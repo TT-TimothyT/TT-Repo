@@ -1,0 +1,197 @@
+
+.account-wishlist-edit {
+    font-family: 'Roboto';
+    a {
+        text-decoration: none;
+        &:hover{
+            text-decoration: none;
+            // color: inherit;
+        }
+    }
+    &__title {
+        font-family: 'Poppins';
+        font-size: 24px;
+        line-height: 36px;
+        &-div {
+            margin-bottom: 8px;
+            flex-direction: column;
+        }
+    }
+    .card {
+        background-color: $white;
+        // border-bottom: 4px solid $blue;
+        padding: 0;
+        border-radius: 4px;
+        .carousel-inner{
+            img{
+                height: 250px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+        }
+        .wishlist-item-remove{
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 11;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            background-image: url('data:image/svg+xml,<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Utility / Wishlist / Filled "><path id="heart filled" d="M15.2831 6.88733L15.9998 7.62405L16.7166 6.88733C19.8804 3.6354 25.5542 4.80328 27.5926 8.78422C28.5788 10.7101 28.7428 13.3985 27.0707 16.6974C25.435 19.9243 22.0445 23.7148 15.9998 27.7974C9.95514 23.7148 6.5647 19.9243 4.92902 16.6974C3.25687 13.3985 3.42088 10.7101 4.40704 8.78422C6.44548 4.80328 12.1193 3.6354 15.2831 6.88733Z" fill="black" stroke="white" stroke-width="2"/></g></svg>');
+            background-repeat: no-repeat;
+        }
+        .card-body{
+            .badge{
+                font-family: 'Roboto';
+                font-size: 12px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 16px;
+            }
+            ul{
+                li.listValue{
+                    font-family: 'Roboto';
+                    font-size: 14px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 20px;
+                }
+            }
+        }
+    }
+    &__flex {
+        gap: 24px;
+        order: 2;
+        margin-top: 32px;
+    }
+    &__save {
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+    }
+    &__button {
+        flex-direction: column;
+        margin-top: 32px;
+    }
+    &__cancel {
+        color: $black;
+        text-decoration: underline;
+        &:hover {
+            color: $black;
+            text-decoration: none;
+        }
+    }
+    .carousel-indicators {
+        button {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1px solid white;
+            &.active {
+                background-color: $white;
+            }
+            &:not(.active) {
+                background-color: transparent;
+            }
+        }
+    }
+    .no-item-text{
+        margin: 2rem 0;
+    }
+    .card-body.pricing{
+        h4{
+            font-family: Poppins;
+        }
+    }
+    
+    
+    @include media-breakpoint-up(lg) {
+        &__title {
+            font-size: 36px;
+            line-height: 48px;
+            &-div {
+                margin-bottom: 16px;
+                flex-direction: row;
+            }
+        }
+        .card {
+            padding: 0;
+            height: 389px;
+            margin-bottom: 1.5rem;
+            .carousel-inner{
+                img{
+                    height: 389px;
+                    object-fit: cover;
+                }
+            }
+            .card-body{
+                .badge{
+                    width: 64px;
+                    height: 24px;
+                }
+            }
+            .carousel.slide{
+                button{
+                    opacity: 1;
+                    &.carousel-control-next{
+                        right: 5% !important;
+                    }
+                    .carousel-control-next-icon{
+                        background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Chevron / Right"><path id="Path (Stroke)" fill-rule="evenodd" clip-rule="evenodd" d="M8.22725 4.85225C8.44692 4.63258 8.80308 4.63258 9.02275 4.85225L15.7727 11.6023C15.9924 11.8219 15.9924 12.1781 15.7727 12.3977L9.02275 19.1477C8.80308 19.3674 8.44692 19.3674 8.22725 19.1477C8.00758 18.9281 8.00758 18.5719 8.22725 18.3523L14.5795 12L8.22725 5.64775C8.00758 5.42808 8.00758 5.07192 8.22725 4.85225Z" fill="black"/></g></svg>');
+                        background-repeat: no-repeat;
+                        background-color: #fff;
+                        border-radius: 50%;
+                        opacity: 1;
+                    }
+                    .carousel-control-prev-icon{
+                        background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Chevron / Left"><path id="Path (Stroke)" fill-rule="evenodd" clip-rule="evenodd" d="M15.7727 4.85225C15.9924 5.07192 15.9924 5.42808 15.7727 5.64775L9.4205 12L15.7727 18.3523C15.9924 18.5719 15.9924 18.9281 15.7727 19.1477C15.5531 19.3674 15.1969 19.3674 14.9773 19.1477L8.22725 12.3977C8.00758 12.1781 8.00758 11.8219 8.22725 11.6023L14.9773 4.85225C15.1969 4.63258 15.5531 4.63258 15.7727 4.85225Z" fill="black"/></g></svg>');
+                        background-repeat: no-repeat;
+                        background-color: #fff;
+                        border-radius: 50%;
+                        opacity: 1;
+                    }
+                }
+            }
+            .wishlist-item-remove{
+                top: 24px;
+                right: 52px;
+            }
+        }
+        &__flex {
+            order: 1;
+            margin-top: unset;
+        }
+        &__button {
+            flex-direction: row;
+            margin-top: 48px;
+        }
+        .card-body.pricing{
+            margin-left: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+    }
+    @include media-breakpoint-down(md) {
+        padding: 0;
+        .row{
+            position: relative;
+            .pricing-section{
+                position: absolute !important;
+                top: 73%;
+                left: 58%;
+                width: 45%;
+                .card-body{
+                    padding: 0;
+                }
+            }
+        }
+    }
+    .view-all-trips-btn{
+        width: 10%;
+    }
+}
+
+body:has(div.account-wishlist-edit){
+    background-color: #d3d3d3;
+}

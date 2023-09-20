@@ -1,0 +1,103 @@
+#testimonials {
+    
+    .col-12 {
+        padding-right: unset;
+    }
+
+    .card {
+        border: unset;
+        background-color: $gray-100;
+        border-bottom: 4px solid $blue;
+        &:nth-child(even){
+            @include media-breakpoint-up(lg) {
+                margin-top: 1%;
+            }
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .text {
+            font-size: 14px;
+            line-height: 20px;
+            color: $black;
+            font-family: 'Roboto';
+            margin-top: 24px;
+        }
+        .text-author {
+            font-family: 'Roboto';
+            font-size: 14px;
+            line-height: 20px;
+            color: $gray-600;
+            &:before {
+                content: '-';
+                width:10px;
+            }
+        }
+    }
+    .slick-slider {
+        margin-right: -20px;
+        @include media-breakpoint-up(lg) {
+            margin-right: -72px;
+        }
+    }
+    .slick-list{
+        padding:0 50px 0 0;
+    }
+    .slick-slide {
+        margin-right:8px;
+        @include media-breakpoint-up(lg) {
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+        @include media-breakpoint-up(lg) {
+            &:nth-of-type(even) {
+                margin-top: 52px;
+            }
+        }
+    }
+    .slick-prev {
+        width: 63px;
+        height: 63px;
+        background: url('../../../trek-travel-theme/assets/images/testimonial-arrow.png') !important;
+        transform: matrix(-1, 0, 0, 1, 0, 0);
+        z-index: 1;
+        &:before {
+            content: unset !important;
+        }
+    }
+    .slick-next {
+        width: 63px;
+        height: 63px;
+        right: 2%;
+        margin-top: 3%;
+        background: url('../../../trek-travel-theme/assets/images/testimonial-arrow.png') !important;
+        &:before {
+            content: unset !important;
+        }
+    }
+    .slick-list {
+        @include media-breakpoint-down(lg) {
+            padding-bottom: 24px;
+        }
+    }
+    .slick-dots {
+        li {
+            width: unset;
+            height: unset;
+            border-radius: 50%;
+            margin-right:3px;
+            button {
+                border: 1px solid $gray-500;
+                height: 8px;
+                width: 8px;
+                padding: 4px;
+                border-radius: 50%;
+                &::before {
+                    content: unset;
+                }
+            }
+            &.slick-active{
+                background-color: $gray-500;
+            }
+        }
+    }
+}

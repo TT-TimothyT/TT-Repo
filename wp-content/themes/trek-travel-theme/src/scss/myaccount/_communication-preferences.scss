@@ -1,0 +1,92 @@
+.communication-preferences {
+    font-family: 'Roboto';
+    &__title {
+        font-family: 'Poppins';
+        font-size: 24px;
+        line-height: 36px;
+        &-div {
+            margin-bottom: 8px;
+            flex-direction: column;
+        }
+    }
+    &__card {
+        background-color: $white;
+        border-bottom: 4px solid $blue;
+        padding: 32px 20px 40px 20px;
+    }
+    &__flex {
+        gap: 24px;
+        order: 2;
+        margin-top: 32px;
+    }
+    &__save {
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+    }
+    &__button {
+        flex-direction: column;
+        margin-top: 32px;
+    }
+    &__cancel {
+        color: $black;
+        text-decoration: underline;
+        &:hover {
+            color: $black;
+            text-decoration: none;
+        }
+    }
+    select {
+        background-image: url('../../assets/images/checkout/Calendar.png') !important;
+        background-repeat: no-repeat !important;
+        background-position: 98% center !important;
+        background-size: unset !important;
+    }
+    .form-select:focus{
+        box-shadow: none;
+        border: 1px solid #ced4da;
+    }
+    .form-check-input:focus{
+        box-shadow: none;
+        border-color: $black;        
+    }
+    .form-check-input:not(:checked){
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill=''/%3e%3c/svg%3e");
+        border-color: $black;
+    }
+    .form-check-input:checked {
+        background-color: $black;
+        border-color: $black;
+    }
+    @include media-breakpoint-up(lg) {
+        &__title {
+            font-size: 36px;
+            line-height: 48px;
+            &-div {
+                margin-bottom: 16px;
+                flex-direction: row;
+            }
+        }
+        &__card {
+            padding: 48px 48px 56px 48px;
+        }
+        &__flex {
+            order: 1;
+            margin-top: unset;
+        }
+        &__button {
+            flex-direction: row;
+            margin-top: 48px;
+        }
+        &__contact-method{
+            .form-floating{
+                width: 50%;
+            }
+        }
+        &__newsletter{
+            .info{
+                width: 50%;
+            }
+        }
+    }
+}

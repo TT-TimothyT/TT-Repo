@@ -1,0 +1,39 @@
+.pdp-additional-gear {
+
+    &__list {
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 400;
+        color: $gray-600;
+    }
+    &__image{
+        @include media-breakpoint-down(lg){
+            align-self: center;
+            order: -1;
+        }
+        img{
+            background-color: #e5e5e5;
+            width: 335px;
+            height: 335px;
+            object-fit: cover;
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+
+        &__list {
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 400;
+            color: $gray-600;
+        }
+        &__image{
+            img{
+                // background-color: #e5e5e5;
+                width: 630px;
+                height: 420px;
+                max-width: none;
+            }
+        }
+    }
+}

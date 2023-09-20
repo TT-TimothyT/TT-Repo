@@ -1,0 +1,28 @@
+.pdp-weather{
+    &__weather-table{
+        @include media-breakpoint-down(md) {
+            overflow-x: scroll;
+            padding: 0;
+            table{
+                tr th:first-child {
+                    position: sticky;
+                    left: -1px;
+                    white-space: nowrap;
+                }
+                thead tr th:first-child {
+                    background-color: $black;
+                }
+            } 
+        }
+        thead th, tbody th {
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 400;
+        }
+        tbody tr th:first-child {
+            background-color: $white;
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+}

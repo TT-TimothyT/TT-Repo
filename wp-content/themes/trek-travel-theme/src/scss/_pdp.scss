@@ -1,0 +1,61 @@
+.pdp-container{
+    .row{
+        margin: 0;
+        padding: 0;
+    }
+
+    [class^="col-"] {
+        padding: 0;
+    }
+    a.pdp-anchor {
+        display: block;
+        position: relative;
+        top: -90px;
+        visibility: hidden;
+    }
+}
+
+.pdp-section {
+    padding: 40px 20px 0 20px;
+
+    &__title {
+        font-family: "Poppins";
+        margin-bottom: 32px;
+        color: #000000;
+    }
+
+    &__divider {
+        margin-top: 40px;
+        margin-bottom: 0;
+    }
+
+    @include media-breakpoint-up(md) {
+        padding: 60px 72px 0 72px;
+
+        &__divider {
+            margin-top: 60px;
+        }
+    }
+}
+
+// Import PDP section and components
+@import "PDP/pdp-hero-carousel";
+@import "PDP/pdp-overview-bar";
+@import "PDP/pdp-overview-section";
+@import "PDP/pdp-faq";
+@import "PDP/pdp-overview-navigation";
+@import "PDP/pdp-overview-navigation-mobile";
+@import "PDP/pdp-great-riders";
+@import "PDP/pdp-additional-details";
+@import "PDP/pdp-trip-wows";
+@import "PDP/pdp-rider-information";
+@import "PDP/pdp-dates-pricing";
+@import "PDP/pdp-before-after";
+@import "PDP/pdp-trip-inclusions";
+@import "PDP/pdp-testimonial";
+@import "PDP/pdp-hotels";
+@import "PDP/pdp-bikes";
+@import "PDP/pdp-additional-gear";
+@import "PDP/pdp-itinerary";
+@import "PDP/pdp-weather";
+@import "PDP/pdp-similar-trips";

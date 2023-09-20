@@ -1,0 +1,88 @@
+#inclusions {
+
+    .tab-pane {
+        .d-flex {
+            gap: 20px;
+            @include media-breakpoint-down(lg) {
+                flex-flow: column;
+                gap: 24px;
+                .left-div {
+                    order: 1;
+                }
+            }
+            .left-div,
+            .right-div {
+                width: 50%;
+                @include media-breakpoint-down(lg) {
+                    width: 100%;
+                }
+            }
+            
+            ul {
+                color: $gray-600;
+                padding-left: 1rem;
+                li {
+                    font-family: 'Roboto';
+                    font-size: 16px;
+                    line-height: 24px;
+                    color: $gray-600;
+                }
+            }
+            
+            .right-div {
+                .gratuities_description {
+                    background-color: $gray-100;
+                    padding: 32px 32px 40px 32px;
+                    border-bottom: 4px solid $blue;
+                    border-radius: 4px;
+                    @include media-breakpoint-down(lg) {
+                        padding: 24px 24px 32px 24px;
+                    }
+                    img {
+                        margin-bottom: 24px;
+                        @include media-breakpoint-down(lg) {
+                            margin-bottom: 16px;
+                        }
+                    }
+                    .gratuities_heading {
+                        font-family: 'Roboto';
+                        font-size: 18px;
+                        line-height: 28px;
+                        margin-bottom: 8px;
+                        @include media-breakpoint-down(lg) {
+                            font-size: 16px;
+                            line-height: 24px;
+                        }
+                    }
+                    .description {
+                        font-size: 14px;
+                        line-height: 20px;
+                        color: $black;
+                    }
+                }
+            }
+        }
+        .gallery {
+            -webkit-column-count: 3;
+            -moz-column-count: 3;
+            column-count: 3;
+            -webkit-column-width: 33%;
+            -moz-column-width: 33%;
+            column-width: 33%;
+            width:100%;
+            gap: 6px;
+            @include media-breakpoint-down(lg) {
+                gap: 4px;
+            }
+            .pics {
+                margin-bottom: 6px;
+                img {
+                    width: 100%;
+                }
+                @include media-breakpoint-down(lg) {
+                    margin-bottom: 4px;
+                }
+            }
+        }
+    }
+}

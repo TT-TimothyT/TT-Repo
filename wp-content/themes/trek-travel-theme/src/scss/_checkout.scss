@@ -1,0 +1,55 @@
+@import 'checkout/checkout-timeline';
+@import 'checkout/checkout-guest';
+@import 'checkout/checkout-hotel';
+@import 'checkout/checkout-bikes';
+@import 'checkout/checkout-payment';
+@import 'checkout/checkout-reviews';
+@import 'checkout/checkout-summary';
+
+.select2-container{
+    .select2-selection--single {
+        padding-top: 1.625rem;
+        padding-bottom: 0.625rem;
+        height: 58px;
+        border: 1px solid #ced4da;
+        .select2-selection__rendered {
+            line-height: 20px;
+            color: #212529;
+        }
+        .select2-selection__arrow {
+            b {
+                background-image: url('../../assets/images/checkout/Calendar.png') !important;
+                background-repeat: no-repeat !important;
+                background-position: 98% center !important;
+                background-size: unset !important;
+                margin-top: 3px;
+                right: 6.5px;
+                height: 24px;
+                width: 24px;
+                border-color: unset;
+                border-style: unset;
+                border-width: unset;
+                left: unset;
+                margin-left: unset;
+            }
+        }
+    }
+} 
+.checkout-trek {
+    @include media-breakpoint-up(lg) {
+        justify-content: space-between;
+    }
+    select.multi-select{
+        height: auto !important;
+        background-image: none !important;
+    }
+    .woocommerce-invalid input,.woocommerce-invalid select,
+    .woocommerce-validated .woocommerce-invalid input, 
+    .woocommerce-validated .woocommerce-invalid select {
+        border-color: #a00 !important;        
+    }
+    .woocommerce-validated input, .woocommerce-validated select,
+    .woocommerce-validated .woocommerce-validated input, .woocommerce-validated .woocommerce-validated select {
+        border-color: #6dc22e !important;        
+    }
+}

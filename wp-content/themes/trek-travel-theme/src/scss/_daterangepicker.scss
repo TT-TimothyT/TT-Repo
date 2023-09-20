@@ -1,0 +1,53 @@
+.daterangepicker{
+    
+    table {
+        font-family: 'Roboto';
+        border-collapse: inherit;
+        tbody, thead tr:nth-child(2){
+            font-size: 14px;
+            font-weight: 500 !important;
+        }        
+    }
+    .ranges{
+        float: none !important;
+        text-align: center !important;
+        display: block !important;
+        .cancelBtn {
+            text-decoration: underline;
+            transition: none;
+            &:hover {
+                border: none;                
+            }
+        }
+        .applyBtn {
+            display: none !important;
+        }
+    }    
+    
+}
+    .daterangepicker td.available:hover, .daterangepicker th.available:hover{
+        border: 1px solid #000000;
+        background-color: transparent;
+        border-radius: 1rem;
+    }
+    .daterangepicker .daterangepicker_input{
+        display: none !important;
+    }
+    // .daterangepicker.dropdown-menu{
+    //     z-index: 0;
+    // }
+    .daterangepicker td.active, .daterangepicker td.active:hover, .daterangepicker td.start-date.end-date{
+        background-color: #000000 !important;
+        border-radius: 1rem;
+    }
+    .daterangepicker td.in-range{
+        background-color: #f4f4f4;
+
+    }
+    .daterangepicker.dropup {
+        .calendar.right{
+            @media (max-width: 767px) {
+              display: none !important;
+            }
+          }
+    }

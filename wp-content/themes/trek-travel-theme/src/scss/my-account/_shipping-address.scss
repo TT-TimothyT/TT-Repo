@@ -1,0 +1,140 @@
+.woocommerce-MyAccount-content {
+    float: none !important;
+}
+.shipping-address {
+    font-family: 'Roboto';
+    &__title {
+        font-family: 'Poppins';
+        font-size: 24px;
+        line-height: 36px;
+        &-div {
+            margin-bottom: 8px;
+            flex-direction: column;
+        }
+    }
+    &__required {
+        margin-left: unset;
+        color: $gray-500;
+    }
+    &__card {
+        background-color: $white;
+        border-bottom: 4px solid $blue;
+        padding: 32px 20px 40px 20px;
+    }
+    &__flex {
+        gap: 24px;
+        order: 2;
+        margin-top: 32px;
+    }
+    &__save {
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+    }
+    &__button {
+        flex-direction: column;
+        margin-top: 32px;
+    }
+    &__cancel {
+        color: $black;
+        text-decoration: underline;
+        &:hover {
+            color: $black;
+            text-decoration: none;
+        }
+    }
+    &__delete {
+        color: $gray-300;
+        text-decoration: underline;
+        order: 1;
+        &:hover {
+            color: $gray-300;
+            text-decoration: none;
+        }
+    }
+    select {
+        background-image: url('../../assets/images/checkout/Calendar.png') !important;
+        background-repeat: no-repeat !important;
+        background-position: 98% center !important;
+        background-size: unset !important;
+    }
+    .modal-header {
+        border-bottom: unset;
+    }
+    .modal-body__title {
+        font-size: 18px;
+        line-height: 28px;
+    }
+    .modal-footer {
+        border-top: unset;
+        margin-bottom: 12px;
+        padding-top: unset;
+        button {
+            padding: 8px 16px;
+            font-weight: 500;
+            line-height: 24px;
+        }
+        a {
+            color: $black;
+            margin-right: 24px;
+            &:hover {
+                color: $black;
+                text-decoration: none;
+            }
+        }
+    }
+    .modal-dialog {
+        top: 25%;
+    }
+    .modal-body {
+        padding: 0px 24px 36px 24px;
+    }
+    .modal-title {
+        margin-left: 11px;
+    }
+    @include media-breakpoint-up(lg) {
+        &__title {
+            font-size: 36px;
+            line-height: 48px;
+            &-div {
+                margin-bottom: 16px;
+                flex-direction: row;
+            }
+        }
+        &__required {
+            margin-left: auto;
+        }
+        &__card {
+            padding: 48px 48px 56px 48px;
+        }
+        &__flex {
+            order: 1;
+            margin-top: unset;
+        }
+        &__delete {
+            margin-left: auto;
+            order: 2;
+        }
+        &__button {
+            flex-direction: row;
+            margin-top: 48px;
+        }
+        .modal-header {
+            padding: 15px 27px;
+        }
+        .modal-body {
+            padding: 0px 40px 36px 40px;
+        }
+        .modal-footer {
+            padding-bottom: 16px;
+            button {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+        }
+        .modal-body__title {
+            font-size: 20px;
+            line-height: 30px;
+        }
+    }
+}

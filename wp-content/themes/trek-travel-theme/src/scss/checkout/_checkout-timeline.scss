@@ -1,0 +1,156 @@
+.checkout-timeline{
+    @mixin alert {
+        gap: 10px;
+        padding: 11px 11px 11px 13px;
+    }
+    font-family: 'Roboto' !important;
+    &__back {
+        width: 184px;
+        margin-bottom: 31px;
+        margin-top: 16px;
+        a {
+            text-decoration: none;
+            gap: 7.5px;
+            &:hover {
+                color: $black;
+            }
+            p {
+                font-size: 14px;
+                font-weight: 20px;
+            }
+        }
+    }
+    &__progress-bar {
+        padding-bottom: 32px;
+        position: relative;
+        ul {
+            list-style: none;
+            padding: 0;
+            li {
+                border-radius: 50%;
+                width: 12px;
+                height: 12px;
+                border: 2px solid $gray-300;
+                z-index: 1;
+                background-color: $white;
+                &.active {
+                    border: 2px solid $blue;
+                    background-color: $blue;
+                    &::after {
+                        color: $black;
+                        font-weight: $font-weight-bold;
+                    }
+                }
+                &::after {
+                    position: absolute;
+                    top: 12px;
+                    color: $gray-500;
+                    font-size: 12px;
+                    line-height: 16px;
+                    width: 50px;
+                }
+                &.guest-info {
+                    .nav-link {
+                        background-color: unset;
+                    }
+                    &::after {
+                        content: 'Guest Info';
+                    }
+                }
+                &.rooms-gear {
+                    .nav-link {
+                        background-color: unset;
+                    }
+                    &::after {
+                        content: 'Rooms & Gear';
+                        left: 29%;
+                        text-align: center;
+                    }
+                }
+                &.payment {
+                    .nav-link {
+                        background-color: unset;
+                    }
+                    &::after {
+                        content: 'Payment';
+                        left: 63%;
+                    }
+                }
+                &.review {
+                    .nav-link {
+                        background-color: unset;
+                    }
+                    &::after {
+                        content: 'Review';
+                        left: 86%;
+                    }
+                }
+            }
+        }
+    }
+    &__info {
+        @include alert;
+        background-color: #D4EEF9;
+        border: 1px solid #1C769D;
+    }
+    
+    &__warning {
+        @include alert;
+        background-color: #FFEEC3;
+        border: 1px solid #7C5E12;
+        margin-bottom:40px;
+    }
+    &__progress {
+        height: 2px;
+        width: 100%;
+        top: 5px;
+        position: absolute;
+        background-color: $gray-300;
+        border-radius: 10px;
+        &-bar-line {
+            width: 0%;
+            flex-direction: column;
+            overflow: hidden;
+            color: #fff;
+            text-align: center;
+            height: 2px;
+            white-space: nowrap;
+            background-color: $blue;
+        }
+    }
+    
+    @include media-breakpoint-up(lg) {
+        &__back {
+            margin-top: 16px;
+            margin-bottom: 61px;
+            a {
+                p {
+                    font-size: 18px;
+                    font-weight: 28px;
+                }
+            }
+        }
+        &__progress-bar {
+            padding-bottom: 48px;
+            ul {
+                li {
+                    &::after { 
+                        font-size: 16px;
+                        line-height: 24px;
+                        width: 110px;
+                    }
+                    &.rooms-gear {
+                        &::after {
+                            text-align: unset;
+                        }
+                    }
+                    &.review {
+                        &::after {
+                            left: 94%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

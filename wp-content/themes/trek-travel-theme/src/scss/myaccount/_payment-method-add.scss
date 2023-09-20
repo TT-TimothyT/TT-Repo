@@ -1,0 +1,158 @@
+.add-payment-method {
+    font-family: 'Roboto';
+    &__title {
+        font-family: 'Poppins';
+        font-size: 24px;
+        line-height: 36px;
+        &-div {
+            margin-bottom: 8px;
+            flex-direction: column;
+        }
+    }
+    &__card {
+        background-color: $white;
+        border-bottom: 4px solid $blue;
+        // padding: 32px 20px 40px 20px;
+    }
+    &__flex {
+        gap: 24px;
+        order: 2;
+        margin-top: 32px;
+    }
+    &__save {
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+    }
+    &__button {
+        flex-direction: column;
+        margin-top: 32px;
+    }
+    &__cancel {
+        color: $black;
+        text-decoration: underline;
+        &:hover {
+            color: $black;
+            text-decoration: none;
+        }
+    }
+    form#add_payment_method{
+        div#payment{
+            background-color: transparent;
+            div.payment_box{
+                background-color: transparent;
+                &::before{
+                    display: none;
+                }
+            }
+            ul{
+                border: none;
+                padding: 0;
+            }
+        }
+    }
+    .wc-cybersource-credit-card-new-payment-method-form{
+        display: flex;
+        flex-wrap: wrap;
+        div.form-row{
+            width: 100%;
+            padding: 0 !important;
+            margin-bottom: 1rem !important;
+            // height: 6rem;
+            #wc-cybersource-credit-card-account-number-hosted{
+                // height: 3rem;
+                background-image: none !important;
+                padding: 0 !important;
+                border: none !important;
+                iframe{
+                    width: 98%;
+                    padding: 0.375rem 0.75rem;
+                    font-size: 1rem;
+                    line-height: 1.5;
+                    border: 1px solid #ced4da !important;
+                    border-radius: 0.375rem;
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                }
+            }
+        }
+        p#wc-cybersource-credit-card-expiry_field{
+            width: 100%;
+            padding: 0 !important;
+            margin-bottom: 1rem !important;
+            // height: 6rem;
+            input#wc-cybersource-credit-card-expiry{
+                width: 98%;
+                // padding: 0.375rem 0.75rem;
+                font-size: 1rem;
+                line-height: 2.1;
+                border: 1px solid #ced4da !important;
+                border-radius: 0.375rem;
+                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            }
+        }
+        div.form-row-last{
+            width: 100%;
+            padding: 0 !important;
+            margin-bottom: 1rem !important;
+            // height: 6rem;
+            #wc-cybersource-credit-card-csc-hosted{
+                // height: 3rem;
+                padding: 0 !important;
+                border: none !important;
+                iframe{
+                    width: 98%;
+                    padding: 0.375rem 0.75rem;
+                    font-size: 1rem;
+                    line-height: 1.5;
+                    border: 1px solid #ced4da !important;
+                    border-radius: 0.375rem !important;
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                }
+            }
+        }
+        
+    }
+    
+    @include media-breakpoint-up(lg) {
+        &__title {
+            font-size: 36px;
+            line-height: 48px;
+            &-div {
+                margin-bottom: 16px;
+                flex-direction: row;
+            }
+        }
+        &__card {
+            padding: 48px 48px 56px 48px;
+        }
+        &__flex {
+            order: 1;
+            margin-top: unset;
+        }
+        &__button {
+            flex-direction: row;
+            margin-top: 48px;
+        }
+        .wc-cybersource-credit-card-new-payment-method-form{
+            div.form-row-wide{
+                #wc-cybersource-credit-card-account-number-hosted{
+                    width: 474px !important;
+                }
+            }
+            p#wc-cybersource-credit-card-expiry_field{
+                width: 227px !important;
+                margin-right: 20px !important;
+                input#wc-cybersource-credit-card-expiry{
+                    width: 227px;
+                }
+            }
+            div.form-row-last{
+                width: 227px !important;
+                #wc-cybersource-credit-card-csc-hosted{
+                    width: 227px;
+                }
+            }
+        }
+        
+    }
+}

@@ -1,0 +1,76 @@
+.my-trips{
+    .card{
+        padding: 16px;
+    }
+    .trip-image{
+        width: 295px;
+        height: 200px;
+        img{
+            width: 295px;
+            height: 200px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+    }
+    .trip-info{
+        a{
+            text-decoration: none;
+            &:hover{
+                color: inherit;
+            }
+        }
+    }
+    .trip-details-cta{
+        a{
+            color: $white;
+        }
+        p{
+            a{
+                color: $black !important;
+            }
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        .card{
+            .past-title, .upcoming-title{
+                margin: 2rem 0 0 2rem;
+            }
+        }
+        .trips-list-item{
+            display: flex;
+            gap: 2%;
+            margin: 2rem;
+            .trip-info{
+                flex-grow: 1;
+            }
+            .trip-image{
+                width: 227px;
+                height: 151px;
+                img{
+                    width: 227px;
+                    height: 151px;
+                }
+            }
+        }
+        .past-trip-item{
+            .trip-details-cta{
+                margin-right: 3%;
+            }
+        }
+        .trip-details-cta{
+            a, button{
+                width: 127px;
+                height: 48px;
+                font-family: 'Roboto';
+                font-style: normal;
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 24px;
+                border: 0;
+            }
+        }
+        .no-trip-text{
+            margin-left: 2rem;
+        }
+    }
+}

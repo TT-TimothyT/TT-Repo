@@ -1,0 +1,113 @@
+#rider-information {
+
+    .tab-pane {
+        .d-flex {
+            gap: 20px;
+            @include media-breakpoint-down(lg) {
+                flex-flow: column;
+                gap: 24px;
+                .left-div {
+                    order: 1;
+                }
+            }
+            .left-div,
+            .right-div {
+                width: 50%;
+                @include media-breakpoint-down(lg) {
+                    width: 100%;
+                }
+            }
+            .left-div {
+                p,
+                li {
+                    font-family: 'Roboto';
+                    font-size: 16px;
+                    line-height: 24px;
+                    color: $gray-600;
+                }
+                p {
+                    margin-bottom: 24px;
+                }
+                ul {
+                    padding-left: 1rem;
+                }
+            }
+            .right-div {
+                img {
+                    width: 100%;
+                }
+            }
+        }
+        .rider-main-heading {
+            font-family: 'Roboto';
+            font-size: 20px;
+            line-height: 30px;
+            margin-bottom: 24px;
+            @include media-breakpoint-down(lg) {
+                margin-bottom: 16px;
+            }
+            .info {
+                margin-left: 10px;
+            }
+        }
+        .rider-sub-heading {
+            font-family: 'Roboto';
+            font-size: 16px;
+            line-height: 24px;
+            margin-bottom: 12px;
+            @include media-breakpoint-down(lg) {
+                margin-bottom: 8px;
+            }
+        }
+        .rider-description {
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Roboto';
+            color: $gray-600;
+            margin-bottom: 32px;
+            @include media-breakpoint-down(lg) {
+                width: 100%;
+                margin-bottom: 31px;
+            }
+        }
+        .row-miles {
+            gap: 17px;
+            @include media-breakpoint-down(lg) {
+                flex-flow: column;
+                gap: 16px;
+            }
+            .miles {
+                background: $gray-100;
+                padding: 28px 24px 32px 24px;
+                border-radius: 4px;
+                width:50%;
+                @include media-breakpoint-down(lg) {
+                    width: 100%;
+                }
+                .rider-heading {
+                    font-family: 'Roboto';
+                    font-size: 18px;
+                    line-height: 28px;
+                    .miles-img {
+                        margin-right: 10px;
+                    }
+                }
+                .miles-h {
+                    font-family: 'Roboto';
+                    font-size: 16px;
+                    line-height: 24px;
+                    margin-bottom: 8px;
+                }
+                .miles-p {
+                    font-family: 'Roboto';
+                    font-size: 14px;
+                    line-height: 20px;
+                    margin-bottom: unset;
+                }
+            }
+        }
+        .pdp-rider-level:hover{
+            cursor: pointer;
+        }
+    }
+}

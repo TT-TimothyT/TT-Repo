@@ -1,0 +1,39 @@
+.checkout-review {
+    font-family: 'Roboto';
+    &__title-bar {
+        margin-top: 32px;
+        margin-bottom: 16px;
+    }
+    &__edit {
+        margin-left: auto;
+    }
+    &__guest,
+    &__room,
+    &__bikes,
+    &__travel,
+    &__payment {
+        margin-bottom: 32px;
+    }
+    &__col {
+        margin-bottom: 24px;
+    }
+    @include media-breakpoint-up(lg) {
+        &__title-bar {
+            margin-top: 40px;
+            margin-bottom: 24px;
+        }
+        &__guest,
+        &__room,
+        &__bikes,
+        &__travel,
+        &__payment {
+            margin-bottom: 40px;
+            .row:not(:last-child) {
+                margin-bottom: 24px;
+            }
+        }
+        &__col {
+            margin-bottom: unset;
+        }
+    }
+}

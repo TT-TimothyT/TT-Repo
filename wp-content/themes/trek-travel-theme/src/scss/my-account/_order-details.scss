@@ -1,0 +1,177 @@
+.order-details {
+    margin-top: 48px;
+    &__number {
+        margin-bottom: 28px;
+    }
+    &__print {
+        font-weight: $font-weight-medium;
+        font-size: $font-size-md;
+        line-height: $line-height-md;
+        margin-bottom: 40px;
+    }
+    &__quite {
+        background-color: #D4EEF9;
+        padding: 32px 24px;
+    }
+    &__title {
+        font-family: 'Poppins';
+    }
+    &__heading {
+        font-family: 'Poppins';
+        font-weight: $font-weight-semibold;
+        font-size: 24px;
+        line-height: 36px;
+    }
+    &__quite {
+        margin-bottom: 40px;
+    }
+    &__text {
+        font-size: $font-size-sm;
+        line-height: $line-height-sm;
+    }
+    &__textbold {
+        font-size: $font-size-md;
+        line-height: $line-height-md;
+    }
+    &__content {
+        padding: 16px 0px;
+    }
+    &__flex {
+        flex-direction: column;
+        gap: 24px;
+        div {
+            width: 100%;
+        }
+    }
+    &__subheading {
+        margin-bottom: 24px;
+    }
+    &__flexmulti {
+        margin-bottom: 24px;
+    }
+    &__submit {
+        font-weight: $font-weight-medium;
+        font-size: $font-size-md;
+        line-height: $line-height-md;
+        margin-top: 24px;
+    }
+    a {
+        &:hover {
+            color: $black;
+            text-decoration: none;
+        }
+    }
+    &__account {
+        font-weight: $font-weight-medium;
+        font-size: $font-size-md;
+        line-height: $line-height-md;
+        &:hover {
+            color: $white !important;
+        }
+    }
+    &__accountdiv {
+        margin-top: 32px;
+        margin-bottom: 88px;
+    }
+    &__formtitle {
+        margin-bottom: 24px;
+    }
+    select {
+        background-image: url('../../assets/images/checkout/Calendar.png') !important;
+        background-repeat: no-repeat !important;
+        background-position: 98% center !important;
+        background-size: unset !important;
+    }
+    &__banner {
+        height: 375px;
+        padding: 32px 20px;
+        background-image: linear-gradient(0deg, #000000 -7.63%, rgba(0, 0, 0, 0) 55.25%),url('../../assets/images/ThankyouMobile.jpg');
+        color: $white;
+        &-heading {
+            font-family: 'Poppins';
+            font-weight: $font-weight-semibold;
+            font-size: 36px;
+            line-height: 48px;
+        }
+        &-text {
+            font-size: 16px;
+            line-height: 24px;
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        padding: 0px 297px;
+        margin-top: 56px;
+        max-width: 100%;
+        &__print,
+        &__quite {
+            margin-bottom: 48px;
+        }
+        &__quite {
+            padding: 32px;
+        }
+        &__heading {
+            font-size: 30px;
+            line-height: 40px;
+        }
+        &__text {
+            font-size: $font-size-md;
+            line-height: $line-height-md;
+        }
+        &__textbold {
+            font-size: $font-size-lg;
+            line-height: $line-height-lg;
+        }
+        &__duesp {
+            width: 50%;
+        }
+        &__content {
+            padding: 24px 0px;
+        }
+        &__flex {
+            flex-direction: row;
+            gap: unset;
+            div {
+                width: 50%;
+            }
+        }
+        &__subheading {
+            margin-bottom: 16px;
+        }
+        &__accountdiv {
+            margin-top: 56px;
+            margin-bottom: 112px;
+        }
+        .form-group {
+            width: 50%;
+        }
+        &__banner {
+            height: 400px;
+            padding: 56px 80px;
+            background-image: linear-gradient(0deg, #000000 -7.63%, rgba(0, 0, 0, 0) 55.25%),url('../../assets/images/Thankyou.jpg');
+            &-heading {
+                font-size: 56px;
+                line-height: 72px;
+            }
+            &-text {
+                font-size: 18px;
+                line-height: 28px;
+            }
+        }
+    }
+}
+.woocommerce-order{
+    p.woocommerce-thankyou-order-received, ul.woocommerce-thankyou-order-details{
+        display: none;
+    }
+}
+
+#main:has(div.woocommerce-order) {
+    padding: 0;
+    max-width: 100%;
+    div.row:first-child{
+        margin: 0;
+        div.col-md-12{
+            padding: 0;
+        }
+    }
+}

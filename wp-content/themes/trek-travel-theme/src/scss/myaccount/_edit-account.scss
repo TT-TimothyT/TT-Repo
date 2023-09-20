@@ -1,0 +1,68 @@
+.my-account-edit{
+    font-family: 'Roboto';
+    &__title {
+        font-family: 'Poppins';
+        font-size: 24px;
+        line-height: 36px;
+        &-div {
+            margin-bottom: 8px;
+            flex-direction: column;
+        }
+    }
+    &__card {
+        background-color: $white;
+        border-bottom: 4px solid $blue;
+        padding: 32px 20px 40px 20px;
+        .primary-form-row{
+            .form-floating{
+                margin-bottom: 1rem !important;
+            }
+        }
+    }
+    &__flex {
+        gap: 24px;
+        order: 2;
+    }
+    
+    
+    select {
+        background-image: url('../../assets/images/checkout/Calendar.png') !important;
+        background-repeat: no-repeat !important;
+        background-position: 98% center !important;
+        background-size: unset !important;
+    }
+    #account_dob {
+        background-image: url('../../assets/images/date-input.png') !important;
+        background-repeat: no-repeat !important;
+        background-position: 96% center !important;
+        background-size: unset !important;
+    }
+    .form-select:focus, .form-control:focus{
+        box-shadow: none;
+        border: 1px solid #ced4da;
+    }
+    @include media-breakpoint-up(lg) {
+        &__title {
+            font-size: 36px;
+            line-height: 48px;
+            &-div {
+                margin-bottom: 16px;
+                flex-direction: row;
+            }
+        }
+        &__card {
+            padding: 48px 48px 56px 48px;
+            .primary-form-row{
+                flex-wrap: nowrap;
+                .col-md{
+                    flex: 0 0 50%;
+                }
+            }
+        }
+        &__flex {
+            order: 1;
+            margin-top: unset;
+        }
+        
+    }
+}

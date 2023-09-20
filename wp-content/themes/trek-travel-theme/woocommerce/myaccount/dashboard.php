@@ -1,0 +1,295 @@
+<?php
+
+/**
+ * My Account Dashboard
+ *
+ * Shows the first intro screen on the account dashboard.
+ *
+ * This template can be overridden by copying it to yourtheme/woocommerce/myaccount/dashboard.php.
+ *
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
+ *
+ * @see     https://docs.woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates
+ * @version 4.4.0
+ */
+if (!defined('ABSPATH')) {
+	exit; // Exit if accessed directly.
+}
+global $woocommerce;
+$allowed_html = array(
+	'a' => array(
+		'href' => array(),
+	),
+);
+$userInfo = wp_get_current_user();
+$wp_user_email = $userInfo->user_email;
+//static fields need to replace with dynamic fields if data is available
+$phone = "";
+$dob = "";
+$ns_user_id = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
+$is_log = isset($_REQUEST['log']) && $_REQUEST['log'] == 1 ? true : false;
+$trips = trek_get_guest_trips(get_current_user_id(), 1,'', $is_log);
+$shipping_address = "";
+$billing_address = "";
+$fullname = $userInfo->first_name;
+if( isset($userInfo->last_name) && $userInfo->last_name ){
+	$fullname .= ' '.$userInfo->last_name;	
+}
+$shipping_address_1 = get_user_meta($userInfo->ID, 'shipping_address_1', true);
+$shipping_address_2 = get_user_meta($userInfo->ID, 'shipping_address_2', true);
+$shipping_postcode = get_user_meta($userInfo->ID, 'shipping_postcode', true);
+$shipping_country = get_user_meta($userInfo->ID, 'shipping_country', true);
+$shipping_state = get_user_meta($userInfo->ID, 'shipping_state', true);
+$shipping_city = get_user_meta($userInfo->ID, 'shipping_city', true);
+$billing_address_1 = get_user_meta($userInfo->ID, 'billing_address_1', true);
+$billing_address_2 = get_user_meta($userInfo->ID, 'billing_address_2', true);
+$billing_postcode = get_user_meta($userInfo->ID, 'billing_postcode', true);
+$billing_country = get_user_meta($userInfo->ID, 'billing_country', true);
+$billing_state = get_user_meta($userInfo->ID, 'billing_state', true);
+$billing_city = get_user_meta($userInfo->ID, 'billing_city', true);
+$phone = get_user_meta($userInfo->ID, 'custentity_phone_number', true);
+$dob = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
+?>
+<div class="container dashboard px-0" id="dashboard">
+	<div class="row mx-0">
+		<div class="col-lg-12 d-flex dashboard__log">
+			<p class="fs-lg lh-lg fw-bold">Hi, <?php echo $userInfo->first_name; ?>!</p>
+			<a href="<?php echo wp_logout_url('login'); ?>">Log out</a>
+		</div>
+	</div>
+	<div class="row mx-0">
+		<div class="col-lg-12">
+			<h3 class="dashboard__title fw-semibold">Dashboard</h3>
+		</div>
+	</div>
+	<div class="row mx-0">
+		<div class="col-lg-4">
+			<div class="card mb-5 dashboard__card rounded-1">
+				<div class="card-body pb-0">
+					<h5 class="card-title fw-bold mb-4">Profile</h5>
+					<div class="d-flex justify-content-between align-items-baseline mb-2">
+						<h6 class="card-subtitle fs-sm lh-sm fw-medium">Personal Information</h6>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/edit-account'); ?>">Edit</a>
+					</div>
+					<div class="card-text dashboard__info">
+						<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $fullname; ?></p>
+						<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $userInfo->user_email; ?></p>
+						<?php if(!empty($phone)): ?>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $phone;?></p>
+						<?php endif; ?>
+						<?php if(!empty($dob)): ?>
+							<p class="mb-0 fs-sm lh-sm fw-normal">DOB: <?php echo $dob;?></p>
+						<?php endif; ?>
+					</div>
+					<hr>
+					<div class="d-flex justify-content-between align-items-baseline mb-2 pt-2">
+						<h6 class="card-subtitle fs-sm lh-sm fw-medium">Password</h6>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/change-password'); ?>">Edit</a>
+					</div>
+					<p class="fs-sm lh-sm fw-normal pb-2">********</p>
+					<hr>
+					<div class="d-flex justify-content-between align-items-baseline mb-2 pt-2">
+						<h6 class="card-subtitle fs-sm lh-sm fw-medium">Medical Information</h6>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/medical-information'); ?>">Edit</a>
+					</div>
+					<p class="fs-sm lh-sm fw-normal pb-2"> Manage your medical and emergency contact info</p>
+					<hr>
+					<div class="d-flex justify-content-between align-items-baseline mb-2 pt-2">
+						<h6 class="card-subtitle fs-sm lh-sm fw-medium">Communication Preferences</h6>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/communication-preferences'); ?>">Edit</a>
+					</div>
+					<p class="fs-sm lh-sm fw-normal">Manage your email and mail subscriptions</p>
+				</div>
+			</div>
+			<div class="card mb-5 dashboard__card rounded-1">
+				<div class="card-body pb-0">
+					<div class="d-flex justify-content-between align-items-baseline mb-2">
+						<h5 class="card-title fw-bold mb-2">Payment Information</h5>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/payment-methods'); ?>">Edit</a>
+					</div>
+					<p class="fs-sm lh-sm fw-normal">Manage your payment methods</p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-lg-4">
+			<?php echo do_shortcode('[content_control roles="travel_advisor"]
+			<div class="card mb-5 dashboard__card rounded-1">
+				<div class="card-body pb-0">
+					<div class="d-flex justify-content-between align-items-baseline mb-2">
+						<h5 class="card-title fw-bold mb-2">Travel Advisor Resources</h5>
+					</div>
+					<p class="fs-sm lh-sm fw-normal">Quick links and resources for Trek Travel Advisors</p>
+					<div class="quick-links">
+						<p><a href="https://trektravel.com/contact-us/travel-agents/">Travel Advisor Program</a></p>
+						<p><a href="https://trektravel.com/contact-us/travel-agents/travel-agent-information/">Travel Advisor Portal</a></p>
+					</div>
+				</div>
+			</div>
+			[/content_control]');?>
+			
+			<div class="card mb-5 dashboard__card rounded-1">
+				<div class="card-body pb-0">
+					<div class="d-flex justify-content-between align-items-baseline mb-3">
+						<h5 class="card-title fw-bold mb-2">My Trips</h5>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/my-trips'); ?>">View all trips (<?php echo $trips['count']; ?>)</a>
+					</div>
+					<h6 class="card-subtitle fs-sm lh-sm fw-medium mb-2">Upcoming</h6>
+					<?php if(empty($trips) || (isset($trips['count']) && $trips['count'] <=0 )) { ?>
+					<p class="fs-sm lh-sm fw-normal">You have 0 upcoming trips</p>
+					<a href="<?php echo site_url('bike-tours/all/') ?>" class="btn btn-lg btn-primary dashboard__button rounded-1 mb-4">Book a trip</a>
+					<?php }else{
+						$trips_html = '<p class="fs-sm lh-sm fw-normal">You have 0 upcoming trips</p>';
+						if($trips && isset($trips['data'])){
+							$trips_html = '';
+							$showTwoTripsCounter = 0;
+							foreach($trips['data'] as $trip ){
+								if ($showTwoTripsCounter == 2) {
+									break;
+								}
+								$showTwoTripsCounter++;
+								$product_id = $trip['product_id'];
+								$order_id = $trip['order_id'];
+                                $order_details = trek_get_user_order_info($userInfo->ID, $order_id);
+								$product = wc_get_product( $product_id );
+								$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
+								if( $product ){
+									$trip_status = $product->get_attribute( 'pa_trip-status' );
+									$trip_sdate = $product->get_attribute( 'pa_start-date' ); 
+									$trip_edate = $product->get_attribute( 'pa_end-date' );
+									$trip_name = $product->get_name();
+									$trip_sku = $product->get_sku();
+									$tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
+									$pa_city = $product->get_attribute( 'pa_city' );
+									$sdate_obj = explode('/', $trip_sdate);
+									$sdate_info = array(
+										'd' => $sdate_obj[0],
+										'm' => $sdate_obj[1],
+										'y' => substr(date('Y'),0,2).$sdate_obj[2]
+									);
+									$edate_obj = explode('/', $trip_edate);
+									$edate_info = array(
+										'd' => $edate_obj[0],
+										'm' => $edate_obj[1],
+										'y' => substr(date('Y'),0,2).$edate_obj[2]
+									);
+									$start_date_text = date('F jS, Y', strtotime(implode('-', $sdate_info)));
+									$end_date_text_1 = date('F jS, Y', strtotime(implode('-', $edate_info)));
+									$end_date_text_2 = date('jS, Y', strtotime(implode('-', $edate_info)));
+									$date_range_1 = $start_date_text. ' - '.$end_date_text_2;
+									$date_range_2 = $start_date_text. ' - '.$end_date_text_1;
+									$date_range = $date_range_1;
+									if( $sdate_info['m'] != $edate_info['m'] ){
+										$date_range = $date_range_2;
+									}
+									$product_image_url = 'https://via.placeholder.com/150?text=Trek Travel';
+									if( has_post_thumbnail($product) ){
+										$product_image_url = wp_get_attachment_url($product->get_image_id());
+									}
+									$trip_sku = $product->get_sku();
+									$parentTrip = tt_get_parent_trip($trip_sku);
+									$trip_link = esc_url( add_query_arg( 'order_id', $order_id, get_permalink( TREK_MY_ACCOUNT_PID ).'my-trip' ) );
+								}
+								$trips_html .= '<div class="dashboard__trip d-flex">
+									<div class="my-upcoming-trips">
+										<img src="'.$parentTrip['image'].'">
+									</div>
+									<div class="w-50">
+										<h6 class="fs-sm lh-sm fw-bold mb-1"><a href="'.$trip_link.'">'.$product->get_name().'</a></h6>
+										<p class="fs-sm lh-sm fw-normal mb-1">'.$pa_city.', '.$tripRegion.'</p>
+										<p class="fs-sm lh-sm fw-normal mb-2">'.$date_range.'</p>
+										<?php if (!empty($order_details)) : ?>
+											<p class="dashboard__error"><img src="'.TREK_DIR.'/assets/images/error.png"> You have pending items</p>
+										<?php endif; ?>									
+                                    </div>
+								</div>';
+							}
+						}
+						echo $trips_html;
+					} ?>
+				</div>
+			</div>
+			<div class="card mb-5 dashboard__card rounded-1">
+				<div class="card-body pb-0">
+					<div class="d-flex justify-content-between align-items-baseline mb-2">
+						<h5 class="card-title fw-bold mb-2">Wishlist</h5>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/account-wishlists/'); ?>">Edit</a>
+					</div>
+					<?php
+						$wishlistCount = 0;
+						if( class_exists('WC_Wishlists_User') ){
+							$userWishlistobj = WC_Wishlists_User::get_wishlists();
+							if( $userWishlistobj && is_array($userWishlistobj) ){
+								$wishlistCount = count($userWishlistobj);
+							}
+						}
+					?>
+					<p class="fs-sm lh-sm fw-normal">You have <?php echo $wishlistCount; ?> items on your wishlist
+					</p>
+				</div>
+			</div>
+			<div class="card mb-3 dashboard__card rounded-1">
+				<div class="card-body pb-0">
+					<div class="d-flex justify-content-between align-items-baseline mb-2">
+						<h5 class="card-title fw-bold mb-2">Bike & Gear Preferences</h5>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/bike-gear-preferences'); ?>">Edit</a>
+					</div>
+					<p class="fs-sm lh-sm fw-normal">Manage your jersey size, helmet size, and more</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="card mb-5 dashboard__card rounded-1">
+				<div class="card-body pb-0">
+					<h5 class="card-title fw-bold">Addresses</h5>
+					<div class="d-flex justify-content-between align-items-baseline mb-2">
+						<h6 class="card-subtitle fs-sm lh-sm fw-medium">Shipping Address</h6>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/edit-address/shipping'); ?>">Edit</a>
+					</div>
+					<div class="card-text">
+						<?php if(empty($shipping_address_1)): ?>
+							<p class="mb-0 fs-sm lh-sm fw-normal">No shipping address added</p>
+						<?php else: ?>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_address_1; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_address_2; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_city; ?>, <?php echo $shipping_state; ?>, <?php echo $shipping_postcode; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_country; ?></p>
+						<?php endif; ?>
+					</div>
+					<hr>
+					<div class="d-flex justify-content-between align-items-baseline mb-2">
+						<h6 class="card-subtitle fs-sm lh-sm fw-medium">Billing Address</h6>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/edit-address/billing'); ?>">Edit</a>
+					</div>
+					<div class="card-text">
+						<?php if(empty($billing_address_1)): ?>
+							<p class="fs-sm lh-sm fw-normal">No billing address added</p>
+						<?php else: ?>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_address_1; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_address_2; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_city; ?>, <?php echo $billing_state; ?>, <?php echo $billing_postcode; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country; ?></p>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
+			<div class="card mb-5 dashboard__card rounded-1">
+				<div class="card-body pb-0">
+					<div class="d-flex justify-content-between align-items-baseline mb-2">
+						<h5 class="card-title fw-bold mb-2">Resource Center</h5>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo get_edit_profile_url(); ?>">View all</a>
+					</div>
+					<p class="fs-sm lh-sm fw-normal">Hand-picked resources for our customers</p>
+					<div class="video-link mb-4">
+						<iframe class="w-100" height="180" src="https://www.youtube.com/embed/nfJEW-uMImI?autoplay=0&mute=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

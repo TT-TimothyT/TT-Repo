@@ -1,0 +1,51 @@
+#additional-details{
+
+    h3 {
+        font-size: 24px;
+        line-height: 36px;
+        font-family: 'Poppins';
+        margin-bottom: 24px;
+        font-weight: $font-weight-semibold;
+        @include media-breakpoint-up(lg) {
+            font-weight: $font-weight-semibold;
+            margin-bottom: 40px;
+        }
+    }
+    .additional-details{
+        background-color: #D4EEF9;
+        padding: 32px 20px 40px 20px;
+        border-radius: 4px;
+        @include media-breakpoint-up(lg) {
+            padding: 40px 40px 48px 40px;
+        }
+        .know-before{
+            padding-bottom: 8px;
+            h4 {
+                font-family: 'Poppins';
+                font-weight: $font-weight-semibold;
+                font-size: 24px;
+                line-height: 36px;
+                padding-bottom: 4px;
+            }
+            p{
+                font-family: 'Roboto';
+                font-size: 18px;
+                line-height: 28px;
+                font-weight: $font-weight-normal;
+            }
+        }
+        .your-day{
+            font-family: 'Roboto';
+            padding-bottom: 8px;
+            h5 {
+                font-family: 'Roboto';
+                font-weight: $font-weight-bold;
+                font-size: 18px;
+                line-height: 28px;
+            }
+        }
+        ul{
+            font-family: 'Roboto';
+        }
+    }
+}

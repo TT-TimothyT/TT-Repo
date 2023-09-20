@@ -1,0 +1,64 @@
+article.post{
+    header{
+        margin: 3rem auto;
+        h1{
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 56px;
+            line-height: 72px;
+            text-align: center;
+        }
+        .entry-meta{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .sep{
+                display: none;
+            }
+            .by-author{
+                .sep{
+                    display: initial;
+                }
+                .author-meta a, .sep{
+                    text-transform: uppercase;
+                    font-weight: 700 !important;
+                    font-size: 14px !important;
+                    line-height: 20px !important;
+                    color: #000;
+                }
+            }
+            a{
+                font-family: 'Roboto';
+                font-style: normal;
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 24px;
+                color: #666666;
+                text-decoration: none;
+            }
+        }
+    }
+    .entry-content{
+        .post-thumbnail{
+            img{
+                width: 100%;
+                height: auto;
+                aspect-ratio: 7/3;
+                object-fit: cover;
+            }
+        }
+        img{
+            object-fit: cover;
+            width: 100%;
+        }
+    }
+}
+
+.recent-posts{
+    padding: 0 5rem;
+    .card{
+        border-bottom: 4px solid #28AAE1;
+        border-radius: 4px;
+    }
+}

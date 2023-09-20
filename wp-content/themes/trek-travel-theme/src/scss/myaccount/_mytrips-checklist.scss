@@ -1,0 +1,175 @@
+.my-trips-checklist{
+    .card{
+        padding: 16px;
+    }
+    .trip-image{
+        img{
+            width: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    }
+    .checklist-collapse-all{
+        display: none;
+    }
+    .trips-list-item.desktop-hideme{
+        .booking-info, .guests-info{
+            display: flex;
+            justify-content: space-between;
+            p{
+                margin-bottom: 8px;
+            }
+        }
+    }
+    .checklist-accordion{
+        margin: 12px 0;
+        .accordion-button{
+            gap: 2%;
+        }
+        .accordion-button:not(.collapsed){
+            color: #000000;
+            box-shadow: none;
+            background-color: transparent;
+        }
+        .accordion-button:focus{
+            box-shadow: none;
+        }
+        .accordion-button::after{
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-plus-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z'/%3E%3C/svg%3E");
+        }
+        .accordion-button:not(.collapsed)::after{
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-dash-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z'/%3E%3C/svg%3E");
+        }
+        .accordion-item{
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            #flush-heading-bikeFitInfo{
+                button{
+                    p{
+                        display: contents;
+                    }
+                }
+            }
+            .form-check-input#inlineCheck{
+                border: 1px solid #666666;
+                border-radius: 2px;
+                &:checked{
+                    background-color: #000000;
+                }
+                &:focus {
+                    box-shadow: none;
+                }
+                &:hover {
+                    cursor: pointer;
+                }
+              }
+              .form-control:focus, .form-select:focus{
+                box-shadow: none;
+                border: 1px solid #ced4da;
+            }
+            select {
+                background-image: url('../../assets/images/checkout/Calendar.png') !important;
+                background-repeat: no-repeat !important;
+                background-position: 98% center !important;
+                background-size: unset !important;
+            }
+            .checkout-bikes__bike{
+                padding: 0 12px;
+            }
+            @include media-breakpoint-up(lg) {
+                padding: 8px 48px;
+            }
+        }
+    }
+    .trip-waiver-info{
+        .waiver-col{
+            @include media-breakpoint-up(lg) {
+                padding-right: 6px;
+            }
+        }
+        .card{
+            @include media-breakpoint-up(lg) {
+                padding: 3rem;
+            }
+        }
+        .status-signed{
+            color: #167332;
+        }
+        .status-not-signed{
+            color: #CE242D;
+        }
+        a{
+            width: 40%;
+            color: #FFF;
+            text-align: center;
+            font-family: "Roboto";
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 24px; /* 171.429% */
+            @include media-breakpoint-up(md) {
+                width: 15%;
+            }
+        }
+    }
+    .trip-photo-album{
+        .card{
+            align-items: baseline;
+        }
+        @include media-breakpoint-up(lg) {
+            .card{
+                flex-direction: row;
+                align-items: start;
+                padding: 3rem;
+                img{
+                    padding-top: 8px;
+                }
+                .photo-album-text{
+                    flex-grow: 1;
+                    padding: 0 1rem;
+                }
+            }
+        }
+    }
+    .additional-trip-info{
+        @include media-breakpoint-up(lg) {
+            .card{
+                padding: 3rem;
+            }
+        }
+    }
+
+    .trip-checklist-desktop{
+        @include media-breakpoint-down(lg) {
+            display: none;
+        }
+        .trips-list-item{
+            display: flex;
+            gap: 2%;
+            margin: 2rem;
+            .trip-info{
+                flex-grow: 1;
+            }
+            .trip-image{
+                width: 227px;
+                height: 151px;
+                img{
+                    width: 227px;
+                    height: 151px;
+                }
+            }
+            .trip-details-cta{
+                @include media-breakpoint-up(xxl) {
+                    width: 188px;
+                }
+            }
+        }
+        .booking-info, .guests-info{
+            padding: 1rem 1.5rem;
+        }
+    }
+    .line-item-title{
+        color: #000000;
+    }
+}

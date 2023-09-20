@@ -1,0 +1,230 @@
+div#tt-custom-fields table,
+div#tt-custom-fields td,
+div#tt-custom-fields th {
+    text-align: left;
+}
+
+div#tt-custom-fields table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tt-wc-ns-admin-wrap td,
+div#tt-custom-fields td,
+.tt-wc-ns-admin-wrap th,
+div#tt-custom-fields th {
+    padding: 10px;
+}
+
+div#tt-custom-fields input,
+div#tt-custom-fields select {
+    min-width: 70%;
+}
+
+div#tt-custom-fields tr td:first-child {
+    color: #555;
+    font-size: 12px;
+    line-height: 24px;
+}
+
+div#tt-custom-fields td select {
+    font-size: 14px;
+    line-height: 2;
+    color: #2c3338;
+    border-color: #8c8f94;
+    box-shadow: none;
+    border-radius: 3px;
+    padding: 0 24px 0 8px;
+    min-height: 30px;
+    max-width: 25rem;
+    background-size: 16px 16px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+body[class*="_page_vware"] div#wpcontent,
+body[class*="tt_page_"] div#wpcontent,
+body[class^="_page_vware"] div#wpcontent,
+body[class^="tt_page_"] div#wpcontent {
+    padding: 0;
+}
+
+.tt-layout_header {
+    background: #fff;
+    padding: 10px 25px;
+    margin-bottom: 30px;
+    margin-top: 15px;
+}
+
+.tt-layout__header-wrapper>h1 {
+    font-size: 16px;
+    padding-left: 20px;
+}
+
+.tt-contents,
+.tt-pl-40 {
+    padding-left: 40px;
+}
+
+.tt-tabs {
+    width: 100%;
+    max-width: 90%;
+}
+
+.tt-mt-30 {
+    margin-top: 30px !important;
+}
+
+.tt-mt-10 {
+    margin-top: 10px !important;
+}
+
+.tt_cf_invisible {
+    display: none;
+}
+
+.tt-button-wrap,
+#tt_configured_cats {
+    width: 90%;
+}
+
+table#tt-dataTable-logs {
+    width: 90% !important;
+    table-layout: fixed;
+}
+
+table#tt-dataTable-logs tr td:first-child,
+table#tt-dataTable-logs tr th:first-child {
+    width: 2%;
+    word-wrap: break-word;
+}
+table#tt-dataTable-logs tr td:nth-child(2),
+table#tt-dataTable-logs tr th:nth-child(2){
+    width: 6%;
+    word-wrap: break-word;
+}
+table#tt-dataTable-logs tr td:nth-child(3),
+table#tt-dataTable-logs tr th:nth-child(3) {
+    width: 42%;
+    word-wrap: break-word;
+}
+table#tt-dataTable-logs tr td:nth-child(4),
+table#tt-dataTable-logs tr th:nth-child(4) {
+    width: 44%;
+    word-wrap: break-word;
+}
+table#tt-dataTable-logs tr td:nth-child(5),
+table#tt-dataTable-logs tr th:nth-child(5) {
+    width: 6%;
+    word-wrap: break-word;
+}
+.tt-wc-ns-admin-wrap td,
+.tt-wc-ns-admin-wrap th,
+.tt-wc-ns-admin-wrap table {
+    border: 1px solid #ebe3e370;
+    text-align: left;
+}
+
+.tt-wc-ns-admin-wrap table {
+    border-collapse: collapse;
+    width: 90%;
+    background: #ffffff8c;
+}
+
+.tt-wc-ns-admin-wrap table input {
+    width: 80%;
+    padding: 5px 10px;
+    border-color: #c3c4c7a4;
+}
+
+.tt-warning-margin {
+    margin: 10px 0 !important;
+}
+
+.tt-plugin-status-wrap {
+    display: block;
+    float: right;
+    box-shadow: 0 0 1px #069;
+    padding: 10px;
+    margin: 0;
+    border-radius: 10px;
+}
+
+.tt-block-tag {
+    display: block;
+    float: left;
+}
+
+.tt-layout__header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tt-button-wrap input[type="submit"] {
+    /* background-color: rgba(255, 0, 0, 0.833);  */
+    background-color: #069; 
+    border-color: #069;
+    color: #fff;
+    font-weight: 700;
+    /* border-color: rgba(255, 0, 0, 0.833); */
+    float: right;
+    margin-bottom: 15px;
+}
+
+.tt-button-wrap input[type="submit"]:hover {
+    /* background-color: #ea1a1a; */
+    color: #fff;
+    background-color: rgba(0, 102, 153, 0.502); 
+    border-color: rgba(0, 102, 153, 0.502); 
+    /* border-color: #ea1a1a; */
+}
+.tt-red-start {
+    color: #ea1a1a;
+}
+
+.tt-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.tt-modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 10px;
+}
+
+.tt-modal-content h3 {
+    margin-top: 0;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.close:focus,
+.close:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+.tt-text-right{
+    text-align: right;
+}
+table.table-old.tt-booking-table {
+    table-layout: auto !important;
+}

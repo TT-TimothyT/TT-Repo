@@ -1,0 +1,98 @@
+.woocommerce-products-compare-content{
+    .col{
+        .card{
+            font-family: 'Roboto';
+            border: 0;
+            margin: 0 auto;
+            // width: 158px;
+            .product-link{
+                img{
+                    border-radius: 4.80288px;
+                    object-fit: cover;
+                    height: 158px;
+                }
+                .badge{
+                    position: absolute;
+                    left: 3%;
+                    top: 1%;
+                }
+                
+            }
+            .card-body{
+                hr{
+                    margin: 2rem 0 1rem 0;
+                    width: 115%;
+                }
+                
+                .line-clamp-title{
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;  
+                    overflow: hidden;
+                }
+                .line-clamp-description{
+                    display: -webkit-box;
+                    -webkit-line-clamp: 10;
+                    -webkit-box-orient: vertical;  
+                    overflow: hidden;
+                }
+            }
+            form.cart{
+                position: absolute;
+                right: 5%;
+                // color: #000;
+                top: 1%;
+                z-index: 10;
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
+                background-image: url('data:image/svg+xml,<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Utility / Wishlist / Filled "><path id="heart filled" d="M15.2831 6.88733L15.9998 7.62405L16.7166 6.88733C19.8804 3.6354 25.5542 4.80328 27.5926 8.78422C28.5788 10.7101 28.7428 13.3985 27.0707 16.6974C25.435 19.9243 22.0445 23.7148 15.9998 27.7974C9.95514 23.7148 6.5647 19.9243 4.92902 16.6974C3.25687 13.3985 3.42088 10.7101 4.40704 8.78422C6.44548 4.80328 12.1193 3.6354 15.2831 6.88733Z" fill="black" stroke="white" stroke-width="2"/></g></svg>');
+                background-repeat: no-repeat;
+                a:hover{
+                    border: none;
+                }
+                // .add-to-wl{
+                // }
+            }            
+        }
+    }
+    .col:last-child{
+        hr{
+            width: 100% !important;
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        .col{
+            .card{
+                width: auto;
+                .card-body{
+                    .product-info-desktop{
+                        display: flex;
+                        justify-content: space-between;
+                        p{
+                            margin-bottom: 0;
+                        }
+                    }
+                    .line-clamp-short-description{
+                        display: -webkit-box;
+                        -webkit-line-clamp: 1;
+                        -webkit-box-orient: vertical;  
+                        overflow: hidden;
+                    }    
+                }
+                .product-link{
+                    img{
+                        height: 309px;
+                    }
+                    .badge{
+                        // position: absolute;
+                        left: 5%;
+                        // top: 1%;
+                    }
+                    
+                }
+                            
+            }
+        }        
+    }
+}

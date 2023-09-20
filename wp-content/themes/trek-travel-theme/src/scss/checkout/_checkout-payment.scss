@@ -1,0 +1,444 @@
+.checkout-payment {
+    @mixin input_checked {
+        input[type=radio] {
+            display: block;
+            position: absolute;
+            cursor: pointer;
+            width: 100%;
+            height: 80px;
+            right: 0px;
+            z-index: 1;
+            opacity: 0;
+            &:checked ~ .checkout-payment__paydep,
+            &:checked ~ .checkout-payment__card {
+                border: 2px solid $black;
+                i::after {
+                    content: url(../../../trek-travel-theme/assets/images/checkout/payment-success.png);
+                }
+            }
+            &:not(:checked) ~ .checkout-payment__paydep,
+            &:not(:checked) ~ .checkout-payment__card {
+                border: 1px solid $gray-500;
+                i::before {
+                    content: url(../../../trek-travel-theme/assets/images/checkout/payment-plus.png);
+                }
+            }
+            &:hover ~ .checkout-payment__paydep,
+            &:hover ~ .checkout-payment__card {
+                border: 2px solid $black;
+            }
+        }
+    }
+    input[type=checkbox] {
+        width: 20px;
+        height: 20px;
+        margin-right:10px;
+    }
+    font-family: 'Roboto' !important;
+    .checkout-timeline__progress-bar-line {
+        width: 66%;
+    }
+    &__add-travel {
+        margin-top: 32px;
+        margin-bottom: 32px;
+    }
+    &__sublabel {
+        line-height: 20px;
+        color: $gray-600;
+        &:nth-child(2){
+            margin-bottom: 24px;
+        }
+        a {
+            &:hover {
+                color: $gray-600;
+                text-decoration: none;
+            }
+        }
+    }
+    &__gray {
+        color: $gray-600;
+    }
+    &__title {
+        gap: 10px;
+    }
+    &__add-travel {
+        margin-top: 28px;
+    }
+    &__checkbox {
+        margin-top: 26px;
+        label {
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+    &__options,
+    &__reward,
+    &__method,
+    &__billing,
+    &__release {
+        margin:32px 0px;
+    }
+    &__button {
+        button {
+            padding: 16px 24px;
+        }
+    }
+    &__iframe {
+        height: 276px;
+        overflow-y: scroll;
+        border: 1px solid $black;
+        padding: 24px 20px 0px 20px;
+        margin-top: 24px;
+    }
+    &__pay {
+        position: relative;
+        margin-bottom: 24px;
+        &dep {
+            padding: 22px 22px 22px 20px;
+            i {
+                margin-top: 3px;
+            }
+        }
+        @include input_checked;
+        &method {
+            position: relative;
+        }
+    }
+    &__card {
+        padding: 22px 22px 22px 20px;
+        i {
+            margin-top: 3px;
+        }
+        &-div {
+            gap: 12px;
+        }
+    }
+    &__newcard {
+        cursor: pointer;
+        padding: 22px 22px 22px 20px;
+        border: 1px solid $gray-500;
+        &-div {
+            gap: 14px;
+        }
+    }
+    &__method {
+        @include input_checked;
+    }
+    &__reward {
+        &-title {
+            text-decoration: underline;
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+    &__billing-checkbox {
+        margin-bottom: 24px;
+    }
+    &__billing-checkboxtwo {
+        margin-top: 24px;
+    }
+    &__card-save {
+        flex-direction: column;
+        gap: 32px;
+        margin-top: 8px;
+        .left-card {
+            margin-left: unset;
+        }
+    }
+    &__card-details {
+        &.active {
+            display: block !important;
+        }
+    }
+    &__added-travel {
+        padding-bottom: 20px; 
+        padding-top: 32px;
+        .travel {
+            margin-bottom: 12px;
+            &-col {
+                margin-bottom: 24px;
+            }
+        }
+    }
+    .woocommerce-form-coupon-toggle {
+        .woocommerce-info {
+            border-top: unset;
+            padding: unset;
+            margin: unset;
+            background-color: unset;
+            position: unset;
+            color: $black;
+            a {
+                color: $black;
+                text-decoration: unset;
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+            &:after,
+            &:before {
+                content: unset;
+            }
+        }
+    }
+    .checkout_coupon {
+        border: unset !important;
+        padding: unset !important;
+        margin: unset !important;
+        text-align: unset !important;
+        border-radius: unset !important;
+    }
+    .coupon_button {
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: $font-weight-medium;
+        padding: 16px 24px;
+    }
+    .modal-header {
+        border-bottom: unset;
+        padding: 19px 27px;
+    }
+    .modal-body {
+        padding: 0px 20px 64px 20px;
+        &__title {
+            font-family: 'Poppins' !important;
+            font-size: 24px;
+            line-height: 36px;
+            margin-bottom: 40px;
+        } 
+        &__sub {
+            margin-bottom: 32px;
+        }
+        &__guest {
+            margin: 24px 0px;
+            .d-flex {
+                gap: 10px;
+            }
+        }
+        &__footer {
+            button {
+                width: 100%;
+            }
+            div {
+                margin-top: 16px;
+                text-align: center;
+            }
+            span {
+                text-decoration: underline;
+                &:hover {
+                    color: $black;
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+    &__button {
+        margin-top: 32px;
+    }
+    ul.payment_methods{
+        list-style: none;
+        padding-left: 0 !important;
+    }
+    .wc-cybersource-credit-card-new-payment-method-form{
+        display: flex;
+        flex-wrap: wrap;
+        div.form-row-wide{
+            width: 100%;
+            // height: 6rem;
+            #wc-cybersource-credit-card-account-number-hosted{
+                height: 3rem;
+                iframe{
+                    width: 98%;
+                    padding: 0.375rem 0.75rem;
+                    font-size: 1rem;
+                    line-height: 1.5;
+                    border: 1px solid #ced4da !important;
+                    border-radius: 0.375rem;
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                }
+            }
+        }
+        p#wc-cybersource-credit-card-expiry_field{
+            width: 50%;
+            height: 6rem;
+            input#wc-cybersource-credit-card-expiry{
+                width: 98%;
+                padding: 0.375rem 0.75rem;
+                font-size: 1rem;
+                line-height: 2.1;
+                border: 1px solid #ced4da !important;
+                border-radius: 0.375rem;
+                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            }
+        }
+        div.form-row-last{
+            width: 50%;
+            height: 6rem;
+            #wc-cybersource-credit-card-csc-hosted{
+                height: 3rem;
+                iframe{
+                    width: 98%;
+                    padding: 0.375rem 0.75rem;
+                    font-size: 1rem;
+                    line-height: 1.5;
+                    border: 1px solid #ced4da !important;
+                    border-radius: 0.375rem !important;
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                }
+            }
+        }
+        input[type=checkbox] {
+            height: auto;
+        }
+        p:has(input#wc-cybersource-credit-card-tokenize-payment-method){
+            display: none;
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        &__add-travel {
+            margin-bottom: 40px;
+        }
+        &__sublabel {
+            &:nth-child(2){
+                margin-bottom: 32px;
+            }
+        }
+        &__checkbox {
+            margin-top: 24px;
+            label {
+                font-size: 16px;
+                line-height: 24px;
+            }
+        }
+        &__options,
+        &__reward,
+        &__method,
+        &__billing,
+        &__release {
+            margin:40px 0px;
+        }
+        &__billing-checkboxtwo {
+            input {
+                margin-top: 5px;
+            }
+            label {
+                width: 50%;
+            }
+        }
+        &__iframe {
+            margin-top: 32px;
+            padding: 32px 24px 0px 24px;
+        }
+        &__card-save {
+            flex-direction: row;
+            gap: 32px;
+            margin-top: 8px;
+            .left-card {
+                margin-left: auto;
+            }
+        }
+        .modal-header {
+            padding: 15px 27px;
+        }
+        .modal-body {
+            padding: 0px 40px 64px 40px;
+            &__title {
+                font-size: 30px;
+                line-height: 40px;
+            } 
+            &__footer {
+                button {
+                    width: unset;
+                    margin-right: 24px;
+                }
+                div {
+                    margin-top: unset;
+                    text-align: unset;
+                }
+            }
+        }
+        &__added-travel {
+            padding-bottom: 24px; 
+            margin-top: 28px;
+            .edit-info {
+                margin-left: auto;
+            }
+            .row:not(:nth-last-child(2)) {
+                margin-bottom: 32px;
+            }
+            .travel {
+                margin-bottom: 20px;
+                &-col {
+                    margin-bottom: unset;
+                }
+            }
+        }
+        &__button {
+            margin-top: 40px;
+        }
+        .wc-cybersource-credit-card-new-payment-method-form{
+            display: flex;
+            flex-wrap: wrap;
+            div.form-row-wide{
+                width: 40%;
+                height: 6rem;
+                #wc-cybersource-credit-card-account-number-hosted{
+                    height: 3rem;
+                    iframe{
+                        width: 98%;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        line-height: 1.5;
+                        border: 1px solid #ced4da !important;
+                        border-radius: 0.375rem;
+                        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                    }
+                }
+            }
+            p#wc-cybersource-credit-card-expiry_field{
+                width: 30%;
+                height: 6rem;
+                input#wc-cybersource-credit-card-expiry{
+                    width: 98%;
+                    padding: 0.375rem 0.75rem;
+                    font-size: 1rem;
+                    line-height: 2.1;
+                    border: 1px solid #ced4da !important;
+                    border-radius: 0.375rem;
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                }
+            }
+            div.form-row-last{
+                width: 30%;
+                height: 6rem;
+                #wc-cybersource-credit-card-csc-hosted{
+                    height: 3rem;
+                    iframe{
+                        width: 98%;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        line-height: 1.5;
+                        border: 1px solid #ced4da !important;
+                        border-radius: 0.375rem;
+                        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                    }
+                }
+            }
+        }
+    }
+}
+#protection_modal{
+    .modal-body__guest{
+        margin: 1rem auto;
+        input[type=radio]{
+            margin-right: 8px;
+        }
+    }
+    .modal-body__footer{
+        margin: 2rem auto;
+        button{
+            margin-right: 1rem;
+        }
+    }
+}

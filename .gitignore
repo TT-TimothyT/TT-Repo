@@ -1,0 +1,141 @@
+### Sytem files ###
+*.log
+.DS_Store
+.htaccess
+sitemap.xml
+sitemap.xml.gz
+
+# WordPress Core files and folders
+/index.php
+/license.txt
+/readme.html
+/wordpress
+/wp-activate.php
+/wp-admin/
+/wp-admin
+/wp-blog-header.php
+/wp-comments-post.php
+/wp-config-sample.php
+/wp-cron.php
+/wp-includes/
+/wp-includes
+/wp-links-opml.php
+/wp-load.php
+/wp-login.php
+/wp-mail.php
+/wp-settings.php
+/wp-signup.php
+/wp-trackback.php
+/xmlrpc.php
+
+*.log
+.project
+.htaccess
+sitemap.xml
+sitemap.xml.gz
+wp-config.php
+wp-config-local.php
+wp-content/advanced-cache.php
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/uploads/
+wp-content/wp-cache-config.php
+dx-smartmeeting/index.php
+dx-smartmeeting/db-setup.php
+dx-smartmeeting/helpers/count.txt
+wp-content/plugins/wordfence/tmp/configCache.php
+wp-content/plugins/dx-localhost/
+wp-content/themes/smartmeeting/_static-html-blocks-content/
+
+
+wp-content/wflogs/
+
+/files/
+
+# Pagely Specifics
+wp-config-hosting.php
+db-config.php
+
+# SSL
+.well-known/
+
+banner.html
+cvbguide/
+
+/dx-smartmeeting/
+/events/
+/readme.9f6f36adc87be64ffbbcabf3102d7b38.html
+/robots.txt
+/smart-stars/
+/smart-stars19/
+/staging.txt
+/swim/
+/sws/
+/sws2018/
+/sws2019/
+/test.php
+/test/
+/used_cf/
+
+# Root files
+/smart-stars18/
+/floridakeysfam/
+/smartstarswinners2019/
+/supplierevents/
+
+# Pagely mu-plugins
+wp-content/mu-plugins/
+wp-content/mu-plugins/pagely-app-stats/
+wp-content/mu-plugins/pagely-assets/
+wp-content/mu-plugins/pagely-cache-control/
+wp-content/mu-plugins/pagely-cache-purge/
+wp-content/mu-plugins/pagely-cdn/
+wp-content/mu-plugins/pagely-cli/
+wp-content/mu-plugins/pagely-management-v2.php
+wp-content/mu-plugins/pagely-security-patches/
+wp-content/mu-plugins/pagely-status/
+wp-content/mu-plugins/pagely-util/
+wp-content/mu-plugins/pagely-wp-cli-mail-patch/
+wp-content/mu-plugins/smartmeetings-analytics.php
+
+# Ignore the SM Ad server directory
+/revive_adserver/
+
+/wp-content/ewww/*
+
+# Uploads folder
+/wp-content/uploads/
+
+# Backup files
+wp-content/backupwordpress-ef5e4760f3-backups/
+
+# ACF Files
+# acf-exports/
+
+# Some Cache folders and files
+cache/
+!wp-content/plugins/**/*/cache
+
+# Our DX Stability Framework files
+dxsfwp/
+
+# IDE Files
+.buildpath
+.settings/
+nbproject/
+/nbproject/private/
+.DS_Store
+.idea/
+
+# Plugin files
+wp-content/db.php
+
+# Assets Dist Files
+wp-content/themes/smartmeetings/assets/dist/css
+wp-content/themes/smartmeetings/assets/dist/scripts
+wp-content/themes/smartmeetings/assets/dist/images
+wp-content/themes/smartmeetings/node_modules/
+wp-content/themes/smartmeetings/package-lock.json

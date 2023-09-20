@@ -1,0 +1,60 @@
+.plp-hero-banner{
+    background-color: #F4F4F4;
+    .banner-section{
+        position: relative;
+        img{
+            // height: 200px;
+            aspect-ratio: 7/3;
+            object-fit: cover;
+        }
+        p, h1{
+            position: absolute;
+            color: #fff;
+            left: 5%;
+        }
+        p{
+            bottom: 0;
+        }
+        h1{
+            bottom: 15%;
+        }
+    }
+    .description-section{
+        padding: 3rem 2rem;
+    }
+    @include media-breakpoint-up(lg) {
+        .banner-section{
+            img{
+                // height: 500px;
+                object-fit: cover;
+                width: 100%;
+                
+            }
+            h1{
+                bottom: 13%;
+            }
+        }
+        .description-section{
+            display: flex;
+            gap: 7%;
+            flex-flow: wrap;
+            justify-content: center;
+            padding: 3rem 0;
+            h4{
+                width: 30%;
+                font-family: 'Poppins';
+                color: #000;
+            }
+            p{
+                width: 50%;
+                color: #333;
+            }
+            .view-category-info-link{
+                flex-grow: 1;
+                text-align: center;
+                font-family: 'Roboto';
+                color: #000;
+            }
+        }
+    }
+}

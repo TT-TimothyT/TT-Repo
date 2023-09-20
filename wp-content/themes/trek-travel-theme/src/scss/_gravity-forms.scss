@@ -1,0 +1,115 @@
+form {
+    .gform_body{
+        ul{
+            margin: 0;
+            padding: 0;
+            li{
+                margin: 0;
+                padding: 0;
+                label.gfield_label{
+                    display: none;
+                }
+            }
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        .gform_body{
+            display: flex;
+            justify-content: center;
+            ul{
+                display: flex !important;
+                flex-wrap: wrap;
+                width: 50%;
+                // flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                li{
+                    width: 100%;
+                    padding-right: 0 !important;
+                    // height: 56px;
+                    
+                    div.ginput_container{
+                        width: 100% !important;
+                        margin: 0 auto !important;
+                        // height: inherit ;
+                        input:not([type='checkbox']), select, textarea{
+                            width: 100% !important;
+                            margin: 0 auto !important;
+                            border: 1px solid #B2B3B6;
+                            border-radius: 4px;
+                            // height: inherit;
+                            font-family: 'Roboto';
+                            font-style: normal;
+                            font-weight: 400;
+                            font-size: 16px;
+                            line-height: 24px;
+                            // text-transform: capitalize;
+                            color: #666666;
+                            padding-left: 16px !important;
+                        }
+                        input[type='checkbox']{
+                            margin: 0 12px 0 0 !important;
+                            height: auto !important;
+                            &:focus{
+                                border: 1px solid #B2B3B6;
+                                border-radius: 2px;
+                                box-shadow: none;
+                            }
+                            &:checked{
+                                background-color: $black !important;
+                                border-color: $black !important;
+                            }
+                        }
+                        input:not([type='checkbox']), input:not([type='textarea']), input:not([type='radio']), select{
+                            height: 56px;
+                        }
+                                              
+                        span.name_last{
+                            padding-right: 0 !important;
+                        }
+                        &.ginput_recaptcha{
+                            margin-left: 0 !important;
+                        }
+                    }
+                    input[type='submit']{
+                        width: 100%;
+                        padding: 16px 24px;
+                        background: #000000;
+                        border-radius: 4px;
+                        color: #fff;
+                        &:hover{
+                            color: #000000;
+                            background: #fff;
+                        }
+                    }
+                    div.gfield_description{
+                        margin-left: 0 !important;
+                        border: none !important;
+                        overflow: hidden !important;
+                        padding-left: 24px !important;
+                    }
+                    div.ginput_container_consent{
+                        display: flex;
+                        align-items: center;
+                    }
+                    div.ginput_container_date{
+                        position: relative;
+                        img.ui-datepicker-trigger{
+                            position: absolute;
+                            right: 2%;
+                            top: 35%;
+                        }
+                    }
+                }
+                .gf_first_name, .gf_last_name{
+                    width: 48% !important;
+                }
+            }
+        }
+    }
+}
+.bike-fit-form-section{
+    ul.gform_fields{
+        width: 100% !important;
+    }
+}

@@ -1,0 +1,319 @@
+.header-main {
+  //
+  &__contact-nav {
+    border-bottom: 1px solid $gray-200;
+    display: none;
+
+    .nav-link {
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    .bi {
+      padding-right: 8px;
+    }
+    @include media-breakpoint-up(md) {
+      display: block;
+    }
+  }
+
+  &__search-account {
+    font-size: 20px;
+
+    a {
+      text-decoration: none;
+    }
+
+    .account-in-header i {
+      font-size: 26px;
+    }
+  }
+}
+
+.search-form {
+  border-top: 1px solid hsl(0, 0%, 73%);
+
+  &__icon {
+    z-index: 10;
+    padding-inline: 20px;
+
+    &--search {
+      margin-inline-end: -60px;
+    }
+
+    &--close {
+      margin-inline-start: -60px;
+    }
+  }
+
+  &__input {
+    padding-inline: 60px;
+    font-size: 24px;
+    color: hsl(0deg 0% 16%);
+    font-weight: 500;
+    box-shadow: inset 0px 0px 14px -13px #000000;
+    margin-left: 32px;
+  }
+}
+
+// Promo Banner
+.promo-banner {
+  padding: 10px;
+
+  &__content {
+    font-size: 14px;
+    line-height: 20px;
+
+    p {
+      margin: 0;
+    }
+
+    a,
+    a:link,
+    a:visited,
+    a:active {
+      color: $gray-300;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: $secondary;
+    }
+  }
+
+  &__control-icon {
+    // remove "prev" "next" BG image / use bootstrap icons in code
+    background-image: none;
+    height: initial;
+    width: initial;
+  }
+  .carousel-control-prev, .carousel-control-next{
+    @include media-breakpoint-down(md) {
+      width: 1%;
+    }
+  }
+  @include media-breakpoint-down(md) {
+    height: 60px;
+  }
+}
+
+// header drop shadow for onscroll
+.add-shadow {
+  box-shadow: $black 0px 0px 10px -4px;
+}
+
+.checkout-header {
+  padding-left: 22px;
+  padding-right: 20px;
+  @include media-breakpoint-up(md) {
+    padding-left: 81px;
+    padding-right: 80px;
+  }
+  .btn-question {
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+  }
+  .contact-in-header,
+  .question-in-header {
+    width: 32px;
+    height: 32px;
+  }
+  .bi-question,
+  .bi-telephone {
+    margin-top: 1.5px !important;
+    &:before {
+      font-weight: 700 !important;
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+}
+
+.desktop-nav{
+  display: none;
+  @include media-breakpoint-up(md) {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+}
+.mobile-nav{
+  display: flex;
+  justify-content: center;
+  z-index: 3;
+  .row{
+    width: 100%;
+  }
+  .row > *{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+  ul#mega-menu-main-menu{
+    overflow: scroll !important;
+    li{
+      margin-top: 10px;
+      margin-bottom: 10px;
+      a{
+        color: #000 !important;
+        font-family: 'Roboto' !important;
+        font-size: 18px !important;
+        font-style: normal;
+        // font-weight: 400 !important;
+        line-height: 28px !important;
+      }
+    }
+  }
+}
+
+.saved-cart{
+  background: #28AAE1;
+  font-family: 'Roboto';
+  button{
+    background: none;
+    border: none;
+    text-decoration: underline;
+  }
+  @include media-breakpoint-up(md) {
+    height: 40px;
+    p{
+      br{
+        display: none;
+      }
+    }
+  }
+}
+
+#homeHeaderModal{
+  .modal-content{
+    height: 100%;
+  }
+  @media (max-width: 767px) and (min-width: 575px){
+    .modal-content{
+      height: auto;
+    }
+  }
+  @include media-breakpoint-down(md) {
+    .modal-title{
+      color: #000000 !important;
+    }
+    .modal-body{
+      padding: 0;
+      #headerCTrigger{
+        .daterangepicker{
+          width: 100%;
+          .calendar.left{
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+#mobileCalendarModal{
+  .modal-content{
+    height: 100%;
+  }
+  @media (max-width: 767px) and (min-width: 575px){
+    .modal-content{
+      height: auto;
+    }
+  }
+  @include media-breakpoint-down(md) {
+    .modal-title{
+      color: #000000 !important;
+    }
+    .modal-body{
+      padding: 0;
+      #mobileCalendarTrigger{
+        .daterangepicker{
+          width: 100%;
+          .calendar.left{
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.desktopMenuCustomLink{
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #000000;
+  text-decoration: none;
+}
+
+@include media-breakpoint-down(md) {
+  #mega-menu-wrap-main-menu #mega-menu-main-menu li.mega-menu-item-has-children > a.mega-menu-link > span.mega-indicator:after{
+      content: '\f347' !important;
+      transform: rotate(-90deg) !important;
+  }
+
+  #mega-menu-wrap-main-menu #mega-menu-main-menu li.mega-menu-item-has-children.mega-toggle-on > a.mega-menu-link > span.mega-indicator:after{
+    content: '\f347' !important;
+    transform: none !important;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  #mega-menu-wrap-main-menu #mega-menu-main-menu li.mega-menu-item-has-children > a.mega-menu-link > span.mega-indicator:after{
+      content: '\f347' !important;
+      // transform: rotate(-90deg) !important;
+  }
+
+  #mega-menu-wrap-main-menu #mega-menu-main-menu li.mega-menu-item-has-children.mega-toggle-on > a.mega-menu-link > span.mega-indicator:after{
+    content: '\f347' !important;
+    transform: rotate(-180deg) !important;
+  }
+}
+
+@media only screen and (max-width: 991px) and (min-width: 768px)  {
+  nav.desktop-nav{
+    .navbar-brand__logo{
+      width: 75%;
+    }
+  }
+  ul#mega-menu-main-menu{
+    li{
+      a{
+        padding: 0px 2px 0px 2px !important;
+        font-size: 13px !important;
+      }
+    }
+  }
+  .header-main__search-account{
+    gap: 12px !important;
+    a.find-a-trip{
+      padding: 8px 12px;
+    }
+  }
+}
+
+#globalSearchModal{
+  .modal-dialog{
+    // top: 12%;
+    width: 100%;
+    /* margin: auto 0; */
+    max-width: 100%;
+    margin-top: 0;
+    .search-form{
+      border: none;
+    }
+  }
+  @include media-breakpoint-down(md) {
+    .modal-body, .modal-content{
+      padding: 1rem 0 !important;
+    }
+  }
+}

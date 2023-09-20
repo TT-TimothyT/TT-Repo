@@ -1,0 +1,158 @@
+.pdp-hotels {
+
+    &__hotel {
+
+        &:not(:last-child) {
+            margin-bottom: 24px;
+        }
+    }
+
+    &__slider {
+        margin-bottom: 16px !important;
+
+        // slick dots //////////////
+        .slick-dots {
+            bottom: 15px
+        }
+
+        .slick-dots li button {
+            width: 8px;
+            height: 8px;
+            border: 1px solid $white;
+            border-radius: 50%;
+            padding: 0;
+        }
+
+        .slick-dots li button:before {
+            width: 8px;
+            height: 8px;
+            content: '';
+            background-color: #fff;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .slick-dots li.slick-active button:before {
+            opacity: 1;
+        }
+
+        // slick arrows ////////////
+        .slick-next {
+            right: 25px;
+        }
+
+        .slick-prev {
+            left: 25px;
+            z-index: 1;
+        }
+
+    }
+
+    &__image-slide {
+        width: 100%;
+        height: 320px;
+        img {
+            width: 100%;
+            border-radius: 6px;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__info {
+        padding: 0;
+    }
+
+    &__region {
+        font-size: 14px;
+        line-height: 20px;
+        color: $gray-500;
+        font-weight: 400;
+        margin-bottom: 4px;
+    }
+
+    &__name {
+        font-size: 24px;
+        line-height: 36px;
+        color: $black;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    &__level {
+        font-size: 16px;
+        line-height: 24px;
+        color: $gray-600;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    &__available {
+        font-size: 14px;
+        line-height: 20px;
+        color: $blue;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+
+    &__text {
+        font-size: 14px;
+        line-height: 20px;
+        color: $gray-600;
+        font-weight: 400;
+        margin-bottom: 16px;
+    }
+
+    &__btn {
+        border: 1px solid $black;
+
+        &:hover {
+            background-color: $black;
+            color: $white;
+            border: 1px solid $black;
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+
+        &__slider {
+            margin-bottom: 0 !important;
+            height: 100%;
+        }
+
+        &__info {
+            padding: 10px 30px 10px 48px;
+            height: inherit;
+            overflow-y: auto;
+            .bi:hover{
+                cursor: pointer;
+            }
+        }
+
+        &__name {
+            font-size: 20px;
+            line-height: 30px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+    
+        &__level {
+            font-size: 14px;
+            line-height: 20px;
+            margin-bottom: 0;
+        }
+
+        &__hotel {
+            height: 320px;
+        }
+        .slick-list{
+            max-height: 100%;
+        }
+        &__image-slide {            
+            img{
+                max-width: 100%;
+                max-height: 100%;                
+            }
+        }
+    }
+}

@@ -1,0 +1,7 @@
+// TREK-311
+.create-account-success{
+    margin: 4rem auto;
+    @include media-breakpoint-up(lg) {
+        width: 35%;
+    }
+}

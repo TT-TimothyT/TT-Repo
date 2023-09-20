@@ -1,0 +1,106 @@
+// FONTS & ICONS
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css");
+@import url("https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css");
+@import url('https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+
+
+// Import all of Bootstrap's CSS - DON'T - Follow the Custom.scss guide below and
+// https://getbootstrap.com/docs/5.2/customize/sass/ 
+// @import "~bootstrap/scss/bootstrap";
+
+// Custom.scss
+// Include parts of Bootstrap
+// READ ME //////////////////
+// A. copy ../node_modules/bootstrap/_variables and paste in this (scss) folder 
+// to override the default variable values. REMOVE the "!default" from values that
+// are overridden.
+// B. Apply the same concept to each component
+// Visit https://getbootstrap.com/docs/5.2/customize/sass/ for more documentation
+// on defaults and overiding.
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "~bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "~bootstrap/scss/variables";
+
+// Trek Travel Variable Overrides
+@import "variables";
+
+// 4. Include any default map overrides here
+
+// 5. Include remainder of required parts
+@import "~bootstrap/scss/maps";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/root";
+
+// 6. Optionally include any other parts as needed
+@import "~bootstrap/scss/utilities";
+@import "~bootstrap/scss/reboot";
+// @import "~bootstrap/scss/type";
+// @import "~bootstrap/scss/images";
+@import "~bootstrap/scss/containers";
+// @import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/tables";
+// @import "~bootstrap/scss/forms";
+// @import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+// @import "~bootstrap/scss/button-group";
+// @import "~bootstrap/scss/nav";
+// @import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/card";
+@import "~bootstrap/scss/accordion";
+@import "~bootstrap/scss/breadcrumb";
+// @import "~bootstrap/scss/pagination";
+@import "~bootstrap/scss/badge";
+// @import "~bootstrap/scss/alert";
+// @import "~bootstrap/scss/progress";
+@import "~bootstrap/scss/list-group";
+// @import "~bootstrap/scss/close";
+// @import "~bootstrap/scss/toasts";
+// @import "~bootstrap/scss/modal";
+// @import "~bootstrap/scss/tooltip";
+// @import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/carousel";
+// @import "~bootstrap/scss/spinners";
+// @import "~bootstrap/scss/offcanvas";
+@import "~bootstrap/scss/helpers";
+
+// 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
+@import "~bootstrap/scss/utilities/api";
+
+// 8. Add additional custom bootstrap code here
+@import "type";
+@import "buttons";
+@import "grid";
+@import "forms";
+@import "icons";
+@import "nav";
+@import "navbar";
+@import "toasts";
+@import "modal";
+
+// 9. Custom Components code here
+@import "header";
+@import "footer";
+@import "search";
+@import "daterangepicker";
+@import "pdp";
+@import "checkout";
+@import "checkout-footer";
+@import "myaccount";
+@import "compare-footer-bar";
+@import "products-compare";
+@import "plp-hero";
+@import "blog-list";
+@import "article-detail";
+@import "gravity-forms";
+@import "home-trip-finder";

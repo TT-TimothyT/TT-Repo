@@ -1,0 +1,49 @@
+.overview-section-gallery{
+    position: relative;
+    .carousel-control-prev, .carousel-control-next{
+        top: 50%;
+    }
+    .carousel{
+        .carousel-inner{
+            .carousel-item{
+                img{
+                    height: 300px;
+                }
+            }        
+        }  
+    }
+    @include media-breakpoint-up(lg) {
+        .carousel{
+            .carousel-inner{
+                .carousel-item{
+                    img{
+                        height: auto;
+                        aspect-ratio: 5/3;
+                        object-fit: cover;
+                    }
+                }        
+            }  
+        }
+    }
+}
+.mobile-share-wishlist{
+    margin: 40px 0 0px 20px;
+    .overview-icons{
+        .share-link, .add-wishlist{
+            color: #000000;
+            background: #ffffff;
+            border-radius: 2rem;
+            padding: .5rem;
+            margin-right: 1rem;
+            border: 0.833333px solid #C6C6C6;
+            width: 40px;
+            height: 40px;
+            &:focus{
+                box-shadow: none;
+            }
+            i{
+                // font-size: 2rem;
+            }
+        }
+    }
+}

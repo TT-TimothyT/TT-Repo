@@ -1,0 +1,63 @@
+
+.account-wishlist {
+    font-family: 'Roboto';
+    &__title {
+        font-family: 'Poppins';
+        font-size: 24px;
+        line-height: 36px;
+        &-div {
+            margin-bottom: 8px;
+            flex-direction: column;
+        }
+    }
+    &__card {
+        background-color: $white;
+        border-bottom: 4px solid $blue;
+        padding: 32px 20px 40px 20px;
+    }
+    &__flex {
+        gap: 24px;
+        order: 2;
+        margin-top: 32px;
+    }
+    &__save {
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+    }
+    &__button {
+        flex-direction: column;
+        margin-top: 32px;
+    }
+    &__cancel {
+        color: $black;
+        text-decoration: underline;
+        &:hover {
+            color: $black;
+            text-decoration: none;
+        }
+    }
+    
+    @include media-breakpoint-up(lg) {
+        &__title {
+            font-size: 36px;
+            line-height: 48px;
+            &-div {
+                margin-bottom: 16px;
+                flex-direction: row;
+            }
+        }
+        &__card {
+            padding: 48px 48px 56px 48px;
+        }
+        &__flex {
+            order: 1;
+            margin-top: unset;
+        }
+        &__button {
+            flex-direction: row;
+            margin-top: 48px;
+        }
+        
+    }
+}

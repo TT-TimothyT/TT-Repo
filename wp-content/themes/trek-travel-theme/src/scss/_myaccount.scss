@@ -1,0 +1,58 @@
+@import "myaccount/password-reset";
+@import "my-account/shipping-address";
+@import "my-account/dashboard";
+@import "myaccount/emergency-contact";
+@import "my-account/order-details";
+@import "myaccount/communication-preferences";
+@import "my-account/medical-information";
+@import "myaccount/gear-preferences";
+@import "myaccount/my-trips";
+@import "myaccount/mytrips-checklist";
+@import "myaccount/edit-account";
+@import "myaccount/create-account-success";
+@import "myaccount/form-reset-password";
+@import "myaccount/password-update-success";
+@import "myaccount/payment-methods";
+@import "myaccount/wishlist";
+@import "myaccount/order-summary";
+@import "myaccount/edit-my-wishlist";
+@import "myaccount/payment-method-add";
+
+.woocommerce-account.logged-in,
+.trek-medical-information,
+.trek-change-password,
+.trek-communication-preferences,
+.trek-my-trips,
+.trek-bike-gear-preferences,
+.trek-my-trip {
+    font-family: 'Roboto';
+    background-color: #D3D3D3;
+}
+
+.woocommerce-view-order {
+    background-color: $white;
+}
+
+.form-check-input {
+    &:checked[type=radio] {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2.6' fill='%23000'/%3e%3c/svg%3e");
+        background-color: white;
+        border-color: black;
+    }
+    &:focus[type=radio] {
+        box-shadow: unset;
+    }
+}
+
+.trek-customer-dashboard{
+    @include media-breakpoint-up(lg) {
+        form{
+            .form-floating{
+                margin-bottom: 20px !important;
+            }
+        }
+        h6.card-subtitle{
+            font-weight: 600 !important;
+        }
+    }
+}

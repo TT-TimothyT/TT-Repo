@@ -1,0 +1,93 @@
+.product-slider {
+    position: relative;
+    .carousel {
+        .carousel-inner {
+            .carousel-item {
+                img {
+                    height:350px;
+                    object-fit: cover;
+                    @include media-breakpoint-up(md) {
+                        height: 45vw;
+                        aspect-ratio: 7/3;
+                    }
+                }
+            }
+        }
+        .carousel-indicators {
+            button {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                border: 1px solid white;
+                &.active {
+                    background-color: $white;
+                }
+                &:not(.active) {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+    .carousel-control-prev ,
+    .carousel-control-next {
+        width: 40px;
+        height: 40px;
+        top: 40%;
+        margin-left: 12px;
+        padding: 0 !important;
+        .carousel-control-prev-icon {
+            background-image: url('../../../trek-travel-theme/assets/images/video/right.png') !important;
+            transform: matrix(-1, 0, 0, 1, 0, 0);
+            background-repeat: no-repeat;
+        }
+    }
+    .carousel-control-next {
+        margin-right: 12px;
+        .carousel-control-next-icon {
+            background-image: url('../../../trek-travel-theme/assets/images/video/right.png') !important;
+            background-repeat: no-repeat;
+        }
+    }
+    .hero-video{
+        // aspect-ratio: 7/3;
+        height: 375px;
+        position: relative;
+        overflow: hidden;
+        width: 100vw;
+        // height: 100vh;
+        iframe {
+            position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 100vw;
+                height: 100vh;
+                transform: translate(-50%, -50%);
+                @media (min-aspect-ratio: 16/9) {
+                    height: 56.25vw;
+                }
+                @media (max-aspect-ratio: 16/9) {
+                    width: 177.78vh;
+                }
+        }
+        @include media-breakpoint-up(md) {
+            position: relative;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            iframe {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 100vw;
+                height: 100vh;
+                transform: translate(-50%, -50%);
+                @media (min-aspect-ratio: 16/9) {
+                    height: 56.25vw;
+                }
+                @media (max-aspect-ratio: 16/9) {
+                    width: 177.78vh;
+                }
+            }
+        }
+    }
+}

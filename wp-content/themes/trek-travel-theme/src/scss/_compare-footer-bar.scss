@@ -1,0 +1,103 @@
+.compare-products-footer-bar{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0px -4px 12px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    p{
+        align-self: center;
+    }
+    .compare-product{
+        height: 72px;
+        width: 100%;
+        background: #F4F4F4;
+        border: 1px dashed #B2B3B6;
+        border-radius: 4px;
+        position: relative;
+        img{
+            height: 72px;
+            width: inherit;
+            object-fit: cover;
+        }
+        i{
+            position: absolute;
+            background-color: white;
+            border-radius: 75%;
+            padding: 0 4px;
+            top: 3%;
+            right: 3%;
+            cursor: pointer;
+        }
+    }
+    #product-1{
+        i{
+            left: 42%;
+        }
+    }
+    #product-2{
+        i{
+            left: 61%;
+        }        
+    }
+    #product-3 {
+        display: none;
+    }
+    a.btn{
+        align-self: center;
+    }
+    .remove-all{
+        position: absolute;
+        right: 8px;
+        top: 2px;
+        cursor: pointer;
+    }
+    .clear-all-link{
+        display: none;
+    }
+    #tt_compare_product{
+        display: flex;
+        gap: 6px;
+    }
+    @include media-breakpoint-up(lg) {
+        gap: 16px;
+        p{
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 36px;
+        }
+        .compare-product{            
+            height: 120px;
+            width: 120px;
+            img{
+                height: 120px;
+                width: 120px;
+                object-fit: cover;
+            }            
+        }
+        #product-1{
+            i{
+                left: 40%;
+            }
+        }
+        #product-2{
+            i{
+                left: 50.6%;
+            }        
+        }
+        #product-3 {
+            display: block;
+            i{
+                left: 61.2%;
+            }
+        }
+        .clear-all-link{
+            display: block;
+            align-self: center;
+            margin: 0 20px;
+        }
+        #tt_compare_product{
+            display: flex;
+            gap: 12px;
+        }
+    }
+}

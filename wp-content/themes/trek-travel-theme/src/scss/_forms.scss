@@ -1,0 +1,416 @@
+@import "forms/labels";
+@import "forms/form-text";
+@import "forms/form-control";
+@import "forms/form-select";
+@import "forms/form-check";
+@import "forms/form-range";
+@import "forms/floating-labels";
+@import "forms/input-group";
+@import "forms/validation";
+
+.entry-title {
+    display: none;
+}
+
+.label-for{
+    color: $gray-500;
+}
+
+.invalid-icon{
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23CE242D'%3E%3Ccircle cx='6' cy='6' r='4.5'/%3E%3Cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3E%3Ccircle cx='6' cy='8.2' r='.6' fill='%23CE242D' stroke='none'/%3E%3C/svg%3E")
+}
+.was-validated .form-control:valid, .form-control.is-valid, .was-validated .form-control:invalid, .form-control.is-invalid, .was-validated .form-control:invalid:focus, .form-control.is-invalid:focus, .was-validated .form-control:valid:focus, .form-control.is-valid:focus{
+    // border-color: $black;
+    background-image: none;
+    box-shadow: none;
+}
+
+.form-floating {
+    margin-bottom: 1rem !important;
+}
+
+.login-form,
+.reset-form {
+    margin-top: 6rem;
+    margin-bottom: 7.9rem;
+    @include media-breakpoint-down(lg) {
+        margin-top: 3.5rem;
+        margin-bottom: 4.9rem;
+    }
+    .reset-p {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+        color: rgb(51, 51, 51);
+        font-weight: 400;
+        margin-bottom: 2rem;
+        margin-top: -1rem;
+    }
+    .login-title,
+    .reset-title {
+        font-size: 1.875rem;
+        line-height: $h4-line-height;
+        font-weight: $font-weight-normal;
+        font-family: 'Poppins';
+        margin-bottom: 2rem;
+        @include media-breakpoint-down(lg) {
+            font-size: 1.5rem;
+            line-height: $h5-line-height;
+            margin-bottom: 1.5rem;
+        }
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+        .input-text{
+            width: 100%;
+            background: $white;
+            border: 1px solid $gray-400;
+            border-radius: $border-radius-sm;
+            &:hover {
+                border: 1px solid $black;
+            }
+            &:focus {
+                box-shadow: none;
+            }
+        }
+        
+        &.forgot-pwd {
+            text-align: right;
+            font-weight: $font-weight-normal;
+            font-size: 1rem;
+            line-height: $line-height-base;
+            text-decoration-line: underline;
+            color: $black;
+            margin-bottom: 2rem;
+            a {
+                &:hover {
+                    color: $black;
+                }
+            }
+        }
+        .login-submit,
+        .reset-submit {
+            width:100%;
+            border-radius: $border-radius-sm;
+            padding: 1rem 1.25rem;
+            font-weight: $font-weight-medium;
+            border: unset;
+            margin-bottom: 1rem;
+        }
+        .reset-submit {
+            margin-bottom: 15px;
+        }
+        &.register-link {
+            text-align: center;
+            color: $black;
+            font-weight: $font-weight-normal;
+            font-size: 1rem;
+            line-height: $line-height-base;
+            span {
+                a {
+                    &:hover {
+                        color: $black;
+                    }
+                }
+            }
+        }
+    }
+    .password-div{
+        position: relative;
+
+    }
+    .password-eye {
+        position: absolute;
+        right: 6px;
+        top: 20px;
+    }
+}
+
+// register form styling
+
+.register-form{
+    margin-top: 6rem;
+    margin-bottom: 7.9rem;
+.form-group {
+    .input-text{
+    //   width: 100%;
+      background: $white;
+      border: 1px solid $gray-400;
+      border-radius: $border-radius-sm; 
+      &:hover {
+          border: 1px solid $black;
+      }
+      &:focus {
+        box-shadow: none;
+      }
+    }
+    button {
+      width:100%;
+      border-radius: $border-radius-sm;
+      padding: 1rem 1.25rem;
+      font-weight: $font-weight-medium;
+      border: unset;
+    }
+    }
+    
+      .input-group{
+        .input-text{
+            // width: 100%;
+            background: $white;
+            border: 1px solid $gray-400;
+            border-radius: $border-radius-sm; 
+            &:hover {
+                border: 1px solid $black;
+            }
+            &:focus {
+              box-shadow: none;
+            }
+          }
+      }
+      .form-check-input{
+        border: 1px solid #666666;
+        border-radius: 2px;
+        &:checked{
+            background-color: #000000;
+        }
+        &:focus {
+            box-shadow: none;
+        }
+        &:hover {
+            cursor: pointer;
+        }
+      }
+
+      .form-text{
+        font-size: .75rem;
+      }
+
+      .was-validated .form-check-input:valid, .form-check-input.is-valid{
+        background-color: initial;
+        border-color: #666666;
+        box-shadow: none;
+      }
+      .was-validated .form-check-input:valid:checked, .form-check-input.is-valid:checked{
+        background-color: #000000;
+        border-color: #666666;
+        box-shadow: none;
+      }
+      .was-validated .form-check-input:valid ~ .form-check-label, .form-check-input.is-valid ~ .form-check-label{
+        color: initial;
+      }
+
+      .password-eye {
+        position: absolute;
+        right: 6px;
+        top: 20px;
+    }
+
+    #newsletterHelpBlock{
+        padding-left: 1.2rem;
+    }
+}
+
+// TRIP FINDER FORM - in shortcode component: [trek-tripfinder-form]
+#trip-finder-daterange {
+
+    // DATERANGE CALENDAR
+    .daterangepicker.dropdown-menu {
+        top: calc(100% + 0.3rem) !important;
+        left: auto !important;
+        display: none;
+    }
+
+    .daterangepicker.opensright:after,
+    .daterangepicker.opensright::before {
+        display: none !important;
+    }
+}
+
+// TRIP FINDER - custom category sellect
+.tf-cat-select {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    border-bottom: 0px;
+    border-radius: 3px;
+    font-size: 1rem;
+
+    >i.toggle {
+        position: absolute;
+        z-index: 4;
+        right: 1rem;
+        top: 0.5rem;
+        color: $black;
+    }
+
+    .title,
+    .placeholder {
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        padding: 6px;
+        background: $white;
+        cursor: pointer;
+    }
+
+    &>input {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        display: block;
+        opacity: 0;
+        cursor: pointer;
+
+        &:checked {
+            ~i.toggle.bi-chevron-down {
+                display: none;
+            }
+
+            ~i.toggle.bi-chevron-up {
+                display: block;
+            }
+            
+            div.options label.option .title {
+                display: none!important;
+            }
+        }
+        &:not(:checked) {
+            z-index: 4;
+
+            ~label.option {
+                >div.title {
+                    display: none;
+                }
+            }
+
+            ~i.toggle.bi-chevron-up {
+                display: none;
+            }
+
+            ~i.toggle.bi-chevron-down {
+                display: block;
+            }
+        }
+        &:disabled {
+            cursor: no-drop;
+        }
+    }
+
+    &>span.placeholder {
+        position: relative;
+        z-index: 0;
+        display: inline-block;
+        width: 100%;
+        color: $black;
+        border-top: 0px;
+    }
+
+    label.option {
+        display: block;
+        overflow: hidden;
+        z-index: 1;
+        width: 100%;
+        transition: all 1s ease-out;
+
+
+        div.title {
+            position: relative;
+            z-index: 2;
+            transition: background .3s ease-out;
+
+            .cat-image {
+                height: 48px;
+                width: 48px;
+                background-color: $gray-200;
+                border: 1px solid $gray-200;
+            }
+
+            i.bi {
+                padding-right: 8px;
+                color: $gray-500;
+            }
+
+            &:hover {
+
+                .cat-image {
+                    background-color: transparent;
+                    border-color: $black;
+                }
+            }
+        }
+
+        input {
+            display: none;
+
+            &:checked~div.title {
+                position: absolute;
+                display: flex;
+                z-index: 3;
+                top: 0px;
+                font-size: 1rem;
+                background: #fff;
+                border-top: 0px;
+                box-shadow: none;
+                color: inherit;
+                width: 100%;
+            }
+
+            &:checked~div.title .cat-image {
+                background-color: transparent;
+                border-color: transparent;
+                height: 30px;
+                width: 30px;
+            }
+
+            &:disabled {
+
+                &~div.title {
+                    background: #f9f9f9!important;
+                    color: #aaa;
+
+                    &:hover {
+                        color: #aaa;
+                        background: none;
+                        cursor: no-drop;
+                    }
+                }
+            }
+        }
+    }
+}
+// TREK-295 bug fix
+input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear {
+  display: none;
+}
+
+#trip-finder-daterange{
+    i.toggle {
+        position: absolute;
+        z-index: 4;
+        right: 1rem;
+        top: 0.5rem;
+        color: $black;
+    }
+    .bi-chevron-up{
+        display: none;
+    }
+}
+
+#home-daterange{
+    box-shadow: none;
+}
+
+/* Logged in & out conditions */
+.logged-in .hide-logged-in {
+	display: none!important;
+}
+.logged-out .hide-logged-out {
+	display: none!important;
+} 

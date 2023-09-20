@@ -1,0 +1,28 @@
+// PDP sticky navigation Mobile
+.overview-menu-mobile{
+    @media (min-width: 768px) {
+        display: none;
+    }
+    z-index: 9;
+    .accordion{
+        --bs-accordion-bg: #F4F4F4 !important;
+        --bs-accordion-active-bg: #F4F4F4 !important;
+        --bs-accordion-active-color: inherit;
+        --bs-accordion-btn-focus-border-color: none;
+        .accordion-button:focus{
+            box-shadow: none;
+        }
+        .accordion-body{
+            .nav-link{
+                font-size: 1.125rem;
+            }
+            .nav-link:hover, .nav-link:focus, .nav-link:active, .nav-link.active{
+                color: #000000;
+                font-weight: bold;
+            }
+        }
+    }
+    .accordion-flush .accordion-item .accordion-button{
+        padding-left: 2rem;
+    }
+}

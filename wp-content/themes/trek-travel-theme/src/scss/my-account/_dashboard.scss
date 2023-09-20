@@ -1,0 +1,105 @@
+.dashboard {
+    &__log {
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    &__title {
+        font-family: 'Poppins';
+        font-size: 24px;
+        line-height: 36px;
+        margin-bottom: 16px;
+    }
+    &__card {
+        border-bottom: 4px solid $blue;
+        padding: 8px 4px 24px 4px;
+        margin-bottom: 20px;
+        border-top: unset;
+        border-left: unset;
+        border-right: unset;
+        .card-title {
+            font-size: 20px;
+            line-height: 30px;
+        }
+        p {
+            color: $gray-600;
+        }
+    }
+    &__button {
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        margin-top: 16px;
+    }
+    &__trip {
+        gap: 16px;
+        padding: 24px 0px;
+        &:not(:last-child) {
+            border-bottom: 1px solid #D9D9D9;
+        }
+        .my-upcoming-trips{
+            width: 112px;
+            height: 75px;
+            img{
+                width: 112px;
+                height: 75px;
+                border-radius: 4px;
+                object-fit: cover;
+            }
+        }
+        a{
+            text-decoration: none;
+            &:hover{
+                color: inherit;
+            }
+        }
+    }
+    &__info{
+        p{
+            &:last-child {
+                margin-bottom: 24px !important;
+            }
+        }
+    }
+    &__error {
+        color: $red !important;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 16px;
+    }
+    a {
+        &:hover {
+            text-decoration: none;
+            color: $black;
+            background: #fff;
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        &__log {
+            justify-content: end;
+            gap: 16px;
+            margin-bottom: unset;
+        }
+        &__title {
+            font-size: 36px;
+            line-height: 48px;
+            margin-bottom: 24px;
+        }
+        &__card {
+            padding: 8px 8px 40px 8px;
+        }
+        &__trip {
+            &:first-child {
+                padding: 8px 0px;
+            }
+            // padding: 24px 0px;
+            .my-upcoming-trips{
+                width: 144px;
+                height: 96px;
+                img{
+                    width: 144px;
+                    height: 96px;
+                }
+            }
+        }
+    }
+}

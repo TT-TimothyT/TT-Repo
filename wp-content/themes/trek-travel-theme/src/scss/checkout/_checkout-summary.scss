@@ -1,0 +1,85 @@
+.checkout-summary {
+    font-family: 'Roboto';
+    &__card {
+        padding: 40px 20px 48px 20px;
+    }
+    &__title {
+        font-family: 'Poppins';
+    }
+    &__date {
+        gap: 16px;
+    }
+    &__guest {
+        margin-left: 8px;
+        color: $gray-500;
+    }
+    &__small {
+        margin-top: 2px;
+        color: $gray-500;
+    }
+    &__p {
+        color: $gray-500;
+        margin-bottom: 40px;
+    }
+    &__font {
+        font-family: 'Poppins';
+    }
+    &__dues {
+        margin-top: -12px;
+    }
+    &__button {
+        font-weight: $font-weight-medium;
+        font-size: $font-size-md;
+        line-height: $line-height-md;
+    }
+    &__mobile {
+        height: 88px;
+        cursor: pointer;
+        box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
+        .open {
+            display: none;
+        }
+        &-open {
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            height: 88px;
+            z-index: 100;
+            .open {
+                display: block;
+            }
+            .closed {
+                display: none;
+            }
+        }
+    }
+    &__toggle {
+        .card {
+            border: unset;
+        }
+    }
+    &__submit {
+        font-weight: $font-weight-medium;
+        font-size: $font-size-md;
+        line-height: $line-height-md;
+        padding: 16px 24px;
+    }
+    &__promo {
+        gap: 12px;
+        margin-bottom: 2px;
+    }
+    &__applied {
+        gap: 16px;
+        p   {
+            color: #1C769D;
+        }
+    }
+    .form-floating {
+        margin-bottom: unset !important;
+    }
+    a {
+        &:hover {
+            color: $black;
+            text-decoration: none;
+        }
+    }
+}
