@@ -14,7 +14,7 @@ TBD, at some point.
 Make sure to update your hosts/server config to match the custom URL we use for the project - `local.trektravel.com`. For information on how to do it [read our article](https://devrixverse.com/knowledgebase/setup-a-custom-localhost-url/).
 
 #### Dashboard/Admin access
-To access the login page go to [http://local.trektravel.com//wp-login.php/](http://localrebuild.enviroklenz.com//wp-login.php).
+To access the login page go to [http://local.trektravel.com/wp-login.php/](http://localrebuild.enviroklenz.com/wp-login.php).
 For localhost Dashboard access, you can use `admin/admin` for `username/password`. Don't judge, this is for your localhost :)
 If you have WP-CLI, you can use [wp user create](https://wp-cli.org/commands/user/create/) or simply add a new user from your phpMyAdmin and/or your local MySQL and use another set of credentials.
 
