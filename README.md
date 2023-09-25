@@ -1,7 +1,7 @@
 # Trek Travel site
 
 ## Notes
-This is the Git repository for the website https://new.trektravel.com/. The repository contains wp-content/* files and a few root files and folders.
+This is the Git repository for the website https://local.trektravel.com/. The repository contains wp-content/* files and a few root files and folders.
 
 The project itself is a single WordPress installation with WooCommerce, ACFs for the dynamic data, Elementor for the landing pages, Netsuite for the ERP integration and sync NetSuite <> WooCommerce, Trek Travel Algolia integration and a bunch of plugins.
 
@@ -39,7 +39,7 @@ The steps below are valid for a simple project. If your project requires additio
 
 ### 0) Prepare the server
 You'll need to update your `/etc/hosts` file with:
-`127.0.0.1	local.trektravel.com # This for the Rebuild site`
+`127.0.0.1	local.trektravel.com`
 
 and have your Apache conf file with something like:
 
