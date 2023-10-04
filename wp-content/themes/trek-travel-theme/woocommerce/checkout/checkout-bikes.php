@@ -10,18 +10,23 @@ if ($tt_posted) {
 $tripInfo = tt_get_trip_pid_sku_from_cart();
 $product = new WC_product($tripInfo['parent_product_id']);
 $tripStyle = $product->get_attribute( 'pa_style' );
-$tripProductLine = $product->get_attribute( 'pa_product-line' );
-$hideJerseyForTrips = ['classic', 'discover', 'ride camp'];
+$tripProductLine = wc_get_product_term_ids( $product->id, 'product_cat' );
+$hideJerseyForTrips = [ 710, 744, 712, 713 ];
 $hideme = "";
-if ( in_array(strtolower($tripProductLine), $hideJerseyForTrips) ) {
-    if (strtolower($tripProductLine) == 'classic'){
-        if(strtolower($tripStyle) == 'self-guided') {
-            $hideme = "d-none";
-        }
-    } else {
-        $hideme = "none";
-    }
+
+if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
+	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
+	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
+		if ( in_array( 712, $product_cat_matches ) || in_array( 744, $product_cat_matches ) ) {
+			$hideme = "d-none";
+		} elseif ( in_array( 710, $product_cat_matches ) && in_array( 713, $product_cat_matches ) ) {
+			$hideme = "d-none";
+		} else {
+			$hideme = "none";
+		}
+	}
 }
+
 $singleSupplementPrice = $bikeUpgradePrice = 0;
 $bikePriceCurr = $singleSupplementPrice = '';
 if ($tripInfo['sku']) {
@@ -183,6 +188,9 @@ if ($p_own_bike == 'yes') {
                             $clothing_style = isset($tt_posted['bike_gears']['primary']['jersey_style']) ? $tt_posted['bike_gears']['primary']['jersey_style'] : '';
                         ?>
                         <option value="">Select Clothing Style</option>
+						<?php if ( 'd-none' === $hideme ) : ?>
+							<option selected value="none">None</option>
+						<?php endif; ?>
                         <option value="men" <?php echo ( $clothing_style == 'men' ? 'selected' : '' ); ?>>Men's</option>
                         <option value="women" <?php echo ( $clothing_style == 'women' ? 'selected' : '' ); ?>>Women's</option>
                     </select>
@@ -190,7 +198,10 @@ if ($p_own_bike == 'yes') {
                 </div>
                 <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
                     <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) ?> name="bike_gears[primary][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example">
-                    <?php
+					<?php if ( 'd-none' === $hideme ) : ?>
+						<option selected value="none">None</option>
+					<?php endif; ?>
+					<?php
                         $clothing_size = isset($tt_posted['bike_gears']['primary']['jersey_size']) ? $tt_posted['bike_gears']['primary']['jersey_size'] : '';
                         echo tt_get_jersey_sizes($clothing_style, $clothing_size); ?>
                     </select>
