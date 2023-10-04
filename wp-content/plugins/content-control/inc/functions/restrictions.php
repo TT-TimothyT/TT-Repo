@@ -11,6 +11,19 @@ namespace ContentControl;
 
 defined( 'ABSPATH' ) || exit;
 
+use function ContentControl\plugin;
+
+/**
+ * Get restriction, by ID, slug or object.
+ *
+ * @param int|string|\ContentControl\Models\Restriction $restriction Restriction ID, slug or object.
+ *
+ * @return \ContentControl\Models\Restriction|null
+ */
+function get_restriction( $restriction ) {
+	return plugin( 'restrictions' )->get_restriction( $restriction );
+}
+
 /**
  * Check if admins are excluded from restrictions.
  *
@@ -26,15 +39,15 @@ function admins_are_excluded() {
  * @return bool True if user is excluded, false if not.
  */
 function user_is_excluded() {
-	return admins_are_excluded() && current_user_can( plugin()->get_permission( 'manage_settings' ) );
+	return admins_are_excluded() && \current_user_can( plugin()->get_permission( 'manage_settings' ) );
 }
 
 /**
  * Check if user meets requirements.
  *
- * @param string       $user_status logged_in or logged_out.
- * @param array|string $user_roles array of roles to check.
- * @param string       $role_match any|match|exclude.
+ * @param string                               $user_status logged_in or logged_out.
+ * @param string[]|array<string,string>|string $user_roles array of roles to check.
+ * @param string                               $role_match any|match|exclude.
  *
  * @return bool True if user meets requirements, false if not.
  */
@@ -44,8 +57,13 @@ function user_meets_requirements( $user_status, $user_roles = [], $role_match = 
 		return false;
 	}
 
-	// If roles is string, convert to array.
-	if ( is_string( $user_roles ) ) {
+	if ( ! in_array( $user_status, [ 'logged_in', 'logged_out' ], true ) ) {
+		// Invalid user status.
+		return false;
+	}
+
+	if ( ! is_array( $user_roles ) ) {
+		// If roles is string, convert to array.
 		$user_roles = explode( ',', $user_roles );
 		$user_roles = array_map( 'trim', $user_roles );
 		$user_roles = array_map( 'strtolower', $user_roles );
@@ -56,7 +74,7 @@ function user_meets_requirements( $user_status, $user_roles = [], $role_match = 
 		$user_roles = array_keys( $user_roles );
 	}
 
-	$logged_in = is_user_logged_in();
+	$logged_in = \is_user_logged_in();
 
 	switch ( $user_status ) {
 		case 'logged_in':
@@ -75,12 +93,17 @@ function user_meets_requirements( $user_status, $user_roles = [], $role_match = 
 				return true;
 			}
 
-			// true for match, false for exclude.
+			if ( ! in_array( $role_match, [ 'match', 'exclude' ], true ) ) {
+				// Invalid role match.
+				return false;
+			}
+
+			// True for match, false for exclude.
 			$match_value = 'match' === $role_match ? true : false;
 
 			// Checks all roles, any match will return.
 			foreach ( $user_roles as $role ) {
-				if ( current_user_can( $role ) ) {
+				if ( \current_user_can( $role ) ) {
 					return $match_value;
 				}
 			}
@@ -90,12 +113,7 @@ function user_meets_requirements( $user_status, $user_roles = [], $role_match = 
 
 		case 'logged_out':
 			return ! $logged_in;
-
-		default:
-			return false;
 	}
-
-	return false;
 }
 
 /**
@@ -106,21 +124,22 @@ function user_meets_requirements( $user_status, $user_roles = [], $role_match = 
  * @return bool True if query can be ignored, false if not.
  */
 function query_can_be_ignored( $query = null ) {
-	$post_types_to_ignore = [
+	if ( $query->get( 'ignore_restrictions', false ) ) {
+		return true;
+	}
+
+	$post_types_to_ignore = \apply_filters( 'content_control/post_types_to_ignore', [
 		'cc_restriction',
 		'wp_template',
 		'wp_template_part',
 		'wp_global_styles',
-	];
-
-	if ( $query->get( 'ignore_restrictions', false ) ) {
-		return true;
-	}
+		'oembed_cache',
+	] );
 
 	// Ignore specific core post types.
 	if ( in_array( $query->get( 'post_type' ), $post_types_to_ignore, true ) ) {
 		return true;
 	}
 
-	return false !== apply_filters( 'content_control/ignoreable_query', false, $query );
+	return false !== \apply_filters( 'content_control/ignoreable_query', false, $query );
 }

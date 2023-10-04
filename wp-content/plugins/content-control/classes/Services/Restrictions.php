@@ -23,13 +23,6 @@ defined( 'ABSPATH' ) || exit;
 class Restrictions {
 
 	/**
-	 * Cache
-	 *
-	 * @var array
-	 */
-	protected $cache = [];
-
-	/**
 	 * Get a list of all restrictions.
 	 *
 	 * @return Restriction[]
@@ -41,13 +34,18 @@ class Restrictions {
 			$all_restrictions = [];
 
 			if ( \ContentControl\get_data_version( 'restrictions' ) === 1 ) {
-				$restrictions = \ContentControl\get_v1_restrictions();
+				$old_restrictions = \ContentControl\get_v1_restrictions();
 
-				foreach ( $restrictions as $key => $restriction ) {
-					$restriction['id']        = $key;
-					$all_restrictions[ $key ] = new Restriction( $restriction );
+				if ( false !== $old_restrictions ) {
+					foreach ( $old_restrictions as $key => $restriction ) {
+						$restriction['id']        = (int) $key;
+						$all_restrictions[ $key ] = new Restriction( $restriction );
+					}
 				}
-			} else {
+			}
+
+			// This should run safely if no v1 rules are found, or if they don't exist.
+			if ( empty( $all_restrictions ) ) {
 				// Query restriction post type.
 				$restrictions = get_posts(
 					[
@@ -76,7 +74,7 @@ class Restrictions {
 	 *
 	 * @param int|string|Restriction $restriction Restriction ID, slug or object.
 	 *
-	 * @return Restriction|false
+	 * @return Restriction|null
 	 */
 	public function get_restriction( $restriction ) {
 		if ( $restriction instanceof Restriction ) {
@@ -111,7 +109,7 @@ class Restrictions {
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
@@ -130,8 +128,8 @@ class Restrictions {
 
 			$query_hash = md5( maybe_serialize( $hash_vars ) );
 		} catch ( \Exception $e ) {
-			$query_hash = md5( wp_rand( 0, 100000 ) );
-			plugin( 'logging' )->log( 'ERROR: ' . $e->getMessage() );
+			$query_hash = md5( (string) wp_rand( 0, 100000 ) );
+			plugin( 'logging' )->log_unique( 'ERROR: ' . $e->getMessage() );
 		}
 
 		if ( is_null( $post_id ) ) {
@@ -166,11 +164,11 @@ class Restrictions {
 	 * @return Restriction[]
 	 */
 	public function get_all_applicable_restrictions( $post_id = null ) {
-		$cache_name = 'all_applicable_restrictions';
-		$cache_key  = $this->get_cache_key( $post_id );
+		static $cache = [];
+		$cache_key    = $this->get_cache_key( $post_id );
 
-		if ( isset( $this->cache[ $cache_name ][ $cache_key ] ) ) {
-			return $this->cache[ $cache_name ][ $cache_key ];
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
 		}
 
 		$restrictions = $this->get_restrictions();
@@ -183,7 +181,7 @@ class Restrictions {
 			}
 		}
 
-		$this->cache[ $cache_name ][ $cache_key ] = $restrictions;
+		$cache[ $cache_key ] = $restrictions;
 
 		return $restrictions;
 	}
@@ -199,14 +197,14 @@ class Restrictions {
 	 * @return Restriction|false
 	 */
 	public function get_applicable_restriction( $post_id = null ) {
-		$cache_name = 'applicable_restriction';
-		$cache_key  = $this->get_cache_key( $post_id );
+		static $cache = [];
+		$cache_key    = $this->get_cache_key( $post_id );
 
-		if ( isset( $this->cache[ $cache_name ][ $cache_key ] ) ) {
-			return $this->cache[ $cache_name ][ $cache_key ];
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
 		}
 
-		$this->cache[ $cache_name ][ $cache_key ] = false;
+		$cache[ $cache_key ] = false;
 
 		$restrictions = $this->get_restrictions();
 
@@ -215,13 +213,13 @@ class Restrictions {
 		if ( ! empty( $restrictions ) ) {
 			foreach ( $restrictions as $restriction ) {
 				if ( $restriction->check_rules() ) {
-					$this->cache[ $cache_name ][ $cache_key ] = $restriction;
+					$cache[ $cache_key ] = $restriction;
 					break;
 				}
 			}
 		}
 
-		return $this->cache[ $cache_name ][ $cache_key ];
+		return $cache[ $cache_key ];
 	}
 
 	/**
@@ -247,22 +245,22 @@ class Restrictions {
 	public function user_meets_requirements( $restriction ) {
 		$restriction = $this->get_restriction( $restriction );
 
-		if ( false === $restriction ) {
+		if ( null === $restriction ) {
 			return false;
 		}
 
-		$cache_name = 'user_meets_requirements';
-		$cache_key  = $restriction->id;
+		static $cache = [];
+		$cache_key    = $restriction->id;
 
 		// Check cache.
-		if ( isset( $this->cache[ $cache_name ][ $cache_key ] ) ) {
-			return $this->cache[ $cache_name ][ $cache_key ];
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
 		}
 
 		$user_meets_requirements = $restriction->user_meets_requirements();
 
 		// Cache result.
-		$this->cache[ $cache_name ][ $cache_key ] = $user_meets_requirements;
+		$cache[ $cache_key ] = $user_meets_requirements;
 
 		return $user_meets_requirements;
 	}

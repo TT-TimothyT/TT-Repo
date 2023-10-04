@@ -11,6 +11,9 @@ namespace ContentControl\Base;
 
 defined( 'ABSPATH' ) || exit;
 
+use Closure;
+use stdClass;
+
 /**
  * Base Upgrade class.
  */
@@ -33,7 +36,7 @@ abstract class Upgrade implements \ContentControl\Interfaces\Upgrade {
 	/**
 	 * Stream.
 	 *
-	 * @var \ContentControl\Services\UpgradeStream
+	 * @var \ContentControl\Services\UpgradeStream|null
 	 */
 	public $stream;
 
@@ -99,7 +102,7 @@ abstract class Upgrade implements \ContentControl\Interfaces\Upgrade {
 	/**
 	 * Run the upgrade.
 	 *
-	 * @return void|WP_Error|false
+	 * @return void|\WP_Error|false
 	 */
 	abstract public function run();
 
@@ -108,7 +111,7 @@ abstract class Upgrade implements \ContentControl\Interfaces\Upgrade {
 	 *
 	 * @param \ContentControl\Services\UpgradeStream $stream Stream.
 	 *
-	 * @return void|WP_Error|false
+	 * @return bool|\WP_Error
 	 */
 	public function stream_run( $stream ) {
 		$this->stream = $stream;
@@ -117,18 +120,35 @@ abstract class Upgrade implements \ContentControl\Interfaces\Upgrade {
 
 		unset( $this->stream );
 
-		return $return;
+		if ( is_bool( $return ) || is_wp_error( $return ) ) {
+			return $return;
+		}
+
+		return true;
 	}
 
 	/**
 	 * Return the stream.
 	 *
-	 * @return \ContentControl\Services\UpgradeStream|Object $stream Stream.
+	 * If no stream is available it returns a mock object with no-op methods to prevent errors.
+	 *
+	 * @return \ContentControl\Services\UpgradeStream|(object{
+	 *      send_event: Closure,
+	 *      send_error: Closure,
+	 *      send_data: Closure,
+	 *      update_status: Closure,
+	 *      update_task_status: Closure,
+	 *      start_upgrades: Closure,
+	 *      complete_upgrades: Closure,
+	 *      start_task: Closure,
+	 *      update_task_progress:Closure,
+	 *      complete_task: Closure
+	 * }&stdClass) Stream.
 	 */
 	public function stream() {
 		$noop = function () {};
 
-		return isset( $this->stream ) ? $this->stream : (object) [
+		return is_a( $this->stream, '\ContentControl\Services\UpgradeStream' ) ? $this->stream : (object) [
 			'send_event'           => $noop,
 			'send_error'           => $noop,
 			'send_data'            => $noop,

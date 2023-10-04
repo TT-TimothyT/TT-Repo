@@ -34,7 +34,7 @@ class Assets extends Controller {
 	/**
 	 * Get list of plugin packages.
 	 *
-	 * @return array
+	 * @return array<string,array<string,mixed>>
 	 */
 	public function get_packages() {
 		$permissions = $this->container->get_permissions();
@@ -43,6 +43,10 @@ class Assets extends Controller {
 			$permissions[ $permission ] = current_user_can( $cap );
 		}
 
+		$wp_version = get_bloginfo( 'version' );
+		// Strip last number from version as they won't be breaking changes.
+		$wp_version = preg_replace( '/\.\d+$/', '', $wp_version );
+
 		$packages = [
 			'block-editor'  => [
 				'handle'   => 'content-control-block-editor',
@@ -50,6 +54,7 @@ class Assets extends Controller {
 				'varsName' => 'contentControlBlockEditor',
 				'vars'     => [
 					'adminUrl'       => admin_url(),
+					'wpVersion'      => $wp_version,
 					'pluginUrl'      => $this->container->get_url(),
 					'advancedMode'   => $this->container->get_option( 'advanced_mode', false ),
 					'allowedBlocks'  => [],
@@ -95,6 +100,7 @@ class Assets extends Controller {
 				'varsName' => 'contentControlSettingsPage',
 				'vars'     => [
 					'pluginUrl'    => $this->container->get( 'url' ),
+					'wpVersion'    => $wp_version,
 					'adminUrl'     => admin_url(),
 					'restBase'     => 'content-control/v2',
 					'userRoles'    => allowed_user_roles(),
@@ -119,6 +125,8 @@ class Assets extends Controller {
 
 	/**
 	 * Register all package scripts & styles.
+	 *
+	 * @return void
 	 */
 	public function register_scripts() {
 		$packages = $this->get_packages();
@@ -154,6 +162,8 @@ class Assets extends Controller {
 
 	/**
 	 * Auto load styles if scripts are enqueued.
+	 *
+	 * @return void
 	 */
 	public function autoload_styles_for_scripts() {
 		$packages = $this->get_packages();
@@ -171,7 +181,7 @@ class Assets extends Controller {
 	 * Get asset meta from generated files.
 	 *
 	 * @param string $package Package name.
-	 * @return array
+	 * @return array{dependencies:string[],version:string}
 	 */
 	public function get_asset_meta( $package ) {
 		$meta_path = $this->container->get_path( "dist/$package.asset.php" );

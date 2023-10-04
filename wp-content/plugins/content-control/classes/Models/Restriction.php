@@ -51,14 +51,14 @@ class Restriction {
 	/**
 	 * Restriction description.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	public $description;
 
 	/**
 	 * Restriction Message.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	public $message;
 
@@ -200,7 +200,7 @@ class Restriction {
 	/**
 	 * Restriction Settings: Conditions.
 	 *
-	 * @var array
+	 * @var array{logicalOperator:string,items:array<array<string,mixed>>}
 	 */
 	public $conditions;
 
@@ -211,10 +211,18 @@ class Restriction {
 	 */
 	public $query;
 
+
+	/**
+	 * Data version.
+	 *
+	 * @var int
+	 */
+	public $data_version;
+
 	/**
 	 * Build a restriction.
 	 *
-	 * @param \WP_Post $restriction Restriction data.
+	 * @param \WP_Post|array<string,mixed> $restriction Restriction data.
 	 */
 	public function __construct( $restriction ) {
 		if ( ! is_a( $restriction, '\WP_Post' ) ) {
@@ -222,10 +230,19 @@ class Restriction {
 		} else {
 			$this->post = $restriction;
 
+			/**
+			 * Restriction settings.
+			 *
+			 * @var array<string,mixed>|false $settings
+			 */
 			$settings = get_post_meta( $restriction->ID, 'restriction_settings', true );
 
+			if ( ! $settings ) {
+				$settings = [];
+			}
+
 			$settings = wp_parse_args(
-				is_array( $settings ) ? $settings : [],
+				$settings,
 				get_default_restriction_settings()
 			);
 
@@ -249,6 +266,13 @@ class Restriction {
 				$settings
 			);
 
+			$this->data_version = get_post_meta( $restriction->ID, 'data_version', true );
+
+			if ( ! $this->data_version ) {
+				$this->data_version = 2;
+				update_post_meta( $restriction->ID, 'data_version', 2 );
+			}
+
 			foreach ( $properties as $key => $value ) {
 				$this->$key = $value;
 			}
@@ -260,7 +284,9 @@ class Restriction {
 	/**
 	 * Map old v1 restriction to new v2 restriction object.
 	 *
-	 * @param array $restriction Restriction data.
+	 * @param array<string,mixed> $restriction Restriction data.
+	 *
+	 * @return void
 	 */
 	public function setup_v1_restriction( $restriction ) {
 		static $index = 0;
@@ -277,6 +303,8 @@ class Restriction {
 			'redirect_url'             => '',
 			'conditions'               => '',
 		] );
+
+		$this->data_version = 1;
 
 		$this->id          = 0;
 		$this->slug        = '';
@@ -365,24 +393,26 @@ class Restriction {
 	 * @uses \get_the_content()
 	 * @uses \ContentControl\get_default_denial_message()
 	 *
+	 * @param string $context Context. 'display' or 'raw'.
+	 *
 	 * @return string
 	 */
-	public function get_message() {
+	public function get_message( $context = 'display' ) {
 		if ( ! isset( $this->message ) ) {
-			if ( ! empty( $this->post->post_content ) ) {
-				$message = \get_the_content( null, false, $this->id );
-			} elseif ( 'message' === $this->replacement_type && $this->override_message && ! empty( $this->custom_message ) ) {
+			$message = '';
+
+			if ( ! empty( $this->custom_message ) ) {
 				$message = $this->custom_message;
-			} else {
-				$message = \ContentControl\get_default_denial_message();
+			} elseif ( ! empty( $this->post->post_content ) ) {
+				$message = 'display' === $context
+					? \get_the_content( null, false, $this->id )
+					: $this->post->post_content;
 			}
 
-			$this->message = ! empty( $message ) ?
-				$message :
-				__( 'This content is restricted.', 'content-control' );
+			$this->message = $message;
 		}
 
-		return $this->message;
+		return sanitize_post_field( 'post_content', $this->message, $this->id, $context );
 	}
 
 	/**
@@ -415,7 +445,7 @@ class Restriction {
 	/**
 	 * Convert this restriction to an array.
 	 *
-	 * @return array
+	 * @return array<string,mixed>
 	 */
 	public function to_array() {
 		return [
@@ -451,7 +481,7 @@ class Restriction {
 	/**
 	 * Convert this restriction to a v1 array.
 	 *
-	 * @return array
+	 * @return array<string,mixed>
 	 */
 	public function to_v1_array() {
 		return [

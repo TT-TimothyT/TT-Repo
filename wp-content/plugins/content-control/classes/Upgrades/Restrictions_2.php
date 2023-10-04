@@ -12,7 +12,6 @@ defined( 'ABSPATH' ) || exit;
 use function __;
 use function add_post_meta;
 use function wp_parse_args;
-use function sanitize_url;
 use function wp_insert_post;
 use function ContentControl\remap_conditions_to_query;
 use function ContentControl\get_default_restriction_settings;
@@ -48,7 +47,7 @@ class Restrictions_2 extends \ContentControl\Base\Upgrade {
 	/**
 	 * Run the migration.
 	 *
-	 * @return void|WP_Error|false
+	 * @return void|\WP_Error|bool
 	 */
 	public function run() {
 		// Gets a stream or mock stream for sending events.
@@ -66,7 +65,7 @@ class Restrictions_2 extends \ContentControl\Base\Upgrade {
 			return true;
 		}
 
-		$restrictions = isset( $settings['restrictions'] ) ? $settings['restrictions'] : [];
+		$restrictions = $settings['restrictions'];
 		$count        = count( $restrictions );
 
 		if ( $count ) {
@@ -127,7 +126,7 @@ class Restrictions_2 extends \ContentControl\Base\Upgrade {
 	/**
 	 * Migrate a given restriction to the new post type.
 	 *
-	 * @param array $restriction Restriction data.
+	 * @param array<string,mixed> $restriction Restriction data.
 	 *
 	 * @return bool True if successful, false otherwise.
 	 */
@@ -169,7 +168,7 @@ class Restrictions_2 extends \ContentControl\Base\Upgrade {
 			'overrideMessage'  => $restriction['override_default_message'],
 			'customMessage'    => $restriction['custom_message'],
 			'redirectType'     => $restriction['redirect_type'],
-			'redirectUrl'      => sanitize_url( $restriction['redirect_url'] ),
+			'redirectUrl'      => esc_url_raw( $restriction['redirect_url'] ),
 			'conditions'       => remap_conditions_to_query( $restriction['conditions'] ),
 		], get_default_restriction_settings() );
 

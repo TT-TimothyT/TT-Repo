@@ -10,7 +10,13 @@ namespace ContentControl\Plugin;
 use ContentControl\Base\Container;
 
 /**
- * Undocumented class
+ * Upgrader class.
+ *
+ * NOTE: For wordpress.org admins: This is only used if:
+ * - The user explicitly entered a license key.
+ * - They further opened a window to our site allowing the user to authorize the connection & installation of the pro upgrade.
+ *
+ * @package ContentControl
  */
 class Upgrader {
 
@@ -54,9 +60,11 @@ class Upgrader {
 	 *
 	 * @param string $message Message.
 	 * @param string $type    Type.
+	 *
+	 * @return void
 	 */
 	public function debug_log( $message, $type = 'INFO' ) {
-		if ( defined( 'CONTENT_CONTROL_LOGGING' ) && CONTENT_CONTROL_LOGGING ) {
+		if ( defined( 'CONTENT_CONTROL_UPGRADE_DEBUG_LOGGING' ) && CONTENT_CONTROL_UPGRADE_DEBUG_LOGGING ) {
 			$this->c->get( 'logging' )->log( "Plugin\Upgrader.$type: $message" );
 		}
 	}
@@ -64,7 +72,7 @@ class Upgrader {
 	/**
 	 * Get credentials for the current request.
 	 *
-	 * @return array|bool
+	 * @return bool
 	 */
 	public function get_fs_creds() {
 		// Prepare variables.
@@ -78,14 +86,14 @@ class Upgrader {
 			)
 		);
 
-		$creds = request_filesystem_credentials( $url, '', false, false, null );
+		$creds = request_filesystem_credentials( $url, '', false, '', null );
 
 		if ( false === $creds || ! WP_Filesystem( $creds ) ) {
 			$this->debug_log( 'Unable to get filesystem credentials.', 'ERROR' );
 			return false;
 		}
 
-		return $creds;
+		return (bool) $creds;
 	}
 
 	/**
@@ -95,7 +103,7 @@ class Upgrader {
 	 * @return bool|\WP_Error
 	 */
 	public function activate_plugin( $plugin_basename ) {
-		if ( ! $plugin_basename || empty( $plugin_basename ) ) {
+		if ( empty( $plugin_basename ) ) {
 			return new \WP_Error( 'content_control_plugin_basename', __( 'Plugin basename empty.', 'content-control' ) );
 		}
 

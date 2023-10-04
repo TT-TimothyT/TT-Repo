@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitdecce82dca3e0724e4cb5ceca0b8e5c7
+class ComposerStaticInita5a595b4e4bbcdc5825278da12a2f655
 {
     public static $files = array (
         '3773ef3f09c37da5478d578e32b03a4b' => __DIR__ . '/..' . '/automattic/jetpack-assets/actions.php',
@@ -283,9 +283,13 @@ class ComposerStaticInitdecce82dca3e0724e4cb5ceca0b8e5c7
         'WCPay\\Internal\\DependencyManagement\\ExtendedContainer' => __DIR__ . '/../..' . '/src/Internal/DependencyManagement/ExtendedContainer.php',
         'WCPay\\Internal\\DependencyManagement\\ServiceProvider\\PaymentsServiceProvider' => __DIR__ . '/../..' . '/src/Internal/DependencyManagement/ServiceProvider/PaymentsServiceProvider.php',
         'WCPay\\Internal\\DependencyManagement\\ServiceProvider\\ProxiesServiceProvider' => __DIR__ . '/../..' . '/src/Internal/DependencyManagement/ServiceProvider/ProxiesServiceProvider.php',
+        'WCPay\\Internal\\Payment\\Factor' => __DIR__ . '/../..' . '/src/Internal/Payment/Factor.php',
         'WCPay\\Internal\\Payment\\PaymentMethod\\NewPaymentMethod' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentMethod/NewPaymentMethod.php',
         'WCPay\\Internal\\Payment\\PaymentMethod\\PaymentMethodInterface' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentMethod/PaymentMethodInterface.php',
         'WCPay\\Internal\\Payment\\PaymentMethod\\SavedPaymentMethod' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentMethod/SavedPaymentMethod.php',
+        'WCPay\\Internal\\Payment\\PaymentRequest' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentRequest.php',
+        'WCPay\\Internal\\Payment\\PaymentRequestException' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentRequestException.php',
+        'WCPay\\Internal\\Payment\\Router' => __DIR__ . '/../..' . '/src/Internal/Payment/Router.php',
         'WCPay\\Internal\\Proxy\\HooksProxy' => __DIR__ . '/../..' . '/src/Internal/Proxy/HooksProxy.php',
         'WCPay\\Internal\\Proxy\\LegacyProxy' => __DIR__ . '/../..' . '/src/Internal/Proxy/LegacyProxy.php',
         'WCPay\\Internal\\Proxy\\ProxyException' => __DIR__ . '/../..' . '/src/Internal/Proxy/ProxyException.php',
@@ -367,9 +371,9 @@ class ComposerStaticInitdecce82dca3e0724e4cb5ceca0b8e5c7
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitdecce82dca3e0724e4cb5ceca0b8e5c7::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitdecce82dca3e0724e4cb5ceca0b8e5c7::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitdecce82dca3e0724e4cb5ceca0b8e5c7::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita5a595b4e4bbcdc5825278da12a2f655::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita5a595b4e4bbcdc5825278da12a2f655::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita5a595b4e4bbcdc5825278da12a2f655::$classMap;
 
         }, null, ClassLoader::class);
     }

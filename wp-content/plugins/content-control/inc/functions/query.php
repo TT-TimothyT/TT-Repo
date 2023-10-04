@@ -57,13 +57,18 @@ function get_current_wp_query() {
  *
  * @param \WP_Query|null $query Query object.
  *
- * @return \WP_Query
+ * @return \WP_Query|null
  */
 function get_query( $query = null ) {
+	/**
+	 * Current query object.
+	 *
+	 * @var null|\WP_Query $cc_current_query
+	 */
 	global $cc_current_query;
 
 	if ( is_null( $query ) ) {
-		if ( isset( $cc_current_query ) && ! is_null( $cc_current_query ) ) {
+		if ( isset( $cc_current_query ) ) {
 			/**
 			 * WP Query object.
 			 *
@@ -82,6 +87,8 @@ function get_query( $query = null ) {
  * Set the current query context.
  *
  * @param string $context 'main', 'main/posts', 'posts', 'main/blocks', 'blocks`.
+ *
+ * @return void
  */
 function override_query_context( $context ) {
 	global $cc_current_query_context;
@@ -90,6 +97,8 @@ function override_query_context( $context ) {
 
 /**
  * Reset the current query context.
+ *
+ * @return void
  */
 function reset_query_context() {
 	global $cc_current_query_context;
@@ -149,11 +158,16 @@ function current_query_context( $query = null ) {
  * Because we check posts in `the_posts`, we can't trust the global $wp_query
  * has been set yet, so we need to manage global state ourselves.
  *
- * @param string $query WP_Query object.
+ * @param \WP_Query|null $query WP_Query object.
  *
  * @return void
  */
 function set_rules_query( $query ) {
+	/**
+	 * Current query object.
+	 *
+	 * @var null|\WP_Query $cc_current_query
+	 */
 	global $cc_current_query;
 	$cc_current_query = $query;
 }
@@ -163,12 +177,16 @@ function set_rules_query( $query ) {
  *
  * This has no effect when checking global queries ($post_id = null).
  *
- * @param int|null $post_id Post ID.
+ * @param int|\WP_Post|null $post_id Post ID.
  *
  * @return bool
  */
 function setup_post( $post_id = null ) {
-	global $post;
+	global $post, $content_control_last_post;
+
+	if ( ! isset( $content_control_last_post ) ) {
+		$content_control_last_post = [];
+	}
 
 	if ( is_null( $post_id ) ) {
 		return false;
@@ -176,11 +194,12 @@ function setup_post( $post_id = null ) {
 
 	$current_post_id = isset( $post ) ? $post->ID : null;
 
-	$overload_post = isset( $post_id ) && (
-	( is_object( $post_id ) && $post_id->ID !== $current_post_id ) ||
-	( is_int( $post_id ) && $post_id !== $current_post_id ) );
+	$overload_post =
+		( is_object( $post_id ) && $post_id->ID !== $current_post_id ) ||
+		( is_int( $post_id ) && $post_id !== $current_post_id );
 
 	if ( $overload_post ) {
+		$content_control_last_post[] = isset( $post ) ? $post : $current_post_id;
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$post = get_post( $post_id );
 		setup_postdata( $post );
@@ -192,13 +211,16 @@ function setup_post( $post_id = null ) {
 /**
  * Check and clear global post if needed.
  *
- * @param bool $overload_post Whether post was overloaded.
- *
  * @return void
  */
-function clear_post( $overload_post = false ) {
-	if ( $overload_post ) {
+function clear_post() {
+	global $post, $content_control_last_post;
+	if ( ! empty( $content_control_last_post ) ) {
+		// Get the last post ID from the array.
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$post = array_pop( $content_control_last_post );
+
 		// Reset global post object.
-		wp_reset_postdata();
+		setup_postdata( $post );
 	}
 }
