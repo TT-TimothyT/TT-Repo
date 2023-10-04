@@ -108,7 +108,7 @@ if( $get_child_products ){
                                     $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'">Book now</button>';
                                 }else{
                                     if (isset($formUrl) && !empty($formUrl)) {
-                                        $button = '<a href="/'.$formUrl.'?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" target="_blank">Book now</a>';
+                                        $button = '<a href="/'.$formUrl.'?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                     }else{
                                         $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</button>';
                                     }

@@ -157,8 +157,49 @@ $trip_information = tt_get_trip_pid_sku_from_cart($order_id);
 $product_image_url = $trip_information['parent_trip_image'];
 //deposite due vars
 $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
-$depositAmount = $depositAmount ? str_ireplace(',', '', $depositAmount) : 0;
-$depositAmount = floatval($depositAmount) * intval(isset($trek_checkoutData['no_of_guests']) ? $trek_checkoutData['no_of_guests'] : 1);
+
+//get the supliment fees
+$supplementFees = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku, true);
+
+//Get the products from the order
+$products = $order->get_items();
+
+//Loop through the products
+foreach( $products as $product ) {
+    //Get the product name
+    $product_name = $product->get_name();
+    if( $product_name == "Single Suppliment Fees" ) {
+        // Get product quantity
+        $product_quantity = $product->get_quantity();
+        $supplementFees = $supplementFees * $product_quantity;
+    }
+
+    if( $product_name == 'Insurance Fees' ) {
+        // Get product quantity
+        $product_quantity = $product->get_quantity();
+        $insuranceFees = $product->get_total();
+    }
+}
+
+if( ! empty( $supplementFees ) ) {
+    $depositAmount = $depositAmount ? str_ireplace(',', '', $depositAmount) : 0;
+    $depositAmount = floatval($depositAmount) * intval(isset($trek_checkoutData['no_of_guests']) ? $trek_checkoutData['no_of_guests'] : 1);
+    $depositAmount = $depositAmount + floatval( $supplementFees );
+    $depositAmount = $depositAmount + floatval( $insuranceFees );
+} else {
+    $depositAmount = $depositAmount ? str_ireplace(',', '', $depositAmount) : 0;
+    $depositAmount = floatval($depositAmount) * intval(isset($trek_checkoutData['no_of_guests']) ? $trek_checkoutData['no_of_guests'] : 1);
+    $depositAmount = $depositAmount + floatval( $insuranceFees );
+}
+
+$taxes_amount = floatval( $order->get_cart_tax() );
+
+if( ! empty( $taxes_amount ) ) {
+    $depositAmount = $depositAmount + floatval( $taxes_amount );
+}
+
+$depositAmount = round( $depositAmount, 3 );
+
 $cart_total = $order->get_total();
 $remaining_amount = $cart_total - ($depositAmount ? $depositAmount : 0);
 $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $remaining_amount . '</span>';
