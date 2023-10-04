@@ -202,7 +202,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<p class="mb-0 fw-normal order-details__text">Single Suppliment <small>x<?php echo $singleSupplementQty; ?></small></p>
 							<?php } ?>
 							<?php if($insuredPerson > 0 && $tt_insurance_total_charges > 0 ) { ?>
-							<p class="mb-0 fw-normal order-details__text">Insurance Fees <small>x<?php echo $insuredPerson; ?></small></p>
+							<p class="mb-0 fw-normal order-details__text">Travel Protection <small>x<?php echo $insuredPerson; ?></small></p>
 							<?php } ?>
 							<p class="mb-0 fw-normal order-details__text">Subtotal</p>
 							<p class="mb-0 fw-normal order-details__text">Local Taxes</p>
