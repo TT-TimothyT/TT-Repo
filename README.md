@@ -95,7 +95,10 @@ Make sure the directory is writable, so WordPress can generate the new file.
 ### 6) Regenerate the Elementor Styles and sync the Media
 There is a chance the Elementor styles to be missing. To fix that navigate to the site dashboard and from the Admin menu select Elementor -> [Tools](http://local.trektravel.com/wp-admin/admin.php?page=elementor-tools). **Regenerate CSS & Data** and **Sync Library**.
 
-### 7) Import the Uploads folder
+### 7) Run a search-replace
+You might want to run `wp search-replace "new.trektravel.com" "local.trektravel.com"` just in case.
+
+### 8) Import the Uploads folder
 If such is not provided, you can use **BE Media From Production** plugin.
 
 The original setting for the media is to NOT order files in year/month folder, yikes.
