@@ -323,30 +323,60 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 	jQuery(document).ready(function () {
 
 		dataLayer.push({ ecommerce: null });
+		var productsArr = [{
+						'name': "<?php echo preg_replace('/[^A-Za-z0-9]/', '', $trip_name) ?>", // Please remove special characters
+						'id': '<?php echo $item['product_id'] ?>', // Parent ID
+						'price': '<?php echo $cart_total ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+						'brand': '', //
+						'category': '<?php echo strip_tags(wc_get_product_category_list( get_the_id())); ?>', // populate with the 'country,continent' separating with a comma
+						'variant': '<?php echo $trip_sku ?>', //this is the SKU of the product
+						'quantity': '1' //the number of products added to the cart
+					}];
+
+					<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkoutData['bikeUpgradePrice'] ) { ?>
+						productsArr.push({
+							'name': "upgrade", // Please remove special characters
+						'id': '<?php echo $item['product_id'] ?>', // Parent ID
+						'price': '<?php echo $trek_checkoutData['bikeUpgradePrice'] ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+						'brand': '', //
+						'category': '<?php echo strip_tags(wc_get_product_category_list( get_the_id())); ?>', // populate with the 'country,continent' separating with a comma
+						'variant': '<?php echo $trip_sku ?>', //this is the SKU of the product
+						'quantity': '1' //the number of products added to the cart
+						})
+
+						<?php 
+					}
+					if($singleSupplementQty > 0) { 
+					 ?>
+					 productsArr.push({
+							'name': "single suppliment fee", // Please remove special characters
+						'id': '<?php echo $item['product_id'] ?>', // Parent ID
+						'price': '<?php echo $singleSupplementPrice ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+						'brand': '', //
+						'category': '<?php echo strip_tags(wc_get_product_category_list( get_the_id())); ?>', // populate with the 'country,continent' separating with a comma
+						'variant': '<?php echo $trip_sku ?>', //this is the SKU of the product
+						'quantity': '1' //the number of products added to the cart
+						})
+
+					 <?php } ?>
+
+
 		dataLayer.push({ 
 			'event':'purchase',
 			'ecommerce': {
-				'currencyCode': 'USD', // use the correct currency code value here
+				'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
 				'purchase': {
 					'actionField':{
 						'id': '<?php echo $order_id; ?>', // populate with the order number
-						'revenue': '<?php echo $item['total'] ?>',  // total price the customer paid 
-						'product_revenue': '<?php echo $item['total'] ?>',  // product revenue paid                      
+						'revenue': '<?php echo $cart_total; ?>',  // total price the customer paid 
+						'product_revenue': '<?php echo $cart_total; ?>',  // product revenue paid                      
 						'tax':'<?php echo $item['total_tax'] ?>', // amount of tax paid
 						'shipping': '', // amount of shipping paid
 						'coupon': '<?php echo $item['coupon_code'] ?>', // order level coupon. Pipe delimit stacked codes.
-						'payment_type': '', // pipe delimit multiple values:ApplePay,GooglePay,Paypal, AfterPay, GiftCard, CreditCard 
+						'payment_type': 'credit card', // pipe delimit multiple values:ApplePay,GooglePay,Paypal, AfterPay, GiftCard, CreditCard 
 						'order_discount': '' // order level discount amount
 					},
-					'products': [{
-						'name': "<?php echo preg_replace('/[^A-Za-z0-9]/', ' ', $trip_name) ?>", // Please remove special characters
-						'id': '<?php echo $item['product_id'] ?>', // Parent ID
-						'price': '<?php echo $item['total'] ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
-						'brand': '', //
-						'category': '', // populate with the 'country,continent' separating with a comma
-						'variant': '<?php echo $item['sku'] ?>', //this is the SKU of the product
-						'quantity': '<?php echo $item['quantity'] ?>' //the number of products added to the cart
-					}]
+					'products': productsArr
 				}
 			}
 		})

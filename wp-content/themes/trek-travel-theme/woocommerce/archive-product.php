@@ -223,7 +223,7 @@ $emptyBlockContent .= '</div></div>';
                                 <# if ( data.gallery_images ) { #>
                                 <# data.gallery_images.forEach(function (item, index) { #>
                                 <div class="carousel-item h-100 <# if ( index == 0 ) { #> active <# } #>">
-                                    <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--thumbnail-link" onclick="datalayerOp('PLP', '{{ data.taxonomies.product_cat }}', '{{ data.post_title }}', '{{ data.post_id }}', '{{data["Start Price"]}}')">
+                                    <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--thumbnail-link" onclick="selectItemAnalytics({{ data.post_id }})">
                                         <img src="{{ item }}" alt="{{ data.post_title }}" title="{{ data.post_title }}" class=" d-block w-100" />
                                     </a>
                                 </div>
@@ -266,10 +266,11 @@ $emptyBlockContent .= '</div></div>';
                             <# } #>
                            <# if ( data.taxonomies.pa_city ) { #>
                            <p class="mb-0">
-                               <small class="text-muted trip-category">{{ data.taxonomies.pa_city }}<# if ( data['Region'] ) { #> , {{data['Region']}}<# } #></small>
+                            <span class="trip-category d-none">{{ data.taxonomies.product_cat }}</span>
+                               <small class="text-muted">{{ data.taxonomies.pa_city }}<# if ( data['Region'] ) { #> , {{data['Region']}}<# } #></small>
                            </p>
                            <# } #>
-                            <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--title-link text-decoration-none" itemprop="url" onclick="datalayerOp('Search', '{{ data.taxonomies.product_cat }}', '{{ data.post_title }}', '{{ data.post_id }}', '{{data["Start Price"]}}')">
+                            <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--title-link text-decoration-none" itemprop="url" onclick="selectItemAnalytics({{ data.post_id }})">
                             <h4 class="card-title fw-semibold trip-title">{{{ data._highlightResult.post_title.value }}}</h4>
                             </a>
                             <# if ( data.content ) { #>
@@ -360,11 +361,12 @@ $emptyBlockContent .= '</div></div>';
 
                             <# if ( data.taxonomies.pa_city ) { #>
                             <p class="mb-0">
-                                <small class="text-muted trip-category">{{ data.taxonomies.pa_city }}<# if ( data['Region'] ) { #> , {{data['Region']}}<# } #></small>
+                            <span class="trip-category d-none">{{ data.taxonomies.product_cat }}</span>
+                                <small class="text-muted">{{ data.taxonomies.pa_city }}<# if ( data['Region'] ) { #> , {{data['Region']}}<# } #></small>
                             </p>
                             <# } #>
 
-                            <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--title-link text-decoration-none" itemprop="url" onclick="datalayerOp('Search', '{{ data.taxonomies.product_cat }}', '{{ data.post_title }}', '{{ data.post_id }}', '{{data["Start Price"]}}')">
+                            <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--title-link text-decoration-none" itemprop="url" onclick="selectItemAnalytics({{ data.post_id }})">
                             <h4 class="card-title fw-semibold trip-title">{{{ data._highlightResult.post_title.value }}}</h4>
                             </a>
 
@@ -602,15 +604,18 @@ $emptyBlockContent .= '</div></div>';
                             // Google Tag Manager (GTM)
                             // You can use `uiState` to make payloads for third-party trackers.
                             window.dataLayer = window.dataLayer || [];
-                            var impressions = [];                
+                            var impressions = [];   
+                            var url = window.location.href;
+                            var splitUrl = url.split(".com");
+                            var textAfterCom = splitUrl[splitUrl.length - 1];             
                             jQuery( ".trip-card-body" ).each(function( index ) {                    
                                 let impression = {
-                                    'name': jQuery( this ).find(".trip-title" ).text() ,
+                                    'name': jQuery( this ).find(".trip-title" ).first().text() ,
                                     'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString(),
                                     'price': jQuery( this ).find(".trip-price").data("price"),
                                     'brand': '',
                                     'category': jQuery( this ).find(".trip-category" ).text(),
-                                    'list': 'search',
+                                    'list': textAfterCom,
                                     'position': index+1
                                 };                
                                 impressions.push(impression)
@@ -618,7 +623,7 @@ $emptyBlockContent .= '</div></div>';
                             dataLayer.push ({
                                 'event':'view_item_list',
                                 'ecommerce': { 
-                                    'currencyCode': 'USD',
+                                    'currencyCode': jQuery("#currency_switcher").val(),
                                     'impressions': impressions
                                 }
                             })
@@ -906,26 +911,29 @@ $emptyBlockContent .= '</div></div>';
 
         jQuery(window).load(function() {
             window.dataLayer = window.dataLayer || [];
-            var impressions = [];                
-                jQuery( ".trip-card-body" ).each(function( index ) {                    
-                    let impression = {
-                        'name': jQuery( this ).find(".trip-title" ).text() ,
-                        'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString(),
-                        'price': jQuery( this ).find(".trip-price").data("price"),
-                        'brand': '',
-                        'category': jQuery( this ).find(".trip-category" ).text(),
-                        'list': 'search',
-                        'position': index+1
-                    };                
-                    impressions.push(impression)
-                });
-                dataLayer.push ({
-                    'event':'view_item_list',
-                    'ecommerce': { 
-                        'currencyCode': 'USD',
-                        'impressions': impressions
-                    }
-                })
+            var impressions = [];
+            var url = window.location.href;
+            var splitUrl = url.split(".com");
+            var textAfterCom = splitUrl[splitUrl.length - 1];                
+            jQuery( ".trip-card-body" ).each(function( index ) {                    
+                let impression = {
+                    'name': jQuery( this ).find(".trip-title" ).first().text() ,
+                    'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString(),
+                    'price': jQuery( this ).find(".trip-price").data("price"),
+                    'brand': '',
+                    'category': jQuery( this ).find(".trip-category" ).text(),
+                    'list': textAfterCom,
+                    'position': index+1
+                };                
+                impressions.push(impression)
+            });
+            dataLayer.push ({
+                'event':'view_item_list',
+                'ecommerce': { 
+                    'currencyCode': 'USD',
+                    'impressions': impressions
+                }
+            })
 
                 
 
@@ -948,6 +956,37 @@ $emptyBlockContent .= '</div></div>';
                 }
             <?php } ?>
         })
+
+        function selectItemAnalytics(id) {
+            var url = window.location.href;
+            var splitUrl = url.split(".com");
+            var textAfterCom = splitUrl[splitUrl.length - 1];
+            dataLayer.push({"ecommerce" : null})
+
+            jQuery( ".trip-card-body" ).each(function( index ) {
+                var cardId = jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id")
+                var price = jQuery( this ).find(".trip-price").data("price")
+                if (parseInt(id) == parseInt(cardId)) {
+                    dataLayer.push({
+                        'event': 'select_item',
+                        'ecommerce': {
+                        'click': {
+                            'actionField': { 'list': textAfterCom },
+                                'products': [{
+                                    'name': jQuery( this ).find(".trip-title" ).first().text(), // Please remove special characters
+                                    'id': id, // Parent ID
+                                    'price': parseFloat(price).toFixed(2), // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+                                    'brand': '', //
+                                    'category': jQuery( this ).find(".trip-category" ).text(), // populate with the 'country,continent' separating with a comma
+                                    'position': index+1
+                                }]
+                            }
+                        },
+                    })
+                    return false                    
+                }                    
+            });            
+        }
 
     </script>
 

@@ -185,6 +185,8 @@ function trek_wp_enqueue_scripts_cb()
         'is_checkout' => is_checkout(),
         'rider_level' => $cart_product_info['parent_rider_level'],
         'rider_level_text' => $cart_product_info['rider_level_text'],
+        'checkoutParentId' => $cart_product_info['parent_product_id'],
+        'checkoutSku' => $cart_product_info['sku'],
         'review_order' => tt_get_review_order_html(),
         'is_order_received' => is_wc_endpoint_url( 'order-received' ),
         'order_id' => $order_id

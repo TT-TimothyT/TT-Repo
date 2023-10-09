@@ -187,14 +187,14 @@ get_footer( 'shop' );
 		dataLayer.push({
 			'event':'view_item',
 			'ecommerce': {
-				'currencyCode': 'USD', // use the correct currency code value here
+				'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
 				'detail': { 
 					'products': [{
 						'name': "<?php echo $product->name; ?>", // Please remove special characters
 						'id': '<?php echo $product->id; ?>', // Parent ID
 						'price': "<?php echo number_format((float)$product->price, 2, '.', ''); ?>", // per unit price displayed to the user - no format is ####.## (no '$' or ',')
 						'brand': '', //
-						'category': '', // populate with the 'country,continent' separating with a comma
+						'category': "<?php echo strip_tags(wc_get_product_category_list( get_the_id())); ?>", // populate with the 'country,continent' separating with a comma
 					}]
 				}
 			}

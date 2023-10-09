@@ -751,6 +751,15 @@ jQuery(document).ready(function () {
   var minSteps = 1;
   var currentStep = jQuery('input[name="step"]').val();
   handleProgressBar(currentStep)
+  if(parseInt(currentStep) == 1){
+    initialDatalayerCall()
+  }
+  if(parseInt(currentStep) == 2){
+    checkoutShippingAnalytics()
+  }
+  if(parseInt(currentStep) == 4){
+    checkoutPaymentAnalytics()
+  }
   jQuery('body').on('click', 'form.checkout.woocommerce-checkout .btn-next', function () {
     tripCapacityValidation(false);
     var currentStep = jQuery('input[name="step"]').val();
@@ -1226,28 +1235,6 @@ jQuery('body').on('click', '.submit_protection', function () {
   return false;
 })
 
-
-// datalayer - listing pages
-
-function datalayerOp(list, cat, title, id, price = 0) {
-  dataLayer.push({ 'ecommerce': null });  // Clear the previous ecommerce object.
-  dataLayer.push({
-    'event': 'select_item',
-    'ecommerce': {
-      'click': {
-        'actionField': { 'list': list.toLowerCase() },
-        'products': [{
-          'name': title, // Please remove special characters
-          'id': id, // Parent ID
-          'price': parseFloat(price).toFixed(2), // per unit price displayed to the user - no format is ####.## (no '$' or ',')
-          'brand': '', //
-          'category': cat, // populate with the 'country,continent' separating with a comma
-          'position': 1
-        }]
-      }
-    },
-  })
-}
 // Data Layer functions
 
 function gtm_newsletter_signup(event, event_location) {
@@ -1760,6 +1747,7 @@ jQuery('body').on('click', '#trip-booking-modal', function () {
 });
 
 jQuery('body').on('click', '.proceed-booking-btn', function () {
+  removeCartAnalytics()
   var actionName = 'tt_clear_cart_ajax_action';
   jQuery.ajax({
     type: 'POST',
@@ -2927,4 +2915,92 @@ if( jQuery('select[name="shipping_country"]').length > 0 ){
     jQuery('select[name="shipping_state"]').attr('required', 'required');
     checkout_steps_validations(1);
   });
+}
+
+function initialDatalayerCall() {
+  var priceText = jQuery(".checkout-summary__price span.woocommerce-Price-amount.amount").first().text().replace(/[^\w\s]/g, "")
+  var formatPrice = parseInt(priceText) / 100
+  const regex = /[^a-zA-Z0-9 ]/g;
+  const text = jQuery("h5.checkout-summary__title").text()
+  const cleanText = text.replace(regex, "");
+
+  dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
+  dataLayer.push({
+    'event':'begin_checkout',
+    'ecommerce': {
+      'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
+      'checkout': {
+        'actionField': {
+          'step': 1
+        },
+        'products': [{
+          'name': cleanText, // Please remove special characters
+          'id': trek_JS_obj.checkoutParentId, // Parent ID
+          'price': formatPrice, // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+          'brand': '', //
+          'category': '', // populate with the 'country,continent' separating with a comma
+          'variant': trek_JS_obj.checkoutSku, //this is the SKU of the product
+          'quantity': '1' //the number of products added to the cart
+        }]
+      }
+    }
+  })
+}
+
+function checkoutPaymentAnalytics() {
+  var priceText = jQuery(".checkout-summary__price span.woocommerce-Price-amount.amount").first().text().replace(/[^\w\s]/g, "")
+  var formatPrice = parseInt(priceText) / 100
+  const regex = /[^a-zA-Z0-9 ]/g;
+  const text = jQuery("h5.checkout-summary__title").text()
+  const cleanText = text.replace(regex, "");
+  dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
+  dataLayer.push({
+    'event':'checkout_payment',
+      'ecommerce': {
+        'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
+        'checkout': {
+          'actionField': {
+            'step': 1
+          },
+          'products': [{
+            'name': cleanText, // Please remove special characters
+            'id': trek_JS_obj.checkoutParentId, // Parent ID
+            'price': formatPrice, // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+            'brand': '', //
+            'category': '', // populate with the 'country,continent' separating with a comma
+            'variant': trek_JS_obj.checkoutSku, //this is the SKU of the product
+            'quantity': '1' //the number of products added to the cart
+          }]
+        }
+      }
+    })
+}
+
+function checkoutShippingAnalytics() {
+  var priceText = jQuery(".checkout-summary__price span.woocommerce-Price-amount.amount").first().text().replace(/[^\w\s]/g, "")
+  var formatPrice = parseInt(priceText) / 100
+  const regex = /[^a-zA-Z0-9 ]/g;
+  const text = jQuery("h5.checkout-summary__title").text()
+  const cleanText = text.replace(regex, "");
+  dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
+  dataLayer.push({
+    'event':'add_shipping_info',
+      'ecommerce': {
+        'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
+        'checkout': {
+          'actionField': {
+            'step': 1
+          },
+          'products': [{
+            'name': cleanText, // Please remove special characters
+            'id': trek_JS_obj.checkoutParentId, // Parent ID
+            'price': formatPrice, // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+            'brand': '', //
+            'category': '', // populate with the 'country,continent' separating with a comma
+            'variant': trek_JS_obj.checkoutSku, //this is the SKU of the product
+            'quantity': '1' //the number of products added to the cart
+          }]
+        }
+      }
+    })
 }

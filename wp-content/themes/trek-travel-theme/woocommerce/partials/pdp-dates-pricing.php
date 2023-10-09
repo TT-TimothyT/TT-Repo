@@ -267,3 +267,53 @@ if( $get_child_products ){
         </div><!-- / .modal-dialog -->
     </div><!-- / .modal -->
 </div> <!-- / Modal .container -->
+<?php 
+global $woocommerce;
+$cartContentsArr = $woocommerce->cart->cart_contents;
+$data = $cartContentsArr[array_key_first($cartContentsArr)]['data'];
+?>
+<script>
+    jQuery('form.cart.grouped_form').on('submit', function () {        
+        var childSku = jQuery(this).closest(".accordion-item").data("sku")
+        dataLayer.push({ 'ecommerce': null });  // Clear the previous ecommerce object.
+        dataLayer.push({
+            'event':'add_to_cart',
+            'ecommerce': {
+                'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
+                'add': {
+                    'products': [{
+                        'name': "<?php echo $product->name; ?>", // Please remove special characters
+                        'id': '<?php echo $product->id; ?>', // Parent ID
+                        'price': jQuery( this ).find("span.amount").data("price"), // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+                        'brand': '', //
+                        'category': '<?php echo strip_tags(wc_get_product_category_list( get_the_id())); ?>', // populate with the 'country,continent' separating with a comma
+                        'variant': childSku, //this is the SKU of the product
+                        'quantity': '1' //the number of products added to the cart
+                    }]
+                }
+            }
+        })
+
+    })
+
+    function removeCartAnalytics() {
+        dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
+        dataLayer.push({
+            'event':'remove_from_cart',
+            'ecommerce': {
+                'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
+                'remove': {
+                    'products': [{
+                    'name': "<?php echo preg_replace('/[^\w\s]/', '', $data->name); ?>", // Please remove special characters
+                    'id': '<?php echo $data->id; ?>', // Parent ID
+                    'price': '<?php echo number_format((float)$data->price, 2, '.', ''); ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+                    'brand': '', //
+                    'category': '', // populate with the 'country,continent' separating with a comma
+                    'variant': '<?php echo $data->sku; ?>', //this is the SKU of the product
+                    'quantity': '1' //the number of products added to the cart
+                    }]
+                }
+            }
+        })
+    }
+</script>
