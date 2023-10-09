@@ -158,7 +158,14 @@ $tt_rooms_output = tt_rooms_output($tt_posted);
                 $review_bikes_html .= '<div class="col-lg-6 px-0 checkout-review__col">';
                 $review_bikes_html .= '<p class="fw-medium mb-2">' . $guestLabel . ': ' . $fullname . '</p>
                     <p class="fs-sm lh-sm mb-0">Rider Level: ' . $syncRiderLevels . '</p>';
-                if( $review_bikes_arr_val['rider_level'] != 5 ){ 
+                if ( $review_bikes_arr_val['rider_level'] != 5 && is_array( $syncJerseySizes ) ) {
+                    $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $syncBikeTypes . '</p>
+                        <p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
+                        <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>
+                        <p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
+                        <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>
+                        <p class="fs-sm lh-sm mb-0">Wheel Upgrade: No</p>';
+                } elseif( $review_bikes_arr_val['rider_level'] != 5 ) { 
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $syncBikeTypes . '</p>
                         <p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
                         <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>
