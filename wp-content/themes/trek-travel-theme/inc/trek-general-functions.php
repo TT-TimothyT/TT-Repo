@@ -1080,6 +1080,12 @@ function trek_get_quote_travel_protection_action_cb()
     $accepted_p_ids = tt_get_line_items_product_ids();
     $fees_product_id = tt_create_line_item_product('TTWP23FEES');
     $is_fees_exist = [];
+    $plan_id = 'TREKTRAVEL23';
+
+    if( ! empty( get_field( 'plan_id', 'option' ) ) ) {
+        $plan_id = get_field( 'plan_id', 'option' );
+    }
+
     //Add travels data to Cart object
     $cart = WC()->cart->get_cart();
     $guest_insurance_data_arr = $guests_insurance_data = array();
@@ -1187,6 +1193,7 @@ function trek_get_quote_travel_protection_action_cb()
                 ]
             ]
         ],
+        "planID" => $plan_id,
         "language" => "en-us",
         "returnTravelerQuotes" => true
     ];
@@ -1750,7 +1757,7 @@ function tt_set_calculate_insurance_fees_api($trek_insurance_args)
                 'Authorization' => $bearer_token['token'],
                 'Content-Type' => 'application/json'
             ),
-           'body' => json_encode($trek_insurance_args)
+            'body' => json_encode($trek_insurance_args)
         );
         try {
             $trek_insurance_result = wp_remote_post(
@@ -4402,6 +4409,7 @@ function tt_generate_save_insurance_quote_cb()
     $product = wc_get_product($product_id);
     $individualTripCost = 0;
     $sdate_info = $edate_info = '';
+
     if( $product ){
         $individualTripCost = $product->get_price();
         $trip_sdate = $product->get_attribute('pa_start-date');
@@ -4419,6 +4427,13 @@ function tt_generate_save_insurance_quote_cb()
             'y' => substr(date('Y'),0,2).$edate_obj[2]
         );
     }
+
+    $plan_id = 'TREKTRAVEL23';
+
+    if( ! empty( get_field( 'plan_id', 'option' ) ) ) {
+        $plan_id = get_field( 'plan_id', 'option' );
+    }
+
     $insuredPerson = $insuredPerson_single = array();
     $effectiveDate = $expirationDate = '';
     if( $sdate_info && is_array($sdate_info) ){
@@ -4439,6 +4454,7 @@ function tt_generate_save_insurance_quote_cb()
             ]
         ],
         "language" => "en-us",
+        "planID" => $plan_id,
         "returnTravelerQuotes" => true
     ];
     $guest_insurance = isset($tt_posted['trek_guest_insurance']) ? $tt_posted['trek_guest_insurance'] : [];
