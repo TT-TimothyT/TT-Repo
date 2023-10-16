@@ -4176,14 +4176,20 @@ function tt_guest_details($tt_posted = [])
                 if ($own_bike == 'yes') {
                     $bike_size = $rider_height = "Bringing own";
                 }
-                if( $rider_levelVal != 5 ){
+                if( $rider_levelVal != 5 && is_array( $jersey_size ) ) {
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_size . '</p>
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>';
+                } elseif ( $rider_levelVal != 5 ) {
                     $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>';
-                }
+                    }
             $bike_gear_html .= '</div>';
             if (($iter % $cols == $cols - 1) || ($iter == $guest_count - 1)) {
                 $guest_html .= '</div>';
