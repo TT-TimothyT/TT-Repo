@@ -26,7 +26,8 @@ function tt_wc_ns_fire_cron_on_wp_init()
         wp_schedule_event(time(), 'every_four_hours', 'tt_wc_ns_sync_hourly_event');
     }
 }
-// add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
+
+add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
 function tt_wc_ns_sync_hourly_event_cb()
 {
     tt_sync_wc_products_from_ns();
