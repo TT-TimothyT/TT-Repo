@@ -210,7 +210,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
                 </div>
                 <div>
                     <p class="mb-2 fw-medium"><?php wc_cart_totals_subtotal_html(); ?></p>
-                    <p class="mb-0 fw-medium"><?php wc_cart_totals_taxes_total_html(); ?></p>
+                    <?php do_action( 'woocommerce_review_order_before_shipping' ); ?>
                 </div>
             </div>
             <?php

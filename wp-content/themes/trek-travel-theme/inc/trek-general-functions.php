@@ -5046,3 +5046,61 @@ function tt_default_checkout_billing_country_state_cb() {
   return '';
 }
 
+// Function to calculate total tax for the products in the cart
+function calculate_cart_total_tax( $cart ) {
+    $total_tax = 0;
+    
+    // Get the first product in the cart
+    $first_cart_item = reset( $cart->get_cart() );
+    if ( $first_cart_item ) {
+        $product_id = $first_cart_item['product_id'];
+        $product_tax_rate = get_post_meta($product_id, 'tt_meta_taxRate', true);
+        
+        if ( $product_tax_rate ) {
+            foreach ( $cart->get_cart() as $cart_item ) {
+                if ( 'taxable' === $cart_item["data"]->tax_status ) {
+                    $product_price    = $cart_item['data']->get_price();
+                    $product_quantity = $cart_item['quantity'];
+                    $product_tax      = ($product_tax_rate / 100) * $product_price * $product_quantity;
+                    $total_tax       += $product_tax;
+                }
+            }
+        }
+    }
+
+    // Set the updated total tax for the cart
+    $cart->set_cart_contents_taxes(array('total' => $total_tax));
+
+    return $total_tax;
+}
+
+// Recalculate the tax when cart totals are calculated
+add_action( 'woocommerce_calculate_totals', 'recalculate_tax_on_cart_update', 10, 1 );
+function recalculate_tax_on_cart_update( $cart ) {
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+        return;
+    }
+
+    // Remove previous tax and add the updated tax
+    $cart->remove_taxes();
+}
+
+// Filter to adjust the cart subtotal
+add_filter( 'woocommerce_calculated_total', 'update_cart_subtotal', 10, 2 );
+function update_cart_subtotal( $cart_total, $cart ) {
+    $total_tax = calculate_cart_total_tax( $cart );
+
+    // Add the calculated tax to the cart subtotal
+    $cart_total += $total_tax;
+
+    return $cart_total;
+}
+
+// Display the updated total tax in the template
+add_action( 'woocommerce_review_order_before_shipping', 'display_total_tax' );
+function display_total_tax() {
+    $cart      = WC()->cart;
+    $total_tax = calculate_cart_total_tax( $cart );
+
+    echo '<p class="mb-0 fw-medium">' . wc_price( $total_tax ) . '</p>';
+}

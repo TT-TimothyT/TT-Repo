@@ -295,7 +295,13 @@ if( $parent_product_id ){
                                                         <p class="mb-0 fw-normal order-details__text">Taxes</p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_cart_tax(); ?></span></p>
+                                                    <?php
+                                                    $local_tax = $order->get_cart_tax();
+                                                    if ( '0' === $local_tax ) {
+                                                        $local_tax = $order->get_total() - $order->get_subtotal();
+                                                    }
+                                                    ?>
+                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $local_tax; ?></span></p>
                                                     </td>
                                                 </tr>
                                                 <tr class="border-white">

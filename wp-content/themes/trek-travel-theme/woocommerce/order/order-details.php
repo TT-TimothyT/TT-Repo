@@ -228,7 +228,13 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_insurance_total_charges; ?></span></p>
 							<?php } ?>
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_subtotal(); ?></span></p>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_cart_tax(); ?></span></p>
+							<?php
+							$local_tax = $order->get_cart_tax();
+							if ( '0' === $local_tax ) {
+								$local_tax = $order->get_total() - $order->get_subtotal();
+							}
+							?>
+							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $local_tax; ?></span></p>
 							<?php if (!empty($dues)) : ?>
 								<p class="mb-0 fw-normal order-details__text"><?php echo $cart_totalCurr; ?></p>
 								<p class="mb-0 mt-1 mt-lg-2 fw-medium order-details__textbold"><?php echo $depositAmountCurr; ?></p>

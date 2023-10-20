@@ -248,7 +248,13 @@ $tt_insurance_total_charges = isset($tt_posted['tt_insurance_total_charges']) ? 
 												<p class="mb-0 fw-normal order-details__text"><?php echo get_woocommerce_currency_symbol() . $singleSupplementPrice; ?></p>
 											<?php } ?>
 											<p class="mb-0 fw-normal order-details__text"><?php echo get_woocommerce_currency_symbol() . $order->get_subtotal(); ?></p>
-											<p class="mb-0 fw-normal order-details__text"><?php echo get_woocommerce_currency_symbol() . $order->get_cart_tax(); ?></p>
+											<?php
+											$local_tax = $order->get_cart_tax();
+											if ( '0' === $local_tax ) {
+												$local_tax = $order->get_total() - $order->get_subtotal();
+											}
+											?>
+											<p class="mb-0 fw-normal order-details__text"><?php echo $local_tax; ?></p>
 											<?php if (!empty($dues)) : ?>
 												<p class="mb-0 fw-normal order-details__text"><?php echo $cart_totalCurr; ?></p>
 												<p class="mb-0 mt-1 mt-lg-2 fw-medium order-details__textbold"><?php echo $depositAmountCurr; ?></p>
