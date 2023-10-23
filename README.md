@@ -106,3 +106,31 @@ The original setting for the media is to NOT order files in year/month folder, y
 As stated above, We strongly suggest you to enable the `WP_DEBUG` on your localhost. You can check **Localhost Debugging** section for more details.
 
 If you have any questions regarding the setup, feel free to ask in project's Slack channel!
+
+### 8) Build Process
+This Theme comes with a built in webpack task automation. Sass files will be compiled if changed. Minification and JS compiling to be added later as needed.
+
+You will need:
+
+-   [Node.js>=18](https://nodejs.org/en)
+-   and npm
+
+* Open the **Theme directory** `/` in Terminal and install the required Node.js dependencies.
+* `$ npm install`
+  
+* Run the **`dev`** script (watch included)
+* `$ npm run dev`
+  
+* Run the **`build`** script (no watching)
+* `$ npm run build`
+  
+* Modify `/src/scss/main.scss` and `/assets/main.js`
+* Bootstrap Overriding detailed at `src/scss/main.scss`
+
+
+## Technology
+
+* [Bootstrap](https://github.com/twbs/bootstrap), [MIT license](https://github.com/twbs/bootstrap/blob/master/LICENSE)
+* [Sass](https://github.com/sass/sass), [MIT license](https://github.com/sass/sass/blob/stable/MIT-LICENSE)
+* [webpack](https://github.com/webpack/webpack), [MIT license](https://github.com/webpack/webpack/blob/master/LICENSE)
+* [wp-bootstrap-navwalker](https://github.com/twittem/wp-bootstrap-navwalker), [GPLv2+](https://github.com/twittem/wp-bootstrap-navwalker/blob/master/LICENSE.txt)

@@ -79,7 +79,6 @@ cvbguide/
 /used_cf/
 
 # Root files
-/smart-stars18/
 /floridakeysfam/
 /smartstarswinners2019/
 /supplierevents/
@@ -97,7 +96,7 @@ wp-content/mu-plugins/pagely-security-patches/
 wp-content/mu-plugins/pagely-status/
 wp-content/mu-plugins/pagely-util/
 wp-content/mu-plugins/pagely-wp-cli-mail-patch/
-wp-content/mu-plugins/smartmeetings-analytics.php
+wp-content/mu-plugins/trek-travel-theme-analytics.php
 
 # Ignore the SM Ad server directory
 /revive_adserver/
@@ -132,8 +131,5 @@ nbproject/
 wp-content/db.php
 
 # Assets Dist Files
-wp-content/themes/smartmeetings/assets/dist/css
-wp-content/themes/smartmeetings/assets/dist/scripts
-wp-content/themes/smartmeetings/assets/dist/images
-wp-content/themes/smartmeetings/node_modules/
-wp-content/themes/smartmeetings/package-lock.json
+wp-content/themes/trek-travel-theme/node_modules/
+wp-content/themes/trek-travel-theme/package-lock.json
