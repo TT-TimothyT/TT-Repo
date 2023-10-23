@@ -132,6 +132,28 @@ $singleSupplementPrice = $singleSupplementPrice * $singleSupplementQty;
 $rooms_html = tt_rooms_output($trek_checkoutData, true);
 $guests_gears_data = tt_guest_details($trek_checkoutData);
 //deposite due vars
+
+if( $singleSupplementPrice == 1 ) {
+	$supplementFees = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku, true);
+
+	//Get the products from the order
+	$supplementFees = str_ireplace(',','',$supplementFees);
+
+
+	//strip the , from the price if there's such
+	$calcSupplementFees = floatval( $supplementFees ) * $singleSupplementQty;
+
+
+	$calcSupplementFees = strval( $calcSupplementFees );
+
+
+	//Get the , back to the string
+	$supplementFees = number_format( $calcSupplementFees, 2 );
+
+} else {
+	$supplementFees = $singleSupplementPrice;
+}
+
 $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
 $depositAmount = $depositAmount ? str_ireplace(',','',$depositAmount) : 0;
 $depositAmount = floatval($depositAmount) * intval(isset($trek_checkoutData['no_of_guests']) ? $trek_checkoutData['no_of_guests'] : 1);
@@ -222,7 +244,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $trek_checkoutData['bikeUpgradePrice']; ?></span></p>
 							<?php } ?>
 							<?php if($singleSupplementQty > 0) { ?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $singleSupplementPrice; ?></span></p>
+							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplementFees; ?></span></p>
 							<?php } ?>
 							<?php if($insuredPerson > 0 && $tt_insurance_total_charges > 0 ) { ?>
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_insurance_total_charges; ?></span></p>
@@ -357,7 +379,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 					 productsArr.push({
 							'name': "single suppliment fee", // Please remove special characters
 						'id': '<?php echo $item['product_id'] ?>', // Parent ID
-						'price': '<?php echo $singleSupplementPrice ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+						'price': '<?php echo $supplementFees ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
 						'brand': '', //
 						'category': '<?php echo strip_tags(wc_get_product_category_list( get_the_id())); ?>', // populate with the 'country,continent' separating with a comma
 						'variant': '<?php echo $trip_sku ?>', //this is the SKU of the product
