@@ -2388,6 +2388,27 @@ jQuery('.read-more-action-right').on('click', function (e) {
   jQuery(this).toggleClass("d-none")
 })
 
+// Listen for clicks on the document and check if the target is the #itinerary-print-button
+jQuery(document).on('click', '#itinerary-print-button', function (e) {
+  e.preventDefault();
+  // Check if a button with classes "olark-launch-button" and "olark-size-md" exists
+  var checkOlarkButton = function () {
+    var olarkButton = jQuery('.olark-launch-button.olark-size-md');
+    if (olarkButton.length > 0) {
+      // Check if the olarkButton has the class "olark-text-button"
+      if (!olarkButton.hasClass('olark-text-button')) {
+        // Trigger a click event on the button if it doesn't have the class
+        olarkButton.click();
+      }
+    } else {
+      // If olarkButton is not found, check again after a delay
+      setTimeout(checkOlarkButton, 1000); // You can adjust the delay as needed
+    }
+  };
+  checkOlarkButton(); // Start checking for the olarkButton
+  window.print();
+});
+
 
 window.addEventListener("beforeprint", (event) => {
   jQuery("header").css("display", "none")

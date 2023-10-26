@@ -15,7 +15,7 @@ if ( $pdp_itineraries ) :
                         <p class="fw-normal fs-lg lh-lg"><?php echo $post->post_content; ?></p>
                     <?php endif; ?>
                     <div class="tour-actions">
-                        <button class="btn btn-primary btn-md rounded-1 me-4" onclick="window.print();">Print Itinerary</button>
+                        <button id="itinerary-print-button" class="btn btn-primary btn-md rounded-1 me-4">Print Itinerary</button>
                         <a href="<?php echo $book_no_link; ?>">Book now</a>
                     </div>
                 </div>

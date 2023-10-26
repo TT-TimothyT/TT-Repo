@@ -57,7 +57,7 @@ if ( $pdp_itineraries ) :
                                 <?php echo do_shortcode( get_field( 'map_shortcode', $itinerary->ID ) ); ?>
                                 <div class="d-md-flex justify-content-between align-items-center">
                                     <h5 class="fw-semibold pdp-section__title pdp-itinerary__title"><?php the_field( 'year' ); ?> Day-to-Day</h5>
-                                    <a href="<?php the_permalink(); ?>" target="_blank" class="btn btn-md btn-outline-dark align-self-start pdp-itinerary__button">View full itinerary</a>
+                                    <a href="<?php the_permalink( $itinerary->ID ); ?>" target="_blank" class="btn btn-md btn-outline-dark align-self-start pdp-itinerary__button">View full itinerary</a>
                                 </div>
                                 <div class="accordion" id="accordionFlushExample">
                                     <div class="accordion-item">
@@ -242,30 +242,27 @@ if ( $pdp_itineraries ) :
                                     <?php 
                                         endif;
                                     endforeach;
-				    if( ! empty( $days ) ) {
-                                    	if (  $days > 7 ):
-                                    	?>
-                                    	<div class="accordion-item">
-                                        	<h6 class="accordion-header" id="flush-headingOne">
-                                            	<button class="accordion-button collapsed mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseadditional" aria-expanded="false" aria-controls="flush-collapseadditional">
-                                                	<span class="fw-medium fs-lg lh-lg">Additional Days</span>
-                                            	</button>
-                                        	</h6>
-                                        	<div id="flush-collapseadditional" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                                            	<hr>
-                                            	<div class="accordion-body text-center accordion-item__additional-days">
-                                                	<p class="fs-lg fw-medium lh-lg">Please view the full itinerary to see more days</p>
-                                                	<a href="<?php the_permalink(); ?>" target="_blank" class="btn btn-md btn-primary">View full itinerary</a>
-                                            	</div>
-                                        	</div>
-                                    	</div>
-                                    	<?php
-                                    	endif; 
-				    }
-                                    
+                                    if( ! empty( $days ) ) {
+                                        if (  $days > 7 ):
+                                        ?>
+                                        <div class="accordion-item">
+                                            <h6 class="accordion-header" id="flush-headingOne">
+                                                <button class="accordion-button collapsed mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseadditional" aria-expanded="false" aria-controls="flush-collapseadditional">
+                                                    <span class="fw-medium fs-lg lh-lg">Additional Days</span>
+                                                </button>
+                                            </h6>
+                                            <div id="flush-collapseadditional" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                                <hr>
+                                                <div class="accordion-body text-center accordion-item__additional-days">
+                                                    <p class="fs-lg fw-medium lh-lg">Please view the full itinerary to see more days</p>
+                                                    <a href="<?php the_permalink( $itinerary->ID ); ?>" target="_blank" class="btn btn-md btn-primary">View full itinerary</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                        endif; 
+                                    }
                                     ?>
-                                    
-                                    
                                 </div>
                             </div>
                         </div>
