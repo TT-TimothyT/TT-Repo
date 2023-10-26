@@ -95,31 +95,42 @@ if ($p_own_bike == 'yes') {
                 <div class="checkout-bikes__bike-grid-guests checkout-bikes__bike-grid d-flex flex-column flex-lg-row flex-nowrap flex-lg-wrap">
                     <?php
                     $primary_available_bike_html = '';
-                    $bikes_type_id_in = [];
-                    if ($available_bikes) {
-                        foreach ($available_bikes as $available_bike) {
-                            $bikeId = $available_bike['bikeId'];
-                            $bikeDescr = $available_bike['bikeDescr'];
-                            $bikeType = json_decode($available_bike['bikeType'], true);
-                            $bikeTypeId = $bikeType['id'];
-                            if (!in_array($bikeTypeId, $bikes_type_id_in) && $bikeTypeId) {
+                    $bikes_model_id_in           = [];
+                    if ( $available_bikes ) {
+                        foreach ( $available_bikes as $available_bike ) {
+                            $bikeId        = $available_bike['bikeId'];
+                            $bikeDescr     = $available_bike['bikeDescr'];
+                            $bikeType      = json_decode($available_bike['bikeType'], true);
+                            $bikeTypeId    = $bikeType['id'];
+                            $bikeModel     = json_decode($available_bike['bikeModel'], true);
+                            $bikeModelId   = $bikeModel['id'];
+                            $bikeModelName = $bikeModel['name'];
+                            if ( ! in_array( $bikeModelId, $bikes_model_id_in ) && $bikeModelId ) {
                                 $bikeTypeName = $bikeType['name'];
-                                $selected_p_bikeId = ($primary_bikeTypeId == $bikeTypeId ? 'checked' : '');
-                                $checkedClass = ($primary_bikeTypeId == $bikeTypeId ? 'bike-selected' : '');
-                                $pcheckedClassIcon = ($primary_bikeTypeId == $bikeTypeId ? 'checkout-bikes__selected-bike-icon' : 'checkout-bikes__select-bike-icon');
+                                $selected_p_bikeId = ($primary_bikeTypeId == $bikeModelId ? 'checked' : '');
+                                $checkedClass = ($primary_bikeTypeId == $bikeModelId ? 'bike-selected' : '');
+                                $pcheckedClassIcon = ($primary_bikeTypeId == $bikeModelId ? 'checkout-bikes__selected-bike-icon' : 'checkout-bikes__select-bike-icon');
                                 //$bike_post_id = tt_get_postid_by_meta_key_value('netsuite_bike_type_id', $bikeTypeId);
-                                $bike_post_id = 0; //temp
                                 $bike_post_name_arr = explode(' ', $bikeDescr);
                                 unset($bike_post_name_arr[0]);
                                 $bike_post_name = implode(' ', $bike_post_name_arr);
-                                $bike_image = get_template_directory_uri() . "/assets/images/bike-placehoder-image.png";
-                                if (has_post_thumbnail($bike_post_id)) {
-                                    $bike_image = get_the_post_thumbnail_url($bike_post_id, 'full');
+                                $posts = get_posts(
+                                    array(
+                                        'post_type' => 'bikes',
+                                        'title'     => $bikeModelName,
+                                    )
+                                );
+                                if ( ! empty( $posts ) && is_array( $posts ) ) {
+                                    $bike_post_id = $posts[0]->ID;
+                                    $bike_image_id = get_post_meta( $bike_post_id, 'bike_image', true );   
+                                    $bike_image = wp_get_attachment_image_url( $bike_image_id, 'medium' );
+                                } else {
+                                    $bike_image = get_template_directory_uri() . "/assets/images/bike-placehoder-image.png";
                                 }
                                 // if( $bike_post_id !== NULL && is_numeric($bike_post_id) ){
                                 //     $bike_post_name = get_the_title($bike_post_id);
                                 // }
-                                $bikeTypeInfo = tt_ns_get_bike_type_info($bikeTypeId);
+                                $bikeTypeInfo = tt_ns_get_bike_type_info($bikeModelId);
                                 $bikeUpgradeHtml = '';
                                 if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
                                     $bikeUpgradeHtml .= '<div class="checkout-bikes__price-upgrade d-flex ms-4">
@@ -127,20 +138,20 @@ if ($p_own_bike == 'yes') {
                                         <p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
                                     </div>';
                                 }
-                                $primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . '" data-selector="tt_bike_selection_primary" data-id="' . $bikeTypeId . '" data-guest-id="0">
-                                <input name="bike_gears[primary][bikeTypeId]" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeTypeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '>
+                                $primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . '" data-selector="tt_bike_selection_primary" data-id="' . $bikeModelId . '" data-guest-id="0">
+                                <input name="bike_gears[primary][bikeTypeId]" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeModelId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '>
                                         <div class="checkout-bikes__image d-flex justify-content-center align-content-center">
                                             <img src="' . $bike_image . '" alt="' . $bikeDescr . '">
                                             <span class="checkout-bikes__badge checkout-bikes__badge--ebike">' . $bikeTypeName . '</span>
                                         </div>
                                         <div class="checkout-bikes__title d-flex justify-content-around">
-                                            <p class="fw-medium fs-lg lh-lg">' . $bike_post_name . '</p>
+                                            <p class="fw-medium fs-lg lh-lg">' . $bikeModelName . '</p>
                                         <span class="radio-selection ' . $pcheckedClassIcon . '"></span>
                                     </div>
                                     ' . $bikeUpgradeHtml . '
                                 </div>';
                             }
-                            $bikes_type_id_in[] = $bikeTypeId;
+                            $bikes_model_id_in[] = $bikeModelId;
                         }
                         $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '>';
                     } else {
@@ -263,27 +274,37 @@ if ($p_own_bike == 'yes') {
                         <div class="checkout-bikes__bike-grid-guests checkout-bikes__bike-grid d-flex flex-column flex-lg-row flex-nowrap flex-lg-wrap">
                             <?php
                             $guest_available_bike_html = '';
-                            $bikes_type_id_in = [];
-                            if ($available_bikes) {
-                                foreach ($available_bikes as $available_bike) {
-                                    $bikeId = $available_bike['bikeId'];
-                                    $bikeDescr = $available_bike['bikeDescr'];
-                                    $bikeType = json_decode($available_bike['bikeType'], true);
-                                    $bikeTypeId = $bikeType['id'];
-                                    $selected_g_bikeId = ($bikeTypeId == $guest_bikeTypeId ? 'checked' : '');
-                                    $checkedClass = ($bikeTypeId == $guest_bikeTypeId ? 'bike-selected' : '');
-                                    $gcheckedClassIcon = ($bikeTypeId == $guest_bikeTypeId ? 'checkout-bikes__selected-bike-icon' : 'checkout-bikes__select-bike-icon');
-                                    if (!in_array($bikeTypeId, $bikes_type_id_in) && $bikeTypeId) {
+                            $bikes_model_id_in         = [];
+                            if ( $available_bikes ) {
+                                foreach ( $available_bikes as $available_bike ) {
+                                    $bikeId            = $available_bike['bikeId'];
+                                    $bikeDescr         = $available_bike['bikeDescr'];
+                                    $bikeType          = json_decode($available_bike['bikeType'], true);
+                                    $bikeTypeId        = $bikeType['id'];
+                                    $bikeModel         = json_decode($available_bike['bikeModel'], true);
+                                    $bikeModelId       = $bikeModel['id'];
+                                    $selected_g_bikeId = ( $bikeModelId == $guest_bikeTypeId ? 'checked' : '' );
+                                    $checkedClass      = ( $bikeModelId == $guest_bikeTypeId ? 'bike-selected' : '' );
+                                    $gcheckedClassIcon = ( $bikeModelId == $guest_bikeTypeId ? 'checkout-bikes__selected-bike-icon' : 'checkout-bikes__select-bike-icon' );
+                                    if ( ! in_array( $bikeModelId, $bikes_model_id_in ) && $bikeModelId ) {
                                         $bikeTypeName = $bikeType['name'];
                                         //$bike_post_id = tt_get_postid_by_meta_key_value('netsuite_bike_type_id', $bikeTypeId);
-                                        $bike_post_id = 0;
                                         $bike_post_name = $bikeDescr;
                                         $bike_post_name_arr = explode(' ', $bike_post_name);
                                         unset($bike_post_name_arr[0]);
                                         $bike_post_name = implode(' ', $bike_post_name_arr);
-                                        $bike_image = get_template_directory_uri() . "/assets/images/bike-placehoder-image.png";
-                                        if (has_post_thumbnail($bike_post_id)) {
-                                            $bike_image = get_the_post_thumbnail_url($bike_post_id, 'full');
+                                        $posts = get_posts(
+                                            array(
+                                                'post_type' => 'bikes',
+                                                'title'     => $bikeModelName,
+                                            )
+                                        );
+                                        if ( ! empty( $posts ) && is_array( $posts ) ) {
+                                            $bike_post_id = $posts[0]->ID;
+                                            $bike_image_id = get_post_meta( $bike_post_id, 'bike_image', true );   
+                                            $bike_image = wp_get_attachment_image_url( $bike_image_id, 'medium' );
+                                        } else {
+                                            $bike_image = get_template_directory_uri() . "/assets/images/bike-placehoder-image.png";
                                         }
                                         // if( $bike_post_id !== NULL && is_numeric($bike_post_id) ){
                                         //     $bike_post_name = get_the_title($bike_post_id);
@@ -296,22 +317,22 @@ if ($p_own_bike == 'yes') {
                                                 <p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
                                             </div>';
                                         }
-                                        $guest_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . ' tt_bike_selection_guest_' . $guest_num . '" data-selector="tt_bike_selection_guest_' . $guest_num . '" data-id="' . $bikeTypeId . '" data-guest-id="' . $guest_num . '">
-                                        <input id="tt_bike_selection_guest_' . $guest_num . $bikeTypeId . '" name="bike_gears[guests][' . $guest_num . '][bikeTypeId]" ' . $selected_g_bikeId . ' type="radio" value="' . $bikeTypeId . '" '.( $g_rider_level != 5 && $g_own_bike == 'yes' ? '' : $guest_required).'>
-                                        <label for="tt_bike_selection_guest_' . $guest_num . $bikeTypeId . '">
+                                        $guest_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . ' tt_bike_selection_guest_' . $guest_num . '" data-selector="tt_bike_selection_guest_' . $guest_num . '" data-id="' . $bikeModelId . '" data-guest-id="' . $guest_num . '">
+                                        <input id="tt_bike_selection_guest_' . $guest_num . $bikeModelId . '" name="bike_gears[guests][' . $guest_num . '][bikeTypeId]" ' . $selected_g_bikeId . ' type="radio" value="' . $bikeModelId . '" '.( $g_rider_level != 5 && $g_own_bike == 'yes' ? '' : $guest_required).'>
+                                        <label for="tt_bike_selection_guest_' . $guest_num . $bikeModelId . '">
                                             <div class="checkout-bikes__image d-flex justify-content-center align-content-center">
                                                 <img src="' . $bike_image . '" alt="' . $bikeDescr . '">
                                                 <span class="checkout-bikes__badge checkout-bikes__badge--ebike">' . $bikeTypeName . '</span>
                                             </div>
                                             <div class="checkout-bikes__title d-flex justify-content-around">
-                                                <p class="fw-medium fs-lg lh-lg">' . $bike_post_name . '</p>
+                                                <p class="fw-medium fs-lg lh-lg">' . $bikeModelName . '</p>
                                                 <div class="radio-selection ' . $gcheckedClassIcon . '"></div>
                                             </div>
                                             ' . $bikeUpgradeHtml . '
                                             </label>
                                         </div>';
                                     }
-                                    $bikes_type_id_in[] = $bikeTypeId;
+                                    $bikes_model_id_in[] = $bikeModelId;
                                 }
                                 $guest_available_bike_html .= '<input name="bike_gears[guests][' . $guest_num . '][bikeId]" type="hidden" value="' . $guest_bikeId . '" '.( $g_rider_level != 5 && $g_own_bike == 'yes' ? '' : $guest_required).'>';
                             } else {

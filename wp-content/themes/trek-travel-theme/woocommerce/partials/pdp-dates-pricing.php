@@ -41,9 +41,14 @@ if( $get_child_products ){
             $m_iter = 1;
             foreach($get_child_product as $month=>$get_child_product_data){
                 $currentMonth = date('m', strtotime(date('Y-m-d H:i:s')));
-                if ($month < $currentMonth) {
+
+                //Sorry, not using camel case for php vars :)
+                $current_year = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
+
+                if ( $month < $currentMonth && $year <= $current_year ) {
                     continue;
                 }
+
                 $my = $month.$year;
                 $monthInfo = trek_get_month_info($month);
                 $month_nav_desktop_btn_output .= '<button class="nav-link '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'-tab" data-bs-toggle="tab" data-bs-target="#nav-'.$my.'" type="button" role="tab" aria-controls="nav-'.$my.'" aria-selected="true">'.$monthInfo[$month][0].'</button>';

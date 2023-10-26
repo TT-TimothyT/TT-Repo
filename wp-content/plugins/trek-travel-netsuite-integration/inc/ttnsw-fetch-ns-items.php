@@ -54,26 +54,50 @@ function tt_admin_menu_page_cb()
     require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
     if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tt_wp_manual_sync_action' && isset($_REQUEST['type'])) {
         if ($_REQUEST['type'] == 'trip' && function_exists('tt_sync_ns_trips')) {
-            tt_sync_ns_trips();
+            if( $_REQUEST['year'] ) {
+                tt_sync_ns_trips($_REQUEST['year']);
+            } else {
+                tt_sync_ns_trips();
+            }
         }
         if ($_REQUEST['type'] == 'trip-details' && function_exists('tt_sync_ns_trip_details')) {
-            tt_sync_ns_trip_details();
+            if( $_REQUEST['year'] ) {
+                tt_sync_ns_trip_details( $_REQUEST['year'] );
+            } else {
+                tt_sync_ns_trip_details();
+            }
         }
         if ($_REQUEST['type'] == 'hotels' && function_exists('tt_sync_ns_trip_hotels')) {
-            tt_sync_ns_trip_hotels();
+            if( $_REQUEST['year'] ) {
+                tt_sync_ns_trip_hotels( $_REQUEST['year'] );
+            } else {
+                tt_sync_ns_trip_hotels();
+            }
         }
         if ($_REQUEST['type'] == 'bikes' && function_exists('tt_sync_ns_trip_bikes')) {
-            tt_sync_ns_trip_bikes();
+            if( $_REQUEST['year'] ) {
+                tt_sync_ns_trip_bikes( $_REQUEST['year'] );
+            } else {
+                tt_sync_ns_trip_bikes();
+            }
         }
         if ($_REQUEST['type'] == 'addons' && function_exists('tt_sync_ns_trip_addons')) {
-            tt_sync_ns_trip_addons();
+            if( $_REQUEST['year'] ) {
+                tt_sync_ns_trip_addons( $_REQUEST['year'] );
+            } else {
+                tt_sync_ns_trip_addons();
+            }
         }
         if ($_REQUEST['type'] == 'product-sync' && function_exists('tt_sync_wc_products_from_ns')) {
-            tt_sync_wc_products_from_ns();
+            if( $_REQUEST['year'] ) {
+                tt_sync_wc_products_from_ns( false, [], $_REQUEST['year'] );
+            } else {
+                tt_sync_wc_products_from_ns();
+            }
         }
         if ($_REQUEST['type'] == 'product-sync-all' && function_exists('tt_sync_wc_products_from_ns')) {
             tt_add_error_log('[Start]', ['type'=> 'Sync All Trips'], ['dateTime' => date('Y-m-d H:i:s')]);
-            as_schedule_single_action(time(), 'ns_trips_sync_to_wc_product', array( true ));
+            as_schedule_single_action(time(), 'ns_trips_sync_to_wc_product', array( true ) );
         }
         if ($_REQUEST['type'] == 'custom-items' && function_exists('tt_sync_custom_items')) {
             tt_sync_custom_items();
@@ -128,11 +152,21 @@ function tt_admin_menu_page_cb()
                         <option value="bikes">Bike</option>
                         <option value="hotels">Hotels</option>
                         <option value="addons">Addons</option>
-                        <option value="product-sync">Product SyncTo WC - [Last modified]</option>
+                        <option value="product-sync">Product SyncTo WC - [By Year]</option>
                         <option value="product-sync-all">Product SyncTo WC - [All]</option>
                         <option value="custom-items">Custom Items</option>
                         <option value="sql-alter">ALTER SQL(Booking table)</option>
                         <option value="ns-wc-booking">NS<>WC Booking Sync</option>
+                    </select>
+                    <select name="year" required>
+                        <option value="">Select Year</option>
+                        <?php
+                        $current_year = date('Y');
+                        for ( $i = 0; $i < 3; $i++ ) {
+                            $year = $current_year + $i;
+                            echo "<option value='{$year}'>{$year}</option>";
+                        }
+                        ?>
                     </select>
                     <input type="hidden" name="action" value="tt_wp_manual_sync_action">
                     <input type="submit" name="submit" value="Sync" class="button-primary">

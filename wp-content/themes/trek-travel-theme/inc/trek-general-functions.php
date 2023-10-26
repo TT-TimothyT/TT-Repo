@@ -2316,15 +2316,30 @@ if (!function_exists('tt_get_local_trip_ids')) {
  * @return  : Get all trips from local DB
  **/
 if (!function_exists('tt_get_local_trips')) {
-    function tt_get_local_trips($tt_details = false)
+    function tt_get_local_trips( $tt_details = false, $year = 2023 )
     {
         global $wpdb;
+        //Make sure $year is an integer
+        $year = intval( $year );
+        //Make sure $year is a 4-digit year
+        if ( strlen($year) != 4 ) {
+            $year = date( 'Y' );
+        }
+
+        //Get the last two digits of the year
+        $year_short = substr( $year, -2 );
+
+        //Turn the year into a string
+
+
         $table_name = $wpdb->prefix . 'netsuite_trips';
         $table_name_2 = $wpdb->prefix . 'netsuite_trip_detail';
         $sql = "SELECT * from {$table_name} as tt";
         if ($tt_details == true) {
             $sql .= " JOIN {$table_name_2} as tt_d ON tt.tripCode = tt_d.tripCode";
         }
+        $sql .= " WHERE tt.tripCode LIKE '" . $year_short . "%'";
+
         $results = $wpdb->get_results($sql);
         return $results;
     }
@@ -2778,7 +2793,7 @@ function tt_get_bikes_by_trip_info($tripId = '', $tripCode = '', $bikeTypeId = '
         foreach ($bikes_arr as $bike_info) {
             $bike_available = $bike_info['available'];
             $bikeSizeObj = json_decode($bike_info['bikeSize'], true);
-            $bikeTypeObj = json_decode($bike_info['bikeType'], true);
+            $bikeTypeObj = json_decode($bike_info['bikeModel'], true);
             $bike_size_id = $bikeSizeObj['id'];
             $bike_size_name = $bikeSizeObj['name'];
             $bike_type_id = $bikeTypeObj['id'];
@@ -2820,7 +2835,7 @@ function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId
         foreach ($bikes_arr as $bike_info) {
             $bike_available = $bike_info['available'];
             $bikeSizeObj = json_decode($bike_info['bikeSize'], true);
-            $bikeTypeObj = json_decode($bike_info['bikeType'], true);
+            $bikeTypeObj = json_decode($bike_info['bikeModel'], true);
             $bike_size_id = $bikeSizeObj['id'];
             $bike_size_name = $bikeSizeObj['name'];
             $bike_type_id = $bikeTypeObj['id'];
@@ -2856,7 +2871,7 @@ function tt_get_bike_id_by_args($tripId = '', $tripCode = '', $bikeTypeId = '', 
     if ($bikes_arr) {
         foreach ($bikes_arr as $bike_info) {
             $bikeSizeObj = json_decode($bike_info['bikeSize'], true);
-            $bikeTypeObj = json_decode($bike_info['bikeType'], true);
+            $bikeTypeObj = json_decode($bike_info['bikeModel'], true);
             $bike_size_id = $bikeSizeObj['id'];
             $bike_type_id = $bikeTypeObj['id'];
             if ($bike_type_id == $bikeTypeId && $bike_size_id ==  $bike_size) {

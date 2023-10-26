@@ -374,3 +374,38 @@ function ttnsw_enqueue_custom_admin_style() {
     }
 }
 add_action( 'admin_enqueue_scripts', 'ttnsw_enqueue_custom_admin_style' );
+
+function tt_update_bikes_table() {
+    global $wpdb;
+
+    if( $_GET['trekupdatebikestable'] == 'enable' && current_user_can( 'administrator' ) ) {
+
+        // Define the table name
+        $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+        $after_column_name = 'bikeType';
+
+        // Define the new column name and data type
+        $new_column_name = 'bikeModel';
+        $data_type = 'TEXT';
+
+        // Check if the column already exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $table_name LIKE '$new_column_name'");
+
+        if (empty($column_exists)) {
+            // Alter the table to add the new column
+            $wpdb->query("ALTER TABLE $table_name ADD $new_column_name $data_type AFTER $after_column_name");
+
+            // You can also update the new column with initial values if needed
+            $wpdb->query("UPDATE $table_name SET $new_column_name = 'NULL'");
+
+            echo '<div class="notice notice-success is-dismissible">';
+            echo '<h2>Updated current DB</h2>';
+            echo '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
+        } else {
+            echo 'There has been an issue :/';
+        }
+    }
+}
+
+add_action( 'admin_init', 'tt_update_bikes_table' );
