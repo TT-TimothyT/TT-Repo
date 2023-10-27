@@ -80,8 +80,8 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
     <div class="card checkout-summary__card">
         <h5 class="fw-semibold checkout-summary__title mb-3"><?php echo $product_name; ?></h5>
         <div class="checkout-summary__date d-flex">
-            <p class="fw-medium"><?php echo $start_date; ?></p>
-            <a href="<?php echo $parent_trip_link; ?>">Change date</a>
+            <!-- <p class="fw-medium"><?php echo $start_date; ?></p> -->
+            <!-- <a href="<?php echo $parent_trip_link; ?>">Change date</a> -->
         </div>
         <p class="mb-1">Trip pricing is subject to change. Book your trip now to lock in your price!</p>
         <hr>
