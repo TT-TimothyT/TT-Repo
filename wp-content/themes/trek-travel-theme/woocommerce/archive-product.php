@@ -224,7 +224,7 @@ $emptyBlockContent .= '</div></div>';
                                 <# data.gallery_images.forEach(function (item, index) { #>
                                 <div class="carousel-item h-100 <# if ( index == 0 ) { #> active <# } #>">
                                     <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--thumbnail-link" onclick="selectItemAnalytics({{ data.post_id }})">
-                                        <img src="{{ item.replace( '-300x300.jpg', '.jpg' ) }}" alt="{{ data.post_title }}" title="{{ data.post_title }}" class=" d-block w-100" />
+                                        <img src="{{ item.replace( '-300x300', '' ) }}" alt="{{ data.post_title }}" title="{{ data.post_title }}" class=" d-block w-100" />
                                     </a>
                                 </div>
                                 <# }) #>
