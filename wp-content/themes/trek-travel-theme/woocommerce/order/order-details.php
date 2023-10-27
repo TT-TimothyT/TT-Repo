@@ -221,7 +221,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<p class="mb-0 fw-normal order-details__text">Upgrade <small>x<?php echo $tt_get_upgrade_qty; ?></small></p>
 							<?php } ?>
 							<?php if($singleSupplementQty > 0) { ?>
-							<p class="mb-0 fw-normal order-details__text">Single Suppliment <small>x<?php echo $singleSupplementQty; ?></small></p>
+							<p class="mb-0 fw-normal order-details__text">Single Supplement <small>x<?php echo $singleSupplementQty; ?></small></p>
 							<?php } ?>
 							<?php if($insuredPerson > 0 && $tt_insurance_total_charges > 0 ) { ?>
 							<p class="mb-0 fw-normal order-details__text">Travel Protection <small>x<?php echo $insuredPerson; ?></small></p>
@@ -377,7 +377,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 					if($singleSupplementQty > 0) { 
 					 ?>
 					 productsArr.push({
-							'name': "single suppliment fee", // Please remove special characters
+							'name': "single supplement fee", // Please remove special characters
 						'id': '<?php echo $item['product_id'] ?>', // Parent ID
 						'price': '<?php echo $supplementFees ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
 						'brand': '', //

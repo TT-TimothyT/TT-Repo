@@ -168,7 +168,7 @@ $products = $order->get_items();
 foreach( $products as $product ) {
     //Get the product name
     $product_name = $product->get_name();
-    if( $product_name == "Single Suppliment Fees" ) {
+    if( $product_name == "Single Supplement Fees" ) {
         // Get product quantity
         $product_quantity = $product->get_quantity();
         $supplementFees = $supplementFees * $product_quantity;

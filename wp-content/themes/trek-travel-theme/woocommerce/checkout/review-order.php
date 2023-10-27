@@ -241,14 +241,14 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
                 </div>
             <?php endif; ?>
             <p class="fs-sm lh-sm fw-normal checkout-summary__p mt-2">All payment amounts are processed in $USD. Please check your exchange rates if booking outside of the U.S.</p>
-            <div class="col-md px-0 d-flex align-items-center guest-checkout__checkbox-gap mb-5">
+            <div class="col-md px-0 d-flex align-items-center guest-checkout__checkbox-gap mb-5 d-none">
                 <input type="checkbox" class="guest-checkout__checkbox" value="1" required="required" name="tt_terms" <?php if ($tt_terms == 1) echo 'checked'; ?>>
                 <label class="w-75">I have read and agree to Trek Travel’s Terms and Conditions and Cancellation Policy</label>
             </div>
-            <?php if ($trip_booking_limit['remaining']  >= $no_of_guests) {?>
-                <button class="btn btn-lg btn-primary rounded-1 w-100 mt-1 mb-3 checkout-summary__button" <?php if ($tt_terms != 1) echo 'disabled'; ?>>Pay now</button>
-            <?php } ?>
-            <div class="mt-5 text-center"><a href="<?php echo TT_CAN_POLICY_PAGE; ?>">View Cancellation Policy</a></div>
+            <?php if ( $trip_booking_limit['remaining']  >= $no_of_guests ) : ?>
+                <button class="btn btn-lg btn-primary rounded-1 w-100 mt-1 mb-3 checkout-summary__button d-none" <?php if ($tt_terms != 1) echo 'disabled'; ?>>Pay now</button>
+            <?php endif; ?>
+            <div class="mt-5 text-center"><a href="<?php echo TT_CAN_POLICY_PAGE; ?>" target="_blank">View Cancellation Policy</a></div>
         </div>
     </div>
 </div>

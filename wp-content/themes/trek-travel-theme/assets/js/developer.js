@@ -3025,3 +3025,24 @@ function checkoutShippingAnalytics() {
       }
     })
 }
+
+function getURLParameter(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
+window.addEventListener("popstate", function () {
+  const step = getURLParameter("step");
+
+  if (step !== null) {
+    if (step === '4') {
+      var button = document.querySelector('.checkout-summary__button');
+      var checkbox = document.querySelector('.guest-checkout__checkbox-gap');
+
+
+      // Remove the 'd-none' class
+      button.classList.remove('d-none');
+      checkbox.classList.remove('d-none');
+    }
+  }
+});
