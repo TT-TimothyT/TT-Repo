@@ -1041,9 +1041,6 @@ jQuery(document).ready(function () {
       jQuery('.checkout-summary').addClass('checkout-summary__toggle');
     }
   });
-  jQuery('.promo').on('click', function () {
-    jQuery('.promo-form').toggleClass('d-none');
-  });
 
   jQuery('.book-trip-cta a').on('click', function () {
     dataLayer.push({
@@ -1289,8 +1286,12 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
           jQuery('#tt-review-order').html(response.html);
         }
         if (response.status == false && dataString.type == 'add' ) {
-          // jQuery(".promo-input").val(coupon_code)
-          jQuery(".invalid-code").css("display", "block")
+          console.log( coupon_code );
+          
+         if ( coupon_code !== '') {
+            // jQuery(".promo-input").val(coupon_code)
+            jQuery(".invalid-code").css("display", "block")
+          }
         }
         jQuery("#currency_switcher").trigger("change")
         if (parseInt(step) != 4) {
@@ -3025,6 +3026,10 @@ function checkoutShippingAnalytics() {
       }
     })
 }
+
+jQuery(document).on('click', '.promo', function () {
+    jQuery('.promo-form').toggleClass('d-none');
+});
 
 function getURLParameter(name) {
   const urlParams = new URLSearchParams(window.location.search);
