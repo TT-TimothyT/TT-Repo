@@ -193,7 +193,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 												endif; ?>">
 
 	<div class="row">
-		<div class="col-2">
+		<!-- <div class="col-2">
 			<a class="nav-link" href="tel:8864648735" onclick="dataLayer.push({'event': 'click_to_call'});">
 				<i class="bi bi-telephone"></i>
 			</a>
@@ -202,13 +202,13 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 			<a class="nav-link" href="" id="mobile-header-calendar">
 				<i class="bi bi-calendar"></i>
 			</a>
-		</div>
-		<div class="col-4">
+		</div> -->
+		<div class="col-8 mobile-logo">
 			<a class="navbar-brand" href="<?php echo esc_url(home_url()); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home">
 				<img class="navbar-brand__logo" src="<?php echo get_template_directory_uri(); ?>/assets/images/mobile_logo.svg" alt="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" />
 			</a>
 		</div>
-		<div class="col-2">
+		<div class="col-2 search-icon">
 			<?php
 			// Search and Account ////////////////////
 			?>

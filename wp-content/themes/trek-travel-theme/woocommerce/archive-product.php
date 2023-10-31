@@ -149,10 +149,10 @@ $emptyBlockContent .= '</div></div>';
                             <div class="modal-footer">
                                 <div class="container">
                                     <div class="row mx-0 align-items-center">
-                                        <div class="col-3">
+                                        <div class="col-3 clear-all-btn">
                                             <span class="modal-a" id="clear-refinements"></span>
                                         </div>
-                                        <div class="col d-lg-flex justify-content-lg-end align-items-lg-baseline">
+                                        <div class="col d-lg-flex justify-content-lg-end align-items-lg-baseline apply-filters-info">
                                             <button type="button" class="btn btn-secondary d-none" data-bs-dismiss="modal">Close</button>
                                             <span class="filter-results-number" id="algolia-stats"></span>
                                             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Apply filters</button>
@@ -353,7 +353,7 @@ $emptyBlockContent .= '</div></div>';
 
 
 
-                    <div class="col-md-6 mobile-hideme">
+                    <div class="col-lg-6 col-md-5 mobile-hideme">
                         <div class="card-body ms-md-4 pt-0">
                             <# if ( data['Badge'] ) { #>
                             <span class="badge bg-dark">{{ data['Badge'] }}</span>
@@ -427,7 +427,7 @@ $emptyBlockContent .= '</div></div>';
 
                     </div>
 
-                    <div class="col-md-2 position-relative mobile-hideme">
+                    <div class="col-lg-2 col-md-3 position-relative mobile-hideme">
                         <# if ( data['Start Price'] ) { #>
                         <div class="card-body mt-5 pricing">
                             <small class="text-muted">Starting from</small>

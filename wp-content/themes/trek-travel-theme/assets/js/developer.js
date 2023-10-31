@@ -1052,6 +1052,30 @@ jQuery(window).load(function () {
   tripCapacityValidation(true);
   prebookingChecklistValidate();
   validateGuestSelectionAdds();
+  jQuery('input[name="trek_destination"]').on('click', function() {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      jQuery('header').css('z-index','0');
+      jQuery('.destination-option').css('display', 'flex');
+      jQuery('body').css('overflow','hidden');
+    } else {
+      jQuery('.destination-option').fadeToggle();
+      jQuery('body').css('overflow','scroll');
+    }
+  })
+
+  jQuery('.destination-option .close-popup').on('click', function() {
+    jQuery('.destination-option').fadeOut();
+    jQuery('header').css('z-index','1020');
+    jQuery('body').css('overflow','scroll');
+  })
+
+  jQuery('.destination-option .option').on('click', function() {
+    jQuery('.mobile-datepicker button.close-popup').removeClass('disabled');
+    var selected_destination = jQuery(this).find('.category-name').text();
+    jQuery('#trip-finder-destination .placeholder .selected-destination').addClass('active');
+    jQuery('#trip-finder-destination .placeholder .placeholder-text').addClass('active');
+    jQuery('#trip-finder-destination .placeholder .selected-destination').text(selected_destination);
+  })
   jQuery('input[name="trek_destination"]').change(function () {
     var destination = jQuery('input[name="trek_destination"]:checked').attr('id');
     jQuery('.trek-trip-finder-form').attr('action', `${destination}`);
@@ -1478,6 +1502,8 @@ jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu a.mega-menu-link', fun
     'event': 'navigation_click',
     'navigation_selection': nav_selection.toLowerCase(), //menu category|menu subcategory|menu selection
   });
+
+  jQuery('.mega-menu-item.mega-toggle-on').first().children('ul').show();
 })
 function handleProgressBar(currentStep) {
   if (currentStep) {
@@ -2211,7 +2237,7 @@ jQuery('body').on('click', function () {
   var selector = jQuery('nav.mobile-nav div#navbar button.mega-toggle-animated')
   var isExpanded = jQuery(selector).attr("aria-expanded")
   if (isExpanded == "true") {
-    jQuery(".mobile-menu-toggle").addClass("position-absolute w-100 p-0")
+    // jQuery(".mobile-menu-toggle").addClass("position-absolute w-100 p-0")
     jQuery("nav.mobile-nav div#navbar").addClass("w-100")
     if (jQuery("header.header-main").hasClass("add-shadow")) {
       var screenHeight = jQuery(window).outerHeight() - 45
@@ -2222,7 +2248,7 @@ jQuery('body').on('click', function () {
     // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#000")
   }
   else{
-    jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
+    // jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
     jQuery("nav.mobile-nav div#navbar").removeClass("w-100")
     resetMobileMenu()
     // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#fff")
@@ -2847,12 +2873,41 @@ jQuery("body").on("keyup", ".promo-input", function(e){
   }
 });
 
+jQuery('.mega-toggle-blocks-left').on('click', function(e) {
+  if(jQuery('.mega-toggle-on').length == 1 || jQuery('.mega-toggle-on').length == 0 ) {
+    jQuery('.mobile-nav #mega-menu-main-menu').children('li').removeClass('d-none');
+    jQuery('.mega-menu-toggle.mega-menu-open').removeClass('active');
+    jQuery('.mega-menu-open .mega-toggle-blocks-center').hide();
+  } else {
+    var menuTitle = jQuery('.mega-menu-item.mega-toggle-on').first().children('a').text();
+    jQuery('.mega-toggle-blocks-center').text(menuTitle);
+    jQuery('.mega-menu-toggle.mega-menu-open').addClass('active');
+    jQuery('.mega-menu-open .mega-toggle-blocks-center').show();
+  }
+
+  var LastOpenMenu = jQuery('.mega-toggle-on').last();
+  LastOpenMenu.removeClass('mega-toggle-on');
+  LastOpenMenu.children('ul').hide();
+  LastOpenMenu.children('a').show();
+  LastOpenMenu.parent().parent().siblings('li').removeClass('d-none');
+  e.preventDefault();
+  e.stopPropagation();
+
+  // i finished with Mobile UX menu, trip finder menu, mburger menu on tablet and product price. Tomorrow i will finish the mobile filters.
+})
+
 jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu li.mega-menu-item a', function (e) {
   jQuery(".mega-toggle-blocks-center").text(jQuery(this).text())
   jQuery(this).parent().siblings().addClass("d-none");
   jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 1)
   jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").show()
-  jQuery(this).hide()
+  jQuery(this).hide();
+
+  jQuery('.mega-menu-toggle.mega-menu-open').addClass('active');
+  jQuery('.mega-menu-open .mega-toggle-blocks-center').show();
+  var backIconCode = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 19L8 12L15 5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var backIcon = "data:image/svg+xml," + encodeURIComponent(backIconCode);
+  jQuery(".mega-toggle-blocks-left").css('background-image', 'url(' + backIcon + ')');
 });
 
 jQuery("nav #mega-menu-wrap-main-menu li.mega-menu-item a .mega-indicator").on("click", function() { 
@@ -2879,7 +2934,7 @@ jQuery('nav #mega-menu-wrap-main-menu .mega-category-sub-menu ul.mega-sub-menu l
   jQuery(this).parent().hide()
 });
 
-jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon', function (e) {
+jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left ', function (e) {
   var level = jQuery(this).attr("level")
   if (level == 1) {
     jQuery("#mega-menu-wrap-main-menu li.mega-menu-item").removeClass("d-none mega-toggle-on")
@@ -2887,7 +2942,9 @@ jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-toggle-blocks-le
     jQuery("#mega-menu-wrap-main-menu li.mega-menu-item").find("a").show()
     jQuery(this).attr("level", '')
     jQuery(this).hide()
-    jQuery(".mega-toggle-blocks-center").text('')
+    jQuery(".mega-toggle-blocks-center").text('');
+    jQuery(".mega-toggle-blocks-left").css('background-image', 'none');
+    jQuery('.mega-menu-toggle.mega-menu-open').removeClass('active');
   }
   if (level == 2) {
     jQuery("#mega-menu-wrap-main-menu .mega-category-sub-menu").removeClass("d-none mega-toggle-on")
@@ -2899,6 +2956,19 @@ jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-toggle-blocks-le
   }
 })
 
+
+//Header mobile select first element with class hide-on-desktop
+jQuery( document ).ready(function() {
+  jQuery('.mega-menu-toggle').on('click', function() {
+  if(jQuery(this).hasClass('mega-menu-open')) {
+    jQuery('.search-icon').show();
+  } else {
+    jQuery('.search-icon').hide();
+  }
+ })
+	jQuery('.mobile-menu-toggle ul#mega-menu-main-menu > .mega-hide-on-desktop:first').addClass('first-gray-elem');
+});
+
 function resetMobileMenu(){
   jQuery("#mega-menu-wrap-main-menu li.mega-menu-item").removeClass("d-none mega-toggle-on")
   jQuery("#mega-menu-wrap-main-menu li.mega-menu-item").find("a").attr("aria-expanded", "false")
@@ -2908,7 +2978,9 @@ function resetMobileMenu(){
   jQuery("#mega-menu-wrap-main-menu li.mega-menu-item").find("a").show()
   jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").attr("level", '')
   jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").hide()
-  jQuery(".mega-toggle-blocks-center").text('')
+  jQuery(".mega-toggle-blocks-center").text('');
+  jQuery(".mega-toggle-blocks-left").css('background-image', 'none');
+  jQuery('.mega-menu-toggle.mega-menu-open').removeClass('active');
 }
 
 jQuery('body').on('shown.bs.modal', '#globalSearchModal', function () {

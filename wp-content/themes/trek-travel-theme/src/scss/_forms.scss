@@ -395,11 +395,219 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear {
         position: absolute;
         z-index: 4;
         right: 1rem;
-        top: 0.5rem;
+        top: 1rem;
         color: $black;
     }
     .bi-chevron-up{
         display: none;
+    }
+}
+
+#trip-finder-destination {
+    width: 310px;
+
+    .input-group {
+        border-radius: 4px !important;
+        border: 1px solid #B2B3B6 !important;
+
+        .placeholder {
+            padding: 12px 16px;
+            color: #666;
+
+            .placeholder-text.active {
+                position: absolute;
+                top: 4px;
+                color: #666;
+                font-size: 12px;
+                line-height: 16px;
+            }
+
+            .selected-destination {
+                display: none;
+                &.active {
+                    top: 8px;
+                    position: relative;
+                    display: inline-block;
+                }
+            }
+        }
+
+        & > div {
+            overflow: visible;
+
+            & > .destination-option {
+                display: none;
+                z-index: 999;
+                position: absolute;
+                width: 308px;
+                top: 100%;
+                margin-top: 12px;
+                border-radius: 4px;
+                border: 1px solid #E5E5E5;
+                background: #FFF;
+                box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.05);
+                padding: 18px;
+
+                @media screen and (max-width: 767px) {
+                    position: fixed;
+                    top: 0;
+                    margin-top: 0;
+                    width: 100%;
+                    left: 0;
+                    // display: flex;
+                    height: 100vh;
+                    flex-wrap: wrap;
+                    gap: 2%;
+                    padding: 18px 0;
+                    justify-content: center;
+                    align-content: space-between;
+                    // align-content: center;
+                }
+
+                .header-popup,
+                .footer-popup {
+                    display: none;
+
+                    @media screen and (max-width: 767px) {
+                        display: block;
+                    }
+                }
+
+                .header-popup {
+                    border-bottom: 1px solid #E5E5E5;
+                    width: 100%;
+                    height: fit-content;
+                    margin-bottom: 6px;
+                    h4 {
+                        color: #000;
+                        font-size: 18px;
+                        font-weight: 500;
+                        line-height: 28px;
+                        margin-bottom: 12px;
+                        & > span {
+                            position: absolute;
+                            right: 20px;
+                            i::before {
+                                font-size: 28px;
+                            }
+                        }
+                    }
+                }
+
+                .footer-popup {
+                    border-top: 1px solid #E5E5E5;
+                    width: 100%;
+                    text-align: right;
+                    padding: 20px 24px;
+                    button {
+                        border-radius: 4px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        padding: 8px 16px;
+                        background: #000000;
+                        color: rgb(255, 255, 255);
+                        pointer-events: all;
+                        
+                        &.disabled {
+                            background: #E5E5E5;
+                            color: #666;
+                            pointer-events: none;
+                        }
+                    }
+                }
+
+                .option {
+                    position: relative !important;
+
+                    @media screen and (max-width: 767px) {
+                        width: 45%;
+                    }
+                    .title {
+                        color: #666;
+                        font-size: 14px;
+                        font-weight: 500;
+                        gap: 12px;
+                        transition: all ease 0.3s;
+
+                        @media screen and (max-width: 767px) {
+                            flex-direction: column;
+                        }
+
+                        .category-name {
+                            @media screen and (max-width: 767px) { 
+                                color: #000;
+                                text-align: center;
+                                line-height: 20px;
+                            }
+                        }
+
+                        span:not(.category-name) {
+                            border: 1px solid transparent;
+                            transition: all ease 0.3s;
+                            width: 48px;
+                            height: 48px;
+                            margin: 0 !important;
+
+                            @media screen and (max-width: 767px) {
+                                width: 158px;
+                                height: 158px;
+                                img {
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                }
+                            }
+                        }
+                        &:hover {
+                            color: #000000;
+
+                            span:not(.category-name) {
+                                border: 1px solid black;
+                               
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#trip-finder-daterange {
+    width: 310px;
+
+    .input-group {
+        border-radius: 4px !important;
+        border: 1px solid #B2B3B6 !important;
+
+        #home-daterange {
+            &.active {
+                padding-bottom: 4px;
+                padding-left: 4px;
+                padding-top: 20px;
+            }
+        }
+        .dates-placeholder-text {
+            display: none;
+            top: 8px;
+            color: #666;
+            font-size: 12px;
+            line-height: 16px;
+            padding: 0;
+            z-index: 999;
+            left: 52px;
+
+            &.active {
+                display: block;
+                position: absolute;
+                
+            }
+        }
+
+        & > span,
+        & > input {
+            padding: 12px 16px;
+        }
     }
 }
 

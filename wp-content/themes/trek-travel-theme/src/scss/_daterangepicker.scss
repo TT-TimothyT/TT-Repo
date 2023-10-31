@@ -1,5 +1,106 @@
+.modal-footer {
+    button {
+        @media screen and (max-width: 768px) {
+            background: #E5E5E5;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+        }
+    }
+}
+
 .daterangepicker{
-    
+    border-radius: 4px;
+    border: 1px solid #E5E5E5;
+    background: #FFF;
+    box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.05);
+    margin-top: 13px;
+    margin-left: -38px;
+    padding: 24px 18px 0;
+
+    @media screen and (max-width: 767px) {
+        margin-left: 0px;
+        box-shadow: none;
+        top: 0;
+    }
+
+    &::after,
+    &::before {
+        display: none;
+    }
+
+    .calendar {
+        max-width: 280px;
+        width: 280px;
+        @media screen and (max-width: 767px) {
+            margin: 0;
+        }
+        .calendar-table {
+            margin: 0;
+            padding: 0;
+            border: none;
+
+            @media screen and (max-width: 768px) {
+                max-width: 300px;
+                margin: auto;
+            }
+
+            table {
+                thead {
+                    tr:first-child {
+                        th {
+                            padding-bottom: 16px;
+                        }
+                    }
+                }
+                tbody {
+                    td {
+                        padding-top: 5px;
+                        padding-bottom: 5px;
+
+                        @media screen and (max-width: 768px) {
+                            padding-top: 8px;
+                            padding-bottom: 8px;
+                        }
+
+                        &.off {
+                            color: #C6C6C6;
+                            text-decoration-line: line-through;
+                            
+                            &.in-range {
+                                background-color: #f4f4f4;
+                                
+                            }
+                        }
+                        
+                        &.active:not(.end-date) {
+                            border-radius: 100%;
+                            box-shadow: 16px 0px 0px 0px rgba(244,244,244,1);
+                        }
+                        &.in-range {
+                            box-shadow: 28px 0px 0px 0px rgba(244,244,244,1);
+                            &:last-of-type {
+                                box-shadow: none;
+                            }
+                            &:hover {
+                                background-color: white;
+                            }
+                        }
+                        &.end-date {
+                            box-shadow: none;
+                            border-radius: 100%;
+                        }
+
+                        &:hover {
+                            box-shadow: none !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     table {
         font-family: 'Roboto';
         border-collapse: inherit;
@@ -50,4 +151,8 @@
               display: none !important;
             }
           }
+    }
+
+    .mobile-datepicker {
+        z-index: 999;
     }

@@ -6596,6 +6596,10 @@ progress {
     display: none !important;
   }
 }
+body {
+  font-family: "Roboto";
+}
+
 .lead {
   font-size: 1.25rem;
   font-weight: 300;
@@ -7448,6 +7452,10 @@ h5, .h5 {
   --bs-btn-padding-x: 0.25rem;
   --bs-btn-font-size: 0.875rem;
   --bs-btn-border-radius: 0.25rem;
+}
+
+.button-border-after:after {
+  content: "|";
 }
 
 .row {
@@ -9645,11 +9653,200 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
   position: absolute;
   z-index: 4;
   right: 1rem;
-  top: 0.5rem;
+  top: 1rem;
   color: #000;
 }
 #trip-finder-daterange .bi-chevron-up {
   display: none;
+}
+
+#trip-finder-destination {
+  width: 310px;
+}
+#trip-finder-destination .input-group {
+  border-radius: 4px !important;
+  border: 1px solid #B2B3B6 !important;
+}
+#trip-finder-destination .input-group .placeholder {
+  padding: 12px 16px;
+  color: #666;
+}
+#trip-finder-destination .input-group .placeholder .placeholder-text.active {
+  position: absolute;
+  top: 4px;
+  color: #666;
+  font-size: 12px;
+  line-height: 16px;
+}
+#trip-finder-destination .input-group .placeholder .selected-destination {
+  display: none;
+}
+#trip-finder-destination .input-group .placeholder .selected-destination.active {
+  top: 8px;
+  position: relative;
+  display: inline-block;
+}
+#trip-finder-destination .input-group > div {
+  overflow: visible;
+}
+#trip-finder-destination .input-group > div > .destination-option {
+  display: none;
+  z-index: 999;
+  position: absolute;
+  width: 308px;
+  top: 100%;
+  margin-top: 12px;
+  border-radius: 4px;
+  border: 1px solid #E5E5E5;
+  background: #FFF;
+  box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.05);
+  padding: 18px;
+}
+@media screen and (max-width: 767px) {
+  #trip-finder-destination .input-group > div > .destination-option {
+    position: fixed;
+    top: 0;
+    margin-top: 0;
+    width: 100%;
+    left: 0;
+    height: 100vh;
+    flex-wrap: wrap;
+    gap: 2%;
+    padding: 18px 0;
+    justify-content: center;
+    align-content: space-between;
+  }
+}
+#trip-finder-destination .input-group > div > .destination-option .header-popup,
+#trip-finder-destination .input-group > div > .destination-option .footer-popup {
+  display: none;
+}
+@media screen and (max-width: 767px) {
+  #trip-finder-destination .input-group > div > .destination-option .header-popup,
+#trip-finder-destination .input-group > div > .destination-option .footer-popup {
+    display: block;
+  }
+}
+#trip-finder-destination .input-group > div > .destination-option .header-popup {
+  border-bottom: 1px solid #E5E5E5;
+  width: 100%;
+  height: fit-content;
+  margin-bottom: 6px;
+}
+#trip-finder-destination .input-group > div > .destination-option .header-popup h4, #trip-finder-destination .input-group > div > .destination-option .header-popup .h4 {
+  color: #000;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+  margin-bottom: 12px;
+}
+#trip-finder-destination .input-group > div > .destination-option .header-popup h4 > span, #trip-finder-destination .input-group > div > .destination-option .header-popup .h4 > span {
+  position: absolute;
+  right: 20px;
+}
+#trip-finder-destination .input-group > div > .destination-option .header-popup h4 > span i::before, #trip-finder-destination .input-group > div > .destination-option .header-popup .h4 > span i::before {
+  font-size: 28px;
+}
+#trip-finder-destination .input-group > div > .destination-option .footer-popup {
+  border-top: 1px solid #E5E5E5;
+  width: 100%;
+  text-align: right;
+  padding: 20px 24px;
+}
+#trip-finder-destination .input-group > div > .destination-option .footer-popup button {
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  background: #000000;
+  color: rgb(255, 255, 255);
+  pointer-events: all;
+}
+#trip-finder-destination .input-group > div > .destination-option .footer-popup button.disabled {
+  background: #E5E5E5;
+  color: #666;
+  pointer-events: none;
+}
+#trip-finder-destination .input-group > div > .destination-option .option {
+  position: relative !important;
+}
+@media screen and (max-width: 767px) {
+  #trip-finder-destination .input-group > div > .destination-option .option {
+    width: 45%;
+  }
+}
+#trip-finder-destination .input-group > div > .destination-option .option .title {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 12px;
+  transition: all ease 0.3s;
+}
+@media screen and (max-width: 767px) {
+  #trip-finder-destination .input-group > div > .destination-option .option .title {
+    flex-direction: column;
+  }
+}
+@media screen and (max-width: 767px) {
+  #trip-finder-destination .input-group > div > .destination-option .option .title .category-name {
+    color: #000;
+    text-align: center;
+    line-height: 20px;
+  }
+}
+#trip-finder-destination .input-group > div > .destination-option .option .title span:not(.category-name) {
+  border: 1px solid transparent;
+  transition: all ease 0.3s;
+  width: 48px;
+  height: 48px;
+  margin: 0 !important;
+}
+@media screen and (max-width: 767px) {
+  #trip-finder-destination .input-group > div > .destination-option .option .title span:not(.category-name) {
+    width: 158px;
+    height: 158px;
+  }
+  #trip-finder-destination .input-group > div > .destination-option .option .title span:not(.category-name) img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+#trip-finder-destination .input-group > div > .destination-option .option .title:hover {
+  color: #000000;
+}
+#trip-finder-destination .input-group > div > .destination-option .option .title:hover span:not(.category-name) {
+  border: 1px solid black;
+}
+
+#trip-finder-daterange {
+  width: 310px;
+}
+#trip-finder-daterange .input-group {
+  border-radius: 4px !important;
+  border: 1px solid #B2B3B6 !important;
+}
+#trip-finder-daterange .input-group #home-daterange.active {
+  padding-bottom: 4px;
+  padding-left: 4px;
+  padding-top: 20px;
+}
+#trip-finder-daterange .input-group .dates-placeholder-text {
+  display: none;
+  top: 8px;
+  color: #666;
+  font-size: 12px;
+  line-height: 16px;
+  padding: 0;
+  z-index: 999;
+  left: 52px;
+}
+#trip-finder-daterange .input-group .dates-placeholder-text.active {
+  display: block;
+  position: absolute;
+}
+#trip-finder-daterange .input-group > span, #trip-finder-daterange .input-group > input {
+  padding: 12px 16px;
 }
 
 #home-daterange {
@@ -9789,6 +9986,40 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
 @media only screen and (min-width: 769px) {
   #mega-menu-wrap-main-menu #mega-menu-main-menu > li.mega-menu-item > a.mega-menu-link:hover {
     text-shadow: 0 0.015em #101010, 0 -0.015em #101010, 0.01em 0 #101010, -0.01em 0 #101010;
+  }
+  #mega-menu-wrap-main-menu #mega-menu-main-menu .mega-sub-menu .mega-sub-menu .mega-sub-menu > li > a > .mega-indicator {
+    display: none !important;
+  }
+  #mega-menu-wrap-main-menu #mega-menu-main-menu .mega-sub-menu .mega-sub-menu .mega-sub-menu .mega-sub-menu {
+    display: block !important;
+  }
+  #mega-menu-wrap-main-menu #mega-menu-main-menu > li > a {
+    display: flex !important;
+  }
+}
+@media (max-width: 992px) and (min-width: 768px) {
+  #mega-menu-wrap-main-menu #mega-menu-main-menu > li > .mega-sub-menu > li > .mega-sub-menu > li > .mega-sub-menu > li.mega-4-columns > .mega-sub-menu > li {
+    width: 50% !important;
+  }
+  #mega-menu-wrap-main-menu #mega-menu-main-menu li.mega-menu-item.mega-menu-megamenu ul.mega-sub-menu li.mega-2-columns > ul.mega-sub-menu > li.mega-menu-item {
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 769px) {
+  #mega-menu-wrap-main-menu #mega-menu-main-menu > li > .mega-sub-menu {
+    padding: 0 20px !important;
+    border: none !important;
+  }
+  #mega-menu-wrap-main-menu #mega-menu-main-menu > li > .mega-sub-menu > li {
+    padding-top: 0 !important;
+    border: none;
+  }
+  #mega-menu-wrap-main-menu #mega-menu-main-menu > li > .mega-sub-menu > li a {
+    font-weight: normal !important;
+  }
+  #mega-menu-wrap-main-menu #mega-menu-main-menu > li > .mega-sub-menu > li > ul a {
+    padding: 0;
+    padding-bottom: 16px;
   }
 }
 .navbar {
@@ -10731,6 +10962,195 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
   top: 50% !important;
 }
 
+#filterModal .modal-content {
+  height: 93vh;
+  overflow: scroll;
+}
+#filterModal .modal-header .modal-title {
+  color: #000 !important;
+  font-size: 18px !important;
+  line-height: 28px;
+  padding-top: 18px;
+  position: relative;
+  padding-top: 0;
+}
+#filterModal .modal-header .btn-close {
+  padding-top: 0;
+  z-index: 999;
+  pointer-events: all;
+  cursor: pointer;
+  position: absolute;
+  right: 32px;
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-header {
+    padding: 9px 18px;
+  }
+}
+#filterModal .modal-body {
+  padding-bottom: 70px;
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-body {
+    width: 95%;
+    padding: 32px 11px 56px;
+  }
+}
+#filterModal .modal-body h5, #filterModal .modal-body .h5 {
+  color: #000;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+  margin-bottom: 20px;
+}
+@media screen and (max-width: 768px) {
+  #filterModal .modal-body h5, #filterModal .modal-body .h5 {
+    font-size: 16px;
+  }
+}
+#filterModal .modal-body #calendarTrigger {
+  justify-content: center;
+}
+#filterModal .modal-body #calendarTrigger .daterangepicker {
+  margin-left: 0;
+  box-shadow: none;
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-body #calendarTrigger .daterangepicker {
+    padding: 0px;
+    margin: 0;
+    padding-top: 0;
+  }
+}
+#filterModal .modal-body #calendarTrigger .daterangepicker .calendar {
+  width: 49% !important;
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-body #calendarTrigger .daterangepicker .calendar {
+    width: 100% !important;
+  }
+}
+#filterModal .modal-body #calendarTrigger .daterangepicker .calendar.left .calendar-table {
+  padding-right: 40px;
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-body #calendarTrigger .daterangepicker .calendar.left .calendar-table {
+    padding: 0;
+  }
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-body #calendarTrigger .daterangepicker .calendar.left .calendar-table table {
+    border-spacing: 11px;
+  }
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-body #calendarTrigger .daterangepicker .calendar.left .calendar-table table tbody td {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+}
+#filterModal .modal-body #calendarTrigger .daterangepicker .calendar.right .calendar-table {
+  padding-left: 40px;
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-body #calendarTrigger .daterangepicker #rangeDateVal {
+    margin-top: 28px;
+  }
+}
+#filterModal .modal-body .ais-Menu-list .ais-Menu-item {
+  margin-bottom: 16px;
+}
+#filterModal .modal-body .ais-Menu-list .menu-facet-container > a {
+  color: #666;
+}
+#filterModal .modal-body .ais-Menu-list .menu-facet-container > a .f-check img,
+#filterModal .modal-body .ais-Menu-list .menu-facet-container > a .f-check-active img {
+  width: 23px;
+  height: 23px;
+}
+#filterModal .modal-body hr {
+  margin-bottom: 32px;
+  margin-top: 4px;
+}
+#filterModal .modal-footer {
+  width: 100%;
+  position: fixed;
+  bottom: 2%;
+  left: 50%;
+  background: white;
+  z-index: 9999;
+  max-width: 778px;
+  transform: translateX(-50%);
+  padding: 16px 12px;
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-footer {
+    width: 95.2%;
+    padding: 20px;
+  }
+}
+#filterModal .modal-footer .container {
+  padding: 0;
+  margin: 0;
+}
+#filterModal .modal-footer .container .clear-all-btn {
+  padding: 0;
+  cursor: pointer;
+}
+#filterModal .modal-footer .container .clear-all-btn .ais-ClearRefinements {
+  display: flex;
+}
+@media screen and (max-width: 991px) {
+  #filterModal .modal-footer .container .clear-all-btn .ais-ClearRefinements button {
+    text-align: left;
+  }
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-footer .container .clear-all-btn .ais-ClearRefinements button {
+    padding: 0;
+    position: relative;
+    bottom: 0;
+  }
+}
+@media screen and (max-width: 991px) {
+  #filterModal .modal-footer .container .apply-filters-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: flex-end;
+  }
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-footer .container .apply-filters-info {
+    padding: 0;
+  }
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-footer .container .apply-filters-info button {
+    border-radius: 4px;
+    background: #000;
+    border: none;
+    color: #FFF;
+    line-height: 24px;
+    padding: 8px 16px;
+  }
+}
+@media screen and (max-width: 767px) {
+  #filterModal .modal-footer .container .apply-filters-info .filter-results-number {
+    padding: 0;
+  }
+}
+#filterModal .modal-footer button {
+  padding: 12px 20px;
+}
+
+.elementor-popup-modal .dialog-close-button {
+  text-decoration: none !important;
+}
+.elementor-popup-modal .dialog-close-button .eicon-close:before {
+  color: #000 !important;
+}
+
 .header-main__contact-nav {
   border-bottom: 1px solid #E5E5E5;
   display: none;
@@ -10869,6 +11289,48 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
 }
 .mobile-nav .row {
   width: 100%;
+  justify-content: space-between;
+}
+.mobile-nav .row .mobile-logo {
+  justify-content: flex-start;
+}
+.mobile-nav .row .mobile-menu-toggle {
+  justify-content: flex-end;
+}
+.mobile-nav .row .mobile-menu-toggle #mega-menu-wrap-main-menu {
+  position: unset;
+}
+.mobile-nav .row .mobile-menu-toggle #mega-menu-wrap-main-menu #mega-menu-main-menu {
+  top: 56px;
+  width: 100%;
+  left: 0;
+  border-top: 1px solid #E5E5E5;
+  padding-top: 40px;
+}
+.mobile-nav .row .mobile-menu-toggle #mega-menu-wrap-main-menu #mega-menu-main-menu > li > a {
+  padding: 0 20px;
+  height: 48px;
+}
+.mobile-nav .row .mobile-menu-toggle #mega-menu-wrap-main-menu #mega-menu-main-menu > li.mega-hide-on-desktop {
+  background-color: #F4F4F4;
+}
+.mobile-nav .row .mobile-menu-toggle #mega-menu-wrap-main-menu #mega-menu-main-menu > li.mega-hide-on-desktop.first-gray-elem {
+  padding-top: 40px;
+  margin-top: 36px;
+}
+.mobile-nav .row .mobile-menu-toggle #mega-menu-wrap-main-menu #mega-menu-main-menu > li.mega-hide-on-desktop > a {
+  background: transparent;
+}
+.mobile-nav .row .mobile-menu-toggle .mega-toggle-blocks-right > .mega-toggle-block {
+  margin-right: 0;
+}
+.mobile-nav .row .mobile-menu-toggle .mega-toggle-blocks-right > .mega-toggle-block > .mega-toggle-animated-inner {
+  width: 33px;
+  height: 2px;
+}
+.mobile-nav .row .mobile-menu-toggle .mega-toggle-blocks-right > .mega-toggle-block > .mega-toggle-animated-inner::after, .mobile-nav .row .mobile-menu-toggle .mega-toggle-blocks-right > .mega-toggle-block > .mega-toggle-animated-inner::before {
+  width: 33px;
+  height: 2px;
 }
 .mobile-nav .row > * {
   display: flex;
@@ -10894,6 +11356,20 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
   font-style: normal;
   line-height: 28px !important;
 }
+.mobile-nav #navbar .mega-menu-toggle.mega-menu-open.active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  height: 57px;
+  align-items: center;
+}
+.mobile-nav #navbar .mega-toggle-blocks-left {
+  height: 22px;
+  background-repeat: no-repeat;
+  background-position-x: 20px;
+}
 
 .saved-cart {
   background: #28AAE1;
@@ -10916,11 +11392,6 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
 #homeHeaderModal .modal-content {
   height: 100%;
 }
-@media (max-width: 767px) and (min-width: 575px) {
-  #homeHeaderModal .modal-content {
-    height: auto;
-  }
-}
 @media (max-width: 767.98px) {
   #homeHeaderModal .modal-title {
     color: #000000 !important;
@@ -10933,6 +11404,19 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
   }
   #homeHeaderModal .modal-body #headerCTrigger .daterangepicker .calendar.left {
     width: 100% !important;
+  }
+}
+@media screen and (max-width: 767.98px) and (max-width: 767px) {
+  #homeHeaderModal .modal-body #headerCTrigger .daterangepicker .ranges .applyBtn {
+    display: block !important;
+    position: fixed;
+    bottom: 26px;
+    right: 26px;
+    background-color: black;
+  }
+  #homeHeaderModal .modal-body #headerCTrigger .daterangepicker .ranges .applyBtn:disabled {
+    background: #E5E5E5;
+    color: #666;
   }
 }
 
@@ -10989,6 +11473,19 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
   }
 }
 @media only screen and (max-width: 991px) and (min-width: 768px) {
+  nav.desktop-nav .container {
+    max-width: 768px;
+  }
+  nav.desktop-nav .container .navbar-brand {
+    margin-right: 10px;
+  }
+  nav.desktop-nav .container #mega-menu-wrap-main-menu {
+    width: 96%;
+  }
+  nav.desktop-nav .container #mega-menu-wrap-main-menu #mega-menu-main-menu {
+    display: flex;
+    justify-content: space-between;
+  }
   nav.desktop-nav .navbar-brand__logo {
     width: 75%;
   }
@@ -11858,6 +12355,10 @@ a.refineLink {
   color: #000000;
 }
 
+.archive .ais-InfiniteHits-list {
+  padding: 0;
+}
+
 @media (max-width: 767px) {
   li.ais-InfiniteHits-item .card-body {
     padding: 0;
@@ -11905,6 +12406,95 @@ a.refineLink {
   line-height: 36px;
 }
 
+@media screen and (max-width: 768px) {
+  .modal-footer button {
+    background: #E5E5E5;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+  }
+}
+
+.daterangepicker {
+  border-radius: 4px;
+  border: 1px solid #E5E5E5;
+  background: #FFF;
+  box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.05);
+  margin-top: 13px;
+  margin-left: -38px;
+  padding: 24px 18px 0;
+}
+@media screen and (max-width: 767px) {
+  .daterangepicker {
+    margin-left: 0px;
+    box-shadow: none;
+    top: 0;
+  }
+}
+.daterangepicker::after, .daterangepicker::before {
+  display: none;
+}
+.daterangepicker .calendar {
+  max-width: 280px;
+  width: 280px;
+}
+@media screen and (max-width: 767px) {
+  .daterangepicker .calendar {
+    margin: 0;
+  }
+}
+.daterangepicker .calendar .calendar-table {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+@media screen and (max-width: 768px) {
+  .daterangepicker .calendar .calendar-table {
+    max-width: 300px;
+    margin: auto;
+  }
+}
+.daterangepicker .calendar .calendar-table table thead tr:first-child th {
+  padding-bottom: 16px;
+}
+.daterangepicker .calendar .calendar-table table tbody td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+@media screen and (max-width: 768px) {
+  .daterangepicker .calendar .calendar-table table tbody td {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+.daterangepicker .calendar .calendar-table table tbody td.off {
+  color: #C6C6C6;
+  text-decoration-line: line-through;
+}
+.daterangepicker .calendar .calendar-table table tbody td.off.in-range {
+  background-color: #f4f4f4;
+}
+.daterangepicker .calendar .calendar-table table tbody td.active:not(.end-date) {
+  border-radius: 100%;
+  box-shadow: 16px 0px 0px 0px rgb(244, 244, 244);
+}
+.daterangepicker .calendar .calendar-table table tbody td.in-range {
+  box-shadow: 28px 0px 0px 0px rgb(244, 244, 244);
+}
+.daterangepicker .calendar .calendar-table table tbody td.in-range:last-of-type {
+  box-shadow: none;
+}
+.daterangepicker .calendar .calendar-table table tbody td.in-range:hover {
+  background-color: white;
+}
+.daterangepicker .calendar .calendar-table table tbody td.end-date {
+  box-shadow: none;
+  border-radius: 100%;
+}
+.daterangepicker .calendar .calendar-table table tbody td:hover {
+  box-shadow: none !important;
+}
 .daterangepicker table {
   font-family: "Roboto";
   border-collapse: inherit;
@@ -11952,6 +12542,10 @@ a.refineLink {
   .daterangepicker.dropup .calendar.right {
     display: none !important;
   }
+}
+
+.mobile-datepicker {
+  z-index: 999;
 }
 
 .pdp-container .row {
@@ -17358,4 +17952,12 @@ form .gform_body ul li label.gfield_label {
 
 form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   cursor: pointer;
+}
+@media screen and (max-width: 767px) {
+  form.trek-trip-finder-form .show-trips-btn {
+    width: 100%;
+  }
+  form.trek-trip-finder-form .show-trips-btn button {
+    width: 100%;
+  }
 }

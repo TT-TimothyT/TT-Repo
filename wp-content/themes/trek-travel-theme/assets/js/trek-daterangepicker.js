@@ -2,7 +2,7 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
     e.preventDefault();
     jQuery('#mobileCalendarModal').modal('toggle');
   })
-  jQuery('#trip-finder-daterange i.toggle').on('click',function (e) {
+  jQuery('#trip-finder-daterange i.toggle, #trip-finder-daterange > div').on('click',function (e) {
     e.preventDefault();
     jQuery("input#home-daterange").trigger("click")
   })
@@ -99,18 +99,50 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
           jQuery('#dateRangePickerHeader').daterangepicker({
             "linkedCalendars": false,
             "singleDatePicker": false,
-            "autoApply": true,
-            "autoUpdateInput": false,
+            "autoApply": false,
+            "autoUpdateInput": true,
             // "opens": "center",
             // "drops": "up",
             "parentEl": "#headerCTrigger",
             "locale": {
               "format": "MMMM D",
               "separator": " - ",
-              "applyLabel": false,
+              "applyLabel": true,
               "cancelLabel": "Clear Dates"
             }
         });
+
+        jQuery('#home-daterange').on('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          jQuery(this).siblings('i.toggle').click();
+        })
+
+        jQuery("#homeHeaderModal").on('apply.daterangepicker', function(ev, Picker) {
+          jQuery('.mobile-datepicker #home-daterange').val(Picker.startDate.format('MMMM D') +' - '+ Picker.endDate.format('MMMM D')); 
+          jQuery('.mobile-datepicker #home-daterange').addClass('active');
+          jQuery('.mobile-datepicker #home-daterange').siblings('.dates-placeholder-text').addClass('active');
+        })
+
+        jQuery('#homeHeaderModal').on('cancel.daterangepicker', function(ev, picker) {
+          jQuery('.mobile-datepicker #home-daterange').val('');
+          picker.setStartDate({})
+          picker.setEndDate({})
+          jQuery('.mobile-datepicker #home-daterange').removeClass('active');
+          jQuery('.mobile-datepicker #home-daterange').siblings('.dates-placeholder-text').removeClass('active');
+          jQuery(this).find('.btn-close').click();
+        });
+
+        jQuery('.modal-footer button').on('click', function() {
+          jQuery('#homeHeaderModal .applyBtn').click();
+        })
+
+        jQuery('#filterModal .clear-all-btn').on('click', function() {
+          var pageLocation = window.location.pathname;
+          window.location.href = pageLocation;
+          jQuery('.cancelBtn').click();
+        })
+
       } else {
           jQuery('#home-daterange').daterangepicker({
             'alwaysShowCalendars': true,
@@ -126,6 +158,8 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
         });
       }
         jQuery('#home-daterange').on('apply.daterangepicker', function (ev, picker) {
+          jQuery('.dates-placeholder-text').addClass('active');
+          jQuery('#home-daterange').addClass('active');
           jQuery(this).val(picker.startDate.format('MMMM D') + ' - ' + picker.endDate.format('MMMM D'));
           startTime = picker.startDate._d.valueOf();
           endTime = picker.endDate._d.valueOf();
@@ -146,6 +180,8 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
           });
         });
         jQuery('#home-daterange').on('cancel.daterangepicker', function (ev, picker) {
+          jQuery('.dates-placeholder-text').removeClass('active');
+          jQuery('#home-daterange').removeClass('active');
           jQuery(this).val('');
           jQuery('.home-trip-finder-form #start_time').val('');
           jQuery('.home-trip-finder-form #end_time').val('');

@@ -480,6 +480,12 @@ a.refineLink {
         color: #000000;
     }
 }
+
+.archive {
+    .ais-InfiniteHits-list {
+        padding: 0;
+    }
+}
 @media (max-width: 767px) {
     li.ais-InfiniteHits-item{
         .card-body{

@@ -248,13 +248,14 @@ function trek_herobaner_tripfinder_shortcode_cb()
             <div class="col-8 col-md-4 col-lg-3 mb-4 mb-md-0 me-0 me-md-4" id="trip-finder-daterange">
                 <div class="input-group w-100 bg-secondary border border-gray-400 rounded py-1">
                     <span class="input-group-text bg-secondary border-0" id="basic-addon1"><i class="bi bi-calendar"></i></span>
+                    <span class="dates-placeholder-text">Select Date</span>
                     <input type="text" aria-describedby="basic-addon1" class="input-text form-control border-0" id="home-daterange" value="" placeholder="Select Dates" />
                      <i class="toggle bi bi-chevron-up"></i>
                      <i class="toggle bi bi-chevron-down"></i>
                 </div>
             </div>
 
-            <div class="col-8 col-md-4 col-lg-3 mb-4 mb-md-0 me-0 me-md-4">
+            <div class="col-8 col-md-4 col-lg-3 mb-4 mb-md-0 me-0 me-md-4" id="trip-finder-destination">
                 
                 <!-- <div class="input-group w-100 bg-secondary border border-gray-400 rounded py-1">
                     <span class="input-group-text bg-secondary border-0"><i class="bi bi-pin-map"></i></span>
@@ -267,35 +268,49 @@ function trek_herobaner_tripfinder_shortcode_cb()
                 <div class="input-group w-100 bg-secondary border border-gray-400 rounded py-1">
 
                     <div class="tf-cat-select">
-                        <input type="radio" name="trek_destination" value="false">
+                        <input type="checkbox" name="trek_destination" value="false">
                         <i class="toggle bi bi-chevron-up"></i>
                         <i class="toggle bi bi-chevron-down"></i>
-                        <span class="placeholder"><i class="bi bi-geo-alt me-4"></i> Select Destination</span>
-                        <?php foreach ($categories as $category) {
-                           $thumbnail_id = get_term_meta( $category->term_id, 'thumbnail_id', true );
-                           // get the image URL
-                           $image = wp_get_attachment_url( $thumbnail_id ); 
-                           $child_term = get_term_by( 'id', $category->term_id, $taxo_name );
-                           $category_link = get_category_link( $category->term_id );
-                           $category_link = str_ireplace(site_url(),'', $category_link);
-                           $image = ( $image ? $image : $logo_url );
-                        ?>
-                        <label class="option">
-                            <input type="radio" name="trek_destination" id="<?php echo $category_link; ?>" value="true">
-                            <div class="title align-items-center">
-                              <span class="cat-image d-inline-block me-4">
-                                 <img src="<?php echo $image; ?>" alt="<?php echo $category->name; ?>">
+                        <span class="placeholder"><i class="bi bi-geo-alt me-4"></i> <span class="placeholder-text">Select Destination</span> <span class="selected-destination"></span></span>
+                        <div class="destination-option">
+                           <div class="header-popup">
+                              <h4 class="popup-title position-relative text-center" id="myModalLabel">Select Destination
+                              <span type="button" class="btn-close close-popup" data-bs-dismiss="modal" aria-label="Close">
+                                 <i type="button" class="bi bi-x"></i>
                               </span>
-                              <?php echo $category->name; ?>
+                              </h4>
                            </div>
-                        </label>
-                        <?php } ?>
+                           <?php foreach ($categories as $category) {
+                              $thumbnail_id = get_term_meta( $category->term_id, 'thumbnail_id', true );
+                              // get the image URL
+                              $image = wp_get_attachment_url( $thumbnail_id ); 
+                              $child_term = get_term_by( 'id', $category->term_id, $taxo_name );
+                              $category_link = get_category_link( $category->term_id );
+                              $category_link = str_ireplace(site_url(),'', $category_link);
+                              $image = ( $image ? $image : $logo_url );
+                           ?>
+                           <label class="option">
+                               <input type="radio" name="trek_destination" id="<?php echo $category_link; ?>" value="true">
+                               <div class="title align-items-center">
+                                 <span class="cat-image d-inline-block me-4">
+                                    <img src="<?php echo $image; ?>" alt="<?php echo $category->name; ?>">
+                                 </span>
+                                 <span class="category-name">
+                                    <?php echo $category->name; ?>
+                                 </span>
+                              </div>
+                           </label>
+                           <?php } ?>
+                           <div class="footer-popup">
+                              <button type="button" class="btn btn-primary close-popup disabled">Apply</button>
+                           </div>
+                        </div>
                     </div>
                         
                 </div>
             </div>
 
-            <div class="col col-md-2">
+            <div class="col col-md-2 show-trips-btn">
                 <input type="hidden" id="start_time" name="start_time">
                 <input type="hidden" id="end_time" name="end_time">
                 <button type="submit" class="btn btn-primary">Show trips</button>

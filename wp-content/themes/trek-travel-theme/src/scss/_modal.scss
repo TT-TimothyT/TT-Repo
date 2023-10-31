@@ -401,4 +401,214 @@
     top: 50% !important;
   }
 }
+
+#filterModal {
+  .modal-content {
+    height: 93vh;
+    overflow: scroll;
+  }
+
+  .modal-header {
+    .modal-title {
+      color: #000 !important;
+      font-size: 18px !important;
+      line-height: 28px;
+      padding-top: 18px;
+      position: relative;
+      padding-top: 0;
+    }
+    .btn-close {
+      padding-top: 0;
+      z-index: 999;
+      pointer-events: all;
+      cursor: pointer;
+      position: absolute;
+      right: 32px;
+    }
+
+    @media screen and (max-width: 767px) {
+      padding: 9px 18px;
+    }
+  }
+
+  .modal-body {
+    padding-bottom: 70px;
+
+    @media screen and (max-width: 767px) {
+      width: 95%;
+      padding: 32px 11px 56px;
+    
+    }
+    h5 {
+      color: #000;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+      margin-bottom: 20px;
+
+      @media screen and (max-width: 768px) {
+        font-size: 16px;
+      }
+    }
+    #calendarTrigger {
+      justify-content: center;
+
+      .daterangepicker {
+        margin-left: 0;
+        box-shadow: none;
+
+        @media screen and (max-width: 767px) {
+          padding: 0px;
+          margin: 0;
+          padding-top: 0;
+        }
+        .calendar {
+          width: 49% !important;
+
+          @media screen and (max-width: 767px) {
+            width: 100% !important;
+          }
+          &.left {
+            .calendar-table {
+              padding-right: 40px;
+
+              @media screen and (max-width: 767px) {
+                padding: 0;
+              }
+
+              table {
+
+                @media screen and (max-width: 767px) {
+                  border-spacing: 11px;
+                }
+                tbody td {
+                  @media screen and (max-width: 767px) {
+                    padding-top: 3px;
+                    padding-bottom: 3px;
+                  }
+                }
+              } 
+            }
+          } 
+          &.right {
+            .calendar-table {
+              padding-left: 40px;
+            }
+          }
+        }
+        #rangeDateVal {
+          @media screen and (max-width: 767px) {
+            margin-top: 28px;
+          }
+        }
+      }
+    }
+    .ais-Menu-list {
+      .ais-Menu-item {
+        margin-bottom: 16px;
+      }
+      .menu-facet-container {
+        & > a {
+          color: #666;
+          .f-check,
+          .f-check-active {
+            img {
+              width: 23px;
+              height: 23px;
+
+            }
+          }
+        }
+      }
+    }
+
+    hr {
+      margin-bottom: 32px;
+      margin-top: 4px;
+    }
+  }
+
+  .modal-footer {
+    width: 100%;
+    position: fixed;
+    bottom: 2%;
+    left: 50%;
+    background: white;
+    z-index: 9999;
+    max-width: 778px;
+    transform: translateX(-50%);
+    padding: 16px 12px;
+
+    @media screen and (max-width: 767px) {
+      width: 95.2%;
+      padding: 20px;
+    }
+
+    .container {
+      padding: 0;
+      margin: 0;
+
+      .clear-all-btn {
+        padding: 0;
+        // pointer-events: none;
+        cursor: pointer;
+
+        .ais-ClearRefinements {
+          display: flex;
+
+          button {
+            @media screen and (max-width: 991px) {
+              text-align: left;
+            }
+            @media screen and (max-width: 767px) {
+              padding: 0;
+              position: relative;
+              bottom: 0;
+            }
+          }
+        }
+      }
+
+      .apply-filters-info {
+        @media screen and (max-width: 991px) {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          justify-content: flex-end;
+        }
+        @media screen and (max-width: 767px)  {
+          padding: 0;
+        }
+        button {
+          @media screen and (max-width: 767px) {
+            border-radius: 4px;
+            background: #000;
+            border: none;
+            color: #FFF;
+            line-height: 24px;
+            padding: 8px 16px;
+          }
+        }
+
+        .filter-results-number {
+          @media screen and (max-width: 767px) {
+            padding: 0;
+          }
+        }
+      }
+    }
+    button {
+      padding: 12px 20px;
+    }
+  }
+}
+
+.elementor-popup-modal {
+  .dialog-close-button {
+    text-decoration: none !important;
+    .eicon-close:before {
+      color: #000 !important;
+    }
+  }
+}
 // scss-docs-end modal-fullscreen-loop

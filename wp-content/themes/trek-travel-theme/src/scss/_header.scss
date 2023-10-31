@@ -145,6 +145,57 @@
   z-index: 3;
   .row{
     width: 100%;
+    justify-content: space-between;
+
+    .mobile-logo {
+      justify-content: flex-start;
+    }
+    .mobile-menu-toggle {
+      justify-content: flex-end;
+      #mega-menu-wrap-main-menu {
+        position: unset;
+
+        #mega-menu-main-menu {
+          top: 56px;
+          width: 100%;
+          left: 0;
+          border-top: 1px solid #E5E5E5;
+          padding-top: 40px;
+
+          & > li {
+            & > a {
+              padding: 0 20px;
+              height: 48px;
+            }
+
+            &.mega-hide-on-desktop {
+              background-color: #F4F4F4;
+              &.first-gray-elem {
+               padding-top: 40px;
+               margin-top: 36px;
+              }
+              & > a {
+                background: transparent;
+              }
+            }
+          }
+        }
+      }
+      .mega-toggle-blocks-right {
+        & > .mega-toggle-block {
+          margin-right: 0;
+          & > .mega-toggle-animated-inner {
+            width: 33px;
+            height: 2px;
+            &::after,
+            &::before {
+              width: 33px;
+              height: 2px;
+            }
+          }
+        } 
+      }
+    }
   }
   .row > *{
     display: flex;
@@ -168,6 +219,24 @@
         // font-weight: 400 !important;
         line-height: 28px !important;
       }
+    }
+  }
+
+  #navbar {
+    .mega-menu-toggle.mega-menu-open.active {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+      height: 57px;
+      align-items: center;
+
+    }
+    .mega-toggle-blocks-left {
+      height: 22px;
+      background-repeat: no-repeat;
+      background-position-x: 20px;
     }
   }
 }
@@ -196,7 +265,7 @@
   }
   @media (max-width: 767px) and (min-width: 575px){
     .modal-content{
-      height: auto;
+      // height: auto;
     }
   }
   @include media-breakpoint-down(md) {
@@ -210,6 +279,21 @@
           width: 100%;
           .calendar.left{
             width: 100% !important;
+          }
+          .ranges {
+            .applyBtn {
+              @media screen and (max-width: 767px) {
+                display: block !important;
+                position: fixed;
+                bottom: 26px;
+                right: 26px;
+                background-color: black;
+                &:disabled {
+                  background: #E5E5E5;
+                  color: #666;
+                }
+              }
+            }
           }
         }
       }
@@ -280,6 +364,21 @@
 
 @media only screen and (max-width: 991px) and (min-width: 768px)  {
   nav.desktop-nav{
+    .container {
+      max-width: 768px;
+      .navbar-brand {
+        margin-right: 10px;
+      }
+
+      #mega-menu-wrap-main-menu {
+        width: 96%;
+
+        #mega-menu-main-menu {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+    }
     .navbar-brand__logo{
       width: 75%;
     }

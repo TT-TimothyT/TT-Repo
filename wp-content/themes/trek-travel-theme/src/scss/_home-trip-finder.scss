@@ -4,4 +4,13 @@ form.trek-trip-finder-form{
             cursor: pointer;
         }
     }
+    .show-trips-btn {
+        @media screen and (max-width: 767px) {
+            width: 100%;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
 }
