@@ -2418,6 +2418,31 @@ jQuery('.read-more-action-right').on('click', function (e) {
 // Listen for clicks on the document and check if the target is the #itinerary-print-button
 jQuery(document).on('click', '#itinerary-print-button', function (e) {
   e.preventDefault();
+
+  // Select elements with the specified classes
+  var collapseButtons = jQuery('.accordion-button.mb-0.collapsed');
+
+  // Check if any elements were found
+  if (collapseButtons.length > 0) {
+      // Iterate through the found elements and click each one
+      collapseButtons.each(function() {
+          jQuery(this).click(); // Trigger a click event on each element
+      });
+  }
+  // Click on all <a> elements with the class "read-more-action"
+  jQuery('a.read-more-action').each(function() {
+    if (! jQuery(this).hasClass('d-none')) {
+      jQuery(this).click();
+    }
+  });
+
+  // Click on all <a> elements with the class "read-more-action"
+  jQuery('a.read-more-action-right').each(function() {
+    if (! jQuery(this).hasClass('d-none')) {
+      jQuery(this).click();
+    }
+  });
+
   // Check if a button with classes "olark-launch-button" and "olark-size-md" exists
   var checkOlarkButton = function () {
     var olarkButton = jQuery('.olark-launch-button.olark-size-md');
@@ -2433,6 +2458,10 @@ jQuery(document).on('click', '#itinerary-print-button', function (e) {
     }
   };
   checkOlarkButton(); // Start checking for the olarkButton
+
+
+  
+
   window.print();
 });
 

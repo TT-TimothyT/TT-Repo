@@ -14354,6 +14354,14 @@ nav .nav-tabs .nav-link.active {
     max-width: 100%;
   }
 }
+@media print {
+  .itinerary-details .accordion-item {
+    page-break-after: always;
+  }
+  .itinerary-details .accordion-item:last-child {
+    page-break-after: auto;
+  }
+}
 
 @media (max-width: 767.98px) {
   .pdp-weather__weather-table {

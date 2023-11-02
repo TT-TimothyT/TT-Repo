@@ -301,4 +301,12 @@
         }
 
     }
+    @media print {
+        .accordion-item {
+            page-break-after: always;
+            &:last-child {
+                page-break-after: auto;
+           }
+        }
+    }
 }
