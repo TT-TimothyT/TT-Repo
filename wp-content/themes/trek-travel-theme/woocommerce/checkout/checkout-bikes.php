@@ -283,6 +283,7 @@ if ($p_own_bike == 'yes') {
                                     $bikeTypeId        = $bikeType['id'];
                                     $bikeModel         = json_decode($available_bike['bikeModel'], true);
                                     $bikeModelId       = $bikeModel['id'];
+                                    $bikeModelName     = $bikeModel['name'];
                                     $selected_g_bikeId = ( $bikeModelId == $guest_bikeTypeId ? 'checked' : '' );
                                     $checkedClass      = ( $bikeModelId == $guest_bikeTypeId ? 'bike-selected' : '' );
                                     $gcheckedClassIcon = ( $bikeModelId == $guest_bikeTypeId ? 'checkout-bikes__selected-bike-icon' : 'checkout-bikes__select-bike-icon' );
