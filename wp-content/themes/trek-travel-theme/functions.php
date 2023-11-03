@@ -60,6 +60,7 @@ if ( ! function_exists( 'trek_travel_theme_setup_theme' ) ) :
 			)
 		);
 
+		add_image_size( 'featured-archive', 886, 664, true );
 		// Add support for Block Styles.
 		add_theme_support( 'wp-block-styles' );
 		// Add support for full and wide alignment.
