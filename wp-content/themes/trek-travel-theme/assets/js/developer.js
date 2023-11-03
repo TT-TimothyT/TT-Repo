@@ -1862,14 +1862,18 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
     var currentVal = parseInt(input.val());
     if (!isNaN(currentVal)) {
       if (type == 'minus') {
-
-        if (currentVal > input.attr('min')) {
-          input.val(currentVal - 1).change();
+        if (input.val() == 1 || input.val() == 0) {
+          if (jQuery('#' + fieldName).length) {
+            jQuery('#' + fieldName).click();
+          }
+        } else {
+          if (currentVal > input.attr('min')) {
+            input.val(currentVal - 1).change();
+          }
+          if (parseInt(input.val()) == input.attr('min')) {
+            jQuery(this).attr('disabled', true);
+          }
         }
-        if (parseInt(input.val()) == input.attr('min')) {
-          jQuery(this).attr('disabled', true);
-        }
-
       } else if (type == 'plus') {
 
         if (currentVal < input.attr('max')) {
@@ -3151,4 +3155,126 @@ window.addEventListener("popstate", function () {
       checkbox.classList.remove('d-none');
     }
   }
+});
+
+jQuery('body').on('click', 'button.btn.btn-number.btn-plus-private', function () {
+  jQuery('.container.checkout-hotel-modal').addClass('d-none');
+  // Trigger a click event on the target button
+  jQuery('button.d-none.plus-button-private.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
+
+
+  // Listen for the "shown.bs.modal" event on the modal
+  jQuery('#addOccupantsModal').on('shown.bs.modal', function () {
+    // Wait for the modal content to load (you can specify an appropriate time if needed)
+    setTimeout(function () {
+      // Find the first option with a value other than "none" in the select menu
+      let $select = jQuery('select[name="occupants[private][0]"]');
+      let $options = $select.find('option[value!="none"]').first();
+      
+      if ($options.length > 0) {
+        // Select the first non-"none" option
+        $select.val($options.val());
+      }
+      
+      // Click on the "Done" button
+      jQuery('#tt-occupants-btn').click();
+    }, 1000); // Adjust the delay as needed
+  });
+
+  setTimeout(function () {
+    jQuery('#private').removeClass('d-none');
+  } , 2000);
+
+});
+
+jQuery('body').on('click', 'button.btn.btn-number.btn-plus-roommate', function () {
+  jQuery('.container.checkout-hotel-modal').addClass('d-none');
+  // Trigger a click event on the target button
+  jQuery('button.d-none.plus-button-roommate.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
+
+  // Listen for the "shown.bs.modal" event on the modal
+  jQuery('#addOccupantsModal').on('shown.bs.modal', function () {
+    // Wait for the modal content to load (you can specify an appropriate time if needed)
+    setTimeout(function () {
+        // Find the first option with a value other than "none" in the select menu
+        let $select = jQuery('select[name="occupants[roommate][0]"]');
+        let $options = $select.find('option[value!="none"]').first();
+        
+        if ($options.length > 0) {
+            // Select the first non-"none" option
+            $select.val($options.val());
+        }
+
+        // Click on the "Done" button
+        jQuery('#tt-occupants-btn').click();
+    }, 1000); // Adjust the delay as needed
+  });
+  setTimeout(function () {
+    jQuery('#roommate').removeClass('d-none');
+  } , 2000);
+});
+
+jQuery('body').on('click', 'button.btn.btn-number.btn-plus-single', function () {
+  jQuery('.container.checkout-hotel-modal').addClass('d-none');
+  // Trigger a click event on the target button
+  jQuery('button.d-none.plus-button-single.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
+
+
+  // Listen for the "shown.bs.modal" event on the modal
+  jQuery('#addOccupantsModal').on('shown.bs.modal', function () {
+    // Wait for the modal content to load (you can specify an appropriate time if needed)
+    setTimeout(function () {
+        // Find the first option with a value other than "none" in the select menu
+        let $select1 = jQuery('select[name="occupants[single][0]"]');
+        let $options1 = $select1.find('option[value!="none"]').first();
+
+        let $select2 = jQuery('select[name="occupants[single][1]"]');
+        let $options2 = $select2.find('option[value!="none"]').eq(1); // Select the second non-"none" option
+        
+        if ($options1.length > 0) {
+            // Select the first non-"none" option
+            $select1.val($options1.val());
+        }
+
+        if ($options2.length > 0) {
+          // Select the second non-"none" option
+          $select2.val($options2.val());
+        }
+
+        // Click on the "Done" button
+        jQuery('#tt-occupants-btn').click();
+    }, 1000); // Adjust the delay as needed
+  });
+});
+
+jQuery('body').on('click', 'button.btn.btn-number.btn-plus-double', function () {
+  jQuery('.container.checkout-hotel-modal').addClass('d-none');
+  // Trigger a click event on the target button
+  jQuery('button.d-none.plus-button-double.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
+
+  // Listen for the "shown.bs.modal" event on the modal
+  jQuery('#addOccupantsModal').on('shown.bs.modal', function () {
+    // Wait for the modal content to load (you can specify an appropriate time if needed)
+    setTimeout(function () {
+        // Find the first option with a value other than "none" in the select menu
+        let $select1 = jQuery('select[name="occupants[double][0]"]');
+        let $options1 = $select1.find('option[value!="none"]').first();
+
+        let $select2 = jQuery('select[name="occupants[double][1]"]');
+        let $options2 = $select2.find('option[value!="none"]').eq(1); // Select the second non-"none" option
+        
+        if ($options1.length > 0) {
+            // Select the first non-"none" option
+            $select1.val($options1.val());
+        }
+
+        if ($options2.length > 0) {
+          // Select the second non-"none" option
+          $select2.val($options2.val());
+        }
+
+        // Click on the "Done" button
+        jQuery('#tt-occupants-btn').click();
+    }, 1000); // Adjust the delay as needed
+  });
 });
