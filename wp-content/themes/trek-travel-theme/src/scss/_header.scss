@@ -152,6 +152,89 @@
     }
     .mobile-menu-toggle {
       justify-content: flex-end;
+      .mega-toggle-block {
+        .mega-toggle-animated {
+          padding: 0;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          cursor: pointer;
+          transition-property: opacity, filter;
+          transition-duration: 0.15s;
+          transition-timing-function: linear;
+          font: inherit;
+          color: inherit;
+          text-transform: none;
+          background-color: transparent;
+          border: 0;
+          margin: 0;
+          overflow: visible;
+          transform: scale(0.8);
+          align-self: center;
+          outline: 0;
+          background: none;
+        }
+        .mega-toggle-animated-box {
+          width: 40px;
+          height: 24px;
+          display: inline-block;
+          position: relative;
+          outline: 0;
+        }
+        .mega-toggle-animated-inner {
+          display: block;
+          top: 50%;
+          margin-top: -2px;
+        }
+        .mega-toggle-animated-inner,
+        .mega-toggle-animated-inner::before,
+        .mega-toggle-animated-inner::after {
+          width: 40px;
+          height: 4px;
+          background-color: #000;
+          border-radius: 4px;
+          position: absolute;
+          transition-property: transform;
+          transition-duration: 0.15s;
+          transition-timing-function: ease;
+        }
+        .mega-toggle-animated-inner::before,
+        .mega-toggle-animated-inner::after {
+          content: "";
+          display: block;
+        }
+        .mega-toggle-animated-inner::before {
+          top: -10px;
+        }
+        .mega-toggle-animated-inner::after {
+          bottom: -10px;
+        }
+        .mega-toggle-animated-slider .mega-toggle-animated-inner {
+          top: 2px;
+        }
+        .mega-toggle-animated-slider .mega-toggle-animated-inner::before {
+          top: 10px;
+          transition-property: transform, opacity;
+          transition-timing-function: ease;
+          transition-duration: 0.15s;
+        }
+        .mega-toggle-animated-slider .mega-toggle-animated-inner::after {
+          top: 20px;
+        }
+      }
+      .mega-menu-toggle.mega-menu-open .mega-toggle-block {
+        .mega-toggle-animated-slider .mega-toggle-animated-inner {
+          transform: translate3d(0, 10px, 0) rotate(45deg);
+        }
+        .mega-toggle-animated-slider .mega-toggle-animated-inner::before {
+          transform: rotate(-45deg) translate3d(-5.71429px, -6px, 0);
+          opacity: 0;
+        }
+        .mega-toggle-animated-slider .mega-toggle-animated-inner::after {
+          transform: translate3d(0, -20px, 0) rotate(-90deg);
+        }
+      }
       #mega-menu-wrap-main-menu {
         position: unset;
 
@@ -160,12 +243,19 @@
           width: 100%;
           left: 0;
           border-top: 1px solid #E5E5E5;
-          padding-top: 40px;
+          // padding-top: 40px;
+          padding: 40px 0px 37px !important;
 
           & > li {
             & > a {
               padding: 0 20px;
               height: 48px;
+
+            }
+            a {
+              .mega-indicator {
+                pointer-events: none;
+              }
             }
 
             &.mega-hide-on-desktop {
@@ -231,7 +321,15 @@
       z-index: 999;
       height: 57px;
       align-items: center;
+    }
 
+    .mega-menu-toggle:not(.mega-menu-open) {
+      .mega-toggle-blocks-right {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
     }
     .mega-toggle-blocks-left {
       height: 22px;

@@ -1049,6 +1049,14 @@ jQuery(document).ready(function () {
   });
 });
 jQuery(window).load(function () {
+
+  var isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+               navigator.userAgent &&
+               navigator.userAgent.indexOf('CriOS') == -1 &&
+               navigator.userAgent.indexOf('FxiOS') == -1;
+  if( isSafari && jQuery(document).width() < 768){
+    jQuery('.destination-option').css('padding-bottom', '80px');
+  }
   tripCapacityValidation(true);
   prebookingChecklistValidate();
   validateGuestSelectionAdds();

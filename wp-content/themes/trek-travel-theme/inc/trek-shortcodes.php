@@ -283,7 +283,8 @@ function trek_herobaner_tripfinder_shortcode_cb()
                            <?php foreach ($categories as $category) {
                               $thumbnail_id = get_term_meta( $category->term_id, 'thumbnail_id', true );
                               // get the image URL
-                              $image = wp_get_attachment_url( $thumbnail_id ); 
+                              $filter_image = get_field('filter_image', $category);
+                              // $image = wp_get_attachment_url( $thumbnail_id ); 
                               $child_term = get_term_by( 'id', $category->term_id, $taxo_name );
                               $category_link = get_category_link( $category->term_id );
                               $category_link = str_ireplace(site_url(),'', $category_link);
@@ -293,7 +294,7 @@ function trek_herobaner_tripfinder_shortcode_cb()
                                <input type="radio" name="trek_destination" id="<?php echo $category_link; ?>" value="true">
                                <div class="title align-items-center">
                                  <span class="cat-image d-inline-block me-4">
-                                    <img src="<?php echo $image; ?>" alt="<?php echo $category->name; ?>">
+                                    <img src="<?php echo $filter_image['url']; ?>" alt="<?php echo $category->name; ?>">
                                  </span>
                                  <span class="category-name">
                                     <?php echo $category->name; ?>

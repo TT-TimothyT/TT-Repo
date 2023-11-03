@@ -208,6 +208,10 @@
       a {
         font-weight: normal !important;
       }
+      li {
+        border: none !important;
+        padding-right: 0 !important;
+      }
       & > ul {
         a {
           padding: 0;
