@@ -3140,10 +3140,6 @@ function checkoutShippingAnalytics() {
     })
 }
 
-jQuery(document).on('click', '.promo', function () {
-    jQuery('.promo-form').toggleClass('d-none');
-});
-
 function getURLParameter(name) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(name);

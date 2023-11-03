@@ -115,7 +115,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         <!-- End product line items -->
         <hr>
         <div class="checkout-summary__promo">
-            <a href="javascript:" class="promo">Have a Promo Code?</a>
+            <span class="promo">Promo Code</span>
             <div class="mt-5 d-flex justify-content-between align-items-start promo-form checkout-summary__promo <?php echo ($tt_coupan_code ? 'd-none' : 'd-flex'); ?>">
                 <div class="form-group form-floating mb-0 w-75">
                     <input type="text" class="input-text form-control rounded-1 promo-input coupon-code-input" name="coupon_code" placeholder="Enter promo code" value="<?php echo $tt_coupan_code; ?>" required>
