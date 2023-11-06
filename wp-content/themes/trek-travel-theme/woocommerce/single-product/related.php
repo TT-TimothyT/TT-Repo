@@ -44,7 +44,7 @@ if( $similar_product->have_posts() ) { ?>
 					$heading = apply_filters( 'woocommerce_product_related_products_heading', __( 'Similar Trips', 'woocommerce' ) );
 					if ( $heading ) :
 						?>
-						<h3 class="fw-semibold my-4"><?php echo esc_html( $heading ); ?></h3>
+						<h3 class="fw-semibold my-4 similar-trips-title"><?php echo esc_html( $heading ); ?></h3>
 					<?php endif; ?>
 					<div class="pdp_similar_trips_slider my-4">
 						<?php while($similar_product->have_posts()){

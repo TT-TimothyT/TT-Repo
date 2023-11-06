@@ -488,20 +488,39 @@ jQuery(document).ready(function () {
     autoclose: true
   });
 
+  var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
+  if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
+  } else if(jQuery(window).width() > 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
+  }
+
   
   jQuery('.pdp_similar_trips_slider').slick({
     dots: false,
     infinite: false,
     speed: 300,
-    slidesToShow: 3.5,
+    slidesToShow: 4.2,
     slidesToScroll: 1,
     autoplay: false,
     centerMode: false,
     responsive: [
       {
+        breakpoint: 1640,
+        settings: {
+          dots: false,
+          infinite: false,
+          speed: 300,
+          slidesToShow: 3.2,
+          slidesToScroll: 1,
+          autoplay: false,
+          centerMode: false,
+        }
+      },
+      {
         breakpoint: 991,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 2.2,
           slidesToScroll: 2,
           dots: true,
           arrows: false,
@@ -512,7 +531,7 @@ jQuery(document).ready(function () {
         settings: {
           dots: true,
           arrows: false,
-          slidesToShow: 1,
+          slidesToShow: 1.07,
           slidesToScroll: 1,
         }
       }

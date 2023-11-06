@@ -42,6 +42,9 @@
             padding: 51px 48px 51px 40px;
             // margin-top: 41px;
 
+            @media (max-width: 991px) and (min-width: 769px) {
+                width: 64%;
+            }
             
             @media (max-width: 1180px) and (min-width: 992px){
                 width: 48%;

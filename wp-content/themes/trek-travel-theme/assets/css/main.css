@@ -13062,6 +13062,11 @@ a.refineLink {
   color: #fff;
   padding: 51px 48px 51px 40px;
 }
+@media (max-width: 991px) and (min-width: 769px) {
+  #bikes-guide .great-riders .great-rider {
+    width: 64%;
+  }
+}
 @media (max-width: 1180px) and (min-width: 992px) {
   #bikes-guide .great-riders .great-rider {
     width: 48%;
@@ -14482,25 +14487,58 @@ nav .nav-tabs .nav-link.active {
 }
 
 #similar-trips {
-  padding: 3rem 0 3rem 2rem;
+  padding: 3rem 0px 3.5rem 82px;
+}
+@media screen and (max-width: 991px) {
+  #similar-trips {
+    padding: 3rem 0 3.5rem 2rem;
+  }
+}
+#similar-trips .pdp_similar_trips_slider {
+  height: fit-content;
+}
+@media screen and (max-width: 768px) {
+  #similar-trips .pdp_similar_trips_slider {
+    padding: 0;
+  }
 }
 #similar-trips .col-12 {
   padding-right: unset;
 }
+#similar-trips .similar-trips-title {
+  margin-bottom: 53px !important;
+}
+@media screen and (min-width: 1640px) {
+  #similar-trips .similar-trips-title {
+    padding-left: 10px;
+  }
+}
+@media screen and (max-width: 768px) {
+  #similar-trips .similar-trips-title {
+    margin-bottom: 2rem !important;
+    padding: 0;
+    font-family: Poppins;
+    font-size: 24px;
+    line-height: 36px;
+  }
+}
 #similar-trips div.product {
+  margin: 0 10px;
   border: unset;
 }
-@media (max-width: 991.98px) {
+@media screen and (max-width: 768px) {
   #similar-trips div.product {
-    padding-right: 12px;
+    margin: 0 6px;
   }
 }
 #similar-trips div.product a {
   text-decoration: none !important;
+  display: block;
+  width: 100%;
 }
 #similar-trips div.product img {
-  width: 90%;
-  height: 220px;
+  width: 100%;
+  height: 270px;
   border-bottom: 4px solid #28AAE1;
   border-radius: 4px;
   object-fit: cover;
@@ -14511,13 +14549,37 @@ nav .nav-tabs .nav-link.active {
   font-weight: 600;
   font-size: 30px;
   line-height: 40px;
-  margin-top: 2rem;
+  margin-top: 32px;
+  width: 90%;
+}
+@media screen and (max-width: 768px) {
+  #similar-trips div.product h2.woocommerce-loop-product__title, #similar-trips div.product .woocommerce-loop-product__title.h2 {
+    font-size: 24px;
+    line-height: 36px;
+    margin-top: 24px;
+  }
 }
 #similar-trips div.product span.price, #similar-trips div.product a.button, #similar-trips div.product p.woocommerce-products-compare-compare-button {
   display: none;
 }
 #similar-trips .slick-list {
-  padding: 0 50px 0 0 !important;
+  width: 100%;
+}
+#similar-trips .slick-track {
+  margin: 0 -10px;
+}
+@media screen and (max-width: 768px) {
+  #similar-trips .slick-track {
+    margin: 0 -6px;
+  }
+}
+@media screen and (min-width: 1640px) {
+  #similar-trips .slick-track {
+    margin: 0;
+  }
+}
+#similar-trips .slick-arrow.slick-disabled {
+  display: none !important;
 }
 #similar-trips .slick-prev {
   width: 63px;
@@ -14525,7 +14587,9 @@ nav .nav-tabs .nav-link.active {
   background: url("../../../trek-travel-theme/assets/images/testimonial-arrow.png") !important;
   transform: matrix(-1, 0, 0, 1, 0, 0);
   z-index: 1;
-  top: 40%;
+  scale: 0.9;
+  top: 27%;
+  left: -20px;
 }
 #similar-trips .slick-prev:before {
   content: unset !important;
@@ -14533,7 +14597,10 @@ nav .nav-tabs .nav-link.active {
 #similar-trips .slick-next {
   width: 63px;
   height: 63px;
-  right: 10%;
+  right: -25px;
+  scale: 0.9;
+  top: 34%;
+  right: 72px;
   background: url("../../../trek-travel-theme/assets/images/testimonial-arrow.png") !important;
 }
 #similar-trips .slick-next:before {
