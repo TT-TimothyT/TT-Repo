@@ -107,16 +107,27 @@ function tripCapacityValidation(is_return = true) {
 function tt_validate_email(email = '') {
   var isValid = true;
   if (email) {
-    let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+    let regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     isValid = regex.test(email);
+  }
+  return isValid;
+}
+function tt_validate_name(name = '') {
+  var isValid = false;
+  if (name) {
+    let regex = /^[A-Za-z-' ]+$/i;
+    isValid = regex.test(name);
   }
   return isValid;
 }
 function tt_validate_phone(phone = '') {
   var isValid = true;
   if (phone) {
-    let regex = new RegExp("^[0-9]{10}$");
+    let regex = /^(\+\d{1,2}\s?)?(\(\d{3}\)|\d{3})([-.\s]?)\d{3}([-.\s]?)\d{4}$/;
     isValid = regex.test(phone);
+  }
+  if ( phone.length === 0 ) {
+    isValid = false;
   }
   return isValid;
 }
@@ -197,29 +208,14 @@ function checkout_steps_validations(step = 1) {
       }
       if (isRequired == 'required') {
         if (CurrentVal == '' || CurrentVal == undefined || CurrentVal == 'undefined') {
-          jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-invalid');
-          jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-validated');
-          jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
           isValidated = true;
         } else {
           if (CurrentName == 'email' && tt_validate_email(CurrentVal) == false) {
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-invalid');
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-validated');
             isValidated = true;
           }else if ((CurrentName == 'shipping_phone' || validationType == 'phone') && tt_validate_phone(CurrentVal) == false) {
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-invalid');
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-validated');
-            jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
             isValidated = true;
           } else if ((CurrentName == 'custentity_birthdate' || validationType == 'date') && tt_validate_age(CurrentVal) == false) {
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-invalid');
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-validated');
-            jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
             isValidated = true;
-          } else {
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-invalid');
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-validated');
-            jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').find(".invalid-feedback").css("display", "none");
           }
         }
         validationMessages.push(`Step 1: Field [name: ${CurrentName}, Value: ${CurrentVal}]`);
@@ -393,7 +389,7 @@ jQuery(document).ready(function () {
   jQuery('#minus').addClass('qtydisable');
   function addfields(countnum) {
     var add = countnum;
-    jQuery('#qytguest').append('<div class="guest-checkout__guests guests"><p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest ' + add + '</p><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_fname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="First Name" value=""><label for="floatingInputGrid">First Name</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_lname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="Last Name" value=""><label for="floatingInputGrid">Last Name</label></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="email" name="guests[' + add + '][guest_email]" class="form-control tt_guest_inputs" required="required" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value=""><label for="floatingInputGrid">Email</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" class="form-control tt_guest_inputs" required="required" data-validation="phone" data-type="input" id="floatingInputGrid" name="guests[' + add + '][guest_phone]" placeholder="Phone" value=""><label for="floatingInputGrid">Phone</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class=""><select required="required" class="form-select py-4 tt_guest_inputs" required="required" data-validation="text" data-type="input" name="guests[' + add + '][guest_gender]" id="floatingSelectGrid" aria-label="Floating label select example"><option value="0">Gender</option><option value="1">Male</option><option value="2">Female</option></select><div class="invalid-feedback"><img class="invalid-icon" /> Please select gender.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="date" name="guests[' + add + '][guest_dob]" class="form-control tt_guest_inputs" required="required" data-validation="date" data-type="date" id="floatingInputGrid" placeholder="Date of Birth" value=""><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback"><img class="invalid-icon" /> Age must be 16 years old or above, Please enter correct date of birth.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row pt-1"><div class="col-md px-0 d-flex align-items-center guest-checkout__checkbox-gap"><input type="checkbox" name="guests[' + add + '][guest_as_me_mailing]" class="guest-checkout__checkbox"><label>This guest shares the same mailing address as me</label></div><hr></div>');
+    jQuery('#qytguest').append('<div class="guest-checkout__guests guests"><p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest ' + add + '</p><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_fname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="First Name" value=""><label for="floatingInputGrid">First Name</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_lname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="Last Name" value=""><label for="floatingInputGrid">Last Name</label></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="email" name="guests[' + add + '][guest_email]" class="form-control tt_guest_inputs" required="required" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value=""><label for="floatingInputGrid">Email</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" class="form-control tt_guest_inputs" required="required" data-validation="phone" data-type="input" id="floatingInputGrid" name="guests[' + add + '][guest_phone]" placeholder="Phone" value=""><label for="floatingInputGrid">Phone</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class=""><select required="required" class="form-select py-4 tt_guest_inputs" required="required" data-validation="text" data-type="input" name="guests[' + add + '][guest_gender]" id="floatingSelectGrid" aria-label="Floating label select example"><option value="1">Male</option><option value="2">Female</option></select><div class="invalid-feedback"><img class="invalid-icon" /> Please select gender.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="date" name="guests[' + add + '][guest_dob]" class="form-control tt_guest_inputs" required="required" data-validation="date" data-type="date" id="floatingInputGrid" placeholder="Date of Birth" value=""><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback"><img class="invalid-icon" /> Age must be 16 years old or above, Please enter correct date of birth.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row pt-1"><div class="col-md px-0 d-flex align-items-center guest-checkout__checkbox-gap"><input type="checkbox" name="guests[' + add + '][guest_as_me_mailing]" class="guest-checkout__checkbox"><label>This guest shares the same mailing address as me</label></div><hr></div>');
   }
   //jQuery('.guestnumber').keyup(function () {
   jQuery('.guestnumber').on('keyup', function () {
@@ -2329,7 +2325,6 @@ jQuery(document).on('click', 'input[name="is_same_billing_as_mailing"]', functio
     jQuery('input[name="billing_postcode"]').val(shipping_postcode);
   }else{
     if (billingCountry == '') {
-      console.log("iffffff")
       jQuery('select[name="billing_country"]').val('').trigger('change');
       jQuery('select[name="billing_state"]').val('').trigger('change');
       jQuery('input[name="billing_state"]').val('').trigger('change');
@@ -2508,7 +2503,7 @@ jQuery('body').on('change', '.tt_rider_level_select', function () {
     jQuery(this).closest('div.form-floating').removeClass('woocommerce-invalid');
     jQuery(this).closest('div.form-floating').addClass('woocommerce-validated');
   } else {
-    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "block")
+    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none")
     jQuery(this).closest('div.form-floating').addClass('woocommerce-invalid');
     jQuery(this).closest('div.form-floating').removeClass('woocommerce-validated');
 
@@ -3045,12 +3040,351 @@ jQuery('body').on('shown.bs.modal', '#globalSearchModal', function () {
     }
   }
 });
-if( jQuery('select[name="shipping_country"]').length > 0 ){
-  jQuery(document).on('change', 'select[name="shipping_country"]', function(){
-    jQuery('select[name="shipping_state"]').attr('required', 'required');
-    checkout_steps_validations(1);
-  });
-}
+
+jQuery(document).on('change blur', 'input[name="shipping_first_name"]', function () {
+  jQuery('input[name="shipping_first_name"]').attr('required', 'required');
+  if (tt_validate_name(jQuery('input[name="shipping_first_name"]').val()) == false) {
+    jQuery(`input[name="shipping_first_name"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_first_name"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="shipping_first_name"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_first_name"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="shipping_last_name"]', function () {
+  jQuery('input[name="shipping_last_name"]').attr('required', 'required');
+  if (tt_validate_name(jQuery('input[name="shipping_last_name"]').val()) == false) {
+    jQuery(`input[name="shipping_last_name"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_last_name"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="shipping_last_name"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_last_name"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="shipping_phone"]', function () {
+  jQuery('input[name="shipping_phone"]').attr('required', 'required');
+  if (tt_validate_phone(jQuery('input[name="shipping_phone"]').val()) == false) {
+    jQuery(`input[name="shipping_phone"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_phone"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="shipping_phone"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_phone"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="custentity_birthdate"]', function () {
+  jQuery('input[name="custentity_birthdate"]').attr('required', 'required');
+  if (tt_validate_age(jQuery('input[name="custentity_birthdate"]').val()) == false || jQuery('input[name="custentity_birthdate"]').val().length == 0) {
+    jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="shipping_address_1"]', function () {
+  jQuery('input[name="shipping_address_1"]').attr('required', 'required');
+  if (jQuery('input[name="shipping_address_1"]').val() == false) {
+    jQuery(`input[name="shipping_address_1"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_address_1"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="shipping_address_1"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_address_1"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="shipping_city"]', function () {
+  jQuery('input[name="shipping_city"]').attr('required', 'required');
+  if (jQuery('input[name="shipping_city"]').val() == false) {
+    jQuery(`input[name="shipping_city"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_city"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="shipping_city"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_city"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="shipping_postcode"]', function () {
+  jQuery('input[name="shipping_postcode"]').attr('required', 'required');
+  if (jQuery('input[name="shipping_postcode"]').val() == false) {
+    jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change', 'select[name="shipping_country"]', function () {
+  jQuery('select[name="shipping_country"]').attr('required', 'required');
+  checkout_steps_validations(1);
+  jQuery('select[name="shipping_state"]').selectedIndex = 0;
+  if (jQuery('select[name="shipping_country"]').val() == 'Select a country / region…') {
+    jQuery(`select[name="shipping_country"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`select[name="shipping_country"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`select[name="shipping_country"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`select[name="shipping_country"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none !important");
+  }
+});
+
+jQuery(document).on('change blur', 'select[name="shipping_state"]', function () {
+  jQuery('select[name="shipping_state"]').attr('required', 'required');
+  if (jQuery('select[name="shipping_state"]').val() == false) {
+    jQuery(`select[name="shipping_state"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`select[name="shipping_state"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`select[name="shipping_state"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`select[name="shipping_state"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name*="[guest_fname]"]', function () {
+  jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+  if (tt_validate_name(jQuery(this).val()) == false) {
+    jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name*="[guest_lname]"]', function () {
+  jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+  if (tt_validate_name(jQuery(this).val()) == false) {
+    jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name*="[guest_email]"]', function () {
+  jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+  if (tt_validate_email(jQuery(this).val()) == false || jQuery(this).val() == '') {
+    jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name*="[guest_phone]"]', function () {
+  jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+  if (tt_validate_phone(jQuery(this).val()) == false) {
+    jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name*="[guest_gender]"]', function () {
+  jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+  if (tt_validate_phone(jQuery(this).val()) == false) {
+    jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name*="[guest_dob]"]', function () {
+  jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+  if (tt_validate_age(jQuery(this).val()) == false || jQuery(this).val() == "" ) {
+    jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="billing_first_name"]', function () {
+  jQuery('input[name="billing_first_name"]').attr('required', 'required');
+  if (tt_validate_name(jQuery('input[name="billing_first_name"]').val()) == false) {
+    jQuery(`input[name="billing_first_name"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="billing_first_name"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="billing_first_name"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="billing_first_name"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="billing_last_name"]', function () {
+  jQuery('input[name="billing_last_name"]').attr('required', 'required');
+  if (tt_validate_name(jQuery('input[name="billing_last_name"]').val()) == false) {
+    jQuery(`input[name="billing_last_name"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="billing_last_name"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="billing_last_name"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="billing_last_name"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="billing_address_1"]', function () {
+  jQuery('input[name="billing_address_1"]').attr('required', 'required');
+  if (jQuery('input[name="billing_address_1"]').val() == false) {
+    jQuery(`input[name="billing_address_1"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="billing_address_1"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="billing_address_1"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="billing_address_1"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="billing_state"]', function () {
+  jQuery('input[name="billing_state"]').attr('required', 'required');
+  if (jQuery('input[name="billing_state"]').val() == false) {
+    jQuery(`input[name="billing_state"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="billing_state"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="billing_state"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="billing_state"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="billing_city"]', function () {
+  jQuery('input[name="billing_city"]').attr('required', 'required');
+  if (jQuery('input[name="billing_city"]').val() == false) {
+    jQuery(`input[name="billing_city"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="billing_city"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="billing_city"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="billing_city"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="billing_postcode"]', function () {
+  jQuery('input[name="billing_postcode"]').attr('required', 'required');
+  if (jQuery('input[name="billing_postcode"]').val() == false) {
+    jQuery(`input[name="billing_postcode"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`input[name="billing_postcode"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`input[name="billing_postcode"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`input[name="billing_postcode"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'select[name="billing_country"]', function () {
+  jQuery('select[name="billing_country"]').attr('required', 'required');
+  if (jQuery('select[name="billing_country"]').val() == false) {
+    jQuery(`select[name="billing_country"]`).closest('div.form-row').addClass('woocommerce-invalid');
+    jQuery(`select[name="billing_country"]`).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+  } else {
+    jQuery(`select[name="billing_country"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+    jQuery(`select[name="billing_country"]`).closest('div.form-row').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).ready(function () {
+  if (jQuery('input[name="shipping_first_name"]').val()) {
+    jQuery(`input[name="shipping_first_name"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="shipping_last_name"]').val()) {
+    jQuery(`input[name="shipping_last_name"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="shipping_phone"]').val()) {
+    jQuery(`input[name="shipping_phone"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="custentity_birthdate"]').val()) {
+    jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="shipping_address_1"]').val()) {
+    jQuery(`input[name="shipping_address_1"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="shipping_address_1"]').val()) {
+    jQuery(`input[name="shipping_address_1"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="shipping_city"]').val()) {
+    jQuery(`input[name="shipping_city"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('select[name="shipping_country"]').val()) {
+    jQuery(`select[name="shipping_country"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="shipping_address_1"]').val()) {
+    jQuery(`input[name="shipping_address_1"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="shipping_postcode"]').val()) {
+    jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="custentity_gender"]')) {
+    jQuery(`input[name="custentity_gender"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="email"]').val()) {
+    jQuery(`input[name="email"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="billing_first_name"]').val()) {
+    jQuery(`input[name="billing_first_name"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="billing_last_name"]').val()) {
+    jQuery(`input[name="billing_last_name"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="billing_address_1"]').val()) {
+    jQuery(`input[name="billing_address_1"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="billing_address_2"]').val()) {
+    jQuery(`input[name="billing_address_2"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="billing_city"]').val()) {
+    jQuery(`input[name="billing_city"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+  if (jQuery('input[name="billing_postcode"]').val()) {
+    jQuery(`input[name="billing_postcode"]`).closest('div.form-row').addClass('woocommerce-validated');
+  }
+});
 
 function initialDatalayerCall() {
   var priceText = jQuery(".checkout-summary__price span.woocommerce-Price-amount.amount").first().text().replace(/[^\w\s]/g, "")
