@@ -178,7 +178,10 @@ function trek_wp_enqueue_scripts_cb()
     wp_enqueue_script('trek-trips-compare');
     wp_localize_script('trek-developer', 'trek_JS_obj', array(
         'ajaxURL' => admin_url('admin-ajax.php'),
-        'product_images' => tt_get_product_image(),
+        /**
+         * Most likely we won't need this, as this function is looping all products for no obvious reason
+         */
+        // 'product_images' => tt_get_product_image(),
         'blank_image' => DEFAULT_IMG,
         'temp_dir' => get_template_directory_uri(),
         'trip_booking_limit' => $trip_booking_limit,
@@ -1655,6 +1658,15 @@ function trek_tt_load_more_blog_action_cb()
     exit;
 }
 
+/**
+ * tt_get_product_image
+ * 
+ * Most likely we do not need this function and it's a leftover.
+ * It loops all published products for no apparent reason and it's making a HUGE call
+ *
+ * @deprecated We do not need this function as it does not make any sense
+ * @return void
+ */
 function tt_get_product_image()
 {
     $args = ['post_type' => 'product', 'posts_per_page' => -1, 'post_status' => 'publish'];
