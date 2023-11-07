@@ -168,6 +168,7 @@ export const ConfigsPage = ( { isWidget, wphbData } ) => {
 			sourceLang={ lang }
 			sourceUrls={ wphbData.links }
 			requestsData={ wphbData.requestsData }
+			proItems={ ! wphbData.module.isMember ? [ 'Uptime' ] : '' }
 		/>
 	);
 };

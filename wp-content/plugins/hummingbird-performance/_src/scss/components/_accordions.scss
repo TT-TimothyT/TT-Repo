@@ -122,3 +122,10 @@
 		div:last-of-type { justify-content: flex-end; }
 	}
 }
+
+// Configs page accordion item override description css.
+#wrap-wphb-configs {
+	.sui-accordion-item-header {
+		div:nth-child(2) { justify-content: left; }
+	}
+}

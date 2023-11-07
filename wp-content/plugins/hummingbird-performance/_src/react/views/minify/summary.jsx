@@ -32,11 +32,11 @@ import useSummaryUpdate from './utils/summaryUpdate'
  * @return {JSX.Element} Summary meta box
  */
 export const MinifySummary = ( props ) => {
-	const summaryUpdate = useSummaryUpdate()
+	const summaryUpdate = useSummaryUpdate();
 	const didMount = useRef( false );
 	const api = new HBAPIFetch();
 	const [ loading, setLoading ] = useState( true );
-	const { cdn, safeMode, assets, hasResolved, delayJs } = useSelect( ( select ) => {
+	const { cdn, safeMode, assets, hasResolved, delayJs, criticalCss } = useSelect( ( select ) => {
 		if ( ! select( STORE_NAME ).hasStartedResolution( 'getOptions' ) ) {
 			select( STORE_NAME ).getOptions();
 		}
@@ -47,6 +47,7 @@ export const MinifySummary = ( props ) => {
 			assets: select( STORE_NAME ).getAssets(),
 			hasResolved: select( STORE_NAME ).hasFinishedResolution( 'getOptions' ) && select( STORE_NAME ).hasFinishedResolution( 'getAssets' ),
 			delayJs: select( STORE_NAME ).getOption( 'delay_js' ),
+			criticalCss: select( STORE_NAME ).getOption( 'critical_css' ),
 		};
 	}, [] );
 
@@ -66,16 +67,24 @@ export const MinifySummary = ( props ) => {
 	useEffect( () => {
 		if ( didMount.current ) {
 			let viewDelayJs = document.getElementById("view_delay_js");
-			if( viewDelayJs ) {
+			if ( viewDelayJs ) {
 				if ( viewDelayJs.checked !== delayJs  ) {
 					viewDelayJs.checked = delayJs;
 					jQuery(viewDelayJs).trigger("change");
 				}			
 			}
+
+			let viewCriticalCss = document.getElementById("critical_css_toggle");
+			if ( viewCriticalCss ) {
+				if ( viewCriticalCss.checked !== criticalCss  ) {
+					viewCriticalCss.checked = criticalCss;
+					jQuery(viewCriticalCss).trigger("change");
+				}			
+			}
 		} else {
 			didMount.current = true;
 		}				
-	}, [ delayJs ] );
+	}, [ delayJs, criticalCss ] );
 
 	/**
 	 * Get original/compressed sizes.
@@ -155,7 +164,13 @@ export const MinifySummary = ( props ) => {
 	const toggleCDN = ( e ) => {
 
 		api.post( 'minify_toggle_cdn', e.target.checked )
-			.then( () => {
+			.then( ( response ) => {
+				if ( response.cdn ) {
+					window.wphbMixPanel.enableFeature( 'CDN' );
+				} else {
+					window.wphbMixPanel.disableFeature( 'CDN' );
+				}
+
 				dispatch( STORE_NAME ).invalidateResolution( 'getOptions' );
 			} )
 			.catch( window.console.log );
@@ -185,14 +200,41 @@ export const MinifySummary = ( props ) => {
 	};
 
 	/**
-	 * Modal for non logged user for delay js.
+	 * Toggle Critical CSS.
+	 *
+	 * @since 3.6.0
+	 *
+	 * @param {Object} e
+	 */
+	const toggleCritical = ( e ) => {
+
+		api.post( 'minify_toggle_critical_css', e.target.checked )
+			.then( ( response ) => {
+				window.wphbMixPanel.trackCriticalCSSEvent( response.criticalCss, 'ao_summary', response.mode, '', '' );
+
+				dispatch( STORE_NAME ).invalidateResolution( 'getOptions' );
+				if ( 'activate' === response.criticalCss ) {
+					WPHB_Admin.notices.show( wphb.strings.enableCriticalCss, 'blue', false );
+					WPHB_Admin.minification.triggerCriticalStatusUpdateAjax( response.htmlForStatusTag );
+				} else if ( 'deactivate' === response.criticalCss ) {
+					WPHB_Admin.minification.criticalUpdateStatusTag( response.htmlForStatusTag );
+				}
+
+				const styleType = 'activate' === response.criticalCss ? 'block' : 'deactivate' === response.criticalCss ? 'none' : '';
+				WPHB_Admin.minification.hbToggleElement( 'wphb-clear-critical-css', styleType );
+			} )
+			.catch( window.console.log );
+	};
+
+	/**
+	 * Modal for non logged user for delay js and Critical CSS.
 	 *
 	 * @since 3.5.0
 	 *
 	 * @param {Object} e
 	 */
-	 const triggerDelayModal = ( e ) => {
-		WPHB_Admin.minification.hbTriggerDelayJsModal( e.target.dataset.url, e.target.dataset.location );
+	 const triggerUpsellModal = ( e ) => {
+		WPHB_Admin.minification.hbTriggerUpsellModal( e.target.dataset.url, e.target.dataset.location, e.target.dataset.modalname );
 
 		return false;
 	};
@@ -278,7 +320,21 @@ export const MinifySummary = ( props ) => {
 		} else {
 			delayDetails =
 				<Tooltip text={ __( 'Delay JavaScript Execution', 'wphb' ) } classes={ [ 'sui-tooltip-top-right' ] }>
-					<Toggle data-location='ao_summary' data-url={ props.wphbData.links.delayUpsell } onChange={ triggerDelayModal } />
+					<Toggle data-location='ao_summary' data-url={ props.wphbData.links.delayUpsell } data-modalname="delay-js" onChange={ triggerUpsellModal } />
+				</Tooltip>;
+		}
+
+		let criticalCssDetails;
+
+		if ( props.wphbData.isMember ) {
+			criticalCssDetails =
+				<Tooltip text={ __( 'Generate Critical CSS', 'wphb' ) } classes={ [ 'sui-tooltip-top-right' ] }>
+					<Toggle id="critical_css" checked={ criticalCss } onChange={ toggleCritical } />
+				</Tooltip>;
+		} else {
+			criticalCssDetails =
+				<Tooltip text={ __( 'Generate Critical CSS', 'wphb' ) } classes={ [ 'sui-tooltip-top-right' ] }>
+					<Toggle data-location='ao_summary' data-url={ props.wphbData.links.criticalUpsell } data-modalname="critical-css" onChange={ triggerUpsellModal } />
 				</Tooltip>;
 		}
 
@@ -300,6 +356,13 @@ export const MinifySummary = ( props ) => {
 					{ ! props.wphbData.isMember && <Tag type="pro" value={ __( 'Pro', 'wphb' ) } /> }
 				</React.Fragment>,
 				details: delayDetails,
+			},
+			{
+				label: <React.Fragment>
+					{ __( 'Generate Critical CSS', 'wphb' ) }
+					{ ! props.wphbData.isMember && <Tag type="pro" value={ __( 'Pro', 'wphb' ) } /> }
+				</React.Fragment>,
+				details: criticalCssDetails,
 			},
 		];
 

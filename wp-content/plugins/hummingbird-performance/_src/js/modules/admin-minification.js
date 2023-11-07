@@ -15,6 +15,8 @@ import MinifyScanner from '../scanners/MinifyScanner';
  * External dependencies
  */
  const MixPanel = require( 'mixpanel-browser' );
+ let criticalAjaxInterval;
+ const ajaxExecutionInterval = 10000; // The interval set to 10 seconds
 
 ( function( $ ) {
 	'use strict';
@@ -27,6 +29,12 @@ import MinifyScanner from '../scanners/MinifyScanner';
 
 		init() {
 			const self = this;
+			if ('undefined' !== typeof wphb.minification.criticalStatusForQueue.status && ( 'pending' === wphb.minification.criticalStatusForQueue.status || 'processing' === wphb.minification.criticalStatusForQueue.status ) ) {
+				criticalAjaxInterval = setInterval( this.criticalUpdateStatusNotice, ajaxExecutionInterval );
+			}
+			if ( wphb.minification.triggerCriticalUpsellModal ) {
+				self.hbTriggerUpsellModal( wphb.minification.gutenbergUpgradeCTAUrl, 'eo_settings', 'critical-css' );
+			}
 
 			// Init files scanner.
 			this.scanner = new MinifyScanner(
@@ -62,14 +70,37 @@ import MinifyScanner from '../scanners/MinifyScanner';
 					WPHB_Admin.notices.show();
 				} );
 			} );
+
 			// Delay Js Execution checkbox update status.
 			$( 'input[type=checkbox][name=delay_js]' ).on(
 				'change',
 				function() {
-					$( '#delay_js_file_exclude' ).toggleClass( 'sui-hidden' );			
+					$( '#delay_js_file_exclude' ).toggleClass( 'sui-hidden' );
 				}
-			);			
-			
+			);
+
+			// Critical CSS checkbox update status.
+			const criticalCss = $( 'input[type=checkbox][name=critical_css_option]' );
+			criticalCss.on( 'change', function() {
+				$( '#critical_css_file_exclude' ).toggleClass( 'sui-hidden' );
+			} );
+
+			// Critical CSS checkbox update status.
+			const criticalCssType = $( 'select[name=critical_css_type]' );
+			criticalCssType.on( 'change', function( e ) {
+				$( '.load_cs_options' ).addClass( 'sui-hidden' );
+				$( '.load_'+e.target.value ).removeClass( 'sui-hidden' );				
+			} );
+
+			$( '#manual_css_switch_now' ).on( 'click', function() {
+				if ( ! wphbReact.isMember ) {
+					self.hbTriggerUpsellModal( this.dataset.url, 'legacy_switch', 'critical-css' );
+					return;
+				}
+
+				window.WPHB_Admin.minification.criticalCSSSwitchMode('critical_css');				
+			} );
+
 			$( 'input[type=checkbox][name=debug_log]' ).on(
 				'change',
 				function() {
@@ -103,14 +134,27 @@ import MinifyScanner from '../scanners/MinifyScanner';
 							document.getElementById("wphb-minification-tools-form").dispatchEvent(eventUpdateSummary);
 							if ( response.is_delay_value_updated ) {
 								window.wphbMixPanel.trackDelayJSEvent( {
-									'update_type': (response.delay_js) ? 'activate' : 'deactivate',
+									'update_type': response.delay_js_update_type,
 									'Location': 'eo_settings',
 									'Timeout': response.delay_js_timeout,
 									'Excluded Files': (response.delay_js_exclude) ? 'yes' : 'no',
 								} );
 							}
 
-							WPHB_Admin.notices.show( response.message );
+							if ( response.isCriticalValueUpdated ) {
+								window.wphbMixPanel.trackCriticalCSSEvent( response.updateType, response.location, response.mode, response.settingsModified, response.settingsDefault );
+							}
+
+							if ( response.isStatusTagNeedsUpdate ) {
+								self.triggerCriticalStatusUpdateAjax( response.htmlForStatusTag );
+							} else if ( 'deactivate' === response.updateType ) {
+								self.criticalUpdateStatusTag( response.htmlForStatusTag );
+							}
+
+							const styleType = 'activate' === response.updateType ? 'block' : 'deactivate' === response.updateType ? 'none' : '';
+							self.hbToggleElement( 'wphb-clear-critical-css', styleType );
+
+							WPHB_Admin.notices.show( response.message, 'blue', false );
 						} else {
 							WPHB_Admin.notices.show( response.message, 'error' );
 						}
@@ -274,36 +318,100 @@ import MinifyScanner from '../scanners/MinifyScanner';
 					);
 				} );
 			}
-
+			// Clear critical css files.
+			$( '#wphb-clear-critical-css' ).on( 'click', ( e ) => {
+				e.preventDefault();
+				self.clearCriticalCss( e.target );
+			} );
 			return this;
 		},
 
 		/**
-		 * Trigger modal for non member for delay JS.
+		 * Call ajax to get the critical css status for queue.
+		 *
+		 * @param {string} statusHtml
+		 */
+		 triggerCriticalStatusUpdateAjax( statusHtml ) {
+			criticalAjaxInterval = setInterval( this.criticalUpdateStatusNotice, ajaxExecutionInterval );
+			this.criticalUpdateStatusTag( statusHtml );
+		 },
+
+		/**
+		 * Call ajax to get the critical css status for queue.
+		 */
+		criticalUpdateStatusNotice() {
+			Fetcher.minification
+			.getCriticalStatusForQueue()
+			.then( ( response ) => {
+				if ( 'undefined' !== typeof response.criticalStatusForQueue.status && 'complete' === response.criticalStatusForQueue.status ) {
+					clearInterval( criticalAjaxInterval );
+					WPHB_Admin.minification.criticalUpdateStatusTag( response.htmlForStatusTag );
+					const criticalDisplayError = 'critical_display_error_message';
+
+					if ( 'COMPLETE' === response.criticalStatusForQueue.result ) {
+						WPHB_Admin.notices.show( getString( 'criticalGeneratedNotice' ), 'success', false );
+						WPHB_Admin.minification.hbToggleElement( criticalDisplayError, 'none' );
+					} else if ( 'ERROR' === response.criticalStatusForQueue.result ) {
+						window.SUI.closeNotice( 'wphb-ajax-update-notice' );
+						window.wphbMixPanel.track( 'error_encountered', {
+							critical_css_error: response.errorCode
+						} );
+						WPHB_Admin.minification.hbToggleElement( criticalDisplayError, 'block' );
+						document.getElementById( 'critical_error_message_tag' ).innerHTML = response.criticalErrorMessage;
+					}
+				}
+			} );
+		},
+
+		/**
+		 * Update the status html.
+		 *
+		 * @param {string} statusHtml
+		 */
+		 criticalUpdateStatusTag( statusHtml ) {
+			document.getElementById( 'critical_progress_tag' ).remove();
+			document.getElementById( 'generate_css_label' ).insertAdjacentHTML( 'afterend', statusHtml );
+		},
+
+		/**
+		 * Toggle an element.
+		 */
+		hbToggleElement( elementId, styleType ) {
+			if ( '' === styleType ) {
+				return;
+			}
+
+			const regenerateButton = document.getElementById( elementId );
+			regenerateButton.style.display = styleType;
+		},
+
+		/**
+		 * Trigger modal for non member for delay JS and critical CSS.
 		 *
 		 * @param {string} url
 		 * @param {string} location
+		 * @param {string} modalname
 		 */
-		 hbTriggerDelayJsModal( url, location ) {
-			const getTryProTag = document.getElementById( 'delay-js-non-pro-member-try-pro' );
+		 hbTriggerUpsellModal( url, location, modalname ) {
+			const getTryProTag = document.getElementById( modalname + '-non-pro-member-try-pro' );
 
 			if ( getTryProTag ) {
 				getTryProTag.setAttribute( "href", url );
 				getTryProTag.setAttribute( "data-location", location );
 			}
 
-			const getConnectUpsell = document.getElementById( 'delay-js-non-pro-member-connect' );
+			const getConnectUpsell = document.getElementById( modalname + '-non-pro-member-connect' );
 			if ( getConnectUpsell ) {
 				getConnectUpsell.setAttribute( "data-location", location );
 			}
 
-			const getDismissButton = document.getElementById( 'delay-js-non-pro-member-dismiss-button' );
+			const getDismissButton = document.getElementById( modalname + '-non-pro-member-dismiss-button' );
 			if ( getDismissButton ) {
 				getDismissButton.setAttribute( "data-location", location );
 			}
 			
 			window.SUI.openModal(
-				'delay-js-non-pro-member-modal',
+				modalname + '-non-pro-member-modal',
 				'wpbody-content'
 			);
 		},
@@ -317,6 +425,20 @@ import MinifyScanner from '../scanners/MinifyScanner';
 			window.SUI.closeModal();
 
 			window.wphbMixPanel.trackDelayJSUpsell( {
+				'Modal Action': element.dataset.action,
+				'Location': element.dataset.location,
+			} );
+		},
+
+		/**
+		 * Trigger modal for non member for Critical CSS.
+		 *
+		 * @param {object} element
+		 */
+		 hbTrackCriticalMPEvent( element ) {
+			window.SUI.closeModal();
+
+			window.wphbMixPanel.trackCriticalCSSUpsell( {
 				'Modal Action': element.dataset.action,
 				'Location': element.dataset.location,
 			} );
@@ -435,6 +557,47 @@ import MinifyScanner from '../scanners/MinifyScanner';
 			Fetcher.advanced.clearOrphanedBatch( count ).then( () => {
 				window.location.reload();
 			} );
+		},
+
+		/**
+		 * Clear critical CSS.
+		 *
+		 * @since 3.6.0
+		 *
+		 * @param {Object} target Target button that was clicked.
+		 */
+		clearCriticalCss: ( target ) => {
+			target.classList.add( 'sui-button-onload-text' );
+			Fetcher.minification.clearCriticalCssFiles().then( ( response ) => {
+				if ( 'undefined' !== typeof response && response.success ) {
+					window.wphbMixPanel.track( 'critical_css_cache_purge', {
+						location: 'eo_settings'
+					} );
+
+					WPHB_Admin.minification.triggerCriticalStatusUpdateAjax( response.htmlForStatusTag );
+					$( '.box-caching-summary span.sui-summary-large' ).html( '0' ); 
+					WPHB_Admin.notices.show( getString( 'successCriticalCssPurge' ), 'blue', false );
+				} else {
+					WPHB_Admin.notices.show( getString( 'errorCriticalCssPurge' ), 'error' );
+				}
+			} ).finally( () => target.classList.remove( 'sui-button-onload-text' ) );
+		},
+
+		criticalCSSSwitchMode( mode ) {
+			$('#critical_css_mode').val( mode )
+			if ( 'manual_css' === mode ) {
+				$("#manual_css_delivery_box").removeClass('sui-hidden');
+				$("#critical_css_delivery_box").addClass('sui-hidden');
+			} else {
+				$("#manual_css_delivery_box").addClass('sui-hidden');
+				$("#critical_css_delivery_box").removeClass('sui-hidden');
+				const manualCriticalBox = document.getElementById( 'manual_critical_css' ).value;
+				const advancedCriticalBox = document.getElementById( 'critical_css_advanced' ).value;
+
+				if ( '' === advancedCriticalBox ) {
+					document.getElementById( 'critical_css_advanced' ).value = manualCriticalBox;
+				}
+			}
 		},
 	}; // End WPHB_Admin.minification.
 }( jQuery ) );

@@ -199,8 +199,25 @@ class AJAX {
 		add_action( 'wp_ajax_wphb_upload_config', array( $this, 'upload_config' ) );
 		add_action( 'wp_ajax_wphb_apply_config', array( $this, 'apply_config' ) );
 
+		// Clear Critical Css.
+		add_action( 'wp_ajax_wphb_clear_critical_css_files', array( $this, 'clear_critical_css_files_and_regenerate' ) );
+
+		// Create Critical Css.
+		add_action( 'wp_ajax_wphb_gutenberg_create_css_file', array( $this, 'gutenberg_create_css_file' ) );
+		// Re-Create Critical Css.
+		add_action( 'wp_ajax_wphb_gutenberg_recreate_css_file', array( $this, 'gutenberg_recreate_css_file' ) );
+		// Revert Critical Css.
+		add_action( 'wp_ajax_wphb_gutenberg_revert_css_file', array( $this, 'gutenberg_revert_css_file' ) );
+		// Get Critical Css status for single post.
+		add_action( 'wp_ajax_wphb_gutenberg_get_critical_status_for_single_post', array( $this, 'gutenberg_get_critical_status_for_single_post' ) );
+
+		// Get Critical Css status for single post.
+		add_action( 'wp_ajax_wphb_get_critical_status_for_queue', array( $this, 'get_critical_status_for_queue' ) );
+
 		// Toggle Delay Js.
 		add_action( 'wp_ajax_wphb_react_minify_toggle_delay_js', array( $this, 'minification_toggle_delay' ) );
+		// Toggle Critical CSS.
+		add_action( 'wp_ajax_wphb_react_minify_toggle_critical_css', array( $this, 'minify_toggle_critical_css' ) );
 	}
 
 	/**
@@ -493,9 +510,10 @@ class AJAX {
 				Performance::set_doing_report( false );
 				wp_send_json_success(
 					array(
-						'finished'     => true,
-						'mobileScore'  => $mobile,
-						'desktopScore' => $desktop,
+						'finished'        => true,
+						'mobileScore'     => $mobile,
+						'desktopScore'    => $desktop,
+						'HBSmushFeatures' => implode( ',', Utils::get_active_features() ),
 					)
 				);
 			}
@@ -541,9 +559,10 @@ class AJAX {
 
 			wp_send_json_success(
 				array(
-					'finished'     => true,
-					'mobileScore'  => $mobile,
-					'desktopScore' => $desktop,
+					'finished'        => true,
+					'mobileScore'     => $mobile,
+					'desktopScore'    => $desktop,
+					'HBSmushFeatures' => implode( ',', Utils::get_active_features() ),
 				)
 			);
 		}
@@ -1245,13 +1264,30 @@ class AJAX {
 			die();
 		}
 
+		$minify_options = Settings::get_settings( 'minify' );
+		$message        = __( 'Settings updated', 'wphb' );
+
 		parse_str( wp_unslash( $_POST['form'] ), $form ); // Input var ok.
 
-		$prev_delay_value = Settings::get_setting( 'delay_js', 'minify' );
-		$status           = Minify::save_css( $form['critical_css'] );
+		$prev_delay_value         = Settings::get_setting( 'delay_js', 'minify' );
+		$prev_delay_js_exclusions = Settings::get_setting( 'delay_js_exclusions', 'minify' );
+		$prev_delay_js_timeout    = Settings::get_setting( 'delay_js_timeout', 'minify' );
 
-		$delay_js = $form['delay_js'] ? true : false;
+		$old_critical_css_option                = $minify_options['critical_css'];
+		$old_critical_css_mode                  = $minify_options['critical_css_mode'];
+		$old_critical_page_types                = $minify_options['critical_page_types'];
+		$old_critical_skipped_custom_post_types = $minify_options['critical_skipped_custom_post_types'];
+		$old_critical_css_type                  = $minify_options['critical_css_type'];
+		$old_critical_css_remove_type           = $minify_options['critical_css_remove_type'];
+		$old_critical_css_manual_include        = Minify::get_css( 'manual-critical' );
 
+		if ( ! empty( $form['critical_css_option'] ) ) {
+			Minify::save_css( $form['critical_css_advanced'], 'manual-critical' );
+		}
+
+		$status = Minify::save_css( $form['critical_css'] );
+
+		$delay_js         = ! empty( $form['delay_js'] );
 		$delay_js_exclude = $form['delay_js_exclude'];
 		$delay_js_exclude = html_entity_decode( $delay_js_exclude );
 		$delay_js_timeout = (int) $form['delay_js_timeout'];
@@ -1259,17 +1295,121 @@ class AJAX {
 		Settings::update_setting( 'delay_js', $delay_js, 'minify' );
 		Settings::update_setting( 'delay_js_exclusions', $delay_js_exclude, 'minify' );
 		Settings::update_setting( 'delay_js_timeout', $delay_js_timeout, 'minify' );
+
+		// Update Critical CSS option.
+		$critical_css_mode          = $form['critical_css_mode'];
+		$critical_css_option        = ! empty( $form['critical_css_option'] ) && 'critical_css' === $critical_css_mode;
+		$critical_css_type          = $form['critical_css_type'];
+		$critical_css_remove_type   = ! empty( $form['critical_css_remove_type'] ) ? $form['critical_css_remove_type'] : '';
+		$is_status_tag_needs_update = false;
+
+		$critical_page_types                = array();
+		$critical_skipped_custom_post_types = array();
+
+		if ( isset( $form['critical_page_types'] ) && is_array( $form['critical_page_types'] ) ) { // Input var ok.
+			$critical_page_types = array_keys( wp_unslash( $form['critical_page_types'] ) ); // Input var ok.
+		}
+		if ( isset( $form['critical_skipped_custom_post_types'] ) && is_array( $form['critical_skipped_custom_post_types'] ) ) { // Input var ok.
+			$custom_post_types_data = wp_unslash( $form['critical_skipped_custom_post_types'] ); // Input var ok.
+			foreach ( $custom_post_types_data as $custom_post_type => $value ) {
+				if ( $value ) {
+					$critical_skipped_custom_post_types[] = $custom_post_type;
+				}
+			}
+		}
+
+		Settings::update_setting( 'critical_css', $critical_css_option, 'minify' );
+		Settings::update_setting( 'critical_css_type', $critical_css_type, 'minify' );
+		Settings::update_setting( 'critical_css_remove_type', $critical_css_remove_type, 'minify' );
+		Settings::update_setting( 'critical_page_types', $critical_page_types, 'minify' );
+		Settings::update_setting( 'critical_skipped_custom_post_types', $critical_skipped_custom_post_types, 'minify' );
+		Settings::update_setting( 'critical_css_mode', $critical_css_mode, 'minify' );
+
+		// In Case of toggle changes generate critical css enabled, clear the data otherwise.
+		if ( $old_critical_css_option !== $critical_css_option || $old_critical_css_type !== $critical_css_type ) {
+			if ( ! empty( $critical_css_option ) ) {
+				$is_status_tag_needs_update = true;
+				$critical_status            = Utils::get_module( 'critical_css' )->regenerate_critical_css();
+				$message                    = __( 'Settings updated. Generating Critical CSS, this could take about a minute.', 'wphb' );
+			}
+		}
+
 		// This will require a clear cache call.
-		Utils::get_module( 'minify' )->clear_cache( false );
+		Utils::get_module( 'page_cache' )->clear_cache();
+
+		// Track delay js modified values.
+		$is_delay_value_updated = $prev_delay_value !== $delay_js;
+		$delay_js_update_type   = ! empty( $delay_js ) ? 'activate' : 'deactivate';
+
+		if ( ! empty( $delay_js ) && $prev_delay_value === $delay_js ) {
+			if ( $prev_delay_js_exclusions !== $delay_js_exclude || $prev_delay_js_timeout !== $delay_js_timeout ) {
+				$delay_js_update_type   = 'modified';
+				$is_delay_value_updated = true;
+			}
+		}
+
+		// Track critical css modified values.
+		$settings_modified = array();
+		$settings_default  = array();
+
+		$is_critical_value_updated = $old_critical_css_option !== $critical_css_option;
+		$critical_css_update_type  = ! empty( $critical_css_option ) ? 'activate' : 'deactivate';
+
+		if ( ! empty( $critical_css_option ) && $old_critical_css_option === $critical_css_option ) {
+			if ( $old_critical_css_type !== $critical_css_type || $old_critical_css_remove_type !== $critical_css_remove_type ) {
+				$is_critical_value_updated = true;
+				$critical_css_update_type  = 'modified';
+			}
+
+			if ( $old_critical_page_types !== $critical_page_types || $old_critical_skipped_custom_post_types !== $critical_skipped_custom_post_types ) {
+				$settings_modified[] = 'post_type';
+			} else {
+				$settings_default[] = 'post_type';
+			}
+
+			if ( $old_critical_css_manual_include !== $form['critical_css_advanced'] ) {
+				$settings_modified[] = 'inclusions';
+			} else {
+				$settings_default[] = 'inclusions';
+			}
+		}
+
+		$critical_css_update_type  = ! empty( $settings_modified ) ? 'modified' : $critical_css_update_type;
+		$is_critical_value_updated = ! empty( $settings_modified ) ? true : $is_critical_value_updated;
+
+		// Track the mode for mixpanel.
+		if ( 'asynchronously' === $critical_css_type ) {
+			$critical_mode = 'abovefold_async';
+		} elseif ( 'remove_unused' === $critical_css_remove_type ) {
+			$critical_mode = 'fullpage_remove';
+		} else {
+			$critical_mode = 'fullpage_ui';
+		}
+
+		// Track the location for mixpanel.
+		$location = 'eo_settings';
+		if ( ! empty( $form['critical_css'] ) && ! empty( $critical_css_option ) && $old_critical_css_option !== $critical_css_option && $old_critical_css_mode !== $critical_css_mode ) {
+			$location = 'legacy';
+		}
 
 		wp_send_json_success(
 			array(
 				'delay_js'               => $delay_js,
-				'is_delay_value_updated' => $prev_delay_value !== $delay_js,
+				'delay_js_update_type'   => $delay_js_update_type,
+				'is_delay_value_updated' => $is_delay_value_updated,
 				'delay_js_timeout'       => $delay_js_timeout,
 				'delay_js_exclude'       => $delay_js_exclude,
+				'updateType'             => $critical_css_update_type,
+				'isCriticalValueUpdated' => $is_critical_value_updated,
+				'critical_css'           => $critical_css_option,
+				'settingsModified'       => implode( ',', $settings_modified ),
+				'settingsDefault'        => implode( ',', $settings_default ),
+				'mode'                   => $critical_mode,
+				'location'               => $location,
 				'success'                => $status['success'],
-				'message'                => $status['message'],
+				'message'                => $message,
+				'isStatusTagNeedsUpdate' => $is_status_tag_needs_update,
+				'htmlForStatusTag'       => Utils::get_module( 'critical_css' )->get_html_for_status_tag(),
 			)
 		);
 	}
@@ -1518,6 +1658,13 @@ class AJAX {
 		$adv_module = Utils::get_module( 'advanced' );
 		$options    = $adv_module->get_options();
 
+		$remove_query_strings   = $options['query_string'];
+		$disable_cart_fragments = $options['cart_fragments'];
+		$remove_emojis          = $options['emoji'];
+		$prefetch_dns           = $options['prefetch'];
+		$lazy_comments          = $options['lazy_load']['enabled'];
+		$preconnect             = $options['preconnect'];
+
 		// General settings tab.
 		if ( 'advanced-general-settings' === $form ) {
 			$skip = isset( $options['query_strings_global'] ) && $options['query_strings_global'] && ! Utils::is_ajax_network_admin();
@@ -1560,8 +1707,39 @@ class AJAX {
 			);
 		}
 
+		// Track MP event.
+		$mp_events = array();
+		if ( $remove_query_strings !== $options['query_string'] ) {
+			$mp_events[] = array( 'remove_query_strings' => $options['query_string'] );
+		}
+
+		if ( $disable_cart_fragments !== $options['cart_fragments'] ) {
+			$mp_events[] = array( 'disable_cart_fragments' => $options['cart_fragments'] );
+		}
+
+		if ( $remove_emojis !== $options['emoji'] ) {
+			$mp_events[] = array( 'remove_emojis' => $options['emoji'] );
+		}
+
+		if ( $prefetch_dns !== $options['prefetch'] ) {
+			$mp_events[] = array( 'prefetch_dns' => ! empty( $options['prefetch'] ) ? true : false );
+		}
+
+		if ( $preconnect !== $options['preconnect'] ) {
+			$mp_events[] = array( 'preconnect_domains' => ! empty( $options['preconnect'] ) ? true : false );
+		}
+
+		if ( $lazy_comments !== $options['lazy_load']['enabled'] ) {
+			$mp_events[] = array( 'lazy_comments' => $options['lazy_load']['enabled'] );
+		}
+
 		$adv_module->update_options( $options );
-		wp_send_json_success( array( 'success' => true ) );
+		wp_send_json_success(
+			array(
+				'success'   => true,
+				'mp_events' => $mp_events,
+			)
+		);
 	}
 
 	/**
@@ -1960,6 +2138,185 @@ class AJAX {
 	}
 
 	/**
+	 * Purge Critical css files.
+	 *
+	 * @since 3.6.0
+	 */
+	public function clear_critical_css_files_and_regenerate() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) { // Input var okay.
+			die();
+		}
+
+		$status = Utils::get_module( 'critical_css' )->regenerate_critical_css();
+
+		wp_send_json_success(
+			array(
+				'success'          => true,
+				'htmlForStatusTag' => Utils::get_module( 'critical_css' )->get_html_for_status_tag(),
+			)
+		);
+	}
+
+	/**
+	 * Create critical css for selected page from Gutenberg post edit screen.
+	 *
+	 * @since 3.6.0
+	 */
+	public function gutenberg_create_css_file() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) || ! isset( $_POST['postId'] ) ) { // Input var okay.
+			die();
+		}
+
+		$id = absint( wp_unslash( $_POST['postId'] ) );
+
+		// Also clear cache.
+		Utils::get_module( 'page_cache' )->clear_cache_action( $id );
+
+		$status                          = Utils::get_module( 'critical_css' )->create_post_css_file( $id );
+		$single_post_critical_css_status = Utils::get_module( 'critical_css' )->get_single_post_critical_css_status( $id );
+
+		if ( 'error' === $single_post_critical_css_status ) {
+			$type      = get_post_type( $id ) . '-' . $id;
+			$get_error = Utils::get_module( 'critical_css' )->get_queue_item_by_type( $type );
+			$message   = isset( $get_error->error_message ) ? $get_error->error_message : esc_html__( 'There was some error in generating Critical CSS', 'wphb' );
+		} elseif ( 'processing' === $single_post_critical_css_status ) {
+			$message = esc_html__( 'Critical CSS is being generated', 'wphb' );
+		} else {
+			$message = esc_html__( 'Critical CSS generated', 'wphb' );
+		}
+
+		wp_send_json_success(
+			array(
+				'success'                     => $status,
+				'singlePostCriticalCSSStatus' => $single_post_critical_css_status,
+				'message'                     => $message,
+			)
+		);
+	}
+
+	/**
+	 * Re Create critical css for selected page from Gutenberg post edit screen.
+	 *
+	 * @since 3.6.0
+	 */
+	public function gutenberg_recreate_css_file() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) || ! isset( $_POST['postId'] ) ) { // Input var okay.
+			die();
+		}
+
+		$id = absint( wp_unslash( $_POST['postId'] ) );
+		// Also clear cache.
+		Utils::get_module( 'page_cache' )->clear_cache_action( $id );
+		$status                          = Utils::get_module( 'critical_css' )->recreate_post_css_file( $id );
+		$single_post_critical_css_status = Utils::get_module( 'critical_css' )->get_single_post_critical_css_status( $id );
+		$message                         = '';
+
+		if ( 'processing' === $single_post_critical_css_status ) {
+			$message = esc_html__( 'Critical CSS is being re-generated', 'wphb' );
+		} elseif ( 'error' === $single_post_critical_css_status ) {
+			$type      = get_post_type( $id ) . '-' . $id;
+			$get_error = Utils::get_module( 'critical_css' )->get_queue_item_by_type( $type );
+			$message   = isset( $get_error->error_message ) ? $get_error->error_message : esc_html__( 'There was some error in generating Critical CSS', 'wphb' );
+		} elseif ( $single_post_critical_css_status ) {
+			$message = esc_html__( 'Critical CSS re-generated', 'wphb' );
+		}
+
+		wp_send_json_success(
+			array(
+				'success'                     => $status,
+				'singlePostCriticalCSSStatus' => $single_post_critical_css_status,
+				'message'                     => $message,
+			)
+		);
+	}
+
+	/**
+	 * Create critical css for selected page from Gutenberg post edit screen.
+	 *
+	 * @since 3.6.0
+	 */
+	public function gutenberg_revert_css_file() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) || ! isset( $_POST['postId'] ) ) { // Input var okay.
+			die();
+		}
+
+		$id = absint( wp_unslash( $_POST['postId'] ) );
+
+		// Also clear cache.
+		Utils::get_module( 'page_cache' )->clear_cache_action( $id );
+		$status                          = Utils::get_module( 'critical_css' )->revert_post_css_file( $id );
+		$single_post_critical_css_status = Utils::get_module( 'critical_css' )->get_single_post_critical_css_status( $id );
+		$message                         = esc_html__( 'Critical CSS file deleted successfully', 'wphb' );
+
+		wp_send_json_success(
+			array(
+				'success'                     => $status,
+				'singlePostCriticalCSSStatus' => $single_post_critical_css_status,
+				'message'                     => $message,
+			)
+		);
+	}
+
+	/**
+	 * Get critical css status for single post.
+	 *
+	 * @since 3.6.0
+	 */
+	public function gutenberg_get_critical_status_for_single_post() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) || ! isset( $_POST['postId'] ) ) { // Input var okay.
+			die();
+		}
+
+		$id          = absint( wp_unslash( $_POST['postId'] ) );
+		$type        = get_post_type( $id ) . '-' . $id;
+		$item_detail = Utils::get_module( 'critical_css' )->get_queue_item_by_type( $type );
+
+		wp_send_json_success(
+			array(
+				'singlePostCriticalCSSStatus' => Utils::get_module( 'critical_css' )->get_single_post_critical_css_status( $id ),
+				'singlePostCriticalDetail'    => $item_detail,
+				'errorCode'                   => Utils::get_module( 'critical_css' )->get_error_code_from_log( (array) $item_detail ),
+			)
+		);
+	}
+
+	/**
+	 * Get critical css status for single post.
+	 *
+	 * @since 3.6.0
+	 */
+	public function get_critical_status_for_queue() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) { // Input var okay.
+			die();
+		}
+
+		$critical_css_log = Utils::get_module( 'critical_css' )->critical_css_status_for_queue();
+		$result           = isset( $critical_css_log['result'] ) ? $critical_css_log['result'] : false;
+		$error_message    = 'ERROR' === $result ? Utils::get_module( 'critical_css' )->critical_css_generation_complete_notice() : '';
+
+		wp_send_json_success(
+			array(
+				'criticalStatusForQueue' => $critical_css_log,
+				'criticalErrorMessage'   => $error_message,
+				'errorCode'              => Utils::get_module( 'critical_css' )->get_error_code_from_log(),
+				'htmlForStatusTag'       => Utils::get_module( 'critical_css' )->get_html_for_status_tag(),
+			)
+		);
+	}
+
+	/**
 	 * Toggle Delay Js.
 	 */
 	public function minification_toggle_delay() {
@@ -1982,6 +2339,28 @@ class AJAX {
 				'delay_js_timeout' => Settings::get_setting( 'delay_js_timeout', 'minify' ),
 				'delay_js_exclude' => Settings::get_setting( 'delay_js_exclusions', 'minify' ),
 				'notice'           => $notice,
+			)
+		);
+	}
+
+	/**
+	 * Toggle Critical CSS.
+	 */
+	public function minify_toggle_critical_css() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		if ( ! current_user_can( Utils::get_admin_capability() ) || ! isset( $_POST['data'] ) ) { // Input var okay.
+			die();
+		}
+
+		$value = filter_input( INPUT_POST, 'data', FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+		Utils::get_module( 'critical_css' )->toggle_critical_css( $value );
+
+		wp_send_json_success(
+			array(
+				'criticalCss'      => $value ? 'activate' : 'deactivate',
+				'htmlForStatusTag' => Utils::get_module( 'critical_css' )->get_html_for_status_tag(),
+				'mode'             => Settings::get_setting( 'critical_css_type', 'minify' ),
 			)
 		);
 	}

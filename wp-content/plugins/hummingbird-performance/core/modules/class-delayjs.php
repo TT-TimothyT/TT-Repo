@@ -48,6 +48,8 @@ class Delayjs extends Module {
 
 		// Add delay js to scripts.
 		add_action( 'wp_print_footer_scripts', array( $this, 'wphb_add_delay_js' ), 5 );
+		// Add delay scripts hub client page.
+		add_action( 'wpmudev_hub_template_footer', array( $this, 'wphb_add_delay_js' ) );
 
 		// Fetch exclusion list on plugin activation.
 		add_action( 'admin_init', array( $this, 'wphb_prelaod_exclusion_lists' ) );
@@ -121,46 +123,11 @@ class Delayjs extends Module {
 	 * @return bool
 	 */
 	public function should_delay_script() {
-		if ( ( defined( 'WPHBDONOTDELAYJS' ) && WPHBDONOTDELAYJS ) || $this->wphb_is_page_builder() || is_preview() || is_customize_preview() ) {
+		if ( ( defined( 'WPHBDONOTDELAYJS' ) && WPHBDONOTDELAYJS ) || Utils::wphb_is_page_builder() || is_preview() || is_customize_preview() ) {
 			return false;
 		}
 
 		return true;
-	}
-
-	/**
-	 * Check if page builder is active.
-	 *
-	 * @return bool
-	 */
-	public function wphb_is_page_builder() {
-		$page_builders = apply_filters(
-			'wphb_page_builders',
-			array(
-				'elementor-preview', // Elementor.
-				'cs_preview_state', // Cornerstone Builder.
-				'fl_builder', // Beaver builder.
-				'et_fb', // Divi.
-				'ct_builder', // Oxygen.
-				'tve', // Thrive.
-				'app', // flatsome.
-				'uxb_iframe',
-				'fb-edit', // fusion builder.
-				'builder',
-				'bricks', // bricks.
-				'vc_editable', // wp bakery.
-			)
-		);
-
-		if ( ! empty( $page_builders ) ) {
-			foreach ( $page_builders as $page_builder ) {
-				if ( isset( $_GET[ $page_builder ] ) ) {
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	/**

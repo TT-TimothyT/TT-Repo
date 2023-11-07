@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			</div>
 
-			<div class="sui-upgrade-page-header__image"></div>
+			<div class="sui-upgrade-page-header__image" style="background-size: unset;"></div>
 		</div>
 	</div>
 	<div class="sui-upgrade-page-features">
@@ -45,19 +45,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="sui-upgrade-page__container">
 		<div class="sui-upgrade-page-features__items">
 			<div class="sui-upgrade-page-features__item">
-				<span class="sui-icon-graph-bar" aria-hidden="true"></span>
-				<h3><?php esc_html_e( 'White label automated reporting', 'wphb' ); ?></h3>
-				<p><?php esc_html_e( 'You’ll get automated email reporting of your site’s performance (or if you have a multisite network, we’ve still got you covered!). You can even white label this for your clients, and have the reports sent straight to them. You’re informed and look great, and we do the work for you.', 'wphb' ); ?></p>
+				<span class="sui-icon-performance" aria-hidden="true"></span>
+				<h3><?php esc_html_e( 'Generate Critical CSS', 'wphb' ); ?></h3>
+				<p><?php esc_html_e( 'Improve your page speed by delaying the loading of all CSS except for what is required to display content above the fold.', 'wphb' ); ?></p>
 			</div>
 			<div class="sui-upgrade-page-features__item">
-				<span class="sui-icon-uptime" aria-hidden="true"></span>
-				<h3><?php esc_html_e( 'Uptime monitoring', 'wphb' ); ?></h3>
-				<p><?php esc_html_e( 'Make sure you know when your site is available with Hummingbird’s Pro uptime monitoring. We’ll notify you by email if there’s a problem with any of your WordPress sites loading, and we’ll even check your site’s average response time, and give you a rolling average, so you always know how well your site is performing.', 'wphb' ); ?></p>
+				<span class="sui-icon-performance" aria-hidden="true"></span>
+				<h3><?php esc_html_e( 'Delay JavaScript Execution', 'wphb' ); ?></h3>
+				<p><?php esc_html_e( 'Improve performance by delaying the loading of non-critical JavaScript files above the fold until user interaction.', 'wphb' ); ?></p>
 			</div>
 			<div class="sui-upgrade-page-features__item">
 				<span class="sui-icon-arrows-in" aria-hidden="true"></span>
 				<h3><?php esc_html_e( 'Enhanced file minification with CDN', 'wphb' ); ?></h3>
 				<p><?php esc_html_e( 'You’ll get enhanced file minification, with 2x the compression. Plus, for maximum speed, you can load your files from our global WPMU DEV CDN – instead of your server. Make your files smaller, and then load them faster with Hummingbird Pro.', 'wphb' ); ?></p>
+			</div>
+			<div class="sui-upgrade-page-features__item">
+				<span class="sui-icon-uptime" aria-hidden="true"></span>
+				<h3><?php esc_html_e( 'Instant site health alerts and notification', 'wphb' ); ?></h3>
+				<p><?php esc_html_e( 'Monitor your server response time and get instantly notified if your site is too slow for your visitors or experiences any downtime.', 'wphb' ); ?></p>
+			</div>
+			<div class="sui-upgrade-page-features__item">
+				<span class="sui-icon-graph-bar" aria-hidden="true"></span>
+				<h3><?php esc_html_e( 'White label automated reporting', 'wphb' ); ?></h3>
+				<p><?php esc_html_e( 'You’ll get automated email reporting of your site’s performance (or if you have a multisite network, we’ve still got you covered!). You can even white label this for your clients, and have the reports sent straight to them. You’re informed and look great, and we do the work for you.', 'wphb' ); ?></p>
 			</div>
 			<div class="sui-upgrade-page-features__item">
 				<span class="sui-icon-smush" aria-hidden="true"></span>
@@ -89,15 +99,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="sui-upgrade-page-cta">
 		<div class="sui-upgrade-page-cta__inner">
 			<h2><?php esc_html_e( 'Join 752,819 Happy Members', 'wphb' ); ?></h2>
-			<p><?php esc_html_e( "97% of customers are happy with WPMU DEV’s service, and it’s a great time to join them! Hummingbird Pro users can unlock our full suite of Pro WP plugins, time-saving site management, and integrated client billing/management tools.", 'wphb' ); ?></p>
+			<p><?php esc_html_e( '97% of customers are happy with WPMU DEV’s service, and it’s a great time to join them! Hummingbird Pro users can unlock our full suite of Pro WP plugins, time-saving site management, and integrated client billing/management tools.', 'wphb' ); ?></p>
 			<a href="<?php echo esc_url( Utils::get_link( 'plugin', 'hummingbird_propage_bottombutton' ) ); ?>" class="sui-button sui-button-lg sui-button-purple" target="_blank">
-				<?php esc_html_e( 'Get Hummingbird Pro, and get a better WordPress', 'wphb' ); ?>
+				<?php esc_html_e( 'GET HUMMINGBIRD PRO FOR A FASTER WP SITE', 'wphb' ); ?>
 			</a>
 			<button type="button" class="sui-button sui-button-lg sui-button-purple sui-hidden-desktop">
 				<?php esc_html_e( 'Get Hummingbird Pro', 'wphb' ); ?>
 			</button>
 			<a href="<?php echo esc_url( Utils::get_link( 'plugin', 'hummingbird_propage_bottombutton' ) ); ?>" target="_blank">
-				<?php esc_html_e( 'UPGRADE TO PRO', 'wphb' ); ?>
+				<?php esc_html_e( 'Includes a 30-day money-back guarantee', 'wphb' ); ?>
 			</a>
 		</div>
 	</div>

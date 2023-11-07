@@ -250,6 +250,7 @@ class BrowserCachingPage extends React.Component {
 			.post( 'cloudflare_disconnect' )
 			.then( () => {
 				this.browserCachingStatus( 'refresh' );
+				window.wphbMixPanel.disableFeature( 'Cloudflare_integration' );
 				WPHB_Admin.notices.show(
 					__( 'Cloudflare was disconnected successfully.', 'wphb' )
 				);

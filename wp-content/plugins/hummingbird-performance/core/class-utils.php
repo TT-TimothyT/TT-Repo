@@ -158,52 +158,57 @@ class Utils {
 			),
 			'strings'    => array(
 				/* Performance test strings */
-				'previousScoreMobile'    => isset( $mobile_score ) ? $mobile_score : '-',
-				'previousScoreDesktop'   => isset( $desktop_score ) ? $desktop_score : '-',
-				'removeButtonText'       => __( 'Remove', 'wphb' ),
-				'youLabelText'           => __( 'You', 'wphb' ),
-				'scanRunning'            => __( 'Running speed test...', 'wphb' ),
-				'scanAnalyzing'          => __( 'Analyzing data and preparing report...', 'wphb' ),
-				'scanWaiting'            => __( 'Test is taking a little longer than expected, hang in there…', 'wphb' ),
-				'scanComplete'           => __( 'Test complete! Reloading...', 'wphb' ),
+				'previousScoreMobile'     => isset( $mobile_score ) ? $mobile_score : '-',
+				'previousScoreDesktop'    => isset( $desktop_score ) ? $desktop_score : '-',
+				'removeButtonText'        => __( 'Remove', 'wphb' ),
+				'youLabelText'            => __( 'You', 'wphb' ),
+				'scanRunning'             => __( 'Running speed test...', 'wphb' ),
+				'scanAnalyzing'           => __( 'Analyzing data and preparing report...', 'wphb' ),
+				'scanWaiting'             => __( 'Test is taking a little longer than expected, hang in there…', 'wphb' ),
+				'scanComplete'            => __( 'Test complete! Reloading...', 'wphb' ),
 				/* Caching strings */
-				'errorCachePurge'        => __( 'There was an error during the cache purge. Check folder permissions are 755 for /wp-content/wphb-cache or delete directory manually.', 'wphb' ),
-				'successGravatarPurge'   => __( 'Gravatar cache purged.', 'wphb' ),
-				'successPageCachePurge'  => __( 'Page cache purged.', 'wphb' ),
-				'errorRecheckStatus'     => __( 'There was an error re-checking the caching status, please try again later.', 'wphb' ),
-				'successRecheckStatus'   => __( 'Browser caching status updated.', 'wphb' ),
-				'successCloudflarePurge' => __( 'Cloudflare cache successfully purged. Please wait 30 seconds for the purge to complete.', 'wphb' ),
-				'successRedisPurge'      => __( 'Your cache has been cleared.', 'wphb' ),
-				'selectZone'             => __( 'Select zone', 'wphb' ),
+				'errorCachePurge'         => __( 'There was an error during the cache purge. Check folder permissions are 755 for /wp-content/wphb-cache or delete directory manually.', 'wphb' ),
+				'successGravatarPurge'    => __( 'Gravatar cache purged.', 'wphb' ),
+				'successPageCachePurge'   => __( 'Page cache purged.', 'wphb' ),
+				'errorRecheckStatus'      => __( 'There was an error re-checking the caching status, please try again later.', 'wphb' ),
+				'successRecheckStatus'    => __( 'Browser caching status updated.', 'wphb' ),
+				'successCloudflarePurge'  => __( 'Cloudflare cache successfully purged. Please wait 30 seconds for the purge to complete.', 'wphb' ),
+				'successRedisPurge'       => __( 'Your cache has been cleared.', 'wphb' ),
+				'selectZone'              => __( 'Select zone', 'wphb' ),
 				/* Misc */
-				'errorSettingsUpdate'    => __( 'Error updating settings', 'wphb' ),
-				'errorEmptyName'         => __( 'Error: Please enter your name', 'wphb' ),
-				'successUpdate'          => __( 'Settings updated', 'wphb' ),
-				'deleteAll'              => __( 'Delete All Permanently', 'wphb' ),
-				'dbDeleteButton'         => __( 'Delete permanently', 'wphb' ),
-				'dbDeleteDraftsButton'   => __( 'Clear draft posts', 'wphb' ),
-				'db_delete'              => __( 'Are you sure you wish to delete', 'wphb' ),
-				'dbDeleteDrafts'         => __( 'Are you sure you want to clear draft posts and move them to the trash? Trashed posts can be permanently deleted below.', 'wphb' ),
-				'db_entries'             => __( 'database entries', 'wphb' ),
-				'db_backup'              => __( 'Make sure you have a current backup just in case.', 'wphb' ),
-				'dismissLabel'           => __( 'Dismiss', 'wphb' ),
-				'successAdvPurgeCache'   => __( 'Preload cache purged successfully.', 'wphb' ),
-				'successAdvPurgeMinify'  => __( 'All database data and Custom Post Type information related to Asset Optimization has been cleared successfully.', 'wphb' ),
-				'successAoOrphanedPurge' => __( 'Database entries removed successfully.', 'wphb' ),
+				'errorSettingsUpdate'     => __( 'Error updating settings', 'wphb' ),
+				'errorEmptyName'          => __( 'Error: Please enter your name', 'wphb' ),
+				'successUpdate'           => __( 'Settings updated', 'wphb' ),
+				'deleteAll'               => __( 'Delete All Permanently', 'wphb' ),
+				'dbDeleteButton'          => __( 'Delete permanently', 'wphb' ),
+				'dbDeleteDraftsButton'    => __( 'Clear draft posts', 'wphb' ),
+				'db_delete'               => __( 'Are you sure you wish to delete', 'wphb' ),
+				'dbDeleteDrafts'          => __( 'Are you sure you want to clear draft posts and move them to the trash? Trashed posts can be permanently deleted below.', 'wphb' ),
+				'db_entries'              => __( 'database entries', 'wphb' ),
+				'db_backup'               => __( 'Make sure you have a current backup just in case.', 'wphb' ),
+				'dismissLabel'            => __( 'Dismiss', 'wphb' ),
+				'successAdvPurgeCache'    => __( 'Preload cache purged successfully.', 'wphb' ),
+				'successAdvPurgeMinify'   => __( 'All database data and Custom Post Type information related to Asset Optimization has been cleared successfully.', 'wphb' ),
+				'successAoOrphanedPurge'  => __( 'Database entries removed successfully.', 'wphb' ),
 				/* Cloudflare */
-				'CloudflareHelpAPItoken' => __( 'Need help getting your API token?', 'wphb' ),
-				'CloudflareHelpAPIkey'   => __( 'Need help getting your Global API key?', 'wphb' ),
+				'CloudflareHelpAPItoken'  => __( 'Need help getting your API token?', 'wphb' ),
+				'CloudflareHelpAPIkey'    => __( 'Need help getting your Global API key?', 'wphb' ),
 				/* Notifications */
-				'removeRecipient'        => __( 'Remove recipient', 'wphb' ),
-				'noRecipients'           => __( "You've not added the users. In order to activate the notification you need to add users first.", 'wphb' ),
-				'noRecipientDisable'     => __( "You've removed all recipients. If you save without a recipient, we'll automatically turn off notifications.", 'wphb' ),
-				'recipientExists'        => __( 'Recipient already exists.', 'wphb' ),
-				'awaitingConfirmation'   => __( 'Awaiting confirmation', 'wphb' ),
-				'resendInvite'           => __( 'Resend invite email', 'wphb' ),
-				'addRecipient'           => __( 'Add recipient', 'wphb' ),
+				'removeRecipient'         => __( 'Remove recipient', 'wphb' ),
+				'noRecipients'            => __( "You've not added the users. In order to activate the notification you need to add users first.", 'wphb' ),
+				'noRecipientDisable'      => __( "You've removed all recipients. If you save without a recipient, we'll automatically turn off notifications.", 'wphb' ),
+				'recipientExists'         => __( 'Recipient already exists.', 'wphb' ),
+				'awaitingConfirmation'    => __( 'Awaiting confirmation', 'wphb' ),
+				'resendInvite'            => __( 'Resend invite email', 'wphb' ),
+				'addRecipient'            => __( 'Add recipient', 'wphb' ),
+				'successCriticalCssPurge' => __( 'Cache purged. Regenerating Critical CSS, this could take about a minute.', 'wphb' ),
+				'criticalGeneratedNotice' => __( 'Critical CSS generated. Please visit the site and let the cache build up before running a test.', 'wphb' ),
+				'errorCriticalCssPurge'   => __( 'There was an error during the critical css files purge. Check folder permissions are 755 for /wp-content/wphb-cache/critical-css or delete directory manually.', 'wphb' ),
+				'enableCriticalCss'       => __( 'Settings updated. Generating Critical CSS, this could take about a minute.', 'wphb' ),
 			),
 			'links'      => array(
 				'audits'        => self::get_admin_menu_url( 'performance' ),
+				'eoUrl'         => self::get_admin_menu_url( 'minification' ) . '&view=tools',
 				'tutorials'     => self::get_admin_menu_url( 'tutorials' ),
 				'notifications' => self::get_admin_menu_url( 'notifications' ),
 				'disableUptime' => add_query_arg(
@@ -227,11 +232,14 @@ class Utils {
 				$i10n,
 				array(
 					'minification' => array(
-						'is'  => array(
+						'criticalStatusForQueue'     => self::get_module( 'critical_css' )->critical_css_status_for_queue(),
+						'triggerCriticalUpsellModal' => isset( $_GET['triggercriticalupsellmodal'] ) && 1 === absint( $_GET['triggercriticalupsellmodal'] ) && ! self::is_member(),
+						'gutenbergUpgradeCTAUrl'     => self::get_link( 'plugin', 'hummingbird_criticalcss_gutenberg' ),
+						'is'                         => array(
 							'scanning' => $is_scanning,
 							'scanned'  => $minify_module->scanner->is_files_scanned(),
 						),
-						'get' => array(
+						'get'                        => array(
 							'currentScanStep' => $minify_module->scanner->get_current_scan_step(),
 							'totalSteps'      => $minify_module->scanner->get_scan_steps(),
 							'showCDNModal'    => ! is_multisite(),
@@ -1179,4 +1187,161 @@ class Utils {
 		return $data;
 	}
 
+	/**
+	 * Returns HB active features.
+	 *
+	 * @return array
+	 */
+	public static function get_active_features() {
+		$active_features  = array();
+		$minify_options   = self::get_module( 'minify' )->get_options();
+		$advanced_options = self::get_module( 'advanced' )->get_options();
+
+		// CDN.
+		if ( self::get_module( 'minify' )->is_active() && $minify_options['use_cdn'] ) {
+			$active_features[] = 'CDN';
+		}
+
+		// Critical CSS.
+		if ( self::get_module( 'minify' )->is_active() && ! empty( $minify_options['critical_css'] ) ) {
+			$active_features[] = 'Critical CSS';
+		}
+
+		// Delay.
+		if ( self::get_module( 'minify' )->is_active() && ! empty( $minify_options['delay_js'] ) ) {
+			$active_features[] = 'JS Delay';
+		}
+
+		// AO_Speedy','AO_Basic','AO_Manual'.
+		if ( self::get_module( 'minify' )->is_active() ) {
+			if ( 'advanced' == $minify_options['view'] ) {
+				$active_features[] = 'AO_Manual';
+			} else {
+				if ( 'speedy' == $minify_options['type'] ) {
+					$active_features[] = 'AO_Speedy';
+				} else {
+					$active_features[] = 'AO_Basic';
+				}
+			}
+		}
+
+		// GZip.
+		if ( self::get_module( 'gzip' )->is_active() ) {
+			$active_features[] = 'GZip';
+		}
+
+		// Gravatar.
+		if ( self::get_module( 'gravatar' )->is_active() ) {
+			$active_features[] = 'Gravatar';
+		}
+
+		// Caching.
+		if ( self::get_module( 'caching' )->is_active() ) {
+			$active_features[] = 'Caching';
+		}
+
+		// Page Caching.
+		if ( self::get_module( 'page_cache' )->is_active() ) {
+			$active_features[] = 'Page Caching';
+		}
+
+		// Redis Cache.
+		if ( self::get_module( 'redis' )->is_active() ) {
+			$active_features[] = 'Redis Cache';
+		}
+
+		// RSS Caching.
+		if ( self::get_module( 'rss' )->is_active() ) {
+			$active_features[] = 'RSS Caching';
+		}
+
+		// Cloudflare_integration.
+		if ( self::get_module( 'cloudflare' )->is_active() ) {
+			$active_features[] = 'Cloudflare_integration';
+		}
+
+		// Lazy_comments (Advanced tools).
+		if ( isset( $advanced_options['lazy_load'] ) && $advanced_options['lazy_load']['enabled'] ) {
+			$active_features[] = 'lazy_comments';
+		}
+		// Remove_query_strings (Advanced tools).
+		if ( ! empty( $advanced_options['query_string'] ) ) {
+			$active_features[] = 'remove_query_strings';
+		}
+		// Disable_cart_fragments (Advanced tools).
+		if ( ! empty( $advanced_options['cart_fragments'] ) ) {
+			$active_features[] = 'disable_cart_fragments';
+		}
+		// Remove_emojis (Advanced tools).
+		if ( ! empty( $advanced_options['emoji'] ) ) {
+			$active_features[] = 'remove_emojis';
+		}
+		// Prefetch_dns (Advanced tools).
+		if ( ! empty( $advanced_options['prefetch'] ) ) {
+			$active_features[] = 'prefetch_dns';
+		}
+		// Preconnect_domains (Advanced tools).
+		if ( ! empty( $advanced_options['preconnect'] ) ) {
+			$active_features[] = 'preconnect_domains';
+		}
+
+		/**
+		 * Filters the HB active features for MP.
+		 *
+		 * @since 3.6.0
+		 *
+		 * @param array $active_features An array of active features.
+		 *
+		 * @return array
+		 */
+		$active_features = apply_filters( 'wphb_tracking_active_features', $active_features );
+
+		return $active_features;
+	}
+
+	/**
+	 * Check if page builder is active.
+	 *
+	 * @return bool
+	 */
+	public static function wphb_is_page_builder() {
+		$page_builders = apply_filters(
+			'wphb_page_builders',
+			array(
+				'elementor-preview', // Elementor.
+				'cs_preview_state', // Cornerstone Builder.
+				'fl_builder', // Beaver builder.
+				'et_fb', // Divi.
+				'ct_builder', // Oxygen.
+				'tve', // Thrive.
+				'app', // flatsome.
+				'uxb_iframe',
+				'fb-edit', // fusion builder.
+				'builder',
+				'bricks', // bricks.
+				'vc_editable', // wp bakery.
+			)
+		);
+
+		if ( ! empty( $page_builders ) ) {
+			foreach ( $page_builders as $page_builder ) {
+				if ( isset( $_GET[ $page_builder ] ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns current user name to be displayed.
+	 *
+	 * @return string
+	 */
+	public static function get_user_name() {
+		$current_user = wp_get_current_user();
+
+		return ! empty( $current_user->first_name ) ? $current_user->first_name : $current_user->display_name;
+	}
 }

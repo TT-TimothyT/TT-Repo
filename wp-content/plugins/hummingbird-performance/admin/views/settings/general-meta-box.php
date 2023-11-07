@@ -62,7 +62,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="sui-tab-boxed <?php echo is_array( $cache_control ) ? '' : 'active'; ?>">
 								<p class="sui-description">
 									<?php
-									printf( /* translators: %1$s - <strong>, %2$s - </strong> */
+									printf( /* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 										esc_html__( 'When this option is selected, clicking the Clear Cache button in the WordPress Admin Bar will clear all active cache types, such as %1$sPage Cache, Asset Optimization Cache, Redis Cache%2$s, and %1$sCloudflare Cache%2$s.', 'wphb' ),
 										'<strong>',
 										'</strong>'
@@ -154,7 +154,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</span>
 					<span id="tracking-description" class="sui-description">
 						<?php
-						printf(
+						printf( /* translators: %s: Link to tracking detail page */
 							__( "Note: Usage tracking is completely anonymous. We are only tracking what features you are/aren't using to make our feature decision more informed. You can read about what data will be collected <a href='%s' target='_blank'>here</a>.", 'wphb' ),
 							esc_url( Utils::get_link( 'tracking' ) )
 						);

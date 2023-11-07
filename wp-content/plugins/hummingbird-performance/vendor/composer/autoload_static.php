@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit38f25bc07101ceb3d5efc0677f56f35c
+class ComposerStaticInit59abb8f68172b3d78dc9b03733f29a8a
 {
     public static $prefixLengthsPsr4 = array (
         'P' => 
@@ -94,6 +94,7 @@ class ComposerStaticInit38f25bc07101ceb3d5efc0677f56f35c
         'Hummingbird\\Core\\Modules\\Caching\\Background_Process' => __DIR__ . '/../..' . '/core/modules/caching/class-background-process.php',
         'Hummingbird\\Core\\Modules\\Caching\\Preload' => __DIR__ . '/../..' . '/core/modules/caching/class-preload.php',
         'Hummingbird\\Core\\Modules\\Cloudflare' => __DIR__ . '/../..' . '/core/modules/class-cloudflare.php',
+        'Hummingbird\\Core\\Modules\\Critical_Css' => __DIR__ . '/../..' . '/core/modules/class-critical-css.php',
         'Hummingbird\\Core\\Modules\\Delayjs' => __DIR__ . '/../..' . '/core/modules/class-delayjs.php',
         'Hummingbird\\Core\\Modules\\Gravatar' => __DIR__ . '/../..' . '/core/modules/class-gravatar.php',
         'Hummingbird\\Core\\Modules\\Gzip' => __DIR__ . '/../..' . '/core/modules/class-gzip.php',
@@ -399,9 +400,9 @@ class ComposerStaticInit38f25bc07101ceb3d5efc0677f56f35c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit38f25bc07101ceb3d5efc0677f56f35c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit38f25bc07101ceb3d5efc0677f56f35c::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit38f25bc07101ceb3d5efc0677f56f35c::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit59abb8f68172b3d78dc9b03733f29a8a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit59abb8f68172b3d78dc9b03733f29a8a::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit59abb8f68172b3d78dc9b03733f29a8a::$classMap;
 
         }, null, ClassLoader::class);
     }

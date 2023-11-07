@@ -64,34 +64,38 @@ class Gzip extends Page {
 		wp_localize_script(
 			'wphb-react-gzip',
 			'wphb',
-			array(
-				'isMember' => Utils::is_member(),
-				'links'    => array(
-					'modules' => array(
-						'gzip' => Utils::get_admin_menu_url( 'gzip' ),
+			array_merge_recursive(
+				array(
+					'isMember' => Utils::is_member(),
+					'links'    => array(
+						'modules' => array(
+							'gzip' => Utils::get_admin_menu_url( 'gzip' ),
+						),
+						'support' => array(
+							'chat'  => Utils::get_link( 'chat' ),
+							'forum' => Utils::get_link( 'support' ),
+						),
 					),
-					'support' => array(
-						'chat'  => Utils::get_link( 'chat' ),
-						'forum' => Utils::get_link( 'support' ),
+					'nonces'   => array(
+						'HBFetchNonce' => wp_create_nonce( 'wphb-fetch' ),
+					),
+					'module'   => array(
+						'is_wpmu_hosting'   => isset( $_SERVER['WPMUDEV_HOSTED'] ),
+						'is_white_labeled'  => apply_filters( 'wpmudev_branding_hide_branding', false ),
+						'cdn'               => Utils::get_module( 'minify' )->is_active() && Utils::get_module( 'minify' )->get_cdn_status(),
+						'htaccess_error'    => isset( $_GET['htaccess-error'] ), // Input data ok.
+						'htaccess_writable' => Module_Server::is_htaccess_writable(),
+						'htaccess_written'  => Module_Server::is_htaccess_written( 'gzip' ),
+						'servers_array'     => Module_Server::get_servers(),
+						'server_name'       => Module_Server::get_server_type(),
+						'snippets'          => array(
+							'apache' => Module_Server::get_code_snippet( 'gzip', 'apache' ),
+							'iis'    => Module_Server::get_code_snippet( 'gzip', 'iis' ),
+							'nginx'  => Module_Server::get_code_snippet( 'gzip', 'nginx' ),
+						),
 					),
 				),
-				'nonces'   => array(
-					'HBFetchNonce' => wp_create_nonce( 'wphb-fetch' ),
-				),
-				'module'   => array(
-					'is_wpmu_hosting'   => isset( $_SERVER['WPMUDEV_HOSTED'] ),
-					'is_white_labeled'  => apply_filters( 'wpmudev_branding_hide_branding', false ),
-					'htaccess_error'    => isset( $_GET['htaccess-error'] ), // Input data ok.
-					'htaccess_writable' => Module_Server::is_htaccess_writable(),
-					'htaccess_written'  => Module_Server::is_htaccess_written( 'gzip' ),
-					'servers_array'     => Module_Server::get_servers(),
-					'server_name'       => Module_Server::get_server_type(),
-					'snippets'          => array(
-						'apache' => Module_Server::get_code_snippet( 'gzip', 'apache' ),
-						'iis'    => Module_Server::get_code_snippet( 'gzip', 'iis' ),
-						'nginx'  => Module_Server::get_code_snippet( 'gzip', 'nginx' ),
-					),
-				),
+				Utils::get_tracking_data()
 			)
 		);
 

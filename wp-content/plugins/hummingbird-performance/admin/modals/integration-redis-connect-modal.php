@@ -80,7 +80,7 @@ if ( is_object( $wp_object_cache ) && method_exists( $wp_object_cache, 'redis_st
 							aria-labelledby="label-redis-host" required>
 						<span id="description-redis-host" class="sui-description">
 							<?php
-							printf( /* translators: %1$s - <strong>, %2$s - </strong> */
+							printf( /* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 								esc_html__( 'Add host information here, %1$se.g. 127.0.0.1%2$s or UNIX socket path, %1$se.g./tmp/redis.sock%2$s.', 'wphb' ),
 								'<strong>',
 								'</strong>'

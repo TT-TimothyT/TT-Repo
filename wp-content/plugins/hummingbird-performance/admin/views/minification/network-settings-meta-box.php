@@ -138,22 +138,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 
 				<?php if ( ! $is_member ) : ?>
-					<div class="sui-upsell-row">
-						<img class="sui-image sui-upsell-image"
-							src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hummingbird-upsell-minify.png' ); ?>"
-							srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hummingbird-upsell-minify@2x.png' ); ?> 2x"
-							alt="<?php esc_attr_e( 'WP Smush free installed', 'wphb' ); ?>">
 						<?php
 						$this->admin_notices->show_inline(
 							sprintf( /* translators: %1$s: upsell modal href link, %2$s: closing a tag */
 								esc_html__( 'With our pro version of Hummingbird you can super-compress your files and then host them on our blazing-fast CDN. Get CDN as part of a WPMU DEV membership with 24/7 support and lots of handy site management tools. %1$sUNLOCK NOW WITH PRO!%2$s', 'wphb' ),
-								'<a href="' . esc_html( \Hummingbird\Core\Utils::get_link( 'plugin', 'hummingbird_test_multisite_cdn_upsell_link' ) ) . '" target="_blank">',
+								'<a style="color: #8d00b1;font-weight: bold;" href="' . esc_html( \Hummingbird\Core\Utils::get_link( 'plugin', 'hummingbird_test_multisite_cdn_upsell_link' ) ) . '" target="_blank">',
 								'</a>'
 							),
-							'sui-upsell-notice'
+							'purple'
 						);
 						?>
-					</div>
 				<?php endif; ?>
 			</div><!-- end sui-border-frame -->
 		</form>

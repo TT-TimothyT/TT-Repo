@@ -89,7 +89,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php
 					esc_html_e( "This is a quick guide to help you configure Hummingbird's Asset Optimization.", 'wphb' );
 					if ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) {
-						printf( /* translators: %1$s - space, %2$s - link */
+						printf( /* translators: %1$s - space, %2$s - Link to AO detail page */
 							__( '%1$sFor more detailed information, please check out our in-depth <a href="%2$s" target="_blank" >documentation</a>.', 'wphb' ),
 							'&nbsp;',
 							'https://wpmudev.com/docs/wpmu-dev-plugins/hummingbird/#asset-optimization'
@@ -165,7 +165,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										<span class="sui-icon-check" aria-hidden="true" style="margin-left: -20px;"></span>
 										<strong><?php esc_html_e( 'Step 4: Defer Some Of The Scripts', 'wphb' ); ?></strong><br>
 										<?php
-										printf(
+										printf( /* translators: %s: Defer icon */
 											__( 'The next step is deferring the loading of scripts that are not needed to run immediately after a page has loaded (like a form processing or spam protection scripts). Use the "Force load this file after the page is loaded" button %s, which can be found in the "JavaScripts" section.', 'wphb' ),
 											'<span class="sui-icon-defer" aria-hidden="true" style="padding-left:3px;padding-right:3px;border:1px solid #bbb;"></span>'
 										);
@@ -277,7 +277,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<p class="sui-description" style="margin-top: 50px">
 						<?php
-						printf(
+						printf( /* translators: %s - Link to AO detail page */
 							__( 'Didn\'t find the answer you were looking for? Check out our detailed <a href="%s" target="_blank" >documentation</a> or contact our support team for further assistance.', 'wphb' ),
 							'https://wpmudev.com/docs/wpmu-dev-plugins/hummingbird/#asset-optimization'
 						);

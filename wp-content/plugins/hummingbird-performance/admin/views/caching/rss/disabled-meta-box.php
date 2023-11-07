@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $this->admin_notices->show_inline(
 	esc_html__( 'RSS Caching is currently disabled.', 'wphb' ),
 	'warning',
-	sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+	sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 		esc_html__( '%1$sEnable Caching%2$s', 'wphb' ),
 		'<a href="' . esc_url( $url ) . '" class="sui-button" role="button" onclick="wphbMixPanel.enableFeature( \'RSS Caching\' )">',
 		'</a>'

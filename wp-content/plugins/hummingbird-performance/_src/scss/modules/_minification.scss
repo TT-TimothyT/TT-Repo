@@ -16,7 +16,56 @@
         max-width: 100%;
         margin-bottom: 0;
     }
+    /* Two column layouts: used in page types table */
+    .box-minification-tools .wphb-dash-table.three-columns > .wphb-dash-table-row > div {
+        flex-basis: 25%;
+    }
 
+    .box-minification-tools .wphb-dash-table-row {
+        display: flex;
+        align-items: center;
+        align-content: center;
+        justify-content: space-between;
+        height: 60px;
+        border-top: 1px solid #E6E6E6;
+
+        &:first-child {
+            border-top: 0;
+        }
+
+        &:last-child {
+            margin-bottom: -10px;
+        }
+
+        > div {
+            text-align: center;
+
+            &:first-child {
+                display: flex;
+                align-items: center;
+                align-content: center;
+                flex-basis: 50% !important;
+                text-align: left;
+                font-size: 13px;
+                color: #333333;
+                font-weight: 500;
+                line-height: 16px;
+            }
+
+            &:last-child {
+                text-align: right;
+            }
+        }
+    }
+
+    #critical_css_delivery_box {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom-width: 0;
+        .sui-table {
+            margin: 10px 0;
+        }
+    }
     /**
      * Auto to manual modal
      * @since 2.6.0
@@ -189,4 +238,35 @@
 		color: #286EFA;
 		background-color: white;
 	}
+}
+
+#critical_css_file_exclude .sui-table .sui-box-body .sui-label + .wphb-dash-table-row {
+    border-top: 0 !important;
+}
+
+#critical_progress_tag.sui-tag {
+    .sui-icon-info,
+    .sui-icon-loader.sui-loading {
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+
+    .sui-icon-info:not(.sui-icon-error):before,
+    .sui-icon-loader:before {
+        color: #ffffff;
+    }
+
+    .sui-icon-info.sui-icon-error:before {
+        color: #333;
+    }
+
+    top: 0 !important;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 1px 8px;
+}
+
+#critical_progress_tag.sui-tag-grey {
+    background-color: #666666;
+    color: #ffffff;
 }

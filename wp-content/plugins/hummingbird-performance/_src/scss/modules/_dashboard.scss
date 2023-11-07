@@ -53,7 +53,7 @@
 
 .wpmud .wrap-wphb .box-dashboard-welcome.sui-summary:not(.sui-rebranded):not(.sui-unbranded):not(.sui-summary-sm) {
     @if variable-exists(summary-image) {
-        @include background-2x( "#{$image--path}/summary-graphic-dash", 'png', 192px, 182px, 30px 100% );
+        @include background-2x( "#{$image--path}/hb-icon", 'png', $summary-image--width, $summary-image--height, 30px center );
     }
 
     @include media(max-width, md) {
@@ -297,4 +297,16 @@
 
 .sui-wrap.sui-color-accessible .dashboard-delay-highlight-sui-box .sui-tag.sui-tag-beta {
     background: #000000;
+}
+
+.sui-2-12-13 .sui-cross-sell-modules [class*=sui-cross-]>span {
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+    border: none !important;
+    border-radius: unset !important;
+    box-shadow: none !important;
+}
+
+#wphb-box-dashboard-caching-browser .sui-upsell-row .sui-upsell-notice {
+    padding-left: 0px;
 }

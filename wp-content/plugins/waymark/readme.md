@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Tested up to:** 6.2  
 **Requires PHP:** 5.2  
-**Stable tag:** 0.9.28.6  
+**Stable tag:** 0.9.29.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -110,6 +110,27 @@ A big thank you to the following projects and their contributors. Without their 
 
 
 ## Changelog ##
+
+### 0.9.29.2 ###
+
+* Fixed a bug where the Shortcode Zoom and Centre parameters were being ignored. Thanks to <a href="https://github.com/killianweid">killianweid</a> for creating <a href="https://github.com/morehawes/Waymark/issues/25">this issue</a>.
+
+### 0.9.29.1 ###
+
+* Fixed a bug where the default line_opacity was being set to 0. Thanks to <a href="https://wordpress.org/support/users/digbymaass /">digbymaass</a> for <a href="https://wordpress.org/support/topic/update-sets-track-opacity-setting-to-0/">letting me know</a>.
+
+### 0.9.29 ###
+
+* Added `map_width` Shortcode option, which has been requested a couple of times. Thanks for bugging me! :0)
+* Added Opacity Setting for Line Types (Lines > Opacity), thanks to <a href="https://wordpress.org/support/users/digbymaass/">digbymaass</a> for the <a href="https://wordpress.org/support/topic/feature-request-opacity-setting-for-lines/">suggestion</a>.
+
+### 0.9.28.7 ###
+
+* Meta data is now preserved when the Map is trashed/restored. Thanks to <a href="https://wordpress.org/support/users/killiandev7/">killiandev7</a> for <a href="https://wordpress.org/support/topic/feature-request-recover-map-data-after-recovering-a-deleted-map/">bringing this to my attention</a>.
+* Fixed a bug where special characters in Description were being messed up. Thanks to <a href="https://github.com/killianweid">killianweid</a> for creating this <a href="https://github.com/morehawes/Waymark/issues/24">issue</a>.
+* Fixed a bug with some KML files when loading from URL using Shortcode. Thanks to <a href="https://wordpress.org/support/users/henkna/">henkna</a> for <a href="https://wordpress.org/support/topic/kml-fails-to-load/">letting me know about this</a>.
+* Added Leaflet Basemap examples URL to Settings > Basemaps.
+* Minor bug fixes and improvements.
 
 ### 0.9.28.6 ###
 

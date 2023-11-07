@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3d2bb497a30374d8d380fe9a2f15a201
+class ComposerStaticInit9d1debbce2b2393e81082ffc63d1d6a2
 {
     public static $prefixLengthsPsr4 = array (
         'C' => 
@@ -138,6 +138,7 @@ class ComposerStaticInit3d2bb497a30374d8d380fe9a2f15a201
         'ContentControl\\Controllers\\Compatibility' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility.php',
         'ContentControl\\Controllers\\Compatibility\\Divi' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility/Divi.php',
         'ContentControl\\Controllers\\Compatibility\\Elementor' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility/Elementor.php',
+        'ContentControl\\Controllers\\Compatibility\\QueryMonitor' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility/QueryMonitor.php',
         'ContentControl\\Controllers\\Frontend' => __DIR__ . '/../..' . '/classes/Controllers/Frontend.php',
         'ContentControl\\Controllers\\Frontend\\Blocks' => __DIR__ . '/../..' . '/classes/Controllers/Frontend/Blocks.php',
         'ContentControl\\Controllers\\Frontend\\Restrictions' => __DIR__ . '/../..' . '/classes/Controllers/Frontend/Restrictions.php',
@@ -169,6 +170,9 @@ class ComposerStaticInit3d2bb497a30374d8d380fe9a2f15a201
         'ContentControl\\Plugin\\Options' => __DIR__ . '/../..' . '/classes/Plugin/Options.php',
         'ContentControl\\Plugin\\Prerequisites' => __DIR__ . '/../..' . '/classes/Plugin/Prerequisites.php',
         'ContentControl\\Plugin\\Upgrader' => __DIR__ . '/../..' . '/classes/Plugin/Upgrader.php',
+        'ContentControl\\QueryMonitor\\Collector' => __DIR__ . '/../..' . '/classes/QueryMonitor/Collector.php',
+        'ContentControl\\QueryMonitor\\Data' => __DIR__ . '/../..' . '/classes/QueryMonitor/Data.php',
+        'ContentControl\\QueryMonitor\\Output' => __DIR__ . '/../..' . '/classes/QueryMonitor/Output.php',
         'ContentControl\\RestAPI\\BlockTypes' => __DIR__ . '/../..' . '/classes/RestAPI/BlockTypes.php',
         'ContentControl\\RestAPI\\License' => __DIR__ . '/../..' . '/classes/RestAPI/License.php',
         'ContentControl\\RestAPI\\ObjectSearch' => __DIR__ . '/../..' . '/classes/RestAPI/ObjectSearch.php',
@@ -225,9 +229,9 @@ class ComposerStaticInit3d2bb497a30374d8d380fe9a2f15a201
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3d2bb497a30374d8d380fe9a2f15a201::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3d2bb497a30374d8d380fe9a2f15a201::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit3d2bb497a30374d8d380fe9a2f15a201::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9d1debbce2b2393e81082ffc63d1d6a2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9d1debbce2b2393e81082ffc63d1d6a2::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit9d1debbce2b2393e81082ffc63d1d6a2::$classMap;
 
         }, null, ClassLoader::class);
     }

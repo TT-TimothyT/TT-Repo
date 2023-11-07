@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <?php if ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) : ?>
 	<img class="sui-image" aria-hidden="true" alt=""
-		src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hummingbird-circle@1x.jpg' ); ?>" />
+		src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-uptime-available@1x.png' ); ?>" />
 <?php endif; ?>
 
 <div class="sui-message-content">

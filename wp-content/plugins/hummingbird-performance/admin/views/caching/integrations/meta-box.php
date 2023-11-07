@@ -110,7 +110,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<h4><?php esc_html_e( 'Exclusion', 'wphb' ); ?></h4>
 								<p>
 									<?php
-									printf( /* translators: %1$s - <strong>, %2$s - </strong>, %3$s - <a>, %4$s - </a> */
+									printf( /* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag, %3$s - opening a tag, %4$s - closing a tag */
 										esc_html__( 'Manually configure the Exclusion List for object caching in your %1$swp-config.php%2$s file by following the guide %3$shere%4$s.', 'wphb' ),
 										'<strong>',
 										'</strong>',

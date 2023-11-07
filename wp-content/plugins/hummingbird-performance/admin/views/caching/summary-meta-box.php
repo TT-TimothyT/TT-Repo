@@ -71,7 +71,7 @@ $branded_image = apply_filters( 'wpmudev_branding_hero_image', '' );
 				echo ' | ';
 
 				printf(
-					/* translators: %1$s - start of the link, %2$s - link end */
+					/* translators: %1$s - opening a tag, %2$s - closing a tag */
 					esc_html__( '%1$sCancel%2$s', 'wphb' ),
 					'<a href="#" id="wphb-cancel-cache-preload">',
 					'</a>'

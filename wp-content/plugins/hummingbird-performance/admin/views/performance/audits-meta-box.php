@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 </strong>
 <p>
 	<?php
-	printf( /* translators: %1$s - <strong>, %2$s - </strong> */
+	printf( /* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 		esc_html__( 'Each suggestion in this section is an opportunity to improve your page load speed and estimates how much faster the page will load if the improvement is implemented. Although they are %1$snot directly affect%2$s your Performance Score, improving the audits here can help as a starting point for overall performance score gains.', 'wphb' ),
 		'<strong>',
 		'</strong>'
@@ -77,7 +77,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 </strong>
 <p>
 	<?php
-	printf( /* translators: %1$s - <strong>, %2$s - </strong> */
+	printf( /* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 		esc_html__( 'This section provides additional information about how your page adheres to best practices of web development. These improvements may %1$snot directly impact%2$s your performance score, however, can help as a starting point for overall performance score gains.', 'wphb' ),
 		'<strong>',
 		'</strong>'

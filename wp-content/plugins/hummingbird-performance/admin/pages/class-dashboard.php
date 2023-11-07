@@ -889,12 +889,14 @@ class Dashboard extends Page {
 	 * Asset optimization meta box.
 	 */
 	public function dashboard_minification_module_metabox() {
-		$args                = Utils::get_ao_stats_data();
-		$args['is_member']   = Utils::is_member();
-		$options             = Utils::get_module( 'minify' )->get_options();
-		$args['delay_js']    = $options['delay_js'];
-		$args['ao_page_url'] = Utils::get_admin_menu_url( 'minification' ) . '&view=tools';
-		$args['delayupsell'] = Utils::get_link( 'plugin', 'hummingbird_delay_js_dash_widget' );
+		$args                        = Utils::get_ao_stats_data();
+		$args['is_member']           = Utils::is_member();
+		$options                     = Utils::get_module( 'minify' )->get_options();
+		$args['delay_js']            = $options['delay_js'];
+		$args['ao_page_url']         = Utils::get_admin_menu_url( 'minification' ) . '&view=tools';
+		$args['delayupsell']         = Utils::get_link( 'plugin', 'hummingbird_delay_js_dash_widget' );
+		$args['critical_css']        = $options['critical_css'];
+		$args['critical_css_upsell'] = Utils::get_link( 'plugin', 'hummingbird_criticalcss_dash_widget' );
 
 		$this->view( 'dashboard/minification/module-meta-box', $args );
 	}

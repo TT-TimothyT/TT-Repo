@@ -51,12 +51,17 @@ $this->admin_notices->show_inline(
 		</tr>
 		</thead>
 		<tbody>
-		<?php foreach ( $audit->details->items as $item ) : ?>
+		<?php
+		foreach ( $audit->details->items as $item ) :
+			if ( ! isset( $item->items[0], $item->items[0]->node ) && ! isset( $item->node ) ) {
+				continue;
+			}
+			?>
 			<tr>
 				<td>
-					<?php echo esc_html( $item->node->nodeLabel ); ?><br/>
+					<?php echo esc_html( $item->items[0]->node->nodeLabel ? $item->items[0]->node->nodeLabel : $item->node->nodeLabel ); ?><br/>
 					<pre class="sui-code-snippet sui-no-copy">
-						<?php echo esc_html( $item->node->snippet ); ?>
+						<?php echo esc_html( $item->items[0]->node->snippet ? $item->items[0]->node->snippet : $item->node->snippet ); ?>
 					</pre>
 				</td>
 			</tr>
@@ -67,7 +72,7 @@ $this->admin_notices->show_inline(
 
 <p>
 	<?php
-	printf( /* translators: %1$s - <a>, %2$s - </a> */
+	printf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 		esc_html__( 'Note: This Audit is purely informative but you can %1$slearn more about optimizing your Largest Contentful Paint here%2$s.', 'wphb' ),
 		'<a href="https://web.dev/lcp/#how-to-improve-largest-contentful-paint-on-your-site" target="_blank">',
 		'</a>'

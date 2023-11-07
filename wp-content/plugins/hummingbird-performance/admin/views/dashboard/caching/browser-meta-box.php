@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php
 	if ( $issues ) {
 		$this->admin_notices->show_inline(
-			sprintf( /* translators: %s: Number of issues */
+			sprintf( /* translators: %1$s - number of issues, %2$s - configure caching url */
 				__( '%1$s of your cache types don’t meet the recommended expiry period of 1 year. Configure browser caching <a href="%2$s" id="configure-link">here</a>.', 'wphb' ),
 				absint( $issues ),
 				esc_attr( $configure_caching_url )
@@ -93,13 +93,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</ul>
 </div>
 <?php if ( $show_cf_notice ) : ?>
-	<div class="sui-box-settings-row sui-upsell-row cf-dash-notice sui-margin-top">
-		<?php if ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) : ?>
-			<img class="sui-image sui-upsell-image"
-				src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-hb-cf-sell.png' ); ?>"
-				srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-hb-cf-sell@2x.png' ); ?> 2x"
-				alt="<?php esc_attr_e( 'Connect your account to Cloudflare', 'wphb' ); ?>">
-		<?php endif; ?>
+	<div class="sui-box-settings-row sui-upsell-row cf-dash-notice">
 		<?php
 		$this->admin_notices->show_inline(
 			$cf_notice,
@@ -108,7 +102,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				__( ' <a href="%s">Connect your account</a> to control your settings via Hummingbird.', 'wphb' ),
 				esc_url( $cf_connect_url )
 			),
-			sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+			sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 				esc_html__( '%1$sDismiss%2$s', 'wphb' ),
 				'<a href="#" id="dismiss-cf-notice">',
 				'</a>'

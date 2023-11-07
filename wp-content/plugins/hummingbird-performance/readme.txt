@@ -1,14 +1,14 @@
 === Hummingbird – Optimize Speed, Enable Cache, Minify CSS & Defer Critical JS ===
 Plugin Name: Hummingbird – Optimize Speed, Enable Cache, Minify CSS & Defer Critical JS
-Version: 3.5.0
+Version: 3.6.0
 Author: WPMU DEV
 Author URI: https://wpmudev.com/
 Contributors: WPMUDEV
 Tags: defer css javascript, cache, minify css, minify javascript, speed up wordpress, page cache, wordpress speed optimization, page speed, wordpress cache plugin, wordpress performance optimization, lazy load, performance optimization, seo, pagespeed, wp cache, delay javascript, brotli compression, generate critical css
 Requires at least: 5.2
 Tested up to: 6.3
-Requires PHP: 5.6
-Stable tag: 3.5.0
+Requires PHP: 7.4
+Stable tag: 3.6.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -31,7 +31,8 @@ Hummingbird is brought to you by the WordPress speed specialists that created [S
 - Minify CSS - Strip unused code from your CSS.
 - Minify JavaScript - Speed up the time it takes to parse your JS files.
 - Eliminate render-blocking resources - Move critical CSS and JS inline and defer all non-critical JS/CSS.
-- Delay JavaScript execution - Increase performance by delaying the loading of non-critical JS files and scripts until user interaction.
+- Delay JavaScript execution (Pro only) - Increase performance by delaying the loading of non-critical JS files and scripts until user interaction.
+- Automatically generate Critical CSS (Pro only) - Substantially boost page speed and UX by prioritizing above-the-fold content.
 - Defer unused CSS - Defer the loading of CSS not used for above-the-fold content.
 - Lazy Load offscreen images ([Smush free](https://wordpress.org/plugins/wp-smushit/) integration).
 
@@ -104,7 +105,7 @@ Boost site performance dramatically by delaying the loading of JS files and thir
 
 Activate in one click, includes user interaction timeout and the option to exclude critical files from being delayed. A paid WPMU DEV account (the developers of Hummingbird) is required to access this feature. You can check out our affordable plans [here](https://wpmudev.com/pricing/).
 
-### Generate Critical CSS (Coming Soon)
+### Generate Critical CSS (Pro Only)
 
 Maximize site speed and user experience by prioritizing only the CSS that matters most. The Generate Critical CSS feature intelligently generates and embeds critical CSS in the head of each page, giving priority to above-the-fold content and significantly improving loading speed. Updates to your critical CSS are automated with every site design change, and you can enable/disable with a click.
 
@@ -193,6 +194,14 @@ Asset Optimization is a great way to speed up your site but moving, combining, u
 4. Use suggestions to make improvements and speed up your site.
 
 == Changelog ==
+
+= 3.6.0 ( 2023-10-09 ) =
+- New: Generate Critical CSS for your pages to address render-blocking resource warnings and eliminate unused CSS
+- Improvement: Add comments for all translation strings that have placeholders in them
+- Improvement: Set minimum required PHP version to 7.4
+- Fix: PHP errors and warnings
+- Fix: Asset Optimization doesn't save settings on Manual Mode
+- Fix: Delay JS conflict with Hub Client
 
 = 3.5.0 ( 2023-06-27 ) =
 - New: Delay JS - Delay the execution of scripts to prioritize page rendering

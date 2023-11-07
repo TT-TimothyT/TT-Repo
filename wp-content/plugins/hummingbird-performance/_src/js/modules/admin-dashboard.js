@@ -42,6 +42,21 @@ import Fetcher from '../utils/fetcher';
 				} );
 			} );
 
+			// Critical CSS checkbox update status.
+			const dashboardCritical = $( '#critical_css_toggle' );
+			dashboardCritical.on( 'change', function() {
+				// Update Critical CSS status.
+				const criticalValue = $( this ).is( ':checked' );
+				Fetcher.minification.toggleCriticalCss( criticalValue ).then( ( response ) => {
+					window.wphbMixPanel.trackCriticalCSSEvent( response.criticalCss, 'dash_widget', response.mode, '', '' );
+					if ( criticalValue && wphb.links.eoUrl ) {
+						window.location.href = wphb.links.eoUrl;
+					} else {
+						WPHB_Admin.notices.show();
+					}
+				} );
+			} );
+
 			return this;
 		},
 
@@ -75,10 +90,18 @@ import Fetcher from '../utils/fetcher';
 
 		/**
 		 * Hide upgrade summary modal.
+		 *
+		 * @param {Object} element Target button that was clicked.
 		 */
-		hideUpgradeSummary: () => {
+		 hideUpgradeSummary: ( element ) => {
 			window.SUI.closeModal();
-			Fetcher.common.call( 'wphb_hide_upgrade_summary' );
+			Fetcher.common.call( 'wphb_hide_upgrade_summary' ).then( () => {
+				if ( element.hasAttribute( 'href' ) ) {
+					window.location.href = element.href;
+				}
+			} );
+
+			return false;
 		},
 	};
 }( jQuery ) );

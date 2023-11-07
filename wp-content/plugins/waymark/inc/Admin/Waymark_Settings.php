@@ -63,7 +63,7 @@ class Waymark_Settings {
 				'layers' => array(
 					'repeatable' => true,
 					'title' => esc_html__('Basemaps', 'waymark'),
-					'description' => sprintf(__('<span class="waymark-lead">Waymark uses the excellent <a href="%s">OpenStreetMap</a> as it’s default Basemap and allows integration for services that support <a href="%s">tiled web maps</a></span>.<br /><br /><a href="%s">Thunderforest</a> and <a href="%s">Mapbox</a> are examples of providers that offer easy access to beautiful Basemaps (including satellite imagery). They require registration, but have a free usage tier.', 'waymark'), 'https://www.openstreetmap.org/fixthemap', 'https://en.wikipedia.org/wiki/Tiled_web_map', 'https://www.thunderforest.com/', 'https://www.mapbox.com/maps/'),
+					'description' => sprintf(__('<span class="waymark-lead">Waymark uses the excellent <a href="%s">OpenStreetMap</a> as it’s default Basemap and supports many <a href="%s">other providers</a>.<br /><br /><a href="%s">Thunderforest</a> and <a href="%s">Mapbox</a> are examples of providers that offer easy access to beautiful Basemaps (including satellite imagery). They require registration, but have a free usage tier.', 'waymark'), 'https://www.openstreetmap.org/fixthemap', 'https://leaflet-extras.github.io/leaflet-providers/preview/', 'https://www.thunderforest.com/', 'https://www.mapbox.com/maps/'),
 					'footer' => sprintf(__('<small><b>Pro Tip!</b> If you have more than one Basemap, you can switch between them when viewing the Map. The first listed will be used as the default, unless specified in the shortcode like this: %s. Drag to re-order, remove all to restore defaults.</small>', 'waymark'), '[' . Waymark_Config::get_item('shortcode') . ' map_id=&quot;1234&quot; basemap=&quot;Basemap Name&quot;]'),
 					'help' => array(
 						'url' => esc_attr(Waymark_Helper::site_url('docs/basemaps')),
@@ -316,6 +316,18 @@ class Waymark_Settings {
 								'(is_numeric($param_value)) ? $param_value : 3;'	//Fallback
 							)					
 						),
+						'line_opacity' => array(
+							'name' => 'line_opacity',
+							'id' => 'line_opacity',
+							'type' => 'text',
+							'class' => 'waymark-short-input',				
+							'title' => '<span class="waymark-invisible">' . esc_html__('Line', 'waymark') . '</span> ' . esc_html__('Opacity', 'waymark'),
+							'default' => Waymark_Config::get_default('lines', 'line_types', 'line_opacity'),
+							'tip' => esc_attr__('The opacity of the Line, between 0.0 and 1.0 (e.g. "0.5").', 'waymark'),
+							'input_processing' => array(
+								'(is_numeric($param_value) && $param_value > 0 && $param_value <= 1) ? $param_value : 0.7;' //Fallback
+							)										
+						),						
 						'line_display' => array(
 							'name' => 'line_display',
 							'id' => 'line_display',
@@ -870,10 +882,11 @@ class Waymark_Settings {
 							'name' => 'map_height',
 							'id' => 'map_height',
 							'type' => 'text',
-							'class' => 'waymark-short-input',				
+							'class' => 'waymark-short-input waymark-align-top',				
 							'title' => esc_html__('Map Height', 'waymark'),
-							'default' => Waymark_Config::get_setting('misc', 'map_options', 'map_height'),
-							'tip' => sprintf(esc_attr__('Specify the desired height of the Map (in pixels). The Map will automatically adjust it’s width to fill the space available to it. Pro Tip! This will affect all Maps, but you can change the height of an individual Map through the shortcode: %s', 'waymark'), '[' . Waymark_Config::get_item('shortcode') . ' map_id=&quot;1234&quot; map_height=&quot;' . Waymark_Config::get_setting('misc', 'map_options', 'map_height') . '&quot;]'),
+							'default' => Waymark_Config::get_setting('misc', 'map_options', 'map_height'),							
+							'append' => '<br />' . sprintf(esc_attr__('Or set in Shortcode: %s', 'waymark'), '<code>[' . Waymark_Config::get_item('shortcode') . ' map_height=&quot;' . Waymark_Config::get_setting('misc', 'map_options', 'map_height') . '&quot; map_width=&quot;320&quot;]</code>'),
+							'tip' => sprintf(esc_attr__('Specify the desired height of the Map (in pixels). Pro Tip! This will affect all Maps, but you can change the height (and width) of an individual Map through the Shortcode: %s', 'waymark'), '[' . Waymark_Config::get_item('shortcode') . ' map_id=&quot;1234&quot; map_height=&quot;' . Waymark_Config::get_setting('misc', 'map_options', 'map_height') . '&quot;]'),
 							'input_processing' => array(
 								'preg_replace("/[^0-9]/", "", $param_value);'
 							),

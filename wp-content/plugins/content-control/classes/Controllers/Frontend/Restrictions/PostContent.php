@@ -80,7 +80,7 @@ class PostContent extends Controller {
 			return $content;
 		}
 
-		$message = '';
+		$message = \ContentControl\get_default_denial_message();
 
 		/**
 		 * If the restriction has a custom message, use it.
@@ -95,11 +95,6 @@ class PostContent extends Controller {
 		 */
 		if ( $restriction->override_message ) {
 			$message = $restriction->get_message();
-		}
-
-		// If the message is empty, use the global default message.
-		if ( empty( $message ) ) {
-			$message = \ContentControl\get_default_denial_message();
 		}
 
 		/**
@@ -126,7 +121,7 @@ class PostContent extends Controller {
 	 *
 	 * @return string
 	 */
-	public function filter_the_excerpt_if_restricted( $post_excerpt, $post ) {
+	public function filter_the_excerpt_if_restricted( $post_excerpt, $post = null ) {
 		$filter_name = 'content_control/restricted_post_excerpt';
 
 		if ( doing_filter( $filter_name ) ) {

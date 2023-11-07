@@ -43,8 +43,13 @@ export const MinifyPage = ( props ) => {
 		setLoading( true );
 
 		api.post( 'minify_clear_cache' )
-			.then( () => {
+			.then( ( response ) => {
 				dispatch( STORE_NAME ).invalidateResolution( 'getAssets' );
+				if ( response.isCriticalActive ) {
+					window.wphbMixPanel.track( 'critical_css_cache_purge', {
+						location: 'ao_settings'
+					} );
+				}
 				const message = __( 'Your cache has been successfully cleared. Your assets will regenerate the next time someone visits your website.', 'wphb' );
 				WPHB_Admin.notices.show( message ); // eslint-disable-line camelcase
 				setLoading( false );

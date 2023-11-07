@@ -118,7 +118,7 @@ class Admin {
 		// Upgrade link.
 		if ( ! Utils::is_member() ) {
 			if ( defined( 'WPHB_WPORG' ) && WPHB_WPORG ) {
-				$actions['wphb-plugins-upgrade'] = '<a href="' . Utils::get_link( 'plugin', 'hummingbird_pluginlist_upgrade' ) . '" aria-label="' . esc_attr( __( 'Upgrade to Hummingbird Pro', 'wphb' ) ) . '" target="_blank" style="color: #8D00B1;">' . esc_html__( 'Upgrade', 'wphb' ) . '</a>';
+				$actions['wphb-plugins-upgrade'] = '<a href="' . Utils::get_link( 'plugin', 'hummingbird_pluginlist_upgrade' ) . '" aria-label="' . esc_attr( __( 'Upgrade to Hummingbird Pro', 'wphb' ) ) . '" target="_blank" style="color: #8D00B1;">' . esc_html__( 'Upgrade For 60% Off!', 'wphb' ) . '</a>';
 			} elseif ( ! Utils::is_hosted_site_connected_to_free_hub() ) {
 				$actions['wphb-plugins-upgrade'] = '<a href="' . Utils::get_link( 'plugin', 'hummingbird_pluginlist_renew' ) . '" aria-label="' . esc_attr( __( 'Renew Membership', 'wphb' ) ) . '" target="_blank" style="color: #8D00B1;">' . esc_html__( 'Renew Membership', 'wphb' ) . '</a>';
 			}
@@ -130,11 +130,11 @@ class Admin {
 		// Settings link.
 		if ( current_user_can( Utils::get_admin_capability() ) ) {
 			if ( is_multisite() && ! is_network_admin() ) {
-				$url = network_admin_url( 'admin.php?page=wphb-settings' );
+				$url = network_admin_url( 'admin.php?page=wphb' );
 			} else {
-				$url = Utils::get_admin_menu_url( 'settings' );
+				$url = Utils::get_admin_menu_url();
 			}
-			$actions['wphb-plugins-dashboard'] = '<a href="' . $url . '" aria-label="' . esc_attr( __( 'Go to Hummingbird settings', 'wphb' ) ) . '">' . esc_html__( 'Settings', 'wphb' ) . '</a>';
+			$actions['wphb-plugins-dashboard'] = '<a href="' . $url . '" aria-label="' . esc_attr( __( 'Go to Hummingbird settings', 'wphb' ) ) . '">' . esc_html__( 'Dashboard', 'wphb' ) . '</a>';
 		}
 
 		return array_reverse( $actions );
@@ -160,7 +160,7 @@ class Admin {
 			$links[] = '<a href="https://wordpress.org/support/plugin/hummingbird-performance/" target="_blank" title="' . esc_attr__( 'Support', 'wphb' ) . '">' . esc_html__( 'Support', 'wphb' ) . '</a>';
 		} else {
 			if ( isset( $links[2] ) && false !== strpos( $links[2], 'project/wp-hummingbird' ) ) {
-				$links[2] = sprintf(
+				$links[2] = sprintf( /* translators: %s - Link to Hummingbird project detail page, %s - Text for anchor tag */
 					'<a href="%s" target="_blank">%s</a>',
 					'https://wpmudev.com/project/wp-hummingbird/',
 					__( 'View details', 'wphb' )
@@ -191,8 +191,9 @@ class Admin {
 	public function add_menu_pages() {
 		$hb_title = defined( 'WPHB_WPORG' ) && WPHB_WPORG ? __( 'Hummingbird', 'wphb' ) : __( 'Hummingbird Pro', 'wphb' );
 
-		$current_page = filter_input( INPUT_GET, 'page', FILTER_UNSAFE_RAW );
-		$current_page = sanitize_text_field( $current_page );
+		$current_page = $this->get_current_page_slug();
+
+		$this->hide_the_status_tag();
 
 		$this->pages['wphb']           = new Pages\Dashboard( 'wphb', $hb_title, $hb_title, false, false );
 		$this->pages['wphb-dashboard'] = new Pages\Dashboard( 'wphb', __( 'Dashboard', 'wphb' ), __( 'Dashboard', 'wphb' ), 'wphb' );
@@ -215,7 +216,7 @@ class Admin {
 		$minify = Settings::get_setting( 'enabled', 'minify' );
 
 		if ( ! is_multisite() || ( ( 'super-admins' === $minify && is_super_admin() ) || ( true === $minify ) ) ) {
-			$this->pages['wphb-minification'] = new Pages\Minification( 'wphb-minification', __( 'Asset Optimization', 'wphb' ), __( 'Asset Optimization', 'wphb' ), 'wphb' );
+			$this->pages['wphb-minification'] = new Pages\Minification( 'wphb-minification', __( 'Asset Optimization', 'wphb' ), __( 'Asset Optimization', 'wphb' ) . $this->get_status_tag_html(), 'wphb' );
 		} elseif ( isset( $current_page ) && 'wphb-minification' === $current_page ) {
 			// Asset optimization is off, and is a network, let's redirect to network admin.
 			$url = add_query_arg( 'minify-instructions', 'true', network_admin_url( 'admin.php?page=wphb#wphb-box-dashboard-minification-network-module' ) );
@@ -247,9 +248,41 @@ class Admin {
 	}
 
 	/**
+	 * Returns status tag html.
+	 */
+	public function get_status_tag_html() {
+		if ( get_option( 'wphb_hide_ao_menu_status_animation' ) ) {
+			return '';
+		}
+
+		return '<span class="wphb-critical-status-menu"><style>.wphb-critical-status-menu{margin-left:8px;margin-top:6px;position:absolute;vertical-align:middle;width:8px;height:8px;border-radius:50%}.wphb-critical-status-menu,.wphb-critical-status-menu::after,.wphb-critical-status-menu::before{background:#1abc9c}.wphb-critical-status-menu::before{content:"";animation:1.5s infinite wphb-critical-animation}.wphb-critical-status-menu::after{content:"";animation:1.5s -.4s infinite wphb-critical-animation}.wphb-critical-status-menu::after,.wphb-critical-status-menu::before{left:0;top:50%;margin-left:-1px;margin-top:-5px;position:absolute;vertical-align:middle;width:10px;height:10px;border-radius:50%}@keyframes wphb-critical-animation{0%{transform:scale(1);-webkit-transform:scale(1);opacity:1}100%{transform:scale(2);-webkit-transform:scale(2);opacity:0}}@-webkit-keyframes wphb-critical-animation{0%{transform:scale(1);-webkit-transform:scale(1);opacity:1}100%{transform:scale(2);-webkit-transform:scale(2);opacity:0}}</style></span>';
+	}
+
+	/**
+	 * Returns current page slug.
+	 */
+	public function get_current_page_slug() {
+		$current_page = filter_input( INPUT_GET, 'page', FILTER_UNSAFE_RAW );
+		$current_page = sanitize_text_field( $current_page );
+
+		return $current_page;
+	}
+
+	/**
+	 * Hide the animated status tag.
+	 */
+	public function hide_the_status_tag() {
+		if ( 'wphb-minification' === $this->get_current_page_slug() ) {
+			update_option( 'wphb_hide_ao_menu_status_animation', true );
+		}
+	}
+
+	/**
 	 * Network menu pages.
 	 */
 	public function add_network_menu_pages() {
+		$this->hide_the_status_tag();
+
 		$hb_title = defined( 'WPHB_WPORG' ) && WPHB_WPORG ? __( 'Hummingbird', 'wphb' ) : __( 'Hummingbird Pro', 'wphb' );
 
 		$this->pages['wphb']               = new Pages\Dashboard( 'wphb', $hb_title, $hb_title, false, false );
@@ -257,7 +290,7 @@ class Admin {
 		$this->pages['wphb-performance']   = new Pages\Performance( 'wphb-performance', __( 'Performance Test', 'wphb' ), __( 'Performance Test', 'wphb' ), 'wphb' );
 		$this->pages['wphb-caching']       = new Pages\Caching( 'wphb-caching', __( 'Caching', 'wphb' ), __( 'Caching', 'wphb' ), 'wphb' );
 		$this->pages['wphb-gzip']          = new Pages\React\Gzip( 'wphb-gzip', __( 'Gzip Compression', 'wphb' ), __( 'Gzip Compression', 'wphb' ), 'wphb' );
-		$this->pages['wphb-minification']  = new Pages\Minification( 'wphb-minification', __( 'Asset Optimization', 'wphb' ), __( 'Asset Optimization', 'wphb' ), 'wphb' );
+		$this->pages['wphb-minification']  = new Pages\Minification( 'wphb-minification', __( 'Asset Optimization', 'wphb' ), __( 'Asset Optimization', 'wphb' ) . $this->get_status_tag_html(), 'wphb' );
 		$this->pages['wphb-advanced']      = new Pages\Advanced( 'wphb-advanced', __( 'Advanced Tools', 'wphb' ), __( 'Advanced Tools', 'wphb' ), 'wphb' );
 		$this->pages['wphb-uptime']        = new Pages\Uptime( 'wphb-uptime', __( 'Uptime', 'wphb' ), __( 'Uptime', 'wphb' ), 'wphb' );
 		$this->pages['wphb-notifications'] = new Pages\Notifications( 'wphb-notifications', __( 'Notifications', 'wphb' ), __( 'Notifications', 'wphb' ), 'wphb' );

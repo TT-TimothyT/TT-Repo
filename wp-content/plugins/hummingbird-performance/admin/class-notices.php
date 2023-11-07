@@ -518,12 +518,7 @@ class Notices {
 				Utils::get_admin_menu_url( 'minification' )
 			);
 
-			$text = __(
-				"We've noticed you've made changes to your website. If you’ve installed new plugins or themes,
-			we recommend you re-check Hummingbird's Asset Optimization configuration to ensure those new files are added
-			correctly.",
-				'wphb'
-			);
+			$text = __( "We've noticed you've made changes to your website. If you’ve installed new plugins or themes, we recommend you re-check Hummingbird's Asset Optimization configuration to ensure those new files are added	correctly.", 'wphb' );
 
 			if ( ! ( is_multisite() && is_network_admin() ) ) {
 				$additional .= '<a href="' . esc_url( $recheck_file_url ) . '" class="button button-primary" style="margin-right:10px">' . __( 'Re-check Asset Optimization', 'wphb' ) . '</a>';

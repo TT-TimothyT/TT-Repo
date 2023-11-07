@@ -317,7 +317,7 @@ class SetupWizard extends React.Component {
 				<div className="sui-actions-right">
 					{ ! this.state.isMember &&
 						<Tooltip
-							text={ __( 'Get Hummingbird Pro for our full WordPress speed optimization suite, including uptime monitoring and enhanced, hosted file minification.', 'wphb' ) }
+							text={ __( 'Get Hummingbird Pro for our full WordPress speed optimization suite, including uptime monitoring and enhanced CDN.', 'wphb' ) }
 							classes={ [ 'sui-tooltip-constrained', 'sui-tooltip-bottom' ] } >
 							<Button
 								classes={ [ 'sui-button', 'sui-button-purple' ] }

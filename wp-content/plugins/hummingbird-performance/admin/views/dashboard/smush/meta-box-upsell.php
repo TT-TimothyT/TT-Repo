@@ -15,13 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <div class="sui-upsell-notice sui-padding sui-padding-top--hidden sui-padding-bottom__desktop--hidden">
-	<div class="sui-upsell-notice__image" aria-hidden="true">
-		<img class="sui-image sui-upsell-image"
-			src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/smush-share-widget.png' ); ?>"
-			srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/smush-share-widget@2x.png' ); ?> 2x"
-			alt="<?php esc_attr_e( 'Get WP Smush Pro', 'wphb' ); ?>">
-	</div>
-
 	<div class="sui-upsell-notice__content">
 		<div class="sui-notice sui-notice-purple">
 			<div class="sui-notice-content">

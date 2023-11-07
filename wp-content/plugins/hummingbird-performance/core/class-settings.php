@@ -82,59 +82,65 @@ class Settings {
 	public static function get_default_settings() {
 		$defaults = array(
 			'minify'      => array(
-				'enabled'                 => false,
-				'use_cdn'                 => true,
-				'delay_js'                => false,
-				'log'                     => false,
-				'file_path'               => '',
+				'enabled'                            => false,
+				'use_cdn'                            => true,
+				'delay_js'                           => false,
+				'critical_css'                       => false,
+				'critical_css_type'                  => 'remove',
+				'critical_css_remove_type'           => 'user_interaction_with_remove',
+				'critical_css_mode'                  => '',
+				'critical_page_types'                => array(),
+				'critical_skipped_custom_post_types' => array(),
+				'log'                                => false,
+				'file_path'                          => '',
 				// Only for multisites. Toggles minification in a subsite
 				// By default is true as if 'minify'-'enabled' is set to false, this option has no meaning.
-				'minify_blog'             => false,
-				'view'                    => 'basic', // Accepts: 'basic' or 'advanced'.
-				'type'                    => 'speedy', // Accepts: 'speedy' or 'basic'.
-				'do_assets'               => array( // Assets to optimize.
+				'minify_blog'                        => false,
+				'view'                               => 'basic', // Accepts: 'basic' or 'advanced'.
+				'type'                               => 'speedy', // Accepts: 'speedy' or 'basic'.
+				'do_assets'                          => array( // Assets to optimize.
 					'styles'  => true,
 					'scripts' => true,
 					'fonts'   => true,
 				),
 				// Only for multisite.
-				'block'                   => array(
+				'block'                              => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'dont_minify'             => array(
+				'dont_minify'                        => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'dont_combine'            => array(
+				'dont_combine'                       => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'position'                => array( // Move to footer.
+				'position'                           => array( // Move to footer.
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'defer'                   => array(
+				'defer'                              => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'inline'                  => array(
+				'inline'                             => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'nocdn'                   => array(
+				'nocdn'                              => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'delay_js_exclusions'     => '',
-				'delay_js_exclusion_list' => false,
-				'delay_js_timeout'        => 20,
-				'fonts'                   => array(),
-				'preload'                 => array(
+				'delay_js_exclusions'                => '',
+				'delay_js_exclusion_list'            => false,
+				'delay_js_timeout'                   => 20,
+				'fonts'                              => array(),
+				'preload'                            => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'async'                   => array(
+				'async'                             => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
@@ -276,7 +282,7 @@ class Settings {
 
 		$options = array(
 			'caching'     => array( 'expiry_css', 'expiry_javascript', 'expiry_media', 'expiry_images' ),
-			'minify'      => array( 'minify_blog', 'view', 'type', 'do_assets', 'block', 'dont_minify', 'dont_combine', 'position', 'defer', 'inline', 'nocdn', 'fonts', 'preload', 'async', 'delay_js', 'delay_js_exclusions', 'delay_js_exclusion_list', 'delay_js_timeout' ),
+			'minify'      => array( 'minify_blog', 'view', 'type', 'do_assets', 'block', 'dont_minify', 'dont_combine', 'position', 'defer', 'inline', 'nocdn', 'fonts', 'preload', 'async', 'delay_js', 'delay_js_exclusions', 'delay_js_exclusion_list', 'delay_js_timeout', 'critical_css', 'critical_css_type', 'critical_css_remove_type', 'critical_css_mode', 'critical_page_types', 'critical_skipped_custom_post_types' ),
 			'page_cache'  => array( 'cache_blog' ),
 			'performance' => array( 'dismissed', 'reports' ),
 			'advanced'    => array( 'query_string', 'emoji', 'prefetch', 'preconnect', 'cart_fragments' ),

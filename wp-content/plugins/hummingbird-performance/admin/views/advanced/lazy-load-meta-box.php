@@ -279,7 +279,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				?>
 				<span class="sui-description" id="comments_per_page_desc">
 				<?php
-					/* translators: %1$s - anchor link, %2$s - closing tag */
+					/* translators: %1$s - opening a tag, %2$s - closing a tag */
 					printf( esc_html__( 'If you are using native WordPress comments, limiting the number of comments to grab from the database will reduce the time to query them. You can change the limit in %1$sDiscussion Settings%2$s.', 'wphb' ), '<a href="' . esc_url( $discussion_settings ) . '">', '</a>' );
 				?>
 				</span>
@@ -321,7 +321,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				?>
 				<span class="sui-description">
 					<?php
-					/* translators: %1$s - anchor link, %2$s - closing tag */
+					/* translators: %1$s - opening a tag, %2$s - closing a tag */
 					printf( esc_html__( 'Make sure you have activated %1$sGravatar Caching%2$s. It will store local copies of avatars used in comments and in your theme.', 'wphb' ), '<a href="' . esc_url( $gravatar_caching_url ) . '">', '</a>' );
 					?>
 				</span>
@@ -344,7 +344,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php $show_smush_box = true; ?>
 		<a style="display: block; color: #17A8E3; margin-top: 10px;" href="<?php echo esc_url( Utils::get_link( 'smush' ) ); ?>" class="upsell-action-link" id="smush-install">
 			<?php
-			/* translators: %1$s - plugin name */
+			/* translators: %s - plugin name */
 			printf( esc_html__( 'Install %s', 'wphb' ), esc_attr( $smush_plugin_name ) );
 			?>
 		</a>
@@ -367,19 +367,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php endif; ?>
 	<?php $message = ob_get_clean(); ?>
 	<?php if ( $show_smush_box && ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) : ?>
-	<div class="sui-box-settings-row sui-upsell-row">
-		<img class="sui-image sui-upsell-image" style="width: auto !important; height: 108px !important; margin-bottom: -30px" src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/smush-share-widget.png' ); ?>"
-			srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/smush-share-widget.png' ); ?> 1x, <?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/smush-share-widget@2x.png' ); ?> 2x" alt="">
-
-		<div class="sui-upsell-notice">
-			<p>
-				<?php
-					/* translators: %1$s - plugin name */
-					printf( esc_html__( 'Did you know that %1$s provides media lazy loading? It will reduce load on your server and will speed up the page load time. %1$s also delivers up to 2x better compression.', 'wphb' ), esc_attr( $smush_plugin_name ) );
-					echo '<br>';
-					echo $message;
-				?>
-			</p>
+	<div class="sui-upsell-row">
+	<div class="sui-notice sui-notice-info">
+			<div class="sui-notice-content">
+				<div class="sui-notice-message">
+					<span class="sui-notice-icon sui-icon-info sui-md" aria-hidden="true"></span>
+					<p>
+					<?php
+						/* translators: %1$s - plugin name */
+						printf( esc_html__( 'Did you know that %1$s provides media lazy loading? It will reduce load on your server and will speed up the page load time. %1$s also delivers up to 2x better compression.', 'wphb' ), esc_attr( $smush_plugin_name ) );
+						echo '<br>';
+						echo $message;
+					?>
+					</p>
+				</div>
+			</div>
 		</div>
 	</div>
 	<?php endif; ?>

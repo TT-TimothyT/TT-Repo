@@ -52,6 +52,16 @@ import { OrphanedScanner, BATCH_SIZE } from '../scanners/OrphanedScanner';
 							'undefined' !== typeof response &&
 							response.success
 						) {
+							
+							response.mp_events.forEach( function( object ) {
+								for (const property in object) {
+									if ( false === object[property] ) {
+										window.wphbMixPanel.disableFeature( property  );
+									} else {
+										window.wphbMixPanel.enableFeature( property );
+									}
+								}
+							});
 							WPHB_Admin.notices.show();
 						} else {
 							WPHB_Admin.notices.show(

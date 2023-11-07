@@ -159,32 +159,7 @@ class Status extends React.Component {
 
 		return (
 			<div className="sui-box-settings-row sui-upsell-row cf-dash-notice sui-no-padding-top">
-				{ ! this.props.data.isWhiteLabeled && (
-					<img
-						className="sui-image sui-upsell-image"
-						alt={ __(
-							'Connect your account to Cloudflare',
-							'wphb'
-						) }
-						src={
-							this.props.link.wphbDirUrl +
-							'admin/assets/image/graphic-hb-cf-sell.png'
-						}
-						srcSet={
-							this.props.link.wphbDirUrl +
-							'admin/assets/image/graphic-hb-cf-sell.png 1x, ' +
-							this.props.link.wphbDirUrl +
-							'admin/assets/image/graphic-hb-cf-sell@2x.png 2x'
-						}
-					/>
-				) }
-				{ this.props.data.isWhiteLabeled ? (
-					<Notice
-						message={ notice }
-						content={ connectButton }
-						classes="sui-notice-grey"
-					/>
-				) : (
+				{ (
 					<div className="sui-upsell-notice">
 						<p>
 							{ notice }

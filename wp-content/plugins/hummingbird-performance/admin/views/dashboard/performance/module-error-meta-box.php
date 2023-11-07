@@ -16,11 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 $this->admin_notices->show_inline(
 	$error,
 	'error',
-	sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+	sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 		esc_html__( '%1$sTry again%2$s', 'wphb' ),
 		'<a href="' . esc_url( $retry_url ) . '" class="sui-button">',
 		'</a>'
-	) . sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+	) . sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 		esc_html__( '%1$sSupport%2$s', 'wphb' ),
 		'<a href="' . esc_url( $support_url ) . '" target="_blank" class="sui-button">',
 		'</a>'

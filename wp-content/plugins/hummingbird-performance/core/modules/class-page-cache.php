@@ -90,6 +90,7 @@ class Page_Cache extends Module {
 		$this->init_filesystem();
 		$this->check_plugin_compatibility();
 		$this->check_minification_queue();
+		$this->check_critical_css_queue();
 		$this->check_fast_cgi_cache();
 
 		add_action( 'admin_init', array( $this, 'maybe_update_advanced_cache' ) );
@@ -1276,6 +1277,11 @@ class Page_Cache extends Module {
 			self::log_msg( 'Page not cached. Asset optimization processing in progress. Sending buffer to user.' );
 			return $buffer;
 		}
+		
+		if ( apply_filters( 'wphb_should_cache_exit', false ) ) {
+			// Exit early.
+			return $buffer;
+		}
 
 		$cache_page = true;
 		$is_404     = false;
@@ -1739,7 +1745,7 @@ class Page_Cache extends Module {
 			// Check expiry.
 			if ( isset( $wphb_cache_config->clear_interval['enabled'] ) && $wphb_cache_config->clear_interval['enabled'] ) {
 				self::log_msg(
-					sprintf(
+					sprintf( /* translators: %s - Cache expiration time, %s - Cache old time */
 						'Cache file found. Expiry set to %s hours, file is %s hours old.',
 						$wphb_cache_config->clear_interval['interval'],
 						round( ( time() - filemtime( $wphb_cache_file ) ) / HOUR_IN_SECONDS )
@@ -2211,6 +2217,26 @@ class Page_Cache extends Module {
 		$buffer = (string) apply_filters( 'wphb_buffer', $buffer );
 
 		return $buffer;
+	}
+
+	/**
+	 * Check for critical css queue.
+	 *
+	 * @since   3.6.0
+	 * @access  private
+	 * @used-by Page_Cache::init()
+	 */
+	private function check_critical_css_queue() {
+		if ( is_wp_error( $this->error ) || ! $this->is_active() ) {
+			return;
+		}
+
+		if ( get_transient( 'wphb-cs-processing' ) ) {
+			$this->error = new WP_Error(
+				'critical-css-queue-present',
+				__( 'Hummingbird cache will not work for some pages while Critical CSS is being generated. Page caching will resume automatically when Critical CSS is generated.', 'wphb' )
+			);
+		}
 	}
 
 }

@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php
 if ( $report_dismissed ) {
 	if ( true === $can_run_test ) {
-		$buttons = sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+		$buttons = sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 			esc_html__( '%1$sRun Test%2$s', 'wphb' ),
 			'<a href="' . esc_url( $retry_url ) . '" class="sui-button sui-button-blue">',
 			'</a>'
@@ -49,7 +49,7 @@ if ( $report_dismissed ) {
 			),
 			number_format_i18n( $can_run_test )
 		);
-		$buttons = sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+		$buttons = sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 			esc_html__( '%1$sRun Test%2$s', 'wphb' ),
 			'<span class="sui-tooltip sui-tooltip-constrained" data-tooltip="' . esc_attr( $tooltip ) . '" aria-hidden="true">' .
 			'<a href="#" disabled="disabled" class="sui-button sui-button-blue" aria-hidden="true">',
@@ -169,7 +169,7 @@ foreach ( $last_test->metrics as $rule => $rule_result ) {
 
 <p>
 	<?php
-	printf( /* translators: %1$s - starting a tag, %2$s - ending a tag */
+	printf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 		esc_html__( 'The field data is a historical report about how a particular URL has performed, and represents anonymized performance data from users in the real-world on a variety of devices and network conditions. We use %1$sChrome User Experience Report%2$s to generate insights about the real users’ experience with your webpage over the last 30 days.', 'wphb' ),
 		'<a href="https://developers.google.com/web/tools/chrome-user-experience-report/" target="_blank">',
 		'</a>'

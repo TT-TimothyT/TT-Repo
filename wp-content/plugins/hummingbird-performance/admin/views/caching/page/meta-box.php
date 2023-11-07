@@ -448,12 +448,7 @@ if ( is_wp_error( $error ) ) {
 			echo sprintf(
 				/* translators: %1$s - opening a tag, %2$s - closing a tag */
 				esc_html__(
-					'For example, if you want to not cache any pages that are nested under your Forums
-				area you might add "/forums/" as a rule. When Hummingbird goes to cache pages, she will ignore any
-				URL that contains "/forums/". To exclude a specific page you might add "/forums/thread-title". Accepts
-				regular expression syntax, for more complex exclusions it can be helpful to test
-				on %1$sregex101.com%2$s. Note: Hummingbird will auto convert
-				your input into valid regex syntax.',
+					'For example, if you want to not cache any pages that are nested under your Forums area you might add "/forums/" as a rule. When Hummingbird goes to cache pages, she will ignore any URL that contains "/forums/". To exclude a specific page you might add "/forums/thread-title". Accepts regular expression syntax, for more complex exclusions it can be helpful to test on %1$sregex101.com%2$s. Note: Hummingbird will auto convert your input into valid regex syntax.',
 					'wphb'
 				),
 				'<a href="https://regex101.com" target="_blank">',

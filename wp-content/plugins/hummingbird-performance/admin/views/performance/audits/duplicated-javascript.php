@@ -81,7 +81,7 @@ if ( isset( $audit->score ) && 1 === $audit->score ) {
 	<h4><?php esc_html_e( 'How to fix', 'wphb' ); ?></h4>
 	<p>
 		<?php
-		printf( /* translators: %1$s - <a>, %2$s - </a> */
+		printf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 			esc_html__( 'You can focus on optimizing your dependencies in order to achieve significant reductions in JavaScript library size. %1$sLearn more about optimizing your dependencies here%2$s.', 'wphb' ),
 			'<a href="https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies" target="_blank">',
 			'</a>'

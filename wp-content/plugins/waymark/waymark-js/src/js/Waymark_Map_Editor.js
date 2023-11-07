@@ -733,7 +733,8 @@ function Waymark_Map_Editor() {
 				case 'line' :
 					layer.setStyle({
 						color: type.line_colour,
-						weight: type.line_weight							
+						weight: type.line_weight,
+						opacity: type.line_opacity													
 					});				
 
 					break;
@@ -747,7 +748,7 @@ function Waymark_Map_Editor() {
 				case 'marker' :
 					//Create Icon								
 					layer.setIcon(
-						L.divIcon(Waymark.build_icon_data(type))
+						Waymark_L.divIcon(Waymark.build_icon_data(type))
 					);				
 
 					break;								

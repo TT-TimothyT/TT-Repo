@@ -52,7 +52,7 @@
 
 .wpmud .wrap-wphb-caching .box-summary.sui-summary:not(.sui-rebranded):not(.sui-unbranded):not(.sui-summary-sm) {
     @if variable-exists(summary-image) {
-        @include background-2x("#{$image--path}/summary-graphic-caching", 'png', 192px, 172px, 30px 100%);
+        @include background-2x("#{$image--path}/hb-icon", 'png', $summary-image--width, $summary-image--height, 30px center );
     }
 
     @include media(max-width, md) {
@@ -192,4 +192,13 @@
         margin-left: 5px;
         &:before { color: #17A8E3; }
     }
+}
+
+#wrap-wphb-browser-caching .sui-upsell-row .sui-upsell-notice {
+    padding-left: 0px;
+}
+
+#wrap-wphb-browser-caching .sui-box-settings-row.sui-upsell-row,
+#wrap-wphb-browser-caching .sui-upsell-row .sui-upsell-notice {
+    display: block;
 }

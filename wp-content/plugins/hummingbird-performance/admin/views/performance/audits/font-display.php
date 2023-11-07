@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <p>
 	<?php
 	printf(
-		/* translators: %1$s - <strong>, %2$s - </strong> */
+		/* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 		esc_html__( "When you use web fonts on your website, browsers have to download them before any text can be displayed. Most browsers have a maximum timeout, after which a web font will be replaced with a fallback font. It's recommended to use a %1\$sfont-display%2\$s descriptor in your %1\$s@font-face%2\$s rule to control how text renders when web font download delays occur.", 'wphb' ),
 		'<strong>',
 		'</strong>'
@@ -73,7 +73,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p>
 		<?php
 		printf(
-			/* translators: %1$s - <strong>, %2$s - </strong>, %3$s - <strong> with font color */
+			/* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag, %3$s - <strong> with font color */
 			esc_html__( 'To add the %1$sfont-display%2$s property for Google Fonts, you can pass the desired value in the query string %3$sdisplay%2$s parameter as shown in the example below:', 'wphb' ),
 			'<strong>',
 			'</strong>',
@@ -85,7 +85,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p>
 		<?php
 		printf(
-			/* translators: %1$s - <strong>, %2$s - </strong> */
+			/* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 			esc_html__( 'For fonts hosted locally, add the %1$sfont-display%2$s property to the @font-face CSS rule as shown below:', 'wphb' ),
 			'<strong>',
 			'</strong>'
@@ -100,7 +100,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p>
 		<?php
 		printf(
-			/* translators: %1$s - <strong>, %2$s - </strong>, %3$s - link, %4$s - closing a tag */
+			/* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag, %3$s - opening a tag, %4$s - closing a tag */
 			esc_html__( 'The %1$sfont-display%2$s supports "%1$sauto | block | swap | fallback | optional%2$s" values. Try different values to achieve the desired result. You can read about the different values %3$shere%4$s.', 'wphb' ),
 			'<strong>',
 			'</strong>',

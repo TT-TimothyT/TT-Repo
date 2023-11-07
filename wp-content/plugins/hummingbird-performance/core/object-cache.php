@@ -383,6 +383,7 @@ class WP_Object_Cache {
 			}
 
 			if ( 'hhvm' === $client ) {
+				/* translators: %d: HHVM no */
 				$this->redis_client = sprintf( 'HHVM Extension (v%s)', constant( 'HHVM_VERSION' ) );
 
 				$this->redis = new Redis();
@@ -395,6 +396,7 @@ class WP_Object_Cache {
 
 			if ( 'pecl' === $client ) {
 				$phpredis_version   = phpversion( 'redis' );
+				/* translators: %s: PECL extesnion */
 				$this->redis_client = sprintf( 'PECL Extension (v%s)', $phpredis_version );
 
 				$this->redis = new Redis();
@@ -419,11 +421,13 @@ class WP_Object_Cache {
 				// Load bundled Predis library.
 				if ( ! class_exists( 'Predis\Client' ) ) {
 					$predis_pro = sprintf(
+						/* translators: %s: Path to plugin directory page */
 						'%s/wp-hummingbird/vendor/predis/predis/autoload.php',
 						defined( 'WP_PLUGIN_DIR' ) ? WP_PLUGIN_DIR : WP_CONTENT_DIR . '/plugins'
 					);
 
 					$predis_free = sprintf(
+						/* translators: %s: Path to plugin directory page */
 						'%s/hummingbird-performance/vendor/predis/predis/autoload.php',
 						defined( 'WP_PLUGIN_DIR' ) ? WP_PLUGIN_DIR : WP_CONTENT_DIR . '/plugins'
 					);
@@ -464,6 +468,7 @@ class WP_Object_Cache {
 
 				$this->redis->connect();
 
+				/* translators: %s: Predis client version */
 				$this->redis_client .= sprintf( ' (v%s)', Predis\Client::VERSION );
 			}
 
@@ -1129,7 +1134,7 @@ LUA2;
 		<?php foreach ( $this->cache as $group => $cache ) : ?>
 			<li>
 				<?php
-				printf(
+				printf( /* translators: %1$s - Group <a>, %2$s - Cache </a> */
 					'%s - %sk',
 					strip_tags( $group ),
 					number_format( strlen( serialize( $cache ) ) / 1024, 2 )

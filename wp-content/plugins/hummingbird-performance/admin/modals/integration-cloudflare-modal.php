@@ -159,7 +159,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<ol id="cloudflare-key-how-to" class="sui-border-frame sui-hidden">
 					<li>
 						<?php
-						printf( /* translators: %1$s - <a>, %2$s - </a> */
+						printf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 							esc_html__( '%1$sLog in%2$s to your Cloudflare account.', 'wphb' ),
 							'<a target="_blank" href="https://dash.cloudflare.com/login">',
 							'</a>'

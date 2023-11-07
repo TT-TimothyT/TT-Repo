@@ -52,10 +52,11 @@ class Configs {
 			'wphbReact',
 			array(
 				'links'        => array(
-					'accordionImg' => WPHB_DIR_URL . 'admin/assets/image/icon-configs@2x.png',
-					'hubConfigs'   => Utils::get_link( 'configs' ),
-					'hubWelcome'   => Utils::get_link( 'hub-welcome', 'config' ),
-					'configsPage'  => Utils::get_admin_menu_url( 'settings' ) . '&view=configs',
+					'accordionImg'  => WPHB_DIR_URL . 'admin/assets/image/icon-configs@2x.png',
+					'hubConfigs'    => Utils::get_link( 'configs' ),
+					'hubWelcome'    => Utils::get_link( 'hub-welcome', 'config' ),
+					'configsPage'   => Utils::get_admin_menu_url( 'settings' ) . '&view=configs',
+					'freeNoticeHub' => Utils::get_link( 'hub-welcome', 'hummingbird_hub_config' ),
 				),
 				'module'       => array(
 					'isMember'       => Utils::has_access_to_hub(),
@@ -260,7 +261,7 @@ class Configs {
 		if ( ! $file ) {
 			throw new Exception( __( 'The configs file is required', 'wphb' ) );
 		} elseif ( ! empty( $file['error'] ) ) {
-			/* translators: error message */
+			/* translators: %s - error message */
 			throw new Exception( sprintf( __( 'Error: %s.', 'wphb' ), $file['error'] ) );
 		} elseif ( 'application/json' !== $file['type'] ) {
 			throw new Exception( __( 'The file must be a JSON.', 'wphb' ) );

@@ -1240,8 +1240,19 @@ class Minify extends Module {
 		$options  = $this->get_options();
 		$combine  = $options['dont_combine'][ $type ];
 		$delay_js = $options['delay_js'];
-		// Added @since 3.3.4.
+
 		if ( true === $delay_js && 'scripts' === $type ) {
+			return false;
+		}
+
+		/**
+		 * Filter to disable the combine.
+		 *
+		 * @param array  $value  Whether to disable the combine or not, default false.
+		 * @param array  $handle Resource handle.
+		 * @param string $type   Script or style..
+		 */
+		if ( apply_filters( 'wphb_dont_combine_handles', false, $handle, $type ) ) {
 			return false;
 		}
 
@@ -1542,6 +1553,11 @@ class Minify extends Module {
 	 * @since 1.8
 	 */
 	public function enqueue_critical_css() {
+		// If critical css is enable return early.
+		if ( Utils::get_module( 'critical_css' )->is_active() ) {
+			return;
+		}
+
 		$assets_dir = Filesystem::critical_assets_dir();
 		$file       = $assets_dir['path'] . 'critical.css';
 
@@ -1565,11 +1581,12 @@ class Minify extends Module {
 	 *
 	 * @since 1.8
 	 *
+	 * @param string $filename CSS filename.
 	 * @return string
 	 */
-	public static function get_css() {
+	public static function get_css( $filename = 'critical' ) {
 		$assets_dir = Filesystem::critical_assets_dir();
-		$file       = $assets_dir['path'] . 'critical.css';
+		$file       = $assets_dir['path'] . $filename . '.css';
 
 		if ( file_exists( $file ) ) {
 			return file_get_contents( $file );
@@ -1583,11 +1600,12 @@ class Minify extends Module {
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $content  CSS content.
+	 * @param string $content   CSS content.
+	 * @param string $filename  CSS filename.
 	 *
 	 * @return array
 	 */
-	public static function save_css( $content ) {
+	public static function save_css( $content, $filename = 'critical' ) {
 		if ( ! is_string( $content ) ) {
 			return array(
 				'success' => false,
@@ -1605,7 +1623,7 @@ class Minify extends Module {
 		}
 
 		$assets_dir = Filesystem::critical_assets_dir();
-		$file       = $assets_dir['path'] . 'critical.css';
+		$file       = $assets_dir['path'] . $filename . '.css';
 		$content    = trim( $content );
 		if ( ! empty( $content ) ) {
 			$status = $fs->write( $file, $content );

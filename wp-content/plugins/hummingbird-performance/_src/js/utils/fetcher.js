@@ -311,6 +311,88 @@ function Fetcher() {
 				const action = actionPrefix + 'minification_save_exclude_list';
 				return request( action, { data }, 'POST' );
 			},
+			/**
+			 * Clear Css files.
+			 *
+			 * @since 3.6.0
+			 * @param {string} module
+			 */
+			clearCriticalCssFiles: () => {
+				return request(
+					actionPrefix + 'clear_critical_css_files',
+					{},
+					'POST'
+				).then( ( response ) => {
+					return response;
+				} );
+			},
+			
+			/**
+			 * Create CSS files from gutenberg.
+			 *
+			 * @since 3.6.0
+			 * @param {string} postID
+			 */
+			createCSSForPost: ( postId ) => {
+				return request(
+					actionPrefix + 'gutenberg_create_css_file',
+					{ postId },
+					'POST'
+				);
+			},
+			
+			/**
+			 * Re Create CSS files from gutenberg.
+			 *
+			 * @since 3.6.0
+			 * @param {string} postID
+			 */
+			reCreateCSSForPost: ( postId ) => {
+				return request(
+					actionPrefix + 'gutenberg_recreate_css_file',
+					{ postId },
+					'POST'
+				);
+			},
+			
+			/**
+			 * Revert CSS files from gutenberg.
+			 *
+			 * @since 3.6.0
+			 * @param {string} postID
+			 */
+			revertCSSForPost: ( postId ) => {
+				return request(
+					actionPrefix + 'gutenberg_revert_css_file',
+					{ postId },
+					'POST'
+				);
+			},
+
+			/**
+			 * Get critical css status for single post.
+			 *
+			 * @since 3.6.0
+			 * @param {string} postID
+			 */
+			 getCriticalStatusForSinglePost: ( postId ) => {
+				return request(
+					actionPrefix + 'gutenberg_get_critical_status_for_single_post',
+					{ postId },
+					'POST'
+				);
+			},
+
+			/**
+			 * Get critical css status for queue.
+			 */
+			 getCriticalStatusForQueue: () => {
+				return request(
+					actionPrefix + 'get_critical_status_for_queue',
+					{},
+					'POST'
+				);
+			},
 
 			/**
 			 * Update Toggle Delay Js status.
@@ -319,6 +401,16 @@ function Fetcher() {
 			 */
 			 toggleDelayJs: ( data ) => {
 				const action = actionPrefix + 'react_minify_toggle_delay_js';
+				return request( action, { data }, 'POST' );
+			},
+
+			/**
+			 * Update Toggle Critical CSS status.
+			 *
+			 * @param {string} data critical css checkbox value.
+			 */
+			toggleCriticalCss: ( data ) => {
+				const action = actionPrefix + 'react_minify_toggle_critical_css';
 				return request( action, { data }, 'POST' );
 			},
 		},

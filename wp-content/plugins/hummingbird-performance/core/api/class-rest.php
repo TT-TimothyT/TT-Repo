@@ -338,11 +338,12 @@ class Rest {
 		$options = Utils::get_module( 'minify' )->get_options();
 
 		$response = array(
-			'cdn'      => $options['use_cdn'],
-			'modal'    => (bool) get_option( 'wphb-minification-show-advanced_modal' ),
-			'mode'     => $options['view'],
-			'safeMode' => Minify::get_safe_mode_status(),
-			'delay_js' => $options['delay_js'],
+			'cdn'          => $options['use_cdn'],
+			'modal'        => (bool) get_option( 'wphb-minification-show-advanced_modal' ),
+			'mode'         => $options['view'],
+			'safeMode'     => Minify::get_safe_mode_status(),
+			'delay_js'     => $options['delay_js'],
+			'critical_css' => $options['critical_css'],
 		);
 
 		return rest_ensure_response( $response );

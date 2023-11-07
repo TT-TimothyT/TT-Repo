@@ -109,7 +109,7 @@
  */
 .wpmud .wrap-wphb-uptime .box-uptime-summary.sui-summary:not(.sui-rebranded):not(.sui-unbranded):not(.sui-summary-sm) {
     @if variable-exists(summary-image) {
-        @include background-2x("#{$image--path}/summary-graphic-uptime", 'png', 192px, 172px, 30px 100%);
+        @include background-2x("#{$image--path}/hb-icon", 'png', $summary-image--width, $summary-image--height, 30px center );
     }
 
     @include media(max-width, md) {

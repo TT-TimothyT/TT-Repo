@@ -83,7 +83,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p><?php esc_html_e( 'Some of your files may not be hosted on your server. Hummingbird cannot compress JavaScript files hosted on a separate domain. If one of these files needs to be minimized, you can:', 'wphb' ); ?></p>
 		<ol>
 			<li><?php esc_html_e( 'Find where the asset is being added from (plugin, theme, or custom code) and replace it with an optimized file.', 'wphb' ); ?></li>
-			<li><?php esc_html_e( 'Ignore this recommendation and continue using the file as is. While leaving files uncompressed may affect your 	performance score, it is recommended for essential plugins or themes when the files can\'t be altered.', 'wphb' ); ?></li>
+			<li><?php esc_html_e( 'Ignore this recommendation and continue using the file as is. While leaving files uncompressed may affect your performance score, it is recommended for essential plugins or themes when the files can\'t be altered.', 'wphb' ); ?></li>
 		</ol>
 	<?php endif; ?>
 <?php endif; ?>

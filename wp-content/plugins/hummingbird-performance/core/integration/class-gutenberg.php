@@ -7,6 +7,7 @@
  */
 
 namespace Hummingbird\Core\Integration;
+use Hummingbird\Core\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -42,7 +43,11 @@ class Gutenberg {
 	 */
 	public function init() {
 		// Page caching is not enabled.
-		if ( ! apply_filters( 'wp_hummingbird_is_active_module_page_cache', false ) ) {
+		$page_cache = apply_filters( 'wp_hummingbird_is_active_module_page_cache', false );
+
+		$critical_css = Utils::get_module( 'critical_css' )->is_active();
+
+		if ( ! $page_cache && ! $critical_css && Utils::is_member() ) {
 			return;
 		}
 
@@ -86,6 +91,21 @@ class Gutenberg {
 			return;
 		}
 
+		$critical_css = Utils::get_module( 'critical_css' )->is_active();
+
+		$button_label = ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) ? esc_html__( 'HB', 'wphb' ) : '';
+		$post_id      = get_the_ID();
+
+		if ( 'publish' !== get_post_status( $post_id ) ) {
+			return;
+		}
+
+		$type = get_post_type();
+
+		$ignore_page_type                = Utils::get_module( 'critical_css' )->skip_page_type( $type );
+		$display_critical                = $critical_css && ! $ignore_page_type && 'page' === $type;
+		$single_post_critical_css_status = false;
+
 		// Gutenberg block scripts.
 		wp_enqueue_script(
 			'wphb-gutenberg',
@@ -94,22 +114,44 @@ class Gutenberg {
 			WPHB_VERSION,
 			true
 		);
-		
-		$button_label = ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) ? esc_html__( 'HB', 'wphb' ) : '';
 
-		wp_localize_script(
-			'wphb-gutenberg',
-			'wphb',
-			array(
-				'strings' => array(
-					'button' => sprintf( esc_html__( 'Clear %s post cache', 'wphb' ), $button_label ),
-					'notice' => esc_html__( 'Cache for post has been cleared.', 'wphb' ),
+
+		if ( ! empty( $post_id ) ) {
+			$single_post_critical_css_status = Utils::get_module( 'critical_css' )->get_single_post_critical_css_status( $post_id );
+		}
+
+		$page_cache = apply_filters( 'wp_hummingbird_is_active_module_page_cache', false );
+
+		$pro_label = ( ! Utils::is_member() ) ? esc_html__( '(Pro)', 'wphb' ) : '';
+		$args      = array(
+			'strings' => array(
+				'pageCache'                   => $page_cache,
+				'isMember'                    => Utils::is_member(),
+				'displayProLabelButton'       => ! Utils::is_member() && Utils::get_module( 'minify' )->is_active(),
+				'eoPageUrl'                   => Utils::get_admin_menu_url( 'minification' ) . '&view=tools&triggercriticalupsellmodal=1',
+				'button'                      => sprintf(
+					/* translators: %s - Cache button label */
+					esc_html__( 'Clear %s post cache', 'wphb' ),
+					$button_label
 				),
-				'nonces'  => array(
-					'HBFetchNonce' => wp_create_nonce( 'wphb-fetch' ),
+				'notice'                      => esc_html__( 'Cache for post has been cleared.', 'wphb' ),
+				'criticalCreateButton'        => sprintf(
+					/* translators: %s - button label for non member */
+					esc_html__( 'Generate CSS File %s', 'wphb' ),
+					$pro_label
 				),
-			)
+				'criticalRecreateButton'      => esc_html__( 'Regenerate CSS File', 'wphb' ),
+				'criticalRevertButton'        => esc_html__( 'Revert back to the default CSS File', 'wphb' ),
+				'criticalCss'                 => $display_critical,
+				'singlePostCriticalCSSStatus' => $single_post_critical_css_status,
+			),
+			'nonces'  => array(
+				'HBFetchNonce' => wp_create_nonce( 'wphb-fetch' ),
+			),
 		);
-	}
 
+		$args = array_merge_recursive( $args, Utils::get_tracking_data() );
+
+		wp_localize_script( 'wphb-gutenberg', 'wphb', $args );
+	}
 }

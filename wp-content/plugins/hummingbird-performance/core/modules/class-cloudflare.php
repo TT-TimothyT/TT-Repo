@@ -479,7 +479,11 @@ class Cloudflare extends Module {
 				);
 				break;
 			default:
-				$message = sprintf( '<strong>%s</strong> [%s]', $zones->get_error_message(), $zones->get_error_code() );
+				$message = sprintf( /* translators: %s - Zone Error message, %s - Zone Error code */
+					'<strong>%s</strong> [%s]',
+					$zones->get_error_message(),
+					$zones->get_error_code()
+				);
 				wp_send_json_error( array( 'message' => $message ) );
 				break;
 		}
@@ -1006,6 +1010,7 @@ class Cloudflare extends Module {
 		$page_number_max = min( 3, ceil( $total_posts_count / $posts_per_page ) );
 
 		foreach ( range( 1, $page_number_max ) as $page_number ) {
+			/* translators: %s: Page number */
 			array_push( $urls, home_url( sprintf( '/page/%s/', $page_number ) ) );
 		}
 

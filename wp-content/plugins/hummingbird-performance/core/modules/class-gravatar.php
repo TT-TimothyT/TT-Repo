@@ -298,6 +298,7 @@ class Gravatar extends Module {
 		}
 
 		return sprintf(
+			/* translators: %s - Alt tex, %s - Src of the image, %s - Srcset of the image, %s - Classes of the image, %d - Height of the image, %d - Width of the image */
 			"<img alt='%s' src='%s' srcset='%s' class='%s' height='%d' width='%d'/>",
 			esc_attr( $alt ),
 			esc_url( $src ),

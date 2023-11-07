@@ -5,8 +5,6 @@ const MixPanel = require( 'mixpanel-browser' );
 ( function() {
 	'use strict';
 
-	let hbCriticalUpsellClick = false;
-
 	window.wphbMixPanel = {
 		/**
 		 * Init super properties (common with every request).
@@ -91,10 +89,7 @@ const MixPanel = require( 'mixpanel-browser' );
 		 * @param {object} properties Properties.
 		 */
 		 trackCriticalCSSUpsell( properties ) {
-			if ( ! hbCriticalUpsellClick ) {
-				hbCriticalUpsellClick = true;
-				this.track( 'critical_css_upsell', properties );
-			}
+			this.track( 'critical_css_upsell', properties );
 		},
 
 		/**
@@ -115,6 +110,33 @@ const MixPanel = require( 'mixpanel-browser' );
 		},
 
 		/**
+		 * Track Critical Upsell event.
+		 *
+		 * @param {string} updateType       Update type.
+		 * @param {string} location         Location.
+		 * @param {string} mode             Mode.
+		 * @param {string} settingsModified Settings modified.
+		 * @param {string} settingsDefault  Settings default.
+		 */
+		trackCriticalCSSEvent( updateType, location, mode, settingsModified, settingsDefault ) {
+			if ( 'activate' === updateType ) {
+				this.enableFeature( 'Critical Css' );
+			}
+
+			if ( 'deactivate' === updateType ) {
+				this.disableFeature( 'Critical Css' );
+			}
+
+			this.track( 'critical_css_updated', {
+				'update_type': updateType,
+				'Location': location,
+				'mode': mode,
+				'settings_modified': settingsModified,
+				'settings_default': settingsDefault,
+			} );
+		},
+
+		/**
 		 * Track AO updated event.
 		 *
 		 * @param {object} properties Properties.
@@ -123,6 +145,21 @@ const MixPanel = require( 'mixpanel-browser' );
 			const mode = properties.Mode.charAt(0).toUpperCase() + properties.Mode.slice(1);
 			properties.Mode = mode;
 			this.track( 'ao_updated', properties );
+		},
+
+		/**
+		 * Track AO updated event.
+		 *
+		 * @param {object} feature Feature.
+		 */
+		 trackGutenbergEvent( feature ) {
+			this.track( 'critical_css_gutenberg', { feature } );
+
+			if ( 'revert' === feature ) {
+				this.track( 'critical_css_cache_purge', {
+					location: 'gutenberg'
+				} );
+			}
 		},
 
 

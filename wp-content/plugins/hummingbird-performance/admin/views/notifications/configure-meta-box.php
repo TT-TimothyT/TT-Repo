@@ -72,18 +72,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 </div>
 
 <div class="sui-box-settings-row sui-upsell-row">
-	<img class="sui-image sui-upsell-image" alt="<?php esc_attr_e( 'Scheduled notifications', 'wphb' ); ?>"
-		src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-hb-minify-summary.png' ); ?>"
-		srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-hb-minify-summary.png' ); ?> 1x, <?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-hb-minify-summary@2x.png' ); ?> 2x">
-
-
-	<div class="sui-upsell-notice">
-		<p>
-			<?php esc_html_e( 'Stay on top of potential performance issues with scheduled automatic reports, sent directly to your inbox. Get reports as part of a WPMU DEV membership. Unlock now with Pro.', 'wphb' ); ?>
-			<br/>
-			<a href="<?php echo esc_url( Utils::get_link( 'plugin', 'notifications' ) ); ?>" class="sui-button sui-button-purple" style="margin-top: 10px" target="_blank">
-				<?php esc_html_e( 'Upgrade to Pro', 'wphb' ); ?>
-			</a>
-		</p>
+	<div class="sui-upsell-notice__content">
+		<div class="sui-notice sui-notice-purple">
+			<div class="sui-notice-content">
+				<div class="sui-notice-message">
+					<span class="sui-notice-icon sui-icon-info sui-md" aria-hidden="true"></span>
+					<p>
+						<?php esc_html_e( 'Stay on top of potential performance issues with scheduled automatic reports, sent directly to your inbox. Get reports as part of a WPMU DEV membership. Unlock now with Pro.', 'wphb' ); ?>
+						<br/>
+						<a href="<?php echo esc_url( Utils::get_link( 'plugin', 'notifications' ) ); ?>" class="sui-button sui-button-purple" style="margin-top: 10px" target="_blank">
+							<?php esc_html_e( 'Upgrade to Pro', 'wphb' ); ?>
+						</a>
+					</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

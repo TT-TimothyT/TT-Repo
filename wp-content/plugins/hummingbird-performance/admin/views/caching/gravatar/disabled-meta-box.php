@@ -15,8 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <?php if ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) : ?>
 	<img class="sui-image" aria-hidden="true" alt=""
-		src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-gravatarcaching-disabled.png' ); ?>"
-		srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-gravatarcaching-disabled.png' ); ?> 1x, <?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-gravatarcaching-disabled@2x.png' ); ?> 2x" />
+		src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-page-caching-disabled.png' ); ?>"
+		srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-page-caching-disabled.png' ); ?> 1x, <?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-page-caching-disabled@2x.png' ); ?> 2x" />
 <?php endif; ?>
 
 <div class="sui-message-content">

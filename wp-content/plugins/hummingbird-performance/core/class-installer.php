@@ -188,6 +188,10 @@ class Installer {
 				self::upgrade_3_5_0();
 			}
 
+			if ( version_compare( $version, '3.6.0', '<' ) ) {
+				self::upgrade_3_6_0();
+			}
+
 			update_site_option( 'wphb_version', WPHB_VERSION );
 		}
 	}
@@ -639,6 +643,18 @@ class Installer {
 	 * @return void
 	 */
 	private static function upgrade_3_5_0() {
+		// Summary upgrade modal.
+		add_site_option( 'wphb_show_upgrade_summary', true );
+	}
+
+	/**
+	 * Handle Summary upgrade modal display for critical css.
+	 *
+	 * @since 3.6.0
+	 *
+	 * @return void
+	 */
+	private static function upgrade_3_6_0() {
 		// Summary upgrade modal.
 		add_site_option( 'wphb_show_upgrade_summary', true );
 	}

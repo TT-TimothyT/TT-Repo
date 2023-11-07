@@ -1,12 +1,16 @@
-$summary-image: '../../admin/assets/image/graphic-hb-minify-summary@2x.png';
-$summary-image-sm: '../../admin/assets/image/notice-image@2x.png';
-$upgrade-image: '../../admin/assets/image/hero@2x.png';
-$upgrade-image-mobile: '../../admin/assets/image/hero-mobile@2x.png';
+$summary-image: '../../admin/assets/image/hb-icon@2x.png';
+$summary-image-sm: '../../admin/assets/image/hb-icon@2x.png';
+$upgrade-image: '../../admin/assets/image/hero.png';
+$upgrade-image-mobile: '../../admin/assets/image/hero-mobile.png';
 
 // Overwrite image size
-$summary-image-sm--width:  71px;
-$summary-image-sm--height: 141px;
+$summary-image-sm--width:  96px;
+$summary-image-sm--height: 96px;
 $summary-image-sm--position-y: 30px;
+
+$summary-image--width:  96px;
+$summary-image--height: 96px;
+$summary-image--position-y: center;
 
 $cross-sell-1: 'smush';
 $cross-sell-2: 'defender';
@@ -139,3 +143,108 @@ $sui-font-path: '~@wpmudev/shared-ui/dist/fonts/';
 
 .sui-recipient .sui-recipient-email,
 .sui-recipient .sui-recipient-name { flex-basis: 45%; }
+
+.wp-hb-upsell-modals {
+    .sui-box-body {
+        .sui-description {
+            margin-top: 8px!important;
+            margin-bottom: 20px!important;
+        }
+    }
+    .sui-box-footer {
+        flex-direction: column;
+    }
+    .sui-box-footer {
+        .sui-box-title {
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            width: 100% !important;
+            margin-bottom: 11px !important;
+            // padding-left: 7px;
+        }
+        .wp-hb-pro-features {
+            display: flex;
+            ul {
+                font-size: 12px;
+                margin:0;
+                padding:0;
+                li {
+                    display: flex;
+                    flex-direction: column;
+                    .wp-hb-pro-features_item {
+                        display: flex;
+                        align-self: stretch;
+                        align-items: flex-start;
+                        width: 100%;
+                        gap: 10px;
+                        margin-bottom: 7px;
+                        // padding-left: 7px;
+                        .sui-icon-box{
+                            display: block;
+                            border-radius: 6px;
+                            padding:3px;
+                            border: 1px solid #ddd;
+                            justify-content: center;
+                            >span{
+                                width:20px;
+                                height: 20px;
+                                justify-content: center;
+                                align-items: center;
+                                display: flex;
+                            }
+                        }
+                        .sui-content-box {
+                            margin:0;
+                            h5 {
+                                line-height: 16px;
+                                margin:0 0 3px 0;
+                                font-weight: 600;
+                                font-size: inherit;
+                                display: flex;
+                                align-self: stretch;
+                                letter-spacing: 0;
+                            }
+                            p {
+                                margin:0;
+                                font-size: 12px;
+                                line-height: 20px;
+                            }
+                        }
+                    }
+                    @media screen and (min-width: 480px) {
+                        flex-direction: row;
+                        .wp-hb-pro-features_item {
+                            width: 50%;
+                            &:last-child{
+                                padding-left: 7px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        > p {
+            --purple: #8D00B1;
+            width:100%;
+            margin-top: 16px;
+            .sui-button-ghost {
+                font-size: 13px;
+                display: block;
+                color: var( --purple );
+                background-color: #F8F8F8;
+                text-align: center;
+                padding: 7px 12px;
+                transition: all 0.3s ease;
+                line-height: 22px;
+                span {
+                    &:before {
+                        color: var( --purple );
+                    }
+                }
+                &:hover{
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

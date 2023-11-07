@@ -103,7 +103,7 @@ class Core {
 		 */
 		$modules = apply_filters(
 			'wp_hummingbird_modules',
-			array( 'minify', 'gzip', 'caching', 'performance', 'uptime', 'cloudflare', 'gravatar', 'page_cache', 'advanced', 'rss', 'redis', 'delayjs' )
+			array( 'minify', 'gzip', 'caching', 'performance', 'uptime', 'cloudflare', 'gravatar', 'page_cache', 'advanced', 'rss', 'redis', 'delayjs', 'critical_css' )
 		);
 
 		array_walk( $modules, array( $this, 'load_module' ) );
@@ -295,11 +295,11 @@ class Core {
 			return;
 		}
 
-		$content = sprintf(
-			'<h3>%s</h3><p>%s</p>',
+		$content = sprintf( /* translators: %1$s - Text, %2$s - Link to privacy policy page */
+			'<h3>%1$s</h3><p>%2$s</p>',
 			__( 'Third parties', 'wphb' ),
 			sprintf(
-				/* translators: %s: start of a href tag, %s: end of a tag */
+				/* translators: %1$s - opening a tag, %2$s - closing a tag */
 				__( 'Hummingbird uses the Stackpath Content Delivery Network (CDN). Stackpath may store web log information of site visitors, including IPs, UA, referrer, Location and ISP info of site visitors for 7 days. Files and images served by the CDN may be stored and served from countries other than your own. Stackpath’s privacy policy can be found %1$shere%2$s.', 'wphb' ),
 				'<a href="https://www.stackpath.com/legal/privacy-statement/" target="_blank">',
 				'</a>'

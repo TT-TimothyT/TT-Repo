@@ -98,6 +98,7 @@ class PerfScanner extends Scanner {
 		window.wphbMixPanel.track( 'plugin_scan_finished', {
 			score_mobile: response.mobileScore,
 			score_desktop: response.desktopScore,
+			active_features: response.HBSmushFeatures,
 		} );
 
 		// Give a second for the report to be saved to the db.

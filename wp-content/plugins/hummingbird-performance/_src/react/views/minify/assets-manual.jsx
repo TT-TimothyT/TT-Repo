@@ -346,8 +346,6 @@ export const ManualAssets = ( props ) => {
 				size="sm"
 				title={ __( 'Bulk update', 'wphb' ) }
 				isMember={ props.isMember }
-				imagePath={ props.links.images + 'graphic-minify-modal-warning@1x.png' }
-				imageSrcSet={ props.links.images + 'graphic-minify-modal-warning@1x.png 1x, ' + props.links.images + 'graphic-minify-modal-warning@2x.png 2x' }
 				description={ __( 'Choose what bulk update actions you’d like to apply to the selected files. You still have to publish your changes before they will be set live.', 'wphb' ) }
 				content={ content }
 				footerBtn={ footer }

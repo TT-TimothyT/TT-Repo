@@ -60,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php
 					esc_html_e( "This is a quick guide to help you configure Hummingbird's Asset Optimization.", 'wphb' );
 					if ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) {
-						printf( /* translators: %1$s - space, %2$s - link */
+						printf( /* translators: %1$s - space, %2$s - Link to AO detail page */
 							__( '%1$sFor more detailed information, please check out our in-depth <a href="%2$s" target="_blank" >documentation</a>.', 'wphb' ),
 							'&nbsp;',
 							'https://wpmudev.com/docs/wpmu-dev-plugins/hummingbird/#asset-optimization'
@@ -260,7 +260,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<p class="sui-description" style="margin-top: 50px">
 						<?php
-						printf( /* translators: %s - link */
+						printf( /* translators: %s - Link to AO detail page */
 							__( 'Didn\'t find the answer you were looking for? Check out our detailed <a href="%s" target="_blank" >documentation</a> or contact our support team for further assistance.', 'wphb' ),
 							'https://wpmudev.com/docs/wpmu-dev-plugins/hummingbird/#asset-optimization'
 						);

@@ -12,6 +12,7 @@ use Hummingbird\Core\Modules\Minify;
 use Hummingbird\Core\Settings;
 use Hummingbird\Core\Utils;
 use Hummingbird\WP_Hummingbird;
+use Hummingbird\Core\Modules\Page_Cache;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -119,16 +120,17 @@ class Minification extends Page {
 				'mode'              => $this->mode,
 				'showModal'         => (bool) get_option( 'wphb-minification-show-advanced_modal' ),
 				'links'             => array(
-					'connect'     => Utils::get_link( 'wpmudev-login' ),
-					'site'        => site_url(),
-					'images'      => WPHB_DIR_URL . 'admin/assets/image/',
-					'support'     => array(
+					'connect'        => Utils::get_link( 'wpmudev-login' ),
+					'site'           => site_url(),
+					'images'         => WPHB_DIR_URL . 'admin/assets/image/',
+					'support'        => array(
 						'chat'  => Utils::get_link( 'chat' ),
 						'forum' => Utils::get_link( 'support' ),
 					),
-					'cdnUpsell'   => Utils::get_link( 'plugin', 'hummingbird_topsummary_cdnbutton' ),
-					'delayUpsell' => Utils::get_link( 'plugin', 'hummingbird_delay_js_ao_summary' ),
-					'safeMode'    => site_url() . '?minify-safe=true',
+					'cdnUpsell'      => Utils::get_link( 'plugin', 'hummingbird_topsummary_cdnbutton' ),
+					'delayUpsell'    => Utils::get_link( 'plugin', 'hummingbird_delay_js_ao_summary' ),
+					'criticalUpsell' => Utils::get_link( 'plugin', 'hummingbird_criticalcss_ao_summary' ),
+					'safeMode'       => site_url() . '?minify-safe=true',
 				),
 			)
 		);
@@ -257,12 +259,7 @@ class Minification extends Page {
 		}
 		?>
 		<div role="alert" class="sui-box sui-summary sui-summary-sm wphb-box-notice <?php echo isset( $_SERVER['WPMUDEV_HOSTED'] ) ? '' : 'wphb-notice-upsell'; ?>" aria-live="assertive">
-			<?php $branded_image = apply_filters( 'wpmudev_branding_hero_image', '' ); ?>
-			<?php if ( $branded_image ) : ?>
-				<div class="sui-summary-image-space" aria-hidden="true" style="background-image: url('<?php echo esc_url( $branded_image ); ?>')"></div>
-			<?php else : ?>
-				<div class="sui-summary-image-space" aria-hidden="true"></div>
-			<?php endif; ?>
+			<div class="sui-summary-image-space" aria-hidden="true"></div>
 			<div class="sui-summary-segment">
 				<div class="sui-summary-details sui-no-padding-left">
 					<span class="sui-summary-sub sui-no-margin-bottom">
@@ -350,7 +347,7 @@ class Minification extends Page {
 			<span class="hidden" id="count-ao-orphaned"><?php echo esc_html( $orphaned_metas ); ?></span>
 			<p>
 				<?php
-				printf(
+				printf( /* translators: %1$s - opening a link <a>, %2$s - Close the link </a>,%3$s - Link to HB health page */
 					esc_html__( "We've detected some orphaned asset optimization metadata, which exceeded the acceptable limit. To avoid unnecessary database bloating and performance issues, click %1\$shere%2\$s to delete all the orphaned data. For more information check the %3\$sPlugins Health%2\$s page.", 'wphb' ),
 					'<a href="#" onclick="WPHB_Admin.minification.purgeOrphanedData()">',
 					'</a>',
@@ -457,14 +454,33 @@ class Minification extends Page {
 	 * @since 1.8
 	 */
 	public function tools_metabox() {
+		$minify_options = Settings::get_settings( 'minify' );
+
 		$this->view(
 			'minification/tools-meta-box',
 			array(
-				'css'               => Minify::get_css(),
-				'delay_js'          => Settings::get_setting( 'delay_js', 'minify' ),
-				'delay_js_excludes' => Settings::get_setting( 'delay_js_exclusions', 'minify' ),
-				'delay_js_timeout'  => Settings::get_setting( 'delay_js_timeout', 'minify' ),
-				'is_member'         => Utils::is_member(),
+				'css'                            => Minify::get_css(),
+				'manual_inclusion'               => Minify::get_css( 'manual-critical' ),
+				'delay_js'                       => Settings::get_setting( 'delay_js', 'minify' ),
+				'delay_js_excludes'              => Settings::get_setting( 'delay_js_exclusions', 'minify' ),
+				'delay_js_timeout'               => Settings::get_setting( 'delay_js_timeout', 'minify' ),
+				'is_member'                      => Utils::is_member(),
+				'critical_css'                   => Settings::get_setting( 'critical_css', 'minify' ),
+				'critical_css_type'              => Settings::get_setting( 'critical_css_type', 'minify' ),
+				'critical_css_remove_type'       => Settings::get_setting( 'critical_css_remove_type', 'minify' ),
+				'critical_css_mode'              => Settings::get_setting( 'critical_css_mode', 'minify' ),
+				'settings'                       => $minify_options,
+				'blog_is_frontpage'              => 'posts' === get_option( 'show_on_front' ) && ! is_multisite(),
+				'pages'                          => Page_Cache::get_page_types(),
+				'critical_css_status'            => Utils::get_module( 'critical_css' )->critical_css_status_for_queue(),
+				'critical_css_generation_notice' => Utils::get_module( 'critical_css' )->critical_css_generation_complete_notice(),
+				'custom_post_types'              => get_post_types(
+					array(
+						'public'   => true,
+						'_builtin' => false,
+					),
+					'objects'
+				),
 			)
 		);
 	}

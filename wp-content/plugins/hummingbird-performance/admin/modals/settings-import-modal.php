@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php esc_html_e( 'This lists Hummingbird configuration in the file you are importing.', 'wphb' ); ?>
 				</p>
 			</div>
-			<div class="sui-box-body sui-content-center" style="padding-bottom: 0;color: #888;font-size: 13px;line-height: 25px;">
+			<div class="sui-box-body sui-content-center" style="color: #888;font-size: 13px;line-height: 25px;">
 
 				<div class="sui-box" style="text-align:left; padding: 20px; border: 1px solid #e6e6e6; border-radius: 5px;">
 					<strong><?php esc_html_e( 'Asset Optimization/Manual', 'wphb' ); ?></strong><br>
@@ -60,11 +60,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div class="sui-box">
 					<?php esc_html_e( 'Note: This will override your existing Hummingbird asset optimization configuration.', 'wphb' ); ?>
 				</div>
-
-				<figure aria-hidden="true" style="padding: 0; margin: 0; height: 130px; overflow: hidden;text-align: center;">
-					<img style="width:60%" src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-hb-minify-summary.png' ); ?>" alt="<?php esc_attr_e( 'Connect Redis', 'wphb' ); ?>"
-						srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-hb-minify-summary@2x.png' ); ?> 1x, <?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-hb-minify-summary@2x.png' ); ?> 2x">
-				</figure>	
 			</div>
 
 		</div>

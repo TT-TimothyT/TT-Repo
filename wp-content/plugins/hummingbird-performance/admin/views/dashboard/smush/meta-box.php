@@ -64,7 +64,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			);
 		} else {
 			$this->admin_notices->show_inline(
-				sprintf(
+				sprintf( /* translators: %1$s - Smush total saved space, %2$s - Smush total saved percentage */
 					esc_html__( "WP Smush is installed. So far you've saved %1\$s of space. That's a total savings of %2\$s. Nice one!", 'wphb' ),
 					$smush_data['human'],
 					number_format_i18n( $smush_data['percent'], 2 ) . '%'

@@ -1,6 +1,12 @@
 <?php
 /* THIS IS A GENERATED FILE. DO NOT EDIT DIRECTLY. */
 $generated_i18n_strings = array(
+	// Reference: _src/js/block.js:179
+	__( 'Generating Critical CSS', 'wphb' ),
+
+	// Reference: _src/js/block.js:92
+	__( 'Critical CSS generated successfully', 'wphb' ),
+
 	// Reference: _src/react/components/loader/index.jsx:28
 	__( 'Fetching latest data...', 'wphb' ),
 
@@ -115,7 +121,7 @@ $generated_i18n_strings = array(
 	__( 'Setup', 'wphb' ),
 
 	// Reference: _src/react/components/steps-bar/index.jsx:52
-	// Reference: _src/react/modules/caching/integrations.jsx:533
+	// Reference: _src/react/modules/caching/integrations.jsx:535
 	__( 'Browser Caching', 'wphb' ),
 
 	// Reference: _src/react/components/steps-content/index.jsx:112
@@ -129,7 +135,7 @@ $generated_i18n_strings = array(
 	__( 'Individual file types', 'wphb' ),
 
 	// Reference: _src/react/components/steps-content/index.jsx:161
-	// Reference: _src/react/modules/caching/integrations.jsx:411
+	// Reference: _src/react/modules/caching/integrations.jsx:413
 	__( 'JavaScript, CSS, Media, Images', 'wphb' ),
 
 	// Reference: _src/react/components/steps-content/index.jsx:214
@@ -174,125 +180,125 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/components/support-link/index.jsx:29
 	__( 'Open a support ticket.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/browser.jsx:254
-	// Reference: _src/react/modules/caching/integrations.jsx:157
+	// Reference: _src/react/modules/caching/browser.jsx:255
+	// Reference: _src/react/modules/caching/integrations.jsx:159
 	__( 'Cloudflare was disconnected successfully.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:177
+	// Reference: _src/react/modules/caching/integrations.jsx:179
 	__( 'Cloudflare cache successfully purged. Please wait 30 seconds for the purge to complete.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:194
+	// Reference: _src/react/modules/caching/integrations.jsx:196
 	__( 'Automatic Platform Optimization is disabled.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:196
+	// Reference: _src/react/modules/caching/integrations.jsx:198
 	__( 'Automatic Platform Optimization is enabled.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:229
+	// Reference: _src/react/modules/caching/integrations.jsx:231
 	__( 'Settings updated.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:268
+	// Reference: _src/react/modules/caching/integrations.jsx:270
 	__( 'Cloudflare was connected successfully.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:303
+	// Reference: _src/react/modules/caching/integrations.jsx:305
 	__( 'Cloudflare', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:321
+	// Reference: _src/react/modules/caching/integrations.jsx:323
 	__( 'Cloudflare is connected for this domain.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:331
+	// Reference: _src/react/modules/caching/integrations.jsx:333
 	__( 'Cloudflare is connected, but it appears you don’t have any active zones for this domain. Double check your domain has been added to Cloudflare and tap re-check when ready.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:341
+	// Reference: _src/react/modules/caching/integrations.jsx:343
 	// Reference: _src/react/views/caching/browser/status.jsx:143
 	__( 'We’ve detected you’re using Cloudflare! Connect your account to control your settings via Hummingbird.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:351
+	// Reference: _src/react/modules/caching/integrations.jsx:353
 	__( 'Cloudflare is not connected.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:376
+	// Reference: _src/react/modules/caching/integrations.jsx:378
 	__( 'If the zone is not auto detected, try selecting one of the available zones from the list below:', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:383
+	// Reference: _src/react/modules/caching/integrations.jsx:385
 	__( 'Cloudflare zone', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:384
+	// Reference: _src/react/modules/caching/integrations.jsx:386
 	__( 'Select zone', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:403
-	// Reference: _src/react/views/caching/browser/status.jsx:405
+	// Reference: _src/react/modules/caching/integrations.jsx:405
+	// Reference: _src/react/views/caching/browser/status.jsx:380
 	// Reference: _src/react/views/gzip/configure.jsx:99
 	__( 'Configure', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:421
-	// Reference: _src/react/views/caching/browser/status.jsx:331
+	// Reference: _src/react/modules/caching/integrations.jsx:423
+	// Reference: _src/react/views/caching/browser/status.jsx:306
 	__( 'Store temporary data on your visitors devices so that they don’t have to download assets twice if they don’t have to. This results in a much faster second time round page load speed.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:429
+	// Reference: _src/react/modules/caching/integrations.jsx:431
 	__( 'File types', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:431
+	// Reference: _src/react/modules/caching/integrations.jsx:433
 	__( 'Expiry time', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:459
+	// Reference: _src/react/modules/caching/integrations.jsx:461
 	__( 'Cloudflare APO will cache dynamic content and third-party scripts so the entire site is served from cache. This eliminates round trips between your server and the user\'s browser, drastically improving TTFB and other site performance metrics.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:471
+	// Reference: _src/react/modules/caching/integrations.jsx:473
 	__( 'Enable APO', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:479
+	// Reference: _src/react/modules/caching/integrations.jsx:481
 	__( 'Cache by device type', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:486
+	// Reference: _src/react/modules/caching/integrations.jsx:488
 	__( 'This enables you to target visitors with cached content appropriate to their device. Once enabled, Cloudflare sends a CF-Device-Type HTTP header to your origin page with a value of either mobile, tablet or desktop for every request to specify the visitor’s device type. If your origin page responds with the appropriate content for that device type, Cloudflare caches the resource only for that specific device type. Note: changing the Cache by device type setting will purge the entire Cloudflare cache for your zone.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:496
+	// Reference: _src/react/modules/caching/integrations.jsx:498
 	__( 'Automatic Platform Optimization is a paid service and you need to purchase it to enable it. You can purchase it <a>here</a>.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:514
+	// Reference: _src/react/modules/caching/integrations.jsx:516
 	__( 'Cloudflare is a Content Delivery Network (CDN) that sends traffic through its global network to automatically optimize the delivery of your site so your visitors can browse your site at top speeds. With the new Automatic Platform Optimization (APO), Cloudflare can also cache dynamic content and third-party scripts so the entire site is served from cache. Learn more about the integration <a>here</a>.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:522
+	// Reference: _src/react/modules/caching/integrations.jsx:524
 	__( 'Overview', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:525
-	// Reference: _src/react/views/caching/browser/status.jsx:435
-	// Reference: _src/react/views/gzip/summary.jsx:298
+	// Reference: _src/react/modules/caching/integrations.jsx:527
+	// Reference: _src/react/views/caching/browser/status.jsx:410
+	// Reference: _src/react/views/gzip/summary.jsx:323
 	// Reference: _src/react/views/setup/wizard.jsx:521
 	__( 'Status', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:541
+	// Reference: _src/react/modules/caching/integrations.jsx:543
 	__( 'Automatic Platform Optimization', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:565
+	// Reference: _src/react/modules/caching/integrations.jsx:567
 	// Reference: _src/react/views/gzip/server-instructions.jsx:305
 	__( 'Deactivate', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:574
-	// Reference: _src/react/views/caching/browser/status.jsx:399
-	// Reference: _src/react/views/gzip/summary.jsx:280
+	// Reference: _src/react/modules/caching/integrations.jsx:576
+	// Reference: _src/react/views/caching/browser/status.jsx:374
+	// Reference: _src/react/views/gzip/summary.jsx:305
 	// Reference: _src/react/views/setup/wizard.jsx:312
 	__( 'Re-check status', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:587
+	// Reference: _src/react/modules/caching/integrations.jsx:589
 	__( 'Re-check', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:598
+	// Reference: _src/react/modules/caching/integrations.jsx:600
 	__( 'Save zone', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:608
+	// Reference: _src/react/modules/caching/integrations.jsx:610
 	__( 'Connect', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:617
+	// Reference: _src/react/modules/caching/integrations.jsx:619
 	// Reference: _src/react/views/minify/assets.jsx:59
 	__( 'Clear cache', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:637
+	// Reference: _src/react/modules/caching/integrations.jsx:639
 	__( 'Connect your Cloudflare account to control APO and Browser Caching directly from Hummingbird.', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:657
+	// Reference: _src/react/modules/caching/integrations.jsx:659
 	__( 'Connect Cloudflare', 'wphb' ),
 
-	// Reference: _src/react/modules/caching/integrations.jsx:671
+	// Reference: _src/react/modules/caching/integrations.jsx:673
 	__( 'Open item', 'wphb' ),
 
 	// Reference: _src/react/modules/configs.jsx:102
@@ -435,7 +441,7 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/modules/configs.jsx:99
 	__( 'Apply Config', 'wphb' ),
 
-	// Reference: _src/react/modules/minify.jsx:48
+	// Reference: _src/react/modules/minify.jsx:53
 	__( 'Your cache has been successfully cleared. Your assets will regenerate the next time someone visits your website.', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:308
@@ -448,10 +454,10 @@ $generated_i18n_strings = array(
 	__( 'Wizard', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:320
-	__( 'Get Hummingbird Pro for our full WordPress speed optimization suite, including uptime monitoring and enhanced, hosted file minification.', 'wphb' ),
+	__( 'Get Hummingbird Pro for our full WordPress speed optimization suite, including uptime monitoring and enhanced CDN.', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:326
-	// Reference: _src/react/views/minify/summary.jsx:256
+	// Reference: _src/react/views/minify/summary.jsx:298
 	__( 'UPGRADE TO PRO', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:337
@@ -530,7 +536,7 @@ $generated_i18n_strings = array(
 	__( 'Your server may not have the "expires" module enabled (mod_expires for Apache, ngx_http_headers_module for NGINX). Another plugin may be interfering with the configuration. If re-checking and restarting does not resolve, please check with your host or', 'wphb' ),
 
 	// Reference: _src/react/views/caching/browser/status.jsx:114
-	// Reference: _src/react/views/gzip/summary.jsx:99
+	// Reference: _src/react/views/gzip/summary.jsx:100
 	__( 'open a support ticket.', 'wphb' ),
 
 	// Reference: _src/react/views/caching/browser/status.jsx:147
@@ -539,43 +545,40 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/views/caching/browser/status.jsx:154
 	__( 'Enable integration', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:165
-	__( 'Connect your account to Cloudflare', 'wphb' ),
-
-	// Reference: _src/react/views/caching/browser/status.jsx:194
+	// Reference: _src/react/views/caching/browser/status.jsx:169
 	__( 'Learn More', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:219
+	// Reference: _src/react/views/caching/browser/status.jsx:194
 	/* translators: %d - number of failed items */
 	__( '%d of your cache types don’t meet the recommended expiry period of 1 year. Configure browser caching below.', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:228
+	// Reference: _src/react/views/caching/browser/status.jsx:203
 	__( 'All of your cache types meet the recommended expiry period of 1 year. Great work!', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:235
+	// Reference: _src/react/views/caching/browser/status.jsx:210
 	__( 'All of your cache types meet the recommended expiry period of 1 year. Your hosting has automatically pre-configured browser caching for you and no further actions are required.', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:260
+	// Reference: _src/react/views/caching/browser/status.jsx:235
 	/* translators: %s - recommended value label */
 	__( 'The recommended value for this file type is at least %s.', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:341
-	// Reference: _src/react/views/gzip/summary.jsx:256
+	// Reference: _src/react/views/caching/browser/status.jsx:316
+	// Reference: _src/react/views/gzip/summary.jsx:281
 	__( 'File type', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:342
+	// Reference: _src/react/views/caching/browser/status.jsx:317
 	__( 'Current expiry', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:343
+	// Reference: _src/react/views/caching/browser/status.jsx:318
 	__( 'Recommended expiry', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:372
+	// Reference: _src/react/views/caching/browser/status.jsx:347
 	__( 'Clear Cache', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:380
+	// Reference: _src/react/views/caching/browser/status.jsx:355
 	__( 'Disconnect', 'wphb' ),
 
-	// Reference: _src/react/views/caching/browser/status.jsx:408
+	// Reference: _src/react/views/caching/browser/status.jsx:383
 	__( 'Adjust your server type again and select the relevant rules.', 'wphb' ),
 
 	// Reference: _src/react/views/caching/browser/wizard.jsx:159
@@ -665,55 +668,58 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/views/gzip/server-instructions.jsx:96
 	__( '<p>We tried applying the .htaccess rules automatically but we weren’t able to. Make sure your file permissions on your .htaccess file are set to 644, or <button/> and apply the rules yourself.</p>', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:124
+	// Reference: _src/react/views/gzip/summary.jsx:136
 	/* translators: %d - number of gzip types */
 	__( '%d of your compression types are inactive. Configure compression for all files types below.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:139
+	// Reference: _src/react/views/gzip/summary.jsx:151
 	/* translators: %d - number of active types */
 	__( 'GZip compression is currently active for %d/3 types.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:152
+	// Reference: _src/react/views/gzip/summary.jsx:164
 	__( 'We’ve detected that you have Privacy Mode active which prevents us from accurately detecting whether HTML compression is active or not. That is to say, an HTTP 401 Unauthorized Client status was detected and your site requires valid HTTP authentication credentials. You can re-check this once you have tended to the HTTP 401 error.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:159
+	// Reference: _src/react/views/gzip/summary.jsx:171
 	__( 'We’ve detected an HTTP error that prevents us from accurately detecting whether HTML compression is active or not. You can re-check this once you have tended to the HTTP error.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:166
+	// Reference: _src/react/views/gzip/summary.jsx:178
 	__( 'Gzip compression is currently active. Good job!', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:170
+	// Reference: _src/react/views/gzip/summary.jsx:182
 	__( 'GZip compression is already running smoothly on your site. Your hosting has automatically pre-configured GZip compression for you and no further actions are required.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:181
+	// Reference: _src/react/views/gzip/summary.jsx:193
 	__( 'GZip compression is already running smoothly on your site. Since your site is hosted with WPMU DEV, GZip compression has been automatically configured and no further actions are required.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:190
+	// Reference: _src/react/views/gzip/summary.jsx:205
+	__( 'Gzip compression is already running smoothly on your site. Since you have enabled the WPMU DEV CDN, your files will be served with the more performant Brotli compression instead of GZip to browsers that support it. <a>Check browser support here</a>.', 'wphb' ),
+
+	// Reference: _src/react/views/gzip/summary.jsx:215
 	__( 'Inactive', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:194
+	// Reference: _src/react/views/gzip/summary.jsx:219
 	__( 'Active', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:219
+	// Reference: _src/react/views/gzip/summary.jsx:244
 	/* translators: %1$s - status label, %2$s - type */
 	__( 'Gzip compression is %1$s for %2$s', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:225
+	// Reference: _src/react/views/gzip/summary.jsx:250
 	__( 'While Privacy Mode is active, we can’t accurately detect if HTML compression is active and working. Re-check this once you’ve disabled Privacy Mode.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:246
+	// Reference: _src/react/views/gzip/summary.jsx:271
 	__( 'Gzip compresses your web pages and style sheets before sending them over to the browser. This drastically reduces transfer time since the files are much smaller.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:257
+	// Reference: _src/react/views/gzip/summary.jsx:282
 	__( 'Current status', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:277
+	// Reference: _src/react/views/gzip/summary.jsx:302
 	__( 'Made changes?', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:91
+	// Reference: _src/react/views/gzip/summary.jsx:92
 	__( 'Gzip is not working properly:', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:93
+	// Reference: _src/react/views/gzip/summary.jsx:94
 	__( 'Your server may not have the "deflate" module enabled (mod_deflate for Apache, ngx_http_gzip_module for NGINX). Contact your host. If deflate is enabled, ask why all .htaccess or nginx.conf compression rules are not being applied. If re-checking and restarting does not resolve, please check with your host or', 'wphb' ),
 
 	// Reference: _src/react/views/minify/assets-auto.jsx:260
@@ -758,74 +764,74 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/views/minify/assets-manual.jsx:330
 	__( 'Defer', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:351
+	// Reference: _src/react/views/minify/assets-manual.jsx:349
 	__( 'Choose what bulk update actions you’d like to apply to the selected files. You still have to publish your changes before they will be set live.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:370
+	// Reference: _src/react/views/minify/assets-manual.jsx:368
 	__( 'Discard', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:382
+	// Reference: _src/react/views/minify/assets-manual.jsx:380
 	__( 'Publish', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:389
+	// Reference: _src/react/views/minify/assets-manual.jsx:387
 	__( 'Unpublished changes', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:390
+	// Reference: _src/react/views/minify/assets-manual.jsx:388
 	__( 'There are unpublished changes made in safe mode. Do you want to publish the changes to live or discard them?', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:577
+	// Reference: _src/react/views/minify/assets-manual.jsx:575
 	__( 'Test different settings in a safe environment without affecting visitors\' experience. The changes done in the safe mode will be only visible to you (as an admin).', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:580
+	// Reference: _src/react/views/minify/assets-manual.jsx:578
 	__( 'Safe mode', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:596
+	// Reference: _src/react/views/minify/assets-manual.jsx:594
 	__( 'All', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:602
+	// Reference: _src/react/views/minify/assets-manual.jsx:600
 	__( 'Hosted', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:608
+	// Reference: _src/react/views/minify/assets-manual.jsx:606
 	__( 'External', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:617
+	// Reference: _src/react/views/minify/assets-manual.jsx:615
 	__( 'Preview your changes on the front-end, then publish to live if no errors are found.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:623
+	// Reference: _src/react/views/minify/assets-manual.jsx:621
 	__( 'Preview', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:630
+	// Reference: _src/react/views/minify/assets-manual.jsx:628
 	// Reference: _src/react/views/minify/configurations.jsx:54
 	__( 'Publish changes', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:645
+	// Reference: _src/react/views/minify/assets-manual.jsx:643
 	__( 'Bulk update', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:661
+	// Reference: _src/react/views/minify/assets-manual.jsx:659
 	__( 'Display files', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:674
+	// Reference: _src/react/views/minify/assets-manual.jsx:672
 	__( 'Sort by', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:675
+	// Reference: _src/react/views/minify/assets-manual.jsx:673
 	__( 'Choose plugin or theme', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:682
+	// Reference: _src/react/views/minify/assets-manual.jsx:680
 	__( 'Search by name or extension', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:692
+	// Reference: _src/react/views/minify/assets-manual.jsx:690
 	__( 'Clear filters', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:884
+	// Reference: _src/react/views/minify/assets-manual.jsx:882
 	__( 'We\'ve completed the file check but haven\'t been able to load the files. Please try clearing your object cache, refresh the page and wait a few seconds to load the files, or visit your homepage to trigger the file list to show.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:900
+	// Reference: _src/react/views/minify/assets-manual.jsx:898
 	__( 'Visit homepage', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:927
+	// Reference: _src/react/views/minify/assets-manual.jsx:925
 	__( 'You are currently using <strong>safe mode</strong> which enables you to test different settings without affecting your website visitors\' experience. You can update the assets, and preview the changes in the frontend of your website to check for any errors in your browser\'s console or broken UI. When no issues are found, publish your changes to live.<span><strong>Note:</strong> Asset minification is disabled while safe mode is active, which can cause slower page load times. We recommend exiting safe mode or publishing the changes you\'ve made as soon as possible to avoid page load issues.</span>', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:953
+	// Reference: _src/react/views/minify/assets-manual.jsx:951
 	// Reference: _src/react/views/minify/configurations.jsx:90
 	__( 'Fonts', 'wphb' ),
 
@@ -901,45 +907,48 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/views/minify/configurations.jsx:91
 	__( 'Enable this option to optimize the delivery of your fonts so they don\'t trigger the "Eliminate render-blocking resources" recommendation in your performance tests.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:211
+	// Reference: _src/react/views/minify/summary.jsx:253
 	__( 'All assets are auto-compressed', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:221
+	// Reference: _src/react/views/minify/summary.jsx:263
 	__( 'Compression savings', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:222
+	// Reference: _src/react/views/minify/summary.jsx:264
 	__( 'Total Files', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:240
+	// Reference: _src/react/views/minify/summary.jsx:282
 	__( 'Files are compressed', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:250
+	// Reference: _src/react/views/minify/summary.jsx:292
 	__( 'Enable WPMU DEV CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:255
+	// Reference: _src/react/views/minify/summary.jsx:297
 	__( 'Host your files on WPMU DEV’s blazing-fast CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:261
+	// Reference: _src/react/views/minify/summary.jsx:303
 	__( 'The Network Admin has the WPMU DEV CDN turned on', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:266
+	// Reference: _src/react/views/minify/summary.jsx:308
 	__( 'The Network Admin has the WPMU DEV CDN turned off', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:267
+	// Reference: _src/react/views/minify/summary.jsx:309
 	// Reference: _src/react/views/setup/wizard.jsx:619
 	__( 'Disabled', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:287
+	// Reference: _src/react/views/minify/summary.jsx:343
 	__( 'Filesize reductions', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:292
+	// Reference: _src/react/views/minify/summary.jsx:348
 	// Reference: _src/react/views/setup/wizard.jsx:391
 	__( 'WPMU DEV CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:299
+	// Reference: _src/react/views/minify/summary.jsx:355
 	__( 'Delay JavaScript Execution', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:300
+	// Reference: _src/react/views/minify/summary.jsx:362
+	__( 'Generate Critical CSS', 'wphb' ),
+
+	// Reference: _src/react/views/minify/summary.jsx:363
 	// Reference: _src/react/views/setup/wizard.jsx:141
 	__( 'Pro', 'wphb' ),
 

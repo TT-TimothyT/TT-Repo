@@ -164,6 +164,7 @@ import { getString } from '../utils/helpers';
 							'next'
 						);
 					} else {
+						window.wphbMixPanel.enableFeature( 'Cloudflare_integration' );
 						// All good, reload page.
 						window.location.reload();
 					}
@@ -241,6 +242,7 @@ import { getString } from '../utils/helpers';
 							response.zones
 						);
 					} else {
+						window.wphbMixPanel.enableFeature( 'Cloudflare_integration' );
 						// All good, reload page.
 						window.location.reload();
 					}

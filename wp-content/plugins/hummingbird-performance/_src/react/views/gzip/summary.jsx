@@ -19,6 +19,7 @@ import Button from '../../components/sui-button';
 import Notice from '../../components/sui-notice';
 import Tag from '../../components/sui-tag';
 import Tooltip from '../../components/sui-tooltip';
+import {createInterpolateElement} from "@wordpress/element";
 
 /**
  * GzipSummary component.
@@ -109,6 +110,17 @@ class GzipSummary extends React.Component {
 	}
 
 	/**
+	 * Track MP event.
+	 *
+	 * @since 3.6.0
+	 *
+	 * @param {Object} e
+	 */
+	trackMPEvent = ( e ) => {
+		window.wphbMixPanel.track( 'check_brotli_support' );
+	};
+
+	/**
 	 * Get content for the component.
 	 *
 	 * @return {Object}  Module content.
@@ -182,6 +194,19 @@ class GzipSummary extends React.Component {
 					'GZip compression is already running smoothly on your site. Since your site is hosted with WPMU DEV, GZip compression has been automatically configured and no further actions are required.',
 					'wphb'
 				);
+			}
+
+			// Replace notice if CDN is enabled.
+			if (
+				false === this.props.data.is_white_labeled &&
+				true === this.props.data.cdn
+			) {
+				text = createInterpolateElement(
+				__('Gzip compression is already running smoothly on your site. Since you have enabled the WPMU DEV CDN, your files will be served with the more performant Brotli compression instead of GZip to browsers that support it. <a>Check browser support here</a>.', 'wphb'),
+				{
+					a: <a onClick={this.trackMPEvent} href="https://caniuse.com/brotli"/>
+				}
+			);;
 			}
 		}
 

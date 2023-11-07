@@ -68,7 +68,7 @@ if ( isset( $audit->details->items ) && 0 === count( $audit->details->items ) ) 
 	<h4><?php esc_html_e( 'How to fix', 'wphb' ); ?></h4>
 	<p>
 		<?php
-		printf( /* translators: %1$s - <a>, %2$s - </a> */
+		printf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 			esc_html__( 'Learn how to avoid sudden layout shifts to improve user experience in this amazing in-depth article by Google: %1$sOptimize Cumulative Layout Shift%2$s.', 'wphb' ),
 			'<a href="https://web.dev/optimize-cls/" target="_blank">',
 			'</a>'

@@ -109,7 +109,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 				<?php
 				$this->admin_notices->show_inline(
-					sprintf( /* translators: %1$s - <a> link, %2$s - </a> closing tag */
+					sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 						esc_html__( 'After disabling cart fragments, be sure to enable the %1$sRedirect to the cart page after successful addition%2$s option in your Woocommerce Settings to redirect your customers to the main cart page instead of waiting for an item to be added to the cart.', 'wphb' ),
 						'<a href="' . esc_url( $woo_link ) . '" target="_blank">',
 						'</a>'
@@ -227,7 +227,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			><?php echo esc_html( $preconnect ); ?></textarea>
 			<span id="preconnect_strings-id" class="sui-description">
 				<?php
-				printf( /* translators: %1$s - opening <a>, %2$s - closing </a> */
+				printf( /* translators: %1$s - opening <a> tag, %2$s - closing </a> tag */
 					esc_html__( 'Add hosts one per line, with no http or https. We’ve added a few common domains as an example. Note that Preconnect requests are made without the crossorigin attribute by default. If you’d like to add the crossorigin attribute, please see our %1$sdocumentation%2$s first.', 'wphb' ),
 					'<a href="' . esc_url( \Hummingbird\Core\Utils::get_documentation_url( 'wphb-advanced' ) ) . '" target="_blank">',
 					'</a>'

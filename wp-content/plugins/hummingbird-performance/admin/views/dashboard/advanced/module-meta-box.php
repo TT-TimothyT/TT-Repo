@@ -18,8 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p>
 		<?php
 		esc_html_e(
-			'Database Cleanups and tools to remove unnecessary functions WordPress does that
-                                can slow down your server.',
+			'Database Cleanups and tools to remove unnecessary functions WordPress does that can slow down your server.',
 			'wphb'
 		);
 		?>
@@ -32,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php if ( $count > 0 ) : ?>
 			<span class="sui-list-detail">
 				<?php
-				/* translators: %d: number of entries */
+				/* translators: %d - number of entries */
 				printf( __( '%d dispensable entries', 'wphb' ), absint( $count ) );
 				?>
 		</span>

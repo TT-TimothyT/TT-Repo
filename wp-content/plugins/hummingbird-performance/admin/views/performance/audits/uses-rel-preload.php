@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <p>
 	<?php
 	printf(
-		/* translators: % - <link rel=preload> */
+		/* translators: %s - preload tag */
 		esc_html__( 'The late-discovery of critical resources hidden in CSS or JS files can delay the first render, the rendering of text, or loading of critical parts of a page. Use %s to tell the browser to fetch critical resources earlier.', 'wphb' ),
 		'<strong>&lt;link rel=preload&gt;</strong>'
 	);

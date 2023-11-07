@@ -14,6 +14,8 @@
  * @var bool   $delay_js                 Delay JS status.
  * @var string $delayupsell              Upsell url for delay JS.
  * @var string $ao_page_url              AO extra optimization page URL.
+ * @var bool   $critical_css             Critical CSS status.
+ * @var bool   $critical_css_upsell      Upsell url for Critical.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -94,13 +96,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<li>
 				<span class="sui-list-label">
 					<span><?php esc_html_e( 'Generate Critical CSS', 'wphb' ); ?></span>
-					<span class="sui-tag sui-tag-blue sui-tag-sm"><?php esc_html_e( 'Coming Soon', 'wphb' ); ?></span>
+					<?php if ( ! $is_member ) { ?>
+						<span class="sui-tag sui-tag-pro"><?php esc_html_e( 'Pro', 'wphb' ); ?></span>
+					<?php } ?>
 				</span>
 				<span class="sui-list-detail">
-					<label for="critical_css_coming_soon" class="sui-toggle" onclick="wphbMixPanel.trackCriticalCSSUpsell( {'Modal Action': 'na', 'Location': 'dash_widget'} )">
-						<input type="checkbox" id="critical_css_coming_soon" disabled="disabled">
-						<span class="sui-toggle-slider" aria-hidden="true"></span>
-					</label>
+					<?php if ( $is_member ) : ?>
+						<label for="critical_css_toggle" class="sui-toggle">
+							<input type="checkbox" name="critical_css_option" id="critical_css_toggle" aria-labelledby="critical_css_toggle-label" <?php checked( $critical_css ); ?>>
+							<span class="sui-toggle-slider" aria-hidden="true"></span>
+						</label>
+					<?php else : ?>
+						<label for="non_logged_in_critical_css" class="sui-toggle">
+							<input type="checkbox" data-location="dash_widget" data-url="<?php echo esc_url( $critical_css_upsell ); ?>" name="non_logged_in_critical_css" id="non_logged_in_critical_css">
+							<span class="sui-toggle-slider" aria-hidden="true"></span>
+						</label>
+					<?php endif; ?>
 				</span>
 			</li>
 		</ul>

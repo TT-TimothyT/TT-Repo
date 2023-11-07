@@ -9,6 +9,7 @@ use Hummingbird\Core\Filesystem;
 use Hummingbird\Core\Logger;
 use Hummingbird\Core\Settings;
 
+
 // If uninstall not called from WordPress exit.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit();
@@ -26,6 +27,7 @@ if ( ! class_exists( 'Hummingbird\\Core\\Settings' ) ) {
 	/* @noinspection PhpIncludeInspection */
 	include_once plugin_dir_path( __FILE__ ) . '/core/class-settings.php';
 }
+
 $settings = Settings::get_settings( 'settings' );
 
 if ( $settings['remove_settings'] ) {
@@ -101,6 +103,11 @@ if ( $settings['remove_data'] ) {
 	delete_site_option( 'wphb-last-report' );
 
 	delete_site_transient( 'wphb-fast-cgi-enabled' );
+
+	// Remove critical css data.
+	delete_site_option( 'wphb_cs_process_queue' );
+	delete_site_transient( 'wphb_critical_css_log' );
+	delete_site_transient( 'wphb-cs-processing' );
 
 	if ( ! class_exists( 'Hummingbird\\Core\\Filesystem' ) ) {
 		/* @noinspection PhpIncludeInspection */

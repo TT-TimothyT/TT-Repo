@@ -21,11 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	$this->admin_notices->show_inline(
 		$error,
 		'error',
-		sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+		sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 			esc_html__( '%1$sTry again%2$s', 'wphb' ),
 			'<a href="' . esc_url( $retry_url ) . '" class="sui-button sui-button-blue">',
 			'</a>'
-		) . sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+		) . sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
 			esc_html__( '%1$sSupport%2$s', 'wphb' ),
 			'<a href="' . esc_url( $support_url ) . '" target="_blank" class="sui-button sui-button-blue">',
 			'</a>'
@@ -43,9 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p>
 			<?php
 			_e(
-				'Uptime monitors your server response time and lets you know when your website is down<br>
-			or too slow for your visitors. This service is currently under maintenance as we build a<br>
-			brand new monitoring service. Check back soon!',
+				'Uptime monitors your server response time and lets you know when your website is down<br>or too slow for your visitors. This service is currently under maintenance as we build a<br>brand new monitoring service. Check back soon!',
 				'wphb'
 			);
 			?>
@@ -55,9 +53,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p>
 		<?php
 		esc_html_e(
-			'Server response time is the amount of time it takes for a web server to
-		respond to a request from a browser. The longer it takes, the longer your visitors wait for the page
-		to start loading.',
+			'Server response time is the amount of time it takes for a web server to respond to a request from a browser. The longer it takes, the longer your visitors wait for the page to start loading.',
 			'wphb'
 		);
 		?>

@@ -29,13 +29,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<p class="sui-description" id="dialogDescription">
 					<?php
 					if ( 'speedy' === Settings::get_setting( 'type', 'minify' ) ) {
-						printf( /* translators: %1$s - <strong>, %2$s - </strong> */
+						printf( /* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 							esc_html__( 'The automatic %1$sSpeedy%2$s preset rules will be applied which will auto-compress and auto-combine your assets. This mode will inherit configurations from the current manual mode.', 'wphb' ),
 							'<strong>',
 							'</strong>'
 						);
 					} else {
-						printf( /* translators: %1$s - <strong>, %2$s - </strong> */
+						printf( /* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 							esc_html__( 'The automatic %1$sBasic%2$s preset rules will be applied which will auto-compress your assets. This mode will inherit configurations from the current manual mode.', 'wphb' ),
 							'<strong>',
 							'</strong>'
@@ -46,7 +46,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				<p class="sui-description">
 					<?php
-					printf( /* translators: %1$s - <strong>, %2$s - </strong> */
+					printf( /* translators: %1$s - opening <strong> tag, %2$s - closing </strong> tag */
 						esc_html__( 'Configurations that are unique to the manual mode (defer/inline etc.) will be discarded with this change and %1$swon’t be saved%2$s if you decide to switch back to manual.', 'wphb' ),
 						'<strong>',
 						'</strong>'
@@ -70,11 +70,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php esc_html_e( 'Got it', 'wphb' ); ?>
 				</button>
 			</div>
-
-			<?php if ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) : ?>
-				<img class="sui-image" alt="" src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-minify-modal-warning@1x.png' ); ?>"
-					srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-minify-modal-warning@1x.png' ); ?> 1x, <?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/graphic-minify-modal-warning@2x.png' ); ?> 2x">
-			<?php endif; ?>
 		</div>
 	</div>
 </div>

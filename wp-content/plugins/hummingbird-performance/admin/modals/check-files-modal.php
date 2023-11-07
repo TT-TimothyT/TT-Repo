@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					$this->admin_notices->show_inline(
 						esc_html__( 'Did you know the Pro version of Hummingbird comes up to 2x better compression and a CDN to store your assets on? Get it as part of a WPMU DEV membership.', 'wphb' ),
 						'info',
-						sprintf( /* translators: %1$s - opening a tag, %2$s - </a> */
+						sprintf( /* translators: %1$s - opening a tag, %2$s -  closing a tag */
 							esc_html__( '%1$sLearn more%2$s', 'wphb' ),
 							'<a href="' . esc_url( Utils::get_link( 'plugin' ) ) . '" target="_blank">',
 							'</a>'
@@ -88,13 +88,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="checkbox" aria-hidden="true" name="enable_cdn" id="enable_cdn" <?php checked( $cdn_status ); ?> style="display: none" hidden>
 				<?php endif; ?>
 			</div>
-
-			<?php if ( ! apply_filters( 'wpmudev_branding_hide_branding', false ) ) : ?>
-				<div class="sui-box-footer sui-content-center sui-flatten sui-spacing-bottom--0">
-					<img class="sui-image sui-no-margin-bottom" alt="" src="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-minify-summary.png' ); ?>"
-						srcset="<?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-minify-summary.png' ); ?> 1x, <?php echo esc_url( WPHB_DIR_URL . 'admin/assets/image/hb-graphic-minify-summary@2x.png' ); ?> 2x">
-				</div>
-			<?php endif; ?>
 		</div>
 	</div>
 

@@ -77,7 +77,7 @@ const MixPanel = require( 'mixpanel-browser' );
 			 *
 			 * @since 2.5.0
 			 */
-			$( '#performance-run-test, #performance-scan-website' ).on(
+			$( '#performance-run-test, #performance-scan-website, #run-performance-test' ).on(
 				'click',
 				() => {
 					wphbMixPanel.track( 'plugin_scan_started', {

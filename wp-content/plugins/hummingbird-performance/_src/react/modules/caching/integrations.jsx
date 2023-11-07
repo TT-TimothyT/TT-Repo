@@ -153,6 +153,8 @@ class Integrations extends React.Component {
 					apo: response.apo,
 				} );
 
+				window.wphbMixPanel.disableFeature( 'Cloudflare_integration' );
+
 				window.WPHB_Admin.notices.show(
 					__( 'Cloudflare was disconnected successfully.', 'wphb' )
 				);

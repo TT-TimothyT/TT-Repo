@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <p>
 	<?php
 	printf(
-		/* translators: % - <link rel=preload> */
+		/* translators: % - preload tag */
 		esc_html__( 'Establishing a connection with a third-party origin often involves significant time as it involves DNS lookups, redirects, and several round trips. Whenever your site needs to fetch resources from a third-party origin such as a CDN, you should consider pre-connecting to that origin to make your application feel snappier.', 'wphb' ),
 		'<strong>&lt;link rel=preload&gt;</strong>'
 	);

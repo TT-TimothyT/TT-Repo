@@ -138,8 +138,13 @@ class Minify {
 		}
 
 		Utils::get_module( 'minify' )->clear_cache( false );
+		Utils::get_module( 'critical_css' )->regenerate_critical_css();
 
-		wp_send_json_success();
+		wp_send_json_success(
+			array(
+				'isCriticalActive' => Utils::get_module( 'critical_css' )->is_active(),
+			)
+		);
 	}
 
 	/**
@@ -326,7 +331,7 @@ class Minify {
 		$options = $minify->get_options();
 
 		foreach ( $settings as $action => $assets ) {
-			if ( ! isset( $options[ $action ] ) ) {
+			if ( ! isset( $options[ $action ] ) || ! is_array( $options[ $action ] ) ) {
 				continue;
 			}
 
@@ -528,6 +533,7 @@ class Minify {
 
 		wp_send_json_success(
 			array(
+				'cdn'    => $value,
 				'notice' => $notice,
 			)
 		);
@@ -581,6 +587,12 @@ class Minify {
 		unset( $options['delay_js_exclusions'] );
 		unset( $options['delay_js_timeout'] );
 		unset( $options['delay_js_exclusion_list'] );
+		unset( $options['critical_css'] );
+		unset( $options['critical_css_type'] );
+		unset( $options['critical_css_remove_type'] );
+		unset( $options['critical_css_mode'] );
+		unset( $options['critical_page_types'] );
+		unset( $options['critical_skipped_custom_post_types'] );
 		return $options;
 	}
 
