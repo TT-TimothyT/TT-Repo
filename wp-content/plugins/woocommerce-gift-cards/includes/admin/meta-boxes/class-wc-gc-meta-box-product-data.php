@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Admin AJAX meta-box handlers.
  *
  * @class    WC_GC_Meta_Box_Product_Data
- * @version  1.4.0
+ * @version  1.16.0
  */
 class WC_GC_Meta_Box_Product_Data {
 
@@ -94,8 +94,8 @@ class WC_GC_Meta_Box_Product_Data {
 	public static function add_gift_card_inputs() {
 		global $product_object;
 
-		?><div class="options_group show_if_giftcard"><?php
-
+		?><div class="options_group show_if_giftcard" id="giftcard_settings">
+		<div class="hr-section hr-section-components"><?php echo esc_html__( 'Gift Card', 'woocommerce-gift-cards' ); ?></div><?php
 			// Nonce.
 			wp_nonce_field( 'giftcard_meta_data', 'security' );
 
@@ -116,7 +116,7 @@ class WC_GC_Meta_Box_Product_Data {
 			$template = WC_GC()->emails->get_template_by_product( $product_object );
 
 			?><div id="wc_gc_template_admin_fields"><?php
-				echo $template->get_admin_product_fields_html( $product_object );
+				echo $template->get_admin_product_fields_html( $product_object ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?></div><?php
 
 		?></div><?php // show_if_giftcard
@@ -143,7 +143,7 @@ class WC_GC_Meta_Box_Product_Data {
 
 		?><div class="options_group show_if_giftcard"><?php
 			?><div id="wc_gc_template_admin_fields"><?php
-				echo $template->get_admin_product_fields_html( $variation, $loop );
+				echo $template->get_admin_product_fields_html( $variation, $loop ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?></div><?php
 		?></div><?php // show_if_giftcard
 	}

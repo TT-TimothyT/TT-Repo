@@ -6,11 +6,13 @@ use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
  *
  * @package WooCommerce Gift Cards
  * @since   1.11.0
+ *
+ * @version 1.16.0
  */
 class WC_GC_Checkout_Blocks_Integration implements IntegrationInterface {
 
 	/**
-	 * Whether the intregration has been initialized.
+	 * Whether the integration has been initialized.
 	 *
 	 * @var boolean
 	 */
@@ -40,14 +42,14 @@ class WC_GC_Checkout_Blocks_Integration implements IntegrationInterface {
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Foul!', 'woocommerce-gift-cards' ), '1.11.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce-gift-cards' ), '1.11.0' );
 	}
 
 	/**
 	 * Unserializing instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Foul!', 'woocommerce-gift-cards' ), '1.11.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce-gift-cards' ), '1.11.0' );
 	}
 
 	/**
@@ -68,65 +70,11 @@ class WC_GC_Checkout_Blocks_Integration implements IntegrationInterface {
 			return;
 		}
 
-		$suffix            = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		// Enqueue block assets for the editor.
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
+		// Enqueue block assets for both editor and front-end.
+		add_action( 'enqueue_block_assets', array( $this, 'enqueue_block_assets' ) );
 
-		// Load main JS file.
-		$script_path       = '/assets/dist/frontend/blocks' . $suffix . '.js';
-		$script_asset_path = WC_GC_ABSPATH . 'assets/dist/frontend/blocks.asset.php';
-		$script_asset      = file_exists( $script_asset_path )
-			? require( $script_asset_path )
-			: array(
-				'dependencies' => array(),
-				'version'      => WC_GC()->get_plugin_version()
-			);
-		$script_url        = WC_GC()->get_plugin_url() . $script_path;
-
-		wp_register_script(
-			'wc-gift-cards-blocks',
-			$script_url,
-			$script_asset[ 'dependencies' ],
-			$script_asset[ 'version' ],
-			true
-		);
-
-		// Load admin JS file.
-		if ( is_admin() ) {
-
-			$script_path       = '/assets/dist/admin/blocks' . $suffix . '.js';
-			$script_asset_path = WC_GC_ABSPATH . 'assets/dist/admin/blocks.asset.php';
-			$script_asset      = file_exists( $script_asset_path )
-				? require( $script_asset_path )
-				: array(
-					'dependencies' => array(),
-					'version'      => WC_GC()->get_plugin_version()
-				);
-			$script_url        = WC_GC()->get_plugin_url() . $script_path;
-
-			wp_register_script(
-				'wc-gift-cards-admin-blocks',
-				$script_url,
-				$script_asset[ 'dependencies' ],
-				$script_asset[ 'version' ],
-				true
-			);
-
-			wp_enqueue_script( 'wc-gift-cards-admin-blocks' );
-		}
-
-		// Load stylesheet.
-		$style_path        = '/assets/dist/frontend/blocks.css';
-		$style_url         = WC_GC()->get_plugin_url() . $style_path;
-		wp_enqueue_style(
-			'wc-gift-cards-blocks-integration',
-			$style_url,
-			[],
-			$this->get_file_version( $style_path )
-		);
-
-		// Load JS translations.
-		if ( function_exists( 'wp_set_script_translations' ) ) {
-			wp_set_script_translations( 'wc-gift-cards-blocks', 'woocommerce-gift-cards', WC_GC_ABSPATH . 'languages/' );
-		}
 	}
 
 	/**
@@ -167,12 +115,92 @@ class WC_GC_Checkout_Blocks_Integration implements IntegrationInterface {
 			'show_remaining_balance_per_gift_card' => (bool) apply_filters( 'woocommerce_gc_checkout_show_remaining_balance_per_gift_card', true ),
 
 			'is_ui_disabled'                       => ! wc_gc_is_ui_disabled(),
-			'is_cart'                              => $is_singular ? has_block( 'woocommerce/cart', $post ) : false,
-			'is_checkout'                          => $is_singular ? has_block( 'woocommerce/checkout', $post ) : false,
+			'is_cart'                              => $is_singular && has_block( 'woocommerce/cart', $post ),
+			'is_checkout'                          => $is_singular && has_block( 'woocommerce/checkout', $post ),
 			'account_orders_link'                  => add_query_arg( array( 'wc_gc_show_pending_orders' => 'yes' ), wc_get_account_endpoint_url( 'orders' ) )
 		);
 
-		return $data;
+		return $data; // nosemgrep: audit.php.wp.security.xss.query-arg
+	}
+
+	/**
+	 * Enqueue block assets for the editor.
+	 *
+	 * @since 1.13.1
+	 *
+	 * @return void
+	 */
+	public function enqueue_block_editor_assets() {
+
+		$suffix            = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$script_path       = '/assets/dist/admin/blocks' . $suffix . '.js';
+		$script_asset_path = WC_GC_ABSPATH . 'assets/dist/admin/blocks.asset.php';
+		$script_asset      = file_exists( $script_asset_path )
+			? require( $script_asset_path )
+			: array(
+				'dependencies' => array(),
+				'version'      => WC_GC()->get_plugin_version()
+			);
+		$script_url        = WC_GC()->get_plugin_url() . $script_path;
+
+		wp_register_script(
+			'wc-gift-cards-admin-blocks',
+			$script_url,
+			$script_asset[ 'dependencies' ],
+			$script_asset[ 'version' ],
+			true
+		);
+
+		wp_enqueue_script( 'wc-gift-cards-admin-blocks' );
+
+	}
+
+	/**
+	 * Enqueue block assets for both editor and front-end.
+	 *
+	 * @since 1.13.1
+	 *
+	 * @return void
+	 */
+	public function enqueue_block_assets() {
+
+		$suffix            = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		// Load main JS file.
+		$script_path       = '/assets/dist/frontend/blocks' . $suffix . '.js';
+		$script_asset_path = WC_GC_ABSPATH . 'assets/dist/frontend/blocks.asset.php';
+		$script_asset      = file_exists( $script_asset_path )
+			? require( $script_asset_path )
+			: array(
+				'dependencies' => array(),
+				'version'      => WC_GC()->get_plugin_version()
+			);
+		$script_url        = WC_GC()->get_plugin_url() . $script_path;
+
+		wp_register_script(
+			'wc-gift-cards-blocks',
+			$script_url,
+			$script_asset[ 'dependencies' ],
+			$script_asset[ 'version' ],
+			true
+		);
+
+		// Load JS translations.
+		if ( function_exists( 'wp_set_script_translations' ) ) {
+			wp_set_script_translations( 'wc-gift-cards-blocks', 'woocommerce-gift-cards', WC_GC_ABSPATH . 'languages/' );
+		}
+
+		// Load stylesheet.
+		$style_path       = 'assets/dist/frontend/blocks.css';
+		$style_asset_path = WC_GC_ABSPATH . $style_path;
+		$style_url        = WC_GC()->get_plugin_url() . '/' . $style_path;
+		wp_enqueue_style(
+			'wc-gift-cards-blocks-integration',
+			$style_url,
+			[],
+			$this->get_file_version( $style_asset_path )
+		);
+
 	}
 
 	/**
@@ -187,4 +215,5 @@ class WC_GC_Checkout_Blocks_Integration implements IntegrationInterface {
 		}
 		return WC_GC()->get_plugin_version();
 	}
+
 }

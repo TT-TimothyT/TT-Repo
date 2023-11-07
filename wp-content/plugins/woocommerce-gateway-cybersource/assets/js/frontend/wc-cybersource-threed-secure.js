@@ -30,6 +30,7 @@ jQuery( document ).ready( ( $ ) => {
 			this.check_enrollment_action = args.check_enrollment_action;
 			this.check_enrollment_nonce  = args.check_enrollment_nonce;
 			this.enabled_card_types      = args.enabled_card_types;
+			this.enabled_card_type_names = args.enabled_card_type_names;
 			this.i18n                    = args.i18n;
 
 			// enable Cardinal logging if enabled in the gateway
@@ -44,13 +45,25 @@ jQuery( document ).ready( ( $ ) => {
 
 			Cardinal.on( 'payments.setupComplete', ( setupCompleteData ) => {
 
-				Cardinal.trigger( 'bin.process', this.handler.card_number.substring( 0, 6 ) ).then( ( result ) => {
+				let maskedCardNumber = this.handler.card_number;
+
+				if ( this.handler.saved_payment_method_selected ) {
+					maskedCardNumber = this.handler.form.find('input#wc-cybersource-credit-card-payment-token-' + this.handler.saved_payment_method_selected).data('card-bin').toString();
+				}
+
+				Cardinal.trigger( 'bin.process', maskedCardNumber.substring( 0, 6 ) ).then( ( result ) => {
 
 					if ( result.Status ) {
 
 						this.log( 'BIN detection successful' );
 
-						this.check_enrollment( this.token );
+						if ( this.handler.saved_payment_method_selected ) {
+							// using existing tokenized card
+							this.check_enrollment( this.handler.saved_payment_method_selected, false );
+						} else {
+							// new card being tokenized
+							this.check_enrollment( this.token, true );
+						}
 
 					} else {
 
@@ -73,13 +86,18 @@ jQuery( document ).ready( ( $ ) => {
 
 				this.handler = data.payment_form;
 
-				// don't attempt 3D Secure for saved methods
-				if ( this.handler.form.saved_payment_method_selected ) {
-					return true;
+				// assume new card
+				let cardType = this.handler.card_type;
+				let enabledCardTypes = this.enabled_card_types;
+
+				// tokenized payment method handling
+				if ( this.handler.saved_payment_method_selected ) {
+					cardType = this.handler.form.find('input#wc-cybersource-credit-card-payment-token-' + this.handler.saved_payment_method_selected).data('card-type');
+					enabledCardTypes = this.enabled_card_type_names;
 				}
 
 				// if the card type is not enabled for 3D Secure, bail for regular processing
-				if ( ! this.enabled_card_types.includes( this.handler.card_type ) ) {
+				if ( ! enabledCardTypes.includes( cardType ) ) {
 					return true;
 				}
 
@@ -90,7 +108,11 @@ jQuery( document ).ready( ( $ ) => {
 
 				this.token = this.handler.jti;
 
-				this.setup( this.token );
+				if ( this.handler.saved_payment_method_selected ) {
+					this.setup( this.handler.saved_payment_method_selected, false );
+				} else {
+					this.setup( this.token, true );
+				}
 
 				return false;
 
@@ -106,14 +128,15 @@ jQuery( document ).ready( ( $ ) => {
 		 * @since 2.3.0
 		 *
 		 * @param {String} token
+		 * @param {Boolean} isTransient
 		 */
-		setup( token ) {
-
+		setup( token, isTransient ) {
 			$.post( this.ajax_url, {
-				order_id: this.order_id,
-				action:   this.setup_action,
-				nonce:    this.setup_nonce,
-				token:    token
+				order_id:     this.order_id,
+				action:       this.setup_action,
+				nonce:        this.setup_nonce,
+				token:        token,
+				is_transient: isTransient
 			}, ( response ) => {
 
 				if ( response.success && response.data && response.data.jwt ) {
@@ -145,18 +168,30 @@ jQuery( document ).ready( ( $ ) => {
 		 * @since 2.3.0
 		 *
 		 * @param {String} token
+		 * @param {Boolean} isTransient
 		 */
-		check_enrollment( token ) {
+		check_enrollment( token, isTransient ) {
 
 			$.post( this.ajax_url, {
 				order_id:     this.order_id,
 				reference_id: this.reference_id,
 				action:       this.check_enrollment_action,
 				nonce:        this.check_enrollment_nonce,
-				token:        token
+				token:        token,
+				is_transient: isTransient
 			}, ( response ) => {
 
 				if ( response.success && response.data && response.data.order ) {
+
+					this.handler.form.find( '#wc_cybersource_threed_secure_ecommerce_indicator' ).val( response.data.order.OrderDetails.ecommerceIndicator );
+					this.handler.form.find( '#wc_cybersource_threed_secure_ucaf_collection_indicator' ).val( response.data.order.OrderDetails.ucafCollectionIndicator );
+					this.handler.form.find( '#wc_cybersource_threed_secure_cavv' ).val( response.data.order.OrderDetails.cavv );
+					this.handler.form.find( '#wc_cybersource_threed_secure_ucaf_authentication_data' ).val( response.data.order.OrderDetails.ucafAuthenticationData );
+					this.handler.form.find( '#wc_cybersource_threed_secure_xid' ).val( response.data.order.OrderDetails.xid );
+					this.handler.form.find( '#wc_cybersource_threed_secure_veres_enrolled' ).val( response.data.order.OrderDetails.veresEnrolled );
+					this.handler.form.find( '#wc_cybersource_threed_secure_specification_version' ).val( response.data.order.OrderDetails.specificationVersion);
+					this.handler.form.find( '#wc_cybersource_threed_secure_directory_server_transaction_id' ).val( response.data.order.OrderDetails.directoryServerTransactionId );
+					this.handler.form.find( '#wc_cybersource_threed_secure_card_type' ).val( response.data.order.OrderDetails.cardType );
 
 					if ( response.data.continue && response.data.continue.AcsUrl ) {
 
@@ -206,6 +241,12 @@ jQuery( document ).ready( ( $ ) => {
 
 			this.set_transaction_id( data.Payment.ProcessorTransactionId );
 			this.set_reference_id( this.reference_id );
+			this.handler.form.find( '#wc_cybersource_threed_secure_eci_flag' ).val( data.Payment.ExtendedData.ECIFlag );
+
+			// if available from the challenge request, override the CAVV from the check enrollment response
+			if ( data.Payment.ExtendedData.CAVV ) {
+				this.handler.form.find( '#wc_cybersource_threed_secure_cavv' ).val( data.Payment.ExtendedData.CAVV );
+			}
 
 			this.handler.form.find( '#wc_cybersource_threed_secure_jwt' ).val( jwt );
 

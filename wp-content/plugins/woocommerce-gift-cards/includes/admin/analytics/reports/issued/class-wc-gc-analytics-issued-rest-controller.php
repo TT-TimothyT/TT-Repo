@@ -16,7 +16,7 @@ use Automattic\WooCommerce\Admin\API\Reports\ExportableInterface;
 /**
  * WC_GC_Analytics_Issued_REST_Controller class.
  *
- * @version 1.8.0
+ * @version 1.16.0
  */
 class WC_GC_Analytics_Issued_REST_Controller extends WC_REST_Reports_Controller implements ExportableInterface {
 
@@ -77,7 +77,7 @@ class WC_GC_Analytics_Issued_REST_Controller extends WC_REST_Reports_Controller 
 
 		$page      = $products_data->page_no;
 		$max_pages = $products_data->pages;
-		$base      = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) );
+		$base      = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) ); // nosemgrep: audit.php.wp.security.xss.query-arg
 		if ( $page > 1 ) {
 			$prev_page = $page - 1;
 			if ( $prev_page > $max_pages ) {

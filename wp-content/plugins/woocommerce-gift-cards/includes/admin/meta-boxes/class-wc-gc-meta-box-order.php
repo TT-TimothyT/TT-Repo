@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Admin AJAX meta-box handlers.
  *
  * @class    WC_GC_Meta_Box_Order
- * @version  1.7.0
+ * @version  1.16.0
  */
 class WC_GC_Meta_Box_Order {
 
@@ -132,7 +132,7 @@ class WC_GC_Meta_Box_Order {
 							</article>
 							<footer>
 								<div class="inner">
-									<button id="btn-ok" class="button button-primary button-large"><?php _e( 'Done', 'woocommerce-gift-cards' ); ?></button>
+									<button id="btn-ok" class="button button-primary button-large"><?php esc_html_e( 'Done', 'woocommerce-gift-cards' ); ?></button>
 								</div>
 							</footer>
 						</section>

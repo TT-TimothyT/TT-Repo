@@ -3,7 +3,7 @@ if (!is_admin()) {
 
 	add_action( 'woocommerce_payment_gateways', 'myexclude');
 }
-function myexclude ( $methods ) {
+function myexclude( $methods ) {
 	$methods[] = 'WC_Gateway_Custom'; 
 	return $methods;
 }
@@ -23,6 +23,12 @@ function init_custom_gateway_class() {
 
 			$this->domain = 'custom_payment';
 			$this->id                 = 'Offline Method';
+			/**
+			 * Description:woocommerce_gateway_icon
+			 *
+			 * @since 1.0.1
+			 * @return $icon.
+			 */
 			$this->icon               = apply_filters('woocommerce_custom_gateway_icon', 'sssssss');
 			$this->has_fields         = false;
 			$this->method_title       = __( 'Offline Payment Method', 'custom_payment' );
@@ -38,8 +44,6 @@ function init_custom_gateway_class() {
 			// add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
 
 			add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
-
-			
 		}
 
 
@@ -50,7 +54,7 @@ function init_custom_gateway_class() {
 					'title'   => __( 'Enable/Disable', 'custom_payment' ),
 					'type'    => 'checkbox',
 					'label'   => __( 'Enable Custom Payment', 'custom_payment' ),
-					'default' => 'yes'
+					'default' => 'yes',
 				),
 				'title' => array(
 					'title'       => __( 'Title', 'custom_payment' ),
@@ -77,7 +81,6 @@ function init_custom_gateway_class() {
 			if ( $this->instructions ) {
 				echo esc_attr(wpautop( wptexturize( $this->instructions ) ));
 			}
-
 		}
 
 
@@ -86,7 +89,6 @@ function init_custom_gateway_class() {
 			if ( $this->instructions && ! $sent_to_admin && 'custom' === $order->payment_method && $order->has_status( 'on-hold' ) ) {
 				echo esc_attr(wpautop( wptexturize( $this->instructions ) ) . PHP_EOL);
 			}
-
 		}
 
 		
@@ -121,14 +123,18 @@ function init_custom_gateway_class() {
 
 			return array(
 				'result'    => 'success',
-				'redirect'  => $this->get_return_url( $order )
+				'redirect'  => $this->get_return_url( $order ),
 			);
-
-
 		}
 		public function get_icon() {
 			$link = null;
 			global $woocommerce;
+			/**
+			 * Description:woocommerce_gateway_icon
+			 *
+			 * @since 1.0.1
+			 * @return $id.
+			 */
 			return apply_filters('woocommerce_gateway_icon', '', $this->id);
 		}
 	}

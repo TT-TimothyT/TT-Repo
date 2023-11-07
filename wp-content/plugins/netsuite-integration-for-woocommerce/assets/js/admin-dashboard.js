@@ -79,6 +79,7 @@ jQuery(document).ready(function ($) {
 			},
 			success: function (response) {
 			btnEventListener.closest('.manually_order_sync_btn').find('span.loaderSpiner').hide();
+			console.log('order_submit_response');
 			console.log(response);
 
 				if (response == 0 || response == '' || response == 00) {

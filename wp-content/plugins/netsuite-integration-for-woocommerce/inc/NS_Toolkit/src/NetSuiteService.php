@@ -29,7 +29,7 @@ use NetSuite\Classes;
 
 class NetSuiteService  extends NetSuiteClient {
 
-	public $generated_from_endpoint = '2020_2';
+	public $generated_from_endpoint = '2022_2';
 
 	 /*
 		 * Constructor using wsdl location and options array

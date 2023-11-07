@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -26,9 +26,9 @@ namespace SkyVerge\WooCommerce\Cybersource\API\Responses\Payments;
 use SkyVerge\WooCommerce\Cybersource\API\Message_Helper;
 use SkyVerge\WooCommerce\Cybersource\API\Responses\Payments;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Payment_Token;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12\SV_WC_API_Exception;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12\SV_WC_Payment_Gateway_API_Create_Payment_Token_Response;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12\SV_WC_Payment_Gateway_API_Customer_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4\SV_WC_API_Exception;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4\SV_WC_Payment_Gateway_API_Create_Payment_Token_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4\SV_WC_Payment_Gateway_API_Customer_Response;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -140,7 +140,7 @@ abstract class Payment extends Payments implements SV_WC_Payment_Gateway_API_Cus
 	 * @since 2.3.0-dev.1
 	 *
 	 * @return \SkyVerge\WooCommerce\Cybersource\Gateway\Payment_Token payment token object
- 	 * @throws \SkyVerge\WooCommerce\PluginFramework\v5_10_12\SV_WC_API_Exception
+ 	 * @throws \SkyVerge\WooCommerce\PluginFramework\v5_11_4\SV_WC_API_Exception
 	 */
 	public function get_payment_token() {
 

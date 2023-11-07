@@ -36,14 +36,14 @@ global $TMWNI_OPTIONS;
 
 //$orderId = trim(str_replace('#', '', $order->get_order_number())); 
 
-$orderId = $order->ID;
+$order_id = $order->ID;
 
-$ups_trackingno = get_post_meta($orderId, 'ywot_tracking_code', true);
+$ups_trackingno = tm_ns_get_post_meta($order_id, 'ywot_tracking_code');
 if (isset($TMWNI_OPTIONS['ns_order_shipping_courier']) && !empty($TMWNI_OPTIONS['ns_order_shipping_courier'])) {
 
-	$shipping_carrier =	get_post_meta($order_id, $TMWNI_OPTIONS['ns_order_shipping_courier'], true);
+	$shipping_carrier =	tm_ns_get_post_meta($order_id, $TMWNI_OPTIONS['ns_order_shipping_courier']);
 } else {
-	$shipping_carrier = 	get_post_meta($order_id, 'ywot_carrier_name', true);
+	$shipping_carrier = 	tm_ns_get_post_meta($order_id, 'ywot_carrier_name');
 }
 
 ?>

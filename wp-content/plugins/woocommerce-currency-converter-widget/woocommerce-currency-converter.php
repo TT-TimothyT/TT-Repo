@@ -2,18 +2,18 @@
 /**
  * Plugin Name: WooCommerce Currency Converter
  * Plugin URI: https://woocommerce.com/products/currency-converter-widget/
- * Description: Adds a currency selection widget - when the user chooses a currency, the stores prices are displayed in the chosen currency dynamically. This does not affect the currency in which you take payment. Conversions are estimated based on data from the Open Source Exchange Rates API with no guarantee whatsoever of accuracy.
- * Version: 1.9.1
- * Author: Themesquad
- * Author URI: https://themesquad.com/
+ * Description: Provides a currency selection widget for displaying product prices and totals in different currencies. Conversions are estimated based on data from the Open Exchange Rates API with no guarantee whatsoever of accuracy.
+ * Version: 2.1.1
+ * Author: KoiLab
+ * Author URI: https://koilab.com/
  * Text Domain: woocommerce-currency-converter-widget
  * Domain Path: /languages
- * Requires PHP: 5.4
- * Requires at least: 4.7
- * Tested up to: 6.1
+ * Requires PHP: 7.0
+ * Requires at least: 5.0
+ * Tested up to: 6.4
  *
- * WC requires at least: 3.5
- * WC tested up to: 7.3
+ * WC requires at least: 4.0
+ * WC tested up to: 8.2
  * Woo: 18651:0b2ec7cb103c9c102d37f8183924b271
  *
  * License: GNU General Public License v3.0
@@ -24,18 +24,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 // Load the class autoloader.
 require __DIR__ . '/src/Autoloader.php';
 
-if ( ! \Themesquad\WC_Currency_Converter\Autoloader::init() ) {
+if ( ! \KoiLab\WC_Currency_Converter\Autoloader::init() ) {
 	return;
 }
 
 // Plugin requirements.
-\Themesquad\WC_Currency_Converter\Requirements::init();
+\KoiLab\WC_Currency_Converter\Requirements::init();
 
-if ( ! \Themesquad\WC_Currency_Converter\Requirements::are_satisfied() ) {
+if ( ! \KoiLab\WC_Currency_Converter\Requirements::are_satisfied() ) {
 	return;
 }
 
@@ -51,4 +50,4 @@ function wc_currency_converter_init() {
 	require_once __DIR__ . '/includes/class-wc-currency-converter.php';
 	WC_Currency_Converter::instance();
 }
-add_action( 'plugins_loaded', 'wc_currency_converter_init' );
+wc_currency_converter_init();

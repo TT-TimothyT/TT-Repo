@@ -3,7 +3,7 @@
 * Plugin Name: WooCommerce Gift Cards
 * Plugin URI: https://woocommerce.com/products/gift-cards/
 * Description: Create and sell digital gift cards that customers can redeem at your store.
-* Version: 1.12.2
+* Version: 1.16.6
 * Author: WooCommerce
 * Author URI: https://somewherewarm.com/
 *
@@ -12,11 +12,13 @@
 * Text Domain: woocommerce-gift-cards
 * Domain Path: /languages/
 *
+* Requires PHP: 7.0
+*
 * Requires at least: 4.4
 * Tested up to: 6.0
 *
 * WC requires at least: 3.9
-* WC tested up to: 6.7
+* WC tested up to: 8.2
 *
 * License: GNU General Public License v3.0
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -31,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Main plugin class.
  *
  * @class    WC_Gift_Cards
- * @version  1.12.2
+ * @version  1.16.6
  */
 class WC_Gift_Cards {
 
@@ -40,7 +42,7 @@ class WC_Gift_Cards {
 	 *
 	 * @var string
 	 */
-	private $version = '1.12.2';
+	private $version = '1.16.6';
 
 	/**
 	 * Min required WC version.
@@ -96,7 +98,7 @@ class WC_Gift_Cards {
 	 *
 	 * @var WC_GC_Emails
 	 */
-	public $email;
+	public $emails;
 
 	/**
 	 * The single instance of the class.
@@ -295,7 +297,7 @@ class WC_Gift_Cards {
 		require_once  WC_GC_ABSPATH . 'includes/data-stores/class-wc-gc-order-item-gift-card-data-store.php' ;
 		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-order-item-gift-card.php' ;
 
-		// Contollers.
+		// Controllers.
 		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-notices.php' ;
 		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-gift-card-product.php' ;
 		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-gift-card.php' ;
@@ -306,10 +308,10 @@ class WC_Gift_Cards {
 
 		// Tracking.
 		require_once( WC_GC_ABSPATH . 'includes/class-wc-gc-tracker.php' );
+		require_once( WC_GC_ABSPATH . 'includes/class-wc-gc-tracks.php' );
 
 		// Templates.
 		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-templates.php' ;
-		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-account.php' ;
 
 		// Front-end AJAX handlers.
 		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-ajax.php' ;
@@ -369,6 +371,8 @@ class WC_Gift_Cards {
 	 */
 	public function load_translation() {
 		load_plugin_textdomain( 'woocommerce-gift-cards', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		// Subscribe to automated translations.
+		add_filter( 'woocommerce_translations_updates_for_' . basename( __FILE__, '.php' ), '__return_true' );
 	}
 
 	/**
@@ -391,9 +395,15 @@ class WC_Gift_Cards {
 	 * @return void
 	 */
 	public function on_activation() {
-		$this->define_constants();
-		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-install.php';
-		WC_GC_Install::create_events();
+		// Add daily maintenance process.
+		if ( ! wp_next_scheduled( 'wc_gc_daily' ) ) {
+			wp_schedule_event( time() + 10, 'daily', 'wc_gc_daily' );
+		}
+
+		// Add hourly maintenance process.
+		if ( ! wp_next_scheduled( 'wc_gc_hourly' ) ) {
+			wp_schedule_event( time() + 10, 'hourly', 'wc_gc_hourly' );
+		}
 	}
 
 	/**
@@ -404,18 +414,28 @@ class WC_Gift_Cards {
 	 * @return void
 	 */
 	public function on_deactivation() {
-		$this->define_constants();
-		require_once  WC_GC_ABSPATH . 'includes/class-wc-gc-install.php';
 		// Clear daily maintenance process.
 		wp_clear_scheduled_hook( 'wc_gc_daily' );
+
+		// Clear hourly maintenance process.
+		wp_clear_scheduled_hook( 'wc_gc_hourly' );
 	}
 
 	/**
 	 * Get screen ids.
 	 */
 	public function get_screen_ids() {
-		$screens   = array();
-		$prefix    = 'marketing' === wc_gc_get_parent_menu() ? sanitize_title( __( 'Marketing', 'woocommerce' ) ) : sanitize_title( __( 'WooCommerce', 'woocommerce' ) );
+		$screens = array();
+
+		if ( 'marketing' === wc_gc_get_parent_menu() ) {
+			$prefix = sanitize_title( __( 'Marketing', 'woocommerce' ) );
+		} else {
+			if ( version_compare( WC()->version, '7.3.0' ) < 0 ) {
+				$prefix = sanitize_title( __( 'WooCommerce', 'woocommerce' ) );
+			} else {
+				$prefix = 'woocommerce';
+			}
+		}
 
 		$screens[] = $prefix . '_page_gc_activity';
 		$screens[] = $prefix . '_page_gc_giftcards';

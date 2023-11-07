@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Legacy;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\API\Helper;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 /**
  * Gateway class
@@ -330,22 +330,22 @@ class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 			}
 
 			// store the payment information in the order, regardless of success or failure
-			update_post_meta( $order->get_id(), '_wc_cybersource_trans_id',         $response->requestID );
-			update_post_meta( $order->get_id(), '_transaction_id',                  $response->requestID );
-			update_post_meta( $order->get_id(), '_wc_cybersource_environment',      $this->get_environment() );
-			update_post_meta( $order->get_id(), '_wc_cybersource_card_type',        isset( $request->card->cardType ) ? Helper::convert_code_to_card_type( $request->card->cardType ) : '' );
-			update_post_meta( $order->get_id(), '_wc_cybersource_account_four',     isset( $request->card->accountNumber ) ? substr( $request->card->accountNumber, -4 ) : '' );
-			update_post_meta( $order->get_id(), '_wc_cybersource_card_expiry_date', isset( $request->card->expirationMonth ) && isset( $request->card->expirationYear ) ? $request->card->expirationYear . '-' . $request->card->expirationMonth : '' );
-			update_post_meta( $order->get_id(), '_wc_cybersource_trans_date',       current_time( 'mysql' ) );
+			$order->update_meta_data( '_wc_cybersource_trans_id',         $response->requestID );
+			$order->update_meta_data( '_transaction_id',                  $response->requestID );
+			$order->update_meta_data( '_wc_cybersource_environment',      $this->get_environment() );
+			$order->update_meta_data( '_wc_cybersource_card_type',        isset( $request->card->cardType ) ? Helper::convert_code_to_card_type( $request->card->cardType ) : '' );
+			$order->update_meta_data( '_wc_cybersource_account_four',     isset( $request->card->accountNumber ) ? substr( $request->card->accountNumber, -4 ) : '' );
+			$order->update_meta_data( '_wc_cybersource_card_expiry_date', isset( $request->card->expirationMonth ) && isset( $request->card->expirationYear ) ? $request->card->expirationYear . '-' . $request->card->expirationMonth : '' );
+			$order->update_meta_data( '_wc_cybersource_trans_date',       current_time( 'mysql' ) );
 
 			if ( isset( $response->ccAuthReply->authorizationCode ) ) {
-				update_post_meta( $order->get_id(), '_wc_cybersource_authorization_code', $response->ccAuthReply->authorizationCode );
+				$order->update_meta_data( '_wc_cybersource_authorization_code', $response->ccAuthReply->authorizationCode );
 			}
 
 			if ( 'ACCEPT' === $response->decision ) {
 
 				// Successful payment:
-				update_post_meta( $order->get_id(), '_wc_cybersource_charge_captured', $this->perform_credit_card_charge() ? 'yes' : 'no' );
+				$order->update_meta_data( '_wc_cybersource_charge_captured', $this->perform_credit_card_charge() ? 'yes' : 'no' );
 
 				$order_note = $this->is_production_environment() ?
 								__( 'Credit Card Transaction Approved: %s ending in %s (%s)', 'woocommerce-gateway-cybersource' ) :

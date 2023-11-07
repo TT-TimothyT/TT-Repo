@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\Gateway\Credit_Card;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 /**
  * Plugin lifecycle handler.
@@ -250,22 +250,88 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 			update_option( 'woocommerce_' . Plugin::PLUGIN_ID . '_settings', $settings );
 		}
 
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_trans_id'         WHERE meta_key='_cybersource_request_id'" );
+		if( Framework\SV_WC_Plugin_Compatibility::is_hpos_enabled() ){
 
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='test'                           WHERE meta_key='_cybersource_orderpage_environment' AND meta_value='TEST'" );
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='production'                     WHERE meta_key='_cybersource_orderpage_environment' AND meta_value='PRODUCTION'" );
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_environment'      WHERE meta_key='_cybersource_orderpage_environment'" );
+			// Update existing meta values before we migrate the keys
+			$values_to_update = [
+				'_cybersource_orderpage_environment' => [
+					'TEST'       => 'test',
+					'PRODUCTION' => 'production',
+				],
+				'_cybersource_card_type' => [
+					'Visa'             => 'visa',
+					'MasterCard'       => 'mc',
+					'American Express' => 'amex',
+					'Discover'         => 'disc',
+				],
+			];
 
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='visa'                           WHERE meta_key='_cybersource_card_type' AND meta_value='Visa'" );
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='mc'                             WHERE meta_key='_cybersource_card_type' AND meta_value='MasterCard'" );
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='amex'                           WHERE meta_key='_cybersource_card_type' AND meta_value='American Express'" );
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='disc'                           WHERE meta_key='_cybersource_card_type' AND meta_value='Discover'" );
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_card_type'        WHERE meta_key='_cybersource_card_type'" );
+			foreach( $values_to_update as $meta_key ){
+				foreach ( $meta_key as $old => $new ){
+					$orders = wc_get_orders(
+						array(
+							'meta_query' => array(
+								array(
+									'key' => $meta_key,
+									'value' => $old,
+								),
+							),
+						)
+					);
 
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_account_four'     WHERE meta_key='_cybersource_card_last4'" );
+					foreach( $orders as $order ){
+						$order->update_meta_data( $meta_key, $new );
+						$order->save_meta_data();
+					}
+				}
+			}
 
-		// older entries will be in the form MM/YYYY
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_card_expiry_date' WHERE meta_key='_cybersource_card_expiration'" );
+			// Add _wc prefix to order meta keys
+			$keys_to_update = [
+				'_cybersource_request_id'            => '_wc_cybersource_trans_id',
+				'_cybersource_orderpage_environment' => '_wc_cybersource_environment',
+				'_cybersource_card_type'             => '_wc_cybersource_card_type',
+				'_cybersource_card_last4'            => '_wc_cybersource_account_four',
+				'_cybersource_card_expiration'       => '_wc_cybersource_card_expiry_date'
+			];
+
+			foreach ( $keys_to_update as $old => $new ){
+				$orders = wc_get_orders(
+					array(
+						'meta_query' => array(
+							array(
+								'key' => $old,
+							),
+						),
+					)
+				);
+
+				foreach( $orders as $order ){
+					$order->add_meta_data( $new, $order->get_meta( $old ) );
+					$order->delete_meta_data( $old );
+					$order->save_meta_data();
+				}
+			}
+
+		}
+		else{
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_trans_id'         WHERE meta_key='_cybersource_request_id'" );
+
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='test'                           WHERE meta_key='_cybersource_orderpage_environment' AND meta_value='TEST'" );
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='production'                     WHERE meta_key='_cybersource_orderpage_environment' AND meta_value='PRODUCTION'" );
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_environment'      WHERE meta_key='_cybersource_orderpage_environment'" );
+
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='visa'                           WHERE meta_key='_cybersource_card_type' AND meta_value='Visa'" );
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='mc'                             WHERE meta_key='_cybersource_card_type' AND meta_value='MasterCard'" );
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='amex'                           WHERE meta_key='_cybersource_card_type' AND meta_value='American Express'" );
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='disc'                           WHERE meta_key='_cybersource_card_type' AND meta_value='Discover'" );
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_card_type'        WHERE meta_key='_cybersource_card_type'" );
+
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_account_four'     WHERE meta_key='_cybersource_card_last4'" );
+
+			// older entries will be in the form MM/YYYY
+			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_card_expiry_date' WHERE meta_key='_cybersource_card_expiration'" );
+		}
 	}
 
 

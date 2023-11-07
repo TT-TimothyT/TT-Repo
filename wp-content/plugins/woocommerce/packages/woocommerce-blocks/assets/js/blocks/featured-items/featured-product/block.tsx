@@ -36,12 +36,16 @@ const CONTENT_CONFIG = {
 		'No product is selected.',
 		'woo-gutenberg-products-block'
 	),
+	noSelectionButtonLabel: __(
+		'Select a product',
+		'woo-gutenberg-products-block'
+	),
 };
 
 const EDIT_MODE_CONFIG = {
 	...GENERIC_CONFIG,
 	description: __(
-		'Visually highlight a product or variation and encourage prompt action',
+		'Highlight a product or variation.',
 		'woo-gutenberg-products-block'
 	),
 	editLabel: __(

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC_GC_Admin_Importers Class.
  *
- * @version 1.10.0
+ * @version 1.13.1
  */
 class WC_GC_Admin_Importers {
 
@@ -137,6 +137,9 @@ class WC_GC_Admin_Importers {
 		update_user_option( get_current_user_id(), 'giftcard_import_error_log', $error_log );
 
 		if ( 100 === $percent_complete ) {
+
+			// Delete uploaded file.
+			wp_delete_file( $file );
 
 			// Send success.
 			wp_send_json_success(

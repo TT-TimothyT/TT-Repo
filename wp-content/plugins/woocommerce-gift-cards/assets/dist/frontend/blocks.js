@@ -108,17 +108,12 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayWithHoles = __webpack_require__(41);
-
 var iterableToArrayLimit = __webpack_require__(42);
-
 var unsupportedIterableToArray = __webpack_require__(34);
-
 var nonIterableRest = __webpack_require__(43);
-
 function _slicedToArray(arr, i) {
   return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
 }
-
 module.exports = _slicedToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -128,22 +123,19 @@ module.exports = _slicedToArray, module.exports.__esModule = true, module.export
 /***/ (function(module, exports) {
 
 function _extends() {
-  module.exports = _extends = Object.assign || function (target) {
+  module.exports = _extends = Object.assign ? Object.assign.bind() : function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
-
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
         }
       }
     }
-
     return target;
   }, module.exports.__esModule = true, module.exports["default"] = module.exports;
   return _extends.apply(this, arguments);
 }
-
 module.exports = _extends, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -157,21 +149,20 @@ module.exports = _extends, module.exports.__esModule = true, module.exports["def
  * External dependencies
  */
 
+
 /**
  * Helper for fetching plugin settings.
  */
-
 var getPluginSettings = function getPluginSettings() {
   var _getSetting = Object(_woocommerce_settings__WEBPACK_IMPORTED_MODULE_0__["getSetting"])('wc-gift-cards-blocks_data'),
-      showBalanceCheckbox = _getSetting.show_balance_checkbox,
-      showRemainingBalance = _getSetting.show_remaining_balance_per_gift_card,
-      isUiDisabled = _getSetting.is_ui_disabled,
-      isCartDisabled = _getSetting.is_cart_disabled,
-      isRedeemingEnabled = _getSetting.is_redeeming_enabled,
-      isCart = _getSetting.is_cart,
-      isCheckout = _getSetting.is_checkout,
-      accountOrdersLink = _getSetting.account_orders_link;
-
+    showBalanceCheckbox = _getSetting.show_balance_checkbox,
+    showRemainingBalance = _getSetting.show_remaining_balance_per_gift_card,
+    isUiDisabled = _getSetting.is_ui_disabled,
+    isCartDisabled = _getSetting.is_cart_disabled,
+    isRedeemingEnabled = _getSetting.is_redeeming_enabled,
+    isCart = _getSetting.is_cart,
+    isCheckout = _getSetting.is_checkout,
+    accountOrdersLink = _getSetting.account_orders_link;
   return {
     isUiDisabled: isUiDisabled,
     isCartDisabled: isCartDisabled,
@@ -183,7 +174,6 @@ var getPluginSettings = function getPluginSettings() {
     accountOrdersLink: accountOrdersLink
   };
 };
-
 /* harmony default export */ __webpack_exports__["a"] = (getPluginSettings);
 
 /***/ }),
@@ -287,15 +277,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /***/ (function(module, exports, __webpack_require__) {
 
 var objectWithoutPropertiesLoose = __webpack_require__(44);
-
 function _objectWithoutProperties(source, excluded) {
   if (source == null) return {};
   var target = objectWithoutPropertiesLoose(source, excluded);
   var key, i;
-
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
     for (i = 0; i < sourceSymbolKeys.length; i++) {
       key = sourceSymbolKeys[i];
       if (excluded.indexOf(key) >= 0) continue;
@@ -303,10 +290,8 @@ function _objectWithoutProperties(source, excluded) {
       target[key] = source[key];
     }
   }
-
   return target;
 }
-
 module.exports = _objectWithoutProperties, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -353,10 +338,10 @@ var style = __webpack_require__(53);
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/balance-checkbox/index.js
 
 
-
 /**
  * External dependencies
  */
+
 
 
 
@@ -377,28 +362,24 @@ var style = __webpack_require__(53);
  * @param {Object} props.extensions The extension-added data on the WC Cart.
  * @return {JSX.Element} The account balance checkbox.
  */
-
 var balance_checkbox_BalanceCheckbox = function BalanceCheckbox(_ref) {
   var extensions = _ref.extensions;
   var _extensions$woocommer = extensions['woocommerce-gift-cards'],
-      isUsingBalance = _extensions$woocommer.is_using_balance,
-      availableTotal = _extensions$woocommer.available_total,
-      pendingTotal = _extensions$woocommer.pending_total;
-
+    isUsingBalance = _extensions$woocommer.is_using_balance,
+    availableTotal = _extensions$woocommer.available_total,
+    pendingTotal = _extensions$woocommer.pending_total;
   var _getPluginSettings = Object(get_plugin_settings["a" /* default */])(),
-      accountOrdersLink = _getPluginSettings.accountOrdersLink;
-
+    accountOrdersLink = _getPluginSettings.accountOrdersLink;
   var _useState = Object(external_wp_element_["useState"])(isUsingBalance),
-      _useState2 = slicedToArray_default()(_useState, 2),
-      isChecked = _useState2[0],
-      setIsChecked = _useState2[1];
-
+    _useState2 = slicedToArray_default()(_useState, 2),
+    isChecked = _useState2[0],
+    setIsChecked = _useState2[1];
   var _useState3 = Object(external_wp_element_["useState"])(false),
-      _useState4 = slicedToArray_default()(_useState3, 2),
-      isLoading = _useState4[0],
-      setIsLoading = _useState4[1];
-
+    _useState4 = slicedToArray_default()(_useState3, 2),
+    isLoading = _useState4[0],
+    setIsLoading = _useState4[1];
   var isDisabled = isLoading;
+
   /**
    * Function that handles checkbox changes.
    *
@@ -406,7 +387,6 @@ var balance_checkbox_BalanceCheckbox = function BalanceCheckbox(_ref) {
    *
    * @param {boolean} value The checked state of the checkbox.
    */
-
   var _onChange = function onChange(value) {
     setIsLoading(true);
     Object(external_wc_blocksCheckout_["extensionCartUpdate"])({
@@ -422,23 +402,23 @@ var balance_checkbox_BalanceCheckbox = function BalanceCheckbox(_ref) {
     }).finally(function () {
       setIsLoading(false);
     });
-  }; // Cache sprintf.
+  };
 
-
+  // Cache sprintf.
   var checkboxLabel = Object(external_wp_element_["useMemo"])(function () {
-    var label = Object(external_wp_i18n_["sprintf"])(
-    /* translators: %S gift cards balance amount */
+    var label = Object(external_wp_i18n_["sprintf"])( /* translators: %S gift cards balance amount */
     Object(external_wp_i18n_["__"])('Use %s from your gift cards balance.', 'woocommerce-gift-cards'), '<strong>' + Object(external_wc_priceFormat_["formatPrice"])(availableTotal) + '</strong>');
-    var pendingOrdersLink = '<a href="' + accountOrdersLink + '">' + // TODO: Add link.
+    var pendingOrdersLink = '<a href="' + accountOrdersLink + '">' +
+    // TODO: Add link.
     Object(external_wp_i18n_["__"])('pending orders', 'woocommerce-gift-cards') + '</a>';
-    var pendingText = Object(external_wp_i18n_["sprintf"])(
-    /* translators: %1$s pending balance, %2$s pending orders link html */
+    var pendingText = Object(external_wp_i18n_["sprintf"])( /* translators: %1$s pending balance, %2$s pending orders link html */
     Object(external_wp_i18n_["__"])('%1$s on hold in %2$s', 'woocommerce-gift-cards'), Object(external_wc_priceFormat_["formatPrice"])(pendingTotal), pendingOrdersLink);
     return Object(external_wp_element_["createElement"])(external_wp_element_["RawHTML"], {
       className: 'wc-gift-cards-checkbox-message'
     }, label, pendingTotal > 0 && '<div class="wc-block-components-totals-item__description">' + pendingText + '</div>');
-  }, [availableTotal, pendingTotal, accountOrdersLink]); // Render Gift Cards Balance Checkbox.
+  }, [availableTotal, pendingTotal, accountOrdersLink]);
 
+  // Render Gift Cards Balance Checkbox.
   return Object(external_wp_element_["createElement"])(external_wc_blocksCheckout_["TotalsWrapper"], null, Object(external_wp_element_["createElement"])("div", {
     className: classnames_default()('wc-gc-balance-checkbox-container', {
       'wc-gc-balance-checkbox-container--disabled': isDisabled
@@ -453,7 +433,6 @@ var balance_checkbox_BalanceCheckbox = function BalanceCheckbox(_ref) {
     disabled: isDisabled
   }, checkboxLabel)));
 };
-
 /* harmony default export */ var balance_checkbox = (balance_checkbox_BalanceCheckbox);
 // EXTERNAL MODULE: external ["wp","data"]
 var external_wp_data_ = __webpack_require__(14);
@@ -474,10 +453,10 @@ var objectWithoutProperties_default = /*#__PURE__*/__webpack_require__.n(objectW
 
 var _excluded = ["text", "screenReaderText", "element", "className", "radius", "children"];
 
-
 /**
  * External dependencies
  */
+
 
 /**
  * Component used to render a "chip" -- a list item containing some text.
@@ -493,21 +472,19 @@ var _excluded = ["text", "screenReaderText", "element", "className", "radius", "
  * @param {string} props.radius
  * @param {Array} props.children
  */
-
 var chip_Chip = function Chip(_ref) {
   var text = _ref.text,
-      _ref$screenReaderText = _ref.screenReaderText,
-      screenReaderText = _ref$screenReaderText === void 0 ? '' : _ref$screenReaderText,
-      _ref$element = _ref.element,
-      element = _ref$element === void 0 ? 'li' : _ref$element,
-      _ref$className = _ref.className,
-      className = _ref$className === void 0 ? '' : _ref$className,
-      _ref$radius = _ref.radius,
-      radius = _ref$radius === void 0 ? 'small' : _ref$radius,
-      _ref$children = _ref.children,
-      children = _ref$children === void 0 ? null : _ref$children,
-      props = objectWithoutProperties_default()(_ref, _excluded);
-
+    _ref$screenReaderText = _ref.screenReaderText,
+    screenReaderText = _ref$screenReaderText === void 0 ? '' : _ref$screenReaderText,
+    _ref$element = _ref.element,
+    element = _ref$element === void 0 ? 'li' : _ref$element,
+    _ref$className = _ref.className,
+    className = _ref$className === void 0 ? '' : _ref$className,
+    _ref$radius = _ref.radius,
+    radius = _ref$radius === void 0 ? 'small' : _ref$radius,
+    _ref$children = _ref.children,
+    children = _ref$children === void 0 ? null : _ref$children,
+    props = objectWithoutProperties_default()(_ref, _excluded);
   var Wrapper = element;
   var wrapperClassName = classnames_default()(className, 'wc-block-components-chip', 'wc-block-components-chip--radius-' + radius);
   var showScreenReaderText = Boolean(screenReaderText && screenReaderText !== text);
@@ -520,7 +497,6 @@ var chip_Chip = function Chip(_ref) {
     className: "screen-reader-text"
   }, screenReaderText), children);
 };
-
 /* harmony default export */ var chip = (chip_Chip);
 // EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/icon/index.js
 var icon = __webpack_require__(68);
@@ -551,10 +527,10 @@ var chip_style = __webpack_require__(54);
 
 var removable_chip_excluded = ["ariaLabel", "className", "disabled", "onRemove", "removeOnAnyClick", "text", "screenReaderText"];
 
-
 /**
  * External dependencies
  */
+
 
 
 
@@ -578,36 +554,30 @@ var removable_chip_excluded = ["ariaLabel", "className", "disabled", "onRemove",
  * @param {string} props.screenReaderText The screen reader text for the chip.
  * @param {Object} props.props Rest of props passed into component.
  */
-
 var removable_chip_RemovableChip = function RemovableChip(_ref) {
   var _ref$ariaLabel = _ref.ariaLabel,
-      ariaLabel = _ref$ariaLabel === void 0 ? '' : _ref$ariaLabel,
-      _ref$className = _ref.className,
-      className = _ref$className === void 0 ? '' : _ref$className,
-      _ref$disabled = _ref.disabled,
-      disabled = _ref$disabled === void 0 ? false : _ref$disabled,
-      _ref$onRemove = _ref.onRemove,
-      onRemove = _ref$onRemove === void 0 ? function () {
-    return void 0;
-  } : _ref$onRemove,
-      _ref$removeOnAnyClick = _ref.removeOnAnyClick,
-      removeOnAnyClick = _ref$removeOnAnyClick === void 0 ? false : _ref$removeOnAnyClick,
-      text = _ref.text,
-      _ref$screenReaderText = _ref.screenReaderText,
-      screenReaderText = _ref$screenReaderText === void 0 ? '' : _ref$screenReaderText,
-      props = objectWithoutProperties_default()(_ref, removable_chip_excluded);
-
+    ariaLabel = _ref$ariaLabel === void 0 ? '' : _ref$ariaLabel,
+    _ref$className = _ref.className,
+    className = _ref$className === void 0 ? '' : _ref$className,
+    _ref$disabled = _ref.disabled,
+    disabled = _ref$disabled === void 0 ? false : _ref$disabled,
+    _ref$onRemove = _ref.onRemove,
+    onRemove = _ref$onRemove === void 0 ? function () {
+      return void 0;
+    } : _ref$onRemove,
+    _ref$removeOnAnyClick = _ref.removeOnAnyClick,
+    removeOnAnyClick = _ref$removeOnAnyClick === void 0 ? false : _ref$removeOnAnyClick,
+    text = _ref.text,
+    _ref$screenReaderText = _ref.screenReaderText,
+    screenReaderText = _ref$screenReaderText === void 0 ? '' : _ref$screenReaderText,
+    props = objectWithoutProperties_default()(_ref, removable_chip_excluded);
   var RemoveElement = removeOnAnyClick ? 'span' : 'button';
-
   if (!ariaLabel) {
     var ariaLabelText = screenReaderText && typeof screenReaderText === 'string' ? screenReaderText : text;
-    ariaLabel = typeof ariaLabelText !== 'string' ?
-    /* translators: Remove chip. */
-    Object(external_wp_i18n_["__"])('Remove', 'woocommerce-gift-cards') : Object(external_wp_i18n_["sprintf"])(
-    /* translators: %s text of the chip to remove. */
+    ariaLabel = typeof ariaLabelText !== 'string' ? /* translators: Remove chip. */
+    Object(external_wp_i18n_["__"])('Remove', 'woocommerce-gift-cards') : Object(external_wp_i18n_["sprintf"])( /* translators: %s text of the chip to remove. */
     Object(external_wp_i18n_["__"])('Remove gift card "%s"', 'woocommerce-gift-cards'), ariaLabelText);
   }
-
   var clickableElementProps = {
     'aria-label': ariaLabel,
     disabled: disabled,
@@ -637,7 +607,6 @@ var removable_chip_RemovableChip = function RemovableChip(_ref) {
     size: 16
   })));
 };
-
 /* harmony default export */ var removable_chip = (removable_chip_RemovableChip);
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/chip/index.js
 
@@ -645,10 +614,10 @@ var removable_chip_RemovableChip = function RemovableChip(_ref) {
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/applied-gift-cards-totals/applied-gift-card.js
 
 
-
 /**
  * External dependencies
  */
+
 
 
 
@@ -667,26 +636,21 @@ var removable_chip_RemovableChip = function RemovableChip(_ref) {
  * @param {Function} props.handleRemove The function to handle the removal.
  * @return {JSX.Element} A panel used to display an applied gift card.
  */
-
 var applied_gift_card_AppliedGiftCard = function AppliedGiftCard(_ref) {
   var giftcard = _ref.giftcard,
-      handleRemove = _ref.handleRemove;
+    handleRemove = _ref.handleRemove;
   var currency = Object(external_wc_priceFormat_["getCurrency"])();
-
   var _useState = Object(external_wp_element_["useState"])(false),
-      _useState2 = slicedToArray_default()(_useState, 2),
-      isDisabled = _useState2[0],
-      setIsDisabled = _useState2[1];
-
+    _useState2 = slicedToArray_default()(_useState, 2),
+    isDisabled = _useState2[0],
+    setIsDisabled = _useState2[1];
   var id = giftcard.id,
-      code = giftcard.code,
-      amount = giftcard.amount,
-      balance = giftcard.balance,
-      pendingMessage = giftcard.pending_message;
-
+    code = giftcard.code,
+    amount = giftcard.amount,
+    balance = giftcard.balance,
+    pendingMessage = giftcard.pending_message;
   var _getPluginSettings = Object(get_plugin_settings["a" /* default */])(),
-      showRemainingBalance = _getPluginSettings.showRemainingBalance;
-
+    showRemainingBalance = _getPluginSettings.showRemainingBalance;
   return Object(external_wp_element_["createElement"])(external_wc_blocksCheckout_["TotalsWrapper"], null, Object(external_wp_element_["createElement"])(external_wc_blocksCheckout_["TotalsItem"], {
     className: "wc-gift-cards-totals wc-block-components-totals-discount",
     currency: currency,
@@ -698,28 +662,25 @@ var applied_gift_card_AppliedGiftCard = function AppliedGiftCard(_ref) {
       text: code,
       element: "div",
       radius: "large",
-      screenReaderText: Object(external_wp_i18n_["sprintf"])(
-      /* translators: %s Gift card code. */
+      screenReaderText: Object(external_wp_i18n_["sprintf"])( /* translators: %s Gift card code. */
       Object(external_wp_i18n_["__"])('Gift Card: %s', 'woocommerce-gift-cards'), code),
       disabled: isDisabled,
       onRemove: function onRemove() {
         setIsDisabled(true);
         handleRemove(id);
       },
-      ariaLabel: Object(external_wp_i18n_["sprintf"])(
-      /* translators: %s gift card code. */
+      ariaLabel: Object(external_wp_i18n_["sprintf"])( /* translators: %s gift card code. */
       Object(external_wp_i18n_["__"])('Remove gift card "%s"', 'woocommerce-gift-cards'), code)
     }), pendingMessage && Object(external_wp_element_["createElement"])(external_wp_element_["RawHTML"], null, pendingMessage), showRemainingBalance && Object(external_wp_element_["createElement"])("div", null, Object(external_wp_element_["createElement"])("strong", null, Object(external_wp_i18n_["__"])('Remaining Balance:', 'woocommerce-gift-cards')), Object(external_wp_element_["createElement"])("div", null, Object(external_wc_priceFormat_["formatPrice"])(balance - amount))))
   }));
 };
-
 /* harmony default export */ var applied_gift_card = (applied_gift_card_AppliedGiftCard);
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/applied-gift-cards-totals/index.js
-
 
 /**
  * External dependencies
  */
+
 
 
 
@@ -738,25 +699,21 @@ var applied_gift_card_AppliedGiftCard = function AppliedGiftCard(_ref) {
  * @param {Function} props.createNotice
  * @return {JSX.Element} A panel used to display the inline gift card form.
  */
-
 var applied_gift_cards_totals_AppliedGiftCardTotals = function AppliedGiftCardTotals(_ref) {
   var extensions = _ref.extensions,
-      createNotice = _ref.createNotice;
+    createNotice = _ref.createNotice;
   var appliedGiftCards = extensions['woocommerce-gift-cards'].applied_giftcards;
-
   if (!appliedGiftCards.length) {
     return null;
   }
-
   var _getPluginSettings = Object(get_plugin_settings["a" /* default */])(),
-      isCheckout = _getPluginSettings.isCheckout;
+    isCheckout = _getPluginSettings.isCheckout;
+
   /**
    * Function to handle the code removal.
    *
    * @param {number} giftcardId The giftcard ID to remove from session.
    */
-
-
   var handleRemove = function handleRemove(giftcardId) {
     Object(external_wc_blocksCheckout_["extensionCartUpdate"])({
       namespace: 'woocommerce-gift-cards',
@@ -766,16 +723,15 @@ var applied_gift_cards_totals_AppliedGiftCardTotals = function AppliedGiftCardTo
       }
     }).then(function () {
       var message = Object(external_wp_i18n_["__"])('Gift card code has been removed.', 'woocommerce-gift-cards');
-
       createNotice('default', message, {
         id: 'wc-gift-cards-removed-gift-card',
         type: 'snackbar',
         context: !isCheckout ? 'wc/cart' : 'wc/checkout'
       });
-    }).catch(function () {// ...
+    }).catch(function () {
+      // ...
     });
   };
-
   return appliedGiftCards.map(function (giftcard) {
     return Object(external_wp_element_["createElement"])(applied_gift_card, {
       key: 'giftcard-' + giftcard.id,
@@ -784,21 +740,19 @@ var applied_gift_cards_totals_AppliedGiftCardTotals = function AppliedGiftCardTo
     });
   });
 };
-
 /* harmony default export */ var applied_gift_cards_totals = (Object(external_wp_compose_["compose"])(Object(external_wp_data_["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('core/notices'),
-      createNotice = _dispatch.createNotice;
-
+    createNotice = _dispatch.createNotice;
   return {
     createNotice: createNotice
   };
 }))(applied_gift_cards_totals_AppliedGiftCardTotals));
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/account-gift-cards-totals/index.js
 
-
 /**
  * External dependencies
  */
+
 
 
 
@@ -816,18 +770,15 @@ var applied_gift_cards_totals_AppliedGiftCardTotals = function AppliedGiftCardTo
  * @param {Object} props.extensions The extension-added data on the WC Cart.
  * @return {JSX.Element} A panel used to display the inline gift card form.
  */
-
 var account_gift_cards_totals_AccountGiftCardTotals = function AccountGiftCardTotals(_ref) {
   var extensions = _ref.extensions;
   var _extensions$woocommer = extensions['woocommerce-gift-cards'],
-      accountGiftCards = _extensions$woocommer.account_giftcards,
-      accountBalance = _extensions$woocommer.balance,
-      availableTotal = _extensions$woocommer.available_total;
-
+    accountGiftCards = _extensions$woocommer.account_giftcards,
+    accountBalance = _extensions$woocommer.balance,
+    availableTotal = _extensions$woocommer.available_total;
   if (accountGiftCards.length === 0) {
     return null;
   }
-
   var currency = Object(external_wc_priceFormat_["getCurrency"])();
   var totalBalanceUsed = accountGiftCards.reduce(function (total, giftcard) {
     total = total + parseInt(giftcard.amount, 10);
@@ -846,21 +797,19 @@ var account_gift_cards_totals_AccountGiftCardTotals = function AccountGiftCardTo
         className: "wc-block-components-totals-discount__coupon-list-item",
         text: giftcard.code,
         radius: "large",
-        screenReaderText: Object(external_wp_i18n_["sprintf"])(
-        /* translators: %s Gift card code. */
+        screenReaderText: Object(external_wp_i18n_["sprintf"])( /* translators: %s Gift card code. */
         Object(external_wp_i18n_["__"])('Gift Card: %s', 'woocommerce-gift-cards'), giftcard.code)
       });
     })), Object(external_wp_element_["createElement"])("strong", null, Object(external_wp_i18n_["__"])('Remaining Balance:', 'woocommerce-gift-cards')), Object(external_wp_element_["createElement"])("div", null, Object(external_wc_priceFormat_["formatPrice"])(accountBalance - availableTotal)))
   })));
 };
-
 /* harmony default export */ var account_gift_cards_totals = (account_gift_cards_totals_AccountGiftCardTotals);
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/totals-item/index.js
-
 
 /**
  * External dependencies
  */
+
 
 
 
@@ -871,24 +820,19 @@ var account_gift_cards_totals_AccountGiftCardTotals = function AccountGiftCardTo
  * @param {Object} props.extensions The extension-added data on the WC Cart.
  * @return {JSX.Element} The account balance checkbox.
  */
-
 var totals_item_TotalBeforeGiftCardsItem = function TotalBeforeGiftCardsItem(_ref) {
   var extensions = _ref.extensions;
   var notApplicable = !extensions || !extensions.hasOwnProperty('woocommerce-gift-cards') || !extensions['woocommerce-gift-cards'].hasOwnProperty('account_giftcards');
-
   if (notApplicable === true) {
     return null;
   }
-
   var _extensions$woocommer = extensions['woocommerce-gift-cards'],
-      cartTotal = _extensions$woocommer.cart_total,
-      appliedGiftCards = _extensions$woocommer.applied_giftcards,
-      accountGiftCards = _extensions$woocommer.account_giftcards;
-
+    cartTotal = _extensions$woocommer.cart_total,
+    appliedGiftCards = _extensions$woocommer.applied_giftcards,
+    accountGiftCards = _extensions$woocommer.account_giftcards;
   if (!appliedGiftCards.length && !accountGiftCards.length) {
     return null;
   }
-
   var currency = Object(external_wc_priceFormat_["getCurrency"])();
   return Object(external_wp_element_["createElement"])(external_wc_blocksCheckout_["TotalsWrapper"], null, Object(external_wp_element_["createElement"])(external_wc_blocksCheckout_["TotalsItem"], {
     className: "wc-gift-cards-totals wc-block-components-totals-footer-item",
@@ -898,14 +842,13 @@ var totals_item_TotalBeforeGiftCardsItem = function TotalBeforeGiftCardsItem(_re
     description: Object(external_wp_i18n_["__"])('(before gift cards)', 'woocommerce-gift-cards')
   }));
 };
-
 /* harmony default export */ var totals_item = (totals_item_TotalBeforeGiftCardsItem);
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/gift-cards-totals/index.js
-
 
 /**
  * Internal dependencies
  */
+
 
 
 
@@ -919,26 +862,20 @@ var totals_item_TotalBeforeGiftCardsItem = function TotalBeforeGiftCardsItem(_re
  * @param {Object} props.extensions The extension-added data on the WC Cart.
  * @return {JSX.Element} The gift card totals.
  */
-
 var gift_cards_totals_GiftCardsTotals = function GiftCardsTotals(props) {
   var notApplicable = !props.extensions || !props.extensions.hasOwnProperty('woocommerce-gift-cards') || !(props !== null && props !== void 0 && props.extensions['woocommerce-gift-cards'].hasOwnProperty('account_giftcards'));
-
   if (notApplicable === true) {
     return null;
   }
-
   var _props$extensions$woo = props.extensions['woocommerce-gift-cards'],
-      accountBalance = _props$extensions$woo.balance,
-      availableTotal = _props$extensions$woo.available_total;
-
+    accountBalance = _props$extensions$woo.balance,
+    availableTotal = _props$extensions$woo.available_total;
   var _getPluginSettings = Object(get_plugin_settings["a" /* default */])(),
-      isRedeemingEnabled = _getPluginSettings.isRedeemingEnabled,
-      showBalanceCheckbox = _getPluginSettings.showBalanceCheckbox;
-
+    isRedeemingEnabled = _getPluginSettings.isRedeemingEnabled,
+    showBalanceCheckbox = _getPluginSettings.showBalanceCheckbox;
   var showAccountRelatedUI = accountBalance > 0 && isRedeemingEnabled && showBalanceCheckbox;
   return Object(external_wp_element_["createElement"])(external_wp_element_["Fragment"], null, Object(external_wp_element_["createElement"])(totals_item, props), Object(external_wp_element_["createElement"])(applied_gift_cards_totals, props), showAccountRelatedUI && availableTotal > 0 && Object(external_wp_element_["createElement"])(balance_checkbox, props), showAccountRelatedUI && Object(external_wp_element_["createElement"])(account_gift_cards_totals, props));
 };
-
 /* harmony default export */ var gift_cards_totals = __webpack_exports__["a"] = (gift_cards_totals_GiftCardsTotals);
 
 /***/ }),
@@ -972,19 +909,19 @@ var classnames_default = /*#__PURE__*/__webpack_require__.n(classnames);
 
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/loading-mask/index.js
 
-
 /**
  * External dependencies
  */
 
- // @todo Find a way to block buttons/form components when LoadingMask isLoading
 
+
+// @todo Find a way to block buttons/form components when LoadingMask isLoading
 var loading_mask_LoadingMask = function LoadingMask(_ref) {
   var children = _ref.children,
-      className = _ref.className,
-      screenReaderLabel = _ref.screenReaderLabel,
-      _ref$isLoading = _ref.isLoading,
-      isLoading = _ref$isLoading === void 0 ? true : _ref$isLoading;
+    className = _ref.className,
+    screenReaderLabel = _ref.screenReaderLabel,
+    _ref$isLoading = _ref.isLoading,
+    isLoading = _ref$isLoading === void 0 ? true : _ref$isLoading;
   return Object(external_wp_element_["createElement"])("div", {
     className: classnames_default()(className, {
       'wc-block-components-loading-mask': isLoading
@@ -998,7 +935,6 @@ var loading_mask_LoadingMask = function LoadingMask(_ref) {
     className: "screen-reader-text"
   }, screenReaderLabel || Object(external_wp_i18n_["__"])('Loading…', 'woocommerce-gift-cards')));
 };
-
 /* harmony default export */ var loading_mask = (loading_mask_LoadingMask);
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/extends.js
 var helpers_extends = __webpack_require__(7);
@@ -1011,10 +947,10 @@ var style = __webpack_require__(51);
 
 
 
-
 /**
  * External dependencies
  */
+
 
 
 
@@ -1049,63 +985,57 @@ var style = __webpack_require__(51);
  * @param {boolean} props.onBlur
  * @return {JSX.Element} TextInput.
  */
-
 var text_input_TextInput = function TextInput(_ref) {
   var className = _ref.className,
-      id = _ref.id,
-      _ref$type = _ref.type,
-      type = _ref$type === void 0 ? 'text' : _ref$type,
-      ariaLabel = _ref.ariaLabel,
-      ariaDescribedBy = _ref.ariaDescribedBy,
-      label = _ref.label,
-      screenReaderLabel = _ref.screenReaderLabel,
-      disabled = _ref.disabled,
-      help = _ref.help,
-      _ref$autoCapitalize = _ref.autoCapitalize,
-      autoCapitalize = _ref$autoCapitalize === void 0 ? 'off' : _ref$autoCapitalize,
-      _ref$autoComplete = _ref.autoComplete,
-      autoComplete = _ref$autoComplete === void 0 ? 'off' : _ref$autoComplete,
-      _ref$value = _ref.value,
-      value = _ref$value === void 0 ? '' : _ref$value,
-      _onChange = _ref.onChange,
-      min = _ref.min,
-      max = _ref.max,
-      step = _ref.step,
-      _ref$hasError = _ref.hasError,
-      hasError = _ref$hasError === void 0 ? false : _ref$hasError,
-      _ref$required = _ref.required,
-      required = _ref$required === void 0 ? false : _ref$required,
-      _ref$focusOnMount = _ref.focusOnMount,
-      focusOnMount = _ref$focusOnMount === void 0 ? false : _ref$focusOnMount,
-      _ref$onBlur = _ref.onBlur,
-      _onBlur = _ref$onBlur === void 0 ? function () {
-    /* Do nothing */
-  } : _ref$onBlur;
-
+    id = _ref.id,
+    _ref$type = _ref.type,
+    type = _ref$type === void 0 ? 'text' : _ref$type,
+    ariaLabel = _ref.ariaLabel,
+    ariaDescribedBy = _ref.ariaDescribedBy,
+    label = _ref.label,
+    screenReaderLabel = _ref.screenReaderLabel,
+    disabled = _ref.disabled,
+    help = _ref.help,
+    _ref$autoCapitalize = _ref.autoCapitalize,
+    autoCapitalize = _ref$autoCapitalize === void 0 ? 'off' : _ref$autoCapitalize,
+    _ref$autoComplete = _ref.autoComplete,
+    autoComplete = _ref$autoComplete === void 0 ? 'off' : _ref$autoComplete,
+    _ref$value = _ref.value,
+    value = _ref$value === void 0 ? '' : _ref$value,
+    _onChange = _ref.onChange,
+    min = _ref.min,
+    max = _ref.max,
+    step = _ref.step,
+    _ref$hasError = _ref.hasError,
+    hasError = _ref$hasError === void 0 ? false : _ref$hasError,
+    _ref$required = _ref.required,
+    required = _ref$required === void 0 ? false : _ref$required,
+    _ref$focusOnMount = _ref.focusOnMount,
+    focusOnMount = _ref$focusOnMount === void 0 ? false : _ref$focusOnMount,
+    _ref$onBlur = _ref.onBlur,
+    _onBlur = _ref$onBlur === void 0 ? function () {
+      /* Do nothing */
+    } : _ref$onBlur;
   var _useState = Object(external_wp_element_["useState"])(true),
-      _useState2 = slicedToArray_default()(_useState, 2),
-      isPristine = _useState2[0],
-      setIsPristine = _useState2[1];
-
+    _useState2 = slicedToArray_default()(_useState, 2),
+    isPristine = _useState2[0],
+    setIsPristine = _useState2[1];
   var _useState3 = Object(external_wp_element_["useState"])(false),
-      _useState4 = slicedToArray_default()(_useState3, 2),
-      isActive = _useState4[0],
-      setIsActive = _useState4[1];
-
+    _useState4 = slicedToArray_default()(_useState3, 2),
+    isActive = _useState4[0],
+    setIsActive = _useState4[1];
   var inputRef = Object(external_wp_element_["useRef"])(null);
+
   /**
    * Focus on mount
    *
    * If the input is in pristine state, focus the element.
    */
-
   Object(external_wp_element_["useEffect"])(function () {
     if (isPristine && focusOnMount) {
       var _inputRef$current;
-
       (_inputRef$current = inputRef.current) === null || _inputRef$current === void 0 ? void 0 : _inputRef$current.focus();
     }
-
     setIsPristine(false);
   }, [focusOnMount, isPristine]);
   var numberAttributesFromProps = type === 'number' ? {
@@ -1118,7 +1048,6 @@ var text_input_TextInput = function TextInput(_ref) {
     if (typeof numberAttributesFromProps[key] === 'undefined') {
       return;
     }
-
     numberProps[key] = numberAttributesFromProps[key];
   });
   return Object(external_wp_element_["createElement"])("div", {
@@ -1141,7 +1070,6 @@ var text_input_TextInput = function TextInput(_ref) {
     },
     onBlur: function onBlur(event) {
       _onBlur(event.target.value);
-
       setIsActive(false);
     },
     "aria-label": ariaLabel || label,
@@ -1158,7 +1086,6 @@ var text_input_TextInput = function TextInput(_ref) {
     htmlFor: id
   }));
 };
-
 /* harmony default export */ var text_input = (text_input_TextInput);
 // EXTERNAL MODULE: ./resources/js/frontend/blocks/utils/get-plugin-settings.js
 var get_plugin_settings = __webpack_require__(8);
@@ -1169,10 +1096,10 @@ var gift_cards_form_style = __webpack_require__(52);
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/components/gift-cards-form/index.js
 
 
-
 /**
  * External dependencies
  */
+
 
 
 
@@ -1194,41 +1121,35 @@ var gift_cards_form_style = __webpack_require__(52);
  * @param {Function} props.createNotice
  * @return {JSX.Element} A panel used to display the inline gift card form.
  */
-
 var gift_cards_form_GiftCardsForm = function GiftCardsForm(_ref) {
   var extensions = _ref.extensions,
-      createNotice = _ref.createNotice;
-
+    createNotice = _ref.createNotice;
   // Form state.
   var _useState = Object(external_wp_element_["useState"])(''),
-      _useState2 = slicedToArray_default()(_useState, 2),
-      giftCardCode = _useState2[0],
-      setGiftCardCode = _useState2[1];
-
+    _useState2 = slicedToArray_default()(_useState, 2),
+    giftCardCode = _useState2[0],
+    setGiftCardCode = _useState2[1];
   var _useState3 = Object(external_wp_element_["useState"])(false),
-      _useState4 = slicedToArray_default()(_useState3, 2),
-      isProcessing = _useState4[0],
-      setIsProcessing = _useState4[1]; // Error handling state.
+    _useState4 = slicedToArray_default()(_useState3, 2),
+    isProcessing = _useState4[0],
+    setIsProcessing = _useState4[1];
 
-
+  // Error handling state.
   var _useState5 = Object(external_wp_element_["useState"])(false),
-      _useState6 = slicedToArray_default()(_useState5, 2),
-      showError = _useState6[0],
-      setShowError = _useState6[1];
-
+    _useState6 = slicedToArray_default()(_useState5, 2),
+    showError = _useState6[0],
+    setShowError = _useState6[1];
   var _useState7 = Object(external_wp_element_["useState"])(''),
-      _useState8 = slicedToArray_default()(_useState7, 2),
-      errorMessage = _useState8[0],
-      setErrorMessage = _useState8[1];
-
+    _useState8 = slicedToArray_default()(_useState7, 2),
+    errorMessage = _useState8[0],
+    setErrorMessage = _useState8[1];
   var notApplicable = !extensions || !extensions.hasOwnProperty('woocommerce-gift-cards') || !extensions['woocommerce-gift-cards'].hasOwnProperty('account_giftcards');
-
   if (notApplicable === true) {
     return null;
   }
-
   var _getPluginSettings = Object(get_plugin_settings["a" /* default */])(),
-      isCheckout = _getPluginSettings.isCheckout;
+    isCheckout = _getPluginSettings.isCheckout;
+
   /**
    * Function applyGiftCardCode.
    *
@@ -1236,21 +1157,16 @@ var gift_cards_form_GiftCardsForm = function GiftCardsForm(_ref) {
    *
    * @param {string} codeToApply
    */
-
-
   var applyGiftCardCode = function applyGiftCardCode(codeToApply) {
     codeToApply = codeToApply.trim();
     var codeRegex = /^([a-zA-Z0-9]{4}[\-]){3}[a-zA-Z0-9]{4}$/;
-
     if (!codeToApply.match(codeRegex)) {
       var message = Object(external_wp_i18n_["__"])('Please enter a gift card code that follows the format XXXX-XXXX-XXXX-XXXX, where X can be any letter or number.', 'woocommerce-gift-cards');
-
       setGiftCardCode('');
       setErrorMessage(message);
       setShowError(true);
       return;
     }
-
     setIsProcessing(true);
     setShowError(false);
     setErrorMessage('');
@@ -1262,7 +1178,6 @@ var gift_cards_form_GiftCardsForm = function GiftCardsForm(_ref) {
       }
     }).then(function () {
       var message = Object(external_wp_i18n_["__"])('Gift card code has been applied.', 'woocommerce-gift-cards');
-
       createNotice('default', message, {
         id: 'wc-gift-cards-form-notice',
         type: 'snackbar',
@@ -1270,20 +1185,18 @@ var gift_cards_form_GiftCardsForm = function GiftCardsForm(_ref) {
       });
     }).catch(function (err) {
       setShowError(true);
-
       if (err !== null && err !== void 0 && err.message && typeof err.message === 'string') {
         setErrorMessage(err.message);
         return;
       }
-
       setErrorMessage(Object(external_wp_i18n_["__"])('An unknown error occurred.', 'woocommerce-gift-cards'));
     }).finally(function () {
       setIsProcessing(false);
       setGiftCardCode('');
     });
-  }; // Render Inline Gift Card Form Panel.
+  };
 
-
+  // Render Inline Gift Card Form Panel.
   return Object(external_wp_element_["createElement"])(external_wc_blocksCheckout_["Panel"], {
     className: "wc-gift-cards-apply-panel",
     hasBorder: false,
@@ -1319,11 +1232,9 @@ var gift_cards_form_GiftCardsForm = function GiftCardsForm(_ref) {
     className: "wc-gift-cards-form__error"
   }, Object(external_wp_element_["createElement"])(external_wp_element_["RawHTML"], null, errorMessage)))));
 };
-
 /* harmony default export */ var gift_cards_form = __webpack_exports__["a"] = (Object(external_wp_compose_["compose"])(Object(external_wp_data_["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('core/notices'),
-      createNotice = _dispatch.createNotice;
-
+    createNotice = _dispatch.createNotice;
   return {
     createNotice: createNotice
   };
@@ -1338,14 +1249,11 @@ var gift_cards_form_GiftCardsForm = function GiftCardsForm(_ref) {
 
 function _arrayLikeToArray(arr, len) {
   if (len == null || len > arr.length) len = arr.length;
-
   for (var i = 0, arr2 = new Array(len); i < len; i++) {
     arr2[i] = arr[i];
   }
-
   return arr2;
 }
-
 module.exports = _arrayLikeToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -1353,7 +1261,6 @@ module.exports = _arrayLikeToArray, module.exports.__esModule = true, module.exp
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayLikeToArray = __webpack_require__(33);
-
 function _unsupportedIterableToArray(o, minLen) {
   if (!o) return;
   if (typeof o === "string") return arrayLikeToArray(o, minLen);
@@ -1362,7 +1269,6 @@ function _unsupportedIterableToArray(o, minLen) {
   if (n === "Map" || n === "Set") return Array.from(o);
   if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
 }
-
 module.exports = _unsupportedIterableToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -1398,7 +1304,6 @@ module.exports = JSON.parse("{\"name\":\"woocommerce/cart-order-summary-gift-car
 function _arrayWithHoles(arr) {
   if (Array.isArray(arr)) return arr;
 }
-
 module.exports = _arrayWithHoles, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -1407,18 +1312,14 @@ module.exports = _arrayWithHoles, module.exports.__esModule = true, module.expor
 
 function _iterableToArrayLimit(arr, i) {
   var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-
   if (_i == null) return;
   var _arr = [];
   var _n = true;
   var _d = false;
-
   var _s, _e;
-
   try {
     for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
-
       if (i && _arr.length === i) break;
     }
   } catch (err) {
@@ -1431,10 +1332,8 @@ function _iterableToArrayLimit(arr, i) {
       if (_d) throw _e;
     }
   }
-
   return _arr;
 }
-
 module.exports = _iterableToArrayLimit, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -1444,7 +1343,6 @@ module.exports = _iterableToArrayLimit, module.exports.__esModule = true, module
 function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
-
 module.exports = _nonIterableRest, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -1456,16 +1354,13 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   var target = {};
   var sourceKeys = Object.keys(source);
   var key, i;
-
   for (i = 0; i < sourceKeys.length; i++) {
     key = sourceKeys[i];
     if (excluded.indexOf(key) >= 0) continue;
     target[key] = source[key];
   }
-
   return target;
 }
-
 module.exports = _objectWithoutPropertiesLoose, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
@@ -1479,27 +1374,24 @@ module.exports = _objectWithoutPropertiesLoose, module.exports.__esModule = true
 /* harmony import */ var _woocommerce_blocks_checkout__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_blocks_checkout__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _components_gift_cards_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(29);
 
-
 /**
  * External dependencies
  */
+
 
 /**
  * Internal dependencies
  */
 
-
-
 var Block = function Block(props) {
   var className = props.className,
-      extensions = props.extensions;
+    extensions = props.extensions;
   return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_woocommerce_blocks_checkout__WEBPACK_IMPORTED_MODULE_1__["TotalsWrapper"], {
     className: className
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_components_gift_cards_form__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"], {
     extensions: extensions
   }));
 };
-
 /* harmony default export */ __webpack_exports__["a"] = (Block);
 
 /***/ }),
@@ -1511,11 +1403,9 @@ var Block = function Block(props) {
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components_gift_cards_totals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(28);
 
-
 /**
  * Internal dependencies
  */
-
 
 var Block = function Block(props) {
   var className = props.className;
@@ -1523,7 +1413,6 @@ var Block = function Block(props) {
     className: className
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_components_gift_cards_totals__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"], props));
 };
-
 /* harmony default export */ __webpack_exports__["a"] = (Block);
 
 /***/ }),
@@ -1537,27 +1426,24 @@ var Block = function Block(props) {
 /* harmony import */ var _woocommerce_blocks_checkout__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_blocks_checkout__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _components_gift_cards_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(29);
 
-
 /**
  * External dependencies
  */
+
 
 /**
  * Internal dependencies
  */
 
-
-
 var Block = function Block(props) {
   var className = props.className,
-      extensions = props.extensions;
+    extensions = props.extensions;
   return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_woocommerce_blocks_checkout__WEBPACK_IMPORTED_MODULE_1__["TotalsWrapper"], {
     className: className
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_components_gift_cards_form__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"], {
     extensions: extensions
   }));
 };
-
 /* harmony default export */ __webpack_exports__["a"] = (Block);
 
 /***/ }),
@@ -1569,11 +1455,9 @@ var Block = function Block(props) {
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components_gift_cards_totals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(28);
 
-
 /**
  * Internal dependencies
  */
-
 
 var Block = function Block(props) {
   var className = props.className;
@@ -1581,7 +1465,6 @@ var Block = function Block(props) {
     className: className
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_components_gift_cards_totals__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"], props));
 };
-
 /* harmony default export */ __webpack_exports__["a"] = (Block);
 
 /***/ }),
@@ -1694,15 +1577,14 @@ var checkout_order_summary_gift_card_form_block = __webpack_require__(36);
 
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/inner-blocks/checkout-order-summary-gift-card-form/index.js
 
-
 /**
  * External dependencies
  */
 
+
 /**
  * Internal dependencies
  */
-
 
 
 var checkout_order_summary_gift_card_form_registerInnerBlock = function registerInnerBlock() {
@@ -1722,15 +1604,14 @@ var inner_blocks_checkout_order_summary_gift_card_totals_block = __webpack_requi
 
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/inner-blocks/checkout-order-summary-gift-card-totals/index.js
 
-
 /**
  * External dependencies
  */
 
+
 /**
  * Internal dependencies
  */
-
 
 
 var checkout_order_summary_gift_card_totals_registerInnerBlock = function registerInnerBlock() {
@@ -1750,15 +1631,14 @@ var inner_blocks_cart_order_summary_gift_card_form_block = __webpack_require__(3
 
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/inner-blocks/cart-order-summary-gift-card-form/index.js
 
-
 /**
  * External dependencies
  */
 
+
 /**
  * Internal dependencies
  */
-
 
 
 var cart_order_summary_gift_card_form_registerInnerBlock = function registerInnerBlock() {
@@ -1778,15 +1658,14 @@ var inner_blocks_cart_order_summary_gift_card_totals_block = __webpack_require__
 
 // CONCATENATED MODULE: ./resources/js/frontend/blocks/inner-blocks/cart-order-summary-gift-card-totals/index.js
 
-
 /**
  * External dependencies
  */
 
+
 /**
  * Internal dependencies
  */
-
 
 
 var cart_order_summary_gift_card_totals_registerInnerBlock = function registerInnerBlock() {
@@ -1811,32 +1690,28 @@ var style = __webpack_require__(55);
 
 
 
+
 /**
  * Gift Card Inner blocks registry controller.
  */
-
 var blocks_registerInnerBlocks = function registerInnerBlocks() {
   var _getPluginSettings = Object(get_plugin_settings["a" /* default */])(),
-      isCartDisabled = _getPluginSettings.isCartDisabled,
-      isUiDisabled = _getPluginSettings.isUiDisabled;
-
+    isCartDisabled = _getPluginSettings.isCartDisabled,
+    isUiDisabled = _getPluginSettings.isUiDisabled;
   if (isUiDisabled) {
     return;
   }
-
   checkout_order_summary_gift_card_form_registerInnerBlock();
   checkout_order_summary_gift_card_totals_registerInnerBlock();
-
   if (!isCartDisabled) {
     cart_order_summary_gift_card_form_registerInnerBlock();
     cart_order_summary_gift_card_totals_registerInnerBlock();
   }
 };
+
 /**
  * Register.
  */
-
-
 blocks_registerInnerBlocks();
 
 /***/ })

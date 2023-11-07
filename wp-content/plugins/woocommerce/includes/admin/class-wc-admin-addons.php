@@ -26,7 +26,8 @@ class WC_Admin_Addons {
 	 * @return array of objects
 	 */
 	public static function get_featured() {
-		$featured = get_transient( 'wc_addons_featured_2' );
+		$locale   = get_user_locale();
+		$featured = self::get_locale_data_from_transient( 'wc_addons_featured_2', $locale );
 		if ( false === $featured ) {
 			$headers = array();
 			$auth    = WC_Helper_Options::get( 'auth' );
@@ -38,14 +39,15 @@ class WC_Admin_Addons {
 			$raw_featured = wp_safe_remote_get(
 				'https://woocommerce.com/wp-json/wccom-extensions/1.0/featured',
 				array(
-					'headers' => $headers,
+					'headers'    => $headers,
+					'user-agent' => 'WooCommerce/' . WC()->version . '; ' . get_bloginfo( 'url' ),
 				)
 			);
 
 			if ( ! is_wp_error( $raw_featured ) ) {
 				$featured = json_decode( wp_remote_retrieve_body( $raw_featured ) );
 				if ( $featured ) {
-					set_transient( 'wc_addons_featured_2', $featured, DAY_IN_SECONDS );
+					self::set_locale_data_in_transient( 'wc_addons_featured_2', $featured, $locale, DAY_IN_SECONDS );
 				}
 			}
 		}
@@ -62,7 +64,24 @@ class WC_Admin_Addons {
 	 * @return void
 	 */
 	public static function render_featured() {
-		$featured = get_transient( 'wc_addons_featured' );
+		$featured = self::fetch_featured();
+
+		if ( is_wp_error( $featured ) ) {
+			self::output_empty( $featured->get_error_message() );
+		}
+
+		self::output_featured( $featured );
+	}
+
+	/**
+	 * Fetch featured products from WCCOM's the Featured 2.0 Endpoint and cache the data for a day.
+	 *
+	 * @return array|WP_Error
+	 */
+	public static function fetch_featured() {
+		$locale   = get_user_locale();
+		$featured = self::get_locale_data_from_transient( 'wc_addons_featured', $locale );
+
 		if ( false === $featured ) {
 			$headers = array();
 			$auth    = WC_Helper_Options::get( 'auth' );
@@ -71,17 +90,18 @@ class WC_Admin_Addons {
 				$headers['Authorization'] = 'Bearer ' . $auth['access_token'];
 			}
 
-			$parameter_string = '';
+			$parameter_string = '?' . http_build_query( array( 'locale' => get_user_locale() ) );
 			$country          = WC()->countries->get_base_country();
 			if ( ! empty( $country ) ) {
-				$parameter_string = '?' . http_build_query( array( 'country' => $country ) );
+				$parameter_string = $parameter_string . '&' . http_build_query( array( 'country' => $country ) );
 			}
 
 			// Important: WCCOM Extensions API v2.0 is used.
 			$raw_featured = wp_safe_remote_get(
 				'https://woocommerce.com/wp-json/wccom-extensions/2.0/featured' . $parameter_string,
 				array(
-					'headers' => $headers,
+					'headers'    => $headers,
+					'user-agent' => 'WooCommerce/' . WC()->version . '; ' . get_bloginfo( 'url' ),
 				)
 			);
 
@@ -92,9 +112,7 @@ class WC_Admin_Addons {
 					? __( 'We encountered an SSL error. Please ensure your site supports TLS version 1.2 or above.', 'woocommerce' )
 					: $raw_featured->get_error_message();
 
-				self::output_empty( $message );
-
-				return;
+				return new WP_Error( 'wc-addons-connection-error', $message );
 			}
 
 			$response_code = (int) wp_remote_retrieve_response_code( $raw_featured );
@@ -113,26 +131,23 @@ class WC_Admin_Addons {
 					$response_code
 				);
 
-				self::output_empty( $message );
-
-				return;
+				return new WP_Error( 'wc-addons-connection-error', $message );
 			}
 
-			$featured      = json_decode( wp_remote_retrieve_body( $raw_featured ) );
+			$featured = json_decode( wp_remote_retrieve_body( $raw_featured ) );
 			if ( empty( $featured ) || ! is_array( $featured ) ) {
 				do_action( 'woocommerce_page_wc-addons_connection_error', 'Empty or malformed response' );
 				$message = __( 'Our request to the featured API got a malformed response.', 'woocommerce' );
-				self::output_empty( $message );
 
-				return;
+				return new WP_Error( 'wc-addons-connection-error', $message );
 			}
 
 			if ( $featured ) {
-				set_transient( 'wc_addons_featured', $featured, DAY_IN_SECONDS );
+				self::set_locale_data_in_transient( 'wc_addons_featured', $featured, $locale, DAY_IN_SECONDS );
 			}
 		}
 
-		self::output_featured( $featured );
+		return $featured;
 	}
 
 	/**
@@ -161,6 +176,7 @@ class WC_Admin_Addons {
 			'category' => $category,
 			'term'     => $term,
 			'country'  => $country,
+			'locale'   => get_user_locale(),
 		);
 
 		return '?' . http_build_query( $parameters );
@@ -187,7 +203,10 @@ class WC_Admin_Addons {
 
 		$raw_extensions = wp_safe_remote_get(
 			'https://woocommerce.com/wp-json/wccom-extensions/1.0/search' . $parameters,
-			array( 'headers' => $headers )
+			array(
+				'headers'    => $headers,
+				'user-agent' => 'WooCommerce/' . WC()->version . '; ' . get_bloginfo( 'url' ),
+			)
 		);
 
 		if ( is_wp_error( $raw_extensions ) ) {
@@ -216,7 +235,6 @@ class WC_Admin_Addons {
 			do_action( 'woocommerce_page_wc-addons_connection_error', 'Empty or malformed response' );
 			return new WP_Error( 'error', __( 'Our request to the search API got a malformed response.', 'woocommerce' ) );
 		}
-
 		return $addons;
 	}
 
@@ -226,15 +244,20 @@ class WC_Admin_Addons {
 	 * @return array of objects
 	 */
 	public static function get_sections() {
-		$addon_sections = get_transient( 'wc_addons_sections' );
+		$locale         = get_user_locale();
+		$addon_sections = self::get_locale_data_from_transient( 'wc_addons_sections', $locale );
 		if ( false === ( $addon_sections ) ) {
-			$raw_sections = wp_safe_remote_get(
-				'https://woocommerce.com/wp-json/wccom-extensions/1.0/categories'
+			$parameter_string = '?' . http_build_query( array( 'locale' => get_user_locale() ) );
+			$raw_sections     = wp_safe_remote_get(
+				'https://woocommerce.com/wp-json/wccom-extensions/1.0/categories' . $parameter_string,
+				array(
+					'user-agent' => 'WooCommerce/' . WC()->version . '; ' . get_bloginfo( 'url' ),
+				)
 			);
 			if ( ! is_wp_error( $raw_sections ) ) {
 				$addon_sections = json_decode( wp_remote_retrieve_body( $raw_sections ) );
 				if ( $addon_sections ) {
-					set_transient( 'wc_addons_sections', $addon_sections, WEEK_IN_SECONDS );
+					self::set_locale_data_in_transient( 'wc_addons_sections', $addon_sections, $locale, WEEK_IN_SECONDS );
 				}
 			}
 		}
@@ -273,7 +296,12 @@ class WC_Admin_Addons {
 		if ( ! empty( $section->endpoint ) ) {
 			$section_data = get_transient( 'wc_addons_section_' . $section_id );
 			if ( false === $section_data ) {
-				$raw_section = wp_safe_remote_get( esc_url_raw( $section->endpoint ) );
+				$raw_section = wp_safe_remote_get(
+					esc_url_raw( $section->endpoint ),
+					array(
+						'user-agent' => 'WooCommerce/' . WC()->version . '; ' . get_bloginfo( 'url' ),
+					)
+				);
 
 				if ( ! is_wp_error( $raw_section ) ) {
 					$section_data = json_decode( wp_remote_retrieve_body( $raw_section ) );
@@ -323,7 +351,7 @@ class WC_Admin_Addons {
 			$url
 		);
 
-		echo '<a href="' . esc_url( $url ) . '" class="add-new-h2">' . esc_html( $text ) . '</a>' . "\n";
+		echo '<a href="' . esc_url( $url ) . '" class="page-title-action">' . esc_html( $text ) . '</a>' . "\n";
 	}
 
 	/**
@@ -624,7 +652,7 @@ class WC_Admin_Addons {
 
 		$defaults = array(
 			'image'       => WC()->plugin_url() . '/assets/images/wcpayments-icon-secure.png',
-			'image_alt'   => __( 'WooCommerce Payments', 'woocommerce' ),
+			'image_alt'   => __( 'WooPayments', 'woocommerce' ),
 			'title'       => __( 'Payments made simple, with no monthly fees &mdash; exclusively for WooCommerce stores.', 'woocommerce' ),
 			'description' => __( 'Securely accept cards in your store. See payments, track cash flow into your bank account, and stay on top of disputes – right from your dashboard.', 'woocommerce' ),
 			'button'      => __( 'Free - Install now', 'woocommerce' ),
@@ -1102,7 +1130,7 @@ class WC_Admin_Addons {
 	/**
 	 * Install WooCommerce Payments from the Extensions screens.
 	 *
-	 * @param string $section Optional. Extenstions tab.
+	 * @param string $section Optional. Extensions tab.
 	 *
 	 * @return void
 	 */
@@ -1111,7 +1139,7 @@ class WC_Admin_Addons {
 
 		$wcpay_plugin_id = 'woocommerce-payments';
 		$wcpay_plugin    = array(
-			'name'      => __( 'WooCommerce Payments', 'woocommerce' ),
+			'name'      => __( 'WooPayments', 'woocommerce' ),
 			'repo-slug' => 'woocommerce-payments',
 		);
 
@@ -1481,5 +1509,51 @@ class WC_Admin_Addons {
 			</li>
 			<?php
 		}
+	}
+
+	/**
+	 * Retrieves the locale data from a transient.
+	 *
+	 * Transient value is an array of locale data in the following format:
+	 * array(
+	 *    'en_US' => ...,
+	 *    'fr_FR' => ...,
+	 * )
+	 *
+	 * If the transient does not exist, does not have a value, or has expired,
+	 * then the return value will be false.
+	 *
+	 * @param string $transient Transient name. Expected to not be SQL-escaped.
+	 * @param string $locale  Locale to retrieve.
+	 * @return mixed Value of transient.
+	 */
+	private static function get_locale_data_from_transient( $transient, $locale ) {
+		$transient_value = get_transient( $transient );
+		$transient_value = is_array( $transient_value ) ? $transient_value : array();
+		return $transient_value[ $locale ] ?? false;
+	}
+
+	/**
+	 * Sets the locale data in a transient.
+	 *
+	 * Transient value is an array of locale data in the following format:
+	 * array(
+	 *    'en_US' => ...,
+	 *    'fr_FR' => ...,
+	 * )
+	 *
+	 * @param string $transient  Transient name. Expected to not be SQL-escaped.
+	 *                           Must be 172 characters or fewer in length.
+	 * @param mixed  $value      Transient value. Must be serializable if non-scalar.
+	 *                           Expected to not be SQL-escaped.
+	 * @param string $locale  Locale to set.
+	 * @param int    $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
+	 * @return bool True if the value was set, false otherwise.
+	 */
+	private static function set_locale_data_in_transient( $transient, $value, $locale, $expiration = 0 ) {
+		$transient_value            = get_transient( $transient );
+		$transient_value            = is_array( $transient_value ) ? $transient_value : array();
+		$transient_value[ $locale ] = $value;
+		return set_transient( $transient, $transient_value, $expiration );
 	}
 }

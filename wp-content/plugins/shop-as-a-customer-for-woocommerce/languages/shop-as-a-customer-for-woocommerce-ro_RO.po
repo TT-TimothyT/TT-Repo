@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: FME Addons: Shop as a Customer for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-13 09:22+0000\n"
-"PO-Revision-Date: 2021-04-13 09:22+0000\n"
+"PO-Revision-Date: 2023-03-08 11:22+0000\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -16,141 +16,167 @@ msgstr ""
 "X-Loco-Version: 2.5.2; wp-5.7\n"
 "X-Domain: shop-as-a-customer-for-woocommerce"
 
-#: shop-as-a-customer-for-woocommerce.php:175
-#: shop-as-a-customer-for-woocommerce.php:1172
-msgid "Shop as Customer"
-msgstr "Magazin în calitate de Client"
-
-#: shop-as-a-customer-for-woocommerce.php:195
-msgid "Your settings has been saved!"
-msgstr "Setările au fost salvate!"
-
-#: shop-as-a-customer-for-woocommerce.php:197
-msgid "Switch To Customers"
-msgstr "Comutator Pentru Clienții"
-
-#: shop-as-a-customer-for-woocommerce.php:198
-msgid "Customer Logs"
-msgstr "Client Busteni"
-
-#: shop-as-a-customer-for-woocommerce.php:199
-msgid "Settings"
-msgstr "Setări"
-
-#: shop-as-a-customer-for-woocommerce.php:204
-msgid "Select Role(s)"
-msgstr "Selectați Rolul(e)"
-
-#: shop-as-a-customer-for-woocommerce.php:206
-msgid ""
-"Only Selected Roles will be allowed to switch & View orders. If no role is "
-"selected all roles will be considered as selected"
-msgstr ""
-"Numai Roluri Selectate va fi permis pentru a comuta & a Vizualiza comenzile. "
-"Dacă nu există rol este selectat toate rolurile vor fi considerate selectate"
-
-#: shop-as-a-customer-for-woocommerce.php:251
-msgid "By Default Order Status During Offline Payment"
-msgstr "În Mod Implicit Starea Comenzii Timpul De Plată Online"
-
-#: shop-as-a-customer-for-woocommerce.php:267
-msgid "Save Settings"
-msgstr "Salvați Setările"
-
-#: shop-as-a-customer-for-woocommerce.php:276
-#: shop-as-a-customer-for-woocommerce.php:344
-#: shop-as-a-customer-for-woocommerce.php:467
-#: shop-as-a-customer-for-woocommerce.php:554
-msgid "ID"
-msgstr "ID"
-
-#: shop-as-a-customer-for-woocommerce.php:282
-#: shop-as-a-customer-for-woocommerce.php:350
-msgid "Name"
-msgstr "Numele"
-
-#: shop-as-a-customer-for-woocommerce.php:288
-#: shop-as-a-customer-for-woocommerce.php:356
-msgid "Email"
-msgstr "E-mail"
-
-#: shop-as-a-customer-for-woocommerce.php:293
-#: shop-as-a-customer-for-woocommerce.php:361
+#: shop-as-a-customer-for-woocommerce.php:559
+#: shop-as-a-customer-for-woocommerce.php:585
 msgid "Action"
 msgstr "Acțiune"
 
-#: shop-as-a-customer-for-woocommerce.php:328
-#: shop-as-a-customer-for-woocommerce.php:1327
-msgid "Switch"
-msgstr "Comutator"
+#: shop-as-a-customer-for-woocommerce.php:497
+msgid "By Default Order Status During Offline Payment"
+msgstr "Starea implicită a comenzii în timpul plății offline"
 
-#: shop-as-a-customer-for-woocommerce.php:329
-#: shop-as-a-customer-for-woocommerce.php:1330
-msgid "View Orders"
-msgstr "Vezi Comenzi"
+#: shop-as-a-customer-for-woocommerce.php:1147
+msgid "compress to left"
+msgstr "comprima spre stânga"
 
-#: shop-as-a-customer-for-woocommerce.php:330
-#: shop-as-a-customer-for-woocommerce.php:1332
-msgid "Edit Profile"
-msgstr "Editare Profil"
-
-#: shop-as-a-customer-for-woocommerce.php:473
-#: shop-as-a-customer-for-woocommerce.php:560
-msgid "Logged in At"
-msgstr "Conectat La"
-
-#: shop-as-a-customer-for-woocommerce.php:479
-#: shop-as-a-customer-for-woocommerce.php:566
-msgid "Customer"
-msgstr "Client"
-
-#: shop-as-a-customer-for-woocommerce.php:484
-#: shop-as-a-customer-for-woocommerce.php:571
-msgid "Products"
-msgstr "Produse"
-
-#: shop-as-a-customer-for-woocommerce.php:489
-#: shop-as-a-customer-for-woocommerce.php:576
-msgid "Message On Whatsapp"
-msgstr "Mesaj Pe Whatsapp"
-
-#: shop-as-a-customer-for-woocommerce.php:930
-#: shop-as-a-customer-for-woocommerce.php:940
+#: shop-as-a-customer-for-woocommerce.php:1120
+#: shop-as-a-customer-for-woocommerce.php:1130
 msgid "compress to right"
 msgstr "comprima la dreapta"
 
-#: shop-as-a-customer-for-woocommerce.php:947
-msgid "You are now login as "
-msgstr "Te afli conectare ca "
+#: shop-as-a-customer-for-woocommerce.php:723
+#: shop-as-a-customer-for-woocommerce.php:753
+msgid "Customer"
+msgstr "Client"
 
-#: shop-as-a-customer-for-woocommerce.php:955
-msgid "Switch Back "
-msgstr "Comuta Înapoi "
+#: shop-as-a-customer-for-woocommerce.php:396
+msgid "Customer Logs"
+msgstr "Jurnalele clienților"
 
-#: shop-as-a-customer-for-woocommerce.php:957
-msgid "compress to left"
-msgstr "comprima la stânga"
+#: shop-as-a-customer-for-woocommerce.php:1560
+msgid "Edit Profile"
+msgstr "Editează profilul"
 
-#: shop-as-a-customer-for-woocommerce.php:1028
-msgid "Switch Back And View Orders"
-msgstr "Comuta Înapoi Și Vezi Comenzi"
-
-#: shop-as-a-customer-for-woocommerce.php:1181
-msgid "No Records found"
-msgstr "Nu am găsit Înregistrări"
-
-#: shop-as-a-customer-for-woocommerce.php:1182
-msgid "next"
-msgstr "următoarea"
-
-#: shop-as-a-customer-for-woocommerce.php:1337
-msgid "Recent Customer:"
-msgstr "Recent Client:"
+#: shop-as-a-customer-for-woocommerce.php:554
+#: shop-as-a-customer-for-woocommerce.php:580
+msgid "Email"
+msgstr "E-mail"
 
 #. Name of the plugin
 msgid "FME Addons: Shop as a Customer for WooCommerce"
-msgstr "FME Addons: Magazin ca un Client pentru WooCommerce"
+msgstr "Suplimente FME: Cumpărați ca client pentru WooCommerce"
 
 #. Author of the plugin
 msgid "fmeaddons"
 msgstr "fmeaddons"
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://www.fmeaddons.com/"
+msgstr "https://www.fmeaddons.com/"
+
+#: shop-as-a-customer-for-woocommerce.php:542
+#: shop-as-a-customer-for-woocommerce.php:568
+#: shop-as-a-customer-for-woocommerce.php:711
+#: shop-as-a-customer-for-woocommerce.php:741
+msgid "ID"
+msgstr "ID"
+
+#: shop-as-a-customer-for-woocommerce.php:717
+#: shop-as-a-customer-for-woocommerce.php:747
+msgid "Logged in At"
+msgstr "Conectat la"
+
+#: shop-as-a-customer-for-woocommerce.php:733
+#: shop-as-a-customer-for-woocommerce.php:763
+msgid "Message On Whatsapp"
+msgstr "Mesaj pe Whatsapp"
+
+#: shop-as-a-customer-for-woocommerce.php:548
+#: shop-as-a-customer-for-woocommerce.php:574
+msgid "Name"
+msgstr "Nume"
+
+#: shop-as-a-customer-for-woocommerce.php:1403
+msgid "next"
+msgstr "Următorul"
+
+#: shop-as-a-customer-for-woocommerce.php:1402
+msgid "No Records found"
+msgstr "Nu au fost găsite"
+
+#: shop-as-a-customer-for-woocommerce.php:728
+#: shop-as-a-customer-for-woocommerce.php:758
+msgid "Products"
+msgstr "Produse"
+
+#: shop-as-a-customer-for-woocommerce.php:1565
+msgid "Recent Customer:"
+msgstr "Client recent:"
+
+#: shop-as-a-customer-for-woocommerce.php:523
+msgid "Save Settings"
+msgstr "Salvează setările"
+
+#: shop-as-a-customer-for-woocommerce.php:453
+msgid "Select Role(s)"
+msgstr "Selectați rol(ele)"
+
+#: shop-as-a-customer-for-woocommerce.php:421
+msgid "Select Tab to Switch as Customer/Guest"
+msgstr "Selectați Tab pentru a comuta ca Client/Invitat"
+
+#: shop-as-a-customer-for-woocommerce.php:402
+msgid "Settings"
+msgstr "Setări"
+
+#: shop-as-a-customer-for-woocommerce.php:527
+msgid "Settings saved successfully"
+msgstr "Setările au fost salvate cu succes"
+
+#: shop-as-a-customer-for-woocommerce.php:1393
+msgid "Shop as Customer"
+msgstr "Cumpără în calitate de client"
+
+#: shop-as-a-customer-for-woocommerce.php:527
+msgid "Success!"
+msgstr "Succes!"
+
+#: shop-as-a-customer-for-woocommerce.php:1555
+msgid "Switch"
+msgstr "Intrerupator"
+
+#: shop-as-a-customer-for-woocommerce.php:1145
+msgid "Switch Back "
+msgstr "Comutați înapoi"
+
+#. Description of the plugin
+msgid ""
+"Switch to any customer profile from administration panel and use WooCommerce "
+"store as customer, Create orders  \tand Edit user profile."
+msgstr ""
+"Comutați la orice profil de client din panoul de administrare și utilizați "
+"magazinul WooCommerce ca client, Creați comenzi și Editați profilul "
+"utilizatorului."
+
+#: shop-as-a-customer-for-woocommerce.php:1358
+msgid "Switch To Customer"
+msgstr "Comutați la client"
+
+#: shop-as-a-customer-for-woocommerce.php:1365
+msgid "switch to customer"
+msgstr "trece la client"
+
+#: shop-as-a-customer-for-woocommerce.php:390
+msgid "Switch To Customers"
+msgstr "Comutați la clienți"
+
+#: shop-as-a-customer-for-woocommerce.php:1344
+msgid "Switch To Guest"
+msgstr "Comutați la invitat"
+
+#: shop-as-a-customer-for-woocommerce.php:1351
+msgid "switch to Guest"
+msgstr "comutați la Guest"
+
+#: shop-as-a-customer-for-woocommerce.php:1558
+msgid "View Orders"
+msgstr "Vizualizați comenzi"
+
+#: shop-as-a-customer-for-woocommerce.php:1137
+msgid "You are now login as "
+msgstr "Acum vă autentificați ca"
+
+#: shop-as-a-customer-for-woocommerce.php:376
+msgid "Your settings has been saved!"
+msgstr "Setările dvs. au fost salvate!"

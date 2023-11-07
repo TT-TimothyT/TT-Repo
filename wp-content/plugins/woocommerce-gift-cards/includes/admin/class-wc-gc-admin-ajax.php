@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Admin AJAX meta-box handlers.
  *
  * @class    WC_GC_Admin_Ajax
- * @version  1.10.0
+ * @version  1.16.0
  */
 class WC_GC_Admin_Ajax {
 
@@ -349,7 +349,8 @@ class WC_GC_Admin_Ajax {
 			}
 
 			// Apply giftcard.
-			$giftcard_data = WC_GC()->db->giftcards->query( array( 'code' => $giftcard_code, 'return' => 'objects' ) );
+			// It's safe to ignore semgrep warning, as everything is properly escaped.
+			$giftcard_data = WC_GC()->db->giftcards->query( array( 'code' => $giftcard_code, 'return' => 'objects' ) );// nosemgrep: audit.php.wp.security.sqli.input-in-sinks
 			if ( empty( $giftcard_data ) ) {
 				throw new Exception( __( 'Gift card not found', 'woocommerce-gift-cards' ) );
 			}
@@ -389,7 +390,7 @@ class WC_GC_Admin_Ajax {
 			);
 			$order->add_item( $item );
 			/* translators: %s gift card code. */
-			$order->add_order_note( sprintf( __( 'Applied gift card: %s', 'woocommerce-gift-cards' ), $giftcard->get_code() ), false, true );
+			$order->add_order_note( sprintf( __( 'Applied gift card: <span class="woocommerce-giftcards-admin-note-code">%s</span>.', 'woocommerce-gift-cards' ), $giftcard->get_code() ), false, true );
 
 			// Update balance.
 			WC_GC()->order->maybe_debit_giftcards( $order_id, $order, array( $item ) );
@@ -501,7 +502,7 @@ class WC_GC_Admin_Ajax {
 					}
 
 					/* translators: %s gift card code. */
-					$order->add_order_note( sprintf( __( 'Removed gift card: %s.', 'woocommerce-gift-cards' ), $item->get_code() ), false, true );
+					$order->add_order_note( sprintf( __( 'Removed gift card: <span class="woocommerce-giftcards-admin-note-code">%s</span>.', 'woocommerce-gift-cards' ), $item->get_code() ), false, true );
 					wc_delete_order_item( $item_id );
 
 					/**

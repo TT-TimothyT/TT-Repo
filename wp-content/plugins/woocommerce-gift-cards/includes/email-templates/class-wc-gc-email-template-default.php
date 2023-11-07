@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Default email template.
  *
  * @class    WC_GC_Email_Template_Default
- * @version  1.10.0
+ * @version  1.16.0
  */
 class WC_GC_Email_Template_Default extends WC_GC_Email_Template {
 
@@ -125,8 +125,8 @@ class WC_GC_Email_Template_Default extends WC_GC_Email_Template {
 
 			?><p class="form-field gift_card_template_default_custom_image wc_gc_select_image">
 				<label></label>
-				<a href="#" class="wc_gc_field_select_image <?php echo $image_id ? 'has_image': ''; ?>"><span class="prompt"><?php echo __( 'Select image', 'woocommerce-gift-cards' ); ?></span><img src="<?php if ( ! empty( $image ) ) echo esc_attr( $image ); else echo esc_attr( wc_placeholder_img_src() ); ?>" /><input type="hidden" name="<?php echo $input_name; ?>" class="image" value="<?php echo $image_id; ?>" /></a>
-				<a href="#" class="wc_gc_field_remove_image <?php echo $image_id ? 'has_image': ''; ?>"><?php echo __( 'Remove image', 'woocommerce-gift-cards' ); ?></a>
+				<a href="#" class="wc_gc_field_select_image <?php echo $image_id ? 'has_image': ''; ?>"><span class="prompt"><?php echo esc_html__( 'Select image', 'woocommerce-gift-cards' ); ?></span><img src="<?php if ( ! empty( $image ) ) echo esc_attr( $image ); else echo esc_attr( wc_placeholder_img_src() ); ?>" /><input type="hidden" name="<?php echo esc_attr( $input_name ); ?>" class="image" value="<?php echo esc_attr( $image_id ); ?>" /></a>
+				<a href="#" class="wc_gc_field_remove_image <?php echo $image_id ? 'has_image': ''; ?>"><?php echo esc_html__( 'Remove image', 'woocommerce-gift-cards' ); ?></a>
 			</p><?php
 
 		?></div><?php

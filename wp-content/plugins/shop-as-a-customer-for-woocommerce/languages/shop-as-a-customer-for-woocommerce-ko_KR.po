@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: FME Addons: Shop as a Customer for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-13 09:25+0000\n"
-"PO-Revision-Date: 2021-04-13 09:37+0000\n"
+"PO-Revision-Date: 2023-03-08 11:48+0000\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -15,139 +15,165 @@ msgstr ""
 "X-Loco-Version: 2.5.2; wp-5.7\n"
 "X-Domain: shop-as-a-customer-for-woocommerce"
 
-#: shop-as-a-customer-for-woocommerce.php:293
-#: shop-as-a-customer-for-woocommerce.php:361
+#: shop-as-a-customer-for-woocommerce.php:559
+#: shop-as-a-customer-for-woocommerce.php:585
 msgid "Action"
-msgstr "작"
+msgstr "행동"
 
-#: shop-as-a-customer-for-woocommerce.php:251
+#: shop-as-a-customer-for-woocommerce.php:497
 msgid "By Default Order Status During Offline Payment"
-msgstr "기본적으로 주문 상태는 동안 오프라인 결제"
+msgstr "오프라인 결제 시 기본 주문 상태별"
 
-#: shop-as-a-customer-for-woocommerce.php:957
+#: shop-as-a-customer-for-woocommerce.php:1147
 msgid "compress to left"
-msgstr "압축을 남"
+msgstr "왼쪽으로 압축"
 
-#: shop-as-a-customer-for-woocommerce.php:930
-#: shop-as-a-customer-for-woocommerce.php:940
+#: shop-as-a-customer-for-woocommerce.php:1120
+#: shop-as-a-customer-for-woocommerce.php:1130
 msgid "compress to right"
-msgstr "압축을 바"
+msgstr "오른쪽으로 압축"
 
-#: shop-as-a-customer-for-woocommerce.php:479
-#: shop-as-a-customer-for-woocommerce.php:566
+#: shop-as-a-customer-for-woocommerce.php:723
+#: shop-as-a-customer-for-woocommerce.php:753
 msgid "Customer"
 msgstr "고객"
 
-#: shop-as-a-customer-for-woocommerce.php:198
+#: shop-as-a-customer-for-woocommerce.php:396
 msgid "Customer Logs"
 msgstr "고객 로그"
 
-#: shop-as-a-customer-for-woocommerce.php:330
-#: shop-as-a-customer-for-woocommerce.php:1332
+#: shop-as-a-customer-for-woocommerce.php:1560
 msgid "Edit Profile"
-msgstr "프로필 편집"
+msgstr "프로필 수정"
 
-#: shop-as-a-customer-for-woocommerce.php:288
-#: shop-as-a-customer-for-woocommerce.php:356
+#: shop-as-a-customer-for-woocommerce.php:554
+#: shop-as-a-customer-for-woocommerce.php:580
 msgid "Email"
 msgstr "이메일"
 
 #. Name of the plugin
 msgid "FME Addons: Shop as a Customer for WooCommerce"
-msgstr "FME 애드온:점으로 고객에 대한 WooCommerce"
+msgstr "FME 애드온: WooCommerce 고객으로 쇼핑하기"
 
 #. Author of the plugin
 msgid "fmeaddons"
 msgstr "fmeaddons"
 
-#: shop-as-a-customer-for-woocommerce.php:276
-#: shop-as-a-customer-for-woocommerce.php:344
-#: shop-as-a-customer-for-woocommerce.php:467
-#: shop-as-a-customer-for-woocommerce.php:554
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://www.fmeaddons.com/"
+msgstr "https://www.fmeaddons.com/"
+
+#: shop-as-a-customer-for-woocommerce.php:542
+#: shop-as-a-customer-for-woocommerce.php:568
+#: shop-as-a-customer-for-woocommerce.php:711
+#: shop-as-a-customer-for-woocommerce.php:741
 msgid "ID"
 msgstr "ID"
 
-#: shop-as-a-customer-for-woocommerce.php:473
-#: shop-as-a-customer-for-woocommerce.php:560
+#: shop-as-a-customer-for-woocommerce.php:717
+#: shop-as-a-customer-for-woocommerce.php:747
 msgid "Logged in At"
-msgstr "로그인"
+msgstr "로그인 시간"
 
-#: shop-as-a-customer-for-woocommerce.php:489
-#: shop-as-a-customer-for-woocommerce.php:576
+#: shop-as-a-customer-for-woocommerce.php:733
+#: shop-as-a-customer-for-woocommerce.php:763
 msgid "Message On Whatsapp"
-msgstr "메시지투스"
+msgstr "WhatsApp에 메시지"
 
-#: shop-as-a-customer-for-woocommerce.php:282
-#: shop-as-a-customer-for-woocommerce.php:350
+#: shop-as-a-customer-for-woocommerce.php:548
+#: shop-as-a-customer-for-woocommerce.php:574
 msgid "Name"
 msgstr "이름"
 
-#: shop-as-a-customer-for-woocommerce.php:1182
+#: shop-as-a-customer-for-woocommerce.php:1403
 msgid "next"
 msgstr "다음"
 
-#: shop-as-a-customer-for-woocommerce.php:1181
+#: shop-as-a-customer-for-woocommerce.php:1402
 msgid "No Records found"
-msgstr "어떤 기록을 찾을 수 없습니다"
+msgstr "기록 없음"
 
-#: shop-as-a-customer-for-woocommerce.php:206
-msgid ""
-"Only Selected Roles will be allowed to switch & View orders. If no role is "
-"selected all roles will be considered as selected"
-msgstr "만 선택한 역할 것이 허용하는 스위치 및 보기를 주문입니다. 지 않은 경우 역할을 선택해 모든 역할 것으로 간주됩 선택"
-
-#: shop-as-a-customer-for-woocommerce.php:484
-#: shop-as-a-customer-for-woocommerce.php:571
+#: shop-as-a-customer-for-woocommerce.php:728
+#: shop-as-a-customer-for-woocommerce.php:758
 msgid "Products"
 msgstr "제품"
 
-#: shop-as-a-customer-for-woocommerce.php:1337
+#: shop-as-a-customer-for-woocommerce.php:1565
 msgid "Recent Customer:"
 msgstr "최근 고객:"
 
-#: shop-as-a-customer-for-woocommerce.php:267
+#: shop-as-a-customer-for-woocommerce.php:523
 msgid "Save Settings"
-msgstr "설정을 저장"
+msgstr "설정 저장"
 
-#: shop-as-a-customer-for-woocommerce.php:204
+#: shop-as-a-customer-for-woocommerce.php:453
 msgid "Select Role(s)"
-msgstr "선택하는 역할(s)"
+msgstr "역할 선택"
 
-#: shop-as-a-customer-for-woocommerce.php:199
+#: shop-as-a-customer-for-woocommerce.php:421
+msgid "Select Tab to Switch as Customer/Guest"
+msgstr "탭을 선택하여 고객/손님으로 전환"
+
+#: shop-as-a-customer-for-woocommerce.php:402
 msgid "Settings"
 msgstr "설정"
 
-#: shop-as-a-customer-for-woocommerce.php:175
-#: shop-as-a-customer-for-woocommerce.php:1172
-msgid "Shop as Customer"
-msgstr "점으로 고객"
+#: shop-as-a-customer-for-woocommerce.php:527
+msgid "Settings saved successfully"
+msgstr "설정이 성공적으로 저장되었습니다."
 
-#: shop-as-a-customer-for-woocommerce.php:328
-#: shop-as-a-customer-for-woocommerce.php:1327
+#: shop-as-a-customer-for-woocommerce.php:1393
+msgid "Shop as Customer"
+msgstr "고객으로 쇼핑하기"
+
+#: shop-as-a-customer-for-woocommerce.php:527
+msgid "Success!"
+msgstr "성공!"
+
+#: shop-as-a-customer-for-woocommerce.php:1555
 msgid "Switch"
 msgstr "스위치"
 
-#: shop-as-a-customer-for-woocommerce.php:955
+#: shop-as-a-customer-for-woocommerce.php:1145
 msgid "Switch Back "
-msgstr "다시 전환 "
+msgstr "뒤로 전환"
 
-#: shop-as-a-customer-for-woocommerce.php:1028
-msgid "Switch Back And View Orders"
-msgstr "위 및 주문 보기"
+#. Description of the plugin
+msgid ""
+"Switch to any customer profile from administration panel and use WooCommerce "
+"store as customer, Create orders  \tand Edit user profile."
+msgstr ""
+"관리 패널에서 고객 프로필로 전환하고 WooCommerce 스토어를 고객으로 사용하고 주문을 생성하고 사용자 프로필을 편집합니다."
 
-#: shop-as-a-customer-for-woocommerce.php:197
+#: shop-as-a-customer-for-woocommerce.php:1358
+msgid "Switch To Customer"
+msgstr "고객으로 전환"
+
+#: shop-as-a-customer-for-woocommerce.php:1365
+msgid "switch to customer"
+msgstr "고객으로 전환"
+
+#: shop-as-a-customer-for-woocommerce.php:390
 msgid "Switch To Customers"
-msgstr "스위치를 고객이"
+msgstr "고객으로 전환"
 
-#: shop-as-a-customer-for-woocommerce.php:329
-#: shop-as-a-customer-for-woocommerce.php:1330
+#: shop-as-a-customer-for-woocommerce.php:1344
+msgid "Switch To Guest"
+msgstr "게스트로 전환"
+
+#: shop-as-a-customer-for-woocommerce.php:1351
+msgid "switch to Guest"
+msgstr "게스트로 전환"
+
+#: shop-as-a-customer-for-woocommerce.php:1558
 msgid "View Orders"
 msgstr "주문 보기"
 
-#: shop-as-a-customer-for-woocommerce.php:947
+#: shop-as-a-customer-for-woocommerce.php:1137
 msgid "You are now login as "
-msgstr "당신은 지금으로 로그인 "
+msgstr "당신은 지금 로그인"
 
-#: shop-as-a-customer-for-woocommerce.php:195
+#: shop-as-a-customer-for-woocommerce.php:376
 msgid "Your settings has been saved!"
-msgstr "귀하의 설정을 저장되었습!"
+msgstr "설정이 저장되었습니다!"

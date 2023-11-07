@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
 
 use SkyVerge\WooCommerce\Cybersource\API\Response;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -102,7 +102,8 @@ class AJAX {
 
 			$order = $this->handler->get_gateway()->get_order( $order );
 
-			$order->payment->token = Framework\SV_WC_Helper::get_posted_value( 'token' );
+			$order->payment->token        = Framework\SV_WC_Helper::get_posted_value( 'token' );
+			$order->payment->is_transient = Framework\SV_WC_Helper::get_posted_value( 'is_transient' ) == 'true';
 
 			$response = $this->handler->get_gateway()->get_api()->threed_secure_setup( $order );
 
@@ -140,6 +141,7 @@ class AJAX {
 			$order = $this->handler->get_gateway()->get_order( $order );
 
 			$order->payment->token        = Framework\SV_WC_Helper::get_posted_value( 'token' );
+			$order->payment->is_transient = Framework\SV_WC_Helper::get_posted_value( 'is_transient' ) == 'true';
 			$order->payment->reference_id = Framework\SV_WC_Helper::get_posted_value( 'reference_id' );
 
 			$response = $this->handler->get_gateway()->get_api()->threed_secure_check_enrollment( $order );
@@ -155,7 +157,16 @@ class AJAX {
 				],
 				'order' => [
 					'OrderDetails' => [
-						'TransactionId' => $response->get_transaction_id(),
+						'TransactionId'                => $response->get_transaction_id(),
+						'ecommerceIndicator'           => $response->get_commerce_indicator(),
+						'ucafCollectionIndicator'      => $response->get_aav_indicator(),
+						'cavv'                         => $response->get_cavv(),
+						'ucafAuthenticationData'       => $response->get_aav(),
+						'xid'                          => $response->get_xid(),
+						'veresEnrolled'                => $response->get_enrolled(),
+						'specificationVersion'         => $response->get_specification_version(),
+						'directoryServerTransactionId' => $response->get_directory_server_transaction_id(),
+						'cardType'                     => $response->get_card_type(),
 					],
 				]
 			] );

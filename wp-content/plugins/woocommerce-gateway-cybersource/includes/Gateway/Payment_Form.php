@@ -17,14 +17,14 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 
 use SkyVerge\WooCommerce\Cybersource\Gateway;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -265,6 +265,25 @@ class Payment_Form extends Base_Payment_Form {
 		}
 
 		return $args;
+	}
+
+
+	/**
+	 * Prevent rendering JS on checkout if 3D Secure is enabled.
+	 *
+	 * @inheritDoc
+	 *
+	 * @since 2.7.1
+	 */
+	public function maybe_render_js(): void {
+
+		$gateway = $this->get_gateway();
+
+		if ( ! is_add_payment_method_page() && ! is_checkout_pay_page() && is_callable( [ $gateway, 'is_3d_secure_enabled'] ) && $this->get_gateway()->is_3d_secure_enabled() ) {
+			return;
+		}
+
+		parent::maybe_render_js();
 	}
 
 

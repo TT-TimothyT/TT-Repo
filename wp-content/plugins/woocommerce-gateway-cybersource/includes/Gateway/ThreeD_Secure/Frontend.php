@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -25,6 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
 
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -73,6 +74,29 @@ class Frontend {
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 
 		add_action( 'wc_' . Plugin::CREDIT_CARD_GATEWAY_ID . '_payment_form_end',   array( $this, 'render_js' ), 5 );
+
+		add_action( 'wc_' . Plugin::CREDIT_CARD_GATEWAY_ID . '_payment_form_payment_method_html', array( $this, 'add_token_data' ), 10, 2 );
+	}
+
+
+	/**
+	 * Adds the card type and card bin for saved payment methods.
+	 *
+	 * @internal
+	 *
+	 * @since 2.7.0
+	 */
+	public function add_token_data(string $html, Framework\SV_WC_Payment_Gateway_Payment_Token $token) : string {
+
+		$html = str_replace('type="radio"', 'type="radio" data-card-type="' . $token->get_card_type() . '"', $html );
+
+		$token_data = $token->to_datastore_format();
+
+		if ( isset($token_data['first_six']) && $token_data['first_six'] ) {
+			$html = str_replace('type="radio"', 'type="radio" data-card-bin="' . $token_data['first_six'] . '"', $html );
+		}
+
+		return $html;
 	}
 
 
@@ -107,6 +131,16 @@ class Frontend {
 		<input id="wc_cybersource_threed_secure_transaction_id" name="wc_cybersource_threed_secure_transaction_id" type="hidden" />
 		<input id="wc_cybersource_threed_secure_reference_id" name="wc_cybersource_threed_secure_reference_id" type="hidden" />
 		<input id="wc_cybersource_threed_secure_jwt" name="wc_cybersource_threed_secure_jwt" type="hidden" />
+		<input id="wc_cybersource_threed_secure_ecommerce_indicator" name="wc_cybersource_threed_secure_ecommerce_indicator" type="hidden" />
+		<input id="wc_cybersource_threed_secure_ucaf_collection_indicator" name="wc_cybersource_threed_secure_ucaf_collection_indicator" type="hidden" />
+		<input id="wc_cybersource_threed_secure_cavv" name="wc_cybersource_threed_secure_cavv" type="hidden" />
+		<input id="wc_cybersource_threed_secure_ucaf_authentication_data" name="wc_cybersource_threed_secure_ucaf_authentication_data" type="hidden" />
+		<input id="wc_cybersource_threed_secure_xid" name="wc_cybersource_threed_secure_xid" type="hidden" />
+		<input id="wc_cybersource_threed_secure_veres_enrolled" name="wc_cybersource_threed_secure_veres_enrolled" type="hidden" />
+		<input id="wc_cybersource_threed_secure_specification_version" name="wc_cybersource_threed_secure_specification_version" type="hidden" />
+		<input id="wc_cybersource_threed_secure_directory_server_transaction_id" name="wc_cybersource_threed_secure_directory_server_transaction_id" type="hidden" />
+		<input id="wc_cybersource_threed_secure_card_type" name="wc_cybersource_threed_secure_card_type" type="hidden" />
+		<input id="wc_cybersource_threed_secure_eci_flag" name="wc_cybersource_threed_secure_eci_flag" type="hidden" />
 		<?php
 
 		wc_enqueue_js( sprintf( 'window.wc_cybersource_threed_secure = new WC_Cybersource_ThreeD_Secure_Handler( %s );', json_encode( [
@@ -118,6 +152,7 @@ class Frontend {
 			'check_enrollment_action' => AJAX::ACTION_CHECK_ENROLLMENT,
 			'check_enrollment_nonce'  => wp_create_nonce( AJAX::ACTION_CHECK_ENROLLMENT ),
 			'enabled_card_types'      => array_map( 'SkyVerge\WooCommerce\Cybersource\API\Helper::convert_card_type_to_code', $this->handler->get_enabled_card_types() ),
+			'enabled_card_type_names' => $this->handler->get_enabled_card_types(),
 			'i18n' => [
 				'error_general' => __( 'An error occurred, please try again or try an alternate form of payment', 'woocommerce-gateway-cybersource' )
 			],

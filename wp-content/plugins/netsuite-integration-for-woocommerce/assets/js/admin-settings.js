@@ -35,16 +35,23 @@ jQuery(document).ready(function ($) {
     });
 
     $('#ns_order_send_email_to_admin_enable').click(function(){
-        console.log('hiiiiii');
         if($('#ns_order_send_email_to_admin_enable:checked').length > 0){
             // $('#ns_order_shiping_line_item').css('display','');
             $('#ns_order_admin_email').removeClass('ns_order_admin_email_field');
             $("input[name='ns_order_admin_email']").prop('required',true);
         }else{
-            console.log('dimpal');
             $('#ns_order_admin_email').addClass('ns_order_admin_email_field');
             $("input[name='ns_order_admin_email']").prop('required',false);
             // $('#ns_order_shiping_line_item').css('display','none');
+        }
+    });
+
+
+     $('#order_item_tax_code_enable').click(function(){
+        if($('#order_item_tax_code_enable:checked').length > 0){
+            $('#order_tax_code_field').removeClass('ns_order_shiping_line_item');
+        }else{
+            $('#order_tax_code_field').addClass('ns_order_shiping_line_item');
         }
     });
 
@@ -142,6 +149,7 @@ jQuery(document).ready(function ($) {
 
     $('#netsuite_countries').select2();    
     $('#netstuite_locations').select2(); 
+    $('#order_item_tax_code').select2(); 
 
     $('.inventoryDefaultLocation').on('change',function(){
         if(3 == $(this).val()){
@@ -393,14 +401,19 @@ jQuery(function ($) {
         var $this = $(this);
         $this.parents('tr').find('input.ns-field-value').attr('placeholder','');
         $this.parents('tr').find('input.ns-field-type').val($('option:selected', $this).attr('data-type'));
+        var dataType = $('option:selected', $this).attr('data-type');
         if($('option:selected', $this).attr('data-type') == 'dateTime'){
             $this.parents('tr').find('input.ns-field-value').attr('type','datetime-local');
+        }else if(dataType == 'RecordRef'){
+            $this.parents('tr').find('input.ns-field-value').attr('type','number');
+            $this.parents('tr').find('input.ns-field-value').attr('placeholder','enter numeric value');
         }else{
             $this.parents('tr').find('input.ns-field-value').attr('type','text');
         }
 
         if( $('option:selected', $this).attr('data-type') == "boolean" ){
-            $this.parents('tr').find('input.ns-field-value').attr('placeholder','True or False only');
+            $this.parents('tr').find('input.ns-field-value').attr('placeholder','0 or 1 only');
+            $this.parents('tr').find('input.ns-field-value').attr('type','number');
             $this.parents('tr').find('input.ns-field-value').attr('value', "");
         }
 
@@ -409,11 +422,24 @@ jQuery(function ($) {
     $(document).on('change','.ns-field-type',function(){
         var $this = $(this);
         $this.parents('tr').find('input.ns-field-value').attr('placeholder','');
+        console.log('dataType'); 
+
+        var dataType = $this.parents('tr').find('input.ns-field-type').val($('option:selected', $this).attr('data-type'));
+
+        console.log(dataType); 
+
         if($this.val() == 'dateTime'){
             $this.parents('tr').find('input.ns-field-value').attr('type','datetime-local');
         }else if($this.val() == 'customboolean'){
-            $this.parents('tr').find('input.ns-field-value').attr('placeholder','True or False only');
+            $this.parents('tr').find('input.ns-field-value').attr('placeholder','0 or 1 only');
+            $this.parents('tr').find('input.ns-field-value').attr('type','number');
+
             $this.parents('tr').find('input.ns-field-value').attr('value','');
+        }else if(dataType == 'customrecordref' || dataType == 'customselectfield' || dataType == 'custommultiselectfield'){
+            $this.parents('tr').find('input.ns-field-value').attr('type','number');
+            $this.parents('tr').find('input.ns-field-value').attr('placeholder','enter numeric value');
+
+
         }else{
             $this.parents('tr').find('input.ns-field-value').attr('type','text');
         }
@@ -488,6 +514,64 @@ jQuery(function ($) {
             dataType: "json",
             url: tmwni_admin_settings_js.ajax_url,
             data: {'action':'tm_load_ns_price_levels',nonce : tmwni_admin_settings_js.nonce,},
+            beforeSend: function() {
+                current.find('.glyphicon-refresh').addClass("glyphicon-spin");
+            },
+            complete: function (response) {
+                console.log(response.responseJSON);
+                var status = response.responseJSON.status;
+                current.find('.glyphicon-refresh').removeClass("glyphicon-spin");
+
+                if(status != 0){
+                    location.reload(true); 
+                }else{
+                    alert("Something went wrong");
+
+                }
+                             
+         },
+     });
+    });
+
+
+    //Ajax for get priceCurrency
+    jQuery("#currencyRefresh").on('click', function(e){
+        e.preventDefault();
+        var current = jQuery(this);
+        jQuery.ajax({
+            type: "post",
+            dataType: "json",
+            url: tmwni_admin_settings_js.ajax_url,
+            data: {'action':'tm_load_ns_price_currency',nonce : tmwni_admin_settings_js.nonce,},
+            beforeSend: function() {
+                current.find('.glyphicon-refresh').addClass("glyphicon-spin");
+            },
+            complete: function (response) {
+                console.log(response.responseJSON);
+                var status = response.responseJSON.status;
+                current.find('.glyphicon-refresh').removeClass("glyphicon-spin");
+
+                if(status != 0){
+                    location.reload(true); 
+                }else{
+                    alert("Something went wrong");
+
+                }
+                             
+         },
+     });
+    });
+
+
+    //Ajax for get taxcodes
+    $("#taxCodeRefresh").on('click', function(e){
+        e.preventDefault();
+        var current = $(this);
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: tmwni_admin_settings_js.ajax_url,
+            data: {'action':'tm_load_ns_tax_code',nonce : tmwni_admin_settings_js.nonce,},
             beforeSend: function() {
                 current.find('.glyphicon-refresh').addClass("glyphicon-spin");
             },

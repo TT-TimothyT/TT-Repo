@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Gift Card Controller class.
  *
  * @class    WC_GC_Gift_Card
- * @version  1.6.0
+ * @version  1.14.0
  */
 class WC_GC_Gift_Card {
 
@@ -298,47 +298,41 @@ class WC_GC_Gift_Card {
 	 */
 	public function debit( $amount, $order, $log = true ) {
 
-		$amount  = abs( $amount );
-		$current = $this->data->get_balance();
-		if ( $current < $amount ) {
+		$amount = abs( $amount );
+		// Debit the balance.
+		if ( ! WC_GC()->db->giftcards->debit_giftcard( $this->get_id(), $amount ) ) {
 			return false;
 		}
 
-		$new = round( $current - $amount, wc_get_rounding_precision() );
+		// Re-fetch to update data model.
+		$this->data->read( $this->get_id() );
 
-		$this->data->set_balance( $new );
+		if ( $log ) {
 
-		if ( $this->data->save() ) {
-
-			if ( $log ) {
-
-				$user = $order->get_user();
-				if ( ! $user ) {
-					$user_email = $order->get_billing_email();
-					$user_id    = 0;
-				} else {
-					$user_email = $user->user_email;
-					$user_id    = $user->ID;
-				}
-
-				$activity_args = array(
-					'gc_id'      => $this->get_id(),
-					'user_id'    => $user_id,
-					'user_email' => $user_email,
-					'object_id'  => $order->get_id(),
-					'type'       => 'used',
-					'amount'     => $amount
-				);
-
-				WC_GC()->db->activity->add( $activity_args );
+			$user = $order->get_user();
+			if ( ! $user ) {
+				$user_email = $order->get_billing_email();
+				$user_id    = 0;
+			} else {
+				$user_email = $user->user_email;
+				$user_id    = $user->ID;
 			}
 
-			do_action( 'woocommerce_gc_gift_card_debited', $amount, $this, $order );
+			$activity_args = array(
+				'gc_id'      => $this->get_id(),
+				'user_id'    => $user_id,
+				'user_email' => $user_email,
+				'object_id'  => $order->get_id(),
+				'type'       => 'used',
+				'amount'     => $amount
+			);
 
-			return true;
+			WC_GC()->db->activity->add( $activity_args );
 		}
 
-		return false;
+		do_action( 'woocommerce_gc_gift_card_debited', $amount, $this, $order );
+
+		return true;
 	}
 
 	/**

@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @class    WC_GC_REST_API_Gift_Cards_V2_Controller
  * @extends  WC_REST_Controller
- * @version  1.11.1
+ * @version  1.16.0
  */
 class WC_GC_REST_API_Gift_Cards_V2_Controller extends WC_REST_Controller {
 
@@ -230,7 +230,7 @@ class WC_GC_REST_API_Gift_Cards_V2_Controller extends WC_REST_Controller {
 		$response->header( 'X-WP-Total', $total_rows );
 		$response->header( 'X-WP-TotalPages', $max_pages );
 
-		$base = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) );
+		$base = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) ); // nosemgrep: audit.php.wp.security.xss.query-arg
 
 		if ( $page > 1 ) {
 			$prev_page = $page - 1;

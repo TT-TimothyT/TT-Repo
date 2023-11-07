@@ -335,9 +335,8 @@ td.forminp.forminp-checkbox input[type="checkbox"] {
 
 .btn, .button-primary, .btn:hover, .button-primary:hover, .btn:focus, .button-primary:focus, .btn:active, .button-primary:active {
     background: #2271b1 !important;
-    /*border: 0px;*/
-    padding: 10px 20px;
-}
+/*    padding: 10px 20px;
+*/}
 
 input#export_settings,#import_settings{
     background: #2271b1 !important;
@@ -849,7 +848,7 @@ a#locationRefresh {
     right: -26%;
     top: 0;
 }
-span#order_price_level_field{
+span#order_price_level_field,span#order_tax_code_field{
     padding-left : 20px;
 }
 /*.location_forminp span.select2.select2-container.select2-container--default.select2-container--above {
@@ -861,4 +860,29 @@ span#order_price_level_field{
 .select2-container--default .select2-selection--multiple .select2-selection__rendered li{
     overflow: scroll;
 }
+#order_tax_code_field {display: flex;align-items: center;}
+#order_tax_code_field #taxCodeRefresh {
+    padding-left: 10px;
+}
+#order_tax_code_field #taxCodeRefresh span.loaderSpiner {
+    padding-right: 0;
+}
+span.select2-selection__choice__remove {
+    width: fit-content !important;
+}
+.general-form-table tr td.forminp {
+    align-items: center;
+}
+#tm_select span.select2.select2-container.select2-container--default {
+    width: 100% !important;
+    margin-top: 17px;
+
+}
+#tm_select span.select2-selection.select2-selection--single {
+    height: 40px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+}
+
 

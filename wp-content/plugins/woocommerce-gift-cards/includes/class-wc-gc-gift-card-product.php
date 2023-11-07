@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Gift Card Product view controller.
  *
  * @class    WC_GC_Gift_Card_Product
- * @version  1.10.1
+ * @version  1.16.6
  */
 class WC_GC_Gift_Card_Product {
 
@@ -471,7 +471,7 @@ class WC_GC_Gift_Card_Product {
 			}
 		}
 
-		return $link;
+		return $link; // nosemgrep: audit.php.wp.security.xss.query-arg
 	}
 
 	/**
@@ -1126,7 +1126,7 @@ class WC_GC_Gift_Card_Product {
 			if ( ! empty( $giftcards ) ) {
 				/* translators: %d order id. */
 				WC_GC_Admin_Notices::add_notice( sprintf( __( 'Order #%d cannot be deleted at the moment. Some pending gift card code deliveries depend on data found in this order.', 'woocommerce-gift-cards' ), $post_id ), 'error', true );
-				wp_redirect( admin_url( 'edit.php?post_type=' . $post_type ) );
+				wp_safe_redirect( admin_url( 'edit.php?post_type=' . $post_type ) );
 				exit();
 			}
 
@@ -1139,7 +1139,7 @@ class WC_GC_Gift_Card_Product {
 				if ( ! empty( $giftcards ) ) {
 					/* translators: %d product id. */
 					WC_GC_Admin_Notices::add_notice( sprintf( __( 'Product #%d cannot be deleted at the moment. Some pending gift card code deliveries will fail if this product is deleted.', 'woocommerce-gift-cards' ), $product->get_id() ), 'error', true );
-					wp_redirect( admin_url( 'edit.php?post_type=' . $post_type ) );
+					wp_safe_redirect( admin_url( 'edit.php?post_type=' . $post_type ) );
 					exit();
 				}
 			}

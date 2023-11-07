@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Gift Card Data model class.
  *
  * @class    WC_GC_Gift_Card_Data
- * @version  1.7.4
+ * @version  1.14.0
  */
 class WC_GC_Gift_Card_Data {
 
@@ -959,5 +959,26 @@ class WC_GC_Gift_Card_Data {
 	 */
 	public function validate_hash( $hash_to_check ) {
 		return $hash_to_check === $this->get_hash();
+	}
+
+	/**
+	 * Lock checkout transactions for this giftcard.
+	 *
+	 * @since 1.14.0
+	 *
+	 * @throws Exception
+	 *
+	 * @return int|null
+	 */
+	public function lock_transactions() {
+		$result = WC_GC()->db->giftcards->check_and_lock_giftcard( $this->get_id() );
+		if ( false === $result ) {
+			// translators: Giftcard code.
+			throw new Exception( sprintf( __( 'An unexpected error happened while applying gift card code %s.', 'woocommerce-gift-cards' ), $this->get_code() ) );
+		} elseif ( 0 === $result ) {
+			// translators: Giftcard code.
+			throw new Exception( sprintf( __( 'Gift card code %s was used in another transaction during this checkout. Please try again.', 'woocommerce-gift-cards' ), $this->get_code() ) );
+		}
+		return $result;
 	}
 }

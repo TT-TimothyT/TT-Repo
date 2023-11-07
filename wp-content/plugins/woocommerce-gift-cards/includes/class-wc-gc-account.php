@@ -15,9 +15,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Account class.
  *
  * @class    WC_GC_Account
- * @version  1.10.0
+ * @version  1.16.0
  */
 class WC_GC_Account {
+
+	/**
+	 * Cache query vars locally to avoid multiple get_option calls.
+	 *
+	 * @since 1.13.0
+	 * @var array
+	 */
+	protected $query_vars = array();
 
 	/**
 	 * Hook.
@@ -59,6 +67,17 @@ class WC_GC_Account {
 		add_filter( 'woocommerce_my_account_my_orders_column_order-status', array( $this, 'add_pending_balance_in_account_orders_list' ), 10, 2 );
 		add_filter( 'template_redirect', array( $this, 'init_my_account_pending_orders' ) );
 		add_filter( 'woocommerce_my_account_my_orders_query', array( $this, 'filter_my_account_pending_orders' ) );
+
+		$this->init_query_vars();
+	}
+
+	/**
+	 * Init query vars by loading options.
+	 *
+	 * @since 1.13.0
+	 */
+	public function init_query_vars() {
+		$this->query_vars[ 'giftcards' ] = get_option( 'woocommerce_checkout_gc_giftcards_endpoint', 'giftcards' );
 	}
 
 	/**
@@ -303,6 +322,8 @@ class WC_GC_Account {
 				exit;
 			}
 
+			// It's safe to ignore semgrep warning, as everything is properly escaped.
+			// nosemgrep: audit.php.wp.security.sqli.input-in-sinks
 			$gc_results = WC_GC()->db->giftcards->query( array(
 				'return' => 'objects',
 				'code'   => $code,
@@ -342,6 +363,11 @@ class WC_GC_Account {
 	 * @return array
 	 */
 	public function add_navigation_item( $items ) {
+
+		// If the Gift Cards endpoint setting is empty, don't display it; in line with core WC behaviour.
+		if ( empty( $this->query_vars[ 'giftcards' ] ) ) {
+			return $items;
+		}
 
 		$after_menu_position = 3;
 		$giftcards_menu_item = array( 'giftcards' => __( 'Gift Cards', 'woocommerce-gift-cards' ) );
@@ -441,6 +467,18 @@ class WC_GC_Account {
 			$total_pages = 0;
 		}
 
+		$button_class = implode(
+			' ',
+			array_filter(
+				array(
+					'woocommerce-Button',
+					'woocommerce-button',
+					'button',
+					wc_gc_wp_theme_get_element_class_name( 'button' ),
+				)
+			)
+		);
+
 		wc_get_template(
 			'myaccount/giftcards.php',
 			array(
@@ -450,6 +488,7 @@ class WC_GC_Account {
 				'giftcards'      => $giftcards,
 				'activities'     => $activities,
 				'has_activities' => $has_activities,
+				'button_class'   => $button_class,
 				'balance'        => $balance
 			),
 			false,
@@ -480,7 +519,7 @@ class WC_GC_Account {
 	 * @return array
 	 */
 	public function add_query_var( $query_vars ) {
-		$query_vars[ 'giftcards' ] = get_option( 'woocommerce_checkout_gc_giftcards_endpoint', 'giftcards' );
+		$query_vars[ 'giftcards' ] = $this->query_vars[ 'giftcards' ];
 		return $query_vars;
 	}
 
@@ -499,8 +538,10 @@ class WC_GC_Account {
 		}
 
 		if ( 'yes' === $_GET[ 'wc_gc_show_pending_orders' ] ) {
+			$button_class = wc_gc_wp_theme_get_element_class_name( 'button' );
+			$wp_button_class = $button_class ? ' ' . $button_class : '';
 			$notice_text = __( 'Currently viewing pending orders only.', 'woocommerce-gift-cards' );
-			$notice      = sprintf( '<a href="%s" class="button wc-forward">%s</a> %s', wc_get_endpoint_url( 'orders' ), esc_html__( 'View all orders', 'woocommerce-gift-cards' ), $notice_text );
+			$notice      = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wc_get_endpoint_url( 'orders' ), $wp_button_class, esc_html__( 'View all orders', 'woocommerce-gift-cards' ), $notice_text );
 			wc_add_notice( $notice, 'notice' );
 		}
 
@@ -550,7 +591,9 @@ class WC_GC_Account {
 				}
 
 				// Append Gift Cards.
-				echo sprintf( '<small class="woocommerce-MyAccount-Giftcards-pending-amount">Gift card funds on hold: %s <span class="warning-icon"></span></small>', wc_price( $pending_balance ) );
+				echo '<small class="woocommerce-MyAccount-Giftcards-pending-amount"><span class="warning-icon"></span>'
+				     . wp_kses_post( sprintf( __( 'Gift card funds on hold: %s', 'woocommerce-gift-cards' ), wc_price( $pending_balance ) ) )
+				     . ' </small>';
 			}
 		}
 	}

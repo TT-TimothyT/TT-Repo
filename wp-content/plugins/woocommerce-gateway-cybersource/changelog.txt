@@ -1,5 +1,25 @@
 *** WooCommerce CyberSource Gateway Changelog ***
 
+2023.10.06 - version 2.7.1
+ * Fix - Ensure consumer authentication validation is invoked for 3DS transactions
+ * Fix - Pass 3DSecure enrollment field values to authorization request to ensure liability shift
+
+2023.07.31 - version 2.7.0
+ * Feature - Add 3DS support for saved payment methods
+ * Fix - Fix the Visa checkout button URL
+ * Fix - Ensure only a single 3DS Payer Authentication Enrollment
+ * Misc - Require PHP 7.4 and WordPress 5.6
+
+2023.06.13 - version 2.6.0
+ * Misc - Add compatibility for WooCommerce High Performance Order Storage (HPOS)
+
+2023.02.21 - version 2.5.6
+ * Fix - Address a fatal error on plugin load in certain environments that include other SkyVerge plugins
+
+2023.02.14 - version 2.5.5
+ * Fix - Resolve bug when deleting a saved credit card
+ * Misc - Update SkyVerge Plugin Framework to 5.10.15
+
 2022.08.15 - version 2.5.4
  * Fix - Replace deprecated `is_ajax()` function calls with `wp_doing_ajax()`
  * Misc - Require WooCommerce 3.9.4 or greater

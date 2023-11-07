@@ -17,14 +17,14 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
 
 use SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -336,6 +336,67 @@ abstract class Payment extends Payments {
 
 
 	/**
+	 * Gets the 3DSecure commerce indicator, if any
+	 * 
+	 * @since 2.7.1
+	 * @return string|null
+	 */
+	private function get_threed_secure_commerce_indicator(): ?string {
+		
+		// ecommerce indicator was passed from the enrollment check (frictionless)
+		if ( ! empty( $this->get_order()->threed_secure->ecommerce_indicator ) ) {
+			return $this->get_order()->threed_secure->ecommerce_indicator;
+		}
+
+		if ( ! empty( $this->get_order()->threed_secure->card_type ) && ! empty( $this->get_order()->threed_secure->eci_flag ) ) {
+			$card_type = $this->get_order()->threed_secure->card_type;
+			$eci_flag = $this->get_order()->threed_secure->eci_flag;
+
+			$eci_mapping = [
+				'JCB' => [
+					'05' => 'js',
+					'06' => 'js_attempted',
+				],
+				'AMERICAN EXPRESS' => [
+					'05' => 'aesk',
+					'06' => 'aesk_attempted',
+				],
+				'VISA' => [
+					'05' => 'vbv',
+					'06' => 'vbv_attempted',
+					'07' => 'vbv_failure',
+				],
+				// not sure which card type name diners uses, as we've been unable to test this card type
+				'DINERS' => [
+					'05' => 'pb',
+					'06' => 'pb_attempted',
+				],
+				'DINERS CLUB' => [
+					'05' => 'pb',
+					'06' => 'pb_attempted',
+				],
+				// it's strange, but both of these seem to indicate success for mastercard
+				'MASTERCARD' => [
+					'01' => 'spa',
+					'02' => 'spa',
+				],
+				'DISCOVER' => [
+					'05' => 'dipb',
+					'06' => 'dipb_attempted',
+				],
+			];
+
+			if ( isset( $eci_mapping[ $card_type ][ $eci_flag ] ) ) {
+				return $eci_mapping[ $card_type ][ $eci_flag ];
+			}
+		}
+
+		// default of 'internet' will be used
+		return null;
+
+	}
+
+	/**
 	 * Gets processing information.
 	 *
 	 * Sets special CIT or MIT transaction data if this is a recurring order.
@@ -361,6 +422,10 @@ abstract class Payment extends Payments {
 			$processing_information = [
 				'commerceIndicator' => 'internet',
 			];
+		}
+
+		if ( $commerce_indicator = $this->get_threed_secure_commerce_indicator() ) {
+			$processing_information['commerceIndicator'] = $commerce_indicator;
 		}
 
 		$payment = $this->get_order()->payment;

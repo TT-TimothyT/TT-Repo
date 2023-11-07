@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Admin Reports Class.
  *
  * @class    WC_GC_Admin_Reports
- * @version  1.0.0
+ * @version  1.16.0
  */
 class WC_GC_Admin_Reports {
 
@@ -60,7 +60,7 @@ class WC_GC_Admin_Reports {
 		$name  = sanitize_title( str_replace( '_', '-', $name ) );
 		$class = 'WC_GC_Report_' . str_replace( '-', '_', $name );
 
-		include_once 'class-wc-gc-report-' . $name . '.php';
+		include_once 'class-wc-gc-report-' . $name . '.php'; // nosemgrep: audit.php.lang.security.file.inclusion-arg
 
 		if ( ! class_exists( $class ) ) {
 			return;

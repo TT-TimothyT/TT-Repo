@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Display functions and filters.
  *
  * @class    WC_GC_Templates
- * @version  1.12.1
+ * @version  1.16.0
  */
 class WC_GC_Templates {
 
@@ -77,6 +77,12 @@ class WC_GC_Templates {
 		wp_register_style( 'wc-gc-css', WC_GC()->get_plugin_url() . '/assets/css/frontend/woocommerce.css', false, WC_GC()->get_plugin_version(), 'all' );
 		wp_style_add_data( 'wc-gc-css', 'rtl', 'replace' );
 		wp_enqueue_style( 'wc-gc-css' );
+
+		if ( WC_GC_Core_Compatibility::wc_current_theme_is_fse_theme() ) {
+			wp_register_style( 'wc-gc-blocks-style', WC_GC()->get_plugin_url() . '/assets/css/frontend/blocktheme.css', false, WC_GC()->get_plugin_version() );
+			wp_style_add_data( 'wc-gc-blocks-style', 'rtl', 'replace' );
+			wp_enqueue_style( 'wc-gc-blocks-style' );
+		}
 
 		$dependencies = array( 'jquery', 'jquery-ui-datepicker');
 

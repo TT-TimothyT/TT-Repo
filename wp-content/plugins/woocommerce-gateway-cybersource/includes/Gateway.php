@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 use Firebase\JWT\JWT;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Base_Payment_Form;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -499,7 +499,9 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 
 			$this->update_order_meta( $order, 'trans_id', $transaction_id );
 
-			update_post_meta( $order->get_id(), '_transaction_id', $transaction_id );
+			// @NOTE: Do not update the transaction order meta directly to avoid WC casting a notice
+			$order->set_transaction_id( $transaction_id );
+			$order->save();
 		}
 
 		$message = '';

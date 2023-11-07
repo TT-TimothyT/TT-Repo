@@ -11,6 +11,7 @@ class Add_Netsuite_Order extends WP_Background_Process {
 	protected function task( $order_id ) {
 		// Actions to perform
 		require_once(TMWNI_DIR . 'inc/loader.php');
+		$this->deleteQueueFromDataBase($order_id);
 		$this->netsuiteOrderClient = new TMWNI_Loader();
 		$order_netsuite_internal_id = $this->netsuiteOrderClient->addNetsuiteOrder($order_id);
 
@@ -45,6 +46,28 @@ class Add_Netsuite_Order extends WP_Background_Process {
 		die('delete_order_queue');
 
 		return $this;
+	}
+
+
+	public function deleteQueueFromDataBase( $order_id) {
+		global $wpdb;
+		$ids = array();
+		$ids[0] = $order_id;
+		$wpdb->netsuite_order_queue = $wpdb->prefix . 'options';
+
+		$value = serialize($ids);
+
+		$removefromdb = $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->netsuite_order_queue WHERE option_value=%s", $value));
+
+
+		if (is_multisite()) {
+			$wpdb->netsuite_order_queue_site_meta_table = $wpdb->prefix . 'sitemeta';
+			$removefromdb = $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->netsuite_order_queue_site_meta_table WHERE meta_value=%s", $value));
+
+		}
+
+		
+
 	}
 
 }

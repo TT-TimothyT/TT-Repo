@@ -65,9 +65,8 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 		$internalIds_array = array();
 		foreach ($orders as $key => $order) {
 			$order_id = $order->get_id();
-			$netSuiteSOInternalID = get_post_meta($order_id, 'ns_order_internal_id', true);
+			$netSuiteSOInternalID = tm_ns_get_post_meta($order_id, 'ns_order_internal_id');
 			$order_status = $order->get_status();
-			$tracking_status = get_post_meta($order_id, 'ywot_tracking_code', true);
 			if ('processing' == $order_status) {
 				$searchValue = new RecordRef();
 				$searchValue->internalId = $netSuiteSOInternalID;	
@@ -128,21 +127,29 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 		$order_id = $order[0]->get_id();
 
 
-	
 
 		if (isset($record->linkedTrackingNumbers) && !empty($record->linkedTrackingNumbers)) {
 			$trackingNo = $record->linkedTrackingNumbers;
 			if (isset($TMWNI_OPTIONS['ns_order_tracking_number']) && !empty($TMWNI_OPTIONS['ns_order_tracking_number'])) {
-				update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_tracking_number'], $trackingNo);
+				tm_ns_update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_tracking_number'], $trackingNo);
 			}	
-			update_post_meta($order_id, 'ywot_tracking_code', $trackingNo);
-			update_post_meta($order_id, 'ywot_picked_up', 'on');
+			tm_ns_update_post_meta($order_id, 'ywot_tracking_code', $trackingNo);
+			tm_ns_update_post_meta($order_id, 'ywot_picked_up', 'on');
 
-			if (empty(get_post_meta($order_id, 'trackingno_email_sent', true))) {
+
+
+			if (empty(tm_ns_get_post_meta($order_id, 'trackingno_email_sent'))) {
 				if (isset($TMWNI_OPTIONS['ns_order_tracking_email']) && !empty($TMWNI_OPTIONS['ns_order_tracking_email'])) {
+
 					$wc_emails = WC()->mailer()->get_emails();
+
+
 					$wc_emails['WC_NetSuite_Order_Tracking_No']->trigger($order_id);
-					update_post_meta($order_id, 'trackingno_email_sent', 'sent');
+
+
+
+					tm_ns_update_post_meta($order_id, 'trackingno_email_sent', 'sent');
+
 					//die;
 									// die('helloooo');
 				}
@@ -156,9 +163,9 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 			$ShippingCarrier = $record->shipMethod->name;
 			if (isset($TMWNI_OPTIONS['ns_order_shipping_courier']) && !empty($TMWNI_OPTIONS['ns_order_shipping_courier'])) {
 
-				update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_shipping_courier'], $ShippingCarrier);
+				tm_ns_update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_shipping_courier'], $ShippingCarrier);
 			} else {
-				update_post_meta($order_id, 'ywot_carrier_name', $ShippingCarrier);
+				tm_ns_update_post_meta($order_id, 'ywot_carrier_name', $ShippingCarrier);
 			}	
 
 
@@ -170,10 +177,10 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 			$ShipDate = gmdate('Y-m-d', strtotime($record->shipDate));
 
 			if (isset($TMWNI_OPTIONS['ns_order_pickup_date']) && !empty($TMWNI_OPTIONS['ns_order_pickup_date'])) {
-				update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_pickup_date'], $ShipDate);
+				tm_ns_update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_pickup_date'], $ShipDate);
 
 			} else {
-				update_post_meta($order_id, 'ywot_pick_up_date', $ShipDate);
+				tm_ns_update_post_meta($order_id, 'ywot_pick_up_date', $ShipDate);
 
 			}	
 

@@ -14,7 +14,7 @@
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce Gift Cards
- * @version 1.9.0
+ * @version 1.16.0
  */
 
 // Exit if accessed directly.
@@ -46,11 +46,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<div id="giftcard__card-amount-container">
 			<div><?php echo esc_html_x( 'Amount', 'Email gift card received', 'woocommerce-gift-cards' ); ?>:</div>
-			<div id="giftcard__card-amount"><?php echo wc_price( $giftcard->get_balance() ); ?></div>
+			<div id="giftcard__card-amount"><?php echo wp_kses_post( wc_price( $giftcard->get_balance() ) ); ?></div>
 		</div>
 
 		<?php if ( $show_redeem_button ): ?>
-			<a href="<?php echo esc_url( $button_href ); ?>" id="giftcard__action-button" class="redeem-action"><?php echo apply_filters( 'woocommerce_gc_email_received_redeem_button_text', esc_html_x( 'Add to your Account', 'Email gift card received', 'woocommerce-gift-cards' ), $giftcard ); ?></a>
+			<a href="<?php echo esc_url( $button_href ); ?>" id="giftcard__action-button" class="redeem-action"><?php echo esc_html( apply_filters( 'woocommerce_gc_email_received_redeem_button_text', esc_html_x( 'Add to your Account', 'Email gift card received', 'woocommerce-gift-cards' ), $giftcard ) ); ?></a>
 
 			<div id="giftcard__separator">&mdash; <?php echo esc_html_x( 'or', 'Email gift card received', 'woocommerce-gift-cards' ); ?> &mdash;</div>
 
@@ -61,7 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<?php else: ?>
 
-			<a href="<?php echo esc_url( $button_href ); ?>" id="giftcard__action-button" class="shop-action"><?php echo apply_filters( 'woocommerce_gc_email_received_action_button_text', esc_html_x( 'Shop Now', 'Email gift card received', 'woocommerce-gift-cards' ), $giftcard ); ?></a>
+			<a href="<?php echo esc_url( $button_href ); ?>" id="giftcard__action-button" class="shop-action"><?php echo esc_html( apply_filters( 'woocommerce_gc_email_received_action_button_text', esc_html_x( 'Shop Now', 'Email gift card received', 'woocommerce-gift-cards' ), $giftcard ) ); ?></a>
 
 			<div id="giftcard__separator">&nbsp;</div>
 
@@ -76,7 +76,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div id="giftcard__expiration"><?php
 			$expiration_date = esc_html( date_i18n( get_option( 'date_format' ), $giftcard->get_expire_date() ) );
 			/* translators: %s: Gift card expiration date */
-			echo sprintf( esc_html_x( 'Expires on %s', 'Email gift card received', 'woocommerce-gift-cards' ), $expiration_date ); ?></div>
+			echo sprintf( esc_html_x( 'Expires on %s', 'Email gift card received', 'woocommerce-gift-cards' ), esc_html( $expiration_date ) ); ?></div>
 		<?php endif; ?>
 
 	</td></tr></table>

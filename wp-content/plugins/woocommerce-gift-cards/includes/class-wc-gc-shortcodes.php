@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WooCommerce Gift Cards Shortcodes class.
  *
- * @version 1.5.1
+ * @version 1.16.0
  */
 class WC_GC_Shortcodes {
 
@@ -49,9 +49,9 @@ class WC_GC_Shortcodes {
 
 		ob_start();
 
-		echo empty( $wrapper[ 'before' ] ) ? '<div class="' . esc_attr( $wrapper[ 'class' ] ) . '">' : $wrapper[ 'before' ];
+		echo empty( $wrapper[ 'before' ] ) ? '<div class="' . esc_attr( $wrapper[ 'class' ] ) . '">' : $wrapper[ 'before' ]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		call_user_func( $function, $args );
-		echo empty( $wrapper[ 'after' ] ) ? '</div>' : $wrapper[ 'after' ];
+		echo empty( $wrapper[ 'after' ] ) ? '</div>' : $wrapper[ 'after' ]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		return ob_get_clean();
 	}

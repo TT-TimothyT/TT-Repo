@@ -4,21 +4,25 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit07f5108facda1af864e8ccf2db75e38f
+class ComposerStaticInit76409a0d6e844e9814b13a77958a3db0
 {
-    public static $files = array (
-        '8e485c958a85e9d26202026ac2f7ec7a' => __DIR__ . '/../..' . '/src/Deprecated/functions.php',
-    );
-
     public static $prefixLengthsPsr4 = array (
         'T' => 
         array (
             'Themesquad\\WC_Currency_Converter\\' => 33,
         ),
+        'K' => 
+        array (
+            'KoiLab\\WC_Currency_Converter\\' => 29,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'Themesquad\\WC_Currency_Converter\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+        'KoiLab\\WC_Currency_Converter\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -31,9 +35,9 @@ class ComposerStaticInit07f5108facda1af864e8ccf2db75e38f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit07f5108facda1af864e8ccf2db75e38f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit07f5108facda1af864e8ccf2db75e38f::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit07f5108facda1af864e8ccf2db75e38f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit76409a0d6e844e9814b13a77958a3db0::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit76409a0d6e844e9814b13a77958a3db0::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit76409a0d6e844e9814b13a77958a3db0::$classMap;
 
         }, null, ClassLoader::class);
     }

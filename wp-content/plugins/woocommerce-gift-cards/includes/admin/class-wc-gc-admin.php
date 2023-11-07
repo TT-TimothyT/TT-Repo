@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Loads admin scripts, includes admin classes and adds admin hooks.
  *
  * @class    WC_GC_Admin
- * @version  1.10.0
+ * @version  1.16.5
  */
 class WC_GC_Admin {
 
@@ -26,7 +26,7 @@ class WC_GC_Admin {
 	 *
 	 * @var string
 	 */
-	private static $bundled_selectsw_version = '1.1.7';
+	private static $bundled_selectsw_version = '1.2.2';
 
 	/**
 	 * Setup Admin class.
@@ -55,6 +55,9 @@ class WC_GC_Admin {
 
 		// Settings.
 		add_filter( 'woocommerce_get_settings_pages', array( __CLASS__, 'add_settings_page' ) );
+
+		// Filter order notes.
+		add_filter( 'get_comment', array( __CLASS__, 'filter_order_notes' ) );
 	}
 
 	/**
@@ -248,7 +251,7 @@ class WC_GC_Admin {
 		/*
 		 * Enqueue specific styles & scripts.
 		 */
-		if ( WC_GC()->is_current_screen( array( 'shop_order', 'product', wc_gc_get_formatted_screen_id( 'woocommerce_page_wc-settings', false ) ) ) ) {
+		if ( WC_GC()->is_current_screen( array( 'shop_order', 'product', wc_gc_get_formatted_screen_id( 'woocommerce_page_wc-orders', false ), wc_gc_get_formatted_screen_id( 'woocommerce_page_wc-settings', false ) ) ) ) {
 			wp_enqueue_script( 'wc-gc-writepanel' );
 			wp_localize_script( 'wc-gc-writepanel', 'wc_gc_admin_params', $params );
 		}
@@ -287,13 +290,20 @@ class WC_GC_Admin {
 	 */
 	public static function gc_body_class( $classes ) {
 
-		$classes = "$classes wc-gc";
-		if ( strpos( $classes, 'sw-wp-version-gte-53' ) !== false ) {
+		$classes .= ' wc-gc';
+
+		if ( strpos( $classes, 'sw-wp-version-gte-53' ) !== false
+		     || strpos( $classes, 'sw-wp-version-gte-55' ) !== false
+		) {
 			return $classes;
 		}
 
 		if ( WC_GC_Core_Compatibility::is_wp_version_gte( '5.3' ) ) {
 			$classes .= ' sw-wp-version-gte-53';
+		}
+
+		if ( WC_GC_Core_Compatibility::is_wp_version_gte( '5.5' ) ) {
+			$classes .= ' sw-wp-version-gte-55';
 		}
 
 		return $classes;
@@ -311,6 +321,43 @@ class WC_GC_Admin {
 
 		return $settings;
 	}
+
+	/**
+	 * Filter order notes, and mask gift card code if needed.
+	 *
+	 * @since  1.15.1
+	 *
+	 * @param  WP_Comment $comment Order note.
+	 * @return WP_Comment $comment
+	 */
+	public static function filter_order_notes( $comment ) {
+
+		// Bail out early.
+		if (
+			'order_note' !== $comment->comment_type
+			|| ! is_admin()
+			|| ! wc_gc_mask_codes( 'admin' )
+		) {
+			return $comment;
+		}
+
+		$pos = strpos( $comment->comment_content, 'woocommerce-giftcards-admin-note-code' );
+		if ( false === $pos ) {
+			return $comment;
+		}
+
+		$pattern = '/<span class="woocommerce-giftcards-admin-note-code">(.*?)<\/span>/';
+		if ( preg_match( $pattern, $comment->comment_content, $matches ) ) {
+			$gift_cart_code = $matches[ 1 ];
+
+			if ( wc_gc_is_gift_card_code( $gift_cart_code ) ) {
+				$comment->comment_content = str_replace( $gift_cart_code, wc_gc_mask_code( $gift_cart_code ), $comment->comment_content );
+			}
+		}
+
+		return $comment;
+	}
+
 
 }
 

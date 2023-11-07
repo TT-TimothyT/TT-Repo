@@ -14,7 +14,7 @@
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce Gift Cards
- * @version 1.7.0
+ * @version 1.16.0
  */
 
 // Exit if accessed directly.
@@ -38,7 +38,7 @@ if ( ! empty( $giftcards[ 'applied' ][ 'giftcards' ] ) || ! empty( $giftcards[ '
 			</th>
 			<td data-title="<?php esc_attr_e( 'Total before gift cards', 'woocommerce-gift-cards' ); ?>">
 				<strong>
-					<?php echo wc_price( $totals[ 'cart_total' ] ); ?>
+					<?php echo wp_kses_post( wc_price( $totals[ 'cart_total' ] ) ); ?>
 				</strong>
 			</td>
 		</tr>
@@ -70,19 +70,19 @@ if ( ! empty( $giftcards[ 'applied' ][ 'giftcards' ] ) ) :
 						<?php esc_html_e( 'Remaining Balance:', 'woocommerce-gift-cards' ); ?>
 					</small>
 					<small class="balance">
-						<?php echo wc_price( $giftcard_used[ 'giftcard' ]->get_balance() - $giftcard_used[ 'amount' ] ); ?>
+						<?php echo wp_kses_post( wc_price( $giftcard_used[ 'giftcard' ]->get_balance() - $giftcard_used[ 'amount' ] ) ); ?>
 					</small>
 				<?php endif; ?>
 
 			</th>
 			<td data-title="<?php esc_attr_e( 'Gift Card', 'woocommerce-gift-cards' ); ?>">
-				<?php echo wc_price( $giftcard_used[ 'amount' ] * -1 ); ?>
+				<?php echo wp_kses_post( wc_price( $giftcard_used[ 'amount' ] * -1 ) ); ?>
 				[ <a href="#" class="wc_gc_remove_gift_card" data-giftcard="<?php echo esc_attr( $giftcard_used[ 'giftcard' ]->get_id() ); ?>">
 					<?php esc_html_e( 'Remove', 'woocommerce-gift-cards' ); ?>
 				</a> ]
 				<?php if ( $giftcard_used[ 'giftcard' ]->get_pending_balance() > 0 ) { ?>
 					<small class="woocommerce-MyAccount-Giftcards-pending-amount">
-						<?php echo wc_gc_get_pending_balance_resolution( $giftcard_used[ 'giftcard' ] ); ?>
+						<?php echo wc_gc_get_pending_balance_resolution( $giftcard_used[ 'giftcard' ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						<span class="warning-icon"></span>
 					</small>
 				<?php } ?>
@@ -103,14 +103,14 @@ if ( wc_gc_is_redeeming_enabled() && $totals[ 'available_total' ] > 0 && $has_ba
 				<input type="checkbox" id="use_gift_card_balance" name="use_gift_card_balance"<?php echo $use_balance ? ' checked' : ''; ?>>
 					<?php
 					/* translators: remaining balance */
-					echo sprintf( __( 'Use <strong>%s</strong> from your gift cards balance.', 'woocommerce-gift-cards' ), wp_kses_post( wc_price( $totals[ 'available_total' ] ) ) ); ?>
+					echo wp_kses_post( sprintf( __( 'Use <strong>%s</strong> from your gift cards balance.', 'woocommerce-gift-cards' ), wc_price( $totals[ 'available_total' ] ) ) ); ?>
 					<?php if ( $totals[ 'pending_total' ] > 0 ) { ?>
 						<small class="woocommerce-MyAccount-Giftcards-pending-amount">
 							<?php
 							$link_text = esc_html__( 'pending orders', 'woocommerce-gift-cards' );
 							$link      = add_query_arg( array( 'wc_gc_show_pending_orders' => 'yes' ), wc_get_account_endpoint_url( 'orders' ) );
 							/* translators: %1$s: text link, %2$s pending amount */
-							echo sprintf( __( ' %2$s on hold in %1$s', 'woocommerce-gift-cards' ), '<a href="' . $link . '">' . $link_text . '</a>', wc_price( $totals[ 'pending_total' ] ) );
+							echo wp_kses_post( sprintf( __( ' %2$s on hold in %1$s', 'woocommerce-gift-cards' ), '<a href="' . $link . '">' . $link_text . '</a>', wc_price( $totals[ 'pending_total' ] ) ) );
 							 ?>
 							<span class="warning-icon"></span>
 						</small>
@@ -133,7 +133,7 @@ if ( $use_balance && $has_balance && ! empty( $giftcards[ 'account' ][ 'total_am
 				<?php esc_html_e( 'Gift Cards Balance', 'woocommerce-gift-cards' ); ?>
 			</th>
 			<td data-title="<?php esc_attr_e( 'Gift Cards Balance', 'woocommerce-gift-cards' ); ?>">
-				<?php echo wc_price( $giftcards[ 'account' ][ 'total_amount' ] * -1 ); ?>
+				<?php echo wp_kses_post( wc_price( $giftcards[ 'account' ][ 'total_amount' ] * -1 ) ); ?>
 
 				<?php if ( apply_filters( 'woocommerce_gc_checkout_show_codes_used', true ) ) : ?>
 					<small class="codes_label">
@@ -155,7 +155,7 @@ if ( $use_balance && $has_balance && ! empty( $giftcards[ 'account' ][ 'total_am
 						</strong>
 					</small>
 					<small class="balance">
-						<?php echo wc_price( $balance - $giftcards[ 'account' ][ 'total_amount' ] ); ?>
+						<?php echo wp_kses_post( wc_price( $balance - $giftcards[ 'account' ][ 'total_amount' ] ) ); ?>
 					</small>
 				<?php endif; ?>
 			</td>
@@ -182,7 +182,7 @@ if ( $use_balance && $has_balance && ! empty( $giftcards[ 'account' ][ 'total_am
 
 				</th>
 				<td data-title="<?php esc_attr_e( 'Gift Card Balance', 'woocommerce-gift-cards' ); ?>">
-					<?php echo wc_price( $giftcard_used[ 'amount' ] * -1 ); ?>
+					<?php echo wp_kses_post( wc_price( $giftcard_used[ 'amount' ] * -1 ) ); ?>
 				</td>
 			</tr>
 			<?php

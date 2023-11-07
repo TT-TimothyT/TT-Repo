@@ -12,7 +12,7 @@
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce Gift Cards
- * @version 1.1.0
+ * @version 1.16.0
  */
 
 // Exit if accessed directly.
@@ -28,7 +28,7 @@ echo "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 /* translators: %s: Sender name */
 echo esc_html( wp_strip_all_tags( wptexturize( apply_filters( 'woocommerce_email_intro_content', $intro_content, $giftcard ) ) ) );
 /* translators: %s: Gifcard amount */
-echo sprintf( esc_html_x( 'Amount %s', 'Email gift card received', 'woocommerce-gift-cards' ), wc_price( $giftcard->get_balance() ) ) . "\n\n";
+echo sprintf( esc_html_x( 'Amount %s', 'Email gift card received', 'woocommerce-gift-cards' ), wp_kses_post( wc_price( $giftcard->get_balance() ) ) ) . "\n\n";
 /* translators: %s: Gifcard code */
 echo sprintf( esc_html_x( 'Code: %s', 'Email gift card received', 'woocommerce-gift-cards' ), esc_html( $giftcard->get_code() ) );
 

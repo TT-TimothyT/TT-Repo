@@ -3,38 +3,40 @@
  * Plugin Name: WooCommerce WishLists
  * Plugin URI: https://woocommerce.com/products/woocommerce-wishlists/
  * Description:  WooCommerce Wishlists allows you to create public and personal wishlists.
- * Version: 2.2.7
+ * Version: 2.2.10
  * Author: Element Stark
  * Author URI: https://www.elementstark.com
  * Requires at least: 3.1
- * Tested up to: 5.9
+ * Tested up to: 6.2
 
  * Text Domain: wc_wishlist
  * Domain Path: /lang/
 
- * Copyright: © 2009-2022 Element Stark LLC
+ * Copyright: © 2009-2023 Element Stark LLC
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
  * WC requires at least: 3.8.0
- * WC tested up to: 6.4
+ * WC tested up to: 7.5
  * Woo: 171144:6bd20993ea96333eab6931ec2adc6d63
  */
 
 /**
  * Required functions
  */
-if ( ! function_exists( 'woothemes_queue_update' ) ) {
+if ( ! function_exists( 'is_woocommerce_active' ) ) {
 	require_once( 'woo-includes/woo-functions.php' );
 }
 
-/**
- * Plugin updates
- */
-woothemes_queue_update( plugin_basename( __FILE__ ), '6bd20993ea96333eab6931ec2adc6d63', '171144' );
-
 
 if ( is_woocommerce_active() ) {
+
+	// Declare support for features
+	add_action( 'before_woocommerce_init', function () {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
+	} );
 
 	class WC_Wishlists_Plugin {
 
@@ -326,7 +328,9 @@ if ( is_woocommerce_active() ) {
 		            add_action( $template_hook, array( $this, 'add_to_wishlist_button' ) );
 	            } elseif ( $product->is_type( 'external' ) ) {
 		            add_action( $template_hook, array( $this, 'add_wishlist_form_to_external_products' ) );
-	            }
+	            } elseif( $product->is_type('bundle') ) {
+                    add_action( $template_hook, array( $this, 'add_to_wishlist_button' ) );
+                }
             }
 		}
 
@@ -334,6 +338,9 @@ if ( is_woocommerce_active() ) {
 			global $add_to_wishlist_args;
 
 			$product = wc_get_product( get_the_ID() );
+            if (empty($product)) {
+                return;
+            }
 
 			if ( WC_Wishlists_Settings::get_setting( 'wc_wishlist_lists_enabled', 'enabled' ) == 'enabled' || WC_Wishlists_Settings::get_setting( 'wc_wishlist_registries_enabled', 'enabled' ) == 'enabled' ) {
 				$guest_setting = WC_Wishlists_Settings::get_setting( 'wc_wishlist_guest_enabled', 'enabled' );

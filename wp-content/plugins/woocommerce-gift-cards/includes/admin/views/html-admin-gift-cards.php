@@ -4,6 +4,7 @@
  *
  * @package  WooCommerce Gift Cards
  * @since    1.0.0
+ * @version  1.16.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php WC_GC_Admin_Menus::render_tabs(); ?>
 
 	<h1 class="wp-heading-inline"><?php esc_html_e( 'Gift Cards', 'woocommerce-gift-cards' ); ?></h1>
-	<a href="<?php echo admin_url( 'admin.php?page=gc_giftcards&section=giftcard_importer' ); ?>" class="page-title-action woocommerce-gc-importer-button"><?php esc_html_e( 'Import', 'woocommerce-gift-cards' ); ?></a>
+	<a href="<?php echo esc_url( admin_url( 'admin.php?page=gc_giftcards&section=giftcard_importer' )); ?>" class="page-title-action woocommerce-gc-importer-button"><?php esc_html_e( 'Import', 'woocommerce-gift-cards' ); ?></a>
 	<a href="#" class="page-title-action woocommerce-gc-exporter-button"><?php esc_html_e( 'Export', 'woocommerce-gift-cards' ); ?></a>
 
 

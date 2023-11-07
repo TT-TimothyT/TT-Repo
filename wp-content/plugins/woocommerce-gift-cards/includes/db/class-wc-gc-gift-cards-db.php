@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * DB API class.
  *
- * @version  1.9.5
+ * @version  1.15.2
  */
 class WC_GC_Gift_Cards_DB {
 
@@ -90,6 +90,8 @@ class WC_GC_Gift_Cards_DB {
 			'template_id'     => '',
 			'expired_start'   => '',
 			'expired_end'     => '',
+			'start_date'      => '',
+			'end_date'        => '',
 			'order_by'        => array( 'id' => 'ASC' ),
 			'limit'           => -1,
 			'offset'          => -1,
@@ -242,6 +244,18 @@ class WC_GC_Gift_Cards_DB {
 		if ( $args[ 'expired_end' ] ) {
 			$end_date        = absint( $args[ 'expired_end' ] );
 			$where_clauses[] = "{$table}.expire_date < %d";
+			$where_values    = array_merge( $where_values, array( $end_date ) );
+		}
+
+		if ( $args[ 'start_date' ] ) {
+			$start_date      = absint( $args[ 'start_date' ] );
+			$where_clauses[] = "{$table}.create_date >= %d";
+			$where_values    = array_merge( $where_values, array( $start_date ) );
+		}
+
+		if ( $args[ 'end_date' ] ) {
+			$end_date        = absint( $args[ 'end_date' ] );
+			$where_clauses[] = "{$table}.create_date < %d";
 			$where_values    = array_merge( $where_values, array( $end_date ) );
 		}
 
@@ -645,5 +659,122 @@ class WC_GC_Gift_Cards_DB {
 		}
 
 		return $giftcards;
+	}
+
+	/**
+	 * Check and locks a giftcard for a short period.
+	 *
+	 * @since 1.14.0
+	 *
+	 * @param int $giftcard_id
+	 *
+	 * @return bool|int|string|null Returns meta key if giftcard was locked, null if returned early.
+	 */
+	public function check_and_lock_giftcard( $giftcard_id ) {
+
+		if ( ! apply_filters( 'woocommerce_gc_checkout_lock_enabled', true ) ) {
+			return null;
+		}
+
+		global $wpdb;
+
+		$held_time       = (int) apply_filters( 'woocommerce_gc_checkout_hold_minutes', MINUTE_IN_SECONDS);
+		$table           = sprintf( '%s%s', $wpdb->prefix, 'woocommerce_gc_cardsmeta' );
+		$query_for_locks = $wpdb->prepare(
+			"
+			SELECT COUNT(meta_id) FROM $table
+			WHERE $table.meta_key LIKE '_lock_%%'
+			AND $table.meta_key > %s
+			AND $table.gc_giftcard_id = %d
+			FOR UPDATE
+			",
+			array(
+				'_lock_' . time(),
+				$giftcard_id,
+			)
+		);
+
+		$lock_key         = '_lock_' . ( time() + $held_time ) . '_' . wp_generate_password( 6, false );
+		$insert_statement = $wpdb->prepare(
+			"
+			INSERT INTO $table ( gc_giftcard_id, meta_key, meta_value )
+			SELECT %d, %s, %s FROM DUAL
+			WHERE ( $query_for_locks ) < 1
+			",
+			$giftcard_id,
+			$lock_key,
+			''
+		);
+
+		// This query can be deadlocked if a combined index on gc_giftcard_id and meta_key is present and there is high concurrency,
+		// in which case DB will abort the query which has done less work to resolve deadlock.
+		// We will try up to 3 times before giving up.
+		for ( $count = 0; $count < 3; $count++ ) {
+			$result = $wpdb->query( $insert_statement );
+			if ( false !== $result ) {
+				break;
+			}
+		}
+
+		return $result > 0 ? $lock_key : $result;
+	}
+
+	/**
+	 * Check balance of a gift card for a given amount.
+	 *
+	 * @since 1.14.0
+	 *
+	 * @param int $giftcard_id
+	 * @param float $amount
+	 *
+	 * @return bool
+	 */
+	public function debit_giftcard( $giftcard_id, $amount ) {
+		global $wpdb;
+
+		$wpdb->query( 'START TRANSACTION' );
+
+		// Deadlock the row and get the current remaining balance.
+		$current_balance = (float) $wpdb->get_var(
+			$wpdb->prepare( "
+				SELECT remaining
+				FROM `{$wpdb->prefix}woocommerce_gc_cards`
+				WHERE id = %d
+				LIMIT 1
+				FOR UPDATE
+				",
+				$giftcard_id
+			)
+		);
+
+		if ( empty( $current_balance ) ) {
+			// Release row.
+			$wpdb->query( 'ROLLBACK' );
+			return false;
+		}
+
+		// Test balance.
+		$new_balance = (float) round( $current_balance - $amount, wc_get_rounding_precision() );
+		if ( $new_balance >= 0 ) {
+			$result = $wpdb->query(
+				$wpdb->prepare( "
+					UPDATE `{$wpdb->prefix}woocommerce_gc_cards`
+					SET remaining = %f
+					WHERE id = %d",
+					$new_balance,
+					$giftcard_id
+				)
+			);
+
+			if ( $result > 0 ) {
+				// Update and Release row.
+				$wpdb->query( 'COMMIT' );
+				return true;
+			}
+		}
+
+		// Release row.
+		$wpdb->query( 'ROLLBACK' );
+		return false;
 	}
 }

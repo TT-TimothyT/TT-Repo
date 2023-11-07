@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Admin Sync Reports Class.
  *
- * @version 1.10.0
+ * @version 1.16.6
  */
 class WC_GC_Admin_Analytics_Sync {
 
@@ -64,7 +64,7 @@ class WC_GC_Admin_Analytics_Sync {
 
 		if ( ! empty( $_GET[ 'trigger_wc_gc_order_stats_db_update' ] ) && isset( $_GET[ '_wc_gc_admin_nonce' ] ) && wp_verify_nonce( wc_clean( $_GET[ '_wc_gc_admin_nonce' ] ), 'wc_gc_trigger_order_stats_db_update_nonce' ) && ! self::is_order_stats_update_queued() ) {
 			self::queue_order_stats_update();
-			wp_redirect( remove_query_arg( array( 'trigger_wc_gc_order_stats_db_update', '_wc_gc_admin_nonce' ) ) );
+			wp_safe_redirect( remove_query_arg( array( 'trigger_wc_gc_order_stats_db_update', '_wc_gc_admin_nonce' ) ) );
 			exit;
 		}
 	}

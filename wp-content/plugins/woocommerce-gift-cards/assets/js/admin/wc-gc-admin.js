@@ -5,7 +5,7 @@
 	$( function() {
 
 		// Settings
-		$( 'select#wc_gc_settings_send_as_gift_status' ).change( function() {
+		$( 'select#wc_gc_settings_send_as_gift_status' ).on( 'change', function() {
 			var $this = $( this );
 
 			if ( 'never' === $this.val() ) {
@@ -731,6 +731,10 @@
 
 			handle_show_if_giftcard_containers();
 
+			// Hide the border for the previous section to display custom border with embedded section title.
+			var $previous_section = $( '#giftcard_settings' ).prevAll( '.options_group:visible:first' );
+			$previous_section.addClass( 'gc_previous_section' );
+
 			// Global Virtual.
 			$virtual_checkbox.prop( 'checked', 'checked' ).trigger( 'change' );
 			$virtual_container.attr( 'class', 'tips' ); // Remove every show_if & hide_if classes.
@@ -754,6 +758,10 @@
 		function giftcard_checkbox_off_cb( on_load ) {
 
 			handle_show_if_giftcard_containers( false );
+
+			// Show the border for the previous section since the section title is gone.
+			var $previous_section = $( '#giftcard_settings' ).prevAll( '.options_group:visible:first' );
+			$previous_section.removeClass( 'gc_previous_section' );
 
 			// Global Virtual.
 			$virtual_container.attr( 'class', virtual_classes.join( ' ' ) );

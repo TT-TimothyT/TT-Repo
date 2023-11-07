@@ -2,12 +2,11 @@
 	<h3>Customer Sync Settings</h3>
 	<div class="col-md-12">
 		<h4>General Settings</h4>
+
 		<form class="well"  action="admin-post.php" method="post" id="settings_tm_ns"> 
 			<input type="hidden" name="action" value="save_tm_ns_settings"> 
 			<input type="hidden" name="current_tab_id" value="<?php echo esc_attr($current_tab_id); ?>">
-			<?php wp_nonce_field('nonce'); ?>
-
-			
+			<?php wp_nonce_field(); ?>
 			<table class="form-table">
 				<tbody>
 					<tr valign="top" class="">
@@ -27,9 +26,9 @@
 					</tr>
 					<tr valign="top">
 						<th scope="row" class="titledesc">
-							<label for="ns_customer_department_id">Sync These Contact Roles</label>
+							<label for="ns_customer_department_id">Sync These User Roles</label>
 							<div class="tooltip dashicons-before dashicons-editor-help">
-								<span class="tooltiptext">Sync These Contact Roles</span>
+								<span class="tooltiptext">Sync These User Roles</span>
 							</div>
 						</th>
 						<td class="forminp">

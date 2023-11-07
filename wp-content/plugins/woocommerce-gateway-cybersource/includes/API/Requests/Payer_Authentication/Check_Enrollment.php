@@ -17,14 +17,14 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payer_Authentication;
 
 use SkyVerge\WooCommerce\Cybersource\API\Requests\Payments\Payment;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -62,11 +62,20 @@ class Check_Enrollment extends Payment {
 		$this->data = [
 			'clientReferenceInformation' => $this->get_client_reference_information(),
 			'orderInformation'           => $this->get_order_information(),
-			'tokenInformation' => [
-				'transientToken' => $order->payment->token,
-			],
 			'buyerInformation' => $this->get_buyer_information(),
 		];
+
+		if ( $order->payment->is_transient ) {
+			$this->data['tokenInformation'] = [
+				'transientToken' => $order->payment->token,
+			];
+		} else {
+			$this->data['paymentInformation'] = [
+				'customer' => [
+					'customerId' => $order->payment->token,
+				],
+			];
+		}
 
 		// include the reference ID if there is one
 		if ( ! empty( $order->payment->reference_id ) ) {

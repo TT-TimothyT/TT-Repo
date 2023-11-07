@@ -16,9 +16,16 @@ use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 /**
  * Setup GC menus in WP admin.
  *
- * @version 1.6.0
+ * @version 1.16.5
  */
 class WC_GC_Admin_Menus {
+
+	/**
+	 * The CSS classes used to hide the submenu items in navigation.
+	 *
+	 * @var string
+	 */
+	protected static $HIDE_CSS_CLASS = 'hide-if-js';
 
 	/**
 	 * GC parent file.
@@ -40,16 +47,13 @@ class WC_GC_Admin_Menus {
 
 		// Menu.
 		add_action( 'admin_menu', array( __CLASS__, 'gc_menu' ), 10 );
-		add_action( 'current_screen', array( __CLASS__, 'gc_remove_submenu_link' ), 10 );
 		add_filter( 'parent_file', array( __CLASS__, 'gc_fix_menu_highlight' ) );
-
-		// Tweak title.
-		add_filter( 'admin_title', array( __CLASS__, 'tweak_page_title' ), 10, 2 );
 
 		// Integrate WooCommerce breadcrumb bar.
 		add_action( 'admin_menu', array( __CLASS__, 'wc_admin_connect_gc_pages' ) );
 		add_filter( 'woocommerce_navigation_pages_with_tabs', array( __CLASS__, 'wc_admin_navigation_pages_with_tabs' ) );
 		add_filter( 'woocommerce_navigation_page_tab_sections', array( __CLASS__, 'wc_admin_navigation_page_tab_sections' ) );
+		add_filter( 'woocommerce_navigation_screen_ids', array( __CLASS__, 'wc_admin_navigation_screen_ids' ) );
 
 		// Integrate WooCommerce menu pages.
 		add_action( 'admin_menu', array( __CLASS__, 'register_navigation_pages' ) );
@@ -79,13 +83,26 @@ class WC_GC_Admin_Menus {
 	}
 
 	/**
+	 * Add screen id to WooCommerce.
+	 *
+	 * @since 1.16.5
+	 * @param  array  $screen_ids  List of screen IDs.
+	 * @return array
+	 */
+	public static function wc_admin_navigation_screen_ids( $screen_ids ) {
+		$screen_ids = array_merge( $screen_ids, WC_GC()->get_screen_ids() );
+
+		return $screen_ids;
+	}
+
+	/**
 	 * Connect pages with navigation bar.
 	 *
 	 * @return void
 	 */
 	public static function wc_admin_connect_gc_pages() {
 
-		if ( WC_GC_Core_Compatibility::is_wc_admin_enabled() ) {
+		if ( function_exists( 'wc_admin_connect_page' ) ) {
 
 			wc_admin_connect_page(
 				array(
@@ -222,20 +239,6 @@ class WC_GC_Admin_Menus {
 	}
 
 	/**
-	 * Removes multiple submenu links for that are not being used as a menu item.
-	 */
-	public static function gc_remove_submenu_link() {
-
-		$submenu_slugs = array(
-			'gc_activity'
-		);
-
-		foreach ( $submenu_slugs as $slug ) {
-			remove_submenu_page( self::$parent_file, $slug );
-		}
-	}
-
-	/**
 	 * Add menu items.
 	 */
 	public static function gc_menu() {
@@ -249,6 +252,9 @@ class WC_GC_Admin_Menus {
 		$activity_page = add_submenu_page( self::$parent_file, __( 'Activity', 'woocommerce-gift-cards' ), __( 'Activity', 'woocommerce-gift-cards' ), 'manage_woocommerce', 'gc_activity', array( __CLASS__, 'activity_page' ) );
 
 		add_action( 'load-' . $giftcards_page, array( __CLASS__, 'giftcards_page_init' ) );
+
+		// Hide pages.
+		self::hide_submenu_page( self::$parent_file, 'gc_activity' );
 	}
 
 	/**
@@ -297,40 +303,6 @@ class WC_GC_Admin_Menus {
 	 */
 	public static function activity_page() {
 		WC_GC_Admin_Activity_Page::output();
-	}
-
-	/**
-	 * Changes the admin title based on the section.
-	 */
-	public static function tweak_page_title( $admin_title, $title ) {
-
-		$screen = get_current_screen();
-		if ( $screen && wc_gc_get_formatted_screen_id( 'woocommerce_page_gc_giftcards' ) === $screen->id ) {
-
-			// Fix the main title issue cause by the remove_submenu_page.
-			$title = __( 'Gift Cards', 'woocommerce-gift-cards' );
-
-			if ( ! isset( $_GET[ 'section' ] ) ) {
-				return $admin_title;
-			}
-
-			$section = wc_clean( $_GET[ 'section' ] );
-			switch ( $section ) {
-				case 'edit':
-					$admin_title = str_replace( $title, __( 'Edit Gift Card', 'woocommerce-gift-cards' ), $admin_title );
-					break;
-				case 'giftcard_importer':
-					$admin_title = str_replace( $title, __( 'Import Gift Cards', 'woocommerce-gift-cards' ), $admin_title );
-					break;
-			}
-		} elseif ( wc_gc_get_formatted_screen_id( 'woocommerce_page_gc_activity' ) === $screen->id ) {
-
-			// Fix the main title issue cause by the null title.
-			$title = __( 'Activity', 'woocommerce-gift-cards' );
-			return $title . $admin_title;
-		}
-
-		return $admin_title;
 	}
 
 	/**
@@ -404,6 +376,71 @@ class WC_GC_Admin_Menus {
 				'order'      => 20
 			)
 		);
+	}
+
+	/**
+	 * Hide the submenu page based on slug and return the item that was hidden.
+	 *
+	 * @since 1.16.3
+	 *
+	 * Instead of actually removing the submenu item, a safer approach is to hide it and filter it in the API response.
+	 * In this manner we'll avoid breaking third-party plugins depending on items that no longer exist.
+	 *
+	 * @param string $menu_slug The parent menu slug.
+	 * @param string $submenu_slug The submenu slug that should be hidden.
+	 * @return false|array
+	 */
+	protected static function hide_submenu_page( $menu_slug, $submenu_slug ) {
+		global $submenu;
+
+		if ( ! isset( $submenu[ $menu_slug ] ) ) {
+			return false;
+		}
+
+		foreach ( $submenu[ $menu_slug ] as $i => $item ) {
+			if ( $submenu_slug !== $item[2] ) {
+				continue;
+			}
+
+			self::hide_submenu_element( $i, $menu_slug, $item );
+
+			return $item;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Apply the hide-if-js CSS class to a submenu item.
+	 *
+	 * @since 1.16.3
+	 * 
+	 * @param int    $index The position of a submenu item in the submenu array.
+	 * @param string $parent_slug The parent slug.
+	 * @param array  $item The submenu item.
+	 */
+	protected static function hide_submenu_element( $index, $parent_slug, $item ) {
+		global $submenu;
+
+		$css_classes = empty( $item[4] ) ? self::$HIDE_CSS_CLASS : $item[4] . ' ' . self::$HIDE_CSS_CLASS;
+
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$submenu[ $parent_slug ][ $index ][4] = $css_classes;
+	}
+
+	/*
+	|--------------------------------------------------------------------------
+	| Deprecated methods.
+	|--------------------------------------------------------------------------
+	*/
+
+	/**
+	 * Removes multiple submenu links that are not being used as a menu item.
+	 * 
+	 * @deprecated
+	 */
+	public static function gc_remove_submenu_link() {
+		_deprecated_function( __METHOD__ . '()', '1.16.3' );
 	}
 }
 

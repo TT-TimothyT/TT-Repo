@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Handles compatibility with other WC extensions.
  *
  * @class    WC_GC_Compatibility
- * @version  1.11.0
+ * @version  1.16.6
  */
 class WC_GC_Compatibility {
 
@@ -101,6 +101,12 @@ class WC_GC_Compatibility {
 		// Include core compatibility class.
 		self::core_includes();
 
+		// Declare HPOS compatibility.
+		add_action( 'before_woocommerce_init', array( __CLASS__, 'declare_hpos_compatibility' ) );
+
+		// Declare Blocks compatibility.
+		add_action( 'before_woocommerce_init', array( __CLASS__, 'declare_blocks_compatibility' ) );
+
 		// Load modules.
 		add_action( 'plugins_loaded', array( __CLASS__, 'module_includes' ), 100 );
 
@@ -115,6 +121,35 @@ class WC_GC_Compatibility {
 	 */
 	public static function core_includes() {
 		require_once  WC_GC_ABSPATH . 'includes/compatibility/core/class-wc-gc-core-compatibility.php' ;
+	}
+
+	/**
+	 * Declare HPOS( Custom Order tables) compatibility.
+	 *
+	 * @since 1.13.1
+	 */
+	public static function declare_hpos_compatibility() {
+
+		if ( ! class_exists( 'Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+			return;
+		}
+
+		$compatibility = WC_GC_Core_Compatibility::is_wc_version_gte( '7.1.1' );
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', WC_GC()->get_plugin_basename(), $compatibility );
+	}
+
+	/**
+	 * Declare cart/checkout Blocks compatibility.
+	 *
+	 * @since 1.16.6
+	 */
+	public static function declare_blocks_compatibility() {
+
+		if ( ! class_exists( 'Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+			return;
+		}
+
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', WC_GC()->get_plugin_basename(), true );
 	}
 
 	/**

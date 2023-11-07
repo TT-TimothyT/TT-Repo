@@ -75,6 +75,10 @@ class CustomerClient extends CommonIntegrationFunctions {
 			**/
 			$search_customer_status  = apply_filters('tm_netsuite_search_customer_status', $search_customer_status, $email, $customer_id);
 
+
+			// pr($search_customer_status);
+			// die('zzzzzzz');
+
 		if (false != $search_customer_status) {
 			$this->object_id = $customer_id;
 
@@ -100,19 +104,33 @@ class CustomerClient extends CommonIntegrationFunctions {
 			$request->searchRecord = $search;
 
 
+			// pr($search);
+
+
 
 			try {
 				$searchResponse = $this->netsuiteService->search($request);
-				$customer_internalId = $this->handleAPISearchResponse($searchResponse, 'customer', $email);
+				$customer_internalId = $this->handleAPISearchResponse($searchResponse, 'customerS', $email);
 			/** 
 				*Hook for netsuite customer response.
 		
 				* @since 1.0.0
  
 				**/
-				$customer_internalId = apply_filters('tm_ns_customer_response', $customer_internalId, $searchResponse, $customer_id);
-				
-				return $searchResponse;
+				$searchResponse = apply_filters('tm_ns_customer_response', $searchResponse, $customer_internalId, $customer_id);
+
+				if (isset($searchResponse->searchResult->totalRecords) && $searchResponse->searchResult->totalRecords > 0) {
+					$customer_internalId = $searchResponse->searchResult->recordList->record[0]->internalId;
+				}
+
+
+
+
+				if (!empty($customer_internalId)) {
+					return $searchResponse;
+				} else {
+					return 0;
+				}
 			} catch (SoapFault $e) {
 				$object = 'customer';
 				$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
@@ -126,10 +144,12 @@ class CustomerClient extends CommonIntegrationFunctions {
 
 		}
 
+
 		return 0;
 
 		
 	}
+
 
 
 
@@ -166,9 +186,9 @@ class CustomerClient extends CommonIntegrationFunctions {
 		
 					* @since 1.0.0
  
-			**/
-			apply_filters('tm_ns_customer_response', $searchResponse, $customer_id);
-			return $searchResponse->searchResult->recordList->record[0]->addressbookList;
+					**/
+					apply_filters('tm_ns_customer_internal_id_response', $searchResponse, $customer_id);
+					return $searchResponse->searchResult->recordList->record[0]->addressbookList;
 		} catch (SoapFault $e) {
 			$object = 'customer';
 			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
@@ -253,7 +273,6 @@ class CustomerClient extends CommonIntegrationFunctions {
 
 		$request = new AddRequest();
 		$request->record = $customer;
-		// pr($customer); 
 
 
 
@@ -346,13 +365,16 @@ class CustomerClient extends CommonIntegrationFunctions {
 		$request = new UpdateRequest();
 		$request->record = $customer;
 
-		// pr($customer);
+
+			// pr($customer);  
+
 
 
 
 
 			try {
 					$updateResponse = $this->netsuiteService->update($request);
+					// pr($updateResponse); die('ddff');
 				if (1 == $updateResponse->writeResponse->status->isSuccess) {
 					/** 
 						* Hook for  after update customer data.
@@ -381,9 +403,11 @@ class CustomerClient extends CommonIntegrationFunctions {
 	 * Creating customer request.
 	 */
 	public function createRequest( &$customer, $customer_data) {
+
+		// pr($customer_data['ns_customer_fields']); 
 		foreach ($customer_data['ns_customer_fields'] as $nsfield => $value) {
 
-			if ( isset($value['type']) && 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type']) {
+			if ( isset($value['type']) && 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type'] || 'GlobalSubscriptionStatus' == $value['type']) {
 
 				if ('phone'==$nsfield && strlen($value['value']) > 6) {
 					$customer->$nsfield = $value['value'];
@@ -520,7 +544,8 @@ class CustomerClient extends CommonIntegrationFunctions {
 		$this->user_id = $customer_data['customer_id'];
 		$customer_data['ns_customer_fields'] = array(); 
 		$cm_options = get_option('customer_cm_options');
-		// pr($cm_options);die;
+
+		// pr($cm_options); die('zzzz');
 		if (!empty($cm_options)) {
 			foreach ($cm_options as $key => $mapping) {
 				if (!empty($customer_internal_id) && isset($mapping['exlcude_in_update']) && 'on'  == $mapping['exlcude_in_update'] ) {
@@ -544,33 +569,12 @@ class CustomerClient extends CommonIntegrationFunctions {
 							} else if (3 == $mapping['type']) {
 								$orderkey = $mapping['wc_field_key'];
 								if (!empty($order)) {
-									if ('memo' == $mapping['wc_field_key'] || 'customer_note' == $mapping['wc_field_key']) {
-										$saved_value = $order->get_customer_note();
-									}
-
-									if ('id' == $mapping['wc_field_key']) {
-										$saved_value = $order->get_id();
-									}
-
-									if ('shipping_method' == $mapping['wc_field_key']) {
-										$saved_value = $order->get_shipping_method();
-									}
-
-									if ('billing_address_2' == $mapping['wc_field_key']) {
-										$saved_value = $order->billing_address_2;
-									}
-
-									if ('shipping_address_2' == $mapping['wc_field_key']) {
-										$saved_value = $order->shipping_address_2;
-									}
-
-									if (!empty(get_post_meta($order->get_id(), '_' . $mapping['wc_field_key'], true))) {
-										$saved_value = get_post_meta($order->get_id(), '_' . $mapping['wc_field_key'], true);
-									}
+									$saved_value = tm_ns_get_order_data($order, $mapping);
 								}
 							} else if (4 == $mapping['type']) {
 								if (!empty($order)) {
-									$saved_value = get_post_meta($order->get_id(), $mapping ['wc_field_key'], true);
+									// $saved_value = get_post_meta($order->get_id(), $mapping ['wc_field_key'], true);
+									$saved_value = tm_ns_get_post_meta($order->get_id(), $mapping['wc_field_key']);
 								}
 							}
 
@@ -584,13 +588,22 @@ class CustomerClient extends CommonIntegrationFunctions {
 									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
 								}
 							} elseif ('is' == $mapping['wc_where_op']) {
-								if ( strtolower($saved_value) == strtolower($mapping['wc_field_value'])) {
+								if ('null' == strtolower($mapping['wc_field_value'])) {
+									if (empty($saved_value)) {
+										$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									}
+								} elseif ( strtolower($saved_value) == strtolower($mapping['wc_field_value'])) {
 									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
 								}
 							} elseif ('isnot' == $mapping['wc_where_op']) {
-								if ( strtolower($saved_value) != strtolower($mapping['wc_field_value'])) {
+								if ('null' == strtolower($mapping['wc_field_value'])) {
+									if (!empty($saved_value)) {
+										$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									}
+								} elseif ( strtolower($saved_value) != strtolower($mapping['wc_field_value'])) {
 									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
 								}
+
 							}
 
 						}
@@ -615,32 +628,12 @@ class CustomerClient extends CommonIntegrationFunctions {
 								$saved_value = get_user_meta($this->user_id, $mapping['wc_field_key'], true);
 							} else if (3 == $mapping['type']) {
 								if (!empty($order)) {
-									if ('memo' == $mapping['wc_field_key'] || 'customer_note' == $mapping['wc_field_key']) {
-										$saved_value = $order->get_customer_note();
-									}
-
-									if ('id' == $mapping['wc_field_key']) {
-										$saved_value = $order->get_id();
-									}
-
-									if ('shipping_method' == $mapping['wc_field_key']) {
-										$saved_value = $order->get_shipping_method();
-									}
-
-									if ('billing_address_2' == $mapping['wc_field_key']) {
-										$saved_value = $order->billing_address_2;
-									}
-
-									if ('shipping_address_2' == $mapping['wc_field_key']) {
-										$saved_value = $order->shipping_address_2;
-									}
-
-									if (!empty(get_post_meta($order->get_id(), '_' . $mapping['wc_field_key'], true))) {
-										$saved_value = get_post_meta($order->get_id(), '_' . $mapping['wc_field_key'], true);
-									}
+									$saved_value = tm_ns_get_order_data($order, $mapping);
 								}
 							} else if (4 == $mapping ['type']) {
-								$saved_value = get_post_meta($order->get_id(), $mapping ['wc_field_key'], true);
+								if (!empty($order)) {
+									$saved_value = tm_ns_get_post_meta($order->get_id(), $mapping['wc_field_key']);
+								}
 							}
 							if (isset($saved_value) && !empty($saved_value)) {
 								$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$prefix . $saved_value);
@@ -652,6 +645,8 @@ class CustomerClient extends CommonIntegrationFunctions {
 				}
 			}
 		}
+
+
 		return true;
 	}
 

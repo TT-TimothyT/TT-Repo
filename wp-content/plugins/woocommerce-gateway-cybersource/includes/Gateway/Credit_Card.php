@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -26,8 +26,8 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\API\Helper;
 use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -291,13 +291,25 @@ class Credit_Card extends Gateway {
 		$order = parent::get_order( $order_id );
 
 		// if enabled, set the 3D Secure data
-		if ( 'yes' === $this->enable_threed_secure ) {
+		if ( $this->is_3d_secure_enabled() ) {
 
 			$order->threed_secure = new \stdClass();
 
 			$order->threed_secure->transaction_id = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_transaction_id' );
 			$order->threed_secure->reference_id   = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_reference_id' );
 			$order->threed_secure->jwt            = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_jwt' );
+
+			// check enrollment response fields that are passed to the authorization request
+			$order->threed_secure->ecommerce_indicator             = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_ecommerce_indicator' );
+			$order->threed_secure->ucaf_collection_indicator       = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_ucaf_collection_indicator' );
+			$order->threed_secure->cavv                            = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_cavv' );
+			$order->threed_secure->ucaf_authentication_data        = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_ucaf_authentication_data' );
+			$order->threed_secure->xid                             = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_xid' );
+			$order->threed_secure->veres_enrolled                  = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_veres_enrolled' );
+			$order->threed_secure->specification_version           = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_specification_version' );
+			$order->threed_secure->directory_server_transaction_id = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_directory_server_transaction_id' );
+			$order->threed_secure->card_type                       = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_card_type' );
+			$order->threed_secure->eci_flag                        = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_eci_flag' );
 		}
 
 		// if testing and a specific amount was set
@@ -409,7 +421,7 @@ class Credit_Card extends Gateway {
 
 		$this->threed_secure
 			->set_gateway( $this )
-			->set_enabled( 'yes' === $this->enable_threed_secure )
+			->set_enabled( $this->is_3d_secure_enabled() )
 			->set_enabled_card_types( (array) $this->threed_secure_card_types )
 			->set_test_mode( $this->is_test_environment() )
 			->init();
@@ -425,7 +437,8 @@ class Credit_Card extends Gateway {
 	 */
 	public function payment_fields() {
 
-		if ( ! is_checkout_pay_page() && 'yes' === $this->enable_threed_secure ) {
+		// TODO: skipping 3DS handling on the "add payment method page" but we need to return to implement this later {JS - 2023-07-27}
+		if ( ! is_add_payment_method_page() && ! is_checkout_pay_page() && $this->is_3d_secure_enabled() ) {
 
 			$description = $this->get_description();
 
@@ -476,10 +489,10 @@ class Credit_Card extends Gateway {
 	 *
 	 * @return bool
 	 */
-	public function validate_fields() {
+	public function validate_fields(): bool {
 
 		// skip validation on the Checkout page if 3D Secure is being used
-		if (  ! is_checkout_pay_page() && 'yes' === $this->enable_threed_secure ) {
+		if (  ! is_checkout_pay_page() && $this->is_3d_secure_enabled() ) {
 			return true;
 		}
 
@@ -524,7 +537,7 @@ class Credit_Card extends Gateway {
 		$is_automatic_renewal = $is_renewal && did_action( 'woocommerce_scheduled_subscription_payment' );
 
 		// special handling if 3D Secure is enabled and we're not already in the middle of the 3DS flow
-		if ( ! $this->is_external_checkout( $order_id ) && ! $is_automatic_renewal && 'yes' === $this->enable_threed_secure && ! is_checkout_pay_page() ) {
+		if ( ! $this->is_external_checkout( $order_id ) && ! $is_automatic_renewal && $this->is_3d_secure_enabled() && ! is_checkout_pay_page() ) {
 
 			$order = wc_get_order( $order_id );
 
@@ -565,24 +578,9 @@ class Credit_Card extends Gateway {
 	 *
 	 * @return bool
 	 */
-	public function is_hosted_gateway() {
+	public function is_hosted_gateway(): bool {
 
-		return 'yes' === $this->enable_threed_secure && ! is_checkout_pay_page();
-	}
-
-
-	/**
-	 * Determines whether Add Payment Method is supported.
-	 *
-	 * Currently unsupported with 3D Secure.
-	 *
-	 * @since 2.3.0
-	 *
-	 * @return bool
-	 */
-	public function supports_add_payment_method() {
-
-		return 'yes' !== $this->enable_threed_secure && parent::supports_add_payment_method();
+		return $this->is_3d_secure_enabled() && ! is_checkout_pay_page();
 	}
 
 
@@ -599,6 +597,19 @@ class Credit_Card extends Gateway {
 		$order = wc_get_order( $order_id );
 
 		return $order && ( self::FEATURE_GOOGLE_PAY == $order->get_created_via() || self::FEATURE_APPLE_PAY == $order->get_created_via() );
+	}
+
+
+	/**
+	 * Determines whether 3D secure is enabled.
+	 *
+	 * @since 2.7.1
+	 *
+	 * @return bool
+	 */
+	public function is_3d_secure_enabled(): bool {
+
+		return 'yes' === $this->enable_threed_secure;
 	}
 
 

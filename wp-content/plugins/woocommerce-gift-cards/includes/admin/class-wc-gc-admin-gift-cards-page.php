@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC_GC_Admin_Gift_Cards_Page Class.
  *
- * @version 1.8.1
+ * @version 1.16.6
  */
 class WC_GC_Admin_Gift_Cards_Page {
 
@@ -241,7 +241,7 @@ class WC_GC_Admin_Gift_Cards_Page {
 				}
 			}
 
-			wp_redirect( admin_url( $edit_url ) );
+			wp_safe_redirect( admin_url( $edit_url ) );
 			exit;
 		}
 	}
@@ -263,7 +263,7 @@ class WC_GC_Admin_Gift_Cards_Page {
 			WC_GC_Admin_Notices::add_notice( __( 'Gift card deleted.', 'woocommerce-gift-cards' ), 'success', true );
 		}
 
-		wp_redirect( admin_url( self::PAGE_URL ) );
+		wp_safe_redirect( admin_url( self::PAGE_URL ) );
 		exit;
 	}
 
@@ -298,7 +298,7 @@ class WC_GC_Admin_Gift_Cards_Page {
 
 		if ( ! isset( $giftcard ) || ! $giftcard ) {
 			WC_GC_Admin_Notices::add_notice( __( 'Gift card not found.', 'woocommerce-gift-cards' ), 'success', true );
-			wp_redirect( admin_url( self::PAGE_URL ) );
+			wp_safe_redirect( admin_url( self::PAGE_URL ) );
 			exit();
 		}
 

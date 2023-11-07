@@ -1,15 +1,15 @@
-# Copyright (C) 2022 SkyVerge
+# Copyright (C) 2023 SkyVerge
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce CyberSource Gateway 2.5.4\n"
+"Project-Id-Version: WooCommerce CyberSource Gateway 2.7.1\n"
 "Report-Msgid-Bugs-To: "
 "https://woocommerce.com/my-account/marketplace-ticket-form/\n"
-"POT-Creation-Date: 2022-08-15 07:39:28+00:00\n"
+"POT-Creation-Date: 2023-10-06 15:25:36+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "An error occurred, please try again or try an alternate form of payment."
 msgstr ""
 
-#: includes/Gateway/ThreeD_Secure/Frontend.php:122
+#: includes/Gateway/ThreeD_Secure/Frontend.php:157
 #: includes/Gateway/Visa_Checkout/Payment_Form.php:99
 #: includes/Legacy/Gateway.php:413
 msgid "An error occurred, please try again or try an alternate form of payment"
@@ -350,15 +350,15 @@ msgstr ""
 msgid "Error executing the migration, please check the debug logs."
 msgstr ""
 
-#: includes/Gateway.php:510
+#: includes/Gateway.php:512
 msgid "Order authorized by CyberSource fraud management."
 msgstr ""
 
-#: includes/Gateway.php:514
+#: includes/Gateway.php:516
 msgid "Order requires manual review in CyberSource Case Management system."
 msgstr ""
 
-#: includes/Gateway.php:518
+#: includes/Gateway.php:520
 msgid ""
 "Order rejected by CyberSource fraud management. View the CyberSource Case "
 "Management system for more details."
@@ -516,11 +516,11 @@ msgstr ""
 msgid "CyberSource Response:"
 msgstr ""
 
-#: includes/Lifecycle.php:313
+#: includes/Lifecycle.php:379
 msgid "Credit Card"
 msgstr ""
 
-#: includes/Lifecycle.php:314
+#: includes/Lifecycle.php:380
 msgid "Pay securely using your credit card."
 msgstr ""
 
@@ -530,31 +530,31 @@ msgstr ""
 msgid "Order changed from %1$s to %2$s in decision manager."
 msgstr ""
 
-#: includes/Plugin.php:255
+#: includes/Plugin.php:256
 msgid "Use the new CyberSource Gateway"
 msgstr ""
 
-#: includes/Plugin.php:262
+#: includes/Plugin.php:263
 msgid "Use CyberSource Legacy"
 msgstr ""
 
-#: includes/Plugin.php:294
+#: includes/Plugin.php:295
 msgid "Configure"
 msgstr ""
 
-#: includes/Plugin.php:298
+#: includes/Plugin.php:299
 msgid "Configure eChecks"
 msgstr ""
 
-#: includes/Plugin.php:302
+#: includes/Plugin.php:303
 msgid "Configure Visa Checkout"
 msgstr ""
 
-#: includes/Plugin.php:306
+#: includes/Plugin.php:307
 msgid "Configure Credit Cards"
 msgstr ""
 
-#: includes/Plugin.php:459
+#: includes/Plugin.php:460
 #. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
 #. <code> tag, %4$s - </code> tag
 msgid ""
@@ -563,21 +563,21 @@ msgid ""
 "configuration to prevent future timeouts."
 msgstr ""
 
-#: includes/Plugin.php:472
+#: includes/Plugin.php:473
 msgid "CyberSource Legacy Gateway is now active."
 msgstr ""
 
-#: includes/Plugin.php:472
+#: includes/Plugin.php:473
 msgid "CyberSource Gateway is now active."
 msgstr ""
 
-#: includes/Plugin.php:481
+#: includes/Plugin.php:482
 msgid ""
 "Migration successful! Your historical orders will now use the new "
 "CyberSource gateway."
 msgstr ""
 
-#: includes/Plugin.php:494
+#: includes/Plugin.php:495
 #. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
 #. <a> tag, %4$s - </a> tag, %5$s - <a> tag, %6$s - </a> tag
 msgid ""
@@ -589,21 +589,21 @@ msgid ""
 "and deactivate the SOP plugin."
 msgstr ""
 
-#: includes/Plugin.php:512
+#: includes/Plugin.php:513
 msgid ""
 "Thank you for installing the WooCommerce CyberSource Gateway! To start "
 "accepting payments, %1$sset your CyberSource API credentials%2$s. Need "
 "help? See the %3$sdocumentation%4$s."
 msgstr ""
 
-#: includes/Plugin.php:546
+#: includes/Plugin.php:547
 msgid ""
 "%1$sHeads up!%2$s CyberSource’s %3$sFlex Microform%4$s feature is now "
 "active on your site to make your checkout more secure. Please %5$scontact "
 "support%6$s with any questions or concerns."
 msgstr ""
 
-#: includes/Plugin.php:594
+#: includes/Plugin.php:595
 #. translators: Placeholders: %1$s - plugin name, %2$s - a
 #. currency/comma-separated list of currencies, %3$s - <a> tag, %4$s - </a> tag
 msgid ""
@@ -615,7 +615,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Plugin.php:659
+#: includes/Plugin.php:660
 msgid "WooCommerce CyberSource"
 msgstr ""
 

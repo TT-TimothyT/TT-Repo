@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Gift Card - Send As Gift product manager.
  *
  * @class    WC_GC_SAG_Gift_Card_Product
- * @version  1.12.0
+ * @version  1.16.4
  */
 class WC_GC_SAG_Gift_Card_Product {
 
@@ -28,8 +28,12 @@ class WC_GC_SAG_Gift_Card_Product {
 		*
 		*/
 
-		// Determine which parts of the Gift Cards form will be visible.
-		add_action( 'woocommerce_before_single_product', array( __CLASS__, 'setup_gift_cards_form' ) );
+		// Conditionally hide Gift Cards form, when "Send as Gift?" is set to never.
+		add_action( 'woocommerce_before_add_to_cart_button', array( __CLASS__, 'maybe_hide_cards_form' ), 5 );
+		add_action( 'woocommerce_before_single_variation', array( __CLASS__, 'maybe_hide_cards_form' ), 5 );
+
+		// Display a checkbox, when "Send as Gift?" is set to "Let customers decide".
+		add_action( 'woocommerce_gc_before_form', array( __CLASS__, 'maybe_print_send_as_a_gift_checkbox' ), 9 );
 
 		// Conditionally show/hide the Gift Cards form based on the value of the "Send as Gift" checkbox.
 		add_action( 'wp_footer',  array( __CLASS__, 'toggle_gift_card_form' ) );
@@ -64,10 +68,43 @@ class WC_GC_SAG_Gift_Card_Product {
 	}
 
 	/**
-	 * Determine which parts of the Gift Cards form will be visible.
+	 * Conditionally hide Gift Cards form, when "Send as Gift?" is set to never.
 	 *
 	 */
-	public static function setup_gift_cards_form() {
+	public static function maybe_hide_cards_form() {
+
+		if ( ! is_product() ) {
+			return;
+		}
+
+		global $product;
+
+		if ( ! is_a( $product, 'WC_Product' ) ) {
+			return;
+		}
+
+		if ( ! WC_GC_Gift_Card_Product::is_gift_card( $product ) ) {
+			return;
+		}
+
+		$send_as_gift = wc_gc_sag_get_send_as_gift_status( $product );
+
+		// Hide Gift Cards form if Gift Cards can never be bought as a gift.
+		if ( 'never' === $send_as_gift ) {
+
+			if ( $product->is_type( 'simple' ) ) {
+				remove_action( 'woocommerce_before_add_to_cart_button', array( 'WC_GC_Gift_Card_Product', 'handle_simple_gift_card_form' ), 9 );
+			} elseif ( $product->is_type( 'variable' ) ) {
+				remove_action( 'woocommerce_before_single_variation', array( 'WC_GC_Gift_Card_Product', 'handle_variable_gift_card_form' ), 9 );
+			}
+		}
+	}
+
+	/**
+	 * Display a checkbox, when "Send as Gift?" is set to "Let customers decide".
+	 *
+	 */
+	public static function maybe_print_send_as_a_gift_checkbox() {
 
 		if ( ! is_product() ) {
 			return;
@@ -88,17 +125,12 @@ class WC_GC_SAG_Gift_Card_Product {
 		// Add "Send as Gift" checkbox.
 		if ( 'maybe' === $send_as_gift ) {
 
-			add_action( 'woocommerce_gc_before_form', array( __CLASS__, 'print_send_as_a_gift_checkbox' ), 9 );
+			self::print_send_as_a_gift_checkbox( $product );
 
 			// Add wrapper around the Gift Cards form.
-	 		add_action( 'woocommerce_gc_before_form', array( __CLASS__, 'add_form_container_pre' ) );
-			add_action( 'woocommerce_gc_after_form', array( __CLASS__, 'add_form_container_after' ) );
-		}
+			self::add_form_container_pre();
 
-		// Hide Gift Cards form if Gift Cards can never be bought as a gift.
-		if ( 'never' === $send_as_gift ) {
-			remove_action( 'woocommerce_before_add_to_cart_button', array( 'WC_GC_Gift_Card_Product', 'handle_simple_gift_card_form' ), 9 );
-			remove_action( 'woocommerce_before_single_variation', array( 'WC_GC_Gift_Card_Product', 'handle_variable_gift_card_form' ), 9 );
+			add_action( 'woocommerce_gc_after_form', array( __CLASS__, 'add_form_container_after' ) );
 		}
 	}
 
@@ -251,7 +283,7 @@ class WC_GC_SAG_Gift_Card_Product {
 			}
 		}
 
-		return $link;
+		return $link; // nosemgrep: audit.php.wp.security.xss.query-arg
 	}
 
 	/**
@@ -421,7 +453,7 @@ class WC_GC_SAG_Gift_Card_Product {
 			}
 		}
 
-		return $link;
+		return $link; // nosemgrep: audit.php.wp.security.xss.query-arg
 	}
 
 	/**

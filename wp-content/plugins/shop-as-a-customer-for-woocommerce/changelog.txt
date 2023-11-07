@@ -1,5 +1,41 @@
 ** FME Addons: Shop as a Customer for WooCommerce **
 
+2023-10-26 - version 1.2.7
+*Fixed bug causing switched account to roll back to first admin account instead of their own
+
+2023-09-05 - version 1.2.6
+* Added funtionality to search users by username
+
+2023-07-21 - version 1.2.5
+* Fixed issue related to customer switching restriction 
+
+2023-07-18 - version 1.2.4
+* Added vulnerabilities fixes
+
+2023-07-11 - version 1.2.3
+* Added wordpress multisite compatibility
+
+2023-07-04 - version 1.2.2
+* Bug fixes and Improvements
+* Resolved HPOS compatibility warning issues
+
+2023-06-21 - version 1.2.1
+* Settings not working issue resolved
+
+2023-06-20 - version 1.2.0
+* Resolved compatibility issues
+
+2023-05-09 - version 1.1.9
+* Minor bug fixes
+
+2023-04-19 - version 1.1.8
+* Added compatibility fix for php8 : Null value exceptions on array count
+* Minor vulnerability issues fixes
+
+2023-03-09 - version 1.1.7
+* Minor bug fixes and improvements
+* Fixed string translation issues
+
 2023-02-08 - version 1.1.6
 * Site crashing issue resolved
 
@@ -8,7 +44,6 @@
 * Added compatibility fixes
 
 2022-12-20 - version 1.1.4
-
 * Minor bug fixes and improvements
 
 2022-10-26 - version 1.1.3

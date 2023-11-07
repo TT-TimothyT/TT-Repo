@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Gift Card emails manager.
  *
  * @class    WC_GC_Emails
- * @version  1.9.0
+ * @version  1.16.0
  */
 class WC_GC_Emails {
 
@@ -239,7 +239,7 @@ class WC_GC_Emails {
 				false,
 				WC_GC()->get_plugin_path() . '/templates/'
 			);
-		echo ob_get_clean();
+		echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/*

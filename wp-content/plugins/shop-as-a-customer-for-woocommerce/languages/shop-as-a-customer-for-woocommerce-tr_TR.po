@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: FME Addons: Shop as a Customer for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-13 09:10+0000\n"
-"PO-Revision-Date: 2021-04-13 09:12+0000\n"
+"PO-Revision-Date: 2023-03-08 11:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -15,141 +15,167 @@ msgstr ""
 "X-Loco-Version: 2.5.2; wp-5.7\n"
 "X-Domain: shop-as-a-customer-for-woocommerce"
 
-#: shop-as-a-customer-for-woocommerce.php:175
-#: shop-as-a-customer-for-woocommerce.php:1172
-msgid "Shop as Customer"
-msgstr "Müşteri olarak alışveriş yapın"
-
-#: shop-as-a-customer-for-woocommerce.php:195
-msgid "Your settings has been saved!"
-msgstr "Ayarlarınız kaydedildi!"
-
-#: shop-as-a-customer-for-woocommerce.php:197
-msgid "Switch To Customers"
-msgstr "Müşterilere Geç"
-
-#: shop-as-a-customer-for-woocommerce.php:198
-msgid "Customer Logs"
-msgstr "Müşteri Günlükleri"
-
-#: shop-as-a-customer-for-woocommerce.php:199
-msgid "Settings"
-msgstr "Ayarlar"
-
-#: shop-as-a-customer-for-woocommerce.php:204
-msgid "Select Role(s)"
-msgstr "Rol(ler) i seçin)"
-
-#: shop-as-a-customer-for-woocommerce.php:206
-msgid ""
-"Only Selected Roles will be allowed to switch & View orders. If no role is "
-"selected all roles will be considered as selected"
-msgstr ""
-"Sadece Seçili Rolleri geçiş ve emir Görüntülemek izin verilecektir. Hiçbir "
-"rol seçilmezse, tüm roller seçili olarak kabul edilir"
-
-#: shop-as-a-customer-for-woocommerce.php:251
-msgid "By Default Order Status During Offline Payment"
-msgstr "Çevrimdışı Ödeme Sırasında Varsayılan Sipariş Durumuna Göre"
-
-#: shop-as-a-customer-for-woocommerce.php:267
-msgid "Save Settings"
-msgstr "Ayarları Kaydet"
-
-#: shop-as-a-customer-for-woocommerce.php:276
-#: shop-as-a-customer-for-woocommerce.php:344
-#: shop-as-a-customer-for-woocommerce.php:467
-#: shop-as-a-customer-for-woocommerce.php:554
-msgid "ID"
-msgstr "KİMLİK"
-
-#: shop-as-a-customer-for-woocommerce.php:282
-#: shop-as-a-customer-for-woocommerce.php:350
-msgid "Name"
-msgstr "İsim"
-
-#: shop-as-a-customer-for-woocommerce.php:288
-#: shop-as-a-customer-for-woocommerce.php:356
-msgid "Email"
-msgstr "Posta"
-
-#: shop-as-a-customer-for-woocommerce.php:293
-#: shop-as-a-customer-for-woocommerce.php:361
+#: shop-as-a-customer-for-woocommerce.php:559
+#: shop-as-a-customer-for-woocommerce.php:585
 msgid "Action"
 msgstr "Aksiyon"
 
-#: shop-as-a-customer-for-woocommerce.php:328
-#: shop-as-a-customer-for-woocommerce.php:1327
-msgid "Switch"
-msgstr "Değiştirmek"
+#: shop-as-a-customer-for-woocommerce.php:497
+msgid "By Default Order Status During Offline Payment"
+msgstr "Çevrimdışı Ödeme Sırasında Varsayılan Sipariş Durumuna Göre"
 
-#: shop-as-a-customer-for-woocommerce.php:329
-#: shop-as-a-customer-for-woocommerce.php:1330
-msgid "View Orders"
-msgstr "Siparişleri Görüntüle"
-
-#: shop-as-a-customer-for-woocommerce.php:330
-#: shop-as-a-customer-for-woocommerce.php:1332
-msgid "Edit Profile"
-msgstr "Profili Düzenle"
-
-#: shop-as-a-customer-for-woocommerce.php:473
-#: shop-as-a-customer-for-woocommerce.php:560
-msgid "Logged in At"
-msgstr "Oturum açmış"
-
-#: shop-as-a-customer-for-woocommerce.php:479
-#: shop-as-a-customer-for-woocommerce.php:566
-msgid "Customer"
-msgstr "Müşteri"
-
-#: shop-as-a-customer-for-woocommerce.php:484
-#: shop-as-a-customer-for-woocommerce.php:571
-msgid "Products"
-msgstr "Ürünler"
-
-#: shop-as-a-customer-for-woocommerce.php:489
-#: shop-as-a-customer-for-woocommerce.php:576
-msgid "Message On Whatsapp"
-msgstr "Whatsapp'ta Mesaj"
-
-#: shop-as-a-customer-for-woocommerce.php:930
-#: shop-as-a-customer-for-woocommerce.php:940
-msgid "compress to right"
-msgstr "sağa sıkıştır"
-
-#: shop-as-a-customer-for-woocommerce.php:947
-msgid "You are now login as "
-msgstr "Şimdi şu şekilde giriş yapıyorsunuz "
-
-#: shop-as-a-customer-for-woocommerce.php:955
-msgid "Switch Back "
-msgstr "Geçin  "
-
-#: shop-as-a-customer-for-woocommerce.php:957
+#: shop-as-a-customer-for-woocommerce.php:1147
 msgid "compress to left"
 msgstr "sola sıkıştır"
 
-#: shop-as-a-customer-for-woocommerce.php:1028
-msgid "Switch Back And View Orders"
-msgstr "Geri Dönün Ve Siparişleri Görüntüleyin"
+#: shop-as-a-customer-for-woocommerce.php:1120
+#: shop-as-a-customer-for-woocommerce.php:1130
+msgid "compress to right"
+msgstr "sağa sıkıştır"
 
-#: shop-as-a-customer-for-woocommerce.php:1181
-msgid "No Records found"
-msgstr "Hiçbir Kayıt bulundu"
+#: shop-as-a-customer-for-woocommerce.php:723
+#: shop-as-a-customer-for-woocommerce.php:753
+msgid "Customer"
+msgstr "Müşteri"
 
-#: shop-as-a-customer-for-woocommerce.php:1182
-msgid "next"
-msgstr "sonraki"
+#: shop-as-a-customer-for-woocommerce.php:396
+msgid "Customer Logs"
+msgstr "Müşteri Günlükleri"
 
-#: shop-as-a-customer-for-woocommerce.php:1337
-msgid "Recent Customer:"
-msgstr "Son Müşteri:"
+#: shop-as-a-customer-for-woocommerce.php:1560
+msgid "Edit Profile"
+msgstr "Profili Düzenle"
+
+#: shop-as-a-customer-for-woocommerce.php:554
+#: shop-as-a-customer-for-woocommerce.php:580
+msgid "Email"
+msgstr "E-posta"
 
 #. Name of the plugin
 msgid "FME Addons: Shop as a Customer for WooCommerce"
-msgstr "FME eklentileri: WooCommerce için müşteri olarak alışveriş yapın"
+msgstr "FME Eklentileri: WooCommerce için Müşteri Olarak Alışveriş Yapın"
 
 #. Author of the plugin
 msgid "fmeaddons"
-msgstr "fmeaddonsname"
+msgstr "fmeaddons"
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://www.fmeaddons.com/"
+msgstr "https://www.fmeaddons.com/"
+
+#: shop-as-a-customer-for-woocommerce.php:542
+#: shop-as-a-customer-for-woocommerce.php:568
+#: shop-as-a-customer-for-woocommerce.php:711
+#: shop-as-a-customer-for-woocommerce.php:741
+msgid "ID"
+msgstr "İD"
+
+#: shop-as-a-customer-for-woocommerce.php:717
+#: shop-as-a-customer-for-woocommerce.php:747
+msgid "Logged in At"
+msgstr "Şurada giriş yaptı:"
+
+#: shop-as-a-customer-for-woocommerce.php:733
+#: shop-as-a-customer-for-woocommerce.php:763
+msgid "Message On Whatsapp"
+msgstr "Whatsapp'ta Mesaj"
+
+#: shop-as-a-customer-for-woocommerce.php:548
+#: shop-as-a-customer-for-woocommerce.php:574
+msgid "Name"
+msgstr "İsim"
+
+#: shop-as-a-customer-for-woocommerce.php:1403
+msgid "next"
+msgstr "Sonraki"
+
+#: shop-as-a-customer-for-woocommerce.php:1402
+msgid "No Records found"
+msgstr "Kayıt bulunamadı"
+
+#: shop-as-a-customer-for-woocommerce.php:728
+#: shop-as-a-customer-for-woocommerce.php:758
+msgid "Products"
+msgstr "Ürünler"
+
+#: shop-as-a-customer-for-woocommerce.php:1565
+msgid "Recent Customer:"
+msgstr "Son Müşteri:"
+
+#: shop-as-a-customer-for-woocommerce.php:523
+msgid "Save Settings"
+msgstr "Ayarları kaydet"
+
+#: shop-as-a-customer-for-woocommerce.php:453
+msgid "Select Role(s)"
+msgstr "Rol(ler) seçin"
+
+#: shop-as-a-customer-for-woocommerce.php:421
+msgid "Select Tab to Switch as Customer/Guest"
+msgstr "Müşteri/Misafir Olarak Geçiş Yapmak İçin Sekmeyi Seçin"
+
+#: shop-as-a-customer-for-woocommerce.php:402
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: shop-as-a-customer-for-woocommerce.php:527
+msgid "Settings saved successfully"
+msgstr "Ayarlar başarıyla kaydedildi"
+
+#: shop-as-a-customer-for-woocommerce.php:1393
+msgid "Shop as Customer"
+msgstr "Müşteri Olarak Alışveriş Yapın"
+
+#: shop-as-a-customer-for-woocommerce.php:527
+msgid "Success!"
+msgstr "Başarı!"
+
+#: shop-as-a-customer-for-woocommerce.php:1555
+msgid "Switch"
+msgstr "Anahtar"
+
+#: shop-as-a-customer-for-woocommerce.php:1145
+msgid "Switch Back "
+msgstr "Geri Dön"
+
+#. Description of the plugin
+msgid ""
+"Switch to any customer profile from administration panel and use WooCommerce "
+"store as customer, Create orders  \tand Edit user profile."
+msgstr ""
+"Yönetim panelinden herhangi bir müşteri profiline geçin ve WooCommerce "
+"mağazasını müşteri olarak kullanın, Sipariş oluşturun ve Kullanıcı profilini "
+"düzenleyin."
+
+#: shop-as-a-customer-for-woocommerce.php:1358
+msgid "Switch To Customer"
+msgstr "Müşteriye Geç"
+
+#: shop-as-a-customer-for-woocommerce.php:1365
+msgid "switch to customer"
+msgstr "müşteriye geç"
+
+#: shop-as-a-customer-for-woocommerce.php:390
+msgid "Switch To Customers"
+msgstr "Müşterilere Geç"
+
+#: shop-as-a-customer-for-woocommerce.php:1344
+msgid "Switch To Guest"
+msgstr "Misafire Geç"
+
+#: shop-as-a-customer-for-woocommerce.php:1351
+msgid "switch to Guest"
+msgstr "misafire geç"
+
+#: shop-as-a-customer-for-woocommerce.php:1558
+msgid "View Orders"
+msgstr "Siparişleri Görüntüle"
+
+#: shop-as-a-customer-for-woocommerce.php:1137
+msgid "You are now login as "
+msgstr "şimdi şu şekilde giriş yapıyorsunuz:"
+
+#: shop-as-a-customer-for-woocommerce.php:376
+msgid "Your settings has been saved!"
+msgstr "Ayarlarınız kaydedildi!"

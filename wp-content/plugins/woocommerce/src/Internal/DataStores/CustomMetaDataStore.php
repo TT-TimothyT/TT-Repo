@@ -78,8 +78,10 @@ abstract class CustomMetaDataStore {
 	 *
 	 * @param  WC_Data  $object WC_Data object.
 	 * @param  stdClass $meta (containing at least ->id).
+	 *
+	 * @return bool
 	 */
-	public function delete_meta( &$object, $meta ) {
+	public function delete_meta( &$object, $meta ) : bool {
 		global $wpdb;
 
 		if ( ! isset( $meta->id ) ) {
@@ -97,14 +99,11 @@ abstract class CustomMetaDataStore {
 	 *
 	 * @param  WC_Data  $object WC_Data object.
 	 * @param  stdClass $meta (containing ->key and ->value).
-	 * @return int meta ID
+	 *
+	 * @return int|false meta ID
 	 */
 	public function add_meta( &$object, $meta ) {
 		global $wpdb;
-
-		if ( ! is_a( $meta, 'WC_Meta_Data' ) ) {
-			return false;
-		}
 
 		$db_info = $this->get_db_info();
 
@@ -131,8 +130,10 @@ abstract class CustomMetaDataStore {
 	 *
 	 * @param  WC_Data  $object WC_Data object.
 	 * @param  stdClass $meta (containing ->id, ->key and ->value).
+	 *
+	 * @return bool
 	 */
-	public function update_meta( &$object, $meta ) {
+	public function update_meta( &$object, $meta ) : bool {
 		global $wpdb;
 
 		if ( ! isset( $meta->id ) || empty( $meta->key ) ) {
@@ -190,6 +191,42 @@ abstract class CustomMetaDataStore {
 
 		if ( isset( $meta->meta_value ) ) {
 			$meta->meta_value = maybe_unserialize( $meta->meta_value );
+		}
+
+		return $meta;
+	}
+
+	/**
+	 * Retrieves metadata by meta key.
+	 *
+	 * @param \WC_Abstract_Order $object Object ID.
+	 * @param string             $meta_key Meta key.
+	 *
+	 * @return \stdClass|bool Metadata object or FALSE if not found.
+	 */
+	public function get_metadata_by_key( &$object, string $meta_key ) {
+		global $wpdb;
+
+		$db_info = $this->get_db_info();
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$meta = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT {$db_info['meta_id_field']}, meta_key, meta_value, {$db_info['object_id_field']} FROM {$db_info['table']} WHERE meta_key = %s AND {$db_info['object_id_field']} = %d",
+				$meta_key,
+				$object->get_id(),
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( empty( $meta ) ) {
+			return false;
+		}
+
+		foreach ( $meta as $row ) {
+			if ( isset( $row->meta_value ) ) {
+				$row->meta_value = maybe_unserialize( $row->meta_value );
+			}
 		}
 
 		return $meta;

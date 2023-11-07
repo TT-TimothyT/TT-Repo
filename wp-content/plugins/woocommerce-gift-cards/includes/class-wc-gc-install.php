@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Handles installation and updating tasks.
  *
  * @class    WC_GC_Install
- * @version  1.10.0
+ * @version  1.15.4
  */
 class WC_GC_Install {
 
@@ -284,6 +284,10 @@ class WC_GC_Install {
 	public static function create_events() {
 		if ( ! wp_next_scheduled( 'wc_gc_daily' ) ) {
 			wp_schedule_event( time() + 10, 'daily', 'wc_gc_daily' );
+		}
+
+		if ( ! wp_next_scheduled( 'wc_gc_hourly' ) ) {
+			wp_schedule_event( time() + 10, 'hourly', 'wc_gc_hourly' );
 		}
 	}
 

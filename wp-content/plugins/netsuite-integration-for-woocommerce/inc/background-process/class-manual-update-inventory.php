@@ -17,7 +17,7 @@ class Manually_Update_Inventory extends WP_Background_Process {
 		error_log(print_r($old_count), true);
 		$new_count = $old_count + 1;
 		error_log(print_r($new_count), true);
-		update_option('processed_products', $new_count);
+		update_option('processed_products', $new_count, false);
 		return false;
 	}
 

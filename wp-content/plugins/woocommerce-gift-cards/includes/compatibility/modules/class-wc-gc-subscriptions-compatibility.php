@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC Subscriptions integration.
  *
- * @version 1.8.1
+ * @version 1.16.6
  */
 class WC_GC_WCS_Compatibility {
 
@@ -161,7 +161,7 @@ class WC_GC_WCS_Compatibility {
 				} else {
 					$has_errors = true;
 					/* translators: %1$s: Gift Card code %2$d: order ID */
-					$subscription->add_order_note( sprintf( __( 'Failed to use gift card code %1$s to pay for renewal order #%2$d.', 'woocommerce-gift-cards' ), $giftcard->get_code(), $renewal_order->get_id() ), false, false );
+					$subscription->add_order_note( sprintf( __( 'Failed to use gift card code <span class="woocommerce-giftcards-admin-note-code">%1$s</span> to pay for renewal order #%2$d.', 'woocommerce-gift-cards' ), $giftcard->get_code(), $renewal_order->get_id() ), false, false );
 				}
 			}
 		}
@@ -227,10 +227,17 @@ class WC_GC_WCS_Compatibility {
 					$toggle_classes = array( 'subscription-auto-renew-toggle', 'subscription-auto-renew-toggle--hidden' );
 
 					if ( 'yes' !== $current_setting ) {
-						$toggle_label     = __( 'Use gift cards balance to pay for renewals', 'woocommerce-gift-cards' );
-						$toggle_classes[] = 'subscription-auto-renew-toggle--off';
+						$toggle_label      = __( 'Use gift cards balance to pay for renewals', 'woocommerce-gift-cards' );
+						$toggle_classes[]  = 'subscription-auto-renew-toggle--off';
+						$is_duplicate_site = false;
 
-						if ( WC_Subscriptions::is_duplicate_site() ) {
+						if ( version_compare( WC_Subscriptions::$version, '4.0.0', '<' ) ) {
+							$is_duplicate_site = (bool) WC_Subscriptions::is_duplicate_site();
+						} else {
+							$is_duplicate_site = (bool) WCS_Staging::is_duplicate_site();
+						}
+
+						if ( $is_duplicate_site ) {
 							$toggle_classes[] = 'subscription-auto-renew-toggle--disabled';
 						}
 					} else {
@@ -243,7 +250,7 @@ class WC_GC_WCS_Compatibility {
 		</tr>
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+		echo wp_kses_post( $html );
 	}
 
 	/**
@@ -412,7 +419,7 @@ class WC_GC_WCS_Compatibility {
 		</p>
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**

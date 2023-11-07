@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Component } from 'react';
+import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import isShallowEqual from '@wordpress/is-shallow-equal';
 
@@ -9,7 +9,7 @@ import isShallowEqual from '@wordpress/is-shallow-equal';
  * Internal dependencies
  */
 import { getReviews } from '../../blocks/reviews/utils';
-import { formatError } from '../utils/errors.js';
+import { formatError } from '../utils/errors';
 
 /**
  * HOC that queries reviews for a component.
@@ -92,13 +92,8 @@ const withReviews = ( OriginalComponent ) => {
 		}
 
 		getArgs( reviewsToSkip ) {
-			const {
-				categoryIds,
-				order,
-				orderby,
-				productId,
-				reviewsToDisplay,
-			} = this.props;
+			const { categoryIds, order, orderby, productId, reviewsToDisplay } =
+				this.props;
 			const args = {
 				order,
 				orderby,
@@ -214,9 +209,8 @@ const withReviews = ( OriginalComponent ) => {
 		}
 	}
 
-	const {
-		displayName = OriginalComponent.name || 'Component',
-	} = OriginalComponent;
+	const { displayName = OriginalComponent.name || 'Component' } =
+		OriginalComponent;
 	WrappedComponent.displayName = `WithReviews( ${ displayName } )`;
 
 	return WrappedComponent;

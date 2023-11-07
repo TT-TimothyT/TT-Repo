@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC_GC_Admin_Exporters Class.
  *
- * @version 1.6.0
+ * @version 1.15.1
  */
 class WC_GC_Admin_Exporters {
 
@@ -22,16 +22,13 @@ class WC_GC_Admin_Exporters {
 	 * Constructor.
 	 */
 	public function __construct() {
-		if ( ! $this->export_allowed() ) {
-			return;
-		}
 
 		add_action( 'admin_init', array( $this, 'download_export_file' ) );
 
 		// Process step.
 		add_action( 'wp_ajax_woocommerce_gc_do_ajax_giftcards_export', array( $this, 'do_ajax_export' ) );
 		// Render export modal.
-		add_action( 'wp_ajax_wc_gc_export_modal_html', array( __CLASS__, 'export_modal_html' ) );
+		add_action( 'wp_ajax_wc_gc_export_modal_html', array( $this, 'export_modal_html' ) );
 		// Add JS template.
 		add_action( 'admin_footer', array( __CLASS__, 'add_js_template' ) );
 	}
@@ -42,13 +39,19 @@ class WC_GC_Admin_Exporters {
 	 * @return bool Whether current user can perform export.
 	 */
 	protected function export_allowed() {
-		return current_user_can( 'manage_woocommerce' ) && current_user_can( 'export' );
+		return current_user_can( 'manage_woocommerce' ) && current_user_can( 'export' ) && ! wc_gc_mask_codes( 'admin' );
 	}
 
 	/**
 	 * Serve the generated file.
 	 */
 	public function download_export_file() {
+
+		// If accessed directly will echo "The link you followed has expired".
+		if ( ! $this->export_allowed() ) {
+			return;
+		}
+
 		if ( isset( $_GET[ 'action' ], $_GET[ 'nonce' ] ) && wp_verify_nonce( wc_clean( $_GET[ 'nonce' ] ), 'giftcard-csv' ) && 'download_giftcard_csv' === wc_clean( $_GET[ 'action' ] ) ) {
 			include_once WC_GC_ABSPATH . 'includes/admin/export/class-wc-gc-csv-exporter.php';
 			$exporter = new WC_GC_CSV_Exporter();
@@ -68,7 +71,7 @@ class WC_GC_Admin_Exporters {
 		check_ajax_referer( 'wc-gc-giftcards-export', 'security' );
 
 		if ( ! $this->export_allowed() ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient privileges to export giftcards.', 'woocommerce-gift-cards' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient privileges to export gift cards.', 'woocommerce-gift-cards' ) ) );
 		}
 
 		include_once WC_GC_ABSPATH . 'includes/admin/export/class-wc-gc-csv-exporter.php';
@@ -91,7 +94,7 @@ class WC_GC_Admin_Exporters {
 			array(
 				'nonce'    => wp_create_nonce( 'giftcard-csv' ),
 				'action'   => 'download_giftcard_csv',
-				'filename' => $exporter->get_filename()
+				'filename' => $exporter->get_filename(),
 			)
 		);
 
@@ -125,14 +128,24 @@ class WC_GC_Admin_Exporters {
 	 *
 	 * @return void
 	 */
-	public static function export_modal_html() {
+	public function export_modal_html() {
 
 		$failure = array(
-			'result' => 'failure'
+			'result' => 'failure',
 		);
 
 		if ( ! check_ajax_referer( 'wc-gc-modal-giftcards-export', 'security', false ) ) {
 			wp_send_json( $failure );
+		}
+
+		if ( ! $this->export_allowed() ) {
+			// Result is "success" on purpose, in order to render the message.
+			$response = array(
+				'result' => 'success',
+				'html'   => __( 'Insufficient privileges to export gift cards. Please contact the site administrator.', 'woocommerce-gift-cards' ),
+			);
+
+			wp_send_json( $response );
 		}
 
 		ob_start();
@@ -141,7 +154,7 @@ class WC_GC_Admin_Exporters {
 
 		$response = array(
 			'result' => 'success',
-			'html'   => $html
+			'html'   => $html,
 		);
 
 		wp_send_json( $response );

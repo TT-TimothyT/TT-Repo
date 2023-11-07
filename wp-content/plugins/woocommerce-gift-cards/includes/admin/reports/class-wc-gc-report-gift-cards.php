@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Base Report Class for GCs.
  *
  * @class    WC_GC_Admin_Report
- * @version  1.0.0
+ * @version  1.16.0
  */
 class WC_GC_Report_Gift_Cards extends WC_Admin_Report {
 
@@ -302,7 +302,7 @@ class WC_GC_Report_Gift_Cards extends WC_Admin_Report {
 							points: { show: true, radius: 5, lineWidth: 2, fillColor: '#fff', fill: true },
 							lines: { show: true, lineWidth: 5, fill: false },
 							shadowSize: 0,
-							<?php echo $this->get_currency_tooltip(); ?>
+							<?php echo $this->get_currency_tooltip(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						},
 						{
 							label: "<?php echo esc_js( __( 'Used balance', 'woocommerce-gift-cards' ) ); ?>",
@@ -312,7 +312,7 @@ class WC_GC_Report_Gift_Cards extends WC_Admin_Report {
 							points: { show: true, radius: 5, lineWidth: 2, fillColor: '#fff', fill: true },
 							lines: { show: true, lineWidth: 2, fill: false },
 							shadowSize: 0,
-							<?php echo $this->get_currency_tooltip(); ?>
+							<?php echo $this->get_currency_tooltip(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						},
 						{
 							label: "<?php echo esc_js( __( 'Expired balance', 'woocommerce-gift-cards' ) ); ?>",
@@ -322,7 +322,7 @@ class WC_GC_Report_Gift_Cards extends WC_Admin_Report {
 							points: { show: true, radius: 5, lineWidth: 2, fillColor: '#fff', fill: true },
 							lines: { show: true, lineWidth: 2, fill: false },
 							shadowSize: 0,
-							<?php echo $this->get_currency_tooltip(); ?>
+							<?php echo $this->get_currency_tooltip(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						}
 					];
 

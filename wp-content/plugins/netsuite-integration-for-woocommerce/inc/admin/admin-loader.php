@@ -6,6 +6,8 @@ foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
 	require_once $filename;
 }
 require_once TMWNI_DIR . 'inc/common.php';
+require_once TMWNI_DIR . 'inc/helper.php';
+
 
 use NetSuite\Classes\GetServerTimeRequest;
 use NetSuite\NetSuiteService;
@@ -19,6 +21,9 @@ use NetSuite\Classes\GetSelectValueFieldDescription;
 use NetSuite\Classes\getSelectValueRequest;
 use NetSuite\Classes\RecordType;
 use NetSuite\Classes\PriceLevelSearchBasic;
+use NetSuite\Classes\SalesTaxItemSearchBasic;
+use Automattic\WooCommerce\Utilities\OrderUtil;
+
 
 
 
@@ -123,27 +128,21 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		add_action( 'admin_enqueue_scripts', array($this,'TMWNIAdminScript'));
 
 
-		
+		//ajax for verifying amazon FBA settings
+		add_action('admin_post_save_tm_ns_settings', array($this, 'tmwniHanldeActions'));
 
-			//ajax for saving plugin admin settings
+
 		add_action('wp_ajax_load_tmwni_logs', array($this, 'getLogs'));
 
 
-
 		add_action('wp_ajax_tm_clear_customer_ns_id', array($this, 'tmwniDeleteValue'));
-
-
-
-
-
-			//ajax for verifying amazon FBA settings
-		add_action('admin_post_save_tm_ns_settings', array($this, 'tmwniHanldeActions'));
 
 
 		add_action('admin_post_import_export_tm_ns', array($this, 'tmwniHanldeExportActions'));
 
 
 		add_action('wp_ajax_import_netsuite_settings', array($this, 'ImportNetsuiteSettings'));
+
 
 
 		add_action('add_meta_boxes', array($this, 'add_meta_box'));
@@ -165,7 +164,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 		add_action( 'edit_user_profile', array($this, 'extra_user_profile_fields' ) );
 
-		add_action('wp_ajax_tm_validate_ns_credentials', array($this, 'validateCredentials'));
+		
 
 		add_action('wp_ajax_order_logs', array($this, 'getOrderLogs'));
 
@@ -173,6 +172,8 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		
 
 		if (TMWNI_Settings::areCredentialsDefined()) {
+
+			add_action('wp_ajax_tm_validate_ns_credentials', array($this, 'validateCredentials'));
 
 
 			add_action('wp_ajax_tm_load_ns_promo_feilds_value', array($this, 'loadPromoFields'));
@@ -182,6 +183,10 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 			add_action('wp_ajax_tm_load_ns_price_levels', array($this, 'loadNsPriceLevels'));
+
+			add_action('wp_ajax_tm_load_ns_tax_code', array($this, 'saveNetsuiteTaxCodes'));
+
+			add_action('wp_ajax_tm_load_ns_price_currency', array($this, 'loadNsPriceCurrency'));
 
 
 			
@@ -197,240 +202,245 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 	public function getOrderLogs() {
 		global $wpdb; 
 		global $TMWNI_OPTIONS;
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			echo json_encode(array(
-				'draw' => 0,
-				'recordsTotal' => 0,
-				'recordsFiltered' => 0,
-				'data'=>0,
-			)); 
-		}
-		if (!empty($_POST)) {
-			$request = $_POST;
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
 
-			require_once TMWNI_DIR . '/inc/datatables.php';
+			if (!empty($_POST)) {
+				$request = $_POST;
 
-			$datatables = new Datatables();
+				require_once TMWNI_DIR . '/inc/datatables.php';
 
-			$columns = array(
-				array('db' => 'orderlog.id as id',
-					'dt' => 0,
-					'db_ref' => 'id'
-				),
+				$datatables = new Datatables();
 
-				array(
-					'db' => 'log.woo_object_id as woo_object_id',
-					'dt' => 1,
-					'db_ref' => 'woo_object_id'
-				),
-				array('db' => 'orderlog.created_at as created_at',
-					'dt' => 2,
-					'db_ref' => 'created_at'
-				),
-				array(
-					'db' => 'orderlog.status as status',
-					'dt' => 3,
-					'db_ref' => 'status'
-				),
-				array(
-					'db' => 'orderlog.ns_order_status as ns_order_status',
-					'dt' => 4,
-					'db_ref' => 'ns_order_status'
-				),
-				array(
-					'db' => 'orderlog.ns_order_internal_id as ns_order_internal_id',
-					'dt' => 5,
-					'db_ref' => 'ns_order_internal_id'
-				),
-				array(
-					'db' => 'orderlog.notes as notes',
-					'dt' => 6,
-					'db_ref' => 'notes'
-				),
-				
-			);
+				$columns = array(
+					array('db' => 'orderlog.id as id',
+						'dt' => 0,
+						'db_ref' => 'id'
+					),
+
+					array(
+						'db' => 'log.woo_object_id as woo_object_id',
+						'dt' => 1,
+						'db_ref' => 'woo_object_id'
+					),
+					array('db' => 'orderlog.created_at as created_at',
+						'dt' => 2,
+						'db_ref' => 'created_at'
+					),
+					array(
+						'db' => 'orderlog.status as status',
+						'dt' => 3,
+						'db_ref' => 'status'
+					),
+					array(
+						'db' => 'orderlog.ns_order_status as ns_order_status',
+						'dt' => 4,
+						'db_ref' => 'ns_order_status'
+					),
+					array(
+						'db' => 'orderlog.ns_order_internal_id as ns_order_internal_id',
+						'dt' => 5,
+						'db_ref' => 'ns_order_internal_id'
+					),
+					array(
+						'db' => 'orderlog.notes as notes',
+						'dt' => 6,
+						'db_ref' => 'notes'
+					),
+
+				);
 
 
-			$limit = $datatables->limit($request, $columns);
-			$order = $datatables->order($request, $columns);
-			$where = $datatables->filter($request, $columns, $binding);
-			$wpdb->netsuite_order_logs = $wpdb->prefix . 'tm_woo_netsuite_auto_sync_order_status';
+				$limit = $datatables->limit($request, $columns);
+				$order = $datatables->order($request, $columns);
+				$where = $datatables->filter($request, $columns, $binding);
+				$wpdb->netsuite_order_logs = $wpdb->prefix . 'tm_woo_netsuite_auto_sync_order_status';
 
 
-			$limit_arr = explode(' ', $limit);
-			$order_arr = explode(' ', $order);
+				$limit_arr = explode(' ', $limit);
+				$order_arr = explode(' ', $order);
 
-			
+
 
 
 
 
 
 		//ID base datatable
-			if ('id'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.woo_object_id  LIKE %d) ORDER BY id ASC limit %d, %d", $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY id ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('id'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.woo_object_id  LIKE %d) ORDER BY id ASC limit %d, %d", $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY id ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
-			if ('id'==$order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.woo_object_id  LIKE %d) ORDER BY id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY id DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('id'==$order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.woo_object_id  LIKE %d) ORDER BY id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY id DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
-			
+
 
 
 		//By Order Id
-			if ('woo_object_id'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY woo_object_id ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY woo_object_id ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('woo_object_id'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY woo_object_id ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY woo_object_id ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
-			if ('woo_object_id'==$order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY woo_object_id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY woo_object_id DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				}
-				
-			}		
+				if ('woo_object_id'==$order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY woo_object_id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY woo_object_id DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
+				}		
 
 
 			//By Created Date
-			if ('created_at'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY created_at ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY created_at ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('created_at'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY created_at ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY created_at ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
 				}
-			}
-			if ('created_at'== $order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY created_at DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY created_at DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('created_at'== $order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY created_at DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY created_at DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
 
 
 			//By Order Status
-			if ('ns_order_status'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY ns_order_status ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY ns_order_status ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('ns_order_status'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY ns_order_status ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY ns_order_status ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
-			if ('ns_order_status'==$order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY ns_order_status DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY ns_order_status DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('ns_order_status'==$order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.status  LIKE %s OR orderlog.notes  LIKE %s) ORDER BY ns_order_status DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY ns_order_status DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
+				}			
+
+
+				if (isset($TMWNI_OPTIONS['ns_account']) && !empty($TMWNI_OPTIONS['ns_account'])) {
+					$ns_account_id = $TMWNI_OPTIONS['ns_account'];
 				}
-				
-			}			
-
-
-			$ns_account_id = $TMWNI_OPTIONS['ns_account'];
 
 
 
-			$data_filter = $wpdb->get_results('SELECT FOUND_ROWS() as filtered_rows');
+				$data_filter = $wpdb->get_results('SELECT FOUND_ROWS() as filtered_rows');
 				//total filtered records
-			$recordsFiltered = $data_filter[0]->filtered_rows;
+				$recordsFiltered = $data_filter[0]->filtered_rows;
 
-			$recordsTotal = $recordsFiltered;
-
-
-
-			$site_url = get_site_url();
-
-			$records = array();
-			foreach ($data as $key => $record) {
-
-				$order_link =  $site_url . '/wp-admin/post.php?post=' . $record['woo_object_id'] . '&amp;action=edit';
-				$ns_explode_account_id = explode('_' , ( $ns_account_id ));
-				$ns_emplode_account_id = implode('-', $ns_explode_account_id);
-				
+				$recordsTotal = $recordsFiltered;
 
 
 
-				$rows = array();
-				$rows[] = $record['id'];
-				$rows[] = $record['woo_object_id'];
-				$rows[] = $record['created_at'];
-				$rows[] = ( !empty($record['ns_order_internal_id']) ) ? '<a target="_blank" href="https://' . $ns_emplode_account_id . '.app.netsuite.com/app/accounting/transactions/salesord.nl?id=' . $record['ns_order_internal_id'] . '&amp;whence=" class="btn btn-success">View</a>' : '';	
-				if (!empty($record['ns_order_internal_id'])) {
-					$rows[]= $record['ns_order_status'];
-				} else {
-					$rows[]= $record['ns_order_status'] . '&nbsp;&nbsp;
-					<a style="color:#95bf47" data-toggle="collapse" href="#collapsable-msg-' . $key . '" role="button" aria-expanded="false" aria-controls="collapsable-msg-' . $key . '">Know More</a><div class="row">
-					<div class="col">
-					<div class="collapse multi-collapse" id="collapsable-msg-' . $key . '">
-					<div class="card card-body">' . $record['notes'] . '</div>
-					</div>
-					</div>
-					</div>';
-				}
+				$site_url = get_site_url();
 
-				if (isset($TMWNI_OPTIONS['enableOrderSync']) && 'on' == $TMWNI_OPTIONS['enableOrderSync']) {
-					$rows[] = '<div class="manually_order_sync_btn">
-					<a target="_blank" href="' . $order_link . '"  class="btn btn-success">View</a>&nbsp;
-					<button type="button" class="btn btn-success manual_order_sync"  data-id="' . $record['woo_object_id'] . '">Re-Submit</button>
-					<span class="loaderSpiner"></span>
-					</div>';
-				} else {
-					$rows[] = '<div class="manually_order_sync_btn">
-					<a target="_blank" href="' . $order_link . '"  class="btn btn-success">View</a>
-					</div>';
-				}
-				
+				$records = array();
+				foreach ($data as $key => $record) {
 
-				$records[] = $rows;
+					$order_link =  $site_url . '/wp-admin/post.php?post=' . $record['woo_object_id'] . '&amp;action=edit';
+					$ns_explode_account_id = explode('_' , ( $ns_account_id ));
+					$ns_emplode_account_id = implode('-', $ns_explode_account_id);
+
+
+
+
+					$rows = array();
+					$rows[] = $record['id'];
+					$rows[] = $record['woo_object_id'];
+					$rows[] = $record['created_at'];
+					$rows[] = ( !empty($record['ns_order_internal_id']) ) ? '<a target="_blank" href="https://' . $ns_emplode_account_id . '.app.netsuite.com/app/accounting/transactions/salesord.nl?id=' . $record['ns_order_internal_id'] . '&amp;whence=" class="btn btn-success">View</a>' : '';	
+					if (!empty($record['ns_order_internal_id'])) {
+						$rows[]= $record['ns_order_status'];
+					} else {
+						$rows[]= $record['ns_order_status'] . '&nbsp;&nbsp;
+						<a style="color:#95bf47" data-toggle="collapse" href="#collapsable-msg-' . $key . '" role="button" aria-expanded="false" aria-controls="collapsable-msg-' . $key . '">Know More</a><div class="row">
+						<div class="col">
+						<div class="collapse multi-collapse" id="collapsable-msg-' . $key . '">
+						<div class="card card-body">' . $record['notes'] . '</div>
+						</div>
+						</div>
+						</div>';
+					}
+
+					if (isset($TMWNI_OPTIONS['enableOrderSync']) && 'on' == $TMWNI_OPTIONS['enableOrderSync']) {
+						$rows[] = '<div class="manually_order_sync_btn">
+						<a target="_blank" href="' . $order_link . '"  class="btn btn-success">View</a>&nbsp;
+						<button type="button" class="btn btn-success manual_order_sync"  data-id="' . $record['woo_object_id'] . '">Re-Submit</button>
+						<span class="loaderSpiner"></span>
+						</div>';
+					} else {
+						$rows[] = '<div class="manually_order_sync_btn">
+						<a target="_blank" href="' . $order_link . '"  class="btn btn-success">View</a>
+						</div>';
+					}
+
+
+					$records[] = $rows;
 			# code...
-			}
+				}
 
 
 
 
 
 				//json to be returned
-			echo json_encode(array(
-				'draw' => intval($request['draw']),
-				'recordsTotal' => intval($recordsTotal),
-				'recordsFiltered' => intval($recordsFiltered),
-				'data' => $records
-			));
-			die;
+				echo json_encode(array(
+					'draw' => intval($request['draw']),
+					'recordsTotal' => intval($recordsTotal),
+					'recordsFiltered' => intval($recordsFiltered),
+					'data' => $records
+				));
+				die;
 
-		}die;
+			}die;
+
+		} else {
+			echo json_encode(array(
+				'draw' => 0,
+				'recordsTotal' => 0,
+				'recordsFiltered' => 0,
+				'data'=>0,
+			));
+		}
 	} 
 
 	public function validateCredentials() {
@@ -463,6 +473,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 			//pr($GetServerTimeRequest);
 			try {
 				$rtn_data =  $ns_service->getServerTime($GetServerTimeRequest);
+
 				if (isset($rtn_data->getServerTimeResult->status->isSuccess) && 1 == $rtn_data->getServerTimeResult->status->isSuccess) {
 					$return['status'] = 1;
 					$return['message'] = 'Congrats. API connection is successful.';
@@ -497,24 +508,89 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 	}
 
+	public function loadNsPriceCurrency() {
+
+		$priceCurrency = self::getSettingsFromNS('currency', 'inventoryItem');
+		if (!empty($priceCurrency)) {
+			update_option( 'netstuite_price_currency', $priceCurrency);
+		}
+
+	}
+
+
 
 	public function getNetsuitePromoSettings() {
 
 		//For Promotion Custom Form
-		// $Promo_custom_form = get_option( 'netsuite_promo_customForm');
+		$Promo_custom_form = get_option('netsuite_promo_customForm');
 		if (empty($Promo_custom_form)) {
 			$Promo_custom_form = self::getSettingsFromNS('customform', 'promotionCode');
-			update_option( 'netsuite_promo_customForm', $Promo_custom_form);
+			update_option( 'netsuite_promo_customForm', $Promo_custom_form, false);
 		}
 
 		//For Promotion Discount Item
-		$Promo_DiscountItem = get_option( 'netsuite_promo_discountItem');		
+		$Promo_DiscountItem = get_option('netsuite_promo_discountItem');		
 		if (empty($Promo_DiscountItem)) {
 			$Promo_DiscountItem = self::getSettingsFromNS('discount', 'promotionCode');
-			update_option( 'netsuite_promo_discountItem', $Promo_DiscountItem);
+			update_option( 'netsuite_promo_discountItem', $Promo_DiscountItem, false);
 		}
 
 		
+
+	}
+
+	public function saveNetsuiteTaxCodes() {
+		$ns_tax_codes = $this->getNetsuiteTaxCodes();
+		if (empty($ns_tax_codes)) {
+			update_option( 'netsuite_tax_codes', $ns_tax_codes, false);
+		}
+	}
+
+
+	public function getNetsuiteTaxCodes() {
+		$ns_service = new NetSuiteService();
+		$ns_service->setSearchPreferences(false, 1000, true);
+
+
+
+
+
+		$selectedField = new SearchBooleanField();
+		$selectedField->searchValue = false;
+
+
+		$salesTaxItemSearch = new SalesTaxItemSearchBasic();
+		$salesTaxItemSearch->isInactive = $selectedField;
+
+
+
+		$request = new SearchRequest();
+		$request->searchRecord = $salesTaxItemSearch;
+
+		// pr($salesTaxItemSearch); 
+
+		try {
+			$searchResponse = $ns_service->search($request);
+			// pr($searchResponse);
+			$data = [];
+			if ($searchResponse->searchResult->totalRecords > 0) {
+				foreach ($searchResponse->searchResult->recordList->record as $key => $value) {
+					$data[$value->internalId] = $value->itemId;
+				}
+
+				// pr($data); die;
+
+				return $data;
+
+			} else {
+				return 0;
+			}
+
+		} catch (SoapFault $e) {
+			return 0;
+		}
+
+
 
 	}
 
@@ -525,14 +601,14 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		$locations = get_option( 'netstuite_locations');
 		if (empty($locations)) {
 			$locations = self::getSettingsFromNS('location', 'inventoryItem');
-			update_option( 'netstuite_locations', $locations);
+			update_option( 'netstuite_locations', $locations, false);
 		}
 
 
 		$price_levels = get_option( 'netstuite_price_levels');
 		if (empty($price_levels)) {
 			$price_levels = self::getPriceLevels();
-			update_option( 'netstuite_price_levels', $price_levels);
+			update_option( 'netstuite_price_levels', $price_levels, false);
 		}
 
 	}
@@ -581,29 +657,31 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 	public function loadPromoFields() {
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('custom form search nonce error'); 
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
+			$fields = array('customform','discount');
+
+			foreach ($fields as  $value) {
+				$data = $this->getSettingsFromNS($value, 'promotionCode');
+				if (!empty($data) && 'customform' == $value) {
+					update_option( 'netsuite_promo_customForm', $data, false);
+				}
+
+				if (!empty($data) && 'discount' == $value) {
+					update_option( 'netsuite_promo_discountItem', $data, false);
+				}
+			}
+
+			echo json_encode(array(
+				'status' => true,					
+			));
+
+		} else {
+			die('Nonce Error');
 		}
 
 
 
-		$fields = array('customform','discount');
 		
-		foreach ($fields as  $value) {
-			$data = $this->getSettingsFromNS($value, 'promotionCode');
-			if (!empty($data) && 'customform' == $value) {
-				update_option( 'netsuite_promo_customForm', $data);
-			}
-
-			if (!empty($data) && 'discount' == $value) {
-				update_option( 'netsuite_promo_discountItem', $data);
-			}
-		}
-
-		echo json_encode(array(
-			'status' => true,					
-		));
-
 
 		
 	}
@@ -611,25 +689,23 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 	public  function loadNsLocations() {
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('Locations search nonce error'); 
-		}
-
-		// $locations = self::getSettingsFromNS('location', 'inventoryItem');
-		$locations = self::getLocationsFromNS();
-		if (!empty($locations)) {
-			update_option( 'netstuite_locations', $locations);
-			die(json_encode([
-				'status'=>true
-			]));
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
+			$locations = self::getLocationsFromNS();
+			if (!empty($locations)) {
+				update_option( 'netstuite_locations', $locations, false);
+				die(json_encode([
+					'status'=>true
+				]));
+			} else {
+				die(json_encode([
+					'type' => 'Error',
+					'msg' => 'No data found',
+					'status'=>0
+				]));
+			}
 		} else {
-			die(json_encode([
-				'type' => 'Error',
-				'msg' => 'No data found',
-				'status'=>0
-			]));
+			die('Nonce Error');
 		}
-		
 
 	}
 
@@ -734,24 +810,23 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 	public static function loadNsPriceLevels() {
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('Price Level search nonce error'); 
-		}
-
-		$pricelevels = self::getPriceLevels();
-		if (!empty($pricelevels)) {
-			update_option( 'netstuite_price_levels', $pricelevels);
-			die(json_encode([
-				'status'=> true
-			]));
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
+			$pricelevels = self::getPriceLevels();
+			if (!empty($pricelevels)) {
+				update_option( 'netstuite_price_levels', $pricelevels, false);
+				die(json_encode([
+					'status'=> true
+				]));
+			} else {
+				die(json_encode([
+					'type' => 'Error',
+					'msg' => 'No data found',
+					'status'=> 0
+				]));
+			}
 		} else {
-			die(json_encode([
-				'type' => 'Error',
-				'msg' => 'No data found',
-				'status'=> 0
-			]));
+			die('Nonce Error');
 		}
-		
 
 	}
 
@@ -838,7 +913,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 				}
 			}
 			$option_tag = isset($_REQUEST['cm_type']) ? sanitize_text_field($_REQUEST['cm_type']) . '_cm_options' : '';//customer_cm_options,order_cm_options
-			update_option($option_tag, $request);
+			update_option($option_tag, $request, false);
 
 			die(json_encode([
 				'type' => 'success',
@@ -857,6 +932,8 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		} elseif ('order_settings' == $tab) {
 			$this->netsuiteParameters = new SalesOrder();
 		}
+
+
 
 
 		$template = '';
@@ -941,7 +1018,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 					$template .= '<tr><td><span class="h6 required">NS Field</span><br/><select class="form-control input-sm ns-field-key" name="cm[' . $index . '][ns_field_key]" style="width:190px;" >';
 
 					foreach ($this->netsuiteParameters::$paramtypesmap as $key => $value) {
-						if ('RecordRef' == $value || 'string' == $value || 'boolean' == $value || 'dateTime' == $value|| 'float' == $value|| 'integer' == $value) {
+						if ('RecordRef' == $value || 'string' == $value || 'boolean' == $value || 'dateTime' == $value|| 'float' == $value|| 'integer' == $value || 'GlobalSubscriptionStatus' == $value) {
 							if ($key == $mapping['ns_field_key']) {
 								$template .= '<option data-type="' . $value . '" value="' . $key . '" selected>' . $key . '(' . $value . ')</option>';
 							} else {
@@ -977,10 +1054,10 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 		foreach ($this->netsuiteParameters::$paramtypesmap as $key => $value) {
 
-			if ('RecordRef' == $value || 'string' == $value|| 'boolean' == $value|| 'dateTime' == $value|| 'float' == $value|| 'integer' == $value) {
+			if ('RecordRef' == $value || 'string' == $value|| 'boolean' == $value|| 'dateTime' == $value|| 'float' == $value|| 'integer' == $value || 'GlobalSubscriptionStatus' == $value) {
 
 				if ($key == $mapping['ns_field_key']) {
-					$template .= '<option data-type="' . $value . '" value="' . $key . '" selected>' . $key . '(' . $value . ')</option>';
+					$template .= '<option data-type="' . $value . '" value="' . $key . '" selected>' . $key . ' (' . $value . ')</option>';
 				} else {
 					$template .= '<option data-type="' . $value . '" value="' . $key . '">' . $key . ' (' . $value . ')</option>';
 				}
@@ -1075,7 +1152,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		$template = '<td width="20%"><span class="required">Attribute type</span><br/><select name="cm[' . $index . '][ns_attr_type]" class="form-control input-sm attr_type"><option value="0">Please Select</option>';
 
 		$template .= isset($mapping['ns_attr_type']) && 1==$mapping['ns_attr_type'] || 1 ==$attr_type ? '<option value="1" selected>Default NetSuite Fields</option>': '<option value="1">Default NetSuite Fields</option>';
-		$template .= isset($mapping['ns_attr_type']) && 2==$mapping['ns_attr_type'] || 2 ==$attr_type ? '<option value="2" selected>Custom NetSuite Field</option></select></td>' : '<option value="2">Custom NetSuite Field</option></select></td>';
+		$template .= isset($mapping['ns_attr_type']) && 2==$mapping['ns_attr_type'] || 2 ==$attr_type ? '<option value="2" selected>Custom NetSuite Fields</option></select></td>' : '<option value="2">Custom NetSuite Fields</option></select></td>';
 
 		return $template;
 	}
@@ -1117,29 +1194,39 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 	 * Ajax function for getting conditional mapping template
 	 */
 	public function getConditionalMappingTemplate() {
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('conditional-mapping-nonce-error'); 
-		}
-		$request = $_POST;		
-		$return = [];
-		$return['status'] = 0;
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
+			$request = $_POST;		
+			$return = [];
+			$return['status'] = 0;
 
-		if (!empty($request) &&
-			!empty($request['operator']) &&
-			!empty($request['index'])) {
-			$template = $this->getTemplate($request['type'], $request['operator'], $request['index'], [], $request['tab'], $request['attr_type'], $request['cm_wc_field_key'], $request['cm_wc_field_value'], $request['cm_wc_where_op']);
-			if (!empty($template)) {
-				$return['status'] = 1;
-				$return['template'] = $template;
+
+			if (!empty($request) &&
+				!empty($request['operator']) &&
+				!empty($request['index'])) {
+				$template = $this->getTemplate($request['type'], $request['operator'], $request['index'], [], $request['tab'], $request['attr_type'], $request['cm_wc_field_key'], $request['cm_wc_field_value'], $request['cm_wc_where_op']);
+				if (!empty($template)) {
+					$return['status'] = 1;
+					$return['template'] = $template;
+				}
 			}
+
+		echo json_encode($return);
+		die;
+		} else {
+			die('Nonce Error');
 		}
 
-	echo json_encode($return);
-	die;
 	}
 
 	public function add_meta_box() {
-		add_meta_box('woocommerce-netsuite-order-sync', __('NetSuite Sales Order Synchronization', 'woocommerce-netsuite-order-sync'), array($this, 'meta_box_sales_order'), 'shop_order', 'side', 'high');
+		tmns_hpos_add_meta_box(
+			'woocommerce-netsuite-order-sync',
+			__( 'NetSuite Sales Order Synchronization', 'woocommerce-netsuite-order-sync' ),
+			array( $this, 'meta_box_sales_order' ),
+			'shop_order',
+			'side',
+			'high'
+		);
 	}
 
 	/**
@@ -1147,15 +1234,26 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 	 *
 	 * Access public
 	 */
-	public function meta_box_sales_order() {
+	public function meta_box_sales_order( $post_or_order_object) {
 		global $post;
 
-		$sales_order_internalID = get_post_meta($post->ID, esc_attr(TMWNI_Settings::$ns_order_id), true);
+	
+
+		if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled() ) {
+
+			$post_id = $post_or_order_object->get_id();
+		} else {
+			$post_id = $post->ID;
+		}
+
+		// $sales_order_internalID = get_post_meta($post->ID, esc_attr(TMWNI_Settings::$ns_order_id), true);
+		$sales_order_internalID = tm_ns_get_post_meta($post_id, esc_attr(TMWNI_Settings::$ns_order_id));
 		if (empty($sales_order_internalID)) {
 			echo "<p><span class='replace-content'>This Sales Order for this order has not been synced with NetSuite.</span><br/> Use order action 'Sync to NetSuite' to sync it</p>";
 		} else {
 			echo "<p><span class='replace-content'>This Sales Order for this order has been successfully transferred to NetSuite. </span><br/><br/><b>NS Internal Order ID : </b>" . esc_attr($sales_order_internalID);
-			$sales_order_externalID = get_post_meta($post->ID, esc_attr(TMWNI_Settings::$ns_external_order_id), true);
+			// $sales_order_externalID = get_post_meta($post->ID, esc_attr(TMWNI_Settings::$ns_external_order_id), true);
+			$sales_order_externalID = tm_ns_get_post_meta($post_id, esc_attr(TMWNI_Settings::$ns_external_order_id));
 			if (!empty($sales_order_externalID)) {
 				echo '<br><b>NS Order ID : </b>' . esc_attr($sales_order_externalID);
 			}
@@ -1175,15 +1273,17 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 
-	
+
 	public function tmwniHanldeExportActions() {
 
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('Nonce Error'); 
+		if (isset($_POST['_wpnonce']) && !empty($_POST['_wpnonce']) && wp_verify_nonce(sanitize_text_field($_POST['_wpnonce'])) ) {
+			if (isset($_POST['Export'])   &&  'Export Settings' == $_POST['Export']) {			
+				self::downloadSettings();
+			}
+		} else {
+			die('Nonce Error');
 		}
-		if (isset($_POST['Export'])   &&  'Export Settings' == $_POST['Export']) {			
-			self::downloadSettings();
-		}
+					
 	} 
 
 
@@ -1246,6 +1346,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 				$settings_array = unserialize($settings->option_value);
 
+
 				if (!empty($settings_array['ns_host']) && !empty($settings_array['ns_account']) && !empty($settings_array['ns_consumer_key']) && !empty($settings_array['ns_token_id']) && !empty($settings_array['ns_token_secret']) ) {
 
 					$validate_credentials = $this->validateCredsJSONFile($settings_array);
@@ -1282,7 +1383,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 				}
 
-				
+
 				# code...
 			}
 
@@ -1302,7 +1403,12 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		$settings_array['consumerSecret'] = $settings['ns_consumer_secret'];
 		$settings_array['token'] = $settings['ns_token_id'];
 		$settings_array['tokenSecret'] = $settings['ns_token_secret'];
-		$settings_array['signatureAlgorithm'] =  ( 'HMAC-SHA1' == $settings['hma_algorithm_method'] ) ? 'sha1' : 'sha256';
+		if (isset($settings['hma_algorithm_method']) && 'HMAC-SHA1' == $settings['hma_algorithm_method']) {
+				$settings_array['signatureAlgorithm'] = 'sha1';
+		} else {
+			$settings_array['signatureAlgorithm'] = 'sha256';
+		}
+		
 
 
 
@@ -1316,259 +1422,268 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 
-	
 
-	
+
+
 
 	public function tmwniHanldeActions() {
 		global $wpdb;
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('Nonce Error'); 
+		if (isset($_POST['_wpnonce']) && !empty($_POST['_wpnonce']) && wp_verify_nonce(sanitize_text_field($_POST['_wpnonce'])) ) {
+			if (!empty($_POST['save_post'])) { 
+				$tm_netsuite_settings = $_POST;
+
+				unset($tm_netsuite_settings['current_tab_id']);
+				unset($tm_netsuite_settings['action']);
+				unset($tm_netsuite_settings['save_post']);
+
+				if (!isset($_POST['ns_order_shiping_line_item_enable'])) {
+					unset($_POST['ns_order_shiping_line_item']);
+				}
+
+				if (!isset($_POST['ns_coupon_netsuite_sync'])) {
+					if (isset($_POST['ns_promo_custform_id'])) {
+						unset($_POST['ns_promo_custform_id']);	
+					}
+					if (isset($_POST['ns_promo_discount_id'])) {
+						unset($_POST['ns_promo_custform_id']);	
+					}
+				}
+
+				if (isset($_POST['current_tab_id']) && 'inventory_settings' == $_POST['current_tab_id']) {
+					if (!isset($tm_netsuite_settings['enableInventorySync']) && !isset($tm_netsuite_settings['enablePriceSync'])) {
+						wp_clear_scheduled_hook('wp_tm_ns_manual_process_inventories_cron');
+						wp_clear_scheduled_hook('tm_ns_process_inventories');
+					}
+
+
+					if (!isset($tm_netsuite_settings['updateStockStatus'])) {
+						$tm_netsuite_settings['updateStockStatus'] = 'no';
+					}
+
+
+				}
+
+
+				if (isset($_POST['current_tab_id'])) {
+					TMWNI_Settings::saveOption($tm_netsuite_settings, sanitize_text_field($_POST['current_tab_id']));
+
+				}
+
+				$url = isset($_SERVER['HTTP_REFERER']) ? esc_url_raw($_SERVER['HTTP_REFERER']) : '';
+
+				wp_safe_redirect($url);
+				exit();
+			} 
+		} else {
+			die('nonce_error');
 		}
 
-		if (!empty($_POST['save_post'])) { 
-			$tm_netsuite_settings = $_POST;
-
-
-			// pr($tm_netsuite_settings);die;
-
-			unset($tm_netsuite_settings['current_tab_id']);
-			unset($tm_netsuite_settings['action']);
-			unset($tm_netsuite_settings['save_post']);
-
-			if (!isset($_POST['ns_order_shiping_line_item_enable'])) {
-				unset($_POST['ns_order_shiping_line_item']);
-			}
-
-			if (!isset($_POST['ns_coupon_netsuite_sync'])) {
-				if (isset($_POST['ns_promo_custform_id'])) {
-					unset($_POST['ns_promo_custform_id']);	
-				}
-				if (isset($_POST['ns_promo_discount_id'])) {
-					unset($_POST['ns_promo_custform_id']);	
-				}
-			}
-
-			if (isset($_POST['current_tab_id']) && 'inventory_settings' == $_POST['current_tab_id']) {
-				if (!isset($tm_netsuite_settings['enableInventorySync']) && !isset($tm_netsuite_settings['enablePriceSync'])) {
-					wp_clear_scheduled_hook('wp_tm_ns_manual_process_inventories_cron');
-					wp_clear_scheduled_hook('tm_ns_process_inventories');
-				}
-
-
-				if (!isset($tm_netsuite_settings['updateStockStatus'])) {
-					$tm_netsuite_settings['updateStockStatus'] = 'no';
-				}
-
-
-			}
-
-
-			if (isset($_POST['current_tab_id'])) {
-				TMWNI_Settings::saveOption($tm_netsuite_settings, sanitize_text_field($_POST['current_tab_id']));
-
-			}
-
-			$url = isset($_SERVER['HTTP_REFERER']) ? esc_url_raw($_SERVER['HTTP_REFERER']) : '';
-			wp_safe_redirect($url);
-			exit();
-		}
+					
 	}
 
 	public function getLogs() {
-
 		global $wpdb;
 
 		require_once TMWNI_DIR . '/inc/datatables.php';
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('Logs Nonce Error'); 
-		}		
-
-		$request = $_POST;
-		$binding = array();
-		if (!empty($request)) {
-
-			$datatables = new Datatables();
-
-			$columns = array(
-				array('db' => 'log.id as id',
-					'dt' => 0,
-					'db_ref' => 'id'
-				),
-				array('db' => 'log.created_at as created_at',
-					'dt' => 1,
-					'db_ref' => 'created_at'
-				),
-				array(
-					'db' => 'log.operation as operation',
-					'dt' => 2,
-					'db_ref' => 'operation'
-				),
-				array(
-					'db' => 'log.status as status',
-					'dt' => 3,
-					'db_ref' => 'status'
-				),
-				array(
-					'db' => 'log.notes as notes',
-					'dt' => 4,
-					'db_ref' => 'notes'
-				),
-				array(
-					'db' => 'log.woo_object_id as woo_object_id',
-					'dt' => 5,
-					'db_ref' => 'woo_object_id'
-				),
-			);
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
 
 
-			$limit = $datatables->limit($request, $columns);
-			$order = $datatables->order($request, $columns);
-			$where = $datatables->filter($request, $columns, $binding);
-			$table_name = $wpdb->prefix . 'tm_woo_netsuite_logs';
-			$wpdb->netsuite_logs = $wpdb->prefix . 'tm_woo_netsuite_logs';
+
+			$request = $_POST;
+			$binding = array();
+			if (!empty($request)) {
+
+				$datatables = new Datatables();
+
+				$columns = array(
+					array('db' => 'log.id as id',
+						'dt' => 0,
+						'db_ref' => 'id'
+					),
+					array('db' => 'log.created_at as created_at',
+						'dt' => 1,
+						'db_ref' => 'created_at'
+					),
+					array(
+						'db' => 'log.operation as operation',
+						'dt' => 2,
+						'db_ref' => 'operation'
+					),
+					array(
+						'db' => 'log.status as status',
+						'dt' => 3,
+						'db_ref' => 'status'
+					),
+					array(
+						'db' => 'log.notes as notes',
+						'dt' => 4,
+						'db_ref' => 'notes'
+					),
+					array(
+						'db' => 'log.woo_object_id as woo_object_id',
+						'dt' => 5,
+						'db_ref' => 'woo_object_id'
+					),
+				);
 
 
-			$limit_arr = explode(' ', $limit);
-			$order_arr = explode(' ', $order);
-			
-			
+				$limit = $datatables->limit($request, $columns);
+				$order = $datatables->order($request, $columns);
+				$where = $datatables->filter($request, $columns, $binding);
+				$table_name = $wpdb->prefix . 'tm_woo_netsuite_logs';
+				$wpdb->netsuite_logs = $wpdb->prefix . 'tm_woo_netsuite_logs';
+
+
+				$limit_arr = explode(' ', $limit);
+				$order_arr = explode(' ', $order);
+
+
 			//Main queries for  get the data Based on Conditions
-			
+
 			//By id
-			if ('id'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY id ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY id ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('id'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY id ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY id ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
-			if ('id'==$order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY id DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('id'==$order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY id DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
 
 			//By Created Date
-			if ('created_at'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY created_at ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY created_at ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('created_at'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY created_at ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY created_at ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
-			if ('created_at'==$order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY created_at DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY created_at DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('created_at'==$order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY created_at DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY created_at DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
 
 			//By Operation Condition
-			if ('operation'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY operation ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY operation ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('operation'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY operation ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY operation ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
-			if ('operation'==$order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY operation DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY operation DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('operation'==$order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY operation DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY operation DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
 
 			//By Status
-			if ('status'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY status ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY status ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('status'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY status ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY status ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
-			if ('status'==$order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY status DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY status DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+				if ('status'==$order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY status DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY status DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
 				}
-				
-			}
 
 			//By woo_object_id 
-			if ('woo_object_id'==$order_arr[2] && 'ASC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY woo_object_id ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY woo_object_id ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				}
-				
-			}
-			if ('woo_object_id'==$order_arr[2] && 'DESC'==$order_arr[3]) {
-				if (!empty($where)) {
-					$where_arr = explode(' ', $where);
-					$where = str_replace("'", '', $where_arr[4]);
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY woo_object_id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				} else {
-					$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY woo_object_id DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
-				}
-				
-			}
+				if ('woo_object_id'==$order_arr[2] && 'ASC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY woo_object_id ASC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY woo_object_id ASC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
 
-			$data_filter = $wpdb->get_results('SELECT FOUND_ROWS() as filtered_rows');
+				}
+				if ('woo_object_id'==$order_arr[2] && 'DESC'==$order_arr[3]) {
+					if (!empty($where)) {
+						$where_arr = explode(' ', $where);
+						$where = str_replace("'", '', $where_arr[4]);
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY woo_object_id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					} else {
+						$data = $wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY woo_object_id DESC limit %d, %d", $limit_arr[1], $limit_arr[2]), ARRAY_A);
+					}
+
+				}
+
+				$data_filter = $wpdb->get_results('SELECT FOUND_ROWS() as filtered_rows');
 				//total filtered records
-			$recordsFiltered = $data_filter[0]->filtered_rows;
+				$recordsFiltered = $data_filter[0]->filtered_rows;
 
-			$recordsTotal = $recordsFiltered;
+				$recordsTotal = $recordsFiltered;
 
 				//array to be returned
-			$unprocessed_rows = array();
-			if ($recordsTotal > 0) {
-				$unprocessed_rows = $datatables->data_output($columns, (array) $data);
-			}
+				$unprocessed_rows = array();
+				if ($recordsTotal > 0) {
+					$unprocessed_rows = $datatables->data_output($columns, (array) $data);
+				}
+
+
 
 
 
 				//json to be returned
-			echo json_encode(array(
-				'draw' => intval($request['draw']),
-				'recordsTotal' => intval($recordsTotal),
-				'recordsFiltered' => intval($recordsFiltered),
-				'data' => $unprocessed_rows
-			));
+				echo json_encode(array(
+					'draw' => intval($request['draw']),
+					'recordsTotal' => intval($recordsTotal),
+					'recordsFiltered' => intval($recordsFiltered),
+					'data' => $unprocessed_rows
+				));
+				die;
+			}
 			die;
+		} else {
+			echo json_encode(array(
+				'draw' => 0,
+				'recordsTotal' => 0,
+				'recordsFiltered' => 0,
+				'data'=>0,
+			));
 		}
-		die;
 	}
 
 
@@ -1591,22 +1706,27 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		wp_enqueue_script('tmwni-common-js', TMWNI_URL . '/assets/js/common.js', false, WC_TM_NETSUITE_INTEGRATION_INIT_VERSION, 'all');
 
 		wp_localize_script('tmwni-common-js', 'tmwni_common_js', 
-				array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'nonce' => wp_create_nonce('security_nonce')));
+			array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'nonce' => wp_create_nonce('security_nonce')));
 
 	}
 
 	public function tmwniDeleteValue() {
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('delete customer internal id'); 
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
+			if (!empty($_POST['user_id'])) {
+				delete_user_meta(sanitize_text_field($_POST['user_id']), TMWNI_Settings::$ns_customer_id);
+			} 
+		} else {
+			die('Nonce Error');
 		}
-		if (!empty($_POST['user_id'])) {
-			delete_user_meta(sanitize_text_field($_POST['user_id']), TMWNI_Settings::$ns_customer_id);
-		}
+					
 
 	}
 
-	
+
 	public function TMWNISettingsTabs() {
+
+		global $TMWNI_OPTIONS;
+
 
 
 
@@ -1616,12 +1736,39 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 
+		$intented_tab = ( !empty($_GET['tab']) ) ? sanitize_text_field($_GET['tab']) : TMWNI_Settings::$default_tab;
 
-		if (empty($_GET['tab'])) {
+
+
+		switch ($intented_tab) {
+			case 'customer_settings':
+			$current_tab_id = 'customer_settings';
+				break;
+			case 'general_settings':
+			$current_tab_id = 'general_settings';
+				break;
+			case 'help':
+			$current_tab_id = 'help';
+				break;
+			case 'import_export_settings':
+			$current_tab_id = 'import_export_settings';
+				break;
+			case 'inventory_settings':
+			$current_tab_id = 'inventory_settings';
+				break;
+			case 'logs':
+			$current_tab_id = 'logs';
+				break;
+			case 'order_settings':
+			$current_tab_id = 'order_settings';
+				break;
+			default:
 			$current_tab_id = TMWNI_Settings::$default_tab;
-		} else {
-			$current_tab_id = sanitize_text_field($_GET['tab']);
 		}
+
+
+		// pr($_GET['tab']);
+		// pr($current_tab_id); die('zzz');
 
 
 
@@ -1637,22 +1784,25 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 			if ('order_settings' == $current_tab_id) {
 				if (isset($validate_credentials['status']) && 1== $validate_credentials['status']) {
-					$this->getNetsuitePromoSettings();
+
+					if (isset($TMWNI_OPTIONS['ns_coupon_netsuite_sync']) && !empty($TMWNI_OPTIONS['ns_coupon_netsuite_sync'])) {
+						$this->getNetsuitePromoSettings();
+					}
+
+					// if (isset($TMWNI_OPTIONS['order_item_tax_code_enable']) && !empty($TMWNI_OPTIONS['order_item_tax_code_enable'])) {
+					// 	$this->saveNetsuiteTaxCodes();
+					// }
+					
 				}
 
 				$order_general_settings = TMWNI_Settings::getTabSettings($current_tab_id . '_general_settings');
 				$order_fulfillment_settings = TMWNI_Settings::getTabSettings($current_tab_id . '_fulfillment_settings');
 				$order_refund_settings = TMWNI_Settings::getTabSettings($current_tab_id . '_refund_settings');
+				$order_line_item_settings = TMWNI_Settings::getTabSettings($current_tab_id . '_line_item_settings');
 
 
 
 
-
-
-
-
-
-				
 				if (!empty($order_general_settings) && !empty($order_fulfillment_settings) && !empty($order_refund_settings)) {
 					$options = array_merge($order_general_settings, $order_refund_settings, $order_fulfillment_settings);
 				} elseif (!empty($order_general_settings) && !empty($order_refund_settings)) {
@@ -1671,7 +1821,10 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 
-			
+			if (!empty($order_line_item_settings)) {
+
+				$options = array_merge($options, $order_line_item_settings);
+			}
 
 
 			$option_tag = '';
@@ -1686,7 +1839,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 				$option_tag = 'customer_cm_options';
 			}
 
-			
+
 
 			$cm_options = get_option($option_tag, null);
 
@@ -1708,6 +1861,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 							}
 						}  
 
+
 						if ( isset($mapping['type']) ) {
 							$cm_options[$key]['template'] = $this->getTemplate($mapping['type'], $mapping['operator'], $index, $mapping, $current_tab_id);
 						} else {
@@ -1728,8 +1882,10 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 			}
 		}
 
-			//GET TAB CONTENT
+		//GET TAB CONTENT
 		$tab_content_file = TMWNI_DIR . 'inc/admin/tab-templates/admin-tab-template-' . $current_tab_id . '.php';
+
+		// pr($tab_content_file); die;
 		if (file_exists($tab_content_file)) {
 			ob_start();
 			include $tab_content_file;
@@ -1815,36 +1971,40 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 	}
 
 	public function clearAllApiLogs() {
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('clear api logs'); 
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
+			if (!empty($_POST['form_data']) && 'clearLogs' == $_POST['form_data']) {
+				global $wpdb;
+				$table = $wpdb->prefix . 'tm_woo_netsuite_logs';
+				$result = $wpdb->get_results($wpdb->prepare('TRUNCATE TABLE ' . $wpdb->prefix . 'tm_woo_netsuite_logs'));
+				if (empty($result)) {
+					exit('success');
+				} else {
+					exit('failure');
+				}
+			}
+		} else {
+			die('Nonce Error');
 		}
 
-		if (!empty($_POST['form_data']) && 'clearLogs' == $_POST['form_data']) {
-			global $wpdb;
-			$table = $wpdb->prefix . 'tm_woo_netsuite_logs';
-			$result = $wpdb->get_results($wpdb->prepare('TRUNCATE TABLE ' . $wpdb->prefix . 'tm_woo_netsuite_logs'));
-			if (empty($result)) {
-				exit('success');
-			} else {
-				exit('failure');
-			}
-		}
+		
 	}
 
 	public function clearAllDashboardLogs() {
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('clear api logs'); 
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
+			if (!empty($_POST['form_data']) && 'clearDashboardLogs' == $_POST['form_data']) {
+				global $wpdb;
+				$result = $wpdb->get_results($wpdb->prepare('TRUNCATE TABLE ' . $wpdb->prefix . 'tm_woo_netsuite_auto_sync_order_status'));
+				if (empty($result)) {
+					exit('success');
+				} else {
+					exit('failure');
+				}
+			} 
+		} else {
+			die('Nonce Error');
 		}
 
-		if (!empty($_POST['form_data']) && 'clearDashboardLogs' == $_POST['form_data']) {
-			global $wpdb;
-			$result = $wpdb->get_results($wpdb->prepare('TRUNCATE TABLE ' . $wpdb->prefix . 'tm_woo_netsuite_auto_sync_order_status'));
-			if (empty($result)) {
-				exit('success');
-			} else {
-				exit('failure');
-			}
-		}
+		
 	}
 
 

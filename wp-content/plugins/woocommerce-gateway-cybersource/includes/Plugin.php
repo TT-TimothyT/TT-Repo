@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_10_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
 
 /**
  * WooCommerce CyberSource Gateway main plugin class.
@@ -36,7 +36,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 
 	/** version number */
-	const VERSION = '2.5.4';
+	const VERSION = '2.7.1';
 
 	/** @var Plugin single instance of this plugin */
 	protected static $instance;
@@ -84,11 +84,12 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 			self::PLUGIN_ID,
 			self::VERSION,
 			[
-				'text_domain'  => 'woocommerce-gateway-cybersource',
-				'gateways'     => $this->get_active_gateways(),
-				'dependencies' => $this->get_active_dependencies(),
-				'supports'     => $this->get_active_features(),
-				'require_ssl'  => true,
+				'text_domain'   => 'woocommerce-gateway-cybersource',
+				'gateways'      => $this->get_active_gateways(),
+				'dependencies'  => $this->get_active_dependencies(),
+				'supports'      => $this->get_active_features(),
+				'require_ssl'   => true,
+				'supports_hpos' => true,
 			]
 		);
 

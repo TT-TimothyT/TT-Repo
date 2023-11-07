@@ -1,4 +1,6 @@
 <?php global $woocommerce_wishlist, $add_to_wishlist_args, $product; ?>
+<?php if (empty($product)){ return; } ?>
+
 <?php $class_name = woocommerce_wishlists_get_wishlists_for_product( $product->get_id() ) ? 'wl-button-already-in' : ''; ?>
 <input type="hidden" name="wlid" id="wlid"/>
 <input type="hidden" name="add-to-wishlist-type" value="<?php echo $product->get_type(); ?>"/>

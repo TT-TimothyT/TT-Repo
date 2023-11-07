@@ -114,6 +114,10 @@ class ItemClient extends CommonIntegrationFunctions {
 
 
 	public function searchItemUpdateInventory( $item_sku, $product_id) {
+		
+
+
+		// die('one');
 		$this->object_id = $product_id;
 		$kit_item_sync_status = true;
 		$item_sync_status  = true;
@@ -139,6 +143,7 @@ class ItemClient extends CommonIntegrationFunctions {
 		file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
 		
 		$response = $this->_searchItem($item_sku, $product_id);
+		// pr($response); die('dvv');
 
 
 		if ($response['status']) {
@@ -159,26 +164,25 @@ class ItemClient extends CommonIntegrationFunctions {
 				}
 			}
 
-			/**
-			* Filter for check kit item status.
-			*
-			* @since 1.0.0
 
-			**/	
-			$kit_item_sync_status = apply_filters('tm_ns_kit_item_status', $kit_item_sync_status, $searchResponse);
 
-			/**
-			* Filter for check inventory item status.
-			*
-			* @since 1.0.0
 
-			**/	
-			$item_sync_status = apply_filters('tm_ns_item_status', $item_sync_status, $searchResponse);	
 			$class = get_class($searchResponse->searchResult->recordList->record[0]);
 			$pieces = explode('\\', $class);
 			$item_type = end($pieces);
 
+			// pr($item_type); die('doneee');
+
 			if ('KitItem' == $item_type) {
+				/**
+					* Filter for check kit item status.
+					*
+					* @since 1.0.0
+
+					**/	
+					$kit_item_sync_status = apply_filters('tm_ns_kit_item_status', $kit_item_sync_status, $searchResponse, $product_id);
+
+
 				if (false != $kit_item_sync_status) {
 					$this->_updatekitItemData($searchResponse, $product_id, $item_location_id);
 					/**
@@ -187,9 +191,17 @@ class ItemClient extends CommonIntegrationFunctions {
 						* @since 1.0.0
 
 						**/
-						do_action('tm_ns_after_update_kit_item_data', $searchResponse, $product_id);
+					do_action('tm_ns_after_update_kit_item_data', $searchResponse, $product_id);
+
 				}					
 			} else {
+				/**
+					* Filter for check inventory item status.
+					*
+					* @since 1.0.0
+
+					**/	
+				$item_sync_status = apply_filters('tm_ns_item_status', $item_sync_status, $searchResponse, $product_id);
 				if (false != $item_sync_status) {
 					$this->_updateItemData($searchResponse, $product_id, $item_location_id);
 					/**
@@ -216,28 +228,32 @@ class ItemClient extends CommonIntegrationFunctions {
 
 
 	/**
-	 * Earch Product From NS By Sku and Update Inventory
+	 * Search Product From NS By Sku and Update Inventory
 	 *
 	*/ 
-	private function _searchItem( $item_sku, $product_id) {
-		//pr($item_sku); die('zzzz');
-		//$item_sku = 'test store';
-
-		$response = array();
-		$response['status'] = 0;
-		global $TMWNI_OPTIONS;
+	public function _searchItem( $item_sku, $product_id) {
+		/** 
+			*Inventory search item sku  hook.
+		
+			* @since 1.4.8
+ 
+			**/
+			$item_sku = apply_filters('tm_netsuite_inventory_search_sku', $item_sku, $product_id);
+			$response = array();
+			$response['status'] = 0;
+			global $TMWNI_OPTIONS;
 
 
 		//search preference
-		$this->netsuiteService->setSearchPreferences(false, 20);
+			$this->netsuiteService->setSearchPreferences(false, 20);
 		//set search field
-		$SearchField = new SearchStringField();
-		$SearchField->operator = 'is';
-		$SearchField->searchValue = $item_sku;
+			$SearchField = new SearchStringField();
+			$SearchField->operator = 'is';
+			$SearchField->searchValue = $item_sku;
 
 
 		//search on items
-		$search = new ItemSearchBasic();
+			$search = new ItemSearchBasic();
 
 		if (!isset($TMWNI_OPTIONS['sku_mapping_field']) || empty($TMWNI_OPTIONS['sku_mapping_field']) ) {
 			$search->itemId = $SearchField;
@@ -289,23 +305,23 @@ class ItemClient extends CommonIntegrationFunctions {
 					* @since 1.0.0
 
 					**/
-			do_action('tm_ns_search_item_after', $product_id, $searchResponse);
+					do_action('tm_ns_search_item_after', $product_id, $searchResponse);
 
-			$response['status'] = 1;
-			$response['search_response'] = $searchResponse;
+					$response['status'] = 1;
+					$response['search_response'] = $searchResponse;
 				}
 			}
 		} catch (SoapFault $e) {
 
-		   $object = 'inventory_item';
-		   $error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
-		   $error_msg .= 'Search Keyword: ' . $item_sku . '. ';
-		   $error_msg .= 'Error Message: ' . $e->getMessage();
+			$object = 'inventory_item';
+			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
+			$error_msg .= 'Search Keyword: ' . $item_sku . '. ';
+			$error_msg .= 'Error Message: ' . $e->getMessage();
 
-		   $this->handleLog(0, $product_id, $object, $error_msg);
+			$this->handleLog(0, $product_id, $object, $error_msg);
 
 		}
- return $response;
+		return $response;
 	}
 
 
@@ -314,7 +330,7 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * Earch Product From NS By Internal Id
 	 *
 	*/ 
-	private function _searchItemByInternalId( $internalId, $product_id) {
+	public function _searchItemByInternalId( $internalId, $product_id) {
 		// $item_sku = 'MISCBOTTLESFLINT';
 
 		$response = array();
@@ -347,7 +363,7 @@ class ItemClient extends CommonIntegrationFunctions {
 					* @since 1.0.0
 
 					**/
-			apply_filters('tm_ns_search_item_response', $searchResponse, $product_id);
+					apply_filters('tm_ns_search_item_response', $searchResponse, $product_id);
 
 			if (!$searchResponse->searchResult->status->isSuccess) {
 
@@ -376,7 +392,7 @@ class ItemClient extends CommonIntegrationFunctions {
 			$this->handleLog(0, $product_id, $object, $error_msg);
 
 		}
-		return $response;
+				return $response;
 	}
 
 	/**
@@ -391,16 +407,36 @@ class ItemClient extends CommonIntegrationFunctions {
 			$product = $searchResponse->searchResult->recordList->record[0]->pricingMatrix;
 			foreach ($product->pricing as $pricing) {
 				$name = $pricing->priceLevel->internalId;
+				$currency = $pricing->currency->internalId;
 				if (isset($TMWNI_OPTIONS['price_level_name']) && !empty($TMWNI_OPTIONS['price_level_name'])) {
 					$price_level_name = $TMWNI_OPTIONS['price_level_name']; 
 				} else {
 					$price_level_name = TMWNI_Settings::$pricing_group;
 				}
-				if ($price_level_name == $name) {
-					return $pricing->priceList->price;
-				} elseif ($price_level_name == $pricing->priceLevel->name) {
-					return $pricing->priceList->price;
+
+
+				$price_currency_name = $TMWNI_OPTIONS['price_currency']; 
+
+
+				if (isset($TMWNI_OPTIONS['price_currency']) && !empty($TMWNI_OPTIONS['price_currency'])) {
+
+					$price_currency_name = $TMWNI_OPTIONS['price_currency']; 
+
+					if ($price_level_name == $name  && $price_currency_name == $currency) {
+						
+						return $pricing->priceList->price;
+					} 
+				} else {
+
+					if ($price_level_name == $name) {
+						return $pricing->priceList->price;
+					} elseif ($price_level_name == $pricing->priceLevel->name) {
+						return $pricing->priceList->price;
+					}
+					
 				}
+
+				
 			}
 		}
 
@@ -420,9 +456,9 @@ class ItemClient extends CommonIntegrationFunctions {
 		
 				* @since 1.0.0
  
-			**/
-			$prices = apply_filters('tm_ns_kit_item_prices', $prices, $searchResponse, $product_id);
-			$this->_updateWooPrice($prices, $product_id);				
+				**/
+				$prices = apply_filters('tm_ns_kit_item_prices', $prices, $searchResponse, $product_id);
+				$this->_updateWooPrice($prices, $product_id);				
 		}	
 
 		if (( isset($TMWNI_OPTIONS['enableInventorySync']) && 'on' == $TMWNI_OPTIONS['enableInventorySync'] )) {
@@ -465,37 +501,39 @@ class ItemClient extends CommonIntegrationFunctions {
 		
 				* @since 1.0.0
  
-			**/
-			$prices = apply_filters('tm_ns_item_prices', $prices, $searchResponse, $product_id);
-			$this->_updateWooPrice($prices, $product_id);				
+				**/
+				$prices = apply_filters('tm_ns_item_prices', $prices, $searchResponse, $product_id);
+				$this->_updateWooPrice($prices, $product_id);				
 		}	
 
 		if (( isset($TMWNI_OPTIONS['enableInventorySync']) && 'on' == $TMWNI_OPTIONS['enableInventorySync'] )) {
-			
+				
 			$item_internal_id = $searchResponse->searchResult->recordList->record[0]->internalId;
-			
+				
 			$quantity = $this->getItemQuantity($searchResponse, $item_location_id, $product_id, $item_internal_id);
 			/**
 					* Inventory Item Quantity Filter.
 					*
 					* @since 1.0.0
 
-			**/			
-			$quantity = apply_filters('tm_ns_item_quantity', $quantity, $searchResponse, $item_location_id, $product_id, $item_internal_id);
-			
-			$this->updateWooQuantity($product_id, $quantity);
-			
+					**/			
+				$quantity = apply_filters('tm_ns_item_quantity', $quantity, $searchResponse, $item_location_id, $product_id, $item_internal_id);
+					
+				$this->updateWooQuantity($product_id, $quantity);
+					
 		}
 	}
 
 	//update woo price
 	public function _updateWooPrice( $prices, $product_id) {
-		
+				
 		if (!empty($prices) && isset($prices[0]->value)) {
 			$main_price = $prices[0]->value;
 			update_post_meta($product_id, '_regular_price', $main_price);
-			update_post_meta($product_id, '_price', $main_price);
-
+			$sale_price = get_post_meta($product_id, '_sale_price', $product_id, true);
+			if (empty($sale_price)) {
+				update_post_meta($product_id, '_price', $main_price);
+			}
 			$content = '<p><b>Action: Price updated</b></p>';
 			if (( isset($TMWNI_OPTIONS['enableInventorySync']) && 'on' == $TMWNI_OPTIONS['enableInventorySync'] )) {
 				$new_count = 0;
@@ -509,7 +547,7 @@ class ItemClient extends CommonIntegrationFunctions {
 	}
 
 
-	private function getItemQuantity( $searchResponse, $item_location_id, $product_id, $item_internal_id) {
+	public function getItemQuantity( $searchResponse, $item_location_id, $product_id, $item_internal_id) {
 		global $TMWNI_OPTIONS;	
 		if (!empty($searchResponse->searchResult->recordList->record[0]->locationsList)) {
 			$item_locations = $searchResponse->searchResult->recordList->record[0]->locationsList->locations;
@@ -523,11 +561,11 @@ class ItemClient extends CommonIntegrationFunctions {
 		}
 
 		return $quantity; 
-		
+				
 	}
 
 
-	private function _getItemQuantityfromLocations( $item_locations, $item_location_id) {
+	public function _getItemQuantityfromLocations( $item_locations, $item_location_id) {
 		global $TMWNI_OPTIONS;
 		$quantity = 0;
 
@@ -573,34 +611,34 @@ class ItemClient extends CommonIntegrationFunctions {
 	}
 
 
-	private function updateWooQuantity( $product_id, $quantity) {
+	public function updateWooQuantity( $product_id, $quantity) {
 		global $TMWNI_OPTIONS;
 		/**
 					* NetSuite Item Quantity Filter.
 					*
 					* @since 1.3.6
 
-		**/
-		$quantity = apply_filters('tm_ns_last_item_quantity', $quantity, $product_id);
-		update_post_meta($product_id, '_stock', $quantity);
+					**/
+			$quantity = apply_filters('tm_ns_last_item_quantity', $quantity, $product_id);
+			update_post_meta($product_id, '_stock', $quantity);
 		if (isset($TMWNI_OPTIONS['overrideManageStock']) && 'on' == $TMWNI_OPTIONS['overrideManageStock'] ) {
-			$manage_stock = update_post_meta($product_id, '_manage_stock', 'yes');
+				$manage_stock = update_post_meta($product_id, '_manage_stock', 'yes');
 		} 
 
 		if ('no' != $TMWNI_OPTIONS['updateStockStatus']) {
-			$this->updateStock($product_id, $quantity);
+					$this->updateStock($product_id, $quantity);
 		}	
 
 
-		$old_count = get_option('updated_products_count');
-		$new_count = $old_count + 1;
-		$content = '<p><b>Action: Inventory updated</b></p>';
-		$this->updateLogFileContent($content, $new_count);
+					$old_count = get_option('updated_products_count');
+					$new_count = $old_count + 1;
+					$content = '<p><b>Action: Inventory updated</b></p>';
+					$this->updateLogFileContent($content, $new_count);
 
 	}
 
 
-	private function updateStock( $product_id, $quantity) {
+	public function updateStock( $product_id, $quantity) {
 
 		if ('onbackorder' != get_post_meta($product_id, '_stock_status', true)) {
 			if ($quantity > 0) {
@@ -640,8 +678,8 @@ class ItemClient extends CommonIntegrationFunctions {
 					*
 					* @since 1.0.0
 
-			**/
-			apply_filters('tm_ns_item_availability_response', $getResponse, $product_id, $item_internal_id);
+					**/
+		apply_filters('tm_ns_item_availability_response', $getResponse, $product_id, $item_internal_id);
 			if (1 == $getResponse->getItemAvailabilityResult->status->isSuccess) {
 				if (isset($getResponse->getItemAvailabilityResult->itemAvailabilityList->itemAvailability)) {
 					$item_locations_inventory = $getResponse->getItemAvailabilityResult->itemAvailabilityList->itemAvailability;
@@ -660,7 +698,7 @@ class ItemClient extends CommonIntegrationFunctions {
 			return 0;
 
 		}
-		
+				
 	}
 
 

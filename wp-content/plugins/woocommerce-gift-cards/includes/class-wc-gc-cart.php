@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC_GC_Cart class.
  *
- * @version 1.2.0
+ * @version 1.16.0
  */
 class WC_GC_Cart {
 
@@ -109,7 +109,74 @@ class WC_GC_Cart {
 			$remove_id = absint( $post[ 'wc_gc_cart_remove_giftcards' ] );
 			WC_GC()->giftcards->remove_giftcard_from_session( $remove_id );
 		}
+	}
 
+	/**
+	 * Calculate totals using active Gift Cards.
+	 *
+	 * @since 1.14.0
+	 *
+	 * @param  WC_Cart $cart (Optional).
+	 * @return void
+	 */
+	public function calculate_totals( $cart = null ) {
+
+		if ( empty( $cart ) ) {
+			$cart = WC()->cart;
+		}
+
+		$this->totals[ 'cart_total' ]      = $cart->get_total( 'edit' );
+		$this->totals[ 'remaining_total' ] = $this->totals[ 'cart_total' ];
+
+		// Giftcards via form?
+		$this->giftcards[ 'applied' ] = array(
+			'giftcards'    => array(),
+			'total_amount' => 0.0
+		);
+
+		$applied_giftcards = WC_GC()->giftcards->get_applied_giftcards_from_session();
+		if ( $applied_giftcards ) {
+
+			$this->giftcards[ 'applied' ]      = WC_GC()->giftcards->cover_balance( $this->totals[ 'remaining_total' ], $applied_giftcards );
+			$this->totals[ 'remaining_total' ] = $this->totals[ 'remaining_total' ] - (float) $this->giftcards[ 'applied' ][ 'total_amount' ];
+		}
+
+		// Sanity.
+		$this->totals[ 'remaining_total' ] = max( 0, $this->totals[ 'remaining_total' ] );
+		// Cache the remaining total to be covered by account balance.
+		$this->totals[ 'total_for_balance' ] = $this->totals[ 'remaining_total' ];
+
+		// Account balance?
+		$this->giftcards[ 'account' ] = array(
+			'giftcards'    => array(),
+			'total_amount' => 0.0
+		);
+
+		if ( wc_gc_is_redeeming_enabled() ) {
+			$account_giftcards = WC_GC()->account->get_active_giftcards_from_session();
+			if ( $account_giftcards ) {
+
+				if ( WC_GC()->account->use_balance() ) {
+
+					$this->giftcards[ 'account' ]      = WC_GC()->giftcards->cover_balance( $this->totals[ 'remaining_total' ], $account_giftcards );
+					$this->totals[ 'remaining_total' ] = $this->totals[ 'remaining_total' ] - (float) $this->giftcards[ 'account' ][ 'total_amount' ];
+				}
+
+				// Calculate pending balance in totals.
+				$this->totals[ 'pending_total' ] = 0;
+				foreach ( $account_giftcards as $account_giftcard ) {
+					if ( $account_giftcard->get_pending_balance() ) {
+						$this->totals[ 'pending_total' ] += $account_giftcard->get_pending_balance();
+					}
+				}
+			}
+		}
+
+		// Change the Cart total. Taxes already included in the Gift Card amount.
+		$cart->set_total( max( 0, $this->totals[ 'remaining_total' ] ) );
+
+		// Calculate available amount.
+		$this->totals[ 'available_total' ] = min( $this->totals[ 'total_for_balance' ], WC_GC()->account->get_balance() );
 	}
 
 	/**
@@ -148,56 +215,8 @@ class WC_GC_Cart {
 			return;
 		}
 
-		$this->totals[ 'cart_total' ]      = $cart->get_total( 'edit' );
-		$this->totals[ 'remaining_total' ] = $this->totals[ 'cart_total' ];
+		$this->calculate_totals( $cart );
 
-		// Giftcards via form?
-		$this->giftcards[ 'applied' ] = array(
-			'giftcards'    => array(),
-			'total_amount' => 0.0
-		);
-		$applied_giftcards = WC_GC()->giftcards->get_applied_giftcards_from_session();
-		if ( $applied_giftcards ) {
-
-			$this->giftcards[ 'applied' ]      = WC_GC()->giftcards->cover_balance( $this->totals[ 'remaining_total' ], $applied_giftcards );
-			$this->totals[ 'remaining_total' ] = $this->totals[ 'remaining_total' ] - (float) $this->giftcards[ 'applied' ][ 'total_amount' ];
-		}
-
-		// Sanity.
-		$this->totals[ 'remaining_total' ] = max( 0, $this->totals[ 'remaining_total' ] );
-		// Cache the remaining total to be covered by account balance.
-		$this->totals[ 'total_for_balance' ] = $this->totals[ 'remaining_total' ];
-
-		// Account balance?
-		$this->giftcards[ 'account' ] = array(
-			'giftcards'    => array(),
-			'total_amount' => 0.0
-		);
-		if ( wc_gc_is_redeeming_enabled() ) {
-			$account_giftcards = WC_GC()->account->get_active_giftcards_from_session();
-			if ( $account_giftcards ) {
-
-				if ( WC_GC()->account->use_balance() ) {
-
-					$this->giftcards[ 'account' ]      = WC_GC()->giftcards->cover_balance( $this->totals[ 'remaining_total' ], $account_giftcards );
-					$this->totals[ 'remaining_total' ] = $this->totals[ 'remaining_total' ] - (float) $this->giftcards[ 'account' ][ 'total_amount' ];
-				}
-
-				// Calculate pending balance in totals.
-				$this->totals[ 'pending_total' ] = 0;
-				foreach ( $account_giftcards as $account_giftcard ) {
-					if ( $account_giftcard->get_pending_balance() ) {
-						$this->totals[ 'pending_total' ] += $account_giftcard->get_pending_balance();
-					}
-				}
-			}
-		}
-
-		// Change the Cart total. Taxes already included in the Gift Card amount.
-		$cart->set_total( max( 0, $this->totals[ 'remaining_total' ] ) );
-
-		// Calculate available amount.
-		$this->totals[ 'available_total' ] = min( $this->totals[ 'total_for_balance' ], WC_GC()->account->get_balance() );
 		// Cache calculated giftcards.
 		WC()->session->set( '_wc_gc_giftcards', array_merge( $this->giftcards[ 'applied' ][ 'giftcards' ], $this->giftcards[ 'account' ][ 'giftcards' ] ) );
 
@@ -285,10 +304,20 @@ class WC_GC_Cart {
 			return;
 		}
 
+		$button_class = implode(
+			' ',
+			array_filter(
+				array(
+					'button',
+					wc_gc_wp_theme_get_element_class_name( 'button' ),
+				)
+			)
+		);
+
 		// Load template.
 		wc_get_template(
 			'cart/apply-gift-card-form.php',
-			apply_filters( 'woocommerce_gc_apply_gift_card_form_template_args', array(), $this ),
+			apply_filters( 'woocommerce_gc_apply_gift_card_form_template_args', array( 'button_class' => $button_class ), $this ),
 			false,
 			WC_GC()->get_plugin_path() . '/templates/'
 		);
@@ -308,7 +337,7 @@ class WC_GC_Cart {
 				if ( empty( $notice[ 'type' ] ) ) {
 					$notice[ 'type' ] = 'message';
 				}
-				echo '<div class="woocommerce-' . esc_attr( $notice[ 'type' ] ) . '">' . $notice[ 'text' ] . '</div>';
+				echo '<div class="woocommerce-' . esc_attr( $notice[ 'type' ] ) . '">' . wp_kses_post( $notice[ 'text' ] ) . '</div>';
 			}
 		}
 	}

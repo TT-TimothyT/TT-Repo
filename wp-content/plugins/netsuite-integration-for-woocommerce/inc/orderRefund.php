@@ -58,7 +58,7 @@ class OrderRefund extends CommonIntegrationFunctions {
 	public function create_nd_refund( $order_id, $refund_id, $order_ns_internal_id) {
 		$this->object_id = $order_id;
 		
-		$customer_internal_id = get_post_meta($order_id, TMWNI_Settings::$ns_order_customer_id, true);
+		$customer_internal_id = tm_ns_get_post_meta($order_id, TMWNI_Settings::$ns_order_customer_id);
 
 		$refund = new WC_Order_Refund($refund_id);
 		if (!$refund->get_items()) {
@@ -119,7 +119,7 @@ class OrderRefund extends CommonIntegrationFunctions {
 
 			$unit_price = round(number_format((float) ( $total_price / abs($item->get_quantity()) ) , 2, '.', ''));
 
-			$ns_product_id 		= get_post_meta($item->get_product_id(), TMWNI_Settings::$ns_product_id, true);
+			$ns_product_id = get_post_meta($item->get_product_id(), TMWNI_Settings::$ns_product_id, true);
 			$soi[$key] = new ReturnAuthorizationItem();
 			$soi[$key]->item = new RecordRef();
 			$soi[$key]->item->internalId = $ns_product_id;
@@ -154,7 +154,7 @@ class OrderRefund extends CommonIntegrationFunctions {
 		$order_internalIds_array = array();
 		foreach ($orders as $key => $order) {
 			$order_id = $order->get_id();
-			$netSuiteSOInternalID = get_post_meta($order_id, 'ns_order_internal_id', true);
+			$netSuiteSOInternalID = tm_ns_get_post_meta($order_id, 'ns_order_internal_id');
 			//$netSuiteSOInternalID = 271222;
 			$searchValue = new RecordRef();
 			$searchValue->internalId = $netSuiteSOInternalID;	
@@ -359,7 +359,7 @@ class OrderRefund extends CommonIntegrationFunctions {
 
 
 				if (!is_wp_error($refund)) {
-					update_post_meta($order_id, TMWNI_Settings::$ns_order_refund_internal_id, $order_refund_id);
+					tm_ns_update_post_meta($order_id, TMWNI_Settings::$ns_order_refund_internal_id, $order_refund_id);
 				}
 			}
 

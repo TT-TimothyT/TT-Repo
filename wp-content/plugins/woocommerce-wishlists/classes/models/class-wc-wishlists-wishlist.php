@@ -215,7 +215,7 @@ class WC_Wishlists_Wishlist {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$args = apply_filters( 'wc_wishlists_udpate_list_args', $args );
+		$args = apply_filters( 'wc_wishlists_update_list_args', $args );
 
 		unset( $args['wishlist_owner'] );
 

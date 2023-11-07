@@ -14,7 +14,7 @@
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce Gift Cards
- * @version 1.6.0
+ * @version 1.16.0
  */
 
 // Exit if accessed directly.
@@ -25,14 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_gc_before_account_giftcards', $has_giftcards ); ?>
 
 	<h2><?php esc_html_e( 'Your Balance', 'woocommerce-gift-cards' ); ?></h2>
-	<div class="woocommerce-Giftcards woocommerce-MyAccount-Giftcards-balance-amount"><?php echo wc_price( $balance ); ?></div>
+	<div class="woocommerce-Giftcards woocommerce-MyAccount-Giftcards-balance-amount"><?php echo wp_kses_post( wc_price( $balance ) ); ?></div>
 
 	<form method="POST">
 		<?php wp_nonce_field( 'customer_redeems_gift_card' ); ?>
 		<h4><?php esc_html_e( 'Add a gift card?', 'woocommerce-gift-cards' ); ?></h4>
 		<div class="woocommerce-Giftcards woocommerce-MyAccount-Giftcards-form">
-			<input type="text" name="wc_gc_redeem_code" placeholder="<?php esc_attr_e( 'Enter code&hellip;', 'woocommerce-gift-cards' ); ?>"/>
-			<button name="wc_gc_redeem_save" value="wc_gc_redeem_save" class="woocommerce-Button button"><?php esc_html_e( 'Add to your account', 'woocommerce-gift-cards' ); ?></button>
+			<input type="text"  class="input-text" name="wc_gc_redeem_code" placeholder="<?php esc_attr_e( 'Enter code&hellip;', 'woocommerce-gift-cards' ); ?>"/>
+			<button name="wc_gc_redeem_save" value="wc_gc_redeem_save" class="<?php echo isset( $button_class) ? esc_attr( $button_class ) : 'woocommerce-Button button'; ?>"><?php esc_html_e( 'Add to your account', 'woocommerce-gift-cards' ); ?></button>
 		</div>
 	</form>
 
@@ -68,11 +68,11 @@ do_action( 'woocommerce_gc_before_account_giftcards', $has_giftcards ); ?>
 							<?php echo wc_gc_mask_codes( 'account' ) ? esc_html( wc_gc_mask_code( $giftcard->get_code() ) ) : esc_html( $giftcard->get_code() ); ?>
 						</td>
 						<td data-title="<?php esc_html_e( 'Available Balance', 'woocommerce-gift-cards' ); ?>">
-							<?php echo wc_price( $giftcard->get_balance() ); ?>
+							<?php echo wp_kses_post( wc_price( $giftcard->get_balance() ) ); ?>
 
 							<?php if ( $giftcard->get_pending_balance() > 0 ) { ?>
 								<small class="woocommerce-MyAccount-Giftcards-pending-amount">
-									<?php echo wc_gc_get_pending_balance_resolution( $giftcard ); ?>
+									<?php echo wc_gc_get_pending_balance_resolution( $giftcard ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 									<span class="warning-icon"></span>
 								</small>
 							<?php } ?>
@@ -120,7 +120,7 @@ do_action( 'woocommerce_gc_before_account_giftcards', $has_giftcards ); ?>
 							<?php echo wp_kses_post( wc_gc_get_activity_description( $activity ) ); ?>
 						</td>
 						<td data-title="<?php esc_html_e( 'Amount', 'woocommerce-gift-cards' ); ?>">
-							<?php echo wc_price( $activity->get_amount() ); ?>
+							<?php echo wp_kses_post( wc_price( $activity->get_amount() ) ); ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>
@@ -136,11 +136,11 @@ do_action( 'woocommerce_gc_before_account_giftcards', $has_giftcards ); ?>
 <?php if ( 1 < $total_pages ) : ?>
 	<div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination">
 		<?php if ( 1 !== $current_page ) : ?>
-			<a class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button" href="<?php echo esc_url( wc_get_endpoint_url( 'giftcards', $current_page - 1 ) ); ?>"><?php esc_html_e( 'Previous', 'woocommerce' ); ?></a>
+			<a class="<?php echo isset( $button_class) ? esc_attr( $button_class ) : 'woocommerce-Button button'; ?> woocommerce-button--previous woocommerce-Button--previous" href="<?php echo esc_url( wc_get_endpoint_url( 'giftcards', $current_page - 1 ) ); ?>"><?php esc_html_e( 'Previous', 'woocommerce' ); ?></a>
 		<?php endif; ?>
 
 		<?php if ( intval( $total_pages ) !== $current_page ) : ?>
-			<a class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button" href="<?php echo esc_url( wc_get_endpoint_url( 'giftcards', $current_page + 1 ) ); ?>"><?php esc_html_e( 'Next', 'woocommerce' ); ?></a>
+			<a class="<?php echo isset( $button_class) ? esc_attr( $button_class ) : 'woocommerce-Button button'; ?> woocommerce-button--next woocommerce-Button--next" href="<?php echo esc_url( wc_get_endpoint_url( 'giftcards', $current_page + 1 ) ); ?>"><?php esc_html_e( 'Next', 'woocommerce' ); ?></a>
 		<?php endif; ?>
 	</div>
 <?php endif; ?>

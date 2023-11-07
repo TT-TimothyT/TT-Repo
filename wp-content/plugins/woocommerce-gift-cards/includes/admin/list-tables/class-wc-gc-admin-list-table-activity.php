@@ -19,7 +19,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Adds a custom deployments list table.
  *
  * @class    WC_GC_Activity_List_Table
- * @version  1.10.3
+ * @version  1.16.0
  */
 class WC_GC_Activity_List_Table extends WP_List_Table {
 
@@ -78,7 +78,7 @@ class WC_GC_Activity_List_Table extends WP_List_Table {
 
 		if ( isset( $item[ $column_name ] ) ) {
 
-			echo $item[ $column_name ];
+			echo wp_kses_post( $item[ $column_name ] );
 
 		} else {
 
@@ -123,7 +123,7 @@ class WC_GC_Activity_List_Table extends WP_List_Table {
 		printf(
 			'%s%s',
 			esc_html( $title ),
-			$this->row_actions( $actions )
+			wp_kses_post( $this->row_actions( $actions ) )
 		);
 	}
 
@@ -153,7 +153,7 @@ class WC_GC_Activity_List_Table extends WP_List_Table {
 	 * @param array $item
 	 */
 	public function column_amount( $item ) {
-		echo wc_price( (float) $item[ 'amount' ] );
+		echo wp_kses_post( wc_price( (float) $item[ 'amount' ] ) );
 	}
 
 	/**
@@ -162,7 +162,7 @@ class WC_GC_Activity_List_Table extends WP_List_Table {
 	 * @param array $item
 	 */
 	public function column_type( $item ) {
-		echo wc_gc_get_activity_type_label( $item[ 'type' ] );
+		echo esc_html( wc_gc_get_activity_type_label( $item[ 'type' ] ) );
 	}
 
 	/**
@@ -179,7 +179,7 @@ class WC_GC_Activity_List_Table extends WP_List_Table {
 			/* translators: %s: human time diff */
 			$h_time = sprintf( esc_html__( '%s ago', 'woocommerce-gift-cards' ), human_time_diff( $item[ 'date' ] ) );
 		} else {
-			$h_time = WC_GC_Core_Compatibility::wp_date( _x( 'Y/m/d', 'list table date format', 'woocommerce-gift-cards' ), $item[ 'date' ] );
+			$h_time = WC_GC_Core_Compatibility::wp_date( get_option( 'date_format', 'Y/m/d' ), $item[ 'date' ] );
 		}
 
 		echo '<span title="' . esc_attr( $t_time ) . '">' . esc_html( $h_time ) . '</span>';
@@ -270,9 +270,22 @@ class WC_GC_Activity_List_Table extends WP_List_Table {
 				$query_args[ 'type' ] = array( $filter );
 			}
 		}
+		if ( ! empty( $_GET[ 'm' ] ) ) {
+
+			$filter = absint( $_GET[ 'm' ] );
+			$month  = substr( $filter, 4, 6 );
+			$year   = substr( $filter, 0, 4 ); 
+			if ( $filter ) {
+				$start_date                 = strtotime( "{$year}-{$month}-01" );
+				$query_args[ 'start_date' ] = $start_date;
+				$end_date                   = strtotime( '+1 month', $start_date );
+				$query_args[ 'end_date' ]   = $end_date;
+			}
+		}
 
 		// Fetch the items.
-		$this->items = WC_GC()->db->activity->query( $query_args );
+		// It's safe to ignore semgrep warning, as everything is properly escaped.
+		$this->items = WC_GC()->db->activity->query( $query_args ); // nosemgrep: audit.php.wp.security.sqli.input-in-sinks
 
 		// Count total items.
 		$query_args[ 'count' ] = true;
@@ -471,10 +484,10 @@ class WC_GC_Activity_List_Table extends WP_List_Table {
 				$html  = "<option %s value='%s'>%s</option>\n";
 
 				printf(
-					$html,
+					$html, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					selected( $m, $year . $month, false ),
 					esc_attr( $arc_row->year . $month ),
-					$label
+					esc_html( $label )
 				);
 			}
 			?>

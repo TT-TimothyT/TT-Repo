@@ -543,8 +543,15 @@ class WC_GC_Activity_DB {
 			$statuses = implode( '\', \'', array_map( function( $item ) {
 				return 'wc-' . wc_clean( $item );
 			}, $args[ 'exclude_statuses' ] ) );
-			$join       = " INNER JOIN `{$wpdb->posts}` AS `orders` ON `activities`.`object_id` = `orders`.`ID`";
-			$where_join = " AND `orders`.`post_status` NOT IN ('{$statuses}')";
+			if ( WC_GC_Core_Compatibility::is_hpos_enabled() ) {
+				$hpos_orders_table = Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::get_orders_table_name();
+
+				$join       = " INNER JOIN `{$hpos_orders_table}` AS `orders` ON `activities`.`object_id` = `orders`.`id`";
+				$where_join = " AND `orders`.`status` NOT IN ('{$statuses}')";
+			} else {
+				$join       = " INNER JOIN `{$wpdb->posts}` AS `orders` ON `activities`.`object_id` = `orders`.`ID`";
+				$where_join = " AND `orders`.`post_status` NOT IN ('{$statuses}')";
+			}
 		}
 
 		// Post status.
@@ -553,11 +560,11 @@ class WC_GC_Activity_DB {
 		$results = $wpdb->get_results( $wpdb->prepare(
 			"
 				SELECT
-				SUM( CASE WHEN `type` IN ({$case_credit_placeholder}) THEN amount ELSE 0 END ) AS credits,
-				SUM( CASE WHEN `type` IN ({$case_debit_placeholder}) THEN amount ELSE 0 END ) AS debits
+				SUM( CASE WHEN `activities`.`type` IN ({$case_credit_placeholder}) THEN amount ELSE 0 END ) AS credits,
+				SUM( CASE WHEN `activities`.`type` IN ({$case_debit_placeholder}) THEN amount ELSE 0 END ) AS debits
 				FROM `{$wpdb->prefix}woocommerce_gc_activity` AS `activities`
 				{$join}
-				WHERE `type` IN ({$types_placeholder})
+				WHERE `activities`.`type` IN ({$types_placeholder})
 				{$where_giftcard_query}
 				{$where_order_query}
 				{$where_date_query}

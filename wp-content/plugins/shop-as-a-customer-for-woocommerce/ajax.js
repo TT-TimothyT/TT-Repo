@@ -1,6 +1,7 @@
 var globnextcount=0;
 
-var ajaxurl = ewcpm_php_vars.admin_url;
+var ajaxurl = saac_php_vars.admin_url;
+var ajax_nonce = saac_php_vars.ajax_nonce;
 
 jQuery(document).ready(function(){
 
@@ -13,25 +14,6 @@ jQuery(document).ready(function(){
     jQuery(this).parents('#allcustomers_paginate').find('.paginate_button.current').next().click();
   });
    
-  // var fme_allcookies = document.cookie;
-
-  // fme_cookiearray = fme_allcookies.split(';');
-
-  // function getCookie(fme_name) {
-  //   var fme_value = "; " + document.cookie;
-  //   var fme_parts = fme_value.split("; " + fme_name + "=");
-  //   if (fme_parts.length == 2) return fme_parts.pop().split(";").shift();
-  // }
-  // var fme_mode = getCookie('display');
-
-  // if(fme_mode == 'fme_switchcustomerbtn') {
-  //   jQuery('#fme_switchcustomerbtn').click();
-  // } else if ( fme_mode == 'fme_customerlogsbtn') {
-  //   jQuery('#fme_customerlogsbtn').click();
-  // } else if ( fme_mode == 'fme_settingsbtn') {
-  //   // alert()
-  //   jQuery('#fme_settingsbtn').click();
-  // } 
 
   jQuery('.saveroles').click(function(e){
   e.preventDefault();
@@ -47,7 +29,7 @@ jQuery(document).ready(function(){
         allroless:allroless,
         fme_tabselect:fme_tabselect,
         defselectedp:defselectedp,
-        notallowedpleasegoaway_fme_123e:  'fmessnotallowedpleasegoaway_fme_123#e',
+        security: ajax_nonce,
       },
       success : function( response ) {
           
@@ -105,6 +87,7 @@ jQuery(document).ready(function(){
 
   jQuery('#nextfind').click(function(){
     globnextcount=globnextcount+10;
+    
     var nextvalue=jQuery('#cusname').val();
     jQuery.ajax({
       url : ajaxurl,
@@ -114,11 +97,7 @@ jQuery(document).ready(function(){
         action : 'nextdatafind', 
         nextvalue:nextvalue,     
         globnextcount:globnextcount,
-        notallowedpleasegoaway_fme_123e:  'fmessnotallowedpleasegoaway_fme_123#e',       
-        
-        
-
-        
+        security:  ajax_nonce,       
         
       },
       success : function( response ) {
@@ -144,8 +123,6 @@ jQuery(document).ready(function(){
         jQuery('#cusname').after(app);
       }
       
-
-
     }
     
   });
@@ -158,6 +135,7 @@ jQuery(document).ready(function(){
    jQuery('#fmse_nrf').hide();
    var value=jQuery('#cusname').val();
    var countkk=value.length;
+   globnextcount=0;
 
    if(countkk<3){
     jQuery('.myownulbabes').remove();
@@ -170,12 +148,8 @@ jQuery(document).ready(function(){
       data : {
         action : 'my_action', 
         value:value,
-        notallowedpleasegoaway_fme_123e:  'fmessnotallowedpleasegoaway_fme_123#e',            
-        
-        
-
-        
-        
+        security:  ajax_nonce,            
+                
       },
       success : function( response ) {
 
@@ -264,17 +238,14 @@ jQuery(document).ready(function(){
       return false;
     }
     e.preventDefault();
-    
-    
-    
-    jQuery.ajax({
+      jQuery.ajax({
       url : ajaxurl,
       type : 'post',
       data : {
         action : 'ajaxxx', 
         id: id, 
         x:x,
-        notallowedpleasegoaway_fme_123e:  'fmessnotallowedpleasegoaway_fme_123#e',
+        security:  ajax_nonce,
         switchbtn_refferer:  switchbtn_refferer,
         
         
@@ -298,6 +269,7 @@ jQuery(document).ready(function(){
   });
 
   jQuery('body').on('click', '.vieworder', function(e) {
+
   // jQuery('.vieworder').click(function(e){
     var id ='';
     if(jQuery(this).hasClass('frompage')){
@@ -312,19 +284,17 @@ jQuery(document).ready(function(){
       return false;
     }
     e.preventDefault();
-    
-    
-    
+   
     jQuery.ajax({
       url : ajaxurl,
       type : 'post',
       data : {
         action : 'vieworder', 
         id:id,
-        notallowedpleasegoaway_fme_123e:  'fmessnotallowedpleasegoaway_fme_123#e',
+        security:  ajax_nonce,
       },
       success : function( response ) {
-        
+       
        if (response=='usernotmatched'){
         alert('You are not allowed to View Orders!');
       } else {
@@ -358,7 +328,7 @@ jQuery(document).ready(function(){
     data : {
       action : 'editprofile', 
       id:id,
-      notallowedpleasegoaway_fme_123e:  'fmessnotallowedpleasegoaway_fme_123#e',
+      security:  ajax_nonce,
       
     },
     success : function( response ) {
@@ -368,23 +338,21 @@ jQuery(document).ready(function(){
     }
   });
 });
-
-
   jQuery('.btn1').click(function(e){
     
    jQuery('#loader_fme').show();
    e.preventDefault();
-   
    jQuery.ajax({
     url : ajaxurl,
     type : 'post',
     data : {
       action : 'ajax', 
-      notallowedpleasegoaway_fme_123e:  'fmessnotallowedpleasegoaway_fme_123#e'
+      security: ajax_nonce
     },
     success : function( response ) {
       window.location.href = response;
      let mainLocation =jQuery('#mainUrl').val();
+    
      // window.location.href = mainLocation + '/wp-admin/admin.php?page=wc-settings&tab=shop_as_a_customer_for_woocommerce'
        
    }
@@ -499,11 +467,8 @@ jQuery(document).ready(function(){
         ]
 
       } );
-
-      
+ 
     }
-    
-
     jQuery('.fade').css('opacity', 'unset');
     jQuery(".buttonn").click(function(){
       jQuery("#myModal").modal();
@@ -521,7 +486,7 @@ jQuery(document).ready(function(){
         type : 'post',
         data : {
           action : 'asguest', 
-          notallowedpleasegoaway_fme_123e:  'fmessnotallowedpleasegoaway_fme_123#e',
+          security:  ajax_nonce,
         },
         success : function( response ) {
          
@@ -534,18 +499,12 @@ jQuery(document).ready(function(){
           } else {
             window.open(response,"_self");
           }
-        }
-        
-        
-        
-      }
-
-      
+        } 
+      }      
     });
     });
-
-
-
 
   });
 });
+
+

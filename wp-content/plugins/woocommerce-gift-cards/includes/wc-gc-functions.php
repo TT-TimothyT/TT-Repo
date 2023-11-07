@@ -523,8 +523,16 @@ function wc_gc_get_parent_menu() {
  */
 function wc_gc_get_formatted_screen_id( $screen_id, $replace = true ) {
 
-	$prefix = $replace && 'marketing' === wc_gc_get_parent_menu() ? sanitize_title( __( 'Marketing', 'woocommerce' ) ) : sanitize_title( __( 'WooCommerce', 'woocommerce' ) );
-
+	if ( 'marketing' === wc_gc_get_parent_menu() ) {
+		$prefix = sanitize_title( __( 'Marketing', 'woocommerce' ) );
+	} else {
+		if ( version_compare( WC()->version, '7.3.0' ) < 0 ) {
+			$prefix = sanitize_title( __( 'WooCommerce', 'woocommerce' ) );
+		} else {
+			$prefix = 'woocommerce';
+		}
+	}
+	
 	if ( 0 === strpos( $screen_id, 'woocommerce_' ) ) {
 		$screen_id = str_replace( 'woocommerce_', $prefix . '_', $screen_id );
 	}

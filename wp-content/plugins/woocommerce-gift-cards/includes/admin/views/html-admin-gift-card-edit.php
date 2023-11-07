@@ -5,7 +5,7 @@
  * @package  WooCommerce Gift Cards
  * @since    1.0.0
  *
- * @version  1.8.1
+ * @version  1.16.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -103,13 +103,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 							<div class="gift-card-data__available_balance">
 								<p><?php esc_html_e( 'Available balance' ,'woocommerce-gift-cards' ); ?></p>
-								<span class="text--balance"><?php echo wc_price( $giftcard->get_balance() ); ?></span>
+								<span class="text--balance"><?php echo wp_kses_post( wc_price( $giftcard->get_balance() ) ); ?></span>
 							</div>
 
 						</div>
 
 						<div class="gift-card-data__status-column">
-							<?php echo wc_gc_get_status_labels_html( $giftcard ); ?>
+							<?php echo wc_gc_get_status_labels_html( $giftcard ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						</div>
 
 					</div><!-- #row -->
@@ -121,7 +121,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 						<div class="cell">
 							<label><?php esc_html_e( 'Issued value' ,'woocommerce-gift-cards' ); ?></label>
-							<span><?php echo wc_price( $giftcard->get_initial_balance() ); ?></span>
+							<span><?php echo wp_kses_post( wc_price( $giftcard->get_initial_balance() ) ); ?></span>
 						</div>
 						<div class="cell">
 							<label><?php esc_html_e( 'Order' ,'woocommerce-gift-cards' ); ?></label>
@@ -143,7 +143,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									$value = sprintf( '<a href="%s">%s</a>', esc_url( get_edit_user_link( $user->ID ) ), esc_html( $user->display_name ) );
 								}
 							}
-								echo $value;
+								echo wp_kses_post( $value );
 							?>
 							</span>
 						</div>
@@ -181,7 +181,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<div class="gift-card-data__row">
 						<div class="gift-card-data__form-field">
-							<?php echo self::get_message_field_html( $giftcard ); ?>
+							<?php echo self::get_message_field_html( $giftcard ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						</div>
 					</div><!-- #row -->
 

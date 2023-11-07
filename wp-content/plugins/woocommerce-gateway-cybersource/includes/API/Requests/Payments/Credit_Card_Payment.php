@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -98,6 +98,7 @@ class Credit_Card_Payment extends Payment {
 
 		$data = [];
 
+		// TODO: consider whether all of these empty() checks are needed since array_filter() strips out nulls {IT: 2023-10-06}
 		if ( ! empty( $order->threed_secure->transaction_id ) ) {
 			$data['authenticationTransactionId'] = $order->threed_secure->transaction_id;
 		}
@@ -105,6 +106,35 @@ class Credit_Card_Payment extends Payment {
 		// add the reference ID if available
 		if ( ! empty( $order->threed_secure->reference_id ) ) {
 			$data['referenceId'] = $order->threed_secure->reference_id;
+		}
+
+		// add the remaining check enrollment response fields as avaialble
+		if ( ! empty( $order->threed_secure->ucaf_collection_indicator ) ) {
+			$data['ucafCollectionIndicator'] = $order->threed_secure->ucaf_collection_indicator;
+		}
+
+		if ( ! empty( $order->threed_secure->cavv ) ) {
+			$data['cavv'] = $order->threed_secure->cavv;
+		}
+
+		if ( ! empty( $order->threed_secure->ucaf_authentication_data ) ) {
+			$data['ucafAuthenticationData'] = $order->threed_secure->ucaf_authentication_data;
+		}
+
+		if ( ! empty( $order->threed_secure->xid ) ) {
+			$data['xid'] = $order->threed_secure->xid;
+		}
+
+		if ( ! empty( $order->threed_secure->veres_enrolled ) ) {
+			$data['veresEnrolled'] = $order->threed_secure->veres_enrolled;
+		}
+
+		if ( ! empty( $order->threed_secure->specification_version ) ) {
+			$data['paSpecificationVersion'] = $order->threed_secure->specification_version;
+		}
+
+		if ( ! empty( $order->threed_secure->directory_server_transaction_id ) ) {
+			$data['directoryServerTransactionId'] = $order->threed_secure->directory_server_transaction_id;
 		}
 
 		return array_filter( $data );
@@ -203,9 +233,9 @@ class Credit_Card_Payment extends Payment {
 			$data['paymentSolution'] = self::PAYMENT_SOLUTION_GOOGLE_PAY;
 		}
 
-		// tweak values for 3D Secure
-		if ( ! empty( $this->get_order()->threed_secure->transaction_id ) ) {
-			$data['actionList'][] = $this->get_order()->threed_secure->jwt ? 'VALIDATE_CONSUMER_AUTHENTICATION' : 'CONSUMER_AUTHENTICATION';
+		// validate consumer authentication for 3DSecure transactions
+		if ( ! empty( $this->get_order()->threed_secure->transaction_id ) && $this->get_order()->threed_secure->jwt ) {
+			$data['actionList'][] = 'VALIDATE_CONSUMER_AUTHENTICATION';
 		}
 
 		if ( $info = $this->get_visa_checkout_processing_information( $this->get_order(), 'payment' ) ) {

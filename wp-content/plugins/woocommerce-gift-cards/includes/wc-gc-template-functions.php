@@ -4,6 +4,7 @@
  *
  * @package  WooCommerce Gift Cards
  * @since    1.0.0
+ * @version  1.16.0
  */
 
 // Exit if accessed directly.
@@ -101,15 +102,15 @@ if ( ! function_exists( 'wc_gc_get_pending_balance_resolution' ) ) {
 			if ( 'notice' === $context ) {
 
 				/* translators: Gift Card balance */
-				$notice_text = sprintf( esc_html__( 'Failed to apply gift card. %s on hold in pending orders.', 'woocommerce-gift-cards' ), wc_price( $giftcard->get_pending_balance() ) );
-
-				/* translators: %1$s pay link, %2$s cta text, %3$s notice text html */
-				$resolution  = sprintf( '<a href="%1$s" class="button wc-forward">%2$s</a> %s', $link, esc_html__( 'View orders', 'woocommerce-gift-cards' ), $notice_text );
+				$notice_text     = sprintf( esc_html__( 'Failed to apply gift card. %s on hold in pending orders.', 'woocommerce-gift-cards' ), wc_price( $giftcard->get_pending_balance() ) );
+				$button_class    = wc_gc_wp_theme_get_element_class_name( 'button' );
+				$wp_button_class = $button_class ? ' ' . $button_class : '';
+				$resolution      = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', esc_url( $link ), esc_attr( $wp_button_class ), esc_html__( 'View orders', 'woocommerce-gift-cards' ), $notice_text );
 
 			} else {
 
 				/* translators: %1$s pending balance, %2$s account order link */
-				$resolution  = sprintf( '%1$s on hold in <a href="%2$s">pending orders</a>', wc_price( $giftcard->get_pending_balance() ), $link );
+				$resolution  = sprintf( '%1$s on hold in <a href="%2$s">pending orders</a>', wc_price( $giftcard->get_pending_balance() ), esc_url( $link ) );
 			}
 
 
@@ -128,17 +129,17 @@ if ( ! function_exists( 'wc_gc_get_pending_balance_resolution' ) ) {
 				}
 
 				/* translators: %1$s pay link, %2$s order id */
-				$link = sprintf( '<a href="%s">#%d</a>', add_query_arg( array( 'wc_gc_pay_order_pending_status' => 'notice' ), $order->get_checkout_payment_url() ), $order->get_id() );
+				$link = sprintf( '<a href="%s">#%d</a>', esc_url( add_query_arg( array( 'wc_gc_pay_order_pending_status' => 'notice' ), $order->get_checkout_payment_url() ) ), $order->get_id() );
 
 				if ( 'notice' === $context ) {
 
 					/* translators: %1$s pending balance, %2$s pay link html */
-					$resolution = sprintf( esc_html__( 'Failed to apply gift card. %1$s on hold in order %2$s.', 'woocommerce-gift-cards' ), wc_price( $giftcard->get_pending_balance() ), $link );
+					$resolution = sprintf( esc_html__( 'Failed to apply gift card. %1$s on hold in order %2$s.', 'woocommerce-gift-cards' ), wc_price( $giftcard->get_pending_balance() ), esc_url( $link ) );
 
 				} else {
 
 					/* translators: %1$s pending balance, %2$s pay link html */
-					$resolution = sprintf( esc_html__( '%1$s on hold in order %2$s', 'woocommerce-gift-cards' ), wc_price( $giftcard->get_pending_balance() ), $link );
+					$resolution = sprintf( esc_html__( '%1$s on hold in order %2$s', 'woocommerce-gift-cards' ), wc_price( $giftcard->get_pending_balance() ), esc_url( $link ) );
 				}
 
 			} else {
@@ -154,7 +155,7 @@ if ( ! function_exists( 'wc_gc_get_pending_balance_resolution' ) ) {
 					}
 
 					/* translators: %1$s pay link, %2$s order id */
-					$pay_links[] = sprintf( '<a href="%1$s">#%2$d</a>', add_query_arg( array( 'wc_gc_pay_order_pending_status' => 'notice' ), $order->get_checkout_payment_url() ), $order->get_id() );
+					$pay_links[] = sprintf( '<a href="%1$s">#%2$d</a>', esc_url( add_query_arg( array( 'wc_gc_pay_order_pending_status' => 'notice' ), $order->get_checkout_payment_url() ) ), $order->get_id() );
 					$counter     = $counter + 1;
 
 					if ( $counter >= 2 ) {
@@ -199,16 +200,20 @@ if ( ! function_exists( 'wc_gc_form_field_recipient_html' ) ) {
 		$to = empty( $to ) && isset( $_REQUEST[ 'wc_gc_giftcard_to_multiple' ] ) ? sanitize_text_field( $_REQUEST[ 'wc_gc_giftcard_to_multiple' ] ) : $to;
 
 		if ( $product->is_sold_individually() ) { ?>
-			<div class="wc_gc_field wc_gc_giftcard_to">
-				<label for="wc_gc_giftcard_to"><?php esc_html_e( 'To', 'woocommerce-gift-cards' ); ?></label>
-				<input type="text" name="wc_gc_giftcard_to" placeholder="<?php esc_attr_e( 'Enter gift card recipient email', 'woocommerce-gift-cards' ); ?>" value="<?php echo esc_attr( $to ); ?>" />
+			<div class="wc_gc_field wc_gc_giftcard_to form-row">
+				<label for="wc_gc_giftcard_to"><?php esc_html_e( 'To', 'woocommerce-gift-cards' ); ?>
+					<abbr class="required" title="Required field"><?php echo esc_html_x( '*', 'character, indicating a required field', 'woocommerce-gift-cards' ); ?></abbr>
+				</label>
+				<input type="text" class="input-text" name="wc_gc_giftcard_to" placeholder="<?php esc_attr_e( 'Enter gift card recipient email', 'woocommerce-gift-cards' ); ?>" value="<?php echo esc_attr( $to ); ?>" />
 			</div>
 		<?php } else { ?>
-			<div class="wc_gc_field wc_gc_giftcard_to_multiple">
-				<label for="wc_gc_giftcard_to_multiple"><?php esc_html_e( 'To', 'woocommerce-gift-cards' ); ?></label><?php
+			<div class="wc_gc_field wc_gc_giftcard_to_multiple form-row">
+				<label for="wc_gc_giftcard_to_multiple"><?php esc_html_e( 'To', 'woocommerce-gift-cards' ); ?>
+					<abbr class="required" title="Required field"><?php echo esc_html_x( '*', 'character, indicating a required field', 'woocommerce-gift-cards' ); ?></abbr>
+				</label><?php
 					/* translators: delimiter */
 					$placeholder = sprintf( esc_attr__( 'Enter gift card recipient emails, separated by comma (%s)', 'woocommerce-gift-cards' ), wc_gc_get_emails_delimiter() );
-				?><input type="text" name="wc_gc_giftcard_to_multiple" placeholder="<?php echo $placeholder ?>" value="<?php echo esc_attr( $to ); ?>"/>
+				?><input type="text" class="input-text" name="wc_gc_giftcard_to_multiple" placeholder="<?php echo esc_attr( $placeholder ); ?>" value="<?php echo esc_attr( $to ); ?>"/>
 			</div>
 		<?php
 		}
@@ -234,10 +239,10 @@ if ( ! function_exists( 'wc_gc_form_field_cc_html' ) ) {
 		$value = isset( $_REQUEST[ 'wc_gc_giftcard_cc' ] ) ? sanitize_text_field( $_REQUEST[ 'wc_gc_giftcard_cc' ] ) : '';
 
 		?>
-		<div class="wc_gc_field wc_gc_giftcard_cc">
+		<div class="wc_gc_field wc_gc_giftcard_cc form-row">
 			<label for="wc_gc_giftcard_cc"><?php esc_html_e( 'CC', 'woocommerce-gift-cards' ); ?></label><?php
 			/* translators: delimiter */
-			?><input type="text" name="wc_gc_giftcard_cc" placeholder="<?php echo sprintf( esc_attr__( 'Enter additional emails to receive a gift card copy, separated by comma (%s)', 'woocommerce-gift-cards' ), wc_gc_get_emails_delimiter() ); ?>" value="<?php echo esc_attr( $value ); ?>"/>
+			?><input type="text" class="input-text" name="wc_gc_giftcard_cc" placeholder="<?php echo sprintf( esc_attr__( 'Enter additional emails to receive a gift card copy, separated by comma (%s)', 'woocommerce-gift-cards' ), esc_attr( wc_gc_get_emails_delimiter() ) ); ?>" value="<?php echo esc_attr( $value ); ?>"/>
 
 		</div>
 		<?php
@@ -273,9 +278,11 @@ if ( ! function_exists( 'wc_gc_form_field_sender_html' ) ) {
 		}
 
 		?>
-		<div class="wc_gc_field wc_gc_giftcard_from">
-			<label for="wc_gc_giftcard_from"><?php esc_html_e( 'From', 'woocommerce-gift-cards' ); ?></label>
-			<input type="text" name="wc_gc_giftcard_from" placeholder="<?php esc_attr_e( 'Enter your name', 'woocommerce-gift-cards' ); ?>" value="<?php echo esc_attr( $from ); ?>" />
+		<div class="wc_gc_field wc_gc_giftcard_from form-row">
+			<label for="wc_gc_giftcard_from"><?php esc_html_e( 'From', 'woocommerce-gift-cards' ); ?>
+				<abbr class="required" title="Required field"><?php echo esc_html_x( '*', 'character, indicating a required field', 'woocommerce-gift-cards' ); ?></abbr>
+			</label>
+			<input type="text" class="input-text" name="wc_gc_giftcard_from" placeholder="<?php esc_attr_e( 'Enter your name', 'woocommerce-gift-cards' ); ?>" value="<?php echo esc_attr( $from ); ?>" />
 		</div>
 		<?php
 	}
@@ -297,9 +304,9 @@ if ( ! function_exists( 'wc_gc_form_field_message_html' ) ) {
 		$message = isset( $_REQUEST[ 'wc_gc_giftcard_message' ] ) ? sanitize_textarea_field( str_replace( '<br />', "\n", wp_unslash( urldecode( $_REQUEST[ 'wc_gc_giftcard_message' ] ) ) ) ) : ''; // @phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		?>
-		<div class="wc_gc_field wc_gc_giftcard_message">
+		<div class="wc_gc_field wc_gc_giftcard_message form-row">
 			<label for="wc_gc_giftcard_message"><?php esc_html_e( 'Message', 'woocommerce-gift-cards' ); ?></label>
-			<textarea rows="3" name="wc_gc_giftcard_message" placeholder="<?php esc_attr_e( 'Add your message (optional)', 'woocommerce-gift-cards' ); ?>"><?php echo esc_html( $message ); ?></textarea>
+			<textarea rows="3" class="input-text" name="wc_gc_giftcard_message" placeholder="<?php esc_attr_e( 'Add your message (optional)', 'woocommerce-gift-cards' ); ?>"><?php echo esc_html( $message ); ?></textarea>
 		</div>
 		<?php
 	}
@@ -330,9 +337,9 @@ if ( ! function_exists( 'wc_gc_form_field_delivery_html' ) ) {
 		}
 
 		?>
-		<div class="wc_gc_field wc_gc_giftcard_delivery">
+		<div class="wc_gc_field wc_gc_giftcard_delivery form-row">
 			<label for="wc_gc_giftcard_delivery"><?php esc_html_e( 'Delivery Date', 'woocommerce-gift-cards' ); ?></label>
-			<input autocomplete="off" readonly type="text" class="datepicker" placeholder="<?php esc_attr_e( 'Now', 'woocommerce-gift-cards' ); ?>" value="<?php echo $deliver_date ? esc_attr( date_i18n( get_option( 'date_format' ), $deliver_date ) ) : ''; ?>" />
+			<input autocomplete="off" readonly type="text" class="datepicker input-text" placeholder="<?php esc_attr_e( 'Now', 'woocommerce-gift-cards' ); ?>" value="<?php echo $deliver_date ? esc_attr( date_i18n( get_option( 'date_format' ), $deliver_date ) ) : ''; ?>" />
 			<input autocomplete="off" type="hidden" name="wc_gc_giftcard_delivery" />
 			<input autocomplete="off" type="hidden" name="_wc_gc_giftcard_delivery_gmt_offset" />
 			<?php echo wp_kses_post( apply_filters( 'woocommerce_gc_reset_delivery_date_link', '<a class="reset_delivery_date" href="#">' . esc_html__( 'Clear', 'woocommerce-gift-cards' ) . '</a>' ) ); ?>
@@ -490,5 +497,19 @@ if ( ! function_exists( 'wc_gc_display_message_text' ) ) {
 		$formatted = $strip ? trim( preg_replace( '/\s\s+/', esc_html( $separator ), wptexturize( $message ) ) ) : wptexturize( $message );
 
 		return $formatted;
+	}
+}
+
+if ( ! function_exists( 'wc_gc_wp_theme_get_element_class_name' ) ) {
+	/**
+	 * Compatibility wrapper for getting the element-based block class.
+	 *
+	 * @since 1.16.0
+	 *
+	 * @param  string  $element
+	 * @return string
+	 */
+	function wc_gc_wp_theme_get_element_class_name( $element ) {
+		return WC_GC_Core_Compatibility::wc_current_theme_is_fse_theme() && function_exists( 'wc_wp_theme_get_element_class_name' ) ? wc_wp_theme_get_element_class_name( $element ) : '';
 	}
 }

@@ -42,7 +42,7 @@ class NS_Inventory {
 	// 	if (!empty($_GET['tester']) && 1 == $_GET['tester']) {
 	// 		require_once(TMWNI_DIR . 'inc/item.php');
 	// 		$netsuiteClient = new ItemClient();
-	// 		$netsuiteClient->searchItemUpdateInventory('-L', 28921);
+	// 		$netsuiteClient->searchItemUpdateInventory('5431', 29026);
 	// 		die('zzzzzz');
 
 	// 	}
@@ -64,25 +64,27 @@ class NS_Inventory {
 	}
 
 	public function fetchInventoryUpdateStatus() {
-		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
-			die('Nonce Error'); 
-		}
-		if (!empty($_POST['action'])) {
+		if (isset($_POST['nonce']) && !empty($_POST['nonce']) && wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'security_nonce') ) {
+			if (!empty($_POST['action'])) {
 			// sleep(1); 
-			$processed_count = get_option('processed_products');
-			$not_found_skus = get_option('not_found_skus');
-			$empty_skus = get_option('empty_skus');
+				$processed_count = get_option('processed_products');
+				$not_found_skus = get_option('not_found_skus');
+				$empty_skus = get_option('empty_skus');
 
-			$updated_count = get_option('updated_products_count');
-			$file_dir = wp_upload_dir();
+				$updated_count = get_option('updated_products_count');
+				$file_dir = wp_upload_dir();
 
-			$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_inventory_log_file;
-			
-			
-			$logs = file_get_contents($log_file);
-			wp_send_json(array('success' => true, 'processed_count' => $processed_count, 'skus' => $not_found_skus, 'updated_count' => $updated_count, 'logs' => $logs, 'empty_skus' => $empty_skus));
-			die();
+				$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_inventory_log_file;
+				
+				
+				$logs = file_get_contents($log_file);
+				wp_send_json(array('success' => true, 'processed_count' => $processed_count, 'skus' => $not_found_skus, 'updated_count' => $updated_count, 'logs' => $logs, 'empty_skus' => $empty_skus));
+				die();
+			} 
+		} else {
+				die('Nonce Error');
 		}
+		
 	}
 
 	/**
@@ -158,7 +160,7 @@ class NS_Inventory {
 
 		//save inventory update time in option table
 		$updateInventoryDateTime = gmdate('Y-m-d H:i:s a');
-		update_option('ns_woo_inventory_update', $updateInventoryDateTime);
+		update_option('ns_woo_inventory_update', $updateInventoryDateTime, false);
 
 
 		set_time_limit(0);
@@ -223,11 +225,11 @@ class NS_Inventory {
 
 		$total_count = $product_count->total_products;
 		
-		add_option('total_product_count', $total_count);
-		update_option('processed_products', 0);
-		update_option('updated_products_count', 0);
-		update_option('not_found_skus', array());
-		update_option('empty_skus', array());
+		update_option('total_product_count', $total_count, false);
+		update_option('processed_products', 0, false);
+		update_option('updated_products_count', 0, false);
+		update_option('not_found_skus', array(), false);
+		update_option('empty_skus', array(), false);
 		$file_dir = wp_upload_dir();
 		$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_inventory_log_file;
 
@@ -282,10 +284,10 @@ class NS_Inventory {
 			*
 			* @since 1.0.0
 
-		**/		
-		$products = apply_filters('tm_netsuite_get_all_woo_product', $products, $offset, $limit);
+			**/		
+			$products = apply_filters('tm_netsuite_get_all_woo_product', $products, $offset, $limit);
 
-		$sku_lot = []; 
+			$sku_lot = []; 
 
 		foreach ($products as $product) {
 			$sku = get_post_meta($product->ID, '_sku', true );
@@ -294,10 +296,10 @@ class NS_Inventory {
 			$sku_lot[$product->ID] = $sku; 
 			// }
 		}
-		
-		return $sku_lot;
+			
+			return $sku_lot;
 	}
 
 }
 
-new NS_Inventory();
+	new NS_Inventory();

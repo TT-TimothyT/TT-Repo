@@ -10,7 +10,7 @@ class CommonIntegrationFunctions {
 
 			$this->handleLog(0, $this->object_id, $object, $error_msg);
 			if ('order' == $object) {
-				$this->netsuiteAutoSyncOrderStatus(0, $this->object_id, 'order Add', $error_msg, 'Not Sync', '');
+				$this->netsuiteAutoSyncOrderStatus(0, $this->object_id, 'order Add', $error_msg, 'Failed', '');
 			}
 			return 0;
 		} else {
@@ -18,7 +18,7 @@ class CommonIntegrationFunctions {
 
 
 			if ('order' == $object) {
-			$this->netsuiteAutoSyncOrderStatus(1, $this->object_id, 'order Add', $error_msg, 'Sync', $response->writeResponse->baseRef->internalId);
+			$this->netsuiteAutoSyncOrderStatus(1, $this->object_id, 'order Add', $error_msg, 'Success', $response->writeResponse->baseRef->internalId);
 			}
 			$this->handleLog(1, $this->object_id, $object);
 
@@ -96,11 +96,11 @@ class CommonIntegrationFunctions {
 
 		if (!file_exists($error_log_file)) {
 			fopen($error_log_file, 'w');
-			chmod($error_log_file, 0777); 
+			chmod($error_log_file, 0775); 
 		}
 		
 		if (!is_writable($error_log_file)) {
-			chmod($error_log_file, 0777);
+			chmod($error_log_file, 0775);
 		}
 		$error = "\n" . gmdate('Y-m-d H:i:s') . '->' . $error . ' ;';
 		file_put_contents($error_log_file, $error, FILE_APPEND);
@@ -130,19 +130,23 @@ class CommonIntegrationFunctions {
 
 	public function getNetsuiteCustomerSync() {
 		global $wpdb;
-		$customer_sync = $wpdb->get_results( 'SELECT DISTINCT meta_value FROM wp_usermeta WHERE meta_key = "ns_customer_internal_id"', OBJECT );
+		$wpdb->user_meta = $wpdb->prefix . 'usermeta';
+		$customer_sync = $wpdb->get_results( "SELECT DISTINCT meta_value FROM $wpdb->user_meta WHERE meta_key = 'ns_customer_internal_id'", OBJECT );
 		return $customer_sync; 
 	}
 
 	public function getNetsuiteGuestCustomerSync() {
 		global $wpdb;
-		$customer_sync = $wpdb->get_results( 'SELECT DISTINCT meta_value FROM wp_postmeta WHERE meta_key = "ns_guest_customer_internal_id"', OBJECT );
+		$wpdb->post_meta = $wpdb->prefix . 'postmeta';
+
+		$customer_sync = $wpdb->get_results( "SELECT DISTINCT meta_value FROM $wpdb->post_meta WHERE meta_key = 'ns_guest_customer_internal_id'", OBJECT );
 		return $customer_sync; 
 	}
 
 	public function getNetsuiteOrderSync() {
 		global $wpdb;
-		$order_sync = $wpdb->get_results( 'SELECT DISTINCT meta_value FROM wp_postmeta WHERE meta_key = "ns_order_internal_id"', OBJECT );
+		$wpdb->post_meta = $wpdb->prefix . 'postmeta';
+		$order_sync = $wpdb->get_results( "SELECT DISTINCT meta_value FROM $wpdb->post_meta WHERE meta_key = 'ns_order_internal_id'", OBJECT );
 		return $order_sync; 
 	}
 

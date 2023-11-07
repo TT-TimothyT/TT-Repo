@@ -19,7 +19,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Adds a custom deployments list table.
  *
  * @class    WC_GC_Gift_Cards_List_Table
- * @version  1.10.3
+ * @version  1.16.6
  */
 class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 
@@ -78,7 +78,7 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 
 		if ( isset( $item[ $column_name ] ) ) {
 
-			echo $item[ $column_name ];
+			echo wp_kses_post( $item[ $column_name ] );
 
 		} else {
 
@@ -116,7 +116,7 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 			/* translators: %s: Giftcard code */
 			sprintf( esc_attr__( '&#8220;%s&#8221; (Edit)', 'woocommerce-gift-cards' ), esc_attr( $title ) ),
 			esc_html( $title ),
-			$this->row_actions( $actions )
+			wp_kses_post( $this->row_actions( $actions ) )
 		);
 	}
 
@@ -128,8 +128,10 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 	public function column_cb( $item ) {
 		?><label class="screen-reader-text" for="cb-select-<?php echo intval( $item[ 'id' ] ); ?>">
 		<?php
+			$title = $this->mask_codes ? wc_gc_mask_code( $item[ 'code' ] ) : $item[ 'code' ];
+
 			/* translators: %s: Giftcard code */
-			printf( esc_html__( 'Select %s', 'woocommerce-gift-cards' ), esc_html( $item[ 'code' ] ) );
+			printf( esc_html__( 'Select %s', 'woocommerce-gift-cards' ), esc_html( $title ) );
 		?>
 		</label>
 		<input id="cb-select-<?php echo intval( $item[ 'id' ] ); ?>" type="checkbox" name="giftcard[]" value="<?php echo intval( $item[ 'id' ] ); ?>" />
@@ -142,7 +144,7 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 	 * @param array $item
 	 */
 	public function column_balance( $item ) {
-		echo wc_price( (float) $item[ 'remaining' ] );
+		echo wp_kses_post( wc_price( (float) $item[ 'remaining' ] ));
 	}
 
 	/**
@@ -151,7 +153,7 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 	 * @param array $item
 	 */
 	public function column_status( $item ) {
-		echo wc_gc_get_status_labels_html( $item, true );
+		echo wc_gc_get_status_labels_html( $item, true );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -191,7 +193,7 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 				/* translators: %s: human time diff */
 				$h_time = sprintf( __( '%s ago', 'woocommerce-gift-cards' ), human_time_diff( $item[ 'create_date' ] ) );
 			} else {
-				$h_time = WC_GC_Core_Compatibility::wp_date( _x( 'Y/m/d', 'list table date format', 'woocommerce-gift-cards' ), $item[ 'create_date' ] );
+				$h_time = WC_GC_Core_Compatibility::wp_date( get_option( 'date_format', 'Y/m/d' ), $item[ 'create_date' ] );
 			}
 		}
 
@@ -278,6 +280,8 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 
 		if ( $this->current_action() ) {
 
+			check_admin_referer( 'bulk-giftcards' );
+
 			$giftcards = isset( $_GET[ 'giftcard' ] ) && is_array( $_GET[ 'giftcard' ] ) ? array_map( 'absint', $_GET[ 'giftcard' ] ) : array();
 
 			if ( empty( $giftcards ) ) {
@@ -319,7 +323,7 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 				WC_GC_Admin_Notices::add_notice( __( 'Gift cards deleted.', 'woocommerce-gift-cards' ), 'success', true );
 			}
 
-			wp_redirect( admin_url( self::PAGE_URL ) );
+			wp_safe_redirect( admin_url( self::PAGE_URL ) );
 			exit();
 		}
 	}
@@ -381,8 +385,25 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 			$query_args[ 'redeemed_by' ] = array( $filter );
 		}
 
+		if ( ! empty( $_GET[ 'm' ] ) ) {
+
+			$filter = absint( $_GET[ 'm' ] );
+			$month  = substr( $filter, 4, 6 );
+			$year   = substr( $filter, 0, 4 ); // This will break at year 10.000 AC :)
+
+			if ( $filter ) {
+
+				$start_date                 = strtotime( "{$year}-{$month}-01" );
+				$query_args[ 'start_date' ] = $start_date;
+
+				$end_date                   = strtotime( '+1 month', $start_date );
+				$query_args[ 'end_date' ]   = $end_date;
+			}
+		}
+
 		// Fetch the items.
-		$this->items = WC_GC()->db->giftcards->query( $query_args );
+		// It's safe to ignore semgrep warning, as everything is properly escaped.
+		$this->items = WC_GC()->db->giftcards->query( $query_args ); // nosemgrep: audit.php.wp.security.sqli.input-in-sinks
 
 		// Count total items.
 		$query_args[ 'count' ] = true;

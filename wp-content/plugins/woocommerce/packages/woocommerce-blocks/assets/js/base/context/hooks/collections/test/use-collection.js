@@ -28,7 +28,7 @@ class TestErrorBoundary extends ReactComponent {
 
 	render() {
 		if ( this.state.hasError ) {
-			return <div error={ this.state.error } />;
+			return <div data-error={ this.state.error } />;
 		}
 
 		return this.props.children;
@@ -38,10 +38,8 @@ class TestErrorBoundary extends ReactComponent {
 describe( 'useCollection', () => {
 	let registry, mocks, renderer;
 	const getProps = ( testRenderer ) => {
-		//eslint-disable-next-line testing-library/await-async-query
-		const { results, isLoading } = testRenderer.root.findByType(
-			'div'
-		).props;
+		const { results, isLoading } =
+			testRenderer.root.findByType( 'div' ).props; //eslint-disable-line testing-library/await-async-query
 		return {
 			results,
 			isLoading,
@@ -56,10 +54,12 @@ describe( 'useCollection', () => {
 		</RegistryProvider>
 	);
 
-	const getTestComponent = () => ( { options } ) => {
-		const items = useCollection( options );
-		return <div { ...items } />;
-	};
+	const getTestComponent =
+		() =>
+		( { options } ) => {
+			const items = useCollection( options );
+			return <div { ...items } />;
+		};
 
 	const setUpMocks = () => {
 		mocks = {
@@ -100,7 +100,7 @@ describe( 'useCollection', () => {
 			} );
 			//eslint-disable-next-line testing-library/await-async-query
 			const props = renderer.root.findByType( 'div' ).props;
-			expect( props.error.message ).toMatch( /options object/ );
+			expect( props[ 'data-error' ].message ).toMatch( /options object/ );
 			expect( console ).toHaveErrored( /your React components:/ );
 			renderer.unmount();
 		}
@@ -122,7 +122,7 @@ describe( 'useCollection', () => {
 			} );
 			//eslint-disable-next-line testing-library/await-async-query
 			const props = renderer.root.findByType( 'div' ).props;
-			expect( props.error.message ).toMatch( /options object/ );
+			expect( props[ 'data-error' ].message ).toMatch( /options object/ );
 			expect( console ).toHaveErrored( /your React components:/ );
 			renderer.unmount();
 		}

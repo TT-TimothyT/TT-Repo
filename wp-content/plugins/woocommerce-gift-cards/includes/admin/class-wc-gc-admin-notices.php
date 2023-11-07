@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Admin notices handling.
  *
  * @class    WC_GC_Admin_Notices
- * @version  1.6.0
+ * @version  1.16.1
  */
 class WC_GC_Admin_Notices {
 
@@ -210,17 +210,15 @@ class WC_GC_Admin_Notices {
 			foreach ( $notices as $notice ) {
 
 				$notice_classes = array( 'wc_gc_notice', 'notice', 'notice-' . esc_attr( $notice[ 'type' ] ) );
-				$dismiss_attr   = $notice[ 'dismiss_class' ] ? 'data-dismiss_class="' . esc_attr( $notice[ 'dismiss_class' ] ) . '"' : '';
+				$dismiss_attr   = $notice[ 'dismiss_class' ] ? ' data-dismiss_class="' . esc_attr( $notice[ 'dismiss_class' ] ) . '"' : '';
 
 				if ( $notice[ 'dismiss_class' ] ) {
 					$notice_classes[] = $notice[ 'dismiss_class' ];
 					$notice_classes[] = 'is-dismissible';
 				}
 
-
-				echo '<div class="' . esc_attr( implode( ' ', $notice_classes ) ) . '"' . $dismiss_attr . '>';
-				echo wpautop( wp_kses_post( $notice[ 'content' ] ) );
-				echo '</div>';
+				$output = '<div class="' . esc_attr( implode( ' ', $notice_classes ) ) . '"' . $dismiss_attr . '>' . wpautop( $notice[ 'content' ] ) . '</div>';
+				echo wp_kses_post( $output );
 			}
 
 			if ( function_exists( 'wc_enqueue_js' ) ) {

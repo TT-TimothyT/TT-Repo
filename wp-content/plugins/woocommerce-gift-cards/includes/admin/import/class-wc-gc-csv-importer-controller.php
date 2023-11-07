@@ -19,7 +19,7 @@ if ( ! class_exists( 'WP_Importer' ) ) {
 /**
  * Gift Card controller - handles file upload and forms in admin.
  *
- * @version 1.10.1
+ * @version 1.16.0
  */
 class WC_GC_CSV_Importer_Controller {
 
@@ -114,6 +114,47 @@ class WC_GC_CSV_Importer_Controller {
 	}
 
 	/**
+	 * Checks if the provided filepath is within the PHAR executable.
+	 *
+	 * @since 1.13.1
+	 *
+	 * @param  string  $filepath  The filepath to be checked.
+	 * @return bool True if the filepath is within ABSPATH.
+	 */
+	public static function is_within_phar( $filepath ) {
+
+		if ( 'phar' === strtolower( (string) wp_parse_url( $filepath, PHP_URL_SCHEME ) ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if the provided filepath is within the WordPress absolute path.
+	 *
+	 * @since 1.13.1
+	 *
+	 * @param  string  $filepath  The filepath to be checked.
+	 * @return bool True if the filepath is within ABSPATH.
+	 */
+	public static function is_within_abspath( $filepath ) {
+		return 0 === stripos( realpath( $filepath ), trailingslashit( realpath( ABSPATH ) ) );
+	}
+
+	/**
+	 * Checks if the provided filepath is within wp-content directory.
+	 *
+	 * @since 1.15.3
+	 *
+	 * @param  string  $filepath  The filepath to be checked.
+	 * @return bool True if the filepath is within WP_CONTENT_DIR.
+	 */
+	public static function is_within_wp_content( $filepath ) {
+		return 0 === stripos( realpath( $filepath ), trailingslashit( realpath( WP_CONTENT_DIR ) ) );
+	}
+
+	/**
 	 * Get all the valid filetypes for a CSV file.
 	 *
 	 * @return array
@@ -205,7 +246,7 @@ class WC_GC_CSV_Importer_Controller {
 			'_wpnonce'        => wp_create_nonce( 'woocommerce-gc-csv-importer' ), // wp_nonce_url() escapes & to &amp; breaking redirects.
 		);
 
-		return add_query_arg( $params );
+		return add_query_arg( $params ); // nosemgrep: audit.php.wp.security.xss.query-arg
 	}
 
 	/**
@@ -306,7 +347,7 @@ class WC_GC_CSV_Importer_Controller {
 			$this->file = $file;
 		}
 
-		wp_redirect( esc_url_raw( $this->get_next_step_link() ) );
+		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
 		exit;
 	}
 
@@ -355,17 +396,17 @@ class WC_GC_CSV_Importer_Controller {
 			$id = wp_insert_attachment( $object, $upload[ 'file' ] );
 
 			/*
-			 * Schedule a cleanup for one day from now in case of failed
+			 * Schedule a cleanup for two hours from now in case of failed
 			 * import or missing wp_import_cleanup() call.
 			 */
-			wp_schedule_single_event( time() + DAY_IN_SECONDS, 'importer_scheduled_cleanup', array( $id ) );
+			wp_schedule_single_event( time() + ( 2 * HOUR_IN_SECONDS ), 'importer_scheduled_cleanup', array( $id ) );
 
 			return $upload[ 'file' ];
 
-		} elseif ( 
-			( 0 === stripos( realpath( ABSPATH . $file_url ), ABSPATH ) ) &&
-			file_exists( ABSPATH . $file_url )
-		 ) {
+		} elseif (
+			self::is_within_abspath( ABSPATH . $file_url )
+			&& file_exists( ABSPATH . $file_url )
+		) {
 			if ( ! self::is_file_valid_csv( ABSPATH . $file_url ) ) {
 				return new WP_Error( 'woocommerce_gc_giftcards_csv_importer_upload_file_invalid', __( 'Invalid file type. The importer supports CSV and TXT file formats.', 'woocommerce' ) );
 			}
@@ -418,6 +459,18 @@ class WC_GC_CSV_Importer_Controller {
 		// therefore this page needs to be nonce protected as well.
 		check_admin_referer( 'woocommerce-gc-csv-importer' );
 
+		if ( self::is_within_phar( $this->file ) ) {
+			$this->add_error( __( 'Invalid file path. Files must must not be within a PHAR executable.', 'woocommerce-gift-cards' ) );
+			$this->output_errors();
+			return;
+		}
+
+		if ( ! self::is_within_abspath( $this->file ) && ! self::is_within_wp_content( $this->file ) ) {
+			$this->add_error( __( 'Invalid file path. Files must be uploaded to a location inside the WordPress absolute path or wp-content.', 'woocommerce-gift-cards' ) );
+			$this->output_errors();
+			return;
+		}
+
 		if ( ! self::is_file_valid_csv( $this->file ) ) {
 			$this->add_error( __( 'Invalid file type. The importer supports CSV and TXT file formats.', 'woocommerce' ) );
 			$this->output_errors();
@@ -437,7 +490,7 @@ class WC_GC_CSV_Importer_Controller {
 			// Save mapping preferences for future imports.
 			update_user_option( get_current_user_id(), 'woocommerce_gc_giftcards_import_mapping', $mapping_to );
 		} else {
-			wp_redirect( esc_url_raw( $this->get_next_step_link( 'upload' ) ) );
+			wp_safe_redirect( esc_url_raw( $this->get_next_step_link( 'upload' ) ) );
 			exit;
 		}
 

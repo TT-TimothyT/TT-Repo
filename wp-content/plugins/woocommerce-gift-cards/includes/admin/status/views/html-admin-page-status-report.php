@@ -4,6 +4,7 @@
  *
  * @package  WooCommerce Gift Cards
  * @since    1.0.0
+ * @version  1.16.0
  */
 
 // Exit if accessed directly.
@@ -43,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				} elseif ( '' === $debug_data[ 'loopback_test_result' ] ) {
 					echo '<mark class="no">&ndash;</mark>';
 				} else {
-					echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . __( 'Loopback test failed.', 'woocommerce-gift-cards' ) . '</mark>';
+					echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . esc_html__( 'Loopback test failed.', 'woocommerce-gift-cards' ) . '</mark>';
 				}
 			?>
 			</td>
@@ -57,7 +58,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  				if ( 'pass' === $debug_data[ 'queue_test_result' ] ) {
  					echo '<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>';
  				} else {
- 					echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . __( 'Task queueing test failed.', 'woocommerce-gift-cards' ) . '</mark>';
+ 					echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . esc_html__( 'Task queueing test failed.', 'woocommerce-gift-cards' ) . '</mark>';
  				}
  			?>
  			</td>

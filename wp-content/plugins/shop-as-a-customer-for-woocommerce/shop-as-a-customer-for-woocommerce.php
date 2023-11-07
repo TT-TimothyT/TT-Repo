@@ -2,19 +2,17 @@
 /**
  * Plugin Name: FME Addons: Shop as a Customer for WooCommerce
  * Author: fmeaddons
- * Version: 1.1.6
+ * Version: 1.2.7
  * Developed By: fmeaddons Team
- * Description:Switch to any customer profile from administration panel and use WooCommerce store as customer, Create orders  	and Edit user profile.
+ * Description:Switch to any customer profile from administration panel and use WooCommerce store as customer, Create orders    and Edit user profile.
  * License:    GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Requires at least: 4.4
- * Plugin URI: 		  https://www.fmeaddons.com/
-*  Author URI: 		  https://www.fmeaddons.com/
+ * Plugin URI:        https://www.fmeaddons.com/
+ *  Author URI:           https://www.fmeaddons.com/
  * Text Domain: shop-as-a-customer-for-woocommerce
  * Domain Path: /languages
- * Tested up to: 6.1.1
  * WC requires at least: 3.0
- * WC tested up to: 7.1.1
  * Woo: 5467980:a75e8762bdf7a49e92759802ab34efb9
  */
 
@@ -23,27 +21,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+if (! function_exists('is_plugin_active')) {
+	include_once ABSPATH . 'wp-admin/includes/plugin.php' ;
+}
+
 /**
  * Check if WooCommerce is active
  * if wooCommerce is not active FME Addons: Shop as a Customer for WooCommerce module will not work.
  **/
-if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-
-	function my_admin_notice() {
-
-		// Deactivate the plugin
-		deactivate_plugins(__FILE__);
-		$error_message = __('This plugin requires <a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a> plugin to be installed and active!', 'woocommerce');
-		echo esc_attr( $error_message );
-		die();
-	}
-	add_action( 'admin_notices', 'my_admin_notice' );
-}
-
 
 class MainFmeaddonsClass {
 
 	public function __construct() {
+		if ( !is_plugin_active( 'woocommerce/woocommerce.php') ) {
+
+				add_action('admin_notices', array( $this, 'my_admin_notice' ));
+		}
 		$aa=$this->aaaaaaaaaaaa_fmesac();
 		if ('yes' == $aa) {
 			include 'payment.php';
@@ -53,61 +46,69 @@ class MainFmeaddonsClass {
 		define('INDEXCOUNTER', 1);
 		
 
-		add_action('init', array($this, 'fmeaddons_script'));
-		add_action('admin_footer', array($this, 'fmeaddons_script'));
-		add_action('wp_ajax_ajaxxx', array( $this, 'fmeaddons_switchtocustomer'));
-		add_action('wp_ajax_nopriv_ajaxxx', array( $this, 'fmeaddons_switchtocustomer'));
+		add_action('init', array( $this, 'fmeaddons_script' ));
+		add_action('admin_footer', array( $this, 'fmeaddons_script' ));
+		add_action('wp_ajax_ajaxxx', array( $this, 'fmeaddons_switchtocustomer' ));
 		
-		add_action('wp_ajax_asguest', array( $this, 'fmeaddons_switchtoguest'));
-		add_action('wp_ajax_nopriv_asguest', array( $this, 'fmeaddons_switchtoguest'));
+		add_action('wp_ajax_asguest', array( $this, 'fmeaddons_switchtoguest' ));
+		add_action('wp_ajax_nopriv_asguest', array( $this, 'fmeaddons_switchtoguest' ));
 		
-		add_action('wp_head', array($this, 'fmeaddons_switchback_tab'));
-		add_action('wp_ajax_ajax', array( $this, 'fmeaddons_switchback_to_admin'));
-		add_action('wp_ajax_nopriv_ajax', array( $this, 'fmeaddons_switchback_to_admin'));
+		add_action('wp_head', array( $this, 'fmeaddons_switchback_tab' ));
+		add_action('wp_ajax_ajax', array( $this, 'fmeaddons_switchback_to_admin' ));
+		add_action('wp_ajax_nopriv_ajax', array( $this, 'fmeaddons_switchback_to_admin' ));
 		
-		add_action('wp_ajax_vieworder', array( $this, 'fmeaddons_view_order'));
-		add_action('wp_ajax_nopriv_vieworder', array( $this, 'fmeaddons_view_order'));
+		add_action('wp_ajax_vieworder', array( $this, 'fmeaddons_view_order' ));
+		add_action('wp_ajax_editprofile', array( $this, 'fmeaddons_edit_profile' ));
 		
-		add_action('wp_ajax_editprofile', array( $this, 'fmeaddons_edit_profile'));
-		add_action('wp_ajax_nopriv_editprofile', array( $this, 'fmeaddons_edit_profile'));
+		add_action( 'woocommerce_thankyou', array( $this, 'fmeaddons_custom_content_thankyou' ), 10, 1 );
 		
-		add_action( 'woocommerce_thankyou', array($this, 'fmeaddons_custom_content_thankyou'), 10, 1 );
+		add_action('init', array( $this, 'fmeaddons_start_session' ));        
+		add_action('admin_footer', array( $this, 'fmeaddons_modal' ));
+		add_action('admin_bar_menu', array( $this, 'fmeaddons_custom_toolbar_link' ), 999);
+		add_action('wp_logout', array( $this, 'fmeaddons_end_session' ));
+		add_action('woocommerce_settings_tabs_array', array( $this, 'fmeaddons_menu_pages' ), 50);
+		add_action( 'woocommerce_settings_shop_as_a_customer_for_woocommerce', array( $this, 'fmeaddons_customerlogs' ) );
+		add_action('wp_ajax_my_action' , array( $this, 'data_fetch' ));
 		
-		add_action('init', array($this, 'fmeaddons_start_session'));        
-		 // add_action('wp_footer', array($this, 'fmeaddons_modal'));
-		add_action('admin_footer', array($this, 'fmeaddons_modal'));
-		add_action('admin_bar_menu', array( $this, 'fmeaddons_custom_toolbar_link'), 999);
-		add_action('wp_logout', array( $this, 'fmeaddons_end_session'));
-		add_action('woocommerce_settings_tabs_array', array($this, 'fmeaddons_menu_pages'), 50);
-		add_action( 'woocommerce_settings_shop_as_a_customer_for_woocommerce', array($this, 'fmeaddons_customerlogs') );
-		add_action('wp_ajax_my_action' , array($this,'data_fetch'));
-		add_action('wp_ajax_nopriv_my_action' , array($this,'data_fetch'));
-		
-		add_action('wp_ajax_nextdatafind' , array($this,'nextdatafind'));
-		add_action('wp_ajax_nopriv_nextdatafind' , array($this,'nextdatafind'));
-		add_action('wp_ajax_saveallroles' , array($this,'fme_saveallroles'));
-		add_action('wp_ajax_nopriv_saveallroles' , array($this,'fme_saveallroles'));
-		add_action('wp_ajax_getcustomersfordatatables' , array($this,'getcustomersfordatatables'));
-		add_action('wp_ajax_nopriv_getcustomersfordatatables' , array($this,'getcustomersfordatatables'));
-		add_action('wp_ajax_getcustomerslogs' , array($this,'getcustomerslogs'));
-		add_action('wp_ajax_nopriv_getcustomerslogs' , array($this,'getcustomerslogs'));
-		
-		add_action( 'wp_loaded', array($this,'fme_load_textdomain' ));
-		add_filter( 'load_textdomain_mofile', array($this,'my_plugin_load_my_own_textdomain'), 10, 2 );
+		add_action('wp_ajax_nextdatafind' , array( $this, 'nextdatafind' ));
+		add_action('wp_ajax_saveallroles' , array( $this, 'fme_saveallroles' ));
+		add_action('wp_ajax_getcustomersfordatatables' , array( $this, 'getcustomersfordatatables' ));
 
-		add_action( 'requests-curl.before_request', array($this,'fma_curl_before_request'), 9999 );
+		add_action('wp_ajax_getcustomerslogs' , array( $this, 'getcustomerslogs' ));
+		
+		add_action( 'wp_loaded', array( $this, 'fme_load_textdomain' ));
+		add_filter( 'load_textdomain_mofile', array( $this, 'my_plugin_load_my_own_textdomain' ), 10, 2 );
+
+		add_action( 'requests-curl.before_request', array( $this, 'fma_curl_before_request' ), 9999 );
 	}
-	public function fma_curl_before_request( $curlhandle) {
+	public function my_admin_notice() {
+
+		// Deactivate the plugin
+		deactivate_plugins(__FILE__);
+		$error_message = __('This plugin requires <a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a> plugin to be installed and active!', 'woocommerce');
+		echo esc_attr( $error_message );
+		die();
+	}
+	
+
+
+	public function fma_curl_before_request( $curlhandle ) {
 		session_write_close();
 	}
 
 	public function fme_load_textdomain() {
-		load_plugin_textdomain( 'shop-as-a-customer-for-woocommerce', false, basename( dirname( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'shop-as-a-customer-for-woocommerce', false, basename( __DIR__ ) . '/languages/' );
 	}
 
 	public function my_plugin_load_my_own_textdomain( $mofile, $domain ) {
 
 		if ( 'shop-as-a-customer-for-woocommerce' === $domain && false !== strpos( $mofile, WP_LANG_DIR . '/plugins/' ) ) {
+			/**
+			 * Description:Switch to any customer profile from administration panel and use WooCommerce store 
+			 *
+			 * @since 1.0.1
+			 * @return $mofile.
+			 */
 			$locale = apply_filters( 'plugin_locale', determine_locale(), $domain );
 			$mofile = WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __FILE__ ) ) . '/languages/' . $domain . '-' . $locale . '.mo';
 		}
@@ -126,16 +127,11 @@ class MainFmeaddonsClass {
 		}
 		session_write_close();
 		return 'no';
-		
 	}
 	public function fme_saveallroles() {
-		if (!isset($_REQUEST['notallowedpleasegoaway_fme_123e']) && 'fmessnotallowedpleasegoaway_fme_123#e' != $_REQUEST['notallowedpleasegoaway_fme_123e'] ) {
-			echo esc_attr('GO AWAY THIS IS NOT LEGAL WAY!');
-			wp_die();
-		}
+		check_ajax_referer('ajax_nonce', 'security');
 		if (isset($_REQUEST['allroless']) || isset($_REQUEST['defselectedp']) || isset($_REQUEST['fme_tabselect']) ) {
 			$defselectedp=sanitize_text_field($_REQUEST['defselectedp']);
-			// $allrolessaved=array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['allroless'] ) );
 			$fme_tabselect = sanitize_text_field($_REQUEST['fme_tabselect']);
 		}
 		
@@ -156,8 +152,6 @@ class MainFmeaddonsClass {
 
 		//////////////////////////////////////////updated/////////////////////////
 
-		// update_option('fme_allrolessaved', $allrolessaved);
-
 		update_option('fme_defselectedp', $defselectedp);
 		update_option('fme_tabselect', $fme_tabselect);
 
@@ -165,47 +159,41 @@ class MainFmeaddonsClass {
 	}
 
 	public function getcustomersfordatatables() {
+
 		global $wpdb;
 		$search_value='';
 		if (isset($_REQUEST['search']['value'])) {
 			$search_value=sanitize_text_field($_REQUEST['search']['value']);
 		}
-		//      $search_query='';
-		//      if($search_value != ''){
-		//    $search_query = " and (u.display_name like '%".$search_value."%' or 
-		//         u.ID like '%".$search_value."%' or 
-		//         u.user_nicename like'%".$search_value."%' ) ";
-		// }
-		// $search_query='';
+		
 		$currIndStart=0;
 		if (isset($_REQUEST['start'])) {
 			$currIndStart = sanitize_text_field( $_REQUEST['start'] );
 		}
 		$return_json = array();
-		// $blogusers = $wpdb->get_results($wpdb->prepare('SELECT u.ID, u.user_email, u.display_name FROM  ' . $wpdb->prefix . 'users u, ' . $wpdb->prefix . 'usermeta m WHERE u.ID = m.user_id AND m.meta_key LIKE "' . $wpdb->prefix . 'capabilities"'. $search_query . '  AND m.meta_value NOT LIKE %s LIMIT '. $currIndStart . ', 10', '%administrator%'));
-
-		$blogusers = get_users( array( 'fields' => array( 'display_name','user_email','ID' ),'role__not_in' => array( 'administrator' ),'offset' =>$currIndStart,'number' =>10, 'orderby' => 'ID', 'order'=>'asc','search'         => '*' . esc_attr( $search_value ) . '*',
+		
+		$blogusers = get_users( array(
+'fields' => array( 'display_name', 'user_email', 'ID' ), 'role__not_in' => array( 'administrator' ), 'offset' =>$currIndStart, 'number' =>10, 'orderby' => 'ID', 'order'=>'asc', 'search'         => '*' . esc_attr( $search_value ) . '*',
 			'search_columns' => array(
 		'display_name',
-		'user_nicename',
-		'ID'
-		)
+		'user_email',
+		'ID',
+		),
 		 ) );
-		 
+		
 		foreach ($blogusers as $key => $value) {
-
-
+		 
 			$action = '<center>';
-			$action.='<button  class="button frompage switchbtn" style="margin: 1%;" value="' . ( $value->ID ) . '">Switch</button>
-					<button  class="button frompage vieworder" value="' . ( $value->ID ) . '" style="margin: 1%;">View Orders</button>
-						<button  class="button frompage editprofile" value="' . ( $value->ID ) . '" style="margin: 1%;">Edit Profile</button>
+			$action.='<button  class="button frompage switchbtn" style="margin: 1%;" value="' . ( $value->ID ) . '">' . __('Switch', 'shop-as-a-customer-for-woocommerce') . '</button>
+					<button  class="button frompage vieworder" value="' . ( $value->ID ) . '" style="margin: 1%;">' . __('View Orders', 'shop-as-a-customer-for-woocommerce') . '</button>
+						<button  class="button frompage editprofile" value="' . ( $value->ID ) . '" style="margin: 1%;">' . __('Edit Profile', 'shop-as-a-customer-for-woocommerce') . '</button>
 								</center>';
 			$row = array(
 
 			'ID' => '<center>' . $value->ID . '</center>',
 			'Name' =>'<center>' . $value->display_name . '</center>',
 			'Email' =>'<center>' . $value->user_email . '</center>',
-			'Action' =>$action
+			'Action' =>$action,
 
 			);
 			$return_json[] = $row;
@@ -213,12 +201,9 @@ class MainFmeaddonsClass {
 
 		}
 
-		echo json_encode(array('data' => $return_json));
+		echo json_encode(array( 'data' => $return_json ));
 			wp_die();
-
 	}
-
-
 	public function getcustomerslogs() {
 
 		$start=0;
@@ -230,13 +215,12 @@ class MainFmeaddonsClass {
 		if (isset($_REQUEST['search']['value'])) {
 			$search_value=sanitize_text_field($_REQUEST['search']['value']);
 		}
-		// $search_query='';
 		$array_for_log = get_option('all_logs');
 
 
 		if ( '' == $array_for_log ) {
-			$counnnt=count($array_for_log);
-			$counnnt=$counnnt-1;
+			
+			$counnnt=0;
 		} else {
 			$counnnt=count($array_for_log);
 
@@ -244,7 +228,7 @@ class MainFmeaddonsClass {
 		$return_json = array();
 		$counter=0;
 			$counnnt=$counnnt-( $currIndStart );
-		for ($i=$counnnt-1; $i > 0 ; $i--) { 
+		for ($i=$counnnt-1; $i >= 0 ; $i--) { 
 						$idd = $array_for_log[$i]['id'];
 						$time = $array_for_log[$i]['time'];
 						$customer = $array_for_log[$i]['customer'];
@@ -273,7 +257,7 @@ class MainFmeaddonsClass {
 				'Logged_in_At' =>'<center>' . $time . '</center>',
 				'Customer' =>'<center>' . $customer[0] . '</center>',
 				'Products' =>$products,
-				'Message_On_Whatsapp' => $whatsapp
+				'Message_On_Whatsapp' => $whatsapp,
 
 								);
 			} else if ($search_value == $idd || ( str_contains($customer[0], $search_value) )) {
@@ -283,7 +267,7 @@ class MainFmeaddonsClass {
 				'Logged_in_At' =>'<center>' . $time . '</center>',
 				'Customer' =>'<center>' . $customer[0] . '</center>',
 				'Products' =>$products,
-				'Message_On_Whatsapp' => $whatsapp
+				'Message_On_Whatsapp' => $whatsapp,
 
 				);
 			}
@@ -297,7 +281,7 @@ class MainFmeaddonsClass {
 		}
 
 
-			echo json_encode(array('data' => $return_json));
+			echo json_encode(array( 'data' => $return_json ));
 			wp_die();
 	}
 
@@ -305,10 +289,7 @@ class MainFmeaddonsClass {
 
 	
 	public function nextdatafind() {
-		if (!isset($_REQUEST['notallowedpleasegoaway_fme_123e']) && 'fmessnotallowedpleasegoaway_fme_123#e' != $_REQUEST['notallowedpleasegoaway_fme_123e'] ) {
-			echo esc_attr('GO AWAY THIS IS NOT LEGAL WAY!');
-			wp_die();
-		}
+		check_ajax_referer('ajax_nonce', 'security');
 		if (isset($_REQUEST['nextvalue'])) {
 			$find=sanitize_text_field($_REQUEST['nextvalue']);
 
@@ -319,16 +300,14 @@ class MainFmeaddonsClass {
 		}
 	
 		global $wpdb;
-		$results = $wpdb->get_results($wpdb->prepare('SELECT u.ID, u.user_email, u.display_name FROM  ' . $wpdb->prefix . 'users u, ' . $wpdb->prefix . 'usermeta m WHERE u.ID = m.user_id AND m.meta_key LIKE "' . $wpdb->prefix . 'capabilities" AND m.meta_value NOT LIKE %s AND u.user_email LIKE %s LIMIT %d, 10', '%administrator%', '%' . $find . '%', $globnextcount));
-	
+		$results = $wpdb->get_results($wpdb->prepare('SELECT u.ID, u.user_email, u.display_name FROM  ' . $wpdb->prefix . 'users u, ' . $wpdb->prefix . 'usermeta m WHERE u.ID = m.user_id AND m.meta_key = "' . $wpdb->prefix . 'capabilities" AND m.meta_value NOT LIKE %s AND (u.user_email LIKE %s OR u.display_name LIKE %s OR u.user_login LIKE %s) LIMIT %d, 10', '%administrator%', '%' . $find . '%', '%' . $find . '%', '%' . $find . '%', $globnextcount));
+
+
 		echo json_encode( $results);
 		exit();
 	}
 	public function data_fetch() {
-		if (!isset($_REQUEST['notallowedpleasegoaway_fme_123e']) && 'fmessnotallowedpleasegoaway_fme_123#e' != $_REQUEST['notallowedpleasegoaway_fme_123e'] ) {
-			echo esc_attr('GO AWAY THIS IS NOT LEGAL WAY!');
-			wp_die();
-		}
+		check_ajax_referer('ajax_nonce', 'security');
 		
 		if (isset($_REQUEST['value'])) {
 			$find=sanitize_text_field($_REQUEST['value']);
@@ -337,7 +316,7 @@ class MainFmeaddonsClass {
 		global $wpdb;
 
 
-		$results = $wpdb->get_results($wpdb->prepare('SELECT u.ID, u.user_email, u.display_name FROM  ' . $wpdb->prefix . 'users u, ' . $wpdb->prefix . 'usermeta m WHERE u.ID = m.user_id AND m.meta_key LIKE "' . $wpdb->prefix . 'capabilities" AND m.meta_value NOT LIKE %s AND u.user_email LIKE %s LIMIT 10', '%administrator%', '%' . $find . '%'));
+		$results = $wpdb->get_results($wpdb->prepare('SELECT u.ID, u.user_email, u.display_name FROM  ' . $wpdb->prefix . 'users u, ' . $wpdb->prefix . 'usermeta m WHERE u.ID = m.user_id AND m.meta_key = "' . $wpdb->prefix . 'capabilities" AND m.meta_value NOT LIKE %s AND (u.user_email LIKE %s OR u.display_name LIKE %s OR u.user_login LIKE %s) LIMIT 10', '%administrator%', '%' . $find . '%', '%' . $find . '%', '%' . $find . '%'));
 		echo json_encode( $results);
 
 		exit();
@@ -345,7 +324,7 @@ class MainFmeaddonsClass {
 
 
 	public function fmeaddons_menu_pages( $tabs ) {
-		$tabs['shop_as_a_customer_for_woocommerce'] = __('Shop As a Customer', ' shop-as-a-customer-for-woocommerce');
+		$tabs['shop_as_a_customer_for_woocommerce'] = __('Shop As a Customer', 'shop-as-a-customer-for-woocommerce');
 		return $tabs;
 	}
 	public function fmeaddons_customerlogs() {
@@ -366,12 +345,14 @@ class MainFmeaddonsClass {
 
 
 		if ( '' == $array_for_log ) {
-			$counnnt=count($array_for_log);
-			$counnnt=$counnnt-1;
+			
+			$counnnt=0;
+		
+		
 		} else {
 			$counnnt=count($array_for_log);
-
 		}
+
 		global $wpdb;
 
 		$results = $wpdb->get_results($wpdb->prepare('SELECT u.ID, u.user_email, u.display_name FROM  ' . $wpdb->prefix . 'users u, ' . $wpdb->prefix . 'usermeta m WHERE u.ID = m.user_id AND m.meta_key LIKE "' . $wpdb->prefix . 'capabilities" AND m.meta_value NOT LIKE %s ', '%administrator%'));
@@ -379,19 +360,9 @@ class MainFmeaddonsClass {
 
 		?>
 	
-		<!-- <br> -->
-
 		<div id="savediv"style="display: none;font-weight:bold; color:green;font-size:15px "><br><?php echo esc_html_e('Your settings has been saved!', 'shop-as-a-customer-for-woocommerce'); ?><br><br></div><br>
-
-		<br>
-
-		
-				<!-- <span id="savediv" class="alert alert-success" style="display:none;">
-					<b><?php esc_html_e('Success!', 'shop-as-a-customer'); ?></b> <?php echo esc_html__('Settings saved successfully', 'shop-as-a-customer'); ?>
-				</span> -->
-		
+		<br>		
 		<ul class="subsubsub">
-			
 
 			<li>
 				<a href="#" class="fme_tabsss current" id="fme_customerlogsbtn">
@@ -410,10 +381,6 @@ class MainFmeaddonsClass {
 					<?php echo esc_html_e('Settings', 'shop-as-a-customer-for-woocommerce'); ?>
 				</a>
 			</li>
-
-
-			
-			
 		</ul>
 		<br>
 		<input type="hidden" id="pageefound" value="found">
@@ -426,8 +393,11 @@ class MainFmeaddonsClass {
 			<tbody>
 				<tr>
 					<th>
-						<label ><?php echo esc_html_e('Select Tab to Switch as Customer/Guest', 'shop-as-a-customer-for-woocommerce'); ?></label>
-						<span class="woocommerce-help-tip" data-tip="Select The Tab in Which Admin Will be Switch as a Cutomer or Guest"></span>
+						<label ><?php echo esc_html_e('Select Tab to Switch as Customer/Guest', 'shop-as-a-customer-for-woocommerce'); ?>
+						
+							
+						<?php echo wc_help_tip(__('Select The Tab in Which Admin Will be Switch as a Cutomer or Guest', 'shop-as-a-customer-for-woocommerce' ) ); ?> 
+						</label>
 					</th>
 					<td>
 						<select id="fme_tabselect">
@@ -458,8 +428,10 @@ class MainFmeaddonsClass {
 				</tr>
 				<tr>
 					<th>
-						<label><?php echo esc_html_e('Select Role(s)', 'shop-as-a-customer-for-woocommerce'); ?></label>
-						<span class="woocommerce-help-tip" data-tip="Only Selected Roles will be allowed to switch & View orders. If no role is selected all roles will be considered as selected"></span>	
+						<label><?php echo esc_html_e('Select Role(s)', 'shop-as-a-customer-for-woocommerce'); ?>
+			 <?php echo wc_help_tip(__('Only Selected Roles will be allowed to switch & View orders. If no role is selected all roles will be considered as selected', 'shop-as-a-customer-for-woocommerce' ) ); ?> 
+							</label>
+							
 					</th>
 					<td>
 						<?php 
@@ -481,7 +453,7 @@ class MainFmeaddonsClass {
 										?>
 										<option value="<?php echo filter_var( $valueuserrole ); ?>"
 											<?php
-											if (in_array($valueuserrole, $savedroles)) {
+											if (isset($savedroles) && is_array($savedroles) && in_array($valueuserrole, $savedroles)) {
 												echo esc_attr('selected');
 											}
 											?>
@@ -532,7 +504,7 @@ class MainFmeaddonsClass {
 					</th>
 				<td>
 				<span id="fme_settings_global_msg" class="fme_alert fme_alert-success" style="display:none;">
-					<b><?php esc_html_e('Success!', 'shop-as-a-customer'); ?></b> <?php echo esc_html__('Settings saved successfully', 'shop-as-a-customer'); ?>
+					<b><?php esc_html_e('Success!', 'shop-as-a-customer-for-woocommerce'); ?></b> <?php echo esc_html__('Settings saved successfully', 'shop-as-a-customer-for-woocommerce'); ?>
 				</span>
 			</td>
 				</tr>
@@ -545,7 +517,7 @@ class MainFmeaddonsClass {
 		<div  id="fme_tableofswitch" style="display:block;">
 			<table id="allcustomers" class="display responsive widefat ">
 				<thead>
-					<th >
+					<th>
 						<center>
 							<?php echo esc_html_e('ID', 'shop-as-a-customer-for-woocommerce'); ?>
 						</center>
@@ -598,6 +570,9 @@ class MainFmeaddonsClass {
 			</table>
 
 			<style type="text/css">
+				.frompage{
+					padding: 0px 10px !important;
+				}
 				#allcustomers_info{
 					display: none;
 				}
@@ -608,9 +583,6 @@ class MainFmeaddonsClass {
 					border-radius: 100%;
 					
 					cursor: help;
-				/*	position: relative;
-					display: inline-block;
-					border-bottom: 1px dotted black;*/
 				}
 				.subsubsub {
 					float: unset !important;
@@ -625,7 +597,6 @@ class MainFmeaddonsClass {
 					border-radius: 6px;
 					padding: 5px 0;
 					margin-left: 15px;
-					/* Position the tooltip */
 					position: absolute;
 					z-index: 1;
 				}
@@ -633,8 +604,6 @@ class MainFmeaddonsClass {
 				.tooltip:hover .tooltiptext {
 					visibility: visible;
 				}
-				
-
 			.page-item.active .page-link{
 				background-color: #2f283b;
 				border-color: #2f283b;
@@ -842,10 +811,7 @@ class MainFmeaddonsClass {
 		<?php
 	}
 	public function fmeaddons_edit_profile() {
-		if (!isset($_REQUEST['notallowedpleasegoaway_fme_123e']) && 'fmessnotallowedpleasegoaway_fme_123#e' != $_REQUEST['notallowedpleasegoaway_fme_123e'] ) {
-			echo esc_attr('GO AWAY THIS IS NOT LEGAL WAY!');
-			wp_die();
-		}
+		check_ajax_referer('ajax_nonce', 'security');
 
 		$username = 'Admin';
 		$user = get_user_by('login', $username );
@@ -863,72 +829,94 @@ class MainFmeaddonsClass {
 		}
 		die();
 	}
-	public function fmeaddons_view_order() {
-		session_start();
-		if (!isset($_REQUEST['notallowedpleasegoaway_fme_123e']) && 'fmessnotallowedpleasegoaway_fme_123#e' != $_REQUEST['notallowedpleasegoaway_fme_123e'] ) {
-			echo esc_attr('GO AWAY THIS IS NOT LEGAL WAY!');
-			wp_die();
-		}
-		$user_meta=get_userdata(get_current_user_ID());
+	public function customer_id_chk( $id ) {
 
-		$user_roles=$user_meta->roles;
-		if (!empty(get_option('fme_allrolessaved')) || '' != get_option('fme_allrolessaved')) {
-			$found=false;
-			foreach ($user_roles as $key => $value) {
-				if (in_array($value, get_option('fme_allrolessaved'))) {
-					$found=true;
-				}
-			}
-		} else {
-			$found=true;
-		}
-		if ($found) {
-			$id='';
-			$username = 'Admin';
-			$array_for_log_child=array();
-			$array_for_log=get_option('all_logs');
-			$user = get_user_by('login', $username );
-			if (isset($_REQUEST['id'])) {
-				$id=sanitize_text_field($_REQUEST['id']);
-
-			}
-			if ( 'Select Customer' == $id ) {
-				$url= admin_url('/edit.php?post_type=shop_order');
-				echo filter_var($url);
-			} else if ( !is_wp_error( $user ) ) {
-				wp_clear_auth_cookie();
-				wp_set_current_user ( $id );
-				wp_set_auth_cookie  ( $id );
-
-
-				if ( 'Select Customer'!=$id ) {
-					echo filter_var(wc_get_endpoint_url( 'orders', '', wc_get_page_permalink( 'myaccount' ) ));
-				}
-			}
-			$useralll = get_userdata($id);
-			$nammee=$useralll->data->display_name;
-			$emaill=$useralll->data->user_email;
-
-			$nmbrphone=get_user_meta($id, 'billing_phone', true);
-
-			$array_for_log_child['id']=$id;
-
-			$array_for_log_child['time']=gmdate('M d, Y h:i:s A'); 
-			$array_for_log_child['customer']=$nammee . ' < ' . $emaill . ' > ';
-			$array_for_log_child['phone']=$nmbrphone;
-			$array_for_log_child['products']='';
-			$array_for_log[]=$array_for_log_child;
-			$_SESSION['admin']='adminisloggedin';
-			update_option('all_logs', $array_for_log);
-			session_write_close();
+		$user_meta = get_userdata( $id );
+				$user_roles=$user_meta->roles;
+				// check if requested id is customer user id
+		if ( is_array($user_roles) && in_array('administrator', $user_roles)) {
+			//you can't login as a admin
+			echo esc_html('usernotmatched');
 			die();
-		} else {
-
-			echo esc_attr('usernotmatched');
 		}
-		session_write_close();
-		wp_die();
+	}
+	public function fmeaddons_view_order() {
+			
+		if (current_user_can('manage_woocommerce')) {
+			if (isset($_REQUEST['id'])) {
+				$this->customer_id_chk(intval($_REQUEST['id']));
+			} else {
+				// id is not set
+				echo esc_html('usernotmatched');
+				die();
+			}
 
+			session_start();
+			check_ajax_referer('ajax_nonce', 'security');
+		
+			$user_meta=get_userdata(get_current_user_ID());
+
+			$user_roles=$user_meta->roles;
+			if (!empty(get_option('fme_allrolessaved')) || '' != get_option('fme_allrolessaved')) {
+				$found=false;
+				foreach ($user_roles as $key => $value) {
+					if (is_array(get_option('fme_allrolessaved')) && in_array($value, get_option('fme_allrolessaved'))) {
+						$found=true;
+					}
+				}
+			} else {
+				$found=true;
+			}
+			if ($found) {
+				$id='';
+				$username = 'Admin';
+				$array_for_log_child=array();
+				$array_for_log=get_option('all_logs');
+				$user = get_user_by('login', $username );
+				if (isset($_REQUEST['id'])) {
+					$id=sanitize_text_field(intval($_REQUEST['id']));
+				}
+				if ( 'Select Customer' == $id ) {
+					$url= admin_url('/edit.php?post_type=shop_order');
+					echo filter_var($url);
+				} else if ( !is_wp_error( $user ) ) {
+					wp_clear_auth_cookie();
+					wp_set_current_user ( sanitize_text_field($id) );
+					wp_set_auth_cookie  ( sanitize_text_field($id) );
+
+					if ( 'Select Customer'!=$id ) {
+						echo filter_var(wc_get_endpoint_url( 'orders', '', wc_get_page_permalink( 'myaccount' ) ));
+					}
+				}
+				$useralll = get_userdata($id);
+
+				$nammee=$useralll->data->display_name;
+				$emaill=$useralll->data->user_email;
+
+				$nmbrphone=get_user_meta($id, 'billing_phone', true);
+
+				$array_for_log_child['id']=$id;
+
+				$array_for_log_child['time']=gmdate('M d, Y h:i:s A'); 
+				$array_for_log_child['customer']=$nammee . ' < ' . $emaill . ' > ';
+				$array_for_log_child['phone']=$nmbrphone;
+				$array_for_log_child['products']='';
+				$array_for_log[]=$array_for_log_child;
+				$_SESSION['admin']='adminisloggedin';
+				update_option('all_logs', $array_for_log);
+				session_write_close();
+				die();
+			} else {
+
+				echo esc_attr('usernotmatched');
+			}
+		} else {
+			echo esc_attr('You don not have the access');
+		
+		}
+	
+
+		wp_die();
 	}
 	public function fmeaddons_end_session() {
 		session_start();
@@ -937,31 +925,31 @@ class MainFmeaddonsClass {
 			session_destroy ();
 
 		}  
-
 	}
 	public function fmeaddons_start_session() {
 		if (!session_id()) {
 			session_start();
 		}
-
 	}
 
 
 	public function fmeaddons_switchtoguest() {
 		session_start();
-		if (!isset($_REQUEST['notallowedpleasegoaway_fme_123e']) && 'fmessnotallowedpleasegoaway_fme_123#e' != $_REQUEST['notallowedpleasegoaway_fme_123e'] ) {
-			echo esc_attr('GO AWAY THIS IS NOT LEGAL WAY!');
-			wp_die();
-		}
-		$user_meta=get_userdata(get_current_user_ID());
+	 $current_user = wp_get_current_user();
+	   $current_user_id = $current_user->id; 
 
+	   $_SESSION['current_user_ids']=$current_user_id;
+		check_ajax_referer('ajax_nonce', 'security');
+		
+		$user_meta=get_userdata(get_current_user_ID());
+		
 		$user_roles=$user_meta->roles;
 		if (!empty(get_option('fme_allrolessaved')) || '' != get_option('fme_allrolessaved')) {
 
 		
 			$found=false;
 			foreach ($user_roles as $key => $value) {
-				if (in_array($value, get_option('fme_allrolessaved'))) {
+				if (is_array(get_option('fme_allrolessaved')) && in_array($value, get_option('fme_allrolessaved'))) {
 					$found=true;
 				}
 			}
@@ -976,18 +964,20 @@ class MainFmeaddonsClass {
 			$current_id=get_current_user_ID();
 			if (isset($_REQUEST['id'])) {
 				$id=sanitize_text_field($_REQUEST['id']);
+				if (isset($_SESSION['current_user_ids'])) {
+		 $admin_id = sanitize_text_field($_SESSION['current_user_ids']);
+				}
+			
 
 			}
 
-
-			$username = 'Admin';
 			$user = get_user_by('login', $username );
 
 
 			if ( !is_wp_error( $user ) ) {
 				wp_clear_auth_cookie();
 				
-
+				  
 				$array_for_log_child['id']='N/A';
 
 				$array_for_log_child['time']=gmdate('M d, Y h:i:s A'); 
@@ -1002,11 +992,17 @@ class MainFmeaddonsClass {
 					echo esc_url($redirect_to);
 				} else {
 					echo esc_attr($d);
+
 				}
 				$admin=array();
 				array_push ($admin, $current_id);
 				$_SESSION['admin']='adminisloggedin';
-				update_option('admin111', $current_id );
+				if (isset($_SESSION['current_user_ids'])) {
+		  $admin_id = sanitize_text_field($_SESSION['current_user_ids']);
+	
+				}
+				
+				
 				$items = $woocommerce->cart->get_cart();
 				update_option('whole_admin_cart', $items);
 				$woocommerce->cart->empty_cart();
@@ -1017,16 +1013,30 @@ class MainFmeaddonsClass {
 		}
 		session_write_close();
 		wp_die();
-
-
 	}
 
 	public function fmeaddons_switchtocustomer() {
-		session_start();
-		if (!isset($_REQUEST['notallowedpleasegoaway_fme_123e']) && 'fmessnotallowedpleasegoaway_fme_123#e' != $_REQUEST['notallowedpleasegoaway_fme_123e'] ) {
-			echo esc_attr('GO AWAY THIS IS NOT LEGAL WAY!');
+		$current_user = wp_get_current_user();
+	   $current_user_id = $current_user->id; 
+	   $_SESSION['current_user_ids']=$current_user_id;
+
+		if (!current_user_can('manage_woocommerce')) {
+			echo esc_attr('You are not allowed to switch customer');
 			wp_die();
 		}
+		check_ajax_referer('ajax_nonce', 'security');
+		if (isset($_REQUEST['id'])) {
+
+			$this->customer_id_chk(intval($_REQUEST['id']));
+			
+		} else {
+				// id is not set
+				echo esc_html('usernotmatched');
+				die();
+		}
+
+		session_start();
+		
 		if (isset($_REQUEST['switchbtn_refferer'])) {
 			$_SESSION['switchbtn_refferer_page']=filter_var( $_REQUEST['switchbtn_refferer'] );
 		}
@@ -1035,12 +1045,13 @@ class MainFmeaddonsClass {
 		$user_meta=get_userdata(get_current_user_ID());
 
 		$user_roles=$user_meta->roles;
+
 		if (!empty(get_option('fme_allrolessaved')) || '' != get_option('fme_allrolessaved')) {
 
 		
 			$found=false;
 			foreach ($user_roles as $key => $value) {
-				if (in_array($value, get_option('fme_allrolessaved'))) {
+				if (is_array(get_option('fme_allrolessaved')) && in_array($value, get_option('fme_allrolessaved'))) {
 					$found=true;
 				}
 			}
@@ -1061,11 +1072,10 @@ class MainFmeaddonsClass {
 			$username = 'Admin';
 			$user = get_user_by('login', $username );
 
-
 			if ( !is_wp_error( $user ) ) {
 				wp_clear_auth_cookie();
-				wp_set_current_user ( $id );
-				wp_set_auth_cookie  ( $id );
+				wp_set_current_user ( sanitize_text_field($id) );
+				wp_set_auth_cookie  ( sanitize_text_field($id ));
 				$useralll = get_userdata($id);
 				$nammee=$useralll->data->display_name;
 				$emaill=$useralll->data->user_email;
@@ -1093,7 +1103,8 @@ class MainFmeaddonsClass {
 				$admin=array();
 				array_push ($admin, $current_id);
 				$_SESSION['admin']='adminisloggedin';
-				update_option('admin111', $current_id );
+				$_SESSION['current_user_ids']=$current_user_id;
+				
 				$items = $woocommerce->cart->get_cart();
 				update_option('whole_admin_cart', $items);
 				$woocommerce->cart->empty_cart();
@@ -1107,16 +1118,18 @@ class MainFmeaddonsClass {
 		wp_die();
 	}
 
-
-
-
 	public function fmeaddons_switchback_tab() {
+		
 		session_start();
 		$flag=0;
 		$theme=wp_get_theme();
 		$id= get_current_user_ID();
-
-		$admin_id=get_option( 'admin111' );
+		
+		if (isset($_SESSION['current_user_ids'])) {
+		$admin_id = sanitize_text_field($_SESSION['current_user_ids']);
+	
+		}
+	
 		if ( $id != $admin_id) {
 			if (isset($_SESSION['admin']) && 'adminisloggedin' == $_SESSION['admin'] ) {
 				
@@ -1127,8 +1140,6 @@ class MainFmeaddonsClass {
 				} else {
 					$display_name='Guest';
 				}
-
-				$admin_id=get_option('admin111');
 				if ('Shopkeeper' == $theme) {
 
 					?>
@@ -1172,31 +1183,31 @@ class MainFmeaddonsClass {
 				<?php
 			}
 		}
-		session_write_close();
 	}
 
-
 	public function fmeaddons_switchback_to_admin() {
-		session_start();
-		if (!isset($_REQUEST['notallowedpleasegoaway_fme_123e']) && 'fmessnotallowedpleasegoaway_fme_123#e' != $_REQUEST['notallowedpleasegoaway_fme_123e'] ) {
-			echo esc_attr('GO AWAY THIS IS NOT LEGAL WAY!');
-			wp_die();
-		}
-		global $woocommerce;
-		$admin_id=get_option('admin111');
-		$username = 'Admin';
-		$user = get_user_by('login', $username );
-		$url_to_be_redirected=admin_url();
-		if (isset($_SESSION['switchbtn_refferer_page'])) {
-			$url_to_be_redirected = $_SESSION['switchbtn_refferer_page'];
-		}
+		session_start(); 
 
+		check_ajax_referer ('ajax_nonce', 'security');
+		global $woocommerce;
+		 // $admin_id=  $_SESSION['current_user_ids'];
+		if (isset($_SESSION['current_user_ids'])) {
+	$admin_id = sanitize_text_field($_SESSION['current_user_ids']);
+	
+		}
+		 $username = 'Admin';
+		 $user = get_user_by('login', $username );
+		$url_to_be_redirected=admin_url();
+
+		if (isset($_SESSION['switchbtn_refferer_page'])) {
+			$url_to_be_redirected = sanitize_text_field($_SESSION['switchbtn_refferer_page']);
+		}
 		if ( !is_wp_error( $user ) ) {
 			update_option('recent_customer', get_current_user_ID());
 			wp_clear_auth_cookie();
-			wp_set_current_user ($admin_id);
-			wp_set_auth_cookie  ( $admin_id );
-
+		   wp_set_current_user (sanitize_text_field($admin_id));
+			wp_set_auth_cookie  ( sanitize_text_field($admin_id ));
+	   
 			$redirect_to = $url_to_be_redirected;
 			//wp_safe_redirect( $redirect_to );
 
@@ -1232,7 +1243,11 @@ class MainFmeaddonsClass {
 
 	public function fmeaddons_custom_content_thankyou( $order_id ) {
 		session_start();
-		$admin_id=get_option( 'admin111' );
+		// $admin_id= $_SESSION['current_user_ids'];
+		if (isset($_SESSION['current_user_ids'])) {
+	$admin_id = sanitize_text_field($_SESSION['current_user_ids']);
+	
+		}
 		$id= get_current_user_ID();
 		if (isset( $_SESSION['admin'] ) && 'adminisloggedin' == $_SESSION['admin'] ) {
 			$order = wc_get_order( $order_id );
@@ -1259,18 +1274,18 @@ class MainFmeaddonsClass {
 
 	public function fmeaddons_script() {
 		
-		if (is_admin() && 'Customerslogs' == isset($_GET['page'])) {
+		if (is_admin() && ( isset($_GET['tab']) && 'shop_as_a_customer_for_woocommerce' == $_GET['tab'] )) {
 			wp_register_style( 'select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/3.4.8/select2.css', false, '1.0', 'all' );
 			wp_register_script( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/3.4.8/select2.js', array( 'jquery' ), '1.0', true );
 			wp_enqueue_style( 'select2css' );
 			wp_enqueue_script( 'select2' );
 
 			wp_register_script('fmesac_dataTableButtons', 'https://code.jquery.com/jquery-3.5.1.js', '', '1.0');
-			wp_enqueue_script('fmesac_dataTableButtons');	
+			wp_enqueue_script('fmesac_dataTableButtons');   
 
 
 			wp_register_script('fmesac_jsZipCdn', 'https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js', '', '1.0');
-			wp_enqueue_script('fmesac_jsZipCdn');	
+			wp_enqueue_script('fmesac_jsZipCdn');   
 
 
 			wp_register_script('fmesac_pdfMakeCdn', 'https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js', '', '1.0');
@@ -1307,7 +1322,7 @@ class MainFmeaddonsClass {
 			////////////////////////////////////////font awesome new version enqueue///////////////////
 		
 			wp_register_style( 'load-fa', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css', '', '1.0' );
-			wp_enqueue_style('load-fa');	
+			wp_enqueue_style('load-fa');    
 
 		/////////////////////////////////////////////////////////////////////////////////////
 
@@ -1319,12 +1334,12 @@ class MainFmeaddonsClass {
 		}
 
 		////////////////////////////////////////////////STORE FRONT/////////////////////////////
-		if ( 'Avada' != $theme->name && 'Avada' != $theme->parent_theme && 'Flatsome' != $theme->name && 'Flatsome' != $theme->parent_theme && 'Woodmart' != $theme->name && 'Woodmart' != $theme->parent_theme  ) {	
+		if ( 'Avada' != $theme->name && 'Avada' != $theme->parent_theme && 'Flatsome' != $theme->name && 'Flatsome' != $theme->parent_theme && 'Woodmart' != $theme->name && 'Woodmart' != $theme->parent_theme  ) {    
 			wp_register_style( 'storefrontheme', plugin_dir_url(__FILE__) . 'storefronttheme.css', false, '1.1.3', 'all' );
 			wp_enqueue_style( 'storefrontheme' );
 		}
 
-		if ( 'Storefront' != $theme->name && 'Storefront' != $theme->parent_theme && 'Flatsome' != $theme->name && 'Flatsome' != $theme->parent_theme && 'Woodmart' != $theme->name && 'Woodmart' != $theme->parent_theme  ) {	
+		if ( 'Storefront' != $theme->name && 'Storefront' != $theme->parent_theme && 'Flatsome' != $theme->name && 'Flatsome' != $theme->parent_theme && 'Woodmart' != $theme->name && 'Woodmart' != $theme->parent_theme  ) {  
 			 wp_register_style( 'Avada', plugin_dir_url(__FILE__) . 'Avada.css', false, '1.1.3', 'all' );
 			 wp_enqueue_style( 'Avada' );
 		}
@@ -1334,19 +1349,17 @@ class MainFmeaddonsClass {
 
 		wp_enqueue_style( 'bootstrap-min-css123', plugin_dir_url( __FILE__ ) . 'bootstrap-4.3.1-dist/css/bootstrap-iso.css', false, '1.1.3', 'all' );
 
-		// wp_enqueue_style( 'bootstrap-min-css1234', plugin_dir_url( __FILE__ ) . 'bootstrap-4.3.1-dist/css/bootstrap.min.css', false, '1.0', 'all' );
-
-
 		wp_enqueue_script('bootstrap-min-js', plugin_dir_url( __FILE__ ) . 'bootstrap-4.3.1-dist/js/bootstrap.js', false, '1.0', 'all' );
 		wp_enqueue_script('jquery-form');
 		wp_enqueue_script('jquery');    
-		wp_enqueue_script('myyy_custom_script', plugin_dir_url( __FILE__ ) . 'ajax.js', false, '1.1.3', 'all' );
+		wp_enqueue_script('myyy_custom_script', plugin_dir_url( __FILE__ ) . 'ajax.js', false, '1.2.2', 'all' );
 
 		$ewcpm_data = array(
 			'admin_url' => admin_url('admin-ajax.php'),
+			'ajax_nonce'=> wp_create_nonce('ajax_nonce'),
 		);
-		wp_localize_script('myyy_custom_script', 'ewcpm_php_vars', $ewcpm_data);
-		wp_localize_script('myyy_custom_script', 'ajax_url_add_pq', array('ajax_url_add_pq_data' => admin_url('admin-ajax.php')));
+		wp_localize_script('myyy_custom_script', 'saac_php_vars', $ewcpm_data);
+		wp_localize_script('myyy_custom_script', 'ajax_url_add_pq', array( 'ajax_url_add_pq_data' => admin_url('admin-ajax.php') ));
 	}
 
 
@@ -1354,33 +1367,31 @@ class MainFmeaddonsClass {
 
 		$args = array(
 			'id' => 'switch-to1',
-			'title' => 'Switch To Guest', 
+			'title' => __('Switch To Guest', 'shop-as-a-customer-for-woocommerce'), 
 			'href' => '#',
 			'type' => 'button',
 
 			'parent' => 'user-actions',
 			'meta' => array(
 				'class' => 'buttonn1 ib-icon', 
-				'title' => 'switch to Guest'
-			)
+				'title' => __('switch to Guest', 'shop-as-a-customer-for-woocommerce'),
+			),
 		);
 		$wp_admin_bar->add_node($args);
 
 		$args = array(
 			'id' => 'switch-to',
-			'title' => 'Switch To Customer', 
+			'title' => __('Switch To Customer', 'shop-as-a-customer-for-woocommerce'), 
 			'href' => '#',
 			'type' => 'button',
 
 			'parent' => 'user-actions',
 			'meta' => array(
 				'class' => 'buttonn ib-icon', 
-				'title' => 'switch to customer'
-			)
+				'title' => __('switch to customer', 'shop-as-a-customer-for-woocommerce'),
+			),
 		);
 		$wp_admin_bar->add_node($args);
-
-
 	}
 
 
@@ -1389,12 +1400,12 @@ class MainFmeaddonsClass {
 		$args = array(
 
 			'orderby' => 'last_name',
-			'order'   => 'ASC'
+			'order'   => 'ASC',
 		);
 		// $users = get_users( $args ); 
 		$recent=get_option('recent_customer');
 		$datau=get_userdata($recent);
-
+		
 		?>
 		<input type="hidden" name="test" id="icon_image" value="<?php echo esc_attr(plugin_dir_url( __FILE__ ) . 'Assets/icon.png'); ?>">
 		<div class="modal fade" id="myModal" role="dialog">
@@ -1408,7 +1419,7 @@ class MainFmeaddonsClass {
 					<div class="modal-body">
 
 						<div class="searchable">
-							<input type="text" id="cusname" autocomplete="off" placeholder="Search customers by email" >
+							<input type="text" id="cusname" autocomplete="off" placeholder="Search customers by user email or name" >
 							<input type="hidden" id="cusname1">
 							
 						</div>
@@ -1425,13 +1436,10 @@ class MainFmeaddonsClass {
 								}
 
 							}
-
-
 							div.searchable {
 								width: 100%;
 
 							}
-
 							.searchable input {
 								width: 100%;
 								height: 50px;
@@ -1453,7 +1461,6 @@ class MainFmeaddonsClass {
 							}
 
 							.searchable ul {
-								/*display: none;*/
 								list-style-type: none;
 								background-color: #fff;
 								border-radius: 0 0 5px 5px;
@@ -1462,7 +1469,6 @@ class MainFmeaddonsClass {
 								max-height: 180px;
 
 								overflow-y: scroll;
-								/*overflow-x: hidden;*/
 
 							}
 
@@ -1480,8 +1486,6 @@ class MainFmeaddonsClass {
 						</style>
 
 						<script type="text/javascript">
-
-
 							function filterFunction(that, event) {
 								let container, input, filter, li, input_val;
 								container = jQuery(that).closest(".searchable");
@@ -1602,9 +1606,6 @@ class MainFmeaddonsClass {
 			</style>
 			<?php
 		}
-
 	}
-
 }
-
 new MainFmeaddonsClass();

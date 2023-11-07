@@ -15,7 +15,7 @@ jQuery(document).ready(function ($) {
         "ajax": {
             "url": tmwni_admin_log.ajax_url,
             "type": "POST",
-            "data": {'action': 'load_tmwni_logs'}
+            "data": {'action': 'load_tmwni_logs',nonce : tmwni_admin_log.nonce}
         }
     });
 

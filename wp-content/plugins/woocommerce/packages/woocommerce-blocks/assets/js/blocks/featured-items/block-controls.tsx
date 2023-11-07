@@ -1,19 +1,18 @@
 /**
  * External dependencies
  */
-import { ComponentType, Dispatch, SetStateAction } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
 	AlignmentToolbar,
 	BlockControls as BlockControlsWrapper,
 	MediaReplaceFlow,
 } from '@wordpress/block-editor';
-import type { BlockAlignment } from '@wordpress/blocks';
 import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
 import { crop } from '@wordpress/icons';
 import { WP_REST_API_Category } from 'wp-types';
 import { ProductResponseItem } from '@woocommerce/types';
-import TextToolbarButton from '@woocommerce/editor-components/text-toolbar-button';
+import type { ComponentType, Dispatch, SetStateAction } from 'react';
+import type { BlockAlignment } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -112,13 +111,13 @@ export const BlockControls = ( {
 					allowedTypes={ [ 'image' ] }
 				/>
 				{ backgroundImageId && mediaSrc ? (
-					<TextToolbarButton
+					<ToolbarButton
 						onClick={ () =>
 							setAttributes( { mediaId: 0, mediaSrc: '' } )
 						}
 					>
 						{ __( 'Reset', 'woo-gutenberg-products-block' ) }
-					</TextToolbarButton>
+					</ToolbarButton>
 				) : null }
 			</ToolbarGroup>
 			<ToolbarGroup
@@ -136,39 +135,37 @@ export const BlockControls = ( {
 	);
 };
 
-export const withBlockControls = ( {
-	cropLabel,
-	editLabel,
-}: BlockControlsConfiguration ) => < T extends EditorBlock< T > >(
-	Component: ComponentType< T >
-) => ( props: WithBlockControlsProps< T > ) => {
-	const [ isEditingImage, setIsEditingImage ] = props.useEditingImage;
-	const { attributes, category, name, product, setAttributes } = props;
-	const { contentAlign, editMode, mediaId, mediaSrc } = attributes;
-	const item = category || product;
+export const withBlockControls =
+	( { cropLabel, editLabel }: BlockControlsConfiguration ) =>
+	< T extends EditorBlock< T > >( Component: ComponentType< T > ) =>
+	( props: WithBlockControlsProps< T > ) => {
+		const [ isEditingImage, setIsEditingImage ] = props.useEditingImage;
+		const { attributes, category, name, product, setAttributes } = props;
+		const { contentAlign, editMode, mediaId, mediaSrc } = attributes;
+		const item = category || product;
 
-	const { backgroundImageId, backgroundImageSrc } = useBackgroundImage( {
-		item,
-		mediaId,
-		mediaSrc,
-		blockName: name,
-	} );
+		const { backgroundImageId, backgroundImageSrc } = useBackgroundImage( {
+			item,
+			mediaId,
+			mediaSrc,
+			blockName: name,
+		} );
 
-	return (
-		<>
-			<BlockControls
-				backgroundImageId={ backgroundImageId }
-				backgroundImageSrc={ backgroundImageSrc }
-				contentAlign={ contentAlign }
-				cropLabel={ cropLabel }
-				editLabel={ editLabel }
-				editMode={ editMode }
-				isEditingImage={ isEditingImage }
-				mediaSrc={ mediaSrc }
-				setAttributes={ setAttributes }
-				setIsEditingImage={ setIsEditingImage }
-			/>
-			<Component { ...props } />
-		</>
-	);
-};
+		return (
+			<>
+				<BlockControls
+					backgroundImageId={ backgroundImageId }
+					backgroundImageSrc={ backgroundImageSrc }
+					contentAlign={ contentAlign }
+					cropLabel={ cropLabel }
+					editLabel={ editLabel }
+					editMode={ editMode }
+					isEditingImage={ isEditingImage }
+					mediaSrc={ mediaSrc }
+					setAttributes={ setAttributes }
+					setIsEditingImage={ setIsEditingImage }
+				/>
+				<Component { ...props } />
+			</>
+		);
+	};

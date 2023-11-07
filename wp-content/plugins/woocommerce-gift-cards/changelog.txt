@@ -1,5 +1,77 @@
 *** WooCommerce Gift Cards ***
 
+2023.10.17 - version 1.16.6
+* Fix - Important: Security improvements.
+* Fix - Resolved deprecation notice when viewing a Subscription paid by gift cards balance.
+* Tweak - Declared compatibility with the cart/checkout Blocks.
+
+2023.09.19 - version 1.16.5
+* Fix - Fixed an issue with page titles in settings.
+* Tweak - Used admin theme colors in settings.
+* Fix - Resolved a styling issue with the outline border when selecting a gift card form field.
+
+2023.08.28 - version 1.16.4
+* Feature - Added compatibility between the 'Send as gift?' feature and the new, block-based single product template.
+
+2023.07.03 - version 1.16.3
+* Tweak - Updated the way screen IDs are constructed to avoid issues with translated WooCommerce instances. 
+
+2023.06.12 - version 1.16.2
+* Fix - Fixed an issue that prevented the 'Use gift cards balance for renewal payments' dropdown from rendering correctly in the Subscriptions admin area.
+
+2023.06.01 - version 1.16.1
+* Fix - Fixed styling for dismissible admin notices.
+
+2023.05.29 - version 1.16.0
+* New - Introduced block theme support on existing frontend templates.
+* Fix - Improvements in global styles compatibility.
+* Fix - Important: Security improvements.
+
+2023.05.22 - version 1.15.6
+* Tweak - Introduced basic event tracking support via Tracks.
+* Fix - Fixed a fatal error that was triggered when importing gift cards with corrupted activity data.
+
+2023.05.10 - version 1.15.5
+* Tweak - Added 'Gift Card' section title under 'Product Data > General'.
+* Fix - Ensured that plugin styles are correctly loaded for RTL sites with WooCommerce 7.3+.
+
+2023.04.10 - version 1.15.4
+* Tweak - Added an asterisk next to required form fields.
+* Tweak - Improved data collection.
+
+2023.03.27 - version 1.15.3
+* Fix - Fixed an issue that prevented Gift Cards from being imported on some hosting environments.
+
+2023.03.06 - version 1.15.2
+* Fix - Fixed dates/times format in admin list tables to follow WordPress settings.
+* Fix - Fixed stylesheet path in WooCommerce Blocks compatibility module.
+* Fix - Fixed date filters in admin list tables.
+* Update - Updated color in Gift Cards empty state admin screens.
+
+2023.01.23 - version 1.15.1
+* Important - Security improvements.
+* Tweak - Added support for uploading translation files to GlotPress after each release.
+
+2022.12.12 - version 1.15.0
+* Important - Declared compatibility with the new High-Performance Order Storage.
+
+2022.11.28 - version 1.14.1
+* Tweak - Renamed emails controller.
+
+2022.11.16 - version 1.14.0
+* Important - Security improvements.
+
+2022.11.01 - version 1.13.1
+* Important - Security improvements.
+* Fix - Fixed block 'registered with an invalid category' warnings in the console.
+* Tweak - Enqueue block assets only when needed.
+* Tweak - Declared incompatibility with the new High-Performance Order Storage.
+
+2022.09.22 - version 1.13.0
+* Important - WooCommerce 3.9+ and PHP 7.0+ are now required.
+* Fix - Fixed 'My Account - Gift Cards' not hiding when endpoint setting is empty.
+* Fix - Fixed fatal errors triggered when activating/deactivating the plugin via WP CLI.
+
 2022.07.19 - version 1.12.2
 * Fix - Fixed an issue with the refund button in the edit-order screen introduced in WC gte 6.4.
 

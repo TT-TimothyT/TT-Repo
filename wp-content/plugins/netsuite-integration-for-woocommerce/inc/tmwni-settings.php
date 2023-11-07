@@ -321,6 +321,9 @@ class TMWNI_Settings {
 					$order_general_settings = get_option('tmwni_order_settings_general_settings_options');
 					
 					$order_refund_settings = get_option('tmwni_order_settings_refund_settings_options');
+
+
+					$order_line_item_settings = get_option('tmwni_order_settings_line_item_settings_options');
 					// pr($order_general_settings); die('zzzz');
 					if (!empty($order_refund_settings) && !empty($order_general_settings) && !empty($order_fulfillment_settings)) {
 						$tab_option_data = array_merge($order_refund_settings, $order_general_settings, $order_fulfillment_settings);
@@ -332,6 +335,11 @@ class TMWNI_Settings {
 						$tab_option_data = $order_general_settings;
 					} else {
 						$tab_option_data = get_option($option_key);
+					}
+
+
+					if (!empty($order_line_item_settings) && !empty($tab_option_data)) {
+						$tab_option_data = array_merge($order_line_item_settings, $tab_option_data);
 					}
 					
 					

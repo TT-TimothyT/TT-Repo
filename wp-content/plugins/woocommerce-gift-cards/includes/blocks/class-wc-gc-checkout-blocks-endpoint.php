@@ -6,6 +6,8 @@
  *
  * @package WooCommerce Gift Cards
  * @since   1.11.0
+ *
+ * @version 1.13.1
  */
 
 use Automattic\WooCommerce\StoreApi\Exceptions\RouteException;
@@ -110,7 +112,6 @@ class WC_GC_Checkout_Blocks_Endpoint {
 			case 'set_balance_usage':
 				$is_using = 'yes' === $args[ 'value' ];
 				WC_GC()->account->set_balance_usage( $is_using );
-				WC()->cart->calculate_totals( false );
 				break;
 
 			/**

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC_GC_Admin_Refunds Class.
  *
- * @version 1.12.2
+ * @version 1.16.0
  */
 class WC_GC_Admin_Refunds {
 
@@ -176,12 +176,12 @@ class WC_GC_Admin_Refunds {
 			<tr>
 				<td class="label refunded-total gift-cards-refunded-total"><?php esc_html_e( 'Refunded', 'woocommerce' ); ?> <small><?php esc_html_e( '(to gift cards)', 'woocommerce-gift-cards' ); ?></small>:</td>
 				<td width="1%"></td>
-				<td class="total refunded-total">-<?php echo wc_price( $total_gift_cards - $total_captured, array( 'currency' => $order->get_currency() ) ); ?></td>
+				<td class="total refunded-total">-<?php echo wp_kses_post( wc_price( $total_gift_cards - $total_captured, array( 'currency' => $order->get_currency() ) ) ); ?></td>
 			</tr>
 			<tr>
 				<td class="label label-highlight"><?php esc_html_e( 'Net payment', 'woocommerce-gift-cards' ); ?> <small><?php esc_html_e( '(via gift cards)', 'woocommerce-gift-cards' ); ?></small>:</td>
 				<td width="1%"></td>
-				<td class="total"><?php echo wc_price( $total_captured, array( 'currency' => $order->get_currency() ) ); ?></td>
+				<td class="total"><?php echo wp_kses_post( wc_price( $total_captured, array( 'currency' => $order->get_currency() ) ) ); ?></td>
 			</tr>
 			<?php
 		}
@@ -190,12 +190,12 @@ class WC_GC_Admin_Refunds {
 		?>
 		<tr class="wc_gc_move_row_to_refund_summary" style="display: none;">
 			<td class="label"><?php esc_html_e( 'Total available to refund to gift cards', 'woocommerce-gift-cards' ); ?>:</td>
-			<td class="total"><?php echo wc_price( $total_captured, array( 'currency' => $order->get_currency() ) ); ?></td>
+			<td class="total"><?php echo wp_kses_post( wc_price( $total_captured, array( 'currency' => $order->get_currency() ) ) ); ?></td>
 		</tr>
 		<tr class="wc_gc_move_row_to_refund_summary" style="display: none;">
 			<td class="label"><?php esc_html_e( 'Amount already refunded to gift cards', 'woocommerce-gift-cards' ); ?>:</td>
 			<td class="total">
-				-<?php echo wc_price( $total_gift_cards - $total_captured, array( 'currency' => $order->get_currency() ) ); ?>
+				-<?php echo wp_kses_post( wc_price( $total_gift_cards - $total_captured, array( 'currency' => $order->get_currency() ) ) ); ?>
 				<input type="hidden" id="gift_card_refunded_amount" name="gift_card_refunded_amount" value="<?php echo esc_attr( number_format( $total_gift_cards - $total_captured, wc_get_price_decimals() ) ); ?>" />
 			</td>
 		</tr>
@@ -219,6 +219,7 @@ class WC_GC_Admin_Refunds {
 			return;
 		}
 
+		$mask  = wc_gc_mask_codes( 'admin' );
 		$text  = _n( 'Refunded to gift card code:', 'Refunded to gift card codes:', count( $activities ), 'woocommerce-gift-cards' );
 		$codes = array();
 
@@ -227,7 +228,7 @@ class WC_GC_Admin_Refunds {
 			if ( ! $activity ) {
 				continue;
 			}
-			$codes[]  = $activity->get_gc_code();
+			$codes[] = $mask ? wc_gc_mask_code( $activity->get_gc_code() ) : $activity->get_gc_code();
 		}
 		$text .= ' ' . implode( ', ', $codes );
 		?>

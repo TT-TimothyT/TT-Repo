@@ -24,7 +24,7 @@ if ( ! class_exists( 'WC_GC_CSV_Importer_Controller', false ) ) {
 /**
  * WC_GC_CSV_Importer Class.
  *
- * @version 1.9.1
+ * @version 1.15.6
  */
 class WC_GC_CSV_Importer extends WC_GC_Importer {
 
@@ -73,8 +73,16 @@ class WC_GC_CSV_Importer extends WC_GC_Importer {
 	 */
 	protected function read_file() {
 
+		if ( WC_GC_CSV_Importer_Controller::is_within_phar( $this->file ) ) {
+			wp_die( esc_html__( 'Invalid file path. Files must must not be within a PHAR executable.', 'woocommerce-gift-cards' ) );
+		}
+
+		if ( ! WC_GC_CSV_Importer_Controller::is_within_abspath( $this->file ) && ! WC_GC_CSV_Importer_Controller::is_within_wp_content( $this->file ) ) {
+			wp_die( esc_html__( 'Invalid file path. Files must be uploaded to a location inside the WordPress absolute path or wp-content.', 'woocommerce-gift-cards' ) );
+		}
+
 		if ( ! WC_GC_CSV_Importer_Controller::is_file_valid_csv( $this->file ) ) {
-			wp_die( esc_html__( 'Invalid file type. The importer supports CSV and TXT file formats.', 'woocommerce-gift-cards' ) );
+			wp_die( esc_html__( 'Invalid file type. The importer supports CSV and TXT file formats.', 'woocommerce' ) );
 		}
 
 		$handle = fopen( $this->file, 'r' );
@@ -238,7 +246,7 @@ class WC_GC_CSV_Importer extends WC_GC_Importer {
 		foreach ( $data as $key => $value ) {
 
 			if ( $this->starts_with( $key, 'activities:json' ) ) {
-				if ( ! empty( $value ) ) {
+				if ( '' !== $value ) {
 					$activities[] = $value;
 				}
 				unset( $data[ $key ] );
@@ -364,6 +372,7 @@ class WC_GC_CSV_Importer extends WC_GC_Importer {
 
 			$id          = isset( $parsed_data[ 'id' ] ) ? absint( $parsed_data[ 'id' ] ) : 0;
 			$code        = isset( $parsed_data[ 'code' ] ) ? $parsed_data[ 'code' ] : '';
+			$activities  = isset( $parsed_data[ 'activities' ] ) ? $parsed_data[ 'activities' ] : '';
 			$id_exists   = false;
 			$code_exists = false;
 
@@ -407,8 +416,20 @@ class WC_GC_CSV_Importer extends WC_GC_Importer {
 					'woocommerce_gc_giftcards_importer_error',
 					esc_html__( 'No matching gift card exists to update.', 'woocommerce-gift-cards' ),
 					array(
-						'id'  => $id,
+						'id'   => $id,
 						'code' => esc_attr( $code ),
+						'row'  => $this->get_row_id( $parsed_data ),
+					)
+				);
+				continue;
+			}
+
+			if ( is_array( $activities ) && in_array( false, $activities, true ) ) {
+				$data[ 'skipped' ][] = new WP_Error(
+					'woocommerce_gc_giftcards_importer_error',
+					esc_html__( 'The gift cards activity data should be in a JSON format.', 'woocommerce-gift-cards' ),
+					array(
+						'id'  => $id,
 						'row' => $this->get_row_id( $parsed_data ),
 					)
 				);
@@ -565,7 +586,7 @@ class WC_GC_CSV_Importer extends WC_GC_Importer {
 	 * Parse gift card activities from a CSV.
 	 *
 	 * @param  string  $value
-	 * @return string
+	 * @return string|false
 	 */
 	public function parse_activities_field( $value ) {
 		if ( empty( $value ) ) {
@@ -573,7 +594,13 @@ class WC_GC_CSV_Importer extends WC_GC_Importer {
 		}
 
 		$data = json_decode( $value, JSON_OBJECT_AS_ARRAY );
+
+		if ( is_null( $data ) ) {
+			return false;
+		}
+
 		$data = array_pop( $data );
+
 		if ( ! empty( $data ) ) {
 			return $data;
 		}

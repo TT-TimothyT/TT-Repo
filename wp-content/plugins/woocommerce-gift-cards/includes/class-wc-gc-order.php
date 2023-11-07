@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC_GC_Order class.
  *
- * @version 1.12.1
+ * @version 1.16.0
  */
 class WC_GC_Order {
 
@@ -61,6 +61,7 @@ class WC_GC_Order {
 		// Add Gift Card line items.
 		add_action( 'woocommerce_checkout_create_order', array( $this, 'checkout_create_order' ) );
 		add_action( 'woocommerce_resume_order', array( $this, 'handle_order_awaiting_payment' ) );
+		add_action( 'woocommerce_checkout_order_exception', array( $this, 'unlock_giftcards' ) );
 
 		// Order item configuration.
 		add_filter( 'woocommerce_get_order_item_classname', array( $this, 'get_order_item_classname' ), 10, 2 );
@@ -69,9 +70,15 @@ class WC_GC_Order {
 		add_filter( 'woocommerce_data_stores', array( $this, 'order_item_data_store' ) );
 
 		// Order deletion management.
-		add_action( 'wp_trash_post', array( $this, 'handle_trash_order' ), 0 );
-		add_action( 'trashed_post', array( $this, 'after_trash_order' ), 0 );
-		add_action( 'before_delete_post', array( $this, 'before_delete_order' ), 0 );
+		if ( WC_GC_Core_Compatibility::is_hpos_enabled() ) {
+			add_action( 'woocommerce_before_trash_order', array( $this, 'handle_trash_order' ), 0 ); // HPOS Compatibility.
+			add_action( 'woocommerce_trash_order', array( $this, 'after_trash_order' ), 0 ); // HPOS Compatibility.
+			add_action( 'woocommerce_before_delete_order', array( $this, 'before_delete_order' ), 0 ); // HPOS Compatibility.
+		} else {
+			add_action( 'wp_trash_post', array( $this, 'handle_trash_order' ), 0 );
+			add_action( 'trashed_post', array( $this, 'after_trash_order' ), 0 );
+			add_action( 'before_delete_post', array( $this, 'before_delete_order' ), 0 );
+		}
 		add_action( 'woocommerce_rest_check_permissions', array( $this, 'before_delete_rest_order' ), 0, 4 );
 
 		// Keep track of on-hold balances.
@@ -404,6 +411,7 @@ class WC_GC_Order {
 		$giftcard        = $giftcard_order_item->get_giftcard();
 		$giftcard_exists = false !== $giftcard;
 		$captured_amount = $giftcard_order_item->get_captured_amount();
+		$mask            = wc_gc_mask_codes( 'admin' );
 
 		?><tr class="giftcards item" data-gc_code="<?php echo esc_attr( $giftcard_order_item->get_code() ); ?>" data-order_item_id="<?php echo intval( $giftcard_order_item->get_id() ); ?>">
 			<td class="thumb">
@@ -432,7 +440,7 @@ class WC_GC_Order {
 									<?php esc_html_e( 'Code:', 'woocommerce-gift-cards' ); ?>
 								</th>
 								<td>
-									<?php echo esc_html( $giftcard_order_item->get_code() ); ?>
+									<?php echo esc_html( $mask ? wc_gc_mask_code( $giftcard_order_item->get_code() ) : $giftcard_order_item->get_code() ); ?>
 								</td>
 							</tr>
 							<tr>
@@ -440,7 +448,7 @@ class WC_GC_Order {
 									<?php esc_html_e( 'Captured amount:', 'woocommerce-gift-cards' ); ?>
 								</th>
 								<td>
-									<?php echo wc_price( $captured_amount ); ?>
+									<?php echo wp_kses_post( wc_price( $captured_amount ) ); ?>
 								</td>
 							</tr>
 							<tr>
@@ -448,7 +456,7 @@ class WC_GC_Order {
 									<?php esc_html_e( 'Available balance:', 'woocommerce-gift-cards' ); ?>
 								</th>
 								<td>
-									<?php echo $giftcard_exists ? wc_price( $giftcard->get_balance() ) : esc_html__( 'N/A', 'woocommerce-gift-cards' ); ?>
+									<?php echo $giftcard_exists ? wp_kses_post( wc_price( $giftcard->get_balance() ) ) : esc_html__( 'N/A', 'woocommerce-gift-cards' ); ?>
 								</td>
 							</tr>
 							<tr>
@@ -487,10 +495,10 @@ class WC_GC_Order {
 			<td class="line_cost" width="1%">
 				<div class="view">-<?php
 
-					echo wc_price( $giftcard_order_item->get_amount(), array( 'currency' => $order->get_currency() ) );
+					echo wp_kses_post( wc_price( $giftcard_order_item->get_amount(), array( 'currency' => $order->get_currency() ) ) );
 					if ( $giftcard_order_item->get_amount() > $captured_amount ) {
 						?><small class="refunded giftcard_refunded">+<?php
-						echo wc_price( $giftcard_order_item->get_amount() - $captured_amount );
+						echo wp_kses_post( wc_price( $giftcard_order_item->get_amount() - $captured_amount ) );
 						?></small><?php
 					}
 
@@ -566,14 +574,14 @@ class WC_GC_Order {
 				</td>
 				<td width="1%"></td>
 				<td class="total">
-					<?php echo wc_price( $this->get_order_total( $order ), array( 'currency' => $order->get_currency() ) ); ?>
+					<?php echo wp_kses_post( wc_price( $this->get_order_total( $order ), array( 'currency' => $order->get_currency() ) ) ); ?>
 				</td>
 			</tr>
 			<tr>
 				<td class="label"><?php echo esc_html( __( 'Gift Cards:', 'woocommerce-gift-cards' ) ); ?></td>
 				<td width="1%"></td>
 				<td class="total">-
-					<?php echo wc_price( $giftcards[ 'total' ], array( 'currency' => $order->get_currency() ) ); ?>
+					<?php echo wp_kses_post( wc_price( $giftcards[ 'total' ], array( 'currency' => $order->get_currency() ) ) ); ?>
 				</td>
 			</tr>
 			<?php
@@ -657,35 +665,47 @@ class WC_GC_Order {
 			return;
 		}
 
-		foreach ( $giftcard_items as $id => $order_item ) {
+		$error = null;
+		try {
 
-			$giftcard = new WC_GC_Gift_Card( $order_item->get_giftcard_id() );
-			if ( $giftcard->get_id() ) {
+			foreach ( $giftcard_items as $id => $order_item ) {
 
-				if ( $order_item->meta_exists( 'gift_card_debited' ) || $order_item->get_amount() === $order_item->get_captured_amount( 'db' ) || $order_item->get_amount() === $order_item->get_refunded_amount( 'db' ) ) {
-					continue;
-				}
+				$giftcard = new WC_GC_Gift_Card( $order_item->get_giftcard_id() );
+				if ( $giftcard->get_id() ) {
 
-				$amount = $order_item->get_amount() - $order_item->get_captured_amount() - $order_item->get_refunded_amount();
-				if ( $amount > 0 ) {
-
-					if ( $giftcard->debit( $amount, $order ) ) {
-						/* translators: %1$s gift card code, %2$s debited amount */
-						$order->add_order_note( sprintf( __( 'Debited %2$s to gift card code %1$s.', 'woocommerce-gift-cards' ), $giftcard->get_code(), wc_price( $amount, array( 'currency' => $order->get_currency() ) ) ), false, true );
-
-					} else {
-
-						throw new Exception( sprintf( __( 'Gift card code %s does not have enough balance.', 'woocommerce-gift-cards' ), $giftcard->get_code() ), 1 );
+					if ( $order_item->meta_exists( 'gift_card_debited' ) || $order_item->get_amount() === $order_item->get_captured_amount( 'db' ) || $order_item->get_amount() === $order_item->get_refunded_amount( 'db' ) ) {
+						continue;
 					}
+
+					$amount = $order_item->get_amount() - $order_item->get_captured_amount() - $order_item->get_refunded_amount();
+					if ( $amount > 0 ) {
+
+						if ( $giftcard->debit( $amount, $order ) ) {
+							/* translators: %1$s gift card code, %2$s debited amount */
+							$order->add_order_note( sprintf( __( 'Debited %2$s to gift card code <span class="woocommerce-giftcards-admin-note-code">%1$s</span>.', 'woocommerce-gift-cards' ), $giftcard->get_code(), wc_price( $amount, array( 'currency' => $order->get_currency() ) ) ), false, true );
+						} else {
+
+							throw new Exception( sprintf( __( 'Gift card code %s does not have enough balance.', 'woocommerce-gift-cards' ), $giftcard->get_code() ), 1 );
+						}
+					}
+
+					// Cancel debit action.
+					$order_item->delete_meta_data( 'gift_card_credited' );
+					$order_item->add_meta_data( 'gift_card_debited', 'yes', true );
+					$order_item->save();
+
+				} else {
+					throw new Exception( __( 'Gift card not found.', 'woocommerce-gift-cards' ) , 1 );
 				}
+			}
 
-				// Cancel debit action.
-				$order_item->delete_meta_data( 'gift_card_credited' );
-				$order_item->add_meta_data( 'gift_card_debited', 'yes', true );
-				$order_item->save();
+		} catch ( Exception $e ) {
+			$error = $e;
+		} finally {
+			$this->unlock_giftcards( $order );
 
-			} else {
-				throw new Exception( __( 'Gift card not found.', 'woocommerce-gift-cards' ) , 1 );
+			if ( $error instanceof Exception ) {
+				throw $error;
 			}
 		}
 	}
@@ -720,8 +740,8 @@ class WC_GC_Order {
 				$amount = $order_item->get_captured_amount();
 				if ( $amount > 0 ) {
 					$giftcard->credit( $amount, $order );
-						/* translators: %1$s gift card code, %2$s credited amount */
-					$order->add_order_note( sprintf( __( 'Credited %2$s to gift card code %1$s.', 'woocommerce-gift-cards' ), $giftcard->get_code(), wc_price( $amount, array( 'currency' => $order->get_currency() ) ) ), false, true );
+					/* translators: %1$s gift card code, %2$s credited amount */
+					$order->add_order_note( sprintf( __( 'Credited %2$s to gift card code <span class="woocommerce-giftcards-admin-note-code">%1$s</span>.', 'woocommerce-gift-cards' ), $giftcard->get_code(), wc_price( $amount, array( 'currency' => $order->get_currency() ) ) ), false, true );
 				}
 
 				// Cancel debit action.
@@ -742,42 +762,87 @@ class WC_GC_Order {
 	 */
 	public function checkout_create_order( $order ) {
 
-		// Fetch all active giftcards.
-		$giftcards            = WC_GC()->giftcards->get();
-		if ( empty( $giftcards ) ) {
+		$locked_giftcard_keys = array();
+		$error                = null;
+
+		try {
+
+			// Fetch all active giftcards.
+			$giftcards = WC_GC()->giftcards->get();
+			if ( empty( $giftcards ) ) {
+				return;
+			}
+
+			$is_resuming_order    = did_action( 'woocommerce_resume_order' );
+			foreach ( $giftcards as $giftcard_info ) {
+
+				$lock_key = $giftcard_info[ 'giftcard' ]->lock_transactions();
+				if ( $lock_key ) {
+					$locked_giftcard_keys[ $giftcard_info[ 'giftcard' ]->get_id() ] = $lock_key;
+				}
+
+				// Re-fetch.
+				$giftcard = new WC_GC_Gift_Card( $giftcard_info[ 'giftcard' ]->get_id() );
+				$amount   = (float) $giftcard_info[ 'amount' ];
+
+				// Sanity checks.
+				$is_valid_giftcard = $giftcard->get_id() && $giftcard->is_active() && ! $giftcard->has_expired();
+				$is_valid_balance  = $is_resuming_order ? true : $giftcard->get_balance() >= $amount;
+
+				if ( $is_valid_giftcard && $is_valid_balance ) {
+
+					$item = new WC_GC_Order_Item_Gift_Card();
+
+					$item->set_props(
+						array(
+							'giftcard_id' => $giftcard->get_id(),
+							'code'        => $giftcard->get_code(),
+							'amount'      => $amount,
+						)
+					);
+
+					$order->add_item( $item );
+
+				} else {
+					throw new Exception( __( 'Failed to apply gift card codes.', 'woocommerce-gift-cards' ), 1 );
+				}
+			}
+
+		} catch ( Exception $e ) {
+			$error = $e;
+		} finally {
+
+			if ( ! empty( $locked_giftcard_keys ) ) {
+				$order->update_meta_data( '_giftcard_lock_keys', $locked_giftcard_keys );
+			}
+
+			if ( $error instanceof Exception ) {
+				throw $error;
+			}
+		}
+	}
+
+	/**
+	 * Unlocks all giftcards in the given order.
+	 *
+	 * @since  1.14.0
+	 *
+	 * @param  WC_Order  $order
+	 * @return void
+	 */
+	public function unlock_giftcards( $order ) {
+
+		$lock_keys = $order->get_meta( '_giftcard_lock_keys' );
+		if ( empty( $lock_keys ) ) {
 			return;
 		}
 
-		// Fetch all
-		$is_resuming_order    = did_action( 'woocommerce_resume_order' );
-		foreach ( $giftcards as $giftcard_info ) {
-
-			// Re-fetch.
-			$giftcard = new WC_GC_Gift_Card( $giftcard_info[ 'giftcard' ]->get_id() );
-			$amount   = (float) $giftcard_info[ 'amount' ];
-
-			// Sanity checks.
-			$is_valid_giftcard = $giftcard->get_id() && $giftcard->is_active() && ! $giftcard->has_expired();
-			$is_valid_balance  = $is_resuming_order ? true : $giftcard->get_balance() >= $amount;
-
-			if ( $is_valid_giftcard && $is_valid_balance ) {
-
-				$item = new WC_GC_Order_Item_Gift_Card();
-
-				$item->set_props(
-					array(
-						'giftcard_id' => $giftcard->get_id(),
-						'code'        => $giftcard->get_code(),
-						'amount'      => $amount,
-					)
-				);
-
-				$order->add_item( $item );
-
-			} else {
-				throw new Exception( __( 'Failed to apply gift card codes.', 'woocommerce-gift-cards' ), 1 );
-			}
+		global $wpdb;
+		foreach ( $lock_keys as $key ) {
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}woocommerce_gc_cardsmeta where meta_key = %s", $key ) );
 		}
+
+		$order->delete_meta_data( '_giftcard_lock_keys' );
 	}
 
 	/**
@@ -906,34 +971,63 @@ class WC_GC_Order {
 	 *
 	 * @since  1.5.4
 	 *
-	 * @param  int   $post_id
-	 * @return array
+	 * @param  int   $post_id Post ID or Order id.
+	 * @return void
 	 */
 	public function handle_trash_order( $post_id ) {
 
-		// Fetch the post type.
-		$post_type = get_post_type( $post_id );
-		if ( ! in_array( $post_type, wc_get_order_types(), true ) ) {
-			return;
+		if ( WC_GC_Core_Compatibility::is_hpos_enabled() ) {
+
+			if ( ! Automattic\WooCommerce\Utilities\OrderUtil::is_order( $post_id, wc_get_order_types() ) ) {
+				return;
+			}
+
+			$order = wc_get_order( $post_id );
+			if ( ! is_a( $order, 'WC_Order' ) ) {
+				return;
+			}
+
+			if ( ! in_array( $order->get_status(), wc_gc_get_order_pending_statuses() ) ) {
+				return;
+			}
+
+			$order_giftcards = $order->get_items( 'gift_card' );
+			if ( empty( $order_giftcards ) ) {
+				// No giftcards.
+				return;
+			}
+
+			$order->update_status( 'wc-cancelled', __( 'Moving Pending order with applied gift cards to the Trash.', 'woocommerce-gift-cards' ) );
+			$order->update_meta_data( '_wc_gc_restore_order_status', true );
+			$order->save();
+
+		} else {
+
+			// Fetch the post type.
+			$post_type = get_post_type( $post_id );
+			if ( ! in_array( $post_type, wc_get_order_types(), true ) ) {
+				return;
+			}
+
+			$order = wc_get_order( $post_id );
+			if ( ! is_a( $order, 'WC_Order' ) ) {
+				return;
+			}
+
+			if ( ! in_array( $order->get_status(), wc_gc_get_order_pending_statuses() ) ) {
+				return;
+			}
+
+			$order_giftcards = $order->get_items( 'gift_card' );
+			if ( empty( $order_giftcards ) ) {
+				// No giftcards.
+				return;
+			}
+
+			$order->update_status( 'wc-cancelled', __( 'Moving Pending order with applied gift cards to the Trash.', 'woocommerce-gift-cards' ) );
+			update_post_meta( $post_id, '_wc_gc_restore_order_status', true );
 		}
 
-		$order = wc_get_order( $post_id );
-		if ( ! is_a( $order, 'WC_Order' ) ) {
-			return;
-		}
-
-		if ( ! in_array( $order->get_status(), wc_gc_get_order_pending_statuses() ) ) {
-			return;
-		}
-
-		$order_giftcards = $order->get_items( 'gift_card' );
-		if ( empty( $order_giftcards ) ) {
-			// No giftcards.
-			return;
-		}
-
-		$order->update_status( 'wc-cancelled', __( 'Moving Pending order with applied gift cards to the Trash.', 'woocommerce-gift-cards' ) );
-		update_post_meta( $post_id, '_wc_gc_restore_order_status', true );
 	}
 
 	/**
@@ -941,14 +1035,36 @@ class WC_GC_Order {
 	 *
 	 * @since  1.5.4
 	 *
-	 * @param  int   $post_id
-	 * @return array
+	 * @param  int   $post_id Post ID or Order ID.
+	 * @return void
 	 */
 	public function after_trash_order( $post_id ) {
-		if ( get_post_meta( $post_id, '_wc_gc_restore_order_status', true ) ) {
-			update_post_meta( $post_id, '_wp_trash_meta_status', 'wc-cancelled' );
-			delete_post_meta( $post_id, '_wc_gc_restore_order_status' );
+
+		if ( WC_GC_Core_Compatibility::is_hpos_enabled() ) {
+
+			if ( ! Automattic\WooCommerce\Utilities\OrderUtil::is_order( $post_id, wc_get_order_types() ) ) {
+				return;
+			}
+
+			$order = wc_get_order( $post_id );
+			if ( ! is_a( $order, 'WC_Order' ) ) {
+				return;
+			}
+
+			if ( $order->get_meta( '_wc_gc_restore_order_status', true ) ) {
+				$order->update_meta_data( '_wp_trash_meta_status', 'wc-cancelled' );
+				$order->delete_meta_data( '_wc_gc_restore_order_status' );
+				$order->save();
+			}
+		} else {
+
+			// There is no need to get the post type and check if valid order, as this is already done in 'handle_trash_order'.
+			if ( get_post_meta( $post_id, '_wc_gc_restore_order_status', true ) ) {
+				update_post_meta( $post_id, '_wp_trash_meta_status', 'wc-cancelled' );
+				delete_post_meta( $post_id, '_wc_gc_restore_order_status' );
+			}
 		}
+
 	}
 
 	/**
@@ -956,31 +1072,56 @@ class WC_GC_Order {
 	 *
 	 * @since  1.5.4
 	 *
-	 * @param  int $post_id
+	 * @param  int $post_id Post ID or Order id.
 	 * @return void
 	 */
 	public function before_delete_order( $post_id ) {
 
-		// Fetch the post type.
-		$post_type = get_post_type( $post_id );
-		if ( ! in_array( $post_type, wc_get_order_types(), true ) ) {
-			return;
+		if ( WC_GC_Core_Compatibility::is_hpos_enabled() ) {
+
+			if ( ! Automattic\WooCommerce\Utilities\OrderUtil::is_order( $post_id, wc_get_order_types() ) ) {
+				return;
+			}
+
+			$order = wc_get_order( $post_id );
+			if ( ! is_a( $order, 'WC_Order' ) ) {
+				return;
+			}
+
+			if ( ! in_array( $order->get_status(), wc_gc_get_order_pending_statuses() ) ) {
+				return;
+			}
+
+			$giftcards = $order->get_items( 'gift_card' );
+			if ( ! empty( $giftcards ) ) {
+				// Cancel the order in order to return gift card funds.
+				$order->update_status( 'wc-cancelled' );
+				$order->save();
+			}
+		} else {
+
+			// Fetch the post type.
+			$post_type = get_post_type( $post_id );
+			if ( ! in_array( $post_type, wc_get_order_types(), true ) ) {
+				return;
+			}
+
+			$order = wc_get_order( $post_id );
+			if ( ! is_a( $order, 'WC_Order' ) ) {
+				return;
+			}
+
+			if ( ! in_array( $order->get_status(), wc_gc_get_order_pending_statuses() ) ) {
+				return;
+			}
+
+			$giftcards = $order->get_items( 'gift_card' );
+			if ( ! empty( $giftcards ) ) {
+				// Cancel the order in order to return gift card funds.
+				$order->update_status( 'wc-cancelled' );
+			}
 		}
 
-		$order = wc_get_order( $post_id );
-		if ( ! is_a( $order, 'WC_Order' ) ) {
-			return;
-		}
-
-		if ( ! in_array( $order->get_status(), wc_gc_get_order_pending_statuses() ) ) {
-			return;
-		}
-
-		$giftcards = $order->get_items( 'gift_card' );
-		if ( ! empty( $giftcards ) ) {
-			// Cancel the order in order to return gift card funds.
-			$order->update_status( 'wc-cancelled' );
-		}
 	}
 
 	/**
@@ -1163,7 +1304,9 @@ class WC_GC_Order {
 			if ( ! current_user_can( 'pay_for_order', $order_id ) && ! is_user_logged_in() ) {
 				$notice = $notice_text;
 			} else {
-				$notice = sprintf( '<a href="%s" class="button wc-forward">%s</a> %s', $order->get_cancel_order_url(), esc_html__( 'Cancel order', 'woocommerce-gift-cards' ), $notice_text );
+				$button_class = wc_gc_wp_theme_get_element_class_name( 'button' );
+				$wp_button_class = $button_class ? ' ' . $button_class : '';
+				$notice = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', $order->get_cancel_order_url(), $wp_button_class, esc_html__( 'Cancel order', 'woocommerce-gift-cards' ), $notice_text );
 			}
 
 			wc_add_notice( $notice );
@@ -1187,6 +1330,6 @@ class WC_GC_Order {
 			$url = add_query_arg( array( 'wc_gc_pay_order_pending_status' => 'notice' ), $url );
 		}
 
-		return $url;
+		return $url; // nosemgrep: audit.php.wp.security.xss.query-arg
 	}
 }

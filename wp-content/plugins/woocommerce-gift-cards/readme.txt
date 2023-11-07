@@ -3,10 +3,10 @@
 Contributors: SomewhereWarm
 Tags: woocommerce, product, gift cards, gift, cards
 Requires at least: 4.4
-Tested up to: 5.9
-Stable tag: 1.12.2
+Tested up to: 6.0
+Stable tag: 1.16.6
 WC requires at least: 3.9
-WC tested up to: 6.5
+WC tested up to: 8.2
 License: GNU General Public License v3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
