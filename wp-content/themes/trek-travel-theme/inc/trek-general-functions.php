@@ -2419,14 +2419,23 @@ if (!function_exists('tt_get_local_trips_detail')) {
 if (!function_exists('tt_get_line_items_product_ids')) {
     function tt_get_line_items_product_ids()
     {
-        global $wpdb;
-        $ids = array();
-        $sql = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key='tt_line_item_fees_product' AND meta_value = '1' ";
-        $results = $wpdb->get_results($sql, ARRAY_A);
-        if ($results) {
-            $ids = array_column($results, 'post_id');
+
+        // @TODO: temp soluton for storring the logic in a transient, as it's huge call
+        $ids = get_transient( 'tt_line_item_fees_product' );
+
+        if ( ! empty( $ids ) ) {
+            return $ids;
+        } else {
+            global $wpdb;
+            $sql = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key='tt_line_item_fees_product' AND meta_value = '1' ";
+            $results = $wpdb->get_results($sql, ARRAY_A);
+            if ($results) {
+                $ids = array_column($results, 'post_id');
+                set_transient( 'tt_line_item_fees_product', $ids, DAY_IN_SECONDS );
+            }
+
+            return $ids;
         }
-        return $ids;
     }
 }
 /**
