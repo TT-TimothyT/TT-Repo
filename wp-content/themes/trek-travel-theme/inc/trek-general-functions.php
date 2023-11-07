@@ -42,11 +42,14 @@ function trek_create_page($title, $content, $parent_id = NULL)
     }
     return $is_page;
 }
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
  * @return  : Calling Add new page function for Default pages in TT
- **/
+ * @deprecated Removing these functions, as we already have the pages
+ */
+/*
 trek_create_page('Register', '[trek-register]');
 trek_create_page('Login', '[trek-login]');
 trek_create_page('Reset password', '[trek-forgot-password]');
@@ -56,6 +59,7 @@ trek_create_page('Bike & Gear Preferences', '[trek-bike-gear-preferences]', TREK
 trek_create_page('Communication Preferences', '[trek-communication-preferences]', TREK_MY_ACCOUNT_PID);
 $my_trips_page_ID = trek_create_page('My Trips', '[trek-my-trips]', TREK_MY_ACCOUNT_PID);
 trek_create_page('My Trip', '[trek-my-trip]', $my_trips_page_ID);
+*/
 
 /**
  * @author  : Dharmesh Panchal
