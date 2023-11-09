@@ -6,6 +6,7 @@
             "key": "field_654a0a56b343e",
             "label": "NetSuite User ID(salesRepId)",
             "name": "salesrepid",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -25,9 +26,9 @@
     "location": [
         [
             {
-                "param": "current_user_role",
+                "param": "user_form",
                 "operator": "==",
-                "value": "administrator"
+                "value": "edit"
             }
         ]
     ],
@@ -40,5 +41,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1699351741
+    "modified": 1699546559
 }
