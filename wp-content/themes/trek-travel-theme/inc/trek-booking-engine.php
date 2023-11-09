@@ -103,7 +103,7 @@ function insert_records_guest_bookings_cb( $order_id ){
         session_start();
     }
     $is_behalf = false;
-    if( isset($_SESSION['admin']) && $_SESSION['admin'] == 'adminisloggedin' ){
+    if( current_user_can( 'administrator' ) ) {
         $is_behalf = true;
     }
     //$order_id = $order->get_id();

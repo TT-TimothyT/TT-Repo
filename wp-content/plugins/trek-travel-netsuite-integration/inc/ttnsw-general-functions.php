@@ -129,6 +129,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
             $start_date = date('Y-m-d', $wc_booking->trip_start_date);
             $end_date = date('Y-m-d', $wc_booking->trip_end_date);
             $guest_index_id = $wc_booking->guest_index_id;
+            $guest_wp_id = $wc_booking->user_id;
             $user_rooms_data = $user_rooms_arr['users_in_rooms'];
             $trip_rooms = $user_rooms_arr['rooms'];
             $user_room_index = tt_get_user_room_index_by_user_key($user_rooms_data, $guest_index_id);
@@ -184,6 +185,10 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
                 $e_relationship = tt_validate($wc_booking->emergency_contact_relationship);
                 $ns_user_id = tt_validate($wc_booking->netsuite_guest_registration_id);
                 $admin_ns_user_id = 1687333;
+                $sales_rep_id = get_user_meta( $guest_wp_id, 'salesrepid', true );
+                if ( empty( $sales_rep_id ) ) {
+                    $sales_rep_id = '';
+                }
                 if ( $booking_index == 0 ) {
                     $ns_booking_payload = [
                         "tripDateId" => $ns_trip_ID,
@@ -191,7 +196,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
                         "endDate" => $end_date,
                         "wantPrivate" => $wantPrivate,
                         //"referralSourceType" => $is_behalf == true ? 19 : '',
-                        'salesRepId' => $is_behalf == true ? $admin_ns_user_id : '',
+                        'salesRepId' => $is_behalf == true ? $sales_rep_id : '',
                         //"referralSourceName" => $is_behalf == true ? $super_admin_name : '',
                         "bikeUpgradePriceDisplayed" => $bikeUpgradePrice,
                         "rooms" => $trip_rooms,
