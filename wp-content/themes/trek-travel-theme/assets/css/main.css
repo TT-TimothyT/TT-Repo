@@ -10026,6 +10026,15 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
     padding: 0;
     padding-bottom: 16px;
   }
+  .mobile-nav #navbar #mega-menu-wrap-main-menu .mega-menu .custom-style-menu > .mega-sub-menu > li > ul > li > ul > li > a {
+    font-weight: bold !important;
+  }
+  .mobile-nav #navbar #mega-menu-wrap-main-menu .mega-menu .custom-style-menu > .mega-sub-menu > li > ul > li > ul > li > ul {
+    margin-left: 20px !important;
+  }
+  .mobile-nav #navbar #mega-menu-wrap-main-menu .mega-menu .custom-style-menu > .mega-sub-menu > li > ul > li > ul > li > ul > li > ul {
+    margin-left: 20px !important;
+  }
 }
 .navbar {
   --bs-navbar-padding-x: 0;

@@ -220,6 +220,20 @@
       }
     }
   }
+
+  .mobile-nav #navbar #mega-menu-wrap-main-menu .mega-menu .custom-style-menu {
+    & > .mega-sub-menu > li > ul > li > ul > li {
+      & > a {
+        font-weight: bold !important;
+      }
+      & > ul {
+        margin-left: 20px !important;
+        & > li > ul {
+          margin-left: 20px !important;
+        }
+      }
+    }
+  }
 }
 
 

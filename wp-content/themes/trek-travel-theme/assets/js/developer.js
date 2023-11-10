@@ -2265,16 +2265,18 @@ jQuery('body').on('click', function () {
   var isExpanded = jQuery(selector).attr("aria-expanded")
   if (isExpanded == "true") {
     // jQuery(".mobile-menu-toggle").addClass("position-absolute w-100 p-0")
-    jQuery("nav.mobile-nav div#navbar").addClass("w-100")
+    jQuery("nav.mobile-nav div#navbar").addClass("w-100");
+    jQuery('html, body').css('overflow', 'hidden');
     if (jQuery("header.header-main").hasClass("add-shadow")) {
-      var screenHeight = jQuery(window).outerHeight() - 45
+      var screenHeight = jQuery(window).outerHeight() - 90
     } else {
-      var screenHeight = jQuery(window).outerHeight() - 120
+      var screenHeight = jQuery(window).outerHeight() - 170
     }   
     jQuery("div#navbar ul#mega-menu-main-menu").height(screenHeight)
     // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#000")
   }
   else{
+    jQuery('html, body').css('overflow', 'scroll');
     // jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
     jQuery("nav.mobile-nav div#navbar").removeClass("w-100")
     resetMobileMenu()
@@ -2952,17 +2954,19 @@ jQuery('.mega-toggle-blocks-left').on('click', function(e) {
 })
 
 jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu li.mega-menu-item a', function (e) {
-  jQuery(".mega-toggle-blocks-center").text(jQuery(this).text())
-  jQuery(this).parent().siblings().addClass("d-none");
-  jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 1)
-  jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").show()
-  jQuery(this).hide();
-
-  jQuery('.mega-menu-toggle.mega-menu-open').addClass('active');
-  jQuery('.mega-menu-open .mega-toggle-blocks-center').show();
-  var backIconCode = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 19L8 12L15 5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  var backIcon = "data:image/svg+xml," + encodeURIComponent(backIconCode);
-  jQuery(".mega-toggle-blocks-left").css('background-image', 'url(' + backIcon + ')');
+  if(jQuery(this).attr('href') === undefined) {
+    jQuery(".mega-toggle-blocks-center").text(jQuery(this).text())
+    jQuery(this).parent().siblings().addClass("d-none");
+    jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 1)
+    jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").show()
+    jQuery(this).hide();
+  
+    jQuery('.mega-menu-toggle.mega-menu-open').addClass('active');
+    jQuery('.mega-menu-open .mega-toggle-blocks-center').show();
+    var backIconCode = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 19L8 12L15 5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var backIcon = "data:image/svg+xml," + encodeURIComponent(backIconCode);
+    jQuery(".mega-toggle-blocks-left").css('background-image', 'url(' + backIcon + ')');
+  }
 });
 
 jQuery("nav #mega-menu-wrap-main-menu li.mega-menu-item a .mega-indicator").on("click", function() { 
@@ -2974,11 +2978,13 @@ jQuery("nav #mega-menu-wrap-main-menu li.mega-menu-item a .mega-indicator").on("
 });
 
 jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-category-sub-menu ul.mega-sub-menu li a', function (e) {
-  let parentText = jQuery(this).parents("li.mega-menu-item").eq(1).find("a").eq(0).text()
-  jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").attr("parent-text", parentText)
-  jQuery(this).parent().parent().parent().siblings().addClass("d-none");
-  jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 2)
-  jQuery(this).hide()
+  if(jQuery(this).attr('href') === undefined) {
+    let parentText = jQuery(this).parents("li.mega-menu-item").eq(1).find("a").eq(0).text()
+    jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").attr("parent-text", parentText)
+    jQuery(this).parent().parent().parent().siblings().addClass("d-none");
+    jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 2)
+    jQuery(this).hide();
+  }
 });
 
 jQuery('nav #mega-menu-wrap-main-menu .mega-category-sub-menu ul.mega-sub-menu li a .mega-indicator').on('click', function () {
