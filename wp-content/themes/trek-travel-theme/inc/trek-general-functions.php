@@ -1836,6 +1836,34 @@ function tt_items_select_options($item_name = "", $optionId="")
         $options = isset($itemData['options']) ? $itemData['options'] : array();
         if ($options) {
             $opts .= '<option value="" data-value="' . $optionId . '">Select ' . $listName . '</option>';
+
+            // Sort options ASC by value in optionValue key if item name is "syncHeights" - only for Rider Height is available this.
+            if( 'syncHeights' === $item_name ){
+                // Regex to match ft and inches.
+                $re = '/.*(\d)\'(\d+).*/m';
+                // ASC sort function.
+                $sortFunc = function($a, $b) use ($re) {
+                    if (stripos($b['optionValue'], 'Under') !== false) {
+                        return 1;
+                    } elseif (stripos($a['optionValue'], 'Under') !== false) {
+                        return -1;
+                    } else if (preg_match($re, $a['optionValue'], $matchesA) && preg_match($re, $b['optionValue'], $matchesB)) {
+                        $aHeight = (int)$matchesA[1] * 12 + (int)$matchesA[2];
+                        $bHeight = (int)$matchesB[1] * 12 + (int)$matchesB[2];
+
+                        if ($aHeight == $bHeight) {
+                            return strcmp($a['optionValue'], $b['optionValue']);
+                        }
+
+                        return $aHeight - $bHeight;
+                    }
+
+                    return 0;
+                };
+                // Sort options with custom calback function for sorting.
+                usort($options, $sortFunc);
+            }
+
             foreach ($options as $option) {
                 $selected = ($optionId == $option['optionId'] ? 'selected' : '');
                 $opts .= '<option value="' . $option['optionId'] . '" ' . $selected . '>' . $option['optionValue'] . '</option>';
