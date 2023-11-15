@@ -3022,9 +3022,17 @@ jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-toggle-blocks-le
 jQuery( document ).ready(function() {
   jQuery('.mega-menu-toggle').on('click', function() {
   if(jQuery(this).hasClass('mega-menu-open')) {
+    jQuery('.mobile-menu-toggle').css('position','relative');
+    jQuery('.mobile-logo .navbar-brand').css('margin-left','auto');
     jQuery('.search-icon').show();
+    jQuery('.phone-icon').show();
+    jQuery('.calendar-icon').show();
   } else {
+    jQuery('.mobile-menu-toggle').css('position','static');
+    jQuery('.mobile-logo .navbar-brand').css('margin-left',0);
     jQuery('.search-icon').hide();
+    jQuery('.phone-icon').hide();
+    jQuery('.calendar-icon').hide();
   }
  })
 	jQuery('.mobile-menu-toggle ul#mega-menu-main-menu > .mega-hide-on-desktop:first').addClass('first-gray-elem');

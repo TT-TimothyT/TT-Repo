@@ -11306,9 +11306,13 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
   justify-content: space-between;
 }
 .mobile-nav .row .mobile-logo {
-  justify-content: flex-start;
+  justify-content: center;
+}
+.mobile-nav .row .mobile-logo .navbar-brand {
+  margin: auto;
 }
 .mobile-nav .row .mobile-menu-toggle {
+  position: relative;
   justify-content: flex-end;
 }
 .mobile-nav .row .mobile-menu-toggle .mega-toggle-block .mega-toggle-animated {
@@ -11348,8 +11352,8 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
 .mobile-nav .row .mobile-menu-toggle .mega-toggle-block .mega-toggle-animated-inner,
 .mobile-nav .row .mobile-menu-toggle .mega-toggle-block .mega-toggle-animated-inner::before,
 .mobile-nav .row .mobile-menu-toggle .mega-toggle-block .mega-toggle-animated-inner::after {
-  width: 40px;
-  height: 4px;
+  width: 30px !important;
+  height: 3px !important;
   background-color: #000;
   border-radius: 4px;
   position: absolute;
