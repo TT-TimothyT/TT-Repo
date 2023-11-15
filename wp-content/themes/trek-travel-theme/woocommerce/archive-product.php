@@ -220,16 +220,22 @@ $emptyBlockContent .= '</div></div>';
                             </div>
 
                             <div class="carousel-inner h-100">
-                                <# if ( data.gallery_images ) { #>
-                                <# data.gallery_images.forEach(function (item, index) { #>
-                                <div class="carousel-item h-100 <# if ( index == 0 ) { #> active <# } #>">
-                                    <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--thumbnail-link" onclick="selectItemAnalytics({{ data.post_id }})">
-                                        <img src="{{ item.replace( '-300x300', '' ) }}" alt="{{ data.post_title }}" title="{{ data.post_title }}" class=" d-block w-100" />
-                                    </a>
-                                </div>
-                                <# }) #>
+                                <# if (data.gallery_images) { #>
+                                    <# data.gallery_images.forEach(function (item, index) { #>
+                                        <#
+                                            let imageUrl = item.replace('-300x300', '-886x664');
+                                            let imageUrlOriginalSize = item.replace('-300x300', '');
+                                        #>
+                                        <div class="carousel-item h-100 <# if (index == 0) { #> active <# } #>">
+                                            <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--thumbnail-link"
+                                            onclick="selectItemAnalytics({{ data.post_id }})">
+                                                <img src="{{ imageUrl }}" alt="{{ data.post_title }}" title="{{ data.post_title }}" class="d-block w-100"
+                                                    onerror="this.onerror=null;this.src='{{ imageUrlOriginalSize }}';"
+                                                    id="imgElement{{ index }}" /> <!-- Use a unique ID for each image element -->
+                                            </a>
+                                        </div>
+                                    <# }) #>
                                 <# } #>
-
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators{{ data.post_id }}" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
