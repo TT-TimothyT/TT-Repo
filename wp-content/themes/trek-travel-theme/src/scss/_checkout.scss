@@ -45,11 +45,12 @@
     }
     .woocommerce-invalid input,.woocommerce-invalid select,
     .woocommerce-validated .woocommerce-invalid input, 
-    .woocommerce-validated .woocommerce-invalid select {
+    .woocommerce-validated .woocommerce-invalid select,
+    .woocommerce-invalid .select2-selection {
         border-color: #a00 !important;        
     }
     .woocommerce-validated input, .woocommerce-validated select,
-    .woocommerce-validated .woocommerce-validated input, .woocommerce-validated .woocommerce-validated select {
+    .woocommerce-validated .woocommerce-validated input, .woocommerce-validated .woocommerce-validated select, .woocommerce-validated .select2-selection {
         border-color: #6dc22e !important;        
     }
 }

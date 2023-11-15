@@ -15842,11 +15842,12 @@ nav .nav-tabs .nav-link.active {
 }
 .checkout-trek .woocommerce-invalid input, .checkout-trek .woocommerce-invalid select,
 .checkout-trek .woocommerce-validated .woocommerce-invalid input,
-.checkout-trek .woocommerce-validated .woocommerce-invalid select {
+.checkout-trek .woocommerce-validated .woocommerce-invalid select,
+.checkout-trek .woocommerce-invalid .select2-selection {
   border-color: #a00 !important;
 }
 .checkout-trek .woocommerce-validated input, .checkout-trek .woocommerce-validated select,
-.checkout-trek .woocommerce-validated .woocommerce-validated input, .checkout-trek .woocommerce-validated .woocommerce-validated select {
+.checkout-trek .woocommerce-validated .woocommerce-validated input, .checkout-trek .woocommerce-validated .woocommerce-validated select, .checkout-trek .woocommerce-validated .select2-selection {
   border-color: #6dc22e !important;
 }
 

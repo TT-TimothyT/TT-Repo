@@ -208,15 +208,17 @@ function checkout_steps_validations(step = 1) {
       }
       if (isRequired == 'required') {
         if (CurrentVal == '' || CurrentVal == undefined || CurrentVal == 'undefined') {
+          jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-invalid');
+          jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-validated');
+          jQuery(`input[name="${CurrentName}"]`).closest('div.form-floating').find(".rider-select").css("display", "block")
+          jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
           isValidated = true;
+          validationMessages.push(`Step 1: Field [name: ${CurrentName}, Value: ${CurrentVal}]`);
         } else {
-          if (CurrentName == 'email' && tt_validate_email(CurrentVal) == false) {
-            isValidated = true;
-          }else if ((CurrentName == 'shipping_phone' || validationType == 'phone') && tt_validate_phone(CurrentVal) == false) {
-            isValidated = true;
-          } else if ((CurrentName == 'custentity_birthdate' || validationType == 'date') && tt_validate_age(CurrentVal) == false) {
-            isValidated = true;
-          }
+          jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+          jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-validated');
+          jQuery(`input[name="${CurrentName}"]`).closest('div.form-floating').find(".rider-select").css("display", "none")
+          jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
         }
         validationMessages.push(`Step 1: Field [name: ${CurrentName}, Value: ${CurrentVal}]`);
       }
@@ -1223,8 +1225,6 @@ jQuery('.my-trips-checklist .checklist-expand-all').on('click', function () {
 });
 
 jQuery('select[id="shipping_country"]').change(function () {
-  jQuery("#guest #shipping_state").closest('div.form-row').addClass('woocommerce-invalid');
-  jQuery("#guest #shipping_state").closest('div.form-row').removeClass('woocommerce-validated');
   jQuery('body').trigger('update_checkout');
 });
 
@@ -3166,30 +3166,33 @@ jQuery(document).on('change blur', 'input[name="shipping_postcode"]', function (
 });
 
 jQuery(document).on('change', 'select[name="shipping_country"]', function () {
-  jQuery('select[name="shipping_country"]').attr('required', 'required');
-  checkout_steps_validations(1);
-  jQuery('select[name="shipping_state"]').selectedIndex = 0;
-  if (jQuery('select[name="shipping_country"]').val() == 'Select a country / region…') {
+  jQuery(`select[name="shipping_state"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+  jQuery(`select[name="shipping_state"]`).closest('div.form-row').removeClass('woocommerce-validated');
+  jQuery(`select[name="shipping_state"]`).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+});
+
+
+jQuery(document).on('select2:close', 'select[name="shipping_country"]', function () {
+  if (jQuery('select[name="shipping_country"]').val() == 'Select a country / region…' || jQuery('select[name="shipping_country"]').val() == '' ) {
     jQuery(`select[name="shipping_country"]`).closest('div.form-row').addClass('woocommerce-invalid');
     jQuery(`select[name="shipping_country"]`).closest('div.form-row').removeClass('woocommerce-validated');
-    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+    jQuery(`select[name="shipping_country"]`).closest('div.form-row').find(".invalid-feedback").css("display", "block");
   } else {
     jQuery(`select[name="shipping_country"]`).closest('div.form-row').removeClass('woocommerce-invalid');
     jQuery(`select[name="shipping_country"]`).closest('div.form-row').addClass('woocommerce-validated');
-    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none !important");
+    jQuery(`select[name="shipping_country"]`).closest('div.form-row').find(".invalid-feedback").css("display", "none");
   }
 });
 
-jQuery(document).on('change blur', 'select[name="shipping_state"]', function () {
-  jQuery('select[name="shipping_state"]').attr('required', 'required');
-  if (jQuery('select[name="shipping_state"]').val() == false) {
+jQuery(document).on('select2:close', 'select[name="shipping_state"]', function () {
+  if (jQuery('select[name="shipping_state"]').val() == null || jQuery('select[name="shipping_state"]').val() == '' ) {
     jQuery(`select[name="shipping_state"]`).closest('div.form-row').addClass('woocommerce-invalid');
     jQuery(`select[name="shipping_state"]`).closest('div.form-row').removeClass('woocommerce-validated');
-    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+    jQuery(`select[name="shipping_state"]`).closest('div.form-row').find(".invalid-feedback").css("display", "block");
   } else {
     jQuery(`select[name="shipping_state"]`).closest('div.form-row').removeClass('woocommerce-invalid');
     jQuery(`select[name="shipping_state"]`).closest('div.form-row').addClass('woocommerce-validated');
-    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+    jQuery(`select[name="shipping_state"]`).closest('div.form-row').find(".invalid-feedback").css("display", "none");
   }
 });
 
@@ -3383,9 +3386,6 @@ jQuery(document).ready(function () {
   }
   if (jQuery('input[name="shipping_city"]').val()) {
     jQuery(`input[name="shipping_city"]`).closest('div.form-row').addClass('woocommerce-validated');
-  }
-  if (jQuery('select[name="shipping_country"]').val()) {
-    jQuery(`select[name="shipping_country"]`).closest('div.form-row').addClass('woocommerce-validated');
   }
   if (jQuery('input[name="shipping_address_1"]').val()) {
     jQuery(`input[name="shipping_address_1"]`).closest('div.form-row').addClass('woocommerce-validated');
