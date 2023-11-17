@@ -883,8 +883,8 @@ jQuery(document).ready(function () {
             window.location.href = response.redirect;
           } else {
             resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`;
+            jQuery('#trek-login-responses').html(resMessage);
           }
-          jQuery('#trek-login-responses').html(resMessage);
           setTimeout(jQuery.unblockUI, 500);
           return false;
         }
