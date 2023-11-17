@@ -1,3 +1,6 @@
+// Define a custom event "occupant_popup_html_ready" that will indicate whether the html of addOccupantsModal is generated and ready for use.
+const occupantPopUpHtmlReadyEvent = new Event("occupant.popup.html.ready");
+
 function tt_fetch_display_order_emails() {
   if (trek_JS_obj && trek_JS_obj.order_id && trek_JS_obj.is_order_received == true) {
     var action = 'tt_display_order_emails_action';
@@ -2006,6 +2009,11 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
         }
         jQuery.unblockUI();
         jQuery("#currency_switcher").trigger("change")
+      },
+      complete: function() {
+        // Trigger an event that shows that the "#addOccupantsModal" modal html is ready.
+        let occupantsModal = document.querySelector('#addOccupantsModal');
+        occupantsModal && occupantsModal.dispatchEvent(occupantPopUpHtmlReadyEvent);
       }
     });
   });
@@ -2084,6 +2092,9 @@ if (jQuery('.tt_reset_rooms').length > 0) {
           jQuery('#tt-review-order').html(trek_JS_obj.review_order);
           jQuery("#currency_switcher").trigger("change")
         }
+        // Trigger an event that shows that the "#addOccupantsModal" modal html is ready.
+        let occupantsModal = document.querySelector('#addOccupantsModal');
+        occupantsModal && occupantsModal.dispatchEvent(occupantPopUpHtmlReadyEvent);
       }
     });
     //return false;
@@ -3533,23 +3544,21 @@ jQuery('body').on('click', 'button.btn.btn-number.btn-plus-private', function ()
   // Trigger a click event on the target button
   jQuery('button.d-none.plus-button-private.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
 
+  let occupantsModal = document.querySelector('#addOccupantsModal');
 
-  // Listen for the "shown.bs.modal" event on the modal
-  jQuery('#addOccupantsModal').on('shown.bs.modal', function () {
-    // Wait for the modal content to load (you can specify an appropriate time if needed)
-    setTimeout(function () {
-      // Find the first option with a value other than "none" in the select menu
-      let $select = jQuery('select[name="occupants[private][0]"]');
-      let $options = $select.find('option[value!="none"]').first();
-      
-      if ($options.length > 0) {
-        // Select the first non-"none" option
-        $select.val($options.val());
-      }
-      
-      // Click on the "Done" button
-      jQuery('#tt-occupants-btn').click();
-    }, 1000); // Adjust the delay as needed
+  // Listen for the custom "occupant.popup.html.ready" event on the modal. This event Wait for the modal content to load.
+  occupantsModal.addEventListener('occupant.popup.html.ready', function(){
+    // Find the first option with a value other than "none" in the select menu
+    let $select = jQuery('select[name="occupants[private][0]"]');
+    let $options = $select.find('option[value!="none"]').first();
+    
+    if ($options.length > 0) {
+      // Select the first non-"none" option
+      $select.val($options.val());
+    }
+    
+    // Click on the "Done" button
+    jQuery('#tt-occupants-btn').click();
   });
 
   setTimeout(function () {
@@ -3563,22 +3572,21 @@ jQuery('body').on('click', 'button.btn.btn-number.btn-plus-roommate', function (
   // Trigger a click event on the target button
   jQuery('button.d-none.plus-button-roommate.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
 
-  // Listen for the "shown.bs.modal" event on the modal
-  jQuery('#addOccupantsModal').on('shown.bs.modal', function () {
-    // Wait for the modal content to load (you can specify an appropriate time if needed)
-    setTimeout(function () {
-        // Find the first option with a value other than "none" in the select menu
-        let $select = jQuery('select[name="occupants[roommate][0]"]');
-        let $options = $select.find('option[value!="none"]').first();
-        
-        if ($options.length > 0) {
-            // Select the first non-"none" option
-            $select.val($options.val());
-        }
+  let occupantsModal = document.querySelector('#addOccupantsModal');
 
-        // Click on the "Done" button
-        jQuery('#tt-occupants-btn').click();
-    }, 1000); // Adjust the delay as needed
+  // Listen for the custom "occupant.popup.html.ready" event on the modal. This event Wait for the modal content to load.
+  occupantsModal.addEventListener('occupant.popup.html.ready', function(){
+    // Find the first option with a value other than "none" in the select menu
+    let $select = jQuery('select[name="occupants[roommate][0]"]');
+    let $options = $select.find('option[value!="none"]').first();
+    
+    if ($options.length > 0) {
+        // Select the first non-"none" option
+        $select.val($options.val());
+    }
+
+    // Click on the "Done" button
+    jQuery('#tt-occupants-btn').click();
   });
   setTimeout(function () {
     jQuery('#roommate').removeClass('d-none');
@@ -3590,31 +3598,29 @@ jQuery('body').on('click', 'button.btn.btn-number.btn-plus-single', function () 
   // Trigger a click event on the target button
   jQuery('button.d-none.plus-button-single.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
 
+  let occupantsModal = document.querySelector('#addOccupantsModal');
 
-  // Listen for the "shown.bs.modal" event on the modal
-  jQuery('#addOccupantsModal').on('shown.bs.modal', function () {
-    // Wait for the modal content to load (you can specify an appropriate time if needed)
-    setTimeout(function () {
-        // Find the first option with a value other than "none" in the select menu
-        let $select1 = jQuery('select[name="occupants[single][0]"]');
-        let $options1 = $select1.find('option[value!="none"]').first();
+  // Listen for the custom "occupant.popup.html.ready" event on the modal. This event Wait for the modal content to load.
+  occupantsModal.addEventListener('occupant.popup.html.ready', function(){
+    // Find the first option with a value other than "none" in the select menu
+    let $select1 = jQuery('select[name="occupants[single][0]"]');
+    let $options1 = $select1.find('option[value!="none"]').first();
 
-        let $select2 = jQuery('select[name="occupants[single][1]"]');
-        let $options2 = $select2.find('option[value!="none"]').eq(1); // Select the second non-"none" option
+    let $select2 = jQuery('select[name="occupants[single][1]"]');
+    let $options2 = $select2.find('option[value!="none"]').eq(1); // Select the second non-"none" option
         
-        if ($options1.length > 0) {
-            // Select the first non-"none" option
-            $select1.val($options1.val());
-        }
+    if ($options1.length > 0) {
+        // Select the first non-"none" option
+        $select1.val($options1.val());
+    }
 
-        if ($options2.length > 0) {
-          // Select the second non-"none" option
-          $select2.val($options2.val());
-        }
+    if ($options2.length > 0) {
+      // Select the second non-"none" option
+      $select2.val($options2.val());
+    }
 
-        // Click on the "Done" button
-        jQuery('#tt-occupants-btn').click();
-    }, 1000); // Adjust the delay as needed
+    // Click on the "Done" button
+    jQuery('#tt-occupants-btn').click();
   });
 });
 
@@ -3623,29 +3629,28 @@ jQuery('body').on('click', 'button.btn.btn-number.btn-plus-double', function () 
   // Trigger a click event on the target button
   jQuery('button.d-none.plus-button-double.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
 
-  // Listen for the "shown.bs.modal" event on the modal
-  jQuery('#addOccupantsModal').on('shown.bs.modal', function () {
-    // Wait for the modal content to load (you can specify an appropriate time if needed)
-    setTimeout(function () {
-        // Find the first option with a value other than "none" in the select menu
-        let $select1 = jQuery('select[name="occupants[double][0]"]');
-        let $options1 = $select1.find('option[value!="none"]').first();
+  let occupantsModal = document.querySelector('#addOccupantsModal');
 
-        let $select2 = jQuery('select[name="occupants[double][1]"]');
-        let $options2 = $select2.find('option[value!="none"]').eq(1); // Select the second non-"none" option
+  // Listen for the custom "occupant.popup.html.ready" event on the modal. This event Wait for the modal content to load.
+  occupantsModal.addEventListener('occupant.popup.html.ready', function(){
+    // Find the first option with a value other than "none" in the select menu
+    let $select1 = jQuery('select[name="occupants[double][0]"]');
+    let $options1 = $select1.find('option[value!="none"]').first();
+
+    let $select2 = jQuery('select[name="occupants[double][1]"]');
+    let $options2 = $select2.find('option[value!="none"]').eq(1); // Select the second non-"none" option
         
-        if ($options1.length > 0) {
-            // Select the first non-"none" option
-            $select1.val($options1.val());
-        }
+    if ($options1.length > 0) {
+        // Select the first non-"none" option
+        $select1.val($options1.val());
+    }
 
-        if ($options2.length > 0) {
-          // Select the second non-"none" option
-          $select2.val($options2.val());
-        }
+    if ($options2.length > 0) {
+      // Select the second non-"none" option
+      $select2.val($options2.val());
+    }
 
-        // Click on the "Done" button
-        jQuery('#tt-occupants-btn').click();
-    }, 1000); // Adjust the delay as needed
+    // Click on the "Done" button
+    jQuery('#tt-occupants-btn').click();
   });
 });
