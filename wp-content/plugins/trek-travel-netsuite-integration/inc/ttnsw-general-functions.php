@@ -129,7 +129,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
             $start_date = date('Y-m-d', $wc_booking->trip_start_date);
             $end_date = date('Y-m-d', $wc_booking->trip_end_date);
             $guest_index_id = $wc_booking->guest_index_id;
-            $guest_wp_id = $wc_booking->user_id;
+            $guest_wp_id = $_SESSION['current_user_ids'];
             $user_rooms_data = $user_rooms_arr['users_in_rooms'];
             $trip_rooms = $user_rooms_arr['rooms'];
             $user_room_index = tt_get_user_room_index_by_user_key($user_rooms_data, $guest_index_id);

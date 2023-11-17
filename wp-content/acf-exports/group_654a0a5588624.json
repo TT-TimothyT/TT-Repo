@@ -26,9 +26,9 @@
     "location": [
         [
             {
-                "param": "user_form",
+                "param": "user_role",
                 "operator": "==",
-                "value": "edit"
+                "value": "administrator"
             }
         ]
     ],
@@ -41,5 +41,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1699546559
+    "modified": 1700220763
 }
