@@ -878,7 +878,7 @@ jQuery(document).ready(function () {
           if (response.status == true) {
             jQuery('form.woocommerce-form-login')[0].reset();
             resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`;
-            jQuery('#trek-login-responses').html(resMessage);
+            // jQuery('#trek-login-responses').html(resMessage);
             setTimeout(jQuery.unblockUI, 1000);
             window.location.href = response.redirect;
           } else {
