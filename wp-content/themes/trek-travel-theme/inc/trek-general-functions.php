@@ -1080,7 +1080,7 @@ add_action('wp_ajax_nopriv_get_quote_travel_protection_action', 'trek_get_quote_
 function trek_get_quote_travel_protection_action_cb()
 {
     $res = array(
-        'status' => false,
+    'status' => false,
         'message' => '',
         'review_order' => ''
     );
@@ -1160,12 +1160,22 @@ function trek_get_quote_travel_protection_action_cb()
         if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
             $product_id = $cart_item['product_id'];
         }
+        if( isset( $cart_item['product_id'] ) && $cart_item['product_id'] == 73798 ) {
+            $supplement_fees = wc_get_product( 73798 );
+        }
     }
     $product = wc_get_product($product_id);
+
     $individualTripCost = 0;
     $sdate_info = $edate_info = '';
     if( $product ){
         $individualTripCost = $product->get_price();
+
+        if( ! empty( $supplement_fees ) ) {
+            $single_supplement_price = $supplement_fees->get_price();
+            $individualTripCost = $individualTripCost + $single_supplement_price;
+        }
+
         $trip_sdate = $product->get_attribute('pa_start-date');
         $sdate_obj = explode('/', $trip_sdate);
         $sdate_info = array(
@@ -4491,6 +4501,23 @@ function tt_generate_save_insurance_quote_cb()
 
     if( $product ){
         $individualTripCost = $product->get_price();
+        $singleSupplementPrice = isset($tt_posted['singleSupplementPrice']) ? $tt_posted['singleSupplementPrice'] : 0;
+
+        // Remove dollar sign and commas
+        $amount_string = str_replace(array('$', ','), '', $singleSupplementPrice);
+
+        // Convert the string to a float
+        $amount_float = (float) $amount_string;
+
+        // Convert to an integer (removing the decimal part)
+        $amount_int = (int) $amount_float;
+
+        $individualTripCost = $individualTripCost + $amount_int;
+
+        //error_log( 'Single Supplement' . $tt_posted['singleSupplementPrice'] );
+        error_log( 'Single Supplement' . $singleSupplementPrice );
+        error_log( "trip Cost:" . $individualTripCost );
+
         $trip_sdate = $product->get_attribute('pa_start-date');
         $sdate_obj = explode('/', $trip_sdate);
         $sdate_info = array(
