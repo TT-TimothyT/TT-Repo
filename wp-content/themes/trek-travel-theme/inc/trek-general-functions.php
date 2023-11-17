@@ -5204,3 +5204,35 @@ function display_total_tax() {
 
     echo '<p class="mb-0 fw-medium">' . wc_price( $total_tax ) . '</p>';
 }
+
+// Custom login redirect function
+function custom_login_redirect() {
+    $return_url = isset($_GET['return_to']) ? sanitize_text_field($_GET['return_to']) : '';
+    if (!empty($return_url)) {
+        return home_url('/checkout/?step=1');
+    }
+
+    // Check for session variable to redirect and clear it. For now this is using only for redirect after register
+    if( isset( $_SESSION["return_url"] ) && !empty( $_SESSION["return_url"]) ) {
+        // Clear session variable.
+        unset( $_SESSION["return_url"] );
+    }
+}
+add_filter('login_redirect', 'custom_login_redirect', 10, 3);
+
+/**
+ * If user is not logged in, on some submission start session to keep a flag,
+ * that we need to redirect user after login or register to the checkout step.
+ */
+function tt_redirect_after_signin_signup_action_cb()
+{
+    if( !is_user_logged_in() ){
+        // Start Session
+        session_start();
+        // Assign redirect url to session variable
+        $_SESSION["return_url"]='/checkout/?step=1';
+    }
+    exit;
+}
+add_action('wp_ajax_tt_redirect_after_signin_signup_action', 'tt_redirect_after_signin_signup_action_cb');
+add_action('wp_ajax_nopriv_tt_redirect_after_signin_signup_action', 'tt_redirect_after_signin_signup_action_cb');

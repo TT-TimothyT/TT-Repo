@@ -109,13 +109,14 @@ if( $get_child_products ){
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
                                 $cart = WC()->session->get( 'cart', null );
                                 $persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
+                                
                                 if ( !is_null($cart) && $persistent_cart_count > 0 ) {
-                                    $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'">Book now</button>';
+                                    $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                 }else{
                                     if (isset($formUrl) && !empty($formUrl)) {
-                                        $button = '<a href="/'.$formUrl.'?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                        $button = '<a href="/?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                     }else{
-                                        $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</button>';
+                                        $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                     }
                                 }
                                 
@@ -298,7 +299,6 @@ $data = $cartContentsArr[array_key_first($cartContentsArr)]['data'];
                 }
             }
         })
-
     })
 
     function removeCartAnalytics() {
@@ -321,4 +321,18 @@ $data = $cartContentsArr[array_key_first($cartContentsArr)]['data'];
             }
         })
     }
+
+    /**
+     * Run AJAX Request on Submit to check if you are not logged in,
+     * to store flag in session for later redirect to checkout, after login/register
+     */
+    jQuery('form.cart.grouped_form').on('submit', function () {
+        let action = 'tt_redirect_after_signin_signup_action';
+        jQuery.ajax({
+            type: 'POST',
+            url: trek_JS_obj.ajaxURL,
+            data: "action=" + action,
+            dataType: 'json'
+        });
+    })
 </script>
