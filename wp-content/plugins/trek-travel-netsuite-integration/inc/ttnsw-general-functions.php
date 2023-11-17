@@ -19,7 +19,7 @@ add_filter( 'cron_schedules', 'tt_custom_cron_schedule' );
  * @version : 1.0.0
  * @return  : TT CRON fire hook every 1 hour
  **/
-// add_action('tt_wc_ns_sync_hourly_event', 'tt_wc_ns_sync_hourly_event_cb');
+add_action('tt_wc_ns_sync_hourly_event', 'tt_wc_ns_sync_hourly_event_cb');
 function tt_wc_ns_fire_cron_on_wp_init()
 {
     if (!wp_next_scheduled('tt_wc_ns_sync_hourly_event')) {
