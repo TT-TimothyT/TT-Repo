@@ -54,43 +54,43 @@ function tt_admin_menu_page_cb()
     require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
     if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tt_wp_manual_sync_action' && isset($_REQUEST['type'])) {
         if ($_REQUEST['type'] == 'trip' && function_exists('tt_sync_ns_trips')) {
-            if( $_REQUEST['year'] ) {
-                tt_sync_ns_trips($_REQUEST['year']);
+            if( $_REQUEST['time_range'] ) {
+                tt_sync_ns_trips($_REQUEST['time_range']);
             } else {
                 tt_sync_ns_trips();
             }
         }
         if ($_REQUEST['type'] == 'trip-details' && function_exists('tt_sync_ns_trip_details')) {
-            if( $_REQUEST['year'] ) {
-                tt_sync_ns_trip_details( $_REQUEST['year'] );
+            if( $_REQUEST['time_range'] ) {
+                tt_sync_ns_trip_details( $_REQUEST['time_range'] );
             } else {
                 tt_sync_ns_trip_details();
             }
         }
         if ($_REQUEST['type'] == 'hotels' && function_exists('tt_sync_ns_trip_hotels')) {
-            if( $_REQUEST['year'] ) {
-                tt_sync_ns_trip_hotels( $_REQUEST['year'] );
+            if( $_REQUEST['time_range'] ) {
+                tt_sync_ns_trip_hotels( $_REQUEST['time_range'] );
             } else {
                 tt_sync_ns_trip_hotels();
             }
         }
         if ($_REQUEST['type'] == 'bikes' && function_exists('tt_sync_ns_trip_bikes')) {
-            if( $_REQUEST['year'] ) {
-                tt_sync_ns_trip_bikes( $_REQUEST['year'] );
+            if( $_REQUEST['time_range'] ) {
+                tt_sync_ns_trip_bikes( $_REQUEST['time_range'] );
             } else {
                 tt_sync_ns_trip_bikes();
             }
         }
         if ($_REQUEST['type'] == 'addons' && function_exists('tt_sync_ns_trip_addons')) {
-            if( $_REQUEST['year'] ) {
-                tt_sync_ns_trip_addons( $_REQUEST['year'] );
+            if( $_REQUEST['time_range'] ) {
+                tt_sync_ns_trip_addons( $_REQUEST['time_range'] );
             } else {
                 tt_sync_ns_trip_addons();
             }
         }
         if ($_REQUEST['type'] == 'product-sync' && function_exists('tt_sync_wc_products_from_ns')) {
-            if( $_REQUEST['year'] ) {
-                tt_sync_wc_products_from_ns( false, [], $_REQUEST['year'] );
+            if( $_REQUEST['time_range'] ) {
+                tt_sync_wc_products_from_ns( false, [], $_REQUEST['time_range'] );
             } else {
                 tt_sync_wc_products_from_ns();
             }
@@ -158,15 +158,13 @@ function tt_admin_menu_page_cb()
                         <option value="sql-alter">ALTER SQL(Booking table)</option>
                         <option value="ns-wc-booking">NS<>WC Booking Sync</option>
                     </select>
-                    <select name="year" required>
-                        <option value="">Select Year</option>
-                        <?php
-                        $current_year = date('Y');
-                        for ( $i = 0; $i < 3; $i++ ) {
-                            $year = $current_year + $i;
-                            echo "<option value='{$year}'>{$year}</option>";
-                        }
-                        ?>
+                    <select name="time_range" required>
+                        <option value="">Time Range</option>
+                        <option value="-12 hours">Last 12 Hours</option>
+                        <option value="-24 hours">Last 24 Hours</option>
+                        <option value="-1 week">Last Week</option>
+                        <option value="-1 month">Last Month</option>
+                        <option value="-1 year">Last Year</option>
                     </select>
                     <input type="hidden" name="action" value="tt_wp_manual_sync_action">
                     <input type="submit" name="submit" value="Sync" class="button-primary">

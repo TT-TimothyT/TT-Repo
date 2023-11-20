@@ -1,20 +1,20 @@
 <?php
 
 use TTNetSuite\NetSuiteClient;
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
  * @return  : Get Trips last modified After
  **/
 if (!function_exists('tt_get_last_modified_trip_ids')) {
-    function tt_get_last_modified_trip_ids( $year = 2023 ){
+    function tt_get_last_modified_trip_ids( $time_range = DEFAULT_TIME_RANGE ){
         $trips_ids = [];
        
-        $current_year = $year;
+        // $current_year = $time_range;
         $netSuiteClient = new NetSuiteClient();
         $trek_script_args = array(
-            'tripYear' => intval($current_year),
-        //    'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime(' -12 hours'))
+           'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime($time_range))
         );
         $trek_trips = $netSuiteClient->get(TRIPS_SCRIPT_ID, $trek_script_args);
         if ($trek_trips && !empty($trek_trips)) {
@@ -33,17 +33,15 @@ if (!function_exists('tt_get_last_modified_trip_ids')) {
  **/
 
 if (!function_exists('tt_sync_ns_trips')) {
-    function tt_sync_ns_trips( $year = 2023 )
+    function tt_sync_ns_trips( $time_range = DEFAULT_TIME_RANGE )
     {
         global $wpdb;
-        $current_year = $year;
 
         $table_name = $wpdb->prefix . 'netsuite_trips';
         $netSuiteClient = new NetSuiteClient();
         //$trek_script_args = array('tripYear' => intval($current_year)); //modified_at
         $trek_script_args = array(
-            'tripYear' => intval($current_year),
-          //  'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime(' - hours'))
+           'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime($time_range))
         );
         $trek_trips = $netSuiteClient->get(TRIPS_SCRIPT_ID, $trek_script_args);
 
@@ -58,8 +56,8 @@ if (!function_exists('tt_sync_ns_trips')) {
                     'itineraryCode' => $trek_trip->itineraryCode,
                     'lastModifiedDate' => $trek_trip->lastModifiedDate
                 );
-                $check_trip = tt_get_trip_by_idCode($tripId, $tripCode);
-                if ($check_trip == 1) {
+                $check_trip = tt_get_trip_by_idCode($table_name, $tripId, $tripCode);
+                if ($check_trip >= 1) {
                     $where = array('tripId' => $tripId, 'tripCode' => $tripCode);
                     $wpdb->update($table_name, $tripsData, $where);
                 } else {
@@ -83,13 +81,13 @@ if (!function_exists('tt_sync_ns_trips')) {
  * @return  : NS Trip Details sync function
  **/
 if (!function_exists('tt_sync_ns_trip_details')) {
-    function tt_sync_ns_trip_details( $year = 2023 )
+    function tt_sync_ns_trip_details( $time_range = DEFAULT_TIME_RANGE )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_detail';
         $netSuiteClient = new NetSuiteClient();
         //$trek_trips = tt_get_local_trips();
-        $last_modified_trip_ids = tt_get_last_modified_trip_ids( $year );
+        $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
         $trip_Ids = tt_get_local_trip_ids($last_modified_trip_ids);
         if ($trip_Ids && !empty($trip_Ids)) {
             foreach ($trip_Ids as $trip_Ids_arr) {
@@ -140,7 +138,7 @@ if (!function_exists('tt_sync_ns_trip_details')) {
                             'tripSpecificMessage' => $trek_trip_detail->tripSpecificMessage
                         );
                         $check_trip = tt_get_trip_by_idCode($table_name, $trek_trip_detail->tripId, $trek_trip_detail->tripCode);
-                        if ($check_trip == 1) {
+                        if ($check_trip >= 1) {
                             $where = array('tripId' => $trek_trip_detail->tripId, 'tripCode' => $tripCode);
                             $wpdb->update($table_name, $tripsData, $where);
                         } else {
@@ -160,12 +158,13 @@ if (!function_exists('tt_sync_ns_trip_details')) {
  * @return  : NS Trip Hotels sync function
  **/
 if (!function_exists('tt_sync_ns_trip_hotels')) {
-    function tt_sync_ns_trip_hotels( $year = 2023 )
+    function tt_sync_ns_trip_hotels( $time_range = DEFAULT_TIME_RANGE )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_hotels';
-        $last_modified_trip_ids = tt_get_last_modified_trip_ids( $year );
-        $trek_trips = tt_get_local_trips($last_modified_trip_ids, $year );
+        $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
+        $trek_trips = tt_get_local_trips( $last_modified_trip_ids );
+        tt_add_error_log('[Hotels Sync]: '.TRIPS_SCRIPT_ID, 'START Hotels Sync for ' . $time_range, '$last_modified_trip_ids-> ' . count($last_modified_trip_ids));
         if ($trek_trips && !empty($trek_trips)) {
             foreach ($trek_trips as $trek_trip) {
                 $tripId = $trek_trip->tripId;
@@ -181,8 +180,8 @@ if (!function_exists('tt_sync_ns_trip_hotels')) {
                                 'rooms' => json_encode($hotel->rooms),
                             );
                             $check_trip = tt_get_field_by_ID($table_name, 'hotelId', $hotel->hotelId, $tripId);
-                            if ($check_trip == 1) {
-                                $where = array('hotelId' => $hotel->hotelId);
+                            if ($check_trip >= 1) {
+                                $where = array('hotelId' => $hotel->hotelId, 'tripId' => $tripId, 'tripCode' => $tripCode);
                                 $wpdb->update($table_name, $tripsData, $where);
                             } else {
                                 $tripsData['tripId'] = $tripId;
@@ -194,6 +193,7 @@ if (!function_exists('tt_sync_ns_trip_hotels')) {
                 }
             }
         }
+        tt_add_error_log('[Hotels Sync]: '.TRIPS_SCRIPT_ID, 'END Hotels Sync', '$last_modified_trip_ids-> ' . count($last_modified_trip_ids));
     }
 }
 /**
@@ -202,45 +202,51 @@ if (!function_exists('tt_sync_ns_trip_hotels')) {
  * @return  : NS Trip bikes sync function
  **/
 if (!function_exists('tt_sync_ns_trip_bikes')) {
-    function tt_sync_ns_trip_bikes( $year = 2023 )
+    function tt_sync_ns_trip_bikes( $time_range = DEFAULT_TIME_RANGE )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
-        $last_modified_trip_ids = tt_get_last_modified_trip_ids( $year );
-        $trek_trips = tt_get_local_trips($last_modified_trip_ids, $year);
-        if ($trek_trips && !empty($trek_trips)) {
-            foreach ($trek_trips as $trek_trip) {
-                $tripId = $trek_trip->tripId;
-                $tripCode = $trek_trip->tripCode;
-                $trek_trip_details = tt_get_local_trips_detail('bikes', $tripId, $tripCode);
-                if (!empty($trek_trip_details) && isset($trek_trip_details[0]->bikes)) {
-                    $bikes = json_decode($trek_trip_details[0]->bikes);
-                    if ($bikes) {
-                        foreach ($bikes as $bike) {
-                            $tripsData = array(
-                                'bikeId' => $bike->bikeId,
-                                'bikeDescr' => $bike->bikeDescr,
-                                'bikeType' => json_encode($bike->bikeType),
-                                'bikeSize' => json_encode($bike->bikeSize),
-                                'bikeModel' => json_encode($bike->bikeModel),
-                                'total' => $bike->total,
-                                'allocated' => $bike->allocated,
-                                'available' => $bike->available,
-                            );
-                            $check_trip = tt_get_field_by_ID($table_name, 'bikeId', $bike->bikeId, $tripId);
-                            if ($check_trip == 1) {
-                                $where = array('bikeId' => $bike->bikeId);
-                                $wpdb->update($table_name, $tripsData, $where);
-                            } else {
-                                $tripsData['tripId'] = $tripId;
-                                $tripsData['tripCode'] = $tripCode;
-                                $inserted_id = $wpdb->insert($table_name, $tripsData);
+        $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
+        $trek_trips_bulk = tt_get_local_trips( $last_modified_trip_ids, true );
+        tt_add_error_log('[Bikes Sync]: '.TRIPS_SCRIPT_ID, 'START Bikes Sync for ' . $time_range, '$last_modified_trip_ids-> ' . count($last_modified_trip_ids));
+        if( $trek_trips_bulk && !empty( $trek_trips_bulk ) ) {
+            foreach ( $trek_trips_bulk as $trek_trips ) {
+                if ($trek_trips && !empty($trek_trips)) {
+                    foreach ($trek_trips as $trek_trip) {
+                        $tripId = $trek_trip->tripId;
+                        $tripCode = $trek_trip->tripCode;
+                        $trek_trip_details = tt_get_local_trips_detail('bikes', $tripId, $tripCode);
+                        if (!empty($trek_trip_details) && isset($trek_trip_details[0]->bikes)) {
+                            $bikes = json_decode($trek_trip_details[0]->bikes);
+                            if ($bikes) {
+                                foreach ($bikes as $bike) {
+                                    $tripsData = array(
+                                        'bikeId' => $bike->bikeId,
+                                        'bikeDescr' => $bike->bikeDescr,
+                                        'bikeType' => json_encode($bike->bikeType),
+                                        'bikeSize' => json_encode($bike->bikeSize),
+                                        'bikeModel' => json_encode($bike->bikeModel),
+                                        'total' => $bike->total,
+                                        'allocated' => $bike->allocated,
+                                        'available' => $bike->available,
+                                    );
+                                    $check_trip = tt_get_field_by_ID($table_name, 'bikeId', $bike->bikeId, $tripId);
+                                    if ($check_trip >= 1) {
+                                        $where = array('bikeId' => $bike->bikeId, 'tripId' => $tripId, 'tripCode' => $tripCode);
+                                        $wpdb->update($table_name, $tripsData, $where);
+                                    } else {
+                                        $tripsData['tripId'] = $tripId;
+                                        $tripsData['tripCode'] = $tripCode;
+                                        $inserted_id = $wpdb->insert($table_name, $tripsData);
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        tt_add_error_log('[Bikes Sync]: '.TRIPS_SCRIPT_ID, 'END Bikes Sync', '$last_modified_trip_ids-> ' . count($last_modified_trip_ids));
     }
 }
 /**
@@ -249,12 +255,13 @@ if (!function_exists('tt_sync_ns_trip_bikes')) {
  * @return  : NS Trips Addons sync function
  **/
 if (!function_exists('tt_sync_ns_trip_addons')) {
-    function tt_sync_ns_trip_addons( $year = 2023 )
+    function tt_sync_ns_trip_addons( $time_range = DEFAULT_TIME_RANGE )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_addons';
-        $last_modified_trip_ids = tt_get_last_modified_trip_ids( $year );
-        $trek_trips = tt_get_local_trips($last_modified_trip_ids, $year);
+        $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
+        $trek_trips = tt_get_local_trips( $last_modified_trip_ids );
+        tt_add_error_log('[Addons Sync]: '.TRIPS_SCRIPT_ID, 'START Addons Sync for ' . $time_range, '$last_modified_trip_ids->' . count($last_modified_trip_ids));
         if ($trek_trips && !empty($trek_trips)) {
             foreach ($trek_trips as $trek_trip) {
                 $tripId = $trek_trip->tripId;
@@ -273,7 +280,7 @@ if (!function_exists('tt_sync_ns_trip_addons')) {
                                 'available' => $addOn->available,
                             );
                             $check_trip = tt_get_field_by_ID($table_name, 'itemId', $addOn->itemId, $tripId);
-                            if ($check_trip == 1) {
+                            if ($check_trip >= 1) {
                                 $where = array('itemId' =>  $addOn->itemId);
                                 $wpdb->update($table_name, $tripsData, $where);
                             } else {
@@ -286,6 +293,7 @@ if (!function_exists('tt_sync_ns_trip_addons')) {
                 }
             }
         }
+        tt_add_error_log('[Addons Sync]: '.TRIPS_SCRIPT_ID, 'END Addons Sync', '$last_modified_trip_ids->' . count($last_modified_trip_ids));
     }
 }
 /**
@@ -337,7 +345,7 @@ if (!function_exists('tt_get_wc_postId_Tripcode')) {
  * @return  : NS Trips/Hotels/Bike/Rooms sync function
  **/
 if (!function_exists('tt_sync_wc_products_from_ns')) {
-    function tt_sync_wc_products_from_ns($is_all=false, $sync_trip_Ids=array(), $year = 2023)
+    function tt_sync_wc_products_from_ns($is_all=false, $sync_trip_Ids=array(), $time_range = DEFAULT_TIME_RANGE)
     {
         $netSuiteClient = new NetSuiteClient();
         $trip_sync_type_msg = '[Trip Sync]: '.TRIP_DETAIL_SCRIPT_ID;
@@ -348,7 +356,7 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
             $trip_Ids = array_chunk($trip_Ids, 10);
             $trip_sync_type_msg = '[Single Trip Sync]: '.TRIP_DETAIL_SCRIPT_ID;
         } else {
-            $last_modified_trip_ids = tt_get_last_modified_trip_ids( $year );
+            $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
             if ( $is_all == true ){
                 $trip_Ids = tt_get_local_trip_ids();
             } else {

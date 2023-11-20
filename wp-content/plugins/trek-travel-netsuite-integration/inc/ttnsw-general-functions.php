@@ -17,7 +17,7 @@ add_filter( 'cron_schedules', 'tt_custom_cron_schedule' );
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
- * @return  : TT CRON fire hook every 1 hour
+ * @return  : TT CRON fire hook every 4 hour
  **/
 add_action('tt_wc_ns_sync_hourly_event', 'tt_wc_ns_sync_hourly_event_cb');
 function tt_wc_ns_fire_cron_on_wp_init()
@@ -30,12 +30,12 @@ function tt_wc_ns_fire_cron_on_wp_init()
 add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
 function tt_wc_ns_sync_hourly_event_cb()
 {
-    tt_sync_wc_products_from_ns();
     tt_sync_ns_trips();
     tt_sync_ns_trip_details();
     tt_sync_ns_trip_hotels();
     tt_sync_ns_trip_bikes();
     tt_sync_ns_trip_addons();
+    tt_sync_wc_products_from_ns();
 }
 add_action('tt_trigger_cron_ns_booking', 'tt_trigger_cron_ns_booking_cb', 10, 2);
 function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=false)
