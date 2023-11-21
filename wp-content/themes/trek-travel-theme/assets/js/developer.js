@@ -1347,6 +1347,10 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
         if (parseInt(step) != 4) {
           jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').addClass("d-none")
         }
+        // Show tearms and conditiones checkbox and pay now button on step 4.
+        if( parseInt( step ) === 4 ) {
+          jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').removeClass("d-none");
+        }
       }
     });
   });
