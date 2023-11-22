@@ -5196,8 +5196,32 @@ function display_total_tax() {
     echo '<p class="mb-0 fw-medium">' . wc_price( $total_tax ) . '</p>';
 }
 
-// Custom login redirect function
-function custom_login_redirect() {
+
+/**
+ * Custom Redirect user after successful login.
+ *
+ * @param string $redirect_to URL to redirect to.
+ * @param string $request URL the user is coming from.
+ * @param object $user Logged user's data.
+ * @return string
+ */
+function custom_login_redirect( $redirect_to, $request, $user ) {
+    // If is admin panel login page leave default behavior of the function.
+    if( $GLOBALS['pagenow'] === 'wp-login.php' ){
+        //is there a user to check?
+	    if ( isset( $user->roles ) && is_array( $user->roles ) ) {
+	    	//check for admins
+	    	if ( in_array( 'administrator', $user->roles ) ) {
+	    		// redirect them to the default place
+	    		return $redirect_to;
+	    	} else {
+	    		return home_url();
+	    	}
+	    } else {
+	    	return $redirect_to;
+	    }
+    }
+
     $return_url = isset($_GET['return_to']) ? sanitize_text_field($_GET['return_to']) : '';
     if (!empty($return_url)) {
         return home_url('/checkout/?step=1');
@@ -5208,6 +5232,8 @@ function custom_login_redirect() {
         // Clear session variable.
         unset( $_SESSION["return_url"] );
     }
+
+    return $redirect_to;
 }
 add_filter('login_redirect', 'custom_login_redirect', 10, 3);
 
