@@ -1,5 +1,9 @@
 *** WooCommerce CyberSource Gateway Changelog ***
 
+2023.11.16 - version 2.7.2
+ * Misc - Add admin notice to help merchants reverting to the checkout shortcode if the checkout block is used
+ * Localization - Improve the plugin localization of components that are part of the underlying framework dependency
+
 2023.10.06 - version 2.7.1
  * Fix - Ensure consumer authentication validation is invoked for 3DS transactions
  * Fix - Pass 3DSecure enrollment field values to authorization request to ensure liability shift

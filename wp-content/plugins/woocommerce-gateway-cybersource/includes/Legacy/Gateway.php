@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Legacy;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\API\Helper;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
 
 /**
  * Gateway class

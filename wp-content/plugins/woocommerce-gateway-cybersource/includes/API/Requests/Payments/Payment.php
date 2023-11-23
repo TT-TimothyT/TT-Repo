@@ -24,7 +24,7 @@
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
 
 use SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -337,12 +337,12 @@ abstract class Payment extends Payments {
 
 	/**
 	 * Gets the 3DSecure commerce indicator, if any
-	 * 
+	 *
 	 * @since 2.7.1
 	 * @return string|null
 	 */
 	private function get_threed_secure_commerce_indicator(): ?string {
-		
+
 		// ecommerce indicator was passed from the enrollment check (frictionless)
 		if ( ! empty( $this->get_order()->threed_secure->ecommerce_indicator ) ) {
 			return $this->get_order()->threed_secure->ecommerce_indicator;

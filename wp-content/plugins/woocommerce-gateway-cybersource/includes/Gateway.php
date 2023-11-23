@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 use Firebase\JWT\JWT;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Base_Payment_Form;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

@@ -2,9 +2,9 @@
 Contributors: morehawes
 Tags: Map maker, Maps, Location, GPX, KML, GeoJSON, OpenStreetMap, Markers, Map markers
 Requires at least: 4.6
-Tested up to: 6.2
+Tested up to: 6.4
 Requires PHP: 5.2
-Stable tag: 0.9.29.2
+Stable tag: 0.9.29.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,8 +94,17 @@ A big thank you to the following projects and their contributors. Without their 
 7. Add Maps to your content using the Waymark Shortcode. You can choose which Meta is displayed.
 8. Organise Maps with Collections and display multiple Maps at once using the Shortcode. Collections can be nested and Maps can be associated with multiple Collections.
 9. Waymark was designed to be very flexible, with lots of Settings to choose from.
+10. Documentation and Help is available from the <a href="https://www.waymark.dev/">Waymark</a> website.
 
 == Changelog ==
+
+= 0.9.29.4 =
+
+* Minor bug fix.
+
+= 0.9.29.3 =
+
+* Added a Collections > "Shortcode Method" Setting. This allows you to choose whether Map data is loaded in the Background (via AJAX), or Embedded in the page when embedding a Collection via the Shortcode. Embedding may be a bad idea for LARGE COLLECTIONS, but *may* resolve some (JavaScript) issues where Collections are not displaying correctly.
 
 = 0.9.29.2 =
 

@@ -31,7 +31,7 @@ use CyberSource\Configuration;
 use SkyVerge\WooCommerce\Cybersource\API\Helper;
 use SkyVerge\WooCommerce\Cybersource\API\Requests;
 use SkyVerge\WooCommerce\Cybersource\API\Responses;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

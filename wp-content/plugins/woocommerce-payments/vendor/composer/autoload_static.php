@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitf93d75411ac254bc7e8b67beb00ff064
+class ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d
 {
     public static $files = array (
         '3773ef3f09c37da5478d578e32b03a4b' => __DIR__ . '/..' . '/automattic/jetpack-assets/actions.php',
@@ -273,6 +273,7 @@ class ComposerStaticInitf93d75411ac254bc7e8b67beb00ff064
         'WCPay\\Internal\\DependencyManagement\\ServiceProvider\\PaymentsServiceProvider' => __DIR__ . '/../..' . '/src/Internal/DependencyManagement/ServiceProvider/PaymentsServiceProvider.php',
         'WCPay\\Internal\\DependencyManagement\\ServiceProvider\\ProxiesServiceProvider' => __DIR__ . '/../..' . '/src/Internal/DependencyManagement/ServiceProvider/ProxiesServiceProvider.php',
         'WCPay\\Internal\\Logger' => __DIR__ . '/../..' . '/src/Internal/Logger.php',
+        'WCPay\\Internal\\Payment\\Change' => __DIR__ . '/../..' . '/src/Internal/Payment/Change.php',
         'WCPay\\Internal\\Payment\\Exception\\StateTransitionException' => __DIR__ . '/../..' . '/src/Internal/Payment/Exception/StateTransitionException.php',
         'WCPay\\Internal\\Payment\\Factor' => __DIR__ . '/../..' . '/src/Internal/Payment/Factor.php',
         'WCPay\\Internal\\Payment\\PaymentContext' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentContext.php',
@@ -291,6 +292,7 @@ class ComposerStaticInitf93d75411ac254bc7e8b67beb00ff064
         'WCPay\\Internal\\Payment\\State\\ProcessedState' => __DIR__ . '/../..' . '/src/Internal/Payment/State/ProcessedState.php',
         'WCPay\\Internal\\Payment\\State\\StateFactory' => __DIR__ . '/../..' . '/src/Internal/Payment/State/StateFactory.php',
         'WCPay\\Internal\\Payment\\State\\SystemErrorState' => __DIR__ . '/../..' . '/src/Internal/Payment/State/SystemErrorState.php',
+        'WCPay\\Internal\\Payment\\Transition' => __DIR__ . '/../..' . '/src/Internal/Payment/Transition.php',
         'WCPay\\Internal\\Proxy\\HooksProxy' => __DIR__ . '/../..' . '/src/Internal/Proxy/HooksProxy.php',
         'WCPay\\Internal\\Proxy\\LegacyProxy' => __DIR__ . '/../..' . '/src/Internal/Proxy/LegacyProxy.php',
         'WCPay\\Internal\\Proxy\\ProxyException' => __DIR__ . '/../..' . '/src/Internal/Proxy/ProxyException.php',
@@ -299,6 +301,7 @@ class ComposerStaticInitf93d75411ac254bc7e8b67beb00ff064
         'WCPay\\Internal\\Service\\ExampleServiceWithDependencies' => __DIR__ . '/../..' . '/src/Internal/Service/ExampleServiceWithDependencies.php',
         'WCPay\\Internal\\Service\\Level3Service' => __DIR__ . '/../..' . '/src/Internal/Service/Level3Service.php',
         'WCPay\\Internal\\Service\\OrderService' => __DIR__ . '/../..' . '/src/Internal/Service/OrderService.php',
+        'WCPay\\Internal\\Service\\PaymentContextLoggerService' => __DIR__ . '/../..' . '/src/Internal/Service/PaymentContextLoggerService.php',
         'WCPay\\Internal\\Service\\PaymentProcessingService' => __DIR__ . '/../..' . '/src/Internal/Service/PaymentProcessingService.php',
         'WCPay\\Internal\\Service\\PaymentRequestService' => __DIR__ . '/../..' . '/src/Internal/Service/PaymentRequestService.php',
         'WCPay\\Internal\\Service\\SessionService' => __DIR__ . '/../..' . '/src/Internal/Service/SessionService.php',
@@ -380,9 +383,9 @@ class ComposerStaticInitf93d75411ac254bc7e8b67beb00ff064
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitf93d75411ac254bc7e8b67beb00ff064::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitf93d75411ac254bc7e8b67beb00ff064::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitf93d75411ac254bc7e8b67beb00ff064::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d::$classMap;
 
         }, null, ClassLoader::class);
     }

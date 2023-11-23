@@ -26,8 +26,8 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\API\Helper;
 use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_4\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_12\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
 
 defined( 'ABSPATH' ) or exit;
 

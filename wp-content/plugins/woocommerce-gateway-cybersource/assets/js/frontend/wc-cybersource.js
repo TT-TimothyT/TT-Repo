@@ -6,7 +6,7 @@ jQuery( document ).ready( ( $ ) => {
 	'use strict';
 
 	// the base non-flex form handler for eChecks or credit cards with Flex disabled
-	window.WC_Cybersource_Payment_Form_Handler = window.SV_WC_Payment_Form_Handler_v5_11_4;
+	window.WC_Cybersource_Payment_Form_Handler = window.SV_WC_Payment_Form_Handler_v5_11_12;
 
 	// dispatch loaded event
 	$( document.body ).trigger( 'wc_cybersource_payment_form_handler_loaded' );
@@ -18,7 +18,7 @@ jQuery( document ).ready( ( $ ) => {
 	 *
 	 * @since 2.0.0-dev-2
 	 */
-	window.WC_Cybersource_Flex_Payment_Form_Handler = class WC_Cybersource_Flex_Payment_Form_Handler extends SV_WC_Payment_Form_Handler_v5_11_4 {
+	window.WC_Cybersource_Flex_Payment_Form_Handler = class WC_Cybersource_Flex_Payment_Form_Handler extends SV_WC_Payment_Form_Handler_v5_11_12 {
 
 		/**
 		 * Instantiates Payment Form Handler.

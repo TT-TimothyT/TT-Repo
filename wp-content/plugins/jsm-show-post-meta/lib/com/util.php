@@ -1300,9 +1300,12 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 */
 		public static function get_screen_id( $screen = false ) {
 
-			if ( false === $screen && function_exists( 'get_current_screen' ) ) {
+			if ( false === $screen ) {
+			
+				if ( function_exists( 'get_current_screen' ) ) {
 
-				$screen = get_current_screen();
+					$screen = get_current_screen();
+				}
 			}
 
 			if ( isset( $screen->id ) ) {
@@ -1625,7 +1628,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		/*
 		 * Since 2021/09/17.
 		 *
-		 * Used by WpssoOptions->sanitize() and WpssoOptionsUpgrade->options().
+		 * Used by WpssoOptions->sanitize() and WpssoUpgrade->options().
 		 */
 		public static function unset_numeric_keys( &$arr ) {
 
@@ -1942,6 +1945,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				$mt_pre . ':brand'                       => null,
 				$mt_pre . ':category'                    => null,	// The product category according to the Google product taxonomy.
 				$mt_pre . ':retailer_category'           => null,	// Non-standard / internal meta tag.
+				$mt_pre . ':awards'                      => array(),	// Non-standard / internal meta tag.
 				$mt_pre . ':condition'                   => null,
 				$mt_pre . ':energy_efficiency:value'     => null,	// Non-standard / internal meta tag.
 				$mt_pre . ':energy_efficiency:min_value' => null,	// Non-standard / internal meta tag.
@@ -2559,6 +2563,10 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 						$locale = $db_locale;
 					}
 				}
+
+			} elseif ( 'current' === $mixed && is_admin() ) {
+
+				$locale = get_user_locale();
 
 			} elseif ( 'current' === $mixed || is_array( $mixed ) ) {
 
@@ -3291,7 +3299,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 		/*
 		 * See WpssoUser->get_public_ids().
-		 * See WpssoOptionsUpgrade->options().
+		 * See WpssoUpgrade->options().
 		 */
 		public static function get_roles_users_ids( array $roles, $blog_id = null ) {
 
@@ -3466,34 +3474,6 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return $users_ids;
 		}
 
-		public static function user_exists( $user_id ) {
-
-			if ( is_numeric( $user_id ) && $user_id > 0 ) {
-
-				static $local_cache = array();
-
-				$user_id = (int) $user_id;	// Cast as integer for the cache index.
-
-				if ( isset( $local_cache[ $user_id ] ) ) {
-
-					return $local_cache[ $user_id ];
-				}
-
-				global $wpdb;
-
-				$select_sql = 'SELECT COUNT(ID) FROM ' . $wpdb->users . ' WHERE ID = %d';
-
-				return $local_cache[ $user_id ] = $wpdb->get_var( $wpdb->prepare( $select_sql, $user_id ) ) ? true : false;
-			}
-
-			return false;
-		}
-
-		public static function get_author_object( $user_id = 0, $output = 'object' ) {
-
-			return self::get_user_object( $user_id, $output );
-		}
-
 		public static function get_user_object( $user_id = 0, $output = 'object' ) {
 
 			$user_obj = false;	// Return false by default.
@@ -3541,6 +3521,11 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			}
 
 			return false;
+		}
+
+		public static function get_author_object( $user_id = 0, $output = 'object' ) {
+
+			return self::get_user_object( $user_id, $output );
 		}
 
 		/*
@@ -4794,18 +4779,13 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return $is_non_assoc;
 		}
 
-		public static function is_post_exists( $post_id ) {
-
-			  return is_string( get_post_status( $post_id ) );
-		}
-
 		public static function is_post_page( $use_post = false ) {
 
 			$is_post_page = false;
 
 			if ( is_numeric( $use_post ) && $use_post > 0 ) {
 
-				$is_post_page = self::is_post_exists( $use_post );
+				$is_post_page = SucomUtilWP::post_exists( $use_post );
 
 			} elseif ( true === $use_post && ! empty( $GLOBALS[ 'post' ]->ID ) ) {
 
@@ -5055,7 +5035,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 			if ( is_numeric( $user_id ) && $user_id > 0 ) {
 
-				$is_user_page = self::user_exists( $user_id );
+				$is_user_page = SucomUtilWP::user_exists( $user_id );
 
 			} elseif ( is_author() ) {
 
@@ -5069,8 +5049,8 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 					switch ( $screen_base ) {
 
-						case 'profile':	// User profile page.
-						case 'user-edit':	// User editing page.
+						case 'profile':								// User profile page.
+						case 'user-edit':							// User editing page.
 						case ( 0 === strpos( $screen_base, 'profile_page_' ) ? true : false ):	// Your profile page.
 						case ( 0 === strpos( $screen_base, 'users_page_' ) ? true : false ):	// Users settings page.
 

@@ -6,7 +6,7 @@
  * Description: Accept credit cards in WooCommerce with the CyberSource (SOAP) payment gateway
  * Author: SkyVerge
  * Author URI: http://www.woocommerce.com/
- * Version: 2.7.1
+ * Version: 2.7.2
  * Text Domain: woocommerce-gateway-cybersource
  * Domain Path: /i18n/languages/
  *
@@ -23,7 +23,7 @@
  *
  * Woo: 18690:3083c0ed00f4a1a2acc5f9044442a7a8
  * WC requires at least: 3.9.4
- * WC tested up to: 8.1.1
+ * WC tested up to: 8.2.2
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -46,7 +46,7 @@ class WC_Cybersource_Loader {
 	const MINIMUM_WC_VERSION = '3.9.4';
 
 	/** SkyVerge plugin framework version used by this plugin */
-	const FRAMEWORK_VERSION = '5.11.4';
+	const FRAMEWORK_VERSION = '5.11.12';
 
 	/** the plugin name, for displaying notices */
 	const PLUGIN_NAME = 'WooCommerce Cybersource';

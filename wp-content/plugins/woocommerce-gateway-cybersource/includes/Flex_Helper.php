@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_4 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
 
 class Flex_Helper {
 
