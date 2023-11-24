@@ -15028,6 +15028,9 @@ nav .nav-tabs .nav-link.active {
   margin-bottom: 1rem;
   order: 2;
 }
+.checkout-step-two-hotel__two-bed .checkout-step-two-hotel__edit-occupants-btn {
+  display: none;
+}
 .checkout-step-two-hotel__one-bed, .checkout-step-two-hotel__two-bed, .checkout-step-two-hotel__open-to-roommate, .checkout-step-two-hotel__private {
   display: flex;
   justify-content: space-between;

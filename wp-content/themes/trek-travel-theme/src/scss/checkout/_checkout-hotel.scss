@@ -42,6 +42,12 @@
         order: 2;
     }
 
+    &__two-bed {
+        .checkout-step-two-hotel__edit-occupants-btn {
+            display: none;
+        }
+    }
+
     &__one-bed, &__two-bed, &__open-to-roommate, &__private{
         display: flex;
         justify-content: space-between;
