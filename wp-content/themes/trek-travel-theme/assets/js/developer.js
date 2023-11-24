@@ -829,6 +829,27 @@ jQuery(document).ready(function () {
         window.history.replaceState(null, null, response.redirectURL);
         //window.location.href = response.redirectURL
         handleProgressBar(targetStep)
+
+        jQuery('body').on('click', '.open-roommate-popup', function() {
+          jQuery('.open-to-roommate-popup-container').css('display', 'flex');
+          jQuery('header').css('z-index','0');
+          jQuery('body').css('overflow','hidden');
+          jQuery('html').addClass('no-scroll');
+        })
+        
+        jQuery('.open-to-roommate-popup-container .close-btn').on('click', function() {
+          jQuery('.open-to-roommate-popup-container').fadeOut();
+          jQuery('header').css('z-index','1020');
+          jQuery('html').removeClass('no-scroll');
+        })
+        
+        jQuery('.open-to-roommate-popup-container').on('click', function(e) {
+          if(jQuery(e.target).hasClass('open-to-roommate-popup-container')) {
+            jQuery('.open-to-roommate-popup-container').fadeOut();
+            jQuery('header').css('z-index','1020');
+            jQuery('html').removeClass('no-scroll');
+          }
+        })
       }
     });
   });
@@ -3658,3 +3679,24 @@ jQuery('body').on('click', 'button.btn.btn-number.btn-plus-double', function () 
     jQuery('#tt-occupants-btn').click();
   });
 });
+
+jQuery('body').on('click', '.open-roommate-popup', function() {
+  jQuery('.open-to-roommate-popup-container').css('display', 'flex');
+  jQuery('header').css('z-index','0');
+  jQuery('body').css('overflow','hidden');
+  jQuery('html').addClass('no-scroll');
+})
+
+jQuery('.open-to-roommate-popup-container .close-btn').on('click', function() {
+  jQuery('.open-to-roommate-popup-container').fadeOut();
+  jQuery('header').css('z-index','1020');
+  jQuery('html').removeClass('no-scroll');
+})
+
+jQuery('.open-to-roommate-popup-container').on('click', function(e) {
+  if(jQuery(e.target).hasClass('open-to-roommate-popup-container')) {
+    jQuery('.open-to-roommate-popup-container').fadeOut();
+    jQuery('header').css('z-index','1020');
+    jQuery('html').removeClass('no-scroll');
+  }
+})

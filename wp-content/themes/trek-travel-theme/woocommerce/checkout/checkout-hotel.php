@@ -154,7 +154,7 @@ if ($trip_sku) {
             <?php endif; ?>
             <div class="checkout-step-two-hotel__assigned-occupants-list" id="tt-roommate-occupants"><?php echo $tt_rooms_output['roommate']; ?></div>
             <p class="fw-medium fs-lg lh-lg price mb-0">+<span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $singleSupplementPriceCurr; ?></span></p>
-            <p class="fw-normal fs-xs lh-sm mb-0 refund-info">This will be refunded if paired with a Roomate <i class="bi bi-info-circle"></i></p>
+            <p class="fw-normal fs-xs lh-sm mb-0 refund-info">This will be refunded if paired with a Roomate <i class="bi bi-info-circle open-roommate-popup"></i></p>
         </div>
         <hr>
         <div class="checkout-step-two-hotel__private">
