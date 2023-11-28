@@ -63,8 +63,10 @@ if( $get_child_products ){
                             $startMonth = $dateParts[1];
                             if ((int)$today < (int)$startDay) {
                                 if ((int)$startMonth < (int)$currentMonth) {
-                                    $month_nav_desktop_btn_output = $month_nav_mobile_btn_output = $month_content_output =  '';
-                                    continue;
+                                    if( (int)$year <= (int)$current_year ) {
+                                        $month_nav_desktop_btn_output = $month_nav_mobile_btn_output = $month_content_output =  '';
+                                        continue;
+                                    }
                                 }
                             }
                         }
