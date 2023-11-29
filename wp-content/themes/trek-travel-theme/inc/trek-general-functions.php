@@ -1107,6 +1107,7 @@ function trek_get_quote_travel_protection_action_cb()
             $cart_item['trek_user_checkout_data']['sku'] = $product->get_sku();
             $cart_posted_data = $cart_item['trek_user_checkout_data'];
             $insuredReq  = isset($_REQUEST['trek_guest_insurance']) ? $_REQUEST['trek_guest_insurance'] : [];
+            error_log("insuredReq " . json_encode($insuredReq));
             $insuredReqGuests = isset($insuredReq['guests']) ? $insuredReq['guests'] : [];
             $insuredPosted  = isset($cart_posted_data['trek_guest_insurance']) ? $cart_posted_data['trek_guest_insurance'] : [];
             $insuredPostedGuests = isset($insuredPosted['guests']) ? $insuredPosted['guests'] : [];
@@ -1242,7 +1243,7 @@ function trek_get_quote_travel_protection_action_cb()
                     "individualTripCost" => $individualTripCost
                 );
                 $trek_insurance_args["insuredPerson"] = $insuredPerson_single;
-                $archinsuranceResPP = tt_set_calculate_insurance_fees_api($trek_insurance_args);
+                $archinsuranceResPP = $insuredReq['primary'];
                 $arcBasePremiumPP = isset($archinsuranceResPP['basePremium']) ? $archinsuranceResPP['basePremium'] : 0;
                 $guest_insurance['primary']['basePremium'] = $arcBasePremiumPP;
                 if ($guest_insurance_val['is_travel_protection'] == 1) {
@@ -1272,7 +1273,7 @@ function trek_get_quote_travel_protection_action_cb()
                         "individualTripCost" => $individualTripCost
                     );
                     $trek_insurance_args["insuredPerson"] = $insuredPerson_single;
-                    $archinsuranceResPG = tt_set_calculate_insurance_fees_api($trek_insurance_args);
+                    $archinsuranceResPG = $insuredReq['primary'];
                     $arcBasePremiumPG = isset($archinsuranceResPG['basePremium']) ? $archinsuranceResPG['basePremium'] : 0;
                     $guest_insurance['guests'][$guest_key]['basePremium'] = $arcBasePremiumPG;
                     if ($guest_insurance_Data['is_travel_protection'] == 1) {
