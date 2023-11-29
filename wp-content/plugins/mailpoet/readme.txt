@@ -3,7 +3,7 @@ Contributors: mailpoet, woocommerce, automattic
 Tags: email, email marketing, post notification, woocommerce emails, email automation, newsletter, newsletter builder, newsletter subscribers
 Requires at least: 6.2
 Tested up to: 6.3
-Stable tag: 4.37.0
+Stable tag: 4.38.0
 Requires PHP: 7.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -11,14 +11,6 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Send beautiful newsletters from WordPress. Collect subscribers with signup forms, automate your emails for WooCommerce, blog post notifications & more
 
 == Description ==
-
-= Get up to 40% off all MailPoet annual plans and upgrades =
-
-Our Black Friday sale is live. Save up to 40% when you switch to or upgrade an annual plan — no coupon needed. Offer ends at 2 PM UTC, 28 November.
-
-[Shop annual plans](https://account.mailpoet.com/?billing=yearly&ref=sale-bfcm-2023-wporg&utm_source=wordpress.org&utm_medium=description&utm_campaign=sale_bfcm_2023)
-
-= What is MailPoet? =
 
 Use MailPoet to create, send, manage, and grow your email marketing campaigns – all without leaving your WordPress dashboard.
 
@@ -226,6 +218,12 @@ Check our [Knowledge Base](https://kb.mailpoet.com) or contact us through our [s
 6. WooCommerce emails
 
 == Changelog ==
+
+= 4.38.0 - 2023-11-27 =
+* Improved: warn users on PHP 7.4 about outdated PHP version;
+* Improved: landing page layout;
+* Improved: the Upgrade page is more concise;
+* Fixed: deprecation warnings.
 
 = 4.37.0 - 2023-11-20 =
 * Updated: upcoming Black Friday sale dates;

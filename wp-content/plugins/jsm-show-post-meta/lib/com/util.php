@@ -1301,7 +1301,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		public static function get_screen_id( $screen = false ) {
 
 			if ( false === $screen ) {
-			
+
 				if ( function_exists( 'get_current_screen' ) ) {
 
 					$screen = get_current_screen();
@@ -2723,12 +2723,13 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return preg_replace( '/#.*/', '', $url ) . ( empty( $fragment ) ? '' : '#' . self::sanitize_css_id( $fragment ) );
 		}
 
-		public static function get_mod_anchor( array $mod ) {
+		public static function get_mod_css_id( array $mod ) {
 
-			$mod_anchor = self::get_mod_salt( $mod );	// Does not include the page number or locale.
-			$mod_anchor = self::sanitize_css_id( $mod_anchor );
+			$css_id = self::get_mod_salt( $mod );	// Does not include the page number or locale.
 
-			return $mod_anchor;
+			$css_id = self::sanitize_css_id( $css_id );
+
+			return $css_id;
 		}
 
 		/*
