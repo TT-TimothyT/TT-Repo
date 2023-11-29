@@ -1273,13 +1273,12 @@ function trek_get_quote_travel_protection_action_cb()
                         "individualTripCost" => $individualTripCost
                     );
                     $trek_insurance_args["insuredPerson"] = $insuredPerson_single;
-                    $archinsuranceResPG = $insuredReq['primary'];
-                    $arcBasePremiumPG = isset($archinsuranceResPG['basePremium']) ? $archinsuranceResPG['basePremium'] : 0;
+                    $archinsuranceResPG = $insuredReq['guests'];
+                    $arcBasePremiumPG = isset($archinsuranceResPG[$guest_key]['basePremium']) ? $archinsuranceResPG[$guest_key]['basePremium'] : 0;
                     $guest_insurance['guests'][$guest_key]['basePremium'] = $arcBasePremiumPG;
                     if ($guest_insurance_Data['is_travel_protection'] == 1) {
                         $tt_total_insurance_amount += $arcBasePremiumPG ;
                     }
-                    
                 }
             }
         }
