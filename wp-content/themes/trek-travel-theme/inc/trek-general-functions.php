@@ -1107,7 +1107,6 @@ function trek_get_quote_travel_protection_action_cb()
             $cart_item['trek_user_checkout_data']['sku'] = $product->get_sku();
             $cart_posted_data = $cart_item['trek_user_checkout_data'];
             $insuredReq  = isset($_REQUEST['trek_guest_insurance']) ? $_REQUEST['trek_guest_insurance'] : [];
-            error_log("insuredReq " . json_encode($insuredReq));
             $insuredReqGuests = isset($insuredReq['guests']) ? $insuredReq['guests'] : [];
             $insuredPosted  = isset($cart_posted_data['trek_guest_insurance']) ? $cart_posted_data['trek_guest_insurance'] : [];
             $insuredPostedGuests = isset($insuredPosted['guests']) ? $insuredPosted['guests'] : [];
@@ -4492,22 +4491,6 @@ function tt_generate_save_insurance_quote_cb()
 
     if( $product ){
         $individualTripCost = $product->get_price();
-        $singleSupplementPrice = isset($tt_posted['singleSupplementPrice']) ? $tt_posted['singleSupplementPrice'] : 0;
-
-        // Remove dollar sign and commas
-        $amount_string = str_replace(array('$', ','), '', $singleSupplementPrice);
-
-        // Convert the string to a float
-        $amount_float = (float) $amount_string;
-
-        // Convert to an integer (removing the decimal part)
-        $amount_int = (int) $amount_float;
-
-        $individualTripCost = $individualTripCost + $amount_int;
-
-        //error_log( 'Single Supplement' . $tt_posted['singleSupplementPrice'] );
-        error_log( 'Single Supplement' . $singleSupplementPrice );
-        error_log( "trip Cost:" . $individualTripCost );
 
         $trip_sdate = $product->get_attribute('pa_start-date');
         $sdate_obj = explode('/', $trip_sdate);
@@ -4558,11 +4541,27 @@ function tt_generate_save_insurance_quote_cb()
     $tt_total_insurance_amount = 0;
     $is_travel_protection_count = 0;
     if (isset($guest_insurance) && !empty($guest_insurance)) {
+        $singleSupplementPrice = isset($tt_posted['singleSupplementPrice']) ? $tt_posted['singleSupplementPrice'] : 0;
+
+        // Remove dollar sign and commas
+        $amount_string = str_replace(array('$', ','), '', $singleSupplementPrice);
+
+        // Convert the string to a float
+        $amount_float = (float) $amount_string;
+
+        // Convert to an integer (removing the decimal part)
+        $amount_int = (int) $amount_float;
         foreach ($guest_insurance as $guest_insurance_k => $guest_insurance_val) {
+            $individualTripCost = $product->get_price();
+            $occupants = $tt_posted['occupants'];
             $trek_insurance_args["insuredPerson"] = array();
             if ($guest_insurance_k == 'primary') {
                 if ($guest_insurance_val['is_travel_protection'] == 1) {
                     $is_travel_protection_count++;
+                }
+                if ( ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( 0, $occupants['private'] ) )
+                || ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( 0, $occupants['roommate'] ) ) ) {
+                    $individualTripCost = $individualTripCost + $amount_int;
                 }
                 //if ($guest_insurance_val['is_travel_protection'] == 1) {
                 $insuredPerson[] = array(
@@ -4591,10 +4590,14 @@ function tt_generate_save_insurance_quote_cb()
                 }
             } else {
                 foreach ($guest_insurance_val as $guest_key => $guest_insurance_Data) {
+                    $individualTripCost = $product->get_price();
                     $guestInfo = $tt_posted['guests'][$guest_key];
-                    //if ($guest_insurance_Data['is_travel_protection'] == 1) {
                     if ($guest_insurance_Data['is_travel_protection'] == 1) {
                         $is_travel_protection_count++;
+                    }
+                    if ( ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( $guest_key, $occupants['private'] ) )
+                    || ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( $guest_key, $occupants['roommate'] ) ) ) {
+                        $individualTripCost = $individualTripCost + $amount_int;
                     }
                     $insuredPerson[] = array(
                         "address" => [
