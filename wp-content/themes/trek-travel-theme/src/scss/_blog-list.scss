@@ -52,6 +52,9 @@
         .list-item{
             padding: 0 20px;
             margin: 2rem 0;
+            a {
+                text-decoration: none;
+            }
             .image{
                 img{
                     width: 100%;

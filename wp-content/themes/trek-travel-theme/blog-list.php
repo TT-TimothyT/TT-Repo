@@ -67,14 +67,14 @@ if( $blogs->have_posts() ){
 		if( has_post_thumbnail(get_the_ID()) ){
 			$featured_Image = get_the_post_thumbnail_url(get_the_ID(), 'full');
 		}
-		$other_blog_html .= '<div class="list-item">
+		$other_blog_html .= '<div class="list-item"><a href="'.get_permalink(get_the_ID()).'">
 			<div class="image">
 			<img src="'.$featured_Image.'">				
 			</div>
 			<p class="fw-normal fs-sm lh-sm">'.get_the_date('F Y').'</p>
 			<p class="fw-bold fs-xl lh-xl">'.get_the_title().'</p>
 			<p class="fw-normal fs-md lh-md">'.substr(get_the_excerpt(), 0, 150).'...</p>
-					
+			</a>
 		</div>';
 	}
 	wp_reset_postdata();
