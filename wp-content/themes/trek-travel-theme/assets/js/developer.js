@@ -1448,8 +1448,11 @@ if (jQuery('#load-more').length > 0) {
 //   });
 // }
 if (jQuery('#tt-occupants-btn').length > 0) {
-  var isValidated = false;
   jQuery('body').on('click', '#tt-occupants-btn', function () {
+    // Take the number of all Select/Options fields in the Modal.
+    const allSelectOptionsLength = jQuery('select[name^="occupants["]').length;
+    // Define the variable to store number of all valid Select/Options.
+    let validSelectOptionsLength = 0;
     jQuery('select[name^="occupants["]').each(function () {
       var isRequired = jQuery(this).attr('required');
       var CurrentName = jQuery(this).attr('name');
@@ -1458,14 +1461,17 @@ if (jQuery('#tt-occupants-btn').length > 0) {
         if (CurrentVal == '' || CurrentVal == 'none') {
           jQuery(`select[name="${CurrentName}"]`).closest('div.form-floating').addClass('woocommerce-invalid');
           jQuery(`select[name="${CurrentName}"]`).closest('div.form-floating').removeClass('woocommerce-validated');
-          isValidated = true;
         } else {
           jQuery(`select[name="${CurrentName}"]`).closest('div.form-floating').removeClass('woocommerce-invalid');
           jQuery(`select[name="${CurrentName}"]`).closest('div.form-floating').addClass('woocommerce-validated');
+          // If Select/Option field is valid, increase the flag variable.
+          validSelectOptionsLength++
         }
       }
     });
-    if (isValidated == true) {
+
+    // Check if all Select/Options fields are valid to continue, otherwise return.
+    if ( validSelectOptionsLength !== allSelectOptionsLength ) {
       return false;
     }
     var actionName = 'tt_save_occupants_ajax_action';
@@ -1990,9 +1996,11 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
           if (single > 0) {
             if (jQuery("#tt-single-occupants:empty").length > 0) {
               jQuery('div[data-room="s-assign"]').show();
+              jQuery('div[data-room="s"]').hide();
             }
             else{
               jQuery('div[data-room="s"]').show();
+              jQuery('div[data-room="s-assign"]').hide();
             }
           } else {
             jQuery('div[data-room="s"]').hide();
@@ -2001,9 +2009,11 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
           if (private > 0) {
             if (jQuery("#tt-private-occupants:empty").length > 0) {
               jQuery('div[data-room="p-assign"]').show();
+              jQuery('div[data-room="p"]').hide();
             }
             else{
               jQuery('div[data-room="p"]').show();
+              jQuery('div[data-room="p-assign"]').hide();
             }
           } else {
             jQuery('div[data-room="p"]').hide();
@@ -2012,9 +2022,11 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
           if (roommate > 0) {
             if (jQuery("#tt-roommate-occupants:empty").length > 0) {
               jQuery('div[data-room="r-assign"]').show();
+              jQuery('div[data-room="r"]').hide();
             }
             else{
               jQuery('div[data-room="r"]').show();
+              jQuery('div[data-room="r-assign"]').hide();
             }
           } else {
             jQuery('div[data-room="r"]').hide();
@@ -2023,9 +2035,11 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
           if (double > 0) {
             if (jQuery("#tt-double1Bed-occupants:empty").length > 0) {
               jQuery('div[data-room="d-assign"]').show();
+              jQuery('div[data-room="d"]').hide();
             }
             else{
               jQuery('div[data-room="d"]').show();
+              jQuery('div[data-room="d-assign"]').hide();
             }
           } else {
             jQuery('div[data-room="d"]').hide();
@@ -2088,24 +2102,56 @@ if (jQuery('.tt_reset_rooms').length > 0) {
         }
         if (response.status == true) {
           if (single > 0) {
-            jQuery('div[data-room="s"]').show();
+            if (jQuery("#tt-single-occupants:empty").length > 0) {
+              jQuery('div[data-room="s-assign"]').show();
+              jQuery('div[data-room="s"]').hide();
+            }
+            else{
+              jQuery('div[data-room="s"]').show();
+              jQuery('div[data-room="s-assign"]').hide();
+            }
           } else {
             jQuery('div[data-room="s"]').hide();
+            jQuery('div[data-room="s-assign"]').hide();
           }
           if (private > 0) {
-            jQuery('div[data-room="p"]').show();
+            if (jQuery("#tt-private-occupants:empty").length > 0) {
+              jQuery('div[data-room="p-assign"]').show();
+              jQuery('div[data-room="p"]').hide();
+            }
+            else{
+              jQuery('div[data-room="p"]').show();
+              jQuery('div[data-room="p-assign"]').hide();
+            }
           } else {
             jQuery('div[data-room="p"]').hide();
+            jQuery('div[data-room="p-assign"]').hide();
           }
           if (roommate > 0) {
-            jQuery('div[data-room="r"]').show();
+            if (jQuery("#tt-roommate-occupants:empty").length > 0) {
+              jQuery('div[data-room="r-assign"]').show();
+              jQuery('div[data-room="r"]').hide();
+            }
+            else{
+              jQuery('div[data-room="r"]').show();
+              jQuery('div[data-room="r-assign"]').hide();
+            }
           } else {
             jQuery('div[data-room="r"]').hide();
+            jQuery('div[data-room="r-assign"]').hide();
           }
           if (double > 0) {
-            jQuery('div[data-room="d"]').show();
+            if (jQuery("#tt-double1Bed-occupants:empty").length > 0) {
+              jQuery('div[data-room="d-assign"]').show();
+              jQuery('div[data-room="d"]').hide();
+            }
+            else{
+              jQuery('div[data-room="d"]').show();
+              jQuery('div[data-room="d-assign"]').hide();
+            }
           } else {
             jQuery('div[data-room="d"]').hide();
+            jQuery('div[data-room="d-assign"]').hide();
           }
         }
         jQuery.unblockUI();

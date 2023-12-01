@@ -3115,7 +3115,7 @@ if (!function_exists('tt_occupant_selection_popup')) {
                 }
                 $double_selected = isset($request['occupants']['double'][$i]) ? $request['occupants']['double'][$i] : "none";
                 $occupant_popup_html .= '<div class="form-floating">
-                        <select name="occupants[double][' . $i . ']" class="form-select" id="floatingSelectdouble" aria-label="Floating label select example">
+                        <select required="required" name="occupants[double][' . $i . ']" class="form-select" id="floatingSelectdouble" aria-label="Floating label select example">
                             ' . trek_occupants($double_selected) . '
                         </select>
                         <label for="floatingSelectdouble">Select Occupant</label>
@@ -3134,7 +3134,7 @@ if (!function_exists('tt_occupant_selection_popup')) {
                 $occupant_popup_html .= '<p class="fw-medium fs-xl lh-lg checkout-step-two-hotel__room-type">Private <span class="bed-icon"></span></p>
                     <p class="fw-medium fs-md lh-md">Who will be in this room?</p>';
                 $occupant_popup_html .= '<div class="form-floating">
-                        <select name="occupants[private][' . $i . ']" class="form-select" id="floatingSelectprivate" aria-label="Floating label select example">
+                        <select required="required" name="occupants[private][' . $i . ']" class="form-select" id="floatingSelectprivate" aria-label="Floating label select example">
                             ' . trek_occupants($private_selected) . '
                         </select>
                         <label for="floatingSelectprivate">Select Occupant</label>
@@ -3150,7 +3150,7 @@ if (!function_exists('tt_occupant_selection_popup')) {
                 $occupant_popup_html .= '<p class="fw-medium fs-xl lh-lg checkout-step-two-hotel__room-type">Open to Roommate <span class="bed-icon"></span><span class="bed-icon ms-1"></span></p>
                     <p class="fw-medium fs-md lh-md">Who will be in this room?</p>';
                 $occupant_popup_html .= '<div class="form-floating">
-                        <select name="occupants[roommate][' . $i . ']" class="form-select" id="floatingSelectroommate" aria-label="Floating label select example">
+                        <select required="required" name="occupants[roommate][' . $i . ']" class="form-select" id="floatingSelectroommate" aria-label="Floating label select example">
                             ' . trek_occupants($roommate_selected) . '
                         </select>
                         <label for="floatingSelectroommate">Select Occupant</label>
@@ -3418,7 +3418,9 @@ function trek_tt_update_occupant_popup_html_ajax_action_cb()
     WC()->cart->set_session();
     WC()->cart->calculate_totals();
     WC()->cart->maybe_set_cart_cookies();
-    $occupant_popup_html = tt_occupant_selection_popup($_REQUEST);
+    $trek_user_checkout_data =  get_trek_user_checkout_data();
+    $trek_user_checkout_posted = $trek_user_checkout_data['posted'];
+    $occupant_popup_html = tt_occupant_selection_popup($trek_user_checkout_posted);
     $checkout_hotel = TREK_PATH . '/woocommerce/checkout/checkout-hotel.php';
     $hotelHtml = '';
     if (is_readable($checkout_hotel)) {
