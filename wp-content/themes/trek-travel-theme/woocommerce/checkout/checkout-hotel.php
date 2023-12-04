@@ -72,7 +72,7 @@ if ($trip_sku) {
                     <button class="btn btn-number<?php echo esc_attr( $single_button_plus_class ); ?>" <?php echo ($guest_left == 1) ? 'disabled="disabled"' : ''; ?> type="button" data-type="plus" data-field="single"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/room_counter_plus.svg" /></button>
                 </div>
             </div>
-            <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Double Occupancy <i class="bi bi-info-circle pdp-double-occupancy"></i></p>
+            <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Double Occupancy <i class="bi bi-info-circle pdp-double-occupancy checkout-double-occupancy"></i></p>
             <?php if ( 2 === $trip_guests ) : ?>
                 <div class="checkout-step-two-hotel__add-occupants" data-room="s-assign" <?php echo $s_occupant_hide_show_style; ?>>
                     <button type="button" class="d-none plus-button-single btn btn-md rounded-1 checkout-step-two-hotel__add-occupants-btn" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/assign_occupants.svg" />Assign Occupants</button>
@@ -103,7 +103,7 @@ if ($trip_sku) {
                     <button class="btn btn-number<?php echo esc_attr( $double_button_plus_class ); ?>" <?php echo ($guest_left  == 1 ? 'disabled="disabled"' : ''); ?> type="button" data-type="plus" data-field="double"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/room_counter_plus.svg" /></button>
                 </div>
             </div>
-            <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Double Occupancy <i class="bi bi-info-circle pdp-double-occupancy"></i></p>
+            <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Double Occupancy <i class="bi bi-info-circle pdp-double-occupancy checkout-double-occupancy"></i></p>
             <?php if ( 2 === $trip_guests ) : ?>
                 <div class="checkout-step-two-hotel__add-occupants" data-room="d-assign" <?php echo $d_occupant_hide_show_style; ?>>
                     <button type="button" class="d-none plus-button-double btn btn-md rounded-1 checkout-step-two-hotel__add-occupants-btn" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/assign_occupants.svg" />Assign Occupants</button>
@@ -134,7 +134,7 @@ if ($trip_sku) {
                     <button class="btn btn-number<?php echo esc_attr( $roommate_button_plus_class ); ?>" type="button" data-type="plus" data-field="roommate"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/room_counter_plus.svg" /></button>
                 </div>
             </div>
-            <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Double Occupancy <i class="bi bi-info-circle pdp-double-occupancy"></i></p>
+            <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Double Occupancy <i class="bi bi-info-circle pdp-double-occupancy checkout-double-occupancy"></i></p>
             <?php if ( 1 === $trip_guests ) : ?>
                 <div class="checkout-step-two-hotel__add-occupants" data-room="r-assign" <?php echo $r_occupant_hide_show_style; ?>>
                     <button type="button" class="d-none plus-button-roommate btn btn-md rounded-1 checkout-step-two-hotel__add-occupants-btn" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/assign_occupants.svg" />Assign Occupants</button>
@@ -167,7 +167,7 @@ if ($trip_sku) {
                     <button class="btn btn-number<?php echo esc_attr( $private_button_plus_class ); ?>" type="button" data-type="plus" data-field="private"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/room_counter_plus.svg" /></button>
                 </div>
             </div>
-            <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Private <i class="bi bi-info-circle pdp-private"></i></p>
+            <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Private <i class="bi bi-info-circle checkout-private-popup"></i></p>
             <?php if ( 1 === $trip_guests ) : ?>
                 <?php $guests_per_trip = $number_of_guests; ?>
                 <div class="checkout-step-two-hotel__add-occupants" data-room="p-assign" <?php echo $p_occupant_hide_show_style; ?>>

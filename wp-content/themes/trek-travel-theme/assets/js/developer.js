@@ -850,6 +850,34 @@ jQuery(document).ready(function () {
             jQuery('html').removeClass('no-scroll');
           }
         })
+
+        jQuery('body').on('click', '.checkout-private-popup', function() {
+          jQuery('.private-popup-container').css('display', 'flex');
+          jQuery('header').css('z-index','0');
+          jQuery('body').css('overflow','hidden');
+          jQuery('html').addClass('no-scroll');
+        })
+        
+        jQuery('.private-popup-container .close-btn').on('click', function() {
+          jQuery('.private-popup-container').fadeOut();
+          jQuery('header').css('z-index','1020');
+          jQuery('html').removeClass('no-scroll');
+        })
+        
+        jQuery('.private-popup-container').on('click', function(e) {
+          if(jQuery(e.target).hasClass('private-popup-container')) {
+            jQuery('.private-popup-container').fadeOut();
+            jQuery('header').css('z-index','1020');
+            jQuery('html').removeClass('no-scroll');
+          }
+        })
+
+        jQuery('body').on('click', '.checkout-double-occupancy', function() {
+          jQuery('.private-popup-container').css('display', 'flex');
+          jQuery('header').css('z-index','0');
+          jQuery('body').css('overflow','hidden');
+          jQuery('html').addClass('no-scroll');
+        })
       }
     });
   });
@@ -3745,4 +3773,32 @@ jQuery('.open-to-roommate-popup-container').on('click', function(e) {
     jQuery('header').css('z-index','1020');
     jQuery('html').removeClass('no-scroll');
   }
+})
+
+jQuery('body').on('click', '.checkout-private-popup', function() {
+  jQuery('.private-popup-container').css('display', 'flex');
+  jQuery('header').css('z-index','0');
+  jQuery('body').css('overflow','hidden');
+  jQuery('html').addClass('no-scroll');
+})
+
+jQuery('.private-popup-container .close-btn').on('click', function() {
+  jQuery('.private-popup-container').fadeOut();
+  jQuery('header').css('z-index','1020');
+  jQuery('html').removeClass('no-scroll');
+})
+
+jQuery('.private-popup-container').on('click', function(e) {
+  if(jQuery(e.target).hasClass('private-popup-container')) {
+    jQuery('.private-popup-container').fadeOut();
+    jQuery('header').css('z-index','1020');
+    jQuery('html').removeClass('no-scroll');
+  }
+})
+
+jQuery('body').on('click', '.checkout-double-occupancy', function() {
+  jQuery('.private-popup-container').css('display', 'flex');
+  jQuery('header').css('z-index','0');
+  jQuery('body').css('overflow','hidden');
+  jQuery('html').addClass('no-scroll');
 })

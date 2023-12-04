@@ -615,10 +615,10 @@
 .no-scroll {
   overflow: hidden !important;
 }
-.open-roommate-popup {
+.open-roommate-popup, .checkout-private-popup, .checkout-double-occupancy {
   cursor: pointer;
 }
-.open-to-roommate-popup-container {
+.open-to-roommate-popup-container, .private-popup-container {
   top: 0;
   display: flex;
   width: 100%;
@@ -629,7 +629,7 @@
   background-color: #00000038;
   display: none;
 
-  .open-to-roommate-popup {
+  .open-to-roommate-popup, .private-popup {
     position: absolute;
     top: 50%;
     margin-top: 12px;

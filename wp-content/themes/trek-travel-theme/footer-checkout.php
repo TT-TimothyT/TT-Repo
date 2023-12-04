@@ -23,22 +23,9 @@
 		</div><!-- /copyright -->
 	</footer><!-- /#footer -->
 
-	 <?php 
-		$roommate_popup_title = get_field('popup_title', 'option'); 
-		$roommate_popup_info = get_field('popup_info', 'option'); 
-		?>
+	<?php wc_get_template_part( 'checkout/roommate', 'popup' ); ?>
 
-	<div class="open-to-roommate-popup-container">
-		<div class="open-to-roommate-popup">
-			<?php if ( ! empty( $roommate_popup_title ) ) : ?>
-				<h3><?php echo esc_html( $roommate_popup_title ); ?></h3>
-				<?php endif; ?>
-				<?php if ( ! empty( $roommate_popup_info ) ) : ?>
-				<div><?php echo $roommate_popup_info ; ?></div>
-				<?php endif; ?>
-				<span class="btn close-btn">OK</span>
-		</div>
-	</div>
+	<?php wc_get_template_part( 'checkout/private', 'popup' ); ?>
 
 	</div><!-- /#wrapper - open in header.php -->
 	<?php
