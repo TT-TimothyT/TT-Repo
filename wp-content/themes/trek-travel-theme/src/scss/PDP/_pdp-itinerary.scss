@@ -308,5 +308,50 @@
                 page-break-after: auto;
            }
         }
+
+        .accordion-item__collapsearrival {
+            flex-direction: row !important;
+        }
+
+        .pdp-itinerary-day__accordion-clamp_main {
+            margin-bottom: 5mm !important;
+        }
+
+        .accordion-item-ad__main {
+            padding: 0mm !important;
+        }
+
+        .waymark-shortcode {
+            page-break-after: always;
+        }
+
+        .pdp-itinerary-day__accordion .pdp-itinerary-day__accordion-right img {
+            display: none !important;
+        }
+
+        .pdp-itinerary-day__accordion .pdp-itinerary-day__accordion-right {
+            width: 50% !important;
+        }
+
+        .pdp-itinerary-heading {
+            margin: 2mm 0mm !important;
+        }
+
+        .pdp-itinerary-day__accordion {
+            margin-bottom: 2mm !important;
+        }
+
+        .pdp-itinerary-day__accordion-hotels {
+            margin-bottom: 5mm !important;
+        }
+
+        .pdp-itinerary-day__accordion {
+            padding-right: 0mm !important;
+            margin-bottom: 5mm !important;
+        }
+
+        nav {
+            margin-bottom: 0mm !important;
+        }
     }
 }
