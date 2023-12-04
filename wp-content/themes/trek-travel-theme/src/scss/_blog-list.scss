@@ -53,7 +53,12 @@
             padding: 0 20px;
             margin: 2rem 0;
             a {
+                transition: all ease 0.3s;
                 text-decoration: none;
+
+                &:hover {
+                    color: #28AAE1;
+                }
             }
             .image{
                 img{
