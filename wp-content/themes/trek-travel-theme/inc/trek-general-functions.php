@@ -439,7 +439,9 @@ function save_checkout_steps_action_cb()
                     if ($trek_bike_gear_k == 'guests' && $trek_bike_gear) {
                         foreach ($trek_bike_gear as $inner_k => $trek_bike_gear_inner_guest) {
                             $inner_guest_arr = $guest_req[$inner_k];
-                            $guests_bikes_data[] = array_merge($inner_guest_arr, $trek_bike_gear_inner_guest);
+                            if(is_array($inner_guest_arr)){
+                                $guests_bikes_data[] = array_merge($inner_guest_arr, $trek_bike_gear_inner_guest);
+                            }
                         }
                     }
                 }
@@ -447,7 +449,7 @@ function save_checkout_steps_action_cb()
             }
             $cart_item['trek_user_formatted_checkout_data'][1] = $bikes_cart_item_data;
             WC()->cart->cart_contents[$cart_item_id] = $cart_item;
-            if ($step == 2) {
+            if ($step == 2 || $step == 1) {
                 WC()->cart->cart_contents[$cart_item_id]['quantity'] = isset($_REQUEST['no_of_guests']) ? $_REQUEST['no_of_guests'] : 1;
             }
         }
@@ -2661,7 +2663,9 @@ function trek_tt_save_occupants_ajax_action_cb()
                     if ($trek_bike_gear_k == 'guests' && $trek_bike_gear) {
                         foreach ($trek_bike_gear as $inner_k => $trek_bike_gear_inner_guest) {
                             $inner_guest_arr = $guest_req[$inner_k];
-                            $guests_bikes_data[] = array_merge($inner_guest_arr, $trek_bike_gear_inner_guest);
+                            if(is_array($inner_guest_arr)){
+                                $guests_bikes_data[] = array_merge($inner_guest_arr, $trek_bike_gear_inner_guest);
+                            }
                         }
                     }
                 }

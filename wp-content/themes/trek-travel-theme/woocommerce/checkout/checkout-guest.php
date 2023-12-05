@@ -195,7 +195,7 @@ $userInfo = wp_get_current_user();
                         <div class="row align-items-center">                                            
                             <div class="col text-end">                                             
                                 <a href="" class="fw-medium fs-md lh-md me-4 text-decoration-none" data-bs-dismiss="modal">Cancel</a>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Proceed</button>
+                                <button type="button" class="btn btn-primary reset-room-selections" data-bs-dismiss="modal">Proceed</button>
                             </div>
                         </div>
                     </div>

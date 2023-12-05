@@ -404,7 +404,7 @@ jQuery(document).ready(function () {
     if (parseInt(counter) > tripLimit) {
       counter = tripLimit
     }
-    var glen = jQuery('.guests').length;
+    var glen = jQuery('#qytguest .guests').length;
     if (counter == 1) {
       jQuery('#minus').addClass('qtydisable');
       jQuery('.guest-infoo , .guest-subinfo , #qytguest').addClass('d-none');
@@ -416,10 +416,10 @@ jQuery(document).ready(function () {
       }
     } else if (counter > 1) {
       jQuery('#minus').removeClass('qtydisable');
-      var guest = counter - jQuery('.guests').length;
+      var guest = counter - jQuery('#qytguest .guests').length;
       jQuery('.guest-infoo , .guest-subinfo , #qytguest').removeClass('d-none');
       for (var i = 1; i < guest; i++) {
-        var count = 1 + jQuery('.guests').length;
+        var count = 1 + jQuery('#qytguest .guests').length;
         addfields(count);
       }
     }
@@ -431,11 +431,11 @@ jQuery(document).ready(function () {
     if (counter > 1) {
       jQuery('#minus').removeClass('qtydisable');
     }
-    var guest = counter - jQuery('.guests').length;
+    var guest = counter - jQuery('#qytguest .guests').length;
     jQuery('.guest-infoo , .guest-subinfo , #qytguest').removeClass('d-none');
     tripCapacityValidation(false);
     for (var i = 1; i < guest; i++) {
-      var count = i + jQuery('.guests').length;
+      var count = i + jQuery('#qytguest .guests').length;
       addfields(count);
     }
   });
@@ -2198,6 +2198,12 @@ if (jQuery('.tt_reset_rooms').length > 0) {
     });
     //return false;
   });
+  if( jQuery( '.modal-guest-change-warning' ).length > 0 ){
+    // Reset Rooms selections, when change number of guests on step one from checkout.
+    jQuery( '.modal-guest-change-warning' ).on( 'hidden.bs.modal', function () {
+      jQuery('.tt_reset_rooms').click();
+    })
+  }
 }
 jQuery('body').on('change', '.tt_bike_size_change', function () {
   var guest_index = jQuery(this).attr('data-guest-index');
