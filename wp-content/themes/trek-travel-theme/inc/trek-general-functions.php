@@ -1846,6 +1846,27 @@ function tt_items_select_options($item_name = "", $optionId="")
         if ($options) {
             $opts .= '<option value="" data-value="' . $optionId . '">Select ' . $listName . '</option>';
 
+            // Reorder options order if item name is "syncPedals".
+            if ('syncPedals' === $item_name) {
+                // Find the "I don't know" option
+                $donKnowOption = null;
+                foreach ($options as $option) {
+                    if ($option['optionId'] == 9) {
+                        $donKnowOption = $option;
+                        break;
+                    }
+                }
+
+                // Remove the "I don't know" option from its current position
+                if ($donKnowOption) {
+                    $index = array_search($donKnowOption, $options);
+                    unset($options[$index]);
+
+                    // Insert the "I don't know" option in the first position
+                    array_unshift($options, $donKnowOption);
+                }
+            }
+
             // Sort options ASC by value in optionValue key if item name is "syncHeights" - only for Rider Height is available this.
             if( 'syncHeights' === $item_name ){
                 // Regex to match ft and inches.
