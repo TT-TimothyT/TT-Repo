@@ -10,34 +10,6 @@
 			this.registerClearCacheFromNotice();
 			this.registerClearCloudflare();
 			this.registerSafeModeActions();
-			this.registerDelayCriticalModal();
-		},
-
-		/**
-		 * Trigger the delay JS modal for non member.
-		 *
-		 * @since 3.5.0
-		 */
-		registerDelayCriticalModal() {
-			// Open non pro member modal for delay JS.
-			const nonLoggedInToggle = document.getElementById( 'non_logged_in_delay_js' );
-			if ( nonLoggedInToggle ) {
-				nonLoggedInToggle.onclick = function() {
-					WPHB_Admin.minification.hbTriggerUpsellModal( nonLoggedInToggle.dataset.url, nonLoggedInToggle.dataset.location, 'delay-js' );
-
-					return false;
-				};
-			}
-
-			// Open non pro member modal for critical CSS.
-			const nonLoggedInCriticalToggle = document.getElementById( 'non_logged_in_critical_css' );
-			if ( nonLoggedInCriticalToggle ) {
-				nonLoggedInCriticalToggle.onclick = function() {
-					WPHB_Admin.minification.hbTriggerUpsellModal( nonLoggedInCriticalToggle.dataset.url, nonLoggedInCriticalToggle.dataset.location, 'critical-css' );
-
-					return false;
-				};
-			}
 		},
 
 		/**

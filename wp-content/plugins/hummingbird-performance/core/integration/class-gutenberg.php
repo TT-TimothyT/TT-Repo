@@ -129,6 +129,7 @@ class Gutenberg {
 				'isMember'                    => Utils::is_member(),
 				'displayProLabelButton'       => ! Utils::is_member() && Utils::get_module( 'minify' )->is_active(),
 				'eoPageUrl'                   => Utils::get_admin_menu_url( 'minification' ) . '&view=tools&triggercriticalupsellmodal=1',
+				'gutenbergUTM'                => Utils::get_link( 'plugin', 'hummingbird_criticalcss_gutenberg' ),
 				'button'                      => sprintf(
 					/* translators: %s - Cache button label */
 					esc_html__( 'Clear %s post cache', 'wphb' ),

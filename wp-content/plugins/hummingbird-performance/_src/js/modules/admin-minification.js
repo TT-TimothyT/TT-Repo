@@ -32,9 +32,6 @@ import MinifyScanner from '../scanners/MinifyScanner';
 			if ('undefined' !== typeof wphb.minification.criticalStatusForQueue.status && ( 'pending' === wphb.minification.criticalStatusForQueue.status || 'processing' === wphb.minification.criticalStatusForQueue.status ) ) {
 				criticalAjaxInterval = setInterval( this.criticalUpdateStatusNotice, ajaxExecutionInterval );
 			}
-			if ( wphb.minification.triggerCriticalUpsellModal ) {
-				self.hbTriggerUpsellModal( wphb.minification.gutenbergUpgradeCTAUrl, 'eo_settings', 'critical-css' );
-			}
 
 			// Init files scanner.
 			this.scanner = new MinifyScanner(
@@ -89,16 +86,16 @@ import MinifyScanner from '../scanners/MinifyScanner';
 			const criticalCssType = $( 'select[name=critical_css_type]' );
 			criticalCssType.on( 'change', function( e ) {
 				$( '.load_cs_options' ).addClass( 'sui-hidden' );
-				$( '.load_'+e.target.value ).removeClass( 'sui-hidden' );				
+				$( '.load_' + e.target.value ).removeClass( 'sui-hidden' );
 			} );
 
 			$( '#manual_css_switch_now' ).on( 'click', function() {
 				if ( ! wphbReact.isMember ) {
-					self.hbTriggerUpsellModal( this.dataset.url, 'legacy_switch', 'critical-css' );
+					self.hbTrackEoMPEvent( this );
 					return;
 				}
 
-				window.WPHB_Admin.minification.criticalCSSSwitchMode('critical_css');				
+				window.WPHB_Admin.minification.criticalCSSSwitchMode( 'critical_css' );
 			} );
 
 			$( 'input[type=checkbox][name=debug_log]' ).on(
@@ -386,62 +383,12 @@ import MinifyScanner from '../scanners/MinifyScanner';
 		},
 
 		/**
-		 * Trigger modal for non member for delay JS and critical CSS.
-		 *
-		 * @param {string} url
-		 * @param {string} location
-		 * @param {string} modalname
-		 */
-		 hbTriggerUpsellModal( url, location, modalname ) {
-			const getTryProTag = document.getElementById( modalname + '-non-pro-member-try-pro' );
-
-			if ( getTryProTag ) {
-				getTryProTag.setAttribute( "href", url );
-				getTryProTag.setAttribute( "data-location", location );
-			}
-
-			const getConnectUpsell = document.getElementById( modalname + '-non-pro-member-connect' );
-			if ( getConnectUpsell ) {
-				getConnectUpsell.setAttribute( "data-location", location );
-			}
-
-			const getDismissButton = document.getElementById( modalname + '-non-pro-member-dismiss-button' );
-			if ( getDismissButton ) {
-				getDismissButton.setAttribute( "data-location", location );
-			}
-			
-			window.SUI.openModal(
-				modalname + '-non-pro-member-modal',
-				'wpbody-content'
-			);
-		},
-
-		/**
-		 * Trigger modal for non member for delay JS.
+		 * Track MP event for delay js and critical css.
 		 *
 		 * @param {object} element
 		 */
-		 hbTrackDelayMPEvent( element ) {
-			window.SUI.closeModal();
-
-			window.wphbMixPanel.trackDelayJSUpsell( {
-				'Modal Action': element.dataset.action,
-				'Location': element.dataset.location,
-			} );
-		},
-
-		/**
-		 * Trigger modal for non member for Critical CSS.
-		 *
-		 * @param {object} element
-		 */
-		 hbTrackCriticalMPEvent( element ) {
-			window.SUI.closeModal();
-
-			window.wphbMixPanel.trackCriticalCSSUpsell( {
-				'Modal Action': element.dataset.action,
-				'Location': element.dataset.location,
-			} );
+		 hbTrackEoMPEvent( element ) {
+			window.wphbMixPanel.trackEoUpsell( element.dataset.eventname, element.dataset.location );
 		},
 
 		/**

@@ -18,6 +18,8 @@
  * @var bool   $critical_css_upsell      Upsell url for Critical.
  */
 
+ use Hummingbird\Core\Utils;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -86,10 +88,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<span class="sui-toggle-slider" aria-hidden="true"></span>
 						</label>
 					<?php else : ?>
-						<label for="non_logged_in_delay_js" class="sui-toggle">
-							<input type="checkbox" data-location="dash_widget" data-url="<?php echo esc_url( $delayupsell ); ?>" name="non_logged_in_delay_js" id="non_logged_in_delay_js">
-							<span class="sui-toggle-slider" aria-hidden="true"></span>
-						</label>
+						<?php Utils::unlock_now_link( 'dash_widget', 'hummingbird_delay_js_dash_widget', 'delayjs' ); ?>
 					<?php endif; ?>
 				</span>
 			</li>
@@ -107,10 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<span class="sui-toggle-slider" aria-hidden="true"></span>
 						</label>
 					<?php else : ?>
-						<label for="non_logged_in_critical_css" class="sui-toggle">
-							<input type="checkbox" data-location="dash_widget" data-url="<?php echo esc_url( $critical_css_upsell ); ?>" name="non_logged_in_critical_css" id="non_logged_in_critical_css">
-							<span class="sui-toggle-slider" aria-hidden="true"></span>
-						</label>
+						<?php Utils::unlock_now_link( 'dash_widget', 'hummingbird_criticalcss_dash_widget', 'critical_css' ); ?>
 					<?php endif; ?>
 				</span>
 			</li>

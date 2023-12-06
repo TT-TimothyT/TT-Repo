@@ -233,7 +233,6 @@ class Utils {
 				array(
 					'minification' => array(
 						'criticalStatusForQueue'     => self::get_module( 'critical_css' )->critical_css_status_for_queue(),
-						'triggerCriticalUpsellModal' => isset( $_GET['triggercriticalupsellmodal'] ) && 1 === absint( $_GET['triggercriticalupsellmodal'] ) && ! self::is_member(),
 						'gutenbergUpgradeCTAUrl'     => self::get_link( 'plugin', 'hummingbird_criticalcss_gutenberg' ),
 						'is'                         => array(
 							'scanning' => $is_scanning,
@@ -1343,5 +1342,49 @@ class Utils {
 		$current_user = wp_get_current_user();
 
 		return ! empty( $current_user->first_name ) ? $current_user->first_name : $current_user->display_name;
+	}
+
+	/**
+	 * Display unlock pro upsell link.
+	 *
+	 * @param string $location   Location of the unlock pro upsell.
+	 * @param string $utm        URM for Upsell.
+	 * @param string $event_name Event name for MP.
+	 * @param string $display    Whether to echo or return the link. Default true.
+	 */
+	public static function unlock_now_link( $location, $utm, $event_name, $display = true ) {
+		$html = sprintf(
+			'<a target="_blank" data-location="%1$s" href="%2$s" data-eventname="%3$s" id="%4$s" class="wphb-upsell-link wphb-upsell-eo" onclick="WPHB_Admin.minification.hbTrackEoMPEvent( this )">
+				%5$s
+				<span class="sui-icon-open-new-window" aria-hidden="true"></span>
+			</a>',
+			esc_attr( $location ),
+			esc_url( self::get_link( 'plugin', $utm ) ),
+			$event_name,
+			'legacy_switch' === $location ? 'manual_css_switch_now' : '',
+			esc_html__( 'Unlock now', 'wphb' )
+		);
+
+		if ( $display ) {
+			echo $html;
+		} else {
+			return $html;
+		}
+	}
+
+	/**
+	 * Checks whether AMP content is being served.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return bool True if an AMP request, false otherwise.
+	 */
+	public static function is_amp() {
+		if ( is_singular( 'web-story' ) ) {
+			return true;
+		}
+
+		// amp_is_request For AMP plugin v2.0+ and is_amp_endpoint For older/other AMP plugins.
+		return ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) || ( function_exists( 'amp_is_request' ) && amp_is_request() );
 	}
 }

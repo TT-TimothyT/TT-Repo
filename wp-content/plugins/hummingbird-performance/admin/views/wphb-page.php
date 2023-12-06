@@ -96,14 +96,6 @@ $this->do_meta_boxes( 'main' ); ?>
 
 <?php
 $this->modal( 'clear-cache' );
-
-if ( ! Utils::is_member() ) {
-	$this->modal( 'delay-js-non-pro-member' );
-}
-
-if ( ! Utils::is_member() ) {
-	$this->modal( 'critical-css-non-pro-member' );
-}
 ?>
 
 <script>

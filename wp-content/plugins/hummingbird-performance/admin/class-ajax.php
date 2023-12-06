@@ -513,7 +513,7 @@ class AJAX {
 						'finished'        => true,
 						'mobileScore'     => $mobile,
 						'desktopScore'    => $desktop,
-						'HBSmushFeatures' => implode( ',', Utils::get_active_features() ),
+						'HBSmushFeatures' => Utils::get_active_features(),
 					)
 				);
 			}
@@ -562,7 +562,7 @@ class AJAX {
 					'finished'        => true,
 					'mobileScore'     => $mobile,
 					'desktopScore'    => $desktop,
-					'HBSmushFeatures' => implode( ',', Utils::get_active_features() ),
+					'HBSmushFeatures' => Utils::get_active_features(),
 				)
 			);
 		}

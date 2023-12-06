@@ -107,6 +107,8 @@ class Minification extends Page {
 		wp_enqueue_style( 'wphb-react-minify-styles', WPHB_DIR_URL . 'admin/assets/css/wphb-react-minify.min.css', array(), WPHB_VERSION );
 		wp_enqueue_script( 'wphb-react-minify', WPHB_DIR_URL . 'admin/assets/js/wphb-react-minify.min.js', array( 'wp-i18n', 'lodash', 'wphb-react-lib', 'wp-api-fetch' ), WPHB_VERSION, true );
 
+		$current_page = filter_input( INPUT_GET, 'view', FILTER_UNSAFE_RAW );
+
 		wp_localize_script(
 			'wphb-react-minify',
 			'wphbReact',
@@ -130,6 +132,7 @@ class Minification extends Page {
 					'cdnUpsell'      => Utils::get_link( 'plugin', 'hummingbird_topsummary_cdnbutton' ),
 					'delayUpsell'    => Utils::get_link( 'plugin', 'hummingbird_delay_js_ao_summary' ),
 					'criticalUpsell' => Utils::get_link( 'plugin', 'hummingbird_criticalcss_ao_summary' ),
+					'isEoPage'       => 'tools' === $current_page ? true : false,
 					'safeMode'       => site_url() . '?minify-safe=true',
 				),
 			)
@@ -618,5 +621,4 @@ class Minification extends Page {
 
 		return $selector_filter;
 	}
-
 }

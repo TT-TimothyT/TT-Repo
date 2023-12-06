@@ -63,15 +63,16 @@ if ( ! $critical_css_mode ) {
 				</label>
 			<?php else : ?>
 				<label for="non_logged_in_delay_js" class="sui-toggle">
-					<input type="checkbox" data-location="eo_settings" data-url="<?php echo esc_url( Utils::get_link( 'plugin', 'hummingbird_delay_js_ao_extra' ) ); ?>" name="non_logged_in_delay_js" id="non_logged_in_delay_js">
+					<input type="checkbox" name="non_logged_in_delay_js" id="non_logged_in_delay_js" onclick="return false;">
 					<span class="sui-toggle-slider" aria-hidden="true"></span>
 					<span id="non_logged_in_delay_js-label" class="sui-toggle-label">
 						<?php esc_html_e( 'Delay JavaScript Execution', 'wphb' ); ?>
 					</span>
 					<span class="sui-description">
-					<?php esc_html_e( 'Upgrade to Pro for instant access and fully optimized JS.', 'wphb' ); ?>
+						<?php esc_html_e( 'Upgrade to Pro for instant access and fully optimized JS.', 'wphb' ); ?>
 					</span>
 				</label>
+				<?php Utils::unlock_now_link( 'eo_settings', 'hummingbird_delay_js_ao_extra', 'delayjs' ); ?>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -184,7 +185,7 @@ script id"><?php echo esc_html( $delay_js_excludes ); ?></textarea>
 				</label>
 			<?php else : ?>
 				<label for="non_logged_in_critical_css" class="sui-toggle">
-					<input type="checkbox" data-location="eo_settings" data-url="<?php echo esc_url( Utils::get_link( 'plugin', 'hummingbird_criticalcss_ao_extra' ) ); ?>" name="non_logged_in_critical_css" id="non_logged_in_critical_css">
+					<input type="checkbox" name="non_logged_in_critical_css" id="non_logged_in_critical_css" onclick="return false;">
 					<span class="sui-toggle-slider" aria-hidden="true"></span>
 					<span id="non_logged_in_critical_css-label" class="sui-toggle-label">
 						<?php esc_html_e( 'Generate Critical CSS', 'wphb' ); ?>
@@ -193,6 +194,7 @@ script id"><?php echo esc_html( $delay_js_excludes ); ?></textarea>
 						<?php esc_html_e( 'Another way to Boost site speed Even faster pages, better user experience, and improved SEO. You will love it.', 'wphb' ); ?>
 					</span>
 				</label>
+				<?php Utils::unlock_now_link( 'eo_settings', 'hummingbird_criticalcss_ao_extra', 'critical_css' ); ?>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -236,7 +238,7 @@ script id"><?php echo esc_html( $delay_js_excludes ); ?></textarea>
 			</div>
 			<div class="sui-description sui-toggle-description load_cs_options load_remove <?php echo esc_attr( $selected_css_type_classes['remove'] ); ?>">
 				<?php esc_html_e( 'Inline all used CSS, delay/remove the rest.', 'wphb' ); ?>
-			</div>			
+			</div>
 		</div>
 		<div class="sui-form-field load_cs_options load_remove <?php echo esc_attr( $selected_css_type_classes['remove'] ); ?>" role="radiogroup">
 			<div class="sui-description">
@@ -367,19 +369,26 @@ script id"><?php echo esc_html( $delay_js_excludes ); ?></textarea>
 				'<span class="sui-tag sui-tag-pro">',
 				'</span>'
 			);
+
+			$switch_now = Utils::unlock_now_link( 'legacy_switch', 'hummingbird_criticalcss_eo_legacy_switch', 'critical_css', false );
 		} else {
 			$hb_pro_upsell = sprintf( /* translators: %1$s - opening span tag, %2$s - closing </span> tag */
 				esc_html__( '%1$sNEW%2$s', 'wphb' ),
 				'<span class="sui-tag sui-tag-green">',
 				'</span>'
 			);
+
+			$switch_now = sprintf( /* translators: %1$s - opening a tag, %2$s - closing a tag */
+				esc_html__( '%1$sSwitch now%2$s', 'wphb' ),
+				'<a style="cursor: pointer;" id="manual_css_switch_now">',
+				'</a>'
+			);
 		}
 
 		$notice_text = sprintf( /* translators: %1$s: opening span tag, %2$s: closing span tag, %3$s: pro tag, %4$s: switch critical mode href link, %5$s: closing a tag */
-			__( '<b>New - Automatic CSS Generation!</b> %1$s <br> Serve sites faster with advanced Critical CSS generation. Your existing settings will be automatically migrated as Manual Inclusions. %2$sSwitch now%3$s', 'wphb' ),
+			__( '<b>New - Automatic CSS Generation!</b> %1$s <br> Serve sites faster with advanced Critical CSS generation. Your existing settings will be automatically migrated as Manual Inclusions. %2$s', 'wphb' ),
 			$hb_pro_upsell,
-			'<a data-url="' . esc_url( Utils::get_link( 'plugin', 'hummingbird_criticalcss_ao_extra' ) ) . '" style="cursor: pointer;" id="manual_css_switch_now">',
-			'</a>'
+			$switch_now
 		);
 		$this->admin_notices->show_inline( $notice_text, 'blue' );
 		?>

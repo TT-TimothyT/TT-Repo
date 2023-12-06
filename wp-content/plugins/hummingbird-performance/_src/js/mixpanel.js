@@ -75,21 +75,18 @@ const MixPanel = require( 'mixpanel-browser' );
 		},
 
 		/**
-		 * Track Delay JS Upsell event.
+		 * Track EO Upsell event.
 		 *
-		 * @param {string} feature Feature name.
+		 * @param {string} eventName Event name.
+		 * @param {string} location  Location.
 		 */
-		 trackDelayJSUpsell( feature ) {
-			this.track( 'js_delay_upsell', feature );
-		},
-
-		/**
-		 * Track Critical CSS Upsell event.
-		 * 
-		 * @param {object} properties Properties.
-		 */
-		 trackCriticalCSSUpsell( properties ) {
-			this.track( 'critical_css_upsell', properties );
+		trackEoUpsell( eventName, location ) {
+			const mpEventName = 'delayjs' === eventName ? 'js_delay_upsell' : 'critical_css_upsell';
+	
+			this.track( mpEventName, {
+				'Modal Action': 'direct_cta',
+				'Location': location,
+			} );
 		},
 
 		/**

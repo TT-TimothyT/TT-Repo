@@ -1,7 +1,7 @@
 <?php
 /* THIS IS A GENERATED FILE. DO NOT EDIT DIRECTLY. */
 $generated_i18n_strings = array(
-	// Reference: _src/js/block.js:179
+	// Reference: _src/js/block.js:181
 	__( 'Generating Critical CSS', 'wphb' ),
 
 	// Reference: _src/js/block.js:92
@@ -457,7 +457,7 @@ $generated_i18n_strings = array(
 	__( 'Get Hummingbird Pro for our full WordPress speed optimization suite, including uptime monitoring and enhanced CDN.', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:326
-	// Reference: _src/react/views/minify/summary.jsx:298
+	// Reference: _src/react/views/minify/summary.jsx:312
 	__( 'UPGRADE TO PRO', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:337
@@ -907,48 +907,51 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/views/minify/configurations.jsx:91
 	__( 'Enable this option to optimize the delivery of your fonts so they don\'t trigger the "Eliminate render-blocking resources" recommendation in your performance tests.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:253
+	// Reference: _src/react/views/minify/summary.jsx:240
 	__( 'All assets are auto-compressed', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:263
+	// Reference: _src/react/views/minify/summary.jsx:250
 	__( 'Compression savings', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:264
+	// Reference: _src/react/views/minify/summary.jsx:251
 	__( 'Total Files', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:282
+	// Reference: _src/react/views/minify/summary.jsx:265
+	__( 'Unlock now  ', 'wphb' ),
+
+	// Reference: _src/react/views/minify/summary.jsx:296
 	__( 'Files are compressed', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:292
+	// Reference: _src/react/views/minify/summary.jsx:306
 	__( 'Enable WPMU DEV CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:297
+	// Reference: _src/react/views/minify/summary.jsx:311
 	__( 'Host your files on WPMU DEV’s blazing-fast CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:303
+	// Reference: _src/react/views/minify/summary.jsx:317
 	__( 'The Network Admin has the WPMU DEV CDN turned on', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:308
+	// Reference: _src/react/views/minify/summary.jsx:322
 	__( 'The Network Admin has the WPMU DEV CDN turned off', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:309
+	// Reference: _src/react/views/minify/summary.jsx:323
 	// Reference: _src/react/views/setup/wizard.jsx:619
 	__( 'Disabled', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:343
+	// Reference: _src/react/views/minify/summary.jsx:351
 	__( 'Filesize reductions', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:348
+	// Reference: _src/react/views/minify/summary.jsx:356
 	// Reference: _src/react/views/setup/wizard.jsx:391
 	__( 'WPMU DEV CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:355
+	// Reference: _src/react/views/minify/summary.jsx:367
 	__( 'Delay JavaScript Execution', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:362
+	// Reference: _src/react/views/minify/summary.jsx:374
 	__( 'Generate Critical CSS', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:363
+	// Reference: _src/react/views/minify/summary.jsx:375
 	// Reference: _src/react/views/setup/wizard.jsx:141
 	__( 'Pro', 'wphb' ),
 

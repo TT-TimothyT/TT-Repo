@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "X-Generator: babel-plugin-makepot\n"
 
-#: _src/js/block.js:179
+#: _src/js/block.js:181
 msgid "Generating Critical CSS"
 msgstr ""
 
@@ -685,7 +685,7 @@ msgid ""
 msgstr ""
 
 #: _src/react/modules/setup.jsx:326
-#: _src/react/views/minify/summary.jsx:298
+#: _src/react/views/minify/summary.jsx:312
 msgid "UPGRADE TO PRO"
 msgstr ""
 
@@ -1416,61 +1416,65 @@ msgid ""
 "performance tests."
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:253
+#: _src/react/views/minify/summary.jsx:240
 msgid "All assets are auto-compressed"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:263
+#: _src/react/views/minify/summary.jsx:250
 msgid "Compression savings"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:264
+#: _src/react/views/minify/summary.jsx:251
 msgid "Total Files"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:282
+#: _src/react/views/minify/summary.jsx:265
+msgid "Unlock now  "
+msgstr ""
+
+#: _src/react/views/minify/summary.jsx:296
 msgid "Files are compressed"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:292
+#: _src/react/views/minify/summary.jsx:306
 msgid "Enable WPMU DEV CDN"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:297
+#: _src/react/views/minify/summary.jsx:311
 msgid "Host your files on WPMU DEV’s blazing-fast CDN"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:303
+#: _src/react/views/minify/summary.jsx:317
 msgid "The Network Admin has the WPMU DEV CDN turned on"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:308
+#: _src/react/views/minify/summary.jsx:322
 msgid "The Network Admin has the WPMU DEV CDN turned off"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:309
+#: _src/react/views/minify/summary.jsx:323
 #: _src/react/views/setup/wizard.jsx:619
 msgid "Disabled"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:343
+#: _src/react/views/minify/summary.jsx:351
 msgid "Filesize reductions"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:348
+#: _src/react/views/minify/summary.jsx:356
 #: _src/react/views/setup/wizard.jsx:391
 msgid "WPMU DEV CDN"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:355
+#: _src/react/views/minify/summary.jsx:367
 msgid "Delay JavaScript Execution"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:362
+#: _src/react/views/minify/summary.jsx:374
 msgid "Generate Critical CSS"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:363
+#: _src/react/views/minify/summary.jsx:375
 #: _src/react/views/setup/wizard.jsx:141
 msgid "Pro"
 msgstr ""

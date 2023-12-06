@@ -123,7 +123,9 @@ class Delayjs extends Module {
 	 * @return bool
 	 */
 	public function should_delay_script() {
-		if ( ( defined( 'WPHBDONOTDELAYJS' ) && WPHBDONOTDELAYJS ) || Utils::wphb_is_page_builder() || is_preview() || is_customize_preview() ) {
+		$avoid_delayjs = filter_input( INPUT_GET, 'avoid-delayjs', FILTER_VALIDATE_BOOLEAN );
+
+		if ( $avoid_delayjs || ( defined( 'WPHBDONOTDELAYJS' ) && WPHBDONOTDELAYJS ) || Utils::is_amp() || Utils::wphb_is_page_builder() || is_preview() || is_customize_preview() ) {
 			return false;
 		}
 

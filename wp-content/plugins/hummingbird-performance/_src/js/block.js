@@ -109,7 +109,9 @@ const MyPluginPostStatusInfo = () => {
 	 */
 	const handleCreateCSS = () => {
 		if ( ! getString( 'isMember' ) ) {
-			window.location.href = getString( 'eoPageUrl' );
+			window.wphbMixPanel.trackEoUpsell( 'critical_css_upsell', 'gutenberg' );
+			window.location.href = getString( 'gutenbergUTM' );
+
 			return;
 		}
 

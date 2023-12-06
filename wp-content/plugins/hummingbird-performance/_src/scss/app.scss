@@ -144,6 +144,21 @@ $sui-font-path: '~@wpmudev/shared-ui/dist/fonts/';
 .sui-recipient .sui-recipient-email,
 .sui-recipient .sui-recipient-name { flex-basis: 45%; }
 
+.sui-box {
+    a.wphb-upsell-link:not(#manual_css_switch_now){
+        margin-left: 44px;
+    }
+
+    a.wphb-upsell-link,
+    span.sui-icon-open-new-window:before {
+        font-size: 11px;
+        color: #8D00B1;
+    }
+    a.wphb-upsell-link:hover {
+        color: #64007e !important;
+    }
+}
+
 .wp-hb-upsell-modals {
     .sui-box-body {
         .sui-description {

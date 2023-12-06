@@ -329,7 +329,7 @@ class Critical_Css extends Module {
 			return false;
 		}
 
-		if ( ( defined( 'WPHBDONOTOPTIMIZE' ) && WPHBDONOTOPTIMIZE ) || Utils::wphb_is_page_builder() || is_preview() || is_customize_preview() ) {
+		if ( ( defined( 'WPHBDONOTOPTIMIZE' ) && WPHBDONOTOPTIMIZE ) || Utils::is_amp() || Utils::wphb_is_page_builder() || is_preview() || is_customize_preview() ) {
 			return false;
 		}
 

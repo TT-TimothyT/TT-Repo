@@ -227,19 +227,6 @@ export const MinifySummary = ( props ) => {
 	};
 
 	/**
-	 * Modal for non logged user for delay js and Critical CSS.
-	 *
-	 * @since 3.5.0
-	 *
-	 * @param {Object} e
-	 */
-	 const triggerUpsellModal = ( e ) => {
-		WPHB_Admin.minification.hbTriggerUpsellModal( e.target.dataset.url, e.target.dataset.location, e.target.dataset.modalname );
-
-		return false;
-	};
-
-	/**
 	 * Get summary segment content.
 	 *
 	 * @return {JSX.Element} Summary segment
@@ -265,6 +252,33 @@ export const MinifySummary = ( props ) => {
 				<span className="sui-summary-sub">{ getEnqueuedFiles() }</span>
 			</div>
 		);
+	};
+
+	/**
+	 * Returns unlock pro upsell link.
+	 *
+	 * @param {string} utm
+	 */
+	const getUnlockUpsellLink = ( utm, eventname ) => {
+		return (
+			<a target="_blank" data-location="ao_summary" data-eventname={ eventname } href={ utm } className="wphb-upsell-link wphb-upsell-eo" onClick={ trackMPEvent }>
+				{ __( 'Unlock now  ', 'wphb' ) }
+				<span className="sui-icon-open-new-window" aria-hidden="true"></span>
+			</a>
+		);
+	};
+
+	/**
+	 * Track EO event on AO summary box.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @param {Object} e
+	 */
+	const trackMPEvent = ( e ) => {
+		WPHB_Admin.minification.hbTrackEoMPEvent( e.target )
+
+		return false;
 	};
 
 	/**
@@ -318,10 +332,7 @@ export const MinifySummary = ( props ) => {
 					<Toggle id="delay_js" checked={ delayJs } onChange={ toggleDelay } />
 				</Tooltip>;
 		} else {
-			delayDetails =
-				<Tooltip text={ __( 'Delay JavaScript Execution', 'wphb' ) } classes={ [ 'sui-tooltip-top-right' ] }>
-					<Toggle data-location='ao_summary' data-url={ props.wphbData.links.delayUpsell } data-modalname="delay-js" onChange={ triggerUpsellModal } />
-				</Tooltip>;
+			delayDetails = getUnlockUpsellLink( props.wphbData.links.delayUpsell, 'delayjs' );
 		}
 
 		let criticalCssDetails;
@@ -332,13 +343,10 @@ export const MinifySummary = ( props ) => {
 					<Toggle id="critical_css" checked={ criticalCss } onChange={ toggleCritical } />
 				</Tooltip>;
 		} else {
-			criticalCssDetails =
-				<Tooltip text={ __( 'Generate Critical CSS', 'wphb' ) } classes={ [ 'sui-tooltip-top-right' ] }>
-					<Toggle data-location='ao_summary' data-url={ props.wphbData.links.criticalUpsell } data-modalname="critical-css" onChange={ triggerUpsellModal } />
-				</Tooltip>;
+			criticalCssDetails = getUnlockUpsellLink( props.wphbData.links.criticalUpsell, 'critical_css' );
 		}
 
-		const elements = [
+		let elements = [
 			{
 				label: __( 'Filesize reductions', 'wphb' ),
 				details: reduction,
@@ -350,21 +358,28 @@ export const MinifySummary = ( props ) => {
 				</React.Fragment>,
 				details: cdnDetails,
 			},
-			{
-				label: <React.Fragment>
-					{ __( 'Delay JavaScript Execution', 'wphb' ) }
-					{ ! props.wphbData.isMember && <Tag type="pro" value={ __( 'Pro', 'wphb' ) } /> }
-				</React.Fragment>,
-				details: delayDetails,
-			},
-			{
-				label: <React.Fragment>
-					{ __( 'Generate Critical CSS', 'wphb' ) }
-					{ ! props.wphbData.isMember && <Tag type="pro" value={ __( 'Pro', 'wphb' ) } /> }
-				</React.Fragment>,
-				details: criticalCssDetails,
-			},
 		];
+
+		if ( props.wphbData.isMember || ! props.wphbData.links.isEoPage ) {
+			const eoElements = [
+				{
+					label: <React.Fragment>
+						{ __( 'Delay JavaScript Execution', 'wphb' ) }
+						{ ! props.wphbData.isMember && <Tag type="pro" value={ __( 'Pro', 'wphb' ) } /> }
+					</React.Fragment>,
+					details: delayDetails,
+				},
+				{
+					label: <React.Fragment>
+						{ __( 'Generate Critical CSS', 'wphb' ) }
+						{ ! props.wphbData.isMember && <Tag type="pro" value={ __( 'Pro', 'wphb' ) } /> }
+					</React.Fragment>,
+					details: criticalCssDetails,
+				},
+			];
+
+			elements = [...elements, ...eoElements ];
+		}
 
 		return <List elements={ elements } />;
 	};

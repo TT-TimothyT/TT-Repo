@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the MailPoet plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: MailPoet 4.38.0\n"
+"Project-Id-Version: MailPoet 4.39.0\n"
 "Report-Msgid-Bugs-To: http://support.mailpoet.com/\n"
 "Last-Translator: MailPoet i18n (https://www.transifex.com/organization/wysija)\n"
 "Language-Team: MailPoet i18n <https://www.transifex.com/organization/wysija>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-11-27T17:35:29+00:00\n"
+"POT-Creation-Date: 2023-12-04T16:03:33+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1068,7 +1068,6 @@ msgstr ""
 #: lib/API/JSON/v1/ImportExport.php:124
 #: lib/API/JSON/v1/Segments.php:133
 #: lib/Models/CustomField.php:26
-#: lib/Models/NewsletterOptionField.php:22
 #: lib/Models/Segment.php:29
 msgid "Please specify a name."
 msgstr ""
@@ -10723,16 +10722,12 @@ msgstr ""
 msgid "Filter \"mailpoet_mailer_smtp_instance\" must return an instance of PHPMailer."
 msgstr ""
 
-#: lib/Models/Newsletter.php:169
+#: lib/Models/Newsletter.php:154
 msgid "This is an empty email without any content and it cannot be sent. Please update [link]the email[/link]."
 msgstr ""
 
-#: lib/Models/Newsletter.php:227
+#: lib/Models/Newsletter.php:212
 msgid "Deleted list"
-msgstr ""
-
-#: lib/Models/NewsletterOptionField.php:25
-msgid "Please specify a newsletter type."
 msgstr ""
 
 #: lib/Models/Segment.php:95
@@ -11560,7 +11555,7 @@ msgid "MailPoet plugin requires WordPress version %s or newer. Please read our [
 msgstr ""
 
 #: mailpoet.php:124
-msgid "MailPoet requires PHP version 7.3 or newer (8.1 recommended). You are running version [version]."
+msgid "MailPoet requires PHP version 7.4 or newer (8.1 recommended). You are running version [version]."
 msgstr ""
 
 #: mailpoet.php:127

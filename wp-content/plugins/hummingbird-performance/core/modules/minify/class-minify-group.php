@@ -1075,12 +1075,14 @@ class Minify_Group {
 						'sslverify' => false,
 					)
 				);
-				$content = wp_remote_retrieve_body( $request );
+				$content = '';
 				if ( is_wp_error( $request ) ) {
 					$minify_module->log( $request->get_error_message() );
 				} elseif ( wp_remote_retrieve_response_code( $request ) !== 200 ) {
 					$minify_module->log( 'Code different from 200. Truncated content:' );
 					$minify_module->log( substr( $content, 0, 1000 ) );
+				} else {
+					$content = wp_remote_retrieve_body( $request );
 				}
 			}
 
