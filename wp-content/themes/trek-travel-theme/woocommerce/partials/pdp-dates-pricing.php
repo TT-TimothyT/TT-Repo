@@ -55,7 +55,7 @@ if( $get_child_products ){
                 $month_nav_mobile_btn_output .= '<option value="nav-'.$my.'-tab">'.$monthInfo[$month][0].'</option>';
                 $month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'" role="tabpanel" aria-labelledby="nav-'.$my.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$my.'">';
                 if($get_child_product_data){
-                    foreach($get_child_product_data as $child_product_data){
+                    foreach($get_child_product_data as $index => $child_product_data){
                         $today = date('d', strtotime(date('Y-m-d H:i:s')));
                         $dateParts = explode('/', $child_product_data['start_date']);
                         if (isset($dateParts) && !empty($dateParts)) {
@@ -69,6 +69,12 @@ if( $get_child_products ){
                                     }
                                 }
                             }
+                        }
+                        // If there has more than one trip per month, and first one is marked as hide, check whether has content for navigation, for other dates in this month.
+                        if($index > 0 && empty($month_nav_desktop_btn_output) && empty($month_nav_mobile_btn_output) && empty($month_content_output)){
+                            $month_nav_desktop_btn_output .= '<button class="nav-link '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'-tab" data-bs-toggle="tab" data-bs-target="#nav-'.$my.'" type="button" role="tab" aria-controls="nav-'.$my.'" aria-selected="true">'.$monthInfo[$month][0].'</button>';
+                            $month_nav_mobile_btn_output .= '<option value="nav-'.$my.'-tab">'.$monthInfo[$month][0].'</option>';
+                            $month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'" role="tabpanel" aria-labelledby="nav-'.$my.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$my.'">';
                         }
                         $contentFlag = true;
                         $accordina_id = $my.$child_product_data['product_id'];
@@ -116,7 +122,7 @@ if( $get_child_products ){
                                     $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                 }else{
                                     if (isset($formUrl) && !empty($formUrl)) {
-                                        $button = '<a href="/?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                        $button = '<a href="/'.$formUrl.'?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                     }else{
                                         $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                     }
