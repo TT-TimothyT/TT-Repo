@@ -34,7 +34,7 @@ if (isset($guest_insurance) && !empty($guest_insurance)) {
                 $guestInfo = $tt_posted['guests'][$guest_key];
                 $fullname = $guestInfo['guest_fname'] . ' ' . $guestInfo['guest_lname'];
                 $guest_insurance_html .= '<div class="col-lg-6 px-0 travel-col ' . $guest_insurance_k . ' ' . $iter . '">';
-                $guest_insurance_html .= '<p class="fw-medium mb-2">Guest ' . $guest_key . ': ' . $fullname . '</p>
+                $guest_insurance_html .= '<p class="fw-medium mb-2">Guest ' . $guest_key + 1 . ': ' . $fullname . '</p>
                     <p class="fs-sm lh-sm mb-0">' . (isset($guest_insurance_Data['is_travel_protection']) && $guest_insurance_Data['is_travel_protection'] == 1 ? 'Added Travel Protection' : 'Declined Travel Protection') . '</p>';
                 $guest_insurance_html .= '</div>';
                 if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {

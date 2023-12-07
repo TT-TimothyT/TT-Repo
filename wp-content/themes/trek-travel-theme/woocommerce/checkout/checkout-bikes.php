@@ -248,7 +248,7 @@ if ($p_own_bike == 'yes') {
                     $g_own_hide = "style='display:none;'";
                 }
         ?>
-                <p class="fw-medium fs-lg lh-lg">Guest <?php echo $guest_num . ': ' . $guest['guest_fname'] . ' ' . $guest['guest_lname']; ?></p>
+                <p class="fw-medium fs-lg lh-lg">Guest <?php echo $guest_num + 1 . ': ' . $guest['guest_fname'] . ' ' . $guest['guest_lname']; ?></p>
                 <div class="checkout-bikes__rider-level">
                     <p class="fw-medium fs-md lh-md">Guest Rider Level <i class="bi bi-info-circle pdp-rider-level"></i></p>
                     <div class="form-floating">

@@ -135,7 +135,7 @@ $userInfo = wp_get_current_user();
             foreach ($trek_user_checkout_posted['guests'] as $guest_num => $guest) {
         ?>
                 <div class="guest-checkout__guests guests">
-                    <p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest <?php echo $guest_num; ?></p>
+                    <p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest <?php echo $guest_num + 1; ?></p>
                     <div class="row mx-0 guest-checkout__primary-form-row">
                         <div class="col-md px-0 form-row">
                             <div class="form-floating"><input type="text" name="guests[<?php echo $guest_num; ?>][guest_fname]" class="form-control tt_guest_inputs" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="First Name" value="<?php echo $guest['guest_fname']; ?>" required="required"><label for="floatingInputGrid">First Name</label></div>

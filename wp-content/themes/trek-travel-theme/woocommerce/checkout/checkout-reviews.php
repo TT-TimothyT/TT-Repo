@@ -72,7 +72,7 @@ $tt_rooms_output = tt_rooms_output($tt_posted);
                         $guest_html .= '<div class="row mx-0">';
                     }
                     $guest_html .= '<div class="col-lg-6 px-0 checkout-review__col" data-num="'.$guest_num.'" data-size="'.$fields_size.'">';
-                    $guest_html .= '<p class="fw-medium mb-2">Guest ' . $guest_num . ': ' . $guest['guest_fname'] . ' ' . $guest['guest_lname'] . '</p>
+                    $guest_html .= '<p class="fw-medium mb-2">Guest ' . $guest_num + 1 . ': ' . $guest['guest_fname'] . ' ' . $guest['guest_lname'] . '</p>
                             <p class="fs-sm lh-sm mb-0">' . $guest['guest_email'] . '</p>
                             <p class="fs-sm lh-sm mb-0">' . $guest['guest_phone'] . '</p>
                             <p class="fs-sm lh-sm mb-0">' . ($guest['guest_gender'] == 2 ? 'Female' : 'Male') . '</p>';

@@ -171,7 +171,7 @@ $parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_tri
 									$basePremium = (isset($guest_insurance["guests"][$guest_k]['basePremium']) ? $guest_insurance["guests"][$guest_k]['basePremium'] : 0);
 									$basePremium = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$basePremium.'</span>';
 									$guest_insurance_html .= '<hr><div class="modal-body__guest">
-												<p class="mb-4 fw-medium">Guest : ' . $guest['guest_fname'] . ' ' . $guest['guest_lname'] . '</p>
+												<p class="mb-4 fw-medium">Guest: ' . $guest['guest_fname'] . ' ' . $guest['guest_lname'] . '</p>
 												<div class="d-flex align-items-center mb-4">
 													<input type="radio" class="guest_radio" name="trek_guest_insurance[guests][' . $guest_k . '][is_travel_protection]" value="1" ' . (isset($guest_insurance["guests"][$guest_k]["is_travel_protection"]) && $guest_insurance["guests"][$guest_k]["is_travel_protection"] != 0 ? 'checked' : '') . '>
 													<input type="hidden" name="trek_guest_insurance[guests][' . $guest_k . '][basePremium]" value="' . (isset($guest_insurance["guests"][$guest_k]["basePremium"]) ? $guest_insurance["guests"][$guest_k]["basePremium"] : 0) . '">

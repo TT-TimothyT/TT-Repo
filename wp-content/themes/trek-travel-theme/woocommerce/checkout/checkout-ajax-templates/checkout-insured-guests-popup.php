@@ -30,7 +30,7 @@ if ($guests) {
         $guest_lname = isset($guest['guest_lname']) ? $guest['guest_lname'] : '';
         $guest_full_name = $guest_fname.' '.$guest_lname;
         $insuredHTML .= '<div class="modal-body__guest">
-                                <p class="mb-4 fw-medium">Guest : ' . $guest_full_name . '</p>
+                                <p class="mb-4 fw-medium">Guest: ' . $guest_full_name . '</p>
                                 <div class="d-flex align-items-center mb-4">
                                     <input type="radio" class="guest_radio" name="trek_guest_insurance[guests][' . $guest_k . '][is_travel_protection]" value="1" ' . ($guest_insurance["guests"][$guest_k]["is_travel_protection"] != 0 ? 'checked' : '') . '>
                                     <input type="hidden" name="trek_guest_insurance[guests][' . $guest_k . '][basePremium]" value="' . ($guest_insurance["guests"][$guest_k]["basePremium"] ? $guest_insurance["guests"][$guest_k]["basePremium"]  : 0) . '">

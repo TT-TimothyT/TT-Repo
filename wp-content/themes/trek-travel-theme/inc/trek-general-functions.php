@@ -4186,7 +4186,7 @@ function tt_guest_insurance_output($tt_posted = [])
                     $guestInfo = $guests[$guest_key];
                     $fullname = $guestInfo['guest_fname'] . ' ' . $guestInfo['guest_lname'];
                     $guest_insurance_html .= '<div>';
-                    $guest_insurance_html .= '<p class="fw-medium mb-2">Guest ' . $guest_key . ': ' . $fullname . '</p>
+                    $guest_insurance_html .= '<p class="fw-medium mb-2">Guest ' . $guest_key + 1 . ': ' . $fullname . '</p>
                     <p class="fs-sm lh-sm mb-0">' . ($guest_insurance_Data['is_travel_protection'] == 1 ? 'Added Travel Protection ('.$g_insurance_amount_curr.')' : 'Declined Travel Protection') . '</p>';
                     $guest_insurance_html .= '</div>';
                     if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
