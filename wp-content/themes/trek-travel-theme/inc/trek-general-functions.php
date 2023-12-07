@@ -2307,6 +2307,26 @@ if (!function_exists('tt_update_user_booking_info')) {
             'modified_at' => date('Y-m-d H:i:s')
         ];
         update_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', $bookingId);
+
+        // Take referral info from `wp_postmeta` table for post_id = order_id and meta_key = tt_meta_referral_info.
+        $ns_referral_args = maybe_unserialize( get_post_meta( $order_id, TT_WC_META_PREFIX . 'referral_info', true ) );
+
+        if( ! empty( $ns_referral_args ) ) {
+
+            $ns_referral_args['bookingId'] = $bookingId;
+
+            // Send to NS.
+            $ns_referral_info_response = tt_send_referral_info_to_ns( $ns_referral_args );
+
+            if( isset( $ns_referral_info_response->success ) ) {
+                if( true == $ns_referral_info_response->success ) {
+
+                    // If info successfully sent to the NS > delete stored in `wp_postmeta` meta value for referral source info.
+                    delete_post_meta( $order_id, TT_WC_META_PREFIX . 'referral_info' );
+                }
+            }
+        }
+          
         if ($guests && is_array($guests) && !empty($guests)) {
             foreach ($guests as $guest_index => $guest) {
                 $releaseFormId = isset($guests[$guest_index]['releaseFormId']) ? $guests[$guest_index]['releaseFormId'] : '';
@@ -5283,3 +5303,76 @@ function tt_redirect_after_signin_signup_action_cb()
 }
 add_action('wp_ajax_tt_redirect_after_signin_signup_action', 'tt_redirect_after_signin_signup_action_cb');
 add_action('wp_ajax_nopriv_tt_redirect_after_signin_signup_action', 'tt_redirect_after_signin_signup_action_cb');
+
+/**
+ * Send referral info from form on last step from checkout.
+ * Using Netsuite client and NS script with ID 1475:2 - REFERRAL_SOURCE_SCRIPT_ID.
+ * 
+ * @param array $ns_referral_args Array with required key/values: bookingId, referralSourceType and referralSourceName.
+ * 
+ * @return object of type stdClass.
+ */
+function tt_send_referral_info_to_ns( $ns_referral_args )
+{
+    // Cerate NS client.
+    $netSuiteClient = new NetSuiteClient();
+
+    // Make post request to NS with JSON object with required fields.
+    $ns_referral_info_response = $netSuiteClient->post(REFERRAL_SOURCE_SCRIPT_ID, json_encode($ns_referral_args));
+
+    // Log result.
+    tt_add_error_log('[NetSuiteScript-1475:2] - Post referral', $ns_referral_args, $ns_referral_info_response);
+
+    // Return result with response from NS Script execution.
+    return $ns_referral_info_response;
+}
+
+/**
+ * Catch GF Submissions, check for the form on last step from checkout
+ * and send referral info to NetSuite via NS script 1475:2.
+ * 
+ * The ID for this form will be stored in ACF fields
+ * in option with id - 'order_details_page_form_id'
+ */
+function tt_after_submission_referral_form( $entry, $form ) {
+    // Take Form ID for referral info form, from ACF Field in Options page.
+    $form_id = get_field( 'order_details_page_form_id', 'option' );
+
+    // If this is the referral form need to send info to NetSuite.
+    if($form_id == $entry['form_id']){
+        global $wp;
+
+        $order_id  = isset($wp->query_vars['order-received']) ? absint( $wp->query_vars['order-received'] ) : '';
+
+        $ns_referral_args = array();
+
+        // Access the entry by looping through the form fields.
+        foreach ( $form['fields'] as $index => $field ) {
+            $inputs = $field->get_entry_inputs();
+            if ( ! is_array( $inputs ) ) {
+                $value = rgar( $entry, (string) $field->id );
+                
+                switch ($index) {
+                    case 0:
+                        // The First field is a dropdown/options and hold information for referralSourceType.
+                        $ns_referral_args['referralSourceType'] = $value;
+                        break;
+                    case 1:
+                        // The Second field is a input field type text and hold information for referralSourceName.
+                        $ns_referral_args['referralSourceName'] = $value;
+                        break;
+                    
+                    default:
+                        // Nothing...
+                        break;
+                }
+            }
+        }
+
+        // Save Referral info in `wp_postmeta` table for post_id = order_id and meta_key = tt_meta_referral_info.
+        update_post_meta( $order_id, TT_WC_META_PREFIX . 'referral_info', maybe_serialize( $ns_referral_args ) );
+
+    }
+}
+add_action( 'gform_after_submission', 'tt_after_submission_referral_form', 10, 2 );
+								

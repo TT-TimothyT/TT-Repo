@@ -316,29 +316,51 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 					<?php echo $guest_insurance_html; ?>
 				</div>
 				<hr>
-				<div class="order-details__content">
-					<h5 class="fw-semibold order-details__title order-details__formtitle">How did you hear about us?</h5>
-					<form>
-						<div class="form-group mb-4">
-							<select name="find" id="find" class="form-select py-4 px-5" required>
-								<option value="">Friend or Family</option>
-								<option value="">Travel Agent</option>
-								<option value="">Trek Bicycle Store</option>
-								<option value="">Trek Travel Guide</option>
-								<option value="">Online Advertising</option>
-								<option value="">Social Media</option>
-								<option value="">Email</option>
-								<option value="">Virtual Event</option>
-								<option value="">Other</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<input type="text" class="form-control py-4 px-5" name="please_specify" id="please_specify" placeholder="Please specify" value="">
-						</div>
-						<button type="submit" class="btn btn-lg btn-primary rounded-1 order-details__submit">Submit</button>
-					</form>
-				</div>
-				<hr>
+				<?php 
+					// If we have GF shortcode proceed.
+					if ( shortcode_exists( 'gravityform' ) ) {
+						// Take Form ID from ACF Field in Options page.
+						$form_id = get_field( 'order_details_page_form_id', 'option' );
+						
+						// If we have ID proceed.
+						if( ! empty( $form_id ) ) {
+							?>
+							<div class="order-details__content">
+								<h5 class="fw-semibold order-details__title order-details__formtitle">How did you hear about us?</h5>
+								<?php
+								// Add additional classes to the fields.
+								add_filter( 'gform_field_content_' . $form_id, function ( $field_content, $field ) {
+										// Add classes to input type text fields.
+										if ( $field->type == 'text' ) {
+											return str_replace( "class='large'", "class='large form-control py-4 px-5'", $field_content );
+										}
+										// Add classes to select fields.
+										if ( $field->type == 'select' ) {
+											// This search for specific classname in select/dropdown field
+											return str_replace( "gfield_select", "gfield_select form-select py-4 px-5", $field_content );
+										}
+									
+										return $field_content;
+								}, 10, 2 );
+								
+								// Add additional classes to the submit button.
+								add_filter( 'gform_submit_button_' . $form_id, function ( $button, $form ) {
+										// Return without changes for the admin back-end.
+										if ( is_admin() ){
+											return $button;
+										}
+										return str_replace( "gform_button button", "btn btn-lg btn-primary rounded-1 order-details__submit", $button );
+								}, 10, 2 );
+								
+								// Display GF.
+								echo do_shortcode('[gravityform id="' . $form_id . '" title="false" description="false"]');
+								?>
+							</div>
+							<hr>
+						<?php
+						}
+					}
+				?>
 				<div class="order-details__accountdiv text-center">
 					<a href="/my-account" class="btn btn-outline-primary rounded-1 py-4 px-5 order-details__account">Go to My Account</a>
 				</div>

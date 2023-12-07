@@ -12,6 +12,7 @@ define('TRIP_DETAIL_SCRIPT_ID', '1297:2'); //211 -old ID, New ID - 1297
 define('LISTS_SCRIPT_ID', '203:2');
 define('TRIP_MSG_SCRIPT_ID', 1297);
 define('USER_BOOKINGS_SCRIPT_ID', '1305:2');
+define('REFERRAL_SOURCE_SCRIPT_ID', '1475:2');
 define('DEFAULT_TIME_RANGE', '-12 hours'); // Define a default time range for sync, when no parameter is passed.
 
 // Alter Query
