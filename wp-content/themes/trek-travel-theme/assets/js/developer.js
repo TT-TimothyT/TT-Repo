@@ -2626,7 +2626,6 @@ window.addEventListener("afterprint", (event) => {
 })
 
 
-
 jQuery('body').on('change', '.tt_rider_level_select', function () {
   var selectedRiderLevel = jQuery(this).val()
   if (selectedRiderLevel && selectedRiderLevel > 0) {    
@@ -2636,6 +2635,24 @@ jQuery('body').on('change', '.tt_rider_level_select', function () {
       jQuery(".modal-rider-level-warning #rider_level_text").text(riderLevelText)
       jQuery('#checkoutRiderLevelModal').modal('toggle');    
     }
+    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none")
+    jQuery(this).closest('div.form-floating').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-floating').addClass('woocommerce-validated');
+  } else {
+    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none")
+    jQuery(this).closest('div.form-floating').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-floating').removeClass('woocommerce-validated');
+
+  }
+})
+
+jQuery('body').on('change', '.form-select', function () {
+  var selectValue = jQuery(this).val()
+  console.log(selectValue);
+  if( selectValue == 'men' ) {
+    console.log( 'true' );
+  }
+  if ((selectValue && selectValue > 0) || selectValue == 'men' || selectValue == 'woman' ) {
     jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none")
     jQuery(this).closest('div.form-floating').removeClass('woocommerce-invalid');
     jQuery(this).closest('div.form-floating').addClass('woocommerce-validated');
