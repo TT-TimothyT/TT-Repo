@@ -673,45 +673,57 @@ $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', 
 					<?php if ($rider_level != 5 && $own_bike != 'yes' ) { ?>
 						<div class="accordion-item">
 							<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-bikeInfo">
-								<button class="accordion-button px-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo">
+								<button class="accordion-button px-0 collapsed bike_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo">
 									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png">
 									Confirm your bike selection
 								</button>
 							</p>
 							<div id="flush-collapse-bikeInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-bikeInfo">
-								<div class="accordion-body px-0">
+								<div class="accordion-body px-0 checkout-bikes-section">
 									<div class="checkout-bikes__bike-grid d-flex flex-column flex-lg-row flex-nowrap">
 										<?php
 										$primary_bikeId = $bike_id;
 										$primary_bikeTypeId = isset($User_order_info[0]['bike_type_id']) ? $User_order_info[0]['bike_type_id'] : ''; //$bikeTypeId;
 										$primary_available_bike_html = '';
-										$bikes_type_id_in = [];
+										$bikes_model_id_in = [];
 										$available_bikes = tt_get_local_bike_detail($trip_sku);
 										if ($available_bikes) {
 											foreach ($available_bikes as $available_bike) {
-												$bikeId = $available_bike['bikeId'];
-												$bikeDescr = $available_bike['bikeDescr'];
-												$bikeType = json_decode($available_bike['bikeType'], true);
-												$bikeTypeId = $bikeType['id'];
-												if (!in_array($bikeTypeId, $bikes_type_id_in) && $bikeTypeId) {
+												$bikeId        = $available_bike['bikeId'];
+												$bikeDescr     = $available_bike['bikeDescr'];
+												$bikeType      = json_decode($available_bike['bikeType'], true);
+												$bikeTypeId    = $bikeType['id'];
+												$bikeModel     = json_decode($available_bike['bikeModel'], true);
+												$bikeModelId   = $bikeModel['id'];
+												$bikeModelName = $bikeModel['name'];
+												if (!in_array($bikeModelId, $bikes_model_id_in) && $bikeModelId) {
 													$bikeTypeName = $bikeType['name'];
-													$selected_p_bikeId = ($primary_bikeTypeId == $bikeTypeId ? 'checked' : '');
-													$checkedClass = ($primary_bikeTypeId == $bikeTypeId ? 'bike-selected' : '');
-													$pcheckedClassIcon = ($primary_bikeTypeId == $bikeTypeId ? 'checkout-bikes__selected-bike-icon' : 'checkout-bikes__select-bike-icon');
+													$selected_p_bikeId = ($primary_bikeTypeId == $bikeModelId ? 'checked' : '');
+													$checkedClass = ($primary_bikeTypeId == $bikeModelId ? 'bike-selected' : '');
+													$pcheckedClassIcon = ($primary_bikeTypeId == $bikeModelId ? 'checkout-bikes__selected-bike-icon' : 'checkout-bikes__select-bike-icon');
 													//$bike_post_id = tt_get_postid_by_meta_key_value('netsuite_bike_type_id', $bikeTypeId);
 													$bike_post_name = $bikeDescr;
 													$bike_post_id = null;
 													$bike_post_name_arr = explode(' ', $bike_post_name);
 													unset($bike_post_name_arr[0]);
 													$bike_post_name = implode(' ', $bike_post_name_arr);
-													$bike_image = get_template_directory_uri() . "/assets/images/bike-placehoder-image.png";
-													if (has_post_thumbnail($bike_post_id)) {
-														$bike_image = get_the_post_thumbnail_url($bike_post_id, 'full');
+													$posts = get_posts(
+														array(
+															'post_type' => 'bikes',
+															'title'     => $bikeModelName,
+														)
+													);
+													if ( ! empty( $posts ) && is_array( $posts ) ) {
+														$bike_post_id = $posts[0]->ID;
+														$bike_image_id = get_post_meta( $bike_post_id, 'bike_image', true );   
+														$bike_image = wp_get_attachment_image_url( $bike_image_id, 'medium' );
+													} else {
+														$bike_image = get_template_directory_uri() . "/assets/images/bike-placehoder-image.png";
 													}
-													if ($bike_post_id !== NULL && is_numeric($bike_post_id)) {
-														$bike_post_name = get_the_title($bike_post_id);
-													}
-													$bikeTypeInfo = tt_ns_get_bike_type_info($bikeTypeId);
+													// if ($bike_post_id !== NULL && is_numeric($bike_post_id)) {
+													// 	$bike_post_name = get_the_title($bike_post_id);
+													// }
+													$bikeTypeInfo = tt_ns_get_bike_type_info($bikeModelId);
 													$bikeUpgradeHtml = '';
 													if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
 														$bikeUpgradeHtml .= '<div class="checkout-bikes__price-upgrade d-flex ms-4">
@@ -719,22 +731,23 @@ $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', 
 													<p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
 												</div>';
 													}
-													$primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElementchk ' . $checkedClass . '" data-id="' . $bikeTypeId . '" data-guest-id="0">
-											<input name="bikeTypeId" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeTypeId . '">
+													$primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElementchk ' . $checkedClass . '" data-id="' . $bikeModelId . '" data-guest-id="0">
+											<input name="bikeModelId" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeModelId . '" class="bike_validation_inputs">
 													<div class="checkout-bikes__image d-flex justify-content-center align-content-center">
 														<img src="' . $bike_image . '" alt="' . $bikeDescr . '">
 														<span class="checkout-bikes__badge checkout-bikes__badge--ebike">' . $bikeTypeName . '</span>
 													</div>
 													<div class="checkout-bikes__title d-flex justify-content-around">
-														<p class="fw-medium fs-lg lh-lg">' . $bike_post_name . '</p>
+														<p class="fw-medium fs-lg lh-lg">' . $bikeModelName . '</p>
 													<span class="radio-selection ' . $pcheckedClassIcon . '"></span>
 												</div>
 												' . $bikeUpgradeHtml . '
 											</div>';
 												}
-												$bikes_type_id_in[] = $bikeTypeId;
+												$bikes_model_id_in[] = $bikeModelId;
 											}
 											$primary_available_bike_html .= '<input name="bikeId" type="hidden" value="' . $bike_id . '">';
+											$primary_available_bike_html .= '<input name="bikeTypeId" type="hidden" value="' . $primary_bikeTypeId . '">';
 										} else {
 											$primary_available_bike_html .= '<strong>No bikes available!</strong>';
 										}
@@ -743,7 +756,7 @@ $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', 
 										?>
 									</div>
 									<div class="form-floating checkout-bikes__bike-size">
-										<select name="tt-bike-size" class="form-select tt_chk_bike_size_change" id="floatingSelect1" aria-label="Floating label select example">
+										<select name="tt-bike-size" class="form-select tt_chk_bike_size_change bike_validation_select" id="floatingSelect1" aria-label="Floating label select example">
 											<?php
 											$bikeOpt_object = tt_get_bikes_by_trip_info_pbc('', $trip_sku, $primary_bikeTypeId, $bike_size, $bike_id);
 											if ($bikeOpt_object && $bikeOpt_object['size_opts']) {
@@ -753,7 +766,7 @@ $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', 
 										</select>
 										<label for="floatingSelect">Bike size</label>
 									</div>
-									<?php if ($lockRecord != 1 || $lockBike != 1) { ?>
+									<?php if ($lockRecord != 1 && $lockBike != 1) { ?>
 										<div class="form-check form-check-inline mb-0">
 											<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck" value="yes">
 											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>

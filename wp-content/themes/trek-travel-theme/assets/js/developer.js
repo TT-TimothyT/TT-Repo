@@ -41,7 +41,12 @@ function tt_change_checkout_step(targetStep = '') {
     }
   }
 }
+/**
+ * Function that set complete state for sections in Post Booking Checklist page.
+ * (my-trip-checklist.php)
+ */
 function prebookingChecklistValidate() {
+  // Need to change this logic, not working corectly.
   var totalMedicalFields = jQuery('.medical_validation_checkboxes').length;
   var totalEmerFields = jQuery('.emergency_validation_inputs').length;
   var totalGearFields = jQuery('.gear_validation_inputs').length;
@@ -89,6 +94,33 @@ function prebookingChecklistValidate() {
     jQuery('.passport_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
   } else {
     jQuery('.passport_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
+  }
+
+  // Check Bike Section for complete state.
+  let bikeModelSelected = false;
+
+  // Loop all bike models.
+  jQuery( '.checkout-bikes-section .bike_validation_inputs' ).each( function() {
+    if( jQuery( this ).is( ':checked' ) ) {
+      // Has selected bike.
+      bikeModelSelected = true;
+      return false; // breaks.
+    }
+  })
+
+  let bikeSizeSelected = false;
+
+  // Check bike size select/options index if gt from 0, we has selected size. The 0 option is 'Select bike size'.
+  if( jQuery( '.checkout-bikes-section .bike_validation_select' ).prop( 'selectedIndex' ) > 0 ) {
+    bikeSizeSelected = true;
+  }
+
+  // Set Bike Section complete state.
+  if ( bikeModelSelected && bikeSizeSelected ) {
+    jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+  } else {
+    // Set Bike Section as not completed yet.
+    jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
   }
 }
 function tripCapacityValidation(is_return = true) {
@@ -2419,7 +2451,7 @@ jQuery('body').on('click', function () {
     }
   },500) 
 });
-jQuery('body').on('input, click, oninput, onpaste, change', '.medical_validation_checkboxes, .emergency_validation_inputs, .gear_validation_inputs, .passport_validation_inputs', function () {
+jQuery('body').on('input, click, oninput, onpaste, change', '.medical_validation_checkboxes, .emergency_validation_inputs, .gear_validation_inputs, .passport_validation_inputs, .bike_validation_select', function () {
   prebookingChecklistValidate();
 });
 jQuery(document).on('change', 'select[name^="occupants["]', function () {
@@ -2482,9 +2514,9 @@ jQuery('body').on('click', '.bike_selectionElementchk', function () {
   var order_id = jQuery('input[name="wc_order_id"]').val();
   var actionName = 'tt_chk_bike_selection_ajax_action';
   var parentDiv = jQuery(this).closest('.checkout-bikes__bike-grid');
-  parentDiv.find('.bike_selectionElement .radio-selection').removeClass("checkout-bikes__selected-bike-icon");
-  parentDiv.find('.bike_selectionElement .radio-selection').addClass("checkout-bikes__select-bike-icon");
-  parentDiv.find('.bike_selectionElement').removeClass("bike-selected");
+  parentDiv.find('.bike_selectionElementchk .radio-selection').removeClass("checkout-bikes__selected-bike-icon");
+  parentDiv.find('.bike_selectionElementchk .radio-selection').addClass("checkout-bikes__select-bike-icon");
+  parentDiv.find('.bike_selectionElementchk').removeClass("bike-selected");
   jQuery(this).find('.radio-selection').addClass("checkout-bikes__selected-bike-icon");
   jQuery(this).addClass("bike-selected");
   jQuery.ajax({
@@ -2509,13 +2541,16 @@ jQuery('body').on('click', '.bike_selectionElementchk', function () {
       if (response.size_opts) {
         jQuery('select[name="tt-bike-size"]').html(response.size_opts);
       }
+      jQuery('input[name="bikeTypeId"]').val(bikeTypeId);
+      // Trigger complete status check after bike model changed.
+      prebookingChecklistValidate();
       jQuery.unblockUI();
       jQuery("#currency_switcher").trigger("change")
     }
   });
 });
 jQuery('body').on('change', '.tt_chk_bike_size_change', function () {
-  var bikeTypeId = jQuery('input[name="bikeTypeId"]:checked').val();
+  var bikeTypeId = jQuery('input[name="bikeModelId"]:checked').val();
   var bike_size = jQuery(this).val();
   var order_id = jQuery('input[name="wc_order_id"]').val();
   var actionName = 'tt_chk_bike_size_change_ajax_action';
