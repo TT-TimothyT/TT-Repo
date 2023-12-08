@@ -162,7 +162,12 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
                 $zipcode = tt_validate($wc_booking->shipping_address_zipcode);
                 $rider_height = tt_validate($wc_booking->rider_height);
                 $rider_level = tt_validate($wc_booking->rider_level);
-                $bike_id = tt_validate($wc_booking->bike_id);
+                // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
+                $default_bike_id = '';
+                if( 0 === (int) $wc_booking->bike_id ){
+                    $default_bike_id = 0;
+                }
+                $bike_id = tt_validate($wc_booking->bike_id, $default_bike_id);
                 $bike_size = tt_validate($wc_booking->bike_size);
                 $bike_selection = tt_validate($wc_booking->bike_selection);
                 $isBikeUpgrade = tt_validate($wc_booking->isBikeUpgrade, '');

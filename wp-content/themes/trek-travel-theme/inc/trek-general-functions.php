@@ -2885,6 +2885,9 @@ function tt_get_bikes_by_trip_info($tripId = '', $tripCode = '', $bikeTypeId = '
         $sql .= " AND ts.bikeId = '{$bikeID}'";
     }
     $bike_size_opts = '<option value="">Select bike size</option>';
+    // Insert the "I don't know" option for bike sizes in the first position.
+    $i_dont_know_selected = ( 33 == (int) $s_bike_size_id ? 'selected' : '');
+    $bike_size_opts .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>';
     $bike_Type_opts = '<option value="">Select bike type</option>';
     $bikes_arr = $wpdb->get_results($sql, ARRAY_A);
     if ($bikes_arr) {
@@ -2982,6 +2985,12 @@ function tt_get_bike_id_by_args($tripId = '', $tripCode = '', $bikeTypeId = '', 
             }
         }
     }
+
+    // If bike size is 33, means "I don't know" option is selected, and need send to NS bike_id with value 0.
+    if( 33 === (int) $bike_size ){
+        $bike_id = 0;
+    }
+
     return [
         'status' => true,
         'bike_id' => $bike_id
