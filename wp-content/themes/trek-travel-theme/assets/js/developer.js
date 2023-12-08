@@ -1720,8 +1720,8 @@ jQuery(document).on('click keyup keydown change', '.tt_rider_level_select', func
   if (rider_level_id == 5 || rider_level_text == 'Non-Rider') {
     jQuery(divID).find('input').prop('required', false);
     jQuery(divID).find('select').prop('required', false);
-    //empty/reset all Fields
-    jQuery(divID).find('input').val('');
+    //empty/reset all Fields without bike type id fields.
+    jQuery(divID).find('input:not([name$="[bikeTypeId]"])').val('');
     jQuery(divID).find('select').prop('selectedIndex',0);
     if (guest_id != 'primary') {
       jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val(5257);
@@ -1739,9 +1739,13 @@ jQuery(document).on('click keyup keydown change', '.tt_rider_level_select', func
     console.log('rider_level_id', rider_level_id);
     jQuery(divID).show();
     if (guest_id != 'primary') {
-      jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val('');
+      if(jQuery('select[name="bike_gears[' + guest_id + '][bike_size]"] option:selected').index() <= 0) {
+        jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val('');
+      }
     }else{
-      jQuery('input[name="bike_gears[primary][bikeId]"]').val('')
+      if(jQuery('select[name="bike_gears[primary][bike_size]"] option:selected').index() <= 0) {
+        jQuery('input[name="bike_gears[primary][bikeId]"]').val('');
+      }
     }
     if (guest_id != 'primary') {
       jQuery(divID).find('select').not('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"]').prop('required', true);
@@ -1787,6 +1791,11 @@ jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
     var guest_id = 'primary';
   }
   if (jQuery(this).is(':checked')) {
+    jQuery(divID).find('input').prop('required', false);
+    jQuery(divID).find('select').prop('required', false);
+    //empty/reset all Fields without bike type id fields.
+    jQuery(divID).find('input:not([name$="[bikeTypeId]"])').val('');
+    jQuery(divID).find('select').prop('selectedIndex',0);
     if (guest_id != 'primary') {
       jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val(5270);
     }else{
@@ -1806,9 +1815,13 @@ jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
     }
   } else {
     if (guest_id != 'primary') {
-      jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val('');
+      if(jQuery('select[name="bike_gears[' + guest_id + '][bike_size]"] option:selected').index() <= 0) {
+        jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val('');
+      }
     }else{
-      jQuery('input[name="bike_gears[primary][bikeId]"]').val('')
+      if(jQuery('select[name="bike_gears[primary][bike_size]"] option:selected').index() <= 0) {
+        jQuery('input[name="bike_gears[primary][bikeId]"]').val('')
+      }
     }
     jQuery(divID).show();
     if (guest_id != 'primary') {
@@ -1880,6 +1893,7 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
       if (targetElement == 'tt_bike_selection_primary' && response) {
         // jQuery("div[data-selector='tt_bike_selection_primary']").removeClass("bike-selected");
         // jQuery("div[data-selector='tt_bike_selection_primary'] span.radio-selection").removeClass("checkout-bikes__selected-bike-icon");
+        jQuery('input[name="bike_gears[primary][bikeId]"]').val('')
         if (response.size_opts) {
           jQuery('select[name="bike_gears[primary][bike_size]"]').html(response.size_opts);
         }
@@ -1891,6 +1905,7 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
         if (guest_num[1] && guest_num[1] != 0) {
           // jQuery("div[class^='tt_bike_selection_guest_']").removeClass("bike-selected");
           // jQuery("div[class^='tt_bike_selection_guest_'] span.radio-selection").removeClass("checkout-bikes__selected-bike-icon");
+          jQuery('input[name="bike_gears[guests][' + guest_num[1] + '][bikeId]"]').val('');
           if (response.size_opts) {
             jQuery(`select[name="bike_gears[guests][${guest_num[1]}][bike_size]"]`).html(response.size_opts);
           }
