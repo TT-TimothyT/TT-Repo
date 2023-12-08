@@ -255,7 +255,7 @@ get_header();
                                                 <div class="card-body">
                                                     <# if ( data['Trip Style'] ) { #>
                                                     <ul class="list-inline mb-1">
-                                                        <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
+                                                        <li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
                                                         <li class="list-inline-item fs-sm">{{data['Trip Style']}}</li>
                                                         <li class="list-inline-item"><i class="bi bi-info-circle pdp-trip-styles"></i></li>
                                                     </ul>
@@ -279,7 +279,7 @@ get_header();
 
                                                     <# if ( data['Rider Level'] ) { #>
                                                     <ul class="list-inline mb-1">
-                                                        <li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
+                                                        <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
                                                         <li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level'].replace(/&amp;/g, ' & ')}}</li>
                                                         <li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>
                                                     </ul>
