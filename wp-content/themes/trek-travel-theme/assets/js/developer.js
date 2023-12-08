@@ -2684,19 +2684,26 @@ jQuery('body').on('change', '.tt_rider_level_select', function () {
 
 jQuery('body').on('change', '.form-select', function () {
   var selectValue = jQuery(this).val()
-  console.log(selectValue);
-  if( selectValue == 'men' ) {
-    console.log( 'true' );
-  }
-  if ((selectValue && selectValue > 0) || selectValue == 'men' || selectValue == 'woman' ) {
-    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none")
+  if (selectValue == 'none' || selectValue == '' || selectValue == null) {
+    jQuery(this).closest('div.form-floating').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-floating').removeClass('woocommerce-validated');
+  } else if ((selectValue) || selectValue == 'men' || selectValue == 'woman' ) {
     jQuery(this).closest('div.form-floating').removeClass('woocommerce-invalid');
     jQuery(this).closest('div.form-floating').addClass('woocommerce-validated');
   } else {
-    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none")
     jQuery(this).closest('div.form-floating').addClass('woocommerce-invalid');
     jQuery(this).closest('div.form-floating').removeClass('woocommerce-validated');
+  }
+})
 
+jQuery('body').on('change', '.form-control', function () {
+  var selectValue = jQuery(this).val()
+  if ((selectValue) ) {
+    jQuery(this).closest('div.form-floating').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-floating').addClass('woocommerce-validated');
+  } else {
+    jQuery(this).closest('div.form-floating').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-floating').removeClass('woocommerce-validated');
   }
 })
 
