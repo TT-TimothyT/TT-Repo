@@ -136,6 +136,23 @@ if( $parent_product_id ){
 }
 $isPassportRequired = get_post_meta($booked_trip_id, TT_WC_META_PREFIX . 'isPassportRequired', true);
 $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', true);
+
+$tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat' );
+$hideJerseyForTrips = [ 710, 744, 712, 713 ];
+$hideme = "";
+
+if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
+	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
+	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
+		if ( in_array( 712, $product_cat_matches ) || in_array( 744, $product_cat_matches ) ) {
+			$hideme = " d-none";
+		} elseif ( in_array( 710, $product_cat_matches ) && in_array( 713, $product_cat_matches ) ) {
+			$hideme = " d-none";
+		} else {
+			$hideme = " none";
+		}
+	}
+}
 ?>
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
@@ -565,7 +582,7 @@ $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', 
 											<label for="emergency_contact_address_2">Helmet Size</label>
 										</div>
 									</div>
-									<div class="col-md px-0">
+									<div class="col-md px-0<?php echo $hideme; ?>">
 										<div class="form-floating">
 											<select name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00">
 												<option value="">Select Clothing Style</option>
@@ -576,7 +593,7 @@ $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', 
 										</div>
 									</div>
 								</div>
-								<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row">
+								<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row<?php echo $hideme; ?>">
 									<div class="col-md px-0">
 										<div class="form-floating">
 											<select name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true">
@@ -585,7 +602,6 @@ $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', 
 											<label for="emergency_contact_address_2">Jersey Size</label>
 										</div>
 									</div>
-
 								</div>
 								<?php if ($lockRecord != 1 && $lockBike != 1) { ?>
 									<div class="form-check form-check-inline mb-0">
