@@ -7,10 +7,10 @@ if ($tt_posted) {
     $primary_name  = $tt_posted['shipping_first_name'] . ' ' . $tt_posted['shipping_last_name'];
     $guests = isset($tt_posted['guests']) ? $tt_posted['guests'] : array();
 }
-$tripInfo = tt_get_trip_pid_sku_from_cart();
-$product = new WC_product($tripInfo['parent_product_id']);
-$tripStyle = $product->get_attribute( 'pa_style' );
-$tripProductLine = wc_get_product_term_ids( $product->id, 'product_cat' );
+$tripInfo           = tt_get_trip_pid_sku_from_cart();
+$parent_product_sku = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX.'itineraryCode', true );
+$parent_product_id  = wc_get_product_id_by_sku($parent_product_sku);
+$tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat' );
 $hideJerseyForTrips = [ 710, 744, 712, 713 ];
 $hideme = "";
 
