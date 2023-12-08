@@ -71,7 +71,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
 ?>
 <div class="checkout-payment" id="checkout-payment">
     <div class="checkout-payment__add-travel <?php if (!empty($guest_insurance_html)) echo 'd-none'; ?>">
-        <h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-payment__title mb-3">Interested in Travel Protection? <i class="bi bi-info-circle"></i></h5>
+        <h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-payment__title mb-3">Interested in Travel Protection? <i class="bi bi-info-circle checkout-travel-protection-tooltip"></i></h5>
         <p class="fs-sm checkout-payment__sublabel mb-0">In order to help protect you, your traveling party, and your trip investment, we recommend that you add travel protection to your reservation. For your convenience, Trek Travel offers this protection with a wide range of benefits through Arch RoamRight comprehensive line of insurance programs.</p>
         <div class="checkout-payment__checkbox d-flex align-items-lg-center">
             <input type="checkbox" class="protection_modal protection_modal_ev">

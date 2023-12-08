@@ -27,6 +27,8 @@
 
 	<?php wc_get_template_part( 'checkout/private', 'popup' ); ?>
 
+	<?php wc_get_template_part( 'checkout/travel', 'protection-popup' ); ?>
+
 	</div><!-- /#wrapper - open in header.php -->
 	<?php
 	wp_footer();

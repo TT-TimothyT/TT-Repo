@@ -615,10 +615,10 @@
 .no-scroll {
   overflow: hidden !important;
 }
-.open-roommate-popup, .checkout-private-popup, .checkout-double-occupancy {
+.open-roommate-popup, .checkout-private-popup, .checkout-double-occupancy, .checkout-travel-protection-tooltip {
   cursor: pointer;
 }
-.open-to-roommate-popup-container, .private-popup-container {
+.open-to-roommate-popup-container, .private-popup-container, .travel-protection-tooltip-container {
   top: 0;
   display: flex;
   width: 100%;
@@ -629,7 +629,7 @@
   background-color: #00000038;
   display: none;
 
-  .open-to-roommate-popup, .private-popup {
+  .open-to-roommate-popup, .private-popup, .travel-protection-tooltip {
     position: absolute;
     top: 50%;
     margin-top: 12px;

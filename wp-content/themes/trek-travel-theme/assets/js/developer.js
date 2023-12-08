@@ -911,6 +911,27 @@ jQuery(document).ready(function () {
           jQuery('body').css('overflow','hidden');
           jQuery('html').addClass('no-scroll');
         })
+
+        jQuery('body').on('click', '.checkout-travel-protection-tooltip', function() {
+          jQuery('.travel-protection-tooltip-container').css('display', 'flex');
+          jQuery('header').css('z-index','0');
+          jQuery('body').css('overflow','hidden');
+          jQuery('html').addClass('no-scroll');
+        })
+        
+        jQuery('.travel-protection-tooltip-container .close-btn').on('click', function() {
+          jQuery('.travel-protection-tooltip-container').fadeOut();
+          jQuery('header').css('z-index','1020');
+          jQuery('html').removeClass('no-scroll');
+        })
+        
+        jQuery('.travel-protection-tooltip-container').on('click', function(e) {
+          if(jQuery(e.target).hasClass('travel-protection-tooltip-container')) {
+            jQuery('.travel-protection-tooltip-container').fadeOut();
+            jQuery('header').css('z-index','1020');
+            jQuery('html').removeClass('no-scroll');
+          }
+        })
       }
     });
   });
@@ -3867,4 +3888,25 @@ jQuery('body').on('click', '.checkout-double-occupancy', function() {
   jQuery('header').css('z-index','0');
   jQuery('body').css('overflow','hidden');
   jQuery('html').addClass('no-scroll');
+})
+
+jQuery('body').on('click', '.checkout-travel-protection-tooltip', function() {
+  jQuery('.travel-protection-tooltip-container').css('display', 'flex');
+  jQuery('header').css('z-index','0');
+  jQuery('body').css('overflow','hidden');
+  jQuery('html').addClass('no-scroll');
+})
+
+jQuery('.travel-protection-tooltip-container .close-btn').on('click', function() {
+  jQuery('.travel-protection-tooltip-container').fadeOut();
+  jQuery('header').css('z-index','1020');
+  jQuery('html').removeClass('no-scroll');
+})
+
+jQuery('.travel-protection-tooltip-container').on('click', function(e) {
+  if(jQuery(e.target).hasClass('travel-protection-tooltip-container')) {
+    jQuery('.travel-protection-tooltip-container').fadeOut();
+    jQuery('header').css('z-index','1020');
+    jQuery('html').removeClass('no-scroll');
+  }
 })
