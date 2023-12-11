@@ -4269,6 +4269,12 @@ function tt_guest_details($tt_posted = [])
                 $bikeTypeId = tt_validate($bike_gears['guests'][$iter]['bikeTypeId']);
                 $own_bike = tt_validate($bike_gears['guests'][$iter]['own_bike']);
             }
+
+            $wheel_upgrade = 'No';
+            $bikeTypeInfo = tt_ns_get_bike_type_info( $bikeTypeId );
+            if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
+                $wheel_upgrade = 'Yes';
+            }
             $guest_html .= '<div>';
             if ($iter == 0) {
                 $guest_label = "Primary Guest";
@@ -4310,14 +4316,16 @@ function tt_guest_details($tt_posted = [])
                         <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>';
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                 } elseif ( $rider_levelVal != 5 ) {
                     $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>';
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                     }
             $bike_gear_html .= '</div>';
             if (($iter % $cols == $cols - 1) || ($iter == $guest_count - 1)) {

@@ -128,6 +128,11 @@ $tt_rooms_output = tt_rooms_output($tt_posted);
         $fields_size = sizeof($review_bikes_arr);
         if (isset($review_bikes_arr) && !empty($review_bikes_arr)) {
             foreach ($review_bikes_arr as $review_bikes_arr_k => $review_bikes_arr_val) {
+                $wheel_upgrade = 'No';
+                $bikeTypeInfo = tt_ns_get_bike_type_info( $review_bikes_arr_val['bikeTypeId'] );
+                if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
+                    $wheel_upgrade = 'Yes';
+                }
                 if ($iter % $cols == 0) {
                     $review_bikes_html .= '<div class="row mx-0">';
                 }
@@ -164,7 +169,7 @@ $tt_rooms_output = tt_rooms_output($tt_posted);
                         <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>
                         <p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
                         <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>
-                        <p class="fs-sm lh-sm mb-0">Wheel Upgrade: No</p>';
+                        <p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                 } elseif( $review_bikes_arr_val['rider_level'] != 5 ) { 
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $syncBikeTypes . '</p>
                         <p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
@@ -172,7 +177,7 @@ $tt_rooms_output = tt_rooms_output($tt_posted);
                         <p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
                         <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>
                         <p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>
-                        <p class="fs-sm lh-sm mb-0">Wheel Upgrade: No</p>';
+                        <p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                 }
                 $review_bikes_html .= '</div>';
                 if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {

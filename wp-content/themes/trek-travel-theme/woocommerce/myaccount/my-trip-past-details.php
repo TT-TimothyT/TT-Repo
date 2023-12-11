@@ -126,6 +126,12 @@ $bike_pedal = tt_get_custom_item_name('syncPedals', $pedal_selection);
 $jersey_size = tt_get_custom_item_name('syncJerseySizes', $tt_jersey_size);
 $jersey_style = tt_get_custom_item_name('syncJerseySizes', $jersey_style);
 $tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
+$wheel_upgrade = 'No';
+$bike_type_id = $User_order_info[0]['bike_type_id'];
+$bikeTypeInfo = tt_ns_get_bike_type_info( $bike_type_id );
+if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
+	$wheel_upgrade = 'Yes';
+}
 $pa_city = "";
 $parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
 if( $parent_product_id ){
@@ -324,6 +330,7 @@ if( $parent_product_id ){
 							<p class="fw-normal fs-sm lh-sm">Helmet Size: <?php echo $helmet_size; ?></p>
 							<p class="fw-normal fs-sm lh-sm">Jersey Size: <?php echo $jersey_size; ?></p>
 							<p class="fw-normal fs-sm lh-sm">Jersey Style: <?php echo $jersey_style; ?></p>
+							<p class="fw-normal fs-sm lh-sm">Wheel Upgrade: <?php echo $wheel_upgrade; ?></p>
 						<?php } ?>
 					</div>
 				</div> <!-- info ends -->
