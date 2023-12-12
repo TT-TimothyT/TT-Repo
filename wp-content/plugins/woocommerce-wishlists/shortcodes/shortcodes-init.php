@@ -260,9 +260,35 @@ function shortcode_wc_wishlists_button( $atts = '' ) {
 	return ob_get_clean();
 }
 
+function shortcode_wc_wishlists_add_link( $atts ): string {
+
+	$args = shortcode_atts( array(
+		'product_id'  => 0,
+		'wishlist_id' => 'default',
+		'title'       => esc_html__( 'Add to Wishlist', 'wc_wishlists' ),
+	), $atts );
+
+	$product_id  = $args['product_id'] ?: get_the_ID();
+	$wishlist_id = $args['wishlist_id'];
+	$title       = $args['title'];
+
+	if ( $title == 'product_title' ) {
+		$product       = wc_get_product( $product_id );
+		if ( $product ) {
+			$title = sprintf( esc_html__( 'Add %s to Wishlist', 'wc_wishlists' ), $product->get_title() );
+		}
+	}
+
+	return '<a href="' . esc_url( add_query_arg( array(
+			'add-to-wishlist-itemid' => $product_id,
+			'wlid'                   => $wishlist_id
+		) ) ) . '" rel="nofollow" data-product-id="' . esc_attr( $product_id ) . '" data-wishlist-id="' . esc_attr( $wishlist_id ) . '" data-product-type="simple" class="add_to_wishlist">' . esc_html__( $title ) . '</a>';
+}
+
 add_shortcode( 'wc_wishlists_create', 'shortcode_wc_wishlists_create' );
 add_shortcode( 'wc_wishlists_search', 'shortcode_wc_wishlists_search' );
 add_shortcode( 'wc_wishlists_single', 'shortcode_wc_wishlists_single' );
 add_shortcode( 'wc_wishlists_my_archive', 'shortcode_wc_wishlists_my_archive' );
 add_shortcode( 'wc_wishlists_edit', 'shortcode_wc_wishlists_edit' );
 add_shortcode( 'wc_wishlists_button', 'shortcode_wc_wishlists_button' );
+add_shortcode( 'wc_wishlists_add_link', 'shortcode_wc_wishlists_add_link' );

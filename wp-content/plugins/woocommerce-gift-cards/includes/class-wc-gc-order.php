@@ -2,7 +2,7 @@
 /**
  * WC_GC_Order class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 
@@ -249,7 +249,7 @@ class WC_GC_Order {
 		}
 
 		/**
-		 * Filter WooCommerce Gift Cards formatted order total.
+		 * Filter Woo Gift Cards formatted order total.
 		 *
 		 * @param string   $formatted_total  Total to display.
 		 * @param WC_Order $order            Order data.

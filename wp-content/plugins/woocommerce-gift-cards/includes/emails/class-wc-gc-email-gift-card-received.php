@@ -2,7 +2,7 @@
 /**
  * WC_GC_Email_Gift_Card_Received class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 

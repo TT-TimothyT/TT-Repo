@@ -233,16 +233,10 @@
 
         $('.wishlist-add-to-cart-button').click(function (e) {
             e.preventDefault();
-
-            var href = ($(this).attr('href'));
-            var qty = $(this).closest('tr').find('input.qty').val();
-
-            var url = href + '&quantity=' + qty;
-
-            window.location = url;
-
+            const href = ($(this).attr('href'));
+            const qty = $(this).closest('tr').find('input.qty').val();
+            window.location = href + '&quantity=' + qty;
             return false;
-
         });
 
         $('.wishlist-add-to-cart-button-view').click(function (e) {

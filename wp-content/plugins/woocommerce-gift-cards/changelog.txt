@@ -1,4 +1,9 @@
-*** WooCommerce Gift Cards ***
+*** Woo Gift Cards ***
+
+2023.12.12 - version 1.16.7
+* Important - Security improvements.
+* Fix - Prevented users from deleting gift cards that are used in orders. 
+* Fix - Fixed an issue with how gift card codes were displayed in e-mails when viewed from mobile screens.
 
 2023.10.17 - version 1.16.6
 * Fix - Important: Security improvements.

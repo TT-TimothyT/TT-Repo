@@ -2,7 +2,7 @@
 /**
  * WC_GC_Settings class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.7.0
  */
 
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'WC_GC_Settings' ) ) :
 
 	/**
-	 * WooCommerce Gift Cards Settings.
+	 * Woo Gift Cards Settings.
 	 *
 	 * @class    WC_GC_Settings
 	 * @version  1.7.3

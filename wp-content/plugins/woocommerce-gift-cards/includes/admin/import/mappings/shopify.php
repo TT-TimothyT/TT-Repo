@@ -2,7 +2,7 @@
 /**
  * Shopify Gift Card columns mapping.
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

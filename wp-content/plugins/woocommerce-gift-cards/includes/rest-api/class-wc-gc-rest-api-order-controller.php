@@ -2,7 +2,7 @@
 /**
  * WC_GC_REST_API_Order_Controller class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.8.0
  */
 

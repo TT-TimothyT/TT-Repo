@@ -1,11 +1,11 @@
 <?php
 /*
-* Plugin Name: WooCommerce Gift Cards
-* Plugin URI: https://woocommerce.com/products/gift-cards/
+* Plugin Name: Woo Gift Cards
+* Plugin URI: https://woo.com/products/gift-cards/
 * Description: Create and sell digital gift cards that customers can redeem at your store.
-* Version: 1.16.6
-* Author: WooCommerce
-* Author URI: https://somewherewarm.com/
+* Version: 1.16.7
+* Author: Woo
+* Author URI: https://woo.com/
 *
 * Woo: 5571998:ef39f1b1dfb2c215f40fa963c0ae971c
 *
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Main plugin class.
  *
  * @class    WC_Gift_Cards
- * @version  1.16.6
+ * @version  1.16.7
  */
 class WC_Gift_Cards {
 
@@ -42,7 +42,7 @@ class WC_Gift_Cards {
 	 *
 	 * @var string
 	 */
-	private $version = '1.16.6';
+	private $version = '1.16.7';
 
 	/**
 	 * Min required WC version.
@@ -223,7 +223,7 @@ class WC_Gift_Cards {
 		// WC version sanity check.
 		if ( ! function_exists( 'WC' ) || version_compare( WC()->version, $this->wc_min_version ) < 0 ) {
 			/* translators: %s: WC min version */
-			$notice = sprintf( __( 'WooCommerce Gift Cards requires at least WooCommerce <strong>%s</strong>.', 'woocommerce-gift-cards' ), $this->wc_min_version );
+			$notice = sprintf( __( 'Woo Gift Cards requires at least WooCommerce <strong>%s</strong>.', 'woocommerce-gift-cards' ), $this->wc_min_version );
 			require_once  WC_GC_ABSPATH . 'includes/admin/class-wc-gc-admin-notices.php' ;
 			WC_GC_Admin_Notices::add_notice( $notice, 'error' );
 			return false;
@@ -253,7 +253,7 @@ class WC_Gift_Cards {
 	 */
 	public function define_constants() {
 		$this->maybe_define_constant( 'WC_GC_VERSION', $this->version );
-		$this->maybe_define_constant( 'WC_GC_SUPPORT_URL', 'https://woocommerce.com/my-account/marketplace-ticket-form/' );
+		$this->maybe_define_constant( 'WC_GC_SUPPORT_URL', 'https://woo.com/my-account/marketplace-ticket-form/' );
 		$this->maybe_define_constant( 'WC_GC_ABSPATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	}
 
@@ -479,17 +479,17 @@ class WC_Gift_Cards {
 		$resource = false;
 
 		if ( 'update-php' === $handle ) {
-			$resource = 'https://woocommerce.com/document/how-to-update-your-php-version/';
+			$resource = 'https://woo.com/document/how-to-update-your-php-version/';
 		} elseif ( 'docs-contents' === $handle ) {
-			$resource = 'https://woocommerce.com/document/gift-cards/';
+			$resource = 'https://woo.com/document/gift-cards/';
 		} elseif ( 'guide' === $handle ) {
-			$resource = 'https://woocommerce.com/document/gift-cards/store-owners-guide/';
+			$resource = 'https://woo.com/document/gift-cards/store-owners-guide/';
 		} elseif ( 'guide-multi-prepaid-tax' === $handle ) {
-			$resource = 'https://woocommerce.com/document/gift-cards/store-owners-guide/#understanding-gift-cards';
+			$resource = 'https://woo.com/document/gift-cards/store-owners-guide/#understanding-gift-cards';
 		} elseif ( 'faq-multi-prepaid-revenue' === $handle ) {
-			$resource = 'https://woocommerce.com/document/gift-cards/faq/#gift-cards-accounting-revenue';
+			$resource = 'https://woo.com/document/gift-cards/faq/#gift-cards-accounting-revenue';
 		} elseif ( 'updating' === $handle ) {
-			$resource = 'https://woocommerce.com/document/how-to-update-woocommerce/';
+			$resource = 'https://woo.com/document/how-to-update-woocommerce/';
 		} elseif ( 'ticket-form' === $handle ) {
 			$resource = WC_GC_SUPPORT_URL;
 		}

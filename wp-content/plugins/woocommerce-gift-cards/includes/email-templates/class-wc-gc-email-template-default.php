@@ -2,7 +2,7 @@
 /**
  * WC_GC_Email_Template_Default class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.2.0
  */
 
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Default email template.
  *
  * @class    WC_GC_Email_Template_Default
- * @version  1.16.0
+ * @version  1.16.7
  */
 class WC_GC_Email_Template_Default extends WC_GC_Email_Template {
 
@@ -282,7 +282,7 @@ class WC_GC_Email_Template_Default extends WC_GC_Email_Template {
 			color: <?php echo esc_attr( $code_text ); ?>;
 			font-weight: bold;
 			margin-top: 4px;
-			font-size: 16px;
+			font-size: 14px;
 			line-height: 16px;
 			border: 1px solid <?php echo esc_attr( $code_text ); ?>;
 			padding-top: 5px;

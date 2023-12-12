@@ -2,7 +2,7 @@
 /**
  * WC_GC_Gift_Card_Product class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Gift Card Product view controller.
  *
  * @class    WC_GC_Gift_Card_Product
- * @version  1.16.6
+ * @version  1.16.7
  */
 class WC_GC_Gift_Card_Product {
 
@@ -855,6 +855,7 @@ class WC_GC_Gift_Card_Product {
 			if ( ! $_product || ! is_a( $_product, 'WC_Product' ) || ! self::is_gift_card( $_product ) ) {
 				continue;
 			}
+
 			if ( $_product->is_type( 'variation' ) ) {
 				$_product = wc_get_product( $_product->get_parent_id() );
 			}
@@ -870,6 +871,11 @@ class WC_GC_Gift_Card_Product {
 			// Skip if no emails.
 			if ( 0 === count( $recipients_array ) ) {
 				continue;
+			}
+
+			// Check for invalid quantity.
+			if ( count( $recipients_array ) % $order_item->get_quantity() !== 0 ) {
+				throw new Exception( __( 'Invalid quantity configuration. Please review the recipients count.', 'woocommerce-gift-cards' ) );
 			}
 
 			// Parse the initial quantity and fill a new recipients array.

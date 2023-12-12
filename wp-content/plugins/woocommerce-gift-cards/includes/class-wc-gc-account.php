@@ -2,7 +2,7 @@
 /**
  * WC_GC_Account class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 

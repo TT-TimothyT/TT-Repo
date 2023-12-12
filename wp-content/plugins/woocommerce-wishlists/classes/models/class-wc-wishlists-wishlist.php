@@ -2,6 +2,25 @@
 
 class WC_Wishlists_Wishlist {
 
+	public static function get_wishlist( $wishlist_id ) {
+		// Check for the list in the cache.
+		$wishlist = wp_cache_get( 'wc_wishlists_wishlist_' . $wishlist_id, 'wishlists' );
+
+		if ( false === $wishlist ) {
+			$wishlist = new WC_Wishlists_Wishlist( $wishlist_id );
+
+			// Make sure the wishlist exists and is the correct post type.
+			if ( ! $wishlist->post || 'wishlist' !== $wishlist->post->post_type ) {
+				$wishlist = false;
+			}
+
+			wp_cache_set( 'wc_wishlists_wishlist_' . $wishlist_id, $wishlist, 'wishlists' );
+		}
+
+		return $wishlist;
+	}
+
+
 	/**
 	 * @var array|null|WP_Post
 	 */
@@ -17,6 +36,8 @@ class WC_Wishlists_Wishlist {
 		$this->post = get_post( $id );
 	}
 
+
+
 	public function the_title() {
 		echo get_the_title( $this->id );
 	}
@@ -26,6 +47,10 @@ class WC_Wishlists_Wishlist {
 		setup_postdata( $this->post );
 		the_content();
 		wp_reset_postdata();
+	}
+
+	public function get_is_default() {
+		return get_post_meta( $this->id, '_wishlist_is_default', true );
 	}
 
 	public function the_url_edit() {
@@ -211,6 +236,7 @@ class WC_Wishlists_Wishlist {
 			'wishlist_last_name'           => get_post_meta( $post_id, '_wishlist_last_name', true ),
 			'wishlist_items'               => get_post_meta( $post_id, '_wishlist_items', true ),
 			'wishlist_subscribers'         => get_post_meta( $post_id, '_wishlist_subscribers', true ),
+			'wishlist_is_default'          => get_post_meta( $post_id, '_wishlist_is_default', true)
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -241,7 +267,7 @@ class WC_Wishlists_Wishlist {
 			WC_Wishlist_Compatibility::wc_add_notice( __( 'Unable to update list', 'wc_wishlist' ), 'error' );
 
 			return false;
-		} elseif ( $wishlist_id && $wishlist_id > 0 ) {
+		} elseif ( $wishlist_id > 0 ) {
 
 			//Make sure we store the email.
 			$actual_wishlist_user_email = get_post_meta( $post_id, '_wishlist_owner_email', true );
@@ -300,5 +326,3 @@ class WC_Wishlists_Wishlist {
 	}
 
 }
-
-?>

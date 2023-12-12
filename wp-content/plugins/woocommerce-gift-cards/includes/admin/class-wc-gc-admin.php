@@ -2,7 +2,7 @@
 /**
  * WC_GC_Admin class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 
@@ -173,7 +173,7 @@ class WC_GC_Admin {
 	 */
 	public static function add_privacy_policy_guide_content() {
 		if ( function_exists( 'wp_add_privacy_policy_content' ) ) {
-			wp_add_privacy_policy_content( 'WooCommerce Gift Cards', self::get_privacy_policy_guide_message() );
+			wp_add_privacy_policy_content( 'Woo Gift Cards', self::get_privacy_policy_guide_message() );
 		}
 	}
 
@@ -187,7 +187,7 @@ class WC_GC_Admin {
 		$content = '
 			<div class="wp-suggested-text">' .
 				'<p class="privacy-policy-tutorial">' .
-					__( 'WooCommerce Gift Cards stores the following information, as provided by gift card buyers:', 'woocommerce-gift-cards' ) .
+					__( 'Woo Gift Cards stores the following information, as provided by gift card buyers:', 'woocommerce-gift-cards' ) .
 				'</p>' .
 				'<ul class="privacy-policy-tutorial">' .
 					'<li>' . __( 'Sender name.', 'woocommerce-gift-cards' ) . '</li>' .

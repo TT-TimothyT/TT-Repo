@@ -2,7 +2,7 @@
 /**
  * Gift Card column mappings. Load up extra automatic mappings for the CSV importer.
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.6.0
  */
 

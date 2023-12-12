@@ -118,7 +118,7 @@ class WC_Products_Compare_Frontend {
 	public function load_scripts() {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_enqueue_script( 'wc_products_compare_script', plugins_url( 'assets/js/frontend' . $suffix . '.js', dirname( __FILE__ ) ), array( 'jquery', 'jquery-cookie' ), WC_PRODUCTS_COMPARE_VERSION, true );
+		wp_enqueue_script( 'wc_products_compare_script', WC_PRODUCTS_COMPARE_URL . 'assets/js/frontend' . $suffix . '.js', array( 'jquery', 'jquery-cookie' ), WC_PRODUCTS_COMPARE_VERSION, true );
 
 		// Maximum products allowed to be compared.
 		$max_products = apply_filters( 'woocommerce_products_compare_max_products', 5 );
@@ -140,7 +140,7 @@ class WC_Products_Compare_Frontend {
 
 		wp_localize_script( 'wc_products_compare_script', 'wc_products_compare_local', $localized_vars );
 
-		wp_enqueue_style( 'wc_products_compare_style', plugins_url( 'assets/css/frontend.css', dirname( __FILE__ ) ), array( 'dashicons' ), WC_PRODUCTS_COMPARE_VERSION );
+		wp_enqueue_style( 'wc_products_compare_style', WC_PRODUCTS_COMPARE_URL . 'assets/css/frontend.css', array( 'dashicons' ), WC_PRODUCTS_COMPARE_VERSION );
 
 		return true;
 	}
@@ -209,7 +209,7 @@ class WC_Products_Compare_Frontend {
 				'products-compare-page-html.php',
 				'',
 				'',
-				plugin_dir_path( dirname( __FILE__ ) ) . 'templates/'
+				WC_PRODUCTS_COMPARE_PATH . 'templates/'
 			);
 
 			exit;
@@ -236,41 +236,41 @@ class WC_Products_Compare_Frontend {
 	}
 
 	/**
-	 * Checks if the product is listed in the compared products cookie.
+	 * Checks if the product is listed in the compared product's cookie.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param int $product_id Product ID.
 	 * @return bool
 	 */
 	public function is_listed( $product_id ) {
-		$products = $this->get_compared_products(); // Comma delimited string.
-
-		// List exists.
-		if ( $products && is_array( $products ) && in_array( (int) $product_id, $products, true ) ) {
-			return true;
-		} else {
-			return false;
-		}
+		return ( in_array( $product_id, $this->get_compared_products(), true ) );
 	}
 
 	/**
-	 * Get the selected compared products from cookie.
+	 * Gets the products to be compared.
 	 *
 	 * @since 1.0.0
-	 * @return $ids array
+	 *
+	 * @return array
 	 */
 	public static function get_compared_products() {
-		$products = isset( $_COOKIE[ self::$cookie_name ] ) ? wc_clean( wp_unslash( $_COOKIE[ self::$cookie_name ] ) ) : false;
+		$product_ids = array();
 
-		// Check if list exists.
-		if ( ! empty( $products ) ) {
-			// Convert it back to array.
-			$products = array_map( 'absint', explode( ',', $products ) );
-		} else {
-			$products = false;
+		// Extract the products to compare from the cookie.
+		if ( ! empty( $_COOKIE[ self::$cookie_name ] ) ) {
+			$cookie_value = wc_clean( wp_unslash( $_COOKIE[ self::$cookie_name ] ) );
+			$product_ids  = array_map( 'absint', explode( ',', $cookie_value ) );
 		}
 
-		return $products;
+		/**
+		 * Filters the products to be compared.
+		 *
+		 * @since 1.3.0
+		 *
+		 * @param array $product_ids An array with the product IDs.
+		 */
+		return apply_filters( 'woocommerce_products_compare_selected_products', $product_ids );
 	}
 
 	/**
@@ -297,7 +297,7 @@ class WC_Products_Compare_Frontend {
 
 			$attributes = $product->get_attributes();
 
-			$description = version_compare( WC_VERSION, '3.0.0', '<' ) ? $product->post->post_content : $product->get_description();
+			$description = $product->get_description();
 
 			if ( ! empty( $description ) ) {
 				$headers[] = 'description';

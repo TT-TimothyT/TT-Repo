@@ -3,11 +3,11 @@
  * Plugin Name: WooCommerce WishLists
  * Plugin URI: https://woocommerce.com/products/woocommerce-wishlists/
  * Description:  WooCommerce Wishlists allows you to create public and personal wishlists.
- * Version: 2.2.10
+ * Version: 2.3.0
  * Author: Element Stark
  * Author URI: https://www.elementstark.com
  * Requires at least: 3.1
- * Tested up to: 6.2
+ * Tested up to: 6.4
 
  * Text Domain: wc_wishlist
  * Domain Path: /lang/
@@ -16,8 +16,8 @@
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
- * WC requires at least: 3.8.0
- * WC tested up to: 7.5
+ * WC requires at least: 7.0
+ * WC tested up to: 8.3
  * Woo: 171144:6bd20993ea96333eab6931ec2adc6d63
  */
 
@@ -44,9 +44,9 @@ if ( is_woocommerce_active() ) {
 		 * @var string
 		 * This is the database version for Wishlists, does not reflect the plugin version.
 		 */
-		var $version = '2.1.9';
+		var $version = '2.2.11';
 
-		var $assets_version = '2.2.6';
+		var $assets_version = '2.2.11';
 
 		/**
 		 * @var string
@@ -330,7 +330,9 @@ if ( is_woocommerce_active() ) {
 		            add_action( $template_hook, array( $this, 'add_wishlist_form_to_external_products' ) );
 	            } elseif( $product->is_type('bundle') ) {
                     add_action( $template_hook, array( $this, 'add_to_wishlist_button' ) );
-                }
+                } elseif($product->is_type('composite')) {
+		            add_action( $template_hook, [ $this, 'add_to_wishlist_button' ] );
+	            }
             }
 		}
 

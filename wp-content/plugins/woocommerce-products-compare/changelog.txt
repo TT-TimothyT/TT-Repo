@@ -1,5 +1,25 @@
 *** WooCommerce Products Compare Changelog ***
 
+2023-10-26 - version 1.3.0
+* Feature - Added template to customize the 'Products compare' widget content.
+* Tweak - Tested compatibility up to WC 8.2.
+* Tweak - Tested compatibility up to WP 6.4.
+* Fix - Fixed 'Template Overrides' info in the 'System Status Report'.
+* Dev - Added filter hook `woocommerce_products_compare_selected_products`.
+* Dev - Refactored widget class by extending the class `WC_Widget`.
+* Dev - Deprecated class `WC_Products_Compare_Widget`.
+* Dev - Changed the plugin namespace to `KoiLab\WC_Products_Compare`.
+* Dev - Updated the minimum requirements to WC 3.7, WP 4.9, and PHP 5.6.
+
+2023-02-07 - version 1.2.0
+* Tweak - Added compatibility with WooCommerce High-Performance Order Storage.
+* Tweak - Added links to the documentation page and to get support in the plugin list.
+* Tweak - Updated plugin author.
+* Tweak - Tested compatibility up to WC 7.4.
+* Tweak - Tested compatibility with WP 6.1.
+* Dev - Implement the singleton pattern in the main plugin class.
+* Dev - Updated the minimum requirements to WC 3.5, WP 4.7, and PHP 5.4.
+
 2022-05-25 - version 1.1.0
 * Fix - Add renovate bot configuration.
 * Fix - fix: composer 2.2 excludes handling.
@@ -58,11 +78,11 @@
 * Fix - Attribute header label not displaying correctly.
 
 2018-09-25 - version 1.0.11
-* Fix    - Usage of deprecated Yoast filter.
+* Fix - Usage of deprecated Yoast filter.
 * Update - WC 3.5 compatibility.
 
 2018-05-21 - version 1.0.10
-* Fix    - Typo on text domain.
+* Fix - Typo on text domain.
 * Update - WC 3.4 compatibility.
 
 2017-12-13 - version 1.0.9
@@ -79,23 +99,23 @@
 * Fix - Version was not bumped on main file.
 
 2017-03-02 - version 1.0.5
-* Add - Page title and breadcrumb support for compare page
+* Add - Page title and breadcrumb support for compare page.
 * Update - WC 3.0 compatibility.
 
 2015-11-24 - version 1.0.4
-* Fix - Check to make sure items are of product type before showing to prevent errors
-* Fix - When WordPress is installed in subfolder, prevents compare page from loading
+* Fix - Check to make sure items are of product type before showing to prevent errors.
+* Fix - When WordPress is installed in subfolder, prevents compare page from loading.
 
 2015-09-16 - version 1.0.3
-* Fix - Typo on class name causing fatal error
+* Fix - Typo on class name causing fatal error.
 
 2015-08-10 - version 1.0.2
-* Tweak - Added a space after the checkbox of compare link to improve UX
-* Add - Version number to template file
-* Add - Template override status in status report
+* Tweak - Added a space after the checkbox of compare link to improve UX.
+* Add - Version number to template file.
+* Add - Template override status in status report.
 
 2015-07-13 - version 1.0.1
-* Fix - filter for endpoint was not working due to load order
+* Fix - filter for endpoint was not working due to load order.
 
 2015-04-20 - version 1.0.0
-* initial release
+* initial release.

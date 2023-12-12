@@ -2,9 +2,9 @@
 /**
 * Plugin Name: Gravity Forms Netsuite Plugin
 * Description: Integrates Gravity Forms with Netsuite allowing form submissions to be automatically sent to your Netsuite account 
-* Version: 1.5.7
+* Version: 1.5.8
 * Requires at least: 3.8
-* Tested up to: 6.3
+* Tested up to: 6.4
 * Author URI: https://www.crmperks.com
 * Plugin URI: https://www.crmperks.com/plugins/gravity-forms-plugins/gravity-forms-netsuite-plugin/
 * Author: CRM Perks.
@@ -26,7 +26,7 @@ class vxg_netsuite {
   public  $crm_name = 'netsuite';
   public  $id = 'vxg_netsuite';
   public  $domain = 'vxg-netsuite';
-  public  $version = "1.5.7";
+  public  $version = "1.5.8";
   public  $update_id = '30006';
   public  $min_gravityforms_version = '1.3.9';
   public $type = 'vxg_netsuite_pro';

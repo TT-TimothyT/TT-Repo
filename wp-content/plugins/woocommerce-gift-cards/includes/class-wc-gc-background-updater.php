@@ -2,7 +2,7 @@
 /**
  * WC_GC_Background_Updater class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 
@@ -59,7 +59,7 @@ class WC_GC_Background_Updater extends WP_Background_Process {
 		$dispatched = parent::dispatch();
 
 		if ( is_wp_error( $dispatched ) ) {
-			WC_GC()->log( sprintf( 'Unable to dispatch WooCommerce Gift Cards updater: %s', $dispatched->get_error_message() ), 'error', 'wc_gc_db_updates' );
+			WC_GC()->log( sprintf( 'Unable to dispatch Woo Gift Cards updater: %s', $dispatched->get_error_message() ), 'error', 'wc_gc_db_updates' );
 		}
 	}
 

@@ -2,7 +2,7 @@
 /**
  * WC_GC_WCS_Compatibility class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.7.0
  */
 

@@ -1,26 +1,26 @@
-# Copyright (C) 2023 WooCommerce
+# Copyright (C) 2023 Woo
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Gift Cards 1.16.6\n"
-"Report-Msgid-Bugs-To: https://woocommerce.com/my-account/create-a-ticket/\n"
+"Project-Id-Version: Woo Gift Cards 1.16.7\n"
+"Report-Msgid-Bugs-To: https://woo.com/my-account/create-a-ticket/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-10-17T11:59:29+00:00\n"
+"POT-Creation-Date: 2023-12-12T10:50:31+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"X-Generator: WP-CLI 2.9.0\n"
 "language-team: LANGUAGE <EMAIL@ADDRESS>\n"
 "X-Domain: woocommerce-gift-cards\n"
 
 #. Plugin Name of the plugin
-msgid "WooCommerce Gift Cards"
+msgid "Woo Gift Cards"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://woocommerce.com/products/gift-cards/"
+msgid "https://woo.com/products/gift-cards/"
 msgstr ""
 
 #. Description of the plugin
@@ -28,11 +28,11 @@ msgid "Create and sell digital gift cards that customers can redeem at your stor
 msgstr ""
 
 #. Author of the plugin
-msgid "WooCommerce"
+msgid "Woo"
 msgstr ""
 
 #. Author URI of the plugin
-msgid "https://somewherewarm.com/"
+msgid "https://woo.com/"
 msgstr ""
 
 #: includes/admin/analytics/class-wc-gc-admin-analytics-sync.php:324
@@ -73,7 +73,7 @@ msgstr ""
 #: includes/admin/analytics/reports/expired/class-wc-gc-analytics-expired-rest-controller.php:160
 #: includes/admin/analytics/reports/issued/class-wc-gc-analytics-issued-rest-controller.php:160
 #: includes/admin/analytics/reports/used/class-wc-gc-analytics-used-rest-controller.php:161
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:333
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:338
 #: includes/rest-api/class-wc-gc-rest-api-order-controller.php:490
 msgid "Gift card ID."
 msgstr ""
@@ -81,8 +81,8 @@ msgstr ""
 #: includes/admin/analytics/reports/expired/class-wc-gc-analytics-expired-rest-controller.php:166
 #: includes/admin/analytics/reports/issued/class-wc-gc-analytics-issued-rest-controller.php:166
 #: includes/admin/analytics/reports/used/class-wc-gc-analytics-used-rest-controller.php:167
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:313
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:339
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:318
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:344
 #: includes/rest-api/class-wc-gc-rest-api-order-controller.php:496
 msgid "Gift card code."
 msgstr ""
@@ -437,12 +437,16 @@ msgstr ""
 msgid "Action failed. The Gift card is disabled, has expired, or has already been redeemed."
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:263
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:279
+msgid "Gift card could not be deleted because it is used in orders."
+msgstr ""
+
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:283
 msgid "Gift card deleted."
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:300
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:183
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:320
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:188
 #: includes/class-wc-gc-cart.php:457
 #: includes/class-wc-gc-gift-card.php:234
 #: includes/class-wc-gc-gift-cards.php:58
@@ -450,33 +454,33 @@ msgstr ""
 msgid "Gift card not found."
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:331
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:352
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:351
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:372
 msgid "Message:"
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:332
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:352
 msgid "Private"
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:333
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:353
 msgid "Cancel"
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:337
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:357
 #: includes/class-wc-gc-gift-card-product.php:771
 msgid "This message was hidden to protect the sender & recipient’s privacy."
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:341
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:361
 msgid "Sender requested a change?"
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:342
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:362
 msgid "Edit this message"
 msgstr ""
 
-#: includes/admin/class-wc-gc-admin-gift-cards-page.php:346
+#: includes/admin/class-wc-gc-admin-gift-cards-page.php:366
 msgid "Write a new message&hellip;"
 msgstr ""
 
@@ -485,7 +489,7 @@ msgid "Gift Card Import"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-importers.php:96
-msgid "WooCommerce Gift Cards (CSV)"
+msgid "Woo Gift Cards (CSV)"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-importers.php:96
@@ -522,11 +526,11 @@ msgstr ""
 
 #. translators: prompt
 #: includes/admin/class-wc-gc-admin-notices.php:347
-msgid "<strong>WooCommerce Gift Cards</strong> is updating your database.%s"
+msgid "<strong>Woo Gift Cards</strong> is updating your database.%s"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-notices.php:352
-msgid "<strong>WooCommerce Gift Cards</strong> has been updated! To keep things running smoothly, your database needs to be updated, as well."
+msgid "<strong>Woo Gift Cards</strong> has been updated! To keep things running smoothly, your database needs to be updated, as well."
 msgstr ""
 
 #. translators: documentation link
@@ -536,11 +540,11 @@ msgstr ""
 
 #. translators: error
 #: includes/admin/class-wc-gc-admin-notices.php:360
-msgid "<strong>WooCommerce Gift Cards</strong> has not finished updating your database.%s"
+msgid "<strong>Woo Gift Cards</strong> has not finished updating your database.%s"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-notices.php:370
-msgid "<strong>WooCommerce Gift Cards</strong> has finished updating your database. Thank you for updating to the latest version!"
+msgid "<strong>Woo Gift Cards</strong> has finished updating your database. Thank you for updating to the latest version!"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-notices.php:382
@@ -567,7 +571,7 @@ msgstr ""
 
 #. translators: onboarding url
 #: includes/admin/class-wc-gc-admin-notices.php:446
-msgid "Thank you for installing <strong>WooCommerce Gift Cards</strong>. Ready to start selling and accepting gift cards? <a href=\"%s\">Click here to create your first gift card product</a>."
+msgid "Thank you for installing <strong>Woo Gift Cards</strong>. Ready to start selling and accepting gift cards? <a href=\"%s\">Click here to create your first gift card product</a>."
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-notices.php:516
@@ -592,7 +596,7 @@ msgstr ""
 
 #. translators: %1$s: documentation link
 #: includes/admin/class-wc-gc-admin-notices.php:610
-msgid "<strong>WooCommerce Gift Cards</strong> now integrates with WooCommerce Analytics, allowing you to generate <a href=\"%s\" target=\"_blank\">more accurate</a> Revenue reports:"
+msgid "<strong>Woo Gift Cards</strong> now integrates with WooCommerce Analytics, allowing you to generate <a href=\"%s\" target=\"_blank\">more accurate</a> Revenue reports:"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-notices.php:611
@@ -608,11 +612,11 @@ msgid "To apply these changes to historical revenue analytics data, click the <s
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-notices.php:621
-msgid "<strong>WooCommerce Gift Cards</strong> is updating your historical Revenue Analytics data. This may take a while, so please be patient!"
+msgid "<strong>Woo Gift Cards</strong> is updating your historical Revenue Analytics data. This may take a while, so please be patient!"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-notices.php:626
-msgid "<strong>WooCommerce Gift Cards</strong> has finished updating your Revenue Analytics data!"
+msgid "<strong>Woo Gift Cards</strong> has finished updating your Revenue Analytics data!"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin-refunds.php:177
@@ -646,7 +650,7 @@ msgid "The installed version of <strong>Gift Cards</strong> is not compatible wi
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin.php:190
-msgid "WooCommerce Gift Cards stores the following information, as provided by gift card buyers:"
+msgid "Woo Gift Cards stores the following information, as provided by gift card buyers:"
 msgstr ""
 
 #: includes/admin/class-wc-gc-admin.php:193
@@ -1151,7 +1155,7 @@ msgid "No activity recorded"
 msgstr ""
 
 #: includes/admin/list-tables/class-wc-gc-admin-list-table-activity.php:379
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:525
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:578
 msgid "Filter"
 msgstr ""
 
@@ -1168,18 +1172,18 @@ msgid "All types"
 msgstr ""
 
 #: includes/admin/list-tables/class-wc-gc-admin-list-table-activity.php:466
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:585
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:638
 msgid "Filter by date"
 msgstr ""
 
 #: includes/admin/list-tables/class-wc-gc-admin-list-table-activity.php:468
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:587
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:640
 msgid "All dates"
 msgstr ""
 
 #. translators: %1$s: month %2$s: year
 #: includes/admin/list-tables/class-wc-gc-admin-list-table-activity.php:481
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:602
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:655
 msgid "%1$s %2$d"
 msgstr ""
 
@@ -1257,21 +1261,33 @@ msgstr ""
 msgid "Delete permanently"
 msgstr ""
 
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:302
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:315
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:304
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:317
 msgid "Gift cards updated."
 msgstr ""
 
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:323
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:352
+msgid "Gift card <strong>%s</strong> could not be deleted, because it is currently used in orders."
+msgstr ""
+
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:358
+msgid "Gift cards  <strong>%1$s</strong> and <strong>%2$s</strong> could not be deleted, because they are currently used in orders."
+msgstr ""
+
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:365
+msgid "Gift cards <strong>%1$s</strong>, <strong>%2$s</strong> and <strong>%3$d</strong> more could not be deleted, because they are currently used in orders."
+msgstr ""
+
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:375
 msgid "Gift cards deleted."
 msgstr ""
 
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:430
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:483
 msgid "No gift cards found"
 msgstr ""
 
 #. translators: %s: Giftcards count
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:448
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:501
 msgctxt "giftccard_status"
 msgid "All <span class=\"count\">(%s)</span>"
 msgid_plural "All <span class=\"count\">(%s)</span>"
@@ -1279,14 +1295,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: Redeemed giftcards count
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:464
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:517
 msgctxt "giftccard_status"
 msgid "Redeemed <span class=\"count\">(%s)</span>"
 msgid_plural "Redeemed <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:560
+#: includes/admin/list-tables/class-wc-gc-admin-list-table-gift-cards.php:613
 msgid "Redeemed by customer&hellip;"
 msgstr ""
 
@@ -1487,7 +1503,7 @@ msgid "Database version"
 msgstr ""
 
 #: includes/admin/status/views/html-admin-page-status-report.php:24
-msgid "The version of WooCommerce Gift Cards reported by the database. This should be the same as the plugin version."
+msgid "The version of Woo Gift Cards reported by the database. This should be the same as the plugin version."
 msgstr ""
 
 #: includes/admin/status/views/html-admin-page-status-report.php:31
@@ -1646,61 +1662,61 @@ msgstr ""
 msgid "Create a gift card product"
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:155
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:160
 #: includes/class-wc-gc-cart.php:416
 msgid "Gift cards cannot be purchased using other gift cards."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:164
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:169
 #: includes/class-wc-gc-cart.php:425
 msgid "Please enter your gift card code."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:166
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:171
 #: includes/class-wc-gc-account.php:320
 #: includes/class-wc-gc-cart.php:428
 #: assets/dist/frontend/blocks.js:63
 msgid "Please enter a gift card code that follows the format XXXX-XXXX-XXXX-XXXX, where X can be any letter or number."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:277
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:282
 msgid "Total balance for the current customer."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:283
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:288
 msgid "Cart total before gift cards."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:289
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:294
 msgid "Total pending amount in customer's balance."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:295
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:300
 msgid "Total amount available to be captured by gift card balance."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:301
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:306
 msgid "True if the customer is using their gift card balance."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:307
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:312
 msgid "All gift cards applied using gift card balance."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:319
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:345
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:324
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:350
 msgid "Gift card amount."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:327
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:332
 msgid "All gift cards applied using the gift card form."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:351
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:356
 msgid "Gift card balance."
 msgstr ""
 
-#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:357
+#: includes/blocks/class-wc-gc-checkout-blocks-endpoint.php:362
 msgid "Gift Card pending balance message (HTML)."
 msgstr ""
 
@@ -1824,17 +1840,21 @@ msgctxt "order_item_display_key"
 msgid "Amount"
 msgstr ""
 
-#: includes/class-wc-gc-gift-card-product.php:924
+#: includes/class-wc-gc-gift-card-product.php:878
+msgid "Invalid quantity configuration. Please review the recipients count."
+msgstr ""
+
+#: includes/class-wc-gc-gift-card-product.php:930
 msgid "Invalid custom code configuration. Please review the recipients count."
 msgstr ""
 
 #. translators: %d order id.
-#: includes/class-wc-gc-gift-card-product.php:1128
+#: includes/class-wc-gc-gift-card-product.php:1134
 msgid "Order #%d cannot be deleted at the moment. Some pending gift card code deliveries depend on data found in this order."
 msgstr ""
 
 #. translators: %d product id.
-#: includes/class-wc-gc-gift-card-product.php:1141
+#: includes/class-wc-gc-gift-card-product.php:1147
 msgid "Product #%d cannot be deleted at the moment. Some pending gift card code deliveries will fail if this product is deleted."
 msgstr ""
 
@@ -1876,7 +1896,7 @@ msgstr ""
 #: templates/cart/cart-gift-cards.php:61
 #: templates/cart/cart-gift-cards.php:141
 #: templates/cart/cart-gift-cards.php:176
-#: assets/dist/frontend/blocks.js:53
+#: assets/dist/frontend/blocks.js:50
 msgid "Code:"
 msgid_plural "Codes:"
 msgstr[0] ""
@@ -2012,7 +2032,7 @@ msgid "Stripe Gateway"
 msgstr ""
 
 #: includes/compatibility/class-wc-gc-compatibility.php:248
-msgid "WooCommerce Stripe Gateway"
+msgid "Woo Stripe Gateway"
 msgstr ""
 
 #. translators: %1$s: extension %2$s: extension url %3$s: extension %4$s: version
@@ -2671,8 +2691,8 @@ msgstr ""
 
 #: templates/cart/cart-gift-cards.php:70
 #: templates/cart/cart-gift-cards.php:154
-#: assets/dist/frontend/blocks.js:84
-#: assets/dist/frontend/blocks.js:76
+#: assets/dist/frontend/blocks.js:81
+#: assets/dist/frontend/blocks.js:74
 msgid "Remaining Balance:"
 msgstr ""
 
@@ -2809,7 +2829,7 @@ msgstr ""
 
 #. translators: %s: WC min version
 #: woocommerce-gift-cards.php:226
-msgid "WooCommerce Gift Cards requires at least WooCommerce <strong>%s</strong>."
+msgid "Woo Gift Cards requires at least WooCommerce <strong>%s</strong>."
 msgstr ""
 
 #: assets/dist/admin/analytics.js:21
@@ -2926,7 +2946,7 @@ msgid "net"
 msgstr ""
 
 #. translators: %s Gift card code.
-#: assets/dist/frontend/blocks.js:73
+#: assets/dist/frontend/blocks.js:70
 #: assets/dist/frontend/blocks.js:53
 msgid "Gift Card: %s"
 msgstr ""
@@ -2942,7 +2962,7 @@ msgstr ""
 msgid "Remove gift card \"%s\""
 msgstr ""
 
-#: assets/dist/frontend/blocks.js:48
+#: assets/dist/frontend/blocks.js:47
 msgid "Gift card code has been removed."
 msgstr ""
 

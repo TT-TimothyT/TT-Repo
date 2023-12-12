@@ -1,4 +1,4 @@
-<?php $wishlist = new WC_Wishlists_Wishlist( $_GET['wlid'] ); ?>
+<?php $wishlist = WC_Wishlists_Wishlist::get_wishlist($_GET['wlid']); ?>
 
 <?php
 $current_owner_key = WC_Wishlists_User::get_wishlist_key();
@@ -12,15 +12,22 @@ if ( empty( $notifications ) ) {
 }
 
 $wishlist_items = WC_Wishlists_Wishlist_Item_Collection::get_items( $wishlist->id, true );
+// only include the items where the product is published
+$wishlist_items = array_filter( $wishlist_items, function ( $item ) {
+	$product = wc_get_product( $item['product_id'] );
+	if ( $product ) {
+		return $product->get_status() == 'publish';
+	}
+
+    return false;
+} );
 
 $treat_as_registry = false;
 ?>
 
 <?php
 if ( $wl_owner != WC_Wishlists_User::get_wishlist_key() && !current_user_can( 'manage_woocommerce' ) ) :
-
 	die();
-
 endif;
 ?>
 
@@ -145,8 +152,9 @@ endif;
 								?>
                                 <tr class="cart_table_item">
                                     <td class="check-column">
-                                        <input type="checkbox" name="wlitem[]"
-                                               value="<?php echo $wishlist_item_key; ?>"/>
+                                        <label aria-label="">
+                                            <input type="checkbox" name="wlitem[]" value="<?php echo $wishlist_item_key; ?>"/>
+                                        </label>
                                     </td>
                                     <td class="product-remove">
                                         <a rel="nofollow"
@@ -271,9 +279,11 @@ endif;
 	                        <?php endif; ?>
 	                        <?php if ( ( apply_filters( 'woocommerce_wishlist_purchases_enabled', true, $wishlist ) ) ): ?>
                                     <td class="product-purchase">
-                                        <a rel="nofollow"
-                                           href="<?php echo woocommerce_wishlist_url_add_all_to_cart( $wishlist->id, $wishlist->get_wishlist_sharing() == 'Shared' ? $wishlist->get_wishlist_sharing_key() : false ); ?>"
-                                           class="button alt wl-add-all"><?php _e( 'Add All To Cart', 'wc_wishlist' ); ?></a>
+                                        <!-- Add all to cart, since 2.2.11 -->
+                                        <input type="submit" class="button alt wl-add-all"
+                                               name="wladdall"
+                                               value="<?php _e( 'Add All To Cart', 'wc_wishlist' ); ?>"/>
+                                        <input type="hidden" name="wladdall-screen" value="edit"/>
                                     </td>
 	                        <?php endif; ?>
                         </tr>
@@ -312,9 +322,6 @@ endif;
                                     <button class="button small wl-but wl-add-to btn-apply"><?php _e( 'Apply Action', 'wc_wishlist' ); ?></button>
                                 </td>
                             </tr>
-
-
-
                             </tbody>
                         </table>
 

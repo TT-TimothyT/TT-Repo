@@ -4,7 +4,7 @@ use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 /**
  * Class for integrating with WooCommerce Blocks scripts
  *
- * @package WooCommerce Gift Cards
+ * @package Woo Gift Cards
  * @since   1.11.0
  *
  * @version 1.16.0

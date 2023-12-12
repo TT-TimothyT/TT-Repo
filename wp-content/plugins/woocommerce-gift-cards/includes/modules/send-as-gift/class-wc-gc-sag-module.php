@@ -2,7 +2,7 @@
 /**
  * WC_GC_SAG_Module class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.9.0
  */
 

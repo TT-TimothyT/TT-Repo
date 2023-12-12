@@ -12,8 +12,8 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce Gift Cards
+ * @see https://woo.com/document/template-structure/
+ * @package Woo Gift Cards
  * @since   1.3.5
  * @version 1.16.0
  */

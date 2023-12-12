@@ -3,7 +3,7 @@
  * REST API Reports Stats Query
  * Handles requests to the '/reports/giftcards/used/stats' endpoint.
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.8.0
  */
 

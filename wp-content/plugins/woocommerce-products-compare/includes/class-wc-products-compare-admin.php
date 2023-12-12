@@ -64,10 +64,8 @@ class WC_Products_Compare_Admin {
 					<td data-export-label="Template Overrides"><?php esc_html_e( 'Template Overrides:', 'woocommerce-products-compare' ); ?></td>
 					<td colspan="2">
 						<?php
-						$theme = wp_get_theme();
-
-						if ( file_exists( get_stylesheet_directory() . '/woocommerce-products-compare/products-compare-page-html.php' ) ) {
-							echo esc_html( strtolower( str_replace( ' ', '', $theme->name ) ) . '/woocommerce-products-compare/products-compare-page-html.php' );
+						if ( file_exists( get_stylesheet_directory() . '/products-compare-page-html.php' ) ) {
+							echo esc_html( get_stylesheet() . '/products-compare-page-html.php' );
 						}
 						?>
 					</td>

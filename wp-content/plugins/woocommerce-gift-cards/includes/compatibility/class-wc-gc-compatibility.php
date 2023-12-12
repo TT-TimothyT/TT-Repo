@@ -2,7 +2,7 @@
 /**
  * WC_GC_Compatibility class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 
@@ -245,8 +245,8 @@ class WC_GC_Compatibility {
 			if ( ! defined( 'WC_STRIPE_VERSION' ) || version_compare( WC_STRIPE_VERSION, $required_version ) < 0 ) {
 
 				$extension      = __( 'Stripe Gateway', 'woocommerce-gift-cards' );
-				$extension_full = __( 'WooCommerce Stripe Gateway', 'woocommerce-gift-cards' );
-				$extension_url  = 'https://woocommerce.com/products/stripe/';
+				$extension_full = __( 'Woo Stripe Gateway', 'woocommerce-gift-cards' );
+				$extension_url  = 'https://woo.com/products/stripe/';
 				/* translators: %1$s: extension %2$s: extension url %3$s: extension %4$s: version */
 				$notice         = sprintf( __( 'The installed version of <strong>%1$s</strong> is not supported by <strong>Gift Cards</strong>. Please update <a href="%2$s" target="_blank">%3$s</a> to version <strong>%4$s</strong> or higher.', 'woocommerce-gift-cards' ), $extension, $extension_url, $extension_full, $required_version );
 

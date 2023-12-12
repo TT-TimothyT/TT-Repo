@@ -2,7 +2,7 @@
 /**
  * WC_GC_Tracks class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.15.6
  */
 

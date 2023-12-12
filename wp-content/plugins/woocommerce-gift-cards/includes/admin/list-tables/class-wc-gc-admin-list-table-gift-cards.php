@@ -2,7 +2,7 @@
 /**
  * WC_GC_Gift_Cards_List_Table class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 
@@ -19,7 +19,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Adds a custom deployments list table.
  *
  * @class    WC_GC_Gift_Cards_List_Table
- * @version  1.16.6
+ * @version  1.16.7
  */
 class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 
@@ -278,6 +278,8 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 	 */
 	private function process_bulk_action() {
 
+		global $wpdb;
+
 		if ( $this->current_action() ) {
 
 			check_admin_referer( 'bulk-giftcards' );
@@ -316,11 +318,62 @@ class WC_GC_Gift_Cards_List_Table extends WP_List_Table {
 
 			} elseif ( 'delete' === $this->current_action() ) {
 
+				$used_giftcards = array();
+
 				foreach ( $giftcards as $id ) {
-					WC_GC()->db->giftcards->delete( $id );
+
+					$is_giftcard_used = $wpdb->get_var( $wpdb->prepare( "
+						SELECT COUNT(*)
+						FROM `{$wpdb->prefix}woocommerce_order_itemmeta`
+						WHERE `meta_key` = 'giftcard_id'
+						AND `meta_value` = %d
+						LIMIT 1
+					"
+						,
+						array(
+							$id
+						)
+					) ) > 0 ? true : false;
+
+					if ( $is_giftcard_used ) {
+						$giftcard         = WC_GC()->db->giftcards->get( $id );
+						$used_giftcards[] = $giftcard->get_code();
+					} else {
+						WC_GC()->db->giftcards->delete( $id );
+					}
 				}
 
-				WC_GC_Admin_Notices::add_notice( __( 'Gift cards deleted.', 'woocommerce-gift-cards' ), 'success', true );
+				if ( ! empty( $used_giftcards ) ) {
+
+					$used_giftcards_count = count( $used_giftcards );
+
+					if ( 1 === $used_giftcards_count ) {
+
+						$message = sprintf( __( 'Gift card <strong>%s</strong> could not be deleted, because it is currently used in orders.', 'woocommerce-gift-cards' ),
+							$used_giftcards[ 0 ]
+						);
+
+					} elseif ( 2 === $used_giftcards_count ) {
+
+						$message = sprintf( __( 'Gift cards  <strong>%1$s</strong> and <strong>%2$s</strong> could not be deleted, because they are currently used in orders.', 'woocommerce-gift-cards' ),
+							$used_giftcards[ 0 ],
+							$used_giftcards[ 1 ]
+						);
+
+					} else {
+						$message = sprintf(
+								__( 'Gift cards <strong>%1$s</strong>, <strong>%2$s</strong> and <strong>%3$d</strong> more could not be deleted, because they are currently used in orders.', 'woocommerce-gift-cards' ),
+							$used_giftcards[ 0 ],
+							$used_giftcards[ 1 ],
+							count( $used_giftcards ) - 2
+						);
+					}
+
+					WC_GC_Admin_Notices::add_notice( $message, 'error', true );
+
+				} else {
+					WC_GC_Admin_Notices::add_notice( __( 'Gift cards deleted.', 'woocommerce-gift-cards' ), 'success', true );
+				}
 			}
 
 			wp_safe_redirect( admin_url( self::PAGE_URL ) );

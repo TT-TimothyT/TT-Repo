@@ -3,22 +3,38 @@
  * Plugin Name: WooCommerce Products Compare
  * Plugin URI: https://woocommerce.com/products/woocommerce-products-compare/
  * Description: Have your customers to compare similar products side by side.
- * Version: 1.1.0
- * Author: WooCommerce
- * Author URI: https://woocommerce.com
+ * Version: 1.3.0
+ * Author: KoiLab
+ * Author URI: https://koilab.com
+ * Requires PHP: 5.6
+ * Requires at least: 4.9
+ * Tested up to: 6.4
  * Text Domain: woocommerce-products-compare
  * Domain Path: /languages
- * Tested up to: 6.0
- * WC tested up to: 6.5
- * WC requires at least: 2.6
- * Copyright: © 2022 WooCommerce
+ *
+ * WC requires at least: 3.7
+ * WC tested up to: 8.2
+ * Woo: 853117:c3ba0a4a3199a0cc7a6112eb24414548
+ *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
- * Woo: 853117:c3ba0a4a3199a0cc7a6112eb24414548
- *
  * @package WC_Products_Compare
  */
+
+defined( 'ABSPATH' ) || exit;
+
+// Load the class autoloader.
+require __DIR__ . '/src/Autoloader.php';
+
+if ( ! \KoiLab\WC_Products_Compare\Autoloader::init() ) {
+	return;
+}
+
+// Define plugin file constant.
+if ( ! defined( 'WC_PRODUCTS_COMPARE_FILE' ) ) {
+	define( 'WC_PRODUCTS_COMPARE_FILE', __FILE__ );
+}
 
 /**
  * WooCommerce fallback notice.
@@ -32,12 +48,10 @@ function woocommerce_products_compare_missing_wc_notice() {
 
 if ( ! class_exists( 'WC_Products_Compare' ) ) :
 
-	define( 'WC_PRODUCTS_COMPARE_VERSION', '1.1.0' ); // WRCS: DEFINED_VERSION.
-
 	/**
 	 * Main class.
 	 */
-	class WC_Products_Compare {
+	class WC_Products_Compare extends \KoiLab\WC_Products_Compare\Plugin {
 
 		/**
 		 * Init.
@@ -46,14 +60,13 @@ if ( ! class_exists( 'WC_Products_Compare' ) ) :
 		 * @return bool
 		 */
 		public function __construct() {
-			register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
+			parent::__construct();
+			register_deactivation_hook( WC_PRODUCTS_COMPARE_FILE, array( $this, 'deactivate' ) );
 
-			require_once dirname( __FILE__ ) . '/includes/class-wc-products-compare-frontend.php';
-
-			add_action( 'widgets_init', array( $this, 'register_widget' ) );
+			require_once dirname( WC_PRODUCTS_COMPARE_FILE ) . '/includes/class-wc-products-compare-frontend.php';
 
 			if ( is_admin() ) {
-				require_once dirname( __FILE__ ) . '/includes/class-wc-products-compare-admin.php';
+				require_once dirname( WC_PRODUCTS_COMPARE_FILE ) . '/includes/class-wc-products-compare-admin.php';
 			}
 
 			return true;
@@ -76,33 +89,28 @@ if ( ! class_exists( 'WC_Products_Compare' ) ) :
 		}
 
 		/**
-		 * Registers the widget
-		 *
-		 * @since 1.0.0
-		 * @return bool
-		 */
-		public function register_widget() {
-			require_once dirname( __FILE__ ) . '/includes/class-wc-products-compare-widget.php';
-
-			register_widget( 'WC_Products_Compare_Widget' );
-
-			return true;
-		}
-
-		/**
 		 * Checks to make sure item is a product
 		 *
 		 * @since 1.0.4
-		 * @version 1.0.4
+		 *
 		 * @param object $product Product object.
 		 * @return bool
 		 */
 		public static function is_product( $product ) {
-			if ( $product && 'product' === get_post_type( $product->get_id() ) ) {
-				return true;
-			}
+			return ( $product && 'product' === get_post_type( $product->get_id() ) );
+		}
 
-			return false;
+		/**
+		 * Registers the widget
+		 *
+		 * @since 1.0.0
+		 * @deprecated 1.3.0
+		 *
+		 * @return bool
+		 */
+		public function register_widget() {
+			wc_deprecated_function( __FUNCTION__, '1.3.0', 'KoiLab\WC_Products_Compare\Plugin->register_widgets()' );
+			return true;
 		}
 	}
 endif;
@@ -113,16 +121,14 @@ add_action( 'plugins_loaded', 'woocommerce_products_compare_init' );
  * Init function.
  *
  * @since 1.0.0
- * @since 1.0.19 Load text domain and check for WC exists.
- * @return bool
+ * @since 1.0.19 Check for WC exists.
+ * @return void
  */
 function woocommerce_products_compare_init() {
-	load_plugin_textdomain( 'woocommerce-products-compare', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
-
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		add_action( 'admin_notices', 'woocommerce_products_compare_missing_wc_notice' );
 		return;
 	}
 
-	new WC_Products_Compare();
+	WC_Products_Compare::instance();
 }

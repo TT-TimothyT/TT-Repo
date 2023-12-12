@@ -25,7 +25,7 @@ class WC_Wishlists_User {
 	}
 
 	public static function get_cookie() {
-		if ( isset( $_COOKIE[ self::$store_key ] ) && !empty( $_COOKIE[ self::$store_key ] ) ) {
+		if ( isset( $_COOKIE[ self::$store_key ] ) && ! empty( $_COOKIE[ self::$store_key ] ) ) {
 			return $_COOKIE[ self::$store_key ];
 		} else {
 			return false;
@@ -33,7 +33,7 @@ class WC_Wishlists_User {
 	}
 
 	public static function set_cookie() {
-		if ( !isset( $_COOKIE[ self::$store_key ] ) || empty( $_COOKIE[ self::$store_key ] ) ) {
+		if ( ! isset( $_COOKIE[ self::$store_key ] ) || empty( $_COOKIE[ self::$store_key ] ) ) {
 			$temp_key = is_user_logged_in() ? get_current_user_id() : uniqid( md5( date( 'F j, Y @ h:i A' ) ) );
 			setcookie( self::$store_key, $temp_key, time() + apply_filters( 'wc_wishlists_cookie_duration', 3600 * 24 * 30 ), '/' );
 			self::$key = $temp_key;
@@ -62,7 +62,7 @@ class WC_Wishlists_User {
 	 */
 	public static function get_wishlists( $by_type = false, $key = false ) {
 
-		if ( !is_user_logged_in() && self::get_cookie() === false ) {
+		if ( ! is_user_logged_in() && self::get_cookie() === false ) {
 			return array();
 		}
 
@@ -131,6 +131,22 @@ class WC_Wishlists_User {
 			return self::$list_cache;
 		}
 
+	}
+
+	public static function get_default_list() {
+		$lists = self::get_wishlists();
+		if ( $lists ) {
+			foreach ( $lists as $list ) {
+				if ( $list->get_is_default() ) {
+					return $list;
+				}
+			}
+
+			// If no list is found, return the last one in the collection.
+			return end( $lists );
+		}
+
+		return false;
 	}
 
 	public static function get_wishlist_product_ids() {

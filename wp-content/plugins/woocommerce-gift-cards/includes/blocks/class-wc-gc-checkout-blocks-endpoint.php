@@ -4,10 +4,9 @@
  *
  * A class to extend the store public API with gift card related data.
  *
- * @package WooCommerce Gift Cards
+ * @package Woo Gift Cards
  * @since   1.11.0
- *
- * @version 1.13.1
+ * @version 1.16.7
  */
 
 use Automattic\WooCommerce\StoreApi\Exceptions\RouteException;
@@ -32,6 +31,12 @@ class WC_GC_Checkout_Blocks_Endpoint {
 
 		// Handle Checkout.
 		add_action( 'woocommerce_store_api_checkout_update_order_meta', array( __CLASS__, 'rest_checkout_update_order_meta' ) );
+
+		// Filter minimum cart item quantity.
+		add_filter( 'woocommerce_store_api_product_quantity_minimum', array( __CLASS__, 'filter_min_cart_item_qty' ), 10, 3 );
+
+		// Filter group of cart item quantity.
+		add_filter( 'woocommerce_store_api_product_quantity_multiple_of', array( __CLASS__, 'filter_multiple_of_cart_item_qty' ), 10, 3 );
 	}
 
 	/**
@@ -362,5 +367,46 @@ class WC_GC_Checkout_Blocks_Endpoint {
 				)
 			),
 		);
+	}
+
+	/**
+	 * Adjust cart item quantity limits to ensure proper handling of multiple reciepients.
+	 *
+	 * @since 1.16.7
+	 *
+	 * @param mixed       $value The value being filtered.
+	 * @param \WC_Product $product The product object.
+	 * @param array|null  $cart_item The cart item if the product exists in the cart, or null.
+	 *
+	 * @return mixed
+	 */
+	public static function filter_min_cart_item_qty( $value, $product, $cart_item ) {
+
+		if ( ! WC_GC_Gift_Card_Product::is_gift_card( $product ) || ! is_array( $cart_item ) || empty( $cart_item[ 'wc_gc_giftcard_to_multiple' ] ) ) {
+			return $value;
+		}
+
+		return count( $cart_item[ 'wc_gc_giftcard_to_multiple' ] );
+	}
+
+	/**
+	 * Ensure that cart item quantity can be changed in specific intervals based on reciepients.
+	 *
+	 * @since 1.16.7
+	 * 
+	 * @param mixed       $value The value being filtered.
+	 * @param \WC_Product $product The product object.
+	 * @param array|null  $cart_item The cart item if the product exists in the cart, or null.
+	 *
+	 * @return mixed
+	 */
+	public static function filter_multiple_of_cart_item_qty( $value, $product, $cart_item ) {
+
+
+		if ( ! WC_GC_Gift_Card_Product::is_gift_card( $product ) || ! is_array( $cart_item ) || empty( $cart_item[ 'wc_gc_giftcard_to_multiple' ] ) ) {
+			return $value;
+		}
+
+		return count( $cart_item[ 'wc_gc_giftcard_to_multiple' ] );
 	}
 }

@@ -2,7 +2,7 @@
 /**
  * WC_GC_Shortcodes class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.5.1
  */
 
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 /**
- * WooCommerce Gift Cards Shortcodes class.
+ * Woo Gift Cards Shortcodes class.
  *
  * @version 1.16.0
  */

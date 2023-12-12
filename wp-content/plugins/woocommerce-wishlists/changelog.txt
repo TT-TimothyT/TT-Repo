@@ -1,4 +1,15 @@
 *** WooCommerce Wishlist Changelog ***
+2023.12.05 - version 2.3.0
+    * Update:  WC and WP Updates.
+    * Update: Filter the list of items on the view a list and edit list pages for published products only.
+    * Fix: Always render the list button on composite products regardless of stock status.
+    * New: Added shortcode to display a link to add the item to a users default list. [wc_wishlists_add_link product_id=<THE_PRODUCT_ID_TO_ADD> /]
+            If product_id is not passed, the current product in the loop or in the global $product will be used.
+            You can pass a list id, or the default list will be used.
+            You can also pass a title, or use the product title by passing title="product_title"
+    * New: Added the concept of default lists. Future updates will allow user to select a default list from the My Account page.
+    * New: Use a quantity input on the view a list page.  That way when someone wants to add a specific quantity of an item they can.
+
 2023.04.01 - version 2.2.10
     * Update:  WC and WP Updates.
     * Fix:  Fix issue where the wishlist button was not showing on the single product page for out of stock bundled products.

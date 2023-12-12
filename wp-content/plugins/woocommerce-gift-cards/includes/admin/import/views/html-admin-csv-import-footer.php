@@ -2,7 +2,7 @@
 /**
  * Admin View: CSV Import footer.
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.6.0
  */
 

@@ -2,7 +2,7 @@
 /**
  * WC_GC_Admin_Notices class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 
@@ -344,12 +344,12 @@ class WC_GC_Admin_Notices {
 				}
 
 				/* translators: prompt */
-				$status = sprintf( __( '<strong>WooCommerce Gift Cards</strong> is updating your database.%s', 'woocommerce-gift-cards' ), $prompt );
+				$status = sprintf( __( '<strong>Woo Gift Cards</strong> is updating your database.%s', 'woocommerce-gift-cards' ), $prompt );
 
 				// Show a prompt to update.
 			} elseif ( false === WC_GC_Install::auto_update_enabled() && false === WC_GC_Install::is_update_incomplete() ) {
 
-				$status  = __( '<strong>WooCommerce Gift Cards</strong> has been updated! To keep things running smoothly, your database needs to be updated, as well.', 'woocommerce-gift-cards' );
+				$status  = __( '<strong>Woo Gift Cards</strong> has been updated! To keep things running smoothly, your database needs to be updated, as well.', 'woocommerce-gift-cards' );
 				/* translators: documentation link */
 				$status .= '<br/>' . sprintf( __( 'Before you proceed, please take a few minutes to <a href="%s" target="_blank">learn more</a> about best practices when updating.', 'woocommerce-gift-cards' ), WC_GC()->get_resource_url( 'updating' ) );
 				$status .= self::get_trigger_update_prompt();
@@ -357,7 +357,7 @@ class WC_GC_Admin_Notices {
 			} elseif ( WC_GC_Install::is_update_incomplete() ) {
 
 				/* translators: error */
-				$status = sprintf( __( '<strong>WooCommerce Gift Cards</strong> has not finished updating your database.%s', 'woocommerce-gift-cards' ), self::get_failed_update_prompt() );
+				$status = sprintf( __( '<strong>Woo Gift Cards</strong> has not finished updating your database.%s', 'woocommerce-gift-cards' ), self::get_failed_update_prompt() );
 			}
 
 			if ( $status ) {
@@ -367,7 +367,7 @@ class WC_GC_Admin_Notices {
 			// Show persistent notice to indicate that the update process is complete.
 		} else {
 
-			$notice = __( '<strong>WooCommerce Gift Cards</strong> has finished updating your database. Thank you for updating to the latest version!', 'woocommerce-gift-cards' );
+			$notice = __( '<strong>Woo Gift Cards</strong> has finished updating your database. Thank you for updating to the latest version!', 'woocommerce-gift-cards' );
 			self::add_notice( $notice, array( 'type' => 'info', 'dismiss_class' => 'update' ) );
 		}
 	}
@@ -443,7 +443,7 @@ class WC_GC_Admin_Notices {
 		<p class="sw-welcome-text">
 			<?php
 				/* translators: onboarding url */
-				echo wp_kses_post( sprintf( __( 'Thank you for installing <strong>WooCommerce Gift Cards</strong>. Ready to start selling and accepting gift cards? <a href="%s">Click here to create your first gift card product</a>.', 'woocommerce-gift-cards' ), admin_url( 'post-new.php?post_type=product&todo=giftcard' ) ) );
+				echo wp_kses_post( sprintf( __( 'Thank you for installing <strong>Woo Gift Cards</strong>. Ready to start selling and accepting gift cards? <a href="%s">Click here to create your first gift card product</a>.', 'woocommerce-gift-cards' ), admin_url( 'post-new.php?post_type=product&todo=giftcard' ) ) );
 			?>
 		</p>
 		<?php
@@ -607,7 +607,7 @@ class WC_GC_Admin_Notices {
 		if ( ! WC_GC_Admin_Analytics_Sync::is_order_stats_update_actioned() ) {
 
 			/* translators: %1$s: documentation link */
-			$status  = sprintf( __( '<strong>WooCommerce Gift Cards</strong> now integrates with WooCommerce Analytics, allowing you to generate <a href="%s" target="_blank">more accurate</a> Revenue reports:', 'woocommerce-gift-cards' ), WC_GC()->get_resource_url( 'faq-multi-prepaid-revenue' ) );
+			$status  = sprintf( __( '<strong>Woo Gift Cards</strong> now integrates with WooCommerce Analytics, allowing you to generate <a href="%s" target="_blank">more accurate</a> Revenue reports:', 'woocommerce-gift-cards' ), WC_GC()->get_resource_url( 'faq-multi-prepaid-revenue' ) );
 			$status .= '<br/><ul class="gc-notice-list"><li>' . __( 'Orders paid using prepaid gift cards are now counted towards the reported gross and net revenue.', 'woocommerce-gift-cards' ) . '</li>';
 			$status .= '<li>' . __( 'Purchases of prepaid gift cards are not counted towards the reported net revenue.', 'woocommerce-gift-cards' ) . '</li>';
 			$status .= '</ul>';
@@ -618,12 +618,12 @@ class WC_GC_Admin_Notices {
 
 		} elseif ( WC_GC_Admin_Analytics_Sync::is_order_stats_update_queued() ) {
 
-			$notice = __( '<strong>WooCommerce Gift Cards</strong> is updating your historical Revenue Analytics data. This may take a while, so please be patient!', 'woocommerce-gift-cards' );
+			$notice = __( '<strong>Woo Gift Cards</strong> is updating your historical Revenue Analytics data. This may take a while, so please be patient!', 'woocommerce-gift-cards' );
 			self::add_notice( $notice, 'info' );
 
 		} else {
 
-			$notice = __( '<strong>WooCommerce Gift Cards</strong> has finished updating your Revenue Analytics data!', 'woocommerce-gift-cards' );
+			$notice = __( '<strong>Woo Gift Cards</strong> has finished updating your Revenue Analytics data!', 'woocommerce-gift-cards' );
 			self::add_notice( $notice, array( 'type' => 'info', 'dismiss_class' => 'update_order_stats' ) );
 		}
 	}

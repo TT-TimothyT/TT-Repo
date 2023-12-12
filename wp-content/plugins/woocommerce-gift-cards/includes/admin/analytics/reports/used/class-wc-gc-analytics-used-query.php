@@ -2,7 +2,7 @@
 /**
  * REST API Reports giftcards used query
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.8.0
  */
 

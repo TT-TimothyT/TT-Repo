@@ -5,16 +5,16 @@ class WC_Wishlists_Request_Handler {
 	public static function process_request() {
 
 		if ( isset( $_REQUEST['wlaction'] ) ) {
-
-
 			$action = $_REQUEST['wlaction'];
-
 			if ( ! WC_Wishlists_Plugin::verify_nonce( $action ) ) {
 				wp_die( __( 'Action failed. Please refresh the page and retry.', 'wc_wishlist' ) );
 			}
 
-			$result = false;
+			if ( isset( $_REQUEST['wladdall'] ) && ! empty( $_REQUEST['wladdall'] ) ) {
+				$action = 'add-cart-items';
+			}
 
+			$result = false;
 			switch ( $action ) {
 				case 'create-list':
 					$result = self::create_list();
@@ -32,14 +32,13 @@ class WC_Wishlists_Request_Handler {
 					$result = self::remove_from_list();
 					break;
 				case 'manage-list':
-
 					$bulkaction = $_REQUEST['wlupdateaction'];
 					switch ( $bulkaction ) :
 						case 'quantity' :
 							$result = self::bulk_update_action();
 							break;
 						case 'quantity-add-to-cart' :
-							$result = self::bulk_update_action(); //update the qquantity first
+							$result = self::bulk_update_action(); //update the quantity first
 							$result = self::bulk_edit_action(); //this will call add to cart.
 							break;
 						default:
@@ -64,7 +63,7 @@ class WC_Wishlists_Request_Handler {
 					header( "Cache-Control: post-check=0, pre-check=0", false );
 					header( "Pragma: no-cache" );
 					header( "X-Robots-Tag: noindex, nofollow", true );
-					wp_redirect( esc_url_raw( add_query_arg( array( 'wlm' => uniqid() ), $result ) ) );
+					wp_redirect( esc_url_raw( add_query_arg( [ 'wlm' => uniqid() ], $result ) ) );
 					die();
 				}
 			}
@@ -91,14 +90,14 @@ class WC_Wishlists_Request_Handler {
 
 		$title = sanitize_text_field( $_POST['wishlist_title'] );
 
-		$args = array();
+		$args = [];
 		foreach ( $_POST as $key => $value ) {
 			$args[ $key ] = sanitize_text_field( $value );
 		}
 
 		$current_user = wp_get_current_user();
 
-		$defaults = array(
+		$defaults = [
 			'wishlist_title'               => $title,
 			'wishlist_description'         => '',
 			'wishlist_type'                => 'list',
@@ -108,7 +107,7 @@ class WC_Wishlists_Request_Handler {
 			'wishlist_owner_notifications' => false,
 			'wishlist_first_name'          => is_user_logged_in() ? $current_user->user_firstname : '',
 			'wishlist_last_name'           => is_user_logged_in() ? $current_user->user_lastname : '',
-		);
+		];
 
 		$args              = wp_parse_args( $args, $defaults );
 		$validation_result = apply_filters( 'woocommerce_validate_wishlist_create', true, $args );
@@ -174,7 +173,7 @@ class WC_Wishlists_Request_Handler {
 	}
 
 	private static function edit_list() {
-		$post_id = isset( $_POST['wlid'] ) ? $_POST['wlid'] : 0;
+		$post_id = $_POST['wlid'] ?? 0;
 		$post    = get_post( $post_id );
 
 		if ( ! $post_id || ! $post->post_type == 'wishlist' ) {
@@ -203,8 +202,6 @@ class WC_Wishlists_Request_Handler {
 		$result = WC_Wishlists_Wishlist::update_list( $post_id, $args );
 		if ( $result ) {
 			WC_Wishlist_Compatibility::wc_add_notice( __( 'Wishlist successfully updated', 'wc_wishlist' ) );
-		} else {
-
 		}
 
 		return WC_Wishlists_Wishlist::get_the_url_edit( $result ) . '#tab-wl-settings';
@@ -213,14 +210,12 @@ class WC_Wishlists_Request_Handler {
 	private static function edit_lists() {
 		$result = true;
 
-		$listids = isset( $_POST['sharing'] ) ? $_POST['sharing'] : false;
-		if ( ! $listids ) {
-			return;
+		$list_ids = isset( $_POST['sharing'] ) ? $_POST['sharing'] : false;
+		if ( ! $list_ids ) {
+			return false;
 		}
 
-		foreach ( $listids as $id => $sharing ) {
-			$wishlist = new WC_Wishlists_Wishlist( $id );
-
+		foreach ( $list_ids as $id => $sharing ) {
 			$wl_owner          = WC_Wishlists_Wishlist::get_the_wishlist_owner( $id );
 			$current_owner_key = WC_Wishlists_User::get_wishlist_key();
 
@@ -228,7 +223,7 @@ class WC_Wishlists_Request_Handler {
 				wp_die( __( 'You can only update your own lists', 'wc_wishlist' ) );
 			}
 
-			$result &= (bool) WC_Wishlists_Wishlist::update_list( $id, array( 'wishlist_sharing' => $sharing ) );
+			$result &= (bool) WC_Wishlists_Wishlist::update_list( $id, [ 'wishlist_sharing' => $sharing ] );
 		}
 
 		if ( $result ) {
@@ -274,14 +269,14 @@ class WC_Wishlists_Request_Handler {
 
 	private static function bulk_edit_action() {
 
-		$wishlist_id = isset( $_REQUEST['wlid'] ) ? $_REQUEST['wlid'] : false;
+		$wishlist_id = $_REQUEST['wlid'] ?? false;
 		if ( ! $wishlist_id ) {
 			WC_Wishlist_Compatibility::wc_add_notice( __( 'Unable to edit list.  Please try again', 'wc_wishlist' ), 'error' );
 
 			return WC_Wishlists_Wishlist::get_the_url_edit( $wishlist_id );
 		}
 
-		$bulk_action = isset( $_REQUEST['wlupdateaction'] ) ? $_REQUEST['wlupdateaction'] : false;
+		$bulk_action = $_REQUEST['wlupdateaction'] ?? false;
 		if ( ! $bulk_action ) {
 			return WC_Wishlists_Wishlist::get_the_url_edit( $wishlist_id );
 		}
@@ -294,7 +289,7 @@ class WC_Wishlists_Request_Handler {
 		}
 
 		if ( $bulk_action == 'remove' ) {
-			$items  = isset( $_REQUEST['wlitem'] ) ? $_REQUEST['wlitem'] : array();
+			$items  = isset( $_REQUEST['wlitem'] ) ? $_REQUEST['wlitem'] : [];
 			$result = 0;
 			foreach ( $items as $wishlist_item_key ) {
 				$result += WC_Wishlists_Wishlist_Item_Collection::remove_item( $wishlist_id, $wishlist_item_key );
@@ -305,9 +300,9 @@ class WC_Wishlists_Request_Handler {
 			} else {
 				WC_Wishlist_Compatibility::wc_add_notice( sprintf( __( 'Please select at least one item before applying an action', 'wc_wishlist' ), $result ), 'error' );
 			}
-		} elseif ( $bulk_action == 'create' ) {
+		} else if ( $bulk_action == 'create' ) {
 
-			$items  = isset( $_REQUEST['wlitem'] ) ? $_REQUEST['wlitem'] : array();
+			$items  = isset( $_REQUEST['wlitem'] ) ? $_REQUEST['wlitem'] : [];
 			$result = 0;
 			foreach ( $items as $wishlist_item_key ) {
 				$result += WC_Wishlists_Wishlist_Item_Collection::move_item_to_session( $wishlist_id, $wishlist_item_key );
@@ -320,8 +315,8 @@ class WC_Wishlists_Request_Handler {
 			}
 
 			return WC_Wishlists_Pages::get_url_for( 'create-a-list' );
-		} elseif ( $bulk_action == 'add-to-cart' || $bulk_action == 'quantity-add-to-cart' ) {
-			$items  = isset( $_REQUEST['wlitem'] ) ? $_REQUEST['wlitem'] : array();
+		} else if ( $bulk_action == 'add-to-cart' || $bulk_action == 'quantity-add-to-cart' ) {
+			$items  = isset( $_REQUEST['wlitem'] ) ? $_REQUEST['wlitem'] : [];
 			$result = 0;
 
 			foreach ( $items as $wishlist_item_key ) {
@@ -340,7 +335,7 @@ class WC_Wishlists_Request_Handler {
 			$destination_list = new WC_Wishlists_Wishlist( $destination_id );
 
 			if ( $destination_list->get_wishlist_owner() == WC_Wishlists_User::get_wishlist_key() ) {
-				$items  = isset( $_REQUEST['wlitem'] ) ? $_REQUEST['wlitem'] : array();
+				$items  = $_REQUEST['wlitem'] ?? [];
 				$result = 0;
 				foreach ( $items as $wishlist_item_key ) {
 					$result += WC_Wishlists_Wishlist_Item_Collection::move_item( $wishlist_id, $destination_id, $wishlist_item_key );
@@ -377,7 +372,7 @@ class WC_Wishlists_Request_Handler {
 		$result = false;
 		if ( isset( $_POST['cart'] ) ) {
 
-			$items  = isset( $_REQUEST['wlitem'] ) ? $_REQUEST['wlitem'] : array();
+			$items  = $_REQUEST['wlitem'] ?? [];
 			$result = 0;
 
 			foreach ( $items as $key ) {
@@ -402,8 +397,15 @@ class WC_Wishlists_Request_Handler {
 	}
 
 	private static function add_all_to_cart() {
-		$wishlist_id = filter_input( INPUT_GET, 'wlid', FILTER_SANITIZE_NUMBER_INT );
-		$items       = WC_Wishlists_Wishlist_Item_Collection::get_items( $wishlist_id );
+		// Determine if this is POST or GET and handle accordingly.
+		$action_type = filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
+		if ( $action_type == 'POST' ) {
+			$wishlist_id = filter_input( INPUT_POST, 'wlid', FILTER_SANITIZE_NUMBER_INT );
+		} else {
+			$wishlist_id = filter_input( INPUT_GET, 'wlid', FILTER_SANITIZE_NUMBER_INT );
+		}
+
+		$items = WC_Wishlists_Wishlist_Item_Collection::get_items( $wishlist_id );
 		if ( $items ) {
 			$result = false;
 			foreach ( $items as $wishlist_item_key => $data ) {
@@ -422,31 +424,45 @@ class WC_Wishlists_Request_Handler {
 
 		$url = self::get_add_to_cart_redirect_url( $wishlist_id );
 		if ( isset( $_GET['preview'] ) ) {
-			return esc_url( add_query_arg( array( 'preview' => 'true' ), $url ) );
+			return esc_url( add_query_arg( [ 'preview' => 'true' ], $url ) );
 		} else {
 			return esc_url( $url );
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private static function add_to_cart( $wishlist_id = false, $wishlist_item_key = false, $suppress_messages = false ) {
 		$result = false;
 
-		if ( ! $wishlist_id && ! $wishlist_item_key ) {
-			$wishlist_id       = filter_input( INPUT_GET, 'wlid', FILTER_SANITIZE_NUMBER_INT );
-			$wishlist_item_key = isset( $_GET['wishlist-item-key'] ) ? filter_input( INPUT_GET, 'wishlist-item-key', FILTER_SANITIZE_STRIPPED ) : false;
+		$input_type = filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
+		$input_type = $input_type == 'POST' ? INPUT_POST : INPUT_GET;
+		if ( ! $wishlist_id ) {
+			$wishlist_id = filter_input( $input_type, 'wlid', FILTER_SANITIZE_NUMBER_INT );
+		}
+
+		if ( ! $wishlist_item_key ) {
+			$wishlist_item_key = filter_input( $input_type, 'wishlist-item-key', FILTER_SANITIZE_STRING );
 		}
 
 		if ( ! $wishlist_id ) {
 			WC_Wishlist_Compatibility::wc_add_notice( __( 'Action failed. Please refresh the page and retry.', 'woocommerce' ), 'error' );
 
-			return;
+			return false;
 		}
 
-		$wishlist = new WC_Wishlists_Wishlist( $wishlist_id );
+		$screen = 'view';
+		// If the input mode === POST and wladdall is set and the wladdall-screen is set to edit, then we are adding all items to the cart from the edit screen.
+		if ( $input_type === INPUT_POST && isset( $_POST['wladdall'] ) && isset( $_POST['wladdall-screen'] ) && $_POST['wladdall-screen'] == 'edit' ) {
+			$screen = 'edit';
+		}
+
+		$wishlist = WC_Wishlists_Wishlist::get_wishlist( $wishlist_id );
 		if ( ! $wishlist ) {
 			WC_Wishlist_Compatibility::wc_add_notice( __( 'Action failed. Please refresh the page and retry.', 'woocommerce' ), 'error' );
 
-			return;
+			return false;
 		}
 
 		$wishlist_items = WC_Wishlists_Wishlist_Item_Collection::get_items( $wishlist->id );
@@ -459,9 +475,9 @@ class WC_Wishlists_Request_Handler {
 					unset( $wishlist_item['wl_price'] );
 				}
 
-				$core_keys   = array( 'product_id', 'variation_id', 'variation', 'quantity', 'data', 'date' );
-				$add_on_data = array();
-				$cart_item   = array();
+				$core_keys   = [ 'product_id', 'variation_id', 'variation', 'quantity', 'data', 'date' ];
+				$add_on_data = [];
+				$cart_item   = [];
 
 				foreach ( $wishlist_item as $key => $value ) {
 					if ( ! in_array( $key, $core_keys ) ) {
@@ -512,42 +528,53 @@ class WC_Wishlists_Request_Handler {
 				}
 
 
-				$add_on_data['wishlist-data']['list'] = array(
+				$add_on_data['wishlist-data']['list'] = [
 					'name'    => $wishlist_prefix,
 					'value'   => $wishlist->id,
 					'display' => get_the_title( $wishlist->id ),
 					'price'   => false
-				);
+				];
 
-				$add_on_data['wishlist-data']['item'] = array(
+				$add_on_data['wishlist-data']['item'] = [
 					'name'    => false,
 					'value'   => $wishlist_item_key,
 					'display' => false,
 					'price'   => false
-				);
+				];
 
-				$add_on_data['wishlist-data']['customer'] = array(
+				$add_on_data['wishlist-data']['customer'] = [
 					'name'    => false,
 					'value'   => $wishlist->get_wishlist_owner(),
 					'display' => false,
 					'price'   => false
-				);
+				];
 
 				$add_on_data = apply_filters( 'woocommerce_copy_cart_item_data', $add_on_data, (int) $wishlist_item['product_id'], $wishlist_item );
-				$quantity    = isset( $_GET['quantity'] ) && $_GET['quantity'] ? $_GET['quantity'] : $cart_item['quantity'];
 
-				$passed_validation = apply_filters( 'woocommerce_add_to_wishlist_validation', true, $cart_item['product_id'], $quantity );
+				// If it's a POST request, get the quantity of the item from the quantity input field, cart[$wishlist_item_key][qty] if it exists. Otherwise, use the quantity from the wishlist item.
+				// If it's a GET request, use the quantity from the query string, otherwise use the quantity from the wishlist item.
+				if ( $input_type === INPUT_POST ) {
+					$quantity = $_POST['cart'][ $wishlist_item_key ]['qty'] ?? $wishlist_item['quantity'];
+				} else {
+					$quantity = $_GET['quantity'] ?? $wishlist_item['quantity'];
+				}
+
+				$passed_validation = apply_filters( 'woocommerce_add_to_cart_from_wishlist_validation', true, $cart_item['product_id'], $quantity, $cart_item['variation_id'], $cart_item['variation'], $add_on_data );
 				if ( $passed_validation && WC()->cart->add_to_cart( (int) $cart_item['product_id'], $quantity, $cart_item['variation_id'], $cart_item['variation'], $add_on_data ) ) {
+
+					// Update the list item quantity.  This is new as of 2.2.11.  It helps with the UX since updating list quantities is not currently obvious.
+					if ( $screen == 'edit' ) {
+						WC_Wishlists_Wishlist_Item_Collection::update_item_quantity( $wishlist->id, $wishlist_item_key, $quantity );
+					}
 
 					if ( ! $suppress_messages ) {
 						$message = __( 'Product successfully added to your cart.', 'wc_wishlist' );
-						$message = apply_filters( 'wc_add_to_cart_message_html', $message, array( $cart_item['product_id'] => $quantity ), false ); // hacked by MRV
+						$message = apply_filters( 'wc_add_to_cart_message_html', $message, [ $cart_item['product_id'] => $quantity ], false ); // hacked by MRV
 						WC_Wishlist_Compatibility::wc_add_notice( $message );
 					}
 
 					$result = self::get_add_to_cart_redirect_url( $wishlist->id );
 				} else {
-
 					WC_Wishlist_Compatibility::wc_add_notice( __( 'Unable to add product to the cart. Please try again', 'wc_wishlist' ), 'error' );
 					$result = false;
 				}
@@ -567,7 +594,7 @@ class WC_Wishlists_Request_Handler {
 			$w_url            = '';
 			if ( $wishlist_sharing == 'Public' ) {
 				$w_url = WC_Wishlists_Wishlist::get_the_url_view( $wishlist->id );
-			} elseif ( $wishlist_sharing == 'Shared' ) {
+			} else if ( $wishlist_sharing == 'Shared' ) {
 				if ( WC_Wishlists_User::get_wishlist_key() != $wishlist->get_wishlist_owner() ) {
 					$w_url = WC_Wishlists_Wishlist::get_the_url_view( $wishlist->id, true );
 				} else {

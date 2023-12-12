@@ -37,7 +37,16 @@ function woocommerce_wishlist_handle_add_to_wishlist_action() {
 		return;
 	}
 
-	$wishlist_id = isset( $_REQUEST['wlid'] ) ? $_REQUEST['wlid'] : 0;
+	$wishlist_id = $_REQUEST['wlid'] ?? 0;
+	if ( $wishlist_id == 'default' ) {
+		$default_list = WC_Wishlists_User::get_default_list();
+		if ( $default_list ) {
+			$wishlist_id = $default_list->id;
+		} else {
+			$wishlist_id = 0;
+		}
+	}
+
 	if ( ! $wishlist_id && ( WC_Wishlists_Settings::get_setting( 'wc_wishlist_autocreate', 'yes' ) == 'yes' ) ) {
 		$wishlist_id = WC_Wishlists_Wishlist::create_list( __( 'Wishlist', 'wc_wishlist' ) );
 
@@ -55,11 +64,14 @@ function woocommerce_wishlist_handle_add_to_wishlist_action() {
 			} else {
 				$myaccounturl = get_permalink( wc_get_page_id( 'myaccount' ) );
 				$redirect_url = WC_Wishlists_Wishlist::get_the_url_edit( $wishlist_id );
-				$auth_url     = apply_filters( 'woocommerce_wishlist_authentication_url', esc_url( add_query_arg( array( 'redirect' => urlencode( $redirect_url ) ), $myaccounturl ) ) );
-				$register_url = apply_filters( 'woocommerce_wishlist_registration_url', esc_url( add_query_arg( array( 'redirect' => urlencode( $redirect_url ) ), $myaccounturl ) ) );
+				$auth_url     = apply_filters( 'woocommerce_wishlist_authentication_url', esc_url( add_query_arg( [ 'redirect' => urlencode( $redirect_url ) ], $myaccounturl ) ) );
+				$register_url = apply_filters( 'woocommerce_wishlist_registration_url', esc_url( add_query_arg( [ 'redirect' => urlencode( $redirect_url ) ], $myaccounturl ) ) );
 				$message      = sprintf( __( 'A temporary list has been created for you. <a href="%s">Login</a> or <a href="%s">register for an account</a> to save this list for future use.  You may access this temporary list for up to 30 days or until you clear your browser history.', 'wc_wishlist' ), $auth_url, $register_url );
 				WC_Wishlist_Compatibility::wc_add_notice( apply_filters( 'woocommerce_wishlist_wishlist_created_message', $message, $wishlist_id ) );
 			}
+
+			//Update Wishlist property to indicate that is the users default wishlist.
+			WC_Wishlists_Wishlist::update_list( $wishlist_id, [ 'wishlist_is_default' => 1 ] );
 		}
 	} else {
 		//Auto Create is disabled.  Require user to create a list manually.
@@ -69,13 +81,11 @@ function woocommerce_wishlist_handle_add_to_wishlist_action() {
 		WC_Wishlist_Compatibility::wc_add_notice( __( 'Unable to locate or create a list for you.  Please try again later', 'wc_wishlist' ), 'error' );
 		wp_redirect( apply_filters( 'woocommerce_add_to_cart_product_id', get_permalink( $_REQUEST['product_id'] ) ) );
 		exit;
-	} else {
-
 	}
 
 	$added_to_wishlist = false;
 
-	$item_id    = isset( $_REQUEST['add-to-cart'] ) ? $_REQUEST['add-to-cart'] : $_REQUEST['add-to-wishlist-itemid'];
+	$item_id    = $_REQUEST['add-to-cart'] ?? $_REQUEST['add-to-wishlist-itemid'];
 	$product_id = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $item_id ) );
 	$product    = wc_get_product( $product_id );
 	if ( empty( $product ) ) {
@@ -97,7 +107,7 @@ function woocommerce_wishlist_handle_add_to_wishlist_action() {
 					exit;
 				}
 
-			} elseif ( $_REQUEST['add-to-wishlist-itemid'] ) {
+			} else if ( $_REQUEST['add-to-wishlist-itemid'] ) {
 
 				/* Link on product archives */
 				WC_Wishlist_Compatibility::wc_add_notice( __( 'Please choose a product&hellip;', 'woocommerce' ), 'error' );
@@ -131,38 +141,28 @@ function woocommerce_wishlist_handle_add_to_wishlist_action() {
 	if ( $added_to_wishlist && $wishlist_id != 'session' ) {
 		woocommerce_wishlist_add_to_wishlist_message( $wishlist_id );
 
-		if ( ! isset( $_REQUEST['wl_from_single_product'] ) || empty( $_REQUEST['wl_from_single_product'] ) ) {
-			$url = add_query_arg( array( 'add-to-wishlist-itemid' => false ) );
-			wp_redirect( esc_url_raw( $url ) );
-			die();
-		}
-
 		$url = apply_filters( 'add_to_wishlist_redirect_url', false, $wishlist_id );
-		//If has custom URL redirect there
+		//If url has custom URL redirect there
 		if ( $url ) {
+			$url = remove_query_arg( [ 'add-to-wishlist-itemid', 'wlid' ] );
 			wp_safe_redirect( $url );
 			exit;
-		} elseif ( WC_Wishlists_Settings::get_setting( 'woocommerce_wishlist_redirect_after_add_to_cart', 'yes' ) == 'yes' && WC_Wishlist_Compatibility::wc_error_count() == 0 ) {
+		} else if ( WC_Wishlists_Settings::get_setting( 'woocommerce_wishlist_redirect_after_add_to_cart', 'yes' ) == 'yes' && WC_Wishlist_Compatibility::wc_error_count() == 0 ) {
 			//Redirect to the wishlist
 			wp_safe_redirect( WC_Wishlists_Wishlist::get_the_url_edit( $wishlist_id ) );
 			die();
 		} else {
-			//Check for is product so we can add items from the shop page / and quick view.
-			if ( is_numeric( $_REQUEST['add-to-wishlist-itemid'] ) ) {
-				wp_redirect( get_permalink( $_REQUEST['add-to-wishlist-itemid'] ) );
-				die();
-			} elseif ( isset( $_GET['product_id'] ) ) {
-				wp_redirect( get_permalink( $_GET['product_id'] ) );
-				die();
-			}
+			$url = remove_query_arg( [ 'add-to-wishlist-itemid', 'wlid' ] );
+			wp_safe_redirect( $url );
+			die();
 		}
-	} elseif ( $wishlist_id == 'session' ) {
+	} else if ( $wishlist_id == 'session' ) {
 
 		if ( $added_to_wishlist ) {
 
 			$message    = sprintf( __( '%s Items ready to move to a new list', 'wc_wishlist' ), 1 );
 			$message    = apply_filters( 'woocommerce_wishlist_wishlist_ready_to_move_message', $message, $wishlist_id );
-			$action_url = WC_Wishlists_Plugin::nonce_url( 'clear-session-items', add_query_arg( array( 'wlaction' => 'clear-session-items' ) ) );
+			$action_url = WC_Wishlists_Plugin::nonce_url( 'clear-session-items', add_query_arg( [ 'wlaction' => 'clear-session-items' ] ) );
 			$action_url = apply_filters( 'woocommerce_wishlist_wishlist_ready_to_move_cancel_url', $action_url, $wishlist_id );
 			$action     = '<a class="wishlist-message-dismiss" href="' . $action_url . '">' . __( 'Cancel', 'wc_wishlist' ) . '</a>';
 
@@ -170,15 +170,15 @@ function woocommerce_wishlist_handle_add_to_wishlist_action() {
 		}
 
 		$wl_return_to = false;
-		if ( isset( $_REQUEST['wl_from_single_product'] ) || ! empty( $_REQUEST['wl_from_single_product'] ) ) {
+		if ( isset( $_REQUEST['wl_from_single_product'] ) ) {
 			if ( is_numeric( $_REQUEST['add-to-wishlist-itemid'] ) ) {
 				$wl_return_to = $_REQUEST['add-to-wishlist-itemid'];
-			} elseif ( isset( $_GET['product_id'] ) ) {
+			} else if ( isset( $_GET['product_id'] ) ) {
 				$wl_return_to = $_GET['product_id'];
 			}
 		}
 
-		wp_safe_redirect( add_query_arg( array( 'wl_return_to' => $wl_return_to ), WC_Wishlists_Pages::get_url_for( 'create-a-list' ) ) );
+		wp_safe_redirect( add_query_arg( [ 'wl_return_to' => $wl_return_to ], WC_Wishlists_Pages::get_url_for( 'create-a-list' ) ) );
 		die();
 	}
 }
@@ -187,8 +187,8 @@ function woocommerce_wishlist_add_to_wishlist_handler_variable( $product_id, $wi
 	$adding_to_cart     = wc_get_product( $product_id );
 	$variation_id       = empty( $_REQUEST['variation_id'] ) ? '' : absint( $_REQUEST['variation_id'] );
 	$quantity           = empty( $_REQUEST['quantity'] ) ? 1 : wc_stock_amount( $_REQUEST['quantity'] );
-	$missing_attributes = array();
-	$variations         = array();
+	$missing_attributes = [];
+	$variations         = [];
 	$attributes         = $adding_to_cart->get_attributes();
 
 	// If no variation ID is set, attempt to get a variation ID from posted attributes.
@@ -258,12 +258,12 @@ function woocommerce_wishlist_add_to_wishlist_handler_variable( $product_id, $wi
 
 function woocommerce_wishlist_add_to_cart_handler_grouped( $product_id, $wishlist_id ) {
 	$was_added_to_cart = false;
-	$added_to_cart     = array();
+	$added_to_cart     = [];
 
 	if ( ! empty( $_REQUEST['quantity'] ) && is_array( $_REQUEST['quantity'] ) ) {
 		$quantity_set = false;
 
-		$items_to_add = array();
+		$items_to_add = [];
 		foreach ( $_REQUEST['quantity'] as $item => $quantity ) {
 			if ( $quantity <= 0 ) {
 				continue;
@@ -274,10 +274,10 @@ function woocommerce_wishlist_add_to_cart_handler_grouped( $product_id, $wishlis
 			$passed_validation = apply_filters( 'woocommerce_add_to_wishlist_validation', apply_filters( 'woocommerce_add_to_cart_validation', true, $item, $quantity ), $item, $quantity );
 
 			if ( $passed_validation ) {
-				$items_to_add[] = array(
+				$items_to_add[] = [
 					'product_id' => $item,
 					'quantity'   => $quantity
-				);
+				];
 			}
 		}
 
@@ -298,13 +298,13 @@ function woocommerce_wishlist_add_to_cart_handler_grouped( $product_id, $wishlis
 
 		if ( ! $was_added_to_cart && ! $quantity_set ) {
 			wc_add_notice( __( 'Please choose the quantity of items you wish to add to your list&hellip;', 'wc_wishlist' ), 'error' );
-		} elseif ( ! $was_added_to_cart ) {
+		} else if ( ! $was_added_to_cart ) {
 			wc_add_notice( __( 'There was a problem adding items to your wishlist.  Please review and try again.&hellip;', 'wc_wishlist' ), 'error' );
 
-		} elseif ( $was_added_to_cart ) {
+		} else if ( $was_added_to_cart ) {
 			return true;
 		}
-	} elseif ( $product_id ) {
+	} else if ( $product_id ) {
 		/* Link on product archives */
 		wc_add_notice( __( 'Please choose a product to add to your list&hellip;', 'wc_wishlist' ), 'error' );
 	}
@@ -313,7 +313,7 @@ function woocommerce_wishlist_add_to_cart_handler_grouped( $product_id, $wishlis
 }
 
 function woocommerce_wishlist_add_to_wishlist_message( $wishlist_id = false ) {
-	//Output succss messages
+	//Output success messages
 	if ( WC_Wishlists_Settings::get_setting( 'woocommerce_wishlist_redirect_after_add_to_cart', 'yes' ) == 'yes' ) :
 		$return_to = ( wp_get_referer() ) ? wp_get_referer() : home_url();
 		$message   = sprintf( '<a href="%s" class="button">%s</a> %s', $return_to, __( 'Continue Shopping &rarr;', 'wc_wishlist' ), __( 'Product successfully added to your wishlist.', 'wc_wishlist' ) );
@@ -372,7 +372,7 @@ function woocommerce_wishlist_handle_share_via_email_action() {
 	if ( $to ) {
 		$addresses = explode( ',', $to );
 		array_map( 'trim', $addresses );
-		$clean_addresses = array();
+		$clean_addresses = [];
 		foreach ( $addresses as $address ) {
 			$clean_addresses[] = filter_var( $address, FILTER_SANITIZE_EMAIL );
 		}
@@ -389,7 +389,7 @@ function woocommerce_wishlist_handle_share_via_email_action() {
 
 	if ( $sent ) {
 		WC_Wishlist_Compatibility::wc_add_notice( __( 'Your email has been sent', 'wc_wishlist' ) );
-	} elseif ( $sent === false ) {
+	} else if ( $sent === false ) {
 		WC_Wishlist_Compatibility::wc_add_notice( __( 'Unable to send mail.  Please check your values and try again.', 'wc_wishlist' ) . ' ' . $phpmailer->ErrorInfo, 'error' );
 	} else {
 		WC_Wishlist_Compatibility::wc_add_notice( __( 'Unable to send mail.  Please check your values and try again.', 'wc_wishlist' ), 'error' );
@@ -433,6 +433,14 @@ function woocommerce_wishlists_authenticate( $user ) {
 
 	return $user;
 }
+
+add_action( 'xoo_el_login_success', 'woocommerce_wishlists_xoo_el_login_success', 10, 1 );
+function woocommerce_wishlists_xoo_el_login_success( $user ) {
+	if (!is_wp_error($user) && is_a($user, 'WP_User') && function_exists('woocommerce_wishlists_wp_login')) {
+		woocommerce_wishlists_wp_login( $user->user_login, $user );
+	}
+}
+
 
 add_action( 'wp_login', 'woocommerce_wishlists_wp_login', 10, 2 );
 

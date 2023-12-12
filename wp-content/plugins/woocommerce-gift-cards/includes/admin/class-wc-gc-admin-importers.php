@@ -2,7 +2,7 @@
 /**
  * WC_GC_Admin_Importers class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.6.0
  */
 
@@ -43,7 +43,7 @@ class WC_GC_Admin_Importers {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 		add_action( 'wp_ajax_woocommerce_gc_do_ajax_import', array( $this, 'do_ajax_gift_card_import' ) );
 
-		// Register WooCommerce Gift Cards importers.
+		// Register Woo Gift Cards importers.
 		$this->importers[ 'giftcard_importer' ] = array(
 			'menu'       => 'woocommerce',
 			'name'       => __( 'Gift Card Import', 'woocommerce-gift-cards' ),
@@ -53,7 +53,7 @@ class WC_GC_Admin_Importers {
 	}
 
 	/**
-	 * Return true if WooCommerce Gift Cards imports are allowed for current user, false otherwise.
+	 * Return true if Woo Gift Cards imports are allowed for current user, false otherwise.
 	 *
 	 * @return bool Whether current user can perform imports.
 	 */
@@ -93,7 +93,7 @@ class WC_GC_Admin_Importers {
 	 */
 	public function register_importers() {
 		if ( defined( 'WP_LOAD_IMPORTERS' ) ) {
-			register_importer( 'woocommerce_gc_giftcards_csv', __( 'WooCommerce Gift Cards (CSV)', 'woocommerce-gift-cards' ), __( 'Import <strong>gift cards</strong> to your store via a csv file.', 'woocommerce-gift-cards' ), array( $this, 'giftcard_importer' ) );
+			register_importer( 'woocommerce_gc_giftcards_csv', __( 'Woo Gift Cards (CSV)', 'woocommerce-gift-cards' ), __( 'Import <strong>gift cards</strong> to your store via a csv file.', 'woocommerce-gift-cards' ), array( $this, 'giftcard_importer' ) );
 		}
 	}
 

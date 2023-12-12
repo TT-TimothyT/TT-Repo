@@ -2,7 +2,7 @@
 /**
  * WC_GC_Admin_Gift_Cards_Page class
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  */
 
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC_GC_Admin_Gift_Cards_Page Class.
  *
- * @version 1.16.6
+ * @version 1.16.7
  */
 class WC_GC_Admin_Gift_Cards_Page {
 
@@ -253,17 +253,37 @@ class WC_GC_Admin_Gift_Cards_Page {
 
 		check_admin_referer( 'delete_giftcard' );
 
+		global $wpdb;
+
 		$giftcard_id = isset( $_GET[ 'giftcard' ] ) ? absint( $_GET[ 'giftcard' ] ) : 0;
 		if ( $giftcard_id ) {
 			$giftcard = WC_GC()->db->giftcards->get( $giftcard_id );
 		}
 
 		if ( isset( $giftcard ) && $giftcard ) {
-			WC_GC()->db->giftcards->delete( $giftcard );
-			WC_GC_Admin_Notices::add_notice( __( 'Gift card deleted.', 'woocommerce-gift-cards' ), 'success', true );
-		}
 
-		wp_safe_redirect( admin_url( self::PAGE_URL ) );
+			$is_giftcard_used = $wpdb->get_var( $wpdb->prepare( "
+				SELECT COUNT(*)
+				FROM `{$wpdb->prefix}woocommerce_order_itemmeta`
+				WHERE `meta_key` = 'giftcard_id'
+				AND `meta_value` = %d
+				LIMIT 1
+			"
+				,
+				array(
+					$giftcard_id
+				)
+			) )  > 0 ? true : false;
+
+			if ( $is_giftcard_used ) {
+				WC_GC_Admin_Notices::add_notice( __( 'Gift card could not be deleted because it is used in orders.', 'woocommerce-gift-cards' ), 'error', true );
+				wp_safe_redirect( admin_url( self::PAGE_URL . '&section=edit&giftcard=' . $giftcard_id ) );
+			} else {
+				WC_GC()->db->giftcards->delete( $giftcard );
+				WC_GC_Admin_Notices::add_notice( __( 'Gift card deleted.', 'woocommerce-gift-cards' ), 'success', true );
+				wp_safe_redirect( admin_url( self::PAGE_URL ) );
+			}
+		}
 		exit;
 	}
 

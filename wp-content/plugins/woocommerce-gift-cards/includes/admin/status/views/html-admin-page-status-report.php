@@ -2,7 +2,7 @@
 /**
  * Status Report data.
  *
- * @package  WooCommerce Gift Cards
+ * @package  Woo Gift Cards
  * @since    1.0.0
  * @version  1.16.0
  */
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<tbody>
 		<tr>
 			<td data-export-label="Database Version"><?php esc_html_e( 'Database version', 'woocommerce-gift-cards' ); ?>:</td>
-			<td class="help"><?php echo wc_help_tip( esc_html__( 'The version of WooCommerce Gift Cards reported by the database. This should be the same as the plugin version.', 'woocommerce-gift-cards' ) ); ?></td>
+			<td class="help"><?php echo wc_help_tip( esc_html__( 'The version of Woo Gift Cards reported by the database. This should be the same as the plugin version.', 'woocommerce-gift-cards' ) ); ?></td>
 			<td>
 			<?php
 
