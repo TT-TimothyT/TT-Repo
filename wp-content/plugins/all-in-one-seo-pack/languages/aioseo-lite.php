@@ -237,9 +237,9 @@ $generated_i18n_strings = [
 	// Translators: 1 - The plugin name ("All in One SEO"), 2 - "upgrading to Pro".
 	__( '%1$s relies on the WordPress Rest API and your site might have it disabled. %2$s.', 'all-in-one-seo-pack' ),
 
-	// Reference: /src/vue/standalone/divi/Modal.vue:17
-	// Translators: 1 - The plugin name ("All in One SEO").
-	__( '%1$s settings', 'all-in-one-seo-pack' ),
+	// Reference: /src/vue/standalone/page-builders/Modal.vue:30
+	// Translators: 1 - The short plugin name ("AIOSEO").
+	__( '%1$s Settings', 'all-in-one-seo-pack' ),
 
 	// Reference: /src/vue/pages/monsterinsights/views/Monsterinsights.vue:62
 	// Reference: /src/vue/pages/monsterinsights/views/Monsterinsights.vue:73
@@ -595,7 +595,7 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/pages/settings/router/paths.js:68
 	// Reference: /src/vue/pages/settings/views/lite/Breadcrumbs.vue:58
 	// Reference: /src/vue/standalone/post-settings/views/Advanced.vue:45
-	// Reference: /src/vue/standalone/post-settings/views/Main.vue:158
+	// Reference: /src/vue/standalone/post-settings/views/Main.vue:159
 	__( 'Advanced', 'all-in-one-seo-pack' ),
 
 	// Reference: /src/vue/plugins/constants.js:1173
@@ -2700,7 +2700,7 @@ $generated_i18n_strings = [
 
 	// Reference: /src/vue/plugins/constants.js:1428
 	// Reference: /src/vue/standalone/post-settings/views/General.vue:104
-	// Reference: /src/vue/standalone/post-settings/views/Main.vue:130
+	// Reference: /src/vue/standalone/post-settings/views/Main.vue:131
 	// Reference: /src/vue/standalone/post-settings/views/ModalContent.vue:37
 	__( 'General', 'all-in-one-seo-pack' ),
 
@@ -2963,7 +2963,7 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/pages/search-appearance/views/GlobalSettings.vue:58
 	__( 'Google, Bing and other search engines use specific data from your schema markup to output data in their Knowledge Panels. This data is known as the Knowledge Graph. Use these settings to change how that data looks.', 'all-in-one-seo-pack' ),
 
-	// Reference: /src/vue/standalone/elementor/introduction.js:37
+	// Reference: /src/vue/standalone/page-builders/elementor/introduction.js:37
 	__( 'Got It!', 'all-in-one-seo-pack' ),
 
 	// Reference: /src/vue/plugins/constants.js:1335
@@ -3756,7 +3756,7 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/plugins/constants.js:1149
 	// Reference: /src/vue/plugins/constants.js:1484
 	// Reference: /src/vue/standalone/post-settings/views/LinksSideBar.vue:21
-	// Reference: /src/vue/standalone/post-settings/views/Main.vue:170
+	// Reference: /src/vue/standalone/post-settings/views/Main.vue:172
 	__( 'Link Assistant', 'all-in-one-seo-pack' ),
 
 	// Reference: /src/vue/pages/link-assistant/views/lite/overview/Overview.vue:26
@@ -4157,7 +4157,7 @@ $generated_i18n_strings = [
 	// Reference: /src/react/headline-analyzer/components/HeadlinePanelNewScore.jsx:11
 	__( 'New Score', 'all-in-one-seo-pack' ),
 
-	// Reference: /src/vue/standalone/elementor/introduction.js:21
+	// Reference: /src/vue/standalone/page-builders/elementor/introduction.js:21
 	// Translators: 1 - The plugin short name ("AIOSEO"), 2 - The Elementor plugin name ("Elementor").
 	__( 'New: %1$s %2$s integration', 'all-in-one-seo-pack' ),
 
@@ -5120,7 +5120,7 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/mixins/ToolsSettings.js:98
 	// Reference: /src/vue/pages/redirects/router/paths.js:24
 	// Reference: /src/vue/pages/redirects/views/Main.vue:35
-	// Reference: /src/vue/standalone/post-settings/views/Main.vue:145
+	// Reference: /src/vue/standalone/post-settings/views/Main.vue:146
 	// Reference: /src/vue/standalone/post-settings/views/RedirectsSideBar.vue:21
 	// Reference: /src/vue/standalone/post-settings/views/lite/partials-redirects/Redirects.vue:26
 	__( 'Redirects', 'all-in-one-seo-pack' ),
@@ -5289,6 +5289,12 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/standalone/blocks/table-of-contents/vue/App.vue:47
 	__( 'Save', 'all-in-one-seo-pack' ),
 
+	// Reference: /src/vue/standalone/page-builders/avada/limit-modified-date.js:8
+	// Reference: /src/vue/standalone/page-builders/divi/limit-modified-date/main.js:16
+	// Reference: /src/vue/standalone/page-builders/elementor/limit-modified-date.js:7
+	// Reference: /src/vue/standalone/page-builders/seedprod/limit-modified-date.js:8
+	__( 'Save (Don\'t Modify Date)', 'all-in-one-seo-pack' ),
+
 	// Reference: /src/vue/composables/Wizard.js:9
 	__( 'Save and Continue', 'all-in-one-seo-pack' ),
 
@@ -5302,7 +5308,7 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/plugins/constants.js:1522
 	__( 'Scheduled', 'all-in-one-seo-pack' ),
 
-	// Reference: /src/vue/standalone/post-settings/views/Main.vue:140
+	// Reference: /src/vue/standalone/post-settings/views/Main.vue:141
 	__( 'Schema', 'all-in-one-seo-pack' ),
 
 	// Reference: /src/vue/standalone/post-settings/views/lite/partials-schema/CtaModal.vue:70
@@ -5600,7 +5606,7 @@ $generated_i18n_strings = [
 	__( 'SEO Preview', 'all-in-one-seo-pack' ),
 
 	// Reference: /src/vue/pages/about/views/lite/LiteVsPro.vue:203
-	// Reference: /src/vue/standalone/post-settings/views/Main.vue:152
+	// Reference: /src/vue/standalone/post-settings/views/Main.vue:153
 	// Reference: /src/vue/standalone/post-settings/views/lite/SeoRevisions.vue:32
 	__( 'SEO Revisions', 'all-in-one-seo-pack' ),
 
@@ -5831,7 +5837,7 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/standalone/publish-panel/PrePublish.vue:44
 	__( 'Snippet Preview', 'all-in-one-seo-pack' ),
 
-	// Reference: /src/vue/standalone/post-settings/views/Main.vue:135
+	// Reference: /src/vue/standalone/post-settings/views/Main.vue:136
 	// Reference: /src/vue/standalone/post-settings/views/ModalContent.vue:42
 	// Reference: /src/vue/standalone/post-settings/views/Social.vue:39
 	// Reference: /src/vue/standalone/publish-panel/PrePublish.vue:73
@@ -6283,7 +6289,7 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/pages/tools/views/partials/robots-editor/RuleErrors.vue:85
 	__( 'The network rule takes precedence.', 'all-in-one-seo-pack' ),
 
-	// Reference: /src/vue/standalone/divi-admin/App.vue:21
+	// Reference: /src/vue/standalone/page-builders/divi-admin/App.vue:21
 	// Translators: 1 - The plugin name ("All in One SEO"), 2 - Opening HTML link tag, 3 - Closing HTML link tag.
 	__( 'The options below are disabled because you are using %1$s to manage your SEO. They can be changed in the %2$sSearch Appearance menu%3$s.', 'all-in-one-seo-pack' ),
 
@@ -7043,6 +7049,9 @@ $generated_i18n_strings = [
 	// Reference: /src/vue/pages/search-statistics/views/partials/Statistic.vue:68
 	__( 'Up', 'all-in-one-seo-pack' ),
 
+	// Reference: /src/vue/standalone/page-builders/wpbakery/limit-modified-date/main.js:16
+	__( 'Update (Don\'t Modify Date)', 'all-in-one-seo-pack' ),
+
 	// Reference: /src/vue/components/common/core/FeatureCard.vue:69
 	__( 'Update Addon', 'all-in-one-seo-pack' ),
 
@@ -7699,7 +7708,7 @@ $generated_i18n_strings = [
 	// Translators: 1 - Learn more link.
 	__( 'You can manually set an API key here, but if left blank a new one will be auto-generated. %1$s', 'all-in-one-seo-pack' ),
 
-	// Reference: /src/vue/standalone/elementor/introduction.js:28
+	// Reference: /src/vue/standalone/page-builders/elementor/introduction.js:28
 	// Translators: 1 - The plugin name ("All in One SEO"), 2 - The Elementor plugin name ("Elementor").
 	__( 'You can now manage your SEO settings inside of %1$s via %2$s before you publish your post!', 'all-in-one-seo-pack' ),
 

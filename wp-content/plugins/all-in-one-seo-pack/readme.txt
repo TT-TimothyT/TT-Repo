@@ -1,10 +1,10 @@
 === All in One SEO – Best WordPress SEO Plugin – Easily Improve SEO Rankings & Increase Traffic ===
 Contributors: aioseo, smub, benjaminprojas
 Tags: SEO, Google Search Console, XML Sitemap, meta description, schema, meta title, rich snippets, woocommerce seo, local seo, open graph, google news sitemap, video sitemap, robots.txt, seo audit, content analysis, seo plugin, redirection
-Tested up to: 6.4.1
+Tested up to: 6.4.2
 Requires at least: 4.9
 Requires PHP: 7.0
-Stable tag: 4.5.1.1
+Stable tag: 4.5.2.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -257,6 +257,17 @@ Visit <a href="http://www.wpbeginner.com/" rel="friend" title="WPBeginner">WPBeg
 
 
 == Changelog ==
+
+**New in Version 4.5.2.1**
+
+* Fixed: Conflict with Avada where some Avada elements cause the post editor to load the wrong data.
+
+**New in Version 4.5.2**
+
+* New: Integrations with Avada & WPBakery - Control your SEO and optimize your content directly from the Avada and WPBakery visual page builders.
+* New: Added support for the Limit Modified Date setting to Elementor, Divi and SeedProd.
+* Updated: Improved shipping details schema logic for WooCommerce to better prevent plugin/theme conflicts.
+* Fixed: PHP error in Tools menu when using WP 5.4 or lower.
 
 **New in Version 4.5.1.1**
 
@@ -684,6 +695,6 @@ Additionally, AIOSEO can also provide you with data on the most frequently used 
 
 == Upgrade Notice ==
 
-= 4.5.1.1 =
+= 4.5.2.1 =
 
 This update adds major improvements and bug fixes.

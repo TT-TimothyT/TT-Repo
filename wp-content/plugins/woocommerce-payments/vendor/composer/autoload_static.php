@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d
+class ComposerStaticInit9dfc107cbaa90afb69bed66432c8cf70
 {
     public static $files = array (
         '3773ef3f09c37da5478d578e32b03a4b' => __DIR__ . '/..' . '/automattic/jetpack-assets/actions.php',
@@ -273,9 +273,11 @@ class ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d
         'WCPay\\Internal\\DependencyManagement\\ServiceProvider\\PaymentsServiceProvider' => __DIR__ . '/../..' . '/src/Internal/DependencyManagement/ServiceProvider/PaymentsServiceProvider.php',
         'WCPay\\Internal\\DependencyManagement\\ServiceProvider\\ProxiesServiceProvider' => __DIR__ . '/../..' . '/src/Internal/DependencyManagement/ServiceProvider/ProxiesServiceProvider.php',
         'WCPay\\Internal\\Logger' => __DIR__ . '/../..' . '/src/Internal/Logger.php',
+        'WCPay\\Internal\\Payment\\AbstractSessionRateLimiter' => __DIR__ . '/../..' . '/src/Internal/Payment/AbstractSessionRateLimiter.php',
         'WCPay\\Internal\\Payment\\Change' => __DIR__ . '/../..' . '/src/Internal/Payment/Change.php',
         'WCPay\\Internal\\Payment\\Exception\\StateTransitionException' => __DIR__ . '/../..' . '/src/Internal/Payment/Exception/StateTransitionException.php',
         'WCPay\\Internal\\Payment\\Factor' => __DIR__ . '/../..' . '/src/Internal/Payment/Factor.php',
+        'WCPay\\Internal\\Payment\\FailedTransactionRateLimiter' => __DIR__ . '/../..' . '/src/Internal/Payment/FailedTransactionRateLimiter.php',
         'WCPay\\Internal\\Payment\\PaymentContext' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentContext.php',
         'WCPay\\Internal\\Payment\\PaymentMethod\\NewPaymentMethod' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentMethod/NewPaymentMethod.php',
         'WCPay\\Internal\\Payment\\PaymentMethod\\PaymentMethodInterface' => __DIR__ . '/../..' . '/src/Internal/Payment/PaymentMethod/PaymentMethodInterface.php',
@@ -299,7 +301,9 @@ class ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d
         'WCPay\\Internal\\Service\\DuplicatePaymentPreventionService' => __DIR__ . '/../..' . '/src/Internal/Service/DuplicatePaymentPreventionService.php',
         'WCPay\\Internal\\Service\\ExampleService' => __DIR__ . '/../..' . '/src/Internal/Service/ExampleService.php',
         'WCPay\\Internal\\Service\\ExampleServiceWithDependencies' => __DIR__ . '/../..' . '/src/Internal/Service/ExampleServiceWithDependencies.php',
+        'WCPay\\Internal\\Service\\FraudPreventionService' => __DIR__ . '/../..' . '/src/Internal/Service/FraudPreventionService.php',
         'WCPay\\Internal\\Service\\Level3Service' => __DIR__ . '/../..' . '/src/Internal/Service/Level3Service.php',
+        'WCPay\\Internal\\Service\\MinimumAmountService' => __DIR__ . '/../..' . '/src/Internal/Service/MinimumAmountService.php',
         'WCPay\\Internal\\Service\\OrderService' => __DIR__ . '/../..' . '/src/Internal/Service/OrderService.php',
         'WCPay\\Internal\\Service\\PaymentContextLoggerService' => __DIR__ . '/../..' . '/src/Internal/Service/PaymentContextLoggerService.php',
         'WCPay\\Internal\\Service\\PaymentProcessingService' => __DIR__ . '/../..' . '/src/Internal/Service/PaymentProcessingService.php',
@@ -383,9 +387,9 @@ class ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit95d672ebb995c8245e0659d2e4d7db3d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9dfc107cbaa90afb69bed66432c8cf70::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9dfc107cbaa90afb69bed66432c8cf70::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit9dfc107cbaa90afb69bed66432c8cf70::$classMap;
 
         }, null, ClassLoader::class);
     }
