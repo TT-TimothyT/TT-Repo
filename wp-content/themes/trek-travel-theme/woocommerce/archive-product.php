@@ -345,14 +345,14 @@ $emptyBlockContent .= '</div></div>';
                                         </h5>                                    
                                     <# } #>
                                 </div>
-                                <div class="card-footer bg-transparent border-success px-0 border-0 pt-5">
+                                <!-- <div class="card-footer bg-transparent border-success px-0 border-0 pt-5">
                                     <div class="form-check woocommerce-products-compare-compare-button text-start m-0">
                                         <input type="checkbox" class="woocommerce-products-compare-checkbox form-check-input" data-product-id="{{ data.post_id }}" id="woocommerce-products-compare-checkbox-{{ data.post_id }}"  {{checkedTick}}/>
                                         <label class="form-check-label fs-md" for="defaultCheck1">
                                             Compare Trip
                                         </label>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                        </div>
                     </div>
@@ -444,14 +444,14 @@ $emptyBlockContent .= '</div></div>';
 
                         </div>
                         <# } #>
-                        <div class="card-footer compare-trip bg-transparent border-0 position-absolute bottom-0 px-3">
+                        <!-- <div class="card-footer compare-trip bg-transparent border-0 position-absolute bottom-0 px-3">
                             <div class="form-check woocommerce-products-compare-compare-button">
                                 <input type="checkbox" class="woocommerce-products-compare-checkbox form-check-input" data-product-id="{{ data.post_id }}" id="woocommerce-products-compare-checkbox-{{ data.post_id }}"  {{checkedTick}}/>
                                 <label class="form-check-label fs-sm" for="defaultCheck1">
                                     Compare Trip
                                 </label>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
