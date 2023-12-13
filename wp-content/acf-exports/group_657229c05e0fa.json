@@ -1,0 +1,45 @@
+{
+    "key": "group_657229c05e0fa",
+    "title": "PDP",
+    "fields": [
+        {
+            "key": "field_65722a32efd62",
+            "label": "Additional Details",
+            "name": "aditional_details",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Use only basic HTML elements and no heading bigger than H3",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "delay": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "product"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1701981171
+}
