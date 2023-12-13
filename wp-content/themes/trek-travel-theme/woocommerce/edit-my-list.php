@@ -152,7 +152,7 @@ endif;
                                             </a>
                                             <p><small><?php echo $_product->short_description ?></small></p>                                            
                                             <ul class="list-inline mb-0">
-                                                <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
+                                                <li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
                                                 <li class="list-inline-item fs-sm listValue"><?php echo $_product->get_attribute( 'pa_trip-style' ); ?></li>
                                                 <li class="list-inline-item mobile-hideme"><i class="bi bi-info-circle pdp-trip-styles"></i></li>
                                             </ul>                                            
@@ -162,7 +162,7 @@ endif;
                                                 <li class="list-inline-item mobile-hideme"></li>
                                             </ul>                                            
                                             <ul class="list-inline mb-0">
-                                                <li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
+                                                <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
                                                 <li class="list-inline-item fs-sm listValue"><?php echo $_product->get_attribute( 'pa_trip-style' ); ?></li>
                                                 <li class="list-inline-item mobile-hideme"><i class="bi bi-info-circle pdp-rider-level"></i></li>
                                             </ul>                                            
