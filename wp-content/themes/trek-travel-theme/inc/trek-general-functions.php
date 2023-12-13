@@ -5393,3 +5393,28 @@ function tt_after_submission_referral_form( $entry, $form ) {
 }
 add_action( 'gform_after_submission', 'tt_after_submission_referral_form', 10, 2 );
 								
+function dx_get_current_user_bike_preferences_cb() {
+    $current_user = wp_get_current_user();
+    $user_id      = $current_user->ID;
+
+    // Get post meta for the current user
+    $gear_preferences_rider_height  = get_user_meta( $user_id, 'gear_preferences_rider_height', true );
+    $gear_preferences_select_pedals = get_user_meta( $user_id, 'gear_preferences_select_pedals', true );
+    $gear_preferences_helmet_size   = get_user_meta( $user_id, 'gear_preferences_helmet_size', true );
+    $gear_preferences_jersey_style  = get_user_meta( $user_id, 'gear_preferences_jersey_style', true );
+    $gear_preferences_jersey_size   = get_user_meta( $user_id, 'gear_preferences_jersey_size', true );
+
+    // Prepare response
+    $response = array(
+        'gear_preferences_rider_height' => $gear_preferences_rider_height,
+        'gear_preferences_select_pedals' => $gear_preferences_select_pedals,
+        'gear_preferences_helmet_size' => $gear_preferences_helmet_size,
+        'gear_preferences_jersey_style' => $gear_preferences_jersey_style,
+        'gear_preferences_jersey_size' => $gear_preferences_jersey_size,
+    );
+
+    // Send JSON response
+	wp_send_json($response);
+}
+add_action( 'wp_ajax_dx_get_current_user_bike_preferences', 'dx_get_current_user_bike_preferences_cb' );
+add_action( 'wp_ajax_nopriv_dx_get_current_user_bike_preferences', 'dx_get_current_user_bike_preferences_cb' );

@@ -293,6 +293,7 @@ function checkout_steps_validations(step = 1) {
         }
       });
     }
+
     if (selectedGuests != no_of_guests) {
       isValidated = true;
     }
@@ -2406,6 +2407,44 @@ if (jQuery('.tt_continue_bike_click_btn').length > 0) {
         jQuery('html, body').animate({
           scrollTop: jQuery('.checkout-bikes__rider-level').offset().top - 150
         }, 'fast');
+      }
+    });
+
+    var action = 'dx_get_current_user_bike_preferences';
+    jQuery.ajax({
+      type: 'POST',
+      url: trek_JS_obj.ajaxURL,
+      data: "action=" + action,
+      dataType: 'json',
+      success: function (response) {
+        // Check if the response is valid
+        if (response) {
+          console.log(response.gear_preferences_rider_height);
+          // Refill fields with retrieved data
+          if (response.gear_preferences_rider_height !== "") {
+            jQuery('[name="bike_gears[primary][rider_height]"]').val(response.gear_preferences_rider_height);
+          }
+          if (response.gear_preferences_select_pedals !== "") {
+            jQuery('[name="bike_gears[primary][bike_pedal]"]').val(response.gear_preferences_select_pedals);
+          }
+          if (response.gear_preferences_helmet_size !== "") {
+            jQuery('[name="bike_gears[primary][helmet_size]"]').val(response.gear_preferences_helmet_size);
+          }
+          if (response.gear_preferences_jersey_style !== "") {
+            if (!jQuery('[name="bike_gears[primary][jersey_style]"]').parent().hasClass('d-none')) {
+              jQuery('[name="bike_gears[primary][jersey_style]"]').val(response.gear_preferences_jersey_style);
+            }
+          }
+          if (response.gear_preferences_jersey_size !== "") {
+            if (!jQuery('[name="bike_gears[primary][jersey_size]"]').parent().hasClass('d-none')) {
+              jQuery('[name="bike_gears[primary][jersey_size]"]').val(response.gear_preferences_jersey_size);
+
+            }
+          }
+        } else {
+          // Handle the case when the AJAX request is not successful
+          console.error('Error fetching user post meta:', response.message);
+        }
       }
     });
   });
