@@ -302,6 +302,9 @@
 
     }
     @media print {
+        .accordion-body * {
+            break-inside: avoid;
+          }
         .accordion-item {
             page-break-after: always;
             &:last-child {
