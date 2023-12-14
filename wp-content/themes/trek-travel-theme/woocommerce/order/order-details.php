@@ -191,7 +191,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 ?>
 <div class="container-fluid order-details__banner d-flex justify-content-end flex-column">
 	<h1 class="mb-0 mb-lg-1 order-details__banner-heading">Thank You!</h1>
-	<p class="order-details__banner-text">Success Msg - Lorem ipsum dolor sit amet</p>
+	<p class="order-details__banner-text">Your booking was successfully completed.</p>
 </div>
 <div class="container order-details" id="order-details-page">
 	<div class="row">
