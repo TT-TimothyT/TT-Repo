@@ -194,13 +194,13 @@ if ($p_own_bike == 'yes') {
                     <label for="floatingSelect">Helmet Size</label>
                 </div>
                 <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
-                    <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) ?> name="bike_gears[primary][jersey_style]" class="form-select tt_jersey_style_change" id="floatingSelect1" data-guest-index="0">
+                    <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' || 'd-none' === $hideme ? '' : $primary_required) ?> name="bike_gears[primary][jersey_style]" class="form-select tt_jersey_style_change" id="floatingSelect1" data-guest-index="0" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
                         <?php
                             $clothing_style = isset($tt_posted['bike_gears']['primary']['jersey_style']) ? $tt_posted['bike_gears']['primary']['jersey_style'] : '';
                         ?>
                         <option value="">Select Clothing Style</option>
 						<?php if ( 'd-none' === $hideme ) : ?>
-							<option selected value="none">None</option>
+							<option selected value="">None</option>
 						<?php endif; ?>
                         <option value="men" <?php echo ( $clothing_style == 'men' ? 'selected' : '' ); ?>>Men's</option>
                         <option value="women" <?php echo ( $clothing_style == 'women' ? 'selected' : '' ); ?>>Women's</option>
@@ -208,9 +208,9 @@ if ($p_own_bike == 'yes') {
                     <label for="floatingSelect">Jersey Style</label>
                 </div>
                 <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
-                    <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) ?> name="bike_gears[primary][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example">
+                    <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' || 'd-none' === $hideme ? '' : $primary_required) ?> name="bike_gears[primary][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
 					<?php if ( 'd-none' === $hideme ) : ?>
-						<option selected value="none">None</option>
+						<option selected value="">None</option>
 					<?php endif; ?>
 					<?php
                         $clothing_size = isset($tt_posted['bike_gears']['primary']['jersey_size']) ? $tt_posted['bike_gears']['primary']['jersey_size'] : '';
@@ -377,9 +377,9 @@ if ($p_own_bike == 'yes') {
                             <label for="floatingSelect">Helmet Size</label>
                         </div>
                         <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
-                            <select <?php echo ( $g_rider_level != 5 && $g_own_bike == 'yes' ? '' : $guest_required); ?> name="bike_gears[guests][<?php echo $guest_num; ?>][jersey_style]" class="form-select tt_jersey_style_change" id="floatingSelect1" aria-label="Floating label select example" data-guest-index="<?php echo $guest_num; ?>">
+                            <select <?php echo ( $g_rider_level != 5 && $g_own_bike == 'yes' || 'd-none' === $hideme ? '' : $guest_required ); ?> name="bike_gears[guests][<?php echo $guest_num; ?>][jersey_style]" class="form-select tt_jersey_style_change" id="floatingSelect1" aria-label="Floating label select example" data-guest-index="<?php echo $guest_num; ?>" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
                                 <?php if ( 'd-none' === $hideme ) : ?>
-					            	<option selected value="none">None</option>
+					            	<option selected value="">None</option>
 					            <?php endif; ?>
                                 <?php 
                                     $g_clothing_style = isset($tt_posted['bike_gears']['guests'][$guest_num]['jersey_style']) ? $tt_posted['bike_gears']['guests'][$guest_num]['jersey_style'] : '';
@@ -391,9 +391,9 @@ if ($p_own_bike == 'yes') {
                             <label for="floatingSelect">Jersey Style</label>
                         </div>
                         <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
-                            <select <?php echo ( $g_rider_level != 5 && $g_own_bike == 'yes' ? '' : $guest_required); ?> name="bike_gears[guests][<?php echo $guest_num; ?>][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example">
+                            <select <?php echo ( $g_rider_level != 5 && $g_own_bike == 'yes' || 'd-none' === $hideme ? '' : $guest_required); ?> name="bike_gears[guests][<?php echo $guest_num; ?>][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
                                 <?php if ( 'd-none' === $hideme ) : ?>
-					            	<option selected value="none">None</option>
+					            	<option selected value="">None</option>
 					            <?php endif; ?>
                                 <?php 
                                     $g_clothing_size = isset($tt_posted['bike_gears']['guests'][$guest_num]['jersey_size']) ? $tt_posted['bike_gears']['guests'][$guest_num]['jersey_size'] : '';

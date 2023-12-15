@@ -1749,10 +1749,10 @@ jQuery(document).on('click keyup keydown change', '.tt_rider_level_select', func
       }
     }
     if (guest_id != 'primary') {
-      jQuery(divID).find('select').not('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"]').prop('required', true);
+      jQuery(divID).find('select').not('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"], select[data-is-required="false"]').prop('required', true);
       jQuery(divID).find('input').not('input[name="bike_gears[guests][' + guest_id + '][own_bike]"]').prop('required', true);
     } else {
-      jQuery(divID).find('select').not('select[name="bike_gears[primary][helmet_size]"]').prop('required', true);
+      jQuery(divID).find('select').not('select[name="bike_gears[primary][helmet_size]"], select[data-is-required="false"]').prop('required', true);
       jQuery(divID).find('input').not('input[name="bike_gears[primary][own_bike]"]').not('input[name="bike_gears[primary][save_preferences]"]').prop('required', true);
     }
     if (jQuery(divID).find('.tt_my_own_bike_checkbox').is(':checked')) {
