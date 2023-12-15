@@ -3130,6 +3130,13 @@ jQuery(document).ready(function() {
   })
   jQuery('#testimonials .card-body > div').height(maxHeight + 16);
 
+  var maxHeightAuthor = 0;
+  jQuery('#testimonials .card-body .text-author').each(function() {
+    var thisH = jQuery(this).height();
+    if (thisH > maxHeightAuthor) { maxHeightAuthor = thisH; }
+  })
+  jQuery('#testimonials .card-body .text-author').height(maxHeightAuthor + 16);
+
   jQuery('#testimonials .read-more').on("click", function(){
       var $this = jQuery(this);
       $this.siblings('.card-text').toggleClass("is-expanded");
