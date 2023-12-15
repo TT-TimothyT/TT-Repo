@@ -2703,7 +2703,7 @@ jQuery(document).on('click', '#itinerary-print-button', function (e) {
     var olarkButton = jQuery('.olark-launch-button.olark-size-md');
     if (olarkButton.length > 0) {
       // Check if the olarkButton has the class "olark-text-button"
-      if (!olarkButton.hasClass('olark-text-button')) {
+      if (!olarkButton.hasClass('olark-text-button') && !olarkButton.parent().parent().parent().hasClass('olark-hidden') ) {
         // Trigger a click event on the button if it doesn't have the class
         olarkButton.click();
       }
