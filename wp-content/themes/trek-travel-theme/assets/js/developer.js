@@ -499,16 +499,17 @@ jQuery(document).ready(function () {
     jQuery("#qytguest").find(".guests:last").remove();
     tripCapacityValidation(false);
   });
+
   jQuery('.pdp_slider').slick({
     dots: false,
     infinite: true,
     speed: 300,
-    slidesToShow: 3,
+    slidesToShow: 3.15,
     slidesToScroll: 1,
     autoplay: false,
     responsive: [
       {
-        breakpoint: 991,
+        breakpoint: 992,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
@@ -3109,6 +3110,38 @@ jQuery(document).ready(function() {
     maxHeightProduct1 = Math.max(maxHeightProduct1, jQuery(this).height());
   });  
   jQuery(".product-info-desktop").height(maxHeightProduct1);
+
+  jQuery('#testimonials .card-text').each(function() {
+    var $text = jQuery(this);
+    var $button = $text.siblings('.read-more');
+    var lineHeight = parseFloat($text.css('line-height'));
+    var textHeight = $text.height();
+    var numberOfLines = Math.round(textHeight / lineHeight);
+    if(numberOfLines > 3) {
+      $text.addClass('long-text');
+      $button.css('display','block');
+    }
+  })
+
+  var maxHeight = 0;
+  jQuery('#testimonials .card-body > div').each(function() {
+    var thisH = jQuery(this).height();
+    if (thisH > maxHeight) { maxHeight = thisH; }
+  })
+  jQuery('#testimonials .card-body > div').height(maxHeight + 16);
+
+  jQuery('#testimonials .read-more').on("click", function(){
+      var $this = jQuery(this);
+      $this.siblings('.card-text').toggleClass("is-expanded");
+      if($this.siblings('.card-text').hasClass("is-expanded")){
+          jQuery(this).text("Show less");
+          jQuery(this).parent().height('auto');
+      } else {
+        jQuery(this).text("Read more");
+        jQuery(this).parent().height(maxHeight + 16)
+      }
+  });
+
 })
 
 jQuery('#search-input').on('keyup', function() {

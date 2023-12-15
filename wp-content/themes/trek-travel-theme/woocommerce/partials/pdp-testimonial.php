@@ -13,7 +13,10 @@ if(!empty($testimonial_details)):
                         <div class="card">
                             <img src="<?php echo $item['testimonial_image']['url']?>" class="card-img-top" alt="<?php echo $item['testimonial_image']['alt']?>">
                             <div class="card-body">
-                            <p class="card-text text text-center"><?php echo $item['testimonial_text']; ?></p>
+                                <div>
+                                    <p class="card-text text text-center"><?php echo $item['testimonial_text']; ?></p>
+                                    <span class="read-more">Read more</span>
+                                </div>
                             <p class="card-text text-author text-center fw-medium"><?php echo $item['testimonial_author']; ?></p>
                             </div>
                         </div>

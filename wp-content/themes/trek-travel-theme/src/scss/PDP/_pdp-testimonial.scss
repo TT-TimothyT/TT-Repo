@@ -8,12 +8,12 @@
         border: unset;
         background-color: $gray-100;
         border-bottom: 4px solid $blue;
+        margin-left: 10px;
+        margin-right: 10px;
         &:nth-child(even){
             @include media-breakpoint-up(lg) {
                 margin-top: 1%;
             }
-            margin-left: 10px;
-            margin-right: 10px;
         }
         .text {
             font-size: 14px;
@@ -21,6 +21,27 @@
             color: $black;
             font-family: 'Roboto';
             margin-top: 24px;
+            
+            &.long-text {     
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+            }
+            &.is-expanded {
+                white-space: initial;
+                overflow: visible;
+                display: block;
+            }
+        }
+        .read-more{ 
+            display: none;
+            font-size: 14px;
+            text-align: center;
+            width: 100%;
+            color: #28AAE1;
+            margin-top: -17px;
+            margin-bottom: 16px;
         }
         .text-author {
             font-family: 'Roboto';
@@ -32,6 +53,13 @@
                 width:10px;
             }
         }
+        .card-img-top {
+            height: 266px;
+            object-fit: cover;
+            @include media-breakpoint-down(lg) {
+                height: 190px;
+            }
+        }
     }
     .slick-slider {
         margin-right: -20px;
@@ -40,14 +68,21 @@
         }
     }
     .slick-list{
-        padding:0 50px 0 0;
+        // padding:0 50px 0 0;
+        // margin: 0 -10px;
+        // padding: 0px 15px;
+        padding-left: 4%;
+
+        @media screen and (max-width: 991px) {
+            padding: 0;
+        }
     }
     .slick-slide {
-        margin-right:8px;
-        @include media-breakpoint-up(lg) {
-            margin-right: 10px;
-            margin-left: 10px;
-        }
+        // margin-right:8px;
+        // @include media-breakpoint-up(lg) {
+        //     margin-right: 10px;
+        //     margin-left: 10px;
+        // }
         @include media-breakpoint-up(lg) {
             &:nth-of-type(even) {
                 margin-top: 52px;
