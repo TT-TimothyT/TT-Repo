@@ -3944,6 +3944,40 @@ jQuery('body').on('click', '.checkout-double-occupancy', function() {
   jQuery('html').addClass('no-scroll');
 })
 
+// Check waiver status, after the modal with the waiver document close.
+jQuery( '#waiver_modal' ).on( 'hidden.bs.modal', function () {
+  const nsBookingId = this.dataset.nsBookingId;
+  const action = 'tt_ajax_get_waiver_info_action';
+  jQuery.ajax({
+    type: 'POST',
+    url: trek_JS_obj.ajaxURL,
+    data: "action=" + action + "&ns-booking-id=" + nsBookingId,
+    dataType: 'json',
+    beforeSend: function () {
+      // Set loader.
+      jQuery.blockUI({
+        css: {
+          border: 'none',
+          padding: '15px',
+          backgroundColor: '#000',
+          '-webkit-border-radius': '10px',
+          '-moz-border-radius': '10px',
+          opacity: .5,
+          color: '#fff'
+        }
+      });
+    },
+    success: function (response) {
+      // If waiver is signed successfully, show success feedback in the trip waiver status section.
+      if(response.waiver_accepted) {
+        jQuery('.waiver-not-signed-ctr').html(response.waiver_signed_html)
+      }
+      // Remove loader.
+      jQuery.unblockUI();
+    }
+  });
+})
+
 jQuery('body').on('click', '.checkout-travel-protection-tooltip', function() {
   jQuery('.travel-protection-tooltip-container').css('display', 'flex');
   jQuery('header').css('z-index','0');

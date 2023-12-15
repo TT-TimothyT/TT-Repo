@@ -6,7 +6,10 @@ $cancellation_policy_page_id = get_option('tt_opt_cancellation_policy_page_id') 
 $cancellation_policy_page_link = $cancellation_policy_page_id ? get_the_permalink($cancellation_policy_page_id) : '';
 define('TREK_DIR', get_template_directory_uri());
 define('TREK_PATH', get_template_directory());
-define('TT_WAIVER_URL', 'https://661527.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527&h=1d9367cf147b5322893e&whence=');
+// This "Waiver URL" below is for production NetSuite account. Use it when launch the site.
+// define('TT_WAIVER_URL', 'https://661527.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527&h=1d9367cf147b5322893e&whence=');
+// Temporary "Waiver URL" for Sandbox NetSuite Account.
+define('TT_WAIVER_URL', 'https://661527-sb2.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527_SB2&h=629b0eb96224bcaa55bd&whence=');
 define('TREK_MY_ACCOUNT_PID', get_option('woocommerce_myaccount_page_id'));
 define('DEFAULT_IMG', 'https://via.placeholder.com/90?text=Trek%20Travel');
 define('G_CAPTCHA_SITEKEY', '6LfJg7MiAAAAAITw-hl0U0r2E8gSGUimzUh8-9Q0');
@@ -4880,6 +4883,77 @@ function tt_get_waiver_status($order_id=""){
     }
     return $waiverAccepted;
 }
+
+/**
+ * Take waiver information from NS and generate a waiver link for signing document.
+ *
+ * @uses NetSuiteClient
+ * @uses NS Script 1304 - This script returns in the same time guests and release forms information for the guests in the given booking.
+ * @uses NetSuite Integration for WooCommerce - Indirect dependencies,
+ * this plugin save in users meta the ns_customer_internal_id value, during users registration.
+ * 
+ * @param string|int $ns_booking_id The booking ID. We take it from post meta for given order ID with meta key `tt_meta_guest_booking_id`
+ * 
+ * @return array A waiver document link for the current user and waiver accepted status.
+ */
+function tt_get_waiver_info( $ns_booking_id ){
+    $netSuiteClient = new NetSuiteClient();
+    $waiverAccepted = false;
+    $user = wp_get_current_user();
+    $ns_user_id = get_user_meta($user->ID, 'ns_customer_internal_id', true);
+    $waiver_info = array(
+        'waiver_link' => '',
+        'waiver_accepted' => false
+    );
+    if ($ns_user_id) {
+
+        if ($ns_booking_id) {
+            $booking_info = $netSuiteClient->get('1304:2', array('bookingId' => $ns_booking_id));
+            $booking_release_forms = isset($booking_info->releaseForms) && $booking_info->releaseForms ? $booking_info->releaseForms : [];
+            if ($booking_release_forms) {
+                foreach ($booking_release_forms as $booking_release_form) {
+                    $guest_id = $booking_release_form->guestId;
+                    if ($guest_id == $ns_user_id) {
+                        $waiver_info['waiver_link'] = add_query_arg(
+                            array(
+                                'custpage_releaseFormId' => $booking_release_form->releaseFormId
+                            ),
+                            TT_WAIVER_URL
+                        );
+                        $waiver_info['waiver_accepted'] = $booking_release_form->releaseFormAccepted;
+                    }
+                }
+            }
+        }
+    }
+    return $waiver_info;
+}
+
+/**
+ * Take waiver status on the front end via AJAX request.
+ * 
+ * @param string|int $_POST['ns-booking-id'] The booking ID.
+ * 
+ * @return array Array with waiver accepted status, and the html for successfully signed of the document. 
+ */
+function tt_ajax_get_waiver_info(){
+    $res = array(
+        'waiver_accepted' => false,
+        'waiver_signed_html' => '<p class="fw-medium fs-lg lh-lg status-signed">Signed</p><p class="fw-normal fs-sm lh-sm">You\'re all set here!</p>'
+    );
+    if( isset( $_POST['ns-booking-id'] ) && !empty( $_POST['ns-booking-id'] ) ) {
+        $waiver_info = tt_get_waiver_info( $_POST['ns-booking-id'] );
+        if( $waiver_info['waiver_accepted'] ){
+            $res['waiver_accepted'] = true;
+        }
+    }
+
+    echo json_encode($res);
+    exit;
+}
+add_action('wp_ajax_tt_ajax_get_waiver_info_action', 'tt_ajax_get_waiver_info');
+add_action('wp_ajax_nopriv_tt_ajax_get_waiver_info_action', 'tt_ajax_get_waiver_info');
+
 add_action('tt_trigger_cron_ns_guest_booking_details', 'tt_trigger_cron_ns_guest_booking_details_cb', 10, 3);
 function tt_trigger_cron_ns_guest_booking_details_cb($single_req,$ns_user_id, $wc_user_id){
     tt_add_error_log('[Start] - Adding Trips', ['ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id], ['dateTime' => date('Y-m-d H:i:s')]);

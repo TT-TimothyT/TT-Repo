@@ -14,7 +14,7 @@ $userInfo = wp_get_current_user();
 $accepted_p_ids = tt_get_line_items_product_ids();
 $guest_emails_arr = trek_get_guest_emails($user_id, $order_id);
 $User_order_info = trek_get_user_order_info($user_id, $order_id);
-$waiver_status = tt_get_waiver_status($order_id);
+// $waiver_status = tt_get_waiver_status($order_id);
 $guest_is_primary = isset($User_order_info[0]['guest_is_primary']) ? $User_order_info[0]['guest_is_primary'] : 0;
 $guest_emails = implode(', ', $guest_emails_arr);
 $trek_formatted_checkoutData = $trek_checkoutData = array();
@@ -136,6 +136,7 @@ if( $parent_product_id ){
 }
 $isPassportRequired = get_post_meta($booked_trip_id, TT_WC_META_PREFIX . 'isPassportRequired', true);
 $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', true);
+$waiver_info = tt_get_waiver_info($ns_booking_id);
 
 $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat' );
 $hideJerseyForTrips = [ 710, 744, 712, 713 ];
@@ -869,16 +870,18 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 			<div class="col-lg-10 waiver-col">
 				<div class="card dashboard__card rounded-1">
 					<p class="fw-medium fs-xl lh-xl">Trip Waiver Status</p>
-					<?php if ($waiver_status == 1) {  ?>
+					<?php if ( $waiver_info['waiver_accepted'] == 1 ) {  ?>
 						<p class="fw-medium fs-lg lh-lg status-signed">Signed</p>
 						<p class="fw-normal fs-sm lh-sm">You're all set here!</p>
 					<?php } else { ?>
-						<p class="fw-medium fs-lg lh-lg status-not-signed">
-							<img src="<?php echo TREK_DIR; ?>/assets/images/error2.png"> Not Signed
-						</p>
-						<p class="fw-normal fs-sm lh-sm">Please review & sign the waiver below before the start of your trip date.</p>
-						<a class="btn btn-primary fs-md lh-md mobile-hideme" href="javascript:" target="_blank" data-bs-toggle="modal" data-bs-target="#waiver_modal">Sign Waiver</a>
-						<a class="btn btn-primary fs-md lh-md desktop-hideme" href="javascript:" target="_blank" data-bs-toggle="modal" data-bs-target="#waiver_modal">View Waiver</a>
+						<div class="waiver-not-signed-ctr">
+							<p class="fw-medium fs-lg lh-lg status-not-signed">
+								<img src="<?php echo TREK_DIR; ?>/assets/images/error2.png"> Not Signed
+							</p>
+							<p class="fw-normal fs-sm lh-sm">Please review & sign the waiver below before the start of your trip date.</p>
+							<a class="btn btn-primary fs-md lh-md mobile-hideme" href="javascript:" target="_blank" data-bs-toggle="modal" data-bs-target="#waiver_modal">Sign Waiver</a>
+							<a class="btn btn-primary fs-md lh-md desktop-hideme" href="javascript:" target="_blank" data-bs-toggle="modal" data-bs-target="#waiver_modal">View Waiver</a>
+						</div>
 					<?php } ?>
 				</div>
 			</div>
@@ -893,12 +896,12 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 				</div>
 			</div>
 		</div> <!-- row ends -->
-		<?php }?>
+	<?php }?>
 
 </div>
 <!-- Begin: Travel Waiver modal form  -->
 <!-- Modal -->
-<div class="modal fade modal-search-filter" id="waiver_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade modal-search-filter" id="waiver_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-ns-booking-id="<?php echo esc_attr( $ns_booking_id ); ?>">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -908,7 +911,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 				</span>
 			</div>
 			<div class="modal-body" style="padding: 0;">
-				<iframe src="<?php echo $waiver_link; ?>" width="100%" height="350"></iframe>
+				<iframe src="<?php echo esc_url( $waiver_info['waiver_link'] ); ?>" width="100%" height="350"></iframe>
 				<!-- </form> -->
 			</div>
 		</div><!-- / .modal-content -->
