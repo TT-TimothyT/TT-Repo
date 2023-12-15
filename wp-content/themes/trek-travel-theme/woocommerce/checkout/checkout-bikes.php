@@ -85,8 +85,8 @@ if ($p_own_bike == 'yes') {
         <div class="checkout-bikes__bike-selection" id="tt_rider_level_primary" <?php echo $p_all_hide; ?>>
             <p class="fw-medium fs-md lh-md">Select Your Bike of Choice</p>
             <div class="form-check">
-                <input name="bike_gears[primary][own_bike]" class="form-check-input checkout-bikes__own-bike-check tt_my_own_bike_checkbox" data-type="tt_my_own_bike_primary" type="checkbox" value="yes" id="flexCheckDefault" <?php echo (isset($tt_posted['bike_gears']['primary']['own_bike']) && $tt_posted['bike_gears']['primary']['own_bike'] == 'yes' ? 'checked' : ''); ?>>
-                <label class="form-check-label fw-medium fs-md lh-md" for="flexCheckDefault">
+                <input name="bike_gears[primary][own_bike]" class="form-check-input checkout-bikes__own-bike-check tt_my_own_bike_checkbox" data-type="tt_my_own_bike_primary" type="checkbox" value="yes" id="myOwnBikeCheckboxPrimary" <?php echo (isset($tt_posted['bike_gears']['primary']['own_bike']) && $tt_posted['bike_gears']['primary']['own_bike'] == 'yes' ? 'checked' : ''); ?>>
+                <label class="form-check-label fw-medium fs-md lh-md" for="myOwnBikeCheckboxPrimary">
                     I am bringing my own bike
                 </label>
             </div>
@@ -222,8 +222,8 @@ if ($p_own_bike == 'yes') {
 
             <div class="container checkout-bikes__save-preferences my-4 mx-0">
                 <div class="form-check">
-                    <input name="bike_gears[primary][save_preferences]" class="form-check-input checkout-bikes__own-bike-check" type="checkbox" value="yes" id="flexCheckDefault" <?php echo (isset($tt_posted['bike_gears']['primary']['save_preferences']) && $tt_posted['bike_gears']['primary']['save_preferences'] == 'yes' ? 'checked' : ''); ?>>
-                    <label class="form-check-label fw-medium fs-md lh-md" for="flexCheckDefault">
+                    <input name="bike_gears[primary][save_preferences]" class="form-check-input checkout-bikes__own-bike-check" type="checkbox" value="yes" id="saveMyBikePrefCheckbox" <?php echo (isset($tt_posted['bike_gears']['primary']['save_preferences']) && $tt_posted['bike_gears']['primary']['save_preferences'] == 'yes' ? 'checked' : ''); ?>>
+                    <label class="form-check-label fw-medium fs-md lh-md" for="saveMyBikePrefCheckbox">
                         Save my bike & gear preferences for future use. This will override your existing preferences saved on your profile.
                     </label>
                 </div>
@@ -265,8 +265,8 @@ if ($p_own_bike == 'yes') {
                 <div class="checkout-bikes__bike-selection" id="tt_rider_level_guest_<?php echo $guest_num; ?>" <?php echo $g_all_hide; ?>>
                     <p class="fw-medium fs-md lh-md">Select Your Bike of Choice</p>
                     <div class="form-check">
-                        <input class="form-check-input checkout-bikes__own-bike-check tt_my_own_bike_checkbox" name="bike_gears[guests][<?php echo $guest_num; ?>][own_bike]" data-type="tt_my_own_bike_guest_<?php echo $guest_num; ?>" type="checkbox" value="yes" id="flexCheckDefault" <?php echo $g_own_bike == "yes" ? "checked" : ""; ?>>
-                        <label class="form-check-label fw-medium fs-md lh-md" for="flexCheckDefault">
+                        <input class="form-check-input checkout-bikes__own-bike-check tt_my_own_bike_checkbox" name="bike_gears[guests][<?php echo $guest_num; ?>][own_bike]" data-type="tt_my_own_bike_guest_<?php echo $guest_num; ?>" type="checkbox" value="yes" id="myOwnBikeCheckboxGuest<?php echo $guest_num; ?>" <?php echo $g_own_bike == "yes" ? "checked" : ""; ?>>
+                        <label class="form-check-label fw-medium fs-md lh-md" for="myOwnBikeCheckboxGuest<?php echo $guest_num; ?>">
                             I am bringing my own bike
                         </label>
                     </div>
