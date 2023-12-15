@@ -419,6 +419,8 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 									<fieldset>
 										<?php
 										$medical_field_html = '';
+										// First time flag.
+										$is_first_medical_load = false;
 										if ($medical_fields) {
 											foreach ($medical_fields as $medical_key => $medical_field) {
 												$medical_val = '';
@@ -434,22 +436,30 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 												if ($medical_key == 'custentity_dietaryrestrictions') {
 													$medical_val = $dietaryrestrictions;
 												}
-												$is_medical = ($medical_val ? 'yes' : 'no');
-												$toggleTextClass = ($medical_val ? 'style="display:block;"' : 'style="display:none;"');
+												$is_medical = ($medical_val && 'none' != $medical_val ? 'yes' : 'no');
+												$toggleTextClass = ($medical_val && 'none' != $medical_val ? 'style="display:block;"' : 'style="display:none;"');
+												// Adjust medical values for 'no' response.
+												if( empty($medical_val) && 'no' == $is_medical ) {
+													$is_first_medical_load = true;
+													$medical_val = 'none';
+												}
 												$medical_field_html .= '<div class="form-group medical-information__item medical_item">
 												<div class="flex-grow-1">
 													<p class="fw-medium fs-lg lh-lg mb-4 mb-lg-5">' . $medical_field . '</p>
 													<div class="form-check form-check-inline mb-0">
-													<input class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadio' . $medical_key . '" value="yes" ' . ($is_medical == 'yes' ? 'checked' : '') . '>
-													<label class="form-check-label" for="inlineRadio' . $medical_key . '">Yes</label>
+													<input class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadioYes' . $medical_key . '" value="yes" ' . ($is_medical == 'yes' ? 'checked' : '') . '>
+													<label class="form-check-label" for="inlineRadioYes' . $medical_key . '">Yes</label>
 													</div>
 													<div class="form-check form-check-inline mb-0 ">
-													<input class="form-check-input" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadio' . $medical_key . '" value="no" ' . ($is_medical == 'no' ? 'checked' : '') . '>
-													<label class="form-check-label" for="inlineRadio' . $medical_key . '">No</label>
+													<input class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadioNo' . $medical_key . '" value="no" ' . ($is_medical == 'no' ? 'checked' : '') . '>
+													<label class="form-check-label" for="inlineRadioNo' . $medical_key . '">No</label>
 													</div>
 													<textarea name="' . $medical_key . '[value]" placeholder="Please tell us more" class="form-control rounded-1 mt-4" ' . $toggleTextClass . '>' . $medical_val . '</textarea>
 												</div>
 											</div>';
+											}
+											if( $is_first_medical_load ){
+												$medical_field_html .= '<input type="hidden" name="custentity_medical_info_first_load" value="true" disabled>';
 											}
 											echo $medical_field_html;
 										}

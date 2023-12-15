@@ -46,18 +46,32 @@ function tt_change_checkout_step(targetStep = '') {
  * (my-trip-checklist.php)
  */
 function prebookingChecklistValidate() {
-  // Need to change this logic, not working corectly.
-  var totalMedicalFields = jQuery('.medical_validation_checkboxes').length;
+  var isFirstMedicalLoad = jQuery('input[name="custentity_medical_info_first_load"]').length > 0;
+  var isMedicalInfoSectionComplete = true;
   var totalEmerFields = jQuery('.emergency_validation_inputs').length;
   var totalGearFields = jQuery('.gear_validation_inputs').length;
   var totalPassFields = jQuery('.passport_validation_inputs').length;
-  var medical_itemCount = 0;
   var emergency_itemCount = 0;
   var gear_itemCount = 0;
   var passport_itemCount = 0;
+  // Check medical information section for complete state.
   jQuery('.medical_validation_checkboxes').each(function () {
     if (jQuery(this).is(':checked')) {
-      medical_itemCount++;
+      var medicalInfoValue = jQuery(this).val();
+      var medicalInfoMoreInfoField = jQuery(this).parents('.medical-information__item').find('textarea');
+      // If Has a flag for first load, mark medical info section as uncomplete.
+      if(isFirstMedicalLoad){
+        isMedicalInfoSectionComplete = false;
+      }
+
+      // Change textarea value, based on radio value selection.
+      if( 'yes' == medicalInfoValue ){
+        // Clear 'none' value and show the placeholder.
+        medicalInfoMoreInfoField.val('');
+      } else if( 'no' == medicalInfoValue ) {
+        // Set default 'none' value for 'no' option.
+        medicalInfoMoreInfoField.val('none');
+      }
     }
   });
   jQuery('.emergency_validation_inputs').each(function () {
@@ -75,7 +89,7 @@ function prebookingChecklistValidate() {
       passport_itemCount++;
     }
   });
-  if (totalMedicalFields == medical_itemCount) {
+  if (isMedicalInfoSectionComplete) {
     jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
   } else {
     jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
@@ -1066,9 +1080,13 @@ jQuery(document).ready(function () {
         var resMessage = '';
         if (response.status == true) {
           resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`
+          // Set Medical info section as complete.
+          jQuery('input[name="custentity_medical_info_first_load"]').remove();
         } else {
           resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
         }
+        // Revalidate checklist completion.
+        prebookingChecklistValidate();
         jQuery('#my-trips-responses').html(resMessage);
         if (response.status == false) {
           alert(response.message);
