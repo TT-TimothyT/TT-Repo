@@ -32,6 +32,11 @@ $cc_exp_date = isset($tt_posted['wc-cybersource-credit-card-expiry']) ? $tt_post
 $cc_masked = isset($tt_posted['wc-cybersource-credit-card-masked-pan']) ? $tt_posted['wc-cybersource-credit-card-masked-pan'] : '';
 $cc_type = isset($tt_posted['wc-cybersource-credit-card-card-type']) ? $tt_posted['wc-cybersource-credit-card-card-type'] : '';
 $tt_rooms_output = tt_rooms_output($tt_posted);
+
+// Take bike names.
+$tripInfo = tt_get_trip_pid_sku_from_cart();
+$local_bike_details = tt_get_local_bike_detail($tripInfo['sku']);
+$local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
 ?>
 <div class="checkout-review" id="checkout-review">
     <div class="checkout-review__guest">
@@ -136,7 +141,7 @@ $tt_rooms_output = tt_rooms_output($tt_posted);
                 if ($iter % $cols == 0) {
                     $review_bikes_html .= '<div class="row mx-0">';
                 }
-                $syncRiderLevels = $syncBikeSizes = $syncHeights = $syncHelmets = $syncBikeTypes = $syncPedals = $syncJerseySizes = '';
+                $syncRiderLevels = $syncBikeSizes = $syncHeights = $syncHelmets = $syncBikeTypes = $syncPedals = $syncJerseySizes = $syncBike = '';
                 if( isset($review_bikes_arr_val['rider_level']) && $review_bikes_arr_val['rider_level'] ){
                     $syncRiderLevels =    tt_get_custom_item_name('syncRiderLevels',$review_bikes_arr_val['rider_level']);
                 }
@@ -158,26 +163,40 @@ $tt_rooms_output = tt_rooms_output($tt_posted);
                 if( isset($review_bikes_arr_val['jersey_size']) && $review_bikes_arr_val['jersey_size'] ){
                     $syncJerseySizes =    tt_get_custom_item_name('syncJerseySizes',$review_bikes_arr_val['jersey_size']);
                 }
+                $bike_id   = (int) $review_bikes_arr_val['bikeId'];
+                $bike_name = '';
+                if( isset($bike_id) && $bike_id ){
+                    switch ( $bike_id ) {
+                        case 5270: // I am bringing my own bike.
+                            $bike_name = 'Bringing own';
+                            break;
+                        default: // Take the name of the bike.
+                            $bike_name = json_decode( $local_bike_models_info[ $bike_id ], true)[ 'name' ];
+                            break;
+                    }
+                }
                 $guestLabel = ($review_bikes_arr_k == 0 ? 'Primary Guest' : 'Guest ' . ($review_bikes_arr_k + 1));
                 $fullname = $review_bikes_arr_val['guest_fname'] . ' ' . $review_bikes_arr_val['guest_lname'];
                 $review_bikes_html .= '<div class="col-lg-6 px-0 checkout-review__col">';
                 $review_bikes_html .= '<p class="fw-medium mb-2">' . $guestLabel . ': ' . $fullname . '</p>
                     <p class="fs-sm lh-sm mb-0">Rider Level: ' . $syncRiderLevels . '</p>';
-                if ( $review_bikes_arr_val['rider_level'] != 5 && is_array( $syncJerseySizes ) ) {
-                    $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $syncBikeTypes . '</p>
-                        <p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
-                        <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>
-                        <p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
-                        <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>
-                        <p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
-                } elseif( $review_bikes_arr_val['rider_level'] != 5 ) { 
-                    $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $syncBikeTypes . '</p>
-                        <p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
-                        <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>
-                        <p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
-                        <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>
-                        <p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>
-                        <p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
+                if( $review_bikes_arr_val['rider_level'] != 5 ) {
+                    if( !empty( $bike_name ) ){
+
+                        $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $bike_name . '</p>';
+                    }
+                    if( 5270 !== $bike_id ){
+
+                        $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
+                        <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>';
+                    }
+                    $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
+                        <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>';
+                        if( ! is_array( $syncJerseySizes ) ) {
+
+                            $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>';
+                        }
+                    $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: No</p>';
                 }
                 $review_bikes_html .= '</div>';
                 if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {

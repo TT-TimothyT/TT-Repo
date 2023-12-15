@@ -4235,6 +4235,9 @@ function tt_guest_details($tt_posted = [])
         $state = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state'] : '';
         $city = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city'] : '';
         $postcode = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode'] : '';
+        $sku = isset($tt_posted['sku']) ? $tt_posted['sku'] : '';
+        $local_bike_details = tt_get_local_bike_detail($sku);
+        $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
         for ($iter = 0; $iter < $guest_count; $iter++) {
             if ($iter % $cols == 0) {
                 $guest_html .= '<div class="d-flex order-details__flex order-details__flexmulti">';
@@ -4307,6 +4310,7 @@ function tt_guest_details($tt_posted = [])
             $bike_pedal = tt_get_custom_item_name('syncPedals', $bike_pedal);
             $jersey_size = tt_get_custom_item_name('syncJerseySizes', $jersey_size);
             $jersey_style = tt_get_custom_item_name('syncJerseySizes', $jersey_style);
+            $bike_name = json_decode( $local_bike_models_info[ $bikeId ], true)[ 'name' ];
             $bike_gear_html .= '<p class="mb-2 fs-md lh-md fw-medium">' . $guest_label . '</p>';
             $bike_gear_html .= '<p class="mb-2 fs-md lh-md fw-medium">' . $fname . ' ' . $lname . '</p>';
             $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Rider Level: ' . $rider_level . '</p>';
@@ -4315,14 +4319,14 @@ function tt_guest_details($tt_posted = [])
                     $bike_size = $rider_height = "Bringing own";
                 }
                 if( $rider_levelVal != 5 && is_array( $jersey_size ) ) {
-                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_size . '</p>
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_name . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                 } elseif ( $rider_levelVal != 5 ) {
-                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_size . '</p>
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_name . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
