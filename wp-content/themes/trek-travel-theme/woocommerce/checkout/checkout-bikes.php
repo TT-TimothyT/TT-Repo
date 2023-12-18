@@ -310,7 +310,7 @@ if ($p_own_bike == 'yes') {
                                         // if( $bike_post_id !== NULL && is_numeric($bike_post_id) ){
                                         //     $bike_post_name = get_the_title($bike_post_id);
                                         // }
-                                        $bikeTypeInfo = tt_ns_get_bike_type_info($bikeTypeId);
+                                        $bikeTypeInfo = tt_ns_get_bike_type_info($bikeModelId);
                                         $bikeUpgradeHtml = '';
                                         if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
                                             $bikeUpgradeHtml .= '<div class="checkout-bikes__price-upgrade d-flex ms-4">
