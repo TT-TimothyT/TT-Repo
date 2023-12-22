@@ -192,8 +192,7 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                     }
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
                         <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>';
-                        if( ! is_array( $syncJerseySizes ) ) {
-
+                        if( !is_array( $syncJerseySizes ) && !empty( $syncJerseySizes ) ) {
                             $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>';
                         }
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';

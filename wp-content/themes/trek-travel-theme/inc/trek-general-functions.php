@@ -4330,9 +4330,11 @@ function tt_guest_details($tt_posted = [])
                         <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
                         <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
+                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>';
+                        if( !empty( $jersey_size ) && '-' != $jersey_size ) {
+                            $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>';
+                        }
+                        $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                     }
             $bike_gear_html .= '</div>';
             if (($iter % $cols == $cols - 1) || ($iter == $guest_count - 1)) {
