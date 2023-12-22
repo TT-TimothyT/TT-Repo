@@ -83,7 +83,8 @@ $userInfo = wp_get_current_user();
                 if (isset($trek_user_checkout_posted['shipping_country']) && !empty($trek_user_checkout_posted['shipping_country'])) {
                     $country_val = $trek_user_checkout_posted['shipping_country'];
                 }
-                $field['country'] = $country_val;
+                $field['country'] = !empty( $country_val ) ? $country_val : '';
+                $woo_field_value =  $trek_user_checkout_posted['shipping_state'];
             }
             $field_input = woocommerce_form_field($key, $field, $woo_field_value);
             $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);

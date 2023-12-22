@@ -220,10 +220,11 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
                     }
                     if( $key == 'billing_state'  ){
                         $country_val = $woocommerce->checkout->get_value('billing_country');
-                        if (isset($trek_user_checkout_posted['billing_country']) && !empty($trek_user_checkout_posted['billing_country'])) {
-                            $country_val = $trek_user_checkout_posted['billing_country'];
+                        if (isset($tt_posted['billing_country']) && !empty($tt_posted['billing_country'])) {
+                            $country_val = $tt_posted['billing_country'];
                         }
-                        $field['country'] = $country_val;
+                        $field['country'] = !empty( $country_val ) ? $country_val : '';
+                        $woo_field_value = $tt_posted['billing_state'];
                     }
                     $field_input = woocommerce_form_field($key, $field, $woo_field_value);
                     $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);
