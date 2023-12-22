@@ -22,6 +22,14 @@ if (!defined('ABSPATH')) {
 if (!isset($_GET['step']) && is_checkout() && !is_admin()) {
 	wp_redirect(trek_checkout_step_link(1));
 }
+/**
+ * Make check for unavailable trips in the cart and remove them.
+ * For unavailable trips will be considered a trips with status "Remove from Stella" and
+ * trips with specific status from woocommerce.
+ * 
+ * This function is located in /trek-travel-theme/inc/trek-general-function.php
+ */
+tt_check_and_remove_old_trips_in_persistent_cart();
 ?>
 <?php
 // If checkout registration is disabled and not logged in, the user cannot checkout.

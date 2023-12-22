@@ -5496,3 +5496,69 @@ function dx_get_current_user_bike_preferences_cb() {
 }
 add_action( 'wp_ajax_dx_get_current_user_bike_preferences', 'dx_get_current_user_bike_preferences_cb' );
 add_action( 'wp_ajax_nopriv_dx_get_current_user_bike_preferences', 'dx_get_current_user_bike_preferences_cb' );
+
+/**
+ * Check for already started bookings,
+ * that you have in the cart and see if they are out of date to remove them.
+ *
+ * For unavailable trips will be considered a trips with status "Remove from Stella" and
+ * trips with specific status from woocommerce.
+ *
+ * This function will be used in the Checkout Form Template located in
+ * /trek-travel-theme/woocommerce/checkout/form-checkout.php
+ */
+function tt_check_and_remove_old_trips_in_persistent_cart() {
+    global $woocommerce;
+
+	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
+	$cart = WC()->session->get( 'cart', null );
+	$persistent_cart_count = isset( $cart_result['cart'] ) && $cart_result['cart'] ? count( $cart_result['cart'] ) : 0;
+
+	if ( !is_null( $cart ) && $persistent_cart_count > 0 ) {
+        // We have started trip alredy. Now check if is out of date.
+        $product_id = ''; // Something like this  ( int )  85028.
+
+        /**
+         * In general we should have one trip at a time in the cart.
+         *
+         * If we have more trips in the cart, we need to move the logic to foreach
+         * and adapt it to remove only a specific trip instead of clearing the whole cart
+         */
+        foreach ( $cart as $id => $child_product_data ) {
+            if( $child_product_data ) {
+                if( isset( $child_product_data['product_id'] ) && !empty( $child_product_data['product_id'] ) ){
+                    $product_id = $child_product_data['product_id'];
+                }
+            }
+        }
+
+        $product = wc_get_product( $product_id );
+
+        // Trip Code: For example 24MAR0512.
+        $sku = $product->get_sku();
+
+        // Trip Status: Limited Availability, Sold Out, Group Hold, Sales Hold or Hold
+        $trip_status = $product->get_attribute( 'pa_trip-status' );
+
+        // Remove from stela status.
+        $remove_from_stella = tt_get_local_trips_detail( 'removeFromStella', '', $sku, true );
+
+        // Statuses that lock trip for booking.
+        $in_status = [
+            "Limited Availability",
+            "Sold Out",
+            "Group Hold",
+            "Sales Hold",
+            "Hold"
+        ];
+
+        if( in_array( $trip_status , $in_status ) || $remove_from_stella == true ) {
+            // Trip not available for booking already. Need to remove it from the cart.
+            $woocommerce->cart->empty_cart();
+        }
+        
+        // The trip can stay in the cart.
+    }
+
+    // There is no trip in the cart.
+}
