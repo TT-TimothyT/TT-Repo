@@ -74,13 +74,60 @@ if ($product_overview) :
                     <a class="fs-sm view-details" href="#bikes-guides">View details</a>
                 </div>
             </div>
+            <?php
+
+            $linked_products = $product->get_children();
+            $child_products = get_child_products($linked_products);
+            $start_price = 0;
+
+            if( $child_products ){
+                foreach( $child_products as $year => $child_product ){
+                    ksort( $child_product, 1 );
+                    if( $child_product ){
+                        foreach( $child_product as $month => $child_product_data ){
+                            ksort( $child_product_data, 1 );
+                            $current_month = date( 'm', strtotime( date( 'Y-m-d H:i:s' ) ) );
+                            $current_year  = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
+
+                            // Check for year to skip the trip is in the past.
+                            if ( (int) $month < (int) $current_month && ( int ) $year <= (int)  $current_year ) {
+                                continue;
+                            }
+
+                            if($child_product_data){
+                                foreach($child_product_data as $index => $child_product_details){
+                                    ksort( $child_product_details, 1 );
+                                    $today_date = new DateTime('now');
+
+                                    // 'start_date' => string '11/12/23' d/m/y
+                                    $trip_start_date = DateTime::createFromFormat('d/m/y', $child_product_details['start_date']);
+
+                                    // If the date of the trip is today or in the past, skip the trip;
+                                    if( $trip_start_date && $trip_start_date <= $today_date ) {
+
+                                        continue;
+                                    }
+
+                                    if ( $start_price == 0 || $start_price > $child_product_details['price']) {
+                                        $start_price = $child_product_details['price'];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            ?>
             <div class="col-md-2 pricing">
                 <p class="fw-normal fs-sm lh-sm mb-0 text-muted starting-from">Starting from</p>
                 <p class="fw-bold fs-xl lh-xl">
                     <span class="amount">
                         <span class="woocommerce-Price-currencySymbol"></span><?php
                             //echo !$product->sale_price ? $product->price : $product->sale_price;
-                            echo $product->get_price_html();
+                            
+                            if( !empty( $start_price ) ){
+                                echo( wc_price( $start_price ) );
+                            }
                             ?>
                     </span>
                     <span class="fw-normal fs-sm">per person</span>
