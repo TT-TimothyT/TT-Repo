@@ -5321,16 +5321,6 @@ function recalculate_tax_on_cart_update( $cart ) {
     $cart->remove_taxes();
 }
 
-// Filter to adjust the cart subtotal
-add_filter( 'woocommerce_calculated_total', 'update_cart_subtotal', 10, 2 );
-function update_cart_subtotal( $cart_total, $cart ) {
-    $total_tax = calculate_cart_total_tax( $cart );
-
-    // Add the calculated tax to the cart subtotal
-    $cart_total += $total_tax;
-
-    return $cart_total;
-}
 
 // Display the updated total tax in the template
 add_action( 'woocommerce_review_order_before_shipping', 'display_total_tax' );
