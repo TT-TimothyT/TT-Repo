@@ -722,3 +722,78 @@ if (!function_exists('tt_ns_fetch_bike_type_info')) {
     }
 }
 
+
+if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
+    function tt_ns_fetch_registration_ids() {
+        //Fire the NS script to fetch all the registration ids for the past 24 hours
+        $modifiedAfter = date('Y-m-d H:i:s', strtotime(' -2 hours'));
+
+        //Get the 1293 script with the modifiedAfter parameter and deploy 2
+        $modifiedAfterTime = gmdate("Y-m-d\TH:i:s", strtotime($modifiedAfter));
+        $netSuiteClient = new NetSuiteClient();
+        $modified_reg_ids = $netSuiteClient->get('1293:2', ['modifiedAfter' => $modifiedAfterTime ]);
+
+        //Loop through the registration ids and fetch the registration details. That's done to filter out users outside of this WP installation
+        foreach( $modified_reg_ids as $modified_reg_id ) {
+            $registrationEmail = $modified_reg_id->email;
+            $netsuite_trip_id = $modified_reg_id->tripId;
+
+            //Check if user exists in WC
+            $user = get_user_by( 'email', $registrationEmail );
+            if( $user ) {
+                $wc_user_id = $user->ID;
+                //Execute the 1294 script with the registration id as parameter and deploy 2
+                $ns_registration_id = $modified_reg_id->id;
+                $ns_registration_details = $netSuiteClient->get('1294:2', ['registrationId' => $ns_registration_id ]);
+
+                //Get "Lock Record" and "Lock Bike" values
+                $lockRecord = isset($ns_registration_details[0]->lockRecord) ? $ns_registration_details[0]->lockRecord : '';
+                $lockBike = isset($ns_registration_details[0]->lockBike) ? $ns_registration_details[0]->lockBike : '';
+
+                //Find the product with netsuite_trip_id  as meta value without using tt_get_postid_by_meta_key_value()
+                $args = array(
+                    'post_type' => 'product',
+                    'meta_query' => array(
+                        array(
+                            'key' => 'tt_meta_tripid',
+                            'value' => $netsuite_trip_id,
+                            'compare' => '='
+                        )
+                    )
+                );
+                $trip_product = get_posts( $args );
+
+                //If the product exists, get the ID
+                if( $trip_product ) {
+                    $trip_product_id = $trip_product[0]->ID;
+                }
+
+                //Update the lock bikes and lock record for the trip as meta values
+                if( $trip_product_id ) {
+                    update_post_meta( $trip_product_id, 'lock_record', $lockRecord );
+                    update_post_meta( $trip_product_id, 'lock_bike', $lockBike );
+                }
+
+                if( $lockRecord && $lockBike ) {
+                    $existing_registration_ids = array();
+
+                    //Check if such post meta exists, if it does, add the new registration id to the array
+                    $existing_registration_ids = get_post_meta( $trip_product_id, 'ns_registration_ids', true );
+
+                    if( ! empty( $existing_registration_ids ) ) {
+                        $existing_registration_ids[] += $wc_user_id;
+                        update_post_meta( $trip_product_id, 'ns_registration_ids', $existing_registration_ids );
+                    } else {
+                        //If the post meta doesn't exist, create a new one
+                        $new_registration_ids = array();
+                        $new_registration_ids[] += $wc_user_id;
+                        update_post_meta( $trip_product_id, 'ns_registration_ids', $new_registration_ids );
+                    }
+                }
+
+            }
+
+
+        }
+    }
+}

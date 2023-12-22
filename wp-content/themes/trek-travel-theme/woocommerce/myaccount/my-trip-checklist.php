@@ -115,8 +115,18 @@ $itinerary_link = tt_get_itinerary_link($trip_name);
 $tt_rooms_output = tt_rooms_output($trek_checkoutData, true);
 $ns_booking_info = tt_get_ns_booking_details_by_order($order_id);
 $waiver_link = $ns_booking_info['waiver_link'];
-$lockBike = get_user_meta($user_id, 'gear_preferences_lock_bike', true);
-$lockRecord = get_user_meta($user_id, 'gear_preferences_lock_record', true);
+$lockBike = get_post_meta($booked_trip_id, 'lock_record', true);
+$lockRecord = get_post_meta($booked_trip_id, 'lock_bike', true);
+$locked_user_ids = get_post_meta($booked_trip_id, 'ns_registration_ids', true);
+//get current user id
+$current_user_id = get_current_user_id();
+
+$lockedUser = 0;
+//Check if current user id is in locked user ids
+if (is_array($locked_user_ids) && in_array($current_user_id, $locked_user_ids)) {
+	$lockedUser = 1;
+}
+
 $bikeUpgradePrice = 0;
 $bikePriceCurr = '';
 if ($trip_sku) {
@@ -134,6 +144,8 @@ if( $parent_product_id ){
         $pa_city = $p_product->get_attribute('pa_city');
     }
 }
+
+var_dump( $booked_trip_id );
 $isPassportRequired = get_post_meta($booked_trip_id, TT_WC_META_PREFIX . 'isPassportRequired', true);
 $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', true);
 $waiver_info = tt_get_waiver_info($ns_booking_id);
@@ -141,6 +153,9 @@ $waiver_info = tt_get_waiver_info($ns_booking_id);
 $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat' );
 $hideJerseyForTrips = [ 710, 744, 712, 713 ];
 $hideme = "";
+
+$bike_pointer_none = '';
+$gear_pointer_none = '';
 
 if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
 	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
@@ -464,7 +479,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											echo $medical_field_html;
 										}
 										?>
-										<?php if ($lockRecord != 1) { ?>
+										<?php if ($lockRecord != 1 && $lockedUser != 1) { ?>
 											<div class="form-check form-check-inline mb-0">
 												<input class="form-check-input" type="checkbox" name="tt_save_medical_info" id="inlineCheck" value="yes">
 												<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
@@ -472,7 +487,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										<?php } ?>
 									</fieldset>
 								</div>
-								<?php if ($lockRecord != 1) { ?>
+								<?php if ($lockRecord != 1 && $lockedUser != 1 ) { ?>
 									<div class="form-buttons d-flex medical-information__buttons">
 										<div class="form-group align-self-center">
 											<button type="submit" class="btn btn-lg btn-primary w-100 medical-information__save rounded-1" name="medical-information"><?php esc_html_e('Confirm', 'trek-travel-theme'); ?></button>
@@ -541,7 +556,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 									</div>
 								</div>
-								<?php if ($lockRecord != 1) { ?>
+								<?php if ($lockRecord != 1 && $lockedUser != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
 										<input class="form-check-input" type="checkbox" name="tt_save_emergency_info" id="inlineCheck" value="yes">
 										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
@@ -557,15 +572,20 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 						</div>
 					</div> <!-- accordion-item ends -->
 					<?php if ($rider_level != 5) { ?>
-					<div class="accordion-item">
+						<?php $title_string = 'Confirm your gear information'; ?>
+					<?php if( $lockRecord == 1 && $lockedUser == 1 ) { ?>
+						<?php $gear_pointer_none = 'style="pointer-events: none;"' ?>
+						<?php $title_string = 'Review your gear information'; ?>
+					<?php } ?>
+					<div class="accordion-item" >
 						<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-gearInfo">
 							<button class="accordion-button px-0 collapsed gear_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo" aria-expanded="false" aria-controls="flush-collapse-gearInfo">
 								<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png">
-								Confirm your gear information
+								<?php echo $title_string; ?>
 							</button>
 						</p>
 						<div id="flush-collapse-gearInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-gearInfo">
-							<div class="accordion-body px-0">
+							<div  <?php echo $gear_pointer_none; ?> class="accordion-body px-0">
 								<div class="row mx-0 guest-checkout__primary-form-row">
 									<div class="col-md px-0">
 										<div class="form-floating">
@@ -614,7 +634,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 									</div>
 								</div>
-								<?php if ($lockRecord != 1 && $lockBike != 1) { ?>
+								<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUser != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
 										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
 										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
@@ -685,7 +705,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											</div>
 										</div>
 									</div>
-									<?php if ($lockRecord != 1) { ?>
+									<?php if ($lockRecord != 1 && $lockedUser != 1 ) { ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
@@ -698,15 +718,20 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 						</div> <!-- accordion-item ends -->
 					<?php } ?>
 					<?php if ($rider_level != 5 && $own_bike != 'yes' ) { ?>
-						<div class="accordion-item">
+						<?php $bike_review_string = 'Confirm your bike selection'; ?>
+						<?php if( $lockBike == 1 ) { ?>
+							<?php $bike_pointer_none = 'style="pointer-events: none;"' ?>
+							<?php $bike_review_string = 'Review your bike selection'; ?>
+						<?php } ?>
+						<div class="accordion-item" >
 							<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-bikeInfo">
 								<button class="accordion-button px-0 collapsed bike_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo">
 									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png">
-									Confirm your bike selection
+									<?php echo $bike_review_string; ?>
 								</button>
 							</p>
 							<div id="flush-collapse-bikeInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-bikeInfo">
-								<div class="accordion-body px-0 checkout-bikes-section">
+								<div  <?php echo $bike_pointer_none; ?> class="accordion-body px-0 checkout-bikes-section">
 									<div class="checkout-bikes__bike-grid d-flex flex-column flex-lg-row flex-nowrap">
 										<?php
 										$primary_bikeId = $bike_id;
@@ -793,7 +818,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</select>
 										<label for="floatingSelect">Bike size</label>
 									</div>
-									<?php if ($lockRecord != 1 && $lockBike != 1) { ?>
+									<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUser != 1 ) { ?>
 										<div class="form-check form-check-inline mb-0">
 											<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck" value="yes">
 											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
@@ -851,7 +876,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											</div>
 										</div>
 									</div>
-									<?php if ($lockRecord != 1 && $lockBike != 1) { ?>
+									<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUser != 1 ) { ?>
 										<div class="form-check form-check-inline mb-0">
 											<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
 											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>

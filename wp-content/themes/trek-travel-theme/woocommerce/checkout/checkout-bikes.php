@@ -52,6 +52,7 @@ if ($p_rider_level == 5) {
 if ($p_own_bike == 'yes') {
     $p_own_hide = "style='display:none;'";
 }
+
 ?>
 <div class="checkout-bikes-section collapse multi-collapse" id="multiCollapseExample2">
     <div class="checkout-bikes">
