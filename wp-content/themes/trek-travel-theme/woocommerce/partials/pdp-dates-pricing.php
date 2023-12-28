@@ -26,6 +26,36 @@ $in_status = [
     "Sales Hold",
     "Hold"
 ];
+
+/**
+ * Function that sorts two dates, ascending.
+ *
+ * @param array $a Array with objects, we need ['start_date'] in this format mm/dd/yyyy.
+ * @param array $b Array with objects.
+ * @param string $d String with the delimeter.
+ */
+function date_sort( $a, $b, $d = "/" ) {
+
+    if ($a == $b) {
+
+        return 0;
+    } else {
+
+        //Convert into dates and compare.
+        list( $am, $ad, $ay ) = explode( $d, $a['start_date'] );
+
+        list( $bm, $bd, $by ) = explode( $d, $b['start_date'] );
+
+        if ( mktime( 0, 0, 0, $am, $ad, $ay ) < mktime( 0, 0, 0, $bm, $bd, $by ) ) {
+
+            return -1;
+        } else {
+
+            return 1;
+        }
+    }
+}
+
 $contentFlag = false;
 if( $get_child_products ){
     $iter = 1;
@@ -40,12 +70,12 @@ if( $get_child_products ){
         if( $get_child_product ){
             $m_iter = 1;
             foreach($get_child_product as $month=>$get_child_product_data){
+                usort( $get_child_product_data, "date_sort" );
                 $currentMonth = date('m', strtotime(date('Y-m-d H:i:s')));
 
                 //Sorry, not using camel case for php vars :)
                 $current_year = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
-
-                if ( $month < $currentMonth && $year <= $current_year ) {
+                if ( (int) $month < (int) $currentMonth && (int) $year <= (int) $current_year ) {
                     continue;
                 }
 
@@ -56,19 +86,15 @@ if( $get_child_products ){
                 $month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'" role="tabpanel" aria-labelledby="nav-'.$my.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$my.'">';
                 if($get_child_product_data){
                     foreach($get_child_product_data as $index => $child_product_data){
-                        $today = date('d', strtotime(date('Y-m-d H:i:s')));
-                        $dateParts = explode('/', $child_product_data['start_date']);
-                        if (isset($dateParts) && !empty($dateParts)) {
-                            $startDay = $dateParts[0];
-                            $startMonth = $dateParts[1];
-                            if ((int)$today < (int)$startDay) {
-                                if ((int)$startMonth < (int)$currentMonth) {
-                                    if( (int)$year <= (int)$current_year ) {
-                                        $month_nav_desktop_btn_output = $month_nav_mobile_btn_output = $month_content_output =  '';
-                                        continue;
-                                    }
-                                }
-                            }
+                        $today_date = new DateTime('now');
+
+                        // 'start_date' => string '11/12/23' d/m/y
+                        $trip_start_date = DateTime::createFromFormat('d/m/y', $child_product_data['start_date']);
+
+                        // If the date of the trip is today or in the past, skip the trip;
+                        if( $trip_start_date && $trip_start_date <= $today_date ) {
+                            $month_nav_desktop_btn_output = $month_nav_mobile_btn_output = $month_content_output =  '';
+                            continue;
                         }
                         // If there has more than one trip per month, and first one is marked as hide, check whether has content for navigation, for other dates in this month.
                         if($index > 0 && empty($month_nav_desktop_btn_output) && empty($month_nav_mobile_btn_output) && empty($month_content_output)){
