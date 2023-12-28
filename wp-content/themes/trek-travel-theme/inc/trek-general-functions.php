@@ -5462,7 +5462,7 @@ function tt_after_submission_referral_form( $entry, $form ) {
     }
 }
 add_action( 'gform_after_submission', 'tt_after_submission_referral_form', 10, 2 );
-								
+
 function dx_get_current_user_bike_preferences_cb() {
     $current_user = wp_get_current_user();
     $user_id      = $current_user->ID;
@@ -5550,7 +5550,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
             // Trip not available for booking already. Need to remove it from the cart.
             $woocommerce->cart->empty_cart();
         }
-        
+
         // The trip can stay in the cart.
     }
 
