@@ -775,7 +775,6 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                 }
 
                 if( $lockRecord || $lockBike ) {
-                    $existing_registration_ids = array();
 
                     //Check if such post meta exists, if it does, add the new registration id to the array
                     $existing_registration_ids_bike = get_post_meta( $trip_product_id, 'ns_registration_ids_bike', true );
@@ -784,8 +783,13 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
 
                     if( $lockBike ) {
                         if( ! empty( $existing_registration_ids_bike ) ) {
-                            $existing_registration_ids_bike[] += $wc_user_id;
-                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+
+                            //Check if the user already exists in the array, if it does, don't add it again
+                            if( ! in_array( $wc_user_id, $existing_registration_ids_bike ) ) {
+                                $existing_registration_ids_bike[] += $wc_user_id;
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                            }
+
                         } else {
                             //If the post meta doesn't exist, create a new one
                             $new_registration_ids_bike = array();
@@ -806,8 +810,11 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
 
                     if( $lockRecord ) {
                         if( ! empty( $existing_registration_ids_record ) ) {
-                            $existing_registration_ids_record[] += $wc_user_id;
-                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                            //Check if the user already exists in the array, if it does, don't add it again
+                            if( ! in_array( $wc_user_id, $existing_registration_ids_record ) ) {
+                                $existing_registration_ids_record[] += $wc_user_id;
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                            }
                         } else {
                             //If the post meta doesn't exist, create a new one
                             $new_registration_ids_record = array();
@@ -817,6 +824,7 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                     } else {
                         //Check if the user exists in the array, if it does, remove it
                         if( ! empty( $existing_registration_ids_record ) ) {
+                            //Remove all existing instances of the user id, even if it's more than one
                             $key = array_search( $wc_user_id, $existing_registration_ids_record );
                             if( $key !== false ) {
                                 unset( $existing_registration_ids_record[$key] );
@@ -827,8 +835,6 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                 }
 
             }
-
-
         }
     }
 }
