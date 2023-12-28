@@ -462,7 +462,7 @@ function save_checkout_steps_action_cb()
     WC()->cart->maybe_set_cart_cookies();
     $gearData = $_REQUEST['bike_gears']['primary'];
     if (isset($gearData['save_preferences']) && $gearData['save_preferences'] == 'yes' && isset($step) && $step == 3) {
-        $p_bike = isset($gearData['bike']) ? $gearData['bike'] : '';
+        $p_bike = isset($gearData['bike_type_id_preferences']) ? $gearData['bike_type_id_preferences'] : '';
         $p_rider_height = isset($gearData['rider_height']) ? $gearData['rider_height'] : '';
         $p_bike_pedal = isset($gearData['bike_pedal']) ? $gearData['bike_pedal'] : '';
         $p_helmet_size = isset($gearData['helmet_size']) ? $gearData['helmet_size'] : '';
@@ -5468,6 +5468,7 @@ function dx_get_current_user_bike_preferences_cb() {
     $user_id      = $current_user->ID;
 
     // Get post meta for the current user
+    $gear_preferences_bike_type     = get_user_meta( $user_id, 'gear_preferences_bike_type', true );
     $gear_preferences_rider_height  = get_user_meta( $user_id, 'gear_preferences_rider_height', true );
     $gear_preferences_select_pedals = get_user_meta( $user_id, 'gear_preferences_select_pedals', true );
     $gear_preferences_helmet_size   = get_user_meta( $user_id, 'gear_preferences_helmet_size', true );
@@ -5476,11 +5477,12 @@ function dx_get_current_user_bike_preferences_cb() {
 
     // Prepare response
     $response = array(
-        'gear_preferences_rider_height' => $gear_preferences_rider_height,
+        'gear_preferences_bike_type'     => $gear_preferences_bike_type,
+        'gear_preferences_rider_height'  => $gear_preferences_rider_height,
         'gear_preferences_select_pedals' => $gear_preferences_select_pedals,
-        'gear_preferences_helmet_size' => $gear_preferences_helmet_size,
-        'gear_preferences_jersey_style' => $gear_preferences_jersey_style,
-        'gear_preferences_jersey_size' => $gear_preferences_jersey_size,
+        'gear_preferences_helmet_size'   => $gear_preferences_helmet_size,
+        'gear_preferences_jersey_style'  => $gear_preferences_jersey_style,
+        'gear_preferences_jersey_size'   => $gear_preferences_jersey_size,
     );
 
     // Send JSON response

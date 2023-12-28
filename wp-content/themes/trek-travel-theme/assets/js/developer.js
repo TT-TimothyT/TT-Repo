@@ -1891,6 +1891,9 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
   parentDiv.find('.bike_selectionElement').removeClass("bike-selected");
   jQuery(this).find('.radio-selection').addClass("checkout-bikes__selected-bike-icon");
   jQuery(this).addClass("bike-selected");
+  // Set bike type id for Bike & Gear Preferences.
+  var bikeTypeIdPreferences = jQuery(this).attr('data-type-id');
+  jQuery('[name="bike_gears[primary][bike_type_id_preferences]"]').val(bikeTypeIdPreferences);
   jQuery.ajax({
     type: 'POST',
     url: trek_JS_obj.ajaxURL,
@@ -2438,26 +2441,73 @@ if (jQuery('.tt_continue_bike_click_btn').length > 0) {
       success: function (response) {
         // Check if the response is valid
         if (response) {
-          console.log(response.gear_preferences_rider_height);
           // Refill fields with retrieved data
+          if (response.gear_preferences_bike_type !== "") {
+            var has_selected_bike = false;
+            jQuery('[data-selector="tt_bike_selection_primary"] [name="bike_gears[primary][bikeTypeId]"]').each(function () {
+              if(jQuery(this).is(':checked')){
+                has_selected_bike = true;
+              }
+            })
+            var can_not_select = false;
+            if(jQuery(`[data-selector="tt_bike_selection_primary"][data-type-id="${response.gear_preferences_bike_type}"]`).length >= 2 ){
+              // Has more than one bike from the same type, can not select any of them.
+              can_not_select = true;
+            }
+            // Check if we have selected already.
+            if( !has_selected_bike && !can_not_select ){
+              jQuery(`[data-selector="tt_bike_selection_primary"][data-type-id="${response.gear_preferences_bike_type}"]`).click();
+            }
+          }
           if (response.gear_preferences_rider_height !== "") {
-            jQuery('[name="bike_gears[primary][rider_height]"]').val(response.gear_preferences_rider_height);
+            // Check if we have selected already.
+            if( jQuery( '[name="bike_gears[primary][rider_height]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+              jQuery('[name="bike_gears[primary][rider_height]"]').val(response.gear_preferences_rider_height);
+            }
           }
           if (response.gear_preferences_select_pedals !== "") {
-            jQuery('[name="bike_gears[primary][bike_pedal]"]').val(response.gear_preferences_select_pedals);
+            // Check if we have selected already.
+            if( jQuery( '[name="bike_gears[primary][bike_pedal]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+             jQuery('[name="bike_gears[primary][bike_pedal]"]').val(response.gear_preferences_select_pedals);
+            }
           }
           if (response.gear_preferences_helmet_size !== "") {
-            jQuery('[name="bike_gears[primary][helmet_size]"]').val(response.gear_preferences_helmet_size);
+            // Check if we have selected already.
+            if( jQuery( '[name="bike_gears[primary][helmet_size]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+              jQuery('[name="bike_gears[primary][helmet_size]"]').val(response.gear_preferences_helmet_size);
+            }
           }
           if (response.gear_preferences_jersey_style !== "") {
             if (!jQuery('[name="bike_gears[primary][jersey_style]"]').parent().hasClass('d-none')) {
-              jQuery('[name="bike_gears[primary][jersey_style]"]').val(response.gear_preferences_jersey_style);
+              // Check if we have selected already.
+              if( jQuery( '[name="bike_gears[primary][jersey_style]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+               jQuery('[name="bike_gears[primary][jersey_style]"]').val(response.gear_preferences_jersey_style);
+              }
             }
           }
-          if (response.gear_preferences_jersey_size !== "") {
+          if (response.gear_preferences_jersey_size !== "" && response.gear_preferences_jersey_style !== "") {
             if (!jQuery('[name="bike_gears[primary][jersey_size]"]').parent().hasClass('d-none')) {
-              jQuery('[name="bike_gears[primary][jersey_size]"]').val(response.gear_preferences_jersey_size);
+              // Check if we have selected already.
+              if( jQuery( '[name="bike_gears[primary][jersey_size]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+                // Take Size options before set the size option value.
+                var actionName   = 'tt_jersey_change_action';
+                var jersey_style = response.gear_preferences_jersey_style;
+                jQuery.ajax({
+                  type: 'POST',
+                  url: trek_JS_obj.ajaxURL,
+                  data: { 'action': actionName, 'jersey_style': jersey_style },
+                  dataType: 'json',
+                  success: function (res) {
+                    if (res.status == true) {
+                      // Append options to select/option field.
+                      jQuery('[name="bike_gears[primary][jersey_size]"]').html(res.opts);
 
+                      // Set selected size.
+                      jQuery('[name="bike_gears[primary][jersey_size]"]').val(response.gear_preferences_jersey_size);
+                    }
+                  }
+                });
+             }
             }
           }
         } else {
