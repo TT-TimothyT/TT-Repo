@@ -792,6 +792,15 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                             $new_registration_ids_bike[] += $wc_user_id;
                             update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $new_registration_ids_bike );
                         }
+                    } else {
+                        //Check if the user exists in the array, if it does, remove it
+                        if( ! empty( $existing_registration_ids_bike ) ) {
+                            $key = array_search( $wc_user_id, $existing_registration_ids_bike );
+                            if( $key !== false ) {
+                                unset( $existing_registration_ids_bike[$key] );
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                            }
+                        }
                     }
 
 
@@ -804,6 +813,15 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                             $new_registration_ids_record = array();
                             $new_registration_ids_record[] += $wc_user_id;
                             update_post_meta( $trip_product_id, 'ns_registration_ids_record', $new_registration_ids_record );
+                        }
+                    } else {
+                        //Check if the user exists in the array, if it does, remove it
+                        if( ! empty( $existing_registration_ids_record ) ) {
+                            $key = array_search( $wc_user_id, $existing_registration_ids_record );
+                            if( $key !== false ) {
+                                unset( $existing_registration_ids_record[$key] );
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                            }
                         }
                     }
                 }
