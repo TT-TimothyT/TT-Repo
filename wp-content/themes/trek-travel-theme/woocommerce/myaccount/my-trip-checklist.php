@@ -117,14 +117,21 @@ $ns_booking_info = tt_get_ns_booking_details_by_order($order_id);
 $waiver_link = $ns_booking_info['waiver_link'];
 $lockBike = get_post_meta($booked_trip_id, 'lock_record', true);
 $lockRecord = get_post_meta($booked_trip_id, 'lock_bike', true);
-$locked_user_ids = get_post_meta($booked_trip_id, 'ns_registration_ids', true);
+$locked_user_ids_bike = get_post_meta($booked_trip_id, 'ns_registration_ids_bike', true);
+$locked_user_ids_record = get_post_meta($booked_trip_id, 'ns_registration_ids_record', true);
+
 //get current user id
 $current_user_id = get_current_user_id();
 
-$lockedUser = 0;
+$lockedUserBike = 0;
+$lockedUserRecord = 0;
 //Check if current user id is in locked user ids
-if (is_array($locked_user_ids) && in_array($current_user_id, $locked_user_ids)) {
-	$lockedUser = 1;
+if ( is_array( $locked_user_ids_bike ) && in_array( $current_user_id, $locked_user_ids_bike ) ) {
+	$lockedUserBike = 1;
+}
+
+if ( is_array( $locked_user_ids_record ) && in_array($current_user_id, $locked_user_ids_record ) ) {
+	$lockedUserRecord = 1;
 }
 
 $bikeUpgradePrice = 0;
@@ -479,7 +486,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											echo $medical_field_html;
 										}
 										?>
-										<?php if ($lockRecord != 1 && $lockedUser != 1) { ?>
+										<?php if ($lockRecord != 1 && $lockedUserRecord != 1) { ?>
 											<div class="form-check form-check-inline mb-0">
 												<input class="form-check-input" type="checkbox" name="tt_save_medical_info" id="inlineCheck" value="yes">
 												<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
@@ -487,7 +494,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										<?php } ?>
 									</fieldset>
 								</div>
-								<?php if ($lockRecord != 1 && $lockedUser != 1 ) { ?>
+								<?php if ($lockRecord != 1 && $lockedUserRecord != 1 ) { ?>
 									<div class="form-buttons d-flex medical-information__buttons">
 										<div class="form-group align-self-center">
 											<button type="submit" class="btn btn-lg btn-primary w-100 medical-information__save rounded-1" name="medical-information"><?php esc_html_e('Confirm', 'trek-travel-theme'); ?></button>
@@ -556,7 +563,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 									</div>
 								</div>
-								<?php if ($lockRecord != 1 && $lockedUser != 1 ) { ?>
+								<?php if ($lockRecord != 1 && $lockedUserRecord != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
 										<input class="form-check-input" type="checkbox" name="tt_save_emergency_info" id="inlineCheck" value="yes">
 										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
@@ -573,7 +580,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 					</div> <!-- accordion-item ends -->
 					<?php if ($rider_level != 5) { ?>
 						<?php $title_string = 'Confirm your gear information'; ?>
-					<?php if( $lockRecord == 1 && $lockedUser == 1 ) { ?>
+					<?php if( $lockRecord == 1 && $lockedUserRecord == 1 ) { ?>
 						<?php $gear_pointer_none = 'style="pointer-events: none;"' ?>
 						<?php $title_string = 'Review your gear information'; ?>
 					<?php } ?>
@@ -634,7 +641,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 									</div>
 								</div>
-								<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUser != 1 ) { ?>
+								<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUserRecordBike != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
 										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
 										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
@@ -705,7 +712,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											</div>
 										</div>
 									</div>
-									<?php if ($lockRecord != 1 && $lockedUser != 1 ) { ?>
+									<?php if ($lockRecord != 1 && $lockedUserRecord != 1 ) { ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
@@ -719,7 +726,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 					<?php } ?>
 					<?php if ($rider_level != 5 && $own_bike != 'yes' ) { ?>
 						<?php $bike_review_string = 'Confirm your bike selection'; ?>
-						<?php if( $lockBike == 1 ) { ?>
+						<?php if( $lockBike == 1 && $lockedUserBike ) { ?>
 							<?php $bike_pointer_none = 'style="pointer-events: none;"' ?>
 							<?php $bike_review_string = 'Review your bike selection'; ?>
 						<?php } ?>
@@ -818,7 +825,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</select>
 										<label for="floatingSelect">Bike size</label>
 									</div>
-									<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUser != 1 ) { ?>
+									<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUserBike != 1 ) { ?>
 										<div class="form-check form-check-inline mb-0">
 											<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck" value="yes">
 											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
@@ -876,7 +883,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											</div>
 										</div>
 									</div>
-									<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUser != 1 ) { ?>
+									<?php if ($lockRecord != 1 && $lockBike != 1 && $lockedUserBike != 1 ) { ?>
 										<div class="form-check form-check-inline mb-0">
 											<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
 											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>

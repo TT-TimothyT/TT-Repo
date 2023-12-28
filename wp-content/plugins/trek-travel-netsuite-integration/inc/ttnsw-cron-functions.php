@@ -774,20 +774,37 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                     update_post_meta( $trip_product_id, 'lock_bike', $lockBike );
                 }
 
-                if( $lockRecord && $lockBike ) {
+                if( $lockRecord || $lockBike ) {
                     $existing_registration_ids = array();
 
                     //Check if such post meta exists, if it does, add the new registration id to the array
-                    $existing_registration_ids = get_post_meta( $trip_product_id, 'ns_registration_ids', true );
+                    $existing_registration_ids_bike = get_post_meta( $trip_product_id, 'ns_registration_ids_bike', true );
+                    $existing_registration_ids_record = get_post_meta( $trip_product_id, 'ns_registration_ids_record', true );
 
-                    if( ! empty( $existing_registration_ids ) ) {
-                        $existing_registration_ids[] += $wc_user_id;
-                        update_post_meta( $trip_product_id, 'ns_registration_ids', $existing_registration_ids );
-                    } else {
-                        //If the post meta doesn't exist, create a new one
-                        $new_registration_ids = array();
-                        $new_registration_ids[] += $wc_user_id;
-                        update_post_meta( $trip_product_id, 'ns_registration_ids', $new_registration_ids );
+
+                    if( $lockBike ) {
+                        if( ! empty( $existing_registration_ids_bike ) ) {
+                            $existing_registration_ids_bike[] += $wc_user_id;
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                        } else {
+                            //If the post meta doesn't exist, create a new one
+                            $new_registration_ids_bike = array();
+                            $new_registration_ids_bike[] += $wc_user_id;
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $new_registration_ids_bike );
+                        }
+                    }
+
+
+                    if( $lockRecord ) {
+                        if( ! empty( $existing_registration_ids_record ) ) {
+                            $existing_registration_ids_record[] += $wc_user_id;
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                        } else {
+                            //If the post meta doesn't exist, create a new one
+                            $new_registration_ids_record = array();
+                            $new_registration_ids_record[] += $wc_user_id;
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $new_registration_ids_record );
+                        }
                     }
                 }
 
