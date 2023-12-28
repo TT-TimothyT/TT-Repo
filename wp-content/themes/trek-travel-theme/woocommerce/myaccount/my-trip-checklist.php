@@ -638,7 +638,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 									</div>
 								</div>
-								<?php if ( $lockedUserRecord ) { ?>
+								<?php if ( $lockedUserRecord != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
 										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
 										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
