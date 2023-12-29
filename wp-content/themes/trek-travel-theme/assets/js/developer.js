@@ -410,6 +410,15 @@ function checkout_steps_validations(step = 1) {
   console.log(validationMessages);
   return isValidated;
 }
+var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
+  if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
+    jQuery('.navigation-sticky').css('padding-left', headerMargin + 10 + 'px');
+    
+  } else if(jQuery(window).width() > 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
+    jQuery('.navigation-sticky').css('padding-left', headerMargin + 'px');
+  }
 jQuery(document).ready(function () {
   tt_fetch_display_order_emails();
   jQuery.validator.addMethod("pwcheck",
@@ -542,12 +551,15 @@ jQuery(document).ready(function () {
     autoclose: true
   });
 
-  var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
-  if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
-    jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
-  } else if(jQuery(window).width() > 1440) {
-    jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
-  }
+  // var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
+  // if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
+  //   jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
+  //   jQuery('.navigation-sticky').css('padding-left', headerMargin + 10 + 'px');
+    
+  // } else if(jQuery(window).width() > 1440) {
+  //   jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
+  //   jQuery('.navigation-sticky').css('padding-left', headerMargin + 'px');
+  // }
 
   
   jQuery('.pdp_similar_trips_slider').slick({
