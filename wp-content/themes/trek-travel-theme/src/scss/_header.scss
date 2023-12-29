@@ -362,6 +362,12 @@
   }
 }
 
+#homeHeaderModal,
+#mobileCalendarModal,
+#filterModal {
+  z-index: 9999999;
+}
+
 #homeHeaderModal{
   .modal-content{
     height: 100%;
