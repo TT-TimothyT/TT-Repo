@@ -381,7 +381,14 @@ function trek_my_trip_shortcode_cb(){
       if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 30 || $trip_status['days_2'] >= 30 ) ) {
          wc_get_template('woocommerce/myaccount/my-trip-checklist.php');
       }else{
-         wc_get_template('woocommerce/myaccount/my-trip-past-details.php');
+         // See order details, only if you are logged in.
+         if (is_user_logged_in()){
+            wc_get_template('woocommerce/myaccount/my-trip-past-details.php');
+         }else{
+            // Redirect to Customer login page, if you are logged out.
+            wp_redirect('login');
+            exit();
+         }
       }
    }else{
       echo '<div class="alert alert-danger" role="alert">The <code>my-trip.php</code> is missing. Please create file at <code>woocommerce/myaccount/my-trip.php</code></div>';
