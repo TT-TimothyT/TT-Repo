@@ -1811,6 +1811,13 @@ jQuery(document).on('click keyup keydown change', '.tt_rider_level_select', func
         jQuery('input[name="bike_gears[primary][bikeId]"]').prop('required', true);
       }
     }
+    if (jQuery(divID).find('.tt_my_own_bike_checkbox').is(':checked')) {
+      if (guest_id != 'primary') {
+          jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val(5270);
+        }else{
+          jQuery('input[name="bike_gears[primary][bikeId]"]').val(5270)
+        }
+    }
   }
 });
 jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
