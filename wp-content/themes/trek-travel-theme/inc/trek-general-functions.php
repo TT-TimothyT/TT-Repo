@@ -5528,6 +5528,11 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
 
         $product = wc_get_product( $product_id );
 
+        // Check for WC_Product existing.
+        if( !$product ) {
+            return;
+        }
+
         // Trip Code: For example 24MAR0512.
         $sku = $product->get_sku();
 
