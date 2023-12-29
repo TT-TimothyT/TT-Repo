@@ -4006,7 +4006,7 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
                     if ($guest_id == 0) {
                         $guest_names[] = $shipping_name;
                     } else {
-                        if ($guest_id) {
+                        if ($guest_id && $guest_id !== 'none') {
                             $guest_fname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_fname'] : '';
                             $guest_lname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_lname'] : '';
                             $guest_names[] = $guest_fname . ' ' . $guest_lname;
@@ -4048,7 +4048,7 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
                     if ($guest_id == 0) {
                         $guest_names[] = $shipping_name;
                     } else {
-                        if ($guest_id) {
+                        if ($guest_id && $guest_id !== 'none') {
                             $guest_fname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_fname'] : '';
                             $guest_lname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_lname'] : '';
                             $guest_names[] = $guest_fname . ' ' . $guest_lname;
@@ -4090,7 +4090,7 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
                     if ($guest_id == 0) {
                         $guest_names[] = $shipping_name;
                     } else {
-                        if ($guest_id) {
+                        if ($guest_id && $guest_id !== 'none') {
                             $guest_fname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_fname'] : '';
                             $guest_lname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_lname'] : '';
                             $guest_names[] = $guest_fname . ' ' . $guest_lname;
@@ -4117,7 +4117,7 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
                     if ($guest_id == 0) {
                         $guest_names[] = $shipping_name;
                     } else {
-                        if ($guest_id) {
+                        if ($guest_id && $guest_id !== 'none') {
                             $guest_fname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_fname'] : '';
                             $guest_lname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_lname'] : '';
                             $guest_names[] = $guest_fname . ' ' . $guest_lname;
