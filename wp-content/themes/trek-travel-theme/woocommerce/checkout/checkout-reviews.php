@@ -164,6 +164,18 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                 if( isset($review_bikes_arr_val['jersey_size']) && $review_bikes_arr_val['jersey_size'] ){
                     $syncJerseySizes =    tt_get_custom_item_name('syncJerseySizes',$review_bikes_arr_val['jersey_size']);
                 }
+                $bike_id   = (int) $review_bikes_arr_val['bikeId'];
+                $bike_name = '';
+                if( isset($bike_id) && $bike_id ){
+                    switch ( $bike_id ) {
+                        case 5270: // I am bringing my own bike.
+                            $bike_name = 'Bringing own';
+                            break;
+                        default: // Take the name of the bike.
+                            $bike_name = json_decode( $local_bike_models_info[ $bike_id ], true)[ 'name' ];
+                            break;
+                    }
+                }
                 if( isset($review_bikes_arr_val['own_bike']) && $review_bikes_arr_val['own_bike'] ){
                     $ownBike = $review_bikes_arr_val['own_bike'];
                 }
@@ -173,9 +185,12 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                 $review_bikes_html .= '<p class="fw-medium mb-2">' . $guestLabel . ': ' . $fullname . '</p>
                 <p class="fs-sm lh-sm mb-0">Rider Level: ' . $syncRiderLevels . '</p>';
                 if ( $review_bikes_arr_val['rider_level'] != 5 ) {
+                    if( !empty( $bike_name ) ){
+
+                        $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $bike_name . '</p>';
+                    }
                     if( empty( $ownBike ) && 'yes' !== $ownBike){
-                        $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $syncBikeTypes . '</p>
-                            <p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
+                        $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
                             <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>';
                     }
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
@@ -183,7 +198,7 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                     if( ! is_array( $syncJerseySizes ) ) {
                         $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>';
                     }
-                    $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: No</p>';
+                    $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                 }
                 $review_bikes_html .= '</div>';
                 if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
