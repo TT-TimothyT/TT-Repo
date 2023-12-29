@@ -13,7 +13,7 @@ if ($product_overview) :
 
     <div class="container my-5 pdp-overview-bar">
         <div class="row">
-            <div class="col-md-5 product-main-info">
+            <div class="col-lg-5 product-main-info">
                 <nav class="mb-0" aria-label="breadcrumb">
                     <ol class="breadcrumb mb-1">
                         <li class="breadcrumb-item fs-sm"><a href="<?php echo get_site_url(); ?>">Home</a></li>
@@ -36,7 +36,7 @@ if ($product_overview) :
                 -->
                 </ul>
             </div>
-            <div class="overview-details col-md-5">
+            <div class="overview-details col-lg-5">
                 <div class="tour-duration">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Tour Duration</p>
                     <p class="fw-medium fs-md lh-md"><?php echo str_replace([' Days', ' Nights', '&amp;'], [' D', ' N', '/'], $product->get_attribute('pa_duration'))  ?></p>
@@ -118,7 +118,7 @@ if ($product_overview) :
                 }
             }
             ?>
-            <div class="col-md-2 pricing">
+            <div class="col-lg-2 pricing">
                 <p class="fw-normal fs-sm lh-sm mb-0 text-muted starting-from">Starting from</p>
                 <p class="fw-bold fs-xl lh-xl">
                     <span class="amount">
