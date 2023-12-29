@@ -1228,7 +1228,7 @@ jQuery(window).load(function () {
     jQuery('#trip-finder-destination .placeholder .selected-destination').text(selected_destination);
   })
   jQuery('input[name="trek_destination"]').change(function () {
-    var destination = jQuery('input[name="trek_destination"]:checked').attr('id');
+    var destination = jQuery('.destination-option input[name="trek_destination"]:checked').attr('id');
     jQuery('.trek-trip-finder-form').attr('action', `${destination}`);
     dataLayer.push({
       'event': 'trip_finder',

@@ -240,7 +240,7 @@ function trek_herobaner_tripfinder_shortcode_cb()
    $logo_url = ( $logo_image ? $logo_image[0] : ''  );
    $logo_url = ( $logo_url ? $logo_url : 'https://via.placeholder.com/50?text=Trek%20Travel' );
 ?>
-<form action="" method="get" class="trek-trip-finder-form home-trip-finder-form" id="trek-trip-finder-form">
+<form action="/bike-tours/all" method="get" class="trek-trip-finder-form home-trip-finder-form" id="trek-trip-finder-form">
 
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
