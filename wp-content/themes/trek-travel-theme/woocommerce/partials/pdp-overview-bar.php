@@ -76,9 +76,10 @@ if ($product_overview) :
             </div>
             <?php
 
-            $linked_products = $product->get_children();
-            $child_products = get_child_products($linked_products);
-            $start_price = 0;
+            $linked_products  = $product->get_children();
+            $child_products   = get_child_products($linked_products);
+            $start_price      = '0.00';
+            $available_prices = array();
 
             if( $child_products ){
                 foreach( $child_products as $year => $child_product ){
@@ -108,15 +109,20 @@ if ($product_overview) :
                                         continue;
                                     }
 
-                                    if ( $start_price == 0 || $start_price > $child_product_details['price']) {
-                                        $start_price = $child_product_details['price'];
-                                    }
+                                    // Store the prices of all available trips.
+                                    array_push( $available_prices, $child_product_details['price'] );
                                 }
                             }
                         }
                     }
                 }
             }
+
+            // If we have any price in the available prices array, take the lowest.
+            if( !empty( $available_prices ) ) {
+                $start_price = min( $available_prices );
+            }
+
             ?>
             <div class="col-lg-2 pricing">
                 <p class="fw-normal fs-sm lh-sm mb-0 text-muted starting-from">Starting from</p>
