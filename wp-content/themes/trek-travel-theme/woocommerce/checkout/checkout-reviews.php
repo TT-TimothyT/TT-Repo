@@ -239,15 +239,25 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
             <div class="col-lg-6 px-0 checkout-review__col">
                 <p class="fw-medium mb-2">Billing Address</p>
                 <?php if (isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1) { ?>
+                    <?php
+                    $primary_states       = WC()->countries->get_states( $primary_country );
+                    $primary_state_name   = isset( $primary_states[$billing_state] ) ? $primary_states[$billing_state] : $primary_state;
+                    $primary_country_name = WC()->countries->countries[$primary_country];
+                    ?>
                     <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_1; ?></p>
                     <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_2; ?></p>
-                    <p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_state; ?>, <?php echo $primary_postcode; ?></p>
-                    <p class="fs-sm lh-sm mb-0"><?php echo $primary_country; ?></p>
+                    <p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_state_name; ?>, <?php echo $primary_postcode; ?></p>
+                    <p class="fs-sm lh-sm mb-0"><?php echo $primary_country_name; ?></p>
                 <?php } else { ?>
+                    <?php
+                    $billing_states       = WC()->countries->get_states( $billing_country );
+                    $billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
+                    $billing_country_name = WC()->countries->countries[$billing_country];
+                    ?>
                     <p class="fs-sm lh-sm mb-0"><?php echo $billing_add1; ?></p>
                     <p class="fs-sm lh-sm mb-0"><?php echo $billing_add2; ?></p>
-                    <p class="fs-sm lh-sm mb-0"><?php echo $billing_city; ?>, <?php echo $billing_state; ?>, <?php echo $billing_postcode; ?></p>
-                    <p class="fs-sm lh-sm mb-0"><?php echo $billing_country; ?></p>
+                    <p class="fs-sm lh-sm mb-0"><?php echo $billing_city; ?>, <?php echo $billing_state_name; ?>, <?php echo $billing_postcode; ?></p>
+                    <p class="fs-sm lh-sm mb-0"><?php echo $billing_country_name; ?></p>
                 <?php } ?>
             </div>
         </div>

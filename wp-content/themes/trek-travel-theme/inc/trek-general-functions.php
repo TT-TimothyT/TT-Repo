@@ -4304,10 +4304,13 @@ function tt_guest_details($tt_posted = [])
             <p class="mb-0 fs-sm lh-sm fw-normal">' . $gender . '</p>
             <p class="mb-0 fs-sm lh-sm fw-normal">' . $dob . '</p>';
             if ($iter == 0) {
+                $guest_details_states = WC()->countries->get_states( $country );
+                $billing_state_name   = isset( $guest_details_states[$state] ) ? $guest_details_states[$state] : $state;
+                $billing_country_name = WC()->countries->countries[$country];
                 $guest_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">'.$addr1.'</p>
                 <p class="mb-0 fs-sm lh-sm fw-normal">'.$addr2.'</p>
-                <p class="mb-0 fs-sm lh-sm fw-normal">'.$state.', '.$city.', '.$postcode.'</p>
-                <p class="mb-0 fs-sm lh-sm fw-normal">'.$country.'</p>';
+                <p class="mb-0 fs-sm lh-sm fw-normal">'.$billing_state_name.', '.$city.', '.$postcode.'</p>
+                <p class="mb-0 fs-sm lh-sm fw-normal">'.$billing_country_name.'</p>';
             }
             $guest_html .= '</div>';
             $bike_gear_html .= '<div>';
