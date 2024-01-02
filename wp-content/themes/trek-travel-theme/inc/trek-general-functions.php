@@ -4244,7 +4244,12 @@ function tt_guest_details($tt_posted = [])
                 $bike_gear_html .= '<div class="d-flex order-details__flex order-details__flexmulti">';
             }
             $rider_levelVal = tt_validate($bike_gears['primary']['rider_level']);
-            $bikeId = tt_validate($bike_gears['primary']['bikeId']);
+            // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
+            $default_p_bike_id = '';
+            if( 0 == $bike_gears['primary']['bikeId'] ){
+                $default_p_bike_id = 0;
+            }
+            $bikeId = tt_validate($bike_gears['primary']['bikeId'], $default_p_bike_id);
             $bike_size = tt_validate($bike_gears['primary']['bike_size']);
             $bike = tt_validate($bike_gears['primary']['bike']);
             $rider_height = tt_validate($bike_gears['primary']['rider_height']);
@@ -4264,7 +4269,12 @@ function tt_guest_details($tt_posted = [])
                 $dob = isset($guest_info['guest_dob']) ? $guest_info['guest_dob'] : '';
                 $gender = isset($guest_info['guest_gender']) && $guest_info['guest_gender'] == 1 ? 'Male' : 'Female';
                 $rider_levelVal = tt_validate($bike_gears['guests'][$iter]['rider_level']);
-                $bikeId = tt_validate($bike_gears['guests'][$iter]['bikeId']);
+                // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
+                $default_bike_id = '';
+                if( 0 == $bike_gears['guests'][$iter]['bikeId'] ){
+                    $default_bike_id = 0;
+                }
+                $bikeId = tt_validate($bike_gears['guests'][$iter]['bikeId'], $default_bike_id);
                 $bike_size = tt_validate($bike_gears['guests'][$iter]['bike_size']);
                 $bike = tt_validate($bike_gears['guests'][$iter]['bike']);
                 $rider_height = tt_validate($bike_gears['guests'][$iter]['rider_height']);
@@ -4310,32 +4320,42 @@ function tt_guest_details($tt_posted = [])
             $bike_pedal = tt_get_custom_item_name('syncPedals', $bike_pedal);
             $jersey_size = tt_get_custom_item_name('syncJerseySizes', $jersey_size);
             $jersey_style = tt_get_custom_item_name('syncJerseySizes', $jersey_style);
-            $bike_name = json_decode( $local_bike_models_info[ $bikeId ], true)[ 'name' ];
+
+            // Set the bike name based on bikeId value.
+            $bike_name = '';
+            if( ( isset($bikeId) && $bikeId ) || 0 == $bikeId ){
+                switch ( $bikeId ) {
+                    case 5270: // I am bringing my own bike.
+                        $bike_name = 'Bringing own';
+                        break;
+                    case 0: // If set to 0, it means "I don't know" was picked for bike size and the bikeTypeName property will be used.
+                        $bike_name = $bikeTypeId;
+                        break;
+                    default: // Take the name of the bike.
+                        $bike_name = json_decode( $local_bike_models_info[ $bikeId ], true)[ 'name' ];
+                        break;
+                }
+            }
+
             $bike_gear_html .= '<p class="mb-2 fs-md lh-md fw-medium">' . $guest_label . '</p>';
             $bike_gear_html .= '<p class="mb-2 fs-md lh-md fw-medium">' . $fname . ' ' . $lname . '</p>';
-            $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Rider Level: ' . $rider_level . '</p>';
-            // if ($rider_level == 'Non-Rider') {
-                if ($own_bike == 'yes') {
-                    $bike_size = $rider_height = "Bringing own";
+            $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Rider Level: ' . $rider_level . '</p>';                
+            if(  $rider_levelVal != 5 ){
+                if( !empty( $bike_name ) ){
+
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_name . '</p>';
                 }
-                if( $rider_levelVal != 5 && is_array( $jersey_size ) ) {
-                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_name . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
-                } elseif ( $rider_levelVal != 5 ) {
-                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_name . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>';
-                        if( !empty( $jersey_size ) && '-' != $jersey_size ) {
-                            $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>';
-                        }
-                        $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
-                    }
+                if( 'yes' !== $own_bike || 0 == $bikeId){
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
+                    <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>';
+                }
+                $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
+                <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>';
+                if( !empty( $jersey_size ) && ! is_array( $jersey_size )  && '-' != $jersey_size ) {
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>';
+                }
+                $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
+            }
             $bike_gear_html .= '</div>';
             if (($iter % $cols == $cols - 1) || ($iter == $guest_count - 1)) {
                 $guest_html .= '</div>';

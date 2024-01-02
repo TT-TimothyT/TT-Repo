@@ -166,10 +166,13 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                 }
                 $bike_id   = (int) $review_bikes_arr_val['bikeId'];
                 $bike_name = '';
-                if( isset($bike_id) && $bike_id ){
+                if( ( isset($bike_id) && $bike_id ) || 0 == $bike_id ){
                     switch ( $bike_id ) {
                         case 5270: // I am bringing my own bike.
                             $bike_name = 'Bringing own';
+                            break;
+                        case 0: // If set to 0, it means "I don't know" was picked for bike size and the bikeTypeName property will be used.
+                            $bike_name = $syncBikeTypes;
                             break;
                         default: // Take the name of the bike.
                             $bike_name = json_decode( $local_bike_models_info[ $bike_id ], true)[ 'name' ];
@@ -189,13 +192,13 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
 
                         $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $bike_name . '</p>';
                     }
-                    if( empty( $ownBike ) && 'yes' !== $ownBike){
+                    if( 'yes' !== $ownBike || 0 == $bike_id ){
                         $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
                             <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>';
                     }
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
                     <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>';
-                    if( ! is_array( $syncJerseySizes ) ) {
+                    if( !empty( $syncJerseySizes ) && ! is_array( $syncJerseySizes )  && '-' != $syncJerseySizes ) {
                         $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>';
                     }
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
