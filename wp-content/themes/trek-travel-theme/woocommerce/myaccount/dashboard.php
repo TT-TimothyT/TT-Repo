@@ -224,19 +224,23 @@ $travel_advisor_useful_resources    = get_field( 'travel_advisor_useful_resource
 									$parentTrip = tt_get_parent_trip($trip_sku);
 									$trip_link = esc_url( add_query_arg( 'order_id', $order_id, get_permalink( TREK_MY_ACCOUNT_PID ).'my-trip' ) );
 								}
-								$trips_html .= '<div class="dashboard__trip d-flex">
-									<div class="my-upcoming-trips">
-										<img src="'.$parentTrip['image'].'">
-									</div>
-									<div class="w-50">
-										<h6 class="fs-sm lh-sm fw-bold mb-1"><a href="'.$trip_link.'">'.$product->get_name().'</a></h6>
-										<p class="fs-sm lh-sm fw-normal mb-1">'.$pa_city.', '.$tripRegion.'</p>
-										<p class="fs-sm lh-sm fw-normal mb-2">'.$date_range.'</p>
-										<?php if (!empty($order_details)) : ?>
-											<p class="dashboard__error"><img src="'.TREK_DIR.'/assets/images/error.png"> You have pending items</p>
-										<?php endif; ?>									
-                                    </div>
-								</div>';
+								$trips_html .= '<div class="dashboard__trip d-flex"><div class="my-upcoming-trips"><img src="'.$parentTrip['image'].'"></div><div class="w-50"><h6 class="fs-sm lh-sm fw-bold mb-1"><a href="'.$trip_link.'">'.$product->get_name().'</a></h6>';
+
+								// Check if $pa_city exists before adding it
+								if ( ! empty( $pa_city ) ) {
+									$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-1">'.$pa_city.', '.$tripRegion.'</p>';
+								} else {
+									$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-1">'.$tripRegion.'</p>';
+								}
+
+								$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-2">'.$date_range.'</p>';
+
+								// Check if $order_details is not empty before adding the error message
+								if ( ! empty( $order_details ) ) {
+									$trips_html .= '<p class="dashboard__error"><img src="'.TREK_DIR.'/assets/images/error.png"> You have pending items</p>';
+								}
+
+								$trips_html .= '</div></div>';
 							}
 						}
 						echo $trips_html;
