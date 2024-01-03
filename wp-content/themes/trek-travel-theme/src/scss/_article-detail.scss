@@ -39,6 +39,9 @@ article.post{
             }
         }
     }
+    p {
+        margin: 3rem 0 !important;
+    }
     .entry-content{
         .post-thumbnail{
             img{
@@ -52,6 +55,22 @@ article.post{
             object-fit: cover;
             width: 100%;
         }
+    }
+}
+
+.share-post {
+    margin-bottom: 3rem  !important;
+    p:first-child {
+        margin-top: 5px;
+    }
+    a {
+        width: 40px;
+        height: 42px;
+        background: black;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
