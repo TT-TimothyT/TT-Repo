@@ -248,7 +248,7 @@ if ( $pdp_itineraries ) :
                                         <div class="accordion-item">
                                             <h6 class="accordion-header" id="flush-headingOne">
                                                 <button class="accordion-button collapsed mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseadditional" aria-expanded="false" aria-controls="flush-collapseadditional">
-                                                    <span class="fw-medium fs-lg lh-lg">Additional Days</span>
+                                                    <span class="fw-medium fs-lg lh-lg">Print full itinerary</span>
                                                 </button>
                                             </h6>
                                             <div id="flush-collapseadditional" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
