@@ -221,7 +221,8 @@ function get_child_products($linked_products = array())
                 if ($start_date && $end_date && !in_array($trip_status, $status_not_in)) {
                     $sdate_obj = explode('/', $start_date);
                     $sku = $p_obj->get_sku();
-                    $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $sku, true);
+                    // Take the singleSupplementPrice from the post meta fields.
+                    $singleSupplementPrice = get_post_meta( $linked_product, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
                     $sdate_info = array(
                         'd' => $sdate_obj[0],
                         'm' => $sdate_obj[1],
@@ -415,8 +416,8 @@ function save_checkout_steps_action_cb()
             $cart_item['trek_user_checkout_data']['parent_product_id'] = $parent_product_id;
             $cart_item['trek_user_checkout_data']['product_id'] = $product_id;
             $cart_item['trek_user_checkout_data']['sku'] = $_product->get_sku();
-            $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $_product->get_sku(), true);
-            $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $_product->get_sku(), true);
+            $bikeUpgradePrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
+            $singleSupplementPrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
             $cart_item['trek_user_checkout_data']['bikeUpgradePrice'] = $bikeUpgradePrice;
             $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = $singleSupplementPrice;
             $cart_posted_data = $cart_item['trek_user_checkout_data'];
@@ -2473,6 +2474,12 @@ if (!function_exists('tt_get_local_trips_detail')) {
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_detail';
+
+        if( !empty( $tripCode ) ) {
+            // Get a trip code without suffix.
+            $tripCode = tt_get_local_trip_code( $tripCode );
+        }
+
         $sql = "SELECT ts.{$field} from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
         if ($tripId) {
             $sql .= " AND ts.tripId = '{$tripId}'";
@@ -2643,7 +2650,7 @@ function trek_tt_save_occupants_ajax_action_cb()
     $occupants_roommate = (isset($_REQUEST['occupants']['roommate']) ? $_REQUEST['occupants']['roommate'] : array());
     $suppliment_counts = count($occupants_private) + count($occupants_roommate);
     $trip_sku = tt_get_trip_pid_sku_from_cart();
-    $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku['sku'], true);
+    $singleSupplementPrice = get_post_meta( $trip_sku['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
     if ($singleSupplementPrice && $singleSupplementPrice > 0) {
         WC()->cart->add_to_cart($s_product_id, $suppliment_counts, 0, array(), array('tt_cart_custom_fees_price' => $singleSupplementPrice));
     }
@@ -2751,6 +2758,12 @@ if (!function_exists('tt_get_local_bike_detail')) {
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+        if( !empty( $tripCode ) ) {
+            // Get a trip code without suffix.
+            $tripCode = tt_get_local_trip_code( $tripCode );
+        }
+
         $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
         if ($bikeId) {
             $sql .= " AND ts.bikeId = '{$bikeId}'";
@@ -2828,8 +2841,17 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
         }
         $parent_trip_link = get_the_permalink($parent_product_id) ? get_the_permalink($parent_product_id) : 'javascript:';
     }
+
+    if( !empty( $sku ) ) {
+        /**
+         * This is part of Ride Camp integration.
+         * Take the base of SKU if is it with suffix like this 24CARC0122-FIRST,
+         * because those additional half-period products, use a shared amount of bikes, hotels, etc. with the main product. 
+         */
+        $sku = explode('-', $sku)[0];
+    }
     return [
-        'sku' => $sku,
+        'sku' => $sku,  
         'parent_rider_level' => isset($parent_rider_level->level) ? $parent_rider_level->level : '',
         'rider_level_text' => $rider_level_text,
         'product_id' => $product_id,
@@ -2867,6 +2889,16 @@ function tt_get_trip_pid_sku_by_orderId($order_id)
         $guests = isset($tt_data['guests']) && is_array($tt_data['guests']) ? $tt_data['guests'] : []; 
         $guest_emails = array_column($guests, 'guest_email');
     }
+
+    if( !empty( $sku ) ) {
+        /**
+         * This is part of Ride Camp integration.
+         * Take the base of SKU if is it with suffix like this 24CARC0122-FIRST,
+         * because those additional half-period products, use a shared amount of bikes, hotels, etc. with the main product. 
+         */
+        $sku = explode('-', $sku)[0];
+    }
+
     return [
         'sku' => $sku,
         'product_id' => $wc_trip_id,
@@ -2880,6 +2912,12 @@ function tt_get_bikes_by_trip_info($tripId = '', $tripCode = '', $bikeTypeId = '
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+    if( !empty( $tripCode ) ) {
+        // Get a trip code without suffix.
+        $tripCode = tt_get_local_trip_code( $tripCode );
+    }
+
     $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
     // if ($tripId) {
     //     $sql .= " AND ts.tripId = '{$tripId}'";
@@ -2930,6 +2968,12 @@ function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+    if( !empty( $tripCode ) ) {
+        // Get a trip code without suffix.
+        $tripCode = tt_get_local_trip_code( $tripCode );
+    }
+
     $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
     if ($tripId) {
         $sql .= " AND ts.tripId = '{$tripId}'";
@@ -2972,6 +3016,12 @@ function tt_get_bike_id_by_args($tripId = '', $tripCode = '', $bikeTypeId = '', 
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+    if( !empty( $tripCode ) ) {
+        // Get a trip code without suffix.
+        $tripCode = tt_get_local_trip_code( $tripCode );
+    }
+
     $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
     if ($tripId) {
         $sql .= " AND ts.tripId = '{$tripId}'";
@@ -3389,7 +3439,7 @@ function trek_tt_bike_selection_ajax_action_cb()
     $opts = tt_get_bikes_by_trip_info($tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId);
     $accepted_p_ids = tt_get_line_items_product_ids();
     $product_id = tt_create_line_item_product('TTWP23UPGRADES');
-    $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $tripInfo['sku'], true);
+    $bikeUpgradePrice = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
     if ($bikeUpgradePrice && $bikeUpgradePrice > 0) {
         WC()->cart->add_to_cart($product_id, $bike_upgrade_qty, 0, array(), array('tt_cart_custom_fees_price' => $bikeUpgradePrice));
     }
@@ -3423,6 +3473,9 @@ function trek_tt_bike_selection_ajax_action_cb()
             WC()->cart->cart_contents[$cart_item_id] = $cart_item;
         }
     }
+    WC()->cart->set_session();
+    WC()->cart->calculate_totals();
+    WC()->cart->maybe_set_cart_cookies();
     $review_order_html = '';
     $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
     if (is_readable($review_order)) {
@@ -3433,9 +3486,6 @@ function trek_tt_bike_selection_ajax_action_cb()
     $opts['review_order'] = $review_order_html;
     $opts['bike_upgrade_qty'] = $bike_upgrade_qty;
     $opts['isBikeUpgrade'] = $isBikeUpgrade;
-    WC()->cart->set_session();
-    WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
     echo json_encode($opts);
     exit;
 }
@@ -3756,8 +3806,8 @@ function tt_woocommerce_add_to_cart_cb()
                 $cart_item['trek_user_checkout_data']['parent_product_id'] = $parent_product_id;
                 $cart_item['trek_user_checkout_data']['product_id'] = $product_id;
                 $cart_item['trek_user_checkout_data']['sku'] = $_product->get_sku();
-                $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $_product->get_sku(), true);
-                $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $_product->get_sku(), true);
+                $bikeUpgradePrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
+                $singleSupplementPrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
                 $cart_item['trek_user_checkout_data']['bikeUpgradePrice'] = $bikeUpgradePrice;
                 $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = $singleSupplementPrice;
                 WC()->cart->cart_contents[$cart_item_id] = $cart_item;
@@ -5583,4 +5633,27 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
     }
 
     // There is no trip in the cart.
+}
+
+/**
+ * Function to get real local Trip Code (SKU)
+ *
+ * Since for the Ride Camp integration we use additional products
+ * for the half periods to which we add a suffix (-FIRST, -SECOND),
+ * when we need to get information about the amount of bikes, hotels, etc.,
+ * we need to make a reference to the main product that stores 
+ * this information in the trip details table in DB.
+ * 
+ * @param string $tripCode Trip Code or SKU like this 24CARC0122
+ * 
+ * @return string A modified trip code that is without the suffix, if any.
+ */
+function tt_get_local_trip_code( $tripCode ) {
+
+    if( is_string( $tripCode ) ) {
+        //Take the base of SKU if is it with suffix like this 24CARC0122-FIRST.
+        $tripCode = explode('-', $tripCode)[0];
+    }
+
+    return $tripCode;
 }

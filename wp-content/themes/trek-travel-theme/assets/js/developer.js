@@ -2298,10 +2298,35 @@ if (jQuery('.tt_reset_rooms').length > 0) {
         jQuery("#currency_switcher").trigger("change")
       },
       complete: function(){
-        if(trek_JS_obj.review_order){
-          jQuery('#tt-review-order').html(trek_JS_obj.review_order);
-          jQuery("#currency_switcher").trigger("change")
-        }
+        // On removing occupant from the room - trigger recalculate, and obtain the review order html.
+        var actionName = 'tt_save_occupants_ajax_action';
+        var formData = jQuery('form.checkout.woocommerce-checkout').serialize();
+        jQuery.ajax({
+          type: 'POST',
+          url: trek_JS_obj.ajaxURL,
+          data: formData + "&action=" + actionName,
+          dataType: 'json',
+          beforeSend: function () {
+            jQuery.blockUI({
+              css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff'
+              }
+            });
+          },
+          success: function (response) {
+            if (response.review_order) {
+              jQuery('#tt-review-order').html(response.review_order);
+              jQuery("#currency_switcher").trigger("change");
+            }
+            jQuery.unblockUI();
+          }
+        });
         // Trigger an event that shows that the "#addOccupantsModal" modal html is ready.
         let occupantsModal = document.querySelector('#addOccupantsModal');
         occupantsModal && occupantsModal.dispatchEvent(occupantPopUpHtmlReadyEvent);

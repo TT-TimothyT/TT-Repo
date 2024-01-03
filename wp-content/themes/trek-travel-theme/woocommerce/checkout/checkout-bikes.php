@@ -29,10 +29,10 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 
 $singleSupplementPrice = $bikeUpgradePrice = 0;
 $bikePriceCurr = $singleSupplementPrice = '';
-if ($tripInfo['sku']) {
-    $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $tripInfo['sku'], true);
+if ( $tt_posted['product_id'] ) {
+    $bikeUpgradePrice = get_post_meta( $tt_posted['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
     $bikePriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $bikeUpgradePrice . '</span>';
-    $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $tripInfo['sku'], true);
+    $singleSupplementPrice = get_post_meta( $tt_posted['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
     $singleSupplementPriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $singleSupplementPrice . '</span>';
 }
 $shipping_name = $primary_name;
