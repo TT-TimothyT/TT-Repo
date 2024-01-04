@@ -4701,13 +4701,24 @@ function tt_generate_save_insurance_quote_cb()
             $individualTripCost = $product->get_price();
             $occupants = $tt_posted['occupants'];
             $trek_insurance_args["insuredPerson"] = array();
+            $bike_gears = $tt_posted['bike_gears'];
+            if ( isset( $tt_posted['bikeUpgradePrice'] ) ) {
+                $bike_upgrade_price = (int) $tt_posted['bikeUpgradePrice'];
+            } else {
+                $bike_upgrade_price =  0;
+            }
             if ($guest_insurance_k == 'primary') {
+                $primary_guest_bike = $bike_gears['primary'];
+                $bike_type_info     = tt_ns_get_bike_type_info( $primary_guest_bike['bikeTypeId'] );
                 if ($guest_insurance_val['is_travel_protection'] == 1) {
                     $is_travel_protection_count++;
                 }
                 if ( ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( 0, $occupants['private'] ) )
                 || ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( 0, $occupants['roommate'] ) ) ) {
                     $individualTripCost = $individualTripCost + $amount_int;
+                }
+                if ( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) {
+                    $individualTripCost = $individualTripCost + $bike_upgrade_price;
                 }
                 //if ($guest_insurance_val['is_travel_protection'] == 1) {
                 $insuredPerson[] = array(
@@ -4737,13 +4748,18 @@ function tt_generate_save_insurance_quote_cb()
             } else {
                 foreach ($guest_insurance_val as $guest_key => $guest_insurance_Data) {
                     $individualTripCost = $product->get_price();
-                    $guestInfo = $tt_posted['guests'][$guest_key];
+                    $guestInfo          = $tt_posted['guests'][$guest_key];
+                    $guest_bike         = $bike_gears['guests'][$guest_key];
+                    $bike_type_info     = tt_ns_get_bike_type_info( $guest_bike['bikeTypeId'] );
                     if ($guest_insurance_Data['is_travel_protection'] == 1) {
                         $is_travel_protection_count++;
                     }
                     if ( ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( $guest_key, $occupants['private'] ) )
                     || ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( $guest_key, $occupants['roommate'] ) ) ) {
                         $individualTripCost = $individualTripCost + $amount_int;
+                    }
+                    if ( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) {
+                        $individualTripCost = $individualTripCost + $bike_upgrade_price;
                     }
                     $insuredPerson[] = array(
                         "address" => [
@@ -5396,6 +5412,16 @@ function recalculate_tax_on_cart_update( $cart ) {
     $cart->remove_taxes();
 }
 
+// Filter to adjust the cart subtotal
+add_filter( 'woocommerce_calculated_total', 'update_cart_subtotal', 10, 2 );
+function update_cart_subtotal( $cart_total, $cart ) {
+    $total_tax = calculate_cart_total_tax( $cart );
+
+    // Add the calculated tax to the cart subtotal
+    $cart_total += $total_tax;
+
+    return $cart_total;
+}
 
 // Display the updated total tax in the template
 add_action( 'woocommerce_review_order_before_shipping', 'display_total_tax' );

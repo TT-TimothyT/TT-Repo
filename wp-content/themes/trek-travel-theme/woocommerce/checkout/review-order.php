@@ -219,11 +219,6 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
             echo $tt_cart_tax_html;
             ?>
             <?php
-            $total_tax        = WC()->cart->get_taxes_total();
-            $float_total_tax  = floatval( $total_tax );
-            $float_cart_total = floatval( $cart_total );
-            $float_total      = $float_total_tax + $float_cart_total;
-            $cart_totalCurr   = wc_price( $float_total );
             $outstanding_payment = $cart_totalCurr;
             if ($pay_amount == 'deposite') {
                 $outstanding_payment = $depositAmountCurr;
