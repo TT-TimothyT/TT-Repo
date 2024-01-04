@@ -261,13 +261,17 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         $field_html .= '<input type="hidden" id="tt_pay_fname" name="first_name" value="'.$woocommerce->checkout->get_value('billing_first_name').'"/>';
         $field_html .= '<input type="hidden" id="tt_pay_lname" name="last_name" value="'.$woocommerce->checkout->get_value('billing_last_name').'"/>';
         echo $field_html;
+
+        $guest_details_states  = WC()->countries->get_states( $primary_country );
+        $shipping_state_name   = isset( $guest_details_states[$shipping_state] ) ? $guest_details_states[$shipping_state] : $shipping_state;
+        $shipping_country_name = WC()->countries->countries[$primary_country];
         ?>
         <div class="checkout-payment__pre-address <?php echo ( isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1 ? '' : 'd-none'); ?>" style="height:120px;">
             <p class="mb-0"><?php echo $shipping_name; ?></p>
             <p class="mb-0"><?php echo $primary_address_1; ?></p>
             <p class="mb-0"><?php echo $primary_address_2; ?></p>
-            <p class="mb-0"><?php echo $shipping_city; ?>, <?php echo $shipping_state; ?>, <?php echo $shipping_postcode; ?></p>
-            <p class="mb-0"><?php echo $primary_country; ?></p>
+            <p class="mb-0"><?php echo $shipping_city; ?>, <?php echo $shipping_state_name; ?>, <?php echo $shipping_postcode; ?></p>
+            <p class="mb-0"><?php echo $shipping_country_name; ?></p>
             <p class="mb-0"></p>
         </div>
         <div class="d-flex checkout-payment__billing-checkboxtwo">

@@ -34,9 +34,12 @@ $cc_type = isset($tt_posted['wc-cybersource-credit-card-card-type']) ? $tt_poste
 $tt_rooms_output = tt_rooms_output($tt_posted);
 
 // Take bike names.
-$tripInfo = tt_get_trip_pid_sku_from_cart();
-$local_bike_details = tt_get_local_bike_detail($tripInfo['sku']);
-$local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
+$tripInfo                   = tt_get_trip_pid_sku_from_cart();
+$local_bike_details         = tt_get_local_bike_detail( $tripInfo['sku'] );
+$local_bike_models_info     = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
+$guest_details_states       = WC()->countries->get_states( $primary_country );
+$primary_guest_state_name   = isset( $guest_details_states[$primary_state] ) ? $guest_details_states[$primary_state] : $primary_state;
+$primary_guest_country_name = WC()->countries->countries[$primary_country];
 ?>
 <div class="checkout-review" id="checkout-review">
     <div class="checkout-review__guest">
@@ -51,8 +54,8 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_phone; ?></p>
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_1; ?></p>
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_2; ?></p>
-                <p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_state; ?>, <?php echo $primary_postcode; ?></p>
-                <p class="fs-sm lh-sm mb-0"><?php echo $primary_country; ?></p>
+                <p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_guest_state_name; ?>, <?php echo $primary_postcode; ?></p>
+                <p class="fs-sm lh-sm mb-0"><?php echo $primary_guest_country_name; ?></p>
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_dob; ?></p>
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_gender; ?></p>
             </div>

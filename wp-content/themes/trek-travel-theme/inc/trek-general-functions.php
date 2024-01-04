@@ -5165,25 +5165,27 @@ function tt_woocommerce_checkout_update_order_meta_cb($order_id, $posted_data, $
  **/
 add_action('wp_ajax_tt_ajax_mailing_address_action', 'tt_ajax_mailing_address_action_cb');
 add_action('wp_ajax_nopriv_tt_ajax_mailing_address_action', 'tt_ajax_mailing_address_action_cb');
-function tt_ajax_mailing_address_action_cb()
-{
-    $res['status'] = true;
-    $tt_checkoutData =  get_trek_user_checkout_data();
-    $tt_posted = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
-    $primary_address_1 = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
-    $primary_address_2 = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
-    $primary_country = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
-    $shipping_fname = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
-    $shipping_lname = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
-    $shipping_name = $shipping_fname.' '.$shipping_lname; 
-    $shipping_postcode = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
-    $shipping_state = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
-    $shipping_city = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
-    $output = '<p class="mb-0">'.$shipping_name.'</p>
+function tt_ajax_mailing_address_action_cb() {
+    $res['status']         = true;
+    $tt_checkoutData       =  get_trek_user_checkout_data();
+    $tt_posted             = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
+    $primary_address_1     = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
+    $primary_address_2     = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
+    $primary_country       = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
+    $shipping_fname        = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
+    $shipping_lname        = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
+    $shipping_name         = $shipping_fname.' '.$shipping_lname; 
+    $shipping_postcode     = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
+    $shipping_state        = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
+    $shipping_city         = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
+    $guest_details_states  = WC()->countries->get_states( $primary_country );
+    $shipping_state_name   = isset( $guest_details_states[$shipping_state] ) ? $guest_details_states[$shipping_state] : $shipping_state;
+    $shipping_country_name = WC()->countries->countries[$primary_country];
+    $output                     = '<p class="mb-0">'.$shipping_name.'</p>
         <p class="mb-0">'.$primary_address_1.'</p>
         <p class="mb-0">'.$primary_address_2.'</p>
-        <p class="mb-0">'.$shipping_city.', '.$shipping_state.', '.$shipping_postcode.'</p>
-        <p class="mb-0">'.$primary_country.'</p>
+        <p class="mb-0">'.$shipping_city.', '.$shipping_state_name.', '.$shipping_postcode.'</p>
+        <p class="mb-0">'.$shipping_country_name.'</p>
         <p class="mb-0"></p>';
     $res['address'] = $output;
     echo json_encode($res);    
