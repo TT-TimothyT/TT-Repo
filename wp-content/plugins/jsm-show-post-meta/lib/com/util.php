@@ -1451,6 +1451,19 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return self::array_map_recursive( 'maybe_unserialize', $arr );
 		}
 
+		/*
+		 * Maybe limit the number of array elements.
+		 */
+		public static function array_fifo( array $array, $max = 1 ) {
+
+			if ( is_numeric( $max ) && $max > 0 && count( $array ) > $max ) {
+
+				return array_slice( $array, -$max, $length = null, $preserve_keys = true );
+			}
+
+			return $array;
+		}
+
 		public static function array_map_recursive( $func, array $arr ) {
 
 			foreach ( $arr as $key => $el ) {
@@ -1875,6 +1888,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return array(
 				'fb:admins'       => null,
 				'fb:app_id'       => null,
+				'og:time'         => null,	// Non-standard / internal meta tag.
 				'og:type'         => null,
 				'og:url'          => null,
 				'og:redirect_url' => null,	// Non-standard / internal meta tag.
@@ -5281,8 +5295,8 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 			/*
 			 * Scalar variables are those containing an int, float, string or bool.
-			 * 
-			 * Types array, object, resource and null are not scalar. 
+			 *
+			 * Types array, object, resource and null are not scalar.
 			 */
 			if ( is_scalar( $key ) ) {
 

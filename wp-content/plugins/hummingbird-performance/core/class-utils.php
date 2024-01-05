@@ -29,6 +29,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Utils {
 
+	/**
+	 * Store HB plugin discount percent.
+	 *
+	 * @var int
+	 */
+	const HB_PLUGIN_DISCOUNT = 80;
+
 	/***************************
 	 *
 	 * I. General helper functions
@@ -731,7 +738,8 @@ class Utils {
 				$link = "$domain/project/wp-smush-pro/$utm_tags";
 				break;
 			case 'hosting':
-				$link = "$domain/hosting/$utm_tags";
+				$get_random_cta = self::get_random_hosting_cta();
+				$link           = "$domain/$get_random_cta/$utm_tags&coupon=HUMMINGBIRD-HOSTING-1M&from_checkout=1";
 				break;
 			case 'wpmudev':
 				$link = "$domain/$utm_tags";
@@ -754,6 +762,18 @@ class Utils {
 		}
 
 		return $link;
+	}
+
+	/**
+	 * Returns the random CTA.
+	 *
+	 * @return string
+	 */
+	public static function get_random_hosting_cta() {
+		$hosting_cta = array( 'hosting', 'register' );
+		$random_keys = array_rand( $hosting_cta, 1 );
+
+		return $hosting_cta[ $random_keys ];
 	}
 
 	/**
@@ -1386,5 +1406,16 @@ class Utils {
 
 		// amp_is_request For AMP plugin v2.0+ and is_amp_endpoint For older/other AMP plugins.
 		return ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) || ( function_exists( 'amp_is_request' ) && amp_is_request() );
+	}
+
+	/**
+	 * Returns plugin discount.
+	 *
+	 * @since 3.7.1
+	 *
+	 * @return string
+	 */
+	public static function get_plugin_discount() {
+		return self::HB_PLUGIN_DISCOUNT . '%';
 	}
 }
