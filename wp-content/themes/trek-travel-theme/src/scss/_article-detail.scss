@@ -101,6 +101,88 @@ article.post{
     }
 }
 
+.rp4wp-related-posts {
+    padding: 0 5rem;
+    display: inline-block;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+
+    @media screen and (max-width: 1024px) {
+        padding: 0;
+    }
+
+    @media screen and (max-width: 498px) {
+        padding: 0 3rem;
+     }
+
+    h3 {
+        margin-top: 1.25rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+    ul {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+
+        @media screen and (max-width: 991px) {
+            gap: 28px;
+        }
+
+        li {
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+            border: 1px solid #00000017;
+            border-bottom: 4px solid #28aae1;
+            width: calc(25% - 12px);
+
+            @media screen and (max-width: 991px) {
+                width: calc(50% - 14px);
+            }
+
+            @media screen and (max-width: 498px) {
+               width: 100%;
+            }
+
+            .rp4wp-related-post-image {
+                width: 100%;
+                padding: 0;
+                height: 150px;
+
+                img {
+                    height: 150px;
+                    width: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .rp4wp-related-post-content {
+                padding: 16px;
+
+                a {
+                    font-size: 1.5rem;
+                    line-height: 2.25rem;
+                    font-weight: 600;
+                    display: block;
+                    margin-bottom: 16px;
+                    transition: all ease 0.3s;
+                    &:hover {
+                        color: #28aae1;
+                        text-decoration: none;
+                    }
+                }
+
+                & > p {
+                    margin: 0 !important;
+                    line-height: 1.2495rem !important;
+                    font-size: 0.875rem;
+                    font-weight: 400 !important;
+                }
+            }
+        }
+    }
+}
+
 .share-post {
     margin-bottom: 3rem  !important;
     p:first-child {
@@ -124,3 +206,4 @@ article.post{
         border-radius: 4px;
     }
 }
+

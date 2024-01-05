@@ -986,6 +986,18 @@ jQuery(document).ready(function () {
   });
 });
 jQuery(document).ready(function () {
+
+  var maxHeight = 0;
+    jQuery('.rp4wp-related-posts li').each(function(){
+        maxHeight = Math.max(maxHeight, jQuery(this).children('.rp4wp-related-post-content').children('a').height());
+    });
+
+    if(jQuery(window).width() > 498) {
+      jQuery('.rp4wp-related-posts li .rp4wp-related-post-content a').height(maxHeight);
+    }
+
+    jQuery('.share-post').after(jQuery('.rp4wp-related-posts') );
+
   if (jQuery('#togglePassword').length > 0) {
     const togglePassword = document.querySelector('#togglePassword');
     const password = document.querySelector('#InputPassword');
