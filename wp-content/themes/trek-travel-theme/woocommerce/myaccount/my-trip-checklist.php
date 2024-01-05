@@ -165,11 +165,11 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
 	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
 		if ( in_array( 712, $product_cat_matches ) || in_array( 744, $product_cat_matches ) ) {
-			$hideme = " d-none";
+			$hideme = "d-none";
 		} elseif ( in_array( 710, $product_cat_matches ) && in_array( 713, $product_cat_matches ) ) {
-			$hideme = " d-none";
+			$hideme = "d-none";
 		} else {
-			$hideme = " none";
+			$hideme = "none";
 		}
 	}
 }
@@ -617,10 +617,13 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											<label for="emergency_contact_address_2">Helmet Size</label>
 										</div>
 									</div>
-									<div class="col-md px-0<?php echo $hideme; ?>">
+									<div class="col-md px-0 <?php echo $hideme; ?>">
 										<div class="form-floating">
-											<select name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00">
+											<select name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
 												<option value="">Select Clothing Style</option>
+												<?php if ( 'd-none' === $hideme ) : ?>
+					            					<option selected value="">None</option>
+					            				<?php endif; ?>
 												<option value="men" <?php echo ($jersey_style == 'men' ? 'selected' : ''); ?>>Men's</option>
 												<option value="women" <?php echo ($jersey_style == 'women' ? 'selected' : ''); ?>>Women's</option>
 											</select>
@@ -628,10 +631,13 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 									</div>
 								</div>
-								<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row<?php echo $hideme; ?>">
+								<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row <?php echo $hideme; ?>">
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<select name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true">
+											<select name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
+												<?php if ( 'd-none' === $hideme ) : ?>
+					            					<option selected value="">None</option>
+					            				<?php endif; ?>
 												<?php echo tt_get_jersey_sizes($jersey_style, $tt_jersey_size); ?>
 											</select>
 											<label for="emergency_contact_address_2">Jersey Size</label>
@@ -721,7 +727,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 							</div>
 						</div> <!-- accordion-item ends -->
 					<?php } ?>
-					<?php if ($rider_level != 5 && $own_bike != 'yes' ) { ?>
+					<?php if ($rider_level != 5 && $own_bike != 'yes' && 5270 != $bike_id ) { ?>
 						<?php $bike_review_string = 'Confirm your bike selection'; ?>
 						<?php if( $lockedUserBike ) { ?>
 							<?php $bike_pointer_none = 'style="pointer-events: none;"' ?>
@@ -787,7 +793,8 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 													<p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
 												</div>';
 													}
-													$primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElementchk ' . $checkedClass . '" data-id="' . $bikeModelId . '" data-guest-id="0">
+													$is_bike_with_upgrade = ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) ? 'true' : 'false';
+													$primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElementchk ' . $checkedClass . '" data-id="' . $bikeModelId . '" data-is-bike-with-upgrade="' . $is_bike_with_upgrade . '" data-guest-id="0">
 											<input name="bikeModelId" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeModelId . '" class="bike_validation_inputs">
 													<div class="checkout-bikes__image d-flex justify-content-center align-content-center">
 														<img src="' . $bike_image . '" alt="' . $bikeDescr . '">
@@ -811,22 +818,26 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										echo $primary_available_bike_html;
 										?>
 									</div>
-									<div class="form-floating checkout-bikes__bike-size">
-										<select name="tt-bike-size" class="form-select tt_chk_bike_size_change bike_validation_select" id="floatingSelect1" aria-label="Floating label select example">
-											<?php
-											$bikeOpt_object = tt_get_bikes_by_trip_info_pbc('', $trip_sku, $primary_bikeTypeId, $bike_size, $bike_id);
-											if ($bikeOpt_object && $bikeOpt_object['size_opts']) {
-												echo $bikeOpt_object['size_opts'];
-											}
-											?>
-										</select>
-										<label for="floatingSelect">Bike size</label>
-									</div>
-									<?php if ( $lockedUserBike != 1 ) { ?>
-										<div class="form-check form-check-inline mb-0">
-											<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck" value="yes">
-											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+									<?php if ($available_bikes) : ?>
+										<div class="form-floating checkout-bikes__bike-size">
+											<select name="tt-bike-size" class="form-select tt_chk_bike_size_change bike_validation_select" id="floatingSelect1" aria-label="Floating label select example">
+												<?php
+												$bikeOpt_object = tt_get_bikes_by_trip_info_pbc('', $trip_sku, $primary_bikeTypeId, $bike_size, $bike_id);
+												if ($bikeOpt_object && $bikeOpt_object['size_opts']) {
+													echo $bikeOpt_object['size_opts'];
+												}
+												?>
+											</select>
+											<label for="floatingSelect">Bike size</label>
 										</div>
+									<?php endif; ?>
+									<?php if ( $lockedUserBike != 1 ) { ?>
+										<?php if ($available_bikes) : ?>
+											<div class="form-check form-check-inline mb-0">
+												<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck" value="yes">
+												<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+											</div>
+										<?php endif; ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
@@ -950,7 +961,11 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 				</span>
 			</div>
 			<div class="modal-body" style="padding: 0;">
-				<iframe src="<?php echo esc_url( $waiver_info['waiver_link'] ); ?>" width="100%" height="350"></iframe>
+				<?php if( !empty( $waiver_info['waiver_link'] ) ) : ?>
+					<iframe src="<?php echo esc_url( $waiver_info['waiver_link'] ); ?>" width="100%" height="350"></iframe>
+				<?php else : ?>
+					<p class="p-4"><?php echo esc_html('Please check again later!'); ?></p>
+				<?php endif; ?>
 				<!-- </form> -->
 			</div>
 		</div><!-- / .modal-content -->

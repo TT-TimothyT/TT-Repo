@@ -49,7 +49,7 @@ function prebookingChecklistValidate() {
   var isFirstMedicalLoad = jQuery('input[name="custentity_medical_info_first_load"]').length > 0;
   var isMedicalInfoSectionComplete = true;
   var totalEmerFields = jQuery('.emergency_validation_inputs').length;
-  var totalGearFields = jQuery('.gear_validation_inputs').length;
+  var totalGearFields = jQuery('.gear_validation_inputs').not('select[data-is-required="false"]').length;
   var totalPassFields = jQuery('.passport_validation_inputs').length;
   var emergency_itemCount = 0;
   var gear_itemCount = 0;
@@ -79,7 +79,7 @@ function prebookingChecklistValidate() {
       emergency_itemCount++;
     }
   });
-  jQuery('.gear_validation_inputs').each(function () {
+  jQuery('.gear_validation_inputs').not('select[data-is-required="false"]').each(function () {
     if (jQuery(this).val() != '') {
       gear_itemCount++;
     }
@@ -129,12 +129,33 @@ function prebookingChecklistValidate() {
     bikeSizeSelected = true;
   }
 
+  // If the Select bike radio inputs and Select size dropdown do not exist on the page, show the section as completed.
+  if(jQuery( '.checkout-bikes-section .bike_validation_select' ).length <= 0 && jQuery( '.checkout-bikes-section .bike_validation_inputs' ).length <= 0 ) {
+    bikeModelSelected = true;
+    bikeSizeSelected  = true;
+  }
+
   // Set Bike Section complete state.
   if ( bikeModelSelected && bikeSizeSelected ) {
     jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
   } else {
     // Set Bike Section as not completed yet.
     jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
+  }
+
+  // Disable or enable specific bikes to can select them or not in post booking checklist.
+  let isSelectedBikeWithUpgrade = jQuery( '.my-trips-checklist .bike-selected' ).attr('data-is-bike-with-upgrade');
+  // If the selected bike during the checkout process is without an upgrade option.
+  if( 'true' != isSelectedBikeWithUpgrade ){
+    // Diable all bikes with upgrade option.
+    jQuery( '.my-trips-checklist [data-is-bike-with-upgrade="true"]' ).each( function () {
+      jQuery( this ).css( {"opacity": "0.5", "pointer-events": "none"} );
+    } );
+  } else {
+    // Disable all bikes without upgrade option.
+    jQuery( '.my-trips-checklist [data-is-bike-with-upgrade="false"]' ).each( function () {
+      jQuery( this ).css( {"opacity": "0.5", "pointer-events": "none"} );
+    } );
   }
 }
 function tripCapacityValidation(is_return = true) {

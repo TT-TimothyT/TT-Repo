@@ -2949,11 +2949,11 @@ function tt_get_bikes_by_trip_info($tripId = '', $tripCode = '', $bikeTypeId = '
                 }
                 if ($bike_size_id && $bike_size_name) {
                     $selected = ($bike_size_id == $s_bike_size_id ? 'selected' : '');
-                    $bike_size_opts .= '<option ' . $option_disabled . $selected . ' value="' . $bike_size_id . '">' . $bike_size_name . '</option>';
+                    $bike_size_opts .= '<option ' . $selected . ' value="' . $bike_size_id . '" ' . $option_disabled . '>' . $bike_size_name . '</option>';
                 }
                 if ($bike_type_id && $bike_type_name) {
                     $selected1 = ($loop_bikeId == $s_bike_type_id ? 'selected' : '');
-                    $bike_Type_opts .= '<option ' . $option_disabled . $selected1 . ' value="' . $bike_type_id . '">' . $bike_type_name . '</option>';
+                    $bike_Type_opts .= '<option ' . $selected1 . ' value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . '</option>';
                 }
             }
         }
@@ -2982,6 +2982,9 @@ function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId
         $sql .= " AND ts.bikeId = '{$bikeID}'";
     }
     $bike_size_opts = '<option value="">Select bike size</option>';
+     // Insert the "I don't know" option for bike sizes in the first position.
+    $i_dont_know_selected = ( 33 == $s_bike_size_id ? 'selected' : '');
+    $bike_size_opts .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>';
     $bike_Type_opts = '<option value="">Select bike type</option>';
     $bikes_arr = $wpdb->get_results($sql, ARRAY_A);
     if ($bikes_arr) {
@@ -2992,16 +2995,21 @@ function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId
             $bike_size_id = $bikeSizeObj['id'];
             $bike_size_name = $bikeSizeObj['name'];
             $bike_type_id = $bikeTypeObj['id'];
-            if ($bike_type_id == $bikeTypeId && $bike_available > 0) {
+            if ($bike_type_id == $bikeTypeId ) {
                 $bike_type_name = $bikeTypeObj['name'];
                 $loop_bikeId = $bike_info['bikeId'];
+                if ( 0 < $bike_available ) {
+                    $option_disabled = '';
+                } else {
+                    $option_disabled = 'disabled';
+                }
                 if ($bike_size_id && $bike_size_name) {
                     $selected = ($bike_size_id == $s_bike_size_id ? 'selected' : '');
-                    $bike_size_opts .= '<option ' . $selected . ' value="' . $bike_size_id . '">' . $bike_size_name . '</option>';
+                    $bike_size_opts .= '<option ' . $selected . ' value="' . $bike_size_id . '" ' . $option_disabled . '>' . $bike_size_name . '</option>';
                 }
                 if ($bike_type_id && $bike_type_name) {
                     $selected1 = ($loop_bikeId == $s_bike_type_id ? 'selected' : '');
-                    $bike_Type_opts .= '<option ' . $selected1 . ' value="' . $bike_type_id . '">' . $bike_type_name . '</option>';
+                    $bike_Type_opts .= '<option ' . $selected1 . ' value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . '</option>';
                 }
             }
         }
