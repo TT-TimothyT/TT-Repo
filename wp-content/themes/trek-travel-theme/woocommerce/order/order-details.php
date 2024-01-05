@@ -241,7 +241,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<p class="mb-0 fw-normal order-details__text"><?php echo $order_id; ?></p>
 							<p class="mb-0 fw-normal order-details__text"><?php echo $order->get_formatted_line_subtotal($order_item) ?></p>
 							<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkoutData['bikeUpgradePrice'] ) { ?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $trek_checkoutData['bikeUpgradePrice']; ?></span></p>
+							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_get_upgrade_qty * $trek_checkoutData['bikeUpgradePrice']; ?></span></p>
 							<?php } ?>
 							<?php if($singleSupplementQty > 0) { ?>
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplementFees; ?></span></p>
