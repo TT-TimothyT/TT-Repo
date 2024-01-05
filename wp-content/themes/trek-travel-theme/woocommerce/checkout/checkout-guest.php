@@ -49,30 +49,28 @@ $userInfo = wp_get_current_user();
                 'shipping_state',
                 'shipping_country'
             ];
-            if( $key && $check_field_keys && in_array($key, $check_field_keys) ){
-                if( empty($woo_field_value) ){
-                    if( $key == 'custentity_birthdate' ){
-                        $woo_field_value = strtotime($woo_field_value);
-                        $woo_field_value = date('Y-m-d', $woo_field_value);
-                    }
-                    if( $key == 'shipping_first_name' ){
-                        $woo_field_value = $userInfo->first_name;
-                    }
-                    if( $key == 'shipping_last_name' ){
-                        $woo_field_value = $userInfo->last_name;
-                    }
-                    if( $key == 'shipping_email' ){
-                        $woo_field_value = $userInfo->user_email;
-                    }
-                    if( $key == 'shipping_phone' ){
-                        $woo_field_value = get_user_meta($userInfo->ID, 'custentity_phone_number', true);
-                    }
-                    if( $key == 'shipping_state' ){
-                        $field['custom_attributes']['required'] = "required";
-                    }
-                    if( $key == 'shipping_country' ){
-                        $field['custom_attributes']['required'] = "required";
-                    }
+            if ( $key && $check_field_keys && in_array( $key, $check_field_keys ) ) {
+                if ( $key == 'custentity_birthdate' ) {
+                    $woo_field_value = strtotime( $woo_field_value );
+                    $woo_field_value = date( 'Y-m-d', $woo_field_value );
+                }
+                if ( $key == 'shipping_first_name' ) {
+                    $woo_field_value = $userInfo->first_name;
+                }
+                if ( $key == 'shipping_last_name' ) {
+                    $woo_field_value = $userInfo->last_name;
+                }
+                if ( $key == 'shipping_email' ) {
+                    $woo_field_value = $userInfo->user_email;
+                }
+                if ( $key == 'shipping_phone' ) {
+                    $woo_field_value = get_user_meta( $userInfo->ID, 'custentity_phone_number', true );
+                }
+                if ( $key == 'shipping_state' ) {
+                    $field['custom_attributes']['required'] = "required";
+                }
+                if ( $key == 'shipping_country' ) {
+                    $field['custom_attributes']['required'] = "required";
                 }
             }
             if( $key != 'shipping_address_2' ){
