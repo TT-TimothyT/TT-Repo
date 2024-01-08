@@ -350,7 +350,14 @@ $travel_advisor_useful_resources    = get_field( 'travel_advisor_useful_resource
 
 						<?php if ( ! empty( $resource_center_video_resources['videos'] ) ) : ?>
 							<?php foreach( $resource_center_video_resources['videos'] as $video ) : ?>
-								<iframe class="w-100" height="180" src="<?php echo $video['video_url']; ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+								<div class="my-account-video">
+									<?php if ( ! empty( $video['video_description'] ) ) : ?>
+										<div class="my-account-description"><?php echo $video['video_description']; ?></div>
+									<?php endif; ?>
+									<?php if ( ! empty( $video['video_url'] ) ) : ?>
+										<iframe class="w-100" height="180" src="<?php echo $video['video_url']; ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+									<?php endif; ?>
+								</div>
 							<?php endforeach; ?>
 						<?php endif; ?>
 					</div>

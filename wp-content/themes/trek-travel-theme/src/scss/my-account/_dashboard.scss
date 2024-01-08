@@ -73,6 +73,20 @@
             background: #fff;
         }
     }
+    .my-account-video {
+        margin: 1rem 0;
+        color: inherit;
+        border: 0;
+        border-bottom: 1px solid;
+
+        &:last-child { 
+            border-bottom: none;
+        }
+
+        iframe {
+            margin-bottom: 1rem;
+        }
+    }
     @include media-breakpoint-up(lg) {
         &__log {
             justify-content: end;

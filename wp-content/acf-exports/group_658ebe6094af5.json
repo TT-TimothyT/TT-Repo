@@ -258,6 +258,27 @@
                     "rows_per_page": 20,
                     "sub_fields": [
                         {
+                            "key": "field_659c4ddaaf0f9",
+                            "label": "Video Description",
+                            "name": "video_description",
+                            "aria-label": "",
+                            "type": "wysiwyg",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "tabs": "all",
+                            "toolbar": "full",
+                            "media_upload": 1,
+                            "delay": 0,
+                            "parent_repeater": "field_658ec7f598c7f"
+                        },
+                        {
                             "key": "field_658ec7fe98c80",
                             "label": "Video URL",
                             "name": "video_url",
@@ -301,5 +322,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1703858778
+    "modified": 1704742511
 }
