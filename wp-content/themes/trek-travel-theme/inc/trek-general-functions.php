@@ -4505,41 +4505,41 @@ function trek_tt_get_product_data_ajax_action_cb()
 }
 function tt_compare_trips_html($Ids = [], $is_header = true)
 {
-    if ($Ids) {
-        $tt_compare_products = $Ids;
-    } else {
-        $tt_compare_products = [];
-        if (isset($_COOKIE['wc_products_compare_products']) && !empty($_COOKIE['wc_products_compare_products'])) {
-            $tt_compare_products = explode(',', $_COOKIE['wc_products_compare_products']);
-        }
-    }
-    $compare_div_style = ($tt_compare_products && count($tt_compare_products) > 0 ? 'display:flex;' : 'display:none;');
-    if ($is_header == true) {
-        $output = '<div class="sticky-bottom bg-white compare-products-footer-bar" style="' . $compare_div_style . '">
-                    <p class="fw-bold fs-sm lh-sm mb-0">Compare Trips</p>
-                    <div id="tt_compare_product">';
-    }
-    if ($tt_compare_products) {
-        foreach ($tt_compare_products as $tt_compare_product) {
-            $image_URL = get_the_post_thumbnail_url($tt_compare_product, 'full');
-            $image_URL = ($image_URL ? $image_URL : DEFAULT_IMG);
-            $output .= '<div class="compare-product" id="product-' . $tt_compare_product . '">
-                        <img src="' . $image_URL . '" class="object-fit-cover" alt="" />
-                        <a href="#" title="Remove" class="remove-compare-page-product" data-remove-id="' . $tt_compare_product . '"><i class="bi bi-x-lg"></i></a>
-                    </div>';
-        }
+    // if ($Ids) {
+    //     $tt_compare_products = $Ids;
+    // } else {
+    //     $tt_compare_products = [];
+    //     if (isset($_COOKIE['wc_products_compare_products']) && !empty($_COOKIE['wc_products_compare_products'])) {
+    //         $tt_compare_products = explode(',', $_COOKIE['wc_products_compare_products']);
+    //     }
+    // }
+    // $compare_div_style = ($tt_compare_products && count($tt_compare_products) > 0 ? 'display:flex;' : 'display:none;');
+    // if ($is_header == true) {
+    //     $output = '<div class="sticky-bottom bg-white compare-products-footer-bar" style="' . $compare_div_style . '">
+    //                 <p class="fw-bold fs-sm lh-sm mb-0">Compare Trips</p>
+    //                 <div id="tt_compare_product">';
+    // }
+    // if ($tt_compare_products) {
+    //     foreach ($tt_compare_products as $tt_compare_product) {
+    //         $image_URL = get_the_post_thumbnail_url($tt_compare_product, 'full');
+    //         $image_URL = ($image_URL ? $image_URL : DEFAULT_IMG);
+    //         $output .= '<div class="compare-product" id="product-' . $tt_compare_product . '">
+    //                     <img src="' . $image_URL . '" class="object-fit-cover" alt="" />
+    //                     <a href="#" title="Remove" class="remove-compare-page-product" data-remove-id="' . $tt_compare_product . '"><i class="bi bi-x-lg"></i></a>
+    //                 </div>';
+    //     }
         
         
 
-    }
-    if ($is_header == true) {
-        $output .= '</div>
-                <a href="#" title="Remove all" class="clear-all-link compare-remove-all-products">Clear All</a>
-                <a href="/products-compare" title="Compare Page" class="woocommerce-products-compare-compare-link btn btn-primary rounded-1">Compare</a>
-                <i class="bi bi-x-lg remove-all compare-remove-all-products"></i>
-            </div>';
-    }
-    return $output;
+    // }
+    // if ($is_header == true) {
+    //     $output .= '</div>
+    //             <a href="#" title="Remove all" class="clear-all-link compare-remove-all-products">Clear All</a>
+    //             <a href="/products-compare" title="Compare Page" class="woocommerce-products-compare-compare-link btn btn-primary rounded-1">Compare</a>
+    //             <i class="bi bi-x-lg remove-all compare-remove-all-products"></i>
+    //         </div>';
+    // }
+    // return $output;
 }
 
 // Add CSS class for logged out users
