@@ -152,7 +152,7 @@ if( $get_child_products ){
                                     }
                                 }else{
                                     if (isset($formUrl) && !empty($formUrl)) {
-                                        $button = '<a href="/'.$formUrl.'?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                        $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                     }else{
                                         $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                     }
