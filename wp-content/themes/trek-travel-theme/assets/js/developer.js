@@ -626,6 +626,19 @@ jQuery(document).ready(function () {
   });
 
 });
+
+jQuery(window).on('resize', function() {
+  var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
+  if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
+    jQuery('.navigation-sticky').css('padding-left', headerMargin + 10 + 'px');
+    
+  } else if(jQuery(window).width() > 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
+    jQuery('.navigation-sticky').css('padding-left', headerMargin + 'px');
+  }
+} );
+
 jQuery('.protection_modal').on('change', function (e) {
   if (e.target.checked) {
     jQuery('#protection_modal').modal('toggle');
