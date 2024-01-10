@@ -45,35 +45,35 @@ function tt_change_checkout_step(targetStep = '') {
  * Function that set complete state for sections in Post Booking Checklist page.
  * (my-trip-checklist.php)
  */
-function prebookingChecklistValidate() {
+function prebookingChecklistValidate(ev) {
   var isFirstMedicalLoad = jQuery('input[name="custentity_medical_info_first_load"]').length > 0;
-  var isMedicalInfoSectionComplete = true;
   var totalEmerFields = jQuery('.emergency_validation_inputs').length;
   var totalGearFields = jQuery('.gear_validation_inputs').not('select[data-is-required="false"]').length;
   var totalPassFields = jQuery('.passport_validation_inputs').length;
   var emergency_itemCount = 0;
   var gear_itemCount = 0;
   var passport_itemCount = 0;
-  // Check medical information section for complete state.
-  jQuery('.medical_validation_checkboxes').each(function () {
-    if (jQuery(this).is(':checked')) {
-      var medicalInfoValue = jQuery(this).val();
-      var medicalInfoMoreInfoField = jQuery(this).parents('.medical-information__item').find('textarea');
-      // If Has a flag for first load, mark medical info section as uncomplete.
-      if(isFirstMedicalLoad){
-        isMedicalInfoSectionComplete = false;
-      }
 
-      // Change textarea value, based on radio value selection.
-      if( 'yes' == medicalInfoValue ){
-        // Clear 'none' value and show the placeholder.
-        medicalInfoMoreInfoField.val('');
-      } else if( 'no' == medicalInfoValue ) {
-        // Set default 'none' value for 'no' option.
-        medicalInfoMoreInfoField.val('none');
+  // Check if event comming from checklist field.
+  if( undefined !== ev ){
+    // Check if this field is medical info checkbox.
+    if( ev.target.classList.contains('medical_validation_checkboxes') ){
+
+      // Catch closest field group with checkboxes and textarea.
+      let thisMedicalFieldGroup = ev.target.closest('.medical-information__item');
+      let textArea = thisMedicalFieldGroup.querySelector('textarea');
+
+      // Adjust medical values for 'no' response, to can send value 'none' to NS.
+      if( 'yes' === ev.target.value ) {
+        // Remove 'none' value and show placeholder.
+        textArea.value = '';
+      } else {
+        // Set 'none' value.
+        textArea.value = 'none';
       }
     }
-  });
+  }
+
   jQuery('.emergency_validation_inputs').each(function () {
     if (jQuery(this).val() != '') {
       emergency_itemCount++;
@@ -89,10 +89,11 @@ function prebookingChecklistValidate() {
       passport_itemCount++;
     }
   });
-  if (isMedicalInfoSectionComplete) {
-    jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
-  } else {
+  // Check medical information section for complete state.
+  if ( isFirstMedicalLoad ) {
     jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
+  } else {
+    jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
   }
   if (totalEmerFields == emergency_itemCount) {
     jQuery('.emergency_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
@@ -2686,8 +2687,8 @@ jQuery('body').on('click', function () {
     }
   },500) 
 });
-jQuery('body').on('input, click, oninput, onpaste, change', '.medical_validation_checkboxes, .emergency_validation_inputs, .gear_validation_inputs, .passport_validation_inputs, .bike_validation_select', function () {
-  prebookingChecklistValidate();
+jQuery('body').on('input, click, oninput, onpaste, change', '.medical_validation_checkboxes, .emergency_validation_inputs, .gear_validation_inputs, .passport_validation_inputs, .bike_validation_select', function (ev) {
+  prebookingChecklistValidate(ev);
 });
 jQuery(document).on('change', 'select[name^="occupants["]', function () {
   var Currentname = jQuery(this).attr('name');
