@@ -3259,7 +3259,7 @@ jQuery(document).ready(function() {
   });  
   jQuery(".product-info-desktop").height(maxHeightProduct1);
 
-  jQuery('#testimonials .card-text').each(function() {
+  jQuery('#testimonials p').each(function() {
     var $text = jQuery(this);
     var $button = $text.siblings('.read-more');
     var lineHeight = parseFloat($text.css('line-height'));
@@ -3287,8 +3287,8 @@ jQuery(document).ready(function() {
 
   jQuery('#testimonials .read-more').on("click", function(){
       var $this = jQuery(this);
-      $this.siblings('.card-text').toggleClass("is-expanded");
-      if($this.siblings('.card-text').hasClass("is-expanded")){
+      $this.siblings('.long-text').toggleClass("is-expanded");
+      if($this.siblings('.long-text').hasClass("is-expanded")){
           jQuery(this).text("Show less");
           jQuery(this).parent().height('auto');
       } else {

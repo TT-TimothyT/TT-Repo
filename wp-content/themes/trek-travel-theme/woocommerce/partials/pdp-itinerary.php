@@ -254,7 +254,26 @@ if ( $pdp_itineraries ) :
                                             <div id="flush-collapseadditional" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                                 <hr>
                                                 <div class="accordion-body text-center accordion-item__additional-days">
-                                                    <p class="fs-lg fw-medium lh-lg">Please view the full itinerary to see more days</p>
+                                                    <?php
+                                                        $more_than_7_days = get_field( 'trip_more_than_7_days', 'option' ); 
+                                                        $less_than_7_days  = get_field( 'trip_less_than_7_days', 'option' ); 
+                                                    ?>
+                                                    <?php
+                                                        if (count($days) > 7) {
+                                                    ?>
+                                                        <?php if ( ! empty( $more_than_7_days ) ) : ?>
+                                                            <p class="fs-lg fw-medium lh-lg"><?php echo esc_html( $more_than_7_days ); ?></p>
+                                                        <?php endif; ?>
+                                                    <?php
+                                                        } else {
+                                                    ?>
+                                                        <?php if ( ! empty( $less_than_7_days ) ) : ?>
+                                                            <p class="fs-lg fw-medium lh-lg"><?php echo esc_html( $less_than_7_days ); ?></p>
+                                                        <?php endif; ?>
+                                                    <?php
+                                                        }
+                                                    ?>
+
                                                     <a href="<?php the_permalink( $itinerary->ID ); ?>" target="_blank" class="btn btn-md btn-primary">View full itinerary</a>
                                                 </div>
                                             </div>
