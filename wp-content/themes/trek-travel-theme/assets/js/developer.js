@@ -1010,6 +1010,12 @@ jQuery(document).ready(function () {
       jQuery('.rp4wp-related-posts li .rp4wp-related-post-content a').height(maxHeight);
     }
 
+    if(jQuery(window).width() < 499) {
+      jQuery('.rp4wp-related-posts ul').slick({
+        slidesToShow: 1,
+      });
+    }
+
     jQuery('.share-post').after(jQuery('.rp4wp-related-posts') );
 
   if (jQuery('#togglePassword').length > 0) {

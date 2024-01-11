@@ -113,7 +113,16 @@ article.post{
 
     @media screen and (max-width: 498px) {
         padding: 0 3rem;
+        width: 100%;
      }
+
+    .slick-track {
+        display: flex !important;
+    }
+
+    .slick-slide {
+        height: inherit !important;
+    }
 
     h3 {
         margin-top: 1.25rem !important;
@@ -126,6 +135,10 @@ article.post{
 
         @media screen and (max-width: 991px) {
             gap: 28px;
+        }
+        
+        @media screen and (max-width: 498px) {
+            float: none !important;
         }
 
         li {
@@ -154,6 +167,10 @@ article.post{
                     width: 100%;
                     object-fit: cover;
                 }
+
+                @media screen and (max-width: 498px) {
+                    margin-bottom: 10px;
+                }
             }
 
             .rp4wp-related-post-content {
@@ -179,6 +196,31 @@ article.post{
                     font-weight: 400 !important;
                 }
             }
+        }
+    }
+
+    .slick-arrow {
+        width: 30px;
+        height: 30px;
+        top: 40%;
+        margin-left: -20px;
+        padding: 0 !important;
+        opacity: 0.5;
+        background-size: cover;
+        top: 50%;
+
+        &::before {
+            display: none;
+        }
+        &.slick-prev {
+            background-image: url('../../../trek-travel-theme/assets/images/video/right.png') !important;
+            transform: matrix(-1, 0, 0, 1, 0, 0) translateY(-50%);
+            background-repeat: no-repeat;
+        }
+        &.slick-next {
+            margin-right: -20px;
+            background-image: url('../../../trek-travel-theme/assets/images/video/right.png') !important;
+            background-repeat: no-repeat;
         }
     }
 }
