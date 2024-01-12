@@ -5,6 +5,26 @@ $get_child_products = get_child_products($linked_products);
 $nav_year_tab = $nav_year_tab_content = '';
 $trip_style = $product->get_attribute( 'pa_trip-style' );
 
+// Hide Custom and Private tabs for these trip styles.
+$in_trip_style = [
+    'self-guided',
+    'race',
+    'cross country',
+    'ride camp'
+];
+
+$trip_styles = explode( ', ', strtolower( $trip_style ) );
+
+$is_tabs_visible = true;
+
+foreach ($in_trip_style as $ts) {
+    if ( in_array( $ts, $trip_styles ) ) {
+        // Need to hide tabs.
+        $is_tabs_visible = false;
+        break;
+    }
+}
+
 function getWebDispalyStatus($status){
     $webDispalyArr = [
         "Hold" => "Limited Availability", 
@@ -61,6 +81,11 @@ if( $get_child_products ){
     $iter = 1;
     foreach( $get_child_products as $year=>$get_child_product ){
         ksort($get_child_product,1);
+        $current_year = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
+        // If the year is in the past, skip it.
+        if( (int) $year < (int) $current_year ) {
+            continue;
+        }
         //nav year tabs & button HTML creation
         $nav_year_tab .= '<button class="nav-link '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-year'.$year.'" type="button" role="tab" aria-controls="nav-year'.$year.'" aria-selected="true">'.$year.' Tours</button>';
         //nav year tab content HTML creation
@@ -74,7 +99,6 @@ if( $get_child_products ){
                 $currentMonth = date('m', strtotime(date('Y-m-d H:i:s')));
 
                 //Sorry, not using camel case for php vars :)
-                $current_year = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
                 if ( (int) $month < (int) $currentMonth && (int) $year <= (int) $current_year ) {
                     continue;
                 }
@@ -152,7 +176,7 @@ if( $get_child_products ){
                                     }
                                 }else{
                                     if (isset($formUrl) && !empty($formUrl)) {
-                                        $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                        $button = '<a href="/'.$formUrl.'?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                     }else{
                                         $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                     }
@@ -231,17 +255,18 @@ if( $get_child_products ){
                 if ($contentFlag) { echo $nav_year_tab; } 
                 ?>
                 <!-- <button class="nav-link active" id="nav-year-tab" data-bs-toggle="tab" data-bs-target="#nav-year" type="button" role="tab" aria-controls="nav-year" aria-selected="true">2022 Tours</button> -->
-                <?php if (strtolower($trip_style) != "self-guided") { ?>
+                <?php if ( $is_tabs_visible ) { ?>
                     <button class="nav-link fs-lg lh-lg <?php echo $contentFlag ? '' : 'active'; ?>" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">Private Tour</button>
                     <button class="nav-link fs-lg lh-lg" id="nav-custom-tab" data-bs-toggle="tab" data-bs-target="#nav-custom" type="button" role="tab" aria-controls="nav-custom" aria-selected="false">Custom Tour</button>
                 <?php } ?>
-                </div>
+            </div>
+            <p class="fw-normal fs-xs lh-xs w-75 pt-md-3">*Pricing, availability and guest minimums are all subject to change at any time. Certain dates have a minimum number of guests required, please contact us for details. Private pricing is not available on Ride Camp, Race, Special Edition or Cross Country style trips.</p>
         </nav>
         <!-- year/private/custom tour tab content -->
         <div class="tab-content" id="nav-tabContent">
             <!-- year tour tab content -->
             <?php if ($contentFlag) { echo $nav_year_tab_content; } ?>
-            <?php if (strtolower($trip_style) != "self-guided") { ?>
+            <?php if ( $is_tabs_visible ) { ?>
             <!-- private tour tab content -->
             <div class="tab-pane fade <?php echo $contentFlag ? '' : 'active'; ?>" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabindex="0">
                 <h5 class="fw-semibold">Looking for a Private Tour with us?</h5>
@@ -272,7 +297,6 @@ if( $get_child_products ){
                 <h5 class="fw-semibold">Looking for a date that you don't see?</h5>
                 <p class="fw-normal fs-md lh-md">Look no further. Simply tell us your preferred travel dates and we’ll work together to deliver the same great trip on your custom schedule. Want to make a few changes to your itinerary, no problem. We will work with you to make sure your custom vacation is the ultimate vacation of a lifetime for your group.</p>
                 <a href="/trip-styles/custom-bike-tours?trip=<?php echo $product->name; ?>" target="_blank" class="btn btn-primary btn-md rounded-1 my-4">Book a Custom Tour</a>
-                <p class="fw-normal fs-xs lh-xs w-75">*Pricing, availability and guest minimums are all subject to change at any time. Certain dates have a minimum number of guests required, please contact us for details. Private pricing is not available on Ride Camp, Race, Special Edition or Cross Country style trips.</p>
             </div>
             <?php } ?>
         </div>

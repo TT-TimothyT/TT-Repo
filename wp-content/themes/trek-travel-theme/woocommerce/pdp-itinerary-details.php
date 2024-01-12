@@ -193,7 +193,7 @@ if ( $pdp_itineraries ) :
                                                                 ?>
                                                                     <p class="fs-sm lh-sm mb-0 pdp-itinerary-day__accordion-right-clamp">                                                                
                                                                     <?php if (strlen($day['day_highlight_body']) > 140) { ?>    
-                                                                        <span class="less-text"><?php echo substr($day['day_highlight_body'], 0, 140); ?>...</span>
+                                                                        <span class="less-text"><?php echo dx_strip_text($day['day_highlight_body']); ?>...</span>
                                                                         <span class="more-text d-none"><?php echo $day['day_highlight_body']; ?></span>
                                                                         <a href="#" class="read-more-action-right">Read More</a>
                                                                     <?php } else { ?>

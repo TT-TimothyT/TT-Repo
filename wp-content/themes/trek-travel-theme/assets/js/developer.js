@@ -2824,6 +2824,12 @@ jQuery('body').on('change', '.tt_chk_bike_size_change', function () {
   });
 });
 
+function waymark_refresh(Waymark) {	
+  jQuery('.pdp-itinerary .nav-link').on('click', function() {
+	  Waymark.reset_map_view();
+  });
+}
+
 jQuery('.read-more-action').on('click', function (e) {
   e.preventDefault();
   jQuery(this).closest('.pdp-itinerary-day__accordion-clamp_main').find('span.less-text').toggleClass("d-none")
