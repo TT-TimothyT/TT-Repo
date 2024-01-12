@@ -120,7 +120,16 @@ article.post{
         display: flex !important;
     }
 
+    .slick-slider {
+        padding: 0 !important;
+    }
+    
+    .slick-list {
+        margin: 0 -6px;
+    }
+    
     .slick-slide {
+        margin: 0 6px;
         height: inherit !important;
     }
 
