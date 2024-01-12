@@ -2778,6 +2778,9 @@ jQuery('body').on('click', '.bike_selectionElementchk', function () {
   parentDiv.find('.bike_selectionElementchk').removeClass("bike-selected");
   jQuery(this).find('.radio-selection').addClass("checkout-bikes__selected-bike-icon");
   jQuery(this).addClass("bike-selected");
+  // Set bike type id for Bike & Gear Preferences.
+  var bikeTypeIdPreferences = jQuery(this).attr('data-type-id');
+  jQuery('[name="bike_type_id_preferences"]').val(bikeTypeIdPreferences);
   jQuery.ajax({
     type: 'POST',
     url: trek_JS_obj.ajaxURL,

@@ -771,11 +771,11 @@ function trek_update_trip_checklist_action_cb()
             'helmet_selection' => $_REQUEST['tt-helmet-size'],
             'jersey_style' => $_REQUEST['tt-jerrsey-style'],
             'tt_jersey_size' => $_REQUEST['tt-jerrsey-size'],
-            'passport_number' => $_REQUEST['passport_number'],
-            'passport_issue_date' => $_REQUEST['passport_issue_date'],
-            'passport_expiration_date' => $_REQUEST['passport_expiration_date'],
-            'passport_place_of_issue' => $_REQUEST['passport_place_of_issue'],
-            'full_name_on_passport' => $_REQUEST['full_name_on_passport'],
+            'passport_number' => isset( $_REQUEST['passport_number'] ) ? $_REQUEST['passport_number'] : '',
+            'passport_issue_date' => isset( $_REQUEST['passport_issue_date'] ) ? $_REQUEST['passport_issue_date'] : '',
+            'passport_expiration_date' => isset( $_REQUEST['passport_expiration_date'] ) ? $_REQUEST['passport_expiration_date'] : '',
+            'passport_place_of_issue' => isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '',
+            'full_name_on_passport' => isset( $_REQUEST['full_name_on_passport'] ) ? $_REQUEST['full_name_on_passport'] : '',
             'bike_selection' => $_REQUEST['bikeId'],
             'bike_type_id' => $_REQUEST['bikeTypeId'],
             'bike_id' => $_REQUEST['bikeId'],
@@ -820,21 +820,27 @@ function trek_update_trip_checklist_action_cb()
             update_user_meta($user->ID, 'gear_preferences_rider_height', $_REQUEST['tt-rider-height']);
             update_user_meta($user->ID, 'gear_preferences_select_pedals', $_REQUEST['tt-pedal-selection']);
             update_user_meta($user->ID, 'gear_preferences_helmet_size', $_REQUEST['tt-helmet-size']);
-            update_user_meta($user->ID, 'gear_preferences_jersey_style', $_REQUEST['tt-jerrsey-style']);
-            update_user_meta($user->ID, 'gear_preferences_jersey_size', $_REQUEST['tt-jerrsey-size']);
+            if( ! empty( $_REQUEST['tt-jerrsey-style'] ) ) {
+
+                update_user_meta($user->ID, 'gear_preferences_jersey_style', $_REQUEST['tt-jerrsey-style']);
+            }
+            if( ! empty( $_REQUEST['tt-jerrsey-size'] ) ) {
+                
+                update_user_meta($user->ID, 'gear_preferences_jersey_size', $_REQUEST['tt-jerrsey-size']);
+            }
             $update_to_ns = true;
         }
         $is_passport_update = true;
         if ($is_passport_update == true) {
-            update_user_meta($user->ID, 'custentity_passport_number', $_REQUEST['passport_number']);
-            update_user_meta($user->ID, 'custentity_passport_exp_date', $_REQUEST['passport_issue_date']);
-            update_user_meta($user->ID, 'custentity_passport_issue_place', $_REQUEST['passport_expiration_date']);
-            update_user_meta($user->ID, 'custentity_placeofbirth', $_REQUEST['passport_place_of_issue']);
-            update_user_meta($user->ID, 'custentity_full_name_on_passport', $_REQUEST['full_name_on_passport']);
+            update_user_meta($user->ID, 'custentity_passport_number', isset( $_REQUEST['passport_number'] ) ? $_REQUEST['passport_number'] : '' );
+            update_user_meta($user->ID, 'custentity_passport_exp_date', isset( $_REQUEST['passport_issue_date'] ) ? $_REQUEST['passport_issue_date'] : '' );
+            update_user_meta($user->ID, 'custentity_passport_issue_place', isset( $_REQUEST['passport_expiration_date'] ) ? $_REQUEST['passport_expiration_date'] : '' );
+            update_user_meta($user->ID, 'custentity_placeofbirth',isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '' );
+            update_user_meta($user->ID, 'custentity_full_name_on_passport', isset( $_REQUEST['full_name_on_passport'] ) ? $_REQUEST['full_name_on_passport'] : '' );
             $update_to_ns = true;
         }
         if (isset($_REQUEST['tt_save_bike_info']) && $_REQUEST['tt_save_bike_info'] == 'yes') {
-            update_user_meta($user->ID, 'gear_preferences_bike_type', $_REQUEST['bikeTypeId']);
+            update_user_meta($user->ID, 'gear_preferences_bike_type', $_REQUEST['bike_type_id_preferences']);
             update_user_meta($user->ID, 'gear_preferences_bike_size', $_REQUEST['tt-bike-size']);
             update_user_meta($user->ID, 'gear_preferences_bike', $_REQUEST['bikeId']);
             $update_to_ns = true;

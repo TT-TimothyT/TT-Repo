@@ -173,6 +173,8 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 		}
 	}
 }
+
+$gear_preferences_bike_type = get_user_meta( $user_id, 'gear_preferences_bike_type', true );
 ?>
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
@@ -794,7 +796,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 												</div>';
 													}
 													$is_bike_with_upgrade = ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) ? 'true' : 'false';
-													$primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElementchk ' . $checkedClass . '" data-id="' . $bikeModelId . '" data-is-bike-with-upgrade="' . $is_bike_with_upgrade . '" data-guest-id="0">
+													$primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElementchk ' . $checkedClass . '" data-id="' . $bikeModelId . '" data-is-bike-with-upgrade="' . $is_bike_with_upgrade . '" data-guest-id="0" data-type-id="' . $bikeTypeId . '">
 											<input name="bikeModelId" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeModelId . '" class="bike_validation_inputs">
 													<div class="checkout-bikes__image d-flex justify-content-center align-content-center">
 														<img src="' . $bike_image . '" alt="' . $bikeDescr . '">
@@ -811,6 +813,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											}
 											$primary_available_bike_html .= '<input name="bikeId" type="hidden" value="' . $bike_id . '">';
 											$primary_available_bike_html .= '<input name="bikeTypeId" type="hidden" value="' . $primary_bikeTypeId . '">';
+											$primary_available_bike_html .= '<input name="bike_type_id_preferences" type="hidden" value="' . esc_attr( $gear_preferences_bike_type ) . '">';
 										} else {
 											$primary_available_bike_html .= '<strong>No bikes available!</strong>';
 										}
