@@ -2851,14 +2851,6 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
         $parent_trip_link = get_the_permalink($parent_product_id) ? get_the_permalink($parent_product_id) : 'javascript:';
     }
 
-    if( !empty( $sku ) ) {
-        /**
-         * This is part of Ride Camp integration.
-         * Take the base of SKU if is it with suffix like this 24CARC0122-FIRST,
-         * because those additional half-period products, use a shared amount of bikes, hotels, etc. with the main product. 
-         */
-        $sku = explode('-', $sku)[0];
-    }
     return [
         'sku' => $sku,  
         'parent_rider_level' => isset($parent_rider_level->level) ? $parent_rider_level->level : '',
@@ -2897,15 +2889,6 @@ function tt_get_trip_pid_sku_by_orderId($order_id)
         }
         $guests = isset($tt_data['guests']) && is_array($tt_data['guests']) ? $tt_data['guests'] : []; 
         $guest_emails = array_column($guests, 'guest_email');
-    }
-
-    if( !empty( $sku ) ) {
-        /**
-         * This is part of Ride Camp integration.
-         * Take the base of SKU if is it with suffix like this 24CARC0122-FIRST,
-         * because those additional half-period products, use a shared amount of bikes, hotels, etc. with the main product. 
-         */
-        $sku = explode('-', $sku)[0];
     }
 
     return [
