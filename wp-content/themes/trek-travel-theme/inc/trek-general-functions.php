@@ -779,7 +779,10 @@ function trek_update_trip_checklist_action_cb()
             'bike_selection' => $_REQUEST['bikeId'],
             'bike_type_id' => $_REQUEST['bikeTypeId'],
             'bike_id' => $_REQUEST['bikeId'],
-            'bike_size' => $_REQUEST['tt-bike-size']
+            'bike_size' => $_REQUEST['tt-bike-size'],
+            'saddle_height' => $_REQUEST['saddleId'],
+            'saddle_bar_reach_from_saddle' => $_REQUEST['bar_reach'],
+            'saddle_bar_height_from_wheel_center' => $_REQUEST['bar_height']
         ];
         if( empty($guest_email_address) ){
             $bookingData['guest_email_address'] = $user->user_email;

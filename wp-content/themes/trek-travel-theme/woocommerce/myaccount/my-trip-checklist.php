@@ -485,8 +485,8 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										?>
 										<?php if ( $lockedUserRecord != 1 ) { ?>
 											<div class="form-check form-check-inline mb-0">
-												<input class="form-check-input" type="checkbox" name="tt_save_medical_info" id="inlineCheck" value="yes">
-												<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+												<input class="form-check-input" type="checkbox" name="tt_save_medical_info" id="inlineCheck1" value="yes">
+												<label class="form-check-label" for="inlineCheck1">Save this information for future use. This will override any existing information you have saved on your account. </label>
 											</div>
 										<?php } ?>
 									</fieldset>
@@ -497,7 +497,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											<button type="submit" class="btn btn-lg btn-primary w-100 medical-information__save rounded-1" name="medical-information"><?php esc_html_e('Confirm', 'trek-travel-theme'); ?></button>
 										</div>
 										<div class="fs-md lh-md fw-medium text-center align-self-center">
-											<a href="javascript;">Cancel</a>
+											<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-medicalInfo" aria-expanded="false" aria-controls="flush-collapse-medicalInfo" class="pb-checklist-cancel">Cancel</a>
 										</div>
 									</div>
 								<?php } ?>
@@ -562,13 +562,13 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 								</div>
 								<?php if ( $lockedUserRecord != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
-										<input class="form-check-input" type="checkbox" name="tt_save_emergency_info" id="inlineCheck" value="yes">
-										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+										<input class="form-check-input" type="checkbox" name="tt_save_emergency_info" id="inlineCheck2" value="yes">
+										<label class="form-check-label" for="inlineCheck2">Save this information for future use. This will override any existing information you have saved on your account. </label>
 									</div>
 									<div class="emergency-contact__button d-flex align-items-lg-center">
 										<div class="d-flex align-items-center emergency-contact__flex">
 											<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-											<a href="#" class="emergency-contact__cancel">Cancel</a>
+											<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-emergencyInfo" aria-expanded="false" aria-controls="flush-collapse-emergencyInfo" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 										</div>
 									</div>
 								<?php } ?>
@@ -646,13 +646,13 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 								</div>
 								<?php if ( $lockedUserRecord != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
-										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
-										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck3" value="yes">
+										<label class="form-check-label" for="inlineCheck3">Save this information for future use. This will override any existing information you have saved on your account. </label>
 									</div>
 									<div class="emergency-contact__button d-flex align-items-lg-center">
 										<div class="d-flex align-items-center emergency-contact__flex">
 											<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-											<a href="#" class="emergency-contact__cancel">Cancel</a>
+											<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo" aria-expanded="false" aria-controls="flush-collapse-gearInfo" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 										</div>
 									</div>
 								<?php } ?>
@@ -719,7 +719,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-												<a href="#" class="emergency-contact__cancel">Cancel</a>
+												<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-passportInfo" aria-expanded="false" aria-controls="flush-collapse-passportInfo" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 											</div>
 										</div>
 									<?php } ?>
@@ -834,14 +834,14 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 									<?php if ( $lockedUserBike != 1 ) { ?>
 										<?php if ($available_bikes) : ?>
 											<div class="form-check form-check-inline mb-0">
-												<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck" value="yes">
-												<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+												<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck4" value="yes">
+												<label class="form-check-label" for="inlineCheck4">Save this information for future use. This will override any existing information you have saved on your account. </label>
 											</div>
 										<?php endif; ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-												<a href="#" class="emergency-contact__cancel">Cancel</a>
+												<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 											</div>
 										</div>
 									<?php } ?>
@@ -862,7 +862,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<select name="saddleId" id="saddleId" class="form-select" autocomplete="saddle-height" data-input-classes="" data-label="Saddle Height" tabindex="-1" aria-hidden="true">
+												<select name="saddleId" id="saddleId" class="form-select gear_optional_validation_inputs" autocomplete="saddle-height" data-input-classes="" data-label="Saddle Height" tabindex="-1" aria-hidden="true">
 													<?php //echo tt_items_select_options('syncSaddles', $pedal_selection);
 													?>
 													<option value="">Select Saddle height</option>
@@ -874,7 +874,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="text" name="bar_reach" id="bar_reach" class="form-control" <?php echo $saddle_bar_reach_from_saddle ?>>
+												<input type="text" name="bar_reach" id="bar_reach" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
 												<label for="bar_reach">Bar reach</label>
 											</div>
 										</div>
@@ -882,7 +882,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="text" name="bar_height" id="bar_height" class="form-control" <?php echo $saddle_bar_height_from_wheel_center; ?>>
+												<input type="text" name="bar_height" id="bar_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>">
 												<label for="bar_height">Bar Height</label>
 											</div>
 										</div>
@@ -893,13 +893,13 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 									</div>
 									<?php if ( $lockedUserBike != 1 ) { ?>
 										<div class="form-check form-check-inline mb-0">
-											<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
-											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+											<input class="form-check-input" type="checkbox" name="tt_save_gear_info_optional" id="inlineCheck5" value="yes">
+											<label class="form-check-label" for="inlineCheck5">Save this information for future use. This will override any existing information you have saved on your account. </label>
 										</div>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-												<a href="#" class="emergency-contact__cancel">Cancel</a>
+												<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo-optional" aria-expanded="false" aria-controls="flush-collapse-gearInfo-optional" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 											</div>
 										</div>
 									<?php } ?>

@@ -1148,6 +1148,23 @@ jQuery(document).ready(function () {
           resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`
           // Set Medical info section as complete.
           jQuery('input[name="custentity_medical_info_first_load"]').remove();
+          // Prevent script-stop execution issues.
+          try {
+            // Store new state of Medical Info section.
+            medicalInfoSectionHelper.confirmChanges();
+            // Store new state of Emergency Info section.
+            emergencyInfoSectionHelper.confirmChanges();
+            // Store new state of Gear Info section.
+            gearInfoSectionHelper.confirmChanges();
+            // Store new state of Passport Info section.
+            passportInfoSectionHelper.confirmChanges();
+            // Store new state of Gear Info Optional section.
+            gearInfoOptionalSectionHelper.confirmChanges();
+            // Store new state of Bike Info section.
+            bikeInfoSectionHelper.confirmChanges();
+          } catch (error) {
+            console.log(error);
+          }
         } else {
           resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
         }
@@ -4210,3 +4227,475 @@ jQuery('.travel-protection-tooltip-container').on('click', function(e) {
     jQuery('html').removeClass('no-scroll');
   }
 })
+
+/* My trip checklist undo current cahnges functionality START */
+
+/**
+ * This is a helper for Medical Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let medicalInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-medicalInfo'),
+  initialState: {
+    checkboxes: {},
+    textareas: {}
+  },
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch checkboxes and textareas
+    let medicalInfoCheckboxes = this.infoCtr.querySelectorAll('input.medical_validation_checkboxes');
+    let medicalInfoTextareas = this.infoCtr.querySelectorAll('textarea');
+
+    medicalInfoCheckboxes.forEach(checkbox => {
+      if( checkbox.checked ){
+        // Keep checked checkboxes.
+        this.initialState['checkboxes'][checkbox.name] = checkbox.value;
+      }
+    });
+  
+    medicalInfoTextareas.forEach(textarea => {
+      // Keep textareas values.
+      this.initialState['textareas'][textarea.name] = textarea.value;
+    });
+
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the checkboxes state.
+    for ( const key in this.initialState.checkboxes ) {
+      this.infoCtr.querySelector(`[name="${key}"][value="${this.initialState.checkboxes[key]}"]`).click();
+    }
+  
+    // Restore the textareas info.
+    for ( const key in this.initialState.textareas ) {
+      this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState.textareas[key];
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Emergency Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let emergencyInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-emergencyInfo'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch inputs.
+    let emInfoInputs = this.infoCtr.querySelectorAll('input.emergency_validation_inputs');
+
+    emInfoInputs.forEach(input => {
+      // Keep input values.
+      this.initialState[input.name] = input.value;
+    })
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the inputs info.
+    for ( const key in this.initialState ) {
+      this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Gear Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let gearInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-gearInfo'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch select options.
+    let gearInfoSelectOptions = this.infoCtr.querySelectorAll('select.gear_validation_inputs');
+
+    gearInfoSelectOptions.forEach(select => {
+      let selectedValue = select.options[select.selectedIndex].value;
+
+      // Keep only visible select option values.
+      if( selectedValue.length > 0 && selectedValue !== 'none' ) {
+
+        this.initialState[select.name] = selectedValue;
+      }
+
+    })
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the inputs info.
+    for ( const key in this.initialState ) {
+
+      // Skip jersey size, as it will be set on jersey style key.
+      if( 'tt-jerrsey-size' === key ) {
+        continue;
+      }
+
+      // If is jersey style, obtain jersey size options first, and set both of them.
+      if( 'tt-jerrsey-style' === key ) {
+        // Keep a reference to this object.
+        let self = this;
+        // Set jersey style value.
+        this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+
+        // Take Size options before set the size option value.
+        let actionName   = 'tt_jersey_change_action';
+        let jersey_style = this.initialState[key]; // value.
+
+        jQuery.ajax({
+          type: 'POST',
+          url: trek_JS_obj.ajaxURL,
+          data: { 'action': actionName, 'jersey_style': jersey_style },
+          dataType: 'json',
+          success: function ( res ) {
+            if ( res.status == true ) {
+              // Append options to select/option field.
+              self.infoCtr.querySelector('[name="tt-jerrsey-size"]').innerHTML = res.opts;
+              // Set selected size.
+              self.infoCtr.querySelector('[name="tt-jerrsey-size"]').value = self.initialState['tt-jerrsey-size'];
+            }
+          }
+        });
+
+      } else {
+
+        this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+      }
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Passport Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let passportInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-passportInfo'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch inputs.
+    let passportInfoInputs = this.infoCtr.querySelectorAll('input.passport_validation_inputs');
+
+    passportInfoInputs.forEach(input => {
+      // Keep input values.
+      this.initialState[input.name] = input.value;
+    })
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the inputs info.
+    for ( const key in this.initialState ) {
+      this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Gear Info Optional section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let gearInfoOptionalSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-gearInfo-optional'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch fields.
+    let gearInfoOptionalInputs = this.infoCtr.querySelectorAll('input.gear_optional_validation_inputs, select.gear_optional_validation_inputs');
+
+    gearInfoOptionalInputs.forEach(field => {
+      // Keep field values.
+      this.initialState[field.name] = field.value;
+    })
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the fields info.
+    for ( const key in this.initialState ) {
+      this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Bike Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let bikeInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-bikeInfo'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch fields.
+    let bikeInfoModelInputs = this.infoCtr.querySelectorAll('input.bike_validation_inputs');
+    let bikeInfoSizeSelect = this.infoCtr.querySelector('select.bike_validation_select');
+    let bikeInfoIdInput = this.infoCtr.querySelector('input[name="bikeId"]');
+    let bikeInfoModelHiddenInput = this.infoCtr.querySelector('input[name="bikeTypeId"]');
+
+    bikeInfoModelInputs.forEach(input => {
+      // Keep selected bike model.
+      if( input.checked ) {
+        this.initialState[input.name] = input.value;
+      }
+    })
+
+    // Keep selected bike size.
+    if( null !== bikeInfoSizeSelect ){
+      if( bikeInfoSizeSelect.options.length > 0 ) {
+        let selectedBikeSizeValue = bikeInfoSizeSelect.options[bikeInfoSizeSelect.selectedIndex].value;
+
+        if( selectedBikeSizeValue.length > 0 && selectedBikeSizeValue !== 'none' ) {
+          this.initialState[bikeInfoSizeSelect.name] = selectedBikeSizeValue
+        }
+      }
+    }
+
+    // Keep selected bike id.
+    if( null !== bikeInfoIdInput ) {
+
+      this.initialState[bikeInfoIdInput.name] = bikeInfoIdInput.value;
+    }
+
+    // Keep hidden bike model id.
+    if( null !== bikeInfoModelHiddenInput ) {
+
+      this.initialState[bikeInfoModelHiddenInput.name] = bikeInfoModelHiddenInput.value;
+    }
+
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the fields info.
+    for ( const key in this.initialState ) {
+      // Skip bike size, as it will be set on bike model key.
+      if( 'tt-bike-size' === key ) {
+        continue;
+      }
+
+      // If is bike model, obtain bike size options first, and set both of them.
+      if( 'bikeModelId' === key ) {
+        // Keep a reference to this object.
+        let self = this;
+        // Set bike model value.
+        let bikeModelInput = this.infoCtr.querySelector(`[name="${key}"][value="${this.initialState[key]}"]`);
+        bikeModelInput.checked = true;
+
+        // Set selected state.
+        let bikeModelsWrapper = bikeModelInput.closest('.checkout-bikes__bike-grid');
+        let bikeModelCtrs = bikeModelsWrapper.querySelectorAll('.bike_selectionElementchk');
+        bikeModelCtrs.forEach( ctr => {
+          let icon = ctr.querySelector('.radio-selection');
+
+          if( this.initialState[key] == ctr.dataset.id ) {
+            ctr.classList.add('bike-selected');
+            icon.classList.add('checkout-bikes__selected-bike-icon');
+          } else {
+            ctr.classList.remove('bike-selected');
+            icon.classList.remove('checkout-bikes__selected-bike-icon');
+          }
+        });
+
+        // Take Size options before set the size option value.
+        let actionName = 'tt_chk_bike_selection_ajax_action';
+        let bikeTypeId = this.initialState[key];
+        let orderId = this.infoCtr.querySelector('[name="wc_order_id"]').value;
+
+        jQuery.ajax({
+          type: 'POST',
+          url: trek_JS_obj.ajaxURL,
+          data: { 'action': actionName, 'bikeTypeId': bikeTypeId, order_id: orderId },
+          dataType: 'json',
+          success: function ( res ) {
+            if ( res.size_opts ) {
+              // Append options to select/option field.
+              self.infoCtr.querySelector('[name="tt-bike-size"]').innerHTML = res.size_opts;
+              // Set selected size.
+              self.infoCtr.querySelector('[name="tt-bike-size"]').value = self.initialState['tt-bike-size'];
+            }
+          }
+        });
+
+      } else {
+
+        this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+      }
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+// Collect initial values in the medical info section when it is expanded.
+jQuery('#flush-collapse-medicalInfo').on('shown.bs.collapse', function() {
+  medicalInfoSectionHelper.storeInfo();
+});
+
+// Collect initial values in the emergency info section when it is expanded.
+jQuery('#flush-collapse-emergencyInfo').on('shown.bs.collapse', function() {
+  emergencyInfoSectionHelper.storeInfo();
+});
+
+// Collect initial values in the gear info section when it is expanded.
+jQuery('#flush-collapse-gearInfo').on('shown.bs.collapse', function() {
+  gearInfoSectionHelper.storeInfo();
+});
+
+// Collect initial values in the passport info section when it is expanded.
+jQuery('#flush-collapse-passportInfo').on('shown.bs.collapse', function() {
+  passportInfoSectionHelper.storeInfo();
+});
+
+// Collect initial values in the gear info optional section when it is expanded.
+jQuery('#flush-collapse-gearInfo-optional').on('shown.bs.collapse', function() {
+  gearInfoOptionalSectionHelper.storeInfo();
+});
+
+// Collect initial values in the bike info optional section when it is expanded.
+jQuery('#flush-collapse-bikeInfo').on('shown.bs.collapse', function() {
+  bikeInfoSectionHelper.storeInfo();
+});
+
+// Restore initial values for any Post Booking Checklist section.
+jQuery('.pb-checklist-cancel').on('click', function(ev) {
+  let cancelTrgger = ev.target;
+
+  switch ( cancelTrgger.dataset.bsTarget ) {
+    case '#flush-collapse-medicalInfo':
+      medicalInfoSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-emergencyInfo':
+      emergencyInfoSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-gearInfo':
+      gearInfoSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-passportInfo':
+      passportInfoSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-gearInfo-optional':
+      gearInfoOptionalSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-bikeInfo':
+      bikeInfoSectionHelper.undoChanges();
+      break;
+    default:
+      break;
+  }
+
+  // Catch parent section container.
+  let sectionCtr = cancelTrgger.closest(cancelTrgger.dataset.bsTarget);
+  // Catch save preferences checkbox in this section.
+  let savePreferencesCheckbox = sectionCtr.querySelector('input[name^="tt_save_"]');
+  // Restore save preferences value.
+  if ( null !== savePreferencesCheckbox ) {
+    savePreferencesCheckbox.checked = false;
+  }
+
+});
+
+/* My trip checklist undo current cahnges functionality END */
