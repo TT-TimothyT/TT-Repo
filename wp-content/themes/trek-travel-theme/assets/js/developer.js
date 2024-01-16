@@ -2684,11 +2684,13 @@ jQuery('body').on('click', function () {
     // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#000")
   }
   else{
-    jQuery('html, body').css('overflow', 'scroll');
-    // jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
-    jQuery("nav.mobile-nav div#navbar").removeClass("w-100")
-    resetMobileMenu()
-    // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#fff")
+    if(jQuery(window).width() < 768) {
+      jQuery('html, body').css('overflow', 'scroll');
+      // jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
+      jQuery("nav.mobile-nav div#navbar").removeClass("w-100")
+      resetMobileMenu()
+      // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#fff")
+    }
   }
   var pdpNav = jQuery(".overview-menu-mobile .accordion-button")
   var isPdpNavExpanded = jQuery(pdpNav).attr("aria-expanded")
