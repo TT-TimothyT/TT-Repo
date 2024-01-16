@@ -3255,7 +3255,7 @@ class FreeCachedContainer extends Container
      */
     protected function getPreprocessManagerService()
     {
-        return $this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\PreprocessManager'] = new \MailPoet\EmailEditor\Engine\Renderer\PreprocessManager(($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\CleanupPreprocessor'] ?? ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\CleanupPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\CleanupPreprocessor())), ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TopLevelPreprocessor'] ?? ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TopLevelPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\TopLevelPreprocessor())), ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\BlocksWidthPreprocessor'] ?? ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\BlocksWidthPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\BlocksWidthPreprocessor())), ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TypographyPreprocessor'] ?? ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TypographyPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\TypographyPreprocessor())));
+        return $this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\PreprocessManager'] = new \MailPoet\EmailEditor\Engine\Renderer\PreprocessManager(($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\CleanupPreprocessor'] ?? ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\CleanupPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\CleanupPreprocessor())), ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TopLevelPreprocessor'] ?? ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TopLevelPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\TopLevelPreprocessor())), ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\BlocksWidthPreprocessor'] ?? ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\BlocksWidthPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\BlocksWidthPreprocessor())), ($this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TypographyPreprocessor'] ?? $this->getTypographyPreprocessorService()));
     }
 
     /**
@@ -3295,7 +3295,7 @@ class FreeCachedContainer extends Container
      */
     protected function getTypographyPreprocessorService()
     {
-        return $this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TypographyPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\TypographyPreprocessor();
+        return $this->services['MailPoet\\EmailEditor\\Engine\\Renderer\\Preprocessors\\TypographyPreprocessor'] = new \MailPoet\EmailEditor\Engine\Renderer\Preprocessors\TypographyPreprocessor(($this->services['MailPoet\\EmailEditor\\Engine\\SettingsController'] ?? ($this->services['MailPoet\\EmailEditor\\Engine\\SettingsController'] = new \MailPoet\EmailEditor\Engine\SettingsController())));
     }
 
     /**
@@ -3345,7 +3345,7 @@ class FreeCachedContainer extends Container
      */
     protected function getEmailEditor3Service()
     {
-        return $this->services['MailPoet\\EmailEditor\\Integrations\\MailPoet\\EmailEditor'] = new \MailPoet\EmailEditor\Integrations\MailPoet\EmailEditor(($this->services['MailPoet\\WP\\Functions'] ?? ($this->services['MailPoet\\WP\\Functions'] = new \MailPoet\WP\Functions())), ($this->services['MailPoet\\Features\\FeaturesController'] ?? $this->getFeaturesControllerService()), ($this->services['MailPoet\\Newsletter\\NewslettersRepository'] ?? $this->getNewslettersRepositoryService()), ($this->services['MailPoet\\EmailEditor\\Integrations\\MailPoet\\EmailApiController'] ?? $this->getEmailApiController2Service()));
+        return $this->services['MailPoet\\EmailEditor\\Integrations\\MailPoet\\EmailEditor'] = new \MailPoet\EmailEditor\Integrations\MailPoet\EmailEditor(($this->services['MailPoet\\WP\\Functions'] ?? ($this->services['MailPoet\\WP\\Functions'] = new \MailPoet\WP\Functions())), ($this->services['MailPoet\\Features\\FeaturesController'] ?? $this->getFeaturesControllerService()), ($this->services['MailPoet\\Newsletter\\NewslettersRepository'] ?? $this->getNewslettersRepositoryService()), ($this->services['MailPoet\\EmailEditor\\Integrations\\MailPoet\\EmailApiController'] ?? $this->getEmailApiController2Service()), ($this->services['MailPoetVendor\\Doctrine\\ORM\\EntityManager'] ?? $this->getEntityManagerService()), ($this->services['MailPoet\\Newsletter\\NewsletterSaveController'] ?? $this->getNewsletterSaveControllerService()));
     }
 
     /**

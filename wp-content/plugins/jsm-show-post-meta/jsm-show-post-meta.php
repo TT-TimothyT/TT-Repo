@@ -11,9 +11,9 @@
  * License URI: https://www.gnu.org/licenses/gpl.txt
  * Description: Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.
  * Requires PHP: 7.2.34
- * Requires At Least: 5.5
+ * Requires At Least: 5.8
  * Tested Up To: 6.4.2
- * Version: 3.9.0
+ * Version: 3.11.0
  *
  * Version Numbering: {major}.{minor}.{bugfix}[-{stage}.{level}]
  *
@@ -22,7 +22,7 @@
  *      {bugfix}        Backwards-compatible bug fixes or small improvements.
  *      {stage}.{level} Pre-production release: dev < a (alpha) < b (beta) < rc (release candidate).
  *
- * Copyright 2016-2023 Jean-Sebastien Morisset (https://surniaulula.com/)
+ * Copyright 2016-2024 Jean-Sebastien Morisset (https://surniaulula.com/)
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

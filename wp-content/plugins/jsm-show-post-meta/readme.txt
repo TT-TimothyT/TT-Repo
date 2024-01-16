@@ -9,9 +9,9 @@ Assets URI: https://jsmoriss.github.io/jsm-show-post-meta/assets/
 Tags: custom fields, meta, post meta, post types, delete, debug, inspector
 Contributors: jsmoriss
 Requires PHP: 7.2.34
-Requires At Least: 5.5
+Requires At Least: 5.8
 Tested Up To: 6.4.2
-Stable Tag: 3.9.0
+Stable Tag: 3.11.0
 
 Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.
 
@@ -58,7 +58,7 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 
 <h3>Changelog / Release Notes</h3>
 
-**Version 3.9.0 (2023/12/18)**
+**Version 3.11.0 (2024/01/12)**
 
 * **New Features**
 	* None.
@@ -67,14 +67,14 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 * **Bugfixes**
 	* None.
 * **Developer Notes**
-	* Update for the `SucomUtil` class.
+	* Update for the `SucomUtil` and `SucomUtilWP` classes.
 * **Requires At Least**
 	* PHP v7.2.34.
-	* WordPress v5.5.
+	* WordPress v5.8.
 
 == Upgrade Notice ==
 
-= 3.9.0 =
+= 3.11.0 =
 
-(2023/12/18) Update for the `SucomUtil` class.
+(2024/01/12) Update for the `SucomUtil` and `SucomUtilWP` classes.
 
