@@ -5729,3 +5729,36 @@ function tt_get_local_trip_code( $tripCode ) {
 
     return $tripCode;
 }
+
+/**
+ * Take user preferences, saved in to user post meta,
+ * for given user.
+ *
+ * @param int $user_id User ID.
+ *
+ * @return null|array Return null if user ID not presented or array with the user preferences data.
+ */
+function dx_get_user_pb_preferences( $user_id = 0 ) {
+    // Check for empty user ID.
+    if( empty( $user_id ) ) {
+        return null;
+    }
+
+    // Get post meta for the given user.
+    $user_pb_preferences = array();
+
+    // Get Medical Information.
+    $user_pb_preferences['med_info_medications']          = get_user_meta( $user_id, 'custentity_medications', true ); // Value of meta data field | false | empty string.
+    $user_pb_preferences['med_info_medical_conditions']   = get_user_meta( $user_id, 'custentity_medicalconditions', true );
+    $user_pb_preferences['med_info_allergies']            = get_user_meta( $user_id, 'custentity_allergies', true );
+    $user_pb_preferences['med_info_dietary_restrictions'] = get_user_meta( $user_id, 'custentity_dietaryrestrictions', true );
+
+    // Get Emergency Contact.
+    $user_pb_preferences['em_info_em_contact_firstname']    = get_user_meta( $user_id, 'custentity_emergencycontactfirstname', true );
+    $user_pb_preferences['em_info_em_contact_lastname']     = get_user_meta( $user_id, 'custentityemergencycontactlastname', true );
+    $user_pb_preferences['em_info_em_contact_phonenumber']  = get_user_meta( $user_id, 'custentity_emergencycontactphonenumber', true );
+    $user_pb_preferences['em_info_em_contact_relationship'] = get_user_meta( $user_id, 'custentity_emergencycontactrelationship', true );
+
+    // Return user preferences.
+    return $user_pb_preferences;
+}

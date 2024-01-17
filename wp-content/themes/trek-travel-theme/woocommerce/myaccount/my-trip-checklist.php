@@ -175,6 +175,47 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 }
 
 $gear_preferences_bike_type = get_user_meta( $user_id, 'gear_preferences_bike_type', true );
+
+// Take user preferences from user postmeta.
+$current_user_preferences = dx_get_user_pb_preferences( $user_id );
+
+// Populate medical info user preferences if there is no value confirmed yet.
+// If the user confirms 'no' for any medical info field,
+// we will have a value 'none' for the given field, which is not empty.
+if( empty( $medications ) && ! empty( $current_user_preferences['med_info_medications'] ) ) {
+	$medications = $current_user_preferences['med_info_medications'];
+}
+
+if( empty( $medicalconditions ) && ! empty( $current_user_preferences['med_info_medical_conditions'] ) ) {
+	$medicalconditions = $current_user_preferences['med_info_medical_conditions'];
+}
+
+if( empty( $allergies ) && ! empty( $current_user_preferences['med_info_allergies'] ) ) {
+	$allergies = $current_user_preferences['med_info_allergies'];
+}
+
+if( empty( $dietaryrestrictions ) && ! empty( $current_user_preferences['med_info_dietary_restrictions'] ) ) {
+	$dietaryrestrictions = $current_user_preferences['med_info_dietary_restrictions'];
+}
+
+// Populate emergency contact info user preferences if no value is confirmed yet.
+
+if( empty( $emergence_cfname ) && ! empty( $current_user_preferences['em_info_em_contact_firstname'] ) ) {
+	$emergence_cfname = $current_user_preferences['em_info_em_contact_firstname'];
+}
+
+if( empty( $emergence_clname ) && ! empty( $current_user_preferences['em_info_em_contact_lastname'] ) ) {
+	$emergence_clname = $current_user_preferences['em_info_em_contact_lastname'];
+}
+
+if( empty( $emergence_cphone ) && ! empty( $current_user_preferences['em_info_em_contact_phonenumber'] ) ) {
+	$emergence_cphone = $current_user_preferences['em_info_em_contact_phonenumber'];
+}
+
+if( empty( $emergence_crelationship ) && ! empty( $current_user_preferences['em_info_em_contact_relationship'] ) ) {
+	$emergence_crelationship = $current_user_preferences['em_info_em_contact_relationship'];
+}
+
 ?>
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
