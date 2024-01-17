@@ -710,6 +710,59 @@ function trek_change_password_action_cb()
     echo json_encode($res);
     exit;
 }
+
+/**
+ * Send Post Booking checklist data to NetSuite.
+ * 
+ * Using NS Scripts 1304 to retrieve booking info from NS first,
+ * and 1292 to publish updated data.
+ * 
+ * @param string  $order_id The ID of the order.
+ * @param string  $ns_user_id The ID of the user in NetSuite.
+ * @param array   $user Current user - converted to array WP_User instance from wp_get_current_user().
+ * @param array   $ns_user_booking_args Array with user booking checklist data.
+ * 
+ * @return void
+ */
+function tt_update_trip_checklist_ns_cb( $order_id, $ns_user_id, $user, $ns_user_booking_args ) {
+
+    // Check for empty required parameters.
+    if( empty( $order_id ) || empty( $ns_user_id ) || empty( $ns_user_booking_args ) ) {
+        tt_add_error_log( '[SuiteScript:1292] - Post booking', array( 'success' => false, 'message' => 'Some of the required parameters $order_id, $ns_user_id or $ns_user_booking_args are empty!' ), array( '$order_id' => $order_id, '$ns_user_id' => $ns_user_id, '$ns_user_booking_args' => $ns_user_booking_args ) );
+        return;
+    }
+
+    $net_suite_client = new NetSuiteClient();
+    $ns_booking_info  = tt_get_ns_booking_details_by_order( $order_id, $user );
+    $booking_id       = $ns_booking_info['booking_id'];
+
+    if ( $booking_id ) {
+        $booking_info   = $net_suite_client->get( '1304:2', array( 'bookingId' => $booking_id ));
+        $booking_guests = isset( $booking_info->guests ) && $booking_info->guests ? $booking_info->guests : array();
+
+        if ( $booking_guests ) {
+
+            foreach ( $booking_guests as $booking_guest ) {
+
+                $guest_id = $booking_guest->guestId;
+
+                if ( $guest_id == $ns_user_id ) {
+
+                    $registration_id                        = $booking_guest->registrationId;
+                    $ns_user_booking_args['registrationId'] = $registration_id;
+                    $ns_posted_booking_info                 = $net_suite_client->post( '1292:2', json_encode( $ns_user_booking_args ) );
+
+                    tt_add_error_log( '[SuiteScript:1292] - Post booking', $ns_user_booking_args, $ns_posted_booking_info );
+                }
+            }
+        }
+
+    } else {
+        tt_add_error_log( '[WP] - No Guest Booking ID found', array( 'ns_user_id' => $ns_user_id, 'user_email' => $user['data']['user_email'], 'order_id' => $order_id, 'wp_user_id' => $user['ID'] ), array( 'ns_booking_info' => $ns_booking_info ) );
+    }
+}
+add_action( 'tt_update_trip_checklist_ns', 'tt_update_trip_checklist_ns_cb', 10, 4 );
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -849,51 +902,34 @@ function trek_update_trip_checklist_action_cb()
         if ($update_to_ns == true) {
             as_schedule_single_action(time(), 'tt_cron_syn_usermeta_ns', array( $user->ID, '[WP] - Update user from post booking' ));
         }
-        $ns_user_id = get_user_meta($user->ID, 'ns_customer_internal_id', true);  
-        if ($ns_user_id) {
-            $order_id = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : '';
-            $ns_bookingInfo = tt_get_ns_booking_details_by_order($order_id);
-            $bookingId = $ns_bookingInfo['booking_id'];
-            if ($bookingId) {
-                $bookingInfo = $netSuiteClient->get('1304:2', array('bookingId' => $bookingId));
-                $booking_Guests = isset($bookingInfo->guests) && $bookingInfo->guests ? $bookingInfo->guests : [];
-                if ($booking_Guests) {
-                    foreach ($booking_Guests as $booking_guest) {
-                        $guestId = $booking_guest->guestId;
-                        if ($guestId == $ns_user_id) {
-                            $registrationId = $booking_guest->registrationId;
-                            $ns_user_booking_args = [
-                                'registrationId' => $registrationId,
-                                'bikeId' => isset($_REQUEST['bikeId']) ? $_REQUEST['bikeId'] : '',
-                                'saddleId' => isset($_REQUEST['saddleId']) ? $_REQUEST['saddleId'] : '',
-                                'custentity_height' => isset($_REQUEST['tt-rider-height']) ? $_REQUEST['tt-rider-height'] : '',
-                                'helmetId' => isset($_REQUEST['tt-helmet-size']) ? $_REQUEST['tt-helmet-size'] : '',
-                                "pedalsId" => isset($_REQUEST['tt-pedal-selection']) ? $_REQUEST['tt-pedal-selection'] : '',
-                                'jerseyId' => isset($_REQUEST['tt-jerrsey-size']) ? $_REQUEST['tt-jerrsey-size'] : '',
-                                'ecFirstName' => isset($_REQUEST['emergency_contact_first_name']) ? $_REQUEST['emergency_contact_first_name'] : '',
-                                'ecLastName' => isset($_REQUEST['emergency_contact_last_name']) ? $_REQUEST['emergency_contact_last_name'] : '',
-                                'ecPhone' => isset($_REQUEST['emergency_contact_phone']) ? $_REQUEST['emergency_contact_phone'] : '',
-                                'ecRelationship' => isset($_REQUEST['emergency_contact_relationship']) ? $_REQUEST['emergency_contact_relationship'] : '',
-                                'medicalConditions' => isset($_REQUEST['custentity_medicalconditions']['value']) ? $_REQUEST['custentity_medicalconditions']['value'] : '',
-                                'medications' => isset($_REQUEST['custentity_medications']['value']) ? $_REQUEST['custentity_medications']['value'] : '',
-                                'allergies' => isset($_REQUEST['custentity_allergies']['value']) ? $_REQUEST['custentity_allergies']['value'] : 'allergies Demo content ',
-                                'dietaryRestrictions' => isset($_REQUEST['custentity_dietaryrestrictions']['value']) ? $_REQUEST['custentity_dietaryrestrictions']['value'] : '',
-                                'barReachFromSaddle' => isset($_REQUEST['bar_reach']) ? $_REQUEST['bar_reach'] : '',
-                                'barHeightFromWheelCenter' => isset($_REQUEST['bar_height']) ? $_REQUEST['bar_height'] : '',
-                            ];
-                            $ns_bookingInfo = $netSuiteClient->post('1292:2', json_encode($ns_user_booking_args));
-                            tt_add_error_log('[SuiteScript:1292] - Post booking', $ns_user_booking_args, $ns_bookingInfo);
-                        }else{
-                            //tt_add_error_log('GuestID from booking & WP NS_User_id doesnt match', array('ns_user_id' => $ns_user_id, 'First name' => $user->first_name, 'guestId' => $guestId, 'bookingId' => $bookingId), []);
-                        }
-                    }
-                }
-            }else{
-                tt_add_error_log('[WP] - No Guest Booking ID found', array('ns_user_id' => $ns_user_id, 'First name' => $user->first_name), []);
-            }
-            //End : Update data in User Booking profile in NS
-        }else{
-            tt_add_error_log('[NetSuite] - User not found', array('user_id' => $user->ID, 'First name' => $user->first_name), []);
+        $ns_user_id = get_user_meta( $user->ID, 'ns_customer_internal_id', true );
+        if ( $ns_user_id ) {
+            $order_id             = isset( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : '';
+
+            $ns_user_booking_args = array(
+                'bikeId'                   => isset( $_REQUEST['bikeId'] ) ? $_REQUEST['bikeId'] : '',
+                'saddleId'                 => isset( $_REQUEST['saddleId'] ) ? $_REQUEST['saddleId'] : '',
+                'custentity_height'        => isset( $_REQUEST['tt-rider-height'] ) ? $_REQUEST['tt-rider-height'] : '',
+                'helmetId'                 => isset( $_REQUEST['tt-helmet-size'] ) ? $_REQUEST['tt-helmet-size'] : '',
+                "pedalsId"                 => isset( $_REQUEST['tt-pedal-selection'] ) ? $_REQUEST['tt-pedal-selection'] : '',
+                'jerseyId'                 => isset( $_REQUEST['tt-jerrsey-size'] ) ? $_REQUEST['tt-jerrsey-size'] : '',
+                'ecFirstName'              => isset( $_REQUEST['emergency_contact_first_name'] ) ? $_REQUEST['emergency_contact_first_name'] : '',
+                'ecLastName'               => isset( $_REQUEST['emergency_contact_last_name'] ) ? $_REQUEST['emergency_contact_last_name'] : '',
+                'ecPhone'                  => isset( $_REQUEST['emergency_contact_phone'] ) ? $_REQUEST['emergency_contact_phone'] : '',
+                'ecRelationship'           => isset( $_REQUEST['emergency_contact_relationship'] ) ? $_REQUEST['emergency_contact_relationship'] : '',
+                'medicalConditions'        => isset( $_REQUEST['custentity_medicalconditions']['value'] ) ? $_REQUEST['custentity_medicalconditions']['value'] : '',
+                'medications'              => isset( $_REQUEST['custentity_medications']['value'] ) ? $_REQUEST['custentity_medications']['value'] : '',
+                'allergies'                => isset( $_REQUEST['custentity_allergies']['value'] ) ? $_REQUEST['custentity_allergies']['value'] : 'allergies Demo content ',
+                'dietaryRestrictions'      => isset( $_REQUEST['custentity_dietaryrestrictions']['value'] ) ? $_REQUEST['custentity_dietaryrestrictions']['value'] : '',
+                'barReachFromSaddle'       => isset( $_REQUEST['bar_reach'] ) ? $_REQUEST['bar_reach'] : '',
+                'barHeightFromWheelCenter' => isset( $_REQUEST['bar_height'] ) ? $_REQUEST['bar_height'] : '',
+            );
+
+            // Update guest booking information in NetSuite with delay. Need to use time() + 1, to prevent a collision, because this function already has as_schedule_single_action with time().
+            as_schedule_single_action( time() + 1 , 'tt_update_trip_checklist_ns', array( $order_id, $ns_user_id, $user, $ns_user_booking_args ) );
+
+        } else {
+            tt_add_error_log( '[NetSuite] - User not found', array( 'user_id' => $user->ID, 'First name' => $user->first_name ), array() );
         }
         $bookingData['modified_at'] = date('Y-m-d H:i:s');
         $where['order_id'] = $_REQUEST['order_id'];
@@ -5055,9 +5091,17 @@ function tt_trigger_cron_ns_guest_booking_details_cb($single_req,$ns_user_id, $w
     tt_ns_guest_booking_details($single_req, $ns_user_id,$wc_user_id);
     tt_add_error_log('[End] - Adding Trips', ['ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id], ['dateTime' => date('Y-m-d H:i:s')]);
 }
-function tt_get_ns_booking_details_by_order($order_id){
+function tt_get_ns_booking_details_by_order( $order_id, $user_info = null ){
     $releaseFormId = $booking_id = $waiver_link = "";
-    $userInfo = wp_get_current_user();
+
+    if( ! empty( $user_info ) ) {
+        // If we have $user_info as a non-empty argument, take the user object from there.
+        $userInfo = (object) $user_info;
+    } else {
+        // Retrieves the current user object.
+        $userInfo = wp_get_current_user();
+    }
+
     $User_order_info = trek_get_user_order_info($userInfo->ID, $order_id);
     if( isset($User_order_info[0]['releaseFormId']) && $User_order_info[0]['releaseFormId'] ){
         $releaseFormId = $User_order_info[0]['releaseFormId'];
