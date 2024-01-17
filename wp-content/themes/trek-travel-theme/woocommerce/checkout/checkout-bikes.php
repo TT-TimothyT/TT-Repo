@@ -29,10 +29,10 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 
 $singleSupplementPrice = $bikeUpgradePrice = 0;
 $bikePriceCurr = $singleSupplementPrice = '';
-if ($tripInfo['sku']) {
-    $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $tripInfo['sku'], true);
+if ( $tt_posted['product_id'] ) {
+    $bikeUpgradePrice = get_post_meta( $tt_posted['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
     $bikePriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $bikeUpgradePrice . '</span>';
-    $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $tripInfo['sku'], true);
+    $singleSupplementPrice = get_post_meta( $tt_posted['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
     $singleSupplementPriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $singleSupplementPrice . '</span>';
 }
 $shipping_name = $primary_name;
@@ -52,6 +52,7 @@ if ($p_rider_level == 5) {
 if ($p_own_bike == 'yes') {
     $p_own_hide = "style='display:none;'";
 }
+
 ?>
 <div class="checkout-bikes-section collapse multi-collapse" id="multiCollapseExample2">
     <div class="checkout-bikes">
@@ -138,7 +139,7 @@ if ($p_own_bike == 'yes') {
                                         <p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
                                     </div>';
                                 }
-                                $primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . '" data-selector="tt_bike_selection_primary" data-id="' . $bikeModelId . '" data-guest-id="0">
+                                $primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . '" data-selector="tt_bike_selection_primary" data-id="' . $bikeModelId . '" data-guest-id="0" data-type-id="' . $bikeTypeId . '">
                                 <input name="bike_gears[primary][bikeTypeId]" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeModelId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '>
                                         <div class="checkout-bikes__image d-flex justify-content-center align-content-center">
                                             <img src="' . $bike_image . '" alt="' . $bikeDescr . '">
@@ -153,7 +154,7 @@ if ($p_own_bike == 'yes') {
                             }
                             $bikes_model_id_in[] = $bikeModelId;
                         }
-                        $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '>';
+                        $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '><input name="bike_gears[primary][bike_type_id_preferences]" type="hidden" value="">';
                     } else {
                         $primary_available_bike_html .= '<strong>No bikes available!</strong>';
                     }

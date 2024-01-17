@@ -21,7 +21,16 @@
             color: $black;
             font-family: 'Roboto';
             margin-top: 24px;
-            
+        }
+
+        .card-body {
+            & > div {
+                margin-bottom: 16px;
+            }
+        }
+
+        p {
+            margin-bottom: 0;
             &.long-text {     
                 overflow: hidden;
                 display: -webkit-box;
@@ -40,8 +49,9 @@
             text-align: center;
             width: 100%;
             color: #28AAE1;
-            margin-top: -17px;
+            margin-top: -3px;
             margin-bottom: 16px;
+            cursor: pointer;
         }
         .text-author {
             font-family: 'Roboto';

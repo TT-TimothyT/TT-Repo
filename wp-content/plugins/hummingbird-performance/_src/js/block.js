@@ -109,8 +109,11 @@ const MyPluginPostStatusInfo = () => {
 	 */
 	const handleCreateCSS = () => {
 		if ( ! getString( 'isMember' ) ) {
-			window.wphbMixPanel.trackEoUpsell( 'critical_css_upsell', 'gutenberg' );
-			window.location.href = getString( 'gutenbergUTM' );
+
+			if ( wphb.mixpanel.enabled ) {
+				window.wphbMixPanel.trackEoUpsell( 'critical_css_upsell', 'gutenberg' );
+			}
+			window.open( getString( 'gutenbergUTM' ), '_blank' );
 
 			return;
 		}

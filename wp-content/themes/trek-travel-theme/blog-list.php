@@ -67,6 +67,9 @@ if( $blogs->have_posts() ){
 		if( has_post_thumbnail(get_the_ID()) ){
 			$featured_Image = get_the_post_thumbnail_url(get_the_ID(), 'full');
 		}
+		if( $featured_Image == '' ) {
+   $featured_Image = get_template_directory_uri() . "/assets/images/posts-thumbnail-placeholder.svg";
+  }
 		$other_blog_html .= '<div class="list-item"><a href="'.get_permalink(get_the_ID()).'">
 			<div class="image">
 			<img src="'.$featured_Image.'">				

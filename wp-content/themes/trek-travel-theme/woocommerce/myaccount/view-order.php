@@ -344,10 +344,15 @@ if( $parent_product_id ){
                                         </div>
                                         <div>
                                             <p class="mb-2 fs-md lh-md fw-medium">Billing Address</p>
+                                            <?php
+                                            $billing_states       = WC()->countries->get_states( $billing_country );
+                                            $billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
+                                            $billing_country_name = WC()->countries->countries[$billing_country];
+                                            ?>
                                             <p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_add_1; ?></p>
                                             <p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_add_2; ?></p>
-                                            <p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_state; ?>, <?php echo $billing_city; ?>, <?php echo $billing_postcode; ?></p>
-                                            <p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country; ?></p>
+                                            <p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_state_name; ?>, <?php echo $billing_city; ?>, <?php echo $billing_postcode; ?></p>
+                                            <p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country_name; ?></p>
                                         </div>
                                     </div>
                                 </div>

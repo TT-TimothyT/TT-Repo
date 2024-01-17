@@ -339,6 +339,126 @@ if (!function_exists('tt_get_wc_postId_Tripcode')) {
         return $product_id;
     }
 }
+
+/**
+ * Create or update a WooComerce product for given NetSuite Trip.
+ * Or for shorter, this is a Product Sync Function.
+ * 
+ * @param object(stdClass) $trek_trip A single trip from NS. 
+ */
+function tt_sync_wc_product_from_ns( $trek_trip ) {
+    $tripCode = $trek_trip->tripCode;
+    $tripId = $trek_trip->tripId;
+    $capacity = $trek_trip->capacity;
+    $basePrice = $trek_trip->basePrice;
+    $product_id = tt_get_wc_postId_by_sku($tripCode);
+    $product_attr = get_post_meta($product_id, '_product_attributes', true);
+    $product_attr = ($product_attr ? $product_attr : array());
+    //Begin: Data preparation
+    $product_data_args = array(
+        'post_title' => $trek_trip->tripName,
+        'post_type' => 'product'
+    );
+    $meta_fields = array(
+        'tripId' => $tripId,
+        'itineraryId' => $trek_trip->itineraryId,
+        'itineraryCode' => $trek_trip->itineraryCode,
+        'singleSupplementPrice' => $trek_trip->singleSupplementPrice,
+        'depositAmount' => $trek_trip->depositAmount,
+        'bikeUpgradePrice' => $trek_trip->bikeUpgradePrice,
+        'insurancePercentage' => $trek_trip->insurancePercentage,
+        'taxRate' => $trek_trip->taxRate,
+        'isPassportRequired' => $trek_trip->isPassportRequired,
+        'tripSpecificMessage' => $trek_trip->tripSpecificMessage
+    );
+    $attr_startDate = ($trek_trip->startDate ? strtotime($trek_trip->startDate) : '');
+    $attr_endDate = ($trek_trip->endDate ? strtotime($trek_trip->endDate) : '');
+    $status = isset($trek_trip->status) && $trek_trip->status ? $trek_trip->status : '';
+    $riderType = isset($trek_trip->riderType) ? $trek_trip->riderType : '';
+    $daysToTrip = ($trek_trip->daysToTrip ? $trek_trip->daysToTrip : '');
+    $tripYear = ($trek_trip->tripYear ? $trek_trip->tripYear : '');
+    $tripSeason = ($trek_trip->tripSeason ? $trek_trip->tripSeason : '');
+    $tripMonth = ($trek_trip->tripMonth ? $trek_trip->tripMonth : '');
+    $tripContinent = ($trek_trip->tripContinent ? $trek_trip->tripContinent : '');
+    $tripCountry = ($trek_trip->tripCountry ? $trek_trip->tripCountry : '');
+    $tripRegion = ($trek_trip->tripRegion ? $trek_trip->tripRegion : '');
+    //End: Data preparation
+    $product = wc_get_product( $product_id );
+    // $parent_product_id = tt_get_parent_trip_id_by_child_sku($tripCode);
+    //if ($product && in_array($product_id, $wc_child_product_ids)) {
+    if ($product) {    
+        //update existing product data with new data
+        // if ($parent_product_id) {
+        //     $product_data_args['post_parent'] = $parent_product_id;
+        // }
+        $product_data_args['ID'] = $product_id;
+        $is_updated = wp_update_post($product_data_args);
+        if ($is_updated && $meta_fields) {
+            foreach ($meta_fields as $meta_id => $meta_value) {
+                $meta_key = TT_WC_META_PREFIX . $meta_id;
+                update_post_meta($product_id, $meta_key, $meta_value);
+            }
+        }
+    } else {
+        //insert new product in WC product
+        // if ($parent_product_id) {
+        //     $product_data_args['post_parent'] = $parent_product_id;
+        // }
+        $product_data_args['post_status'] = 'publish';
+        $new_product_id = wp_insert_post($product_data_args);
+        $product_id = $new_product_id;
+        update_post_meta($product_id, '_sku', $trek_trip->tripCode);
+    }
+    if ($product_id) {
+        if ($meta_fields) {
+            foreach ($meta_fields as $meta_id => $meta_value) {
+                $meta_key = TT_WC_META_PREFIX . $meta_id;
+                update_post_meta($product_id, $meta_key, $meta_value);
+            }
+        }
+        $has_sku = get_post_meta($product_id, '_sku', true);
+        if( empty($has_sku) ){
+            update_post_meta($product_id, '_sku', $trek_trip->tripCode);
+        }
+        if( $parent_p_ID ){
+            $new_child_ids = [$product_id];
+            $get_children_ids = get_post_meta($parent_p_ID, '_children', true);
+            if( $get_children_ids){
+                $new_child_ids = array_merge($get_children_ids, $new_child_ids);
+            }
+            $new_child_ids = array_unique($new_child_ids);
+        }
+        //start saved attribute code
+        if( is_object($riderType) ){
+            $riderLevelVal = tt_get_custom_item_name('syncRiderLevels',$riderType->id);
+        }
+        $custom_attributes = [
+            'pa_trip-status' => is_object($status) ? $status->name : '',
+            'pa_rider-level' => $riderLevelVal,
+            'pa_duration' => $daysToTrip,
+            'pa_region' => $tripRegion,
+            'pa_continent' => $tripContinent,
+            'pa_season' => $tripSeason,
+            'pa_country' => $tripCountry,
+            'pa_start-date' => date('d/m/y', $attr_startDate),
+            'pa_end-date' => date('d/m/y', $attr_endDate)
+        ];
+        if( $custom_attributes ){
+            foreach($custom_attributes as $custom_attribute_k=>$custom_attribute_v){
+                if( $custom_attribute_v ){
+                    tt_set_wc_attribute_value($product_id, $custom_attribute_k, $custom_attribute_v);
+                }
+            }
+        }
+        update_post_meta($product_id, '_manage_stock', 'yes');
+        update_post_meta($product_id, '_stock', $capacity);
+        update_post_meta($product_id, '_regular_price', $basePrice);
+        update_post_meta($product_id, '_price', $basePrice);
+        //end saved attribute code
+        update_post_meta($product_id, 'ns_last_synced_date_time', date('Y-m-d H:i:s'));
+    }
+}
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -382,116 +502,64 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
                         tt_add_error_log($trip_sync_type_msg, $trek_script_args, $trek_trips);
                     }
                     if (!empty($trek_trips) && isset($trek_trips->trips)) {
-                        foreach ($trek_trips->trips as $trek_trip) {
-                            $tripCode = $trek_trip->tripCode;
-                            $tripId = $trek_trip->tripId;
-                            $capacity = $trek_trip->capacity;
-                            $basePrice = $trek_trip->basePrice;
-                            $product_id = tt_get_wc_postId_by_sku($tripCode);
-                            $product_attr = get_post_meta($product_id, '_product_attributes', true);
-                            $product_attr = ($product_attr ? $product_attr : array());
-                            //Begin: Data preparation
-                            $product_data_args = array(
-                                'post_title' => $trek_trip->tripName,
-                                'post_type' => 'product'
-                            );
-                            $meta_fields = array(
-                                'tripId' => $tripId,
-                                'itineraryId' => $trek_trip->itineraryId,
-                                'itineraryCode' => $trek_trip->itineraryCode,
-                                'singleSupplementPrice' => $trek_trip->singleSupplementPrice,
-                                'depositAmount' => $trek_trip->depositAmount,
-                                'bikeUpgradePrice' => $trek_trip->bikeUpgradePrice,
-                                'insurancePercentage' => $trek_trip->insurancePercentage,
-                                'taxRate' => $trek_trip->taxRate,
-                                'isPassportRequired' => $trek_trip->isPassportRequired,
-                                'tripSpecificMessage' => $trek_trip->tripSpecificMessage
-                            );
-                            $attr_startDate = ($trek_trip->startDate ? strtotime($trek_trip->startDate) : '');
-                            $attr_endDate = ($trek_trip->endDate ? strtotime($trek_trip->endDate) : '');
-                            $status = isset($trek_trip->status) && $trek_trip->status ? $trek_trip->status : '';
-                            $riderType = isset($trek_trip->riderType) ? $trek_trip->riderType : '';
-                            $daysToTrip = ($trek_trip->daysToTrip ? $trek_trip->daysToTrip : '');
-                            $tripYear = ($trek_trip->tripYear ? $trek_trip->tripYear : '');
-                            $tripSeason = ($trek_trip->tripSeason ? $trek_trip->tripSeason : '');
-                            $tripMonth = ($trek_trip->tripMonth ? $trek_trip->tripMonth : '');
-                            $tripContinent = ($trek_trip->tripContinent ? $trek_trip->tripContinent : '');
-                            $tripCountry = ($trek_trip->tripCountry ? $trek_trip->tripCountry : '');
-                            $tripRegion = ($trek_trip->tripRegion ? $trek_trip->tripRegion : '');
-                            //End: Data preparation
-                            $product = wc_get_product( $product_id );
-                            $parent_product_id = tt_get_parent_trip_id_by_child_sku($tripCode);
-                            //if ($product && in_array($product_id, $wc_child_product_ids)) {
-                            if ($product) {    
-                                //update existing product data with new data
-                                // if ($parent_product_id) {
-                                //     $product_data_args['post_parent'] = $parent_product_id;
-                                // }
-                                $product_data_args['ID'] = $product_id;
-                                $is_updated = wp_update_post($product_data_args);
-                                if ($is_updated && $meta_fields) {
-                                    foreach ($meta_fields as $meta_id => $meta_value) {
-                                        $meta_key = TT_WC_META_PREFIX . $meta_id;
-                                        update_post_meta($product_id, $meta_key, $meta_value);
-                                    }
-                                }
-                            }else {
-                                //insert new product in WC product
-                                // if ($parent_product_id) {
-                                //     $product_data_args['post_parent'] = $parent_product_id;
-                                // }
-                                $product_data_args['post_status'] = 'publish';
-                                $new_product_id = wp_insert_post($product_data_args);
-                                $product_id = $new_product_id;
-                                update_post_meta($product_id, '_sku', $trek_trip->tripCode);
+                        $ride_camp_trips = array();
+                        foreach ( $trek_trips->trips as $trek_trip ) {
+                            // Set is Ride Camp flag.
+                            $is_ride_camp = ( $trek_trip->isRideCamp ? $trek_trip->isRideCamp : '' );
+
+                            if( !empty( $is_ride_camp ) && $is_ride_camp ) {
+                                // This is a Ride Camp trip, store it into array for laiter usage.
+                                array_push( $ride_camp_trips, $trek_trip );
                             }
-                            if ($product_id) {
-                                if ($meta_fields) {
-                                    foreach ($meta_fields as $meta_id => $meta_value) {
-                                        $meta_key = TT_WC_META_PREFIX . $meta_id;
-                                        update_post_meta($product_id, $meta_key, $meta_value);
+                            // Continue as normal.
+                            tt_sync_wc_product_from_ns( $trek_trip );
+                        }
+                        if( !empty( $ride_camp_trips ) ) {
+                            // Have a Ride Camp Trips.
+                            foreach( $ride_camp_trips as $trek_trip ) {
+
+                                // Take the info for the additional trips that need to be made.
+                                $bookable_periods = $trek_trip->bookablePeriods;
+
+                                $main_start_date  = $trek_trip->startDate;
+                                $main_end_date    = $trek_trip->endDate;
+
+                                // Keep SKU base.
+                                $main_trip_code   = $trek_trip->tripCode;
+                                $main_trip_name   = $trek_trip->tripName;
+
+                                foreach( $bookable_periods as $period ) {
+                                    $start_date = $period->startDate;
+                                    $end_date   = $period->endDate;
+
+                                    if( $start_date === $main_start_date && $end_date === $main_end_date ) {
+                                        // This is the main trip product, that we already have into WC.
+                                        continue;
                                     }
-                                }
-                                $has_sku = get_post_meta($product_id, '_sku', true);
-                                if( empty($has_sku) ){
-                                    update_post_meta($product_id, '_sku', $trek_trip->tripCode);
-                                }
-                                if( $parent_p_ID ){
-                                    $new_child_ids = [$product_id];
-                                    $get_children_ids = get_post_meta($parent_p_ID, '_children', true);
-                                    if( $get_children_ids){
-                                        $new_child_ids = array_merge($get_children_ids, $new_child_ids);
+
+                                    if( $start_date === $main_start_date && $end_date !== $main_end_date ) {
+                                        // This is the FIRST child product, add a suffix to the SKU.
+                                        $trek_trip->tripCode = $main_trip_code . '-FIRST';
+                                        // Add suffix on the name.
+                                        $trek_trip->tripName = $main_trip_name . '-FIRST';
+
+                                    } elseif ( $start_date !== $main_start_date && $end_date === $main_end_date ) {
+                                        // This is the SECOND child product, add a suffix to the SKU.
+                                        $trek_trip->tripCode = $main_trip_code . '-SECOND';
+                                        // Add suffix on the name.
+                                        $trek_trip->tripName = $main_trip_name . '-SECOND';
                                     }
-                                    $new_child_ids = array_unique($new_child_ids);
+                                    
+                                    $trek_trip->startDate             = $start_date;
+                                    $trek_trip->endDate               = $end_date;
+                                    $trek_trip->basePrice             = $period->basePrice;
+                                    $trek_trip->singleSupplementPrice = $period->singleSupplementPrice;
+                                    $trek_trip->depositAmount         = $period->depositAmount;
+                                    $trek_trip->bikeUpgradePrice      = $period->bikeUpgradePrice;
+
+                                    // Create or update a Ride Camp half-period product.
+                                    tt_sync_wc_product_from_ns( $trek_trip );
                                 }
-                                //start saved attribute code
-                                if( is_object($riderType) ){
-                                    $riderLevelVal = tt_get_custom_item_name('syncRiderLevels',$riderType->id);
-                                }
-                                $custom_attributes = [
-                                    'pa_trip-status' => is_object($status) ? $status->name : '',
-                                    'pa_rider-level' => $riderLevelVal,
-                                    'pa_duration' => $daysToTrip,
-                                    'pa_region' => $tripRegion,
-                                    'pa_continent' => $tripContinent,
-                                    'pa_season' => $tripSeason,
-                                    'pa_country' => $tripCountry,
-                                    'pa_start-date' => date('d/m/y', $attr_startDate),
-                                    'pa_end-date' => date('d/m/y', $attr_endDate)
-                                ];
-                                if( $custom_attributes ){
-                                    foreach($custom_attributes as $custom_attribute_k=>$custom_attribute_v){
-                                        if( $custom_attribute_v ){
-                                            tt_set_wc_attribute_value($product_id, $custom_attribute_k, $custom_attribute_v);
-                                        }
-                                    }
-                                }
-                                update_post_meta($product_id, '_manage_stock', 'yes');
-                                update_post_meta($product_id, '_stock', $capacity);
-                                update_post_meta($product_id, '_regular_price', $basePrice);
-                                update_post_meta($product_id, '_price', $basePrice);
-                                //end saved attribute code
-                                update_post_meta($product_id, 'ns_last_synced_date_time', date('Y-m-d H:i:s'));
                             }
                         }
                     }
@@ -722,3 +790,119 @@ if (!function_exists('tt_ns_fetch_bike_type_info')) {
     }
 }
 
+
+if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
+    function tt_ns_fetch_registration_ids() {
+        //Fire the NS script to fetch all the registration ids for the past 24 hours
+        $modifiedAfter = date('Y-m-d H:i:s', strtotime(' -2 hours'));
+
+        //Get the 1293 script with the modifiedAfter parameter and deploy 2
+        $modifiedAfterTime = gmdate("Y-m-d\TH:i:s", strtotime($modifiedAfter));
+        $netSuiteClient = new NetSuiteClient();
+        $modified_reg_ids = $netSuiteClient->get('1293:2', ['modifiedAfter' => $modifiedAfterTime ]);
+
+        //Loop through the registration ids and fetch the registration details. That's done to filter out users outside of this WP installation
+        foreach( $modified_reg_ids as $modified_reg_id ) {
+            $registrationEmail = $modified_reg_id->email;
+            $netsuite_trip_id = $modified_reg_id->tripId;
+
+            //Check if user exists in WC
+            $user = get_user_by( 'email', $registrationEmail );
+            if( $user ) {
+                $wc_user_id = $user->ID;
+                //Execute the 1294 script with the registration id as parameter and deploy 2
+                $ns_registration_id = $modified_reg_id->id;
+                $ns_registration_details = $netSuiteClient->get('1294:2', ['registrationId' => $ns_registration_id ]);
+
+                //Get "Lock Record" and "Lock Bike" values
+                $lockRecord = isset($ns_registration_details[0]->lockRecord) ? $ns_registration_details[0]->lockRecord : '';
+                $lockBike = isset($ns_registration_details[0]->lockBike) ? $ns_registration_details[0]->lockBike : '';
+
+                //Find the product with netsuite_trip_id  as meta value without using tt_get_postid_by_meta_key_value()
+                $args = array(
+                    'post_type' => 'product',
+                    'meta_query' => array(
+                        array(
+                            'key' => 'tt_meta_tripid',
+                            'value' => $netsuite_trip_id,
+                            'compare' => '='
+                        )
+                    )
+                );
+                $trip_product = get_posts( $args );
+
+                //If the product exists, get the ID
+                if( $trip_product ) {
+                    $trip_product_id = $trip_product[0]->ID;
+                }
+
+                //Update the lock bikes and lock record for the trip as meta values
+                if( $trip_product_id ) {
+                    update_post_meta( $trip_product_id, 'lock_record', $lockRecord );
+                    update_post_meta( $trip_product_id, 'lock_bike', $lockBike );
+                }
+
+                if( $lockRecord || $lockBike ) {
+
+                    //Check if such post meta exists, if it does, add the new registration id to the array
+                    $existing_registration_ids_bike = get_post_meta( $trip_product_id, 'ns_registration_ids_bike', true );
+                    $existing_registration_ids_record = get_post_meta( $trip_product_id, 'ns_registration_ids_record', true );
+
+
+                    if( $lockBike ) {
+                        if( ! empty( $existing_registration_ids_bike ) ) {
+
+                            //Check if the user already exists in the array, if it does, don't add it again
+                            if( ! in_array( $wc_user_id, $existing_registration_ids_bike ) ) {
+                                $existing_registration_ids_bike[] += $wc_user_id;
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                            }
+
+                        } else {
+                            //If the post meta doesn't exist, create a new one
+                            $new_registration_ids_bike = array();
+                            $new_registration_ids_bike[] += $wc_user_id;
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $new_registration_ids_bike );
+                        }
+                    } else {
+                        //Check if the user exists in the array, if it does, remove it
+                        if( ! empty( $existing_registration_ids_bike ) ) {
+                            $key = array_search( $wc_user_id, $existing_registration_ids_bike );
+                            if( $key !== false ) {
+                                unset( $existing_registration_ids_bike[$key] );
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                            }
+                        }
+                    }
+
+
+                    if( $lockRecord ) {
+                        if( ! empty( $existing_registration_ids_record ) ) {
+                            //Check if the user already exists in the array, if it does, don't add it again
+                            if( ! in_array( $wc_user_id, $existing_registration_ids_record ) ) {
+                                $existing_registration_ids_record[] += $wc_user_id;
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                            }
+                        } else {
+                            //If the post meta doesn't exist, create a new one
+                            $new_registration_ids_record = array();
+                            $new_registration_ids_record[] += $wc_user_id;
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $new_registration_ids_record );
+                        }
+                    } else {
+                        //Check if the user exists in the array, if it does, remove it
+                        if( ! empty( $existing_registration_ids_record ) ) {
+                            //Remove all existing instances of the user id, even if it's more than one
+                            $key = array_search( $wc_user_id, $existing_registration_ids_record );
+                            if( $key !== false ) {
+                                unset( $existing_registration_ids_record[$key] );
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}

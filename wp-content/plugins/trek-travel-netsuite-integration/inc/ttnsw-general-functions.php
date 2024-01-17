@@ -11,6 +11,13 @@ function tt_custom_cron_schedule( $schedules ) {
         'interval' => 14400,
         'display'  => __( 'Every 4 hours' ),
     );
+
+    //Add every 1 hour to the existing schedules.
+    $schedules['every_one_hour'] = array(
+        'interval' => 3600,
+        'display'  => __( 'Every 1 hour' ),
+    );
+
     return $schedules;
 }
 add_filter( 'cron_schedules', 'tt_custom_cron_schedule' );
@@ -27,6 +34,16 @@ function tt_wc_ns_fire_cron_on_wp_init()
     }
 }
 
+
+add_action( 'tt_wc_ns_sync_one_hour_event', 'tt_wc_ns_sync_one_hour_event_cb' );
+
+function tt_wc_ns_fire_one_hour_cron() {
+    if (!wp_next_scheduled('tt_wc_ns_sync_one_hour_event')) {
+        wp_schedule_event(time(), 'every_one_hour', 'tt_wc_ns_sync_one_hour_event');
+    }
+}
+add_action( 'wp', 'tt_wc_ns_fire_one_hour_cron' );
+
 add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
 function tt_wc_ns_sync_hourly_event_cb()
 {
@@ -37,6 +54,11 @@ function tt_wc_ns_sync_hourly_event_cb()
     tt_sync_ns_trip_addons();
     tt_sync_wc_products_from_ns();
 }
+
+function tt_wc_ns_sync_one_hour_event_cb() {
+    tt_ns_fetch_registration_ids();
+}
+
 add_action('tt_trigger_cron_ns_booking', 'tt_trigger_cron_ns_booking_cb', 10, 2);
 function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=false)
 {
@@ -164,7 +186,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
                 $rider_level = tt_validate($wc_booking->rider_level);
                 // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
                 $default_bike_id = '';
-                if( 0 === (int) $wc_booking->bike_id ){
+                if( 0 == $wc_booking->bike_id ){
                     $default_bike_id = 0;
                 }
                 $bike_id = tt_validate($wc_booking->bike_id, $default_bike_id);

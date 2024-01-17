@@ -295,9 +295,9 @@ get_header();
                                                 </div>
                                                 <# if ( data['review_score'] ) { #>
                                                 <div class="card-footer bg-transparent border-0 ms-md-4">
-                                                    <span class="fw-semibold"><i class="bi bi-star"></i> {{data['review_score']}}</span>
+                                                    <span class="fw-semibold"><i class="bi bi-star"></i> {{ (parseFloat(data['review_score']) % 1 === 0) ? parseFloat(data['review_score']).toFixed(0) : parseFloat(data['review_score']).toFixed(2) }} </span>
                                                     <span class="text-muted review-text"> rating based on </span>
-                                                    <span class="fw-semibold">{{data['total_review']}} </span>
+                                                    <span class="fw-semibold reviews-count">{{data['total_review']}} </span>
                                                     <span class="text-muted review-text"> reviews </span>
                                                 </div>
                                                 <# } #>
@@ -390,7 +390,7 @@ get_header();
 
                                     <# if ( data['review_score'] ) { #>
                                     <div class="card-footer bg-transparent border-0 ms-md-4">
-                                        <span class="fw-semibold"><i class="bi bi-star"></i> {{data['review_score']}}</span>
+                                        <span class="fw-semibold"><i class="bi bi-star"></i> {{ (parseFloat(data['review_score']) % 1 === 0) ? parseFloat(data['review_score']).toFixed(0) : parseFloat(data['review_score']).toFixed(2) }} </span>
                                         <span class="text-muted review-text"> rating based on </span>
                                         <span class="fw-semibold">{{data['total_review']}} </span>
                                         <span class="text-muted review-text"> reviews </span>

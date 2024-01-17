@@ -29,7 +29,7 @@
     .overview-details{
         display: flex;
         flex-wrap: wrap;
-        @media (min-width: 768px) {
+        @media (min-width: 991px) {
             flex-direction: column;
             height: 17rem;
         }
@@ -47,7 +47,7 @@
         }        
         div{            
             margin: 0 .25rem;
-            @media (min-width: 768px) {
+            @media (min-width: 991px) {
                 flex: 0 0 auto;
                 &:not(:last-child){
                     border-right: 1px solid #B2B3B6;
@@ -75,9 +75,9 @@
         }
         
         .rider-level, .hotel-level, .tour-duration, .trip-style{
-            width: 33%;
+            width: 30%;
             @media (min-width: 768px) {
-                width: 25%;
+                // width: 25%;
             }
         }
         .hotel-level{

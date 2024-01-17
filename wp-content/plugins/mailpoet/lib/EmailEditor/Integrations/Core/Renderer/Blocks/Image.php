@@ -9,7 +9,7 @@ use MailPoet\EmailEditor\Engine\Renderer\BlockRenderer;
 use MailPoet\EmailEditor\Engine\SettingsController;
 
 class Image implements BlockRenderer {
-  public function render($blockContent, array $parsedBlock, SettingsController $settingsController): string {
+  public function render(string $blockContent, array $parsedBlock, SettingsController $settingsController): string {
     // Replacing HTML tags figure and figcaption because they are not supported by all email clients
     $blockContent = str_replace(
       ['<figure', '</figure>', '<figcaption', '</figcaption>'],
@@ -21,8 +21,6 @@ class Image implements BlockRenderer {
     $blockContent = $this->addImageDimensions($blockContent, $parsedBlock, $settingsController);
     $blockContent = $this->addWidthToWrapper($blockContent, $parsedBlock, $settingsController);
     $blockContent = $this->addCaptionFontSize($blockContent, $settingsController);
-    bdump($parsedBlock);
-    bdump($blockContent);
     return str_replace('{image_content}', $blockContent, $this->getBlockWrapper($parsedBlock, $settingsController));
   }
 
@@ -40,11 +38,11 @@ class Image implements BlockRenderer {
   /**
    * Settings width and height attributes for images is important for MS Outlook.
    */
-  private function addImageDimensions($blockContent, array $parsedBlock, SettingsController $settingsController) {
+  private function addImageDimensions($blockContent, array $parsedBlock, SettingsController $settingsController): string {
     $html = new \WP_HTML_Tag_Processor($blockContent);
     if ($html->next_tag(['tag_name' => 'img'])) {
       // Getting height from styles and if it's set, we set the height attribute
-      $styles = $html->get_attribute('style');
+      $styles = $html->get_attribute('style') ?? '';
       $styles = $settingsController->parseStylesToArray($styles);
       $height = $styles['height'] ?? null;
       if ($height && is_numeric($settingsController->parseNumberFromStringWithPixels($height))) {
@@ -130,7 +128,7 @@ class Image implements BlockRenderer {
    * @param array{tag_name: string, class_name?: string} $tag
    * @param string $style
    */
-  private function addStyleToElement($blockContent, array $tag, string $style) {
+  private function addStyleToElement($blockContent, array $tag, string $style): string {
     $html = new \WP_HTML_Tag_Processor($blockContent);
     if ($html->next_tag($tag)) {
       $elementStyle = $html->get_attribute('style');

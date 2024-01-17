@@ -221,7 +221,8 @@ function get_child_products($linked_products = array())
                 if ($start_date && $end_date && !in_array($trip_status, $status_not_in)) {
                     $sdate_obj = explode('/', $start_date);
                     $sku = $p_obj->get_sku();
-                    $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $sku, true);
+                    // Take the singleSupplementPrice from the post meta fields.
+                    $singleSupplementPrice = get_post_meta( $linked_product, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
                     $sdate_info = array(
                         'd' => $sdate_obj[0],
                         'm' => $sdate_obj[1],
@@ -415,8 +416,8 @@ function save_checkout_steps_action_cb()
             $cart_item['trek_user_checkout_data']['parent_product_id'] = $parent_product_id;
             $cart_item['trek_user_checkout_data']['product_id'] = $product_id;
             $cart_item['trek_user_checkout_data']['sku'] = $_product->get_sku();
-            $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $_product->get_sku(), true);
-            $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $_product->get_sku(), true);
+            $bikeUpgradePrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
+            $singleSupplementPrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
             $cart_item['trek_user_checkout_data']['bikeUpgradePrice'] = $bikeUpgradePrice;
             $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = $singleSupplementPrice;
             $cart_posted_data = $cart_item['trek_user_checkout_data'];
@@ -462,7 +463,7 @@ function save_checkout_steps_action_cb()
     WC()->cart->maybe_set_cart_cookies();
     $gearData = $_REQUEST['bike_gears']['primary'];
     if (isset($gearData['save_preferences']) && $gearData['save_preferences'] == 'yes' && isset($step) && $step == 3) {
-        $p_bike = isset($gearData['bike']) ? $gearData['bike'] : '';
+        $p_bike = isset($gearData['bike_type_id_preferences']) ? $gearData['bike_type_id_preferences'] : '';
         $p_rider_height = isset($gearData['rider_height']) ? $gearData['rider_height'] : '';
         $p_bike_pedal = isset($gearData['bike_pedal']) ? $gearData['bike_pedal'] : '';
         $p_helmet_size = isset($gearData['helmet_size']) ? $gearData['helmet_size'] : '';
@@ -770,15 +771,18 @@ function trek_update_trip_checklist_action_cb()
             'helmet_selection' => $_REQUEST['tt-helmet-size'],
             'jersey_style' => $_REQUEST['tt-jerrsey-style'],
             'tt_jersey_size' => $_REQUEST['tt-jerrsey-size'],
-            'passport_number' => $_REQUEST['passport_number'],
-            'passport_issue_date' => $_REQUEST['passport_issue_date'],
-            'passport_expiration_date' => $_REQUEST['passport_expiration_date'],
-            'passport_place_of_issue' => $_REQUEST['passport_place_of_issue'],
-            'full_name_on_passport' => $_REQUEST['full_name_on_passport'],
+            'passport_number' => isset( $_REQUEST['passport_number'] ) ? $_REQUEST['passport_number'] : '',
+            'passport_issue_date' => isset( $_REQUEST['passport_issue_date'] ) ? $_REQUEST['passport_issue_date'] : '',
+            'passport_expiration_date' => isset( $_REQUEST['passport_expiration_date'] ) ? $_REQUEST['passport_expiration_date'] : '',
+            'passport_place_of_issue' => isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '',
+            'full_name_on_passport' => isset( $_REQUEST['full_name_on_passport'] ) ? $_REQUEST['full_name_on_passport'] : '',
             'bike_selection' => $_REQUEST['bikeId'],
             'bike_type_id' => $_REQUEST['bikeTypeId'],
             'bike_id' => $_REQUEST['bikeId'],
-            'bike_size' => $_REQUEST['tt-bike-size']
+            'bike_size' => $_REQUEST['tt-bike-size'],
+            'saddle_height' => $_REQUEST['saddleId'],
+            'saddle_bar_reach_from_saddle' => $_REQUEST['bar_reach'],
+            'saddle_bar_height_from_wheel_center' => $_REQUEST['bar_height']
         ];
         if( empty($guest_email_address) ){
             $bookingData['guest_email_address'] = $user->user_email;
@@ -816,21 +820,27 @@ function trek_update_trip_checklist_action_cb()
             update_user_meta($user->ID, 'gear_preferences_rider_height', $_REQUEST['tt-rider-height']);
             update_user_meta($user->ID, 'gear_preferences_select_pedals', $_REQUEST['tt-pedal-selection']);
             update_user_meta($user->ID, 'gear_preferences_helmet_size', $_REQUEST['tt-helmet-size']);
-            update_user_meta($user->ID, 'gear_preferences_jersey_style', $_REQUEST['tt-jerrsey-style']);
-            update_user_meta($user->ID, 'gear_preferences_jersey_size', $_REQUEST['tt-jerrsey-size']);
+            if( ! empty( $_REQUEST['tt-jerrsey-style'] ) ) {
+
+                update_user_meta($user->ID, 'gear_preferences_jersey_style', $_REQUEST['tt-jerrsey-style']);
+            }
+            if( ! empty( $_REQUEST['tt-jerrsey-size'] ) ) {
+                
+                update_user_meta($user->ID, 'gear_preferences_jersey_size', $_REQUEST['tt-jerrsey-size']);
+            }
             $update_to_ns = true;
         }
         $is_passport_update = true;
         if ($is_passport_update == true) {
-            update_user_meta($user->ID, 'custentity_passport_number', $_REQUEST['passport_number']);
-            update_user_meta($user->ID, 'custentity_passport_exp_date', $_REQUEST['passport_issue_date']);
-            update_user_meta($user->ID, 'custentity_passport_issue_place', $_REQUEST['passport_expiration_date']);
-            update_user_meta($user->ID, 'custentity_placeofbirth', $_REQUEST['passport_place_of_issue']);
-            update_user_meta($user->ID, 'custentity_full_name_on_passport', $_REQUEST['full_name_on_passport']);
+            update_user_meta($user->ID, 'custentity_passport_number', isset( $_REQUEST['passport_number'] ) ? $_REQUEST['passport_number'] : '' );
+            update_user_meta($user->ID, 'custentity_passport_exp_date', isset( $_REQUEST['passport_issue_date'] ) ? $_REQUEST['passport_issue_date'] : '' );
+            update_user_meta($user->ID, 'custentity_passport_issue_place', isset( $_REQUEST['passport_expiration_date'] ) ? $_REQUEST['passport_expiration_date'] : '' );
+            update_user_meta($user->ID, 'custentity_placeofbirth',isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '' );
+            update_user_meta($user->ID, 'custentity_full_name_on_passport', isset( $_REQUEST['full_name_on_passport'] ) ? $_REQUEST['full_name_on_passport'] : '' );
             $update_to_ns = true;
         }
         if (isset($_REQUEST['tt_save_bike_info']) && $_REQUEST['tt_save_bike_info'] == 'yes') {
-            update_user_meta($user->ID, 'gear_preferences_bike_type', $_REQUEST['bikeTypeId']);
+            update_user_meta($user->ID, 'gear_preferences_bike_type', $_REQUEST['bike_type_id_preferences']);
             update_user_meta($user->ID, 'gear_preferences_bike_size', $_REQUEST['tt-bike-size']);
             update_user_meta($user->ID, 'gear_preferences_bike', $_REQUEST['bikeId']);
             $update_to_ns = true;
@@ -2473,6 +2483,12 @@ if (!function_exists('tt_get_local_trips_detail')) {
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_detail';
+
+        if( !empty( $tripCode ) ) {
+            // Get a trip code without suffix.
+            $tripCode = tt_get_local_trip_code( $tripCode );
+        }
+
         $sql = "SELECT ts.{$field} from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
         if ($tripId) {
             $sql .= " AND ts.tripId = '{$tripId}'";
@@ -2643,7 +2659,7 @@ function trek_tt_save_occupants_ajax_action_cb()
     $occupants_roommate = (isset($_REQUEST['occupants']['roommate']) ? $_REQUEST['occupants']['roommate'] : array());
     $suppliment_counts = count($occupants_private) + count($occupants_roommate);
     $trip_sku = tt_get_trip_pid_sku_from_cart();
-    $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku['sku'], true);
+    $singleSupplementPrice = get_post_meta( $trip_sku['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
     if ($singleSupplementPrice && $singleSupplementPrice > 0) {
         WC()->cart->add_to_cart($s_product_id, $suppliment_counts, 0, array(), array('tt_cart_custom_fees_price' => $singleSupplementPrice));
     }
@@ -2751,6 +2767,12 @@ if (!function_exists('tt_get_local_bike_detail')) {
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+        if( !empty( $tripCode ) ) {
+            // Get a trip code without suffix.
+            $tripCode = tt_get_local_trip_code( $tripCode );
+        }
+
         $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
         if ($bikeId) {
             $sql .= " AND ts.bikeId = '{$bikeId}'";
@@ -2828,8 +2850,9 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
         }
         $parent_trip_link = get_the_permalink($parent_product_id) ? get_the_permalink($parent_product_id) : 'javascript:';
     }
+
     return [
-        'sku' => $sku,
+        'sku' => $sku,  
         'parent_rider_level' => isset($parent_rider_level->level) ? $parent_rider_level->level : '',
         'rider_level_text' => $rider_level_text,
         'product_id' => $product_id,
@@ -2867,6 +2890,7 @@ function tt_get_trip_pid_sku_by_orderId($order_id)
         $guests = isset($tt_data['guests']) && is_array($tt_data['guests']) ? $tt_data['guests'] : []; 
         $guest_emails = array_column($guests, 'guest_email');
     }
+
     return [
         'sku' => $sku,
         'product_id' => $wc_trip_id,
@@ -2880,6 +2904,12 @@ function tt_get_bikes_by_trip_info($tripId = '', $tripCode = '', $bikeTypeId = '
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+    if( !empty( $tripCode ) ) {
+        // Get a trip code without suffix.
+        $tripCode = tt_get_local_trip_code( $tripCode );
+    }
+
     $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
     // if ($tripId) {
     //     $sql .= " AND ts.tripId = '{$tripId}'";
@@ -2911,11 +2941,11 @@ function tt_get_bikes_by_trip_info($tripId = '', $tripCode = '', $bikeTypeId = '
                 }
                 if ($bike_size_id && $bike_size_name) {
                     $selected = ($bike_size_id == $s_bike_size_id ? 'selected' : '');
-                    $bike_size_opts .= '<option ' . $option_disabled . $selected . ' value="' . $bike_size_id . '">' . $bike_size_name . '</option>';
+                    $bike_size_opts .= '<option ' . $selected . ' value="' . $bike_size_id . '" ' . $option_disabled . '>' . $bike_size_name . '</option>';
                 }
                 if ($bike_type_id && $bike_type_name) {
                     $selected1 = ($loop_bikeId == $s_bike_type_id ? 'selected' : '');
-                    $bike_Type_opts .= '<option ' . $option_disabled . $selected1 . ' value="' . $bike_type_id . '">' . $bike_type_name . '</option>';
+                    $bike_Type_opts .= '<option ' . $selected1 . ' value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . '</option>';
                 }
             }
         }
@@ -2930,6 +2960,12 @@ function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+    if( !empty( $tripCode ) ) {
+        // Get a trip code without suffix.
+        $tripCode = tt_get_local_trip_code( $tripCode );
+    }
+
     $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
     if ($tripId) {
         $sql .= " AND ts.tripId = '{$tripId}'";
@@ -2938,6 +2974,9 @@ function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId
         $sql .= " AND ts.bikeId = '{$bikeID}'";
     }
     $bike_size_opts = '<option value="">Select bike size</option>';
+     // Insert the "I don't know" option for bike sizes in the first position.
+    $i_dont_know_selected = ( 33 == $s_bike_size_id ? 'selected' : '');
+    $bike_size_opts .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>';
     $bike_Type_opts = '<option value="">Select bike type</option>';
     $bikes_arr = $wpdb->get_results($sql, ARRAY_A);
     if ($bikes_arr) {
@@ -2948,16 +2987,21 @@ function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId
             $bike_size_id = $bikeSizeObj['id'];
             $bike_size_name = $bikeSizeObj['name'];
             $bike_type_id = $bikeTypeObj['id'];
-            if ($bike_type_id == $bikeTypeId && $bike_available > 0) {
+            if ($bike_type_id == $bikeTypeId ) {
                 $bike_type_name = $bikeTypeObj['name'];
                 $loop_bikeId = $bike_info['bikeId'];
+                if ( 0 < $bike_available ) {
+                    $option_disabled = '';
+                } else {
+                    $option_disabled = 'disabled';
+                }
                 if ($bike_size_id && $bike_size_name) {
                     $selected = ($bike_size_id == $s_bike_size_id ? 'selected' : '');
-                    $bike_size_opts .= '<option ' . $selected . ' value="' . $bike_size_id . '">' . $bike_size_name . '</option>';
+                    $bike_size_opts .= '<option ' . $selected . ' value="' . $bike_size_id . '" ' . $option_disabled . '>' . $bike_size_name . '</option>';
                 }
                 if ($bike_type_id && $bike_type_name) {
                     $selected1 = ($loop_bikeId == $s_bike_type_id ? 'selected' : '');
-                    $bike_Type_opts .= '<option ' . $selected1 . ' value="' . $bike_type_id . '">' . $bike_type_name . '</option>';
+                    $bike_Type_opts .= '<option ' . $selected1 . ' value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . '</option>';
                 }
             }
         }
@@ -2972,6 +3016,12 @@ function tt_get_bike_id_by_args($tripId = '', $tripCode = '', $bikeTypeId = '', 
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+    if( !empty( $tripCode ) ) {
+        // Get a trip code without suffix.
+        $tripCode = tt_get_local_trip_code( $tripCode );
+    }
+
     $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
     if ($tripId) {
         $sql .= " AND ts.tripId = '{$tripId}'";
@@ -3389,7 +3439,7 @@ function trek_tt_bike_selection_ajax_action_cb()
     $opts = tt_get_bikes_by_trip_info($tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId);
     $accepted_p_ids = tt_get_line_items_product_ids();
     $product_id = tt_create_line_item_product('TTWP23UPGRADES');
-    $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $tripInfo['sku'], true);
+    $bikeUpgradePrice = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
     if ($bikeUpgradePrice && $bikeUpgradePrice > 0) {
         WC()->cart->add_to_cart($product_id, $bike_upgrade_qty, 0, array(), array('tt_cart_custom_fees_price' => $bikeUpgradePrice));
     }
@@ -3423,6 +3473,9 @@ function trek_tt_bike_selection_ajax_action_cb()
             WC()->cart->cart_contents[$cart_item_id] = $cart_item;
         }
     }
+    WC()->cart->set_session();
+    WC()->cart->calculate_totals();
+    WC()->cart->maybe_set_cart_cookies();
     $review_order_html = '';
     $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
     if (is_readable($review_order)) {
@@ -3433,9 +3486,6 @@ function trek_tt_bike_selection_ajax_action_cb()
     $opts['review_order'] = $review_order_html;
     $opts['bike_upgrade_qty'] = $bike_upgrade_qty;
     $opts['isBikeUpgrade'] = $isBikeUpgrade;
-    WC()->cart->set_session();
-    WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
     echo json_encode($opts);
     exit;
 }
@@ -3756,8 +3806,8 @@ function tt_woocommerce_add_to_cart_cb()
                 $cart_item['trek_user_checkout_data']['parent_product_id'] = $parent_product_id;
                 $cart_item['trek_user_checkout_data']['product_id'] = $product_id;
                 $cart_item['trek_user_checkout_data']['sku'] = $_product->get_sku();
-                $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $_product->get_sku(), true);
-                $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $_product->get_sku(), true);
+                $bikeUpgradePrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
+                $singleSupplementPrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
                 $cart_item['trek_user_checkout_data']['bikeUpgradePrice'] = $bikeUpgradePrice;
                 $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = $singleSupplementPrice;
                 WC()->cart->cart_contents[$cart_item_id] = $cart_item;
@@ -4006,7 +4056,7 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
                     if ($guest_id == 0) {
                         $guest_names[] = $shipping_name;
                     } else {
-                        if ($guest_id) {
+                        if ($guest_id && $guest_id !== 'none') {
                             $guest_fname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_fname'] : '';
                             $guest_lname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_lname'] : '';
                             $guest_names[] = $guest_fname . ' ' . $guest_lname;
@@ -4048,7 +4098,7 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
                     if ($guest_id == 0) {
                         $guest_names[] = $shipping_name;
                     } else {
-                        if ($guest_id) {
+                        if ($guest_id && $guest_id !== 'none') {
                             $guest_fname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_fname'] : '';
                             $guest_lname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_lname'] : '';
                             $guest_names[] = $guest_fname . ' ' . $guest_lname;
@@ -4090,7 +4140,7 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
                     if ($guest_id == 0) {
                         $guest_names[] = $shipping_name;
                     } else {
-                        if ($guest_id) {
+                        if ($guest_id && $guest_id !== 'none') {
                             $guest_fname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_fname'] : '';
                             $guest_lname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_lname'] : '';
                             $guest_names[] = $guest_fname . ' ' . $guest_lname;
@@ -4117,7 +4167,7 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
                     if ($guest_id == 0) {
                         $guest_names[] = $shipping_name;
                     } else {
-                        if ($guest_id) {
+                        if ($guest_id && $guest_id !== 'none') {
                             $guest_fname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_fname'] : '';
                             $guest_lname = isset($guests[$guest_id]) ? $guests[$guest_id]['guest_lname'] : '';
                             $guest_names[] = $guest_fname . ' ' . $guest_lname;
@@ -4244,7 +4294,12 @@ function tt_guest_details($tt_posted = [])
                 $bike_gear_html .= '<div class="d-flex order-details__flex order-details__flexmulti">';
             }
             $rider_levelVal = tt_validate($bike_gears['primary']['rider_level']);
-            $bikeId = tt_validate($bike_gears['primary']['bikeId']);
+            // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
+            $default_p_bike_id = '';
+            if( 0 == $bike_gears['primary']['bikeId'] ){
+                $default_p_bike_id = 0;
+            }
+            $bikeId = tt_validate($bike_gears['primary']['bikeId'], $default_p_bike_id);
             $bike_size = tt_validate($bike_gears['primary']['bike_size']);
             $bike = tt_validate($bike_gears['primary']['bike']);
             $rider_height = tt_validate($bike_gears['primary']['rider_height']);
@@ -4264,7 +4319,12 @@ function tt_guest_details($tt_posted = [])
                 $dob = isset($guest_info['guest_dob']) ? $guest_info['guest_dob'] : '';
                 $gender = isset($guest_info['guest_gender']) && $guest_info['guest_gender'] == 1 ? 'Male' : 'Female';
                 $rider_levelVal = tt_validate($bike_gears['guests'][$iter]['rider_level']);
-                $bikeId = tt_validate($bike_gears['guests'][$iter]['bikeId']);
+                // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
+                $default_bike_id = '';
+                if( 0 == $bike_gears['guests'][$iter]['bikeId'] ){
+                    $default_bike_id = 0;
+                }
+                $bikeId = tt_validate($bike_gears['guests'][$iter]['bikeId'], $default_bike_id);
                 $bike_size = tt_validate($bike_gears['guests'][$iter]['bike_size']);
                 $bike = tt_validate($bike_gears['guests'][$iter]['bike']);
                 $rider_height = tt_validate($bike_gears['guests'][$iter]['rider_height']);
@@ -4294,10 +4354,13 @@ function tt_guest_details($tt_posted = [])
             <p class="mb-0 fs-sm lh-sm fw-normal">' . $gender . '</p>
             <p class="mb-0 fs-sm lh-sm fw-normal">' . $dob . '</p>';
             if ($iter == 0) {
+                $guest_details_states = WC()->countries->get_states( $country );
+                $billing_state_name   = isset( $guest_details_states[$state] ) ? $guest_details_states[$state] : $state;
+                $billing_country_name = WC()->countries->countries[$country];
                 $guest_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">'.$addr1.'</p>
                 <p class="mb-0 fs-sm lh-sm fw-normal">'.$addr2.'</p>
-                <p class="mb-0 fs-sm lh-sm fw-normal">'.$state.', '.$city.', '.$postcode.'</p>
-                <p class="mb-0 fs-sm lh-sm fw-normal">'.$country.'</p>';
+                <p class="mb-0 fs-sm lh-sm fw-normal">'.$billing_state_name.', '.$city.', '.$postcode.'</p>
+                <p class="mb-0 fs-sm lh-sm fw-normal">'.$billing_country_name.'</p>';
             }
             $guest_html .= '</div>';
             $bike_gear_html .= '<div>';
@@ -4310,30 +4373,42 @@ function tt_guest_details($tt_posted = [])
             $bike_pedal = tt_get_custom_item_name('syncPedals', $bike_pedal);
             $jersey_size = tt_get_custom_item_name('syncJerseySizes', $jersey_size);
             $jersey_style = tt_get_custom_item_name('syncJerseySizes', $jersey_style);
-            $bike_name = json_decode( $local_bike_models_info[ $bikeId ], true)[ 'name' ];
+
+            // Set the bike name based on bikeId value.
+            $bike_name = '';
+            if( ( isset($bikeId) && $bikeId ) || 0 == $bikeId ){
+                switch ( $bikeId ) {
+                    case 5270: // I am bringing my own bike.
+                        $bike_name = 'Bringing own';
+                        break;
+                    case 0: // If set to 0, it means "I don't know" was picked for bike size and the bikeTypeName property will be used.
+                        $bike_name = $bikeTypeId;
+                        break;
+                    default: // Take the name of the bike.
+                        $bike_name = json_decode( $local_bike_models_info[ $bikeId ], true)[ 'name' ];
+                        break;
+                }
+            }
+
             $bike_gear_html .= '<p class="mb-2 fs-md lh-md fw-medium">' . $guest_label . '</p>';
             $bike_gear_html .= '<p class="mb-2 fs-md lh-md fw-medium">' . $fname . ' ' . $lname . '</p>';
-            $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Rider Level: ' . $rider_level . '</p>';
-            // if ($rider_level == 'Non-Rider') {
-                if ($own_bike == 'yes') {
-                    $bike_size = $rider_height = "Bringing own";
+            $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Rider Level: ' . $rider_level . '</p>';                
+            if(  $rider_levelVal != 5 ){
+                if( !empty( $bike_name ) ){
+
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_name . '</p>';
                 }
-                if( $rider_levelVal != 5 && is_array( $jersey_size ) ) {
-                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_name . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
-                } elseif ( $rider_levelVal != 5 ) {
-                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike: ' . $bike_name . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>
-                        <p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
-                    }
+                if( 'yes' !== $own_bike || 0 == $bikeId){
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Bike Size: ' . $bike_size . '</p>
+                    <p class="mb-0 fs-sm lh-sm fw-normal">Rider Height: ' . $rider_height . '</p>';
+                }
+                $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Pedals: ' . $bike_pedal . '</p>
+                <p class="mb-0 fs-sm lh-sm fw-normal">Helmet Size: ' . $helmet_size . '</p>';
+                if( !empty( $jersey_size ) && ! is_array( $jersey_size )  && '-' != $jersey_size ) {
+                    $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>';
+                }
+                $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
+            }
             $bike_gear_html .= '</div>';
             if (($iter % $cols == $cols - 1) || ($iter == $guest_count - 1)) {
                 $guest_html .= '</div>';
@@ -4422,41 +4497,41 @@ function trek_tt_get_product_data_ajax_action_cb()
 }
 function tt_compare_trips_html($Ids = [], $is_header = true)
 {
-    if ($Ids) {
-        $tt_compare_products = $Ids;
-    } else {
-        $tt_compare_products = [];
-        if (isset($_COOKIE['wc_products_compare_products']) && !empty($_COOKIE['wc_products_compare_products'])) {
-            $tt_compare_products = explode(',', $_COOKIE['wc_products_compare_products']);
-        }
-    }
-    $compare_div_style = ($tt_compare_products && count($tt_compare_products) > 0 ? 'display:flex;' : 'display:none;');
-    if ($is_header == true) {
-        $output = '<div class="sticky-bottom bg-white compare-products-footer-bar" style="' . $compare_div_style . '">
-                    <p class="fw-bold fs-sm lh-sm mb-0">Compare Trips</p>
-                    <div id="tt_compare_product">';
-    }
-    if ($tt_compare_products) {
-        foreach ($tt_compare_products as $tt_compare_product) {
-            $image_URL = get_the_post_thumbnail_url($tt_compare_product, 'full');
-            $image_URL = ($image_URL ? $image_URL : DEFAULT_IMG);
-            $output .= '<div class="compare-product" id="product-' . $tt_compare_product . '">
-                        <img src="' . $image_URL . '" class="object-fit-cover" alt="" />
-                        <a href="#" title="Remove" class="remove-compare-page-product" data-remove-id="' . $tt_compare_product . '"><i class="bi bi-x-lg"></i></a>
-                    </div>';
-        }
+    // if ($Ids) {
+    //     $tt_compare_products = $Ids;
+    // } else {
+    //     $tt_compare_products = [];
+    //     if (isset($_COOKIE['wc_products_compare_products']) && !empty($_COOKIE['wc_products_compare_products'])) {
+    //         $tt_compare_products = explode(',', $_COOKIE['wc_products_compare_products']);
+    //     }
+    // }
+    // $compare_div_style = ($tt_compare_products && count($tt_compare_products) > 0 ? 'display:flex;' : 'display:none;');
+    // if ($is_header == true) {
+    //     $output = '<div class="sticky-bottom bg-white compare-products-footer-bar" style="' . $compare_div_style . '">
+    //                 <p class="fw-bold fs-sm lh-sm mb-0">Compare Trips</p>
+    //                 <div id="tt_compare_product">';
+    // }
+    // if ($tt_compare_products) {
+    //     foreach ($tt_compare_products as $tt_compare_product) {
+    //         $image_URL = get_the_post_thumbnail_url($tt_compare_product, 'full');
+    //         $image_URL = ($image_URL ? $image_URL : DEFAULT_IMG);
+    //         $output .= '<div class="compare-product" id="product-' . $tt_compare_product . '">
+    //                     <img src="' . $image_URL . '" class="object-fit-cover" alt="" />
+    //                     <a href="#" title="Remove" class="remove-compare-page-product" data-remove-id="' . $tt_compare_product . '"><i class="bi bi-x-lg"></i></a>
+    //                 </div>';
+    //     }
         
         
 
-    }
-    if ($is_header == true) {
-        $output .= '</div>
-                <a href="#" title="Remove all" class="clear-all-link compare-remove-all-products">Clear All</a>
-                <a href="/products-compare" title="Compare Page" class="woocommerce-products-compare-compare-link btn btn-primary rounded-1">Compare</a>
-                <i class="bi bi-x-lg remove-all compare-remove-all-products"></i>
-            </div>';
-    }
-    return $output;
+    // }
+    // if ($is_header == true) {
+    //     $output .= '</div>
+    //             <a href="#" title="Remove all" class="clear-all-link compare-remove-all-products">Clear All</a>
+    //             <a href="/products-compare" title="Compare Page" class="woocommerce-products-compare-compare-link btn btn-primary rounded-1">Compare</a>
+    //             <i class="bi bi-x-lg remove-all compare-remove-all-products"></i>
+    //         </div>';
+    // }
+    // return $output;
 }
 
 // Add CSS class for logged out users
@@ -4626,13 +4701,24 @@ function tt_generate_save_insurance_quote_cb()
             $individualTripCost = $product->get_price();
             $occupants = $tt_posted['occupants'];
             $trek_insurance_args["insuredPerson"] = array();
+            $bike_gears = $tt_posted['bike_gears'];
+            if ( isset( $tt_posted['bikeUpgradePrice'] ) ) {
+                $bike_upgrade_price = (int) $tt_posted['bikeUpgradePrice'];
+            } else {
+                $bike_upgrade_price =  0;
+            }
             if ($guest_insurance_k == 'primary') {
+                $primary_guest_bike = $bike_gears['primary'];
+                $bike_type_info     = tt_ns_get_bike_type_info( $primary_guest_bike['bikeTypeId'] );
                 if ($guest_insurance_val['is_travel_protection'] == 1) {
                     $is_travel_protection_count++;
                 }
                 if ( ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( 0, $occupants['private'] ) )
                 || ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( 0, $occupants['roommate'] ) ) ) {
                     $individualTripCost = $individualTripCost + $amount_int;
+                }
+                if ( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) {
+                    $individualTripCost = $individualTripCost + $bike_upgrade_price;
                 }
                 //if ($guest_insurance_val['is_travel_protection'] == 1) {
                 $insuredPerson[] = array(
@@ -4662,13 +4748,18 @@ function tt_generate_save_insurance_quote_cb()
             } else {
                 foreach ($guest_insurance_val as $guest_key => $guest_insurance_Data) {
                     $individualTripCost = $product->get_price();
-                    $guestInfo = $tt_posted['guests'][$guest_key];
+                    $guestInfo          = $tt_posted['guests'][$guest_key];
+                    $guest_bike         = $bike_gears['guests'][$guest_key];
+                    $bike_type_info     = tt_ns_get_bike_type_info( $guest_bike['bikeTypeId'] );
                     if ($guest_insurance_Data['is_travel_protection'] == 1) {
                         $is_travel_protection_count++;
                     }
                     if ( ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( $guest_key, $occupants['private'] ) )
                     || ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( $guest_key, $occupants['roommate'] ) ) ) {
                         $individualTripCost = $individualTripCost + $amount_int;
+                    }
+                    if ( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) {
+                        $individualTripCost = $individualTripCost + $bike_upgrade_price;
                     }
                     $insuredPerson[] = array(
                         "address" => [
@@ -5074,25 +5165,27 @@ function tt_woocommerce_checkout_update_order_meta_cb($order_id, $posted_data, $
  **/
 add_action('wp_ajax_tt_ajax_mailing_address_action', 'tt_ajax_mailing_address_action_cb');
 add_action('wp_ajax_nopriv_tt_ajax_mailing_address_action', 'tt_ajax_mailing_address_action_cb');
-function tt_ajax_mailing_address_action_cb()
-{
-    $res['status'] = true;
-    $tt_checkoutData =  get_trek_user_checkout_data();
-    $tt_posted = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
-    $primary_address_1 = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
-    $primary_address_2 = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
-    $primary_country = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
-    $shipping_fname = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
-    $shipping_lname = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
-    $shipping_name = $shipping_fname.' '.$shipping_lname; 
-    $shipping_postcode = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
-    $shipping_state = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
-    $shipping_city = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
-    $output = '<p class="mb-0">'.$shipping_name.'</p>
+function tt_ajax_mailing_address_action_cb() {
+    $res['status']         = true;
+    $tt_checkoutData       =  get_trek_user_checkout_data();
+    $tt_posted             = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
+    $primary_address_1     = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
+    $primary_address_2     = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
+    $primary_country       = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
+    $shipping_fname        = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
+    $shipping_lname        = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
+    $shipping_name         = $shipping_fname.' '.$shipping_lname; 
+    $shipping_postcode     = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
+    $shipping_state        = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
+    $shipping_city         = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
+    $guest_details_states  = WC()->countries->get_states( $primary_country );
+    $shipping_state_name   = isset( $guest_details_states[$shipping_state] ) ? $guest_details_states[$shipping_state] : $shipping_state;
+    $shipping_country_name = WC()->countries->countries[$primary_country];
+    $output                     = '<p class="mb-0">'.$shipping_name.'</p>
         <p class="mb-0">'.$primary_address_1.'</p>
         <p class="mb-0">'.$primary_address_2.'</p>
-        <p class="mb-0">'.$shipping_city.', '.$shipping_state.', '.$shipping_postcode.'</p>
-        <p class="mb-0">'.$primary_country.'</p>
+        <p class="mb-0">'.$shipping_city.', '.$shipping_state_name.', '.$shipping_postcode.'</p>
+        <p class="mb-0">'.$shipping_country_name.'</p>
         <p class="mb-0"></p>';
     $res['address'] = $output;
     echo json_encode($res);    
@@ -5470,12 +5563,13 @@ function tt_after_submission_referral_form( $entry, $form ) {
     }
 }
 add_action( 'gform_after_submission', 'tt_after_submission_referral_form', 10, 2 );
-								
+
 function dx_get_current_user_bike_preferences_cb() {
     $current_user = wp_get_current_user();
     $user_id      = $current_user->ID;
 
     // Get post meta for the current user
+    $gear_preferences_bike_type     = get_user_meta( $user_id, 'gear_preferences_bike_type', true );
     $gear_preferences_rider_height  = get_user_meta( $user_id, 'gear_preferences_rider_height', true );
     $gear_preferences_select_pedals = get_user_meta( $user_id, 'gear_preferences_select_pedals', true );
     $gear_preferences_helmet_size   = get_user_meta( $user_id, 'gear_preferences_helmet_size', true );
@@ -5484,11 +5578,12 @@ function dx_get_current_user_bike_preferences_cb() {
 
     // Prepare response
     $response = array(
-        'gear_preferences_rider_height' => $gear_preferences_rider_height,
+        'gear_preferences_bike_type'     => $gear_preferences_bike_type,
+        'gear_preferences_rider_height'  => $gear_preferences_rider_height,
         'gear_preferences_select_pedals' => $gear_preferences_select_pedals,
-        'gear_preferences_helmet_size' => $gear_preferences_helmet_size,
-        'gear_preferences_jersey_style' => $gear_preferences_jersey_style,
-        'gear_preferences_jersey_size' => $gear_preferences_jersey_size,
+        'gear_preferences_helmet_size'   => $gear_preferences_helmet_size,
+        'gear_preferences_jersey_style'  => $gear_preferences_jersey_style,
+        'gear_preferences_jersey_size'   => $gear_preferences_jersey_size,
     );
 
     // Send JSON response
@@ -5496,3 +5591,97 @@ function dx_get_current_user_bike_preferences_cb() {
 }
 add_action( 'wp_ajax_dx_get_current_user_bike_preferences', 'dx_get_current_user_bike_preferences_cb' );
 add_action( 'wp_ajax_nopriv_dx_get_current_user_bike_preferences', 'dx_get_current_user_bike_preferences_cb' );
+
+/**
+ * Check for already started bookings,
+ * that you have in the cart and see if they are out of date to remove them.
+ *
+ * For unavailable trips will be considered a trips with status "Remove from Stella" and
+ * trips with specific status from woocommerce.
+ *
+ * This function will be used in the Checkout Form Template located in
+ * /trek-travel-theme/woocommerce/checkout/form-checkout.php
+ */
+function tt_check_and_remove_old_trips_in_persistent_cart() {
+    global $woocommerce;
+
+	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
+	$cart = WC()->session->get( 'cart', null );
+	$persistent_cart_count = isset( $cart_result['cart'] ) && $cart_result['cart'] ? count( $cart_result['cart'] ) : 0;
+
+	if ( !is_null( $cart ) && $persistent_cart_count > 0 ) {
+        // We have started trip alredy. Now check if is out of date.
+        $product_id = ''; // Something like this  ( int )  85028.
+
+        /**
+         * In general we should have one trip at a time in the cart.
+         *
+         * If we have more trips in the cart, we need to move the logic to foreach
+         * and adapt it to remove only a specific trip instead of clearing the whole cart
+         */
+        foreach ( $cart as $id => $child_product_data ) {
+            if( $child_product_data ) {
+                if( isset( $child_product_data['product_id'] ) && !empty( $child_product_data['product_id'] ) ){
+                    $product_id = $child_product_data['product_id'];
+                }
+            }
+        }
+
+        $product = wc_get_product( $product_id );
+
+        // Check for WC_Product existing.
+        if( !$product ) {
+            return;
+        }
+
+        // Trip Code: For example 24MAR0512.
+        $sku = $product->get_sku();
+
+        // Trip Status: Limited Availability, Sold Out, Group Hold, Sales Hold or Hold
+        $trip_status = $product->get_attribute( 'pa_trip-status' );
+
+        // Remove from stela status.
+        $remove_from_stella = tt_get_local_trips_detail( 'removeFromStella', '', $sku, true );
+
+        // Statuses that lock trip for booking.
+        $in_status = [
+            "Limited Availability",
+            "Sold Out",
+            "Group Hold",
+            "Sales Hold",
+            "Hold"
+        ];
+
+        if( in_array( $trip_status , $in_status ) || $remove_from_stella == true ) {
+            // Trip not available for booking already. Need to remove it from the cart.
+            $woocommerce->cart->empty_cart();
+        }
+
+        // The trip can stay in the cart.
+    }
+
+    // There is no trip in the cart.
+}
+
+/**
+ * Function to get real local Trip Code (SKU)
+ *
+ * Since for the Ride Camp integration we use additional products
+ * for the half periods to which we add a suffix (-FIRST, -SECOND),
+ * when we need to get information about the amount of bikes, hotels, etc.,
+ * we need to make a reference to the main product that stores 
+ * this information in the trip details table in DB.
+ * 
+ * @param string $tripCode Trip Code or SKU like this 24CARC0122
+ * 
+ * @return string A modified trip code that is without the suffix, if any.
+ */
+function tt_get_local_trip_code( $tripCode ) {
+
+    if( is_string( $tripCode ) ) {
+        //Take the base of SKU if is it with suffix like this 24CARC0122-FIRST.
+        $tripCode = explode('-', $tripCode)[0];
+    }
+
+    return $tripCode;
+}

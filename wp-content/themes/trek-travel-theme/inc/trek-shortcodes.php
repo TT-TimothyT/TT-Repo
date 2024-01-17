@@ -240,7 +240,7 @@ function trek_herobaner_tripfinder_shortcode_cb()
    $logo_url = ( $logo_image ? $logo_image[0] : ''  );
    $logo_url = ( $logo_url ? $logo_url : 'https://via.placeholder.com/50?text=Trek%20Travel' );
 ?>
-<form action="" method="get" class="trek-trip-finder-form home-trip-finder-form" id="trek-trip-finder-form">
+<form action="/bike-tours/all" method="get" class="trek-trip-finder-form home-trip-finder-form" id="trek-trip-finder-form">
 
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
@@ -371,19 +371,44 @@ function trek_my_trips_shortcode_cb(){
 }
 add_shortcode('trek-my-trip', 'trek_my_trip_shortcode_cb');
 function trek_my_trip_shortcode_cb(){
-   $ns_user_id = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
-   $trip_status = trek_get_guest_trip_status(get_current_user_id(), $_REQUEST['order_id']);
-   $my_trip = TREK_PATH . '/woocommerce/myaccount/my-trip-past-details.php';
+   $ns_user_id         = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
+   $order_id           = $_REQUEST['order_id'];
+   $trip_status        = trek_get_guest_trip_status(get_current_user_id(), $order_id);
+   $my_trip            = TREK_PATH . '/woocommerce/myaccount/my-trip-past-details.php';
+   $current_user_email = wp_get_current_user()->data->user_email;
+   $guest_emails       = trek_get_guest_emails( $order_id );
+   $guest_emails_arr   = array();
+
+   if( is_string( $guest_emails ) ) {
+      $guest_emails_arr   = explode(', ', $guest_emails);
+   }
+
    if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 30 || $trip_status['days_2'] >= 30 ) ) {
       $my_trip = TREK_PATH . '/woocommerce/myaccount/my-trip-checklist.php';  
    }
-   if ( is_readable( $my_trip ) ) {
-      if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 30 || $trip_status['days_2'] >= 30 ) ) {
-         wc_get_template('woocommerce/myaccount/my-trip-checklist.php');
-      }else{
-         wc_get_template('woocommerce/myaccount/my-trip-past-details.php');
+
+   if( is_readable( $my_trip ) ) {
+      // See order details, only if you are logged in.
+      if( is_user_logged_in() ) {
+         // See is user belongs to the order.
+         if( !empty( $current_user_email ) &&  in_array( $current_user_email, $guest_emails_arr ) ) {
+            // Show the checklist template or Past Details template.
+            if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 30 || $trip_status['days_2'] >= 30 ) ) {
+               wc_get_template('woocommerce/myaccount/my-trip-checklist.php');
+            } else {
+               wc_get_template('woocommerce/myaccount/my-trip-past-details.php');
+            }
+         } else {
+            // Redirect to My trips page, if you are logged in, but this order not belongs to you.
+            wp_redirect( 'my-account/my-trips' );
+            exit();
+         }
+      } else {
+         // Redirect to Customer login page, if you are logged out.
+         wp_redirect( 'login' );
+         exit();
       }
-   }else{
+   } else {
       echo '<div class="alert alert-danger" role="alert">The <code>my-trip.php</code> is missing. Please create file at <code>woocommerce/myaccount/my-trip.php</code></div>';
    }
 }

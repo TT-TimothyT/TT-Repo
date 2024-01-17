@@ -50,8 +50,8 @@ if ( 2 === $trip_guests ) {
     $double_button_plus_class   .= ' btn-plus-double';
 }
 
-if ($trip_sku) {
-    $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku, true);
+if ( $trek_user_checkout_posted['product_id'] ) {
+    $singleSupplementPrice = get_post_meta( $trek_user_checkout_posted['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
     $singleSupplementPriceCurr = get_woocommerce_currency_symbol() . $singleSupplementPrice;
 }
 ?>

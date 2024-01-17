@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hummingbird 3.7.0\n"
+"Project-Id-Version: Hummingbird 3.7.1\n"
 "Report-Msgid-Bugs-To: https://wpmudev.com\n"
-"POT-Creation-Date: 2023-12-06 07:58:05+00:00\n"
+"POT-Creation-Date: 2023-12-20 12:15:26+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -44,7 +44,7 @@ msgid "Error removing asset file."
 msgstr ""
 
 #: admin/ajax/class-minify.php:532 admin/class-ajax.php:1268
-#: admin/class-ajax.php:1892 admin/class-ajax.php:2334 core/class-utils.php:181
+#: admin/class-ajax.php:1892 admin/class-ajax.php:2334 core/class-utils.php:188
 #: core/modules/class-minify.php:1644
 msgid "Settings updated"
 msgstr ""
@@ -54,7 +54,8 @@ msgid "Upgrade to Hummingbird Pro"
 msgstr ""
 
 #: admin/class-admin.php:121
-msgid "Upgrade For 60% Off!"
+#. translators: %s: Discount percent
+msgid "Upgrade For %s Off!"
 msgstr ""
 
 #: admin/class-admin.php:123
@@ -193,7 +194,7 @@ msgstr ""
 msgid "%s assets found!"
 msgstr ""
 
-#: admin/class-ajax.php:1333 core/class-utils.php:207
+#: admin/class-ajax.php:1333 core/class-utils.php:214
 msgid "Settings updated. Generating Critical CSS, this could take about a minute."
 msgstr ""
 
@@ -279,7 +280,7 @@ msgid "Dismiss this notice."
 msgstr ""
 
 #: admin/class-notices.php:381 admin/class-notices.php:600
-#: admin/pages/class-minification.php:290 core/class-utils.php:189
+#: admin/pages/class-minification.php:290 core/class-utils.php:196
 #: core/externals/free-dashboard/classes/notices/class-rating.php:82
 #: core/externals/plugin-notice/notice.php:485
 msgid "Dismiss"
@@ -799,7 +800,7 @@ msgid ""
 "current backup just in case."
 msgstr ""
 
-#: admin/modals/database-cleanup-modal.php:38 core/class-utils.php:183
+#: admin/modals/database-cleanup-modal.php:38 core/class-utils.php:190
 msgid "Delete permanently"
 msgstr ""
 
@@ -906,7 +907,7 @@ msgstr ""
 msgid "Hide API token"
 msgstr ""
 
-#: admin/modals/integration-cloudflare-modal.php:143 core/class-utils.php:195
+#: admin/modals/integration-cloudflare-modal.php:143 core/class-utils.php:202
 msgid "Need help getting your Global API key?"
 msgstr ""
 
@@ -979,7 +980,7 @@ msgstr ""
 msgid "Select Zone"
 msgstr ""
 
-#: admin/modals/integration-cloudflare-modal.php:260 core/class-utils.php:177
+#: admin/modals/integration-cloudflare-modal.php:260 core/class-utils.php:184
 #: languages/react.php:225
 msgid "Select zone"
 msgstr ""
@@ -3362,7 +3363,7 @@ msgstr ""
 #: admin/views/dashboard/minification/network-module-meta-box.php:59
 #: admin/views/performance/summary-meta-box.php:176
 #: admin/views/uptime/summary-meta-box.php:103
-#: admin/views/uptime/summary-meta-box.php:118 core/class-utils.php:535
+#: admin/views/uptime/summary-meta-box.php:118 core/class-utils.php:542
 #: languages/react.php:939
 msgid "Disabled"
 msgstr ""
@@ -5858,7 +5859,7 @@ msgstr ""
 msgid "Keep"
 msgstr ""
 
-#: admin/views/settings/data-meta-box.php:62 core/class-utils.php:163
+#: admin/views/settings/data-meta-box.php:62 core/class-utils.php:170
 msgid "Remove"
 msgstr ""
 
@@ -6644,240 +6645,240 @@ msgstr ""
 msgid "Could not write file %s"
 msgstr ""
 
-#: core/class-utils.php:164
+#: core/class-utils.php:171
 msgid "You"
 msgstr ""
 
-#: core/class-utils.php:165
+#: core/class-utils.php:172
 msgid "Running speed test..."
 msgstr ""
 
-#: core/class-utils.php:166
+#: core/class-utils.php:173
 msgid "Analyzing data and preparing report..."
 msgstr ""
 
-#: core/class-utils.php:167
+#: core/class-utils.php:174
 msgid "Test is taking a little longer than expected, hang in there…"
 msgstr ""
 
-#: core/class-utils.php:168
+#: core/class-utils.php:175
 msgid "Test complete! Reloading..."
 msgstr ""
 
-#: core/class-utils.php:170
+#: core/class-utils.php:177
 msgid ""
 "There was an error during the cache purge. Check folder permissions are 755 "
 "for /wp-content/wphb-cache or delete directory manually."
 msgstr ""
 
-#: core/class-utils.php:171
+#: core/class-utils.php:178
 msgid "Gravatar cache purged."
 msgstr ""
 
-#: core/class-utils.php:172
+#: core/class-utils.php:179
 msgid "Page cache purged."
 msgstr ""
 
-#: core/class-utils.php:173
+#: core/class-utils.php:180
 msgid "There was an error re-checking the caching status, please try again later."
 msgstr ""
 
-#: core/class-utils.php:174
+#: core/class-utils.php:181
 msgid "Browser caching status updated."
 msgstr ""
 
-#: core/class-utils.php:175 languages/react.php:188
+#: core/class-utils.php:182 languages/react.php:188
 msgid ""
 "Cloudflare cache successfully purged. Please wait 30 seconds for the purge "
 "to complete."
 msgstr ""
 
-#: core/class-utils.php:176
+#: core/class-utils.php:183
 msgid "Your cache has been cleared."
 msgstr ""
 
-#: core/class-utils.php:179
+#: core/class-utils.php:186
 msgid "Error updating settings"
 msgstr ""
 
-#: core/class-utils.php:180
+#: core/class-utils.php:187
 msgid "Error: Please enter your name"
 msgstr ""
 
-#: core/class-utils.php:182
+#: core/class-utils.php:189
 msgid "Delete All Permanently"
 msgstr ""
 
-#: core/class-utils.php:184
+#: core/class-utils.php:191
 msgid "Clear draft posts"
 msgstr ""
 
-#: core/class-utils.php:185
+#: core/class-utils.php:192
 msgid "Are you sure you wish to delete"
 msgstr ""
 
-#: core/class-utils.php:186
+#: core/class-utils.php:193
 msgid ""
 "Are you sure you want to clear draft posts and move them to the trash? "
 "Trashed posts can be permanently deleted below."
 msgstr ""
 
-#: core/class-utils.php:187
+#: core/class-utils.php:194
 msgid "database entries"
 msgstr ""
 
-#: core/class-utils.php:188
+#: core/class-utils.php:195
 msgid "Make sure you have a current backup just in case."
 msgstr ""
 
-#: core/class-utils.php:190
+#: core/class-utils.php:197
 msgid "Preload cache purged successfully."
 msgstr ""
 
-#: core/class-utils.php:191
+#: core/class-utils.php:198
 msgid ""
 "All database data and Custom Post Type information related to Asset "
 "Optimization has been cleared successfully."
 msgstr ""
 
-#: core/class-utils.php:192
+#: core/class-utils.php:199
 msgid "Database entries removed successfully."
 msgstr ""
 
-#: core/class-utils.php:194
+#: core/class-utils.php:201
 msgid "Need help getting your API token?"
 msgstr ""
 
-#: core/class-utils.php:197
+#: core/class-utils.php:204
 msgid "Remove recipient"
 msgstr ""
 
-#: core/class-utils.php:198
+#: core/class-utils.php:205
 msgid ""
 "You've not added the users. In order to activate the notification you need "
 "to add users first."
 msgstr ""
 
-#: core/class-utils.php:199
+#: core/class-utils.php:206
 msgid ""
 "You've removed all recipients. If you save without a recipient, we'll "
 "automatically turn off notifications."
 msgstr ""
 
-#: core/class-utils.php:200
+#: core/class-utils.php:207
 msgid "Recipient already exists."
 msgstr ""
 
-#: core/class-utils.php:201
+#: core/class-utils.php:208
 msgid "Awaiting confirmation"
 msgstr ""
 
-#: core/class-utils.php:202
+#: core/class-utils.php:209
 msgid "Resend invite email"
 msgstr ""
 
-#: core/class-utils.php:203
+#: core/class-utils.php:210
 msgid "Add recipient"
 msgstr ""
 
-#: core/class-utils.php:204
+#: core/class-utils.php:211
 msgid "Cache purged. Regenerating Critical CSS, this could take about a minute."
 msgstr ""
 
-#: core/class-utils.php:205
+#: core/class-utils.php:212
 msgid ""
 "Critical CSS generated. Please visit the site and let the cache build up "
 "before running a test."
 msgstr ""
 
-#: core/class-utils.php:206
+#: core/class-utils.php:213
 msgid ""
 "There was an error during the critical css files purge. Check folder "
 "permissions are 755 for /wp-content/wphb-cache/critical-css or delete "
 "directory manually."
 msgstr ""
 
-#: core/class-utils.php:249
+#: core/class-utils.php:256
 msgid ""
 "Your changes have been published. Note: Files queued for compression will "
 "generate once someone visits your homepage."
 msgstr ""
 
-#: core/class-utils.php:584
+#: core/class-utils.php:591
 #. translators: %d: year
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/class-utils.php:587
+#: core/class-utils.php:594
 #. translators: %d: month
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/class-utils.php:590
+#: core/class-utils.php:597
 #. translators: %d: day
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/class-utils.php:593
+#: core/class-utils.php:600
 #. translators: %d: hour
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/class-utils.php:596
+#: core/class-utils.php:603
 #. translators: %d: minute
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/class-utils.php:599
+#: core/class-utils.php:606
 #. translators: %d: second
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/class-utils.php:843
+#: core/class-utils.php:863
 msgid "Still having trouble? "
 msgstr ""
 
-#: core/class-utils.php:847 languages/react.php:178
+#: core/class-utils.php:867 languages/react.php:178
 msgid "Start a live chat."
 msgstr ""
 
-#: core/class-utils.php:851 languages/react.php:181
+#: core/class-utils.php:871 languages/react.php:181
 msgid "Open a support ticket."
 msgstr ""
 
-#: core/class-utils.php:968
+#: core/class-utils.php:988
 msgid "Page Cache"
 msgstr ""
 
-#: core/class-utils.php:969 languages/react.php:203
+#: core/class-utils.php:989 languages/react.php:203
 msgid "Cloudflare"
 msgstr ""
 
-#: core/class-utils.php:970
+#: core/class-utils.php:990
 msgid "Gravatar Cache"
 msgstr ""
 
-#: core/class-utils.php:971
+#: core/class-utils.php:991
 msgid "Asset Optimization Cache"
 msgstr ""
 
-#: core/class-utils.php:972
+#: core/class-utils.php:992
 msgid "Redis Cache"
 msgstr ""
 
-#: core/class-utils.php:1365
+#: core/class-utils.php:1385
 msgid "Unlock now"
 msgstr ""
 
@@ -8976,6 +8977,17 @@ msgstr ""
 
 #: languages/react.php:1163
 msgid "Saving settings"
+msgstr ""
+
+#: wp-hummingbird.php:82
+#. translators: %1$s - Opening div and p tag, %2$s - Required PHP version, %3$s
+#. - URL to an article about our hosting benefits, %1$s - Closing div and p tag
+msgid ""
+"%1$sYour site is running an outdated version of PHP that is no longer "
+"supported or receiving security updates. Please update PHP to at least "
+"version %2$s at your hosting provider in order to activate Hummingbird, or "
+"consider switching to <a href=\"%3$s\" target=\"_blank\" rel=\"noopener "
+"noreferrer\">WPMU DEV Hosting</a>.%4$s"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

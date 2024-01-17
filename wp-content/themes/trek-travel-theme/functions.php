@@ -706,3 +706,70 @@ add_filter( 'woocommerce_registration_redirect', function($redirect){
  
  add_filter( 'woocommerce_min_password_strength', 'iconic_min_password_strength', 10, 1 );
 
+
+/**
+ * @TODO: we have to update the location and most probably naming + capabilities
+ * Most likely this is going to be moved in a separate plugin, as functions.php is not the best place, but we have to progress
+ */
+ if( function_exists( 'acf_add_options_page' ) ) {
+
+	acf_add_options_page( array(
+        'page_title'    => 'Trek Travel Settings',
+        'menu_title'    => 'Trek Travel Settings',
+        'menu_slug'     => 'trek-travel-settings',
+        'capability'    => 'edit_posts',
+        'redirect'      => false
+    ));
+
+    // My Account - Resources Center
+	acf_add_options_sub_page( array(
+        'page_title'    => 'My Account - Resources Center',
+        'menu_title'    => 'My Account - Resources Center',
+		'parent_slug'   => 'trek-travel-settings',
+		'capability'    => 'edit_posts',
+    ));
+
+	 // My Account - Travel Advisor
+	 acf_add_options_sub_page( array(
+        'page_title'    => 'My Account - Travel Advisor',
+        'menu_title'    => 'My Account - Travel Advisor',
+		'parent_slug'   => 'trek-travel-settings',
+		'capability'    => 'edit_posts',
+    ));
+}
+
+function dx_strip_text($htmlText){
+
+	// Get the length of the HTML text
+	$htmlLength = strlen($htmlText);
+
+	// Initialize variables
+	$charCount = 0;
+	$insideTag = false;
+
+	// Loop through each character in the HTML text
+	for ($i = 0; $i < $htmlLength; $i++) {
+		// Check if the character is within an HTML tag
+		if ($htmlText[$i] === '<') {
+			$insideTag = true;
+		} elseif ($htmlText[$i] === '>') {
+			$insideTag = false;
+		}
+		// Increment the character count if not inside an HTML tag
+		if (!$insideTag) {
+			$charCount++;
+		}
+		// Check if the character count is greater than or equal to 140
+		if ($charCount >= 140) {
+			// Extract the substring up to the current position, including the markup
+			$result = substr($htmlText, 0, $i + 1);
+			break;
+		}
+	}
+	// If the character count is less than 140, use the original HTML text
+	if ($charCount < 140) {
+		$result = $htmlText;
+	}
+	// Output the result
+	return $result;
+}

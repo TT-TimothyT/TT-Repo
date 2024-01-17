@@ -2,7 +2,7 @@
 /*
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl.txt
- * Copyright 2012-2023 Jean-Sebastien Morisset (https://surniaulula.com/)
+ * Copyright 2012-2024 Jean-Sebastien Morisset (https://surniaulula.com/)
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,7 +36,7 @@ if ( ! class_exists( 'JsmSpmScript' ) ) {
 
 		public function enqueue_block_editor_assets() {
 
-			if ( SucomUtil::is_post_page() ) {
+			if ( SucomUtilWP::is_post_page() ) {
 
 				$src = JSMSPM_URLPATH . 'js/jquery-block-editor.min.js';
 

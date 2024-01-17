@@ -34,9 +34,12 @@ $cc_type = isset($tt_posted['wc-cybersource-credit-card-card-type']) ? $tt_poste
 $tt_rooms_output = tt_rooms_output($tt_posted);
 
 // Take bike names.
-$tripInfo = tt_get_trip_pid_sku_from_cart();
-$local_bike_details = tt_get_local_bike_detail($tripInfo['sku']);
-$local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
+$tripInfo                   = tt_get_trip_pid_sku_from_cart();
+$local_bike_details         = tt_get_local_bike_detail( $tripInfo['sku'] );
+$local_bike_models_info     = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
+$guest_details_states       = WC()->countries->get_states( $primary_country );
+$primary_guest_state_name   = isset( $guest_details_states[$primary_state] ) ? $guest_details_states[$primary_state] : $primary_state;
+$primary_guest_country_name = WC()->countries->countries[$primary_country];
 ?>
 <div class="checkout-review" id="checkout-review">
     <div class="checkout-review__guest">
@@ -51,8 +54,8 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_phone; ?></p>
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_1; ?></p>
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_2; ?></p>
-                <p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_state; ?>, <?php echo $primary_postcode; ?></p>
-                <p class="fs-sm lh-sm mb-0"><?php echo $primary_country; ?></p>
+                <p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_guest_state_name; ?>, <?php echo $primary_postcode; ?></p>
+                <p class="fs-sm lh-sm mb-0"><?php echo $primary_guest_country_name; ?></p>
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_dob; ?></p>
                 <p class="fs-sm lh-sm mb-0"><?php echo $primary_gender; ?></p>
             </div>
@@ -141,7 +144,8 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                 if ($iter % $cols == 0) {
                     $review_bikes_html .= '<div class="row mx-0">';
                 }
-                $syncRiderLevels = $syncBikeSizes = $syncHeights = $syncHelmets = $syncBikeTypes = $syncPedals = $syncJerseySizes = $syncBike = '';
+                $ownBike = '';
+                $syncRiderLevels = $syncBikeSizes = $syncHeights = $syncHelmets = $syncBikeTypes = $syncPedals = $syncJerseySizes = '';
                 if( isset($review_bikes_arr_val['rider_level']) && $review_bikes_arr_val['rider_level'] ){
                     $syncRiderLevels =    tt_get_custom_item_name('syncRiderLevels',$review_bikes_arr_val['rider_level']);
                 }
@@ -165,37 +169,41 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
                 }
                 $bike_id   = (int) $review_bikes_arr_val['bikeId'];
                 $bike_name = '';
-                if( isset($bike_id) && $bike_id ){
+                if( ( isset($bike_id) && $bike_id ) || 0 == $bike_id ){
                     switch ( $bike_id ) {
                         case 5270: // I am bringing my own bike.
                             $bike_name = 'Bringing own';
+                            break;
+                        case 0: // If set to 0, it means "I don't know" was picked for bike size and the bikeTypeName property will be used.
+                            $bike_name = $syncBikeTypes;
                             break;
                         default: // Take the name of the bike.
                             $bike_name = json_decode( $local_bike_models_info[ $bike_id ], true)[ 'name' ];
                             break;
                     }
                 }
+                if( isset($review_bikes_arr_val['own_bike']) && $review_bikes_arr_val['own_bike'] ){
+                    $ownBike = $review_bikes_arr_val['own_bike'];
+                }
                 $guestLabel = ($review_bikes_arr_k == 0 ? 'Primary Guest' : 'Guest ' . ($review_bikes_arr_k + 1));
                 $fullname = $review_bikes_arr_val['guest_fname'] . ' ' . $review_bikes_arr_val['guest_lname'];
                 $review_bikes_html .= '<div class="col-lg-6 px-0 checkout-review__col">';
                 $review_bikes_html .= '<p class="fw-medium mb-2">' . $guestLabel . ': ' . $fullname . '</p>
-                    <p class="fs-sm lh-sm mb-0">Rider Level: ' . $syncRiderLevels . '</p>';
-                if( $review_bikes_arr_val['rider_level'] != 5 ) {
+                <p class="fs-sm lh-sm mb-0">Rider Level: ' . $syncRiderLevels . '</p>';
+                if ( $review_bikes_arr_val['rider_level'] != 5 ) {
                     if( !empty( $bike_name ) ){
 
                         $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $bike_name . '</p>';
                     }
-                    if( 5270 !== $bike_id ){
-
+                    if( 'yes' !== $ownBike || 0 == $bike_id ){
                         $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
-                        <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>';
+                            <p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>';
                     }
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
-                        <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>';
-                        if( ! is_array( $syncJerseySizes ) ) {
-
-                            $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>';
-                        }
+                    <p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>';
+                    if( !empty( $syncJerseySizes ) && ! is_array( $syncJerseySizes )  && '-' != $syncJerseySizes ) {
+                        $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>';
+                    }
                     $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                 }
                 $review_bikes_html .= '</div>';
@@ -234,15 +242,25 @@ $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeI
             <div class="col-lg-6 px-0 checkout-review__col">
                 <p class="fw-medium mb-2">Billing Address</p>
                 <?php if (isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1) { ?>
+                    <?php
+                    $primary_states       = WC()->countries->get_states( $primary_country );
+                    $primary_state_name   = isset( $primary_states[$billing_state] ) ? $primary_states[$billing_state] : $primary_state;
+                    $primary_country_name = WC()->countries->countries[$primary_country];
+                    ?>
                     <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_1; ?></p>
                     <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_2; ?></p>
-                    <p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_state; ?>, <?php echo $primary_postcode; ?></p>
-                    <p class="fs-sm lh-sm mb-0"><?php echo $primary_country; ?></p>
+                    <p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_state_name; ?>, <?php echo $primary_postcode; ?></p>
+                    <p class="fs-sm lh-sm mb-0"><?php echo $primary_country_name; ?></p>
                 <?php } else { ?>
+                    <?php
+                    $billing_states       = WC()->countries->get_states( $billing_country );
+                    $billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
+                    $billing_country_name = WC()->countries->countries[$billing_country];
+                    ?>
                     <p class="fs-sm lh-sm mb-0"><?php echo $billing_add1; ?></p>
                     <p class="fs-sm lh-sm mb-0"><?php echo $billing_add2; ?></p>
-                    <p class="fs-sm lh-sm mb-0"><?php echo $billing_city; ?>, <?php echo $billing_state; ?>, <?php echo $billing_postcode; ?></p>
-                    <p class="fs-sm lh-sm mb-0"><?php echo $billing_country; ?></p>
+                    <p class="fs-sm lh-sm mb-0"><?php echo $billing_city; ?>, <?php echo $billing_state_name; ?>, <?php echo $billing_postcode; ?></p>
+                    <p class="fs-sm lh-sm mb-0"><?php echo $billing_country_name; ?></p>
                 <?php } ?>
             </div>
         </div>

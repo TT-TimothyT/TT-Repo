@@ -73,6 +73,28 @@ $userInfo = wp_get_current_user();
                             <?php else : ?>
                             <?php $woo_field_value = ''; // Initialize with empty value ?>
                             <?php endif; ?><?php
+                            if( $key == 'billing_state' ) {
+                                $country_val = get_user_meta( get_current_user_id(), 'billing_country', true );
+                                $state_val   = get_user_meta( get_current_user_id(), 'billing_state', true );
+                                $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                                $woo_field_value =  $state_val;
+                            }
+                            if ( $key == 'billing_country' ) {
+                                $country_val = get_user_meta( get_current_user_id(), 'billing_country', true );
+                                $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                                $woo_field_value =  $country_val;
+                            }
+                            if( $key == 'shipping_state' ) {
+                                $country_val = get_user_meta( get_current_user_id(), 'shipping_country', true );
+                                $state_val   = get_user_meta( get_current_user_id(), 'shipping_state', true );
+                                $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                                $woo_field_value =  $state_val;
+                            }
+                            if ( $key == 'shipping_country' ) {
+                                $country_val = get_user_meta( get_current_user_id(), 'shipping_country', true );
+                                $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                                $woo_field_value =  $country_val;
+                            }
                             $field_input = woocommerce_form_field($key, $field, $woo_field_value);
                             $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);
                             $field_input = str_ireplace('</span>', '', $field_input);

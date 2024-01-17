@@ -241,7 +241,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<p class="mb-0 fw-normal order-details__text"><?php echo $order_id; ?></p>
 							<p class="mb-0 fw-normal order-details__text"><?php echo $order->get_formatted_line_subtotal($order_item) ?></p>
 							<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkoutData['bikeUpgradePrice'] ) { ?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $trek_checkoutData['bikeUpgradePrice']; ?></span></p>
+							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_get_upgrade_qty * $trek_checkoutData['bikeUpgradePrice']; ?></span></p>
 							<?php } ?>
 							<?php if($singleSupplementQty > 0) { ?>
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplementFees; ?></span></p>
@@ -282,10 +282,15 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 						</div>
 						<div>
 							<p class="mb-2 fs-md lh-md fw-medium">Billing Address</p>
+							<?php
+							$billing_states       = WC()->countries->get_states( $billing_country );
+							$billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
+							$billing_country_name = WC()->countries->countries[$billing_country];
+							?>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_add_1; ?></p>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_add_2; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_city; ?>, <?php echo $billing_state; ?>, <?php echo $billing_postcode; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_city; ?>, <?php echo $billing_state_name; ?>, <?php echo $billing_postcode; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country_name; ?></p>
 						</div>
 					</div>
 				</div>

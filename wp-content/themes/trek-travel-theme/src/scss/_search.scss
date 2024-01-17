@@ -508,6 +508,14 @@ a.refineLink {
                 }
             }
         }
+
+        .card-footer {
+            padding: 0;
+
+            .reviews-count {
+                display: none;
+            }
+        }
     }
     .search-results-container{
         padding-left: 2px;

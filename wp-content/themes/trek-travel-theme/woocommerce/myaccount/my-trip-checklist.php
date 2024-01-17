@@ -115,8 +115,23 @@ $itinerary_link = tt_get_itinerary_link($trip_name);
 $tt_rooms_output = tt_rooms_output($trek_checkoutData, true);
 $ns_booking_info = tt_get_ns_booking_details_by_order($order_id);
 $waiver_link = $ns_booking_info['waiver_link'];
-$lockBike = get_user_meta($user_id, 'gear_preferences_lock_bike', true);
-$lockRecord = get_user_meta($user_id, 'gear_preferences_lock_record', true);
+$locked_user_ids_bike = get_post_meta($booked_trip_id, 'ns_registration_ids_bike', true);
+$locked_user_ids_record = get_post_meta($booked_trip_id, 'ns_registration_ids_record', true);
+
+//get current user id
+$current_user_id = get_current_user_id();
+
+$lockedUserBike = 0;
+$lockedUserRecord = 0;
+//Check if current user id is in locked user ids
+if ( is_array( $locked_user_ids_bike ) && in_array( $current_user_id, $locked_user_ids_bike ) ) {
+	$lockedUserBike = 1;
+}
+
+if ( is_array( $locked_user_ids_record ) && in_array($current_user_id, $locked_user_ids_record ) ) {
+	$lockedUserRecord = 1;
+}
+
 $bikeUpgradePrice = 0;
 $bikePriceCurr = '';
 if ($trip_sku) {
@@ -134,6 +149,7 @@ if( $parent_product_id ){
         $pa_city = $p_product->get_attribute('pa_city');
     }
 }
+
 $isPassportRequired = get_post_meta($booked_trip_id, TT_WC_META_PREFIX . 'isPassportRequired', true);
 $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', true);
 $waiver_info = tt_get_waiver_info($ns_booking_id);
@@ -142,18 +158,23 @@ $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat'
 $hideJerseyForTrips = [ 710, 744, 712, 713 ];
 $hideme = "";
 
+$bike_pointer_none = '';
+$gear_pointer_none = '';
+
 if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
 	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
 	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
 		if ( in_array( 712, $product_cat_matches ) || in_array( 744, $product_cat_matches ) ) {
-			$hideme = " d-none";
+			$hideme = "d-none";
 		} elseif ( in_array( 710, $product_cat_matches ) && in_array( 713, $product_cat_matches ) ) {
-			$hideme = " d-none";
+			$hideme = "d-none";
 		} else {
-			$hideme = " none";
+			$hideme = "none";
 		}
 	}
 }
+
+$gear_preferences_bike_type = get_user_meta( $user_id, 'gear_preferences_bike_type', true );
 ?>
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
@@ -464,21 +485,21 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											echo $medical_field_html;
 										}
 										?>
-										<?php if ($lockRecord != 1) { ?>
+										<?php if ( $lockedUserRecord != 1 ) { ?>
 											<div class="form-check form-check-inline mb-0">
-												<input class="form-check-input" type="checkbox" name="tt_save_medical_info" id="inlineCheck" value="yes">
-												<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+												<input class="form-check-input" type="checkbox" name="tt_save_medical_info" id="inlineCheck1" value="yes">
+												<label class="form-check-label" for="inlineCheck1">Save this information for future use. This will override any existing information you have saved on your account. </label>
 											</div>
 										<?php } ?>
 									</fieldset>
 								</div>
-								<?php if ($lockRecord != 1) { ?>
+								<?php if ( $lockedUserRecord != 1 ) { ?>
 									<div class="form-buttons d-flex medical-information__buttons">
 										<div class="form-group align-self-center">
 											<button type="submit" class="btn btn-lg btn-primary w-100 medical-information__save rounded-1" name="medical-information"><?php esc_html_e('Confirm', 'trek-travel-theme'); ?></button>
 										</div>
 										<div class="fs-md lh-md fw-medium text-center align-self-center">
-											<a href="javascript;">Cancel</a>
+											<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-medicalInfo" aria-expanded="false" aria-controls="flush-collapse-medicalInfo" class="pb-checklist-cancel">Cancel</a>
 										</div>
 									</div>
 								<?php } ?>
@@ -541,15 +562,15 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 									</div>
 								</div>
-								<?php if ($lockRecord != 1) { ?>
+								<?php if ( $lockedUserRecord != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
-										<input class="form-check-input" type="checkbox" name="tt_save_emergency_info" id="inlineCheck" value="yes">
-										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+										<input class="form-check-input" type="checkbox" name="tt_save_emergency_info" id="inlineCheck2" value="yes">
+										<label class="form-check-label" for="inlineCheck2">Save this information for future use. This will override any existing information you have saved on your account. </label>
 									</div>
 									<div class="emergency-contact__button d-flex align-items-lg-center">
 										<div class="d-flex align-items-center emergency-contact__flex">
 											<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-											<a href="#" class="emergency-contact__cancel">Cancel</a>
+											<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-emergencyInfo" aria-expanded="false" aria-controls="flush-collapse-emergencyInfo" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 										</div>
 									</div>
 								<?php } ?>
@@ -557,15 +578,20 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 						</div>
 					</div> <!-- accordion-item ends -->
 					<?php if ($rider_level != 5) { ?>
-					<div class="accordion-item">
+						<?php $title_string = 'Confirm your gear information'; ?>
+					<?php if( $lockedUserRecord == 1 ) { ?>
+						<?php $gear_pointer_none = 'style="pointer-events: none;"' ?>
+						<?php $title_string = 'Review your gear information'; ?>
+					<?php } ?>
+					<div class="accordion-item" >
 						<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-gearInfo">
 							<button class="accordion-button px-0 collapsed gear_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo" aria-expanded="false" aria-controls="flush-collapse-gearInfo">
 								<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png">
-								Confirm your gear information
+								<?php echo $title_string; ?>
 							</button>
 						</p>
 						<div id="flush-collapse-gearInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-gearInfo">
-							<div class="accordion-body px-0">
+							<div  <?php echo $gear_pointer_none; ?> class="accordion-body px-0">
 								<div class="row mx-0 guest-checkout__primary-form-row">
 									<div class="col-md px-0">
 										<div class="form-floating">
@@ -593,10 +619,13 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											<label for="emergency_contact_address_2">Helmet Size</label>
 										</div>
 									</div>
-									<div class="col-md px-0<?php echo $hideme; ?>">
+									<div class="col-md px-0 <?php echo $hideme; ?>">
 										<div class="form-floating">
-											<select name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00">
+											<select name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
 												<option value="">Select Clothing Style</option>
+												<?php if ( 'd-none' === $hideme ) : ?>
+					            					<option selected value="">None</option>
+					            				<?php endif; ?>
 												<option value="men" <?php echo ($jersey_style == 'men' ? 'selected' : ''); ?>>Men's</option>
 												<option value="women" <?php echo ($jersey_style == 'women' ? 'selected' : ''); ?>>Women's</option>
 											</select>
@@ -604,25 +633,28 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 									</div>
 								</div>
-								<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row<?php echo $hideme; ?>">
+								<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row <?php echo $hideme; ?>">
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<select name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true">
+											<select name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
+												<?php if ( 'd-none' === $hideme ) : ?>
+					            					<option selected value="">None</option>
+					            				<?php endif; ?>
 												<?php echo tt_get_jersey_sizes($jersey_style, $tt_jersey_size); ?>
 											</select>
 											<label for="emergency_contact_address_2">Jersey Size</label>
 										</div>
 									</div>
 								</div>
-								<?php if ($lockRecord != 1 && $lockBike != 1) { ?>
+								<?php if ( $lockedUserRecord != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
-										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
-										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck3" value="yes">
+										<label class="form-check-label" for="inlineCheck3">Save this information for future use. This will override any existing information you have saved on your account. </label>
 									</div>
 									<div class="emergency-contact__button d-flex align-items-lg-center">
 										<div class="d-flex align-items-center emergency-contact__flex">
 											<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-											<a href="#" class="emergency-contact__cancel">Cancel</a>
+											<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo" aria-expanded="false" aria-controls="flush-collapse-gearInfo" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 										</div>
 									</div>
 								<?php } ?>
@@ -685,11 +717,11 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											</div>
 										</div>
 									</div>
-									<?php if ($lockRecord != 1) { ?>
+									<?php if ( $lockedUserRecord != 1 ) { ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-												<a href="#" class="emergency-contact__cancel">Cancel</a>
+												<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-passportInfo" aria-expanded="false" aria-controls="flush-collapse-passportInfo" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 											</div>
 										</div>
 									<?php } ?>
@@ -697,16 +729,21 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 							</div>
 						</div> <!-- accordion-item ends -->
 					<?php } ?>
-					<?php if ($rider_level != 5 && $own_bike != 'yes' ) { ?>
-						<div class="accordion-item">
+					<?php if ($rider_level != 5 && $own_bike != 'yes' && 5270 != $bike_id ) { ?>
+						<?php $bike_review_string = 'Confirm your bike selection'; ?>
+						<?php if( $lockedUserBike ) { ?>
+							<?php $bike_pointer_none = 'style="pointer-events: none;"' ?>
+							<?php $bike_review_string = 'Review your bike selection'; ?>
+						<?php } ?>
+						<div class="accordion-item" >
 							<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-bikeInfo">
 								<button class="accordion-button px-0 collapsed bike_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo">
 									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png">
-									Confirm your bike selection
+									<?php echo $bike_review_string; ?>
 								</button>
 							</p>
 							<div id="flush-collapse-bikeInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-bikeInfo">
-								<div class="accordion-body px-0 checkout-bikes-section">
+								<div  <?php echo $bike_pointer_none; ?> class="accordion-body px-0 checkout-bikes-section">
 									<div class="checkout-bikes__bike-grid d-flex flex-column flex-lg-row flex-nowrap">
 										<?php
 										$primary_bikeId = $bike_id;
@@ -758,7 +795,8 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 													<p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
 												</div>';
 													}
-													$primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElementchk ' . $checkedClass . '" data-id="' . $bikeModelId . '" data-guest-id="0">
+													$is_bike_with_upgrade = ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) ? 'true' : 'false';
+													$primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElementchk ' . $checkedClass . '" data-id="' . $bikeModelId . '" data-is-bike-with-upgrade="' . $is_bike_with_upgrade . '" data-guest-id="0" data-type-id="' . $bikeTypeId . '">
 											<input name="bikeModelId" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeModelId . '" class="bike_validation_inputs">
 													<div class="checkout-bikes__image d-flex justify-content-center align-content-center">
 														<img src="' . $bike_image . '" alt="' . $bikeDescr . '">
@@ -775,6 +813,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											}
 											$primary_available_bike_html .= '<input name="bikeId" type="hidden" value="' . $bike_id . '">';
 											$primary_available_bike_html .= '<input name="bikeTypeId" type="hidden" value="' . $primary_bikeTypeId . '">';
+											$primary_available_bike_html .= '<input name="bike_type_id_preferences" type="hidden" value="' . esc_attr( $gear_preferences_bike_type ) . '">';
 										} else {
 											$primary_available_bike_html .= '<strong>No bikes available!</strong>';
 										}
@@ -782,26 +821,30 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										echo $primary_available_bike_html;
 										?>
 									</div>
-									<div class="form-floating checkout-bikes__bike-size">
-										<select name="tt-bike-size" class="form-select tt_chk_bike_size_change bike_validation_select" id="floatingSelect1" aria-label="Floating label select example">
-											<?php
-											$bikeOpt_object = tt_get_bikes_by_trip_info_pbc('', $trip_sku, $primary_bikeTypeId, $bike_size, $bike_id);
-											if ($bikeOpt_object && $bikeOpt_object['size_opts']) {
-												echo $bikeOpt_object['size_opts'];
-											}
-											?>
-										</select>
-										<label for="floatingSelect">Bike size</label>
-									</div>
-									<?php if ($lockRecord != 1 && $lockBike != 1) { ?>
-										<div class="form-check form-check-inline mb-0">
-											<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck" value="yes">
-											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+									<?php if ($available_bikes) : ?>
+										<div class="form-floating checkout-bikes__bike-size">
+											<select name="tt-bike-size" class="form-select tt_chk_bike_size_change bike_validation_select" id="floatingSelect1" aria-label="Floating label select example">
+												<?php
+												$bikeOpt_object = tt_get_bikes_by_trip_info_pbc('', $trip_sku, $primary_bikeTypeId, $bike_size, $bike_id);
+												if ($bikeOpt_object && $bikeOpt_object['size_opts']) {
+													echo $bikeOpt_object['size_opts'];
+												}
+												?>
+											</select>
+											<label for="floatingSelect">Bike size</label>
 										</div>
+									<?php endif; ?>
+									<?php if ( $lockedUserBike != 1 ) { ?>
+										<?php if ($available_bikes) : ?>
+											<div class="form-check form-check-inline mb-0">
+												<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck4" value="yes">
+												<label class="form-check-label" for="inlineCheck4">Save this information for future use. This will override any existing information you have saved on your account. </label>
+											</div>
+										<?php endif; ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-												<a href="#" class="emergency-contact__cancel">Cancel</a>
+												<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 											</div>
 										</div>
 									<?php } ?>
@@ -822,7 +865,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<select name="saddleId" id="saddleId" class="form-select" autocomplete="saddle-height" data-input-classes="" data-label="Saddle Height" tabindex="-1" aria-hidden="true">
+												<select name="saddleId" id="saddleId" class="form-select gear_optional_validation_inputs" autocomplete="saddle-height" data-input-classes="" data-label="Saddle Height" tabindex="-1" aria-hidden="true">
 													<?php //echo tt_items_select_options('syncSaddles', $pedal_selection);
 													?>
 													<option value="">Select Saddle height</option>
@@ -834,7 +877,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 										</div>
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="text" name="bar_reach" id="bar_reach" class="form-control" <?php echo $saddle_bar_reach_from_saddle ?>>
+												<input type="text" name="bar_reach" id="bar_reach" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
 												<label for="bar_reach">Bar reach</label>
 											</div>
 										</div>
@@ -842,7 +885,7 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="text" name="bar_height" id="bar_height" class="form-control" <?php echo $saddle_bar_height_from_wheel_center; ?>>
+												<input type="text" name="bar_height" id="bar_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>">
 												<label for="bar_height">Bar Height</label>
 											</div>
 										</div>
@@ -851,15 +894,15 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 											</div>
 										</div>
 									</div>
-									<?php if ($lockRecord != 1 && $lockBike != 1) { ?>
+									<?php if ( $lockedUserBike != 1 ) { ?>
 										<div class="form-check form-check-inline mb-0">
-											<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck" value="yes">
-											<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
+											<input class="form-check-input" type="checkbox" name="tt_save_gear_info_optional" id="inlineCheck5" value="yes">
+											<label class="form-check-label" for="inlineCheck5">Save this information for future use. This will override any existing information you have saved on your account. </label>
 										</div>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save">Confirm</button>
-												<a href="#" class="emergency-contact__cancel">Cancel</a>
+												<a href="#" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo-optional" aria-expanded="false" aria-controls="flush-collapse-gearInfo-optional" class="emergency-contact__cancel pb-checklist-cancel">Cancel</a>
 											</div>
 										</div>
 									<?php } ?>
@@ -921,7 +964,11 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 				</span>
 			</div>
 			<div class="modal-body" style="padding: 0;">
-				<iframe src="<?php echo esc_url( $waiver_info['waiver_link'] ); ?>" width="100%" height="350"></iframe>
+				<?php if( !empty( $waiver_info['waiver_link'] ) ) : ?>
+					<iframe src="<?php echo esc_url( $waiver_info['waiver_link'] ); ?>" width="100%" height="350"></iframe>
+				<?php else : ?>
+					<p class="p-4"><?php echo esc_html('Please check again later!'); ?></p>
+				<?php endif; ?>
 				<!-- </form> -->
 			</div>
 		</div><!-- / .modal-content -->

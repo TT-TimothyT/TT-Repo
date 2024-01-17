@@ -21,7 +21,7 @@
 	<div class="entry-content">
 		<?php
 			if ( has_post_thumbnail() ) :
-				echo '<div class="post-thumbnail">' . get_the_post_thumbnail( get_the_ID(), 'large' ) . '</div>';
+				echo '<div class="post-thumbnail">' . get_the_post_thumbnail( get_the_ID(), 'full' ) . '</div>';
 			endif;
 
 			the_content();
@@ -34,7 +34,7 @@
 		edit_post_link( __( 'Edit', 'trek-travel-theme' ), '<span class="edit-link">', '</span>' );
 	?>
 
-	<footer class="entry-meta">
+	<!-- <footer class="entry-meta">
 		<hr>
 		<?php
 			/* translators: used between list items, there is a space after the comma */
@@ -64,5 +64,5 @@
 		<?php
 			get_template_part( 'author', 'bio' );
 		?>
-	</footer><!-- /.entry-meta -->
+	</footer>/.entry-meta -->
 </article><!-- /#post-<?php the_ID(); ?> -->

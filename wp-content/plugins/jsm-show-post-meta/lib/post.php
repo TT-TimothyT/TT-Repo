@@ -2,7 +2,7 @@
 /*
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl.txt
- * Copyright 2012-2023 Jean-Sebastien Morisset (https://surniaulula.com/)
+ * Copyright 2012-2024 Jean-Sebastien Morisset (https://surniaulula.com/)
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -108,7 +108,7 @@ if ( ! class_exists( 'JsmSpmPost' ) ) {
 
 			$post_id = $_POST[ 'post_id' ];
 
-			$post_obj = SucomUtil::get_post_object( $post_id );
+			$post_obj = SucomUtilWP::get_post_object( $post_id );
 
 			if ( ! is_object( $post_obj ) ) {
 

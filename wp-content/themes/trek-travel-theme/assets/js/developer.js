@@ -45,41 +45,41 @@ function tt_change_checkout_step(targetStep = '') {
  * Function that set complete state for sections in Post Booking Checklist page.
  * (my-trip-checklist.php)
  */
-function prebookingChecklistValidate() {
+function prebookingChecklistValidate(ev) {
   var isFirstMedicalLoad = jQuery('input[name="custentity_medical_info_first_load"]').length > 0;
-  var isMedicalInfoSectionComplete = true;
   var totalEmerFields = jQuery('.emergency_validation_inputs').length;
-  var totalGearFields = jQuery('.gear_validation_inputs').length;
+  var totalGearFields = jQuery('.gear_validation_inputs').not('select[data-is-required="false"]').length;
   var totalPassFields = jQuery('.passport_validation_inputs').length;
   var emergency_itemCount = 0;
   var gear_itemCount = 0;
   var passport_itemCount = 0;
-  // Check medical information section for complete state.
-  jQuery('.medical_validation_checkboxes').each(function () {
-    if (jQuery(this).is(':checked')) {
-      var medicalInfoValue = jQuery(this).val();
-      var medicalInfoMoreInfoField = jQuery(this).parents('.medical-information__item').find('textarea');
-      // If Has a flag for first load, mark medical info section as uncomplete.
-      if(isFirstMedicalLoad){
-        isMedicalInfoSectionComplete = false;
-      }
 
-      // Change textarea value, based on radio value selection.
-      if( 'yes' == medicalInfoValue ){
-        // Clear 'none' value and show the placeholder.
-        medicalInfoMoreInfoField.val('');
-      } else if( 'no' == medicalInfoValue ) {
-        // Set default 'none' value for 'no' option.
-        medicalInfoMoreInfoField.val('none');
+  // Check if event comming from checklist field.
+  if( undefined !== ev ){
+    // Check if this field is medical info checkbox.
+    if( ev.target.classList.contains('medical_validation_checkboxes') ){
+
+      // Catch closest field group with checkboxes and textarea.
+      let thisMedicalFieldGroup = ev.target.closest('.medical-information__item');
+      let textArea = thisMedicalFieldGroup.querySelector('textarea');
+
+      // Adjust medical values for 'no' response, to can send value 'none' to NS.
+      if( 'yes' === ev.target.value ) {
+        // Remove 'none' value and show placeholder.
+        textArea.value = '';
+      } else {
+        // Set 'none' value.
+        textArea.value = 'none';
       }
     }
-  });
+  }
+
   jQuery('.emergency_validation_inputs').each(function () {
     if (jQuery(this).val() != '') {
       emergency_itemCount++;
     }
   });
-  jQuery('.gear_validation_inputs').each(function () {
+  jQuery('.gear_validation_inputs').not('select[data-is-required="false"]').each(function () {
     if (jQuery(this).val() != '') {
       gear_itemCount++;
     }
@@ -89,10 +89,11 @@ function prebookingChecklistValidate() {
       passport_itemCount++;
     }
   });
-  if (isMedicalInfoSectionComplete) {
-    jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
-  } else {
+  // Check medical information section for complete state.
+  if ( isFirstMedicalLoad ) {
     jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
+  } else {
+    jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
   }
   if (totalEmerFields == emergency_itemCount) {
     jQuery('.emergency_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
@@ -129,12 +130,33 @@ function prebookingChecklistValidate() {
     bikeSizeSelected = true;
   }
 
+  // If the Select bike radio inputs and Select size dropdown do not exist on the page, show the section as completed.
+  if(jQuery( '.checkout-bikes-section .bike_validation_select' ).length <= 0 && jQuery( '.checkout-bikes-section .bike_validation_inputs' ).length <= 0 ) {
+    bikeModelSelected = true;
+    bikeSizeSelected  = true;
+  }
+
   // Set Bike Section complete state.
   if ( bikeModelSelected && bikeSizeSelected ) {
     jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
   } else {
     // Set Bike Section as not completed yet.
     jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
+  }
+
+  // Disable or enable specific bikes to can select them or not in post booking checklist.
+  let isSelectedBikeWithUpgrade = jQuery( '.my-trips-checklist .bike-selected' ).attr('data-is-bike-with-upgrade');
+  // If the selected bike during the checkout process is without an upgrade option.
+  if( 'true' != isSelectedBikeWithUpgrade ){
+    // Diable all bikes with upgrade option.
+    jQuery( '.my-trips-checklist [data-is-bike-with-upgrade="true"]' ).each( function () {
+      jQuery( this ).css( {"opacity": "0.5", "pointer-events": "none"} );
+    } );
+  } else {
+    // Disable all bikes without upgrade option.
+    jQuery( '.my-trips-checklist [data-is-bike-with-upgrade="false"]' ).each( function () {
+      jQuery( this ).css( {"opacity": "0.5", "pointer-events": "none"} );
+    } );
   }
 }
 function tripCapacityValidation(is_return = true) {
@@ -410,6 +432,15 @@ function checkout_steps_validations(step = 1) {
   console.log(validationMessages);
   return isValidated;
 }
+var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
+  if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
+    jQuery('.navigation-sticky').css('padding-left', headerMargin + 10 + 'px');
+    
+  } else if(jQuery(window).width() > 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
+    jQuery('.navigation-sticky').css('padding-left', headerMargin + 'px');
+  }
 jQuery(document).ready(function () {
   tt_fetch_display_order_emails();
   jQuery.validator.addMethod("pwcheck",
@@ -542,12 +573,15 @@ jQuery(document).ready(function () {
     autoclose: true
   });
 
-  var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
-  if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
-    jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
-  } else if(jQuery(window).width() > 1440) {
-    jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
-  }
+  // var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
+  // if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
+  //   jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
+  //   jQuery('.navigation-sticky').css('padding-left', headerMargin + 10 + 'px');
+    
+  // } else if(jQuery(window).width() > 1440) {
+  //   jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
+  //   jQuery('.navigation-sticky').css('padding-left', headerMargin + 'px');
+  // }
 
   
   jQuery('.pdp_similar_trips_slider').slick({
@@ -593,6 +627,19 @@ jQuery(document).ready(function () {
   });
 
 });
+
+jQuery(window).on('resize', function() {
+  var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
+  if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
+    jQuery('.navigation-sticky').css('padding-left', headerMargin + 10 + 'px');
+    
+  } else if(jQuery(window).width() > 1440) {
+    jQuery('#similar-trips').css('padding-left', headerMargin + 'px');
+    jQuery('.navigation-sticky').css('padding-left', headerMargin + 'px');
+  }
+} );
+
 jQuery('.protection_modal').on('change', function (e) {
   if (e.target.checked) {
     jQuery('#protection_modal').modal('toggle');
@@ -953,6 +1000,24 @@ jQuery(document).ready(function () {
   });
 });
 jQuery(document).ready(function () {
+
+  var maxHeight = 0;
+    jQuery('.rp4wp-related-posts li').each(function(){
+        maxHeight = Math.max(maxHeight, jQuery(this).children('.rp4wp-related-post-content').children('a').height());
+    });
+
+    if(jQuery(window).width() > 498) {
+      jQuery('.rp4wp-related-posts li .rp4wp-related-post-content a').height(maxHeight);
+    }
+
+    if(jQuery(window).width() < 499) {
+      jQuery('.rp4wp-related-posts ul').slick({
+        slidesToShow: 1,
+      });
+    }
+
+    jQuery('.share-post').after(jQuery('.rp4wp-related-posts') );
+
   if (jQuery('#togglePassword').length > 0) {
     const togglePassword = document.querySelector('#togglePassword');
     const password = document.querySelector('#InputPassword');
@@ -1083,6 +1148,23 @@ jQuery(document).ready(function () {
           resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`
           // Set Medical info section as complete.
           jQuery('input[name="custentity_medical_info_first_load"]').remove();
+          // Prevent script-stop execution issues.
+          try {
+            // Store new state of Medical Info section.
+            medicalInfoSectionHelper.confirmChanges();
+            // Store new state of Emergency Info section.
+            emergencyInfoSectionHelper.confirmChanges();
+            // Store new state of Gear Info section.
+            gearInfoSectionHelper.confirmChanges();
+            // Store new state of Passport Info section.
+            passportInfoSectionHelper.confirmChanges();
+            // Store new state of Gear Info Optional section.
+            gearInfoOptionalSectionHelper.confirmChanges();
+            // Store new state of Bike Info section.
+            bikeInfoSectionHelper.confirmChanges();
+          } catch (error) {
+            console.log(error);
+          }
         } else {
           resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
         }
@@ -1228,7 +1310,7 @@ jQuery(window).load(function () {
     jQuery('#trip-finder-destination .placeholder .selected-destination').text(selected_destination);
   })
   jQuery('input[name="trek_destination"]').change(function () {
-    var destination = jQuery('input[name="trek_destination"]:checked').attr('id');
+    var destination = jQuery('.destination-option input[name="trek_destination"]:checked').attr('id');
     jQuery('.trek-trip-finder-form').attr('action', `${destination}`);
     dataLayer.push({
       'event': 'trip_finder',
@@ -1772,7 +1854,7 @@ jQuery(document).on('click keyup keydown change', '.tt_rider_level_select', func
       jQuery(divID).find('input').not('input[name="bike_gears[guests][' + guest_id + '][own_bike]"]').prop('required', true);
     } else {
       jQuery(divID).find('select').not('select[name="bike_gears[primary][helmet_size]"], select[data-is-required="false"]').prop('required', true);
-      jQuery(divID).find('input').not('input[name="bike_gears[primary][own_bike]"]').not('input[name="bike_gears[primary][save_preferences]"]').prop('required', true);
+      jQuery(divID).find('input').not('input[name="bike_gears[primary][own_bike]"]').not('input[name="bike_gears[primary][save_preferences]"]').not('input[name="bike_gears[primary][bike_type_id_preferences]"]').prop('required', true);
     }
     if (jQuery(divID).find('.tt_my_own_bike_checkbox').is(':checked')) {
       if (guest_id != 'primary') {
@@ -1798,6 +1880,13 @@ jQuery(document).on('click keyup keydown change', '.tt_rider_level_select', func
         jQuery('input[name="bike_gears[primary][bikeTypeId]"]').prop('required', true);
         jQuery('input[name="bike_gears[primary][bikeId]"]').prop('required', true);
       }
+    }
+    if (jQuery(divID).find('.tt_my_own_bike_checkbox').is(':checked')) {
+      if (guest_id != 'primary') {
+          jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val(5270);
+        }else{
+          jQuery('input[name="bike_gears[primary][bikeId]"]').val(5270)
+        }
     }
   }
 });
@@ -1891,6 +1980,9 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
   parentDiv.find('.bike_selectionElement').removeClass("bike-selected");
   jQuery(this).find('.radio-selection').addClass("checkout-bikes__selected-bike-icon");
   jQuery(this).addClass("bike-selected");
+  // Set bike type id for Bike & Gear Preferences.
+  var bikeTypeIdPreferences = jQuery(this).attr('data-type-id');
+  jQuery('[name="bike_gears[primary][bike_type_id_preferences]"]').val(bikeTypeIdPreferences);
   jQuery.ajax({
     type: 'POST',
     url: trek_JS_obj.ajaxURL,
@@ -2276,10 +2368,35 @@ if (jQuery('.tt_reset_rooms').length > 0) {
         jQuery("#currency_switcher").trigger("change")
       },
       complete: function(){
-        if(trek_JS_obj.review_order){
-          jQuery('#tt-review-order').html(trek_JS_obj.review_order);
-          jQuery("#currency_switcher").trigger("change")
-        }
+        // On removing occupant from the room - trigger recalculate, and obtain the review order html.
+        var actionName = 'tt_save_occupants_ajax_action';
+        var formData = jQuery('form.checkout.woocommerce-checkout').serialize();
+        jQuery.ajax({
+          type: 'POST',
+          url: trek_JS_obj.ajaxURL,
+          data: formData + "&action=" + actionName,
+          dataType: 'json',
+          beforeSend: function () {
+            jQuery.blockUI({
+              css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff'
+              }
+            });
+          },
+          success: function (response) {
+            if (response.review_order) {
+              jQuery('#tt-review-order').html(response.review_order);
+              jQuery("#currency_switcher").trigger("change");
+            }
+            jQuery.unblockUI();
+          }
+        });
         // Trigger an event that shows that the "#addOccupantsModal" modal html is ready.
         let occupantsModal = document.querySelector('#addOccupantsModal');
         occupantsModal && occupantsModal.dispatchEvent(occupantPopUpHtmlReadyEvent);
@@ -2438,26 +2555,74 @@ if (jQuery('.tt_continue_bike_click_btn').length > 0) {
       success: function (response) {
         // Check if the response is valid
         if (response) {
-          console.log(response.gear_preferences_rider_height);
           // Refill fields with retrieved data
+          if (response.gear_preferences_bike_type !== "") {
+            var has_selected_bike = false;
+            jQuery('[data-selector="tt_bike_selection_primary"] [name="bike_gears[primary][bikeTypeId]"]').each(function () {
+              if(jQuery(this).is(':checked')){
+                has_selected_bike = true;
+              }
+            })
+            var can_not_select = false;
+            if(jQuery(`[data-selector="tt_bike_selection_primary"][data-type-id="${response.gear_preferences_bike_type}"]`).length >= 2 ){
+              // Has more than one bike from the same type, can not select any of them.
+              can_not_select = true;
+            }
+            // Check if we have selected already.
+            if( !has_selected_bike && !can_not_select ){
+              // Click on input inside bike to take available sizes.
+              jQuery(`[data-selector="tt_bike_selection_primary"][data-type-id="${response.gear_preferences_bike_type}"] input`).click();
+            }
+          }
           if (response.gear_preferences_rider_height !== "") {
-            jQuery('[name="bike_gears[primary][rider_height]"]').val(response.gear_preferences_rider_height);
+            // Check if we have selected already.
+            if( jQuery( '[name="bike_gears[primary][rider_height]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+              jQuery('[name="bike_gears[primary][rider_height]"]').val(response.gear_preferences_rider_height);
+            }
           }
           if (response.gear_preferences_select_pedals !== "") {
-            jQuery('[name="bike_gears[primary][bike_pedal]"]').val(response.gear_preferences_select_pedals);
+            // Check if we have selected already.
+            if( jQuery( '[name="bike_gears[primary][bike_pedal]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+              jQuery('[name="bike_gears[primary][bike_pedal]"]').val(response.gear_preferences_select_pedals);
+            }
           }
           if (response.gear_preferences_helmet_size !== "") {
-            jQuery('[name="bike_gears[primary][helmet_size]"]').val(response.gear_preferences_helmet_size);
+            // Check if we have selected already.
+            if( jQuery( '[name="bike_gears[primary][helmet_size]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+              jQuery('[name="bike_gears[primary][helmet_size]"]').val(response.gear_preferences_helmet_size);
+            }
           }
           if (response.gear_preferences_jersey_style !== "") {
             if (!jQuery('[name="bike_gears[primary][jersey_style]"]').parent().hasClass('d-none')) {
-              jQuery('[name="bike_gears[primary][jersey_style]"]').val(response.gear_preferences_jersey_style);
+              // Check if we have selected already.
+              if( jQuery( '[name="bike_gears[primary][jersey_style]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+                jQuery('[name="bike_gears[primary][jersey_style]"]').val(response.gear_preferences_jersey_style);
+              }
             }
           }
-          if (response.gear_preferences_jersey_size !== "") {
+          if (response.gear_preferences_jersey_size !== "" && response.gear_preferences_jersey_style !== "" ) {
             if (!jQuery('[name="bike_gears[primary][jersey_size]"]').parent().hasClass('d-none')) {
-              jQuery('[name="bike_gears[primary][jersey_size]"]').val(response.gear_preferences_jersey_size);
+              // Check if we have selected already.
+              if( jQuery( '[name="bike_gears[primary][jersey_size]"]' ).prop( 'selectedIndex' ) <= 0 ) {
+                // Take Size options before set the size option value.
+                var actionName   = 'tt_jersey_change_action';
+                var jersey_style = response.gear_preferences_jersey_style;
+                jQuery.ajax({
+                  type: 'POST',
+                  url: trek_JS_obj.ajaxURL,
+                  data: { 'action': actionName, 'jersey_style': jersey_style },
+                  dataType: 'json',
+                  success: function (res) {
+                    if (res.status == true) {
+                      // Append options to select/option field.
+                      jQuery('[name="bike_gears[primary][jersey_size]"]').html(res.opts);
 
+                      // Set selected size.
+                      jQuery('[name="bike_gears[primary][jersey_size]"]').val(response.gear_preferences_jersey_size);
+                    }
+                  }
+                });
+             }
             }
           }
         } else {
@@ -2519,11 +2684,13 @@ jQuery('body').on('click', function () {
     // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#000")
   }
   else{
-    jQuery('html, body').css('overflow', 'scroll');
-    // jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
-    jQuery("nav.mobile-nav div#navbar").removeClass("w-100")
-    resetMobileMenu()
-    // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#fff")
+    if(jQuery(window).width() < 768) {
+      jQuery('html, body').css('overflow', 'scroll');
+      // jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
+      jQuery("nav.mobile-nav div#navbar").removeClass("w-100")
+      resetMobileMenu()
+      // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#fff")
+    }
   }
   var pdpNav = jQuery(".overview-menu-mobile .accordion-button")
   var isPdpNavExpanded = jQuery(pdpNav).attr("aria-expanded")
@@ -2545,8 +2712,8 @@ jQuery('body').on('click', function () {
     }
   },500) 
 });
-jQuery('body').on('input, click, oninput, onpaste, change', '.medical_validation_checkboxes, .emergency_validation_inputs, .gear_validation_inputs, .passport_validation_inputs, .bike_validation_select', function () {
-  prebookingChecklistValidate();
+jQuery('body').on('input, click, oninput, onpaste, change', '.medical_validation_checkboxes, .emergency_validation_inputs, .gear_validation_inputs, .passport_validation_inputs, .bike_validation_select', function (ev) {
+  prebookingChecklistValidate(ev);
 });
 jQuery(document).on('change', 'select[name^="occupants["]', function () {
   var Currentname = jQuery(this).attr('name');
@@ -2613,6 +2780,9 @@ jQuery('body').on('click', '.bike_selectionElementchk', function () {
   parentDiv.find('.bike_selectionElementchk').removeClass("bike-selected");
   jQuery(this).find('.radio-selection').addClass("checkout-bikes__selected-bike-icon");
   jQuery(this).addClass("bike-selected");
+  // Set bike type id for Bike & Gear Preferences.
+  var bikeTypeIdPreferences = jQuery(this).attr('data-type-id');
+  jQuery('[name="bike_type_id_preferences"]').val(bikeTypeIdPreferences);
   jQuery.ajax({
     type: 'POST',
     url: trek_JS_obj.ajaxURL,
@@ -2675,6 +2845,12 @@ jQuery('body').on('change', '.tt_chk_bike_size_change', function () {
     }
   });
 });
+
+function waymark_refresh(Waymark) {	
+  jQuery('.pdp-itinerary .nav-link').on('click', function() {
+	  Waymark.reset_map_view();
+  });
+}
 
 jQuery('.read-more-action').on('click', function (e) {
   e.preventDefault();
@@ -3111,7 +3287,7 @@ jQuery(document).ready(function() {
   });  
   jQuery(".product-info-desktop").height(maxHeightProduct1);
 
-  jQuery('#testimonials .card-text').each(function() {
+  jQuery('#testimonials p').each(function() {
     var $text = jQuery(this);
     var $button = $text.siblings('.read-more');
     var lineHeight = parseFloat($text.css('line-height'));
@@ -3139,8 +3315,8 @@ jQuery(document).ready(function() {
 
   jQuery('#testimonials .read-more').on("click", function(){
       var $this = jQuery(this);
-      $this.siblings('.card-text').toggleClass("is-expanded");
-      if($this.siblings('.card-text').hasClass("is-expanded")){
+      $this.siblings('.long-text').toggleClass("is-expanded");
+      if($this.siblings('.long-text').hasClass("is-expanded")){
           jQuery(this).text("Show less");
           jQuery(this).parent().height('auto');
       } else {
@@ -4056,3 +4232,475 @@ jQuery('.travel-protection-tooltip-container').on('click', function(e) {
     jQuery('html').removeClass('no-scroll');
   }
 })
+
+/* My trip checklist undo current cahnges functionality START */
+
+/**
+ * This is a helper for Medical Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let medicalInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-medicalInfo'),
+  initialState: {
+    checkboxes: {},
+    textareas: {}
+  },
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch checkboxes and textareas
+    let medicalInfoCheckboxes = this.infoCtr.querySelectorAll('input.medical_validation_checkboxes');
+    let medicalInfoTextareas = this.infoCtr.querySelectorAll('textarea');
+
+    medicalInfoCheckboxes.forEach(checkbox => {
+      if( checkbox.checked ){
+        // Keep checked checkboxes.
+        this.initialState['checkboxes'][checkbox.name] = checkbox.value;
+      }
+    });
+  
+    medicalInfoTextareas.forEach(textarea => {
+      // Keep textareas values.
+      this.initialState['textareas'][textarea.name] = textarea.value;
+    });
+
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the checkboxes state.
+    for ( const key in this.initialState.checkboxes ) {
+      this.infoCtr.querySelector(`[name="${key}"][value="${this.initialState.checkboxes[key]}"]`).click();
+    }
+  
+    // Restore the textareas info.
+    for ( const key in this.initialState.textareas ) {
+      this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState.textareas[key];
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Emergency Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let emergencyInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-emergencyInfo'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch inputs.
+    let emInfoInputs = this.infoCtr.querySelectorAll('input.emergency_validation_inputs');
+
+    emInfoInputs.forEach(input => {
+      // Keep input values.
+      this.initialState[input.name] = input.value;
+    })
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the inputs info.
+    for ( const key in this.initialState ) {
+      this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Gear Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let gearInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-gearInfo'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch select options.
+    let gearInfoSelectOptions = this.infoCtr.querySelectorAll('select.gear_validation_inputs');
+
+    gearInfoSelectOptions.forEach(select => {
+      let selectedValue = select.options[select.selectedIndex].value;
+
+      // Keep only visible select option values.
+      if( selectedValue.length > 0 && selectedValue !== 'none' ) {
+
+        this.initialState[select.name] = selectedValue;
+      }
+
+    })
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the inputs info.
+    for ( const key in this.initialState ) {
+
+      // Skip jersey size, as it will be set on jersey style key.
+      if( 'tt-jerrsey-size' === key ) {
+        continue;
+      }
+
+      // If is jersey style, obtain jersey size options first, and set both of them.
+      if( 'tt-jerrsey-style' === key ) {
+        // Keep a reference to this object.
+        let self = this;
+        // Set jersey style value.
+        this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+
+        // Take Size options before set the size option value.
+        let actionName   = 'tt_jersey_change_action';
+        let jersey_style = this.initialState[key]; // value.
+
+        jQuery.ajax({
+          type: 'POST',
+          url: trek_JS_obj.ajaxURL,
+          data: { 'action': actionName, 'jersey_style': jersey_style },
+          dataType: 'json',
+          success: function ( res ) {
+            if ( res.status == true ) {
+              // Append options to select/option field.
+              self.infoCtr.querySelector('[name="tt-jerrsey-size"]').innerHTML = res.opts;
+              // Set selected size.
+              self.infoCtr.querySelector('[name="tt-jerrsey-size"]').value = self.initialState['tt-jerrsey-size'];
+            }
+          }
+        });
+
+      } else {
+
+        this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+      }
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Passport Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let passportInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-passportInfo'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch inputs.
+    let passportInfoInputs = this.infoCtr.querySelectorAll('input.passport_validation_inputs');
+
+    passportInfoInputs.forEach(input => {
+      // Keep input values.
+      this.initialState[input.name] = input.value;
+    })
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the inputs info.
+    for ( const key in this.initialState ) {
+      this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Gear Info Optional section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let gearInfoOptionalSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-gearInfo-optional'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch fields.
+    let gearInfoOptionalInputs = this.infoCtr.querySelectorAll('input.gear_optional_validation_inputs, select.gear_optional_validation_inputs');
+
+    gearInfoOptionalInputs.forEach(field => {
+      // Keep field values.
+      this.initialState[field.name] = field.value;
+    })
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the fields info.
+    for ( const key in this.initialState ) {
+      this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+/**
+ * This is a helper for Bike Info section,
+ * that store initial information about section state
+ * and provide "undo changes" functionality.
+ */
+let bikeInfoSectionHelper = {
+  infoCtr: document.querySelector('#flush-collapse-bikeInfo'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch fields.
+    let bikeInfoModelInputs = this.infoCtr.querySelectorAll('input.bike_validation_inputs');
+    let bikeInfoSizeSelect = this.infoCtr.querySelector('select.bike_validation_select');
+    let bikeInfoIdInput = this.infoCtr.querySelector('input[name="bikeId"]');
+    let bikeInfoModelHiddenInput = this.infoCtr.querySelector('input[name="bikeTypeId"]');
+
+    bikeInfoModelInputs.forEach(input => {
+      // Keep selected bike model.
+      if( input.checked ) {
+        this.initialState[input.name] = input.value;
+      }
+    })
+
+    // Keep selected bike size.
+    if( null !== bikeInfoSizeSelect ){
+      if( bikeInfoSizeSelect.options.length > 0 ) {
+        let selectedBikeSizeValue = bikeInfoSizeSelect.options[bikeInfoSizeSelect.selectedIndex].value;
+
+        if( selectedBikeSizeValue.length > 0 && selectedBikeSizeValue !== 'none' ) {
+          this.initialState[bikeInfoSizeSelect.name] = selectedBikeSizeValue
+        }
+      }
+    }
+
+    // Keep selected bike id.
+    if( null !== bikeInfoIdInput ) {
+
+      this.initialState[bikeInfoIdInput.name] = bikeInfoIdInput.value;
+    }
+
+    // Keep hidden bike model id.
+    if( null !== bikeInfoModelHiddenInput ) {
+
+      this.initialState[bikeInfoModelHiddenInput.name] = bikeInfoModelHiddenInput.value;
+    }
+
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the fields info.
+    for ( const key in this.initialState ) {
+      // Skip bike size, as it will be set on bike model key.
+      if( 'tt-bike-size' === key ) {
+        continue;
+      }
+
+      // If is bike model, obtain bike size options first, and set both of them.
+      if( 'bikeModelId' === key ) {
+        // Keep a reference to this object.
+        let self = this;
+        // Set bike model value.
+        let bikeModelInput = this.infoCtr.querySelector(`[name="${key}"][value="${this.initialState[key]}"]`);
+        bikeModelInput.checked = true;
+
+        // Set selected state.
+        let bikeModelsWrapper = bikeModelInput.closest('.checkout-bikes__bike-grid');
+        let bikeModelCtrs = bikeModelsWrapper.querySelectorAll('.bike_selectionElementchk');
+        bikeModelCtrs.forEach( ctr => {
+          let icon = ctr.querySelector('.radio-selection');
+
+          if( this.initialState[key] == ctr.dataset.id ) {
+            ctr.classList.add('bike-selected');
+            icon.classList.add('checkout-bikes__selected-bike-icon');
+          } else {
+            ctr.classList.remove('bike-selected');
+            icon.classList.remove('checkout-bikes__selected-bike-icon');
+          }
+        });
+
+        // Take Size options before set the size option value.
+        let actionName = 'tt_chk_bike_selection_ajax_action';
+        let bikeTypeId = this.initialState[key];
+        let orderId = this.infoCtr.querySelector('[name="wc_order_id"]').value;
+
+        jQuery.ajax({
+          type: 'POST',
+          url: trek_JS_obj.ajaxURL,
+          data: { 'action': actionName, 'bikeTypeId': bikeTypeId, order_id: orderId },
+          dataType: 'json',
+          success: function ( res ) {
+            if ( res.size_opts ) {
+              // Append options to select/option field.
+              self.infoCtr.querySelector('[name="tt-bike-size"]').innerHTML = res.size_opts;
+              // Set selected size.
+              self.infoCtr.querySelector('[name="tt-bike-size"]').value = self.initialState['tt-bike-size'];
+            }
+          }
+        });
+
+      } else {
+
+        this.infoCtr.querySelector(`[name="${key}"]`).value = this.initialState[key];
+      }
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state of the section.
+    this.storeInfo();
+  }
+}
+
+// Collect initial values in the medical info section when it is expanded.
+jQuery('#flush-collapse-medicalInfo').on('shown.bs.collapse', function() {
+  medicalInfoSectionHelper.storeInfo();
+});
+
+// Collect initial values in the emergency info section when it is expanded.
+jQuery('#flush-collapse-emergencyInfo').on('shown.bs.collapse', function() {
+  emergencyInfoSectionHelper.storeInfo();
+});
+
+// Collect initial values in the gear info section when it is expanded.
+jQuery('#flush-collapse-gearInfo').on('shown.bs.collapse', function() {
+  gearInfoSectionHelper.storeInfo();
+});
+
+// Collect initial values in the passport info section when it is expanded.
+jQuery('#flush-collapse-passportInfo').on('shown.bs.collapse', function() {
+  passportInfoSectionHelper.storeInfo();
+});
+
+// Collect initial values in the gear info optional section when it is expanded.
+jQuery('#flush-collapse-gearInfo-optional').on('shown.bs.collapse', function() {
+  gearInfoOptionalSectionHelper.storeInfo();
+});
+
+// Collect initial values in the bike info optional section when it is expanded.
+jQuery('#flush-collapse-bikeInfo').on('shown.bs.collapse', function() {
+  bikeInfoSectionHelper.storeInfo();
+});
+
+// Restore initial values for any Post Booking Checklist section.
+jQuery('.pb-checklist-cancel').on('click', function(ev) {
+  let cancelTrgger = ev.target;
+
+  switch ( cancelTrgger.dataset.bsTarget ) {
+    case '#flush-collapse-medicalInfo':
+      medicalInfoSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-emergencyInfo':
+      emergencyInfoSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-gearInfo':
+      gearInfoSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-passportInfo':
+      passportInfoSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-gearInfo-optional':
+      gearInfoOptionalSectionHelper.undoChanges();
+      break;
+    case '#flush-collapse-bikeInfo':
+      bikeInfoSectionHelper.undoChanges();
+      break;
+    default:
+      break;
+  }
+
+  // Catch parent section container.
+  let sectionCtr = cancelTrgger.closest(cancelTrgger.dataset.bsTarget);
+  // Catch save preferences checkbox in this section.
+  let savePreferencesCheckbox = sectionCtr.querySelector('input[name^="tt_save_"]');
+  // Restore save preferences value.
+  if ( null !== savePreferencesCheckbox ) {
+    savePreferencesCheckbox.checked = false;
+  }
+
+});
+
+/* My trip checklist undo current cahnges functionality END */
