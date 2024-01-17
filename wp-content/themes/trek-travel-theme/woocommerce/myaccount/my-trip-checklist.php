@@ -865,20 +865,14 @@ $gear_preferences_bike_type = get_user_meta( $user_id, 'gear_preferences_bike_ty
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<select name="saddleId" id="saddleId" class="form-select gear_optional_validation_inputs" autocomplete="saddle-height" data-input-classes="" data-label="Saddle Height" tabindex="-1" aria-hidden="true">
-													<?php //echo tt_items_select_options('syncSaddles', $pedal_selection);
-													?>
-													<option value="">Select Saddle height</option>
-													<option value="1" <?php ($saddle_height == 1 ? 'selected' : ''); ?>>Bringing own</option>
-													<option value="2" <?php ($saddle_height == 2 ? 'selected' : ''); ?>>Stock Saddle</option>
-												</select>
-												<label for="saddleId">Saddle Height</label>
+												<input name="saddleId" id="saddleId" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
+												<label for="saddleId">Saddle Height (cm)</label>
 											</div>
 										</div>
 										<div class="col-md px-0">
 											<div class="form-floating">
 												<input type="text" name="bar_reach" id="bar_reach" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
-												<label for="bar_reach">Bar reach</label>
+												<label for="bar_reach">Bar reach (cm)</label>
 											</div>
 										</div>
 									</div>
@@ -886,7 +880,7 @@ $gear_preferences_bike_type = get_user_meta( $user_id, 'gear_preferences_bike_ty
 										<div class="col-md px-0">
 											<div class="form-floating">
 												<input type="text" name="bar_height" id="bar_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>">
-												<label for="bar_height">Bar Height</label>
+												<label for="bar_height">Bar Height (cm)</label>
 											</div>
 										</div>
 										<div class="col-md px-0">
