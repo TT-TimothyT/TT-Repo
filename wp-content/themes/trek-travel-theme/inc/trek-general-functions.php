@@ -5686,3 +5686,35 @@ function tt_get_local_trip_code( $tripCode ) {
     return $tripCode;
 }
 
+function set_default_featured_image_for_posts() {
+    // Query for posts without a featured image
+    $args = array(
+        'post_type'      => 'post',
+        'posts_per_page' => -1,
+    );
+
+    $posts = new WP_Query($args);
+
+    // Loop through posts and set default image
+    if ( $posts->have_posts() ) {
+        while ( $posts->have_posts() ) {
+            $posts->the_post();
+
+            if (!has_post_thumbnail(get_the_ID()) ) {
+                set_post_thumbnail( get_the_ID(), 90117 );
+            } elseif ( get_the_post_thumbnail_url(get_the_ID(), 'full') == "") {
+                set_post_thumbnail( get_the_ID(), 90117 );
+            } elseif( 90109 === get_post_thumbnail_id(get_the_ID()) ) {
+                set_post_thumbnail( get_the_ID(), 90117 );
+            }
+        }
+
+        // Reset post data
+        wp_reset_postdata();
+    }
+}
+
+// Run the function once
+if( $_GET['setfeaturedimages'] == 'true' && current_user_can( 'administrator' ) ) {
+    set_default_featured_image_for_posts();
+}

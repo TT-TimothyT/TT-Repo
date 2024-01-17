@@ -21,7 +21,7 @@
 	<div class="entry-content">
 		<?php
 			if ( has_post_thumbnail() ) :
-				echo '<div class="post-thumbnail">' . get_the_post_thumbnail( get_the_ID(), 'large' ) . '</div>';
+				echo '<div class="post-thumbnail">' . get_the_post_thumbnail( get_the_ID(), 'full' ) . '</div>';
 			endif;
 
 			the_content();
