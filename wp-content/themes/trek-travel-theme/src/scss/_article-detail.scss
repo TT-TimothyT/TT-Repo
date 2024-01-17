@@ -255,6 +255,10 @@ article.post{
     .card{
         border-bottom: 4px solid #28AAE1;
         border-radius: 4px;
+
+        .card-img-top {
+            object-fit: cover;
+        }
     }
 }
 
