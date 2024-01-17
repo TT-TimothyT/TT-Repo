@@ -5701,11 +5701,11 @@ function set_default_featured_image_for_posts() {
             $posts->the_post();
 
             if (!has_post_thumbnail(get_the_ID()) ) {
-                set_post_thumbnail( get_the_ID(), 90117 );
+                set_post_thumbnail( get_the_ID(), 90119 );
             } elseif ( get_the_post_thumbnail_url(get_the_ID(), 'full') == "") {
-                set_post_thumbnail( get_the_ID(), 90117 );
+                set_post_thumbnail( get_the_ID(), 90119 );
             } elseif( 90109 === get_post_thumbnail_id(get_the_ID()) ) {
-                set_post_thumbnail( get_the_ID(), 90117 );
+                set_post_thumbnail( get_the_ID(), 90119 );
             }
         }
 
