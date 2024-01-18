@@ -218,13 +218,16 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
                     if (empty($woo_field_value) && isset($tt_posted[$key]) && $tt_posted[$key]) {
                         $woo_field_value = $tt_posted[$key];
                     }
-                    if( $key == 'billing_state'  ){
-                        $country_val = $woocommerce->checkout->get_value('billing_country');
-                        if (isset($tt_posted['billing_country']) && !empty($tt_posted['billing_country'])) {
-                            $country_val = $tt_posted['billing_country'];
-                        }
-                        $field['country'] = !empty( $country_val ) ? $country_val : '';
-                        $woo_field_value = $tt_posted['billing_state'];
+                    if( $key === 'billing_state' ) {
+                        $country_val      = get_user_meta( get_current_user_id(), 'billing_country', true );
+                        $state_val        = get_user_meta( get_current_user_id(), 'billing_state', true );
+                        $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                        $woo_field_value  = $state_val;
+                    }
+                    if ( $key === 'billing_country' ) {
+                        $country_val      = get_user_meta( get_current_user_id(), 'billing_country', true );
+                        $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                        $woo_field_value  = $country_val;
                     }
                     $field_input = woocommerce_form_field($key, $field, $woo_field_value);
                     $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);

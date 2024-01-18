@@ -76,13 +76,16 @@ $userInfo = wp_get_current_user();
             if( $key != 'shipping_address_2' ){
                 $field['custom_attributes']['required'] = "required";
             }
-            if( $key == 'shipping_state'  ){
-                $country_val = $woocommerce->checkout->get_value('shipping_country');
-                if (isset($trek_user_checkout_posted['shipping_country']) && !empty($trek_user_checkout_posted['shipping_country'])) {
-                    $country_val = $trek_user_checkout_posted['shipping_country'];
-                }
-                $field['country'] = !empty( $country_val ) ? $country_val : '';
-                $woo_field_value =  $trek_user_checkout_posted['shipping_state'];
+            if ( $key === 'shipping_state' ) {
+                $country_val      = get_user_meta( get_current_user_id(), 'shipping_country', true );
+                $state_val        = get_user_meta( get_current_user_id(), 'shipping_state', true );
+                $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                $woo_field_value  = $state_val;
+            }
+            if ( $key === 'shipping_country' ) {
+                $country_val      = get_user_meta( get_current_user_id(), 'shipping_country', true );
+                $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                $woo_field_value  = $country_val;
             }
             $field_input = woocommerce_form_field($key, $field, $woo_field_value);
             $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);
