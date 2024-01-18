@@ -30,6 +30,8 @@ if(count($attachment_ids) > 4){
 	$attachment_ids = array_slice($attachment_ids, 0, 4);
 }
 
+$activity_type = get_field('activity_type');
+
 get_header( 'shop' );
 
 // Hero Carousel //////////////////////////////////////////
@@ -54,7 +56,7 @@ wc_get_template_part( 'partials/pdp', 'overview-navigation-mobile' );
 			
 		</div>
 
-		<div class="col-md-9 p-0 pdp-content-section">
+		<div class="col-md-9 p-0 pdp-content-section <?php if (!empty ($activity_type) && ($activity_type == 'H&W') ): ?>hw<?php endif; ?>">
 			<!-- pdp right side content goes here -->
 			<!-- similar trips section goes outside div.row container -->
 
