@@ -89,7 +89,10 @@
                     font-size: 18px;
                     line-height: 28px;
                     .miles-img {
+                        font-size: 20px;
+                        color: $blue;
                         margin-right: 10px;
+                        min-width: 20px;
                     }
                 }
                 .miles-h {
@@ -103,6 +106,16 @@
                     font-size: 14px;
                     line-height: 20px;
                     margin-bottom: unset;
+                }
+
+                .m-flex {
+                    display: flex;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                    .m-col {
+
+                    }
                 }
             }
         }
