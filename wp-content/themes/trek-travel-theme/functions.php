@@ -773,3 +773,39 @@ function dx_strip_text($htmlText){
 	// Output the result
 	return $result;
 }
+
+// CUSTOM WOOCOMMERCE TAXONOMY
+
+add_action( 'init', 'product_tax_activity' );
+
+// Register Custom Taxonomy
+function product_tax_activity()  {
+
+$labels = array(
+    'name'                       => 'Activities',
+    'singular_name'              => 'Activity',
+    'menu_name'                  => 'Activity',
+    'all_items'                  => 'All Activities',
+    'parent_item'                => 'Parent Activity',
+    'parent_item_colon'          => 'Parent Activity:',
+    'new_item_name'              => 'New Activity Name',
+    'add_new_item'               => 'Add New Activity',
+    'edit_item'                  => 'Edit Activity',
+    'update_item'                => 'Update Activity',
+    'separate_items_with_commas' => 'Separate Activity with commas',
+    'search_items'               => 'Search Activities',
+    'add_or_remove_items'        => 'Add or remove Activities',
+    'choose_from_most_used'      => 'Choose from the most used Activities',
+);
+$args = array(
+    'labels'                     => $labels,
+    'hierarchical'               => true,
+    'public'                     => true,
+    'show_ui'                    => true,
+    'show_admin_column'          => true,
+    'show_in_nav_menus'          => true,
+    'show_tagcloud'              => true,
+);
+register_taxonomy( 'activity', 'product', $args );
+
+}
