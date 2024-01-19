@@ -41,124 +41,6 @@ function tt_change_checkout_step(targetStep = '') {
     }
   }
 }
-/**
- * Function that set complete state for sections in Post Booking Checklist page.
- * (my-trip-checklist.php)
- */
-function prebookingChecklistValidate(ev) {
-  var isFirstMedicalLoad = jQuery('input[name="custentity_medical_info_first_load"]').length > 0;
-  var totalEmerFields = jQuery('.emergency_validation_inputs').length;
-  var totalGearFields = jQuery('.gear_validation_inputs').not('select[data-is-required="false"]').length;
-  var totalPassFields = jQuery('.passport_validation_inputs').length;
-  var emergency_itemCount = 0;
-  var gear_itemCount = 0;
-  var passport_itemCount = 0;
-
-  // Check if event comming from checklist field.
-  if( undefined !== ev ){
-    // Check if this field is medical info checkbox.
-    if( ev.target.classList.contains('medical_validation_checkboxes') ){
-
-      // Catch closest field group with checkboxes and textarea.
-      let thisMedicalFieldGroup = ev.target.closest('.medical-information__item');
-      let textArea = thisMedicalFieldGroup.querySelector('textarea');
-
-      // Adjust medical values for 'no' response, to can send value 'none' to NS.
-      if( 'yes' === ev.target.value ) {
-        // Remove 'none' value and show placeholder.
-        textArea.value = '';
-      } else {
-        // Set 'none' value.
-        textArea.value = 'none';
-      }
-    }
-  }
-
-  jQuery('.emergency_validation_inputs').each(function () {
-    if (jQuery(this).val() != '') {
-      emergency_itemCount++;
-    }
-  });
-  jQuery('.gear_validation_inputs').not('select[data-is-required="false"]').each(function () {
-    if (jQuery(this).val() != '') {
-      gear_itemCount++;
-    }
-  });
-  jQuery('.passport_validation_inputs').each(function () {
-    if (jQuery(this).val() != '') {
-      passport_itemCount++;
-    }
-  });
-  // Check medical information section for complete state.
-  if ( isFirstMedicalLoad ) {
-    jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
-  } else {
-    jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
-  }
-  if (totalEmerFields == emergency_itemCount) {
-    jQuery('.emergency_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
-  } else {
-    jQuery('.emergency_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
-  }
-  if (totalGearFields == gear_itemCount) {
-    jQuery('.gear_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
-  } else {
-    jQuery('.gear_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
-  }
-  if (totalPassFields == passport_itemCount) {
-    jQuery('.passport_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
-  } else {
-    jQuery('.passport_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
-  }
-
-  // Check Bike Section for complete state.
-  let bikeModelSelected = false;
-
-  // Loop all bike models.
-  jQuery( '.checkout-bikes-section .bike_validation_inputs' ).each( function() {
-    if( jQuery( this ).is( ':checked' ) ) {
-      // Has selected bike.
-      bikeModelSelected = true;
-      return false; // breaks.
-    }
-  })
-
-  let bikeSizeSelected = false;
-
-  // Check bike size select/options index if gt from 0, we has selected size. The 0 option is 'Select bike size'.
-  if( jQuery( '.checkout-bikes-section .bike_validation_select' ).prop( 'selectedIndex' ) > 0 ) {
-    bikeSizeSelected = true;
-  }
-
-  // If the Select bike radio inputs and Select size dropdown do not exist on the page, show the section as completed.
-  if(jQuery( '.checkout-bikes-section .bike_validation_select' ).length <= 0 && jQuery( '.checkout-bikes-section .bike_validation_inputs' ).length <= 0 ) {
-    bikeModelSelected = true;
-    bikeSizeSelected  = true;
-  }
-
-  // Set Bike Section complete state.
-  if ( bikeModelSelected && bikeSizeSelected ) {
-    jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
-  } else {
-    // Set Bike Section as not completed yet.
-    jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/error2.png');
-  }
-
-  // Disable or enable specific bikes to can select them or not in post booking checklist.
-  let isSelectedBikeWithUpgrade = jQuery( '.my-trips-checklist .bike-selected' ).attr('data-is-bike-with-upgrade');
-  // If the selected bike during the checkout process is without an upgrade option.
-  if( 'true' != isSelectedBikeWithUpgrade ){
-    // Diable all bikes with upgrade option.
-    jQuery( '.my-trips-checklist [data-is-bike-with-upgrade="true"]' ).each( function () {
-      jQuery( this ).css( {"opacity": "0.5", "pointer-events": "none"} );
-    } );
-  } else {
-    // Disable all bikes without upgrade option.
-    jQuery( '.my-trips-checklist [data-is-bike-with-upgrade="false"]' ).each( function () {
-      jQuery( this ).css( {"opacity": "0.5", "pointer-events": "none"} );
-    } );
-  }
-}
 function tripCapacityValidation(is_return = true) {
   jQuery('input#wc-cybersource-credit-card-tokenize-payment-method').prop('checked', true);
   if (trek_JS_obj && trek_JS_obj.is_checkout == true) {
@@ -1120,13 +1002,25 @@ jQuery(document).ready(function () {
       });
     
   });
-  jQuery('body').on('submit', 'form[name="trek-trip-checklist-form"]', function () {
-    var formData = jQuery('form[name="trek-trip-checklist-form"]').serialize();
+  jQuery('body').on('submit', 'form[name^="tt-checklist-form"]', function (ev) {
+
+    this.classList.add('was-validated');
+
+    if (! this.checkValidity()) {
+      ev.preventDefault()
+      ev.stopPropagation()
+      return false;
+    }
+
+    this.classList.remove('was-validated');
+    // Take the confirmed section from the data attribute on the submit button that submits the form.
+    let confirmedSection = jQuery( ev.originalEvent.submitter ).attr('data-confirm');
+    var formData = jQuery(this).serialize();
     var action = 'update_trip_checklist_action';
     jQuery.ajax({
       type: 'POST',
       url: trek_JS_obj.ajaxURL,
-      data: formData + "&action=" + action,
+      data: formData + "&confirmed_section=" + confirmedSection + "&action=" + action,
       dataType: 'json',
       beforeSend: function () {
         jQuery('#my-trips-responses').html('');
@@ -1145,31 +1039,82 @@ jQuery(document).ready(function () {
       success: function (response) {
         var resMessage = '';
         if (response.status == true) {
-          resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`
-          // Set Medical info section as complete.
-          jQuery('input[name="custentity_medical_info_first_load"]').remove();
-          // Prevent script-stop execution issues.
-          try {
-            // Store new state of Medical Info section.
-            medicalInfoSectionHelper.confirmChanges();
-            // Store new state of Emergency Info section.
-            emergencyInfoSectionHelper.confirmChanges();
-            // Store new state of Gear Info section.
-            gearInfoSectionHelper.confirmChanges();
-            // Store new state of Passport Info section.
-            passportInfoSectionHelper.confirmChanges();
-            // Store new state of Gear Info Optional section.
-            gearInfoOptionalSectionHelper.confirmChanges();
-            // Store new state of Bike Info section.
-            bikeInfoSectionHelper.confirmChanges();
-          } catch (error) {
-            console.log(error);
+          resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`;
+
+          switch (confirmedSection) {
+            case 'medical_section':
+              jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              // Restore textarea values for submitted 'no' values.
+              jQuery('.medical_validation_checkboxes').each(function(){
+                if( 'no' == jQuery(this).val() && jQuery(this).is(':checked') ){
+                  let textArea = jQuery(this).closest('.medical_item').find('textarea');
+                  textArea.val('');
+                }
+              })
+              // Prevent script-stop execution issues.
+              try {
+                // Store new state of Medical Info section.
+                medicalInfoSectionHelper.confirmChanges();
+              } catch (error) {
+                console.log(error);
+              }
+              break;
+            case 'emergency_section':
+              jQuery('.emergency_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              // Prevent script-stop execution issues.
+              try {
+                // Store new state of Emergency Info section.
+                emergencyInfoSectionHelper.confirmChanges();
+              } catch (error) {
+                console.log(error);
+              }
+              break;
+            case 'gear_section':
+              jQuery('.gear_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              // Prevent script-stop execution issues.
+              try {
+                // Store new state of Gear Info section.
+                gearInfoSectionHelper.confirmChanges();
+              } catch (error) {
+                console.log(error);
+              }
+              break;
+            case 'passport_section':
+              jQuery('.passport_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              // Prevent script-stop execution issues.
+              try {
+                // Store new state of Passport Info section.
+                passportInfoSectionHelper.confirmChanges();
+              } catch (error) {
+                console.log(error);
+              }
+              break;
+            case 'bike_section':
+              jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              // Prevent script-stop execution issues.
+              try {
+                // Store new state of Bike Info section.
+                bikeInfoSectionHelper.confirmChanges();
+              } catch (error) {
+                console.log(error);
+              }
+              break;
+            case 'gear_optional_section':
+              // Prevent script-stop execution issues.
+              try {
+                // Store new state of Gear Info Optional section.
+                gearInfoOptionalSectionHelper.confirmChanges();
+              } catch (error) {
+                console.log(error);
+              }
+              break;
+            default:
+              break;
           }
         } else {
-          resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
+          resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`;
         }
-        // Revalidate checklist completion.
-        prebookingChecklistValidate();
+
         jQuery('#my-trips-responses').html(resMessage);
         if (response.status == false) {
           alert(response.message);
@@ -1251,7 +1196,13 @@ jQuery(document).ready(function () {
   jQuery('body').on('change', '.medical_item input[type="radio"]', function () {
     var is_checked = jQuery(this).val();
     var textArea = jQuery(this).closest('.medical_item').find('textarea');
-    (is_checked == 'yes' ? textArea.show() : textArea.hide());
+    if( 'yes' == is_checked ) {
+      textArea.show();
+      textArea.attr('required', 'required');
+    } else {
+      textArea.hide();
+      textArea.removeAttr('required');
+    }
     return false;
   });
   jQuery('body').on('click', '#checkout-summary-mobile', function () {
@@ -1283,7 +1234,6 @@ jQuery(window).load(function () {
     jQuery('.destination-option').css('padding-bottom', '80px');
   }
   tripCapacityValidation(true);
-  prebookingChecklistValidate();
   validateGuestSelectionAdds();
   jQuery('input[name="trek_destination"]').on('click', function() {
     if (window.matchMedia('(max-width: 768px)').matches) {
@@ -2712,9 +2662,6 @@ jQuery('body').on('click', function () {
     }
   },500) 
 });
-jQuery('body').on('input, click, oninput, onpaste, change', '.medical_validation_checkboxes, .emergency_validation_inputs, .gear_validation_inputs, .passport_validation_inputs, .bike_validation_select', function (ev) {
-  prebookingChecklistValidate(ev);
-});
 jQuery(document).on('change', 'select[name^="occupants["]', function () {
   var Currentname = jQuery(this).attr('name');
   var CurrentVal = jQuery(this).val();
@@ -2806,8 +2753,6 @@ jQuery('body').on('click', '.bike_selectionElementchk', function () {
         jQuery('select[name="tt-bike-size"]').html(response.size_opts);
       }
       jQuery('input[name="bikeTypeId"]').val(bikeTypeId);
-      // Trigger complete status check after bike model changed.
-      prebookingChecklistValidate();
       jQuery.unblockUI();
       jQuery("#currency_switcher").trigger("change")
     }
@@ -4537,6 +4482,7 @@ let bikeInfoSectionHelper = {
     let bikeInfoSizeSelect = this.infoCtr.querySelector('select.bike_validation_select');
     let bikeInfoIdInput = this.infoCtr.querySelector('input[name="bikeId"]');
     let bikeInfoModelHiddenInput = this.infoCtr.querySelector('input[name="bikeTypeId"]');
+    let bikeTypeIdPreferencesInput = this.infoCtr.querySelector('input[name="bike_type_id_preferences"]');
 
     bikeInfoModelInputs.forEach(input => {
       // Keep selected bike model.
@@ -4566,6 +4512,12 @@ let bikeInfoSectionHelper = {
     if( null !== bikeInfoModelHiddenInput ) {
 
       this.initialState[bikeInfoModelHiddenInput.name] = bikeInfoModelHiddenInput.value;
+    }
+
+    // Keep bike id preferences.
+    if( null !==  bikeTypeIdPreferencesInput ) {
+
+      this.initialState[bikeTypeIdPreferencesInput.name] = bikeTypeIdPreferencesInput.value;
     }
 
     // Initial info stored successfully.
@@ -4699,6 +4651,13 @@ jQuery('.pb-checklist-cancel').on('click', function(ev) {
   // Restore save preferences value.
   if ( null !== savePreferencesCheckbox ) {
     savePreferencesCheckbox.checked = false;
+  }
+
+  // Catch section form.
+  let sectionForm = cancelTrgger.closest('form[name^="tt-checklist-form"]');
+  // Remove validation class from form.
+  if( null !== sectionForm ){
+    sectionForm.classList.remove('was-validated');
   }
 
 });
