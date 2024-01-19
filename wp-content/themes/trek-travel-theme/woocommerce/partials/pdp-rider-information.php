@@ -7,12 +7,9 @@ $product_id = $post->ID;
 $activity_terms = get_the_terms( $product_id, 'activity');
 foreach ( $activity_terms as $activity_term) {
 	$activity = $activity_term->name;
-
-    print_r($activity);
 }
 $product = wc_get_product($product_id);
 $r_level = $product->get_attribute('rider-level');
-    var_dump($r_level);
 
 ?>
 <div class="container pdp-section" id="rider-information">
