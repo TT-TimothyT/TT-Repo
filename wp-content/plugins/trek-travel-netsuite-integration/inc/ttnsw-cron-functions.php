@@ -841,12 +841,15 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                     update_post_meta( $trip_product_id, 'lock_record', $lockRecord );
                     update_post_meta( $trip_product_id, 'lock_bike', $lockBike );
                 }
+                //Check if such post meta exists, if it does, add the new registration id to the array
+                $existing_registration_ids_bike = get_post_meta( $trip_product_id, 'ns_registration_ids_bike', true );
+                $existing_registration_ids_record = get_post_meta( $trip_product_id, 'ns_registration_ids_record', true );
+                //get the user email
+                $user_info = get_userdata($wc_user_id);
+                $user_email = $user_info->user_email;
 
                 if( $lockRecord || $lockBike ) {
 
-                    //Check if such post meta exists, if it does, add the new registration id to the array
-                    $existing_registration_ids_bike = get_post_meta( $trip_product_id, 'ns_registration_ids_bike', true );
-                    $existing_registration_ids_record = get_post_meta( $trip_product_id, 'ns_registration_ids_record', true );
 
 
                     if( $lockBike ) {
@@ -856,6 +859,8 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                             if( ! in_array( $wc_user_id, $existing_registration_ids_bike ) ) {
                                 $existing_registration_ids_bike[] += $wc_user_id;
                                 update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+
+                                tt_add_error_log('NS - Locked Bike For:', $user_email, $trip_product_id);
                             }
 
                         } else {
@@ -863,6 +868,8 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                             $new_registration_ids_bike = array();
                             $new_registration_ids_bike[] += $wc_user_id;
                             update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $new_registration_ids_bike );
+                            tt_add_error_log('NS - Locked Bike For:', $user_email, $trip_product_id);
+
                         }
                     } else {
                         //Check if the user exists in the array, if it does, remove it
@@ -871,6 +878,8 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                             if( $key !== false ) {
                                 unset( $existing_registration_ids_bike[$key] );
                                 update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                                tt_add_error_log('NS - Unlocked Bike For:', $user_email, $trip_product_id);
+
                             }
                         }
                     }
@@ -882,12 +891,16 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                             if( ! in_array( $wc_user_id, $existing_registration_ids_record ) ) {
                                 $existing_registration_ids_record[] += $wc_user_id;
                                 update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                                tt_add_error_log('NS - Locked Gear For:', $user_email, $trip_product_id);
+
                             }
                         } else {
                             //If the post meta doesn't exist, create a new one
                             $new_registration_ids_record = array();
                             $new_registration_ids_record[] += $wc_user_id;
                             update_post_meta( $trip_product_id, 'ns_registration_ids_record', $new_registration_ids_record );
+                            tt_add_error_log('NS - Locked Gear For:', $user_email, $trip_product_id);
+
                         }
                     } else {
                         //Check if the user exists in the array, if it does, remove it
@@ -897,11 +910,32 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                             if( $key !== false ) {
                                 unset( $existing_registration_ids_record[$key] );
                                 update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                                tt_add_error_log('NS - Unlocked Gear For:', $user_email, $trip_product_id);
                             }
                         }
                     }
-                }
+                } else {
+                    //If both lock bike and lock record are false, remove the user from both arrays
+                    if( ! empty( $existing_registration_ids_bike ) ) {
+                        //Remove all existing instances of the user id, even if it's more than one
+                        $key = array_search( $wc_user_id, $existing_registration_ids_bike );
+                        if( $key !== false ) {
+                            unset( $existing_registration_ids_bike[$key] );
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                            tt_add_error_log('NS - Unlocked Bike For:', $user_email, $trip_product_id);
+                        }
+                    }
 
+                    if( ! empty( $existing_registration_ids_record ) ) {
+                        //Remove all existing instances of the user id, even if it's more than one
+                        $key = array_search( $wc_user_id, $existing_registration_ids_record );
+                        if( $key !== false ) {
+                            unset( $existing_registration_ids_record[$key] );
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                            tt_add_error_log('NS - Unlocked Gear For:', $user_email, $trip_product_id);
+                        }
+                    }
+                }
             }
         }
     }

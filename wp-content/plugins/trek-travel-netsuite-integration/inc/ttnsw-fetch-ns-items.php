@@ -139,6 +139,17 @@ function tt_admin_menu_page_cb()
             tt_add_error_log('[Sync] - NS Trip to WC', ['trip_code' => $req_trip_code, 'message' => 'No Product found' ], ['dateTime' => date('Y-m-d H:i:s')]);
         }
     }
+
+    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt_wp_manual_checklist_sync_action' ) {
+        tt_add_error_log('[Start]', ['type'=> 'User Checklist Sync'], ['dateTime' => date('Y-m-d H:i:s')]);
+
+        if( function_exists( 'tt_ns_fetch_registration_ids' ) ) {
+            tt_ns_fetch_registration_ids();
+        }
+
+        tt_add_error_log('[End]', ['type'=> 'User Checklist Sync'], ['dateTime' => date('Y-m-d H:i:s')]);
+
+    }
 ?>
     <div class="tt-admin-page-div tt-pl-40 tt-mt-30">
         <div class="tt-wc-ns-admin-wrap">
@@ -184,6 +195,14 @@ function tt_admin_menu_page_cb()
                     <input type="text" name="trip_code" placeholder="Enter TRIP Code/SKU" required>
                     <input type="hidden" name="action" value="tt_wp_manual_trip_sync_action">
                     <input type="submit" name="submit" value="Sync Trip" class="button-primary">
+                </form>
+            </div>
+            <div id="tt-checklist-sync">
+                <h3>Sync all user meta and checklist locking</h3>
+                <form action="" class="tt-checklist-sync" method="post">
+                    Click to sync the user checklist locking for the past 2 hours
+                    <input type="hidden" name="action" value="tt_wp_manual_checklist_sync_action">
+                    <input type="submit" name="submit" value="Sync" class="button-primary">
                 </form>
             </div>
             <!-- Temp Code -->

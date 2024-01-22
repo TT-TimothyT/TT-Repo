@@ -489,6 +489,11 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						</div>
 					</div> <!-- accordion-item ends -->
 				<?php  } */ ?>
+				<?php $medical_title_string = "Add any medical information we need to know"; ?>
+					<?php if( $lockedUserRecord == 1 ) { ?>
+						<?php $medical_title_string = 'Review your medical information'; ?>
+						<?php $gray_out = 'disabled style="color: #666666;"'; ?>
+					<?php } ?>
 				<div class="accordion-item">
 					<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-medicalInfo">
 						<button class="accordion-button px-0 collapsed medical_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-medicalInfo" aria-expanded="false" aria-controls="flush-collapse-medicalInfo">
@@ -497,12 +502,22 @@ if( !empty( $confirmed_info_unserialized ) ) {
 							<?php else : ?>
 								<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
 							<?php endif; ?>
-							Add any medical information we need to know
+							<?php echo $medical_title_string ?>
 						</button>
 					</p>
 					<form name="tt-checklist-form-medical-section" method="post" novalidate>
 						<div id="flush-collapse-medicalInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-medicalInfo">
 							<div class="accordion-body px-0">
+								<?php if( $lockedUserRecord ) { ?>
+									<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
+										<div class="checkout-bikes__notice-icon">
+											<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
+										</div>
+										<div class="checkout-bikes__notice-text">
+											<p class="fw-normal fs-sm lh-sm">Looks like your trip is starting soon! If you need to make any changes to your information below, give us a call!</p>
+										</div>
+									</div>
+								<?php } ?>
 								<div class="password-reset-form medical_items">
 									<fieldset>
 										<?php
@@ -528,11 +543,11 @@ if( !empty( $confirmed_info_unserialized ) ) {
 												<div class="flex-grow-1">
 													<p class="fw-medium fs-lg lh-lg mb-4 mb-lg-5">' . $medical_field . '</p>
 													<div class="form-check form-check-inline mb-0">
-													<input class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadioYes' . $medical_key . '" value="yes" ' . ($is_medical == 'yes' ? 'checked' : '') . '>
+													<input ' . $gray_out . ' class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadioYes' . $medical_key . '" value="yes" ' . ($is_medical == 'yes' ? 'checked' : '') . '>
 													<label class="form-check-label" for="inlineRadioYes' . $medical_key . '">Yes</label>
 													</div>
 													<div class="form-check form-check-inline mb-0 ">
-													<input class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadioNo' . $medical_key . '" value="no" ' . ($is_medical == 'no' ? 'checked' : '') . '>
+													<input ' . $gray_out . ' class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadioNo' . $medical_key . '" value="no" ' . ($is_medical == 'no' ? 'checked' : '') . '>
 													<label class="form-check-label" for="inlineRadioNo' . $medical_key . '">No</label>
 													</div>
 													<textarea name="' . $medical_key . '[value]" placeholder="Please tell us more" class="form-control rounded-1 mt-4" ' . $toggleTextClass . '>' . ( 'none' != $medical_val ? $medical_val : '') . '</textarea>
@@ -569,6 +584,11 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						<?php wp_nonce_field('edit_trip_checklist_medical_section_action', 'edit_trip_checklist_medical_section_nonce'); ?>
 					</form>
 				</div> <!-- accordion-item ends -->
+				<?php $emergency_title_string = "Add your emergency contact"; ?>
+				<?php if( $lockedUserRecord == 1 ) { ?>
+					<?php $emergency_title_string = 'Review your emergency contact'; ?>
+					<?php $gray_out = 'disabled style="color: #666666;"'; ?>
+				<?php } ?>
 				<div class="accordion-item">
 					<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-emergencyInfo">
 						<button class="accordion-button px-0 collapsed emergency_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-emergencyInfo" aria-expanded="false" aria-controls="flush-collapse-emergencyInfo">
@@ -577,16 +597,26 @@ if( !empty( $confirmed_info_unserialized ) ) {
 							<?php else : ?>
 								<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
 							<?php endif; ?>
-							Add your emergency contact
+							<?php echo $emergency_title_string ?>
 						</button>
 					</p>
 					<form name="tt-checklist-form-emergency-section" method="post" novalidate>
 						<div id="flush-collapse-emergencyInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-emergencyInfo">
 							<div class="accordion-body px-0">
+								<?php if( $lockedUserRecord ) { ?>
+									<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
+										<div class="checkout-bikes__notice-icon">
+											<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
+										</div>
+										<div class="checkout-bikes__notice-text">
+											<p class="fw-normal fs-sm lh-sm">Looks like your trip is starting soon! If you need to make any changes to your information below, give us a call!</p>
+										</div>
+									</div>
+								<?php } ?>
 								<div class="row mx-0 guest-checkout__primary-form-row">
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<input type="text" class="form-control emergency_validation_inputs" name="emergency_contact_first_name" id="emergency_contact_first_name" placeholder="First Name" value="<?php echo $emergence_cfname; ?>" autocomplete="given-name" required>
+											<input <?php echo $gray_out; ?> type="text" class="form-control emergency_validation_inputs" name="emergency_contact_first_name" id="emergency_contact_first_name" placeholder="First Name" value="<?php echo $emergence_cfname; ?>" autocomplete="given-name" required>
 											<label for="emergency_contact_first_name">First Name</label>
 											<div class="invalid-feedback">
 												<img class="invalid-icon" />
@@ -596,7 +626,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 									</div>
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<input type="text" class="form-control emergency_validation_inputs" name="emergency_contact_last_name" id="emergency_contact_last_name" placeholder="Last Name" value="<?php echo $emergence_clname; ?>" autocomplete="family-name" required>
+											<input <?php echo $gray_out; ?> type="text" class="form-control emergency_validation_inputs" name="emergency_contact_last_name" id="emergency_contact_last_name" placeholder="Last Name" value="<?php echo $emergence_clname; ?>" autocomplete="family-name" required>
 											<label for="emergency_contact_last_name">Last Name</label>
 											<div class="invalid-feedback">
 												<img class="invalid-icon" />
@@ -608,7 +638,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 								<div class="row mx-0 guest-checkout__primary-form-row">
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<input type="tel" class="form-control emergency_validation_inputs" name="emergency_contact_phone" id="emergency_contact_phone" placeholder="Phone Number" value="<?php echo $emergence_cphone; ?>" autocomplete="given-name" required>
+											<input <?php echo $gray_out; ?> type="tel" class="form-control emergency_validation_inputs" name="emergency_contact_phone" id="emergency_contact_phone" placeholder="Phone Number" value="<?php echo $emergence_cphone; ?>" autocomplete="given-name" required>
 											<label for="emergency_contact_phone">Phone Number</label>
 											<div class="invalid-feedback">
 												<img class="invalid-icon" />
@@ -618,7 +648,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 									</div>
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<input type="text" class="form-control emergency_validation_inputs" name="emergency_contact_relationship" id="emergency_contact_relationship" placeholder="Phone Number" value="<?php echo $emergence_crelationship; ?>" autocomplete="given-name" required>
+											<input <?php echo $gray_out; ?> type="text" class="form-control emergency_validation_inputs" name="emergency_contact_relationship" id="emergency_contact_relationship" placeholder="Phone Number" value="<?php echo $emergence_crelationship; ?>" autocomplete="given-name" required>
 											<label for="emergency_contact_relationship">Relationship to You</label>
 											<div class="invalid-feedback">
 												<img class="invalid-icon" />
@@ -648,12 +678,13 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						<?php wp_nonce_field('edit_trip_checklist_emergency_section_action', 'edit_trip_checklist_emergency_section_nonce'); ?>
 					</form>
 				</div> <!-- accordion-item ends -->
-				<?php if ($rider_level != 5) { ?>
-					<?php $title_string = 'Confirm your gear information'; ?>
-				<?php if( $lockedUserRecord == 1 ) { ?>
-					<?php $gear_pointer_none = 'style="pointer-events: none;"' ?>
-					<?php $title_string = 'Review your gear information'; ?>
-				<?php } ?>
+				<?php $gray_out = ''; ?>
+					<?php if ($rider_level != 5) { ?>
+						<?php $title_string = 'Confirm your gear information'; ?>
+					<?php if( $lockedUserRecord == 1 ) { ?>
+						<?php $title_string = 'Review your gear information'; ?>
+						<?php $gray_out = 'disabled style="color: #666666;"'; ?>
+					<?php } ?>
 				<div class="accordion-item" >
 					<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-gearInfo">
 						<button class="accordion-button px-0 collapsed gear_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo" aria-expanded="false" aria-controls="flush-collapse-gearInfo">
@@ -667,11 +698,21 @@ if( !empty( $confirmed_info_unserialized ) ) {
 					</p>
 					<form name="tt-checklist-form-gear-section" method="post" novalidate>
 						<div id="flush-collapse-gearInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-gearInfo">
-							<div  <?php echo $gear_pointer_none; ?> class="accordion-body px-0">
+							<div class="accordion-body px-0">
+								<?php if( $lockedUserRecord ) { ?>
+									<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
+										<div class="checkout-bikes__notice-icon">
+											<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
+										</div>
+										<div class="checkout-bikes__notice-text">
+											<p class="fw-normal fs-sm lh-sm">Looks like your trip is starting soon! If you need to make any changes to your information below, give us a call!</p>
+										</div>
+									</div>
+								<?php } ?>
 								<div class="row mx-0 guest-checkout__primary-form-row">
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<select name="tt-rider-height" id="tt-rider-height" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Rider Height" tabindex="-1" aria-hidden="true" required>
+											<select <?php echo $gray_out; ?> name="tt-rider-height" id="tt-rider-height" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Rider Height" tabindex="-1" aria-hidden="true" required>
 												<?php echo tt_items_select_options('syncHeights', $rider_height); ?>
 											</select>
 											<label for="emergency_contact_address_2">Rider Height</label>
@@ -683,7 +724,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 									</div>
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<select name="tt-pedal-selection" id="tt-pedal-selection" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Select Pedals" tabindex="-1" aria-hidden="true" required>
+											<select <?php echo $gray_out; ?> name="tt-pedal-selection" id="tt-pedal-selection" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Select Pedals" tabindex="-1" aria-hidden="true" required>
 												<?php echo tt_items_select_options('syncPedals', $pedal_selection); ?>
 											</select>
 											<label for="emergency_contact_address_2">Select Pedals</label>
@@ -697,7 +738,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 								<div class="row mx-0 guest-checkout__primary-form-row">
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<select name="tt-helmet-size" id="tt-helmet-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Helmet Size" tabindex="-1" aria-hidden="true" required>
+											<select <?php echo $gray_out; ?> name="tt-helmet-size" id="tt-helmet-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Helmet Size" tabindex="-1" aria-hidden="true" required>
 												<?php echo tt_items_select_options('syncHelmets', $helmet_selection); ?>
 											</select>
 											<label for="emergency_contact_address_2">Helmet Size</label>
@@ -709,7 +750,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 									</div>
 									<div class="col-md px-0 <?php echo $hideme; ?>">
 										<div class="form-floating">
-											<select name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
+											<select <?php echo $gray_out; ?> name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
 												<option value="">Select Clothing Style</option>
 												<?php if ( 'd-none' === $hideme ) : ?>
 													<option selected value="">None</option>
@@ -728,7 +769,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 								<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row <?php echo $hideme; ?>">
 									<div class="col-md px-0">
 										<div class="form-floating">
-											<select name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
+											<select <?php echo $gray_out; ?> name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
 												<?php if ( 'd-none' === $hideme ) : ?>
 													<option selected value="">None</option>
 												<?php endif; ?>
@@ -764,6 +805,11 @@ if( !empty( $confirmed_info_unserialized ) ) {
 				</div> <!-- accordion-item ends -->
 				<?php } ?>
 				<?php if (isset($isPassportRequired) && $isPassportRequired == true) { ?>
+					<?php $passport_title_string = "Add your passport information"; ?>
+						<?php if( $lockedUserRecord == 1 ) { ?>
+							<?php $passport_title_string = 'Review your passport information'; ?>
+							<?php $gray_out = 'disabled style="color: #666666;"'; ?>
+						<?php } ?>
 					<div class="accordion-item">
 						<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-passportInfo">
 							<button class="accordion-button px-0 collapsed passport_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-passportInfo" aria-expanded="false" aria-controls="flush-collapse-passportInfo">
@@ -772,16 +818,26 @@ if( !empty( $confirmed_info_unserialized ) ) {
 								<?php else : ?>
 									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
 								<?php endif; ?>
-								Add your passport information
+								<?php echo $passport_title_string ?>
 							</button>
 						</p>
 						<form name="tt-checklist-form-passport-section" method="post" novalidate>
 							<div id="flush-collapse-passportInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-passportInfo">
 								<div class="accordion-body px-0">
+									<?php if( $lockedUserRecord ) { ?>
+										<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
+											<div class="checkout-bikes__notice-icon">
+												<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
+											</div>
+											<div class="checkout-bikes__notice-text">
+												<p class="fw-normal fs-sm lh-sm">Looks like your trip is starting soon! If you need to make any changes to your information below, give us a call!</p>
+											</div>
+										</div>
+									<?php } ?>
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="text" class="form-control passport_validation_inputs" name="full_name_on_passport" id="full_name_on_passport" placeholder="Full name on Passport" value="<?php echo $full_name_on_passport; ?>" autocomplete="given-name" required>
+												<input <?php echo $gray_out; ?> type="text" class="form-control passport_validation_inputs" name="full_name_on_passport" id="full_name_on_passport" placeholder="Full name on Passport" value="<?php echo $full_name_on_passport; ?>" autocomplete="given-name" required>
 												<label for="full_name_on_passport">Full name on Passport</label>
 												<div class="invalid-feedback">
 													<img class="invalid-icon" />
@@ -791,7 +847,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 										</div>
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="text" class="form-control passport_validation_inputs" name="passport_number" id="passport_number" placeholder="First Name" value="<?php echo $passport_number; ?>" autocomplete="given-name" required>
+												<input <?php echo $gray_out; ?> type="text" class="form-control passport_validation_inputs" name="passport_number" id="passport_number" placeholder="First Name" value="<?php echo $passport_number; ?>" autocomplete="given-name" required>
 												<label for="passport_number">Passport Number</label>
 												<div class="invalid-feedback">
 													<img class="invalid-icon" />
@@ -804,7 +860,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="tel" class="form-control passport_validation_inputs" name="passport_place_of_issue" id="passport_place_of_issue" placeholder="Passport Place of issue" value="<?php echo $passport_place_of_issue; ?>" required>
+												<input <?php echo $gray_out; ?> type="tel" class="form-control passport_validation_inputs" name="passport_place_of_issue" id="passport_place_of_issue" placeholder="Passport Place of issue" value="<?php echo $passport_place_of_issue; ?>" required>
 												<label for="passport_place_of_issue">Passport Place of issue</label>
 												<div class="invalid-feedback">
 													<img class="invalid-icon" />
@@ -814,7 +870,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 										</div>
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="date" class="form-control passport_validation_inputs" name="passport_expiration_date" id="passport_expiration_date" placeholder="Last Name" value="<?php echo $passport_expiration_date; ?>" required>
+												<input <?php echo $gray_out; ?> type="date" class="form-control passport_validation_inputs" name="passport_expiration_date" id="passport_expiration_date" placeholder="Last Name" value="<?php echo $passport_expiration_date; ?>" required>
 												<label for="passport_expiration_date">Passport expiration date</label>
 												<div class="invalid-feedback">
 													<img class="invalid-icon" />
@@ -840,12 +896,14 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						</form>
 					</div> <!-- accordion-item ends -->
 				<?php } ?>
-				<?php if ($rider_level != 5 && $own_bike != 'yes' && 5270 != $bike_id ) { ?>
-					<?php $bike_review_string = 'Confirm your bike selection'; ?>
-					<?php if( $lockedUserBike ) { ?>
-						<?php $bike_pointer_none = 'style="pointer-events: none;"' ?>
-						<?php $bike_review_string = 'Review your bike selection'; ?>
-					<?php } ?>
+					<?php if ($rider_level != 5 && $own_bike != 'yes' && 5270 != $bike_id ) { ?>
+						<?php $gray_out = ''; ?>
+						<?php $bike_review_string = 'Confirm your bike selection'; ?>
+						<?php if( $lockedUserBike ) { ?>
+							<?php $bike_pointer_none = 'style="pointer-events: none;"' ?>
+							<?php $bike_review_string = 'Review your bike selection'; ?>
+							<?php $gray_out = 'disabled style="color: #666666;"'; ?>
+						<?php } ?>
 					<div class="accordion-item" >
 						<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-bikeInfo">
 							<button class="accordion-button px-0 collapsed bike_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo">
@@ -858,8 +916,18 @@ if( !empty( $confirmed_info_unserialized ) ) {
 							</button>
 						</p>
 						<form name="tt-checklist-form-bike-section" method="post" novalidate>
-							<div id="flush-collapse-bikeInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-bikeInfo">
+							<div  disabled <?php echo $gray_out; ?> id="flush-collapse-bikeInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-bikeInfo">
 								<div  <?php echo $bike_pointer_none; ?> class="accordion-body px-0 checkout-bikes-section">
+									<?php if( $lockedUserBike ) { ?>
+										<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
+											<div class="checkout-bikes__notice-icon">
+												<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
+											</div>
+											<div class="checkout-bikes__notice-text">
+												<p class="fw-normal fs-sm lh-sm">Looks like your trip is starting soon! If you need to make any changes to your information below, give us a call!</p>
+											</div>
+										</div>
+									<?php } ?>
 									<div class="checkout-bikes__bike-grid d-flex flex-column flex-lg-row flex-nowrap">
 										<?php
 										$primary_bikeId = $bike_id;
@@ -958,7 +1026,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 									</div>
 									<?php if ($available_bikes) : ?>
 										<div class="form-floating checkout-bikes__bike-size">
-											<select name="tt-bike-size" class="form-select tt_chk_bike_size_change bike_validation_select" id="floatingSelect1" aria-label="Floating label select example" required>
+											<select <?php echo $gray_out; ?> name="tt-bike-size" class="form-select tt_chk_bike_size_change bike_validation_select" id="floatingSelect1" aria-label="Floating label select example" required>
 												<?php
 												$bikeOpt_object = tt_get_bikes_by_trip_info_pbc('', $trip_sku, $primary_bikeTypeId, $bike_size, $bike_id);
 												if ($bikeOpt_object && $bikeOpt_object['size_opts']) {
@@ -996,27 +1064,42 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						</form>
 					</div>
 					<!-- accordion-item ends -->
+					<?php $fit_review_string = 'Tell us your bike fit information'; ?>
+						<?php if( $lockedUserBike ) { ?>
+							<?php $fit_review_string = 'Review your bike fit information'; ?>
+							<?php $gray_out = 'disabled style="color: #666666;"'; ?>
+						<?php } ?>
 					<div class="accordion-item">
 						<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-gearInfo-optional">
 							<button class="accordion-button px-0 collapsed gear_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo-optional" aria-expanded="false" aria-controls="flush-collapse-gearInfo-optional">
 								<!-- <img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png"> -->
-								Tell us your bike fit information <span class="fw-normal fs-md lh-md text-muted">(Optional)</span>
+								<?php echo $fit_review_string; ?> <span class="fw-normal fs-md lh-md text-muted">(Optional)</span>
 							</button>
 							<span class="fw-normal fs-sm lh-sm">Comfort matters! Let our team have your bike adjusted ahead of your arrival. </span>
 						</p>
 						<form name="tt-checklist-form-gear-optional-section" method="post" novalidate>
 							<div id="flush-collapse-gearInfo-optional" class="accordion-collapse collapse" aria-labelledby="flush-heading-gearInfo-optional">
 								<div class="accordion-body px-0">
+									<?php if( $lockedUserBike ) { ?>
+										<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
+											<div class="checkout-bikes__notice-icon">
+												<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
+											</div>
+											<div class="checkout-bikes__notice-text">
+												<p class="fw-normal fs-sm lh-sm">Looks like your trip is starting soon! If you need to make any changes to your information below, give us a call!</p>
+											</div>
+										</div>
+									<?php } ?>
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input name="saddle_height" id="saddle_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_height ?>">
+												<input <?php echo $gray_out; ?> name="saddle_height" id="saddle_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_height ?>">
 												<label for="saddle_height">Saddle Height (cm)</label>
 											</div>
 										</div>
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="text" name="bar_reach" id="bar_reach" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
+												<input <?php echo $gray_out; ?> type="text" name="bar_reach" id="bar_reach" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
 												<label for="bar_reach">Bar reach (cm)</label>
 											</div>
 										</div>
@@ -1024,7 +1107,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input type="text" name="bar_height" id="bar_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>">
+												<input <?php echo $gray_out; ?> type="text" name="bar_height" id="bar_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>">
 												<label for="bar_height">Bar Height (cm)</label>
 											</div>
 										</div>
@@ -1035,7 +1118,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 									</div>
 									<?php if ( $lockedUserBike != 1 ) { ?>
 										<div class="form-check form-check-inline mb-0">
-											<input class="form-check-input" type="checkbox" name="tt_save_gear_info_optional" id="inlineCheck5" value="yes">
+											<input <?php echo $gray_out; ?> class="form-check-input" type="checkbox" name="tt_save_gear_info_optional" id="inlineCheck5" value="yes">
 											<label class="form-check-label" for="inlineCheck5">Save this information for future use. This will override any existing information you have saved on your account. </label>
 										</div>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
