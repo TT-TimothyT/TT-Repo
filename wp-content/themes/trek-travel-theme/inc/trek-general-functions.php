@@ -5892,3 +5892,12 @@ function dx_get_user_pb_preferences( $user_id = 0 ) {
     // Return user preferences.
     return $user_pb_preferences;
 }
+
+// Add a filter to change the thumbnail size
+add_filter('rp4wp_thumbnail_size', 'tt_custom_thumbnail_size');
+
+function tt_custom_thumbnail_size($thumbnail_size) {
+    // Change the thumbnail size to your desired size
+    $thumbnail_size = 'medium'; // Change 'your_custom_size' to the size you want
+    return $thumbnail_size;
+}
