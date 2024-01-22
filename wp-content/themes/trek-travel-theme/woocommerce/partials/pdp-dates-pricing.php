@@ -139,6 +139,7 @@ if( $get_child_products ){
                         // $status_class = str_ireplace(' ', '-', $status_class);
                         $tripWebStatus = getWebDispalyStatus($trip_status);
                         $tripWebStatusClass = strtolower(str_ireplace(" ","-",getWebDispalyStatus($trip_status)));
+
                         if ($tripWebStatus == 'Private') {
                             $month_content_output .= 
                             '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
@@ -194,6 +195,9 @@ if( $get_child_products ){
                                 if( in_array($trip_status, $wait_status) ){
                                     $formUrl = "waitlist";
                                 }
+
+                              
+                                
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
                                 $cart = WC()->session->get( 'cart', null );
                                 $persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
