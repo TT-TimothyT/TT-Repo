@@ -64,6 +64,13 @@ $resource_center_video_resources     = get_field( 'resource_center_video_resourc
 $travel_advisor_general_information = get_field( 'travel_advisor_general_information', 'option' );
 $travel_advisor_useful_resources    = get_field( 'travel_advisor_useful_resources', 'option' );
 
+$shipping_states       = WC()->countries->get_states( $shipping_country );
+$shipping_state_name   = isset( $shipping_states[$shipping_state] ) ? $shipping_states[$shipping_state] : $shipping_state;
+$shipping_country_name = WC()->countries->countries[$shipping_country];
+
+$billing_states       = WC()->countries->get_states( $billing_country );
+$billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
+$billing_country_name = WC()->countries->countries[$billing_country];
 ?>
 <div class="container dashboard px-0" id="dashboard">
 	<div class="row mx-0">
@@ -290,8 +297,8 @@ $travel_advisor_useful_resources    = get_field( 'travel_advisor_useful_resource
 						<?php else: ?>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_address_1; ?></p>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_address_2; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_city; ?>, <?php echo $shipping_state; ?>, <?php echo $shipping_postcode; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_country; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_city; ?>, <?php echo $shipping_state_name; ?>, <?php echo $shipping_postcode; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_country_name; ?></p>
 						<?php endif; ?>
 					</div>
 					<hr>
@@ -305,8 +312,8 @@ $travel_advisor_useful_resources    = get_field( 'travel_advisor_useful_resource
 						<?php else: ?>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_address_1; ?></p>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_address_2; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_city; ?>, <?php echo $billing_state; ?>, <?php echo $billing_postcode; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_city; ?>, <?php echo $billing_state_name; ?>, <?php echo $billing_postcode; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country_name; ?></p>
 						<?php endif; ?>
 					</div>
 				</div>

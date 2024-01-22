@@ -5,8 +5,12 @@ namespace MailPoet\Services;
 if (!defined('ABSPATH')) exit;
 
 
+use MailPoet\Mailer\Mailer;
+use MailPoet\Newsletter\Statistics\NewsletterStatisticsRepository;
 use MailPoet\Services\Bridge\API;
-use MailPoet\Util\DmarcPolicyChecker;
+use MailPoet\Settings\SettingsController;
+use MailPoet\Util\License\Features\Subscribers;
+use MailPoetVendor\Carbon\Carbon;
 
 class AuthorizedSenderDomainController {
   const DOMAIN_VERIFICATION_STATUS_VALID = 'valid';
@@ -21,11 +25,21 @@ class AuthorizedSenderDomainController {
   const AUTHORIZED_SENDER_DOMAIN_ERROR_NOT_CREATED = 'Sender domain does not exist';
   const AUTHORIZED_SENDER_DOMAIN_ERROR_ALREADY_VERIFIED = 'Sender domain already verified';
 
+  const LOWER_LIMIT = 500;
+  const UPPER_LIMIT = 1000;
+
+  const ENFORCEMENT_START_TIME = '2024-02-01 00:00:00 UTC';
+
+  const INSTALLED_AFTER_NEW_RESTRICTIONS_OPTION = 'installed_after_new_domain_restrictions';
+
   /** @var Bridge */
   private $bridge;
 
-  /** @var DmarcPolicyChecker */
-  private $dmarcPolicyChecker;
+  /** @var NewsletterStatisticsRepository  */
+  private $newsletterStatisticsRepository;
+
+  /** @var SettingsController  */
+  private $settingsController;
 
   /** @var null|array Cached response for with authorized domains */
   private $currentRecords = null;
@@ -33,12 +47,19 @@ class AuthorizedSenderDomainController {
   /** @var null|array */
   private $currentRawData = null;
 
+  /** @var Subscribers */
+  private $subscribers;
+
   public function __construct(
     Bridge $bridge,
-    DmarcPolicyChecker $dmarcPolicyChecker
+    NewsletterStatisticsRepository $newsletterStatisticsRepository,
+    SettingsController $settingsController,
+    Subscribers $subscribers
   ) {
     $this->bridge = $bridge;
-    $this->dmarcPolicyChecker = $dmarcPolicyChecker;
+    $this->newsletterStatisticsRepository = $newsletterStatisticsRepository;
+    $this->settingsController = $settingsController;
+    $this->subscribers = $subscribers;
   }
 
   /**
@@ -149,54 +170,38 @@ class AuthorizedSenderDomainController {
     return $response;
   }
 
-  /**
-   * Check Domain DMARC Policy
-   *
-   * returns `true` if domain has Restricted policy e.g. policy === reject or quarantine
-   * otherwise returns `false`
-   */
-  public function isDomainDmarcRestricted(string $domain): bool {
-    $result = $this->getDmarcPolicyForDomain($domain);
-    return $result !== DmarcPolicyChecker::POLICY_NONE;
-  }
-
-  /**
-   * Fetch Domain DMARC Policy
-   *
-   * returns reject or quarantine or none
-   */
-  public function getDmarcPolicyForDomain(string $domain): string {
-    return $this->dmarcPolicyChecker->getDomainDmarcPolicy($domain);
-  }
-
-  public function getSenderDomainsByStatus(string $status): array {
+  public function getSenderDomainsByStatus(array $status): array {
     return array_filter($this->getAllRawData(), function(array $senderDomainData) use ($status) {
-      return ($senderDomainData['domain_status'] ?? null) === $status;
+      return in_array($senderDomainData['domain_status'] ?? null, $status);
     });
   }
 
   public function getFullyVerifiedSenderDomains($domainsOnly = false): array {
-    $domainData = $this->getSenderDomainsByStatus(self::OVERALL_STATUS_VERIFIED);
-    if ($domainsOnly) {
-      return array_map([$this, 'domainExtractor'], $domainData);
-    }
-    return $domainData;
+    $domainData = $this->getSenderDomainsByStatus([self::OVERALL_STATUS_VERIFIED]);
+    return $domainsOnly ? $this->extractDomains($domainData) : $domainData;
   }
 
   public function getPartiallyVerifiedSenderDomains($domainsOnly = false): array {
-    $domainData = $this->getSenderDomainsByStatus(self::OVERALL_STATUS_PARTIALLY_VERIFIED);
-    if ($domainsOnly) {
-      return array_map([$this, 'domainExtractor'], $domainData);
-    }
-    return $domainData;
+    $domainData = $this->getSenderDomainsByStatus([self::OVERALL_STATUS_PARTIALLY_VERIFIED]);
+    return $domainsOnly ? $this->extractDomains($domainData) : $domainData;
   }
 
   public function getUnverifiedSenderDomains($domainsOnly = false): array {
-    $domainData = $this->getSenderDomainsByStatus(self::OVERALL_STATUS_UNVERIFIED);
-    if ($domainsOnly) {
-      return array_map([$this, 'domainExtractor'], $domainData);
+    $domainData = $this->getSenderDomainsByStatus([self::OVERALL_STATUS_UNVERIFIED]);
+    return $domainsOnly ? $this->extractDomains($domainData) : $domainData;
+  }
+
+  public function getFullyOrPartiallyVerifiedSenderDomains($domainsOnly = false): array {
+    $domainData = $this->getSenderDomainsByStatus([self::OVERALL_STATUS_PARTIALLY_VERIFIED,self::OVERALL_STATUS_VERIFIED]);
+    return $domainsOnly ? $this->extractDomains($domainData) : $domainData;
+  }
+
+  private function extractDomains(array $domainData): array {
+    $extractedDomains = [];
+    foreach ($domainData as $data) {
+      $extractedDomains[] = $this->domainExtractor($data);
     }
-    return $domainData;
+    return $extractedDomains;
   }
 
   private function domainExtractor(array $domainData): string {
@@ -258,5 +263,44 @@ class AuthorizedSenderDomainController {
       $this->currentRecords = $this->bridge->getAuthorizedSenderDomains();
     }
     return $this->currentRecords;
+  }
+
+  // TODO: Remove after the enforcement date has passed
+  public function isEnforcementOfNewRestrictionsInEffect(): bool {
+    return Carbon::now() >= Carbon::parse(self::ENFORCEMENT_START_TIME);
+  }
+
+  public function isNewUser(): bool {
+    $installedVersion = $this->settingsController->get('version');
+
+    // Setup wizard has not been completed
+    if ($installedVersion === null) {
+      return true;
+    }
+
+    $installedAfterNewDomainRestrictions = $this->settingsController->get(self::INSTALLED_AFTER_NEW_RESTRICTIONS_OPTION, false);
+
+    if ($installedAfterNewDomainRestrictions) {
+      return true;
+    }
+
+    return $this->newsletterStatisticsRepository->countBy([]) === 0;
+  }
+
+  public function isSmallSender(): bool {
+    return $this->subscribers->getSubscribersCount() <= self::LOWER_LIMIT;
+  }
+
+  public function isAuthorizedDomainRequiredForNewCampaigns(): bool {
+    if ($this->settingsController->get('mta.method') !== Mailer::METHOD_MAILPOET) {
+      return false;
+    }
+
+    // TODO: Remove after the enforcement date has passed
+    if (!$this->isNewUser() && !$this->isEnforcementOfNewRestrictionsInEffect()) {
+      return false;
+    }
+
+    return !$this->isSmallSender();
   }
 }

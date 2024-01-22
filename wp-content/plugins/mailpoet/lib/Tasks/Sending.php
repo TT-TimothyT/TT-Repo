@@ -9,7 +9,6 @@ use MailPoet\Cron\Workers\SendingQueue\SendingQueue as SendingQueueAlias;
 use MailPoet\DI\ContainerWrapper;
 use MailPoet\Entities\ScheduledTaskEntity;
 use MailPoet\Entities\ScheduledTaskSubscriberEntity;
-use MailPoet\Entities\SendingQueueEntity;
 use MailPoet\InvalidStateException;
 use MailPoet\Logging\LoggerFactory;
 use MailPoet\Models\ScheduledTask;
@@ -228,16 +227,6 @@ class Sending {
     return $this->queue;
   }
 
-  public function getSendingQueueEntity(): SendingQueueEntity {
-    $sendingQueueEntity = $this->sendingQueuesRepository->findOneById($this->queue->id);
-    if (!$sendingQueueEntity) {
-      throw new InvalidStateException();
-    }
-    $this->sendingQueuesRepository->refresh($sendingQueueEntity);
-
-    return $sendingQueueEntity;
-  }
-
   public function task() {
     return $this->task;
   }
@@ -268,35 +257,11 @@ class Sending {
     $this->updateCount();
   }
 
-  public function removeSubscribers(array $subscriberIds) {
-    $this->scheduledTaskSubscribersRepository->deleteByScheduledTaskAndSubscriberIds($this->scheduledTaskEntity, $subscriberIds);
-
-    $this->updateTaskStatus();
-    $this->updateCount();
-  }
-
   public function updateProcessedSubscribers(array $processedSubscribers): bool {
     $this->scheduledTaskSubscribersRepository->updateProcessedSubscribers($this->scheduledTaskEntity, $processedSubscribers);
     $this->scheduledTasksRepository->refresh($this->scheduledTaskEntity); // needed while Sending still uses Paris
     $this->status = $this->scheduledTaskEntity->getStatus();
     return $this->updateCount(count($processedSubscribers))->getErrors() === false;
-  }
-
-  public function saveSubscriberError($subcriberId, $errorMessage) {
-    $this->scheduledTaskSubscribersRepository->saveError($this->scheduledTaskEntity, $subcriberId, $errorMessage);
-
-    $this->updateTaskStatus();
-
-    return $this->updateCount()->getErrors() === false;
-  }
-
-  private function updateTaskStatus() {
-    // we need to update those fields here as the Sending class is in a mixed state using Paris and Doctrine at the same time
-    // this probably won't be necessary anymore once https://mailpoet.atlassian.net/browse/MAILPOET-4375 is finished
-    $this->task->status = $this->scheduledTaskEntity->getStatus();
-    if (!is_null($this->scheduledTaskEntity->getProcessedAt())) {
-      $this->task->processedAt = $this->scheduledTaskEntity->getProcessedAt()->format('Y-m-d H:i:s');
-    }
   }
 
   public function updateCount(?int $count = null) {

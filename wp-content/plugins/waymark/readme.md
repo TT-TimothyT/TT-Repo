@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Tested up to:** 6.4  
 **Requires PHP:** 5.2  
-**Stable tag:** 1.0.0  
+**Stable tag:** 1.0.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -64,6 +64,7 @@ For developers:
 
 - Most elements can be [styled using CSS](https://www.waymark.dev/docs/styling-with-css-selectors/) and have sensibly named `waymark-` classes.
 - Maps are stored using the custom post type `waymark_map`
+- Geographical data is stored in [GeoJSON](https://geojson.org/) format.
 - Meta is stored as Custom Fields (prefixed with `waymark_`)
 - Collections use the `waymark_collection` Taxonomy.
 - Use the [JavaScript callback function](https://www.waymark.dev/docs/callback-function/) to extend Waymark functionality.
@@ -170,6 +171,14 @@ Built on the shoulders of giants, [thank you](https://www.waymark.dev/docs/thank
 
 
 ## Changelog ##
+
+### 1.0.2 ###
+
+Fix for colours not appearing correctly in the Overlay Filter. Thanks to [geomfranzo](https://wordpress.org/support/users/geomfranzo/) for [raising this](https://wordpress.org/support/topic/sort-line-markers-by-name-bug-line-color/).
+
+### 1.0.1 ###
+
+Fixed a bug with Map Exporting. Thanks to <a href="https://wordpress.org/support/users/microteq/">microteq</a> for <a href="https://wordpress.org/support/topic/error-when-downloading-gpx-or-kml/">reporting this</a>.
 
 ### 1.0.0 ###
 

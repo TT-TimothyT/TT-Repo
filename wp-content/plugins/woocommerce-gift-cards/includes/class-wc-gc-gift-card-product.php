@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Gift Card Product view controller.
  *
  * @class    WC_GC_Gift_Card_Product
- * @version  1.16.7
+ * @version  1.16.8
  */
 class WC_GC_Gift_Card_Product {
 
@@ -867,14 +867,15 @@ class WC_GC_Gift_Card_Product {
 			}
 
 			$recipients_array = wc_gc_parse_email_string( $recipients_string );
+			$recipients_count = count( $recipients_array );
 
 			// Skip if no emails.
-			if ( 0 === count( $recipients_array ) ) {
+			if ( 0 === $recipients_count ) {
 				continue;
 			}
 
 			// Check for invalid quantity.
-			if ( count( $recipients_array ) % $order_item->get_quantity() !== 0 ) {
+			if ( $recipients_count > 1 && $recipients_count % $order_item->get_quantity() !== 0 ) {
 				throw new Exception( __( 'Invalid quantity configuration. Please review the recipients count.', 'woocommerce-gift-cards' ) );
 			}
 
