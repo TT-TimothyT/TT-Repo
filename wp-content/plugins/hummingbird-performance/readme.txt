@@ -1,6 +1,6 @@
 === Hummingbird – Optimize Speed, Enable Cache, Minify CSS & Defer Critical JS ===
 Plugin Name: Hummingbird – Optimize Speed, Enable Cache, Minify CSS & Defer Critical JS
-Version: 3.7.1
+Version: 3.7.2
 Author: WPMU DEV
 Author URI: https://wpmudev.com/
 Contributors: WPMUDEV
@@ -8,7 +8,7 @@ Tags: defer css javascript, cache, minify css, minify javascript, speed up wordp
 Requires at least: 5.2
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 3.7.1
+Stable tag: 3.7.2
 License: GPLv2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -198,6 +198,11 @@ We take plugin security incredibly seriously; if you have a bug or vulnerability
 4. Use suggestions to make improvements and speed up your site.
 
 == Changelog ==
+
+= 3.7.2 ( 2024-01-16 ) =
+- New: Use static IPs for Critical CSS service
+- Improvement: Ignore missing CSS files when generating Critical CSS
+- Fix: Avoid calling the Critical CSS service too frequently
 
 = 3.7.1 ( 2023-12-20 ) =
 - Improvement: Stability improvements

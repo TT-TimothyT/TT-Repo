@@ -191,7 +191,7 @@ script id"><?php echo esc_html( $delay_js_excludes ); ?></textarea>
 						<?php esc_html_e( 'Generate Critical CSS', 'wphb' ); ?>
 					</span>
 					<span class="sui-description">
-						<?php esc_html_e( 'Another way to Boost site speed Even faster pages, better user experience, and improved SEO. You will love it.', 'wphb' ); ?>
+						<?php esc_html_e( 'Another way to boost site speed. Even faster pages, better user experience and improved SEO. You will love it!', 'wphb' ); ?>
 					</span>
 				</label>
 				<?php Utils::unlock_now_link( 'eo_settings', 'hummingbird_criticalcss_ao_extra', 'critical_css' ); ?>

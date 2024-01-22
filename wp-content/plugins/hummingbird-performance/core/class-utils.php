@@ -738,8 +738,7 @@ class Utils {
 				$link = "$domain/project/wp-smush-pro/$utm_tags";
 				break;
 			case 'hosting':
-				$get_random_cta = self::get_random_hosting_cta();
-				$link           = "$domain/$get_random_cta/$utm_tags&coupon=HUMMINGBIRD-HOSTING-1M&from_checkout=1";
+				$link = "$domain/register/$utm_tags&coupon=HUMMINGBIRD-HOSTING-1M&from_checkout=1";
 				break;
 			case 'wpmudev':
 				$link = "$domain/$utm_tags";
@@ -762,18 +761,6 @@ class Utils {
 		}
 
 		return $link;
-	}
-
-	/**
-	 * Returns the random CTA.
-	 *
-	 * @return string
-	 */
-	public static function get_random_hosting_cta() {
-		$hosting_cta = array( 'hosting', 'register' );
-		$random_keys = array_rand( $hosting_cta, 1 );
-
-		return $hosting_cta[ $random_keys ];
 	}
 
 	/**

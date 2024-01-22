@@ -1674,8 +1674,10 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 *	sanitize_hashtags()
 		 *	sanitize_hookname()
 		 *	sanitize_input_name()
+		 *	sanitize_int()
 		 *	sanitize_key()
 		 *	sanitize_locale()
+		 *	sanitize_meta_key()
 		 *	sanitize_tag()
 		 *	sanitize_twitter_name()
 		 *	sanitize_use_post()
@@ -1774,20 +1776,30 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return trim( $input_name, $characters = '-' );
 		}
 
+		public static function sanitize_int( $value ) {
+
+			if ( is_numeric( $value ) ) {
+
+				return (int) $value;
+			}
+
+			return null;
+		}
+
 		/*
 		 * Sanitize an option array key.
 		 *
 		 * Unlike the WordPress sanitize_key() function, this method allows for colon and hash characters, and (optionally)
 		 * upper case characters.
 		 *
+		 * See sucomSanitizeKey() in wpsso/js/com/jquery-admin-page.js
 		 * See wordpress/wp-includes/formatting.php.
 		 */
 		public static function sanitize_key( $key, $allow_upper = false ) {
 
 			/*
-			 * Scalar variables are those containing an int, float, string or bool.
-			 *
-			 * Types array, object, resource and null are not scalar.
+			 * Scalar variables are those containing an int, float, string or bool. Types array, object, resource and
+			 * null are not scalar.
 			 */
 			if ( is_scalar( $key ) ) {
 
@@ -1808,6 +1820,14 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			$locale = preg_replace( '/[^a-zA-Z_]/', '', $locale );
 
 			return $locale;
+		}
+
+		public static function sanitize_meta_key( $meta_key ) {
+
+			$meta_key = self::decode_html( $meta_key );
+			$meta_key = self::strip_html( $meta_key );
+
+			return $meta_key;
 		}
 
 		public static function sanitize_tag( $tag ) {
@@ -2013,7 +2033,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 		public static function esc_url_encode( $url, $esc_url = true ) {
 
-			$decoded_url = self::decode_html( $url );	// Just in case - decode HTML entities.
+			$decoded_url = self::decode_html( $url );	// Decode HTML entities.
 			$encoded_url = urlencode( $esc_url ? esc_url_raw( $decoded_url ) : $decoded_url );
 			$replace     = array( '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F',
 				'%3F', '%25', '%23', '%5B', '%5D' );
@@ -2512,7 +2532,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			$text = preg_replace( '/<style\b[^>]*>(.*)<\/style>/Ui', ' ', $text );			// Remove inline stylesheets.
 			$text = preg_replace( '/([\w])<\/(button|dt|h[0-9]+|li|th)>/i', '$1. ', $text );	// Add missing dot to buttons, headers, lists, etc.
 			$text = preg_replace( '/(<p>|<p[^>]+>|<\/p>)/i', ' ', $text );				// Replace paragraph tags with a space.
-			$text = trim( strip_tags( $text ) );							// Remove remaining html tags.
+			$text = trim( strip_tags( $text ) );							// Strip HTML and PHP tags from a string.
 			$text = preg_replace( '/(\xC2\xA0|\s)+/s', ' ', $text );				// Replace 1+ spaces to a single space.
 
 			return trim( $text );
@@ -2728,12 +2748,15 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 *
 		 *	get_opts_begin()
 		 *	get_opts_hm_tz()
-		 *	get_opts_label_transl()
-		 *	get_opts_value_transl()
+		 *	get_opts_labels_transl()
+		 *	get_opts_values_transl()
 		 *	get_key_locale()
 		 *	get_key_value()
-		 *	get_multi_key_locale()
-		 *	set_key_locale()
+		 *	get_key_values_multi()
+		 *	set_key_value()
+		 *	set_key_value_disabled()
+		 *	set_key_value_locale()
+		 *	set_key_value_locale_disabled()
 		 *	transl_key_values()
 		 */
 		public static function get_opts_begin( $opts, $str ) {
@@ -2770,7 +2793,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return false;
 		}
 
-		public static function get_opts_label_transl( array $opts, $text_domain ) {
+		public static function get_opts_labels_transl( array $opts, $text_domain ) {
 
 			foreach ( $opts as $opt_key => &$opt_label ) {
 
@@ -2782,7 +2805,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return $opts;
 		}
 
-		public static function get_opts_value_transl( array $opts, $text_domain ) {
+		public static function get_opts_values_transl( array $opts, $text_domain ) {
 
 			foreach ( $opts as $opt_key => &$opt_label ) {
 
@@ -2862,7 +2885,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return $value;
 		}
 
-		public static function get_multi_key_locale( $prefix, array &$opts, $add_none = false ) {
+		public static function get_key_values_multi( $prefix, array &$opts, $add_none = false ) {
 
 			$current    = SucomUtilWP::get_locale();	// Uses a local cache.
 			$def_locale = SucomUtilWP::get_locale( 'default' );	// Uses a local cache.
@@ -2909,11 +2932,30 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return $results;
 		}
 
-		public static function set_key_locale( $key, $value, array &$opts, $mixed = 'current' ) {
+		public static function set_key_value( $key, $value, array &$opts ) {
+			
+			$opts[ $key ] = $value;
+		}
+
+		public static function set_key_value_disabled( $key, $value, array &$opts ) {
+			
+			$opts[ $key ]               = $value;
+			$opts[ $key . ':disabled' ] = true;
+		}
+
+		public static function set_key_value_locale( $key, $value, array &$opts, $mixed = 'current' ) {
 
 			$key_locale = self::get_key_locale( $key, $opts, $mixed );
 
 			$opts[ $key_locale ] = $value;
+		}
+
+		public static function set_key_value_locale_disabled( $key, $value, array &$opts, $mixed = 'current' ) {
+
+			$key_locale = self::get_key_locale( $key, $opts, $mixed );
+
+			$opts[ $key_locale ]               = $value;
+			$opts[ $key_locale . ':disabled' ] = true;
 		}
 
 		public static function transl_key_values( $pattern, array &$opts, $text_domain ) {
@@ -3117,7 +3159,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 */
 		public static function get_options_label_transl( array $opts, $text_domain ) {
 
-			return self::get_opts_label_transl( $opts, $text_domain );
+			return self::get_opts_labels_transl( $opts, $text_domain );
 		}
 
 		/*
@@ -3125,7 +3167,23 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 */
 		public static function get_options_value_transl( array $opts, $text_domain ) {
 
-			return self::get_opts_value_transl( $opts, $text_domain );
+			return self::get_opts_values_transl( $opts, $text_domain );
+		}
+
+		/*
+		 * Deprecated on 2024/01/13.
+		 */
+		public static function get_opts_label_transl( array $opts, $text_domain ) {
+
+			return self::get_opts_labels_transl( $opts, $text_domain );
+		}
+		
+		/*
+		 * Deprecated on 2024/01/13.
+		 */
+		public static function get_opts_value_transl( array $opts, $text_domain ) {
+
+			return self::get_opts_values_transl( $opts, $text_domain );
 		}
 
 		/*
@@ -3302,6 +3360,14 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		public static function is_mod_post_type( array $mod, $post_type ) {
 
 			return SucomUtilWP::is_mod_post_type( $mod, $post_type );
+		}
+
+		/*
+		 * Deprecated on 2024/01/13.
+		 */
+		public static function get_multi_key_locale( $prefix, array &$opts, $add_none = false ) {
+		
+			return self::get_key_values_multi( $prefix, $opts, $add_none );
 		}
 
 		/*

@@ -1,14 +1,14 @@
-# Copyright (C) 2023 WPMU DEV
+# Copyright (C) 2024 WPMU DEV
 # This file is distributed under the GPLv2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hummingbird 3.7.1\n"
+"Project-Id-Version: Hummingbird 3.7.2\n"
 "Report-Msgid-Bugs-To: https://wpmudev.com\n"
-"POT-Creation-Date: 2023-12-20 12:15:26+00:00\n"
+"POT-Creation-Date: 2024-01-16 12:30:43+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2023-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
@@ -4165,8 +4165,8 @@ msgstr ""
 
 #: admin/views/minification/tools-meta-box.php:194
 msgid ""
-"Another way to Boost site speed Even faster pages, better user experience, "
-"and improved SEO. You will love it."
+"Another way to boost site speed. Even faster pages, better user experience "
+"and improved SEO. You will love it!"
 msgstr ""
 
 #: admin/views/minification/tools-meta-box.php:209
@@ -6846,39 +6846,39 @@ msgid_plural "%d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core/class-utils.php:863
+#: core/class-utils.php:850
 msgid "Still having trouble? "
 msgstr ""
 
-#: core/class-utils.php:867 languages/react.php:178
+#: core/class-utils.php:854 languages/react.php:178
 msgid "Start a live chat."
 msgstr ""
 
-#: core/class-utils.php:871 languages/react.php:181
+#: core/class-utils.php:858 languages/react.php:181
 msgid "Open a support ticket."
 msgstr ""
 
-#: core/class-utils.php:988
+#: core/class-utils.php:975
 msgid "Page Cache"
 msgstr ""
 
-#: core/class-utils.php:989 languages/react.php:203
+#: core/class-utils.php:976 languages/react.php:203
 msgid "Cloudflare"
 msgstr ""
 
-#: core/class-utils.php:990
+#: core/class-utils.php:977
 msgid "Gravatar Cache"
 msgstr ""
 
-#: core/class-utils.php:991
+#: core/class-utils.php:978
 msgid "Asset Optimization Cache"
 msgstr ""
 
-#: core/class-utils.php:992
+#: core/class-utils.php:979
 msgid "Redis Cache"
 msgstr ""
 
-#: core/class-utils.php:1385
+#: core/class-utils.php:1372
 msgid "Unlock now"
 msgstr ""
 
@@ -7257,57 +7257,57 @@ msgstr ""
 msgid "8 hours"
 msgstr ""
 
-#: core/modules/class-critical-css.php:1029
+#: core/modules/class-critical-css.php:1034
 #. translators: %1$s - page type, %2$s - Used css content, %3$s - manual
 #. critical css
 msgid "HB critical unknown error"
 msgstr ""
 
-#: core/modules/class-critical-css.php:1519
+#: core/modules/class-critical-css.php:1494
 msgid "<em> Error: "
 msgstr ""
 
-#: core/modules/class-critical-css.php:1522
+#: core/modules/class-critical-css.php:1497
 #. translators: %1$s = error message.
 msgid "<br />%1$s"
 msgstr ""
 
-#: core/modules/class-critical-css.php:1544
+#: core/modules/class-critical-css.php:1519
 #. translators: %1$s = message.
 msgid ""
 "Critical CSS generation failed. Please review the below error to "
 "troubleshoot.%1$s"
 msgstr ""
 
-#: core/modules/class-critical-css.php:1622
+#: core/modules/class-critical-css.php:1597
 msgid "Optimizing "
 msgstr ""
 
-#: core/modules/class-critical-css.php:1625
+#: core/modules/class-critical-css.php:1600
 msgid "Generating Critical CSS, this could take about a minute."
 msgstr ""
 
-#: core/modules/class-critical-css.php:1628
+#: core/modules/class-critical-css.php:1603
 msgid "Optimized"
 msgstr ""
 
-#: core/modules/class-critical-css.php:1628
+#: core/modules/class-critical-css.php:1603
 msgid "Error"
 msgstr ""
 
-#: core/modules/class-critical-css.php:1631
+#: core/modules/class-critical-css.php:1606
 msgid "Last Generated: "
 msgstr ""
 
-#: core/modules/class-critical-css.php:1633
+#: core/modules/class-critical-css.php:1608
 msgid "Unoptimized"
 msgstr ""
 
-#: core/modules/class-critical-css.php:1636
+#: core/modules/class-critical-css.php:1611
 msgid "Select settings and saves changes to generate Critical CSS"
 msgstr ""
 
-#: core/modules/class-critical-css.php:1641
+#: core/modules/class-critical-css.php:1616
 #. translators: %1$s = tooltip text, %2$s = sui tag, %3$s = info icon, %4$s =
 #. text for tag.
 msgid ""

@@ -117,4 +117,5 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 3.1.1 - Revised menu item labels for enhanced clarity of meaning.
 3.1.2 - Fixed the localization.
 3.1.3 - Minor changes and bug fixings.
+3.2.0 - Declared compatibility with woocommerce custom_order_tables
 == Upgrade Notice ==

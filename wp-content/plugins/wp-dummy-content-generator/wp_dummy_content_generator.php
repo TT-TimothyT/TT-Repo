@@ -16,7 +16,7 @@
  * Plugin Name:       WP Dummy Content Generator
  * Plugin URI:        https://wpdcg.online/
  * Description:       The "WP Dummy Content Generator" plugin is particularly useful for developers, designers, and website administrators who want to quickly populate their WordPress site with realistic dummy content. It saves time and effort by automatically generating content that mimics real posts and pages, enabling you to focus on other aspects of website development or testing. 
- * Version:           3.1.3
+ * Version:           3.2.0
  * Author:            Deepak anand
  * Author URI:        https://wpdcg.online/about-us/
  * License:           GPL-2.0+
@@ -36,7 +36,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'wp_dummy_content_generator_PLUGIN_NAME_VERSION', '3.1.3' );
+define( 'wp_dummy_content_generator_PLUGIN_NAME_VERSION', '3.2.0' );
 define( 'wp_dummy_content_generator_PLUGIN_BASE_URL',plugin_basename( __FILE__ )); 
 define( 'wp_dummy_content_generator_PLUGIN_BASE_URI',plugin_dir_path( __FILE__ )); 
 define("wp_dummy_content_generator_PLUGIN_DIR",plugin_basename( __DIR__ ));
@@ -76,6 +76,14 @@ function wp_dummy_content_generatorAllLoaded(){
   require_once plugin_dir_path( __FILE__ ) . 'includes/functions-products.php';
   require_once plugin_dir_path( __FILE__ ) . 'includes/functions-thumbnails.php';
 }
+
+
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
+
 
 /**
  * Begins execution of the plugin.
