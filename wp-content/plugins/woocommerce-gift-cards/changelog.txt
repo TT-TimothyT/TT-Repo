@@ -1,5 +1,8 @@
 *** Woo Gift Cards ***
 
+2023.12.19 - version 1.16.8
+* Fix - Fixed 'Invalid quantity configuration. Please review the recipients count.' error for multiple gift cards with the same recipient email.
+
 2023.12.12 - version 1.16.7
 * Important - Security improvements.
 * Fix - Prevented users from deleting gift cards that are used in orders. 
