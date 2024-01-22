@@ -3,11 +3,11 @@
     "title": "PDP",
     "fields": [
         {
-            "key": "field_65a57b5961d37",
-            "label": "Intro",
-            "name": "",
+            "key": "field_65a7ef9e23b60",
+            "label": "Activity Type",
+            "name": "activity_type",
             "aria-label": "",
-            "type": "tab",
+            "type": "radio",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -16,7 +16,33 @@
                 "class": "",
                 "id": ""
             },
-            "placement": "top",
+            "choices": {
+                "Biking": "Biking",
+                "H&W": "H&W"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "layout": "vertical",
+            "save_other_choice": 0
+        },
+        {
+            "key": "field_65a57b5961d37",
+            "label": "Intro",
+            "name": "",
+            "aria-label": "",
+            "type": "accordion",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "open": 1,
+            "multi_expand": 1,
             "endpoint": 0
         },
         {
@@ -298,7 +324,7 @@
         },
         {
             "key": "field_6333387c04171",
-            "label": "GR Image",
+            "label": "Great Image",
             "name": "gr_image",
             "aria-label": "",
             "type": "image",
@@ -323,7 +349,7 @@
         },
         {
             "key": "field_633338f904172",
-            "label": "GR Title",
+            "label": "Great Title",
             "name": "gr_title",
             "aria-label": "",
             "type": "text",
@@ -343,7 +369,7 @@
         },
         {
             "key": "field_6333390504173",
-            "label": "GR Subtitle",
+            "label": "Great Subtitle",
             "name": "gr_subtitle",
             "aria-label": "",
             "type": "text",
@@ -363,7 +389,7 @@
         },
         {
             "key": "field_6333391b04174",
-            "label": "GR Text",
+            "label": "Great Text",
             "name": "gr_text",
             "aria-label": "",
             "type": "textarea",
@@ -383,7 +409,7 @@
         },
         {
             "key": "field_6333393604175",
-            "label": "GR URL",
+            "label": "Great URL",
             "name": "gr_url",
             "aria-label": "",
             "type": "link",
@@ -402,7 +428,7 @@
             "label": "Details",
             "name": "",
             "aria-label": "",
-            "type": "tab",
+            "type": "accordion",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -411,7 +437,8 @@
                 "class": "",
                 "id": ""
             },
-            "placement": "top",
+            "open": 1,
+            "multi_expand": 1,
             "endpoint": 0
         },
         {
@@ -569,7 +596,7 @@
         },
         {
             "key": "field_63333c7abcc01",
-            "label": "Rider",
+            "label": "Rider\/Hiker\/Walker",
             "name": "rider",
             "aria-label": "",
             "type": "group",
@@ -664,6 +691,62 @@
                     "append": ""
                 },
                 {
+                    "key": "field_65a7ef1c1e0e0",
+                    "label": "Walking Activity Level",
+                    "name": "walking_activity_level",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_65a7ef9e23b60",
+                                "operator": "==",
+                                "value": "H&W"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_65a7ef651e0e1",
+                    "label": "Average Walking Time",
+                    "name": "average_walking_time",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_65a7ef9e23b60",
+                                "operator": "==",
+                                "value": "H&W"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
                     "key": "field_6407c5fdf5002",
                     "label": "Elevation Daily Average",
                     "name": "elevation_daily_average",
@@ -707,7 +790,7 @@
         },
         {
             "key": "field_63333deabcc03",
-            "label": "Non-Rider",
+            "label": "Non-Rider\/HIker\/Walker",
             "name": "non-rider",
             "aria-label": "",
             "type": "group",
@@ -926,7 +1009,7 @@
             "label": "Hotels",
             "name": "",
             "aria-label": "",
-            "type": "tab",
+            "type": "accordion",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -935,7 +1018,8 @@
                 "class": "",
                 "id": ""
             },
-            "placement": "top",
+            "open": 1,
+            "multi_expand": 1,
             "endpoint": 0
         },
         {
@@ -967,19 +1051,28 @@
         },
         {
             "key": "field_65a57d4242148",
-            "label": "Gear and Guides",
+            "label": "Bikes",
             "name": "",
             "aria-label": "",
-            "type": "tab",
+            "type": "accordion",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_65a7ef9e23b60",
+                        "operator": "==",
+                        "value": "Biking"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
                 "id": ""
             },
-            "placement": "top",
+            "open": 1,
+            "multi_expand": 1,
             "endpoint": 0
         },
         {
@@ -990,7 +1083,15 @@
             "type": "relationship",
             "instructions": "Select the Hotels related to this product.",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_65a7ef9e23b60",
+                        "operator": "==",
+                        "value": "Biking"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -999,6 +1100,7 @@
             "post_type": [
                 "bikes"
             ],
+            "post_status": "",
             "taxonomy": "",
             "filters": [
                 "search"
@@ -1007,7 +1109,26 @@
             "min": "",
             "max": "",
             "elements": "",
+            "bidirectional": 0,
             "bidirectional_target": []
+        },
+        {
+            "key": "field_65a842442dbb0",
+            "label": "Guides",
+            "name": "",
+            "aria-label": "",
+            "type": "accordion",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "open": 1,
+            "multi_expand": 1,
+            "endpoint": 0
         },
         {
             "key": "field_6407c8fbbf40f",
@@ -1111,6 +1232,24 @@
             "return_format": "array"
         },
         {
+            "key": "field_65a57b9c61d3a",
+            "label": "Additional",
+            "name": "",
+            "aria-label": "",
+            "type": "accordion",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "open": 1,
+            "multi_expand": 1,
+            "endpoint": 0
+        },
+        {
             "key": "field_641d4f7d61c26",
             "label": "Additional Gear List",
             "name": "additional_gear_list",
@@ -1118,7 +1257,15 @@
             "type": "repeater",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_65a7ef9e23b60",
+                        "operator": "==",
+                        "value": "Biking"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -1163,7 +1310,15 @@
             "type": "image",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_65a7ef9e23b60",
+                        "operator": "==",
+                        "value": "Biking"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -1179,23 +1334,6 @@
             "max_size": "",
             "mime_types": "",
             "preview_size": "medium"
-        },
-        {
-            "key": "field_65a57b9c61d3a",
-            "label": "Additional",
-            "name": "",
-            "aria-label": "",
-            "type": "tab",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "placement": "top",
-            "endpoint": 0
         },
         {
             "key": "field_633343da0b254",
@@ -1396,7 +1534,7 @@
             "label": "Before and After",
             "name": "",
             "aria-label": "",
-            "type": "tab",
+            "type": "accordion",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -1405,7 +1543,8 @@
                 "class": "",
                 "id": ""
             },
-            "placement": "top",
+            "open": 1,
+            "multi_expand": 1,
             "endpoint": 0
         },
         {
@@ -1731,7 +1870,7 @@
             "label": "FAQs",
             "name": "",
             "aria-label": "",
-            "type": "tab",
+            "type": "accordion",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -1740,7 +1879,8 @@
                 "class": "",
                 "id": ""
             },
-            "placement": "top",
+            "open": 1,
+            "multi_expand": 1,
             "endpoint": 0
         },
         {
@@ -1828,5 +1968,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1705345198
+    "modified": 1705686933
 }
