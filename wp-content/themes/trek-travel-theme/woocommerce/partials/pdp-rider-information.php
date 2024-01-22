@@ -5,9 +5,12 @@ global $post;
 $product_id = $post->ID;
 
 $activity_terms = get_the_terms( $product_id, 'activity');
+
+
 foreach ( $activity_terms as $activity_term) {
-	$activity = $activity_term->name;
+	$activity = $activity_term->name;   
 }
+
 $product = wc_get_product($product_id);
 $r_level = $product->get_attribute('rider-level');
 
@@ -18,8 +21,9 @@ $r_level = $product->get_attribute('rider-level');
 
             <h5 class="fw-semibold pdp-section__title">
                 <?php
+                
                     switch ($activity) {
-                        case "Cycling":
+                        case "Biking":
                           echo "Rider";
                           break;
                         case "Hiking":
@@ -31,13 +35,13 @@ $r_level = $product->get_attribute('rider-level');
                       }
                 ?>
                  Information</h5>
-
+                 
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <button class="nav-link active" id="nav-rider-tab" data-bs-toggle="tab" data-bs-target="#nav-rider" type="button" role="tab" aria-controls="nav-rider" aria-selected="true">
                     <?php
                     switch ($activity) {
-                        case "Cycling":
+                        case "Biking":
                           echo "Riders";
                           break;
                         case "Hiking":
@@ -52,7 +56,7 @@ $r_level = $product->get_attribute('rider-level');
                     <button class="nav-link" id="nav-non-rider-tab" data-bs-toggle="tab" data-bs-target="#nav-non-rider" type="button" role="tab" aria-controls="nav-non-rider" aria-selected="false">
                     <?php
                         switch ($activity) {
-                            case "Cycling":
+                            case "Biking":
                             echo "Non-riders";
                             break;
                             case "Hiking":
@@ -74,7 +78,7 @@ $r_level = $product->get_attribute('rider-level');
                     <p class="rider-main-heading fw-bold">
                     <?php
                         switch ($activity) {
-                            case "Cycling":
+                            case "Biking":
                             echo "Rider";
                             break;
                             case "Hiking":

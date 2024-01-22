@@ -139,13 +139,40 @@ if( $get_child_products ){
                         // $status_class = str_ireplace(' ', '-', $status_class);
                         $tripWebStatus = getWebDispalyStatus($trip_status);
                         $tripWebStatusClass = strtolower(str_ireplace(" ","-",getWebDispalyStatus($trip_status)));
-                        $month_content_output .= '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
-                        <h6 class="accordion-header" id="flush-headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
-                                <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
-                                <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
-                            </button>
-                        </h6>
+
+                        if ($tripWebStatus == 'Private') {
+                            $month_content_output .= 
+                            '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                                <h6 class="accordion-header" id="flush-headingThree">
+                                    <div class="pvt-box">
+                                        <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'</span>
+                                        <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                        <span class="ms-auto fw-medium fs-sm lh-sm">Date Reserved</span>
+                                    </div>
+                                </h6>
+                            <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                                <hr>
+                                <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                                    <div class="accordion-hotels">
+                                        <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
+                                        '.$bike_hotels['hotels'].'
+                                        <a class="fs-sm view-details" href="#hotels">View hotels</a>
+                                    </div>
+                                    <div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>
+                                    <div class="accordion-book-now">';
+                        } else {
+                        $month_content_output .= 
+                        '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                            <h6 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
+                                    <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                </button>
+                            </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
                             <hr>
                             <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
@@ -160,6 +187,7 @@ if( $get_child_products ){
                                     <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
                                     </div>
                                 <div class="accordion-book-now">';
+                        }
                                 $formUrl = '';
                                 if( in_array($trip_status, $res_status) || $removeFromStella == true ){
                                     $formUrl = "reserve-a-trip";
@@ -167,6 +195,9 @@ if( $get_child_products ){
                                 if( in_array($trip_status, $wait_status) ){
                                     $formUrl = "waitlist";
                                 }
+
+                              
+                                
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
                                 $cart = WC()->session->get( 'cart', null );
                                 $persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
