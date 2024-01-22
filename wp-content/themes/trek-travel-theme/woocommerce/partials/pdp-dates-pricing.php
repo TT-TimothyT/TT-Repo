@@ -39,13 +39,13 @@ function getWebDispalyStatus($status){
     return $status;
 }
 $requestTripFormArr = ["Limited Availability" => "book-this-trip", "Join Waitlist" => "book-this-trip"];
-$in_status = [
+$res_status = [
     "Limited Availability",
-    "Sold Out",
     "Group Hold",
     "Sales Hold",
     "Hold"
 ];
+$wait_status = ["Sold Out"];
 
 /**
  * Function that sorts two dates, ascending.
@@ -161,8 +161,11 @@ if( $get_child_products ){
                                     </div>
                                 <div class="accordion-book-now">';
                                 $formUrl = '';
-                                if( in_array($trip_status, $in_status) || $removeFromStella == true ){
+                                if( in_array($trip_status, $res_status) || $removeFromStella == true ){
                                     $formUrl = "reserve-a-trip";
+                                }
+                                if( in_array($trip_status, $wait_status) ){
+                                    $formUrl = "waitlist";
                                 }
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
                                 $cart = WC()->session->get( 'cart', null );
