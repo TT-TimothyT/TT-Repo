@@ -597,7 +597,7 @@
             },
             {
                 "key": "field_63333c7abcc01",
-                "label": "Rider\/Hiker\/Walker",
+                "label": "Rider/Hiker/Walker",
                 "name": "rider",
                 "aria-label": "",
                 "type": "group",
@@ -801,7 +801,7 @@
             },
             {
                 "key": "field_63333deabcc03",
-                "label": "Non-Rider\/HIker\/Walker",
+                "label": "Non-Rider/HIker/Walker",
                 "name": "non-rider",
                 "aria-label": "",
                 "type": "group",
