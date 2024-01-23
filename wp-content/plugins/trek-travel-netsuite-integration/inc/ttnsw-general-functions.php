@@ -386,7 +386,7 @@ function tt_get_bookings($limit=10)
             <td>' . $rooms . '</td>
             <td>' . $is_primary . '</td>
             <td>' . $name . '</td>
-            <td><code>' . json_encode($wc_meta) . '</code></td>
+            <td class="expandable-cell"><code>' . json_encode($wc_meta) . '</code><span class="expand-cell expand-single" title="Expand Cell"></span></td>
             <td>' . $ns_booking_status . '</td>
             <td>' . $created_at . '</td>
         </tr>';

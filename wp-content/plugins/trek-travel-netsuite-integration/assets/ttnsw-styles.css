@@ -228,3 +228,55 @@ table#tt-dataTable-logs tr th:nth-child(5) {
 table.table-old.tt-booking-table {
     table-layout: auto !important;
 }
+
+table.table-old.tt-booking-table .expandable-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    position: relative;
+    z-index: 2;
+}
+table.table-old.tt-booking-table .expandable-cell.expanded {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    max-width: initial;
+}
+table.table-old.tt-booking-table .expand-cell {
+    position: absolute;
+    display: block;
+    top: 2px;
+    right: 2px;
+    width: 24px;
+    height: 14px;
+    background: rgba(0, 0, 0, 0.07);
+    border-radius: 4px;
+    padding: 2px 1px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+table.table-old.tt-booking-table .expand-cell:before {
+    content: '';
+    position: absolute;
+    border: 2px solid black;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: translate(-50%,-50%) rotate(45deg);
+    transform: translate(-50%,-50%) rotate(45deg);
+    transition: transform 0.3s ease;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    display: block;
+    box-sizing: border-box;
+}
+table.table-old.tt-booking-table .expand-cell:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+table.table-old.tt-booking-table .expandable-cell .expand-cell.all-expanded:before,
+table.table-old.tt-booking-table .expandable-cell.expanded .expand-cell:before {
+    -webkit-transform: translate(-50%,-50%) rotate(-135deg);
+    transform: translate(-50%,-50%) rotate(-135deg);
+}

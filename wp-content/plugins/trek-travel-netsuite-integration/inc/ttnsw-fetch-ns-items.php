@@ -322,7 +322,7 @@ function tt_bookings_admin_menu_page_cb()
                         <th>Rooms</th>
                         <th>Is primary</th>
                         <th>Guest name</th>
-                        <th>WC Meta</th>
+                        <th class="expandable-cell">WC Meta <span class="expand-cell expand-all" title="Expand All"></span></th>
                         <th>NS Booking status</th>
                         <th>Created at</th>
                     </tr>
