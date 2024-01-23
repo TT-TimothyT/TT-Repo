@@ -244,7 +244,7 @@ $primary_guest_country_name = WC()->countries->countries[$primary_country];
                 <?php if (isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1) { ?>
                     <?php
                     $primary_states       = WC()->countries->get_states( $primary_country );
-                    $primary_state_name   = isset( $primary_states[$billing_state] ) ? $primary_states[$billing_state] : $primary_state;
+                    $primary_state_name   = isset( $primary_states[$primary_state] ) ? $primary_states[$primary_state] : $primary_state;
                     $primary_country_name = WC()->countries->countries[$primary_country];
                     ?>
                     <p class="fs-sm lh-sm mb-0"><?php echo $primary_address_1; ?></p>

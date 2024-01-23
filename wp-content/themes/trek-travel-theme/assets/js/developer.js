@@ -2692,13 +2692,13 @@ jQuery(document).on('click', 'input[name="is_same_billing_as_mailing"]', functio
     jQuery('input[name="billing_last_name"]').val(shipping_lname);
     jQuery('input[name="billing_address_1"]').val(shipping_add1);
     jQuery('input[name="billing_address_2"]').val(shipping_add2);
-    jQuery('select[name="billing_country"]').val(shipping_country);
+    jQuery('select[name="shipping_country"]').val(shipping_country);
     jQuery('input[name="billing_city"]').val(shipping_city);
     if( jQuery('select[name="billing_state"]').length > 0  ){
-      jQuery('select[name="billing_state"]').val(shipping_state);
+      jQuery('select[name="shipping_state"]').val(shipping_state);
     }
     if( jQuery('input[name="billing_state"]').length > 0  ){
-      jQuery('input[name="billing_state"]').val(shipping_state);
+      jQuery('input[name="shipping_state"]').val(shipping_state);
     }
     jQuery('input[name="billing_postcode"]').val(shipping_postcode);
   }else{
@@ -2706,6 +2706,10 @@ jQuery(document).on('click', 'input[name="is_same_billing_as_mailing"]', functio
       jQuery('select[name="billing_country"]').val('').trigger('change');
       jQuery('select[name="billing_state"]').val('').trigger('change');
       jQuery('input[name="billing_state"]').val('').trigger('change');
+    } else {
+      jQuery('select[name="billing_state"]').val(billingState);
+      jQuery('input[name="billing_state"]').val(billingState);
+      jQuery('select[name="billing_country"]').val(billingCountry);
     }
     // jQuery('input[name="billing_first_name"]').val('');
     // jQuery('input[name="billing_last_name"]').val('');
