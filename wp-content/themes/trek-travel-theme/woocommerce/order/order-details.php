@@ -23,12 +23,38 @@ $order = wc_get_order($order_id); // phpcs:ignore WordPress.WP.GlobalVariablesOv
 if (!$order) {
 	return;
 }
-$userInfo = wp_get_current_user();
+$userInfo              = wp_get_current_user();
 $order_items           = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
 $show_purchase_note    = $order->has_status(apply_filters('woocommerce_purchase_note_order_statuses', array('completed', 'processing')));
 $show_customer_details = is_user_logged_in() && $order->get_user_id() === get_current_user_id();
 $downloads             = $order->get_downloadable_items();
 $show_downloads        = $order->has_downloadable_item() && $order->is_download_permitted();
+$first_item            = reset( $order_items );
+
+if ( $first_item ) {
+	$product_id              = $first_item['product_id'];
+	$product_tax_rate        = get_post_meta( $product_id, 'tt_meta_taxRate', true );
+	$single_supplement_price = get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true );
+	
+	if ( $product_tax_rate ) {
+		$total_tax = 0;
+		foreach ( $order_items as $item ) {
+			$item_id            = $item->get_product_id();
+			$product_tax_status = get_post_meta( $item_id, '_tax_status', true );
+			if ( 'taxable' === $product_tax_status ) {
+				$product_price = get_post_meta( $item_id, '_price', true );
+				if ( 73798 === $item_id ) {
+					$product_price = $single_supplement_price;
+				}
+				$cleaned_price    = str_replace( ',', '', $product_price );
+				$float_price      = floatval( $cleaned_price );
+				$product_quantity = $item['quantity'];
+				$product_tax      = ( $product_tax_rate / 100 ) * $float_price * $product_quantity;
+				$total_tax       += $product_tax;
+			}
+		}
+	}
+}
 
 if ($show_downloads) {
 	wc_get_template(
@@ -128,32 +154,19 @@ $occupants = isset($trek_checkoutData['occupants']) && $trek_checkoutData['occup
 $singleSupplementQty += isset($occupants['private']) && $occupants['private'] ? count($occupants['private']) : 0;
 $singleSupplementQty += isset($occupants['roommate']) && $occupants['roommate'] ? count($occupants['roommate']) : 0;
 $singleSupplementPrice = isset($trek_checkoutData['singleSupplementPrice']) ? $trek_checkoutData['singleSupplementPrice'] : 0;
-$singleSupplementPrice = $singleSupplementPrice * $singleSupplementQty;
+
+// Calculate the price depends on guest number.
+$supplementFees = str_ireplace(',','',$singleSupplementPrice); // Strip the , from the price if there's such.
+
+$calcSupplementFees = floatval( $supplementFees ) * $singleSupplementQty; // Calculate the full price.
+
+$calcSupplementFees = strval( $calcSupplementFees ); // Get the , back to the string.
+
+$supplementFees = number_format( $calcSupplementFees, 2 );
+
 $rooms_html = tt_rooms_output($trek_checkoutData, true);
 $guests_gears_data = tt_guest_details($trek_checkoutData);
 //deposite due vars
-
-if( $singleSupplementPrice == 1 ) {
-	$supplementFees = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku, true);
-
-	//Get the products from the order
-	$supplementFees = str_ireplace(',','',$supplementFees);
-
-
-	//strip the , from the price if there's such
-	$calcSupplementFees = floatval( $supplementFees ) * $singleSupplementQty;
-
-
-	$calcSupplementFees = strval( $calcSupplementFees );
-
-
-	//Get the , back to the string
-	$supplementFees = number_format( $calcSupplementFees, 2 );
-
-} else {
-	$supplementFees = $singleSupplementPrice;
-}
-
 $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
 $depositAmount = $depositAmount ? str_ireplace(',','',$depositAmount) : 0;
 $depositAmount = floatval($depositAmount) * intval(isset($trek_checkoutData['no_of_guests']) ? $trek_checkoutData['no_of_guests'] : 1);
@@ -250,13 +263,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_insurance_total_charges; ?></span></p>
 							<?php } ?>
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_subtotal(); ?></span></p>
-							<?php
-							$local_tax = $order->get_cart_tax();
-							if ( '0' === $local_tax ) {
-								$local_tax = $order->get_total() - $order->get_subtotal();
-							}
-							?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $local_tax; ?></span></p>
+							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $total_tax ); ?></span></p>
 							<?php if (!empty($dues)) : ?>
 								<p class="mb-0 fw-normal order-details__text"><?php echo $cart_totalCurr; ?></p>
 								<p class="mb-0 mt-1 mt-lg-2 fw-medium order-details__textbold"><?php echo $depositAmountCurr; ?></p>
