@@ -128,32 +128,19 @@ $occupants = isset($trek_checkoutData['occupants']) && $trek_checkoutData['occup
 $singleSupplementQty += isset($occupants['private']) && $occupants['private'] ? count($occupants['private']) : 0;
 $singleSupplementQty += isset($occupants['roommate']) && $occupants['roommate'] ? count($occupants['roommate']) : 0;
 $singleSupplementPrice = isset($trek_checkoutData['singleSupplementPrice']) ? $trek_checkoutData['singleSupplementPrice'] : 0;
-$singleSupplementPrice = $singleSupplementPrice * $singleSupplementQty;
+
+// Calculate the price depends on guest number.
+$supplementFees = str_ireplace(',','',$singleSupplementPrice); // Strip the , from the price if there's such.
+
+$calcSupplementFees = floatval( $supplementFees ) * $singleSupplementQty; // Calculate the full price.
+
+$calcSupplementFees = strval( $calcSupplementFees ); // Get the , back to the string.
+
+$supplementFees = number_format( $calcSupplementFees, 2 );
+
 $rooms_html = tt_rooms_output($trek_checkoutData, true);
 $guests_gears_data = tt_guest_details($trek_checkoutData);
 //deposite due vars
-
-if( $singleSupplementPrice == 1 ) {
-	$supplementFees = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku, true);
-
-	//Get the products from the order
-	$supplementFees = str_ireplace(',','',$supplementFees);
-
-
-	//strip the , from the price if there's such
-	$calcSupplementFees = floatval( $supplementFees ) * $singleSupplementQty;
-
-
-	$calcSupplementFees = strval( $calcSupplementFees );
-
-
-	//Get the , back to the string
-	$supplementFees = number_format( $calcSupplementFees, 2 );
-
-} else {
-	$supplementFees = $singleSupplementPrice;
-}
-
 $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
 $depositAmount = $depositAmount ? str_ireplace(',','',$depositAmount) : 0;
 $depositAmount = floatval($depositAmount) * intval(isset($trek_checkoutData['no_of_guests']) ? $trek_checkoutData['no_of_guests'] : 1);
