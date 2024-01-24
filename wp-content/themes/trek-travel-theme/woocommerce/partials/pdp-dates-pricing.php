@@ -203,7 +203,7 @@ if( $get_child_products ){
                                 $persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
                                 
                                 if ( !is_null($cart) && $persistent_cart_count > 0 ) {
-                                    if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
+                                    if ( isset( $formUrl ) && !empty( $formUrl ) ) {
                                         $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                     } else {
                                         $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';

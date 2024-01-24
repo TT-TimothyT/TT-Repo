@@ -133,7 +133,17 @@
                 border: 1px solid #C6C6C6;
                 border-radius: 4px;
                 margin: 8px auto;
-                button{
+
+                .pvt-box {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    padding: var(--bs-accordion-btn-padding-y) var(--bs-accordion-btn-padding-x);
+                    font-size: 1rem;
+                    color: var(--bs-accordion-btn-color);
+                    text-align: left;
+                }
+                button, .pvt-box{
                     @media (max-width: 540px) {
                         flex-direction: column;
                         align-items: flex-start;
@@ -159,6 +169,10 @@
                         }
                         &.guaranteed::before{
                             content: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='6' fill='%2328AAE1'/%3E%3C/svg%3E");
+                            margin-right: 8px;
+                        }
+                        &.not-guaranteed::before{
+                            content: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='7' cy='7' r='6' fill='none' stroke-width='2' stroke='%2328AAE1'/%3E%3C/svg%3E");
                             margin-right: 8px;
                         }
                         &.private::before{
