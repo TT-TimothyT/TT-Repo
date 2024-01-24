@@ -193,7 +193,9 @@ if ( $pdp_itineraries ) :
                                                             <?php if (!empty($day['day_highlight_title']) && !empty($day['day_highlight_body'])) {
                                                             ?>
                                                             <div class="pdp-itinerary-day__accordion-right">
+                                                                <?php if (!empty($day['day_highlight_image']) ) { ?>
                                                                 <img class="pdp-itinerary-day__accordion-image" src="<?php echo $day['day_highlight_image']['url']; ?>" alt="<?php echo $day['day_highlight_title']; ?>">
+                                                                <?php } ?>
                                                                 <p class="fs-sm lh-sm fw-medium mb-1 pdp-itinerary-day__accordion-highlight">Highlight of the Day</p>
                                                                 <p class="fs-md lh-md fw-medium mb-1"><?php echo $day['day_highlight_title']; ?></p>
                                                                 <p class="fs-sm lh-sm mb-0 pdp-itinerary-day__accordion-right-clamp">

@@ -183,10 +183,13 @@ if ( $pdp_itineraries ) :
                                                                 </div>
                                                             </div>
                                                             <div class="pdp-itinerary-day__accordion-right">
-                                                                <?php if (!empty($day['day_highlight_title']) && !empty($day['day_highlight_image']['url'])) {
+                                                                <?php if (!empty($day['day_highlight_image']['url'])) {
                                                                 ?>
                                                                     <img class="pdp-itinerary-day__accordion-image" src="<?php echo $day['day_highlight_image']['url']; ?>" alt="<?php echo $day['day_highlight_title']; ?>">
+                                                                <?php } ?>
                                                                     <p class="fs-sm lh-sm fw-medium mb-1 pdp-itinerary-day__accordion-highlight">Highlight of the Day</p>
+                                                                <?php if (!empty($day['day_highlight_title']) ) {
+                                                                ?>
                                                                     <p class="fs-md lh-md fw-medium mb-1"><?php echo $day['day_highlight_title']; ?></p>
                                                                 <?php } ?>
                                                                 <?php if (!empty($day['day_highlight_body'])) {
