@@ -2634,7 +2634,7 @@ jQuery('body').on('click', function () {
     // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#000")
   }
   else{
-    if(jQuery(window).width() < 768) {
+    if(jQuery(window).width() < 768 && !jQuery('body').hasClass('single-product')) {
       jQuery('html, body').css('overflow', 'scroll');
       // jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
       jQuery("nav.mobile-nav div#navbar").removeClass("w-100")
@@ -2642,6 +2642,13 @@ jQuery('body').on('click', function () {
       // jQuery("div#navbar .mega-menu-toggle.mega-menu-open").css("background", "#fff")
     }
   }
+  jQuery(".overview-menu-mobile .nav-link").on('click', function(e) {
+    e.preventDefault();
+    var newsWindowEl = jQuery(jQuery(this).attr('href'));
+    jQuery('html, body').animate({
+        scrollTop: newsWindowEl.offset().top - 800
+    }, 'fast');
+  })
   var pdpNav = jQuery(".overview-menu-mobile .accordion-button")
   var isPdpNavExpanded = jQuery(pdpNav).attr("aria-expanded")
   if (isPdpNavExpanded == "true") {
