@@ -45,7 +45,7 @@ $res_status = [
     "Sales Hold",
     "Hold"
 ];
-$wait_status = ["Sold Out"];
+$wait_status = ["SOLD OUT"];
 
 /**
  * Function that sorts two dates, ascending.
