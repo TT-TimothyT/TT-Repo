@@ -1105,6 +1105,8 @@ function trek_update_medical_information_action_cb()
                 $medical_input = $_REQUEST[$input_post];
                 if (isset($medical_input) && $medical_input['boolean'] == 'yes' && !empty($medical_input['value'])) {
                     update_user_meta($user->ID, $input_post, $medical_input['value']);
+                } else if ( isset( $medical_input ) && $medical_input['boolean'] == 'no' ) {
+                    update_user_meta( $user->ID, $input_post, 'none' );
                 } else {
                     update_user_meta($user->ID, $input_post, '');
                 }
