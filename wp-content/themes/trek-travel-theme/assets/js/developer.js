@@ -3397,7 +3397,9 @@ jQuery('.mega-toggle-blocks-left').on('click', function(e) {
 jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu li.mega-menu-item a', function (e) {
   if(jQuery(this).attr('href') === undefined) {
     jQuery(".mega-toggle-blocks-center").text(jQuery(this).text())
-    jQuery(this).parent().siblings().addClass("d-none");
+    if(jQuery(window).width() < 768) {
+      jQuery(this).parent().siblings().addClass("d-none");
+    }
     jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 1)
     jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").show()
     jQuery(this).hide();
