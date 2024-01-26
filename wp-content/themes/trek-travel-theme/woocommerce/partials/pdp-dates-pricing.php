@@ -195,7 +195,6 @@ if( $get_child_products ){
                                 if( in_array($trip_status, $wait_status) ){
                                     $formUrl = "waitlist";
                                 }
-
                               
                                 
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
