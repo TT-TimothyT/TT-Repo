@@ -10,13 +10,10 @@ use MailPoet\Newsletter\Statistics\NewsletterStatisticsRepository;
 use MailPoet\Services\Bridge\API;
 use MailPoet\Settings\SettingsController;
 use MailPoet\Util\License\Features\Subscribers;
+use MailPoet\WP\Functions as WPFunctions;
 use MailPoetVendor\Carbon\Carbon;
 
 class AuthorizedSenderDomainController {
-  const DOMAIN_VERIFICATION_STATUS_VALID = 'valid';
-  const DOMAIN_VERIFICATION_STATUS_INVALID = 'invalid';
-  const DOMAIN_VERIFICATION_STATUS_PENDING = 'pending';
-
   const OVERALL_STATUS_VERIFIED = 'verified';
   const OVERALL_STATUS_PARTIALLY_VERIFIED = 'partially-verified';
   const OVERALL_STATUS_UNVERIFIED = 'unverified';
@@ -31,6 +28,8 @@ class AuthorizedSenderDomainController {
   const ENFORCEMENT_START_TIME = '2024-02-01 00:00:00 UTC';
 
   const INSTALLED_AFTER_NEW_RESTRICTIONS_OPTION = 'installed_after_new_domain_restrictions';
+
+  const SENDER_DOMAINS_KEY = 'mailpoet_sender_domains';
 
   /** @var Bridge */
   private $bridge;
@@ -50,16 +49,21 @@ class AuthorizedSenderDomainController {
   /** @var Subscribers */
   private $subscribers;
 
+  /** @var WPFunctions */
+  private $wp;
+
   public function __construct(
     Bridge $bridge,
     NewsletterStatisticsRepository $newsletterStatisticsRepository,
     SettingsController $settingsController,
-    Subscribers $subscribers
+    Subscribers $subscribers,
+    WPFunctions $wp
   ) {
     $this->bridge = $bridge;
     $this->newsletterStatisticsRepository = $newsletterStatisticsRepository;
     $this->settingsController = $settingsController;
     $this->subscribers = $subscribers;
+    $this->wp = $wp;
   }
 
   /**
@@ -82,21 +86,18 @@ class AuthorizedSenderDomainController {
     return $this->returnAllDomains($this->getAllRecords());
   }
 
-  public function getAllSenderDomainsIgnoringCache(): array {
-    $this->currentRecords = null;
-    return $this->getAllSenderDomains();
-  }
-
   /**
-   * Get all Verified Sender Domains
+   * Get all Verified Sender Domains.
+   *
+   * Note: This includes partially or fully verified domains.
    */
   public function getVerifiedSenderDomains(): array {
-    return $this->returnVerifiedDomains($this->getAllRecords());
+    return $this->getFullyOrPartiallyVerifiedSenderDomains(true);
   }
 
   public function getVerifiedSenderDomainsIgnoringCache(): array {
-    $this->currentRecords = null;
-    return $this->getVerifiedSenderDomains();
+    $this->reloadCache();
+    return $this->getFullyOrPartiallyVerifiedSenderDomains(true);
   }
 
   /**
@@ -152,6 +153,7 @@ class AuthorizedSenderDomainController {
       throw new \InvalidArgumentException(self::AUTHORIZED_SENDER_DOMAIN_ERROR_NOT_CREATED);
     }
 
+    $this->reloadCache();
     $verifiedDomains = $this->getFullyVerifiedSenderDomains(true);
     $alreadyVerified = in_array($domain, $verifiedDomains);
 
@@ -176,11 +178,17 @@ class AuthorizedSenderDomainController {
     });
   }
 
+  /**
+   * Returns sender domains that have all required records, including DMARC.
+   */
   public function getFullyVerifiedSenderDomains($domainsOnly = false): array {
     $domainData = $this->getSenderDomainsByStatus([self::OVERALL_STATUS_VERIFIED]);
     return $domainsOnly ? $this->extractDomains($domainData) : $domainData;
   }
 
+  /**
+   * Returns sender domains that were verified before DMARC record was required.
+   */
   public function getPartiallyVerifiedSenderDomains($domainsOnly = false): array {
     $domainData = $this->getSenderDomainsByStatus([self::OVERALL_STATUS_PARTIALLY_VERIFIED]);
     return $domainsOnly ? $this->extractDomains($domainData) : $domainData;
@@ -230,30 +238,21 @@ class AuthorizedSenderDomainController {
     return $domains;
   }
 
-  /**
-   * Little helper function to return All verified domains
-   */
-  private function returnVerifiedDomains(array $records): array {
-    $verifiedDomains = [];
-
-    foreach ($records as $key => $value) {
-      if (count($value) < 3) continue;
-      [$domainKey1, $domainKey2, $secretRecord] = $value;
-      if (
-        $domainKey1['status'] === self::DOMAIN_VERIFICATION_STATUS_VALID &&
-        $domainKey2['status'] === self::DOMAIN_VERIFICATION_STATUS_VALID &&
-        $secretRecord['status'] === self::DOMAIN_VERIFICATION_STATUS_VALID
-      ) {
-        $verifiedDomains[] = $key;
-      }
-    }
-
-    return $verifiedDomains;
+  private function reloadCache() {
+    $this->currentRecords = null;
+    $this->currentRawData = $this->bridge->getRawSenderDomainData();
+    $this->wp->setTransient(self::SENDER_DOMAINS_KEY, $this->currentRawData, 60 * 60 * 24);
   }
 
   private function getAllRawData(): array {
     if ($this->currentRawData === null) {
-      $this->currentRawData = $this->bridge->getRawSenderDomainData();
+      $currentData = $this->wp->getTransient(self::SENDER_DOMAINS_KEY);
+      if (is_array($currentData)) {
+        $this->currentRawData = $currentData;
+      } else {
+        $this->currentRawData = $this->bridge->getRawSenderDomainData();
+        $this->wp->setTransient(self::SENDER_DOMAINS_KEY, $this->currentRawData, 60 * 60 * 24);
+      }
     }
     return $this->currentRawData;
   }
@@ -291,7 +290,11 @@ class AuthorizedSenderDomainController {
     return $this->subscribers->getSubscribersCount() <= self::LOWER_LIMIT;
   }
 
-  public function isAuthorizedDomainRequiredForNewCampaigns(): bool {
+  public function isBigSender(): bool {
+    return $this->subscribers->getSubscribersCount() > self::UPPER_LIMIT;
+  }
+
+  private function restrictionsApply(): bool {
     if ($this->settingsController->get('mta.method') !== Mailer::METHOD_MAILPOET) {
       return false;
     }
@@ -301,6 +304,14 @@ class AuthorizedSenderDomainController {
       return false;
     }
 
-    return !$this->isSmallSender();
+    return true;
+  }
+
+  public function isAuthorizedDomainRequiredForNewCampaigns(): bool {
+    return $this->restrictionsApply() && !$this->isSmallSender();
+  }
+
+  public function isAuthorizedDomainRequiredForExistingCampaigns(): bool {
+    return $this->restrictionsApply() && $this->isBigSender();
   }
 }

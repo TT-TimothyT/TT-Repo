@@ -1,15 +1,15 @@
-# Copyright (C) 2023 WPMU DEV
+# Copyright (C) 2024 WPMU DEV
 # This file is distributed under the GPLv2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smush Pro 3.15.3\n"
+"Project-Id-Version: Smush Pro 3.15.4\n"
 "Report-Msgid-Bugs-To: https://wpmudev.com\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-20T12:31:27+00:00\n"
+"POT-Creation-Date: 2024-01-23T13:28:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wp-smushit\n"
@@ -228,7 +228,6 @@ msgstr ""
 #: app/class-admin.php:234
 #: app/common/footer-links.php:41
 #: app/common/footer-links.php:66
-#: app/views/smush-upgrade-page.php:211
 msgid "Docs"
 msgstr ""
 
@@ -248,7 +247,6 @@ msgstr ""
 #: app/class-admin.php:266
 #: app/common/footer-links.php:38
 #: app/common/footer-links.php:63
-#: app/views/smush-upgrade-page.php:208
 msgid "Support"
 msgstr ""
 
@@ -263,7 +261,6 @@ msgstr ""
 #: app/class-admin.php:282
 #: app/common/footer-links.php:35
 #: app/common/footer-links.php:60
-#: app/views/smush-upgrade-page.php:205
 msgid "Roadmap"
 msgstr ""
 
@@ -633,25 +630,21 @@ msgid "Made with %s by WPMU DEV"
 msgstr ""
 
 #: app/common/footer-links.php:32
-#: app/views/smush-upgrade-page.php:202
 msgid "Free Plugins"
 msgstr ""
 
 #: app/common/footer-links.php:44
 #: app/common/footer-links.php:54
-#: app/views/smush-upgrade-page.php:214
 msgid "The Hub"
 msgstr ""
 
 #: app/common/footer-links.php:47
 #: app/common/footer-links.php:72
-#: app/views/smush-upgrade-page.php:217
 msgid "Terms of Service"
 msgstr ""
 
 #: app/common/footer-links.php:50
 #: app/common/footer-links.php:75
-#: app/views/smush-upgrade-page.php:220
 msgid "Privacy Policy"
 msgstr ""
 
@@ -2489,14 +2482,6 @@ msgstr ""
 msgid "Includes a 30-day money-back guarantee"
 msgstr ""
 
-#: app/views/smush-upgrade-page.php:197
-msgid "Made with"
-msgstr ""
-
-#: app/views/smush-upgrade-page.php:197
-msgid "by WPMU DEV"
-msgstr ""
-
 #: app/views/summary/lossy-level.php:24
 #: core/class-settings.php:268
 msgid "Smush Mode"
@@ -3435,7 +3420,7 @@ msgid "Skipped with %s filter."
 msgstr ""
 
 #. translators: %s: Cron interval in minutes
-#: core/modules/background/class-background-process.php:347
+#: core/modules/background/class-background-process.php:351
 msgid "Every %d Minutes"
 msgstr ""
 

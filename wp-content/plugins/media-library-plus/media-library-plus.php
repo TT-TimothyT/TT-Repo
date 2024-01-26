@@ -3,7 +3,7 @@
 Plugin Name: Media Library Folders
 Plugin URI: http://maxgalleria.com
 Description: Gives you the ability to adds folders and move files in the WordPress Media Library.
-Version: 8.1.8
+Version: 8.1.9
 Author: Max Foundry
 Author URI: http://maxfoundry.com
 
@@ -75,7 +75,7 @@ class MGMediaLibraryFolders {
   
 	public function set_global_constants() {	
 		define('MAXGALLERIA_MEDIA_LIBRARY_VERSION_KEY', 'maxgalleria_media_library_version');
-		define('MAXGALLERIA_MEDIA_LIBRARY_VERSION_NUM', '8.1.8');
+		define('MAXGALLERIA_MEDIA_LIBRARY_VERSION_NUM', '8.1.9');
 		define('MAXGALLERIA_MEDIA_LIBRARY_IGNORE_NOTICE', 'maxgalleria_media_library_ignore_notice');
 		define('MAXGALLERIA_MEDIA_LIBRARY_PLUGIN_NAME', trim(dirname(plugin_basename(__FILE__)), '/'));
     if(!defined('MAXGALLERIA_MEDIA_LIBRARY_PLUGIN_DIR'))
@@ -448,7 +448,7 @@ class MGMediaLibraryFolders {
   }
   
   /* manually loads an image file */
-  public function mlfp_load_image () {
+  public function mlfp_load_image () {    
     
     if ( !wp_verify_nonce( $_POST['nonce'], MAXGALLERIA_MEDIA_LIBRARY_NONCE)) {
       exit(esc_html__('Missing nonce! Please refresh this page.','maxgalleria-media-library'));
@@ -459,19 +459,37 @@ class MGMediaLibraryFolders {
     else
       $download_file = "";
             
-    if(!empty($download_file)) {      
+    if(!empty($download_file)) { 
+      
       $file_path = $this->get_absolute_path($download_file);
-      if(file_exists($file_path)) {
-        $type = pathinfo($file_path, PATHINFO_EXTENSION);
-        $data = file_get_contents($file_path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);     
-        echo $base64;          
-      }
+            
+      if($this->is_path_inside($this->protected_content_dir, $file_path)) {  
+        if(file_exists($file_path)) {
+          $type = pathinfo($file_path, PATHINFO_EXTENSION);
+          $data = file_get_contents($file_path);
+          $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);     
+          echo $base64;          
+        }
+      } 
     }
     
     die();
   }
   
+  public function is_path_inside($potential_parent, $potential_child) {
+    // Get the real, absolute paths
+    $parent_path = realpath($potential_parent);
+    $child_path = realpath($potential_child);
+
+    // Check if both paths are valid
+    if ($parent_path === false || $child_path === false) {
+        return false;
+    }
+
+    // Use the strncmp function to compare the first n characters of two strings
+    return strncmp($child_path, $parent_path, strlen($parent_path)) === 0;
+}
+      
   /* manually load image on the front end of the site */
   public function mlfp_load_fe_image () {
     
@@ -485,17 +503,21 @@ class MGMediaLibraryFolders {
       $download_file = "";
     
 		if ((isset($_POST['image_id'])) && (strlen(trim($_POST['image_id'])) > 0))
-      $image_id = intval(trim(sanitize_url($_POST['image_id'])));
+      $image_id = intval(trim(sanitize_text_field($_POST['image_id'])));
     else
       $image_id = "";  
                         
     if(!empty($download_file)) {
       $file_path = $this->get_absolute_path($download_file);
-      if(file_exists($file_path)) {
-        $type = pathinfo($file_path, PATHINFO_EXTENSION);
-        $data = file_get_contents($file_path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);     
-        echo $base64;          
+      
+      if($this->is_path_inside($this->protected_content_dir, $file_path)) {  
+      
+        if(file_exists($file_path)) {
+          $type = pathinfo($file_path, PATHINFO_EXTENSION);
+          $data = file_get_contents($file_path);
+          $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);     
+          echo $base64;          
+        }
       }
     } else {
       echo null;
@@ -1451,7 +1473,7 @@ and pm.meta_key = '_wp_attached_file'";
         
   }
   
-  private function add_new_folder_parent($record_id, $parent_folder) {
+  public function add_new_folder_parent($record_id, $parent_folder) {
     
     global $wpdb;
     $record_id = intval($record_id);
@@ -2648,7 +2670,7 @@ AND meta_key = '_wp_attached_file'";
     if ((isset($_POST['parent_id'])) && (strlen(trim($_POST['parent_id'])) > 0))
       $parent_folder = trim(sanitize_text_field($_POST['parent_id']));
 		else
-			$parent_folder = "0";
+			$parent_folder = $this->uploads_folder_ID;
 		
 		            
     foreach( $delete_ids as $delete_id) {
