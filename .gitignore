@@ -98,6 +98,8 @@ wp-content/mu-plugins/pagely-util/
 wp-content/mu-plugins/pagely-wp-cli-mail-patch/
 wp-content/mu-plugins/trek-travel-theme-analytics.php
 
+/wp-content/object-cache.php
+
 # Ignore the SM Ad server directory
 /revive_adserver/
 
