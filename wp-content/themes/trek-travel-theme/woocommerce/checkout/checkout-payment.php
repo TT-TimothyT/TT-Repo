@@ -127,6 +127,10 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         <p class="fs-sm lh-sm checkout-payment__gray">Our team will reach out to collect final payment prior to your trip start date.</p>
     </div>
     <hr>
+    <?php
+    // Check for plugin Woo Gift Cards is active.
+    if ( is_plugin_active( 'woocommerce-gift-cards/woocommerce-gift-cards.php' ) ) : 
+    ?>
     <div class="checkout-payment__reward">
         <div class="woocommerce-form-coupon-toggle fw-medium checkout-payment__reward-title">
             <?php wc_print_notice(apply_filters('woocommerce_checkout_coupon_message', ' <a href="#" class="showcoupon">' . esc_html__('Redeem a Gift Card', 'woocommerce') . '</a>'), 'notice'); ?>
@@ -158,6 +162,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         </div>
     </div>
     <hr>
+    <?php endif; ?>
     <div class="checkout-payment__method">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4">Payment Method</h5>
         <div class="checkout-payment__paymethod">
