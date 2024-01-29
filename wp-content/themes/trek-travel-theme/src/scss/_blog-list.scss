@@ -46,6 +46,9 @@
                 line-height: 24px;
                 color: #333333;
             }
+            a {
+                padding: 0.5rem 0.75rem;
+            }
         }
     }
     .list{
@@ -55,6 +58,7 @@
             a {
                 transition: all ease 0.3s;
                 text-decoration: none;
+                padding: 0.5rem 0.75rem;
 
                 &:hover {
                     color: #28AAE1;
@@ -137,6 +141,14 @@
         }
         .blog-filters{
             margin: 0 3rem;
+        }
+    }
+
+    @media screen and (max-width: 1170px) {
+        .featured {
+            .info {
+                padding: 32px;
+            }
         }
     }
 }
