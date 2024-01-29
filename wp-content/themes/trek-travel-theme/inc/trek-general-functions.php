@@ -1225,7 +1225,7 @@ function trek_trek_login_action_cb()
         }
         $creds = array(
             'user_login' => $user_login,
-            'user_password' => esc_attr($password),
+            'user_password' => $password,
             'remember' => true
         );
         $user = wp_signon($creds, false);
