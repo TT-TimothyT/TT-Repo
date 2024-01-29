@@ -49,16 +49,16 @@ class NetSuiteClient {
             $shouldRetry = false;
             
             $responseJson = $nsResponse->responseJson;
-                
             if ($nsResponse->httpStatusCode == 429 || $nsResponse->httpStatusCode == 400) {
                 if (!is_null($responseJson) && !is_null($responseJson->error) && $responseJson->error->code == 'SSS_REQUEST_LIMIT_EXCEEDED') {
-                    self::log("Concurrency limit exceeded. (Attempt #$retryNumber). Retrying request for script " . $scriptId . "...");
+                    //Add logs in wp_debug.log / This is rather development log, shouldn't be visible to end user or editor
+                    error_log("Concurrency limit exceeded. (Attempt #$retryNumber). Retrying request for script " . $scriptId . "...");
                     sleep(2);
                     $shouldRetry = true;
                     $retryNumber++;
                 }
             } else if ($retryNumber > 1) {
-                self::log("Retried request and got response: " . json_encode($responseJson));
+                error_log("Retried request and got response: " . json_encode($responseJson));
             }
         } while ($shouldRetry);
 
