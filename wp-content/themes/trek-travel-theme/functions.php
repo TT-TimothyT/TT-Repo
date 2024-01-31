@@ -682,13 +682,16 @@ function delete_user_address_callback() {
 }
 add_filter('woocommerce_customer_save_address', 'custom_address_update_message_and_redirect', 10, 2);
 
-function custom_address_update_message_and_redirect($user_id, $load_address) {
-	$current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $relative_url = rtrim(home_url(), '/') . $current_path;
+function custom_address_update_message_and_redirect( $user_id, $load_address ) {
+	// Add a check to prevent issues when updating users through the admin panel.
+	if( ! is_admin() ) {
+		$current_path = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+    	$relative_url = rtrim( home_url(), '/') . $current_path;
 
-    // Redirect to the relative URL
-    wp_redirect($relative_url);
-    exit;
+    	// Redirect to the relative URL
+    	wp_redirect( $relative_url );
+    	exit;
+	}
 }
 /**
  * Redirect users to the My Account page after sign-up.

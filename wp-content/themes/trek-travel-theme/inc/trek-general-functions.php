@@ -1225,7 +1225,7 @@ function trek_trek_login_action_cb()
         }
         $creds = array(
             'user_login' => $user_login,
-            'user_password' => esc_attr($password),
+            'user_password' => $password,
             'remember' => true
         );
         $user = wp_signon($creds, false);
@@ -5903,3 +5903,100 @@ function tt_custom_thumbnail_size($thumbnail_size) {
     $thumbnail_size = 'medium'; // Change 'your_custom_size' to the size you want
     return $thumbnail_size;
 }
+
+/**
+ * Function to take the lowest price
+ * from available trips in the Grouped product.
+ *
+ * @param int|string $id The Grouped product ID.
+ *
+ * @return string|boolean The lowest price Or False if there is no ID given.
+ */
+function tt_get_lowest_starting_from_price( $id = 0 ) {
+    if( empty( $id ) ) {
+        return false;
+    }
+    
+    $start_price     = 0;
+    $grouped_product = wc_get_product( $id );
+
+    if( $grouped_product ) {
+        $linked_products  = $grouped_product->get_children();
+        $child_products   = get_child_products( $linked_products );
+        $available_prices = array();
+
+        if( $child_products ) {
+
+            foreach( $child_products as $year => $child_product ){
+                ksort( $child_product, 1 );
+
+                if( $child_product ) {
+
+                    foreach( $child_product as $month => $child_product_data ){
+                        ksort( $child_product_data, 1 );
+
+                        $current_month = date( 'm', strtotime( date( 'Y-m-d H:i:s' ) ) );
+                        $current_year  = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
+
+                        // Check for year to skip the trip is in the past.
+                        if ( (int) $month < (int) $current_month && ( int ) $year <= (int)  $current_year ) {
+                            continue;
+                        }
+
+                        if( $child_product_data ) {
+
+                            foreach( $child_product_data as $index => $child_product_details ){
+                                ksort( $child_product_details, 1 );
+
+                                $today_date = new DateTime('now');
+
+                                // 'start_date' => string '11/12/23' d/m/y
+                                $trip_start_date = DateTime::createFromFormat('d/m/y', $child_product_details['start_date']);
+
+                                // If the date of the trip is today or in the past, skip the trip;
+                                if( $trip_start_date && $trip_start_date <= $today_date ) {
+
+                                    continue;
+                                }
+
+                                // Store the prices of all available trips.
+                                array_push( $available_prices, $child_product_details['price'] );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // If we have any price in the available prices array, take the lowest.
+        if( ! empty( $available_prices ) ) {
+            $start_price = min( $available_prices );
+        }
+    }
+
+    return $start_price;
+}
+
+/**
+ * Take the lowest price in the available trips
+ * and overwrite algolia Start Price attribute,
+ * that displays the price on the destination archive page.
+ * 
+ * @uses tt_get_lowest_starting_from_price function to take
+ * the lowest price for given grouped product.
+ * 
+ * @param array   $shared_attributes Array with algolia shared attributes.
+ * @param WP_Post $post The post.
+ */
+function tt_algolia_modify_starting_from_price( $shared_attributes, $post ) {
+
+    $shared_attributes['Start Price'] = 0;
+
+    if( isset( $shared_attributes['post_id'] ) ) {
+
+        $shared_attributes['Start Price'] = tt_get_lowest_starting_from_price( $shared_attributes['post_id'] );
+    }
+
+	return $shared_attributes;
+}
+add_filter( 'algolia_searchable_post_shared_attributes', 'tt_algolia_modify_starting_from_price', 10, 2 );
