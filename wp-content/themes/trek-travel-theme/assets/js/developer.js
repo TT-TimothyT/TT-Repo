@@ -2643,12 +2643,13 @@ jQuery('body').on('click', function () {
     }
   }
   jQuery(".overview-menu-mobile .nav-link").on('click', function(e) {
-    e.preventDefault();
-    var newsWindowEl = jQuery(jQuery(this).attr('href'));
-    jQuery('html, body').animate({
-        scrollTop: newsWindowEl.offset().top - 800
-    }, 'fast');
-  })
+    isScrollingByClick = true;
+    // Add code to scroll to the element
+    // Example: jQuery('html, body').animate({scrollTop: jQuery(jQuery(this).attr('href')).offset().top}, 1000);
+    setTimeout(function() {
+      isScrollingByClick = false;
+    }, 1000); // Assuming the scroll animation takes 1 second
+  });
   var pdpNav = jQuery(".overview-menu-mobile .accordion-button")
   var isPdpNavExpanded = jQuery(pdpNav).attr("aria-expanded")
   if (isPdpNavExpanded == "true") {
@@ -4691,4 +4692,46 @@ jQuery('.pb-checklist-cancel').on('click', function(ev) {
 
 });
 
-/* My trip checklist undo current cahnges functionality END */
+
+var navLinks = jQuery('.overview-menu-mobile .nav-link');
+var elementsArray = [];
+var isScrollingByClick = false;
+
+navLinks.each(function() {
+  var id = jQuery(this).attr('href').substring(1);
+  var element = jQuery('#' + id);
+  elementsArray.push(element);
+});
+
+function isElementInViewport(el) {
+  var rect = el[0].getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight - 200 || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
+function handleScroll() {
+  if (!isScrollingByClick) {
+    var elementsInViewport = [];
+    for (var i = 0; i < elementsArray.length; i++) {
+      if (isElementInViewport(elementsArray[i])) {
+        elementsInViewport.push(elementsArray[i].attr('id'));
+      }
+    }
+    if (elementsInViewport.length > 0) {
+      jQuery('.overview-menu-mobile .accordion-body .nav-link').each(function() {
+        if (jQuery(this).attr('href') == '#' + elementsInViewport) {
+          var activeSection = jQuery(this).text();
+          jQuery('.overview-menu-mobile .accordion-button').text(activeSection);
+        }
+      });
+    }
+  }
+}
+
+jQuery(window).scroll(function() {
+  handleScroll();
+});
