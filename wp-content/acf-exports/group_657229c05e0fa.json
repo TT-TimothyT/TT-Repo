@@ -19,7 +19,7 @@
             "taxonomy": "activity",
             "add_term": 0,
             "save_terms": 1,
-            "load_terms": 1,
+            "load_terms": 0,
             "return_format": "id",
             "field_type": "radio",
             "allow_null": 0,
@@ -192,7 +192,7 @@
         },
         {
             "key": "field_63330646281ea",
-            "label": "Wow Trip",
+            "label": "Wow Title",
             "name": "wow_title",
             "aria-label": "",
             "type": "text",
@@ -1981,7 +1981,7 @@
                     "maxlength": "",
                     "rows": "",
                     "placeholder": "",
-                    "new_lines": "",
+                    "new_lines": "wpautop",
                     "parent_repeater": "field_63334a21b82bd"
                 }
             ]
@@ -2005,5 +2005,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1706108183
+    "modified": 1706738174
 }
