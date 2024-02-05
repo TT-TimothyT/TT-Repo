@@ -10,8 +10,8 @@ Tags: posts, custom fields, meta, metadata, post types, delete, debug, inspector
 Contributors: jsmoriss
 Requires PHP: 7.2.34
 Requires At Least: 5.8
-Tested Up To: 6.4.2
-Stable Tag: 4.0.0
+Tested Up To: 6.4.3
+Stable Tag: 4.1.0
 
 Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.
 
@@ -21,7 +21,7 @@ The JSM Show Post Metadata plugin displays post (ie. posts, pages, and custom po
 
 There are no plugin settings - simply install and activate the plugin.
 
-= Available Filters =
+= Available Filters for Developers =
 
 Filter the post meta shown in the metabox:
 
@@ -29,7 +29,7 @@ Filter the post meta shown in the metabox:
 
 Array of regular expressions to exclude meta keys:
 
-<pre><code>'jsmspm_metabox_table_skip_keys' ( array $skip_keys, $post_obj )</code></pre>
+<pre><code>'jsmspm_metabox_table_exclude_keys' ( array $exclude_keys, $post_obj )</code></pre>
 
 Capability required to show post meta:
 
@@ -82,6 +82,20 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 
 <h3>Changelog / Release Notes</h3>
 
+**Version 4.1.0 (2024/02/03)**
+
+* **New Features**
+	* None.
+* **Improvements**
+	* None.
+* **Bugfixes**
+	* None.
+* **Developer Notes**
+	* Added a new `SucomUtilWP::doing_dev()` method.
+* **Requires At Least**
+	* PHP v7.2.34.
+	* WordPress v5.8.
+
 **Version 4.0.0 (2024/01/20)**
 
 * **New Features**
@@ -99,6 +113,10 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 	* WordPress v5.8.
 
 == Upgrade Notice ==
+
+= 4.1.0 =
+
+(2024/02/03) Added a new `SucomUtilWP::doing_dev()` method.
 
 = 4.0.0 =
 

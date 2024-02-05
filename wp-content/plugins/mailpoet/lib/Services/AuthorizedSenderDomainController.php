@@ -22,8 +22,8 @@ class AuthorizedSenderDomainController {
   const AUTHORIZED_SENDER_DOMAIN_ERROR_NOT_CREATED = 'Sender domain does not exist';
   const AUTHORIZED_SENDER_DOMAIN_ERROR_ALREADY_VERIFIED = 'Sender domain already verified';
 
-  const LOWER_LIMIT = 500;
-  const UPPER_LIMIT = 1000;
+  const LOWER_LIMIT = 100;
+  const UPPER_LIMIT = 200;
 
   const ENFORCEMENT_START_TIME = '2024-02-01 00:00:00 UTC';
 
@@ -119,12 +119,12 @@ class AuthorizedSenderDomainController {
 
     $response = $this->bridge->createAuthorizedSenderDomain($domain);
 
-    if ($response['status'] === API::RESPONSE_STATUS_ERROR) {
+    if (isset($response['status']) && $response['status'] === API::RESPONSE_STATUS_ERROR) {
       throw new \InvalidArgumentException($response['message']);
     }
 
     // Reset cached value since a new domain was added
-    $this->currentRecords = null;
+    $this->reloadCache();
 
     return $response;
   }
@@ -313,5 +313,26 @@ class AuthorizedSenderDomainController {
 
   public function isAuthorizedDomainRequiredForExistingCampaigns(): bool {
     return $this->restrictionsApply() && $this->isBigSender();
+  }
+
+  public function getContextData(): array {
+    return [
+      'verifiedSenderDomains' => $this->getFullyVerifiedSenderDomains(true),
+      'partiallyVerifiedSenderDomains' => $this->getPartiallyVerifiedSenderDomains(true),
+      'allSenderDomains' => $this->getAllSenderDomains(),
+      'senderRestrictions' => [
+        'lowerLimit' => self::LOWER_LIMIT,
+        'upperLimit' => self::UPPER_LIMIT,
+        'isNewUser' => $this->isNewUser(),
+        'isEnforcementOfNewRestrictionsInEffect' => $this->isEnforcementOfNewRestrictionsInEffect(),
+        'alwaysRewrite' => false,
+      ],
+    ];
+  }
+
+  public function getContextDataForAutomations(): array {
+    $data = $this->getContextData();
+    $data['senderRestrictions']['alwaysRewrite'] = true;
+    return $data;
   }
 }

@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the MailPoet plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: MailPoet 4.42.0\n"
+"Project-Id-Version: MailPoet 4.42.1\n"
 "Report-Msgid-Bugs-To: http://support.mailpoet.com/\n"
 "Last-Translator: MailPoet i18n (https://www.transifex.com/organization/wysija)\n"
 "Language-Team: MailPoet i18n <https://www.transifex.com/organization/wysija>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-23T15:17:47+00:00\n"
+"POT-Creation-Date: 2024-01-30T12:34:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -83,7 +83,7 @@ msgid "No"
 msgstr ""
 
 #: views/emails/congratulatoryMssEmail.html:50
-#: views/homepage.html:72
+#: views/homepage.html:75
 #: views/segments/translations.html:220
 #: views/subscribers/subscribers.html:137
 #: assets/dist/js/commons.js:9
@@ -541,7 +541,7 @@ msgstr ""
 #: views/subscription/manage_subscription.html:9
 #: lib/API/MP/v1/CustomFields.php:27
 #: lib/Automation/Integrations/WordPress/Subjects/UserSubject.php:63
-#: lib/Config/Menu.php:276
+#: lib/Config/Menu.php:275
 #: lib/EmailEditor/Integrations/MailPoet/EmailEditor.php:44
 #: lib/Form/Templates/Templates/InitialForm.php:22
 #: lib/Subscribers/ImportExport/ImportExportFactory.php:60
@@ -1033,7 +1033,7 @@ msgid "An error occurred, make sure you have filled all the required fields."
 msgstr ""
 
 #: views/form/front_end_form.html:74
-#: views/homepage.html:59
+#: views/homepage.html:62
 #: views/layout.html:174
 #: assets/dist/js/admin.js:2
 #: assets/dist/js/automation_editor.js:1
@@ -1143,8 +1143,8 @@ msgid "<strong>Tip:</strong> check out [link]this list[/link] of form plugins th
 msgstr ""
 
 #: views/forms.html:35
-#: lib/Config/Menu.php:291
-#: lib/Config/Menu.php:292
+#: lib/Config/Menu.php:298
+#: lib/Config/Menu.php:299
 msgid "Forms"
 msgstr ""
 
@@ -1325,8 +1325,8 @@ msgstr ""
 #: views/forms.html:65
 #: views/segments/translations.html:2
 #: views/subscribers/subscribers.html:74
-#: lib/Config/Menu.php:400
-#: lib/Config/Menu.php:401
+#: lib/Config/Menu.php:407
+#: lib/Config/Menu.php:408
 #: assets/dist/js/admin.js:2
 msgid "Lists"
 msgstr ""
@@ -1717,124 +1717,128 @@ msgstr ""
 msgid "Hide setup list"
 msgstr ""
 
-#: views/homepage.html:34
-msgid "Start engaging with your customers"
-msgstr ""
-
-#: views/homepage.html:35
-msgid "Set up a welcome campaign"
-msgstr ""
-
-#: views/homepage.html:36
-msgid "Choose from our list of templates or start with a blank editor"
+#: views/homepage.html:29
+msgid "Improve email delivery rates"
 msgstr ""
 
 #: views/homepage.html:37
-msgid "You started a welcome campaign"
+msgid "Start engaging with your customers"
 msgstr ""
 
 #: views/homepage.html:38
-msgid "Add a subscription form"
+msgid "Set up a welcome campaign"
 msgstr ""
 
 #: views/homepage.html:39
-msgid "Collect new contacts from signup forms"
+msgid "Choose from our list of templates or start with a blank editor"
 msgstr ""
 
 #: views/homepage.html:40
-msgid "You added a subscription form"
+msgid "You started a welcome campaign"
 msgstr ""
 
 #: views/homepage.html:41
-msgid "Send your first newsletter"
+msgid "Add a subscription form"
 msgstr ""
 
 #: views/homepage.html:42
-msgid "Drive traffic with newsletters that are easy to build and measure"
+msgid "Collect new contacts from signup forms"
 msgstr ""
 
 #: views/homepage.html:43
-msgid "You sent or scheduled your first newsletter"
+msgid "You added a subscription form"
 msgstr ""
 
 #: views/homepage.html:44
-msgid "Set up an abandoned cart email"
+msgid "Send your first newsletter"
 msgstr ""
 
 #: views/homepage.html:45
-msgid "Create customized email sequences with our new automation editor"
+msgid "Drive traffic with newsletters that are easy to build and measure"
 msgstr ""
 
 #: views/homepage.html:46
-msgid "You set up an abandoned cart campaign"
+msgid "You sent or scheduled your first newsletter"
 msgstr ""
 
 #: views/homepage.html:47
-msgid "Brand your WooCommerce transactional emails"
+msgid "Set up an abandoned cart email"
 msgstr ""
 
 #: views/homepage.html:48
-msgid "Make your store notification emails shine"
+msgid "Create customized email sequences with our new automation editor"
 msgstr ""
 
 #: views/homepage.html:49
+msgid "You set up an abandoned cart campaign"
+msgstr ""
+
+#: views/homepage.html:50
+msgid "Brand your WooCommerce transactional emails"
+msgstr ""
+
+#: views/homepage.html:51
+msgid "Make your store notification emails shine"
+msgstr ""
+
+#: views/homepage.html:52
 msgid "You branded your transactional emails"
 msgstr ""
 
-#: views/homepage.html:53
+#: views/homepage.html:56
 msgid "Accelerate your growth with our Business plan"
 msgstr ""
 
-#: views/homepage.html:54
+#: views/homepage.html:57
 msgid "Detailed analytics"
 msgstr ""
 
-#: views/homepage.html:55
+#: views/homepage.html:58
 msgid "Advanced subscriber segmentation"
 msgstr ""
 
-#: views/homepage.html:56
+#: views/homepage.html:59
 msgid "Email marketing automations"
 msgstr ""
 
-#: views/homepage.html:57
+#: views/homepage.html:60
 msgid "Priority support"
 msgstr ""
 
-#: views/homepage.html:58
+#: views/homepage.html:61
 msgid "Upgrade plan"
 msgstr ""
 
-#: views/homepage.html:61
+#: views/homepage.html:64
 #: views/subscribers/subscribers.html:16
-#: lib/Config/Menu.php:349
-#: lib/Config/Menu.php:350
+#: lib/Config/Menu.php:356
+#: lib/Config/Menu.php:357
 #: assets/dist/js/automation.js:1
 #: assets/dist/js/automation_analytics.js:9
 #: assets/dist/js/commons.js:9
 msgid "Subscribers"
 msgstr ""
 
-#: views/homepage.html:62
+#: views/homepage.html:65
 msgid "Changes in the last 30 days"
 msgstr ""
 
-#: views/homepage.html:63
+#: views/homepage.html:66
 #: assets/dist/js/commons.js:9
 msgid "new"
 msgstr ""
 
-#: views/homepage.html:66
+#: views/homepage.html:69
 #: lib/Subscribers/ImportExport/PersonalDataExporters/SegmentsExporter.php:56
 msgid "List name"
 msgstr ""
 
-#: views/homepage.html:67
+#: views/homepage.html:70
 #: views/segments/translations.html:47
 msgid "List score"
 msgstr ""
 
-#: views/homepage.html:68
+#: views/homepage.html:71
 #: views/segments/translations.html:216
 #: views/subscribers/subscribers.html:133
 #: lib/Automation/Integrations/MailPoet/Fields/SubscriberFieldsFactory.php:152
@@ -1845,19 +1849,19 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: views/homepage.html:69
+#: views/homepage.html:72
 #: views/segments/translations.html:217
 #: views/subscribers/subscribers.html:134
 msgid "Not enough data."
 msgstr ""
 
-#: views/homepage.html:70
+#: views/homepage.html:73
 #: views/segments/translations.html:218
 #: views/subscribers/subscribers.html:135
 msgid "Fewer than 3 emails sent"
 msgstr ""
 
-#: views/homepage.html:71
+#: views/homepage.html:74
 #: views/segments/translations.html:219
 #: views/subscribers/subscribers.html:136
 #: lib/Twig/Functions.php:331
@@ -1866,12 +1870,12 @@ msgstr ""
 msgid "Excellent"
 msgstr ""
 
-#: views/homepage.html:73
+#: views/homepage.html:76
 #: views/segments/translations.html:221
 msgid "50% or more"
 msgstr ""
 
-#: views/homepage.html:74
+#: views/homepage.html:77
 #: views/segments/translations.html:222
 #: views/subscribers/subscribers.html:139
 #: lib/Twig/Functions.php:333
@@ -1880,103 +1884,103 @@ msgstr ""
 msgid "Good"
 msgstr ""
 
-#: views/homepage.html:75
+#: views/homepage.html:78
 #: views/segments/translations.html:223
 #: views/subscribers/subscribers.html:140
 #: assets/dist/js/commons.js:9
 msgid "Good stuff."
 msgstr ""
 
-#: views/homepage.html:76
+#: views/homepage.html:79
 #: views/segments/translations.html:224
 msgid "between 20 and 50%"
 msgstr ""
 
-#: views/homepage.html:77
+#: views/homepage.html:80
 #: views/segments/translations.html:225
 #: views/subscribers/subscribers.html:142
 msgid "Low"
 msgstr ""
 
-#: views/homepage.html:78
+#: views/homepage.html:81
 #: views/segments/translations.html:226
 #: views/subscribers/subscribers.html:143
 #: assets/dist/js/commons.js:9
 msgid "Something to improve."
 msgstr ""
 
-#: views/homepage.html:79
+#: views/homepage.html:82
 #: views/segments/translations.html:227
 msgid "20% or fewer"
 msgstr ""
 
-#: views/homepage.html:80
+#: views/homepage.html:83
 #: views/segments/translations.html:228
 #: views/subscribers/subscribers.html:145
 msgid "Average percent of emails subscribers read in the last year"
 msgstr ""
 
-#: views/homepage.html:81
+#: views/homepage.html:84
 msgid "Changes to your audience will appear here."
 msgstr ""
 
-#: views/homepage.html:82
+#: views/homepage.html:85
 msgid "Start by setting up a subscription form."
 msgstr ""
 
-#: views/homepage.html:83
+#: views/homepage.html:86
 msgid "Your subscriber count hasn’t changed in the last 30 days. Launch a new campaign to grow your audience."
 msgstr ""
 
-#: views/homepage.html:87
+#: views/homepage.html:90
 msgid "Learn more about email marketing"
 msgstr ""
 
-#: views/homepage.html:88
+#: views/homepage.html:91
 msgid "Create an Email: Types of Campaigns"
 msgstr ""
 
-#: views/homepage.html:89
+#: views/homepage.html:92
 msgid "MailPoet allows you to create five different types of campaigns: Newsletter, Welcome Email, Latest Post Notifications, Re-engagement Emails, and WooCommerce behavior-based emails. Each one has a different purpose and you can read more about it in this article."
 msgstr ""
 
-#: views/homepage.html:90
+#: views/homepage.html:93
 msgid "Create a Subscription Form"
 msgstr ""
 
-#: views/homepage.html:91
+#: views/homepage.html:94
 msgid "You can create sign-up forms with the MailPoet form editor, to gather new subscribers for your email campaign."
 msgstr ""
 
-#: views/homepage.html:92
+#: views/homepage.html:95
 msgid "The beginner’s guide to segmentation"
 msgstr ""
 
-#: views/homepage.html:93
+#: views/homepage.html:96
 msgid "Do you still have just one big email list for all your subscribers? If so, you’re probably not getting the best performance. The good news is that email segmentation is a relatively straightforward way to enhance what you’re already doing."
 msgstr ""
 
-#: views/homepage.html:94
+#: views/homepage.html:97
 msgid "Re-Engagement Emails: Examples and Best Practices to Win Back Subscribers"
 msgstr ""
 
-#: views/homepage.html:95
+#: views/homepage.html:98
 msgid "Beyond people unsubscribing, you might also have people who stop engaging with your emails. By sending re-engagement emails, you have a chance to win back those unengaged subscribers and get them to start opening and clicking your emails again."
 msgstr ""
 
-#: views/homepage.html:96
+#: views/homepage.html:99
 msgid "Why You Need a Newsletter Marketing Strategy + How to Make One"
 msgstr ""
 
-#: views/homepage.html:97
+#: views/homepage.html:100
 msgid "Your email list is only as valuable as the number of engaged subscribers on it. This makes it essential to create an effective long-term newsletter marketing strategy."
 msgstr ""
 
-#: views/homepage.html:98
+#: views/homepage.html:101
 msgid "How to promote your sales with email marketing and segmentation"
 msgstr ""
 
-#: views/homepage.html:99
+#: views/homepage.html:102
 msgid "Planning a sale? Discounts are great, but when you’re competing against millions of other online stores, \"build it and they will come\" isn’t a winning strategy. Instead, you can ensure the success of your sale by learning how to use email marketing to promote it."
 msgstr ""
 
@@ -2026,76 +2030,86 @@ msgid "Subscription form created!"
 msgstr ""
 
 #: views/homepage.html:27
+msgctxt "Link in a task list"
+msgid "Authenticate your sender domain"
+msgstr ""
+
+#: views/homepage.html:28
+msgctxt "Link in a task list"
+msgid "Sender domain authenticated!"
+msgstr ""
+
+#: views/homepage.html:30
 msgctxt "Part of string \"You’re all set! Dismiss setup list\""
 msgid "You’re all set!"
 msgstr ""
 
-#: views/homepage.html:28
+#: views/homepage.html:31
 msgctxt "Part of string \"You’re all set! Dismiss setup list\""
 msgid "Dismiss setup list"
 msgstr ""
 
-#: views/homepage.html:29
+#: views/homepage.html:32
 msgctxt "Part of string \"No subscribers yet? Set up a subscription form\""
 msgid "No subscribers yet?"
 msgstr ""
 
-#: views/homepage.html:30
+#: views/homepage.html:33
 msgctxt "Part of string \"No subscribers yet? Set up a subscription form\""
 msgid "Set up a subscription form"
 msgstr ""
 
-#: views/homepage.html:31
+#: views/homepage.html:34
 msgctxt "Part of string \"Have existing subscribers? Import\""
 msgid "Have existing subscribers?"
 msgstr ""
 
-#: views/homepage.html:32
+#: views/homepage.html:35
 msgctxt "Part of string \"Have existing subscribers? Import\""
 msgid "Import"
 msgstr ""
 
-#: views/homepage.html:50
+#: views/homepage.html:53
 msgctxt "Part of string \"All done! Dismiss tasks\""
 msgid "All done!"
 msgstr ""
 
-#: views/homepage.html:51
+#: views/homepage.html:54
 msgctxt "Part of string \"All done! Dismiss tasks\""
 msgid "Dismiss tasks"
 msgstr ""
 
-#: views/homepage.html:64
+#: views/homepage.html:67
 msgctxt "Label for a number of subscribers who unsubscribed from email delivery"
 msgid "unsubscribed"
 msgstr ""
 
-#: views/homepage.html:65
+#: views/homepage.html:68
 msgctxt "Label for a number of subscribers who subscribed to email delivery"
 msgid "subscribed"
 msgstr ""
 
-#: views/homepage.html:84
+#: views/homepage.html:87
 msgctxt "Cta link title"
 msgid "Create a subscription form"
 msgstr ""
 
-#: views/homepage.html:85
+#: views/homepage.html:88
 msgctxt "Cta link title"
 msgid "Explore campaigns"
 msgstr ""
 
-#: views/homepage.html:100
+#: views/homepage.html:103
 msgctxt "Page 1 of 3"
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: views/homepage.html:101
+#: views/homepage.html:104
 msgctxt "Title of a link to a previous page of posts"
 msgid "Next page with posts"
 msgstr ""
 
-#: views/homepage.html:102
+#: views/homepage.html:105
 msgctxt "Title of a link to a next page of posts"
 msgid "Previous page with posts"
 msgstr ""
@@ -2367,7 +2381,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: views/logs.html:18
-#: lib/Config/Menu.php:515
+#: lib/Config/Menu.php:522
 msgid "Logs"
 msgstr ""
 
@@ -2510,7 +2524,7 @@ msgid "MailPoet account connected"
 msgstr ""
 
 #: views/newsletter/editor.html:340
-#: lib/Config/Menu.php:264
+#: lib/Config/Menu.php:263
 msgid "Newsletter Editor"
 msgstr ""
 
@@ -4363,8 +4377,8 @@ msgstr ""
 
 #: views/segments/translations.html:74
 #: lib/Automation/Integrations/MailPoet/Fields/SubscriberFieldsFactory.php:233
-#: lib/Config/Menu.php:425
-#: lib/Config/Menu.php:426
+#: lib/Config/Menu.php:432
+#: lib/Config/Menu.php:433
 msgid "Segments"
 msgstr ""
 
@@ -4663,8 +4677,8 @@ msgid "1 segment was permanently deleted."
 msgstr ""
 
 #: views/segments/translations.html:180
-#: lib/Config/Menu.php:526
-#: lib/Config/Menu.php:528
+#: lib/Config/Menu.php:533
+#: lib/Config/Menu.php:535
 #: assets/dist/js/admin.js:2
 #: assets/dist/js/automation.js:1
 #: assets/dist/js/automation_analytics.js:9
@@ -4790,8 +4804,8 @@ msgstr ""
 
 #: views/segments/translations.html:233
 #: views/subscribers/subscribers.html:123
-#: lib/Config/Menu.php:478
-#: lib/Config/Menu.php:479
+#: lib/Config/Menu.php:485
+#: lib/Config/Menu.php:486
 #: assets/dist/js/admin.js:2
 #: assets/dist/js/commons.js:9
 msgid "Upgrade"
@@ -4952,8 +4966,8 @@ msgstr ""
 
 #: views/settings_translations.html:2
 #: lib/Config/Hooks.php:514
-#: lib/Config/Menu.php:450
-#: lib/Config/Menu.php:451
+#: lib/Config/Menu.php:457
+#: lib/Config/Menu.php:458
 #: assets/dist/js/admin.js:2
 #: assets/dist/js/automation_editor.js:1
 #: assets/dist/js/commons.js:9
@@ -5866,8 +5880,8 @@ msgstr ""
 #: views/subscribers/importExport/export.html:6
 #: views/subscribers/importExport/export.html:79
 #: views/subscribers/subscribers.html:115
-#: lib/Config/Menu.php:387
-#: lib/Config/Menu.php:388
+#: lib/Config/Menu.php:394
+#: lib/Config/Menu.php:395
 msgid "Export"
 msgstr ""
 
@@ -5932,8 +5946,8 @@ msgstr ""
 #: views/subscribers/importExport/import.html:6
 #: views/subscribers/importExport/import.html:88
 #: views/subscribers/subscribers.html:114
-#: lib/Config/Menu.php:374
-#: lib/Config/Menu.php:375
+#: lib/Config/Menu.php:381
+#: lib/Config/Menu.php:382
 msgid "Import"
 msgstr ""
 
@@ -6802,9 +6816,9 @@ msgstr ""
 #. Author of the plugin
 #: views/woo_system_info.html:5
 #: lib/Config/Capabilities.php:80
+#: lib/Config/Menu.php:207
 #: lib/Config/Menu.php:208
-#: lib/Config/Menu.php:209
-#: lib/Config/Menu.php:681
+#: lib/Config/Menu.php:688
 #: lib/Config/PrivacyPolicy.php:12
 #: lib/WooCommerce/MultichannelMarketing/MPMarketingChannel.php:49
 #: lib/WooCommerce/WooSystemInfoController.php:41
@@ -8730,29 +8744,29 @@ msgstr ""
 msgid "Unable to connect to the database (the database is unable to open a file or folder), the connection is likely not configured correctly. Please read our [link] Knowledge Base article [/link] for steps how to resolve it."
 msgstr ""
 
+#: lib/Config/Menu.php:194
 #: lib/Config/Menu.php:195
-#: lib/Config/Menu.php:196
 msgid "Welcome Wizard"
 msgstr ""
 
+#: lib/Config/Menu.php:224
 #: lib/Config/Menu.php:225
-#: lib/Config/Menu.php:226
 msgid "Home"
 msgstr ""
 
+#: lib/Config/Menu.php:237
 #: lib/Config/Menu.php:238
-#: lib/Config/Menu.php:239
 #: lib/EmailEditor/Integrations/MailPoet/EmailEditor.php:43
 #: assets/dist/js/automation_analytics.js:9
 msgid "Emails"
 msgstr ""
 
-#: lib/Config/Menu.php:251
+#: lib/Config/Menu.php:250
 msgctxt "newsletters per page (screen options)"
 msgid "Number of newsletters per page"
 msgstr ""
 
-#: lib/Config/Menu.php:263
+#: lib/Config/Menu.php:262
 #: lib/Newsletter/Shortcodes/ShortcodesHelper.php:42
 #: assets/dist/js/admin.js:2
 #: assets/dist/js/commons.js:9
@@ -8760,66 +8774,66 @@ msgstr ""
 msgid "Newsletter"
 msgstr ""
 
-#: lib/Config/Menu.php:277
+#: lib/Config/Menu.php:276
 msgid "Email Editor"
 msgstr ""
 
-#: lib/Config/Menu.php:304
+#: lib/Config/Menu.php:311
 msgctxt "forms per page (screen options)"
 msgid "Number of forms per page"
 msgstr ""
 
-#: lib/Config/Menu.php:316
-#: lib/Config/Menu.php:317
+#: lib/Config/Menu.php:323
+#: lib/Config/Menu.php:324
 msgid "Form Editor"
 msgstr ""
 
-#: lib/Config/Menu.php:336
-#: lib/Config/Menu.php:337
+#: lib/Config/Menu.php:343
+#: lib/Config/Menu.php:344
 msgid "Select Form Template"
 msgstr ""
 
-#: lib/Config/Menu.php:362
+#: lib/Config/Menu.php:369
 msgctxt "subscribers per page (screen options)"
 msgid "Number of subscribers per page"
 msgstr ""
 
-#: lib/Config/Menu.php:413
+#: lib/Config/Menu.php:420
 msgctxt "lists per page (screen options)"
 msgid "Number of lists per page"
 msgstr ""
 
-#: lib/Config/Menu.php:438
+#: lib/Config/Menu.php:445
 msgctxt "segments per page (screen options)"
 msgid "Number of segments per page"
 msgstr ""
 
-#: lib/Config/Menu.php:463
-#: lib/Config/Menu.php:464
+#: lib/Config/Menu.php:470
+#: lib/Config/Menu.php:471
 msgid "Help"
 msgstr ""
 
-#: lib/Config/Menu.php:492
-#: lib/Config/Menu.php:493
+#: lib/Config/Menu.php:499
+#: lib/Config/Menu.php:500
 msgid "WooCommerce Setup"
 msgstr ""
 
-#: lib/Config/Menu.php:505
+#: lib/Config/Menu.php:512
 msgid "Experimental Features"
 msgstr ""
 
-#: lib/Config/Menu.php:537
-#: lib/Config/Menu.php:538
+#: lib/Config/Menu.php:544
+#: lib/Config/Menu.php:545
 msgid "Automation Editor"
 msgstr ""
 
-#: lib/Config/Menu.php:547
-#: lib/Config/Menu.php:548
+#: lib/Config/Menu.php:554
+#: lib/Config/Menu.php:555
 msgid "Automation Analytics"
 msgstr ""
 
-#: lib/Config/Menu.php:557
-#: lib/Config/Menu.php:558
+#: lib/Config/Menu.php:564
+#: lib/Config/Menu.php:565
 msgid "Automation Templates"
 msgstr ""
 
