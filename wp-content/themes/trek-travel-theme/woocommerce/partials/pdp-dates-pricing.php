@@ -38,13 +38,16 @@ function getWebDispalyStatus($status){
     }
     return $status;
 }
+
 $requestTripFormArr = ["Limited Availability" => "book-this-trip", "Join Waitlist" => "book-this-trip"];
+
 $res_status = [
     "Limited Availability",
     "Group Hold",
     "Sales Hold",
     "Hold"
 ];
+
 $wait_status = ["SOLD OUT"];
 
 /**
@@ -195,7 +198,6 @@ if( $get_child_products ){
                                 if( in_array($trip_status, $wait_status) ){
                                     $formUrl = "waitlist";
                                 }
-
                               
                                 
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
