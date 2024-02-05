@@ -53,7 +53,7 @@ $wait_status = ["SOLD OUT"];
 /**
  * Function that sorts two dates, ascending.
  *
- * @param array $a Array with objects, we need ['start_date'] in this format mm/dd/yyyy.
+ * @param array $a Array with objects, we need ['start_date'] in this format dd/mm/yy.
  * @param array $b Array with objects.
  * @param string $d String with the delimeter.
  */
@@ -64,10 +64,10 @@ function date_sort( $a, $b, $d = "/" ) {
         return 0;
     } else {
 
-        //Convert into dates and compare.
-        list( $am, $ad, $ay ) = explode( $d, $a['start_date'] );
+        // Convert into dates and compare.
+        list( $ad, $am, $ay ) = explode( $d, $a['start_date'] );
 
-        list( $bm, $bd, $by ) = explode( $d, $b['start_date'] );
+        list( $bd, $bm, $by ) = explode( $d, $b['start_date'] );
 
         if ( mktime( 0, 0, 0, $am, $ad, $ay ) < mktime( 0, 0, 0, $bm, $bd, $by ) ) {
 
@@ -79,16 +79,50 @@ function date_sort( $a, $b, $d = "/" ) {
     }
 }
 
-$contentFlag = false;
-if( $get_child_products ){
-    $iter = 1;
-    foreach( $get_child_products as $year=>$get_child_product ){
-        ksort($get_child_product,1);
-        $current_year = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
-        // If the year is in the past, skip it.
-        if( (int) $year < (int) $current_year ) {
-            continue;
+$available_child_products = array();
+
+// Sort the trips and store only available trips into a new array.
+foreach( $get_child_products as $year => $get_child_product ) {
+
+    // Sort trips by year ascending.
+    ksort( $get_child_product, 1 );
+
+    foreach( $get_child_product as $month => $get_child_product_data) {
+
+        // Sort trips by date ascending.
+        usort( $get_child_product_data, 'date_sort' );
+
+        foreach( $get_child_product_data as $index => $child_product_data ) {
+            $today_date = new DateTime( 'now' );
+
+            // 'start_date' => string '11/12/23' dd/mm/yy.
+            $trip_start_date = DateTime::createFromFormat('d/m/y', $child_product_data['start_date']);
+
+            if( $trip_start_date && $trip_start_date > $today_date ) {
+
+                if( ! isset( $available_child_products[ $year ] ) ) {
+                    // Make a new array for every year.
+                    $available_child_products[ $year ] = array();
+                }
+
+                if( ! isset( $available_child_products[ $year ][ $month ] ) ) {
+                    // Make a new array for every month.
+                    $available_child_products[ $year ][ $month ] = array();
+                }
+
+                // Store the available trip into the new array.
+                array_push( $available_child_products[ $year ][ $month ], $child_product_data );
+            }
         }
+    }
+}
+
+$contentFlag = false;
+
+if( $available_child_products ) {
+    $iter = 1;
+    foreach( $available_child_products as $year=>$get_child_product ){
+
         //nav year tabs & button HTML creation
         $nav_year_tab .= '<button class="nav-link '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-year'.$year.'" type="button" role="tab" aria-controls="nav-year'.$year.'" aria-selected="true">'.$year.' Tours</button>';
         //nav year tab content HTML creation
@@ -98,13 +132,6 @@ if( $get_child_products ){
         if( $get_child_product ){
             $m_iter = 1;
             foreach($get_child_product as $month=>$get_child_product_data){
-                usort( $get_child_product_data, "date_sort" );
-                $currentMonth = date('m', strtotime(date('Y-m-d H:i:s')));
-
-                //Sorry, not using camel case for php vars :)
-                if ( (int) $month < (int) $currentMonth && (int) $year <= (int) $current_year ) {
-                    continue;
-                }
 
                 $my = $month.$year;
                 $monthInfo = trek_get_month_info($month);
@@ -113,22 +140,7 @@ if( $get_child_products ){
                 $month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'" role="tabpanel" aria-labelledby="nav-'.$my.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$my.'">';
                 if($get_child_product_data){
                     foreach($get_child_product_data as $index => $child_product_data){
-                        $today_date = new DateTime('now');
 
-                        // 'start_date' => string '11/12/23' d/m/y
-                        $trip_start_date = DateTime::createFromFormat('d/m/y', $child_product_data['start_date']);
-
-                        // If the date of the trip is today or in the past, skip the trip;
-                        if( $trip_start_date && $trip_start_date <= $today_date ) {
-                            $month_nav_desktop_btn_output = $month_nav_mobile_btn_output = $month_content_output =  '';
-                            continue;
-                        }
-                        // If there has more than one trip per month, and first one is marked as hide, check whether has content for navigation, for other dates in this month.
-                        if($index > 0 && empty($month_nav_desktop_btn_output) && empty($month_nav_mobile_btn_output) && empty($month_content_output)){
-                            $month_nav_desktop_btn_output .= '<button class="nav-link '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'-tab" data-bs-toggle="tab" data-bs-target="#nav-'.$my.'" type="button" role="tab" aria-controls="nav-'.$my.'" aria-selected="true">'.$monthInfo[$month][0].'</button>';
-                            $month_nav_mobile_btn_output .= '<option value="nav-'.$my.'-tab">'.$monthInfo[$month][0].'</option>';
-                            $month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'" role="tabpanel" aria-labelledby="nav-'.$my.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$my.'">';
-                        }
                         $contentFlag = true;
                         $accordina_id = $my.$child_product_data['product_id'];
                         $date_range = $child_product_data['start_date'].' - '.$child_product_data['end_date'];
@@ -304,7 +316,7 @@ if( $get_child_products ){
             <?php if ($contentFlag) { echo $nav_year_tab_content; } ?>
             <?php if ( $is_tabs_visible ) { ?>
             <!-- private tour tab content -->
-            <div class="tab-pane fade <?php echo $contentFlag ? '' : 'active'; ?>" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabindex="0">
+            <div class="tab-pane fade <?php echo $contentFlag ? '' : 'active show'; ?>" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabindex="0">
                 <h5 class="fw-semibold">Looking for a Private Tour with us?</h5>
                 <p class="fw-normal fs-md lh-md">Private bike tours can range in cost based on your group size. See below for specific pricing based on your group size.</p>
                 

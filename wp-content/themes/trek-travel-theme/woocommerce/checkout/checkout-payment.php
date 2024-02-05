@@ -1,24 +1,27 @@
 <?php
 global $woocommerce;
 //demo content for looping till dynamic content is not loaded
-$cards = ['Visa ending in 2559', 'Visa ending in 2456'];
-$guest = ['Jason Bauer', 'Tim Lasso', 'Steve Bauer', 'Keith Lasso'];
-$trek_user_checkout_data =  get_trek_user_checkout_data();
-$tt_posted = $trek_user_checkout_data['posted'];
+$cards                        = ['Visa ending in 2559', 'Visa ending in 2456'];
+$guest                        = ['Jason Bauer', 'Tim Lasso', 'Steve Bauer', 'Keith Lasso'];
+$trek_user_checkout_data      = get_trek_user_checkout_data();
+$tt_posted                    = $trek_user_checkout_data['posted'];
 $trek_user_checkout_formatted = $trek_user_checkout_data['formatted'];
-$primary_address_1 = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
-$primary_address_2 = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
-$primary_country = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
-$guest_insurance = isset($tt_posted['trek_guest_insurance']) ? $tt_posted['trek_guest_insurance'] : array();
-$shipping_fname = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
-$shipping_lname = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
-$shipping_name = $shipping_fname.' '.$shipping_lname; 
-$shipping_postcode = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
-$shipping_state = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
-$shipping_city = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
-$iter = 0;
-$cols = 2;
-$guest_insurance_html = '';
+$primary_address_1            = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
+$primary_address_2            = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
+$primary_country              = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
+$guest_insurance              = isset($tt_posted['trek_guest_insurance']) ? $tt_posted['trek_guest_insurance'] : array();
+$shipping_fname               = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
+$shipping_lname               = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
+$shipping_name                = $shipping_fname.' '.$shipping_lname; 
+$shipping_postcode            = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
+$shipping_state               = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
+$shipping_city                = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
+$iter                         = 0;
+$cols                         = 2;
+$guest_insurance_html         = '';
+$checkout_waiver_heading      = get_field( 'checkout_waiver_heading', 'option' );
+$checkout_waiver_copy         = get_field( 'checkout_waiver_copy', 'option' );
+
 if (isset($guest_insurance) && !empty($guest_insurance)) {
     $fields_size = sizeof(isset($tt_posted['trek_guest_insurance']['guests']) ? $tt_posted['trek_guest_insurance']['guests'] : array()) + 1;
     foreach ($guest_insurance as $guest_insurance_k => $guest_insurance_val) {
@@ -291,15 +294,17 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
     <div class="checkout-payment__release">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4">Release of Liability and Assumption of All Risks</h5>
         <p class="mb-0 fs-sm lh-sm checkout-payment__gray">Please scroll through release form below and check "I Agree" once finished.</p>
-        <div class="checkout-payment__iframe rounded-1">
-            <h5 class="fs-lg lh-lg fw-medium mb-2">Waiver iFrame Headline</h5>
-            <p class="fs-sm lh-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ultrices in amet posuere faucibus ultrices pellentesque. Tristique magna lectus dui nulla sed sit elementum. Egestas sapien vitae nunc senectus ac egestas ipsum non elementum. Ullamcorper turpis ultrices orci sit quis malesuada nunc, aliquam et. Eu et sagittis eget nulla nulla sapien justo. Scelerisque tellus mollis ridiculus porta suscipit sed mauris.<br>
-
-                Lacus turpis nunc, blandit odio. Auctor vitae maecenas rhoncus mattis nulla vel amet aenean. Ac augue convallis ullamcorper id blandit. Pharetra pellentesque quam nisl pretium arcu lectus id proin imperdiet.
-                Donec pharetra, in morbi rhoncus nullam sed volutpat mi.<br>
-
-                Sit fringilla in eu, dictum sit ut. Adipiscing interdum enim dolor adipiscing morbi aliquam. Metus, est nisi, fermentum scelerisque praesent quisque gravida mauris vestibulum. Morbi nisl viverra nunc nulla odio eget. Sed pulvinar fermentum sed aliquet aliquet. Cras laoreet amet, lorem placerat purus.</p>
-        </div>
+        <?php if ( ! empty( $checkout_waiver_copy ) || ! empty( $checkout_waiver_heading ) ) : ?>
+            <div class="checkout-payment__iframe rounded-1">
+                <?php if ( ! empty( $checkout_waiver_heading ) ) : ?>
+                    <h5 class="fs-lg lh-lg fw-medium mb-2"><?php echo wp_kses_post( $checkout_waiver_heading ); ?></h5>
+                <?php endif; ?>
+                <?php if ( ! empty( $checkout_waiver_copy ) ) : ?>
+                    <?php $checkout_waiver_copy = str_replace( array( '<p>', '</p>' ), '', $checkout_waiver_copy ); ?>
+                    <p class="fs-sm lh-sm"><?php echo wp_kses_post( $checkout_waiver_copy ); ?></p>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
         <div class="d-flex checkout-payment__billing-checkboxtwo">
             <input class="tt_waiver_check" type="checkbox" name="tt_waiver" value="1" <?php if (isset($tt_posted['tt_waiver']) && $tt_posted['tt_waiver'] == 1) echo 'checked'; ?> required="required">
             <label>By checking “I Agree” I acknowledge that I have read, understand and agree to this Release Form and Cancellation Policy.</label>
