@@ -2952,25 +2952,38 @@ if (!function_exists('tt_get_local_bike_detail')) {
         return $results;
     }
 }
-function tt_get_parent_trip_id_by_child_sku($child_sku=""){
-    $parent_product_id = '';
+function tt_get_parent_trip_id_by_child_sku( $child_sku = '', $is_nested_dates_trip = false ) {
+    $parent_product_id  = '';
     $itinerary_code_arr = [];
-    if( $child_sku && wc_get_product_id_by_sku($child_sku) ){
-        $child_product_id = wc_get_product_id_by_sku($child_sku);
-        if( $child_product_id ){
-            $itineraryCode = get_post_meta($child_product_id, TT_WC_META_PREFIX.'itineraryCode', true);
-            if($itineraryCode && $child_sku ){
-                $itinerary_code_arr = explode($itineraryCode, $child_sku);
+
+    if( $child_sku && wc_get_product_id_by_sku( $child_sku ) ) {
+
+        $child_product_id = wc_get_product_id_by_sku( $child_sku );
+
+        if( $child_product_id ) {
+
+            $itinerary_code = get_post_meta( $child_product_id, TT_WC_META_PREFIX . 'itineraryCode', true );
+
+            if( $itinerary_code && $child_sku ) {
+                $itinerary_code_arr = explode( $itinerary_code, $child_sku );
             }
-            if($itinerary_code_arr && isset($itinerary_code_arr[0]) && $itineraryCode ){
-                $parent_product_sku = $itinerary_code_arr[0] . $itineraryCode;
-                $parent_product_id = wc_get_product_id_by_sku($parent_product_sku);
-                if( !$parent_product_id){
-                    $parent_product_id = wc_get_product_id_by_sku($itineraryCode);
+
+            if( $itinerary_code_arr && isset( $itinerary_code_arr[0] ) && $itinerary_code ) {
+                $parent_product_sku = $itinerary_code_arr[0] . $itinerary_code;
+                $parent_product_id  = wc_get_product_id_by_sku( $parent_product_sku );
+
+                if( ! $parent_product_id ) {
+
+                    if( $is_nested_dates_trip ) {
+                        $itinerary_code .= '-4';
+                    }
+
+                    $parent_product_id = wc_get_product_id_by_sku( $itinerary_code );
                 }
             }
         }
     }
+
     return $parent_product_id;
 }
 function tt_get_trip_pid_sku_from_cart($order_id = null)
