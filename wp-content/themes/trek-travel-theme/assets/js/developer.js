@@ -2618,13 +2618,15 @@ if (jQuery('input[name="pay_amount"]').length > 0) {
     });
   });
 }
-jQuery('body').on('click', function () {
+jQuery('body').on('click', function (e) {
   var selector = jQuery('nav.mobile-nav div#navbar button.mega-toggle-animated')
   var isExpanded = jQuery(selector).attr("aria-expanded")
   if (isExpanded == "true") {
     // jQuery(".mobile-menu-toggle").addClass("position-absolute w-100 p-0")
     jQuery("nav.mobile-nav div#navbar").addClass("w-100");
-    jQuery('html, body').css('overflow', 'hidden');
+    if(!jQuery(e.target).hasClass('mega-toggle-animated-inner') && !jQuery(e.target).hasClass('mega-toggle-animated-box') && !jQuery(e.target).hasClass('mega-menu-link')) {
+      jQuery('html, body').css('overflow', 'hidden');
+    }
     if (jQuery("header.header-main").hasClass("add-shadow")) {
       var screenHeight = jQuery(window).outerHeight() - 90
     } else {
@@ -2635,7 +2637,7 @@ jQuery('body').on('click', function () {
   }
   else{
     if(jQuery(window).width() < 768 && !jQuery('body').hasClass('single-product')) {
-      jQuery('html, body').css('overflow', 'scroll');
+      jQuery('html, body').css('overflow', 'unset');
       // jQuery(".mobile-menu-toggle").removeClass("position-absolute w-100 p-0")
       jQuery("nav.mobile-nav div#navbar").removeClass("w-100")
       resetMobileMenu()
@@ -3487,12 +3489,14 @@ jQuery( document ).ready(function() {
     jQuery('.search-icon').show();
     jQuery('.phone-icon').show();
     jQuery('.calendar-icon').show();
+    jQuery('html, body').css('overflow', 'unset');
   } else {
     jQuery('.mobile-menu-toggle').css('position','static');
     jQuery('.mobile-logo .navbar-brand').css('margin-left',0);
     jQuery('.search-icon').hide();
     jQuery('.phone-icon').hide();
     jQuery('.calendar-icon').hide();
+    jQuery('html, body').css('overflow', 'unset');
   }
  })
 	jQuery('.mobile-menu-toggle ul#mega-menu-main-menu > .mega-hide-on-desktop:first').addClass('first-gray-elem');

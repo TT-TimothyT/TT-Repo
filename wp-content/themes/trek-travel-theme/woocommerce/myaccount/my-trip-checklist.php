@@ -111,7 +111,7 @@ $public_view_order_url = '';
 if ($guest_is_primary == 1) {
 	$public_view_order_url = esc_url($order->get_view_order_url());
 }
-$itinerary_link = tt_get_itinerary_link($trip_name);
+$itinerary_link = '';
 $tt_rooms_output = tt_rooms_output($trek_checkoutData, true);
 $ns_booking_info = tt_get_ns_booking_details_by_order($order_id);
 $waiver_link = $ns_booking_info['waiver_link'];
@@ -142,7 +142,28 @@ $trip_information = tt_get_trip_pid_sku_from_cart($order_id);
 $product_image_url = $trip_information['parent_trip_image'];
 $tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
 $pa_city = "";
-$parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
+
+$is_nested_dates_trip = false;
+$nested_dates_period = explode( '-', $trip_sku )[1];
+if( $nested_dates_period ) {
+	$is_nested_dates_trip = true;
+}
+$parent_product_id = tt_get_parent_trip_id_by_child_sku( $trip_sku, $is_nested_dates_trip );
+
+// Look for itineraries realation field on the product.
+$itineraries_info = get_field( 'my_trip_details_itineraries', $parent_product_id );
+
+if ( $itineraries_info ) {
+	$suffix = $is_nested_dates_trip ? '_' . strtolower( $nested_dates_period ) : '';
+	$itinerary_posts = $itineraries_info[ 'my_trip_itinerary' . $suffix ];
+	if( ! empty( $itinerary_posts ) && is_array( $itinerary_posts ) ) {
+		$itinerary_post = $itinerary_posts[0];
+
+		if( $itinerary_post ) {
+			$itinerary_link = get_permalink( $itinerary_post );
+		}
+	}
+}
 if( $parent_product_id ){
 	$p_product = wc_get_product($parent_product_id);
 	if($p_product){

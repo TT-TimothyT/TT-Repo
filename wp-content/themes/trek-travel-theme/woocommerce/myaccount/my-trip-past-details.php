@@ -62,7 +62,7 @@ if ($order_items) {
 	}
 }
 $waiver_status = tt_get_waiver_status($order_id);
-$itinerary_link = tt_get_itinerary_link($trip_name);
+$itinerary_link = '';
 $primary_address_1 = $trek_checkoutData['shipping_address_1'];
 $primary_address_2 = $trek_checkoutData['shipping_address_2'];
 $primary_country = $trek_checkoutData['shipping_country'];
@@ -133,7 +133,28 @@ if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['
 	$wheel_upgrade = 'Yes';
 }
 $pa_city = "";
-$parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
+
+$is_nested_dates_trip = false;
+$nested_dates_period = explode( '-', $trip_sku )[1];
+if( $nested_dates_period ) {
+	$is_nested_dates_trip = true;
+}
+$parent_product_id = tt_get_parent_trip_id_by_child_sku( $trip_sku, $is_nested_dates_trip );
+
+// Look for itineraries realation field on the product.
+$itineraries_info = get_field( 'my_trip_details_itineraries', $parent_product_id );
+
+if ( $itineraries_info ) {
+	$suffix = $is_nested_dates_trip ? '_' . strtolower( $nested_dates_period ) : '';
+	$itinerary_posts = $itineraries_info[ 'my_trip_itinerary' . $suffix ];
+	if( ! empty( $itinerary_posts ) && is_array( $itinerary_posts ) ) {
+		$itinerary_post = $itinerary_posts[0];
+
+		if( $itinerary_post ) {
+			$itinerary_link = get_permalink( $itinerary_post );
+		}
+	}
+}
 if( $parent_product_id ){
 	$p_product = wc_get_product($parent_product_id);
 	if($p_product){

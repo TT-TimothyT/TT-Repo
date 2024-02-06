@@ -150,6 +150,21 @@ function tt_admin_menu_page_cb()
         tt_add_error_log('[End]', ['type'=> 'User Checklist Sync'], ['dateTime' => date('Y-m-d H:i:s')]);
 
     }
+    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'dx-rapair-bookings-table' ) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'guest_bookings';
+
+        $row = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'guestRegistrationId'"  );
+        
+        if( empty( $row ) ) {
+            $sql[] = "ALTER TABLE {$table_name} ADD guestRegistrationId VARCHAR(100) NULL DEFAULT NULL AFTER ns_trip_booking_id ";
+            if ( $sql ) {
+                foreach ($sql as $alter_query) {
+                    $wpdb->query($alter_query);
+                }
+            }
+        }
+    }
 ?>
     <div class="tt-admin-page-div tt-pl-40 tt-mt-30">
         <div class="tt-wc-ns-admin-wrap">
@@ -227,6 +242,31 @@ function tt_admin_menu_page_cb()
                             pr($pr_data);
                         }
                         ?>
+                </div>
+            </div>
+            <!-- End Temp code -->
+            <!-- Temp Code -->
+            <hr>
+            <div id="dx-repair-tools">
+                <h3>DX Repair Tools</h3>
+                <p>This process below will add the missing column <code>guestRegistrationId</code> in the <code>guest_bookings</code> table.</p>
+                <?php
+                    global $wpdb;
+                    $table_name = $wpdb->prefix . 'guest_bookings';
+                    $row = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'guestRegistrationId'"  );
+                ?>
+                <form action="" class="tt-order-sync" method="post">
+                    <input type="hidden" name="action" value="dx-rapair-bookings-table">
+                    <input type="submit" name="submit" value="Repair Bookings Table" class="button-primary" <?php echo esc_attr( !empty($row) ? 'disabled="true"' : '' ); ?>>
+                </form>
+                <div id="dx-print_result" style="margin: 2% 0px;">
+                    <p><b>Bookings table status: </b>
+                        <?php if( empty($row) ) : ?>
+                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">Not repaired yet</span>
+                        <?php else : ?>
+                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully repaired</span>
+                        <?php endif; ?>
+                    </p>
                 </div>
             </div>
             <!-- End Temp code -->

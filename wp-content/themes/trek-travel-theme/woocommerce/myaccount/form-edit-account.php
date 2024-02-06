@@ -26,6 +26,7 @@ if( isset($_REQUEST['action']) && $_REQUEST['action'] == 'save_account_details_n
 	}
 	if( $phone ){
 		update_user_meta($userInfo->ID, 'custentity_phone_number', $phone);
+		update_user_meta($userInfo->ID, 'billing_phone', $phone);
 	}
  	ob_start();
     echo '<div class="woocommerce-message woocommerce-message--success alert-success">Your information has been successfully updated.</div>';

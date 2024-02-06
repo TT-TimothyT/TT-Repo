@@ -3,10 +3,10 @@
 <table>
 <tr><th align="right" valign="top" nowrap>Plugin Name</th><td>JSM Show Post Metadata</td></tr>
 <tr><th align="right" valign="top" nowrap>Summary</th><td>Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.</td></tr>
-<tr><th align="right" valign="top" nowrap>Stable Version</th><td>4.0.0</td></tr>
+<tr><th align="right" valign="top" nowrap>Stable Version</th><td>4.1.0</td></tr>
 <tr><th align="right" valign="top" nowrap>Requires PHP</th><td>7.2.34 or newer</td></tr>
 <tr><th align="right" valign="top" nowrap>Requires WordPress</th><td>5.8 or newer</td></tr>
-<tr><th align="right" valign="top" nowrap>Tested Up To WordPress</th><td>6.4.2</td></tr>
+<tr><th align="right" valign="top" nowrap>Tested Up To WordPress</th><td>6.4.3</td></tr>
 <tr><th align="right" valign="top" nowrap>Contributors</th><td>jsmoriss</td></tr>
 <tr><th align="right" valign="top" nowrap>License</th><td><a href="https://www.gnu.org/licenses/gpl.txt">GPLv3</a></td></tr>
 <tr><th align="right" valign="top" nowrap>Tags / Keywords</th><td>posts, custom fields, meta, metadata, post types, delete, debug, inspector</td></tr>
@@ -18,7 +18,7 @@
 
 <p>There are no plugin settings - simply install and activate the plugin.</p>
 
-<h4>Available Filters</h4>
+<h4>Available Filters for Developers</h4>
 
 <p>Filter the post meta shown in the metabox:</p>
 
@@ -26,7 +26,7 @@
 
 <p>Array of regular expressions to exclude meta keys:</p>
 
-<pre><code>'jsmspm_metabox_table_skip_keys' ( array $skip_keys, $post_obj )</code></pre>
+<pre><code>'jsmspm_metabox_table_exclude_keys' ( array $exclude_keys, $post_obj )</code></pre>
 
 <p>Capability required to show post meta:</p>
 
