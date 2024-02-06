@@ -1776,22 +1776,22 @@ function trek_get_user_order_info($user_id, $order_id)
     }
     return $results;
 }
-function tt_checkbooking_status($user_email, $ns_order_id) //old - $ns_user_id var in 1st args
+function tt_checkbooking_status( $ns_user_id, $ns_order_id ) //old - $ns_user_id var in 1st args
 {
     global $wpdb;
     $count = 0;
     $table_name = $wpdb->prefix . 'guest_bookings';
     $sql = "SELECT * from {$table_name} as gb WHERE 1=1";
-    // if( $ns_user_id ){
-    //     $sql .= " AND gb.netsuite_guest_registration_id = {$ns_user_id} ";
+    if( $ns_user_id ){
+        $sql .= " AND gb.netsuite_guest_registration_id = {$ns_user_id} ";
+    }
+    // if ($user_email) {
+    //     $sql .= " AND gb.guest_email_address = '{$user_email}'";
     // }
-    if ($user_email) {
-        $sql .= " AND gb.guest_email_address = '{$user_email}'";
-    }
     if( $ns_order_id ){
-        $sql .= " AND gb.guest_booking_id = {$ns_order_id} ";
+        $sql .= " AND gb.ns_trip_booking_id = {$ns_order_id} ";
     }
-    if( $ns_order_id || $user_email ){
+    if( $ns_order_id || $ns_user_id ){
         $results = $wpdb->get_results($sql, ARRAY_A);
     }else{
         $results = [];
@@ -1801,7 +1801,7 @@ function tt_checkbooking_status($user_email, $ns_order_id) //old - $ns_user_id v
     }
     tt_add_error_log(
         'Check Booking Status', 
-        ['ns_order_id' => $ns_order_id, 'user_email' => $user_email ],
+        ['ns_order_id' => $ns_order_id, 'ns_user_id' => $ns_user_id ],
         ['sql' => $sql, 'results' => $results, 'count' => $count]
     );
     return $count;
@@ -2480,7 +2480,7 @@ if (!function_exists('tt_update_user_booking_info')) {
             $ns_booking_status = 0;
         }
         $bookingData = [
-            'guest_booking_id' => $bookingId,
+            'ns_trip_booking_id' => $bookingId,
             'isDraftBooking' => $isDraftBooking,
             'shouldSendDraftConfirmEmail' => $ConfirmEmail,
             'ns_booking_response' => json_encode($ns_booking_response_arr),
@@ -2521,9 +2521,15 @@ if (!function_exists('tt_update_user_booking_info')) {
                     $where['guest_index_id'] = $guest_index;
                 }
                 $wpdb->update($table_name, $bookingData, $where);
+                if( $wpdb->last_error ) {
+                    tt_add_error_log( '[Faild] Update Booking', array( 'order_id' => $order_id, 'bookingId' => $bookingId ), array( 'last_error' => $wpdb->last_error ) );
+                }
             }
         } else {
             $wpdb->update($table_name, $bookingData, $where);
+            if( $wpdb->last_error ) {
+                tt_add_error_log( '[Faild] Update Booking (No guests)', array( 'order_id' => $order_id, 'bookingId' => $bookingId ), array( 'last_error' => $wpdb->last_error ) );
+            }
         }
         tt_add_error_log('[End] - Update Booking', ['order_id' => $order_id, 'bookingId' => $bookingId], ['dateTime' => date('Y-m-d H:i:s')]);
     }
@@ -3327,7 +3333,7 @@ if (!function_exists('tt_get_postid_by_meta_key_value')) {
         global $wpdb;
         $post_id = null;
         $table_name = $wpdb->prefix . 'postmeta';
-        $sql = "SELECT pm.post_id from {$table_name} as pm WHERE pm.{$meta_key} = '{$meta_value}' ";
+        $sql = "SELECT pm.post_id from {$table_name} as pm WHERE pm.meta_key = '{$meta_key}' AND pm.meta_value = '{$meta_value}'";
         $results = $wpdb->get_results($sql, ARRAY_A);
         if ($results && isset($results[0])) {
             $post_id = $results[0]['post_id'];
@@ -3454,17 +3460,26 @@ if (!function_exists('tt_occupant_selection_popup')) {
     }
 }
 add_action('user_register', 'tt_sync_user_metadata_from_ns_cb', 10, 1);
-function tt_sync_user_metadata_from_ns_cb($user_id)
+function tt_sync_user_metadata_from_ns_cb( $user_id )
 {
-    $netSuiteClient = new NetSuiteClient();
-    sleep(5);
-    $ns_user_id = get_user_meta($user_id, 'ns_customer_internal_id', true);
-    if ($ns_user_id) {
-        $ns_user_ids = array($ns_user_id);
-        $ns_booking_result = $netSuiteClient->get('1294:2', array('registrationIds' => implode(',', $ns_user_ids)));
-        tt_add_error_log('NEW USER', ['wp_user_id' => $user_id, 'ns_user_id' => $ns_user_id ], $ns_booking_result);
-        if ($ns_booking_result) {
-            foreach ($ns_booking_result as $ns_guest_info) {
+    $ns_user_id = '';
+
+    // Use TM NetSuite plugin to register customer in NetSuite.
+    if ( class_exists('TMWNI_Loader') ) {
+        $netsuite_user_client = new TMWNI_Loader();
+        $ns_user_id = $netsuite_user_client->addUpdateNetsuiteCustomer( $user_id );
+        tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => true, 'ns_user_id' => $ns_user_id ) );
+    } else {
+        tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => false, 'message' => 'The TMWNI_Loader class does not exist. Verify that the TM NetSuite plugin is enabled and that its API configuration is working.' ) );
+    }
+
+    $net_suite_client = new NetSuiteClient();
+
+    if ( $ns_user_id ) {
+        $ns_booking_result = $net_suite_client->get( '1294:2', array( 'guestId' => $ns_user_id ) );
+        tt_add_error_log( '[SuiteScript:1294] NEW USER', ['wp_user_id' => $user_id, 'ns_user_id' => $ns_user_id ], $ns_booking_result );
+        if ( $ns_booking_result ) {
+            foreach ( $ns_booking_result as $ns_guest_info ) {
                 $registrationId = $ns_guest_info->registrationId;
                 $isPrimary = $ns_guest_info->isPrimary;
                 $guestId = $ns_guest_info->guestId;
@@ -3564,7 +3579,7 @@ function tt_sync_user_metadata_from_ns_cb($user_id)
                 update_user_meta($user_id, 'gear_preferences_rider_height', '');
             }
         }
-        as_enqueue_async_action('tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id ), '[Sync] - Adding NS Trips for new register guest');
+        as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id ), '[Sync] - Adding NS Trips for new register guest' );
         //tt_ns_guest_booking_details(true, $ns_user_id,$user_id);
     }
 }
@@ -5040,13 +5055,13 @@ function tt_generate_save_insurance_quote_cb()
  * @return  : Function which will send User Data to NS forSync on user update action
  **/
 add_action('tt_cron_syn_usermeta_ns', 'tt_cron_syn_usermeta_ns_cb',10, 2);
-function tt_cron_syn_usermeta_ns_cb($user_id, $type){
-    if (class_exists('TMWNI_Loader')) {
-        $netsuiteUserClient = new TMWNI_Loader();
-        ob_start();
-        $netsuiteUserClient->addUpdateNetsuiteCustomer($user_id);
-        ob_clean();
-        tt_add_error_log('User update - ' . $type, ['user_id' => $user_id], ['dateTime' => date('Y-m-d H:i:s')]);
+function tt_cron_syn_usermeta_ns_cb( $user_id, $type ) {
+    if ( class_exists( 'TMWNI_Loader' ) ) {
+        $netsuite_user_client = new TMWNI_Loader();
+        $ns_user_id           = $netsuite_user_client->addUpdateNetsuiteCustomer( $user_id );
+        tt_add_error_log( 'User update - ' . $type, array( 'user_id' => $user_id ), array( 'status' => true, 'ns_user_id' => $ns_user_id, 'dateTime' => date('Y-m-d H:i:s') ) );
+    } else {
+        tt_add_error_log( 'User update - ' . $type, array( 'user_id' => $user_id ), array( 'status' => false, 'message' => 'The TMWNI_Loader class does not exist. Verify that the TM NetSuite plugin is enabled and that its API configuration is working.' ) );
     }
 }
 add_action('ns_trips_sync_to_wc_product', 'ns_trips_sync_to_wc_product_cb', 10, 2);
@@ -5119,6 +5134,52 @@ function tt_get_jersey_sizes($gender="", $jersey_size=""){
         }
     }
     return $opts;
+}
+/**
+ * Take jersey style by given jersey size id.
+ * Jersey Style is gender equivalent, man or women.
+ *
+ * @param int $jersey_size_id Jersey ID from NS.
+ *
+ * @return string Jersey Style or empty string.
+ */
+function tt_get_jersey_style( $jersey_size_id = null ) {
+    $jersey_style = '';
+
+    $item_data    = tt_get_custom_item_name('syncJerseySizes');
+
+    if( $item_data && isset( $item_data['options'] ) && $item_data['options'] ) {
+
+        foreach( $item_data['options'] as $jersey_options ) {
+
+            $jersey_size = isset( $jersey_options['optionValue'] ) ? $jersey_options['optionValue'] : '';
+            $jersey_id   = isset( $jersey_options['optionId'] ) ? $jersey_options['optionId'] : '';
+
+            if( str_contains( $jersey_size, ' ' ) ) {
+
+                if( $jersey_id == $jersey_size_id ) {
+
+                    $jersey_size_arr = explode( ' ', $jersey_size );
+                    $gender          = isset( $jersey_size_arr[0] ) ? $jersey_size_arr[0] : '';
+
+                    switch ( $gender ) {
+                        case "Men's":
+                            $jersey_style = 'men';
+                            break;
+                        case "Women's":
+                            $jersey_style = 'women';
+                            break;
+                        default:
+                            break;
+                    }
+                    // Exit from loop.
+                    break;
+                }
+            }
+        }
+    }
+
+    return $jersey_style;
 }
 add_action('wp_ajax_tt_jersey_change_action', 'trek_tt_jersey_change_action_cb');
 add_action('wp_ajax_nopriv_tt_jersey_change_action', 'trek_tt_jersey_change_action_cb');
@@ -5247,15 +5308,14 @@ function tt_get_ns_booking_details_by_order( $order_id, $user_info = null ){
         $userInfo = wp_get_current_user();
     }
 
-    $User_order_info = trek_get_user_order_info($userInfo->ID, $order_id);
-    if( isset($User_order_info[0]['releaseFormId']) && $User_order_info[0]['releaseFormId'] ){
-        $releaseFormId = $User_order_info[0]['releaseFormId'];
+    $user_order_info = trek_get_user_order_info($userInfo->ID, $order_id);
+    if( isset($user_order_info[0]['releaseFormId']) && $user_order_info[0]['releaseFormId'] ){
+        $releaseFormId = $user_order_info[0]['releaseFormId'];
     }else{
         $releaseFormId = get_post_meta($order_id, TT_WC_META_PREFIX.'releaseFormId', true);
     }
-    $order_details = trek_get_user_order_info($userInfo->ID, $order_id);
-    if( isset($order_details[0]) && isset($order_details[0]['guest_booking_id']) && $order_details[0]['guest_booking_id'] ){
-        $booking_id = $order_details[0]['guest_booking_id'];
+    if( isset($user_order_info[0]) && isset($user_order_info[0]['ns_trip_booking_id']) && $user_order_info[0]['ns_trip_booking_id'] ){
+        $booking_id = $user_order_info[0]['ns_trip_booking_id'];
     }else{
         $booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', true);
     }

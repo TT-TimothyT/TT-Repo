@@ -357,7 +357,7 @@ function tt_get_bookings($limit=10)
     if ($bookings) {
         foreach ($bookings as $booking) {
             $id = $booking['id'];
-            $booking_id = $booking['guest_booking_id'];
+            $booking_id = $booking['ns_trip_booking_id'];
             $order_id = $booking['order_id'];
             $user_id = $booking['user_id'];
             $ns_user_id = $booking['netsuite_guest_registration_id'];
