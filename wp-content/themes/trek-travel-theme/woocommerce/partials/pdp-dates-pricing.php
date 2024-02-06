@@ -38,13 +38,16 @@ function getWebDispalyStatus($status){
     }
     return $status;
 }
+
 $requestTripFormArr = ["Limited Availability" => "book-this-trip", "Join Waitlist" => "book-this-trip"];
+
 $res_status = [
     "Limited Availability",
     "Group Hold",
     "Sales Hold",
     "Hold"
 ];
+
 $wait_status = ["SOLD OUT"];
 
 /**
