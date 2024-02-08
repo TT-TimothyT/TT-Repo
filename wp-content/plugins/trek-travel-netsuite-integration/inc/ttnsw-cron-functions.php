@@ -465,104 +465,124 @@ function tt_sync_wc_product_from_ns( $trek_trip ) {
  * @return  : NS Trips/Hotels/Bike/Rooms sync function
  **/
 if (!function_exists('tt_sync_wc_products_from_ns')) {
-    function tt_sync_wc_products_from_ns($is_all=false, $sync_trip_Ids=array(), $time_range = DEFAULT_TIME_RANGE)
+    function tt_sync_wc_products_from_ns( $is_all = false, $sync_trip_ids = array(), $time_range = DEFAULT_TIME_RANGE )
     {
-        $netSuiteClient = new NetSuiteClient();
-        $trip_sync_type_msg = '[Trip Sync]: '.TRIP_DETAIL_SCRIPT_ID;
+        $net_suite_client   = new NetSuiteClient();
+        $trip_sync_type_msg = '[Trip Sync]: ' . TRIP_DETAIL_SCRIPT_ID;
 
-        //Check if we are syncing a single trip or a bunch of such
-        if( $sync_trip_Ids && is_array($sync_trip_Ids) && !empty($sync_trip_Ids) ){
-            $trip_Ids = $sync_trip_Ids;
-            $trip_Ids = array_chunk($trip_Ids, 10);
-            $trip_sync_type_msg = '[Single Trip Sync]: '.TRIP_DETAIL_SCRIPT_ID;
+        // Check if we are syncing a single trip or a bunch of such.
+        if( $sync_trip_ids && is_array( $sync_trip_ids ) && ! empty( $sync_trip_ids ) ) {
+
+            $trip_ids           = $sync_trip_ids;
+            $trip_ids           = array_chunk( $trip_ids, 10 );
+            $trip_sync_type_msg = '[Single Trip Sync]: ' . TRIP_DETAIL_SCRIPT_ID;
         } else {
+
             $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
-            if ( $is_all == true ){
-                $trip_Ids = tt_get_local_trip_ids();
+
+            if ( $is_all == true ) {
+
+                $trip_ids = tt_get_local_trip_ids();
             } else {
-                $trip_Ids = tt_get_local_trip_ids( $last_modified_trip_ids );
+
+                if( ! empty( $last_modified_trip_ids ) ) {
+
+                    $trip_ids = tt_get_local_trip_ids( $last_modified_trip_ids );
+                } else {
+
+                    $trip_ids = array();
+                    tt_add_error_log( $trip_sync_type_msg, array( 'trip_ids' => $trip_ids ), array( 'status' => true, 'message' => 'There are no new Trip IDs to sync edited in the period ' . $time_range ) );
+                }
             }
         }
 
-        //If the trip code is found locally in netsuite_trips proceed.
-        if( $trip_Ids ){
-            /*if(count($trip_Ids) > 10 ){
-                $trip_Ids = array_chunk($trip_Ids, 10);
-            }*/
-            if ( ! empty( $trip_Ids ) ) {
-                foreach ($trip_Ids as $trip_Ids_arr) {
-                    if( is_int($trip_Ids_arr) && !is_array($trip_Ids_arr) ){
-                        $trip_Ids_arr = [$trip_Ids];
+        // Early exit if there are no trip ids.
+        if( empty( $trip_ids ) ) {
+            return;
+        }
+        
+        // If the trip code is found locally in netsuite_trips proceed.
+        foreach ( $trip_ids as $trip_ids_arr ) {
+
+            if( is_int( $trip_ids_arr ) && ! is_array( $trip_ids_arr ) ) {
+                $trip_ids_arr = [ $trip_ids ];
+            }
+
+            $trek_script_args = array( 'tripIds' => implode( ',', $trip_ids_arr ) );
+            $trek_trips       = $net_suite_client->get( TRIP_DETAIL_SCRIPT_ID, $trek_script_args );
+
+            if( $trek_trips ) {
+                tt_add_error_log( $trip_sync_type_msg, $trek_script_args, array( 'status' => 'true' ) );
+            } else {
+                tt_add_error_log( $trip_sync_type_msg, $trek_script_args, $trek_trips );
+            }
+
+            if( empty( $trek_trips ) || ! isset( $trek_trips->trips ) ) {
+                continue;
+            }
+
+            $ride_camp_trips = array();
+
+            foreach ( $trek_trips->trips as $trek_trip ) {
+                // Set is Ride Camp flag.
+                $is_ride_camp = ( $trek_trip->isRideCamp ? $trek_trip->isRideCamp : '' );
+
+                if( ! empty( $is_ride_camp ) && $is_ride_camp ) {
+                    // This is a Ride Camp trip, store it into array for laiter usage.
+                    array_push( $ride_camp_trips, $trek_trip );
+                }
+                // Continue as normal.
+                tt_sync_wc_product_from_ns( $trek_trip );
+            }
+
+            if( empty( $ride_camp_trips ) ) {
+                continue;
+            }
+
+            // Have a Ride Camp Trips.
+            foreach( $ride_camp_trips as $trek_trip ) {
+
+                // Take the info for the additional trips that need to be made.
+                $bookable_periods = $trek_trip->bookablePeriods;
+
+                $main_start_date  = $trek_trip->startDate;
+                $main_end_date    = $trek_trip->endDate;
+
+                // Keep SKU base.
+                $main_trip_code   = $trek_trip->tripCode;
+                $main_trip_name   = $trek_trip->tripName;
+
+                foreach( $bookable_periods as $period ) {
+                    $start_date = $period->startDate;
+                    $end_date   = $period->endDate;
+
+                    if( $start_date === $main_start_date && $end_date === $main_end_date ) {
+                        // This is the main trip product, that we already have into WC.
+                        continue;
                     }
-                    $trek_script_args = array('tripIds' => implode(',', $trip_Ids_arr) );
-                    $trek_trips = $netSuiteClient->get(TRIP_DETAIL_SCRIPT_ID, $trek_script_args);
-                    if( $trek_trips ){
-                        tt_add_error_log($trip_sync_type_msg, $trek_script_args, ['status'=>'true']);
-                    }else{
-                        tt_add_error_log($trip_sync_type_msg, $trek_script_args, $trek_trips);
+
+                    if( $start_date === $main_start_date && $end_date !== $main_end_date ) {
+                        // This is the FIRST child product, add a suffix to the SKU.
+                        $trek_trip->tripCode = $main_trip_code . '-FIRST';
+                        // Add suffix on the name.
+                        $trek_trip->tripName = $main_trip_name . '-FIRST';
+
+                    } elseif ( $start_date !== $main_start_date && $end_date === $main_end_date ) {
+                        // This is the SECOND child product, add a suffix to the SKU.
+                        $trek_trip->tripCode = $main_trip_code . '-SECOND';
+                        // Add suffix on the name.
+                        $trek_trip->tripName = $main_trip_name . '-SECOND';
                     }
-                    if (!empty($trek_trips) && isset($trek_trips->trips)) {
-                        $ride_camp_trips = array();
-                        foreach ( $trek_trips->trips as $trek_trip ) {
-                            // Set is Ride Camp flag.
-                            $is_ride_camp = ( $trek_trip->isRideCamp ? $trek_trip->isRideCamp : '' );
+                    
+                    $trek_trip->startDate             = $start_date;
+                    $trek_trip->endDate               = $end_date;
+                    $trek_trip->basePrice             = $period->basePrice;
+                    $trek_trip->singleSupplementPrice = $period->singleSupplementPrice;
+                    $trek_trip->depositAmount         = $period->depositAmount;
+                    $trek_trip->bikeUpgradePrice      = $period->bikeUpgradePrice;
 
-                            if( !empty( $is_ride_camp ) && $is_ride_camp ) {
-                                // This is a Ride Camp trip, store it into array for laiter usage.
-                                array_push( $ride_camp_trips, $trek_trip );
-                            }
-                            // Continue as normal.
-                            tt_sync_wc_product_from_ns( $trek_trip );
-                        }
-                        if( !empty( $ride_camp_trips ) ) {
-                            // Have a Ride Camp Trips.
-                            foreach( $ride_camp_trips as $trek_trip ) {
-
-                                // Take the info for the additional trips that need to be made.
-                                $bookable_periods = $trek_trip->bookablePeriods;
-
-                                $main_start_date  = $trek_trip->startDate;
-                                $main_end_date    = $trek_trip->endDate;
-
-                                // Keep SKU base.
-                                $main_trip_code   = $trek_trip->tripCode;
-                                $main_trip_name   = $trek_trip->tripName;
-
-                                foreach( $bookable_periods as $period ) {
-                                    $start_date = $period->startDate;
-                                    $end_date   = $period->endDate;
-
-                                    if( $start_date === $main_start_date && $end_date === $main_end_date ) {
-                                        // This is the main trip product, that we already have into WC.
-                                        continue;
-                                    }
-
-                                    if( $start_date === $main_start_date && $end_date !== $main_end_date ) {
-                                        // This is the FIRST child product, add a suffix to the SKU.
-                                        $trek_trip->tripCode = $main_trip_code . '-FIRST';
-                                        // Add suffix on the name.
-                                        $trek_trip->tripName = $main_trip_name . '-FIRST';
-
-                                    } elseif ( $start_date !== $main_start_date && $end_date === $main_end_date ) {
-                                        // This is the SECOND child product, add a suffix to the SKU.
-                                        $trek_trip->tripCode = $main_trip_code . '-SECOND';
-                                        // Add suffix on the name.
-                                        $trek_trip->tripName = $main_trip_name . '-SECOND';
-                                    }
-                                    
-                                    $trek_trip->startDate             = $start_date;
-                                    $trek_trip->endDate               = $end_date;
-                                    $trek_trip->basePrice             = $period->basePrice;
-                                    $trek_trip->singleSupplementPrice = $period->singleSupplementPrice;
-                                    $trek_trip->depositAmount         = $period->depositAmount;
-                                    $trek_trip->bikeUpgradePrice      = $period->bikeUpgradePrice;
-
-                                    // Create or update a Ride Camp half-period product.
-                                    tt_sync_wc_product_from_ns( $trek_trip );
-                                }
-                            }
-                        }
-                    }
+                    // Create or update a Ride Camp half-period product.
+                    tt_sync_wc_product_from_ns( $trek_trip );
                 }
             }
         }
