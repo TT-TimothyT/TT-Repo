@@ -514,6 +514,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 					<?php if( $lockedUserRecord == 1 ) { ?>
 						<?php $medical_title_string = 'Review your medical information'; ?>
 						<?php $gray_out = 'disabled style="color: #666666;"'; ?>
+						<?php $gray_out_text = 'disabled'; ?>
 					<?php } ?>
 				<div class="accordion-item">
 					<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-medicalInfo">
@@ -559,7 +560,9 @@ if( !empty( $confirmed_info_unserialized ) ) {
 													$medical_val = $dietaryrestrictions;
 												}
 												$is_medical = ($medical_val && 'none' != $medical_val ? 'yes' : 'no');
+
 												$toggleTextClass = ($medical_val && 'none' != $medical_val ? 'style="display:block;"' : 'style="display:none;"');
+
 												$medical_field_html .= '<div class="form-group medical-information__item medical_item">
 												<div class="flex-grow-1">
 													<p class="fw-medium fs-lg lh-lg mb-4 mb-lg-5">' . $medical_field . '</p>
@@ -571,7 +574,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 													<input ' . $gray_out . ' class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadioNo' . $medical_key . '" value="no" ' . ($is_medical == 'no' ? 'checked' : '') . '>
 													<label class="form-check-label" for="inlineRadioNo' . $medical_key . '">No</label>
 													</div>
-													<textarea name="' . $medical_key . '[value]" placeholder="Please tell us more" class="form-control rounded-1 mt-4" ' . $toggleTextClass . '>' . ( 'none' != $medical_val ? $medical_val : '') . '</textarea>
+													<textarea ' . $gray_out_text . ' name="' . $medical_key . '[value]" placeholder="Please tell us more" class="form-control rounded-1 mt-4" ' . $toggleTextClass . '>' . ( 'none' != $medical_val ? $medical_val : '') . '</textarea>
 													<div class="invalid-feedback"><img class="invalid-icon" />This field is required.</div>
 												</div>
 											</div>';
