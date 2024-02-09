@@ -584,6 +584,7 @@
             "post_type": [
                 "itinerary"
             ],
+            "post_status": "",
             "taxonomy": "",
             "filters": [
                 "search"
@@ -592,7 +593,10 @@
             "min": "",
             "max": "",
             "elements": "",
-            "bidirectional_target": []
+            "bidirectional": 1,
+            "bidirectional_target": [
+                "field_63a4fb53a2686"
+            ]
         },
         {
             "key": "field_65bb63ec7175b",
@@ -2154,5 +2158,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1706738174
+    "modified": 1707334257
 }
