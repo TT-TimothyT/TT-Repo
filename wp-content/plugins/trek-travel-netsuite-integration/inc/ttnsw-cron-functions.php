@@ -68,11 +68,11 @@ if (!function_exists('tt_sync_ns_trips')) {
                 //echo 'executed 1'; exit;
             }
         }
-        // if( $trek_trips ){
-        //     tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, ['status'=>'true']);
-        // }else{
-        //     tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, $trek_trips);
-        // }
+        if( $trek_trips ){
+            tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, ['status'=>'true']);
+        }else{
+            tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, $trek_trips);
+        }
     }
 }
 /**
@@ -93,11 +93,11 @@ if (!function_exists('tt_sync_ns_trip_details')) {
             foreach ($trip_Ids as $trip_Ids_arr) {
                 $trek_script_args = array('tripIds' => implode(',', $trip_Ids_arr) );
                 $trek_trip_details = $netSuiteClient->get(TRIP_DETAIL_SCRIPT_ID, $trek_script_args);
-                // if( $trek_trip_details ){
-                //     tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, ['status' => 'true']);
-                // }else{
-                //     tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, $trek_trip_details);
-                // }
+                if( $trek_trip_details ){
+                    tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, ['status' => 'true']);
+                }else{
+                    tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, $trek_trip_details);
+                }
                 if (!empty($trek_trip_details) && isset($trek_trip_details->trips)) {
                     foreach ($trek_trip_details->trips as $trek_trip_detail) {
                         $tripCode = $trek_trip_detail->tripCode;
