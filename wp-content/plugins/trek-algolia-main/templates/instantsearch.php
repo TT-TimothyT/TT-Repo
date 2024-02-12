@@ -210,23 +210,6 @@ get_header();
                                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Next</span>
                                         </button>
-
-                                        <form class="cart" action="" method="post" enctype="multipart/form-data">
-                                        <?php if( is_user_logged_in() ) { ?>
-                                            <input type="hidden" name="wlid" id="wlid"/>
-                                            <input type="hidden" name="add-to-wishlist-type" value="{{ data.taxonomies.product_type }}"/>
-                                            <input type="hidden" name="wl_from_single_product" value="{{data.post_type == 'product' ? '1' : '0'}}"/>
-                                            <input type="hidden" name="quantity[{{ data.post_id }}]" value="1"/>
-                                            <a rel="nofollow" href="" data-productid="{{ data.post_id }}" data-listid="<?php echo $add_to_wishlist_args['single_id']; ?>" class="wl-add-to btn add-wishlist h-100 ">
-                                                <!-- <i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i> -->
-                                            </a>
-                                            <?php } else { ?>
-                                                <a class="btn add-wishlist h-100" href="<?php echo site_url('login'); ?>">
-                                                    <!-- <i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i> -->
-                                                </a>
-                                            <?php } ?>
-                                        </form>	
-
                                     </div>
 
                                 </div>

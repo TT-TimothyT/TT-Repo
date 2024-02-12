@@ -13,21 +13,6 @@ if(count($attachment_ids) > 4){
         <button type="button" class="btn btn-outline-dark share-link">
             <i class="bi bi-link-45deg"></i>
         </button>
-        <form class="cart" action="" method="post" enctype="multipart/form-data">
-        <?php if( is_user_logged_in() ) { ?>
-            <input type="hidden" name="wlid" id="wlid"/>
-            <input type="hidden" name="add-to-wishlist-type" value="<?php echo $product->get_type(); ?>"/>
-            <input type="hidden" name="wl_from_single_product" value="<?php echo is_product() ? '1' : '0'; ?>"/>	
-            <input type="hidden" name="quantity[<?php echo $product->get_id(); ?>]" value="1"/>		
-            <a rel="nofollow" href="" data-productid="<?php echo $product->get_id(); ?>" data-listid="<?php echo $add_to_wishlist_args['single_id']; ?>" class="wl-add-to btn btn-outline-dark add-wishlist ">
-                <i class="bi bi-heart"></i>
-            </a>
-            <?php } else { ?>
-                <a class="btn btn-outline-dark add-wishlist" href="<?php echo site_url('login'); ?>">
-                    <i class="bi bi-heart"></i>
-                </a>
-            <?php } ?>							
-        </form>
         <div class="toast bg-white link-copied align-items-center w-auto start-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">

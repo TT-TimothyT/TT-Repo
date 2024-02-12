@@ -254,25 +254,6 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 					} ?>
 				</div>
 			</div>
-			<div class="card mb-5 dashboard__card rounded-1">
-				<div class="card-body pb-0">
-					<div class="d-flex justify-content-between align-items-baseline mb-2">
-						<h5 class="card-title fw-bold mb-2">Wishlist</h5>
-						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/account-wishlists/'); ?>">Edit</a>
-					</div>
-					<?php
-						$wishlistCount = 0;
-						if( class_exists('WC_Wishlists_User') ){
-							$userWishlistobj = WC_Wishlists_User::get_wishlists();
-							if( $userWishlistobj && is_array($userWishlistobj) ){
-								$wishlistCount = count($userWishlistobj);
-							}
-						}
-					?>
-					<p class="fs-sm lh-sm fw-normal">You have <?php echo $wishlistCount; ?> items on your wishlist
-					</p>
-				</div>
-			</div>
 			<div class="card mb-3 dashboard__card rounded-1">
 				<div class="card-body pb-0">
 					<div class="d-flex justify-content-between align-items-baseline mb-2">
