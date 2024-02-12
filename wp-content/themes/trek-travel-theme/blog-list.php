@@ -48,6 +48,14 @@ $sort_param = ( isset( $_GET['orderby'] ) ) ? sanitize_text_field( $_GET['orderb
 $cat_param = ( isset( $_GET['category'] ) ) ? sanitize_text_field( $_GET['category'] ) : '0';
 $categories = get_categories();
 
+//Get only the primary categories
+$primary_categories = array();
+foreach($categories as $category) {
+	if ($category->parent == 0) {
+		$primary_categories[] = $category;
+	}
+}
+
 $blog_args = array(
 	'cat' => $cat_param,
 	'post_type' => 'post',
@@ -72,7 +80,7 @@ if( $blogs->have_posts() ){
   }
 		$other_blog_html .= '<div class="list-item"><a href="'.get_permalink(get_the_ID()).'">
 			<div class="image">
-			<img src="'.$featured_Image.'">				
+			<img src="'.$featured_Image.'">			
 			</div>
 			<p class="fw-normal fs-sm lh-sm">'.get_the_date('F Y').'</p>
 			<p class="fw-bold fs-xl lh-xl">'.get_the_title().'</p>
@@ -104,7 +112,7 @@ if( $blogs->have_posts() ){
 			<select class="blog-category-select sortBy-select" onchange="document.location.href = '?category=' + this.value">
 			<option class="blog-category-option sort-option" value="">Category</option>
 				<?php
-				foreach($categories as $category) {
+				foreach($primary_categories as $category) {
 					$selected = ''; 
 					if ($cat_param == $category->term_id) $selected = ' selected'; 
 					echo '<option class="blog-category-option sort-option" value="' . $category->term_id. '" '.$selected.'>' . $category->name . '</option>';
