@@ -1461,7 +1461,7 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
       url: trek_JS_obj.ajaxURL,
       data: dataString,
       dataType: 'json',
-      beforeSend: function () {
+      success: function (response) {
         jQuery.blockUI({
           css: {
             border: 'none',
@@ -1473,10 +1473,7 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
             color: '#fff'
           }
         });
-      },
-      success: function (response) {
         var step = jQuery(".tab-pane.active.show").attr('data-step');
-        setTimeout(jQuery.unblockUI, 500);
         if (dataString.type == 'add' && response.is_applied == true && response.status == true) {
           jQuery('div.promo-form').addClass('d-none');
           jQuery('.checkout-summary__applied').removeClass('d-none');
@@ -1490,14 +1487,6 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
         if (jQuery('#tt-review-order').length > 0 && response.html) {
           jQuery('#tt-review-order').html(response.html);
         }
-        if (response.status == false && dataString.type == 'add' ) {
-          console.log( coupon_code );
-          
-         if ( coupon_code !== '') {
-            // jQuery(".promo-input").val(coupon_code)
-            jQuery(".invalid-code").css("display", "block")
-          }
-        }
         jQuery("#currency_switcher").trigger("change")
         if (parseInt(step) != 4) {
           jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').addClass("d-none")
@@ -1506,10 +1495,60 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
         if( parseInt( step ) === 4 ) {
           jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').removeClass("d-none");
         }
+        if (response.status == false && dataString.type == 'add' ) {
+          jQuery.unblockUI();
+          
+         if ( coupon_code !== '') {
+            // jQuery(".promo-input").val(coupon_code)
+            jQuery(".invalid-code").css("display", "block")
+          }
+        } else {
+          // Nested second AJAX call
+          var secondAction = 'tt_recalculate_travel_protection';
+          jQuery.ajax({
+            type: 'POST',
+            url: trek_JS_obj.ajaxURL,
+            data: "&action=" + secondAction,
+            dataType: 'json',
+            success: function (response) {
+              var resMessage = '';
+              if (response.status == true) {
+                resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`
+              } else {
+                resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
+              }
+              if (response.review_order) {
+                jQuery('#tt-review-order').html(response.review_order);
+              }
+              setTimeout( function(){
+                jQuery('#protection_modal .modal-content').unblock()
+                jQuery("#currency_switcher").trigger("change")
+              }, 500);
+              if (response.guest_insurance_html) {
+                jQuery('#travel-protection-div').html(response.guest_insurance_html);
+              }
+              if (response.insured_summary_html) {
+                jQuery('#travel-protection-summary').html(response.insured_summary_html);
+              }
+              if (response.insuredHTMLPopup) {
+                jQuery(`#tt-popup-insured-form`).html(response.insuredHTMLPopup);
+              }
+              if (jQuery('.checkout-payment__options').length > 0 && response.payment_option) {
+                jQuery('.checkout-payment__options').html(response.payment_option);
+              }
+              if( parseInt( step ) === 4 ) {
+                jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').removeClass("d-none");
+              }
+              jQuery.unblockUI();
+            }
+          });
+        }
+        jQuery("#currency_switcher").trigger("change");
       }
     });
   });
 }
+
 if (jQuery('#load-more').length > 0) {
   let currentPage = 1;
   jQuery('body').on('click', '#load-more', function () {

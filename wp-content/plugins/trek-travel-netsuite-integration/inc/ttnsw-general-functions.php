@@ -75,6 +75,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
     $user_exist = get_userdata($user_id);
     $is_booking_status = $user_exist ? false : true;
     $wc_booking_result = tt_get_booking_details($order_id, $is_booking_status);
+    $guests_count      = count( $wc_booking_result );
     $occupants = tt_get_booking_field('order_id', $order_id, 'trip_room_selection', true);
     $tt_users_indexes = tt_get_booking_guests_indexes($order_id);
     //$dummy_rooms = ["single","single"];
@@ -114,6 +115,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
     //Begin: orders extra meta data(Financial Data)
     $order_currency = get_post_meta($order_id, '_order_currency', true);
     $cart_discount = get_post_meta($order_id, '_cart_discount', true);
+    $cart_discount = intval( $guests_count ) * floatval( $cart_discount );
     $cart_discount_tax = get_post_meta($order_id, '_cart_discount_tax', true);
     $order_tax = get_post_meta($order_id, '_order_tax', true);
     $order_total = get_post_meta($order_id, '_order_total', true);

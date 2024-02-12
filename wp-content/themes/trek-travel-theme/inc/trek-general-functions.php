@@ -2085,6 +2085,22 @@ function tt_items_select_options($item_name = "", $optionId="")
     }
     return $opts;
 }
+
+function tt_is_coupon_applied( $coupon_code ) {
+    global $woocommerce;
+
+    $cart = $woocommerce->cart;
+
+    foreach ( $cart->get_applied_coupons() as $applied_coupon ) {
+        if ( strcasecmp( $applied_coupon, $coupon_code ) === 0 ) {
+            return true;
+        }
+    }
+
+    // Coupon not found in the applied coupons list
+    return false;
+}
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -4419,6 +4435,7 @@ function tt_guest_insurance_output($tt_posted = [])
         $guest_insurance = $tt_posted['trek_guest_insurance'];
         $fields_size = 1;
         $fields_size += isset($guest_insurance['guests']) && $guest_insurance['guests'] ? sizeof($guest_insurance['guests']) : 0;
+        $guest_insurance_html .= '<div id="travel-protection-summary">';
         foreach ($guest_insurance as $guest_insurance_k => $guest_insurance_val) {
             if ($guest_insurance_k == 'primary') {
                 $p_insurance_amount = isset($guest_insurance_val['basePremium']) ? $guest_insurance_val['basePremium'] : 0;
@@ -4454,6 +4471,7 @@ function tt_guest_insurance_output($tt_posted = [])
                 }
             }
         }
+        $guest_insurance_html .= '</div>';
     }
     return $guest_insurance_html;
 }
@@ -4813,17 +4831,21 @@ function tt_get_review_order_html(){
  * @version : 1.0.0
  * @return  : Generate Arc insurance & save into Checkout object 
  **/
-add_action('wp_ajax_tt_generate_save_insurance_quote', 'tt_generate_save_insurance_quote_cb');
-add_action('wp_ajax_nopriv_tt_generate_save_insurance_quote', 'tt_generate_save_insurance_quote_cb');
+add_action( 'wp_ajax_tt_generate_save_insurance_quote', 'tt_generate_save_insurance_quote_cb' );
+add_action( 'wp_ajax_nopriv_tt_generate_save_insurance_quote', 'tt_generate_save_insurance_quote_cb' );
+add_action( 'wp_ajax_tt_recalculate_travel_protection', 'tt_generate_save_insurance_quote_cb' );
+add_action( 'wp_ajax_nopriv_tt_recalculate_travel_protection', 'tt_generate_save_insurance_quote_cb' );
 function tt_generate_save_insurance_quote_cb()
 {
     $accepted_p_ids = tt_get_line_items_product_ids();
     //Add travels data to Cart object
     $cart = WC()->cart->get_cart();
     //Preparing insurance HTML
-    $tt_checkoutData =  get_trek_user_checkout_data();
-    $tt_posted = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
-    $product_id = null;
+    $tt_checkoutData = get_trek_user_checkout_data();
+    $tt_posted       = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
+    $coupon_code     = strtolower( $tt_posted['coupon_code'] );
+    $coupon          = new WC_Coupon( $coupon_code );
+    $product_id      = null;
     if( isset($tt_posted['product_id']) ){
         $product_id = $tt_posted['product_id'];
     }
@@ -4916,6 +4938,15 @@ function tt_generate_save_insurance_quote_cb()
                 if ( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) {
                     $individualTripCost = $individualTripCost + $bike_upgrade_price;
                 }
+                if ( $coupon && tt_is_coupon_applied( $coupon_code ) ) {
+                    // Check if the coupon exists
+                    if ( $coupon->get_id() > 0 ) {
+                        // Coupon exists, retrieve its details
+                        $coupon_amount = $coupon->get_amount();
+                    }
+            
+                    $individualTripCost = $individualTripCost - $coupon_amount;
+                }
                 //if ($guest_insurance_val['is_travel_protection'] == 1) {
                 $insuredPerson[] = array(
                     "address" => [
@@ -4956,6 +4987,15 @@ function tt_generate_save_insurance_quote_cb()
                     }
                     if ( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) {
                         $individualTripCost = $individualTripCost + $bike_upgrade_price;
+                    }
+                    if ( $coupon && tt_is_coupon_applied( $coupon_code ) ) {
+                        // Check if the coupon exists
+                        if ( $coupon->get_id() > 0 ) {
+                            // Coupon exists, retrieve its details
+                            $coupon_amount = $coupon->get_amount();
+                        }
+                
+                        $individualTripCost = $individualTripCost - $coupon_amount;
                     }
                     $insuredPerson[] = array(
                         "address" => [
@@ -5040,12 +5080,20 @@ function tt_generate_save_insurance_quote_cb()
     } else {
         $insuredHTML .= '<h3>Step 4</h3><p>checkout-insured-guests.php form code is missing!</p>';
     }
-    $res['status'] = true;
+    $insured_summary_html = '';
+    $checkout_insured_users   = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php';
+    if ( is_readable( $checkout_insured_users ) ) {
+        $insured_summary_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php');
+    } else {
+        $insured_summary_html .= '<h3>Step 4</h3><p>checkout-insured-summary.php form code is missing!</p>';
+    }
+    $res['status']               = true;
     $res['guest_insurance_html'] = $insuredHTML;
-    $res['insuredHTMLPopup'] = $insuredHTMLPopup;
-    $res['review_order'] = $review_order_html;
-    $res['payment_option'] = $payment_option_html;
-    $res['message'] = "Your information has been changed successfully!";
+    $res['insured_summary_html'] = $insured_summary_html;
+    $res['insuredHTMLPopup']     = $insuredHTMLPopup;
+    $res['review_order']         = $review_order_html;
+    $res['payment_option']       = $payment_option_html;
+    $res['message']              = "Your information has been changed successfully!";
     echo json_encode($res);
     exit;
 }
@@ -5631,13 +5679,32 @@ function calculate_cart_total_tax( $cart ) {
     // Get the first product in the cart
     $first_cart_item = reset( $cart->get_cart() );
     if ( $first_cart_item ) {
-        $product_id = $first_cart_item['product_id'];
-        $product_tax_rate = get_post_meta($product_id, 'tt_meta_taxRate', true);
+        $product_id              = $first_cart_item['product_id'];
+        $product_tax_rate        = floatval( get_post_meta( $product_id, 'tt_meta_taxRate', true ) );
+        $first_product_price     = get_post_meta( $product_id, '_price', true );
+        $first_product_price     = str_replace( ',', '', $first_product_price );
+        $single_supplement_price = floatval( get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true ) );
+        $discount_total          = $cart->get_cart_discount_total();
+        if ( isset( $discount_total ) && ! empty( $discount_total ) && 0 < $discount_total ) {
+            $first_product_price = floatval( $first_product_price ) - floatval( $discount_total );
+        }
         
         if ( $product_tax_rate ) {
+            $total_tax     = 0;
+            $first_product = false;
             foreach ( $cart->get_cart() as $cart_item ) {
-                if ( 'taxable' === $cart_item["data"]->tax_status ) {
+                $item_id            = $cart_item['product_id'];
+                $product_tax_status = get_post_meta( $item_id, '_tax_status', true );
+                if ( 'taxable' === $product_tax_status ) {
+                    $product_price = $cart_item['data']->get_price();
                     $product_price    = $cart_item['data']->get_price();
+                    if ( 73798 === $item_id ) {
+                        $product_price = $single_supplement_price;
+                    }
+                    if ( $product_id === $item_id & $first_product === false ) {
+                        $first_product = true;
+                        $product_price = $first_product_price;
+                    }
                     $product_quantity = $cart_item['quantity'];
                     $product_tax      = ($product_tax_rate / 100) * $product_price * $product_quantity;
                     $total_tax       += $product_tax;
@@ -5671,7 +5738,68 @@ function update_cart_subtotal( $cart_total, $cart ) {
     // Add the calculated tax to the cart subtotal
     $cart_total += $total_tax;
 
+    $trek_user_checkout_data = get_trek_user_checkout_data();
+    $tt_posted               = $trek_user_checkout_data['posted'];
+    $tt_coupon_code          = ( isset( $tt_posted['coupon_code'] ) && $tt_posted['coupon_code'] ? $tt_posted['coupon_code'] : '' );
+    $no_of_guests            = isset( $tt_posted['no_of_guests'] ) ? $tt_posted['no_of_guests'] : 1;
+
+    if ( ! empty( $tt_coupon_code ) && tt_is_coupon_applied( $tt_coupon_code ) ) {
+        $coupon = new WC_Coupon( $tt_coupon_code );
+
+        // Check if the coupon is valid
+        if ( $coupon->is_valid() ) {
+            $coupon_amount = $coupon->get_amount();
+            $coupon_amount = floatval( $coupon_amount );
+        }
+        if ( 1 < $no_of_guests ) {
+            $cart_total -= ( $no_of_guests - 1 ) * $coupon_amount;
+        }
+    }
+
     return $cart_total;
+}
+
+add_action('woocommerce_admin_order_totals_after_tax', 'add_custom_line_before_tax');
+function add_custom_line_before_tax() {
+    global $post;        
+
+    // Check if it's an order edit page
+    if ( get_post_type( $post ) === 'shop_order' ) {
+        $order_id        = $post->ID;
+        $order           = wc_get_order($order_id);
+        $applied_coupons = $order->get_coupon_codes();
+        $first_item      = $order->get_items();
+
+        if ( ! empty( $first_item ) ) {
+            $first_item = reset( $first_item );
+    
+            // Get the quantity of the first product
+            $first_item_quantity = $first_item->get_quantity();
+        }
+
+        foreach ( $applied_coupons as $coupon_code ) {
+            $coupon = new WC_Coupon( $coupon_code );
+
+            // Check if the coupon is valid
+            if ( $coupon->is_valid() ) {
+                $coupon_amount = $coupon->get_amount();
+                $coupon_amount = floatval( $coupon_amount );
+            }
+        }
+        if ( 1 < $first_item_quantity ) {
+            $additional_discount = ( $first_item_quantity - 1 ) * $coupon_amount;
+        }
+        ?>
+        <?php if ( 1 < $first_item_quantity && 0 < $additional_discount ) : ?>
+            <tr>
+                <td class="label"><?php _e('Secondary Guests Discount:', 'trek-travel-them'); ?></td>
+                <td width="1%"></td>
+                <td class="total">
+                    <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">- </span><?php echo wc_price( $additional_discount ); ?></bdi></span>				</td>
+            </tr>
+        <?php endif; ?>
+        <?php
+    }
 }
 
 // Display the updated total tax in the template

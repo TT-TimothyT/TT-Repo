@@ -17,16 +17,20 @@
  */
 
 defined('ABSPATH') || exit;
-$dues = "";
-$future_payment = "null";
-$promo = null;
-$trek_user_checkout_data =  get_trek_user_checkout_data();
-$tt_posted = $trek_user_checkout_data['posted'];
-$tt_coupan_code = (isset($tt_posted['coupon_code']) && $tt_posted['coupon_code'] ? $tt_posted['coupon_code'] : '');
-$product_id = isset($tt_posted['product_id']) ? $tt_posted['product_id'] : '';
-$no_of_guests = isset($tt_posted['no_of_guests']) ? $tt_posted['no_of_guests'] : 1;
+$dues                    = "";
+$future_payment          = "null";
+$promo                   = null;
+$trek_user_checkout_data = get_trek_user_checkout_data();
+$tt_posted               = $trek_user_checkout_data['posted'];
+$tt_coupan_code          = ( isset( $tt_posted['coupon_code'] ) && $tt_posted['coupon_code'] ? $tt_posted['coupon_code'] : '' );
+$applied_coupon          = false;
+if ( ! empty( $tt_coupan_code ) && tt_is_coupon_applied( $tt_coupan_code ) ) {
+    $applied_coupon = true;
+}
+$product_id     = isset( $tt_posted['product_id'] ) ? $tt_posted['product_id'] : '';
+$no_of_guests   = isset( $tt_posted['no_of_guests'] ) ? $tt_posted['no_of_guests'] : 1;
 $accepted_p_ids = tt_get_line_items_product_ids();
-$product_name = $start_date = '';
+$product_name   = $start_date = '';
 foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
     $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
     if (
@@ -116,18 +120,18 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         <hr>
         <div class="checkout-summary__promo">
             <span class="promo">Promo Code</span>
-            <div class="mt-5 d-flex justify-content-between align-items-start promo-form checkout-summary__promo <?php echo ($tt_coupan_code ? 'd-none' : 'd-flex'); ?>">
+            <div class="mt-5 d-flex justify-content-between align-items-start promo-form checkout-summary__promo <?php echo ( $applied_coupon ? 'd-none' : 'd-flex' ); ?>">
                 <div class="form-group form-floating mb-0 w-75">
                     <input type="text" class="input-text form-control rounded-1 promo-input coupon-code-input" name="coupon_code" placeholder="Enter promo code" value="<?php echo $tt_coupan_code; ?>" required>
                     <label>Enter promo code</label>
-                    <div class="invalid-feedback invalid-code">
+                    <div class="invalid-feedback invalid-code" <?php echo ( true !== $applied_coupon && ! empty( $tt_coupan_code ) ? 'style="display: block"' : 'style="display: none"' ) ?>>
                         <img class="invalid-icon" />
                         This code is no longer valid.
                     </div>
                 </div>
                 <button type="button" id="promo-checkout" class="btn btn-primary rounded-1 checkout-summary__submit tt_apply_coupan promo-code-submit" data-action="add" name="Submit" value="Submit">Submit</button>
             </div>
-            <div class="checkout-summary__applied d-flex mt-4 <?php echo ($tt_coupan_code ? 'd-flex' : 'd-none'); ?>">
+            <div class="checkout-summary__applied d-flex mt-4 <?php echo ( $applied_coupon ? 'd-flex' : 'd-none' ); ?>">
                 <p class="fs-md lh-md mb-0">Promo <span class="fw-bold" id="tt-applied-code"><?php echo $tt_coupan_code; ?></span> Applied</p>
                 <a href="javascript:" class="tt_remove_coupan" data-action="remove">Remove</a>
             </div>
@@ -142,15 +146,15 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
                 if (is_string($coupon)) {
                     $coupon = new WC_Coupon($coupon);
                 }
-                $coupan_code = strtoupper($coupon->get_code());
-                $amount               = WC()->cart->get_coupon_discount_amount($coupon->get_code(), WC()->cart->display_cart_ex_tax);
-                $discount_amount_html = wc_price($amount);
-                $discount_type = $coupon->get_discount_type();
-                $coupon_html .= '<div>
-                                        <p class="mb-5" data-coupan="' . esc_attr(sanitize_title($code)) . '">Discount</p>
+                $coupan_code     = strtoupper($coupon->get_code());
+                $amount          = WC()->cart->get_coupon_discount_amount($coupon->get_code(), WC()->cart->display_cart_ex_tax);
+                $discount_amount = floatval( $no_of_guests ) * floatval( $amount );
+                $discount_type   = $coupon->get_discount_type();
+                $coupon_html    .= '<div>
+                                        <p class="mb-5" data-coupan="' . esc_attr( sanitize_title( $code ) ) . '">Discount</p>
                                     </div>
                                     <div class="text-end">
-                                        <p class="fw-medium"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $amount . '</span></p>
+                                        <p class="fw-medium"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $discount_amount . '</span></p>
                                     </div>';
             }
             $coupon_html .= '</div>';

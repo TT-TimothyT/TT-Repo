@@ -33,11 +33,18 @@ $first_item            = reset( $order_items );
 
 if ( $first_item ) {
 	$product_id              = $first_item['product_id'];
-	$product_tax_rate        = get_post_meta( $product_id, 'tt_meta_taxRate', true );
-	$single_supplement_price = get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true );
+	$first_product_price     = get_post_meta( $product_id, '_price', true );
+	$first_product_price     = str_replace( ',', '', $first_product_price );
+	$product_tax_rate        = floatval( get_post_meta( $product_id, 'tt_meta_taxRate', true ) );
+	$single_supplement_price = floatval( get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true ) );
+	$discount_total          = $order->get_discount_total();
+	if ( isset( $discount_total ) && ! empty( $discount_total ) ) {
+		$first_product_price = floatval( $first_product_price ) - floatval( $discount_total );
+	}
 	
 	if ( $product_tax_rate ) {
-		$total_tax = 0;
+		$total_tax     = 0;
+		$first_product = false;
 		foreach ( $order_items as $item ) {
 			$item_id            = $item->get_product_id();
 			$product_tax_status = get_post_meta( $item_id, '_tax_status', true );
@@ -45,6 +52,10 @@ if ( $first_item ) {
 				$product_price = get_post_meta( $item_id, '_price', true );
 				if ( 73798 === $item_id ) {
 					$product_price = $single_supplement_price;
+				}
+				if ( $product_id === $item_id & $first_product === false ) {
+					$first_product = true;
+					$product_price = $first_product_price;
 				}
 				$cleaned_price    = str_replace( ',', '', $product_price );
 				$float_price      = floatval( $cleaned_price );
@@ -197,9 +208,11 @@ if( $insurance_array ){
 		}
 	}
 }
-$guest_emails = trek_get_guest_emails($order_id);
+$guest_emails       = trek_get_guest_emails($order_id);
 $tt_get_upgrade_qty = tt_get_upgrade_qty($trek_checkoutData);
-$dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amount'] == 'full' ? false : true;
+$dues               = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amount'] == 'full' ? false : true;
+$discount_order     = floatval( $discount_total ) * $trek_checkoutData['no_of_guests'];
+
 
 ?>
 <div class="container-fluid order-details__banner d-flex justify-content-end flex-column">
@@ -229,7 +242,7 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 						<div class="w-50">
 							<p class="mb-0 fw-normal order-details__text">Purchase Date</p>
 							<p class="mb-0 fw-normal order-details__text">Confirmation #</p>
-							<p class="mb-0 fw-normal order-details__text">Guests: <small>x<?php echo $trek_checkoutData['no_of_guests']; ?></small></p>
+							<p class="mb-0 fw-normal order-details__text">Guests <small>x<?php echo $trek_checkoutData['no_of_guests']; ?></small></p>
 							<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkoutData['bikeUpgradePrice'] ) { ?>
 							<p class="mb-0 fw-normal order-details__text">Upgrade <small>x<?php echo $tt_get_upgrade_qty; ?></small></p>
 							<?php } ?>
@@ -241,6 +254,9 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<?php } ?>
 							<p class="mb-0 fw-normal order-details__text">Subtotal</p>
 							<p class="mb-0 fw-normal order-details__text">Local Taxes</p>
+							<?php if ( 0 < $discount_order ) : ?>
+								<p class="mb-0 fw-normal order-details__text">Discount</p>
+							<?php endif; ?>
 							<?php if (!empty($dues)) : ?>
 								<p class="mb-0 fw-normal order-details__text">Trip Total</p>
 								<p class="mb-0 mt-1 mt-lg-2 fw-medium order-details__textbold">Amount Paid</p>
@@ -264,6 +280,9 @@ $dues = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amoun
 							<?php } ?>
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_subtotal(); ?></span></p>
 							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $total_tax ); ?></span></p>
+							<?php if ( 0 < $discount_order ) : ?>
+								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $discount_order ); ?></span></p>
+							<?php endif; ?>
 							<?php if (!empty($dues)) : ?>
 								<p class="mb-0 fw-normal order-details__text"><?php echo $cart_totalCurr; ?></p>
 								<p class="mb-0 mt-1 mt-lg-2 fw-medium order-details__textbold"><?php echo $depositAmountCurr; ?></p>

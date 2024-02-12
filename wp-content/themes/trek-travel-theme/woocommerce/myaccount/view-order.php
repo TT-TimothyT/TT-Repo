@@ -103,6 +103,44 @@ foreach ($order_items as $item_id => $item) {
         }
     }
 }
+
+$first_item = reset( $order_items );
+if ( $first_item ) {
+	$product_id              = $first_item['product_id'];
+	$first_product_price     = get_post_meta( $product_id, '_price', true );
+	$first_product_price     = str_replace( ',', '', $first_product_price );
+	$product_tax_rate        = floatval( get_post_meta( $product_id, 'tt_meta_taxRate', true ) );
+	$single_supplement_price = floatval( get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true ) );
+	$discount_total          = $order->get_discount_total();
+	if ( isset( $discount_total ) && ! empty( $discount_total ) ) {
+		$first_product_price = floatval( $first_product_price ) - floatval( $discount_total );
+	}
+	
+	if ( $product_tax_rate ) {
+		$total_tax     = 0;
+		$first_product = false;
+		foreach ( $order_items as $item ) {
+			$item_id            = $item->get_product_id();
+			$product_tax_status = get_post_meta( $item_id, '_tax_status', true );
+			if ( 'taxable' === $product_tax_status ) {
+				$product_price = get_post_meta( $item_id, '_price', true );
+				if ( 73798 === $item_id ) {
+					$product_price = $single_supplement_price;
+				}
+				if ( $product_id === $item_id & $first_product === false ) {
+					$first_product = true;
+					$product_price = $first_product_price;
+				}
+				$cleaned_price    = str_replace( ',', '', $product_price );
+				$float_price      = floatval( $cleaned_price );
+				$product_quantity = $item['quantity'];
+				$product_tax      = ( $product_tax_rate / 100 ) * $float_price * $product_quantity;
+				$total_tax       += $product_tax;
+			}
+		}
+	}
+}
+
 $primary_address_1 = $trek_checkoutData['shipping_address_1'];
 $primary_address_2 = $trek_checkoutData['shipping_address_2'];
 $primary_country = $trek_checkoutData['shipping_country'];
@@ -157,9 +195,43 @@ $trip_information = tt_get_trip_pid_sku_from_cart($order_id);
 $product_image_url = $trip_information['parent_trip_image'];
 //deposite due vars
 $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
+$insuredPerson = isset($trek_checkoutData['insuredPerson']) ? $trek_checkoutData['insuredPerson'] : 0;
+$tt_insurance_total_charges = isset($trek_checkoutData['tt_insurance_total_charges']) ? $trek_checkoutData['tt_insurance_total_charges'] : 0;
+$insurance_array = isset($trek_checkoutData['trek_guest_insurance']) ? $trek_checkoutData['trek_guest_insurance'] : 0;
+$insuredPerson = 0;
+$tt_insurance_total_charges = 0;
+if( $insurance_array ){
+	foreach($insurance_array as $insurance_k=>$insurance_v){
+		if( $insurance_k == 'primary' ){
+			if( $insurance_v['is_travel_protection'] == 1 ){
+				$insuredPerson++;
+				$tt_insurance_total_charges += isset($insurance_v['basePremium']) ? $insurance_v['basePremium'] : 0;
+			}
+		}else{
+			foreach ($insurance_v as $guest_key => $guest_insurance_Data) {
+				if( $guest_insurance_Data['is_travel_protection'] == 1 ){
+					$insuredPerson++;
+					$tt_insurance_total_charges += isset($guest_insurance_Data['basePremium']) ? $guest_insurance_Data['basePremium'] : 0;
+				}
+			}
+		}
+	}
+}
 
-//get the supliment fees
-$supplementFees = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku, true);
+$singleSupplementQty   = $bikeUpgradeQty = 0;
+$occupants             = isset( $trek_checkoutData['occupants'] ) && $trek_checkoutData['occupants'] ? $trek_checkoutData['occupants'] : [];
+$singleSupplementQty  += isset( $occupants['private'] ) && $occupants['private'] ? count($occupants['private']) : 0;
+$singleSupplementQty  += isset( $occupants['roommate'] ) && $occupants['roommate'] ? count($occupants['roommate']) : 0;
+$singleSupplementPrice = isset( $trek_checkoutData['singleSupplementPrice'] ) ? $trek_checkoutData['singleSupplementPrice'] : 0;
+// Calculate the price depends on guest number.
+$supplementFees     = str_ireplace( ',', '', $singleSupplementPrice ); // Strip the , from the price if there's such.
+$calcSupplementFees = floatval( $supplementFees ) * $singleSupplementQty; // Calculate the full price.
+$calcSupplementFees = strval( $calcSupplementFees ); // Get the , back to the string.
+$supplementFees     = number_format( $calcSupplementFees, 2 );
+
+$tt_get_upgrade_qty = tt_get_upgrade_qty( $trek_checkoutData );
+
+$discount_order = floatval( $discount_total ) * $trek_checkoutData['no_of_guests'];
 
 //Get the products from the order
 $products = $order->get_items();
@@ -276,12 +348,42 @@ if( $parent_product_id ){
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="mb-0 fw-normal order-details__text"><?php echo $trip_name; ?> x <?php echo $product_quantity; ?></p>
+                                                        <p class="mb-0 fw-normal order-details__text"><?php echo $trip_name; ?> x <?php echo $trek_checkoutData['no_of_guests']; ?></p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_subtotal(); ?></span></p>
+                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_formatted_line_subtotal( $order_item ); ?></span></p>
                                                     </td>
                                                 </tr>
+                                                <?php if ( 0 < $singleSupplementQty ) : ?>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text">Single Supplement x <?php echo $trek_checkoutData['no_of_guests']; ?></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplementFees; ?></span></p>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
+                                                <?php if ( 0 < $tt_get_upgrade_qty &&  $trek_checkoutData['bikeUpgradePrice'] ) : ?>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text">Upgrade x <?php echo $tt_get_upgrade_qty; ?></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_get_upgrade_qty * $trek_checkoutData['bikeUpgradePrice']; ?></span></p>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
+                                                <?php if ( $insuredPerson > 0 && $tt_insurance_total_charges > 0 ) : ?>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text">Travel Protection x <?php echo $insuredPerson; ?></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_insurance_total_charges; ?></span></p>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
                                                 <tr>
                                                     <td>
                                                         <p class="mb-0 fw-normal order-details__text">Subtotal</p>
@@ -295,15 +397,19 @@ if( $parent_product_id ){
                                                         <p class="mb-0 fw-normal order-details__text">Taxes</p>
                                                     </td>
                                                     <td>
-                                                    <?php
-                                                    $local_tax = $order->get_cart_tax();
-                                                    if ( '0' === $local_tax ) {
-                                                        $local_tax = $order->get_total() - $order->get_subtotal();
-                                                    }
-                                                    ?>
-                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $local_tax; ?></span></p>
+                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $total_tax ); ?></span></p>
                                                     </td>
                                                 </tr>
+                                                <?php if ( 0 < $discount_order ) : ?>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text">Discount x <?php echo $trek_checkoutData['no_of_guests']; ?></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $discount_order ); ?></span></p>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
                                                 <tr class="border-white">
                                                     <td>
                                                         <p class="mb-0 fw-semibold fs-md lh-md">Trip Total</p>
@@ -312,20 +418,19 @@ if( $parent_product_id ){
                                                         <p class="mb-0 fw-semibold fs-md lh-md"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_total(); ?></span></p>
                                                     </td>
                                                 </tr>
-                                                <tr class="border-white">
+                                                <!-- <tr class="border-white">
                                                     <td>
                                                         <p class="mb-0 fw-semibold fs-md lh-md">Remaining Due</p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-semibold fs-md lh-md"><?php echo $remaining_amountCurr; ?></p>
+                                                        <p class="mb-0 fw-semibold fs-md lh-md"><?php // echo $remaining_amountCurr; ?></p>
                                                     </td>
                                                 </tr>
                                                 <tr class="border-white">
                                                     <td class="w-50">
                                                         <p class="mb-0 fs-sm lh-sm fw-normal w-75 order-details__duesp">You will be responsible for paying the remaining amount on your trip before the trip start date. Our team will reach out to collect final payment.</p>
                                                     </td>
-                                                </tr>
-
+                                                </tr> -->
                                             </tbody>
                                         </table>
 
