@@ -98,7 +98,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
     <hr>
     <div class="checkout-payment__options">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-1">Payment Option</h5>
-        <p class="fs-sm checkout-payment__sublabel">Minimum amount required is trip deposit. <a href="#">Learn more about our No-Risk Deposit.</a></p>
+        <p class="fs-sm checkout-payment__sublabel">Minimum amount required is trip deposit. <a href="<?php echo home_url( '/cancellation-policy/' ); ?>" target="_blank">Learn more about our No-Risk Deposit.</a></p>
         <div class="checkout-payment__pay">
             <?php
             $cart_total = WC()->cart->total;

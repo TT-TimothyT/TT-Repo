@@ -146,7 +146,8 @@ $parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_tri
 						<div class="modal-body">
 							<h4 class="fw-semibold modal-body__title">Travel Protection</h4>
 							<p class="fs-lg lh-lg fw-bold mb-4">Please tell us who will be covered in this booking</p>
-							<p class="modal-body__sub">To review full plan details online, please visit: <a href="https://trektravel.com/frequently-asked-questions/travel-insurance/">here</a></p>
+							<p class="modal-body__sub">We can also insure additional trip costs, such as flights and non-refundable hotels. You can learn more on our travel protection page <a href="<?php echo home_url( '/frequently-asked-questions/travel-insurance/' ); ?>"  target="_blank">here</a> or call us at <a href="tel:866-464-8735">866-464-8735</a>.</p>
+							<p class="modal-body__sub">To review full plan details online, please visit: <a href="<?php echo home_url( '/frequently-asked-questions/travel-insurance/' ); ?>" target="_blank">here</a></p>
 							<hr>
 							<!-- <form method="post" name="travel-protection" id="travel-protection"> -->
 							<?php
