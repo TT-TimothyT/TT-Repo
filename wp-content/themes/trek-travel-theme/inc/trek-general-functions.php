@@ -1026,9 +1026,8 @@ function trek_update_trip_checklist_action_cb()
         $is_passport_update = true;
         if ( $is_passport_update == true ) {
             update_user_meta( $user->ID, 'custentity_passport_number', isset( $_REQUEST['passport_number'] ) ? $_REQUEST['passport_number'] : '' );
-            update_user_meta( $user->ID, 'custentity_passport_exp_date', isset( $_REQUEST['passport_issue_date'] ) ? $_REQUEST['passport_issue_date'] : '' );
-            update_user_meta( $user->ID, 'custentity_passport_issue_place', isset( $_REQUEST['passport_expiration_date'] ) ? $_REQUEST['passport_expiration_date'] : '' );
-            update_user_meta( $user->ID, 'custentity_placeofbirth',isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '' );
+            update_user_meta( $user->ID, 'custentity_passport_exp_date', isset( $_REQUEST['passport_expiration_date'] ) ? $_REQUEST['passport_expiration_date'] : '' );
+            update_user_meta( $user->ID, 'custentity_passport_issue_place', isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '' );
             update_user_meta( $user->ID, 'custentity_full_name_on_passport', isset( $_REQUEST['full_name_on_passport'] ) ? $_REQUEST['full_name_on_passport'] : '' );
             $update_to_ns = true;
         }
