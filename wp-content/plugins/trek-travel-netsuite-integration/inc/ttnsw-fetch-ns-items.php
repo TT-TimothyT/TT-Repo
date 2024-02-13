@@ -152,18 +152,19 @@ function tt_admin_menu_page_cb()
     }
     if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'dx-rapair-bookings-table' ) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'guest_bookings';
+        $table_name = $wpdb->prefix . 'netsuite_trip_detail';
+        //$row = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'guestRegistrationId'"  );
 
-        $row = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'guestRegistrationId'"  );
-        
-        if( empty( $row ) ) {
-            $sql[] = "ALTER TABLE {$table_name} ADD guestRegistrationId VARCHAR(100) NULL DEFAULT NULL AFTER ns_trip_booking_id ";
-            if ( $sql ) {
-                foreach ($sql as $alter_query) {
-                    $wpdb->query($alter_query);
-                }
-            }
-        }
+
+        $new_column1_name = 'SmugMugLink';
+        $new_column2_name = 'SmugMugPassword';
+
+        $sql = "ALTER TABLE $table_name ADD COLUMN $new_column1_name VARCHAR(255) AFTER tripSpecificMessage,
+        ADD COLUMN $new_column2_name VARCHAR(255) AFTER $new_column1_name";
+
+        // Execute the query
+        $wpdb->query($sql);
+
     }
 ?>
     <div class="tt-admin-page-div tt-pl-40 tt-mt-30">
@@ -249,11 +250,11 @@ function tt_admin_menu_page_cb()
             <hr>
             <div id="dx-repair-tools">
                 <h3>DX Repair Tools</h3>
-                <p>This process below will add the missing column <code>guestRegistrationId</code> in the <code>guest_bookings</code> table.</p>
+                <p>This process below will add the missing column <code>SmugMugLink</code> and <code>SmugMugPassword</code> in the <code>netsuite_trip_details</code> table.</p>
                 <?php
                     global $wpdb;
-                    $table_name = $wpdb->prefix . 'guest_bookings';
-                    $row = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'guestRegistrationId'"  );
+                    $table_name = $wpdb->prefix . 'netsuite_trip_detail';
+                    $row = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'SmugMugLink'"  );
                 ?>
                 <form action="" class="tt-order-sync" method="post">
                     <input type="hidden" name="action" value="dx-rapair-bookings-table">
