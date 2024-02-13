@@ -126,6 +126,10 @@ $bike_pedal = tt_get_custom_item_name('syncPedals', $pedal_selection);
 $jersey_size = tt_get_custom_item_name('syncJerseySizes', $tt_jersey_size);
 $jersey_style = tt_get_custom_item_name('syncJerseySizes', $jersey_style);
 $tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
+
+$SmugMugLink = tt_get_local_trips_detail( 'SmugMugLink',  '', $trip_sku, true );
+$SmugMugPassword = tt_get_local_trips_detail( 'SmugMugPassword',  '', $trip_sku, true );
+
 $wheel_upgrade = 'No';
 $bike_type_id = $User_order_info[0]['bike_type_id'];
 $bikeTypeInfo = tt_ns_get_bike_type_info( $bike_type_id );
@@ -283,19 +287,23 @@ if( $parent_product_id ){
 		</div>
 	</div> <!-- row ends -->
 
-	<div class="row mx-0 p-0 trip-photo-album">
-		<div class="col-lg-10">
-			<div class="card dashboard__card rounded-1">
-				<img src="/wp-content/themes/trek-travel-theme/assets/images/photo-album.png">
-				<div class="photo-album-text">
-					<h5 class="fw-semibold">Trek Travel Photo Album</h5>
-					<p class="fw-normal fs-sm lh-sm">View, download, or purchase photos from your trip.</p>
-					<p class="fw-normal fs-sm lh-sm">Password to access: <strong>Costabrava23</strong></p>
+	<?php if( ! empty( $SmugMugLink ) ) { ?>
+		<div class="row mx-0 p-0 trip-photo-album">
+			<div class="col-lg-10">
+				<div class="card dashboard__card rounded-1">
+					<img src="/wp-content/themes/trek-travel-theme/assets/images/photo-album.png">
+					<div class="photo-album-text">
+						<h5 class="fw-semibold">Trek Travel Photo Album</h5>
+						<p class="fw-normal fs-sm lh-sm">View, download, or purchase photos from your trip.</p>
+						<?php if( ! empty( $SmugMugPassword ) ) { ?>
+							<p class="fw-normal fs-sm lh-sm">Password to access: <strong><?php echo $SmugMugPassword; ?></strong></p>
+						<?php } ?>
+					</div>
+					<a href=<?php echo $SmugMugLink; ?>><button class="btn btn-md btn-secondary btn-outline-dark rounded-1">View photos</button></a>
 				</div>
-				<button class="btn btn-md btn-secondary btn-outline-dark rounded-1">View photos</button>
 			</div>
-		</div>
-	</div> <!-- row ends -->
+		</div> <!-- row ends -->
+	<?php } ?>
 
 	<div class="row mx-0 my-lg-5">
 		<div class="col-lg-10">

@@ -135,7 +135,9 @@ if (!function_exists('tt_sync_ns_trip_details')) {
                             'hotels' => json_encode($trek_trip_detail->hotels),
                             'bikes' => json_encode($trek_trip_detail->bikes),
                             'addOns' => json_encode($trek_trip_detail->addOns),
-                            'tripSpecificMessage' => $trek_trip_detail->tripSpecificMessage
+                            'tripSpecificMessage' => $trek_trip_detail->tripSpecificMessage,
+                            'SmugMugLink'  => $trek_trip_detail->smugMugLink,
+                            'SmugMugPassword' => $trek_trip_detail->smugMugPasscode
                         );
                         $check_trip = tt_get_trip_by_idCode($table_name, $trek_trip_detail->tripId, $trek_trip_detail->tripCode);
                         if ($check_trip >= 1) {
