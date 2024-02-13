@@ -1089,7 +1089,8 @@ if( !empty( $confirmed_info_unserialized ) ) {
 					</div>
 					<!-- accordion-item ends -->
 					<?php $fit_review_string = 'Tell us your bike fit information'; ?>
-						<?php if( $lockedUserBike ) { ?>
+					<?php $gray_out = ''; ?>
+						<?php if( $lockedUserRecord ) { ?>
 							<?php $fit_review_string = 'Review your bike fit information'; ?>
 							<?php $gray_out = 'disabled style="color: #666666;"'; ?>
 						<?php } ?>
@@ -1104,7 +1105,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						<form name="tt-checklist-form-gear-optional-section" method="post" novalidate>
 							<div id="flush-collapse-gearInfo-optional" class="accordion-collapse collapse" aria-labelledby="flush-heading-gearInfo-optional">
 								<div class="accordion-body px-0">
-									<?php if( $lockedUserBike ) { ?>
+									<?php if( $lockedUserRecord ) { ?>
 										<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
 											<div class="checkout-bikes__notice-icon">
 												<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
@@ -1140,7 +1141,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 											</div>
 										</div>
 									</div>
-									<?php if ( $lockedUserBike != 1 ) { ?>
+									<?php if ( $lockedUserRecord != 1 ) { ?>
 										<div class="form-check form-check-inline mb-0">
 											<input <?php echo $gray_out; ?> class="form-check-input" type="checkbox" name="tt_save_gear_info_optional" id="inlineCheck5" value="yes">
 											<label class="form-check-label" for="inlineCheck5">Save this information for future use. This will override any existing information you have saved on your account. </label>
