@@ -4780,3 +4780,93 @@ function handleScroll() {
 jQuery(window).scroll(function() {
   handleScroll();
 });
+
+// Add event listener when the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", function() {
+    // Get the input element
+    var saddleHeight = document.getElementById("saddle_height");
+    var barReach = document.getElementById("bar_reach");
+    var barHeight = document.getElementById("bar_height");
+  //Loop for each input
+
+
+    // Add input event listener
+    saddleHeight.addEventListener("input", function() {
+        // Call the validateInput function
+        validateInput(this);
+    });
+
+    saddleHeight.addEventListener("keyup", function() {
+        // Call the roundInput function
+        //Wait for 0.5 seconds before calling the roundInput function
+        setTimeout(function() {
+            roundInput(saddleHeight);
+        }
+        , 300);
+    });
+
+    // Add input event listener
+    barReach.addEventListener("input", function() {
+        // Call the validateInput function
+        validateInput(this);
+    });
+
+    barReach.addEventListener("keyup", function() {
+        // Call the roundInput function
+        //Wait for 0.5 seconds before calling the roundInput function
+        setTimeout(function() {
+            roundInput(barReach);
+        }
+        , 300);
+    });
+
+    // Add input event listener
+    barHeight.addEventListener("input", function() {
+        // Call the validateInput function
+        validateInput(this);
+    });
+
+    barHeight.addEventListener("keyup", function() {
+        // Call the roundInput function
+        //Wait for 0.5 seconds before calling the roundInput function
+        setTimeout(function() {
+            roundInput(barHeight);
+        }
+        , 300);
+    });
+});
+
+function validateInput(input) {
+    // Remove non-numeric characters except for periods (decimal points)
+    input.value = input.value.replace(/[^0-9.]/g, '');
+
+    // Ensure only one decimal point is present
+    var decimalCount = (input.value.match(/\./g) || []).length;
+    if (decimalCount > 1) {
+        // Remove excess decimal points
+        input.value = input.value.replace(/\.(?=.*\.)/g, '');
+    }
+}
+
+function roundInput(input) {
+  // Round to the closest first digit after the decimal point
+  var dotIndex = input.value.indexOf('.');
+  if (dotIndex !== -1 && dotIndex < input.value.length - 2) {
+      var secondDigit = parseInt(input.value.charAt(dotIndex + 2));
+      if (secondDigit >= 5) {
+          // Round up using Number.EPSILON
+          var floatValue = parseFloat(input.value);
+          floatValue = Math.round((floatValue + Number.EPSILON) * 10) / 10;
+
+          // Set the input value to the rounded up value
+          input.value = floatValue.toFixed(1);
+      } else {
+          // Round down
+          var floatValue = parseFloat(input.value);
+          floatValue = Math.floor((floatValue + Number.EPSILON) * 10) / 10;
+
+          // Set the input value to the rounded down value
+          input.value = floatValue.toFixed(1);
+      }
+  }
+}

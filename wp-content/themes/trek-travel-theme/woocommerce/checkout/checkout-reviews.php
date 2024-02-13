@@ -204,7 +204,7 @@ $primary_guest_country_name = WC()->countries->countries[$primary_country];
                     if( !empty( $syncJerseySizes ) && ! is_array( $syncJerseySizes )  && '-' != $syncJerseySizes ) {
                         $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>';
                     }
-                    $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
+                    // $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
                 }
                 $review_bikes_html .= '</div>';
                 if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
