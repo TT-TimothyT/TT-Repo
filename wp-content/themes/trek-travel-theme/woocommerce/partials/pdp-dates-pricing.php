@@ -31,7 +31,7 @@ function getWebDispalyStatus($status){
         "Sales Hold" => "Limited Availability",
         "Group Hold" => "Limited Availability",
         "Limited Availability" => "Limited Availability",
-        "Sold Out" => "Join Waitlist"
+        "SOLD OUT" => "Join Waitlist"
     ];
     if (array_key_exists($status,$webDispalyArr)){
         return $webDispalyArr[$status];
@@ -162,7 +162,7 @@ if( $available_child_products ) {
                                     <div class="pvt-box">
                                         <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'</span>
                                         <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
-                                        <span class="ms-auto fw-medium fs-sm lh-sm">Date Reserved</span>
+                                        <span class="ms-auto fw-medium fs-sm lh-sm">Reserved</span>
                                     </div>
                                 </h6>
                             <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">

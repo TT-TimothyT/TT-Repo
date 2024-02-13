@@ -109,7 +109,7 @@ if ( $pdp_itineraries ) :
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
                                                             <img class="align-self-start" src="<?php echo get_template_directory_uri(); ?>/assets/images/location.png">
                                                             <div class="accordion-item-ad__sub">
-                                                                <p class="mb-0 d-inline d-lg-block fw-medium">Pick-up location<span class="d-inline d-lg-none">: </span></p>
+                                                                <p class="mb-0 d-inline d-lg-block fw-medium">Drop-off location<span class="d-inline d-lg-none">: </span></p>
                                                                 <p class="mb-0 d-inline d-lg-block departure-details"><?php echo $departureArray['departure_pickup_location']; ?></p>
                                                             </div>
                                                         </div>
