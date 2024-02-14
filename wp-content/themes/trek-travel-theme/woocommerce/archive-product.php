@@ -765,8 +765,8 @@ $emptyBlockContent .= '</div></div>';
                         container: document.querySelector('#hierarchical-menu'),
                         separator: ' > ',
                         attributes: [
-                            'taxonomies_custom.product_cat.lvl0',
-                            'taxonomies_custom.product_cat.lvl1'
+                            'taxonomies.pa_country',
+                            'taxonomies.pa_city'
                         ],
                         limit: 5,
                         showMoreLimit: 10,
