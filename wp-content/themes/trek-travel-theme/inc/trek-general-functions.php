@@ -732,30 +732,17 @@ function tt_update_trip_checklist_ns_cb( $order_id, $ns_user_id, $user, $ns_user
         return;
     }
 
-    $net_suite_client = new NetSuiteClient();
-    $ns_booking_info  = tt_get_ns_booking_details_by_order( $order_id, $user );
-    $booking_id       = $ns_booking_info['booking_id'];
+    $net_suite_client      = new NetSuiteClient();
+    $ns_booking_info       = tt_get_ns_booking_details_by_order( $order_id, $user );
+    $booking_id            = $ns_booking_info['booking_id'];
+    $guest_registration_id = $ns_booking_info['guest_registration_id'];
 
-    if ( $booking_id ) {
-        $booking_info   = $net_suite_client->get( '1304:2', array( 'bookingId' => $booking_id ));
-        $booking_guests = isset( $booking_info->guests ) && $booking_info->guests ? $booking_info->guests : array();
+    if ( $booking_id && $guest_registration_id ) {
 
-        if ( $booking_guests ) {
+        $ns_user_booking_args['registrationId'] = $guest_registration_id;
+        $ns_posted_booking_info                 = $net_suite_client->post( '1292:2', json_encode( $ns_user_booking_args ) );
 
-            foreach ( $booking_guests as $booking_guest ) {
-
-                $guest_id = $booking_guest->guestId;
-
-                if ( $guest_id == $ns_user_id ) {
-
-                    $registration_id                        = $booking_guest->registrationId;
-                    $ns_user_booking_args['registrationId'] = $registration_id;
-                    $ns_posted_booking_info                 = $net_suite_client->post( '1292:2', json_encode( $ns_user_booking_args ) );
-
-                    tt_add_error_log( '[SuiteScript:1292] - Post booking', $ns_user_booking_args, $ns_posted_booking_info );
-                }
-            }
-        }
+        tt_add_error_log( '[SuiteScript:1292] - Post booking', $ns_user_booking_args, $ns_posted_booking_info );
 
     } else {
         tt_add_error_log( '[WP] - No Guest Booking ID found', array( 'ns_user_id' => $ns_user_id, 'user_email' => $user['data']['user_email'], 'order_id' => $order_id, 'wp_user_id' => $user['ID'] ), array( 'ns_booking_info' => $ns_booking_info ) );
@@ -780,8 +767,9 @@ function trek_update_trip_checklist_action_cb()
     );
     $user                = wp_get_current_user();
     $user_order_info     = trek_get_user_order_info( $user->ID, isset( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : '' );
-    $guest_is_primary    = isset( $user_order_info[0]['guest_is_primary']) ? $user_order_info[0]['guest_is_primary'] : '';
-    $guest_email_address = isset( $user_order_info[0]['guest_email_address']) ? $user_order_info[0]['guest_email_address'] : '';
+    $guest_is_primary    = isset( $user_order_info[0]['guest_is_primary'] ) ? $user_order_info[0]['guest_is_primary'] : '';
+    $guest_email_address = isset( $user_order_info[0]['guest_email_address'] ) ? $user_order_info[0]['guest_email_address'] : '';
+    $waiver_signed       = isset( $user_order_info[0]['waiver_signed'] ) ? $user_order_info[0]['waiver_signed'] : false;
 
     // One of those medical_section, emergency_section, gear_section, passport_section, bike_section, gear_optional_section.
     $confirmed_section   = isset( $_REQUEST['confirmed_section'] ) ? $_REQUEST['confirmed_section'] : '';
@@ -833,6 +821,18 @@ function trek_update_trip_checklist_action_cb()
         // Collect only confirmed data.
         $booking_data         = array();
         $ns_user_booking_data = array();
+
+        // Data for NS.
+        $ns_user_booking_data['waiverAccepted'] = true;
+
+        // We keep waiver signed status into guest_bookings table only.
+        if( 1 != $guest_is_primary ) {
+            // If guest is not primary, need to check waiver signed status.
+            if( 1 != $waiver_signed ) {
+                // Waiver not signed. Need to send false to NS.
+                $ns_user_booking_data['waiverAccepted'] = false;
+            }
+        }
 
         // If the confirmed section is 'medical_section', add medical data.
         if( $is_section_confirmed['medical_section'] ) {
@@ -1075,7 +1075,7 @@ function trek_update_trip_checklist_action_cb()
         $res['booking_data'] = $booking_data;
         $res['where']        = $where;
         $res['message']      = "Your Checklist information has been changed successfully!";
-        $res['is_primary']   = $guest_is_primary && $guest_is_primary == 1 ? true: false;
+        $res['is_primary']   = $guest_is_primary && $guest_is_primary == 1 ? true : false;
         tt_add_error_log('Post booking Log', $res, ['user_id' => $user->ID,'ns_user_id' => $ns_user_id, 'date' => date('Y-m-d H:i:s')]);
     }
     echo json_encode($res);
@@ -5270,6 +5270,7 @@ function tt_get_waiver_status($order_id=""){
 
 /**
  * Take waiver information from NS and generate a waiver link for signing document.
+ * Store waiver signed status info into the `guest_bookings` table.
  *
  * @uses NetSuiteClient
  * @uses NS Script 1304 - This script returns in the same time guests and release forms information for the guests in the given booking.
@@ -5277,34 +5278,53 @@ function tt_get_waiver_status($order_id=""){
  * this plugin save in users meta the ns_customer_internal_id value, during users registration.
  * 
  * @param string|int $ns_booking_id The booking ID. We take it from post meta for given order ID with meta key `tt_meta_guest_booking_id`
+ * @param string|int $order_id The Order ID.
  * 
  * @return array A waiver document link for the current user and waiver accepted status.
  */
-function tt_get_waiver_info( $ns_booking_id ){
-    $netSuiteClient = new NetSuiteClient();
-    $waiverAccepted = false;
-    $user = wp_get_current_user();
-    $ns_user_id = get_user_meta($user->ID, 'ns_customer_internal_id', true);
-    $waiver_info = array(
-        'waiver_link' => '',
+function tt_get_store_waiver_info( $ns_booking_id, $order_id ) {
+    $net_suite_client = new NetSuiteClient();
+    $user             = wp_get_current_user();
+    $ns_user_id       = get_user_meta( $user->ID, 'ns_customer_internal_id', true );
+    $waiver_info      = array(
         'waiver_accepted' => false
     );
-    if ($ns_user_id) {
+    if ( $ns_user_id ) {
 
-        if ($ns_booking_id) {
-            $booking_info = $netSuiteClient->get('1304:2', array('bookingId' => $ns_booking_id));
-            $booking_release_forms = isset($booking_info->releaseForms) && $booking_info->releaseForms ? $booking_info->releaseForms : [];
-            if ($booking_release_forms) {
-                foreach ($booking_release_forms as $booking_release_form) {
+        if ( $ns_booking_id ) {
+            $booking_info          = $net_suite_client->get( '1304:2', array( 'bookingId' => $ns_booking_id ) );
+            $booking_release_forms = isset( $booking_info->releaseForms ) && $booking_info->releaseForms ? $booking_info->releaseForms : [];
+            if ( $booking_release_forms ) {
+                foreach ( $booking_release_forms as $booking_release_form ) {
                     $guest_id = $booking_release_form->guestId;
-                    if ($guest_id == $ns_user_id) {
-                        $waiver_info['waiver_link'] = add_query_arg(
-                            array(
-                                'custpage_releaseFormId' => $booking_release_form->releaseFormId
-                            ),
-                            TT_WAIVER_URL
-                        );
+                    if ( $guest_id == $ns_user_id ) {
                         $waiver_info['waiver_accepted'] = $booking_release_form->releaseFormAccepted;
+
+                        // Store waiver signed status.
+                        global $wpdb;
+                        $table_name          = $wpdb->prefix . 'guest_bookings';
+                        $user_order_info     = trek_get_user_order_info( $user->ID, isset( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : '' );
+                        $guest_email_address = isset( $user_order_info[0]['guest_email_address'] ) ? $user_order_info[0]['guest_email_address'] : '';
+                        
+                        // Collect booking data.
+                        $booking_data                  = array();
+                        $booking_data['modified_at']   = date('Y-m-d H:i:s');
+                        $booking_data['waiver_signed'] = $booking_release_form->releaseFormAccepted == 1 ? 1 : 0;
+
+                        // Create where clause.
+                        $where['order_id']             = $order_id;
+                        if( $guest_email_address ) {
+                            $where['guest_email_address'] = $user->user_email;
+                        } else {
+                            if( $user->ID ){
+                                $where['user_id'] = $user->ID;
+                            }
+                        }
+                        $is_updated                      = $wpdb->update( $table_name, $booking_data, $where );
+                        $waiver_info['status']           = $is_updated;
+                        $waiver_info['wpdb->last_query'] = $wpdb->last_query;
+                        $waiver_info['booking_data']     = $booking_data;
+                        $waiver_info['where']            = $where;
                     }
                 }
             }
@@ -5325,10 +5345,14 @@ function tt_ajax_get_waiver_info(){
         'waiver_accepted' => false,
         'waiver_signed_html' => '<p class="fw-medium fs-lg lh-lg status-signed">Signed</p><p class="fw-normal fs-sm lh-sm">You\'re all set here!</p>'
     );
-    if( isset( $_POST['ns-booking-id'] ) && !empty( $_POST['ns-booking-id'] ) ) {
-        $waiver_info = tt_get_waiver_info( $_POST['ns-booking-id'] );
-        if( $waiver_info['waiver_accepted'] ){
-            $res['waiver_accepted'] = true;
+
+    if( isset( $_POST['ns-booking-id'] ) && ! empty( $_POST['ns-booking-id'] ) && isset( $_POST['order-id'] ) && ! empty( $_POST['order-id'] )) {
+        $waiver_info        = tt_get_store_waiver_info( $_POST['ns-booking-id'], $_POST['order-id'] );
+        $res['waiver_info'] = $waiver_info;
+        if( isset( $waiver_info['waiver_accepted'] ) ) {
+            if( $waiver_info['waiver_accepted'] == 1 ) {
+                $res['waiver_accepted'] = true;
+            }
         }
     }
 
@@ -5345,7 +5369,7 @@ function tt_trigger_cron_ns_guest_booking_details_cb($single_req,$ns_user_id, $w
     tt_add_error_log('[End] - Adding Trips', ['ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id], ['dateTime' => date('Y-m-d H:i:s')]);
 }
 function tt_get_ns_booking_details_by_order( $order_id, $user_info = null ){
-    $releaseFormId = $booking_id = $waiver_link = "";
+    $release_form_id = $booking_id = $waiver_link = "";
 
     if( ! empty( $user_info ) ) {
         // If we have $user_info as a non-empty argument, take the user object from there.
@@ -5355,28 +5379,31 @@ function tt_get_ns_booking_details_by_order( $order_id, $user_info = null ){
         $userInfo = wp_get_current_user();
     }
 
-    $user_order_info = trek_get_user_order_info($userInfo->ID, $order_id);
-    if( isset($user_order_info[0]['releaseFormId']) && $user_order_info[0]['releaseFormId'] ){
-        $releaseFormId = $user_order_info[0]['releaseFormId'];
-    }else{
-        $releaseFormId = get_post_meta($order_id, TT_WC_META_PREFIX.'releaseFormId', true);
+    $user_order_info = trek_get_user_order_info( $userInfo->ID, $order_id );
+    if( isset( $user_order_info[0]['releaseFormId'] ) && $user_order_info[0]['releaseFormId'] ) {
+        $release_form_id = $user_order_info[0]['releaseFormId'];
+    } else {
+        $release_form_id = get_post_meta( $order_id, TT_WC_META_PREFIX . 'releaseFormId', true );
     }
-    if( isset($user_order_info[0]) && isset($user_order_info[0]['ns_trip_booking_id']) && $user_order_info[0]['ns_trip_booking_id'] ){
+    if( isset( $user_order_info[0] ) && isset( $user_order_info[0]['ns_trip_booking_id'] ) && $user_order_info[0]['ns_trip_booking_id'] ) {
         $booking_id = $user_order_info[0]['ns_trip_booking_id'];
-    }else{
-        $booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', true);
+    } else {
+        $booking_id = get_post_meta( $order_id, TT_WC_META_PREFIX . 'guest_booking_id', true );
     }
-    $waiver_link = add_query_arg(
-        array(
-            'custpage_releaseFormId' => $releaseFormId
-        ),
-        TT_WAIVER_URL
+    if( ! empty( $release_form_id ) ) {
+        $waiver_link = add_query_arg(
+            array(
+                'custpage_releaseFormId' => $release_form_id
+            ),
+            TT_WAIVER_URL
+        );
+    }
+    return array(
+        'booking_id'            => $booking_id,
+        'releaseFormId'         => $release_form_id,
+        'waiver_link'           => $waiver_link,
+        'guest_registration_id' => $user_order_info[0]['guestRegistrationId']
     );
-    return [
-        'booking_id' => $booking_id,
-        'releaseFormId' => $releaseFormId,
-        'waiver_link' => $waiver_link
-    ];
 }
 
 add_filter( 'woocommerce_registration_error_email_exists', 'woocommerce_registration_error_email_exists_cb');

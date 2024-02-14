@@ -173,7 +173,6 @@ if( $parent_product_id ){
 
 $isPassportRequired = get_post_meta($booked_trip_id, TT_WC_META_PREFIX . 'isPassportRequired', true);
 $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', true);
-$waiver_info = tt_get_waiver_info($ns_booking_id);
 
 $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat' );
 $hideJerseyForTrips = [ 710, 744, 712, 713 ];
@@ -1170,7 +1169,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 			<div class="col-lg-10 waiver-col">
 				<div class="card dashboard__card rounded-1">
 					<p class="fw-medium fs-xl lh-xl">Trip Waiver Status</p>
-					<?php if ( $waiver_info['waiver_accepted'] == 1 ) {  ?>
+					<?php if ( $waiver_signed == 1 ) {  ?>
 						<p class="fw-medium fs-lg lh-lg status-signed">Signed</p>
 						<p class="fw-normal fs-sm lh-sm">You're all set here!</p>
 					<?php } else { ?>
@@ -1201,7 +1200,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 </div>
 <!-- Begin: Travel Waiver modal form  -->
 <!-- Modal -->
-<div class="modal fade modal-search-filter" id="waiver_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-ns-booking-id="<?php echo esc_attr( $ns_booking_id ); ?>">
+<div class="modal fade modal-search-filter" id="waiver_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-ns-booking-id="<?php echo esc_attr( $ns_booking_id ); ?>" data-order-id="<?php echo esc_attr( $order_id ); ?>">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -1211,8 +1210,8 @@ if( !empty( $confirmed_info_unserialized ) ) {
 				</span>
 			</div>
 			<div class="modal-body" style="padding: 0;">
-				<?php if( !empty( $waiver_info['waiver_link'] ) ) : ?>
-					<iframe src="<?php echo esc_url( $waiver_info['waiver_link'] ); ?>" width="100%" height="350"></iframe>
+				<?php if( !empty( $waiver_link ) ) : ?>
+					<iframe src="<?php echo esc_url( $waiver_link ); ?>" width="100%" height="350"></iframe>
 				<?php else : ?>
 					<p class="p-4"><?php echo esc_html('Please check again later!'); ?></p>
 				<?php endif; ?>

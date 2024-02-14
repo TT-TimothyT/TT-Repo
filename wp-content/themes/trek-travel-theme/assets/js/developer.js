@@ -4201,11 +4201,12 @@ jQuery('body').on('click', '.checkout-double-occupancy', function() {
 // Check waiver status, after the modal with the waiver document close.
 jQuery( '#waiver_modal' ).on( 'hidden.bs.modal', function () {
   const nsBookingId = this.dataset.nsBookingId;
+  const orderId = this.dataset.orderId;
   const action = 'tt_ajax_get_waiver_info_action';
   jQuery.ajax({
     type: 'POST',
     url: trek_JS_obj.ajaxURL,
-    data: "action=" + action + "&ns-booking-id=" + nsBookingId,
+    data: "action=" + action + "&ns-booking-id=" + nsBookingId + "&order-id=" + orderId,
     dataType: 'json',
     beforeSend: function () {
       // Set loader.
