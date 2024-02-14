@@ -36,7 +36,7 @@ get_header();
                                 <p class="fw-normal fs-lg lh-lg">Showing Results for “<span id="searchTerm"><?php echo $_GET['wp_searchable_posts']['query'] ?></span>”</p>
                             </div>
                             
-                            <div id="search-nav-tabs" class="my-4">
+                            <div style="display: none;"  id="search-nav-tabs" class="my-4">
                                 <nav>
                                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
 
