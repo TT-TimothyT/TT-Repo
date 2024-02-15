@@ -1790,7 +1790,7 @@ function tt_checkbooking_status( $ns_user_id, $ns_order_id ) //old - $ns_user_id
     if( $ns_order_id ){
         $sql .= " AND gb.ns_trip_booking_id = {$ns_order_id} ";
     }
-    if( $ns_order_id || $ns_user_id ){
+    if( $ns_order_id && $ns_user_id ){
         $results = $wpdb->get_results($sql, ARRAY_A);
     }else{
         $results = [];

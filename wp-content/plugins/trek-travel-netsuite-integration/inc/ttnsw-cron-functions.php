@@ -629,14 +629,15 @@ if (!function_exists('tt_sync_custom_items')) {
  * @version : 1.0.0
  * @return  : tt_ns_get_last_modified_gustes Array([0] => 1522426 [1] => 2107076 )
  **/
-if (!function_exists('tt_ns_get_last_modified_gustes')) {
-    function tt_ns_get_last_modified_gustes()
+if ( ! function_exists( 'tt_ns_get_last_modified_gustes' ) ) {
+    function tt_ns_get_last_modified_gustes( $time_range = DEFAULT_TIME_RANGE )
     {
-        $modifiedAfter = date('Y-m-d H:i:s', strtotime(' -24 hours'));
-        $modifiedAfterTime = gmdate("Y-m-d\TH:i:s", strtotime($modifiedAfter));
-        $netSuiteClient = new NetSuiteClient();
-        $modified_guest_ids = $netSuiteClient->get('1306:2', ['modifiedAfter' => $modifiedAfterTime ]);
-        //tt_add_error_log('NS - modified_guest_ids', ['modifiedAfter' => $modifiedAfterTime ], $modified_guest_ids);
+        $modified_after      = date( 'Y-m-d H:i:s', strtotime( $time_range ) );
+        $modified_after_time = gmdate( "Y-m-d\TH:i:s", strtotime( $modified_after ) );
+        $net_suite_client    = new NetSuiteClient();
+        $modified_guest_ids  = $net_suite_client->get( GUESTS_TO_SYNC_SCRIPT_ID, array( 'modifiedAfter' => $modified_after_time ) );
+        tt_add_error_log( 'NS - modified_guest_ids: ' . GUESTS_TO_SYNC_SCRIPT_ID, array( 'modified_after' => $modified_after, 'modified_after_time' => $modified_after_time ), $modified_guest_ids );
+
         return $modified_guest_ids;
     }
 }
@@ -646,7 +647,7 @@ if (!function_exists('tt_ns_get_last_modified_gustes')) {
  * @return  : tt_ns_guest_booking_details
  **/
 if (!function_exists('tt_ns_guest_booking_details')) {
-    function tt_ns_guest_booking_details( $single_guest = false, $ns_new_guest_id = '', $wc_user_id = '' )
+    function tt_ns_guest_booking_details( $single_guest = false, $ns_new_guest_id = '', $wc_user_id = '', $time_range = DEFAULT_TIME_RANGE, $is_sync_process = false )
     {
         global $wpdb;
         $table_name       = $wpdb->prefix . 'guest_bookings';
@@ -655,9 +656,10 @@ if (!function_exists('tt_ns_guest_booking_details')) {
 
         if( $single_guest == false ) {
             // This is a manual sync from Dashboard with action - NS<>WC Booking Sync.
-            // Needs improvements, because sync bookings without orders in WC and last modified guests have ancient trips.
-            $guest_ids = tt_ns_get_last_modified_gustes();
+            $guest_ids = tt_ns_get_last_modified_gustes( $time_range );
         } else {
+            // This is a manual sync from Dashboard with action - Manual Single Guest Bookings/Preferences Sync from NS to WC
+            // or during user registration.
             if( $ns_new_guest_id && is_numeric( $ns_new_guest_id ) ) {
                 $guest_ids = array( $ns_new_guest_id );
             }
@@ -677,6 +679,84 @@ if (!function_exists('tt_ns_guest_booking_details')) {
             if( ! $ns_guest_booking_result || ! isset( $ns_guest_booking_result->bookings ) ) {
                 continue;
             }
+
+            // Before collect guest preferences, check for wp user existing.
+            $ns_guest_email = isset( $ns_guest_booking_result->email ) ? $ns_guest_booking_result->email : '';
+            $wp_user        = get_user_by( 'email', $ns_guest_email );
+            $wp_user_id     = $wp_user->ID;
+
+            // If we have wp user.
+            // The check for $is_sync_process prevents override information during the booking process.
+            if( ! empty( $wp_user_id ) && 'true' == $is_sync_process ) {
+
+                // Take NS Guest Preferences.
+                $ns_guest_preferences = array(
+                    // Collect Personal Information.
+                    'first_name'              => isset( $ns_guest_booking_result->firstname ) ? $ns_guest_booking_result->firstname : '',
+                    'last_name'               => isset( $ns_guest_booking_result->lastname ) ? $ns_guest_booking_result->lastname : '',
+                    'billing_phone'           => isset( $ns_guest_booking_result->phone ) ? $ns_guest_booking_result->phone : '',
+                    'custentity_phone_number' => isset( $ns_guest_booking_result->phone ) ? $ns_guest_booking_result->phone : '',
+                    'custentity_birthdate'    => isset( $ns_guest_booking_result->birthdate ) ? date( 'm/d/Y', strtotime( $ns_guest_booking_result->birthdate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
+                    'custentity_gender'       => isset( $ns_guest_booking_result->gender->id ) ? $ns_guest_booking_result->gender->id : '',
+    
+                    // Collect Medical Information.
+                    'custentity_medications'         => isset( $ns_guest_booking_result->medications ) ? $ns_guest_booking_result->medications : '',
+                    'custentity_allergies'           => isset( $ns_guest_booking_result->allergies ) ? $ns_guest_booking_result->allergies : '',
+                    'custentity_medicalconditions'   => isset( $ns_guest_booking_result->medicalconditions ) ? $ns_guest_booking_result->medicalconditions : '',
+                    'custentity_dietaryrestrictions' => isset( $ns_guest_booking_result->dietaryrestrictions ) ? $ns_guest_booking_result->dietaryrestrictions : '',
+
+                    // Collect Emergency Contact.
+                    'custentity_emergencycontactfirstname'    => isset( $ns_guest_booking_result->emergencyContactPrimFirstName ) ? $ns_guest_booking_result->emergencyContactPrimFirstName : '',
+                    'custentityemergencycontactlastname'      => isset( $ns_guest_booking_result->emergencyContactPrimLastName ) ? $ns_guest_booking_result->emergencyContactPrimLastName : '',
+                    'custentity_emergencycontactphonenumber'  => isset( $ns_guest_booking_result->emergencyContactPrimPhone ) ? $ns_guest_booking_result->emergencyContactPrimPhone : '',
+                    'custentity_emergencycontactrelationship' => isset( $ns_guest_booking_result->emergencyContactPrimRelationship ) ? $ns_guest_booking_result->emergencyContactPrimRelationship : '',
+
+                    // Collect Communication Preferences.
+                    'custentity_contactmethod'              => isset( $ns_guest_booking_result->preferredContactMethod->id ) ? $ns_guest_booking_result->preferredContactMethod->id : '',
+
+                    // These two fields below are not clear for what are they.
+                    // 'custentity_addtotrektravelmailinglist' => isset( $ns_guest_booking_result->addToMailList->id ) ? $ns_guest_booking_result->addToMailList->id : '', // Example response - "addToEmailList": { "id": "2", "name": "Soft Opt-Out" } or "addToEmailList": { "id": "1", "name": "Soft Opt-In" }
+                    // 'globalsubscriptionstatus'              => isset( $ns_guest_booking_result->addToEmailList->id ) ? $ns_guest_booking_result->addToEmailList->id : '', // Example response - "addToMailList": { "id": "1", "name": "Yes" },
+
+                    // Collect Bike & Gear Preferences
+                    // TODO: Bike type field mapping. One of the listed bellow.
+                    // 'gear_preferences_bike'       => isset( $ns_guest_booking_result->bikeSelect ) ? $ns_guest_booking_result->bikeSelect : '', // this is a bike id in user meta.
+                    // 'gear_preferences_bike_type'  => isset( $ns_guest_booking_result->bikeSelect ) ? $ns_guest_booking_result->bikeSelect : '', // this is a bike type id in user meta.
+                    'gear_preferences_rider_height'  => isset( $ns_guest_booking_result->height->id ) ? $ns_guest_booking_result->height->id : '',
+                    'gear_preferences_select_pedals' => isset( $ns_guest_booking_result->pedalSelect->id ) ? $ns_guest_booking_result->pedalSelect->id : '',
+                    'gear_preferences_helmet_size'   => isset( $ns_guest_booking_result->helmetSize->id ) ? $ns_guest_booking_result->helmetSize->id : '',
+
+                    // These fields below not comming from 1305 NS Script.
+                    // 'gear_preferences_jersey_size' => '',
+                    // 'gear_preferences_jersey_style' => '',
+
+                    // Collect Gear Optional Preferences.
+                    'gear_preferences_saddle_height' => isset( $ns_guest_booking_result->saddleHeight ) ? $ns_guest_booking_result->saddleHeight : '',
+                    'gear_preferences_bar_height'    => isset( $ns_guest_booking_result->barReachFromSaddle ) ? $ns_guest_booking_result->barReachFromSaddle : '',
+                    'gear_preferences_bar_reach'     => isset( $ns_guest_booking_result->barHeightFromWheel ) ? $ns_guest_booking_result->barHeightFromWheel : '',
+
+                    // Collect Address Preferences.
+                    // About address from NS billing_address_1 ['World Way'] and billing_address_2 ['1'] comming as one field $ns_guest_booking_result->addressInfo->address ['World Way 1'].
+                    // 'billing_address_1' => isset( $ns_guest_booking_result->addressInfo->address ) ? $ns_guest_booking_result->addressInfo->address : '',
+                    // 'billing_address_2' => isset( $ns_guest_booking_result->addressInfo->address ) ? $ns_guest_booking_result->addressInfo->address : '',
+                    'billing_city'     => isset( $ns_guest_booking_result->addressInfo->city ) ? $ns_guest_booking_result->addressInfo->city : '',
+                    'billing_state'    => isset( $ns_guest_booking_result->addressInfo->state ) ? $ns_guest_booking_result->addressInfo->state : '',
+                    'billing_postcode' => isset( $ns_guest_booking_result->addressInfo->zip ) ? $ns_guest_booking_result->addressInfo->zip : '',
+                    'billing_country'  => isset( $ns_guest_booking_result->addressInfo->country ) ? $ns_guest_booking_result->addressInfo->country : '',
+
+                    // Collect Passport Preferences.
+                    'custentity_passport_number'   => isset( $ns_guest_booking_result->passportNumber ) ? $ns_guest_booking_result->passportNumber : '',
+                    'custentity_passport_exp_date' => isset( $ns_guest_booking_result->passportExpirationDate ) ? date( 'm/d/Y', strtotime( $ns_guest_booking_result->passportExpirationDate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
+                );
+
+                foreach( $ns_guest_preferences as $key => $value ) {
+                    if( ! empty( $value ) ) {
+                        // Update user meta for this key.
+                        update_user_meta( $wp_user_id, $key, $value );
+                    }
+                }
+            }
+
 
             foreach( $ns_guest_booking_result->bookings as $booking_data ) {
 
@@ -729,7 +809,7 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     }
 
                     $args_3            = array( 'registrationId' => $registration_id );
-                    $ns_guest_info_arr = $net_suite_client->get( GET_REGISTRATIONS_SCRIPT_ID, $args_3 ); 
+                    $ns_guest_info_arr = $net_suite_client->get( GET_REGISTRATIONS_SCRIPT_ID, $args_3 );
                     tt_add_error_log( 'NS - Guest includeBookingInfo', $args_3, $ns_guest_info_arr );
 
                     // Guest Registration not found.
@@ -743,7 +823,22 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     $guest_email = '';
                     $ns_guest_id = $guest->guestId; // Ns guest.
 
-                    if( $ns_new_guest_id == $ns_guest_id ){
+                    /**
+                     * Check for existing records in DB.
+                     * The unique record is determined via NetSuite User ID and Booking ID.
+                     *
+                     * Here, we rely on the fact that during the checkout process,
+                     * these functions [ insert_records_guest_bookings_cb() & tt_update_user_booking_info() ] have executed successfully
+                     * and the necessary information has been stored in the guest_bookings table for this check.
+                     */
+                    $check_booking = tt_checkbooking_status( $ns_guest_id, $booking_id );
+
+                    if( !$check_booking || $check_booking <= 0 ) {
+                        // If booking record not exist in DB skip next steps and go to the next booking.
+                        continue;
+                    }
+
+                    if( $ns_new_guest_id == $ns_guest_id && ! empty( $wc_user_id ) ) {
                         $user_info   = get_user_by( 'id' , $wc_user_id );
                         if( $user_info ){
                             $guest_email = $user_info->user_email;
@@ -762,6 +857,7 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     // Collect data from $ns_guest_info object.
                     $is_primary                   = isset( $ns_guest_info->isPrimary ) ? $ns_guest_info->isPrimary : '';
                     $bike_id                      = isset( $ns_guest_info->bikeId ) ? $ns_guest_info->bikeId : '';
+                    $rider_height                 = isset( $ns_guest_info->heightId ) ? $ns_guest_info->heightId : '';
                     $helmet_id                    = isset( $ns_guest_info->helmetId ) ? $ns_guest_info->helmetId : '';
                     $pedals_id                    = isset( $ns_guest_info->pedalsId ) ? $ns_guest_info->pedalsId : '';
                     $saddle_id                    = isset( $ns_guest_info->saddleId ) ? $ns_guest_info->saddleId : '';
@@ -791,7 +887,7 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     if( ! empty( $product_id ) ) {
                         $booking_table_data['product_id'] = $product_id;
                     }
-                    if ( $ns_new_guest_id == $ns_guest_id ) {
+                    if ( $ns_new_guest_id == $ns_guest_id && ! empty( $wc_user_id ) ) {
                         $booking_table_data['user_id'] = $wc_user_id;
                     }
                     if ( ! empty( $guest_email ) ) {
@@ -816,6 +912,7 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     $booking_table_data['trip_end_date']                       = strtotime( $trip_end_date );
                     $booking_table_data['guest_is_primary']                    = $is_primary == 1 ? 1 : 0;
                     $booking_table_data['bike_selection']                      = $bike_id;
+                    $booking_table_data['rider_height']                        = $rider_height;
                     $booking_table_data['helmet_selection']                    = $helmet_id;
                     $booking_table_data['pedal_selection']                     = $pedals_id;
                     $booking_table_data['saddle_height']                       = $saddle_height;
@@ -836,19 +933,10 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     $booking_table_data['dietary_restrictions']                = $dietary_restrictions;
                     $booking_table_data['waiver_signed']                       = $waiver_accepted == 1 ? 1 : 0;
 
-                    // Check for existing records in DB.
-                    $check_booking = tt_checkbooking_status( $ns_guest_id, $booking_id );
-                    // Insert new booking.
-                    if( $check_booking == 0 ){
-                        $insert_booking = $wpdb->insert( $table_name, $booking_table_data );
-                        tt_add_error_log( '4) NS<>WC - SQL [Insert]', array( 'last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ), $booking_table_data);
-                    }
                     // Update existing booking.
-                    if( $check_booking && $check_booking > 0 ){
-                        $where = array( 'netsuite_guest_registration_id' => $ns_guest_id, 'ns_trip_booking_id' => $booking_id );
-                        $wpdb->update( $table_name, $booking_table_data, $where );
-                        tt_add_error_log('5) NS<>WC - SQL [Update]', array( 'last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ), $booking_table_data);
-                    }
+                    $where = array( 'netsuite_guest_registration_id' => $ns_guest_id, 'ns_trip_booking_id' => $booking_id );
+                    $wpdb->update( $table_name, $booking_table_data, $where );
+                    tt_add_error_log('5) NS<>WC - SQL [Update]', array( 'last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ), $booking_table_data);
                 }
             }
         }

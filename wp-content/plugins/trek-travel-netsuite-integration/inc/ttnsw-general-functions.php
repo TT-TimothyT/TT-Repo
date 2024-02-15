@@ -53,6 +53,8 @@ function tt_wc_ns_sync_hourly_event_cb()
     tt_sync_ns_trip_bikes();
     tt_sync_ns_trip_addons();
     tt_sync_wc_products_from_ns();
+    // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
+    tt_ns_guest_booking_details( false, '', '', DEFAULT_TIME_RANGE, true );
 }
 
 function tt_wc_ns_sync_one_hour_event_cb() {
