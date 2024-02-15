@@ -1,7 +1,7 @@
 <?php
 /* THIS IS A GENERATED FILE. DO NOT EDIT DIRECTLY. */
 $generated_i18n_strings = array(
-	// Reference: _src/js/block.js:181
+	// Reference: _src/js/block.js:184
 	__( 'Generating Critical CSS', 'wphb' ),
 
 	// Reference: _src/js/block.js:92

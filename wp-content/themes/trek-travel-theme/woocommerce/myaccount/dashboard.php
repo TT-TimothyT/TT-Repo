@@ -54,6 +54,23 @@ $billing_state = get_user_meta($userInfo->ID, 'billing_state', true);
 $billing_city = get_user_meta($userInfo->ID, 'billing_city', true);
 $phone = get_user_meta($userInfo->ID, 'custentity_phone_number', true);
 $dob = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
+
+// My Account - Resource Center Options
+$resource_center_general_information = get_field( 'resource_center_general_information', 'option' );
+$resource_center_useful_resources    = get_field( 'resource_center_useful_resources', 'option' );
+$resource_center_video_resources     = get_field( 'resource_center_video_resources', 'option' );
+
+// My Account - Travel Advisor Options
+$travel_advisor_general_information = get_field( 'travel_advisor_general_information', 'option' );
+$travel_advisor_useful_resources    = get_field( 'travel_advisor_useful_resources', 'option' );
+
+$shipping_states       = WC()->countries->get_states( $shipping_country );
+$shipping_state_name   = isset( $shipping_states[$shipping_state] ) ? $shipping_states[$shipping_state] : $shipping_state;
+$shipping_country_name = WC()->countries->countries[$shipping_country];
+
+$billing_states       = WC()->countries->get_states( $billing_country );
+$billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
+$billing_country_name = WC()->countries->countries[$billing_country];
 ?>
 <div class="container dashboard px-0" id="dashboard">
 	<div class="row mx-0">
@@ -118,21 +135,40 @@ $dob = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
 		</div>
 		
 		<div class="col-lg-4">
-			<?php echo do_shortcode('[content_control roles="travel_advisor"]
-			<div class="card mb-5 dashboard__card rounded-1">
-				<div class="card-body pb-0">
-					<div class="d-flex justify-content-between align-items-baseline mb-2">
-						<h5 class="card-title fw-bold mb-2">Travel Advisor Resources</h5>
-					</div>
-					<p class="fs-sm lh-sm fw-normal">Quick links and resources for Trek Travel Advisors</p>
-					<div class="quick-links">
-						<p><a href="https://trektravel.com/contact-us/travel-agents/">Travel Advisor Program</a></p>
-						<p><a href="https://trektravel.com/contact-us/travel-agents/travel-agent-information/">Travel Advisor Portal</a></p>
+			<?php
+			// This is a custom capability added to the Travel Advisor custom role
+			if ( current_user_can( 'travel_advisor' ) ) : ?>
+				<div class="card mb-5 dashboard__card rounded-1">
+					<div class="card-body pb-0">
+						<?php if ( ! empty( $travel_advisor_general_information['section_title'] ) ) : ?>
+							<div class="d-flex justify-content-between align-items-baseline mb-2">
+								<h5 class="card-title fw-bold mb-2"><?php echo esc_attr( $travel_advisor_general_information['section_title'] ); ?></h5>
+							</div>
+						<?php endif; ?>
+
+						<?php if ( ! empty( $travel_advisor_general_information['section_content'] ) ) : ?>
+							<div class="fs-sm lh-sm fw-normal"><?php echo $travel_advisor_general_information['section_content']; ?></div>
+						<?php endif; ?>
+
+						<hr>
+
+						<?php if ( ! empty( $travel_advisor_useful_resources['section_title'] ) ) : ?>
+							<h6 class="card-subtitle fs-sm lh-sm fw-medium"><?php echo $resource_center_useful_resources['section_title']; ?></h6>
+						<?php endif; ?>
+
+						<?php if ( ! empty( $travel_advisor_useful_resources['useful_resources'] ) ) : ?>
+							<div class="quick-links">
+								<?php foreach( $travel_advisor_useful_resources['useful_resources'] as $resource ) : ?>
+									<?php $target = ( $resource['new_tab'] == true ) ? 'target="_blank"' : ''; ?>
+									<p><a <?php echo $target; ?> href="<?php echo esc_url( $resource['url'] ); ?>"><?php echo esc_attr( $resource['title'] ); ?></a></p>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+
 					</div>
 				</div>
-			</div>
-			[/content_control]');?>
-			
+			<?php endif; ?>
+
 			<div class="card mb-5 dashboard__card rounded-1">
 				<div class="card-body pb-0">
 					<div class="d-flex justify-content-between align-items-baseline mb-3">
@@ -195,42 +231,27 @@ $dob = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
 									$parentTrip = tt_get_parent_trip($trip_sku);
 									$trip_link = esc_url( add_query_arg( 'order_id', $order_id, get_permalink( TREK_MY_ACCOUNT_PID ).'my-trip' ) );
 								}
-								$trips_html .= '<div class="dashboard__trip d-flex">
-									<div class="my-upcoming-trips">
-										<img src="'.$parentTrip['image'].'">
-									</div>
-									<div class="w-50">
-										<h6 class="fs-sm lh-sm fw-bold mb-1"><a href="'.$trip_link.'">'.$product->get_name().'</a></h6>
-										<p class="fs-sm lh-sm fw-normal mb-1">'.$pa_city.', '.$tripRegion.'</p>
-										<p class="fs-sm lh-sm fw-normal mb-2">'.$date_range.'</p>
-										<?php if (!empty($order_details)) : ?>
-											<p class="dashboard__error"><img src="'.TREK_DIR.'/assets/images/error.png"> You have pending items</p>
-										<?php endif; ?>									
-                                    </div>
-								</div>';
+								$trips_html .= '<div class="dashboard__trip d-flex"><div class="my-upcoming-trips"><img src="'.$parentTrip['image'].'"></div><div class="w-50"><h6 class="fs-sm lh-sm fw-bold mb-1"><a href="'.$trip_link.'">'.$product->get_name().'</a></h6>';
+
+								// Check if $pa_city exists before adding it
+								if ( ! empty( $pa_city ) ) {
+									$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-1">'.$pa_city.', '.$tripRegion.'</p>';
+								} else {
+									$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-1">'.$tripRegion.'</p>';
+								}
+
+								$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-2">'.$date_range.'</p>';
+
+								// Check if $order_details is not empty before adding the error message
+								if ( ! empty( $order_details ) ) {
+									$trips_html .= '<p class="dashboard__error"><img src="'.TREK_DIR.'/assets/images/error.png"> You have pending items</p>';
+								}
+
+								$trips_html .= '</div></div>';
 							}
 						}
 						echo $trips_html;
 					} ?>
-				</div>
-			</div>
-			<div class="card mb-5 dashboard__card rounded-1">
-				<div class="card-body pb-0">
-					<div class="d-flex justify-content-between align-items-baseline mb-2">
-						<h5 class="card-title fw-bold mb-2">Wishlist</h5>
-						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/account-wishlists/'); ?>">Edit</a>
-					</div>
-					<?php
-						$wishlistCount = 0;
-						if( class_exists('WC_Wishlists_User') ){
-							$userWishlistobj = WC_Wishlists_User::get_wishlists();
-							if( $userWishlistobj && is_array($userWishlistobj) ){
-								$wishlistCount = count($userWishlistobj);
-							}
-						}
-					?>
-					<p class="fs-sm lh-sm fw-normal">You have <?php echo $wishlistCount; ?> items on your wishlist
-					</p>
 				</div>
 			</div>
 			<div class="card mb-3 dashboard__card rounded-1">
@@ -257,8 +278,8 @@ $dob = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
 						<?php else: ?>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_address_1; ?></p>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_address_2; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_city; ?>, <?php echo $shipping_state; ?>, <?php echo $shipping_postcode; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_country; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_city; ?>, <?php echo $shipping_state_name; ?>, <?php echo $shipping_postcode; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $shipping_country_name; ?></p>
 						<?php endif; ?>
 					</div>
 					<hr>
@@ -272,8 +293,8 @@ $dob = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
 						<?php else: ?>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_address_1; ?></p>
 							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_address_2; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_city; ?>, <?php echo $billing_state; ?>, <?php echo $billing_postcode; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_city; ?>, <?php echo $billing_state_name; ?>, <?php echo $billing_postcode; ?></p>
+							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country_name; ?></p>
 						<?php endif; ?>
 					</div>
 				</div>
@@ -281,12 +302,52 @@ $dob = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
 			<div class="card mb-5 dashboard__card rounded-1">
 				<div class="card-body pb-0">
 					<div class="d-flex justify-content-between align-items-baseline mb-2">
-						<h5 class="card-title fw-bold mb-2">Resource Center</h5>
-						<a class="fs-sm lh-sm fw-medium" href="<?php echo get_edit_profile_url(); ?>">View all</a>
+						<?php if ( ! empty( $resource_center_general_information['section_title'] ) ) : ?>
+							<h5 class="card-title fw-bold mb-2"><?php echo $resource_center_general_information['section_title'] ?></h5>
+						<?php endif; ?>
+
+						<?php if ( ! empty( $resource_center_general_information['section_url'] ) ) : ?>
+							<a class="fs-sm lh-sm fw-medium" href="<?php echo esc_url( $resource_center_general_information['section_url'] ); ?>">View all</a>
+						<?php endif; ?>
 					</div>
-					<p class="fs-sm lh-sm fw-normal">Hand-picked resources for our customers</p>
+					<?php if ( ! empty( $resource_center_general_information['section_content'] ) ) : ?>
+							<div class="fs-sm lh-sm fw-normal"><?php echo $resource_center_general_information['section_content']; ?></div>
+						<?php endif; ?>
+
+					<hr>
+
+					<?php if ( ! empty( $resource_center_useful_resources['section_title'] ) ) : ?>
+						<h6 class="card-subtitle fs-sm lh-sm fw-medium"><?php echo $resource_center_useful_resources['section_title']; ?></h6>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $resource_center_useful_resources['useful_resources'] ) ) : ?>
+						<div class="quick-links">
+							<?php foreach( $resource_center_useful_resources['useful_resources'] as $resource ) : ?>
+								<?php $target = ( $resource['new_tab'] == true ) ? 'target="_blank"' : ''; ?>
+								<p><a <?php echo $target; ?> href="<?php echo esc_url( $resource['url'] ); ?>"><?php echo esc_attr( $resource['title'] ); ?></a></p>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+
+					<hr>
+
 					<div class="video-link mb-4">
-						<iframe class="w-100" height="180" src="https://www.youtube.com/embed/nfJEW-uMImI?autoplay=0&mute=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+						<?php if ( ! empty( $resource_center_video_resources['section_title'] ) ) : ?>
+							<h6 class="card-subtitle fs-sm lh-sm fw-medium"><?php echo $resource_center_video_resources['section_title']; ?></h6>
+						<?php endif; ?>
+
+						<?php if ( ! empty( $resource_center_video_resources['videos'] ) ) : ?>
+							<?php foreach( $resource_center_video_resources['videos'] as $video ) : ?>
+								<div class="my-account-video">
+									<?php if ( ! empty( $video['video_description'] ) ) : ?>
+										<div class="my-account-description"><?php echo $video['video_description']; ?></div>
+									<?php endif; ?>
+									<?php if ( ! empty( $video['video_url'] ) ) : ?>
+										<iframe class="w-100" height="180" src="<?php echo $video['video_url']; ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+									<?php endif; ?>
+								</div>
+							<?php endforeach; ?>
+						<?php endif; ?>
 					</div>
 				</div>
 			</div>

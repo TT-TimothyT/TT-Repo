@@ -22,6 +22,14 @@ if (!defined('ABSPATH')) {
 if (!isset($_GET['step']) && is_checkout() && !is_admin()) {
 	wp_redirect(trek_checkout_step_link(1));
 }
+/**
+ * Make check for unavailable trips in the cart and remove them.
+ * For unavailable trips will be considered a trips with status "Remove from Stella" and
+ * trips with specific status from woocommerce.
+ * 
+ * This function is located in /trek-travel-theme/inc/trek-general-function.php
+ */
+tt_check_and_remove_old_trips_in_persistent_cart();
 ?>
 <?php
 // If checkout registration is disabled and not logged in, the user cannot checkout.
@@ -138,7 +146,8 @@ $parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_tri
 						<div class="modal-body">
 							<h4 class="fw-semibold modal-body__title">Travel Protection</h4>
 							<p class="fs-lg lh-lg fw-bold mb-4">Please tell us who will be covered in this booking</p>
-							<p class="modal-body__sub">To review full plan details online, please visit: <a href="https://trektravel.com/frequently-asked-questions/travel-insurance/">here</a></p>
+							<p class="modal-body__sub">We can also insure additional trip costs, such as flights and non-refundable hotels. You can learn more on our travel protection page <a href="<?php echo home_url( '/travel-protection/' ); ?>"  target="_blank">here</a> or call us at <a href="tel:866-464-8735">866-464-8735</a>.</p>
+							<p class="modal-body__sub">To review full plan details online, please visit: <a href="<?php echo home_url( '/travel-protection/' ); ?>" target="_blank">here</a></p>
 							<hr>
 							<!-- <form method="post" name="travel-protection" id="travel-protection"> -->
 							<?php

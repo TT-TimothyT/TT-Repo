@@ -1,24 +1,27 @@
 <?php
 global $woocommerce;
 //demo content for looping till dynamic content is not loaded
-$cards = ['Visa ending in 2559', 'Visa ending in 2456'];
-$guest = ['Jason Bauer', 'Tim Lasso', 'Steve Bauer', 'Keith Lasso'];
-$trek_user_checkout_data =  get_trek_user_checkout_data();
-$tt_posted = $trek_user_checkout_data['posted'];
+$cards                        = ['Visa ending in 2559', 'Visa ending in 2456'];
+$guest                        = ['Jason Bauer', 'Tim Lasso', 'Steve Bauer', 'Keith Lasso'];
+$trek_user_checkout_data      = get_trek_user_checkout_data();
+$tt_posted                    = $trek_user_checkout_data['posted'];
 $trek_user_checkout_formatted = $trek_user_checkout_data['formatted'];
-$primary_address_1 = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
-$primary_address_2 = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
-$primary_country = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
-$guest_insurance = isset($tt_posted['trek_guest_insurance']) ? $tt_posted['trek_guest_insurance'] : array();
-$shipping_fname = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
-$shipping_lname = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
-$shipping_name = $shipping_fname.' '.$shipping_lname; 
-$shipping_postcode = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
-$shipping_state = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
-$shipping_city = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
-$iter = 0;
-$cols = 2;
-$guest_insurance_html = '';
+$primary_address_1            = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
+$primary_address_2            = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
+$primary_country              = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
+$guest_insurance              = isset($tt_posted['trek_guest_insurance']) ? $tt_posted['trek_guest_insurance'] : array();
+$shipping_fname               = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
+$shipping_lname               = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
+$shipping_name                = $shipping_fname.' '.$shipping_lname; 
+$shipping_postcode            = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
+$shipping_state               = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
+$shipping_city                = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
+$iter                         = 0;
+$cols                         = 2;
+$guest_insurance_html         = '';
+$checkout_waiver_heading      = get_field( 'checkout_waiver_heading', 'option' );
+$checkout_waiver_copy         = get_field( 'checkout_waiver_copy', 'option' );
+
 if (isset($guest_insurance) && !empty($guest_insurance)) {
     $fields_size = sizeof(isset($tt_posted['trek_guest_insurance']['guests']) ? $tt_posted['trek_guest_insurance']['guests'] : array()) + 1;
     foreach ($guest_insurance as $guest_insurance_k => $guest_insurance_val) {
@@ -95,7 +98,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
     <hr>
     <div class="checkout-payment__options">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-1">Payment Option</h5>
-        <p class="fs-sm checkout-payment__sublabel">Minimum amount required is trip deposit. <a href="#">Learn more about our No-Risk Deposit.</a></p>
+        <p class="fs-sm checkout-payment__sublabel">Minimum amount required is trip deposit. <a href="<?php echo home_url( '/cancellation-policy/' ); ?>" target="_blank">Learn more about our No-Risk Deposit.</a></p>
         <div class="checkout-payment__pay">
             <?php
             $cart_total = WC()->cart->total;
@@ -127,6 +130,10 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         <p class="fs-sm lh-sm checkout-payment__gray">Our team will reach out to collect final payment prior to your trip start date.</p>
     </div>
     <hr>
+    <?php
+    // Check for plugin Woo Gift Cards is active.
+    if ( is_plugin_active( 'woocommerce-gift-cards/woocommerce-gift-cards.php' ) ) : 
+    ?>
     <div class="checkout-payment__reward">
         <div class="woocommerce-form-coupon-toggle fw-medium checkout-payment__reward-title">
             <?php wc_print_notice(apply_filters('woocommerce_checkout_coupon_message', ' <a href="#" class="showcoupon">' . esc_html__('Redeem a Gift Card', 'woocommerce') . '</a>'), 'notice'); ?>
@@ -158,6 +165,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         </div>
     </div>
     <hr>
+    <?php endif; ?>
     <div class="checkout-payment__method">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4">Payment Method</h5>
         <div class="checkout-payment__paymethod">
@@ -218,12 +226,16 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
                     if (empty($woo_field_value) && isset($tt_posted[$key]) && $tt_posted[$key]) {
                         $woo_field_value = $tt_posted[$key];
                     }
-                    if( $key == 'billing_state'  ){
-                        $country_val = $woocommerce->checkout->get_value('billing_country');
-                        if (isset($trek_user_checkout_posted['billing_country']) && !empty($trek_user_checkout_posted['billing_country'])) {
-                            $country_val = $trek_user_checkout_posted['billing_country'];
-                        }
-                        $field['country'] = $country_val;
+                    if( $key === 'billing_state' ) {
+                        $country_val      = get_user_meta( get_current_user_id(), 'billing_country', true );
+                        $state_val        = get_user_meta( get_current_user_id(), 'billing_state', true );
+                        $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                        $woo_field_value  = $state_val;
+                    }
+                    if ( $key === 'billing_country' ) {
+                        $country_val      = get_user_meta( get_current_user_id(), 'billing_country', true );
+                        $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                        $woo_field_value  = $country_val;
                     }
                     $field_input = woocommerce_form_field($key, $field, $woo_field_value);
                     $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);
@@ -260,13 +272,17 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         $field_html .= '<input type="hidden" id="tt_pay_fname" name="first_name" value="'.$woocommerce->checkout->get_value('billing_first_name').'"/>';
         $field_html .= '<input type="hidden" id="tt_pay_lname" name="last_name" value="'.$woocommerce->checkout->get_value('billing_last_name').'"/>';
         echo $field_html;
+
+        $guest_details_states  = WC()->countries->get_states( $primary_country );
+        $shipping_state_name   = isset( $guest_details_states[$shipping_state] ) ? $guest_details_states[$shipping_state] : $shipping_state;
+        $shipping_country_name = WC()->countries->countries[$primary_country];
         ?>
         <div class="checkout-payment__pre-address <?php echo ( isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1 ? '' : 'd-none'); ?>" style="height:120px;">
             <p class="mb-0"><?php echo $shipping_name; ?></p>
             <p class="mb-0"><?php echo $primary_address_1; ?></p>
             <p class="mb-0"><?php echo $primary_address_2; ?></p>
-            <p class="mb-0"><?php echo $shipping_city; ?>, <?php echo $shipping_state; ?>, <?php echo $shipping_postcode; ?></p>
-            <p class="mb-0"><?php echo $primary_country; ?></p>
+            <p class="mb-0"><?php echo $shipping_city; ?>, <?php echo $shipping_state_name; ?>, <?php echo $shipping_postcode; ?></p>
+            <p class="mb-0"><?php echo $shipping_country_name; ?></p>
             <p class="mb-0"></p>
         </div>
         <div class="d-flex checkout-payment__billing-checkboxtwo">
@@ -278,15 +294,17 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
     <div class="checkout-payment__release">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4">Release of Liability and Assumption of All Risks</h5>
         <p class="mb-0 fs-sm lh-sm checkout-payment__gray">Please scroll through release form below and check "I Agree" once finished.</p>
-        <div class="checkout-payment__iframe rounded-1">
-            <h5 class="fs-lg lh-lg fw-medium mb-2">Waiver iFrame Headline</h5>
-            <p class="fs-sm lh-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ultrices in amet posuere faucibus ultrices pellentesque. Tristique magna lectus dui nulla sed sit elementum. Egestas sapien vitae nunc senectus ac egestas ipsum non elementum. Ullamcorper turpis ultrices orci sit quis malesuada nunc, aliquam et. Eu et sagittis eget nulla nulla sapien justo. Scelerisque tellus mollis ridiculus porta suscipit sed mauris.<br>
-
-                Lacus turpis nunc, blandit odio. Auctor vitae maecenas rhoncus mattis nulla vel amet aenean. Ac augue convallis ullamcorper id blandit. Pharetra pellentesque quam nisl pretium arcu lectus id proin imperdiet.
-                Donec pharetra, in morbi rhoncus nullam sed volutpat mi.<br>
-
-                Sit fringilla in eu, dictum sit ut. Adipiscing interdum enim dolor adipiscing morbi aliquam. Metus, est nisi, fermentum scelerisque praesent quisque gravida mauris vestibulum. Morbi nisl viverra nunc nulla odio eget. Sed pulvinar fermentum sed aliquet aliquet. Cras laoreet amet, lorem placerat purus.</p>
-        </div>
+        <?php if ( ! empty( $checkout_waiver_copy ) || ! empty( $checkout_waiver_heading ) ) : ?>
+            <div class="checkout-payment__iframe rounded-1">
+                <?php if ( ! empty( $checkout_waiver_heading ) ) : ?>
+                    <h5 class="fs-lg lh-lg fw-medium mb-2"><?php echo wp_kses_post( $checkout_waiver_heading ); ?></h5>
+                <?php endif; ?>
+                <?php if ( ! empty( $checkout_waiver_copy ) ) : ?>
+                    <?php $checkout_waiver_copy = str_replace( array( '<p>', '</p>' ), '', $checkout_waiver_copy ); ?>
+                    <p class="fs-sm lh-sm"><?php echo wp_kses_post( $checkout_waiver_copy ); ?></p>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
         <div class="d-flex checkout-payment__billing-checkboxtwo">
             <input class="tt_waiver_check" type="checkbox" name="tt_waiver" value="1" <?php if (isset($tt_posted['tt_waiver']) && $tt_posted['tt_waiver'] == 1) echo 'checked'; ?> required="required">
             <label>By checking “I Agree” I acknowledge that I have read, understand and agree to this Release Form and Cancellation Policy.</label>

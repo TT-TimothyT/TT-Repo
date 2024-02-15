@@ -302,6 +302,9 @@
 
     }
     @media print {
+        .accordion-body * {
+            break-inside: avoid;
+          }
         .accordion-item {
             page-break-after: always;
             &:last-child {
@@ -358,7 +361,12 @@
             margin-bottom: 5mm !important;
         }
 
+        .waymark-shortcode {
+            display: none !important;
+        }
+
         nav {
+            display: none !important;
             margin-bottom: 0mm !important;
             border-bottom: 0 !important;
         }

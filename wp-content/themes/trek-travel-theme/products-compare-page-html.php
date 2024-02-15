@@ -64,21 +64,6 @@ get_header( 'shop' ); ?>
 								<?php echo $product->get_image( 'shop_single' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 								<span class="badge text-bg-dark">Featured</span>
 							</a>
-							<form class="cart" action="" method="post" enctype="multipart/form-data">
-								<?php if( is_user_logged_in() ) { ?>
-									<input type="hidden" name="wlid" id="wlid"/>
-									<input type="hidden" name="add-to-wishlist-type" value="grouped"/>
-									<input type="hidden" name="wl_from_single_product" value="1"/>
-									<input type="hidden" name="quantity[<?php echo $product->get_id(); ?>]" value="1"/>	
-									<a rel="nofollow" href="" data-productid="<?php echo $product->get_id(); ?>" data-listid="<?php echo $add_to_wishlist_args['single_id']; ?>" class="wl-add-to btn add-wishlist ">
-										<span class="add-to-wl"></span>
-									</a>
-                                <?php } else { ?>
-                                    <a class="btn add-wishlist" href="<?php echo site_url('login'); ?>">
-										<span class="add-to-wl"></span>
-                                    </a>
-                                <?php } ?>
-                            </form>
 							<!-- <img src="..." class="card-img-top" alt="..."> -->
 							<div class="card-body px-0">
 								<div class="product-info-mobile desktop-hideme">

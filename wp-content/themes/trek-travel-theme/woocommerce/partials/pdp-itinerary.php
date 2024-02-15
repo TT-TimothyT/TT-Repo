@@ -52,9 +52,16 @@ if ( $pdp_itineraries ) :
                         $navKey = strtolower($navKey);
                         ?>
 
-                        <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-content hihihi" id="nav-tabContent">
                             <div class="tab-pane fade <?php if($yj == 1) echo 'show active';?>" id="nav-<?php echo $navKey;?>" role="tabpanel" aria-labelledby="nav-<?php echo $navKey;?>-tab">
-                                <?php echo do_shortcode( get_field( 'map_shortcode', $itinerary->ID ) ); ?>
+                            <?php
+                                $map_shortcode = get_field('map_shortcode', $itinerary->ID);
+
+                                if (strpos($map_shortcode, 'map_id') !== false) {
+                                    $map_shortcode = str_replace(']', ' loaded_callback="waymark_refresh"]', $map_shortcode);
+                                }
+                                echo do_shortcode($map_shortcode);
+                            ?>
                                 <div class="d-md-flex justify-content-between align-items-center">
                                     <h5 class="fw-semibold pdp-section__title pdp-itinerary__title"><?php the_field( 'year' ); ?> Day-to-Day</h5>
                                     <a href="<?php the_permalink( $itinerary->ID ); ?>" target="_blank" class="btn btn-md btn-outline-dark align-self-start pdp-itinerary__button">View full itinerary</a>
@@ -186,13 +193,17 @@ if ( $pdp_itineraries ) :
                                                             <?php if (!empty($day['day_highlight_title']) && !empty($day['day_highlight_body'])) {
                                                             ?>
                                                             <div class="pdp-itinerary-day__accordion-right">
+                                                                <?php if (!empty($day['day_highlight_image']) ) { ?>
                                                                 <img class="pdp-itinerary-day__accordion-image" src="<?php echo $day['day_highlight_image']['url']; ?>" alt="<?php echo $day['day_highlight_title']; ?>">
+                                                                <?php } ?>
                                                                 <p class="fs-sm lh-sm fw-medium mb-1 pdp-itinerary-day__accordion-highlight">Highlight of the Day</p>
                                                                 <p class="fs-md lh-md fw-medium mb-1"><?php echo $day['day_highlight_title']; ?></p>
                                                                 <p class="fs-sm lh-sm mb-0 pdp-itinerary-day__accordion-right-clamp">
                                                                 
+                                                        
+
                                                                 <?php if (strlen($day['day_highlight_body']) > 140) { ?>    
-                                                                    <span class="less-text"><?php echo substr($day['day_highlight_body'], 0, 140); ?>...</span>
+                                                                    <span class="less-text"><?php echo dx_strip_text($day['day_highlight_body']); ?>...</span>
                                                                     <span class="more-text d-none"><?php echo $day['day_highlight_body']; ?></span>
                                                                     <a href="#" class="read-more-action-right">Read More</a>
                                                                 <?php } else { ?>
@@ -248,13 +259,32 @@ if ( $pdp_itineraries ) :
                                         <div class="accordion-item">
                                             <h6 class="accordion-header" id="flush-headingOne">
                                                 <button class="accordion-button collapsed mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseadditional" aria-expanded="false" aria-controls="flush-collapseadditional">
-                                                    <span class="fw-medium fs-lg lh-lg">Additional Days</span>
+                                                    <span class="fw-medium fs-lg lh-lg">Print full itinerary</span>
                                                 </button>
                                             </h6>
                                             <div id="flush-collapseadditional" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                                 <hr>
                                                 <div class="accordion-body text-center accordion-item__additional-days">
-                                                    <p class="fs-lg fw-medium lh-lg">Please view the full itinerary to see more days</p>
+                                                    <?php
+                                                        $more_than_7_days = get_field( 'trip_more_than_7_days', 'option' ); 
+                                                        $less_than_7_days  = get_field( 'trip_less_than_7_days', 'option' ); 
+                                                    ?>
+                                                    <?php
+                                                        if (count($days) > 7) {
+                                                    ?>
+                                                        <?php if ( ! empty( $more_than_7_days ) ) : ?>
+                                                            <p class="fs-lg fw-medium lh-lg"><?php echo esc_html( $more_than_7_days ); ?></p>
+                                                        <?php endif; ?>
+                                                    <?php
+                                                        } else {
+                                                    ?>
+                                                        <?php if ( ! empty( $less_than_7_days ) ) : ?>
+                                                            <p class="fs-lg fw-medium lh-lg"><?php echo esc_html( $less_than_7_days ); ?></p>
+                                                        <?php endif; ?>
+                                                    <?php
+                                                        }
+                                                    ?>
+
                                                     <a href="<?php the_permalink( $itinerary->ID ); ?>" target="_blank" class="btn btn-md btn-primary">View full itinerary</a>
                                                 </div>
                                             </div>

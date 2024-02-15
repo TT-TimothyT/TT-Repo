@@ -16,6 +16,17 @@
     }
 }
 
+// Activity Type Changes
+.pdp-content-section {
+
+    &.hw {
+        #testimonials .card {
+            border-color: $tt-green;
+        }
+
+    }
+}
+
 .pdp-section {
     padding: 40px 20px 0 20px;
 

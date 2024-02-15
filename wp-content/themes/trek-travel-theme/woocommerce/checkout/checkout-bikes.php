@@ -29,10 +29,10 @@ if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hid
 
 $singleSupplementPrice = $bikeUpgradePrice = 0;
 $bikePriceCurr = $singleSupplementPrice = '';
-if ($tripInfo['sku']) {
-    $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $tripInfo['sku'], true);
+if ( $tt_posted['product_id'] ) {
+    $bikeUpgradePrice = get_post_meta( $tt_posted['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
     $bikePriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $bikeUpgradePrice . '</span>';
-    $singleSupplementPrice = tt_get_local_trips_detail('singleSupplementPrice', '', $tripInfo['sku'], true);
+    $singleSupplementPrice = get_post_meta( $tt_posted['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
     $singleSupplementPriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $singleSupplementPrice . '</span>';
 }
 $shipping_name = $primary_name;
@@ -52,6 +52,7 @@ if ($p_rider_level == 5) {
 if ($p_own_bike == 'yes') {
     $p_own_hide = "style='display:none;'";
 }
+
 ?>
 <div class="checkout-bikes-section collapse multi-collapse" id="multiCollapseExample2">
     <div class="checkout-bikes">
@@ -85,8 +86,8 @@ if ($p_own_bike == 'yes') {
         <div class="checkout-bikes__bike-selection" id="tt_rider_level_primary" <?php echo $p_all_hide; ?>>
             <p class="fw-medium fs-md lh-md">Select Your Bike of Choice</p>
             <div class="form-check">
-                <input name="bike_gears[primary][own_bike]" class="form-check-input checkout-bikes__own-bike-check tt_my_own_bike_checkbox" data-type="tt_my_own_bike_primary" type="checkbox" value="yes" id="flexCheckDefault" <?php echo (isset($tt_posted['bike_gears']['primary']['own_bike']) && $tt_posted['bike_gears']['primary']['own_bike'] == 'yes' ? 'checked' : ''); ?>>
-                <label class="form-check-label fw-medium fs-md lh-md" for="flexCheckDefault">
+                <input name="bike_gears[primary][own_bike]" class="form-check-input checkout-bikes__own-bike-check tt_my_own_bike_checkbox" data-type="tt_my_own_bike_primary" type="checkbox" value="yes" id="myOwnBikeCheckboxPrimary" <?php echo (isset($tt_posted['bike_gears']['primary']['own_bike']) && $tt_posted['bike_gears']['primary']['own_bike'] == 'yes' ? 'checked' : ''); ?>>
+                <label class="form-check-label fw-medium fs-md lh-md" for="myOwnBikeCheckboxPrimary">
                     I am bringing my own bike
                 </label>
             </div>
@@ -138,7 +139,7 @@ if ($p_own_bike == 'yes') {
                                         <p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
                                     </div>';
                                 }
-                                $primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . '" data-selector="tt_bike_selection_primary" data-id="' . $bikeModelId . '" data-guest-id="0">
+                                $primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . '" data-selector="tt_bike_selection_primary" data-id="' . $bikeModelId . '" data-guest-id="0" data-type-id="' . $bikeTypeId . '">
                                 <input name="bike_gears[primary][bikeTypeId]" ' . $selected_p_bikeId . ' type="radio" value="' . $bikeModelId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '>
                                         <div class="checkout-bikes__image d-flex justify-content-center align-content-center">
                                             <img src="' . $bike_image . '" alt="' . $bikeDescr . '">
@@ -153,7 +154,7 @@ if ($p_own_bike == 'yes') {
                             }
                             $bikes_model_id_in[] = $bikeModelId;
                         }
-                        $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '>';
+                        $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '><input name="bike_gears[primary][bike_type_id_preferences]" type="hidden" value="">';
                     } else {
                         $primary_available_bike_html .= '<strong>No bikes available!</strong>';
                     }
@@ -194,13 +195,13 @@ if ($p_own_bike == 'yes') {
                     <label for="floatingSelect">Helmet Size</label>
                 </div>
                 <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
-                    <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) ?> name="bike_gears[primary][jersey_style]" class="form-select tt_jersey_style_change" id="floatingSelect1" data-guest-index="0">
+                    <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' || 'd-none' === $hideme ? '' : $primary_required) ?> name="bike_gears[primary][jersey_style]" class="form-select tt_jersey_style_change" id="floatingSelect1" data-guest-index="0" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
                         <?php
                             $clothing_style = isset($tt_posted['bike_gears']['primary']['jersey_style']) ? $tt_posted['bike_gears']['primary']['jersey_style'] : '';
                         ?>
                         <option value="">Select Clothing Style</option>
 						<?php if ( 'd-none' === $hideme ) : ?>
-							<option selected value="none">None</option>
+							<option selected value="">None</option>
 						<?php endif; ?>
                         <option value="men" <?php echo ( $clothing_style == 'men' ? 'selected' : '' ); ?>>Men's</option>
                         <option value="women" <?php echo ( $clothing_style == 'women' ? 'selected' : '' ); ?>>Women's</option>
@@ -208,9 +209,9 @@ if ($p_own_bike == 'yes') {
                     <label for="floatingSelect">Jersey Style</label>
                 </div>
                 <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
-                    <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) ?> name="bike_gears[primary][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example">
+                    <select <?php echo ( $p_rider_level != 5 && $p_own_bike == 'yes' || 'd-none' === $hideme ? '' : $primary_required) ?> name="bike_gears[primary][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
 					<?php if ( 'd-none' === $hideme ) : ?>
-						<option selected value="none">None</option>
+						<option selected value="">None</option>
 					<?php endif; ?>
 					<?php
                         $clothing_size = isset($tt_posted['bike_gears']['primary']['jersey_size']) ? $tt_posted['bike_gears']['primary']['jersey_size'] : '';
@@ -222,8 +223,8 @@ if ($p_own_bike == 'yes') {
 
             <div class="container checkout-bikes__save-preferences my-4 mx-0">
                 <div class="form-check">
-                    <input name="bike_gears[primary][save_preferences]" class="form-check-input checkout-bikes__own-bike-check" type="checkbox" value="yes" id="flexCheckDefault" <?php echo (isset($tt_posted['bike_gears']['primary']['save_preferences']) && $tt_posted['bike_gears']['primary']['save_preferences'] == 'yes' ? 'checked' : ''); ?>>
-                    <label class="form-check-label fw-medium fs-md lh-md" for="flexCheckDefault">
+                    <input name="bike_gears[primary][save_preferences]" class="form-check-input checkout-bikes__own-bike-check" type="checkbox" value="yes" id="saveMyBikePrefCheckbox" <?php echo (isset($tt_posted['bike_gears']['primary']['save_preferences']) && $tt_posted['bike_gears']['primary']['save_preferences'] == 'yes' ? 'checked' : ''); ?>>
+                    <label class="form-check-label fw-medium fs-md lh-md" for="saveMyBikePrefCheckbox">
                         Save my bike & gear preferences for future use. This will override your existing preferences saved on your profile.
                     </label>
                 </div>
@@ -265,8 +266,8 @@ if ($p_own_bike == 'yes') {
                 <div class="checkout-bikes__bike-selection" id="tt_rider_level_guest_<?php echo $guest_num; ?>" <?php echo $g_all_hide; ?>>
                     <p class="fw-medium fs-md lh-md">Select Your Bike of Choice</p>
                     <div class="form-check">
-                        <input class="form-check-input checkout-bikes__own-bike-check tt_my_own_bike_checkbox" name="bike_gears[guests][<?php echo $guest_num; ?>][own_bike]" data-type="tt_my_own_bike_guest_<?php echo $guest_num; ?>" type="checkbox" value="yes" id="flexCheckDefault" <?php echo $g_own_bike == "yes" ? "checked" : ""; ?>>
-                        <label class="form-check-label fw-medium fs-md lh-md" for="flexCheckDefault">
+                        <input class="form-check-input checkout-bikes__own-bike-check tt_my_own_bike_checkbox" name="bike_gears[guests][<?php echo $guest_num; ?>][own_bike]" data-type="tt_my_own_bike_guest_<?php echo $guest_num; ?>" type="checkbox" value="yes" id="myOwnBikeCheckboxGuest<?php echo $guest_num; ?>" <?php echo $g_own_bike == "yes" ? "checked" : ""; ?>>
+                        <label class="form-check-label fw-medium fs-md lh-md" for="myOwnBikeCheckboxGuest<?php echo $guest_num; ?>">
                             I am bringing my own bike
                         </label>
                     </div>
@@ -310,7 +311,7 @@ if ($p_own_bike == 'yes') {
                                         // if( $bike_post_id !== NULL && is_numeric($bike_post_id) ){
                                         //     $bike_post_name = get_the_title($bike_post_id);
                                         // }
-                                        $bikeTypeInfo = tt_ns_get_bike_type_info($bikeTypeId);
+                                        $bikeTypeInfo = tt_ns_get_bike_type_info($bikeModelId);
                                         $bikeUpgradeHtml = '';
                                         if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
                                             $bikeUpgradeHtml .= '<div class="checkout-bikes__price-upgrade d-flex ms-4">
@@ -377,9 +378,9 @@ if ($p_own_bike == 'yes') {
                             <label for="floatingSelect">Helmet Size</label>
                         </div>
                         <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
-                            <select <?php echo ( $g_rider_level != 5 && $g_own_bike == 'yes' ? '' : $guest_required); ?> name="bike_gears[guests][<?php echo $guest_num; ?>][jersey_style]" class="form-select tt_jersey_style_change" id="floatingSelect1" aria-label="Floating label select example" data-guest-index="<?php echo $guest_num; ?>">
+                            <select <?php echo ( $g_rider_level != 5 && $g_own_bike == 'yes' || 'd-none' === $hideme ? '' : $guest_required ); ?> name="bike_gears[guests][<?php echo $guest_num; ?>][jersey_style]" class="form-select tt_jersey_style_change" id="floatingSelect1" aria-label="Floating label select example" data-guest-index="<?php echo $guest_num; ?>" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
                                 <?php if ( 'd-none' === $hideme ) : ?>
-					            	<option selected value="none">None</option>
+					            	<option selected value="">None</option>
 					            <?php endif; ?>
                                 <?php 
                                     $g_clothing_style = isset($tt_posted['bike_gears']['guests'][$guest_num]['jersey_style']) ? $tt_posted['bike_gears']['guests'][$guest_num]['jersey_style'] : '';
@@ -391,9 +392,9 @@ if ($p_own_bike == 'yes') {
                             <label for="floatingSelect">Jersey Style</label>
                         </div>
                         <div class="form-floating checkout-bikes__bike-size <?php echo $hideme; ?>">
-                            <select <?php echo ( $g_rider_level != 5 && $g_own_bike == 'yes' ? '' : $guest_required); ?> name="bike_gears[guests][<?php echo $guest_num; ?>][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example">
+                            <select <?php echo ( $g_rider_level != 5 && $g_own_bike == 'yes' || 'd-none' === $hideme ? '' : $guest_required); ?> name="bike_gears[guests][<?php echo $guest_num; ?>][jersey_size]" class="form-select" id="floatingSelect1" aria-label="Floating label select example" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
                                 <?php if ( 'd-none' === $hideme ) : ?>
-					            	<option selected value="none">None</option>
+					            	<option selected value="">None</option>
 					            <?php endif; ?>
                                 <?php 
                                     $g_clothing_size = isset($tt_posted['bike_gears']['guests'][$guest_num]['jersey_size']) ? $tt_posted['bike_gears']['guests'][$guest_num]['jersey_size'] : '';

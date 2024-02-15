@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "X-Generator: babel-plugin-makepot\n"
 
-#: _src/js/block.js:181
+#: _src/js/block.js:184
 msgid "Generating Critical CSS"
 msgstr ""
 

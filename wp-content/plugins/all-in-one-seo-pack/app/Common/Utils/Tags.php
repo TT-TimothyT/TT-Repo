@@ -269,7 +269,8 @@ class Tags {
 			'tagline',
 		],
 		'pagedFormat'         => [
-			'page_number'
+			'page_number',
+			'separator_sa'
 		],
 		'schema'              => [
 			'author_first_name',
@@ -929,7 +930,7 @@ class Tags {
 			case 'taxonomy_title':
 				$title = $this->getTaxonomyTitle( $postId );
 
-				return $sampleData ? __( 'Sample Taxonomy Title', 'all-in-one-seo-pack' ) : $title;
+				return ! $title && $sampleData ? __( 'Sample Taxonomy Title', 'all-in-one-seo-pack' ) : $title;
 			case 'tax_parent_name':
 				$termObject       = get_term( $id );
 				$parentTermObject = ! empty( $termObject->parent ) ? get_term( $termObject->parent ) : '';

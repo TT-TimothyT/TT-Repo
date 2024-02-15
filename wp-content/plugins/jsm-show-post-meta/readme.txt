@@ -6,28 +6,52 @@ Domain Path: /languages
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl.txt
 Assets URI: https://jsmoriss.github.io/jsm-show-post-meta/assets/
-Tags: custom fields, meta, post meta, post types, delete, debug, inspector
+Tags: posts, custom fields, meta, metadata, post types, delete, debug, inspector
 Contributors: jsmoriss
 Requires PHP: 7.2.34
-Requires At Least: 5.5
-Tested Up To: 6.4.1
-Stable Tag: 3.8.0
+Requires At Least: 5.8
+Tested Up To: 6.4.3
+Stable Tag: 4.1.0
 
 Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.
 
 == Description ==
 
-**The JSM Show Post Metadata plugin displays post (ie. posts, pages, and custom post types) meta keys (aka custom field names) and their unserialized values in a metabox at the bottom of post editing pages.**
-
-The current user must have the [WordPress *manage_options* capability](https://wordpress.org/support/article/roles-and-capabilities/#manage_options) (allows access to administration options) to view the Post Metadata metabox, and the *manage_options* capability to delete individual meta keys.
-
-The default *manage_options* capability can be modified using the 'jsmspm_show_metabox_capability' and 'jsmspm_delete_meta_capability' filters (see filters.txt in the plugin folder).
+The JSM Show Post Metadata plugin displays post (ie. posts, pages, and custom post types) meta keys (aka custom field names) and their unserialized values in a metabox at the bottom of the post editing page.
 
 There are no plugin settings - simply install and activate the plugin.
+
+= Available Filters for Developers =
+
+Filter the post meta shown in the metabox:
+
+<pre><code>'jsmspm_metabox_table_metadata' ( array $metadata, $post_obj )</code></pre>
+
+Array of regular expressions to exclude meta keys:
+
+<pre><code>'jsmspm_metabox_table_exclude_keys' ( array $exclude_keys, $post_obj )</code></pre>
+
+Capability required to show post meta:
+
+<pre><code>'jsmspm_show_metabox_capability' ( 'manage_options', $post_obj )</code></pre>
+
+Show post meta for a post type (defaults to true):
+
+<pre><code>'jsmspm_show_metabox_post_type' ( true, $post_type )</code></pre>
+
+Capability required to delete post meta:
+
+<pre><code>'jsmspm_delete_meta_capability' ( 'manage_options', $post_obj )</code></pre>
+
+Icon for the delete post meta button:
+
+<pre><code>'jsmspm_delete_meta_icon_class' ( 'dashicons dashicons-table-row-delete' )</code></pre>
 
 = Related Plugins =
 
 * [JSM Show Comment Metadata](https://wordpress.org/plugins/jsm-show-comment-meta/)
+* [JSM Show Order Metadata for WooCommerce](https://wordpress.org/plugins/jsm-show-order-meta/)
+* [JSM Show Post Metadata](https://wordpress.org/plugins/jsm-show-post-meta/)
 * [JSM Show Term Metadata](https://wordpress.org/plugins/jsm-show-term-meta/)
 * [JSM Show User Metadata](https://wordpress.org/plugins/jsm-show-user-meta/)
 * [JSM Show Registered Shortcodes](https://wordpress.org/plugins/jsm-show-registered-shortcodes/)
@@ -58,7 +82,7 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 
 <h3>Changelog / Release Notes</h3>
 
-**Version 3.8.0 (2023/11/24)**
+**Version 4.1.0 (2024/02/03)**
 
 * **New Features**
 	* None.
@@ -67,14 +91,34 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 * **Bugfixes**
 	* None.
 * **Developer Notes**
-	* Update for the `SucomUtil` class.
+	* Added a new `SucomUtilWP::doing_dev()` method.
 * **Requires At Least**
 	* PHP v7.2.34.
-	* WordPress v5.5.
+	* WordPress v5.8.
+
+**Version 4.0.0 (2024/01/20)**
+
+* **New Features**
+	* None.
+* **Improvements**
+	* Allow upper case and accents in metadata keys.
+* **Bugfixes**
+	* None.
+* **Developer Notes**
+	* Added `$post_obj` argument to `current_user_can()`.
+	* Added new `SucomUtil::sanitize_int()` method.
+	* Added new `SucomUtil::sanitize_meta_key()` method.
+* **Requires At Least**
+	* PHP v7.2.34.
+	* WordPress v5.8.
 
 == Upgrade Notice ==
 
-= 3.8.0 =
+= 4.1.0 =
 
-(2023/11/24) Update for the `SucomUtil` class.
+(2024/02/03) Added a new `SucomUtilWP::doing_dev()` method.
+
+= 4.0.0 =
+
+(2024/01/20) Allow upper case and accents in metadata keys.
 

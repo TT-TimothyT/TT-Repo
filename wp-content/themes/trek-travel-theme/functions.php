@@ -682,13 +682,16 @@ function delete_user_address_callback() {
 }
 add_filter('woocommerce_customer_save_address', 'custom_address_update_message_and_redirect', 10, 2);
 
-function custom_address_update_message_and_redirect($user_id, $load_address) {
-	$current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $relative_url = rtrim(home_url(), '/') . $current_path;
+function custom_address_update_message_and_redirect( $user_id, $load_address ) {
+	// Add a check to prevent issues when updating users through the admin panel.
+	if( ! is_admin() ) {
+		$current_path = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+    	$relative_url = rtrim( home_url(), '/') . $current_path;
 
-    // Redirect to the relative URL
-    wp_redirect($relative_url);
-    exit;
+    	// Redirect to the relative URL
+    	wp_redirect( $relative_url );
+    	exit;
+	}
 }
 /**
  * Redirect users to the My Account page after sign-up.
@@ -706,3 +709,106 @@ add_filter( 'woocommerce_registration_redirect', function($redirect){
  
  add_filter( 'woocommerce_min_password_strength', 'iconic_min_password_strength', 10, 1 );
 
+
+/**
+ * @TODO: we have to update the location and most probably naming + capabilities
+ * Most likely this is going to be moved in a separate plugin, as functions.php is not the best place, but we have to progress
+ */
+ if( function_exists( 'acf_add_options_page' ) ) {
+
+	acf_add_options_page( array(
+        'page_title'    => 'Trek Travel Settings',
+        'menu_title'    => 'Trek Travel Settings',
+        'menu_slug'     => 'trek-travel-settings',
+        'capability'    => 'edit_posts',
+        'redirect'      => false
+    ));
+
+    // My Account - Resources Center
+	acf_add_options_sub_page( array(
+        'page_title'    => 'My Account - Resources Center',
+        'menu_title'    => 'My Account - Resources Center',
+		'parent_slug'   => 'trek-travel-settings',
+		'capability'    => 'edit_posts',
+    ));
+
+	 // My Account - Travel Advisor
+	 acf_add_options_sub_page( array(
+        'page_title'    => 'My Account - Travel Advisor',
+        'menu_title'    => 'My Account - Travel Advisor',
+		'parent_slug'   => 'trek-travel-settings',
+		'capability'    => 'edit_posts',
+    ));
+}
+
+function dx_strip_text($htmlText){
+
+	// Get the length of the HTML text
+	$htmlLength = strlen($htmlText);
+
+	// Initialize variables
+	$charCount = 0;
+	$insideTag = false;
+
+	// Loop through each character in the HTML text
+	for ($i = 0; $i < $htmlLength; $i++) {
+		// Check if the character is within an HTML tag
+		if ($htmlText[$i] === '<') {
+			$insideTag = true;
+		} elseif ($htmlText[$i] === '>') {
+			$insideTag = false;
+		}
+		// Increment the character count if not inside an HTML tag
+		if (!$insideTag) {
+			$charCount++;
+		}
+		// Check if the character count is greater than or equal to 140
+		if ($charCount >= 140) {
+			// Extract the substring up to the current position, including the markup
+			$result = substr($htmlText, 0, $i + 1);
+			break;
+		}
+	}
+	// If the character count is less than 140, use the original HTML text
+	if ($charCount < 140) {
+		$result = $htmlText;
+	}
+	// Output the result
+	return $result;
+}
+
+// CUSTOM WOOCOMMERCE TAXONOMY
+
+add_action( 'init', 'product_tax_activity' );
+
+// Register Custom Taxonomy
+function product_tax_activity()  {
+
+$labels = array(
+    'name'                       => 'Activities',
+    'singular_name'              => 'Activity',
+    'menu_name'                  => 'Activity',
+    'all_items'                  => 'All Activities',
+    'parent_item'                => 'Parent Activity',
+    'parent_item_colon'          => 'Parent Activity:',
+    'new_item_name'              => 'New Activity Name',
+    'add_new_item'               => 'Add New Activity',
+    'edit_item'                  => 'Edit Activity',
+    'update_item'                => 'Update Activity',
+    'separate_items_with_commas' => 'Separate Activity with commas',
+    'search_items'               => 'Search Activities',
+    'add_or_remove_items'        => 'Add or remove Activities',
+    'choose_from_most_used'      => 'Choose from the most used Activities',
+);
+$args = array(
+    'labels'                     => $labels,
+    'hierarchical'               => true,
+    'public'                     => true,
+    'show_ui'                    => true,
+    'show_admin_column'          => true,
+    'show_in_nav_menus'          => true,
+    'show_tagcloud'              => true,
+);
+register_taxonomy( 'activity', 'product', $args );
+
+}

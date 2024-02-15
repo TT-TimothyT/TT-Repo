@@ -3,7 +3,7 @@ Contributors: Yotpo
 Tags: reviews, social reviews, woocommerce, woocommerce reviews, woocommerce product reviews, woocommerce extensions, woocommerce plugins, woocommerce addons, woocommerce add-ons, yotpo, yotpo reviews, yotpo social reviews, photo reviews
 Requires at least: 3.5.1
 Tested up to: 6.1.1
-Stable tag: 1.6.6
+Stable tag: 1.7.7
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -201,3 +201,27 @@ Yes. To connect your social accounts to Yotpo, just log into yotpo.com, and clic
 
 = 1.6.6 - 05/09/2023 =
 * created modal with warning about trial of usage not customizated v3 widgets
+
+= 1.7.0 - 18/12/2023 =
+* added carousel widget, promoted products widget and reviews tab widget
+
+= 1.7.1 - 10/01/2024 =
+* removed edge case bug - when `v3_widgets_enables` was undefined, error occured
+
+= 1.7.2 - 10/01/2024 =
+* Reviews Tab made enablable on product page and category page
+
+= 1.7.3 - 26/01/2024 =
+* removed exception throw which caused complete block of settings page
+
+= 1.7.4 - 29/01/2024 =
+* added checking if the key in $widgets_instances array exists in wc-yotpo-settings-functions.php
+
+= 1.7.5 - 29/01/2024 =
+* changed function name get_arr_value to yotpo_get_arr_value to eliminate the same function name as in another plugin
+
+= 1.7.6 - 29/01/2024 =
+* used yotpo_get_arr_value in wc_yotpo.php to eliminate warnings
+
+= 1.7.7 - 05/02/2024 =
+* used yotpo_get_arr_value in wc-yotpo-settings.php to eliminate warnings

@@ -174,7 +174,8 @@ $emptyBlockContent .= '</div></div>';
                 <span class="f-check"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkback.png" /></span>
                 <span class="f-check-active"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkactive.png" /></span>
                 <span class="">{{data.label}}</span>
-                <span class="">{{data.count.toLocaleString()}}</span>
+                <!-- Hide the count for the moment -->
+                <!-- <span class="">{{data.count.toLocaleString()}}</span> -->
             </a>
         </div>
     </script>
@@ -245,23 +246,6 @@ $emptyBlockContent .= '</div></div>';
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                             </button>
-
-                            <form class="cart" action="" method="post" enctype="multipart/form-data">
-                            <?php if( is_user_logged_in() ) { ?>
-                                <input type="hidden" name="wlid" id="wlid"/>
-                                <input type="hidden" name="add-to-wishlist-type" value="{{ data.taxonomies.product_type }}"/>
-                                <input type="hidden" name="wl_from_single_product" value="{{data.post_type == 'product' ? '1' : '0'}}"/>
-                                <input type="hidden" name="quantity[{{ data.post_id }}]" value="1"/>	
-                                <a rel="nofollow" href="" data-productid="{{ data.post_id }}" data-listid="<?php echo $add_to_wishlist_args['single_id']; ?>" class="wl-add-to btn add-wishlist h-100">
-                                    <!-- <i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i> -->
-                                </a>
-                                <?php } else { ?>
-                                    <a class="btn add-wishlist h-100" href="<?php echo site_url('login'); ?>">
-                                        <!-- <i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i> -->
-                                    </a>
-                                <?php } ?>
-                            </form>
-
                         </div>
 
                     </div>
@@ -328,9 +312,9 @@ $emptyBlockContent .= '</div></div>';
                                 </div>
                                 <# if ( data['review_score'] ) { #>
                                 <div class="card-footer bg-transparent border-0 ms-md-4">
-                                    <span class="fw-semibold"><i class="bi bi-star"></i> {{data['review_score']}}</span>
+                                    <span class="fw-semibold"><i class="bi bi-star"></i> {{ (parseFloat(data['review_score']) % 1 === 0) ? parseFloat(data['review_score']).toFixed(0) : parseFloat(data['review_score']).toFixed(2) }} </span>
                                     <span class="text-muted review-text"> rating based on </span>
-                                    <span class="fw-semibold">{{data['total_review']}} </span>
+                                    <span class="fw-semibold reviews-count">{{data['total_review']}} </span>
                                     <span class="text-muted review-text"> reviews </span>
                                 </div>
                                 <# } #>
@@ -424,7 +408,7 @@ $emptyBlockContent .= '</div></div>';
 
                         <# if ( data['review_score'] ) { #>
                         <div class="card-footer bg-transparent border-0 ms-md-4">
-                            <span class="fw-semibold"><i class="bi bi-star"></i> {{data['review_score']}}</span>
+                            <span class="fw-semibold"><i class="bi bi-star"></i> {{ (parseFloat(data['review_score']) % 1 === 0) ? parseFloat(data['review_score']).toFixed(0) : parseFloat(data['review_score']).toFixed(2) }}  </span>
                             <span class="text-muted review-text"> rating based on </span>
                             <span class="fw-semibold">{{data['total_review']}} </span>
                             <span class="text-muted review-text"> reviews </span>
@@ -782,8 +766,8 @@ $emptyBlockContent .= '</div></div>';
                         container: document.querySelector('#hierarchical-menu'),
                         separator: ' > ',
                         attributes: [
-                            'taxonomies_custom.product_cat.lvl0',
-                            'taxonomies_custom.product_cat.lvl1'
+                            'taxonomies.pa_country',
+                            'taxonomies.pa_city'
                         ],
                         limit: 5,
                         showMoreLimit: 10,

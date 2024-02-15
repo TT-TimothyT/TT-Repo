@@ -4,7 +4,7 @@ Contributors: SomewhereWarm
 Tags: woocommerce, product, gift cards, gift, cards
 Requires at least: 4.4
 Tested up to: 6.0
-Stable tag: 1.16.7
+Stable tag: 1.16.8
 WC requires at least: 3.9
 WC tested up to: 8.2
 License: GNU General Public License v3.0

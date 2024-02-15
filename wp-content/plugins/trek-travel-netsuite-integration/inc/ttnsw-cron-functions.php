@@ -68,11 +68,11 @@ if (!function_exists('tt_sync_ns_trips')) {
                 //echo 'executed 1'; exit;
             }
         }
-        // if( $trek_trips ){
-        //     tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, ['status'=>'true']);
-        // }else{
-        //     tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, $trek_trips);
-        // }
+        if( $trek_trips ){
+            tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, ['status'=>'true']);
+        }else{
+            tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, $trek_trips);
+        }
     }
 }
 /**
@@ -93,11 +93,11 @@ if (!function_exists('tt_sync_ns_trip_details')) {
             foreach ($trip_Ids as $trip_Ids_arr) {
                 $trek_script_args = array('tripIds' => implode(',', $trip_Ids_arr) );
                 $trek_trip_details = $netSuiteClient->get(TRIP_DETAIL_SCRIPT_ID, $trek_script_args);
-                // if( $trek_trip_details ){
-                //     tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, ['status' => 'true']);
-                // }else{
-                //     tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, $trek_trip_details);
-                // }
+                if( $trek_trip_details ){
+                    tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, ['status' => 'true']);
+                }else{
+                    tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, $trek_trip_details);
+                }
                 if (!empty($trek_trip_details) && isset($trek_trip_details->trips)) {
                     foreach ($trek_trip_details->trips as $trek_trip_detail) {
                         $tripCode = $trek_trip_detail->tripCode;
@@ -135,7 +135,9 @@ if (!function_exists('tt_sync_ns_trip_details')) {
                             'hotels' => json_encode($trek_trip_detail->hotels),
                             'bikes' => json_encode($trek_trip_detail->bikes),
                             'addOns' => json_encode($trek_trip_detail->addOns),
-                            'tripSpecificMessage' => $trek_trip_detail->tripSpecificMessage
+                            'tripSpecificMessage' => $trek_trip_detail->tripSpecificMessage,
+                            'SmugMugLink'  => $trek_trip_detail->smugMugLink,
+                            'SmugMugPassword' => $trek_trip_detail->smugMugPasscode
                         );
                         $check_trip = tt_get_trip_by_idCode($table_name, $trek_trip_detail->tripId, $trek_trip_detail->tripCode);
                         if ($check_trip >= 1) {
@@ -339,162 +341,250 @@ if (!function_exists('tt_get_wc_postId_Tripcode')) {
         return $product_id;
     }
 }
+
+/**
+ * Create or update a WooComerce product for given NetSuite Trip.
+ * Or for shorter, this is a Product Sync Function.
+ * 
+ * @param object(stdClass) $trek_trip A single trip from NS. 
+ */
+function tt_sync_wc_product_from_ns( $trek_trip ) {
+    $tripCode = $trek_trip->tripCode;
+    $tripId = $trek_trip->tripId;
+    $capacity = $trek_trip->capacity;
+    $basePrice = $trek_trip->basePrice;
+    $product_id = tt_get_wc_postId_by_sku($tripCode);
+    $product_attr = get_post_meta($product_id, '_product_attributes', true);
+    $product_attr = ($product_attr ? $product_attr : array());
+    //Begin: Data preparation
+    $product_data_args = array(
+        'post_title' => $trek_trip->tripName,
+        'post_type' => 'product'
+    );
+    $meta_fields = array(
+        'tripId' => $tripId,
+        'itineraryId' => $trek_trip->itineraryId,
+        'itineraryCode' => $trek_trip->itineraryCode,
+        'singleSupplementPrice' => $trek_trip->singleSupplementPrice,
+        'depositAmount' => $trek_trip->depositAmount,
+        'bikeUpgradePrice' => $trek_trip->bikeUpgradePrice,
+        'insurancePercentage' => $trek_trip->insurancePercentage,
+        'taxRate' => $trek_trip->taxRate,
+        'isPassportRequired' => $trek_trip->isPassportRequired,
+        'tripSpecificMessage' => $trek_trip->tripSpecificMessage
+    );
+    $attr_startDate = ($trek_trip->startDate ? strtotime($trek_trip->startDate) : '');
+    $attr_endDate = ($trek_trip->endDate ? strtotime($trek_trip->endDate) : '');
+    $status = isset($trek_trip->status) && $trek_trip->status ? $trek_trip->status : '';
+    $riderType = isset($trek_trip->riderType) ? $trek_trip->riderType : '';
+    $daysToTrip = ($trek_trip->daysToTrip ? $trek_trip->daysToTrip : '');
+    $tripYear = ($trek_trip->tripYear ? $trek_trip->tripYear : '');
+    $tripSeason = ($trek_trip->tripSeason ? $trek_trip->tripSeason : '');
+    $tripMonth = ($trek_trip->tripMonth ? $trek_trip->tripMonth : '');
+    $tripContinent = ($trek_trip->tripContinent ? $trek_trip->tripContinent : '');
+    $tripCountry = ($trek_trip->tripCountry ? $trek_trip->tripCountry : '');
+    $tripRegion = ($trek_trip->tripRegion ? $trek_trip->tripRegion : '');
+    //End: Data preparation
+    $product = wc_get_product( $product_id );
+    // $parent_product_id = tt_get_parent_trip_id_by_child_sku($tripCode);
+    //if ($product && in_array($product_id, $wc_child_product_ids)) {
+    if ($product) {    
+        //update existing product data with new data
+        // if ($parent_product_id) {
+        //     $product_data_args['post_parent'] = $parent_product_id;
+        // }
+        $product_data_args['ID'] = $product_id;
+        $is_updated = wp_update_post($product_data_args);
+        if ($is_updated && $meta_fields) {
+            foreach ($meta_fields as $meta_id => $meta_value) {
+                $meta_key = TT_WC_META_PREFIX . $meta_id;
+                update_post_meta($product_id, $meta_key, $meta_value);
+            }
+        }
+    } else {
+        //insert new product in WC product
+        // if ($parent_product_id) {
+        //     $product_data_args['post_parent'] = $parent_product_id;
+        // }
+        $product_data_args['post_status'] = 'publish';
+        $new_product_id = wp_insert_post($product_data_args);
+        $product_id = $new_product_id;
+        update_post_meta($product_id, '_sku', $trek_trip->tripCode);
+    }
+    if ($product_id) {
+        if ($meta_fields) {
+            foreach ($meta_fields as $meta_id => $meta_value) {
+                $meta_key = TT_WC_META_PREFIX . $meta_id;
+                update_post_meta($product_id, $meta_key, $meta_value);
+            }
+        }
+        $has_sku = get_post_meta($product_id, '_sku', true);
+        if( empty($has_sku) ){
+            update_post_meta($product_id, '_sku', $trek_trip->tripCode);
+        }
+        if( $parent_p_ID ){
+            $new_child_ids = [$product_id];
+            $get_children_ids = get_post_meta($parent_p_ID, '_children', true);
+            if( $get_children_ids){
+                $new_child_ids = array_merge($get_children_ids, $new_child_ids);
+            }
+            $new_child_ids = array_unique($new_child_ids);
+        }
+        //start saved attribute code
+        if( is_object($riderType) ){
+            $riderLevelVal = tt_get_custom_item_name('syncRiderLevels',$riderType->id);
+        }
+        $custom_attributes = [
+            'pa_trip-status' => is_object($status) ? $status->name : '',
+            'pa_rider-level' => $riderLevelVal,
+            'pa_duration' => $daysToTrip,
+            'pa_region' => $tripRegion,
+            'pa_continent' => $tripContinent,
+            'pa_season' => $tripSeason,
+            'pa_country' => $tripCountry,
+            'pa_start-date' => date('d/m/y', $attr_startDate),
+            'pa_end-date' => date('d/m/y', $attr_endDate)
+        ];
+        if( $custom_attributes ){
+            foreach($custom_attributes as $custom_attribute_k=>$custom_attribute_v){
+                if( $custom_attribute_v ){
+                    tt_set_wc_attribute_value($product_id, $custom_attribute_k, $custom_attribute_v);
+                }
+            }
+        }
+        update_post_meta($product_id, '_manage_stock', 'yes');
+        update_post_meta($product_id, '_stock', $capacity);
+        update_post_meta($product_id, '_regular_price', $basePrice);
+        update_post_meta($product_id, '_price', $basePrice);
+        //end saved attribute code
+        update_post_meta($product_id, 'ns_last_synced_date_time', date('Y-m-d H:i:s'));
+    }
+}
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
  * @return  : NS Trips/Hotels/Bike/Rooms sync function
  **/
 if (!function_exists('tt_sync_wc_products_from_ns')) {
-    function tt_sync_wc_products_from_ns($is_all=false, $sync_trip_Ids=array(), $time_range = DEFAULT_TIME_RANGE)
+    function tt_sync_wc_products_from_ns( $is_all = false, $sync_trip_ids = array(), $time_range = DEFAULT_TIME_RANGE )
     {
-        $netSuiteClient = new NetSuiteClient();
-        $trip_sync_type_msg = '[Trip Sync]: '.TRIP_DETAIL_SCRIPT_ID;
+        $net_suite_client   = new NetSuiteClient();
+        $trip_sync_type_msg = '[Trip Sync]: ' . TRIP_DETAIL_SCRIPT_ID;
 
-        //Check if we are syncing a single trip or a bunch of such
-        if( $sync_trip_Ids && is_array($sync_trip_Ids) && !empty($sync_trip_Ids) ){
-            $trip_Ids = $sync_trip_Ids;
-            $trip_Ids = array_chunk($trip_Ids, 10);
-            $trip_sync_type_msg = '[Single Trip Sync]: '.TRIP_DETAIL_SCRIPT_ID;
+        // Check if we are syncing a single trip or a bunch of such.
+        if( $sync_trip_ids && is_array( $sync_trip_ids ) && ! empty( $sync_trip_ids ) ) {
+
+            $trip_ids           = $sync_trip_ids;
+            $trip_ids           = array_chunk( $trip_ids, 10 );
+            $trip_sync_type_msg = '[Single Trip Sync]: ' . TRIP_DETAIL_SCRIPT_ID;
         } else {
+
             $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
-            if ( $is_all == true ){
-                $trip_Ids = tt_get_local_trip_ids();
+
+            if ( $is_all == true ) {
+
+                $trip_ids = tt_get_local_trip_ids();
             } else {
-                $trip_Ids = tt_get_local_trip_ids( $last_modified_trip_ids );
+
+                if( ! empty( $last_modified_trip_ids ) ) {
+
+                    $trip_ids = tt_get_local_trip_ids( $last_modified_trip_ids );
+                } else {
+
+                    $trip_ids = array();
+                    tt_add_error_log( $trip_sync_type_msg, array( 'trip_ids' => $trip_ids ), array( 'status' => true, 'message' => 'There are no new Trip IDs to sync edited in the period ' . $time_range ) );
+                }
             }
         }
 
-        //If the trip code is found locally in netsuite_trips proceed.
-        if( $trip_Ids ){
-            /*if(count($trip_Ids) > 10 ){
-                $trip_Ids = array_chunk($trip_Ids, 10);
-            }*/
-            if ( ! empty( $trip_Ids ) ) {
-                foreach ($trip_Ids as $trip_Ids_arr) {
-                    if( is_int($trip_Ids_arr) && !is_array($trip_Ids_arr) ){
-                        $trip_Ids_arr = [$trip_Ids];
+        // Early exit if there are no trip ids.
+        if( empty( $trip_ids ) ) {
+            return;
+        }
+        
+        // If the trip code is found locally in netsuite_trips proceed.
+        foreach ( $trip_ids as $trip_ids_arr ) {
+
+            if( is_int( $trip_ids_arr ) && ! is_array( $trip_ids_arr ) ) {
+                $trip_ids_arr = [ $trip_ids ];
+            }
+
+            $trek_script_args = array( 'tripIds' => implode( ',', $trip_ids_arr ) );
+            $trek_trips       = $net_suite_client->get( TRIP_DETAIL_SCRIPT_ID, $trek_script_args );
+
+            if( $trek_trips ) {
+                tt_add_error_log( $trip_sync_type_msg, $trek_script_args, array( 'status' => 'true' ) );
+            } else {
+                tt_add_error_log( $trip_sync_type_msg, $trek_script_args, $trek_trips );
+            }
+
+            if( empty( $trek_trips ) || ! isset( $trek_trips->trips ) ) {
+                continue;
+            }
+
+            $ride_camp_trips = array();
+
+            foreach ( $trek_trips->trips as $trek_trip ) {
+                // Set is Ride Camp flag.
+                $is_ride_camp = ( $trek_trip->isRideCamp ? $trek_trip->isRideCamp : '' );
+
+                if( ! empty( $is_ride_camp ) && $is_ride_camp ) {
+                    // This is a Ride Camp trip, store it into array for laiter usage.
+                    array_push( $ride_camp_trips, $trek_trip );
+                }
+                // Continue as normal.
+                tt_sync_wc_product_from_ns( $trek_trip );
+            }
+
+            if( empty( $ride_camp_trips ) ) {
+                continue;
+            }
+
+            // Have a Ride Camp Trips.
+            foreach( $ride_camp_trips as $trek_trip ) {
+
+                // Take the info for the additional trips that need to be made.
+                $bookable_periods = $trek_trip->bookablePeriods;
+
+                $main_start_date  = $trek_trip->startDate;
+                $main_end_date    = $trek_trip->endDate;
+
+                // Keep SKU base.
+                $main_trip_code   = $trek_trip->tripCode;
+                $main_trip_name   = $trek_trip->tripName;
+
+                foreach( $bookable_periods as $period ) {
+                    $start_date = $period->startDate;
+                    $end_date   = $period->endDate;
+
+                    if( $start_date === $main_start_date && $end_date === $main_end_date ) {
+                        // This is the main trip product, that we already have into WC.
+                        continue;
                     }
-                    $trek_script_args = array('tripIds' => implode(',', $trip_Ids_arr) );
-                    $trek_trips = $netSuiteClient->get(TRIP_DETAIL_SCRIPT_ID, $trek_script_args);
-                    if( $trek_trips ){
-                        tt_add_error_log($trip_sync_type_msg, $trek_script_args, ['status'=>'true']);
-                    }else{
-                        tt_add_error_log($trip_sync_type_msg, $trek_script_args, $trek_trips);
+
+                    if( $start_date === $main_start_date && $end_date !== $main_end_date ) {
+                        // This is the FIRST child product, add a suffix to the SKU.
+                        $trek_trip->tripCode = $main_trip_code . '-FIRST';
+                        // Add suffix on the name.
+                        $trek_trip->tripName = $main_trip_name . '-FIRST';
+
+                    } elseif ( $start_date !== $main_start_date && $end_date === $main_end_date ) {
+                        // This is the SECOND child product, add a suffix to the SKU.
+                        $trek_trip->tripCode = $main_trip_code . '-SECOND';
+                        // Add suffix on the name.
+                        $trek_trip->tripName = $main_trip_name . '-SECOND';
                     }
-                    if (!empty($trek_trips) && isset($trek_trips->trips)) {
-                        foreach ($trek_trips->trips as $trek_trip) {
-                            $tripCode = $trek_trip->tripCode;
-                            $tripId = $trek_trip->tripId;
-                            $capacity = $trek_trip->capacity;
-                            $basePrice = $trek_trip->basePrice;
-                            $product_id = tt_get_wc_postId_by_sku($tripCode);
-                            $product_attr = get_post_meta($product_id, '_product_attributes', true);
-                            $product_attr = ($product_attr ? $product_attr : array());
-                            //Begin: Data preparation
-                            $product_data_args = array(
-                                'post_title' => $trek_trip->tripName,
-                                'post_type' => 'product'
-                            );
-                            $meta_fields = array(
-                                'tripId' => $tripId,
-                                'itineraryId' => $trek_trip->itineraryId,
-                                'itineraryCode' => $trek_trip->itineraryCode,
-                                'singleSupplementPrice' => $trek_trip->singleSupplementPrice,
-                                'depositAmount' => $trek_trip->depositAmount,
-                                'bikeUpgradePrice' => $trek_trip->bikeUpgradePrice,
-                                'insurancePercentage' => $trek_trip->insurancePercentage,
-                                'taxRate' => $trek_trip->taxRate,
-                                'isPassportRequired' => $trek_trip->isPassportRequired,
-                                'tripSpecificMessage' => $trek_trip->tripSpecificMessage
-                            );
-                            $attr_startDate = ($trek_trip->startDate ? strtotime($trek_trip->startDate) : '');
-                            $attr_endDate = ($trek_trip->endDate ? strtotime($trek_trip->endDate) : '');
-                            $status = isset($trek_trip->status) && $trek_trip->status ? $trek_trip->status : '';
-                            $riderType = isset($trek_trip->riderType) ? $trek_trip->riderType : '';
-                            $daysToTrip = ($trek_trip->daysToTrip ? $trek_trip->daysToTrip : '');
-                            $tripYear = ($trek_trip->tripYear ? $trek_trip->tripYear : '');
-                            $tripSeason = ($trek_trip->tripSeason ? $trek_trip->tripSeason : '');
-                            $tripMonth = ($trek_trip->tripMonth ? $trek_trip->tripMonth : '');
-                            $tripContinent = ($trek_trip->tripContinent ? $trek_trip->tripContinent : '');
-                            $tripCountry = ($trek_trip->tripCountry ? $trek_trip->tripCountry : '');
-                            $tripRegion = ($trek_trip->tripRegion ? $trek_trip->tripRegion : '');
-                            //End: Data preparation
-                            $product = wc_get_product( $product_id );
-                            $parent_product_id = tt_get_parent_trip_id_by_child_sku($tripCode);
-                            //if ($product && in_array($product_id, $wc_child_product_ids)) {
-                            if ($product) {    
-                                //update existing product data with new data
-                                // if ($parent_product_id) {
-                                //     $product_data_args['post_parent'] = $parent_product_id;
-                                // }
-                                $product_data_args['ID'] = $product_id;
-                                $is_updated = wp_update_post($product_data_args);
-                                if ($is_updated && $meta_fields) {
-                                    foreach ($meta_fields as $meta_id => $meta_value) {
-                                        $meta_key = TT_WC_META_PREFIX . $meta_id;
-                                        update_post_meta($product_id, $meta_key, $meta_value);
-                                    }
-                                }
-                            }else {
-                                //insert new product in WC product
-                                // if ($parent_product_id) {
-                                //     $product_data_args['post_parent'] = $parent_product_id;
-                                // }
-                                $product_data_args['post_status'] = 'publish';
-                                $new_product_id = wp_insert_post($product_data_args);
-                                $product_id = $new_product_id;
-                                update_post_meta($product_id, '_sku', $trek_trip->tripCode);
-                            }
-                            if ($product_id) {
-                                if ($meta_fields) {
-                                    foreach ($meta_fields as $meta_id => $meta_value) {
-                                        $meta_key = TT_WC_META_PREFIX . $meta_id;
-                                        update_post_meta($product_id, $meta_key, $meta_value);
-                                    }
-                                }
-                                $has_sku = get_post_meta($product_id, '_sku', true);
-                                if( empty($has_sku) ){
-                                    update_post_meta($product_id, '_sku', $trek_trip->tripCode);
-                                }
-                                if( $parent_p_ID ){
-                                    $new_child_ids = [$product_id];
-                                    $get_children_ids = get_post_meta($parent_p_ID, '_children', true);
-                                    if( $get_children_ids){
-                                        $new_child_ids = array_merge($get_children_ids, $new_child_ids);
-                                    }
-                                    $new_child_ids = array_unique($new_child_ids);
-                                }
-                                //start saved attribute code
-                                if( is_object($riderType) ){
-                                    $riderLevelVal = tt_get_custom_item_name('syncRiderLevels',$riderType->id);
-                                }
-                                $custom_attributes = [
-                                    'pa_trip-status' => is_object($status) ? $status->name : '',
-                                    'pa_rider-level' => $riderLevelVal,
-                                    'pa_duration' => $daysToTrip,
-                                    'pa_region' => $tripRegion,
-                                    'pa_continent' => $tripContinent,
-                                    'pa_season' => $tripSeason,
-                                    'pa_country' => $tripCountry,
-                                    'pa_start-date' => date('d/m/y', $attr_startDate),
-                                    'pa_end-date' => date('d/m/y', $attr_endDate)
-                                ];
-                                if( $custom_attributes ){
-                                    foreach($custom_attributes as $custom_attribute_k=>$custom_attribute_v){
-                                        if( $custom_attribute_v ){
-                                            tt_set_wc_attribute_value($product_id, $custom_attribute_k, $custom_attribute_v);
-                                        }
-                                    }
-                                }
-                                update_post_meta($product_id, '_manage_stock', 'yes');
-                                update_post_meta($product_id, '_stock', $capacity);
-                                update_post_meta($product_id, '_regular_price', $basePrice);
-                                update_post_meta($product_id, '_price', $basePrice);
-                                //end saved attribute code
-                                update_post_meta($product_id, 'ns_last_synced_date_time', date('Y-m-d H:i:s'));
-                            }
-                        }
-                    }
+                    
+                    $trek_trip->startDate             = $start_date;
+                    $trek_trip->endDate               = $end_date;
+                    $trek_trip->basePrice             = $period->basePrice;
+                    $trek_trip->singleSupplementPrice = $period->singleSupplementPrice;
+                    $trek_trip->depositAmount         = $period->depositAmount;
+                    $trek_trip->bikeUpgradePrice      = $period->bikeUpgradePrice;
+
+                    // Create or update a Ride Camp half-period product.
+                    tt_sync_wc_product_from_ns( $trek_trip );
                 }
             }
         }
@@ -539,14 +629,15 @@ if (!function_exists('tt_sync_custom_items')) {
  * @version : 1.0.0
  * @return  : tt_ns_get_last_modified_gustes Array([0] => 1522426 [1] => 2107076 )
  **/
-if (!function_exists('tt_ns_get_last_modified_gustes')) {
-    function tt_ns_get_last_modified_gustes()
+if ( ! function_exists( 'tt_ns_get_last_modified_gustes' ) ) {
+    function tt_ns_get_last_modified_gustes( $time_range = DEFAULT_TIME_RANGE )
     {
-        $modifiedAfter = date('Y-m-d H:i:s', strtotime(' -24 hours'));
-        $modifiedAfterTime = gmdate("Y-m-d\TH:i:s", strtotime($modifiedAfter));
-        $netSuiteClient = new NetSuiteClient();
-        $modified_guest_ids = $netSuiteClient->get('1306:2', ['modifiedAfter' => $modifiedAfterTime ]);
-        //tt_add_error_log('NS - modified_guest_ids', ['modifiedAfter' => $modifiedAfterTime ], $modified_guest_ids);
+        $modified_after      = date( 'Y-m-d H:i:s', strtotime( $time_range ) );
+        $modified_after_time = gmdate( "Y-m-d\TH:i:s", strtotime( $modified_after ) );
+        $net_suite_client    = new NetSuiteClient();
+        $modified_guest_ids  = $net_suite_client->get( GUESTS_TO_SYNC_SCRIPT_ID, array( 'modifiedAfter' => $modified_after_time ) );
+        tt_add_error_log( 'NS - modified_guest_ids: ' . GUESTS_TO_SYNC_SCRIPT_ID, array( 'modified_after' => $modified_after, 'modified_after_time' => $modified_after_time ), $modified_guest_ids );
+
         return $modified_guest_ids;
     }
 }
@@ -556,149 +647,296 @@ if (!function_exists('tt_ns_get_last_modified_gustes')) {
  * @return  : tt_ns_guest_booking_details
  **/
 if (!function_exists('tt_ns_guest_booking_details')) {
-    function tt_ns_guest_booking_details($single_guest=false,$ns_new_guest_id='',$wc_user_id='')
+    function tt_ns_guest_booking_details( $single_guest = false, $ns_new_guest_id = '', $wc_user_id = '', $time_range = DEFAULT_TIME_RANGE, $is_sync_process = false )
     {
-        if( $single_guest == false ){
-            $guest_ids = tt_ns_get_last_modified_gustes();
-        }else{
-            if( $ns_new_guest_id && is_numeric($ns_new_guest_id) ){
-                $guest_ids = [$ns_new_guest_id];
+        global $wpdb;
+        $table_name       = $wpdb->prefix . 'guest_bookings';
+
+        $net_suite_client = new NetSuiteClient();
+
+        if( $single_guest == false ) {
+            // This is a manual sync from Dashboard with action - NS<>WC Booking Sync.
+            $guest_ids = tt_ns_get_last_modified_gustes( $time_range );
+        } else {
+            // This is a manual sync from Dashboard with action - Manual Single Guest Bookings/Preferences Sync from NS to WC
+            // or during user registration.
+            if( $ns_new_guest_id && is_numeric( $ns_new_guest_id ) ) {
+                $guest_ids = array( $ns_new_guest_id );
             }
         }
-        $netSuiteClient = new NetSuiteClient();
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'guest_bookings';
-        if( $guest_ids ){
-            foreach($guest_ids as $guest_id ){
-                $args = array('guestId'=> $guest_id, 'includeBookingInfo' => 1 );
-                $ns_guest_booking_result = $netSuiteClient->get('1305:2', $args );
-                tt_add_error_log('1) NS - Guest includeBookingInfo', $args, $ns_guest_booking_result);
-                if( $ns_guest_booking_result && isset($ns_guest_booking_result->bookings) ){
-                    foreach($ns_guest_booking_result->bookings as $booking_data){
-                        if( $booking_data->bookingId ){
-                            $args_2 = array( 'bookingId'=> $booking_data->bookingId );
-                            $ns_booking_Data = $netSuiteClient->get('1304:2', $args_2 );
-                            tt_add_error_log('2) NS - Guest includeBookingInfo', $args_2, $ns_booking_Data);
-                            $booking_table_data = [];
-                            if( $ns_booking_Data ){
-                                $bookingId = $ns_booking_Data->bookingId;  //NS booking ID
-                                $bookingNumber = $ns_booking_Data->bookingNumber;
-                                $bookingDate = $ns_booking_Data->bookingDate;
-                                $primaryGuestId = $ns_booking_Data->primaryGuestId;
-                                $tripId = $ns_booking_Data->tripId;
-                                $tripCode = $ns_booking_Data->tripCode;
-                                $itineraryCode = $ns_booking_Data->itineraryCode;
-                                $tripName = $ns_booking_Data->tripName;
-                                $tripYear = $ns_booking_Data->tripYear;
-                                $tripStartDate = $ns_booking_Data->tripStartDate;
-                                $tripEndDate = $ns_booking_Data->tripEndDate;
-                                $totalAmount = $ns_booking_Data->totalAmount;
-                                $balancePaid = $ns_booking_Data->balancePaid;
-                                $amountDue = $ns_booking_Data->amountDue;
-                                $salesTax = $ns_booking_Data->salesTax;
-                                $payments = $ns_booking_Data->payments; //Array<>Object
-                                $product_id = tt_get_postid_by_meta_key_value('tt_meta_tripId', $tripId);
-                                $guests = $ns_booking_Data->guests;
-                                if( $guests ){
-                                    foreach( $guests as $guest ){
-                                        $guestId = $guest->guestId; //Ns guest
-                                        $guestName = $guest->guestName;
-                                        $guestEmail = '';
-                                        if( $ns_new_guest_id == $guestId ){
-                                            $userInfo = wp_get_current_user();
-                                            $guestEmail = $userInfo->user_email;
-                                        }
-                                        $tripInsurancePurchased = $guest->tripInsurancePurchased;
-                                        $waiveInsurance = $guest->waiveInsurance;
-                                        $basePrice = $guest->basePrice;
-                                        $insurance = $guest->insurance;
-                                        $singleSupplement = $guest->singleSupplement;
-                                        $wheelUpgrade = $guest->wheelUpgrade;
-                                        $registrationId = $guest->registrationId;
-                                        if($registrationId){
-                                            $args = array('registrationId'=> $registrationId );
-                                            $ns_guest_info = $netSuiteClient->get('1294:2', $args );
-                                            tt_add_error_log('NS - Guest includeBookingInfo', $args, $ns_guest_info);
-                                            if( $ns_guest_info ){
-                                                $isPrimary = isset($ns_guest_info->isPrimary) ? $ns_guest_info->isPrimary : '';
-                                                $bikeId = isset($ns_guest_info->bikeId) ? $ns_guest_info->bikeId : '';
-                                                $helmetId = isset($ns_guest_info->helmetId) ? $ns_guest_info->helmetId : '';
-                                                $pedalsId = isset($ns_guest_info->pedalsId) ? $ns_guest_info->pedalsId : '';
-                                                $saddleId = isset($ns_guest_info->saddleId) ? $ns_guest_info->saddleId : '';
-                                                $saddleHeight = isset($ns_guest_info->saddleHeight) ? $ns_guest_info->saddleHeight : '';
-                                                $barReachFromSaddle = isset($ns_guest_info->barReachFromSaddle) ? $ns_guest_info->barReachFromSaddle : '';
-                                                $barHeightFromWheelCenter = isset($ns_guest_info->barHeightFromWheelCenter) ? $ns_guest_info->barHeightFromWheelCenter : '';
-                                                $jerseyId = isset($ns_guest_info->jerseyId) ? $ns_guest_info->jerseyId : '';
-                                                $tshirtSizeId = isset($ns_guest_info->tshirtSizeId) ? $ns_guest_info->tshirtSizeId : '';
-                                                $raceFitJerseyId = isset($ns_guest_info->raceFitJerseyId) ? $ns_guest_info->raceFitJerseyId : '';
-                                                $shortsBibSizeId = isset($ns_guest_info->shortsBibSizeId) ? $ns_guest_info->shortsBibSizeId : '';
-                                                $ecFirstName = isset($ns_guest_info->ecFirstName) ? $ns_guest_info->ecFirstName : '';
-                                                $ecLastName = isset($ns_guest_info->ecLastName) ? $ns_guest_info->ecLastName : '';
-                                                $ecPhone = isset($ns_guest_info->ecPhone) ? $ns_guest_info->ecPhone : '';
-                                                $ecRelationship = isset($ns_guest_info->ecRelationship) ? $ns_guest_info->ecRelationship : '';
-                                                $medicalConditions = isset($ns_guest_info->medicalConditions) ? $ns_guest_info->medicalConditions : '';
-                                                $medications = isset($ns_guest_info->medications) ? $ns_guest_info->medications : '';
-                                                $allergies = isset($ns_guest_info->allergies) ? $ns_guest_info->allergies : '';
-                                                $dietaryRestrictions = isset($ns_guest_info->dietaryRestrictions) ? $ns_guest_info->dietaryRestrictions : '';
-                                                $dietaryPreferences = isset($ns_guest_info->dietaryPreferences) ? $ns_guest_info->dietaryPreferences : '';
-                                                $lockRecord = isset($ns_guest_info->lockRecord) ? $ns_guest_info->lockRecord : '';
-                                                $lockBike = isset($ns_guest_info->lockBike) ? $ns_guest_info->lockBike : '';
-                                                $waiverAccepted = isset($ns_guest_info->waiverAccepted) ? $ns_guest_info->waiverAccepted : '';
-                                                if( $product_id != null ){
-                                                    $booking_table_data['product_id'] = $product_id;
-                                                }
-                                                $guestName_arr = explode(' ', $guestName);
-                                                $booking_table_data['netsuite_guest_registration_id'] = $guestId;
-                                                $booking_table_data['guestRegistrationId'] = $registrationId;
-                                                $booking_table_data['user_id'] = $wc_user_id;
-                                                $booking_table_data['guest_booking_id'] = $bookingId;
-                                                $booking_table_data['trip_code'] = $tripCode;
-                                                $booking_table_data['trip_name'] = $tripName;
-                                                $booking_table_data['trip_total_amount'] = $totalAmount;
-                                                $booking_table_data['trip_number_of_guests'] = count($guests);
-                                                $booking_table_data['trip_start_date'] = strtotime($tripStartDate);
-                                                $booking_table_data['trip_end_date'] = strtotime($tripEndDate);
-                                                $booking_table_data['guest_is_primary'] = ( $isPrimary == 1 ? 1 : 0 );
-                                                $booking_table_data['guest_first_name'] = ( $guestName_arr[0] ? $guestName_arr[0] : '' );
-                                                $booking_table_data['guest_last_name'] = ( $guestName_arr[1] ? $guestName_arr[1] : '' );
-                                                $booking_table_data['guest_email_address'] = $guestEmail;
-                                                $booking_table_data['bike_selection'] = $bikeId;
-                                                $booking_table_data['helmet_selection'] = $helmetId;
-                                                $booking_table_data['pedal_selection'] = $pedalsId;
-                                                $booking_table_data['saddle_height'] = $saddleHeight;
-                                                $booking_table_data['saddle_bar_reach_from_saddle'] = $barReachFromSaddle;
-                                                $booking_table_data['saddle_bar_height_from_wheel_center'] = $barHeightFromWheelCenter;
-                                                $booking_table_data['jersey_style'] = $jerseyId;
-                                                $booking_table_data['tt_jersey_size'] = $jerseyId;
-                                                $booking_table_data['shorts_bib_size'] = $shortsBibSizeId;
-                                                $booking_table_data['emergency_contact_first_name'] = $ecFirstName;
-                                                $booking_table_data['emergency_contact_last_name'] = $ecLastName;
-                                                $booking_table_data['emergency_contact_phone'] = $ecPhone;
-                                                $booking_table_data['emergency_contact_relationship'] = $ecRelationship;
-                                                $booking_table_data['medical_conditions'] = $medicalConditions;
-                                                $booking_table_data['medications'] = $medications;
-                                                $booking_table_data['allergies'] = $allergies;
-                                                $booking_table_data['dietary_restrictions'] = $dietaryRestrictions;
-                                                $booking_table_data['waiver_signed'] = $waiverAccepted;
-                                                if( $bookingId ){
-                                                    $check_booking = tt_checkbooking_status($guestId, $bookingId);
-                                                    if( $check_booking == 0 ){
-                                                        $insert_booking = $wpdb->insert($table_name, $booking_table_data);
-                                                        tt_add_error_log('4) NS<>WC - SQL [Insert]', ['last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ], $booking_table_data);
-                                                    }
-                                                    if( $check_booking && $check_booking > 0 ){
-                                                        $where = array('netsuite_guest_registration_id' => $guestId, 'guest_booking_id' => $bookingId);
-                                                        $wpdb->update($table_name, $booking_table_data, $where);
-                                                        tt_add_error_log('5) NS<>WC - SQL [Update]', ['last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ], $booking_table_data);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+
+        // Guests IDs not found.
+        if( ! $guest_ids ) {
+            return;
+        }
+
+        foreach( $guest_ids as $guest_id ){
+            $args                    = array( 'guestId' => $guest_id, 'includeBookingInfo' => 1 );
+            $ns_guest_booking_result = $net_suite_client->get( USER_BOOKINGS_SCRIPT_ID, $args );
+            tt_add_error_log( '1) NS - Guest includeBookingInfo', $args, $ns_guest_booking_result );
+
+            // Guest Not Found.
+            if( ! $ns_guest_booking_result || ! isset( $ns_guest_booking_result->bookings ) ) {
+                continue;
+            }
+
+            // Before collect guest preferences, check for wp user existing.
+            $ns_guest_email = isset( $ns_guest_booking_result->email ) ? $ns_guest_booking_result->email : '';
+            $wp_user        = get_user_by( 'email', $ns_guest_email );
+            $wp_user_id     = $wp_user->ID;
+
+            // If we have wp user.
+            // The check for $is_sync_process prevents override information during the booking process.
+            if( ! empty( $wp_user_id ) && 'true' == $is_sync_process ) {
+
+                // Take NS Guest Preferences.
+                $ns_guest_preferences = array(
+                    // Collect Personal Information.
+                    'first_name'              => isset( $ns_guest_booking_result->firstname ) ? $ns_guest_booking_result->firstname : '',
+                    'last_name'               => isset( $ns_guest_booking_result->lastname ) ? $ns_guest_booking_result->lastname : '',
+                    'billing_phone'           => isset( $ns_guest_booking_result->phone ) ? $ns_guest_booking_result->phone : '',
+                    'custentity_phone_number' => isset( $ns_guest_booking_result->phone ) ? $ns_guest_booking_result->phone : '',
+                    'custentity_birthdate'    => isset( $ns_guest_booking_result->birthdate ) ? date( 'm/d/Y', strtotime( $ns_guest_booking_result->birthdate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
+                    'custentity_gender'       => isset( $ns_guest_booking_result->gender->id ) ? $ns_guest_booking_result->gender->id : '',
+    
+                    // Collect Medical Information.
+                    'custentity_medications'         => isset( $ns_guest_booking_result->medications ) ? $ns_guest_booking_result->medications : '',
+                    'custentity_allergies'           => isset( $ns_guest_booking_result->allergies ) ? $ns_guest_booking_result->allergies : '',
+                    'custentity_medicalconditions'   => isset( $ns_guest_booking_result->medicalconditions ) ? $ns_guest_booking_result->medicalconditions : '',
+                    'custentity_dietaryrestrictions' => isset( $ns_guest_booking_result->dietaryrestrictions ) ? $ns_guest_booking_result->dietaryrestrictions : '',
+
+                    // Collect Emergency Contact.
+                    'custentity_emergencycontactfirstname'    => isset( $ns_guest_booking_result->emergencyContactPrimFirstName ) ? $ns_guest_booking_result->emergencyContactPrimFirstName : '',
+                    'custentityemergencycontactlastname'      => isset( $ns_guest_booking_result->emergencyContactPrimLastName ) ? $ns_guest_booking_result->emergencyContactPrimLastName : '',
+                    'custentity_emergencycontactphonenumber'  => isset( $ns_guest_booking_result->emergencyContactPrimPhone ) ? $ns_guest_booking_result->emergencyContactPrimPhone : '',
+                    'custentity_emergencycontactrelationship' => isset( $ns_guest_booking_result->emergencyContactPrimRelationship ) ? $ns_guest_booking_result->emergencyContactPrimRelationship : '',
+
+                    // Collect Communication Preferences.
+                    'custentity_contactmethod'              => isset( $ns_guest_booking_result->preferredContactMethod->id ) ? $ns_guest_booking_result->preferredContactMethod->id : '',
+
+                    // These two fields below are not clear for what are they.
+                    // 'custentity_addtotrektravelmailinglist' => isset( $ns_guest_booking_result->addToMailList->id ) ? $ns_guest_booking_result->addToMailList->id : '', // Example response - "addToEmailList": { "id": "2", "name": "Soft Opt-Out" } or "addToEmailList": { "id": "1", "name": "Soft Opt-In" }
+                    // 'globalsubscriptionstatus'              => isset( $ns_guest_booking_result->addToEmailList->id ) ? $ns_guest_booking_result->addToEmailList->id : '', // Example response - "addToMailList": { "id": "1", "name": "Yes" },
+
+                    // Collect Bike & Gear Preferences
+                    // TODO: Bike type field mapping. One of the listed bellow.
+                    // 'gear_preferences_bike'       => isset( $ns_guest_booking_result->bikeSelect ) ? $ns_guest_booking_result->bikeSelect : '', // this is a bike id in user meta.
+                    // 'gear_preferences_bike_type'  => isset( $ns_guest_booking_result->bikeSelect ) ? $ns_guest_booking_result->bikeSelect : '', // this is a bike type id in user meta.
+                    'gear_preferences_rider_height'  => isset( $ns_guest_booking_result->height->id ) ? $ns_guest_booking_result->height->id : '',
+                    'gear_preferences_select_pedals' => isset( $ns_guest_booking_result->pedalSelect->id ) ? $ns_guest_booking_result->pedalSelect->id : '',
+                    'gear_preferences_helmet_size'   => isset( $ns_guest_booking_result->helmetSize->id ) ? $ns_guest_booking_result->helmetSize->id : '',
+
+                    // These fields below not comming from 1305 NS Script.
+                    // 'gear_preferences_jersey_size' => '',
+                    // 'gear_preferences_jersey_style' => '',
+
+                    // Collect Gear Optional Preferences.
+                    'gear_preferences_saddle_height' => isset( $ns_guest_booking_result->saddleHeight ) ? $ns_guest_booking_result->saddleHeight : '',
+                    'gear_preferences_bar_height'    => isset( $ns_guest_booking_result->barReachFromSaddle ) ? $ns_guest_booking_result->barReachFromSaddle : '',
+                    'gear_preferences_bar_reach'     => isset( $ns_guest_booking_result->barHeightFromWheel ) ? $ns_guest_booking_result->barHeightFromWheel : '',
+
+                    // Collect Address Preferences.
+                    // About address from NS billing_address_1 ['World Way'] and billing_address_2 ['1'] comming as one field $ns_guest_booking_result->addressInfo->address ['World Way 1'].
+                    // 'billing_address_1' => isset( $ns_guest_booking_result->addressInfo->address ) ? $ns_guest_booking_result->addressInfo->address : '',
+                    // 'billing_address_2' => isset( $ns_guest_booking_result->addressInfo->address ) ? $ns_guest_booking_result->addressInfo->address : '',
+                    'billing_city'     => isset( $ns_guest_booking_result->addressInfo->city ) ? $ns_guest_booking_result->addressInfo->city : '',
+                    'billing_state'    => isset( $ns_guest_booking_result->addressInfo->state ) ? $ns_guest_booking_result->addressInfo->state : '',
+                    'billing_postcode' => isset( $ns_guest_booking_result->addressInfo->zip ) ? $ns_guest_booking_result->addressInfo->zip : '',
+                    'billing_country'  => isset( $ns_guest_booking_result->addressInfo->country ) ? $ns_guest_booking_result->addressInfo->country : '',
+
+                    // Collect Passport Preferences.
+                    'custentity_passport_number'   => isset( $ns_guest_booking_result->passportNumber ) ? $ns_guest_booking_result->passportNumber : '',
+                    'custentity_passport_exp_date' => isset( $ns_guest_booking_result->passportExpirationDate ) ? date( 'm/d/Y', strtotime( $ns_guest_booking_result->passportExpirationDate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
+                );
+
+                foreach( $ns_guest_preferences as $key => $value ) {
+                    if( ! empty( $value ) ) {
+                        // Update user meta for this key.
+                        update_user_meta( $wp_user_id, $key, $value );
+                    }
+                }
+            }
+
+
+            foreach( $ns_guest_booking_result->bookings as $booking_data ) {
+
+                // Booking ID not found.
+                if( ! $booking_data->bookingId ) {
+                    continue;
+                }
+
+                $args_2          = array( 'bookingId' => $booking_data->bookingId );
+                $ns_booking_data = $net_suite_client->get( GET_BOOKING_SCRIPT_ID, $args_2 );
+                tt_add_error_log( '2) NS - Guest includeBookingInfo', $args_2, $ns_booking_data );
+
+                // Booking data not found.
+                if( ! $ns_booking_data ) {
+                    continue;
+                }
+
+                $guests           = $ns_booking_data->guests;
+
+                // Guests not found.
+                if( ! $guests ) {
+                    continue;
+                }
+
+                $booking_id       = $ns_booking_data->bookingId;  // NS booking ID.
+                $booking_number   = $ns_booking_data->bookingNumber;
+                $booking_date     = $ns_booking_data->bookingDate;
+                $primary_guest_id = $ns_booking_data->primaryGuestId;
+                $trip_id          = $ns_booking_data->tripId;
+                $trip_code        = $ns_booking_data->tripCode;
+                $itinerary_code   = $ns_booking_data->itineraryCode;
+                $trip_name        = $ns_booking_data->tripName;
+                $trip_year        = $ns_booking_data->tripYear;
+                $trip_start_date  = $ns_booking_data->tripStartDate;
+                $trip_end_date    = $ns_booking_data->tripEndDate;
+                $total_amount     = $ns_booking_data->totalAmount;
+                $balance_paid     = $ns_booking_data->balancePaid;
+                $amount_due       = $ns_booking_data->amountDue;
+                $sales_tax        = $ns_booking_data->salesTax;
+                $payments         = $ns_booking_data->payments; // Array<>Object.
+                $product_id       = tt_get_postid_by_meta_key_value( 'tt_meta_tripId', $trip_id );
+
+                foreach( $guests as $guest ){
+
+                    $registration_id = $guest->registrationId;
+
+                    // Guest Registration ID not found.
+                    if( ! $registration_id ) {
+                        continue;
+                    }
+
+                    $args_3            = array( 'registrationId' => $registration_id );
+                    $ns_guest_info_arr = $net_suite_client->get( GET_REGISTRATIONS_SCRIPT_ID, $args_3 );
+                    tt_add_error_log( 'NS - Guest includeBookingInfo', $args_3, $ns_guest_info_arr );
+
+                    // Guest Registration not found.
+                    if( ! $ns_guest_info_arr ) {
+                        continue;
+                    }
+
+                    $ns_guest_info = $ns_guest_info_arr[0];
+
+                    // Collect secondary guest email.
+                    $guest_email = '';
+                    $ns_guest_id = $guest->guestId; // Ns guest.
+
+                    /**
+                     * Check for existing records in DB.
+                     * The unique record is determined via NetSuite User ID and Booking ID.
+                     *
+                     * Here, we rely on the fact that during the checkout process,
+                     * these functions [ insert_records_guest_bookings_cb() & tt_update_user_booking_info() ] have executed successfully
+                     * and the necessary information has been stored in the guest_bookings table for this check.
+                     */
+                    $check_booking = tt_checkbooking_status( $ns_guest_id, $booking_id );
+
+                    if( !$check_booking || $check_booking <= 0 ) {
+                        // If booking record not exist in DB skip next steps and go to the next booking.
+                        continue;
+                    }
+
+                    if( $ns_new_guest_id == $ns_guest_id && ! empty( $wc_user_id ) ) {
+                        $user_info   = get_user_by( 'id' , $wc_user_id );
+                        if( $user_info ){
+                            $guest_email = $user_info->user_email;
                         }
                     }
+
+                    // Collect data from $guest object.
+                    $guest_name               = $guest->guestName;
+                    $trip_insurance_purchased = $guest->tripInsurancePurchased;
+                    $waive_insurance          = $guest->waiveInsurance;
+                    $base_price               = $guest->basePrice;
+                    $insurance                = $guest->insurance;
+                    $single_supplement        = $guest->singleSupplement;
+                    $wheel_upgrade            = $guest->wheelUpgrade;
+
+                    // Collect data from $ns_guest_info object.
+                    $is_primary                   = isset( $ns_guest_info->isPrimary ) ? $ns_guest_info->isPrimary : '';
+                    $bike_id                      = isset( $ns_guest_info->bikeId ) ? $ns_guest_info->bikeId : '';
+                    $rider_height                 = isset( $ns_guest_info->heightId ) ? $ns_guest_info->heightId : '';
+                    $helmet_id                    = isset( $ns_guest_info->helmetId ) ? $ns_guest_info->helmetId : '';
+                    $pedals_id                    = isset( $ns_guest_info->pedalsId ) ? $ns_guest_info->pedalsId : '';
+                    $saddle_id                    = isset( $ns_guest_info->saddleId ) ? $ns_guest_info->saddleId : '';
+                    $saddle_height                = isset( $ns_guest_info->saddleHeight ) ? $ns_guest_info->saddleHeight : '';
+                    $bar_reach_from_saddle        = isset( $ns_guest_info->barReachFromSaddle ) ? $ns_guest_info->barReachFromSaddle : '';
+                    $bar_height_from_wheel_center = isset( $ns_guest_info->barHeightFromWheelCenter ) ? $ns_guest_info->barHeightFromWheelCenter : '';
+                    $jersey_id                    = isset( $ns_guest_info->jerseyId ) ? $ns_guest_info->jerseyId : '';
+                    $tshirt_size_id               = isset( $ns_guest_info->tshirtSizeId ) ? $ns_guest_info->tshirtSizeId : '';
+                    $race_fit_jersey_id           = isset( $ns_guest_info->raceFitJerseyId ) ? $ns_guest_info->raceFitJerseyId : '';
+                    $shorts_bib_size_id           = isset( $ns_guest_info->shortsBibSizeId ) ? $ns_guest_info->shortsBibSizeId : '';
+                    $ec_first_name                = isset( $ns_guest_info->ecFirstName ) ? $ns_guest_info->ecFirstName : '';
+                    $ec_last_name                 = isset( $ns_guest_info->ecLastName ) ? $ns_guest_info->ecLastName : '';
+                    $ec_phone                     = isset( $ns_guest_info->ecPhone ) ? $ns_guest_info->ecPhone : '';
+                    $ec_relationship              = isset( $ns_guest_info->ecRelationship ) ? $ns_guest_info->ecRelationship : '';
+                    $medical_conditions           = isset( $ns_guest_info->medicalConditions ) ? $ns_guest_info->medicalConditions : '';
+                    $medications                  = isset( $ns_guest_info->medications ) ? $ns_guest_info->medications : '';
+                    $allergies                    = isset( $ns_guest_info->allergies ) ? $ns_guest_info->allergies : '';
+                    $dietary_restrictions         = isset( $ns_guest_info->dietaryRestrictions ) ? $ns_guest_info->dietaryRestrictions : '';
+                    $dietary_preferences          = isset( $ns_guest_info->dietaryPreferences ) ? $ns_guest_info->dietaryPreferences : '';
+                    $lock_record                  = isset( $ns_guest_info->lockRecord ) ? $ns_guest_info->lockRecord : '';
+                    $lock_bike                    = isset( $ns_guest_info->lockBike ) ? $ns_guest_info->lockBike : '';
+                    $waiver_accepted              = isset( $ns_guest_info->waiverAccepted ) ? $ns_guest_info->waiverAccepted : '';
+
+                    // Fill booking table data.
+                    $booking_table_data = array();
+
+                    if( ! empty( $product_id ) ) {
+                        $booking_table_data['product_id'] = $product_id;
+                    }
+                    if ( $ns_new_guest_id == $ns_guest_id && ! empty( $wc_user_id ) ) {
+                        $booking_table_data['user_id'] = $wc_user_id;
+                    }
+                    if ( ! empty( $guest_email ) ) {
+                        $booking_table_data['guest_email_address'] = $guest_email;
+                    }
+
+                    $guest_name_arr = explode( ' ', $guest_name );
+                    if( 1 != $is_primary ) {
+                        // Don't rewrite the primary guest's first and last name, because from NS for primary guest's name is email.
+                        $booking_table_data['guest_first_name'] = ( $guest_name_arr[0] ? $guest_name_arr[0] : '' );
+                        $booking_table_data['guest_last_name']  = ( $guest_name_arr[1] ? $guest_name_arr[1] : '' );
+                    }
+
+                    $booking_table_data['netsuite_guest_registration_id']      = $ns_guest_id;
+                    $booking_table_data['guestRegistrationId']                 = $registration_id;
+                    $booking_table_data['ns_trip_booking_id']                  = $booking_id;
+                    $booking_table_data['trip_code']                           = $trip_code;
+                    $booking_table_data['trip_name']                           = $trip_name;
+                    $booking_table_data['trip_total_amount']                   = $total_amount;
+                    $booking_table_data['trip_number_of_guests']               = count( $guests );
+                    $booking_table_data['trip_start_date']                     = strtotime( $trip_start_date );
+                    $booking_table_data['trip_end_date']                       = strtotime( $trip_end_date );
+                    $booking_table_data['guest_is_primary']                    = $is_primary == 1 ? 1 : 0;
+                    $booking_table_data['bike_selection']                      = $bike_id;
+                    $booking_table_data['rider_height']                        = $rider_height;
+                    $booking_table_data['helmet_selection']                    = $helmet_id;
+                    $booking_table_data['pedal_selection']                     = $pedals_id;
+                    $booking_table_data['saddle_height']                       = $saddle_height;
+                    $booking_table_data['saddle_bar_reach_from_saddle']        = $bar_reach_from_saddle;
+                    $booking_table_data['saddle_bar_height_from_wheel_center'] = $bar_height_from_wheel_center;
+                    $booking_table_data['jersey_style']                        = tt_get_jersey_style( $jersey_id );
+                    $booking_table_data['tt_jersey_size']                      = $jersey_id;
+                    $booking_table_data['tshirt_size']                         = $tshirt_size_id;
+                    $booking_table_data['race_fit_jersey_size']                = $race_fit_jersey_id;
+                    $booking_table_data['shorts_bib_size']                     = $shorts_bib_size_id;
+                    $booking_table_data['emergency_contact_first_name']        = $ec_first_name;
+                    $booking_table_data['emergency_contact_last_name']         = $ec_last_name;
+                    $booking_table_data['emergency_contact_phone']             = $ec_phone;
+                    $booking_table_data['emergency_contact_relationship']      = $ec_relationship;
+                    $booking_table_data['medical_conditions']                  = $medical_conditions;
+                    $booking_table_data['medications']                         = $medications;
+                    $booking_table_data['allergies']                           = $allergies;
+                    $booking_table_data['dietary_restrictions']                = $dietary_restrictions;
+                    $booking_table_data['waiver_signed']                       = $waiver_accepted == 1 ? 1 : 0;
+
+                    // Update existing booking.
+                    $where = array( 'netsuite_guest_registration_id' => $ns_guest_id, 'ns_trip_booking_id' => $booking_id );
+                    $wpdb->update( $table_name, $booking_table_data, $where );
+                    tt_add_error_log('5) NS<>WC - SQL [Update]', array( 'last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ), $booking_table_data);
                 }
             }
         }
@@ -722,3 +960,153 @@ if (!function_exists('tt_ns_fetch_bike_type_info')) {
     }
 }
 
+
+if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
+    function tt_ns_fetch_registration_ids() {
+        //Fire the NS script to fetch all the registration ids for the past 24 hours
+        $modifiedAfter = date('Y-m-d H:i:s', strtotime(' -2 hours'));
+
+        //Get the 1293 script with the modifiedAfter parameter and deploy 2
+        $modifiedAfterTime = gmdate("Y-m-d\TH:i:s", strtotime($modifiedAfter));
+        $netSuiteClient = new NetSuiteClient();
+        $modified_reg_ids = $netSuiteClient->get('1293:2', ['modifiedAfter' => $modifiedAfterTime ]);
+
+        //Loop through the registration ids and fetch the registration details. That's done to filter out users outside of this WP installation
+        foreach( $modified_reg_ids as $modified_reg_id ) {
+            $registrationEmail = $modified_reg_id->email;
+            $netsuite_trip_id = $modified_reg_id->tripId;
+
+            //Check if user exists in WC
+            $user = get_user_by( 'email', $registrationEmail );
+            if( $user ) {
+                $wc_user_id = $user->ID;
+                //Execute the 1294 script with the registration id as parameter and deploy 2
+                $ns_registration_id = $modified_reg_id->id;
+                $ns_registration_details = $netSuiteClient->get('1294:2', ['registrationId' => $ns_registration_id ]);
+
+                //Get "Lock Record" and "Lock Bike" values
+                $lockRecord = isset($ns_registration_details[0]->lockRecord) ? $ns_registration_details[0]->lockRecord : '';
+                $lockBike = isset($ns_registration_details[0]->lockBike) ? $ns_registration_details[0]->lockBike : '';
+
+                //Find the product with netsuite_trip_id  as meta value without using tt_get_postid_by_meta_key_value()
+                $args = array(
+                    'post_type' => 'product',
+                    'meta_query' => array(
+                        array(
+                            'key' => 'tt_meta_tripid',
+                            'value' => $netsuite_trip_id,
+                            'compare' => '='
+                        )
+                    )
+                );
+                $trip_product = get_posts( $args );
+
+                //If the product exists, get the ID
+                if( $trip_product ) {
+                    $trip_product_id = $trip_product[0]->ID;
+                }
+
+                //Update the lock bikes and lock record for the trip as meta values
+                if( $trip_product_id ) {
+                    update_post_meta( $trip_product_id, 'lock_record', $lockRecord );
+                    update_post_meta( $trip_product_id, 'lock_bike', $lockBike );
+                }
+                //Check if such post meta exists, if it does, add the new registration id to the array
+                $existing_registration_ids_bike = get_post_meta( $trip_product_id, 'ns_registration_ids_bike', true );
+                $existing_registration_ids_record = get_post_meta( $trip_product_id, 'ns_registration_ids_record', true );
+                //get the user email
+                $user_info = get_userdata($wc_user_id);
+                $user_email = $user_info->user_email;
+
+                if( $lockRecord || $lockBike ) {
+
+
+
+                    if( $lockBike ) {
+                        if( ! empty( $existing_registration_ids_bike ) ) {
+
+                            //Check if the user already exists in the array, if it does, don't add it again
+                            if( ! in_array( $wc_user_id, $existing_registration_ids_bike ) ) {
+                                $existing_registration_ids_bike[] += $wc_user_id;
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+
+                                tt_add_error_log('NS - Locked Bike For:', $user_email, $trip_product_id);
+                            }
+
+                        } else {
+                            //If the post meta doesn't exist, create a new one
+                            $new_registration_ids_bike = array();
+                            $new_registration_ids_bike[] += $wc_user_id;
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $new_registration_ids_bike );
+                            tt_add_error_log('NS - Locked Bike For:', $user_email, $trip_product_id);
+
+                        }
+                    } else {
+                        //Check if the user exists in the array, if it does, remove it
+                        if( ! empty( $existing_registration_ids_bike ) ) {
+                            $key = array_search( $wc_user_id, $existing_registration_ids_bike );
+                            if( $key !== false ) {
+                                unset( $existing_registration_ids_bike[$key] );
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                                tt_add_error_log('NS - Unlocked Bike For:', $user_email, $trip_product_id);
+
+                            }
+                        }
+                    }
+
+
+                    if( $lockRecord ) {
+                        if( ! empty( $existing_registration_ids_record ) ) {
+                            //Check if the user already exists in the array, if it does, don't add it again
+                            if( ! in_array( $wc_user_id, $existing_registration_ids_record ) ) {
+                                $existing_registration_ids_record[] += $wc_user_id;
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                                tt_add_error_log('NS - Locked Gear For:', $user_email, $trip_product_id);
+
+                            }
+                        } else {
+                            //If the post meta doesn't exist, create a new one
+                            $new_registration_ids_record = array();
+                            $new_registration_ids_record[] += $wc_user_id;
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $new_registration_ids_record );
+                            tt_add_error_log('NS - Locked Gear For:', $user_email, $trip_product_id);
+
+                        }
+                    } else {
+                        //Check if the user exists in the array, if it does, remove it
+                        if( ! empty( $existing_registration_ids_record ) ) {
+                            //Remove all existing instances of the user id, even if it's more than one
+                            $key = array_search( $wc_user_id, $existing_registration_ids_record );
+                            if( $key !== false ) {
+                                unset( $existing_registration_ids_record[$key] );
+                                update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                                tt_add_error_log('NS - Unlocked Gear For:', $user_email, $trip_product_id);
+                            }
+                        }
+                    }
+                } else {
+                    //If both lock bike and lock record are false, remove the user from both arrays
+                    if( ! empty( $existing_registration_ids_bike ) ) {
+                        //Remove all existing instances of the user id, even if it's more than one
+                        $key = array_search( $wc_user_id, $existing_registration_ids_bike );
+                        if( $key !== false ) {
+                            unset( $existing_registration_ids_bike[$key] );
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
+                            tt_add_error_log('NS - Unlocked Bike For:', $user_email, $trip_product_id);
+                        }
+                    }
+
+                    if( ! empty( $existing_registration_ids_record ) ) {
+                        //Remove all existing instances of the user id, even if it's more than one
+                        $key = array_search( $wc_user_id, $existing_registration_ids_record );
+                        if( $key !== false ) {
+                            unset( $existing_registration_ids_record[$key] );
+                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
+                            tt_add_error_log('NS - Unlocked Gear For:', $user_email, $trip_product_id);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

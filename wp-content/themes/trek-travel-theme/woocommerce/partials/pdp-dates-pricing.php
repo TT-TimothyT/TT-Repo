@@ -5,32 +5,124 @@ $get_child_products = get_child_products($linked_products);
 $nav_year_tab = $nav_year_tab_content = '';
 $trip_style = $product->get_attribute( 'pa_trip-style' );
 
+// Hide Custom and Private tabs for these trip styles.
+$in_trip_style = [
+    'self-guided',
+    'race',
+    'cross country',
+    'ride camp'
+];
+
+$trip_styles = explode( ', ', strtolower( $trip_style ) );
+
+$is_tabs_visible = true;
+
+foreach ($in_trip_style as $ts) {
+    if ( in_array( $ts, $trip_styles ) ) {
+        // Need to hide tabs.
+        $is_tabs_visible = false;
+        break;
+    }
+}
+
 function getWebDispalyStatus($status){
     $webDispalyArr = [
         "Hold" => "Limited Availability", 
         "Sales Hold" => "Limited Availability",
         "Group Hold" => "Limited Availability",
         "Limited Availability" => "Limited Availability",
-        "Sold Out" => "Join Waitlist"
+        "SOLD OUT" => "Join Waitlist"
     ];
     if (array_key_exists($status,$webDispalyArr)){
         return $webDispalyArr[$status];
     }
     return $status;
 }
+
 $requestTripFormArr = ["Limited Availability" => "book-this-trip", "Join Waitlist" => "book-this-trip"];
-$in_status = [
+
+$res_status = [
     "Limited Availability",
-    "Sold Out",
     "Group Hold",
     "Sales Hold",
     "Hold"
 ];
+
+$wait_status = ["SOLD OUT"];
+
+/**
+ * Function that sorts two dates, ascending.
+ *
+ * @param array $a Array with objects, we need ['start_date'] in this format dd/mm/yy.
+ * @param array $b Array with objects.
+ * @param string $d String with the delimeter.
+ */
+function date_sort( $a, $b, $d = "/" ) {
+
+    if ($a == $b) {
+
+        return 0;
+    } else {
+
+        // Convert into dates and compare.
+        list( $ad, $am, $ay ) = explode( $d, $a['start_date'] );
+
+        list( $bd, $bm, $by ) = explode( $d, $b['start_date'] );
+
+        if ( mktime( 0, 0, 0, $am, $ad, $ay ) < mktime( 0, 0, 0, $bm, $bd, $by ) ) {
+
+            return -1;
+        } else {
+
+            return 1;
+        }
+    }
+}
+
+$available_child_products = array();
+
+// Sort the trips and store only available trips into a new array.
+foreach( $get_child_products as $year => $get_child_product ) {
+
+    // Sort trips by year ascending.
+    ksort( $get_child_product, 1 );
+
+    foreach( $get_child_product as $month => $get_child_product_data) {
+
+        // Sort trips by date ascending.
+        usort( $get_child_product_data, 'date_sort' );
+
+        foreach( $get_child_product_data as $index => $child_product_data ) {
+            $today_date = new DateTime( 'now' );
+
+            // 'start_date' => string '11/12/23' dd/mm/yy.
+            $trip_start_date = DateTime::createFromFormat('d/m/y', $child_product_data['start_date']);
+
+            if( $trip_start_date && $trip_start_date > $today_date ) {
+
+                if( ! isset( $available_child_products[ $year ] ) ) {
+                    // Make a new array for every year.
+                    $available_child_products[ $year ] = array();
+                }
+
+                if( ! isset( $available_child_products[ $year ][ $month ] ) ) {
+                    // Make a new array for every month.
+                    $available_child_products[ $year ][ $month ] = array();
+                }
+
+                // Store the available trip into the new array.
+                array_push( $available_child_products[ $year ][ $month ], $child_product_data );
+            }
+        }
+    }
+}
+
 $contentFlag = false;
-if( $get_child_products ){
+
+if( $available_child_products ) {
     $iter = 1;
-    foreach( $get_child_products as $year=>$get_child_product ){
-        ksort($get_child_product,1);
+    foreach( $available_child_products as $year=>$get_child_product ){
+
         //nav year tabs & button HTML creation
         $nav_year_tab .= '<button class="nav-link '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-year'.$year.'" type="button" role="tab" aria-controls="nav-year'.$year.'" aria-selected="true">'.$year.' Tours</button>';
         //nav year tab content HTML creation
@@ -40,14 +132,6 @@ if( $get_child_products ){
         if( $get_child_product ){
             $m_iter = 1;
             foreach($get_child_product as $month=>$get_child_product_data){
-                $currentMonth = date('m', strtotime(date('Y-m-d H:i:s')));
-
-                //Sorry, not using camel case for php vars :)
-                $current_year = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
-
-                if ( $month < $currentMonth && $year <= $current_year ) {
-                    continue;
-                }
 
                 $my = $month.$year;
                 $monthInfo = trek_get_month_info($month);
@@ -56,26 +140,7 @@ if( $get_child_products ){
                 $month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'" role="tabpanel" aria-labelledby="nav-'.$my.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$my.'">';
                 if($get_child_product_data){
                     foreach($get_child_product_data as $index => $child_product_data){
-                        $today = date('d', strtotime(date('Y-m-d H:i:s')));
-                        $dateParts = explode('/', $child_product_data['start_date']);
-                        if (isset($dateParts) && !empty($dateParts)) {
-                            $startDay = $dateParts[0];
-                            $startMonth = $dateParts[1];
-                            if ((int)$today < (int)$startDay) {
-                                if ((int)$startMonth < (int)$currentMonth) {
-                                    if( (int)$year <= (int)$current_year ) {
-                                        $month_nav_desktop_btn_output = $month_nav_mobile_btn_output = $month_content_output =  '';
-                                        continue;
-                                    }
-                                }
-                            }
-                        }
-                        // If there has more than one trip per month, and first one is marked as hide, check whether has content for navigation, for other dates in this month.
-                        if($index > 0 && empty($month_nav_desktop_btn_output) && empty($month_nav_mobile_btn_output) && empty($month_content_output)){
-                            $month_nav_desktop_btn_output .= '<button class="nav-link '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'-tab" data-bs-toggle="tab" data-bs-target="#nav-'.$my.'" type="button" role="tab" aria-controls="nav-'.$my.'" aria-selected="true">'.$monthInfo[$month][0].'</button>';
-                            $month_nav_mobile_btn_output .= '<option value="nav-'.$my.'-tab">'.$monthInfo[$month][0].'</option>';
-                            $month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'" role="tabpanel" aria-labelledby="nav-'.$my.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$my.'">';
-                        }
+
                         $contentFlag = true;
                         $accordina_id = $my.$child_product_data['product_id'];
                         $date_range = $child_product_data['start_date'].' - '.$child_product_data['end_date'];
@@ -89,13 +154,40 @@ if( $get_child_products ){
                         // $status_class = str_ireplace(' ', '-', $status_class);
                         $tripWebStatus = getWebDispalyStatus($trip_status);
                         $tripWebStatusClass = strtolower(str_ireplace(" ","-",getWebDispalyStatus($trip_status)));
-                        $month_content_output .= '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
-                        <h6 class="accordion-header" id="flush-headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
-                                <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
-                                <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
-                            </button>
-                        </h6>
+
+                        if ($tripWebStatus == 'Private') {
+                            $month_content_output .= 
+                            '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                                <h6 class="accordion-header" id="flush-headingThree">
+                                    <div class="pvt-box">
+                                        <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'</span>
+                                        <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                        <span class="ms-auto fw-medium fs-sm lh-sm">Reserved</span>
+                                    </div>
+                                </h6>
+                            <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                                <hr>
+                                <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                                    <div class="accordion-hotels">
+                                        <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
+                                        '.$bike_hotels['hotels'].'
+                                        <a class="fs-sm view-details" href="#hotels">View hotels</a>
+                                    </div>
+                                    <div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>
+                                    <div class="accordion-book-now">';
+                        } else {
+                        $month_content_output .= 
+                        '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                            <h6 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
+                                    <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                </button>
+                            </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
                             <hr>
                             <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
@@ -110,19 +202,29 @@ if( $get_child_products ){
                                     <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
                                     </div>
                                 <div class="accordion-book-now">';
+                        }
                                 $formUrl = '';
-                                if( in_array($trip_status, $in_status) || $removeFromStella == true ){
+                                if( in_array($trip_status, $res_status) || $removeFromStella == true ){
                                     $formUrl = "reserve-a-trip";
                                 }
+                                if( in_array($trip_status, $wait_status) ){
+                                    $formUrl = "waitlist";
+                                }
+                              
+                                
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
                                 $cart = WC()->session->get( 'cart', null );
                                 $persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
                                 
                                 if ( !is_null($cart) && $persistent_cart_count > 0 ) {
-                                    $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                    if ( isset( $formUrl ) && !empty( $formUrl ) ) {
+                                        $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                    } else {
+                                        $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                    }
                                 }else{
                                     if (isset($formUrl) && !empty($formUrl)) {
-                                        $button = '<a href="/'.$formUrl.'?trip='.$product->name.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                        $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 mb-1 dates-pricing-book-now">Waitlist</a>';
                                     }else{
                                         $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                     }
@@ -201,19 +303,20 @@ if( $get_child_products ){
                 if ($contentFlag) { echo $nav_year_tab; } 
                 ?>
                 <!-- <button class="nav-link active" id="nav-year-tab" data-bs-toggle="tab" data-bs-target="#nav-year" type="button" role="tab" aria-controls="nav-year" aria-selected="true">2022 Tours</button> -->
-                <?php if (strtolower($trip_style) != "self-guided") { ?>
+                <?php if ( $is_tabs_visible ) { ?>
                     <button class="nav-link fs-lg lh-lg <?php echo $contentFlag ? '' : 'active'; ?>" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">Private Tour</button>
                     <button class="nav-link fs-lg lh-lg" id="nav-custom-tab" data-bs-toggle="tab" data-bs-target="#nav-custom" type="button" role="tab" aria-controls="nav-custom" aria-selected="false">Custom Tour</button>
                 <?php } ?>
-                </div>
+            </div>
+            <p class="fw-normal fs-xs lh-xs w-75 pt-md-3">*Pricing, availability and guest minimums are all subject to change at any time. Certain dates have a minimum number of guests required, please contact us for details. Private pricing is not available on Ride Camp, Race, Special Edition or Cross Country style trips.</p>
         </nav>
         <!-- year/private/custom tour tab content -->
         <div class="tab-content" id="nav-tabContent">
             <!-- year tour tab content -->
             <?php if ($contentFlag) { echo $nav_year_tab_content; } ?>
-            <?php if (strtolower($trip_style) != "self-guided") { ?>
+            <?php if ( $is_tabs_visible ) { ?>
             <!-- private tour tab content -->
-            <div class="tab-pane fade <?php echo $contentFlag ? '' : 'active'; ?>" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabindex="0">
+            <div class="tab-pane fade <?php echo $contentFlag ? '' : 'active show'; ?>" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabindex="0">
                 <h5 class="fw-semibold">Looking for a Private Tour with us?</h5>
                 <p class="fw-normal fs-md lh-md">Private bike tours can range in cost based on your group size. See below for specific pricing based on your group size.</p>
                 
@@ -242,7 +345,6 @@ if( $get_child_products ){
                 <h5 class="fw-semibold">Looking for a date that you don't see?</h5>
                 <p class="fw-normal fs-md lh-md">Look no further. Simply tell us your preferred travel dates and we’ll work together to deliver the same great trip on your custom schedule. Want to make a few changes to your itinerary, no problem. We will work with you to make sure your custom vacation is the ultimate vacation of a lifetime for your group.</p>
                 <a href="/trip-styles/custom-bike-tours?trip=<?php echo $product->name; ?>" target="_blank" class="btn btn-primary btn-md rounded-1 my-4">Book a Custom Tour</a>
-                <p class="fw-normal fs-xs lh-xs w-75">*Pricing, availability and guest minimums are all subject to change at any time. Certain dates have a minimum number of guests required, please contact us for details. Private pricing is not available on Ride Camp, Race, Special Edition or Cross Country style trips.</p>
             </div>
             <?php } ?>
         </div>

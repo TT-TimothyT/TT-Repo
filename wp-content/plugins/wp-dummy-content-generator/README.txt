@@ -3,7 +3,7 @@ Contributors: Deepak anand, tutsocean
 Donate link: 
 Tags: WP Dummy Content Generator, WordPress dummy content plugin, Dummy content generation for WordPress, Populating WordPress site with dummy content, Generate dummy posts and pages in WordPress, Deleting generated dummy content in WordPress, Customizable dummy content for WordPress, Efficient test data generation for WordPress, Simplifying dummy content management in WordPress, Streamlining website development with dummy content., WordPress dummy content
 Requires at least: 5.6
-Tested up to: 6.3
+Tested up to: 6.4
 Stable tag: trunk
 Requires PHP: 5.4
 License: GPLv2 or later
@@ -116,4 +116,6 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 3.1.0 - Adjusted to be compatible with the significant update release of WooCommerce and WordPress
 3.1.1 - Revised menu item labels for enhanced clarity of meaning.
 3.1.2 - Fixed the localization.
+3.1.3 - Minor changes and bug fixings.
+3.2.0 - Declared compatibility with woocommerce custom_order_tables
 == Upgrade Notice ==

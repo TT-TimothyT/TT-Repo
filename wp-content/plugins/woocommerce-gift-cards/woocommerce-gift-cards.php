@@ -3,7 +3,7 @@
 * Plugin Name: Woo Gift Cards
 * Plugin URI: https://woo.com/products/gift-cards/
 * Description: Create and sell digital gift cards that customers can redeem at your store.
-* Version: 1.16.7
+* Version: 1.16.8
 * Author: Woo
 * Author URI: https://woo.com/
 *
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Main plugin class.
  *
  * @class    WC_Gift_Cards
- * @version  1.16.7
+ * @version  1.16.8
  */
 class WC_Gift_Cards {
 
@@ -42,7 +42,7 @@ class WC_Gift_Cards {
 	 *
 	 * @var string
 	 */
-	private $version = '1.16.7';
+	private $version = '1.16.8';
 
 	/**
 	 * Min required WC version.

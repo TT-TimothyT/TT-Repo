@@ -36,7 +36,7 @@ get_header();
                                 <p class="fw-normal fs-lg lh-lg">Showing Results for “<span id="searchTerm"><?php echo $_GET['wp_searchable_posts']['query'] ?></span>”</p>
                             </div>
                             
-                            <div id="search-nav-tabs" class="my-4">
+                            <div style="display: none;"  id="search-nav-tabs" class="my-4">
                                 <nav>
                                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
 
@@ -210,23 +210,6 @@ get_header();
                                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Next</span>
                                         </button>
-
-                                        <form class="cart" action="" method="post" enctype="multipart/form-data">
-                                        <?php if( is_user_logged_in() ) { ?>
-                                            <input type="hidden" name="wlid" id="wlid"/>
-                                            <input type="hidden" name="add-to-wishlist-type" value="{{ data.taxonomies.product_type }}"/>
-                                            <input type="hidden" name="wl_from_single_product" value="{{data.post_type == 'product' ? '1' : '0'}}"/>
-                                            <input type="hidden" name="quantity[{{ data.post_id }}]" value="1"/>
-                                            <a rel="nofollow" href="" data-productid="{{ data.post_id }}" data-listid="<?php echo $add_to_wishlist_args['single_id']; ?>" class="wl-add-to btn add-wishlist h-100 ">
-                                                <!-- <i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i> -->
-                                            </a>
-                                            <?php } else { ?>
-                                                <a class="btn add-wishlist h-100" href="<?php echo site_url('login'); ?>">
-                                                    <!-- <i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i> -->
-                                                </a>
-                                            <?php } ?>
-                                        </form>	
-
                                     </div>
 
                                 </div>
@@ -295,9 +278,9 @@ get_header();
                                                 </div>
                                                 <# if ( data['review_score'] ) { #>
                                                 <div class="card-footer bg-transparent border-0 ms-md-4">
-                                                    <span class="fw-semibold"><i class="bi bi-star"></i> {{data['review_score']}}</span>
+                                                    <span class="fw-semibold"><i class="bi bi-star"></i> {{ (parseFloat(data['review_score']) % 1 === 0) ? parseFloat(data['review_score']).toFixed(0) : parseFloat(data['review_score']).toFixed(2) }} </span>
                                                     <span class="text-muted review-text"> rating based on </span>
-                                                    <span class="fw-semibold">{{data['total_review']}} </span>
+                                                    <span class="fw-semibold reviews-count">{{data['total_review']}} </span>
                                                     <span class="text-muted review-text"> reviews </span>
                                                 </div>
                                                 <# } #>
@@ -348,7 +331,7 @@ get_header();
 
                                         <# if ( data['Trip Style'] ) { #>
                                         <ul class="list-inline mb-0">
-                                            <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
+                                            <li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
                                             <li class="list-inline-item fs-sm">{{data['Trip Style']}}</li>
                                             <li class="list-inline-item"><i class="bi bi-info-circle pdp-trip-styles"></i></li>
                                         </ul>
@@ -372,7 +355,7 @@ get_header();
 
                                         <# if ( data['Rider Level'] ) { #>
                                         <ul class="list-inline mb-0">
-                                            <li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
+                                            <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
                                             <li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level']}}</li>
                                             <li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>
                                         </ul>
@@ -390,7 +373,7 @@ get_header();
 
                                     <# if ( data['review_score'] ) { #>
                                     <div class="card-footer bg-transparent border-0 ms-md-4">
-                                        <span class="fw-semibold"><i class="bi bi-star"></i> {{data['review_score']}}</span>
+                                        <span class="fw-semibold"><i class="bi bi-star"></i> {{ (parseFloat(data['review_score']) % 1 === 0) ? parseFloat(data['review_score']).toFixed(0) : parseFloat(data['review_score']).toFixed(2) }} </span>
                                         <span class="text-muted review-text"> rating based on </span>
                                         <span class="fw-semibold">{{data['total_review']}} </span>
                                         <span class="text-muted review-text"> reviews </span>
@@ -652,7 +635,7 @@ get_header();
                             ],
                         },
                         templates: {
-                            empty: '<div class="container no-results"><h2 class="fw-semibold">Sorry, we didn\'t find anything. </h2><p class="fw-normal fs-lg lh-lg">Do you want to try <a href="#">[Suggested Query]</a>?</p></div><hr><div class="container discover-more"><div class="row m-0"><h3 class="fw-semibold">Discover More Ways to Travel</h3><div class="col-6 col-md-4"><div class="card border-0"><img src="/wp-content/uploads/2022/08/Rectangle-2725.png" class="card-img-top rounded-1" alt="discover more image 1"><div class="card-body ps-0"><a href="#"><p class="card-text text-start fw-semibold">Classic-Guided Tours</p></a></div></div></div><div class="col-6 col-md-4"><div class="card border-0"><img src="/wp-content/uploads/2022/08/Rectangle-2725.png" class="card-img-top rounded-1" alt="discover more image 2"><div class="card-body ps-0"><a href="#"><p class="card-text text-start fw-semibold">Self-Guided Tours</p></a></div></div></div><div class="col-6 col-md-4"><div class="card border-0"><img src="/wp-content/uploads/2022/08/Rectangle-2725.png" class="card-img-top rounded-1" alt="discover more image 3"><div class="card-body ps-0"><a href="#"><p class="card-text text-start fw-semibold">E-Bike Tours</p></a></div></div></div></div></div>',
+                            empty: '<div class="container no-results"><h2 class="fw-semibold">Sorry, we didn\'t find anything. </h2><p class="fw-normal fs-lg lh-lg">Do you want to try <a href="https://trektravel.com/bike-tours/wine-country/">wine tours</a>?</p></div><hr><div class="container discover-more"><div class="row m-0"><h3 class="fw-semibold">Discover More Ways to Travel</h3><div class="col-6 col-md-4"><div class="card border-0"><img src="/wp-content/uploads/2022/08/Rectangle-2730.png" class="card-img-top rounded-1" alt="discover more image 1"><div class="card-body ps-0"><a href="/bike-tours/classic/"><p class="card-text text-start fw-semibold">Classic-Guided Tours</p></a></div></div></div><div class="col-6 col-md-4"><div class="card border-0"><img src="/wp-content/uploads/2022/08/22GLUC-Bike-MCoyle_22GLUC0711_05084.jpg" class="card-img-top rounded-1" alt="discover more image 2"><div class="card-body ps-0"><a href="/bike-tours/national-park/"><p class="card-text text-start fw-semibold">National Park tours</p></a></div></div></div><div class="col-6 col-md-4"><div class="card border-0"><img src="/wp-content/uploads/2022/08/Rectangle-2728.png" class="card-img-top rounded-1" alt="discover more image 3"><div class="card-body ps-0"><a href="/bike-tours/e-bike/"><p class="card-text text-start fw-semibold">E-Bike Tours</p></a></div></div></div></div></div>',
                             item: wp.template('instantsearch-hit'),
                             showMoreText: "View more"
                         },

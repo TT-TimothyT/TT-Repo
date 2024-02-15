@@ -102,7 +102,7 @@ class Helpers {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return boolean Whether or not it is on apache.
+	 * @return bool Whether or not it is on nginx.
 	 */
 	public function isNginx() {
 		if ( ! isset( $_SERVER['SERVER_SOFTWARE'] ) ) {
@@ -119,6 +119,46 @@ class Helpers {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks if the server is running on LiteSpeed.
+	 *
+	 * @since 4.5.3
+	 *
+	 * @return bool Whether it is on LiteSpeed.
+	 */
+	public function isLiteSpeed() {
+		if ( ! isset( $_SERVER['SERVER_SOFTWARE'] ) ) {
+			return false;
+		}
+
+		$server = strtolower( sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ) );
+
+		return false !== stripos( $server, 'litespeed' );
+	}
+
+	/**
+	 * Returns the server name: Apache, nginx or LiteSpeed.
+	 *
+	 * @since 4.5.3
+	 *
+	 * @return string The server name. An empty string if it's unknown.
+	 */
+	public function getServerName() {
+		if ( aioseo()->helpers->isApache() ) {
+			return 'apache';
+		}
+
+		if ( aioseo()->helpers->isNginx() ) {
+			return 'nginx';
+		}
+
+		if ( aioseo()->helpers->isLiteSpeed() ) {
+			return 'litespeed';
+		}
+
+		return '';
 	}
 
 	/**
@@ -236,6 +276,45 @@ class Helpers {
 	 */
 	public function deepClone( $object ) {
 		return unserialize( serialize( $object ) );
+	}
+
+	/**
+	 * Sanitizes a given variable
+	 *
+	 * @since 4.5.6
+	 *
+	 * @param  mixed $variable             The variable.
+	 * @param  bool  $preserveHtml         Whether or not to preserve HTML for ALL fields.
+	 * @param  array $fieldsToPreserveHtml Specific fields to preserve HTML for.
+	 * @param  string $fieldName           The name of the current field (when looping over a list).
+	 * @return mixed                       The sanitized variable.
+	 */
+	public function sanitize( $variable, $preserveHtml = false, $fieldsToPreserveHtml = [], $fieldName = '' ) {
+		$type = gettype( $variable );
+		switch ( $type ) {
+			case 'boolean':
+				return (bool) $variable;
+			case 'string':
+				if ( $preserveHtml || in_array( $fieldName, $fieldsToPreserveHtml, true ) ) {
+					return aioseo()->helpers->decodeHtmlEntities( sanitize_text_field( htmlspecialchars( $variable, ENT_NOQUOTES, 'UTF-8' ) ) );
+				}
+
+				return sanitize_text_field( $variable );
+			case 'integer':
+				return intval( $variable );
+			case 'float':
+			case 'double':
+				return floatval( $variable );
+			case 'array':
+				$array = [];
+				foreach ( (array) $variable as $k => $v ) {
+					$array[ $k ] = $this->sanitize( $v, $preserveHtml, $fieldsToPreserveHtml, $k );
+				}
+
+				return $array;
+			default:
+				return false;
+		}
 	}
 
 	/**

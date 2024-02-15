@@ -84,7 +84,6 @@ class Critical_Css extends Module {
 		add_action( 'admin_init', array( $this, 'schedule_get_critical_cron' ), 20000 );
 		add_action( 'wp_footer', array( $this, 'schedule_cron' ), 20000 );
 		add_action( 'wp_head', array( $this, 'insert_load_css_script' ) );
-		add_action( 'edit_post', array( $this, 'post_edit' ), 11 );
 		add_action( 'after_switch_theme', array( $this, 'regenerate_critical_css' ) );
 	}
 
@@ -566,15 +565,25 @@ class Critical_Css extends Module {
 				$site = $blog->path;
 			}
 		} else {
-			// Purge specific folder.
-			$http_host = '';
-			if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
+			$http_host = get_option( 'siteurl' );
+			if ( ! empty( $http_host ) ) {
+				$http_host = preg_replace( '/^https?:\/\/|\/$/', '', $http_host );
+			} elseif ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
 				$http_host = htmlentities( wp_unslash( $_SERVER['HTTP_HOST'] ) ); // Input var ok.
-			} elseif ( function_exists( 'get_option' ) ) {
-				$http_host = preg_replace( '/https?:\/\//', '', get_option( 'siteurl' ) );
 			}
 
 			$site = $http_host . '/';
+		}
+
+		// Remove starting www.
+		if ( strpos( $site, 'www.' ) !== false ) {
+			$used_css_dir    = WP_CONTENT_DIR . '/wphb-cache/critical-css/' . $site;
+			$is_used_css_dir = is_dir( $used_css_dir );
+
+			// If Used CSS directory exists.
+			if ( ! $is_used_css_dir ) {
+				$site = preg_replace( '/^(www\.)/', '', $site );
+			}
 		}
 
 		return WP_CONTENT_DIR . '/wphb-cache/critical-css/' . $site;
@@ -665,10 +674,6 @@ class Critical_Css extends Module {
 			$type = $term->taxonomy;
 		} elseif ( $wp_query->is_archive ) {
 			$type = $wp_query->is_day ? 'day' : ( $wp_query->is_month ? 'month' : ( $wp_query->is_year ? 'year' : ( $wp_query->is_author ? 'author' : 'archive' ) ) );
-		} elseif ( $wp_query->is_search ) {
-			$type = 'search';
-		} elseif ( $wp_query->is_404 ) {
-			$type = '404';
 		}
 
 		return $type;
@@ -1304,36 +1309,6 @@ class Critical_Css extends Module {
 		$get_hash = $this->hash( $type );
 
 		return $this->get_queue_item_by_hash( $get_hash );
-	}
-
-	/**
-	 * Fires on edit_post action.
-	 *
-	 * @param int $post_id Post ID.
-	 */
-	public function post_edit( $post_id ) {
-		if ( wp_is_post_revision( $post_id ) ) {
-			return;
-		}
-
-		// Only trigger for public page.
-		$post = get_post( $post_id );
-
-		if ( ! isset( $post->post_type ) || ! is_post_type_viewable( $post->post_type ) ) {
-			return;
-		}
-
-		$type             = $this->make_post_type_key( $post_id );
-		$processing_queue = $this->get_queue_item_by_type( $type );
-
-		// If no object found.
-		if ( empty( $processing_queue ) ) {
-			return;
-		}
-
-		$used_css_path = $this->used_css_path( $type );
-
-		$this->recreate_post_css_file( $post_id );
 	}
 
 	/**

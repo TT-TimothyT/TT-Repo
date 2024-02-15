@@ -311,7 +311,7 @@ trait WpContext {
 		$this->originalPost  = is_a( $post, 'WP_Post' ) ? $this->deepClone( $post ) : null;
 
 		// The order of the function calls below is intentional and should NOT change.
-		$postContent = function_exists( 'do_blocks' ) ? do_blocks( $postContent ) : $postContent; // phpcs:ignore AIOSEO.WpFunctionUse.NewFunctions.do_blocksFound
+		$postContent = do_blocks( $postContent );
 		$postContent = wpautop( $postContent );
 		$postContent = $this->doShortcodes( $postContent );
 
@@ -434,9 +434,16 @@ trait WpContext {
 	 * @return int|false The page number or false if we're not on a comment page.
 	 */
 	public function getCommentPageNumber() {
-		$cpage = get_query_var( 'cpage' );
+		$cpage = get_query_var( 'cpage', null );
+		if ( $this->isBlockTheme() ) {
+			global $wp_query;
 
-		return ! empty( $cpage ) ? (int) $cpage : false;
+			// For block themes we can't rely on `get_query_var()` because of {@see build_comment_query_vars_from_block()},
+			// so we need to check the query directly.
+			$cpage = $wp_query->query['cpage'] ?? null;
+		}
+
+		return isset( $cpage ) ? (int) $cpage : false;
 	}
 
 	/**
@@ -861,5 +868,20 @@ trait WpContext {
 		global $_wp_theme_features;
 
 		return isset( $_wp_theme_features ) && is_array( $_wp_theme_features ) ? $_wp_theme_features : [];
+	}
+
+	/**
+	 * Returns whether the active theme is a block-based theme or not.
+	 *
+	 * @since 4.5.3
+	 *
+	 * @return bool Whether the active theme is a block-based theme or not.
+	 */
+	public function isBlockTheme() {
+		if ( function_exists( 'wp_is_block_theme' ) ) {
+			return wp_is_block_theme(); // phpcs:ignore AIOSEO.WpFunctionUse.NewFunctions.wp_is_block_themeFound
+		}
+
+		return false;
 	}
 }
