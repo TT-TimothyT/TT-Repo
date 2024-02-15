@@ -82,9 +82,15 @@ $table_prefix = 'wp_';
 define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 define( 'FS_METHOD', 'direct' ); // Allows you to upload/update themes/plugins/core from your localhost
+
 // BE Media From Production plugin define for having the production images
 if ( ! defined( 'BE_MEDIA_FROM_PRODUCTION_URL' ) ) {
 	define( 'BE_MEDIA_FROM_PRODUCTION_URL', 'https://new.trektravel.com/' );
+}
+
+// Set the DX_DEV define variable
+if ( ! defined( 'DX_DEV' ) ) {
+	define( 'DX_DEV', true );
 }
 
 /* Add any custom values between this line and the "stop editing" line. */

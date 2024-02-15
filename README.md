@@ -5,7 +5,7 @@ This is the Git repository for the website https://local.trektravel.com/. The re
 
 The project itself is a single WordPress installation with WooCommerce, ACFs for the dynamic data, Elementor for the landing pages, Netsuite for the ERP integration and sync NetSuite <> WooCommerce, Trek Travel Algolia integration and a bunch of plugins.
 
-Below you'll find important notes about the project, the git branching, and the like.
+Below you'll find important notes about the project, the git branching, and the like. You have to check the setup details for the NetSuite API details and Algolia setup.
 
 #### Documentation
 TBD, at some point.
@@ -117,16 +117,21 @@ You will need:
 
 * Open the **Theme directory** `/` in Terminal and install the required Node.js dependencies.
 * `$ npm install`
-  
+
 * Run the **`dev`** script (watch included)
 * `$ npm run dev`
-  
+
 * Run the **`build`** script (no watching)
 * `$ npm run build`
-  
+
 * Modify `/src/scss/main.scss` and `/assets/main.js`
 * Bootstrap Overriding detailed at `src/scss/main.scss`
 
+### 9) Algolia setup
+Make sure you'll be using the [Trek Travel Algolia Details](https://app.asana.com/0/1205472772784381/1206349252116376) API keys from the Asana task
+
+### 10) NetSuite setup
+We are using `DX_DEV` define variable to say if this is using a dev or production environment so we can use the proper scripts and NetSuite connection.
 
 ## Technology
 
