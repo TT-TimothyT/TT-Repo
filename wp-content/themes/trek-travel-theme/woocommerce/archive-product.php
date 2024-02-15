@@ -174,7 +174,8 @@ $emptyBlockContent .= '</div></div>';
                 <span class="f-check"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkback.png" /></span>
                 <span class="f-check-active"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkactive.png" /></span>
                 <span class="">{{data.label}}</span>
-                <span class="">{{data.count.toLocaleString()}}</span>
+                <!-- Hide the count for the moment -->
+                <!-- <span class="">{{data.count.toLocaleString()}}</span> -->
             </a>
         </div>
     </script>
