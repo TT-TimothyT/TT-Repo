@@ -1814,6 +1814,9 @@ add_action('wp_ajax_tt_load_more_blog_action', 'trek_tt_load_more_blog_action_cb
 add_action('wp_ajax_nopriv_tt_load_more_blog_action', 'trek_tt_load_more_blog_action_cb');
 function trek_tt_load_more_blog_action_cb()
 {
+
+    $cat_id = $_POST['catid'];
+
     $other_blog_html = '';
     $blog_args = array(
         'post_type' => 'post',
@@ -1822,14 +1825,15 @@ function trek_tt_load_more_blog_action_cb()
         'orderby' => 'date',
         'order' => 'DESC',
         'paged' => $_POST['paged'],
-        'offset' => 1
+        'cat' => array( $cat_id )
+
     );
     $blogs = new WP_Query($blog_args);
     $max_pages = $blogs->max_num_pages;
     if ($blogs->have_posts()) {
         while ($blogs->have_posts()) {
             $blogs->the_post();
-            $featured_Image = 'https://via.placeholder.com/70?text=Trek%20Travel';
+            $featured_Image = '/wp-content/themes/trek-travel-theme/assets/images/posts-thumbnail-placeholder.svg';
             if (has_post_thumbnail(get_the_ID())) {
                 $featured_Image = get_the_post_thumbnail_url(get_the_ID(), 'full');
             }
@@ -6227,3 +6231,173 @@ function tt_algolia_modify_starting_from_price( $shared_attributes, $post ) {
 	return $shared_attributes;
 }
 add_filter( 'algolia_searchable_post_shared_attributes', 'tt_algolia_modify_starting_from_price', 10, 2 );
+
+/**
+ * Take the correct itinerary link from itineraries ACF Field in admin panel.
+ *
+ * @param string $trip_sku The Trip Code or SKU, should be not modified to can catch nested dates trips (ex.: 24CARC0129-FIRST).
+ * @param int $parent_product_id ID of the grouped product that holds the trips for different periods.
+ * 
+ * @return string The itinerary link or empty string
+ */
+function tt_get_itinerary_link_from_trip_itineraries( $trip_sku, $parent_product_id ) {
+	$is_ride_camp           = tt_get_local_trips_detail( 'isRideCamp',  '', $trip_sku, true );
+	$is_nested_dates_trip   = false;
+	$itinerary_link         = '';
+	$current_year           = date( 'Y' );
+	$next_year              = date( 'Y', strtotime('+1 year') );
+	$all_active_itineraries = array();
+	$nested_dates_period    = explode( '-', $trip_sku )[1];
+
+	if( $nested_dates_period ) {
+		$is_nested_dates_trip = true;
+	}
+
+	// Look for itineraries realation field on the product.
+	$itinerary_posts = get_field( 'itineraries', $parent_product_id );
+
+	// Array with itineraries objects.
+	if ( $itinerary_posts ) {
+		$trip_itinerary_post = '';
+
+		// First take all itineraries from next year.
+		foreach ( $itinerary_posts as $itinerary ) {
+			$itinerary_title = $itinerary->post_title;
+
+			if ( strpos( $itinerary_title, $next_year ) !== false ) {
+				array_push( $all_active_itineraries, $itinerary );
+			}
+		}
+
+		// If there are no itineraries for next year, search for the current year and take them.
+		if( empty( $all_active_itineraries ) ) {
+			// First take all itineraries from this year.
+			foreach ( $itinerary_posts as $itinerary ) {
+				$itinerary_title = $itinerary->post_title;
+
+				if ( strpos( $itinerary_title, $current_year ) !== false ) {
+					array_push( $all_active_itineraries, $itinerary );
+				}
+			}
+		}
+
+		if( empty( $all_active_itineraries ) ) {
+			// No active itineraries. Exit.
+			return '';
+		}
+
+		// nested_dates_period SECOND or FIRST
+		if( $is_ride_camp ) {
+			if( $is_nested_dates_trip ) {
+				switch( $nested_dates_period ) {
+					case 'FIRST':
+						// 1-4 day Ride Camp.
+						$trip_itinerary_post = $all_active_itineraries[0];
+						break;
+					case 'SECOND':
+						// 4-7 day Ride Camp.
+						$trip_itinerary_post = $all_active_itineraries[1];
+						break;
+					default:
+                        $trip_itinerary_post = $all_active_itineraries[0];
+						break;
+				}
+			} else {
+				// 7 day Ride Camp.
+				$trip_itinerary_post = $all_active_itineraries[0];
+			}
+		} else {
+			// Standart trip.
+			$trip_itinerary_post = $all_active_itineraries[0];
+		}
+
+        if( ! empty( $trip_itinerary_post ) ) {
+            $itinerary_link = get_permalink( $trip_itinerary_post );
+        }
+
+	}
+
+	return $itinerary_link;
+}
+
+/**
+ * Check the Post Booking Checklist status.
+ *
+ * @param int|string $user_id     The user ID.
+ * @param int|string $order_id    The order ID.
+ * @param int|string $rider_level The rider level, taken from guest_bookings table.
+ * @param int|string $product_id  The product ID, to can check for the passport required.
+ * @param int|string $bike_id     The bike ID, taken from guest_bookings table.
+ * @param bool $guest_is_primary  Is Guest a primary guest.
+ * @param bool $waiver_signed     Is guest has signed waiver.
+ *
+ * @return boolean Is the checklist complete.
+ */
+function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary, $waiver_signed ) {
+	$is_checklist_completed = true;
+
+	// Get info for completed PB checklist sections from the user meta.
+	$confirmed_info_user         = get_user_meta( $user_id, 'pb_checklist_cofirmations', true );
+	$confirmed_info_unserialized = maybe_unserialize( $confirmed_info_user );
+
+    // There is no information yet for confirmed sections.
+	if( ! $confirmed_info_unserialized ) {
+		return false;
+	}
+
+	$confirmed_info_order = isset( $confirmed_info_unserialized[ $order_id ] ) ? $confirmed_info_unserialized[ $order_id ] : null;
+
+    // There is no information yet for confirmed sections for the given order.
+	if( ! $confirmed_info_order ) {
+		return false;
+	}
+
+    // Collect available checklist sections.
+	$available_pb_checklist_sections= array(
+        'medical_section',
+		'emergency_section'
+	);
+
+    $is_passport_required = get_post_meta( $product_id, TT_WC_META_PREFIX . 'isPassportRequired', true );
+
+	if ( isset( $is_passport_required ) && true == $is_passport_required ) {
+		array_push( $available_pb_checklist_sections, 'passport_section' );
+	}
+
+	/**
+	 * Rider Level -> 5 = Non Rider.
+	 * Bike ID -> 5270  = Bring own bike.
+	 */
+	if( 5 != $rider_level ) {
+		array_push( $available_pb_checklist_sections, 'gear_section' );
+	}
+
+	if ( 5 != $rider_level && 5270 != $bike_id ) {
+		array_push( $available_pb_checklist_sections, 'bike_section' );
+	}
+
+    // We keep waiver signed status into guest_bookings table only.
+    if( 1 != $guest_is_primary ) {
+        // If guest is not primary, need to check waiver signed status.
+        if( 1 != $waiver_signed ) {
+            // Waiver not signed. Need to return false.
+            return false;
+        }
+    }
+
+    // Loop the available sections and check for confirmations.
+	foreach ( $available_pb_checklist_sections as $section ) {
+
+		if( ! isset( $confirmed_info_order[ $section ] ) ) {
+			$is_checklist_completed = false;
+			break;
+		}
+
+		if( false == $confirmed_info_order[ $section ] ) {
+			$is_checklist_completed = false;
+			break;
+		}
+	}
+
+	return $is_checklist_completed;
+}

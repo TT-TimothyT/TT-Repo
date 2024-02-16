@@ -477,13 +477,16 @@ final class Algolia_Searchable_Posts_Index extends Algolia_Index {
 				$terms = wp_get_object_terms( $post->ID, $taxonomy->name );
 				$terms = is_array( $terms ) ? $terms : array();
 
-				/*if ( $taxonomy->hierarchical ) {
+				// Here we collect hierarchical taxonomies. We can show Destinations using product_cat taxonomy and from there we will use only Destinations.
+				if ( $taxonomy->hierarchical ) {
 					$hierarchical_taxonomy_values = Algolia_Utils::get_taxonomy_tree( $terms, $taxonomy->name );
 					if ( ! empty( $hierarchical_taxonomy_values ) ) {
 						$shared_attributes['taxonomies_hierarchical'][ $taxonomy->name ] = $hierarchical_taxonomy_values;
 					}
-				}*/
-              if ( $taxonomy->hierarchical ) {
+				}
+
+				// The code below in the if check makes nothing... Also 'echo' doesn't have an effect in this loop.
+              	if ( $taxonomy->hierarchical ) {
 					// Get the term object for the parent category.
 					$parent_category = get_term_by( 'slug', 'destinations', $taxonomy->name );
 				

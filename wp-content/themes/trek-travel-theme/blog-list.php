@@ -126,9 +126,16 @@ if( $blogs->have_posts() ){
 	<div class="blog-list-appendTo list d-flex flex-column flex-lg-row flex-nowrap flex-lg-wrap">
 		<?php echo $other_blog_html; ?>
 	</div>
-	<div class="more d-flex">
-		<button class="btn btn-primary btn-lg rounded-1 view-more-btn" id="load-more">View more</button>
-	</div>
+	<?php
+
+	//Get the number of found posts
+	$found_posts = $blogs->found_posts;
+
+	if( $found_posts > 10 ) { ?>
+		<div class="more d-flex">
+			<button class="btn btn-primary btn-lg rounded-1 view-more-btn" id="load-more">View more</button>
+		</div>
+	<?php } ?>
 </div>
 <?php
 get_footer();
