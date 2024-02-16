@@ -18,7 +18,7 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'TRIPS_SCRIPT_ID', '1296:2' ); //214 -old ID, New ID - 1296
     define( 'BOOKING_SCRIPT_ID', 1298);
     define( 'TRIP_DETAIL_SCRIPT_ID', '1297:2' ); //211 -old ID, New ID - 1297
-    define( 'LISTS_SCRIPT_ID', '203:2' );
+    define( 'LISTS_SCRIPT_ID', '1299:2' );
     define( 'TRIP_MSG_SCRIPT_ID', 1297);
     define( 'USER_BOOKINGS_SCRIPT_ID', '1305:2' );
     define( 'GUESTS_TO_SYNC_SCRIPT_ID', '1306:2' );
