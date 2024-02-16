@@ -16,7 +16,7 @@
  * Plugin Name:       WP Dummy Content Generator
  * Plugin URI:        https://wpdcg.online/
  * Description:       The "WP Dummy Content Generator" plugin is particularly useful for developers, designers, and website administrators who want to quickly populate their WordPress site with realistic dummy content. It saves time and effort by automatically generating content that mimics real posts and pages, enabling you to focus on other aspects of website development or testing. 
- * Version:           3.2.0
+ * Version:           3.2.1
  * Author:            Deepak anand
  * Author URI:        https://wpdcg.online/about-us/
  * License:           GPL-2.0+
@@ -36,7 +36,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'wp_dummy_content_generator_PLUGIN_NAME_VERSION', '3.2.0' );
+define( 'wp_dummy_content_generator_PLUGIN_NAME_VERSION', '3.2.1' );
 define( 'wp_dummy_content_generator_PLUGIN_BASE_URL',plugin_basename( __FILE__ )); 
 define( 'wp_dummy_content_generator_PLUGIN_BASE_URI',plugin_dir_path( __FILE__ )); 
 define("wp_dummy_content_generator_PLUGIN_DIR",plugin_basename( __DIR__ ));
