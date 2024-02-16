@@ -6319,3 +6319,85 @@ function tt_get_itinerary_link_from_trip_itineraries( $trip_sku, $parent_product
 
 	return $itinerary_link;
 }
+
+/**
+ * Check the Post Booking Checklist status.
+ *
+ * @param int|string $user_id     The user ID.
+ * @param int|string $order_id    The order ID.
+ * @param int|string $rider_level The rider level, taken from guest_bookings table.
+ * @param int|string $product_id  The product ID, to can check for the passport required.
+ * @param int|string $bike_id     The bike ID, taken from guest_bookings table.
+ * @param bool $guest_is_primary  Is Guest a primary guest.
+ * @param bool $waiver_signed     Is guest has signed waiver.
+ *
+ * @return boolean Is the checklist complete.
+ */
+function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary, $waiver_signed ) {
+	$is_checklist_completed = true;
+
+	// Get info for completed PB checklist sections from the user meta.
+	$confirmed_info_user         = get_user_meta( $user_id, 'pb_checklist_cofirmations', true );
+	$confirmed_info_unserialized = maybe_unserialize( $confirmed_info_user );
+
+    // There is no information yet for confirmed sections.
+	if( ! $confirmed_info_unserialized ) {
+		return false;
+	}
+
+	$confirmed_info_order = isset( $confirmed_info_unserialized[ $order_id ] ) ? $confirmed_info_unserialized[ $order_id ] : null;
+
+    // There is no information yet for confirmed sections for the given order.
+	if( ! $confirmed_info_order ) {
+		return false;
+	}
+
+    // Collect available checklist sections.
+	$available_pb_checklist_sections= array(
+        'medical_section',
+		'emergency_section'
+	);
+
+    $is_passport_required = get_post_meta( $product_id, TT_WC_META_PREFIX . 'isPassportRequired', true );
+
+	if ( isset( $is_passport_required ) && true == $is_passport_required ) {
+		array_push( $available_pb_checklist_sections, 'passport_section' );
+	}
+
+	/**
+	 * Rider Level -> 5 = Non Rider.
+	 * Bike ID -> 5270  = Bring own bike.
+	 */
+	if( 5 != $rider_level ) {
+		array_push( $available_pb_checklist_sections, 'gear_section' );
+	}
+
+	if ( 5 != $rider_level && 5270 != $bike_id ) {
+		array_push( $available_pb_checklist_sections, 'bike_section' );
+	}
+
+    // We keep waiver signed status into guest_bookings table only.
+    if( 1 != $guest_is_primary ) {
+        // If guest is not primary, need to check waiver signed status.
+        if( 1 != $waiver_signed ) {
+            // Waiver not signed. Need to return false.
+            return false;
+        }
+    }
+
+    // Loop the available sections and check for confirmations.
+	foreach ( $available_pb_checklist_sections as $section ) {
+
+		if( ! isset( $confirmed_info_order[ $section ] ) ) {
+			$is_checklist_completed = false;
+			break;
+		}
+
+		if( false == $confirmed_info_order[ $section ] ) {
+			$is_checklist_completed = false;
+			break;
+		}
+	}
+
+	return $is_checklist_completed;
+}

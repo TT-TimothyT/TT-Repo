@@ -192,8 +192,11 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 								$product_id = $trip['product_id'];
 								$order_id = $trip['order_id'];
                                 $order_details = trek_get_user_order_info($userInfo->ID, $order_id);
+								$guest_is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
+								$waiver_signed = isset( $order_details[0]['waiver_signed'] ) ? $order_details[0]['waiver_signed'] : false;
 								$product = wc_get_product( $product_id );
 								$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
+								$is_checklist_completed = tt_is_checklist_completed( $userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $guest_is_primary, $waiver_signed );
 								if( $product ){
 									$trip_status = $product->get_attribute( 'pa_trip-status' );
 									$trip_sdate = $product->get_attribute( 'pa_start-date' ); 
@@ -243,7 +246,7 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 								$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-2">'.$date_range.'</p>';
 
 								// Check if $order_details is not empty before adding the error message
-								if ( ! empty( $order_details ) ) {
+								if ( ! empty( $order_details ) && ! $is_checklist_completed ) { 
 									$trips_html .= '<p class="dashboard__error"><img src="'.TREK_DIR.'/assets/images/error.png"> You have pending items</p>';
 								}
 

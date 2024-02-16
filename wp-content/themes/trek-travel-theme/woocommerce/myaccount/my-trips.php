@@ -34,7 +34,8 @@ $wp_user_email = $userInfo->user_email;
 							$product_id = $trip['product_id'];
 							$order_id = $trip['order_id'];
 							$order_details = trek_get_user_order_info($userInfo->ID, $order_id);
-							$is_primary = isset($order_details[0]['guest_is_primary']) ? $order_details[0]['guest_is_primary'] : 0; 
+							$is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
+							$waiver_signed = isset( $order_details[0]['waiver_signed'] ) ? $order_details[0]['waiver_signed'] : false;
                             $is_secondary_user = $is_primary == 0;
 							$product = wc_get_product($product_id);
 							$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
@@ -91,6 +92,7 @@ $wp_user_email = $userInfo->user_email;
 								} 
 								$trip_address = [$pa_city,$tripRegion];
 								$trip_address = array_filter($trip_address);
+								$is_checklist_completed = tt_is_checklist_completed( $userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $is_primary, $waiver_signed );
 								$trips_html .= '<div class="trips-list-item">
                                 <div class="trip-image">
                                     <img src="' . $parentTrip['image'] . '">
@@ -98,14 +100,13 @@ $wp_user_email = $userInfo->user_email;
                                 <div class="trip-info">
                                     <p class="fw-normal fs-sm lh-sm mb-0 mt-4">'.implode(', ', $trip_address).'</p>
                                     <h5 class="fw-semibold"><a href="' . $trip_link . '">' . $trip_name . '</a></h5>
-                                    <p class="fw-medium fs-sm lh-sm">' . $date_range . '</p>
-									<?php if (!empty($order_details)) : ?>
-										<i class="bi bi-info-circle me-3 text-danger"></i>
-										<p class="fw-normal fs-sm lh-sm d-inline text-danger">You have items pending confirmation</p>
-									<?php endif; ?>                                
-                                    </div>
-                                ' . $link_html . '
-                            </div><hr>';
+                                    <p class="fw-medium fs-sm lh-sm">' . $date_range . '</p>';
+
+								if( ! empty( $order_details ) && ! $is_checklist_completed ) {
+									$trips_html .= '<i class="bi bi-info-circle me-3 text-danger"></i><p class="fw-normal fs-sm lh-sm d-inline text-danger">You have items pending confirmation</p>';
+								}
+
+								$trips_html .= '</div>' . $link_html . '</div><hr>';
 							}
 						}
 					}
