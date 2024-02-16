@@ -505,8 +505,8 @@ get_header();
                                     .map(
                                         item => `
                             <li class="destinations">
-                            <span class="d-check-i-${item.isRefined ? 'destinations-active' : 'destinations-inactive'}"><img src="/wp-content/themes/trek-travel-theme/assets/images/checkback.png" /></span>
-                            <span class="d-check-a-${item.isRefined ? 'destinations-active' : 'destinations-inactive'}"><img src="/wp-content/themes/trek-travel-theme/assets/images/checkactive.png" /></span>
+                            <span class="d-check d-check-i-${item.isRefined ? 'destinations-active' : 'destinations-inactive'}"><img src="/wp-content/themes/trek-travel-theme/assets/images/checkback.png" /></span>
+                            <span class="d-check d-check-a-${item.isRefined ? 'destinations-active' : 'destinations-inactive'}"><img src="/wp-content/themes/trek-travel-theme/assets/images/checkactive.png" /></span>
                             <a class="refineLink" onClick="destinationClick(jQuery(this));"
                               href="${createURL(item.value)}"
                               data-value="${item.value}"
