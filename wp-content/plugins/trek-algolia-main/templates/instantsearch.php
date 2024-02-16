@@ -139,7 +139,7 @@ get_header();
                                     <span class="f-check"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkback.png" /></span>
                                     <span class="f-check-active"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkactive.png" /></span>
                                     <span class="">{{data.label}}</span>
-                                    <span class="">{{data.count.toLocaleString()}}</span>
+                                    <!-- <span class="">{{data.count.toLocaleString()}}</span> -->
                                 </a>
                             </div>
                     </script>
@@ -150,7 +150,7 @@ get_header();
                                 <span class="f-check"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkback.png" /></span>
                                 <span class="f-check-active"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkactive.png" /></span>
                                 <span class="algolia-start-dates">{{data.label}}</span>
-                                <span class="">{{data.count.toLocaleString()}}</span>
+                                <!-- <span class="">{{data.count.toLocaleString()}}</span> -->
                             </a>
                         </div>
                     </script>
