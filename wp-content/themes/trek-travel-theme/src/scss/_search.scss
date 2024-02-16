@@ -309,6 +309,25 @@ li.ais-Menu-item--selected div div.menu-facet-container a.ais-anchor span.f-chec
     margin-right: 10px;
 }
 
+.destinations .d-check img,
+.destinations .d-check span {
+    width: 23px;
+    height: 23px;
+    display: block;
+}
+
+#hierarchical-menu {
+    .destinations {
+        margin-bottom: 0 !important;
+    
+        a {
+            position: relative;
+            margin-bottom: 16px;
+            color: #666;
+            font-weight: 400 !important;
+        }
+    } 
+}
 
 .d-check-a-destinations-active {
     display: block;
