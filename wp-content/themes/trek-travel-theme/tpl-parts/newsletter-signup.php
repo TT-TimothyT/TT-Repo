@@ -46,7 +46,6 @@
 if( ! empty( get_field( 'newsletter_page', 'option' ) ) ) {
   $nl_page = get_field( 'newsletter_page', 'option' );
 }
-print_r($nl_page);
 ?>
 <!-- newsletter component start -->		
 <div class="newsletter-subscribe mt-5 py-5 container">
