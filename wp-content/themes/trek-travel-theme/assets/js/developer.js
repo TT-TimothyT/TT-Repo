@@ -1553,12 +1553,19 @@ if (jQuery('#load-more').length > 0) {
   let currentPage = 1;
   jQuery('body').on('click', '#load-more', function () {
     var actionName = 'tt_load_more_blog_action';
+
+    currentPage++;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    var categoryId = urlParams.get('category');
+
     jQuery.ajax({
       type: 'POST',
       url: trek_JS_obj.ajaxURL,
       data: {
         action: actionName,
-        paged: currentPage
+        paged: currentPage,
+        catid: categoryId
       },
       dataType: 'json',
       beforeSend: function () {

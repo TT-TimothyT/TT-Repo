@@ -1814,6 +1814,9 @@ add_action('wp_ajax_tt_load_more_blog_action', 'trek_tt_load_more_blog_action_cb
 add_action('wp_ajax_nopriv_tt_load_more_blog_action', 'trek_tt_load_more_blog_action_cb');
 function trek_tt_load_more_blog_action_cb()
 {
+
+    $cat_id = $_POST['catid'];
+
     $other_blog_html = '';
     $blog_args = array(
         'post_type' => 'post',
@@ -1822,14 +1825,15 @@ function trek_tt_load_more_blog_action_cb()
         'orderby' => 'date',
         'order' => 'DESC',
         'paged' => $_POST['paged'],
-        'offset' => 1
+        'cat' => array( $cat_id )
+
     );
     $blogs = new WP_Query($blog_args);
     $max_pages = $blogs->max_num_pages;
     if ($blogs->have_posts()) {
         while ($blogs->have_posts()) {
             $blogs->the_post();
-            $featured_Image = 'https://via.placeholder.com/70?text=Trek%20Travel';
+            $featured_Image = '/wp-content/themes/trek-travel-theme/assets/images/posts-thumbnail-placeholder.svg';
             if (has_post_thumbnail(get_the_ID())) {
                 $featured_Image = get_the_post_thumbnail_url(get_the_ID(), 'full');
             }
