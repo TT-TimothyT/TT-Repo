@@ -502,8 +502,8 @@ get_header();
                 const renderList = ({ items, createURL }) => `
                   <ul>
                     ${items
-                                    .map(
-                                        item => `
+                    .map(
+                        item => `
                             <li class="destinations">
                             <span class="d-check d-check-i-${item.isRefined ? 'destinations-active' : 'destinations-inactive'}"><img src="/wp-content/themes/trek-travel-theme/assets/images/checkback.png" /></span>
                             <span class="d-check d-check-a-${item.isRefined ? 'destinations-active' : 'destinations-inactive'}"><img src="/wp-content/themes/trek-travel-theme/assets/images/checkactive.png" /></span>
@@ -513,13 +513,13 @@ get_header();
                               style="font-weight: ${item.isRefined ? 'bold' : ''}"
                             >
 
-                              ${item.label} (${item.count})
+                              ${item.label}
                             </a>
                             ${item.data ? renderList({ items: item.data, createURL }) : ''}
                             </li>
                         `
-                                    )
-                                    .join('')}
+                    )
+                    .join('')}
                   </ul>
                 `;
 
@@ -542,15 +542,17 @@ get_header();
                         });
 
                         widgetParams.container.appendChild(list);
-                        widgetParams.container.appendChild(button);
+                        // The code below is for Show More button, disable it for now.
+                        // widgetParams.container.appendChild(button);
                     }
 
                     const children = renderList({ items, createURL });
 
                     widgetParams.container.querySelector('div').innerHTML = children;
-                    widgetParams.container.querySelector('button').textContent = isShowingMore
-                        ? 'Show less'
-                        : 'Show more';
+                    // The code below is for Show More button, disable it for now.
+                    // widgetParams.container.querySelector('button').textContent = isShowingMore
+                    //     ? 'Show less'
+                    //     : 'Show more';
 
                     [...widgetParams.container.querySelectorAll('a')].forEach(element => {
                         element.addEventListener('click', event => {
@@ -749,10 +751,25 @@ get_header();
                             'taxonomies_hierarchical.product_cat.lvl0',
                             'taxonomies_hierarchical.product_cat.lvl1',
                             'taxonomies_hierarchical.product_cat.lvl2',
-                            'taxonomies_hierarchical.product_cat.lvl3'
                         ],
-                        limit: 5,
-                        showMoreLimit: 10,
+                        // limit: 5,
+                        // showMoreLimit: 10,
+                        transformItems( items ) {
+                            // Return only Destinations from all product_cat items.
+                            items = items.filter( item => 'Destinations' === item.value );
+                            // Remove 'Bike Tours' from the labels.
+                            return items.map(item => ({
+                                ...item,
+                                data: item.data && item.data.map(subitem => ({
+                                    ...subitem,
+                                    label: subitem.label.replace('Bike Tours', '').trim(),
+                                    data: subitem.data && subitem.data.map(subsubitem => ({
+                                        ...subsubitem,
+                                        label: subsubitem.label.replace('Bike Tours', '').trim()
+                                    }))
+                                })),
+                            }));
+                        },
                     }),
 
                     instantsearch.widgets.configure({
@@ -928,7 +945,7 @@ get_header();
 
         function destinationClick(elm) {
             let data = elm.attr('data-value');
-            jQuery('#ais-destination-selector .fake-selector').text(data);
+            jQuery('#ais-destination-selector .fake-selector').text( data.replaceAll('Bike Tours', '').trim() );
             jQuery('#ais-destination-selector .fake-selector').toggleClass("border-dark fw-semibold")
             console.log(elm);
         }
