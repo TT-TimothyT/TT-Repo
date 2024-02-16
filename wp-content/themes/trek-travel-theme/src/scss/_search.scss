@@ -480,12 +480,13 @@ a.refineLink {
     }
 }
 .mobile-hideme{
-    @media (max-width: 767px) {
+    @media (min-width: 767px) {
         display: none;
     }
 }
+
 .desktop-hideme{
-    @media (min-width: 767px) {
+    @media (max-width: 767px) {
         display: none;
     }
 }
