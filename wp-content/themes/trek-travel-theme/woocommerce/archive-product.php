@@ -535,7 +535,7 @@ $emptyBlockContent .= '</div></div>';
                               style="font-weight: ${item.isRefined ? 'bold' : ''}"
                             >
 
-                              ${item.label} (${item.count})
+                              ${item.label}
                             </a>
                             ${item.data ? renderList({ items: item.data, createURL }) : ''}
                             </li>
@@ -564,15 +564,17 @@ $emptyBlockContent .= '</div></div>';
                         });
 
                         widgetParams.container.appendChild(list);
-                        widgetParams.container.appendChild(button);
+                        // The code below is for Show More button, disable it for now.
+                        // widgetParams.container.appendChild(button);
                     }
 
                     const children = renderList({ items, createURL });
 
                     widgetParams.container.querySelector('div').innerHTML = children;
-                    widgetParams.container.querySelector('button').textContent = isShowingMore
-                        ? 'Show less'
-                        : 'Show more';
+                    // The code below is for Show More button, disable it for now.
+                    // widgetParams.container.querySelector('button').textContent = isShowingMore
+                    //     ? 'Show less'
+                    //     : 'Show more';
 
                     [...widgetParams.container.querySelectorAll('a')].forEach(element => {
                         element.addEventListener('click', event => {
@@ -766,11 +768,28 @@ $emptyBlockContent .= '</div></div>';
                         container: document.querySelector('#hierarchical-menu'),
                         separator: ' > ',
                         attributes: [
-                            'taxonomies.pa_country',
-                            'taxonomies.pa_city'
+                            'taxonomies_hierarchical.product_cat.lvl0',
+                            'taxonomies_hierarchical.product_cat.lvl1',
+                            'taxonomies_hierarchical.product_cat.lvl2',
                         ],
-                        limit: 5,
-                        showMoreLimit: 10,
+                        // limit: 5,
+                        // showMoreLimit: 10,
+                        transformItems( items ) {
+                            // Return only Destinations from all product_cat items.
+                            items = items.filter( item => 'Destinations' === item.value );
+                            // Remove 'Bike Tours' from the labels.
+                            return items.map(item => ({
+                                ...item,
+                                data: item.data && item.data.map(subitem => ({
+                                    ...subitem,
+                                    label: subitem.label.replace('Bike Tours', '').trim(),
+                                    data: subitem.data && subitem.data.map(subsubitem => ({
+                                        ...subsubitem,
+                                        label: subsubitem.label.replace('Bike Tours', '').trim()
+                                    }))
+                                })),
+                            }));
+                        },
                     }),
                     instantsearch.widgets.configure({
                         filters: "taxonomies.product_cat: ' <?php
@@ -881,7 +900,7 @@ $emptyBlockContent .= '</div></div>';
 
         function destinationClick(elm) {
             let data = elm.attr('data-value');
-            jQuery('#ais-destination-selector .fake-selector').text(data);
+            jQuery('#ais-destination-selector .fake-selector').text( data.replaceAll('Bike Tours', '').trim() );
             jQuery('#ais-destination-selector .fake-selector').toggleClass("border-dark fw-semibold")
             // console.log(elm);
         }
