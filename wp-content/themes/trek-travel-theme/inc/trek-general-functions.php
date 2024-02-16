@@ -6231,3 +6231,91 @@ function tt_algolia_modify_starting_from_price( $shared_attributes, $post ) {
 	return $shared_attributes;
 }
 add_filter( 'algolia_searchable_post_shared_attributes', 'tt_algolia_modify_starting_from_price', 10, 2 );
+
+/**
+ * Take the correct itinerary link from itineraries ACF Field in admin panel.
+ *
+ * @param string $trip_sku The Trip Code or SKU, should be not modified to can catch nested dates trips (ex.: 24CARC0129-FIRST).
+ * @param int $parent_product_id ID of the grouped product that holds the trips for different periods.
+ * 
+ * @return string The itinerary link or empty string
+ */
+function tt_get_itinerary_link_from_trip_itineraries( $trip_sku, $parent_product_id ) {
+	$is_ride_camp           = tt_get_local_trips_detail( 'isRideCamp',  '', $trip_sku, true );
+	$is_nested_dates_trip   = false;
+	$itinerary_link         = '';
+	$current_year           = date( 'Y' );
+	$next_year              = date( 'Y', strtotime('+1 year') );
+	$all_active_itineraries = array();
+	$nested_dates_period    = explode( '-', $trip_sku )[1];
+
+	if( $nested_dates_period ) {
+		$is_nested_dates_trip = true;
+	}
+
+	// Look for itineraries realation field on the product.
+	$itinerary_posts = get_field( 'itineraries', $parent_product_id );
+
+	// Array with itineraries objects.
+	if ( $itinerary_posts ) {
+		$trip_itinerary_post = '';
+
+		// First take all itineraries from next year.
+		foreach ( $itinerary_posts as $itinerary ) {
+			$itinerary_title = $itinerary->post_title;
+
+			if ( strpos( $itinerary_title, $next_year ) !== false ) {
+				array_push( $all_active_itineraries, $itinerary );
+			}
+		}
+
+		// If there are no itineraries for next year, search for the current year and take them.
+		if( empty( $all_active_itineraries ) ) {
+			// First take all itineraries from this year.
+			foreach ( $itinerary_posts as $itinerary ) {
+				$itinerary_title = $itinerary->post_title;
+
+				if ( strpos( $itinerary_title, $current_year ) !== false ) {
+					array_push( $all_active_itineraries, $itinerary );
+				}
+			}
+		}
+
+		if( empty( $all_active_itineraries ) ) {
+			// No active itineraries. Exit.
+			return '';
+		}
+
+		// nested_dates_period SECOND or FIRST
+		if( $is_ride_camp ) {
+			if( $is_nested_dates_trip ) {
+				switch( $nested_dates_period ) {
+					case 'FIRST':
+						// 1-4 day Ride Camp.
+						$trip_itinerary_post = $all_active_itineraries[0];
+						break;
+					case 'SECOND':
+						// 4-7 day Ride Camp.
+						$trip_itinerary_post = $all_active_itineraries[1];
+						break;
+					default:
+                        $trip_itinerary_post = $all_active_itineraries[0];
+						break;
+				}
+			} else {
+				// 7 day Ride Camp.
+				$trip_itinerary_post = $all_active_itineraries[0];
+			}
+		} else {
+			// Standart trip.
+			$trip_itinerary_post = $all_active_itineraries[0];
+		}
+
+        if( ! empty( $trip_itinerary_post ) ) {
+            $itinerary_link = get_permalink( $trip_itinerary_post );
+        }
+
+	}
+
+	return $itinerary_link;
+}
