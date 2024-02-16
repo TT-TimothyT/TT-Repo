@@ -20,7 +20,7 @@
 						<a class="nav-link" href="#hotels">Hotels</a>
 						<a class="nav-link" href="#bikes-guides">Bikes & Guides</a>
 						<a class="nav-link" href="#inclusions">Inclusions</a>
-						<a class="nav-link" href="#additional-details">Additional Details</a>
+						<a class="nav-link" href="#additional-details">Know Before You Go</a>
 						<a class="nav-link" href="#faqs">FAQs</a>
 						<a class="nav-link" href="#reviews">Reviews</a>
 					</nav>
