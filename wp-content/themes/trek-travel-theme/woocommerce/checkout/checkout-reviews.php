@@ -159,7 +159,16 @@ $primary_guest_country_name = WC()->countries->countries[$primary_country];
                     $syncHelmets =    tt_get_custom_item_name('syncHelmets',$review_bikes_arr_val['helmet_size']);
                 }
                 if( isset($review_bikes_arr_val['bikeTypeId']) && $review_bikes_arr_val['bikeTypeId'] ){
-                    $syncBikeTypes =    tt_get_custom_item_name('syncBikeTypes',$review_bikes_arr_val['bikeTypeId']);
+                    $syncBikeTypes =    tt_get_custom_item_name('ns_bikeType_info',$review_bikes_arr_val['bikeTypeId']);
+                    // Iterate through the array to find the bike with the desired ID
+                    foreach ($syncBikeTypes as $bike) {
+                        $desired_bike = intval( $review_bikes_arr_val['bikeTypeId'] );
+                        if ($bike['id'] === $desired_bike) {
+                            $desiredBike = $bike['name'];
+                            break; // Stop iterating once the bike with the desired ID is found
+                        }
+                    }
+                    $syncBikeTypes = $desiredBike;
                 }
                 if( isset($review_bikes_arr_val['bike_pedal']) && $review_bikes_arr_val['bike_pedal'] ){
                     $syncPedals =    tt_get_custom_item_name('syncPedals',$review_bikes_arr_val['bike_pedal']);
