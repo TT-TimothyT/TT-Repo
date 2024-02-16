@@ -9,7 +9,7 @@ if(!empty($details)):
     <div class="row">
         <div class="col-md-12">
 
-		<h5 class="fw-semibold pdp-section__title">Know Before You Go</h5>
+		<h5 class="fw-semibold pdp-section__title">Additional Details</h5>
             <div class="additional-details">
                 <?php
                     echo $details;
