@@ -12518,13 +12518,13 @@ a.refineLink {
   background-position: 95%;
 }
 
-@media (max-width: 767px) {
+@media (min-width: 767px) {
   .mobile-hideme {
     display: none;
   }
 }
 
-@media (min-width: 767px) {
+@media (max-width: 767px) {
   .desktop-hideme {
     display: none;
   }
