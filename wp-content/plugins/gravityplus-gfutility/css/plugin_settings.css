@@ -1,0 +1,15 @@
+#tab_gravityformsutility .utility-settings .utility-setting-text{
+
+    display: inline-block;
+    width: 55%;
+    padding-left: 22px;
+}
+
+#tab_gravityformsutility .utility-settings .utility-toggle{
+
+    display: inline;
+    position: absolute;
+    top: 30%;
+    right: 19px;
+
+}

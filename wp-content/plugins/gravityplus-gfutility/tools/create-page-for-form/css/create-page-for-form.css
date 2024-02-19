@@ -1,0 +1,43 @@
+body.gfpgf-utility div#TB_window[style] {
+
+    height: 300px !important;
+}
+
+.gfp_gfutil_create_page_modal_container {
+    padding: 20px;
+}
+
+.gfp_gfutil_create_page_modal_container .setting-row {
+    margin: 0 0 10px;
+}
+
+.gfp_gfutil_create_page_modal_container .setting-row label {
+    line-height: 24px;
+}
+
+.gfp_gfutil_create_page_modal_container .setting-row input,
+.gfp_gfutil_create_page_modal_container .setting-row textarea,
+.gfp_gfutil_create_page_modal_container .setting-row select{
+    display: block;
+    width: 100%;
+}
+
+.gfp_gfutil_create_page_modal_container .setting-row textarea {
+    height: 110px;
+}
+
+.gfp_gfutil_create_page_modal_container .submit-row {
+    margin-top: 38px;
+}
+
+.gfp_gfutil_create_page_modal_container #gfp_gfutility-error {
+    margin: 0 0 18px 5px !important;
+    color: #BC0B0B;
+}
+
+.gfp_gfutil_create_page_modal_container img.gfspinner {
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+
