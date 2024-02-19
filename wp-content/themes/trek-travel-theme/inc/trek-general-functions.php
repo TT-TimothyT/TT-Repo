@@ -3478,7 +3478,7 @@ if (!function_exists('tt_occupant_selection_popup')) {
         return $occupant_popup_html;
     }
 }
-add_action('user_register', 'tt_sync_user_metadata_from_ns_cb', 10, 1);
+add_action('woocommerce_created_customer', 'tt_sync_user_metadata_from_ns_cb', 999, 1);
 function tt_sync_user_metadata_from_ns_cb( $user_id )
 {
     $ns_user_id = '';
