@@ -765,6 +765,12 @@ jQuery(document).ready(function () {
     var targetStepId = jQuery('li.nav-item[data-step="' + targetStep + '"]').attr('data-step-id');
     var validationStatus = checkout_steps_validations(currentStep);
     if (validationStatus == true) {
+      var firstInvalidField = jQuery('.woocommerce-invalid').eq(0);
+      jQuery('html, body').animate({
+        scrollTop: firstInvalidField.offset().top - 120
+      }, 500);
+      
+
       return false;
     }
     jQuery.blockUI({
