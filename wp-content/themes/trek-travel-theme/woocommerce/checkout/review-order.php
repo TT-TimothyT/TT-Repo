@@ -73,7 +73,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
     <div class="closed">
         <i class="bi bi-chevron-compact-up mb-2"></i>
         <p class="mb-0">Trip Summary</p>
-        <p class="mb-3 fs-md lh-md fw-bold">Total: $XXXX.XX</p>
+        <p class="mb-3 fs-md lh-md fw-bold">Total: <?php wc_cart_totals_subtotal_html(); ?></p>
     </div>
     <div class="open">
         <p class="mb-4">Trip Summary</p>
