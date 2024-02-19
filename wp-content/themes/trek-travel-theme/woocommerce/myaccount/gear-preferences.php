@@ -88,6 +88,9 @@ $bar_height = get_user_meta($userInfo->ID, 'gear_preferences_bar_height', true);
                     </div>
                     <div class="gear-preferences__button d-flex align-items-lg-center">
                         <div class="d-flex align-items-center gear-preferences__flex">
+                            <div class="disclaimer-text">
+                                <p>Updating these preferences will help you save time at check-out. These preferences will not update your bike and gear selections for any upcoming trips. To update your bike and gear selections for upcoming trips please visit <a href="<?php echo home_url( '/my-account/my-trips/' ); ?>">upcoming trips</a> in your dashboard or call us at <a href="tel:8664648735"> 866-464-8735 </a></p>
+                            </div>
                             <button type="submit" class="btn btn-lg btn-primary fs-md lh-md gear-preferences__save">Save</button>
                             <a href="<?php echo get_the_permalink(TREK_MY_ACCOUNT_PID); ?>" class="gear-preferences__cancel">Cancel</a>
                         </div>
