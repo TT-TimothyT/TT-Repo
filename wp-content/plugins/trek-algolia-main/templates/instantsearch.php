@@ -113,11 +113,11 @@ get_header();
 
                                             <div class="modal-footer">
                                                 <div class="container">
-                                                    <div class="row align-items-center">
-                                                        <div class="col-3">
+                                                    <div class="row align-items-center mx-0">
+                                                        <div class="col-3 clear-all-btn">
                                                             <span class="modal-a" id="clear-refinements"></span>
                                                         </div>
-                                                        <div class="col text-end">
+                                                        <div class="col d-lg-flex justify-content-lg-end align-items-lg-baseline apply-filters-info">
                                                             <button type="button" class="btn btn-secondary d-none" data-bs-dismiss="modal">Close</button>
                                                             <span class="filter-results-number" id="algolia-stats"></span>
                                                             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Apply filters</button>
@@ -1003,6 +1003,12 @@ get_header();
             else{
                 jQuery(".search-summary, #search-nav-tabs, hr.card-divider, .algolia-search-box-wrapper").removeClass("d-none")
                 jQuery("#searchCount").text(resultCount)
+            }
+
+            if ( resultCount = 1 ) {
+                jQuery('.filter-results-number span.ais-Stats-text').text(resultCount + ' result');
+            } else {
+                jQuery('.filter-results-number span.ais-Stats-text').text(resultCount + ' results');
             }
         }
 
