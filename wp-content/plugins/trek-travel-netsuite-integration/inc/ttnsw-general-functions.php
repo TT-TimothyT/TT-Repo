@@ -92,6 +92,38 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
             $trek_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_checkout_data', true);
         }
     }
+
+    // RETRIEVE INSTRUMENT IDENTIFIER //
+    global $wpdb;
+    $token = get_post_meta( $order_id, '_wc_cybersource_credit_card_payment_token', true );
+
+    // Prepare and execute the query
+    $token_id = $wpdb->get_var( $wpdb->prepare( "
+        SELECT token_id 
+        FROM {$wpdb->prefix}woocommerce_payment_tokens 
+        WHERE token = %s
+    ", $token ) );
+
+    // Prepare and execute the query
+    $instrument_identifier = $wpdb->get_var( $wpdb->prepare( "
+        SELECT meta_value 
+        FROM {$wpdb->prefix}woocommerce_payment_tokenmeta 
+        WHERE payment_token_id = %d 
+        AND meta_key = 'instrument_identifier'
+    ", $token_id ) );
+
+    // Check if an instrument identifier was found
+    if ( $instrument_identifier ) {
+        // Unserialize the instrument identifier
+        $instrument_identifier_array = unserialize( $instrument_identifier );
+
+        // Extract the identifier
+        $identifier = isset( $instrument_identifier_array['id'] ) ? $instrument_identifier_array['id'] : '';
+
+    } else {
+        $identifier = '';
+    }
+
     $user_rooms_arr = tt_create_booking_rooms_arr($tt_users_indexes, $trek_checkoutData['occupants']);
     $billing_add_1 = tt_validate($trek_checkoutData['billing_address_1']);
     $billing_add_2 = tt_validate($trek_checkoutData['billing_address_2']);
@@ -131,7 +163,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
     }else{
         $transaction_payment_token = get_post_meta($order_id, '_wc_cybersource_credit_card_customer_id', true);
     } */
-    $transaction_payment_token = get_post_meta($order_id, '_wc_cybersource_credit_card_customer_id', true);
+    $transaction_payment_token = $identifier;
     $cc_account_four = get_post_meta($order_id, '_wc_cybersource_credit_card_account_four', true);
     $cc_expiry_date = get_post_meta($order_id, '_wc_cybersource_credit_card_card_expiry_date', true);
     $cc_card_type = get_post_meta($order_id, '_wc_cybersource_credit_card_card_type', true);
