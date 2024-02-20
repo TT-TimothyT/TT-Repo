@@ -24,8 +24,8 @@ function only_grouped_products( ){
     $grouped_products = new WP_Query( $args );
 
     foreach( $grouped_products->posts as $key => $gproduct  ) {
-        var_dump( $gproduct->ID );
-        wp_delete_post( $gproduct->ID ); // just trash them
+        echo $gproduct->ID . ',';
+        // wp_delete_post( $gproduct->ID ); // just trash them
     }
 }
 
