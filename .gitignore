@@ -60,28 +60,9 @@ db-config.php
 # SSL
 .well-known/
 
-banner.html
 cvbguide/
 
-/dx-smartmeeting/
-/events/
-/readme.9f6f36adc87be64ffbbcabf3102d7b38.html
 /robots.txt
-/smart-stars/
-/smart-stars19/
-/staging.txt
-/swim/
-/sws/
-/sws2018/
-/sws2019/
-/test.php
-/test/
-/used_cf/
-
-# Root files
-/floridakeysfam/
-/smartstarswinners2019/
-/supplierevents/
 
 # Pagely mu-plugins
 wp-content/mu-plugins/
@@ -100,26 +81,21 @@ wp-content/mu-plugins/trek-travel-theme-analytics.php
 
 /wp-content/object-cache.php
 
-# Ignore the SM Ad server directory
-/revive_adserver/
 
-/wp-content/ewww/*
+
+wp-content/webtoffee_iew_log/
+wp-content/webtoffee_import/
 
 # Uploads folder
 /wp-content/uploads/
 
 # Backup files
-wp-content/backupwordpress-ef5e4760f3-backups/
 
-# ACF Files
-# acf-exports/
 
 # Some Cache folders and files
 cache/
 !wp-content/plugins/**/*/cache
 
-# Our DX Stability Framework files
-dxsfwp/
 
 # IDE Files
 .buildpath
