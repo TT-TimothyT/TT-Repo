@@ -38,7 +38,7 @@ $emptyBlockContent = '<div class="container no-results"><h2 class="fw-semibold">
 $noresultSuggestions = get_field('search_noresult_suggestions', 'option'); 
 if(!empty($noresultSuggestions)){
     foreach($noresultSuggestions as $item){ 
-        $emptyBlockContent .= '<div class="col-6 col-md-4"><div class="card border-0"><img src="'.$item["item_image"]["url"].'" class="card-img-top rounded-1" alt="'.$item["item_title"].'"><div class="card-body ps-0"><a href="'.$item["item_url"].'"><p class="card-text text-start fw-semibold">'.$item["item_title"].'</p></a></div></div></div>';               
+        $emptyBlockContent .= '<div class="col-12 col-md-4"><div class="card border-0"><img src="'.$item["item_image"]["url"].'" class="card-img-top rounded-1" alt="'.$item["item_title"].'"><div class="card-body ps-0"><a href="'.$item["item_url"].'"><p class="card-text text-start fw-semibold">'.$item["item_title"].'</p></a></div></div></div>';               
     }
 }
 $emptyBlockContent .= '</div></div>';
