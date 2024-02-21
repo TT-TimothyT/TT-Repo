@@ -2707,7 +2707,6 @@ if (!function_exists('tt_get_line_items_product_ids')) {
         $ids = get_transient( 'tt_line_item_fees_product' );
 
         if ( ! empty( $ids ) ) {
-            var_dump( $ids ); die();
             return $ids;
         } else {
             global $wpdb;
