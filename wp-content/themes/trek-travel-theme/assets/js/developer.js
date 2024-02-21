@@ -76,7 +76,7 @@ function tt_validate_name(name = '') {
 function tt_validate_phone(phone = '') {
   var isValid = true;
   if (phone) {
-    let regex = /^(\+\d{1,2}\s?)?(\(\d{3}\)|\d{3})([-.\s]?)\d{3}([-.\s]?)\d{4}$/;
+    let regex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
     isValid = regex.test(phone);
   }
   if ( phone.length === 0 ) {
