@@ -130,6 +130,7 @@ $userInfo = wp_get_current_user();
                     echo $field_html;
                     ?>
                     <?php wp_nonce_field('woocommerce-edit_address', 'woocommerce-edit-address-nonce'); ?>
+                    <input type="hidden" name="billing_phone" value="<?php echo esc_attr( get_user_meta( get_current_user_id(), 'custentity_phone_number', true ) ); ?>" />
                     <input type="hidden" name="action" value="edit_address" />
                     <div class="shipping-address__button d-flex align-items-lg-center">
                         <div class="d-flex align-items-center shipping-address__flex w-100">

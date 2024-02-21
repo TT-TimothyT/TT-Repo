@@ -3504,110 +3504,8 @@ function tt_sync_user_metadata_from_ns_cb( $user_id )
     $net_suite_client = new NetSuiteClient();
 
     if ( $ns_user_id ) {
-        $ns_booking_result = $net_suite_client->get( '1294:2', array( 'guestId' => $ns_user_id ) );
-        tt_add_error_log( '[SuiteScript:1294] NEW USER', ['wp_user_id' => $user_id, 'ns_user_id' => $ns_user_id ], $ns_booking_result );
-        if ( $ns_booking_result ) {
-            foreach ( $ns_booking_result as $ns_guest_info ) {
-                $registrationId = $ns_guest_info->registrationId;
-                $isPrimary = $ns_guest_info->isPrimary;
-                $guestId = $ns_guest_info->guestId;
-                $guestName = $ns_guest_info->guestName;
-                $bikeId = $ns_guest_info->bikeId;
-                $helmetId = $ns_guest_info->helmetId;
-                $pedalsId = $ns_guest_info->pedalsId;
-                $saddleId = $ns_guest_info->saddleId;
-                $saddleHeight = $ns_guest_info->saddleHeight;
-                $barReachFromSaddle = $ns_guest_info->barReachFromSaddle;
-                $barHeightFromWheelCenter = $ns_guest_info->barHeightFromWheelCenter;
-                $jerseyId = $ns_guest_info->jerseyId;
-                $tshirtSizeId = $ns_guest_info->tshirtSizeId;
-                $raceFitJerseyId = $ns_guest_info->raceFitJerseyId;
-                $shortsBibSizeId = $ns_guest_info->shortsBibSizeId;
-                $ecFirstName = $ns_guest_info->ecFirstName;
-                $ecLastName = $ns_guest_info->ecLastName;
-                $ecPhone = $ns_guest_info->ecPhone;
-                $ecRelationship = $ns_guest_info->ecRelationship;
-                $medicalConditions = $ns_guest_info->medicalConditions;
-                $medications = $ns_guest_info->medications;
-                $allergies = $ns_guest_info->allergies;
-                $dietaryRestrictions = $ns_guest_info->dietaryRestrictions;
-                $dietaryPreferences = $ns_guest_info->dietaryPreferences;
-                $lockRecord = $ns_guest_info->lockRecord;
-                $lockBike = $ns_guest_info->lockBike;
-                $waiverAccepted = $ns_guest_info->waiverAccepted;
-                if ($ecFirstName) {
-                    update_user_meta($user_id, 'custentity_emergencycontactfirstname', $ecFirstName);
-                }
-                if ($ecLastName) {
-                    update_user_meta($user_id, 'custentity_emergencycontactlastname', $ecLastName);
-                }
-                if ($ecPhone) {
-                    update_user_meta($user_id, 'custentity_emergencycontactphonenumber', $ecPhone);
-                }
-                if ($ecRelationship) {
-                    update_user_meta($user_id, 'custentity_emergencycontactrelationship', $ecRelationship);
-                }
-                if ($medicalConditions) {
-                    update_user_meta($user_id, 'custentity_medicalconditions', $medicalConditions);
-                }
-                if ($medications) {
-                    update_user_meta($user_id, 'custentity_medications', $medications);
-                }
-                if ($allergies) {
-                    update_user_meta($user_id, 'custentity_allergies', $allergies);
-                }
-                if ($dietaryRestrictions) {
-                    update_user_meta($user_id, 'custentity_dietaryrestrictions', $dietaryRestrictions);
-                }
-                if ($dietaryPreferences) {
-                    update_user_meta($user_id, 'custentity_dietary_preferences', $dietaryPreferences);
-                }
-                if ($bikeId) {
-                    update_user_meta($user_id, 'gear_preferences_bike_type', $bikeId);
-                }
-                if ($helmetId) {
-                    update_user_meta($user_id, 'gear_preferences_helmet_size', $helmetId);
-                }
-                if ($pedalsId) {
-                    update_user_meta($user_id, 'gear_preferences_select_pedals', $pedalsId);
-                }
-                if ($saddleId) {
-                    update_user_meta($user_id, 'gear_preferences_select_saddles', $saddleId);
-                }
-                if ($saddleHeight) {
-                    update_user_meta($user_id, 'gear_preferences_saddle_height', $saddleHeight);
-                }
-                if ($barReachFromSaddle) {
-                    update_user_meta($user_id, 'gear_preferences_bar_reach', $barReachFromSaddle);
-                }
-                if ($barHeightFromWheelCenter) {
-                    update_user_meta($user_id, 'gear_preferences_bar_height', $barHeightFromWheelCenter);
-                }
-                if ($jerseyId) {
-                    update_user_meta($user_id, 'gear_preferences_jersey_style', $jerseyId);
-                }
-                if ($tshirtSizeId) {
-                    update_user_meta($user_id, 'gear_preferences_jersey_size', $tshirtSizeId);
-                }
-                if ($lockBike) {
-                    update_user_meta($user_id, 'gear_preferences_lock_bike', $lockBike);
-                }
-                if ($lockRecord) {
-                    update_user_meta($user_id, 'gear_preferences_lock_record', $lockRecord);
-                }
-                if ($waiverAccepted) {
-                    update_user_meta($user_id, 'custentity_waiver_accepted', $waiverAccepted);
-                }
-                if ($raceFitJerseyId) {
-                    update_user_meta($user_id, 'gear_preferences_race_fit_jersey_id', $raceFitJerseyId);
-                }
-                if ($shortsBibSizeId) {
-                    update_user_meta($user_id, 'gear_preferences_shorts_bib_size_id', $shortsBibSizeId);
-                }
-                update_user_meta($user_id, 'gear_preferences_rider_height', '');
-            }
-        }
-        as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id ), '[Sync] - Adding NS Trips for new register guest' );
+        // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
+        as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id, DEFAULT_TIME_RANGE, true ), '[Sync] - Adding NS Trips for new register guest' );
         //tt_ns_guest_booking_details(true, $ns_user_id,$user_id);
     }
 }
@@ -5375,11 +5273,11 @@ function tt_ajax_get_waiver_info(){
 add_action('wp_ajax_tt_ajax_get_waiver_info_action', 'tt_ajax_get_waiver_info');
 add_action('wp_ajax_nopriv_tt_ajax_get_waiver_info_action', 'tt_ajax_get_waiver_info');
 
-add_action('tt_trigger_cron_ns_guest_booking_details', 'tt_trigger_cron_ns_guest_booking_details_cb', 10, 3);
-function tt_trigger_cron_ns_guest_booking_details_cb($single_req,$ns_user_id, $wc_user_id){
-    tt_add_error_log('[Start] - Adding Trips', ['ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id], ['dateTime' => date('Y-m-d H:i:s')]);
-    tt_ns_guest_booking_details($single_req, $ns_user_id,$wc_user_id);
-    tt_add_error_log('[End] - Adding Trips', ['ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id], ['dateTime' => date('Y-m-d H:i:s')]);
+add_action('tt_trigger_cron_ns_guest_booking_details', 'tt_trigger_cron_ns_guest_booking_details_cb', 10, 5);
+function tt_trigger_cron_ns_guest_booking_details_cb($single_req,$ns_user_id, $wc_user_id, $time_range = DEFAULT_TIME_RANGE, $is_sync_process = false){
+    tt_add_error_log('[Start] - Adding Trips', [ 'ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id, 'is_sync_process' => $is_sync_process ], ['dateTime' => date('Y-m-d H:i:s')]);
+    tt_ns_guest_booking_details( $single_req, $ns_user_id, $wc_user_id, $time_range, $is_sync_process );
+    tt_add_error_log('[End] - Adding Trips', [ 'ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id, 'is_sync_process' => $is_sync_process ], ['dateTime' => date('Y-m-d H:i:s')]);
 }
 function tt_get_ns_booking_details_by_order( $order_id, $user_info = null ){
     $release_form_id = $booking_id = $waiver_link = "";
@@ -6410,3 +6308,84 @@ function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_
 
 	return $is_checklist_completed;
 }
+
+/**
+ * Function to detect if we have results from $customerSearchResponseByEmail
+ * to take the phone number from there, if it's not empty.
+ *
+ * @param array $customer_data Array with user data from WP.
+ * @param $customer_id The WP User ID.
+ * @param object $customerSearchResponseByEmail The response from TM NetSuite searchCustomer().
+ * 
+ * Note: $customerSearchResponseByEmail will be not empty when we don't have ns_user_id in to DB.
+ * That means when new user registers on the site, we will have data from the TM NetSuite Search by email.
+ */
+function tt_netsuite_customer_data_cb( $customer_data, $customer_id, $customerSearchResponseByEmail ) {
+    if( ! empty( $customerSearchResponseByEmail ) ){
+        if( isset( $customerSearchResponseByEmail->searchResult->recordList->record[0]->phone ) && ! empty( $customerSearchResponseByEmail->searchResult->recordList->record[0]->phone ) ){
+            // We have existing phone in NS for this user.
+            if( empty( $customer_data['phone'] ) ) {
+                // If the phone we send to NS is Empty, but in NS we have the same user with the phone existing, prevent overwriting the phone.
+                $customer_data['phone'] = $customerSearchResponseByEmail->searchResult->recordList->record[0]->phone;
+                tt_add_error_log('[TM Netsuite] Modify customer_data', array( 'customer_data' => $customer_data, 'customer_id' => $customer_id ), array( 'status' => true, 'message' => 'Keep the existing phone in NS.' ) );
+            }
+        }
+    }
+
+    return $customer_data;
+}
+add_filter( 'tm_netsuite_customer_data', 'tt_netsuite_customer_data_cb', 10, 3 );
+
+/**
+ * Prevent creating dummy addresses in NS.
+ * Prevent TM NetSuite errors when dealing with billing_phone.
+ *
+ * @param array $address_data Array with NS class based objects.
+ * @param int $customer_id The WP User ID
+ * 
+ * @return array The modified $address_data
+ */
+function tt_netsuite_customer_address_data_cb( $address_data, $customer_id ) {
+    $address_indexes_for_remove = array();
+    $is_data_modified           = false;
+
+    if( ! empty( $address_data ) ) {
+        // Keep original data for the log.
+        $incoming_address_data = $address_data;
+
+        foreach( $address_data as $index => $address ) {
+            if( isset( $address->addressbookAddress->zip ) && empty( $address->addressbookAddress->zip ) ) {
+                // We have a zip, but is empty, so need to remove this address.
+                $address_indexes_for_remove[] = $index;
+            }
+        }
+
+        // If all addresses don't have zip codes no need for address_data to be sent, to prevent dummy data in NS for addresses and prevent TM NetSuite errors.
+        if( count( $address_data ) === count( $address_indexes_for_remove ) ) {
+            $address_data     = null;
+            $is_data_modified = true;
+        } else {
+
+            // If we have something to remove, remove it.
+            if( ! empty( $address_indexes_for_remove ) ) {
+                foreach( $address_indexes_for_remove as $index ) {
+                    // Remove empty address.
+                    unset( $address_data[ $index ] );
+                }
+
+                $reindex          = array_values($address_data); // normalize index.
+                $address_data     = $reindex;
+                $is_data_modified = true;
+            }
+        }
+
+        // Log info if we make any manipulations.
+        if( $is_data_modified ) {
+
+            tt_add_error_log( '[TM Netsuite] Modify customer_address_data', array( 'address_data' => $incoming_address_data, 'customer_id' => $customer_id ), array( 'status' => true, 'message' => 'Adjusting address data.', 'address_data(modified)' => $address_data ) );
+        }
+    }
+
+    return $address_data;
+}
+add_filter( 'tm_netsuite_customer_address_data', 'tt_netsuite_customer_address_data_cb', 10, 2 );
