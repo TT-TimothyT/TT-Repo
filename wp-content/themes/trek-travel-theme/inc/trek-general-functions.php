@@ -2707,14 +2707,24 @@ if (!function_exists('tt_get_line_items_product_ids')) {
         $ids = get_transient( 'tt_line_item_fees_product' );
 
         if ( ! empty( $ids ) ) {
+            var_dump( $ids ); die();
             return $ids;
         } else {
             global $wpdb;
             $sql = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key='tt_line_item_fees_product' AND meta_value = '1' ";
             $results = $wpdb->get_results($sql, ARRAY_A);
-            if ($results) {
+            if ( ! empty ( $results ) ) {
                 $ids = array_column($results, 'post_id');
                 set_transient( 'tt_line_item_fees_product', $ids, DAY_IN_SECONDS );
+            } else {
+                /*
+                * adding a check for this, as tt_get_line_items_product_ids() is used a lot
+                * and it is working with in_array() and a few similar functions so it
+                * is thorwing a fatal
+                *
+                * @TODO: find a long-term solition
+                */
+                return array();
             }
 
             return $ids;
