@@ -110,18 +110,43 @@ body {
 
 h1, .h1{
   line-height: $h1-line-height;
+
+  @media (max-width: 768px) {
+    line-height: $h1-line-height-md;
+    font-size: $h1-font-size-md;
+  }
 }
 h2, .h2{
   line-height: $h2-line-height;
+
+  @media (max-width: 768px) {
+    line-height: $h2-line-height-md;
+    font-size: $h2-font-size-md;
+  }
 }
 h3, .h3{
   line-height: $h3-line-height;
+
+  @media (max-width: 768px) {
+    line-height: $h3-line-height-md;
+    font-size: $h3-font-size-md;
+  }
 }
 h4, .h4{
   line-height: $h4-line-height;
+
+  @media (max-width: 768px) {
+    line-height: $h4-line-height-md;
+    font-size: $h4-font-size-md;
+  }
 }
 h5, .h5{
   line-height: $h5-line-height;
+
+  @media (max-width: 768px) {
+    line-height: $h5-line-height-md;
+    font-size: $h5-font-size-md;
+  }
 }
 
 .fw-medium{

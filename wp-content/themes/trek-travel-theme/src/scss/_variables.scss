@@ -623,6 +623,13 @@ $h3-font-size:                $font-size-base * 2.25;
 $h4-font-size:                $font-size-base * 1.875;
 $h5-font-size:                $font-size-base * 1.5;
 $h6-font-size:                $font-size-base;
+
+$h1-font-size-md:             2.25rem;
+$h2-font-size-md:             2rem;
+$h3-font-size-md:             1.875rem;
+$h4-font-size-md:             1.75rem;
+$h5-font-size-md:             1.5rem;
+$h6-font-size-md:             $font-size-base;
 // scss-docs-end font-variables
 
 $h1-line-height:              4.5rem;
@@ -630,6 +637,12 @@ $h2-line-height:              4rem;
 $h3-line-height:              3rem;
 $h4-line-height:              2.5rem;
 $h5-line-height:              2.25rem;
+
+$h1-line-height-md:           3.25rem;
+$h2-line-height-md:           3rem;
+$h3-line-height-md:           2.75rem;
+$h4-line-height-md:           2.5rem;
+$h5-line-height-md:           2.25rem;
 
 // scss-docs-start font-sizes
 $font-sizes: (
