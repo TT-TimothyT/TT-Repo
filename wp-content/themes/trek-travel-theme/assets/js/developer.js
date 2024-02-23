@@ -109,8 +109,7 @@ function tt_validate_duplicate_email() {
       if (jQuery.inArray(emailValue.toLowerCase(), guestEmailsArr) === -1) {
         guestEmailsArr.push(emailValue);
         emailStatus.push(true);
-      }
-      else {
+      } else {
         jQuery(this).closest('div.form-row').addClass('woocommerce-invalid')
         jQuery(this).closest('div.form-row').removeClass('woocommerce-validated')
         jQuery(this).closest('div.form-row').append('<p class="duplicateEmailError mb-0 mt-2 text-danger">This email address is already being used.</p>')
@@ -118,10 +117,14 @@ function tt_validate_duplicate_email() {
       }
     }
   });
-  if( emailStatus.includes(false) == true ){
+
+  if (emailStatus.includes(false)) {
     emailValidate = true;
   }
+
+  return emailValidate;
 }
+
 function checkout_steps_validations(step = 1) {
   var isValidated = false;
   var notAllowedNames = [
@@ -171,7 +174,7 @@ function checkout_steps_validations(step = 1) {
           jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-invalid');
           jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-validated');
           jQuery(`input[name="${CurrentName}"]`).closest('div.form-floating').find(".rider-select").css("display", "none")
-          jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+          jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");  
         }
         validationMessages.push(`Step 1: Field [name: ${CurrentName}, Value: ${CurrentVal}]`);
       }
@@ -230,7 +233,7 @@ function checkout_steps_validations(step = 1) {
         } else {
           jQuery(`select[name="${CurrentName}"]`).closest('div.form-floating').removeClass('woocommerce-invalid');
           jQuery(`select[name="${CurrentName}"]`).closest('div.form-floating').addClass('woocommerce-validated');
-          jQuery(`select[name="${CurrentName}"]`).closest('div.form-floating').find(".rider-select").css("display", "none")
+          jQuery(`select[name="${CurrentName}"]`).closest('div.form-floating').find(".rider-select").css("display", "none");
         }
       }
     });
@@ -763,7 +766,11 @@ jQuery(document).ready(function () {
     var currentStep = jQuery('input[name="step"]').val();
     var targetStep = parseInt(currentStep) + parseInt(1);
     var targetStepId = jQuery('li.nav-item[data-step="' + targetStep + '"]').attr('data-step-id');
+    var duplicatedGuestEmail = tt_validate_duplicate_email();
     var validationStatus = checkout_steps_validations(currentStep);
+    if (duplicatedGuestEmail == true) {
+      validationStatus = true;
+    }
     if (validationStatus == true) {
       var firstInvalidField = jQuery('.woocommerce-invalid').eq(0);
       jQuery('html, body').animate({
@@ -3742,10 +3749,12 @@ jQuery(document).on('change blur', 'input[name*="[guest_lname]"]', function () {
 
 jQuery(document).on('change blur', 'input[name*="[guest_email]"]', function () {
   jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
-  if (tt_validate_email(jQuery(this).val()) == false || jQuery(this).val() == '') {
-    jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+  var duplicatedEmail = tt_validate_duplicate_email();
+  if (tt_validate_email(jQuery(this).val()) == false || jQuery(this).val() == '' || duplicatedEmail == true) {
     jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
     jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+    jQuery(this).closest('div.form-row').find('.form-floating').removeClass('woocommerce-validated');
   } else {
     jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
     jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
