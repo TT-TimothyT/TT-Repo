@@ -277,6 +277,31 @@ function tt_admin_menu_page_cb()
                     </p>
                 </div>
             </div>
+            <hr>
+            <div id="tt-bookings-migration">
+                <h3>TT Bookings Migration</h3>
+                <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">! Under development</span>
+                <p>Extracting existing bookings from NetSuite and creating orders for them in WooCommerce programmatically.</p>
+                <form action="" class="tt-order-sync" method="post">
+                    <input type="text" name="ns_booking_id" placeholder="Enter Booking ID" required>
+                    <input type="hidden" name="action" value="tt-create-order">
+                    <input type="submit" name="submit" value="Create Order Programmatically" class="button-primary">
+                </form>
+                <div id="tt-print_result" style="margin: 2% 0px;">
+                    <?php
+                        if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt-create-order' && isset( $_REQUEST['ns_booking_id'] ) ) {
+                            $booking_check_order = tt_check_booking_existing( $_REQUEST['ns_booking_id'] );
+
+                            if( ! empty( $booking_check_order ) ) {
+                                echo 'This Booking already exists! ';
+                                print_r( $booking_check_order );
+                            } else {
+                                tt_create_order( tt_get_ns_booking_info( $_REQUEST['ns_booking_id'] ) );
+                            }
+                        }
+                    ?>
+                </div>
+            </div>
             <!-- End Temp code -->
         </div>
     </div>

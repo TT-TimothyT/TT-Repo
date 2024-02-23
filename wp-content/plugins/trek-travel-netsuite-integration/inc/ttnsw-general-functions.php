@@ -477,3 +477,243 @@ function tt_update_bikes_table() {
 }
 
 add_action( 'admin_init', 'tt_update_bikes_table' );
+
+/**
+ * Check if we have this booking in guest_bookings table.
+ *
+ * @param int $booking_id NS Booking ID.
+ *
+ * @return array|bool
+ */
+function tt_check_booking_existing( $booking_id ) {
+    if( empty( $booking_id ) ) {
+        return false;
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'guest_bookings';
+    $sql = "SELECT DISTINCT gb.order_id from {$table_name} as gb WHERE gb.ns_trip_booking_id = {$booking_id}";
+
+    $result = $wpdb->get_results( $sql );
+
+    return $result;
+}
+
+/**
+ * Get Booking info from NS.
+ * 
+ * @param int $booking_id The NS Booking ID.
+ * @uses NS Script GET_BOOKING_SCRIPT_ID
+ * 
+ * @return object Booking data object.
+ */
+function tt_get_ns_booking_info( $booking_id ) {
+    if( empty( $booking_id ) ) {
+        return false;
+    }
+    // 1304&deploy=1&bookingId=893165
+    $net_suite_client = new NetSuiteClient();
+    $args             = array( 'bookingId' => $booking_id );
+    $ns_booking_data  = $net_suite_client->get( GET_BOOKING_SCRIPT_ID, $args );
+
+    // Booking info not found.
+    if( ! $ns_booking_data ) {
+        return false;
+    }
+
+    return $ns_booking_data;
+}
+
+/**
+ * Get Guest info from NS.
+ * This information includes user preferences.
+ * If you like can choose to take information for the guest
+ * with his bookings or without them.
+ * 
+ * @param int $ns_user_id The NS Booking ID.
+ * @param int $with_booking_info Should include bookings info: 1 for yes or 0 for no.
+ * @uses NS Script USER_BOOKINGS_SCRIPT_ID
+ * 
+ * @return object|false Guest data in NS.
+ */
+function tt_get_ns_guest_info( $ns_user_id, $with_booking_info = 1 ) {
+    if( empty( $ns_user_id ) ) {
+        return false;
+    }
+    // 1305&deploy=1&guestId=2395994&includeBookingInfo=1
+    $net_suite_client = new NetSuiteClient();
+    $args             = array( 'guestId' => $ns_user_id, 'includeBookingInfo' => $with_booking_info );
+    $ns_guest_data    = $net_suite_client->get( USER_BOOKINGS_SCRIPT_ID, $args );
+
+    // Guest info not found.
+    if( ! $ns_guest_data ) {
+        return false;
+    }
+
+    return $ns_guest_data;
+}
+
+/**
+ * Get Guest Registrations info from NS.
+ * 
+ * @param int|array $booking_id The NS Booking ID.
+ * @uses NS Script GET_REGISTRATIONS_SCRIPT_ID
+ * 
+ * @return array|false Guest registrations data.
+ */
+function tt_get_ns_guest_registrations_info( $user_reg_ids ) {
+    if( empty( $user_reg_ids ) ) {
+        return false;
+    }
+
+    $registration_ids = is_array( $user_reg_ids ) ? $user_reg_ids : array( $user_reg_ids );
+    // 1294&deploy=2&registrationIds=322700,322699
+    $net_suite_client  = new NetSuiteClient();
+    $args              = array( 'registrationIds' => implode( ',', $registration_ids ) );
+    $ns_guest_reg_data = $net_suite_client->get( GET_REGISTRATIONS_SCRIPT_ID, $args );
+
+    // Guest Registrations not found.
+    if( ! $ns_guest_reg_data ) {
+        return false;
+    }
+
+    return $ns_guest_reg_data;
+}
+
+/**
+ * Create Orders Programmatically.
+ * 
+ * @param object $booking_data NS Object response with booking information.
+ * @param array $file_export_data Array with data for Guest name and Email from CSV file with bookings export.
+ * @return void
+ */
+function tt_create_order( $booking_data = null, $file_export_data = array() ) {
+    if( ! $booking_data ) {
+        return;
+    }
+
+    // *** Basic Order Billing Info ***
+    $pr_guest_first_name = 'Woo';
+    $pr_guest_last_name  = 'Customer';
+    $pr_guest_email      = '';
+
+    if( ! empty( $file_export_data ) ) {
+        $pr_guest_names = isset( $file_export_data['name'] ) ? explode( ' ', $file_export_data['name'], 2 ) : array();
+        $pr_guest_email = isset( $file_export_data['email'] ) ? $file_export_data['email'] : '';
+
+        if( ! empty( $pr_guest_names ) && count( $pr_guest_names ) >= 2 ) {
+            $pr_guest_first_name = $pr_guest_names[0];
+            $pr_guest_last_name  = $pr_guest_names[1];
+        }
+    }
+    
+    $trip_product_sku         = isset( $booking_data->tripCode ) ? $booking_data->tripCode : '24CARC0212-FIRST';
+    $trip_product_qty         = isset( $booking_data->guests ) ? count( $booking_data->guests ) : 1;
+    $trip_total_amount        = isset( $booking_data->totalAmount ) ? $booking_data->totalAmount : '';
+    $trip_product_guests      = isset( $booking_data->guests ) ? $booking_data->guests : array();
+    $trip_pr_guest_ns_user_id = ''; // 1305
+
+    $trip_product_price = 0;
+
+    $trip_s_qty = 0;
+    $trip_s_single_price = 0;
+
+    foreach( $trip_product_guests as $guest ) {
+        if( $guest->isPrimary ) {
+            $trip_pr_guest_ns_user_id = $guest->guestId;
+            $trip_product_price       = $guest->basePrice;
+        }
+        
+        if( 0 != $guest->singleSupplement ) {
+            $trip_s_qty++;
+            $trip_s_single_price = $guest->singleSupplement;
+        }
+    }
+
+    $trip_product_id = tt_get_product_by_sku( $trip_product_sku, true );
+    // Need set true if is a Ride Camp booking.
+    $is_nested_dates_trip = false;
+    $parent_product_id = tt_get_parent_trip_id_by_child_sku( $trip_product_sku, $is_nested_dates_trip );
+    
+    if( $trip_product_id ) {
+        // We have existing product.
+    }
+    
+    // *** Create Order ***
+    $order = wc_create_order();
+    $trip_product = wc_get_product( $trip_product_id );
+    if( ! empty( $trip_product_price ) ) {
+        $trip_product->set_price( $trip_product_price );
+    }
+    $product_item_id = $order->add_product( $trip_product, $trip_product_qty );
+    // wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_data', $trek_user_checkout_data );
+    wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_product_id', $trip_product_id );
+
+    // TODO: Travel protection, Insurance Fees, Bike Upgrade
+    // *** Single Supplement Fees ***
+    if( ! empty( $trip_s_qty ) ) {
+        $s_product_id = tt_create_line_item_product( 'TTWP23SUPP' );
+        $s_product    = wc_get_product( $s_product_id );
+        if( ! empty( $trip_s_single_price ) ) {
+            $s_product->set_price( $trip_s_single_price );
+        }
+        $s_product_item_id = $order->add_product( $s_product, $trip_s_qty );
+    }
+    
+    // Add billing and shipping addresses.
+    $address = array(
+        'first_name' => $pr_guest_first_name,
+        'last_name'  => $pr_guest_last_name,
+        'email'      => $pr_guest_email,
+    );
+
+    $order->set_address( $address, 'billing' );
+
+    $order->set_status( 'wc-processing', 'Order Created Programmatically' );
+
+
+    $order->calculate_totals();
+    $order->save();
+
+    $order_id = $order->id;
+    // *** Update Order Meta ***
+    // $trek_user_checkout_data
+    // update_post_meta( $order_id, 'trek_user_checkout_data', $trek_user_checkout_data );
+    update_post_meta( $order_id, 'trek_user_checkout_product_id', $trip_product_id );
+    update_post_meta( $order_id, 'tt_meta_guest_booking_id', $booking_data->bookingId );
+    update_post_meta( $order_id, 'tt_meta_total_amount', $trip_total_amount );
+    update_post_meta( $order_id, 'tt_wc_order_finished_status', 'not-finished' );
+    // Restore product qty.
+    wc_update_product_stock( $trip_product_id, $trip_product_qty, 'increase' );
+
+    print_r( $order );
+}
+
+/**
+ * Take WC order by given booking ID.
+ * Since we store the booking ID in the order's meta,
+ * we can take the order for a given booking.
+ * 
+ * @param int $booking_id The NS Booking ID.
+ * @param bool $full_order Full order Object or the ID only.
+ *
+ * @return object|int|bool
+ */
+function tt_get_order_by_booking( $booking_id, $full_order = true ) {
+
+    $args = array(
+        // 'status'       => 'completed', // Accepts a string: one of 'pending', 'processing', 'on-hold', 'completed', 'refunded, 'failed', 'cancelled', or a custom order status.
+        'meta_key'     => 'tt_meta_guest_booking_id', // Postmeta key field.
+        'meta_value'   => $booking_id, // Postmeta value field.
+        'meta_compare' => '=', // Possible values are ‘=’, ‘!=’, ‘>’, ‘>=’, ‘<‘, ‘<=’, ‘LIKE’, ‘NOT LIKE’, ‘IN’, ‘NOT IN’, ‘BETWEEN’, ‘NOT BETWEEN’, ‘EXISTS’ (only in WP >= 3.5), and ‘NOT EXISTS’ (also only in WP >= 3.5). Values ‘REGEXP’, ‘NOT REGEXP’ and ‘RLIKE’ were added in WordPress 3.7. Default value is ‘=’.
+        'return'       => $full_order ? 'objects' : 'ids' // Accepts a string: 'ids' or 'objects'. Default: 'objects'.
+    );
+
+    $orders = wc_get_orders( $args );
+
+    if( ! empty( $orders ) ) {
+        return $orders[0];
+    }
+
+    return false;
+}
