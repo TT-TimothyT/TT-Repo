@@ -686,7 +686,9 @@ function tt_create_order( $booking_data = null, $file_export_data = array() ) {
     // Restore product qty.
     wc_update_product_stock( $trip_product_id, $trip_product_qty, 'increase' );
 
+    echo '<pre>';
     print_r( $order );
+    echo '</pre>';
 }
 
 /**
