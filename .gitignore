@@ -111,3 +111,6 @@ wp-content/db.php
 # Assets Dist Files
 wp-content/themes/trek-travel-theme/node_modules/
 wp-content/themes/trek-travel-theme/package-lock.json
+
+
+wp-content/webtoffee_export/
