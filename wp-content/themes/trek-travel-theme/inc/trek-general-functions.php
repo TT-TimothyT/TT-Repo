@@ -5702,13 +5702,21 @@ function add_custom_line_before_tax() {
 
     // Check if it's an order edit page
     if ( get_post_type( $post ) === 'shop_order' ) {
-        $order_id        = $post->ID;
-        $order           = wc_get_order($order_id);
-        $applied_coupons = $order->get_coupon_codes();
-        $first_item      = $order->get_items();
+        $order_id                     = $post->ID;
+        $order                        = wc_get_order($order_id);
+        $trek_user_checkout_data      = get_post_meta( $order_id, 'trek_user_checkout_data', true);
+        $pay_amount                   = $trek_user_checkout_data['pay_amount'];
+        $is_order_transaction_deposit = get_post_meta( $order_id, '_is_order_transaction_deposit', true );
+        $applied_coupons              = $order->get_coupon_codes();
+        $first_item                   = $order->get_items();
+
 
         if ( ! empty( $first_item ) ) {
-            $first_item = reset( $first_item );
+            $first_item    = reset( $first_item );
+            $fisrt_product = $first_item->get_product();
+            if ( $fisrt_product ) {
+                $fisrt_product_sku = $fisrt_product->get_sku();
+            }
     
             // Get the quantity of the first product
             $first_item_quantity = $first_item->get_quantity();
@@ -5732,7 +5740,23 @@ function add_custom_line_before_tax() {
                 <td class="label"><?php _e('Secondary Guests Discount:', 'trek-travel-them'); ?></td>
                 <td width="1%"></td>
                 <td class="total">
-                    <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">- </span><?php echo wc_price( $additional_discount ); ?></bdi></span>				</td>
+                    <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">- </span><?php echo wc_price( $additional_discount ); ?></bdi></span>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if ( 'deposite' === $pay_amount && '1' === $is_order_transaction_deposit ) : ?>
+            <?php
+            $deposit_amount = tt_get_local_trips_detail( 'depositAmount', '', $fisrt_product_sku, true );
+            if ( $first_item_quantity ) {
+                $deposit_amount = ( $first_item_quantity ) * floatval( $deposit_amount );
+            }
+            ?>
+            <tr>
+                <td class="label"><?php _e('Deposit Amount:', 'trek-travel-them'); ?></td>
+                <td width="1%"></td>
+                <td class="total">
+                    <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $deposit_amount ); ?></bdi></span>
+                </td>
             </tr>
         <?php endif; ?>
         <?php

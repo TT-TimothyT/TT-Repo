@@ -173,7 +173,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
     $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $trek_checkoutData['sku'], true);
     $cart_total = $order->get_total();
     if( $transaction_deposit == true ){
-        $trip_transaction_amount = $depositAmount;
+        $trip_transaction_amount = intval( $guests_count ) * floatval( $depositAmount );
     }else{
         $trip_transaction_amount = $authorization_amount;
     }
