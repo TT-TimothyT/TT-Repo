@@ -8,9 +8,9 @@
   * https://app.asana.com/0/1205472772784381/1206579514981757 is ready
   */
 if ( ! defined( 'DX_DEV' ) ) {
-    define( 'TT_NS_HOST', '661527-sb2.restlets.api.netsuite.com' );
-    define( 'TT_NS_RESTLET_URL', 'https://661527-sb2.restlets.api.netsuite.com/app/site/hosting/restlet.nl');
-    define( 'TT_NS_ACCOUNT_ID', '661527_SB2');
+    define( 'TT_NS_HOST', '661527.suitetalk.api.netsuite.com' );
+    define( 'TT_NS_RESTLET_URL', 'https://661527.suitetalk.api.netsuite.com/app/site/hosting/restlet.nl');
+    define( 'TT_NS_ACCOUNT_ID', '661527');
     define( 'TT_NS_CONSUMER_KEY', '42903a90e867f7f6e7dea26b86105ac173c2b85775496abff19c1588c817d807');
     define( 'TT_NS_CONSUMER_SECRET', 'cc8428d5300e645dc8aef4524a8be15187852108a33649e073637448cc585cee');
     define( 'TT_NS_TOKEN_ID', 'e785506906fafb0a8aaa8c723fd34f30bd32e4f634781313444fc866f5d1332b');
