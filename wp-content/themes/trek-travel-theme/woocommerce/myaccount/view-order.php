@@ -418,19 +418,41 @@ if( $parent_product_id ){
                                                         <p class="mb-0 fw-semibold fs-md lh-md"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_total(); ?></span></p>
                                                     </td>
                                                 </tr>
-                                                <!-- <tr class="border-white">
-                                                    <td>
-                                                        <p class="mb-0 fw-semibold fs-md lh-md">Remaining Due</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="mb-0 fw-semibold fs-md lh-md"><?php // echo $remaining_amountCurr; ?></p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="border-white">
-                                                    <td class="w-50">
-                                                        <p class="mb-0 fs-sm lh-sm fw-normal w-75 order-details__duesp">You will be responsible for paying the remaining amount on your trip before the trip start date. Our team will reach out to collect final payment.</p>
-                                                    </td>
-                                                </tr> -->
+                                                <?php
+                                                $trek_user_checkout_data      = get_post_meta( $order_id, 'trek_user_checkout_data', true);
+                                                $pay_amount                   = isset( $trek_user_checkout_data['pay_amount'] ) ? $trek_user_checkout_data['pay_amount'] : '';
+                                                $is_order_transaction_deposit = get_post_meta( $order_id, '_is_order_transaction_deposit', true );
+                                                ?>
+                                                <?php if ( 'deposite' === $pay_amount && '1' === $is_order_transaction_deposit ) : ?>
+                                                    <?php
+                                                    $deposit_amount = tt_get_local_trips_detail( 'depositAmount', '', $trip_sku, true );
+                                                    if ( $trek_checkoutData['no_of_guests'] ) {
+                                                        $deposit_amount = ( intval( $trek_checkoutData['no_of_guests'] ) ) * floatval( $deposit_amount );
+                                                        $remaining_amount_calculated = floatval( $cart_total ) - $deposit_amount;
+                                                    }
+                                                    ?>
+                                                    <tr class="border-white">
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text">Deposit Amount</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $deposit_amount ); ?></p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="border-white">
+                                                        <td>
+                                                            <p class="mb-0 fw-semibold fs-md lh-md">Remaining Due</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="mb-0 fw-semibold fs-md lh-md"><?php echo wc_price( $remaining_amount_calculated ); ?></p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="border-white">
+                                                        <td>
+                                                            <p class="mb-0 fs-sm lh-sm fw-normal w-75 order-details__duesp">You will be responsible for paying the remaining amount on your trip before the trip start date. Our team will reach out to collect final payment.</p>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
                                             </tbody>
                                         </table>
 
