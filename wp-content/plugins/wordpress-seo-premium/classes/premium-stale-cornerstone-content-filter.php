@@ -80,25 +80,34 @@ class WPSEO_Premium_Stale_Cornerstone_Content_Filter extends WPSEO_Abstract_Post
 	protected function get_post_total() {
 		global $wpdb;
 
-		return (int) $wpdb->get_var(
-			$wpdb->prepare(
-				'
-				SELECT COUNT( 1 )
-				FROM ' . $wpdb->postmeta . '
-				WHERE post_id IN( SELECT ID FROM ' . $wpdb->posts . ' WHERE post_type = %s && post_modified < %s ) &&
-				meta_value = "1" AND meta_key = %s
-				',
-				$this->get_current_post_type(),
-				$this->date_threshold(),
-				WPSEO_Meta::$meta_prefix . 'is_cornerstone'
-			)
-		);
+		$post_type = $this->get_current_post_type();
+		$cache_key = 'stale_cornerstone_count_' . $post_type;
+		$count     = wp_cache_get( $cache_key, 'stale_cornerstone_counts' );
+
+		if ( $count === false ) {
+			$count = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'
+					SELECT COUNT( 1 )
+					FROM ' . $wpdb->postmeta . '
+					WHERE post_id IN( SELECT ID FROM ' . $wpdb->posts . ' WHERE post_type = %s && post_modified < %s ) &&
+					meta_value = "1" AND meta_key = %s
+					',
+					$post_type,
+					$this->date_threshold(),
+					WPSEO_Meta::$meta_prefix . 'is_cornerstone'
+				)
+			);
+			wp_cache_set( $cache_key, $count, 'stale_cornerstone_counts', DAY_IN_SECONDS );
+		}
+
+		return $count;
 	}
 
 	/**
 	 * Returns the post types to which this filter should be added.
 	 *
-	 * @return array The post types to which this filter should be added.
+	 * @return array<string> The post types to which this filter should be added.
 	 */
 	protected function get_post_types() {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Using YoastSEO hook.

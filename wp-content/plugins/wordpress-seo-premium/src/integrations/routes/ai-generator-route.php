@@ -13,6 +13,7 @@ use Yoast\WP\SEO\Premium\Exceptions\Remote_Request\Forbidden_Exception;
 use Yoast\WP\SEO\Premium\Exceptions\Remote_Request\Internal_Server_Error_Exception;
 use Yoast\WP\SEO\Premium\Exceptions\Remote_Request\Not_Found_Exception;
 use Yoast\WP\SEO\Premium\Exceptions\Remote_Request\Payment_Required_Exception;
+use Yoast\WP\SEO\Premium\Exceptions\Remote_Request\Remote_Request_Exception;
 use Yoast\WP\SEO\Premium\Exceptions\Remote_Request\Request_Timeout_Exception;
 use Yoast\WP\SEO\Premium\Exceptions\Remote_Request\Service_Unavailable_Exception;
 use Yoast\WP\SEO\Premium\Exceptions\Remote_Request\Too_Many_Requests_Exception;
@@ -32,42 +33,42 @@ class AI_Generator_Route implements Route_Interface {
 	 *
 	 * @var string
 	 */
-	const ROUTE_PREFIX = 'ai_generator';
+	public const ROUTE_PREFIX = 'ai_generator';
 
 	/**
 	 * The callback route constant (invoked by the API).
 	 *
 	 * @var string
 	 */
-	const CALLBACK_ROUTE = self::ROUTE_PREFIX . '/callback';
+	public const CALLBACK_ROUTE = self::ROUTE_PREFIX . '/callback';
 
 	/**
 	 * The refresh callback route constant (invoked by the API).
 	 *
 	 * @var string
 	 */
-	const REFRESH_CALLBACK_ROUTE = self::ROUTE_PREFIX . '/refresh_callback';
+	public const REFRESH_CALLBACK_ROUTE = self::ROUTE_PREFIX . '/refresh_callback';
 
 	/**
 	 * The get_suggestions route constant.
 	 *
 	 * @var string
 	 */
-	const GET_SUGGESTIONS_ROUTE = self::ROUTE_PREFIX . '/get_suggestions';
+	public const GET_SUGGESTIONS_ROUTE = self::ROUTE_PREFIX . '/get_suggestions';
 
 	/**
 	 * The get_suggestions route constant.
 	 *
 	 * @var string
 	 */
-	const CONSENT_ROUTE = self::ROUTE_PREFIX . '/consent';
+	public const CONSENT_ROUTE = self::ROUTE_PREFIX . '/consent';
 
 	/**
 	 * The bust_subscription_cache route constant.
 	 *
 	 * @var string
 	 */
-	const BUST_SUBSCRIPTION_CACHE_ROUTE = self::ROUTE_PREFIX . '/bust_subscription_cache';
+	public const BUST_SUBSCRIPTION_CACHE_ROUTE = self::ROUTE_PREFIX . '/bust_subscription_cache';
 
 	/**
 	 * Instance of the AI_Generator_Action.
@@ -245,9 +246,10 @@ class AI_Generator_Route implements Route_Interface {
 		try {
 			$user = \wp_get_current_user();
 			$data = $this->ai_generator_action->get_suggestions( $user, $request['type'], $request['prompt_content'], $request['focus_keyphrase'], $request['language'], $request['platform'] );
-		} catch ( Bad_Request_Exception | Forbidden_Exception | Internal_Server_Error_Exception | Not_Found_Exception | Payment_Required_Exception | Request_Timeout_Exception | Service_Unavailable_Exception | Too_Many_Requests_Exception | Unauthorized_Exception $e ) {
+		} catch ( Remote_Request_Exception $e ) {
 			$message = [
-				'message' => $e->getMessage(),
+				'message'         => $e->getMessage(),
+				'errorIdentifier' => $e->get_error_identifier(),
 			];
 			if ( $e instanceof Payment_Required_Exception ) {
 				$message['missingLicenses'] = $e->get_missing_licenses();

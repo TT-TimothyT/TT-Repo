@@ -125,6 +125,7 @@ class WPSEO_Premium_Assets implements WPSEO_WordPress_Integration {
 				'dependencies' => [
 					'clipboard',
 					'jquery',
+					'regenerator-runtime',
 					'underscore',
 					'wp-api-fetch',
 					'wp-components',
@@ -159,6 +160,7 @@ class WPSEO_Premium_Assets implements WPSEO_WordPress_Integration {
 				'dependencies' => [
 					'clipboard',
 					'lodash',
+					'regenerator-runtime',
 					'wp-api-fetch',
 					'wp-a11y',
 					'wp-components',
@@ -289,6 +291,7 @@ class WPSEO_Premium_Assets implements WPSEO_WordPress_Integration {
 				'path'         => 'assets/js/dist/',
 				'filename'     => 'yoast-premium-prominent-words-indexation-' . $version . WPSEO_CSSJS_SUFFIX . '.js',
 				'dependencies' => [
+					'regenerator-runtime',
 					'yoast-seo-premium-commons',
 					WPSEO_Admin_Asset_Manager::PREFIX . 'analysis',
 					WPSEO_Admin_Asset_Manager::PREFIX . 'editor-modules',
@@ -302,6 +305,7 @@ class WPSEO_Premium_Assets implements WPSEO_WordPress_Integration {
 				'dependencies' => [
 					'clipboard',
 					'jquery',
+					'regenerator-runtime',
 					'underscore',
 					'wp-api-fetch',
 					'wp-components',
@@ -327,6 +331,7 @@ class WPSEO_Premium_Assets implements WPSEO_WordPress_Integration {
 				'filename'     => 'ai-generator-' . $version . WPSEO_CSSJS_SUFFIX . '.js',
 				'dependencies' => [
 					'lodash',
+					'regenerator-runtime',
 					'wp-api-fetch',
 					'wp-components',
 					'wp-data',
@@ -347,6 +352,7 @@ class WPSEO_Premium_Assets implements WPSEO_WordPress_Integration {
 				'filename'     => 'manage-ai-consent-button-' . $version . WPSEO_CSSJS_SUFFIX . '.js',
 				'dependencies' => [
 					'lodash',
+					'regenerator-runtime',
 					'wp-api-fetch',
 					'wp-components',
 					'wp-data',
@@ -365,6 +371,7 @@ class WPSEO_Premium_Assets implements WPSEO_WordPress_Integration {
 				'filename'     => 'introductions-' . $version . WPSEO_CSSJS_SUFFIX . '.js',
 				'dependencies' => [
 					'lodash',
+					'regenerator-runtime',
 					'wp-api-fetch',
 					'wp-components',
 					'wp-data',
@@ -465,7 +472,7 @@ class WPSEO_Premium_Assets implements WPSEO_WordPress_Integration {
 			$url = 'http://localhost:8081/' . $script['filename'];
 		}
 
-		$in_footer = isset( $script['in_footer'] ) ? $script['in_footer'] : false;
+		$in_footer = ( $script['in_footer'] ?? false );
 
 		wp_register_script(
 			$script['name'],
