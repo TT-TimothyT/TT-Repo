@@ -1,5 +1,10 @@
 # Elementor Pro - by Elementor.com
 
+#### 3.19.3 - 2024-02-26
+
+* Tweak: Improved Loop CSS loading structure in Loop Grid item
+* Security Fix: Addressed security weaknesses in Dynamic Tags
+
 #### 3.19.2 - 2024-02-07
 
 * Fix: Export data inconsistencies when using form actions in Form widget

@@ -5,12 +5,12 @@
  * @package   user-switching
  * @link      https://github.com/johnbillion/user-switching
  * @author    John Blackbourn
- * @copyright 2009-2023 John Blackbourn
+ * @copyright 2009-2024 John Blackbourn
  * @license   GPL v2 or later
  *
  * Plugin Name:       User Switching
  * Description:       Instant switching between user accounts in WordPress
- * Version:           1.7.2
+ * Version:           1.7.3
  * Plugin URI:        https://wordpress.org/plugins/user-switching/
  * Author:            John Blackbourn & contributors
  * Author URI:        https://github.com/johnbillion/user-switching/graphs/contributors
@@ -757,8 +757,16 @@ class user_switching {
 			return;
 		}
 
+		if ( function_exists( 'bp_members_get_user_url' ) ) {
+			$redirect_to = bp_members_get_user_url( $user->ID );
+		} elseif ( function_exists( 'bp_core_get_user_domain' ) ) {
+			$redirect_to = bp_core_get_user_domain( $user->ID );
+		} else {
+			$redirect_to = home_url();
+		}
+
 		$link = add_query_arg( array(
-			'redirect_to' => rawurlencode( bp_core_get_user_domain( $user->ID ) ),
+			'redirect_to' => rawurlencode( $redirect_to ),
 		), $link );
 
 		$components = array_keys( buddypress()->active_components );

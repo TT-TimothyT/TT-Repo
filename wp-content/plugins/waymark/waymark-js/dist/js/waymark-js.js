@@ -7390,117 +7390,118 @@ var map = escape.map = {
 
 /*
 	==================================
-	========== LOCALIZATION ==========
-	==================================
-*/
-
-var waymark_js_localize = {
-	//Viewer
-	action_fullscreen_activate: "View Fullscreen",
-	action_fullscreen_deactivate: "Exit Fullscreen",
-	action_locate_activate: "Show me where I am",
-	action_zoom_in: "Zoom in",
-	action_zoom_out: "Zoom out",
-	label_total_length: "Total Length: ",
-	label_max_elevation: "Max. Elevation: ",
-	label_min_elevation: "Min. Elevation: ",
-	label_ascent: "Total Ascent: ",
-	label_descent: "Total Descent: ",
-	//Editor
-	add_line_title: "Draw a Line",
-	add_photo_title: "Upload an Image",
-	add_marker_title: "Place a Marker",
-	add_rectangle_title: "Draw a Rectangle",
-	add_polygon_title: "Draw a Polygon",
-	add_circle_title: "Draw a Circle",
-	upload_file_title:
-		"Read Lines and Markers from file (GPX/KML/GeoJSON supported, which most apps should Export to)",
-	action_duplicate: "Duplicate",
-	action_delete: "Delete",
-	action_edit: "Edit",
-	action_edit_done: "Finish editing",
-	action_upload_image: "Upload Image",
-	object_title_placeholder: "Title",
-	object_image_placeholder: "Image URL",
-	object_description_placeholder: "Description",
-	object_type_label: "Type",
-	marker_latlng_label: "Lat,Lng",
-	action_delete_confirm: "Are you sure you want to delete this",
-	action_search_placeholder: "Search...",
-	object_label_marker: "Marker",
-	object_label_line: "Line",
-	object_label_shape: "Shape",
-	object_label_marker_plural: "Markers",
-	object_label_line_plural: "Lines",
-	object_label_shape_plural: "Shapes",
-	error_message_prefix: "Waymark Error",
-	info_message_prefix: "Waymark Info",
-	debug_message_prefix: "Waymark Debug",
-	error_file_type: "This file type is not supported.",
-	error_file_conversion: "Could not convert this file to GeoJSON.",
-	error_file_upload: "File upload error.",
-	error_photo_meta: "Could not retrieve Image metadata.",
-	info_exif_yes: "Image location metadata (EXIF) detected!",
-	info_exif_no: "Image location metadata (EXIF) NOT detected.",
-	error_no_wpmedia: "WordPress Media Library not found",
-	no_direction: "No Direction",
-	show_direction: "Show Direction",
-	reverse_direction: "Reverse Direction",
-};
-
-if (typeof waymark_js === "undefined") {
-	var waymark_js = {
-		lang: {},
-	};
-}
-for (key in waymark_js_localize) {
-	if (typeof waymark_js.lang[key] === "undefined") {
-		waymark_js.lang[key] = waymark_js_localize[key];
-	}
-}
-
-/*
-	==================================
 	=============== MAP ==============
 	==================================
 */
 
 function Waymark_Map() {
-	this.fallback_latlng = [51.38436, -68.74923];
-	this.fallback_zoom = 9;
-
-	this.init = function (user_config) {
+	this.init = function (user_config = {}) {
 		Waymark = this;
 
 		//Start timer
 		Waymark.start_time = new Date().getTime();
 
+		// jQuery Map Container
 		Waymark.jq_map_container = null;
 
 		//Default config
 		Waymark.config = {
-			map_div_id: "waymark-map",
+			// Map (Common Options)
+
 			map_options: {
-				show_type_labels: 1,
-				button_position: "bottomright",
-				max_zoom: 0,
+				debug_mode: 0,
+
+				map_height: null,
+				map_div_id: "waymark-map",
+				map_width: null,
+				map_init_zoom: null,
+				map_init_latlng: null,
+				map_init_basemap: null,
+				map_max_zoom: null,
+
+				// Basemaps
+
+				tile_layers: [
+					{
+						layer_name: "OpenStreetMap",
+						layer_url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?r=1",
+						layer_attribution:
+							'\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+						layer_max_zoom: "18",
+					},
+				],
+
+				line_types: [],
+				shape_types: [],
+				marker_types: [],
+
+				// Common Features
+				show_scale: 0,
 			},
-			map_height: 400,
-			map_width: null,
-			map_init_zoom: undefined,
-			map_init_latlng: undefined,
-			map_init_basemap: undefined,
-			show_gallery: 0,
-			show_filter: 0,
-			show_elevation: 0,
-			show_cluster: 1,
-			elevation_div_id: "waymark-elevation",
-			elevation_units: "metric",
-			elevation_initial: 1,
-			tile_layers: {},
-			line_types: {},
-			shape_types: {},
-			marker_types: {},
+
+			// Viewer
+
+			viewer_options: {
+				// Features
+				show_gallery: 0,
+				show_filter: 1,
+
+				// Cluster
+				show_cluster: 1,
+				cluster_radius: 80,
+				cluster_threshold: 14,
+
+				// Elevation
+				show_elevation: 0,
+				elevation_div_id: "waymark-elevation",
+				elevation_units: "metric",
+				elevation_initial: 1,
+				elevation_colour: "green",
+
+				// Sleep
+				sleep_delay_seconds: 2,
+				sleep_do_message: 0,
+				sleep_wake_message: "Click or Hover to Wake",
+			},
+
+			// Editor
+
+			editor_options: {
+				confirm_delete: 1,
+				data_div_id: "waymark-data",
+			},
+
+			// Media Library
+
+			image_size_names: ["thumbnail", "medium", "large", "full"],
+
+			// Type Defaults
+
+			marker_type_defaults: {
+				marker_title: "Marker",
+				marker_shape: "marker",
+				marker_size: "medium",
+				marker_colour: "#b42714",
+				marker_icon: "fa-star",
+				icon_type: "font",
+				icon_colour: "white",
+			},
+
+			line_type_defaults: {
+				line_title: "Line",
+				line_colour: "#b42714",
+				line_weight: "2",
+				line_opacity: "0.7",
+			},
+
+			shape_type_defaults: {
+				shape_title: "Shape",
+				shape_colour: "red",
+				fill_opacity: "0.4",
+			},
+
+			// Data Properties
+
 			marker_data_defaults: {
 				title: undefined,
 				type: undefined,
@@ -7526,18 +7527,105 @@ function Waymark_Map() {
 				image_large_url: undefined,
 				description: undefined,
 			},
-			editor_options: {
-				confirm_delete: 1,
+
+			// Localisation
+
+			language: {
+				//Viewer
+				action_fullscreen_activate: "View Fullscreen",
+				action_fullscreen_deactivate: "Exit Fullscreen",
+				action_locate_activate: "Show me where I am",
+				action_zoom_in: "Zoom in",
+				action_zoom_out: "Zoom out",
+				label_total_length: "Total Length: ",
+				label_max_elevation: "Max. Elevation: ",
+				label_min_elevation: "Min. Elevation: ",
+				label_ascent: "Total Ascent: ",
+				label_descent: "Total Descent: ",
+				//Editor
+				add_line_title: "Draw a Line",
+				add_photo_title: "Upload an Image",
+				add_marker_title: "Place a Marker",
+				add_rectangle_title: "Draw a Rectangle",
+				add_polygon_title: "Draw a Polygon",
+				add_circle_title: "Draw a Circle",
+				upload_file_title:
+					"Read Lines and Markers from file (GPX/KML/GeoJSON supported, which most apps should Export to)",
+				action_duplicate: "Duplicate",
+				action_delete: "Delete",
+				action_edit: "Edit",
+				action_edit_done: "Finish editing",
+				action_upload_image: "Upload Image",
+				object_title_placeholder: "Title",
+				object_image_placeholder: "Image URL",
+				object_description_placeholder: "Description",
+				object_type_label: "Type",
+				marker_latlng_label: "Lat,Lng",
+				action_delete_confirm: "Are you sure you want to delete this",
+				action_search_placeholder: "Search...",
+				object_label_marker: "Marker",
+				object_label_line: "Line",
+				object_label_shape: "Shape",
+				object_label_marker_plural: "Markers",
+				object_label_line_plural: "Lines",
+				object_label_shape_plural: "Shapes",
+				error_message_prefix: "Waymark Error",
+				info_message_prefix: "Waymark Info",
+				debug_message_prefix: "Waymark Debug",
+				error_file_type: "This file type is not supported.",
+				error_file_conversion: "Could not convert this file to GeoJSON.",
+				error_file_upload: "File upload error.",
+				error_photo_meta: "Could not retrieve Image metadata.",
+				info_exif_yes: "Image location metadata (EXIF) detected!",
+				info_exif_no: "Image location metadata (EXIF) NOT detected.",
+				error_no_wpmedia: "WordPress Media Library not found",
+				no_direction: "No Direction",
+				show_direction: "Show Direction",
+				reverse_direction: "Reverse Direction",
+				sleep_wake_message: "Click or Hover to Wake",
 			},
-			media_library_sizes: ["thumbnail", "medium", "large", "full"],
 		};
 
-		//Load user config
-		for (config_key in Waymark.config) {
-			if (typeof user_config[config_key] !== "undefined") {
-				Waymark.config[config_key] = user_config[config_key];
+		// Merge config
+
+		//Iterate over user config (Only map_options, viewer_options, editor_options)
+
+		for (key in user_config) {
+			// Only allow the following keys: map_options, viewer_options, editor_options
+			if (
+				["map_options", "viewer_options", "editor_options", "language"].indexOf(
+					key,
+				) > -1
+			) {
+				//Iterate over user config
+				for (sub_key in user_config[key]) {
+					//Check key exists
+					if (typeof Waymark.config[key][sub_key] !== "undefined") {
+						// If Object
+						if (typeof user_config[key][sub_key] === "object") {
+							// Keep Arrays	as Arrays
+							if (Array.isArray(user_config[key][sub_key])) {
+								Waymark.config[key][sub_key] = user_config[key][sub_key];
+								// Else, merge
+							} else {
+								Waymark.config[key][sub_key] = Object.assign(
+									{},
+									Waymark.config[key][sub_key],
+									user_config[key][sub_key],
+								);
+							}
+							// Else, set
+						} else {
+							Waymark.config[key][sub_key] = user_config[key][sub_key];
+						}
+					}
+				}
 			}
 		}
+
+		// Wake message
+		Waymark.config.viewer_options.sleep_wake_message =
+			Waymark.config.language.sleep_wake_message;
 
 		//Set defaults
 		var default_line_type = Waymark.get_type("line");
@@ -7555,6 +7643,11 @@ function Waymark_Map() {
 			default_marker_type.marker_title,
 		);
 		Waymark.config.marker_data_defaults.type = default_marker_type_key;
+
+		// Debug
+		if (Waymark.config.map_options.debug_mode) {
+			console.log(Waymark.config);
+		}
 
 		//Groups
 		Waymark.marker_parent_group = Waymark_L.layerGroup();
@@ -7579,7 +7672,7 @@ function Waymark_Map() {
 	/**
 	 *
 	 * Output debugging content
-	 * 	- Only if debug_mode is enabled (Settings > Misc > Advanced)
+	 * 	- Only if config.map_options.debug_mode is enabled
 	 *
 	 * @param  {string} thing  Thing to debug
 	 * @param  {string} output Output method (console|alert)
@@ -7593,12 +7686,8 @@ function Waymark_Map() {
 	 *
 	 */
 	this.debug = function (thing, output = "console") {
-		if (
-			this.get_property(waymark_settings, "misc", "advanced", "debug_mode") ==
-			true
-		) {
+		if (this.config.map_options.debug_mode) {
 			//String
-
 			if (typeof thing === "string") {
 				this.message(thing, "debug", output);
 
@@ -7628,12 +7717,12 @@ function Waymark_Map() {
 			switch (type) {
 				case "debug":
 				case "error":
-					prefix = waymark_js.lang[type + "_message_prefix"];
+					prefix = Waymark.config.language[type + "_message_prefix"];
 
 					break;
 				default:
 				case "info":
-					prefix = waymark_js.lang.info_message_prefix;
+					prefix = Waymark.config.language.info_message_prefix;
 
 					break;
 			}
@@ -7663,6 +7752,9 @@ function Waymark_Map() {
 	};
 
 	//Cyrillic to latin
+
+	// TODO - move to... somewhere
+
 	//Thanks! https://stackoverflow.com/a/11404121
 	this.transliterate = function (word) {
 		var a = {
@@ -7804,9 +7896,16 @@ function Waymark_Map() {
 	this.setup_map = function () {
 		Waymark = this;
 
-		Waymark.jq_map_container = jQuery("#" + Waymark.config.map_div_id);
+		Waymark.jq_map_container = jQuery(
+			"#" + Waymark.config.map_options.map_div_id,
+		);
 		Waymark.jq_map_container.addClass("waymark-map-container");
-		Waymark.jq_map_container.css("height", Waymark.config.map_height + "px");
+
+		const map_height = Waymark.config.map_options.map_height
+			? Waymark.config.map_options.map_height + "px"
+			: "100%";
+
+		Waymark.jq_map_container.css("height", map_height);
 
 		//Create Map
 		var map_options = {
@@ -7828,28 +7927,13 @@ function Waymark_Map() {
 			//Sleep
 			map_options.sleep = true;
 			map_options.wakeTime =
-				this.get_property(
-					waymark_settings,
-					"misc",
-					"interaction_options",
-					"delay_seconds",
-				) * 1000;
+				1000 * Waymark.config.viewer_options.sleep_delay_seconds;
 
 			//If Sleep Note
-			var do_message = this.get_property(
-				waymark_settings,
-				"misc",
-				"interaction_options",
-				"do_message",
-			);
-			if (do_message === "1") {
+			if (Waymark.config.viewer_options.sleep_do_message === "1") {
 				map_options.sleepNote = true;
-				map_options.wakeMessage = this.get_property(
-					waymark_settings,
-					"misc",
-					"interaction_options",
-					"wake_message",
-				);
+				map_options.wakeMessage =
+					Waymark.config.viewer_options.sleep_wake_message;
 				//No Sleep Note
 			} else {
 				map_options.sleepNote = false;
@@ -7860,34 +7944,41 @@ function Waymark_Map() {
 			map_options.sleepOpacity = 1;
 			//END Sleep
 
-			//Max Zoom
-			if ((max_zoom = Waymark.config.map_options.max_zoom)) {
-				map_options.maxZoom = max_zoom;
-			}
-
 			// === Editor ===
 		} else {
 			//Sleep not used, enable
 			map_options.dragging = true;
 		}
 
-		Waymark.map = Waymark_L.map(Waymark.config.map_div_id, map_options);
+		//Merge Map options
+		if (typeof Waymark.config.map_options !== "undefined") {
+			// If not undefined
+			if (
+				typeof Waymark.config.map_options.map_max_zoom !== "undefined" &&
+				Waymark.config.map_options.map_max_zoom
+			) {
+				// Set
+				map_options.maxZoom = Waymark.config.map_options.map_max_zoom;
+
+				console.log("Max Zoom: " + map_options.maxZoom);
+			}
+		}
+
+		//Create Map
+
+		Waymark.map = Waymark_L.map(
+			Waymark.config.map_options.map_div_id,
+			map_options,
+		);
 		Waymark_L.control
 			.attribution({
 				prefix:
-					'<a href="https://www.waymark.dev/" title="Share your way">Waymark</a>',
+					'<a href="https://www.waymark.dev/js/" title="Share your way">Waymark</a>',
 			})
 			.addTo(Waymark.map);
 
 		//Show scale?
-		if (
-			this.get_property(
-				waymark_settings,
-				"misc",
-				"map_options",
-				"show_scale",
-			) == true
-		) {
+		if (Waymark.config.map_options.show_scale == true) {
 			Waymark_L.control.scale().addTo(Waymark.map);
 		}
 
@@ -7895,15 +7986,31 @@ function Waymark_Map() {
 		Waymark.jq_map_container.data("Waymark", Waymark);
 
 		//View
-		if (Waymark.config.map_init_latlng !== undefined) {
-			Waymark.map.setView(Waymark.config.map_init_latlng);
+		let initial_latlng = Waymark.config.map_options.map_init_latlng;
+		if (typeof initial_latlng !== "undefined" && initial_latlng) {
+			Waymark.map.setView(initial_latlng);
 		} else {
-			Waymark.map.setView(Waymark.fallback_latlng);
+			initial_latlng = false;
 		}
-		if (Waymark.config.map_init_zoom !== undefined) {
-			Waymark.map.setZoom(Waymark.config.map_init_zoom);
+
+		let initial_zoom = Waymark.config.map_options.map_init_zoom;
+		if (typeof initial_zoom !== "undefined" && initial_zoom) {
+			Waymark.map.setZoom(initial_zoom);
 		} else {
-			Waymark.map.setZoom(Waymark.fallback_zoom);
+			initial_zoom = false;
+		}
+
+		// If no initial latlng or zoom
+		if (!initial_latlng && !initial_zoom) {
+			Waymark.debug("No initial latlng or zoom set! 🌍");
+
+			// Random country bounds
+			// let fallback_bounds = Waymark.country_code_to_bounds();
+
+			// // Fit
+			// Waymark.map.fitBounds(fallback_bounds, {
+			// 	padding: [50, 50],
+			// });
 		}
 
 		//Set default style
@@ -7914,9 +8021,9 @@ function Waymark_Map() {
 		//Zoom Control
 		Waymark_L.control
 			.zoom({
-				position: Waymark.config.map_options.button_position,
-				zoomInTitle: waymark_js.lang.action_zoom_in,
-				zoomOutTitle: waymark_js.lang.action_zoom_out,
+				position: "topleft",
+				zoomInTitle: Waymark.config.language.action_zoom_in,
+				zoomOutTitle: Waymark.config.language.action_zoom_out,
 			})
 			.addTo(Waymark.map);
 
@@ -7927,7 +8034,7 @@ function Waymark_Map() {
 				icon: "ion ion-android-locate",
 				drawCircle: false,
 				strings: {
-					title: waymark_js.lang.action_locate_activate,
+					title: Waymark.config.language.action_locate_activate,
 				},
 				locateOptions: {
 					enableHighAccuracy: true,
@@ -7938,10 +8045,10 @@ function Waymark_Map() {
 		//Fullscreen Control
 		Waymark_L.control
 			.fullscreen({
-				position: Waymark.config.map_options.button_position,
+				position: "topleft",
 				title: {
-					false: waymark_js.lang.action_fullscreen_activate,
-					true: waymark_js.lang.action_fullscreen_deactivate,
+					false: Waymark.config.language.action_fullscreen_activate,
+					true: Waymark.config.language.action_fullscreen_deactivate,
 				},
 			})
 			.addTo(Waymark.map);
@@ -8076,7 +8183,7 @@ function Waymark_Map() {
 							feature.properties,
 						);
 
-						//Is this a retangle?
+						//Is this a rectangle?
 						if (feature.properties.rectangle) {
 							//...
 						}
@@ -8163,12 +8270,16 @@ function Waymark_Map() {
 
 		//Determine initial basemap
 		//Set by name?
-		if (typeof Waymark.config.map_init_basemap !== "undefined") {
+		if (
+			typeof Waymark.config.map_options.map_init_basemap !== "undefined" &&
+			Waymark.config.map_options.map_init_basemap
+		) {
 			//Search
-			for (var i in Waymark.config.tile_layers) {
-				var init_basemap_name = Waymark.config.map_init_basemap.toUpperCase();
+			for (var i in Waymark.config.map_options.tile_layers) {
+				var init_basemap_name =
+					Waymark.config.map_options.map_init_basemap.toUpperCase();
 				var this_basemap_name =
-					Waymark.config.tile_layers[i].layer_name.toUpperCase();
+					Waymark.config.map_options.tile_layers[i].layer_name.toUpperCase();
 
 				//Found
 				if (init_basemap_name === this_basemap_name) {
@@ -8179,38 +8290,40 @@ function Waymark_Map() {
 		}
 
 		//For each tile layer
-		for (var i in Waymark.config.tile_layers) {
+		for (var i in Waymark.config.map_options.tile_layers) {
 			//Append URL?
-			if (typeof Waymark.config.tile_layers[i].append !== "undefined") {
-				Waymark.config.tile_layers[i].layer_url +=
-					Waymark.config.tile_layers[i].append;
+			if (
+				typeof Waymark.config.map_options.tile_layers[i].append !== "undefined"
+			) {
+				Waymark.config.map_options.tile_layers[i].layer_url +=
+					Waymark.config.map_options.tile_layers[i].append;
 			}
 
 			//Create key
-			var basemap_key = Waymark.config.tile_layers[i].layer_name.replace(
-				/ /g,
-				"",
-			);
+			var basemap_key = Waymark.config.map_options.tile_layers[
+				i
+			].layer_name.replace(/ /g, "");
 
 			//Create tile layer
 			var layer_options = {
 				id: basemap_key,
-				attribution: Waymark.config.tile_layers[i].layer_attribution,
+				attribution:
+					Waymark.config.map_options.tile_layers[i].layer_attribution,
 			};
 
 			//Max zoom?
 			var layer_max_zoom = parseInt(
-				Waymark.config.tile_layers[i].layer_max_zoom,
+				Waymark.config.map_options.tile_layers[i].layer_max_zoom,
 			);
 			if (layer_max_zoom) {
 				layer_options.maxZoom = layer_max_zoom;
 			}
 
 			var basemap = Waymark_L.tileLayer(
-				Waymark.config.tile_layers[i].layer_url,
+				Waymark.config.map_options.tile_layers[i].layer_url,
 				layer_options,
 			);
-			basemaps[Waymark.config.tile_layers[i].layer_name] = basemap;
+			basemaps[Waymark.config.map_options.tile_layers[i].layer_name] = basemap;
 
 			//Set initial basemap
 			if (i == initial_basemap_index) {
@@ -8237,21 +8350,23 @@ function Waymark_Map() {
 		var type = null;
 
 		//Iterate over all types
-		for (var i in Waymark.config[layer_type + "_types"]) {
+		for (var i in Waymark.config.map_options[layer_type + "_types"]) {
 			//Use first as default
 			if (i == 0) {
-				type = Waymark.config[layer_type + "_types"][i];
+				type = Waymark.config.map_options[layer_type + "_types"][i];
 			}
 
 			//Grab title
 			var type_title =
-				Waymark.config[layer_type + "_types"][i][layer_type + "_title"];
+				Waymark.config.map_options[layer_type + "_types"][i][
+					layer_type + "_title"
+				];
 
 			//Has title
 			if (type_title) {
 				//Found (run both through make_key, just to be on safe side)
 				if (Waymark.make_key(type_key) == Waymark.make_key(type_title)) {
-					type = Waymark.config[layer_type + "_types"][i];
+					type = Waymark.config.map_options[layer_type + "_types"][i];
 				}
 			}
 		}
@@ -8270,35 +8385,13 @@ function Waymark_Map() {
 			type = {};
 		}
 
-		switch (layer_type) {
-			case "line":
-				//Checks
-				var required = [
-					{
-						key: "line_colour",
-						default: "#b42714",
-					},
-					{
-						key: "line_weight",
-						default: "3",
-					},
-					{
-						key: "line_opacity",
-						default: "0.7",
-					},
-				];
+		// Start with fallbacks
+		var fallback = Waymark.config[layer_type + "_type_defaults"];
 
-				for (var i in required) {
-					//If undefined
-					if (typeof type[required[i]["key"]] !== "string") {
-						//Set default
-						type[required[i]["key"]] = required[i]["default"];
-					}
-				}
+		// Merge
+		type = Object.assign({}, fallback, type);
 
-				break;
-		}
-
+		//Set key
 		type.type_key = Waymark.make_key(type[layer_type + "_title"]);
 
 		return type;
@@ -8308,8 +8401,8 @@ function Waymark_Map() {
 		Waymark = this;
 
 		jQuery(window).on("resize", function () {
-			Waymark.config.map_height = Waymark.jq_map_container.height();
-			Waymark.config.map_width = Waymark.jq_map_container.width();
+			Waymark.config.map_options.map_height = Waymark.jq_map_container.height();
+			Waymark.config.map_options.map_width = Waymark.jq_map_container.width();
 
 			if (typeof Waymark.size_gallery === "function") {
 				Waymark.size_gallery();
@@ -8323,16 +8416,11 @@ function Waymark_Map() {
 		var text = "";
 
 		//Displaying Type?
-		if (Waymark.config.map_options.show_type_labels == "1") {
-			var type = Waymark.get_type(layer_type, feature.properties.type);
+		var type = Waymark.get_type(layer_type, feature.properties.type);
 
-			if (type) {
-				var title = type[layer_type + "_title"];
-
-				if (title) {
-					text = "[" + title + "] ";
-				}
-			}
+		if (type && typeof type[layer_type + "_title"] !== "undefined") {
+			var title = type[layer_type + "_title"];
+			text = '<span class="waymark-type-label">[' + title + "]</span> ";
 		}
 
 		//Title
@@ -8396,22 +8484,7 @@ function Waymark_Map() {
 						data_out.description = data_in[key];
 
 						break;
-					// 				case 'photos':
-					// 					waymark_data.type = 'photo';
-					//
-					// 					for(var i in feature.properties[prop]) {
-					// 						//Set thumb
-					// 						if(typeof feature.properties[prop][i]['web_url'] !== 'undefined') {
-					// 							waymark_data.image_thumbnail_url = feature.properties[prop][i]['web_url'];
-					// 						}
-					//
-					// 						//Set large
-					// 						if(typeof feature.properties[prop][i]['web_url'] !== 'undefined') {
-					// 							waymark_data.image_large_url = feature.properties[prop][i]['scaled_url'];
-					// 						}
-					// 					}
-					//
-					// 					break;
+
 					case "radius":
 						data_out[key] = parseFloat(data_in[key]);
 
@@ -8420,51 +8493,12 @@ function Waymark_Map() {
 			}
 		}
 
-		//Importing Overlay Properties?
-		var overlay_properties = this.get_property(
-			waymark_settings,
-			"overlay",
-			"properties",
-		);
-		var properties_keys = Object.keys(overlay_properties);
-
-		// Valid properties?
-		if (properties_keys.length && properties_keys.pop()) {
-			var properties_html = "";
-
-			for (i in overlay_properties) {
-				var key = overlay_properties[i]["property_key"];
-
-				var title = overlay_properties[i]["property_title"];
-				var value = data_in[key];
-
-				if (typeof value !== "undefined") {
-					properties_html +=
-						'<p class="waymark-property waymark-property-' +
-						key +
-						'"><b>' +
-						title +
-						"</b><br />" +
-						value +
-						"</p>";
-
-					Waymark.debug("Importing " + title + " (" + key + ") ==> " + value);
-				}
-			}
-
-			if (properties_html) {
-				if (typeof data_out.description === "undefined") {
-					data_out.description = "";
-				}
-
-				data_out.description += properties_html;
-			}
-		}
-
 		return data_out;
 	};
 
 	this.add_to_group = function (layer_type, layer) {
+		Waymark = this;
+
 		var feature = layer.feature;
 
 		//If we have a type
@@ -8507,7 +8541,10 @@ function Waymark_Map() {
 			}
 
 			//If Overlay Filter is enabled
-			if (Waymark.config.show_filter && Waymark.mode == "view") {
+			if (
+				parseInt(Waymark.config.viewer_options.show_filter) &&
+				Waymark.mode == "view"
+			) {
 				//Ensure the control is added
 				Waymark.layer_control.addTo(Waymark.map);
 
@@ -8518,7 +8555,7 @@ function Waymark_Map() {
 				Waymark.layer_control.addOverlay(
 					Waymark[layer_type + "_parent_group"],
 					"<b>" +
-						waymark_js_localize["object_label_" + layer_type + "_plural"] +
+						Waymark.config.language["object_label_" + layer_type + "_plural"] +
 						"</b>",
 				);
 
@@ -8543,6 +8580,8 @@ function Waymark_Map() {
 
 	//Represent Type as text
 	this.type_to_text = function (layer_type = "", type = {}, ele = "span") {
+		Waymark = this;
+
 		var preview_class = "waymark-type-text waymark-" + layer_type + "-type";
 		var preview_style = "";
 
@@ -8583,7 +8622,14 @@ function Waymark_Map() {
 		return Waymark_L.marker(latlng);
 	};
 
-	this.build_icon_data = function (type) {
+	this.build_icon_data = function (type = {}) {
+		Waymark = this;
+
+		// Ensure is a an object with a non-empty type key
+		if (typeof type !== "object" || typeof type.type_key === "undefined") {
+			return false;
+		}
+
 		var icon_data = {
 			className: "waymark-marker waymark-marker-" + type.type_key,
 		};
@@ -8640,6 +8686,14 @@ function Waymark_Map() {
 			'<div class="waymark-marker-background" style="' +
 			background_css +
 			'"></div>';
+
+		// Ensure we have type.marker_icon
+		if (typeof type.marker_icon === "undefined") {
+			Waymark.debug(
+				"No marker_icon for type: " + JSON.stringify(type),
+				"alert",
+			);
+		}
 
 		//Classes
 		var icon_class = "waymark-marker-icon";
@@ -8793,11 +8847,6 @@ function Waymark_Map() {
 			"black",
 		];
 
-		//Already hex
-		// 		if(colour.indexOf('#' === 0)) {
-		// 			return colour;
-		// 		}
-
 		//Convert
 		if (old_background_options.includes(colour)) {
 			switch (colour) {
@@ -8866,11 +8915,11 @@ function Waymark_Map() {
 			data.GPSLongitudeNum &&
 			!isNaN(data.GPSLongitudeNum)
 		) {
-			Waymark.debug(waymark_js.lang.info_exif_yes);
+			Waymark.debug(Waymark.config.language.info_exif_yes);
 
 			return L.latLng(data.GPSLatitudeNum, data.GPSLongitudeNum);
 		} else {
-			Waymark.debug(waymark_js.lang.info_exif_no);
+			Waymark.debug(Waymark.config.language.info_exif_no);
 		}
 
 		return false;
@@ -8882,20 +8931,19 @@ function Waymark_Map() {
 		var image_sizes = {};
 
 		//Grab these
-		for (var i in Waymark.config.media_library_sizes) {
+		for (var i in Waymark.config.image_size_names) {
 			//Use fallback
-			image_sizes["image_" + Waymark.config.media_library_sizes[i] + "_url"] =
+			image_sizes["image_" + Waymark.config.image_size_names[i] + "_url"] =
 				fallback;
 
 			//We have the data we want
 			if (
-				typeof data[Waymark.config.media_library_sizes[i]] !== "undefined" &&
-				typeof data[Waymark.config.media_library_sizes[i]]["url"] !==
-					"undefined"
+				typeof data[Waymark.config.image_size_names[i]] !== "undefined" &&
+				typeof data[Waymark.config.image_size_names[i]]["url"] !== "undefined"
 			) {
 				//Use it
-				image_sizes["image_" + Waymark.config.media_library_sizes[i] + "_url"] =
-					data[Waymark.config.media_library_sizes[i]]["url"];
+				image_sizes["image_" + Waymark.config.image_size_names[i] + "_url"] =
+					data[Waymark.config.image_size_names[i]]["url"];
 			}
 		}
 
@@ -9011,7 +9059,6 @@ function Waymark_Map() {
 		Waymark.debug(
 			"Waymark Loaded in " + execution_time.toFixed(3) + " seconds",
 		);
-		// Waymark.debug(this);
 
 		// Check for callback waymark_loaded_callback
 		if (typeof waymark_loaded_callback === "function") {
@@ -9024,6 +9071,202 @@ function Waymark_Map() {
 		} else {
 			Waymark.debug("No Global Callback detected.");
 		}
+	};
+
+	this.country_code_to_bounds = function (country_code = "") {
+		let coords = [-140.99778, 41.6751050889, -52.6480987209, 83.23324];
+
+		var country_bounding_boxes = {
+			AF: [60.5284298033, 29.318572496, 75.1580277851, 38.4862816432],
+			AO: [11.6400960629, -17.9306364885, 24.0799052263, -4.43802336998],
+			AL: [19.3044861183, 39.624997667, 21.0200403175, 42.6882473822],
+			AE: [51.5795186705, 22.4969475367, 56.3968473651, 26.055464179],
+			AR: [-73.4154357571, -55.25, -53.628348965, -21.8323104794],
+			AM: [43.5827458026, 38.7412014837, 46.5057198423, 41.2481285671],
+			AQ: [-180.0, -90.0, 180.0, -63.2706604895],
+			TF: [68.72, -49.775, 70.56, -48.625],
+			AU: [113.338953078, -43.6345972634, 153.569469029, -10.6681857235],
+			AT: [9.47996951665, 46.4318173285, 16.9796667823, 49.0390742051],
+			AZ: [44.7939896991, 38.2703775091, 50.3928210793, 41.8606751572],
+			BI: [29.0249263852, -4.49998341229, 30.752262811, -2.34848683025],
+			BE: [2.51357303225, 49.5294835476, 6.15665815596, 51.4750237087],
+			BJ: [0.772335646171, 6.14215770103, 3.79711225751, 12.2356358912],
+			BF: [-5.47056494793, 9.61083486576, 2.17710778159, 15.1161577418],
+			BD: [88.0844222351, 20.670883287, 92.6727209818, 26.4465255803],
+			BG: [22.3805257504, 41.2344859889, 28.5580814959, 44.2349230007],
+			BS: [-78.98, 23.71, -77.0, 27.04],
+			BA: [15.7500260759, 42.65, 19.59976, 45.2337767604],
+			BY: [23.1994938494, 51.3195034857, 32.6936430193, 56.1691299506],
+			BZ: [-89.2291216703, 15.8869375676, -88.1068129138, 18.4999822047],
+			BO: [-69.5904237535, -22.8729187965, -57.4983711412, -9.76198780685],
+			BR: [-73.9872354804, -33.7683777809, -34.7299934555, 5.24448639569],
+			BN: [114.204016555, 4.007636827, 115.450710484, 5.44772980389],
+			BT: [88.8142484883, 26.7194029811, 92.1037117859, 28.2964385035],
+			BW: [19.8954577979, -26.8285429827, 29.4321883481, -17.6618156877],
+			CF: [14.4594071794, 2.2676396753, 27.3742261085, 11.1423951278],
+			CA: [-140.99778, 41.6751050889, -52.6480987209, 83.23324],
+			CH: [6.02260949059, 45.7769477403, 10.4427014502, 47.8308275417],
+			CL: [-75.6443953112, -55.61183, -66.95992, -17.5800118954],
+			CN: [73.6753792663, 18.197700914, 135.026311477, 53.4588044297],
+			CI: [-8.60288021487, 4.33828847902, -2.56218950033, 10.5240607772],
+			CM: [8.48881554529, 1.72767263428, 16.0128524106, 12.8593962671],
+			CD: [12.1823368669, -13.2572266578, 31.1741492042, 5.25608775474],
+			CG: [11.0937728207, -5.03798674888, 18.4530652198, 3.72819651938],
+			CO: [-78.9909352282, -4.29818694419, -66.8763258531, 12.4373031682],
+			CR: [-85.94172543, 8.22502798099, -82.5461962552, 11.2171192489],
+			CU: [-84.9749110583, 19.8554808619, -74.1780248685, 23.1886107447],
+			CY: [32.2566671079, 34.5718694118, 34.0048808123, 35.1731247015],
+			CZ: [12.2401111182, 48.5553052842, 18.8531441586, 51.1172677679],
+			DE: [5.98865807458, 47.3024876979, 15.0169958839, 54.983104153],
+			DJ: [41.66176, 10.9268785669, 43.3178524107, 12.6996385767],
+			DK: [8.08997684086, 54.8000145534, 12.6900061378, 57.730016588],
+			DO: [-71.9451120673, 17.598564358, -68.3179432848, 19.8849105901],
+			DZ: [-8.68439978681, 19.0573642034, 11.9995056495, 37.1183806422],
+			EC: [-80.9677654691, -4.95912851321, -75.2337227037, 1.3809237736],
+			EG: [24.70007, 22.0, 36.86623, 31.58568],
+			ER: [36.3231889178, 12.4554157577, 43.0812260272, 17.9983074],
+			ES: [-9.39288367353, 35.946850084, 3.03948408368, 43.7483377142],
+			EE: [23.3397953631, 57.4745283067, 28.1316992531, 59.6110903998],
+			ET: [32.95418, 3.42206, 47.78942, 14.95943],
+			FI: [20.6455928891, 59.846373196, 31.5160921567, 70.1641930203],
+			FJ: [-180.0, -18.28799, 180.0, -16.0208822567],
+			FK: [-61.2, -52.3, -57.75, -51.1],
+			FR: [-54.5247541978, 2.05338918702, 9.56001631027, 51.1485061713],
+			GA: [8.79799563969, -3.97882659263, 14.4254557634, 2.32675751384],
+			GB: [-7.57216793459, 49.959999905, 1.68153079591, 58.6350001085],
+			GE: [39.9550085793, 41.0644446885, 46.6379081561, 43.553104153],
+			GH: [-3.24437008301, 4.71046214438, 1.0601216976, 11.0983409693],
+			GN: [-15.1303112452, 7.3090373804, -7.83210038902, 12.5861829696],
+			GM: [-16.8415246241, 13.1302841252, -13.8449633448, 13.8764918075],
+			GW: [-16.6774519516, 11.0404116887, -13.7004760401, 12.6281700708],
+			GQ: [9.3056132341, 1.01011953369, 11.285078973, 2.28386607504],
+			GR: [20.1500159034, 34.9199876979, 26.6041955909, 41.8269046087],
+			GL: [-73.297, 60.03676, -12.20855, 83.64513],
+			GT: [-92.2292486234, 13.7353376327, -88.2250227526, 17.8193260767],
+			GY: [-61.4103029039, 1.26808828369, -56.5393857489, 8.36703481692],
+			HN: [-89.3533259753, 12.9846857772, -83.147219001, 16.0054057886],
+			HR: [13.6569755388, 42.47999136, 19.3904757016, 46.5037509222],
+			HT: [-74.4580336168, 18.0309927434, -71.6248732164, 19.9156839055],
+			HU: [16.2022982113, 45.7594811061, 22.710531447, 48.6238540716],
+			ID: [95.2930261576, -10.3599874813, 141.03385176, 5.47982086834],
+			IN: [68.1766451354, 7.96553477623, 97.4025614766, 35.4940095078],
+			IE: [-9.97708574059, 51.6693012559, -6.03298539878, 55.1316222195],
+			IR: [44.1092252948, 25.0782370061, 63.3166317076, 39.7130026312],
+			IQ: [38.7923405291, 29.0990251735, 48.5679712258, 37.3852635768],
+			IS: [-24.3261840479, 63.4963829617, -13.609732225, 66.5267923041],
+			IL: [34.2654333839, 29.5013261988, 35.8363969256, 33.2774264593],
+			IT: [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748],
+			JM: [-78.3377192858, 17.7011162379, -76.1996585761, 18.5242184514],
+			JO: [34.9226025734, 29.1974946152, 39.1954683774, 33.3786864284],
+			JP: [129.408463169, 31.0295791692, 145.543137242, 45.5514834662],
+			KZ: [46.4664457538, 40.6623245306, 87.3599703308, 55.3852501491],
+			KE: [33.8935689697, -4.67677, 41.8550830926, 5.506],
+			KG: [69.464886916, 39.2794632025, 80.2599902689, 43.2983393418],
+			KH: [102.3480994, 10.4865436874, 107.614547968, 14.5705838078],
+			KR: [126.117397903, 34.3900458847, 129.468304478, 38.6122429469],
+			KW: [46.5687134133, 28.5260627304, 48.4160941913, 30.0590699326],
+			LA: [100.115987583, 13.88109101, 107.564525181, 22.4647531194],
+			LB: [35.1260526873, 33.0890400254, 36.6117501157, 34.6449140488],
+			LR: [-11.4387794662, 4.35575511313, -7.53971513511, 8.54105520267],
+			LY: [9.31941084152, 19.58047, 25.16482, 33.1369957545],
+			LK: [79.6951668639, 5.96836985923, 81.7879590189, 9.82407766361],
+			LS: [26.9992619158, -30.6451058896, 29.3251664568, -28.6475017229],
+			LT: [21.0558004086, 53.9057022162, 26.5882792498, 56.3725283881],
+			LU: [5.67405195478, 49.4426671413, 6.24275109216, 50.1280516628],
+			LV: [21.0558004086, 55.61510692, 28.1767094256, 57.9701569688],
+			MA: [-17.0204284327, 21.4207341578, -1.12455115397, 35.7599881048],
+			MD: [26.6193367856, 45.4882831895, 30.0246586443, 48.4671194525],
+			MG: [43.2541870461, -25.6014344215, 50.4765368996, -12.0405567359],
+			MX: [-117.12776, 14.5388286402, -86.811982388, 32.72083],
+			MK: [20.46315, 40.8427269557, 22.9523771502, 42.3202595078],
+			ML: [-12.1707502914, 10.0963607854, 4.27020999514, 24.9745740829],
+			MM: [92.3032344909, 9.93295990645, 101.180005324, 28.335945136],
+			ME: [18.45, 41.87755, 20.3398, 43.52384],
+			MN: [87.7512642761, 41.5974095729, 119.772823928, 52.0473660345],
+			MZ: [30.1794812355, -26.7421916643, 40.7754752948, -10.3170960425],
+			MR: [-17.0634232243, 14.6168342147, -4.92333736817, 27.3957441269],
+			MW: [32.6881653175, -16.8012997372, 35.7719047381, -9.23059905359],
+			MY: [100.085756871, 0.773131415201, 119.181903925, 6.92805288332],
+			NA: [11.7341988461, -29.045461928, 25.0844433937, -16.9413428687],
+			NC: [164.029605748, -22.3999760881, 167.120011428, -20.1056458473],
+			NE: [0.295646396495, 11.6601671412, 15.9032466977, 23.4716684026],
+			NG: [2.69170169436, 4.24059418377, 14.5771777686, 13.8659239771],
+			NI: [-87.6684934151, 10.7268390975, -83.147219001, 15.0162671981],
+			NL: [3.31497114423, 50.803721015, 7.09205325687, 53.5104033474],
+			NO: [4.99207807783, 58.0788841824, 31.29341841, 80.6571442736],
+			NP: [80.0884245137, 26.3978980576, 88.1748043151, 30.4227169866],
+			NZ: [166.509144322, -46.641235447, 178.517093541, -34.4506617165],
+			OM: [52.0000098, 16.6510511337, 59.8080603372, 26.3959343531],
+			PK: [60.8742484882, 23.6919650335, 77.8374507995, 37.1330309108],
+			PA: [-82.9657830472, 7.2205414901, -77.2425664944, 9.61161001224],
+			PE: [-81.4109425524, -18.3479753557, -68.6650797187, -0.0572054988649],
+			PH: [117.17427453, 5.58100332277, 126.537423944, 18.5052273625],
+			PG: [141.000210403, -10.6524760881, 156.019965448, -2.50000212973],
+			PL: [14.0745211117, 49.0273953314, 24.0299857927, 54.8515359564],
+			PR: [-67.2424275377, 17.946553453, -65.5910037909, 18.5206011011],
+			KP: [124.265624628, 37.669070543, 130.780007359, 42.9853868678],
+			PT: [-9.52657060387, 36.838268541, -6.3890876937, 42.280468655],
+			PY: [-62.6850571357, -27.5484990374, -54.2929595608, -19.3427466773],
+			QA: [50.7439107603, 24.5563308782, 51.6067004738, 26.1145820175],
+			RO: [20.2201924985, 43.6884447292, 29.62654341, 48.2208812526],
+			RU: [-180.0, 41.151416124, 180.0, 81.2504],
+			RW: [29.0249263852, -2.91785776125, 30.8161348813, -1.13465911215],
+			SA: [34.6323360532, 16.3478913436, 55.6666593769, 32.161008816],
+			SD: [21.93681, 8.61972971293, 38.4100899595, 22.0],
+			SS: [23.8869795809, 3.50917, 35.2980071182, 12.2480077571],
+			SN: [-17.6250426905, 12.332089952, -11.4678991358, 16.5982636581],
+			SB: [156.491357864, -10.8263672828, 162.398645868, -6.59933847415],
+			SL: [-13.2465502588, 6.78591685631, -10.2300935531, 10.0469839543],
+			SV: [-90.0955545723, 13.1490168319, -87.7235029772, 14.4241327987],
+			SO: [40.98105, -1.68325, 51.13387, 12.02464],
+			RS: [18.82982, 42.2452243971, 22.9860185076, 46.1717298447],
+			SR: [-58.0446943834, 1.81766714112, -53.9580446031, 6.0252914494],
+			SK: [16.8799829444, 47.7584288601, 22.5581376482, 49.5715740017],
+			SI: [13.6981099789, 45.4523163926, 16.5648083839, 46.8523859727],
+			SE: [11.0273686052, 55.3617373725, 23.9033785336, 69.1062472602],
+			SZ: [30.6766085141, -27.2858794085, 32.0716654803, -25.660190525],
+			SY: [35.7007979673, 32.312937527, 42.3495910988, 37.2298725449],
+			TD: [13.5403935076, 7.42192454674, 23.88689, 23.40972],
+			TG: [-0.0497847151599, 5.92883738853, 1.86524051271, 11.0186817489],
+			TH: [97.3758964376, 5.69138418215, 105.589038527, 20.4178496363],
+			TJ: [67.4422196796, 36.7381712916, 74.9800024759, 40.9602133245],
+			TM: [52.5024597512, 35.2706639674, 66.5461503437, 42.7515510117],
+			TL: [124.968682489, -9.39317310958, 127.335928176, -8.27334482181],
+			TT: [-61.95, 10.0, -60.895, 10.89],
+			TN: [7.52448164229, 30.3075560572, 11.4887874691, 37.3499944118],
+			TR: [26.0433512713, 35.8215347357, 44.7939896991, 42.1414848903],
+			TW: [120.106188593, 21.9705713974, 121.951243931, 25.2954588893],
+			TZ: [29.3399975929, -11.7209380022, 40.31659, -0.95],
+			UG: [29.5794661801, -1.44332244223, 35.03599, 4.24988494736],
+			UA: [22.0856083513, 44.3614785833, 40.0807890155, 52.3350745713],
+			UY: [-58.4270741441, -34.9526465797, -53.209588996, -30.1096863746],
+			US: [-171.791110603, 18.91619, -66.96466, 71.3577635769],
+			UZ: [55.9289172707, 37.1449940049, 73.055417108, 45.5868043076],
+			VE: [-73.3049515449, 0.724452215982, -59.7582848782, 12.1623070337],
+			VN: [102.170435826, 8.59975962975, 109.33526981, 23.3520633001],
+			VU: [166.629136998, -16.5978496233, 167.844876744, -14.6264970842],
+			PS: [34.9274084816, 31.3534353704, 35.5456653175, 32.5325106878],
+			YE: [42.6048726743, 12.5859504257, 53.1085726255, 19.0000033635],
+			ZA: [16.3449768409, -34.8191663551, 32.830120477, -22.0913127581],
+			ZM: [21.887842645, -17.9612289364, 33.4856876971, -8.23825652429],
+			ZW: [25.2642257016, -22.2716118303, 32.8498608742, -15.5077869605],
+		};
+
+		if (country_bounding_boxes[country_code]) {
+			coords = country_bounding_boxes[country_code];
+		} else {
+			// Pick random country
+			var keys = Object.keys(country_bounding_boxes);
+			var random_key = keys[Math.floor(Math.random() * keys.length)];
+
+			coords = country_bounding_boxes[random_key];
+		}
+
+		// Convert into Leaflet LatLngBounds
+		return Waymark_L.latLngBounds(
+			[coords[1], coords[0]],
+			[coords[3], coords[2]],
+		);
 	};
 
 	/*
@@ -9059,7 +9302,7 @@ function Waymark_Map_Viewer() {
 		//Show!
 		Waymark.jq_map_container.show();
 		Waymark.map.invalidateSize();
-		Waymark.config.map_width = Waymark.jq_map_container.width();
+		Waymark.config.map_options.map_width = Waymark.jq_map_container.width();
 
 		//Gallery
 		Waymark.setup_gallery();
@@ -9077,7 +9320,7 @@ function Waymark_Map_Viewer() {
 	};
 
 	this.setupCluster = () => {
-		if (!Waymark.config.show_cluster) {
+		if (!parseInt(Waymark.config.viewer_options.show_cluster)) {
 			return;
 		}
 
@@ -9094,18 +9337,8 @@ function Waymark_Map_Viewer() {
 			removeOutsideVisibleBounds: true,
 			iconCreateFunction: this.clusterIconFunction,
 			spiderfyOnMaxZoom: false,
-			disableClusteringAtZoom: Waymark.get_property(
-				waymark_settings,
-				"misc",
-				"cluster_options",
-				"cluster_threshold",
-			),
-			maxClusterRadius: Waymark.get_property(
-				waymark_settings,
-				"misc",
-				"cluster_options",
-				"cluster_radius",
-			),
+			disableClusteringAtZoom: Waymark.config.viewer_options.cluster_threshold,
+			maxClusterRadius: Waymark.config.viewer_options.cluster_radius,
 		});
 
 		// Make Marker Cluster the parent group for all markers
@@ -9118,20 +9351,20 @@ function Waymark_Map_Viewer() {
 	this.clusterIconFunction = (cluster) => {
 		const clusterTypes = new Map([]);
 
-		//Each Marker
+		// Each Marker
 		cluster.getAllChildMarkers().forEach((marker) => {
-			//Get data
+			// Get data
 			const typeKey = marker.feature.properties.type;
 			const typeData = Waymark.get_type("marker", typeKey);
-			typeData.iconData = Waymark.build_icon_data(typeData);
 
-			//Keep Count
+			// Keep Count
 			if (!clusterTypes.has(typeKey)) {
 				typeData.typeCount = 1;
 			} else {
-				typeData.typeCount++;
+				typeData.typeCount = clusterTypes.get(typeKey).typeCount + 1;
 			}
 
+			typeData.iconData = Waymark.build_icon_data(typeData);
 			clusterTypes.set(typeKey, typeData);
 		});
 
@@ -9219,11 +9452,19 @@ function Waymark_Map_Viewer() {
 	this.reset_map_view = function () {
 		Waymark = this;
 
+		let init_latlng = Waymark.config.map_options.map_init_latlng;
+		let init_zoom = Waymark.config.map_options.map_init_zoom;
+
+		// If undefined, set as false
+		if (typeof init_latlng === "undefined") {
+			init_latlng = false;
+		}
+		if (typeof init_zoom === "undefined") {
+			init_zoom = false;
+		}
+
 		//No view specified
-		if (
-			Waymark.config.map_init_latlng === undefined &&
-			Waymark.config.map_init_zoom === undefined
-		) {
+		if (!init_latlng && !init_zoom) {
 			//Use data layer bounds (if we have)
 			var bounds = Waymark.map_data.getBounds();
 			if (typeof bounds === "object" && bounds.isValid()) {
@@ -9232,20 +9473,14 @@ function Waymark_Map_Viewer() {
 				Waymark.map.fitBounds(bounds);
 			}
 			//Both zoom AND centre specified
-		} else if (
-			Waymark.config.map_init_latlng !== undefined &&
-			Waymark.config.map_init_zoom !== undefined
-		) {
+		} else if (init_latlng && init_zoom) {
 			//Use them
-			Waymark.map.setView(
-				Waymark.config.map_init_latlng,
-				Waymark.config.map_init_zoom,
-			);
+			Waymark.map.setView(init_latlng, init_zoom);
 			//Either zoom or centre specified
 		} else {
 			//Centre specified
-			if (Waymark.config.map_init_latlng !== undefined) {
-				Waymark.map.setView(Waymark.config.map_init_latlng);
+			if (init_latlng) {
+				Waymark.map.setView(init_latlng);
 
 				//Use data layer for zoom
 				Waymark.map.setZoom(
@@ -9254,8 +9489,8 @@ function Waymark_Map_Viewer() {
 			}
 
 			//Zoom specified
-			if (Waymark.config.map_init_zoom !== undefined) {
-				Waymark.map.setZoom(Waymark.config.map_init_zoom);
+			if (init_zoom) {
+				Waymark.map.setZoom(init_zoom);
 
 				//Use data layer for centre
 				Waymark.map.setView(Waymark.map_data.getBounds().getCenter());
@@ -9290,10 +9525,6 @@ function Waymark_Map_Viewer() {
 
 					break;
 				case "type":
-					if (Waymark.config.map_options.show_type_labels != "1") {
-						break;
-					}
-
 					//Get type
 					var type = Waymark.get_type(layer_type, feature.properties.type);
 					if (type) {
@@ -9364,10 +9595,13 @@ function Waymark_Map_Viewer() {
 		Waymark = this;
 
 		//Show elevation for Line?
-		if (Waymark.config.show_elevation && layer_type == "line") {
+		if (
+			parseInt(Waymark.config.viewer_options.show_elevation) &&
+			layer_type == "line"
+		) {
 			//Has elevation data, but nothing displayed yet
 			if (
-				Waymark.config.elevation_initial &&
+				parseInt(Waymark.config.viewer_options.elevation_initial) &&
 				Waymark.line_has_elevation_data(feature) &&
 				!Waymark.elevation_container.is(":visible")
 			) {
@@ -9376,23 +9610,24 @@ function Waymark_Map_Viewer() {
 				Waymark.elevation_control.loadData(feature);
 			}
 
-			layer.on("click", function (e) {
+			jQuery(layer).on("click", { W: Waymark }, function (e) {
+				var W = e.data.W;
 				var feature = e.target.feature;
 
 				//Clear chart
-				Waymark.elevation_control.clear();
+				W.elevation_control.clear();
 
 				//Clear Map layer
-				if (typeof Waymark.elevation_control.layer !== "undefined") {
-					Waymark.elevation_control.layer.removeFrom(Waymark.map);
+				if (typeof W.elevation_control.layer !== "undefined") {
+					W.elevation_control.layer.removeFrom(W.map);
 				}
 
 				//Feature has elevation data
-				Waymark.elevation_container.hide();
-				if (Waymark.line_has_elevation_data(feature)) {
-					Waymark.elevation_container.show();
+				W.elevation_container.hide();
+				if (W.line_has_elevation_data(feature)) {
+					W.elevation_container.show();
 
-					Waymark.elevation_control.loadData(feature);
+					W.elevation_control.loadData(feature);
 				}
 			});
 		}
@@ -9442,17 +9677,19 @@ function Waymark_Map_Viewer() {
 	this.setup_elevation = function () {
 		Waymark = this;
 
-		if (!Waymark.config.show_elevation) {
+		if (!Waymark.config.viewer_options.show_elevation) {
 			return;
 		}
 
+		Waymark.debug("Setting up Elevation Control");
+
 		//Localize
 		Waymark_L.registerLocale("waymark", {
-			"Total Length: ": waymark_js.lang.label_total_length,
-			"Max Elevation: ": waymark_js.lang.label_max_elevation,
-			"Min Elevation: ": waymark_js.lang.label_min_elevation,
-			"Total Ascent: ": waymark_js.lang.label_ascent,
-			"Total Descent: ": waymark_js.lang.label_descent,
+			"Total Length: ": Waymark.config.language.label_total_length,
+			"Max Elevation: ": Waymark.config.language.label_max_elevation,
+			"Min Elevation: ": Waymark.config.language.label_min_elevation,
+			"Total Ascent: ": Waymark.config.language.label_ascent,
+			"Total Descent: ": Waymark.config.language.label_descent,
 		});
 		Waymark_L.setLocale("waymark");
 
@@ -9461,14 +9698,42 @@ function Waymark_Map_Viewer() {
 			theme: "magenta-theme",
 			detached: true,
 			followMarker: false,
-			width: Waymark.config.map_width,
+			width: Waymark.config.map_options.map_width,
 		};
 
+		// Add Inline stylsheet for colours
+		// Needs to target both map and elevation divs by ID
+		const elevation_css = `
+			div#${Waymark.config.map_options.map_div_id} .elevation-polyline { stroke: ${Waymark.config.viewer_options.elevation_colour} !important; }
+			div#${Waymark.config.viewer_options.elevation_div_id} .elevation-control.elevation .area { fill: ${Waymark.config.viewer_options.elevation_colour} !important; }
+		`;
+
+		// Append to head
+		jQuery("head").append(`<style type="text/css">${elevation_css}</style>`);
+
 		//Container
-		if (typeof Waymark.config.elevation_div_id !== "undefined") {
-			config.elevationDiv = "#" + Waymark.config.elevation_div_id;
+		if (typeof Waymark.config.viewer_options.elevation_div_id !== "undefined") {
+			config.elevationDiv =
+				"#" + Waymark.config.viewer_options.elevation_div_id;
+
+			// Check if container exists
 			Waymark.elevation_container = jQuery(config.elevationDiv);
-			Waymark.elevation_container.hide();
+
+			// Create if it doesn't exist
+			if (!Waymark.elevation_container.length) {
+				Waymark.debug("Creating Elevation Container");
+
+				// Attached
+				config.width = Waymark.config.map_options.map_width / 2;
+
+				Waymark.elevation_container = jQuery("<div />")
+					.attr("id", Waymark.config.viewer_options.elevation_div_id)
+					.appendTo(Waymark.jq_map_container);
+			}
+
+			Waymark.elevation_container
+				.addClass("waymark-elevation-container")
+				.hide();
 
 			//Close
 			var elevation_close = jQuery("<span />")
@@ -9489,8 +9754,8 @@ function Waymark_Map_Viewer() {
 
 		//Units
 		if (
-			typeof Waymark.config.elevation_units !== "undefined" &&
-			Waymark.config.elevation_units == "imperial"
+			typeof Waymark.config.viewer_options.elevation_units !== "undefined" &&
+			Waymark.config.viewer_options.elevation_units == "imperial"
 		) {
 			config.imperial = true;
 		}
@@ -9531,14 +9796,15 @@ function Waymark_Map_Viewer() {
 	this.setup_gallery = function () {
 		Waymark = this;
 
-		if (!Waymark.config.show_gallery) {
+		//Only if enabled
+		if (!parseInt(Waymark.config.viewer_options.show_gallery)) {
 			return;
 		}
 
 		//Create gallery
 		Waymark.gallery = jQuery("<div />")
 			.attr("id", Waymark.config.gallery_div_id)
-			.css("width", Waymark.config.map_width)
+			.css("width", Waymark.config.map_options.map_width)
 			.addClass("waymark-gallery-container")
 			.html("");
 
@@ -9580,7 +9846,8 @@ function Waymark_Map_Viewer() {
 		gallery_padding = Waymark.gallery.css("paddingRight");
 		gallery_padding = gallery_padding.replace("px", "");
 		gallery_padding = parseInt(gallery_padding);
-		var gallery_width = Waymark.config.map_width - 2 * gallery_padding;
+		var gallery_width =
+			Waymark.config.map_options.map_width - 2 * gallery_padding;
 
 		Waymark.gallery.css("width", gallery_width);
 	};
@@ -9632,7 +9899,7 @@ function Waymark_Map_Viewer() {
 
 				// If we are clustering
 				if (
-					Waymark.config.show_cluster &&
+					parseInt(Waymark.config.viewer_options.show_cluster) &&
 					typeof Waymark.marker_cluster === "object"
 				) {
 					// Check that
@@ -9701,7 +9968,49 @@ function Waymark_Map_Editor() {
 		Waymark = this;
 
 		//This is the editor
-		jQuery(Waymark.map.getContainer()).addClass("waymark-is-editor");
+		Waymark.jq_map_container.addClass("waymark-is-editor");
+
+		// Set up data container
+		const data_div_id = Waymark.config.editor_options.data_div_id;
+		Waymark.jq_data_container = jQuery("#" + data_div_id);
+
+		//Data container found
+		if (Waymark.jq_data_container.length) {
+			// Get existing data
+			const map_data = Waymark.jq_data_container.val();
+
+			// Ensure is valid GeoJSON
+			try {
+				// Parse
+				const parsed_data = JSON.parse(map_data);
+
+				// Load
+				Waymark.load_json(parsed_data);
+
+				Waymark.debug(
+					`Data container (#${data_div_id}) found, valid GeoJSON added to Map.`,
+				);
+			} catch (error) {
+				Waymark.debug(
+					`Data container (#${data_div_id}) found, but not valid GeoJSON.`,
+				);
+			}
+			// Data container not found
+		} else {
+			// Add to map container
+
+			Waymark.debug(
+				`Data container (#${data_div_id}) not found, adding to DOM.`,
+			);
+
+			Waymark.jq_data_container = jQuery("<textarea />")
+				.attr({
+					id: data_div_id,
+					name: "map_data",
+				})
+				.addClass("waymark-input waymark-input-map_data")
+				.appendTo(Waymark.jq_map_container);
+		}
 
 		//Add loading
 		Waymark.jq_map_container.append(
@@ -9808,14 +10117,10 @@ function Waymark_Map_Editor() {
 		Waymark = this;
 
 		//Map Data
-
-		// TODO - this needs to be configurable
-
-		var map_data_container = jQuery(".waymark-input-map_data").first();
 		var map_data_string = JSON.stringify(Waymark.map_data.toGeoJSON());
 
 		//Update custom field form
-		map_data_container.html(map_data_string);
+		Waymark.jq_data_container.html(map_data_string);
 	};
 
 	//Something was edited
@@ -9845,7 +10150,7 @@ function Waymark_Map_Editor() {
 		var geocoder = Waymark_L.Control.geocoder({
 			position: "bottomright",
 			defaultMarkGeocode: false,
-			placeholder: waymark_js.lang.action_search_placeholder,
+			placeholder: Waymark.config.language.action_search_placeholder,
 		});
 		geocoder.on("markgeocode", function (e) {
 			Waymark.map.fitBounds(e.geocode.bbox);
@@ -9869,7 +10174,7 @@ function Waymark_Map_Editor() {
 					"waymark-icon waymark-edit-button waymark-edit-line",
 					toolbar,
 				);
-				button.setAttribute("title", waymark_js.lang.add_line_title);
+				button.setAttribute("title", Waymark.config.language.add_line_title);
 				button.onclick = function () {
 					Waymark.map.editTools.startPolyline();
 				};
@@ -9881,7 +10186,7 @@ function Waymark_Map_Editor() {
 					toolbar,
 				);
 				button.innerHTML = '<i class="ion ion-image"></i>';
-				button.setAttribute("title", waymark_js.lang.add_photo_title);
+				button.setAttribute("title", Waymark.config.language.add_photo_title);
 
 				// Hide initially
 				button.classList.add("waymark-hidden");
@@ -9895,7 +10200,7 @@ function Waymark_Map_Editor() {
 					toolbar,
 				);
 				button.innerHTML = '<i class="ion ion-location"></i>';
-				button.setAttribute("title", waymark_js.lang.add_marker_title);
+				button.setAttribute("title", Waymark.config.language.add_marker_title);
 				button.onclick = function () {
 					//Create JSON
 					var marker_json = Waymark.create_marker_json(Waymark.map.getCenter());
@@ -9915,7 +10220,10 @@ function Waymark_Map_Editor() {
 				);
 				button.innerHTML =
 					'<i class="ion ion-android-checkbox-outline-blank"></i>';
-				button.setAttribute("title", waymark_js.lang.add_rectangle_title);
+				button.setAttribute(
+					"title",
+					Waymark.config.language.add_rectangle_title,
+				);
 				button.onclick = function () {
 					Waymark.map.editTools.startRectangle();
 				};
@@ -9927,7 +10235,7 @@ function Waymark_Map_Editor() {
 					toolbar,
 				);
 				button.innerHTML = '<i class="ion ion-android-star-outline"></i>';
-				button.setAttribute("title", waymark_js.lang.add_polygon_title);
+				button.setAttribute("title", Waymark.config.language.add_polygon_title);
 				button.onclick = function () {
 					Waymark.map.editTools.startPolygon();
 				};
@@ -9939,7 +10247,7 @@ function Waymark_Map_Editor() {
 					toolbar,
 				);
 				button.innerHTML = '<i class="ion ion-ios-circle-outline"></i>';
-				button.setAttribute("title", waymark_js.lang.add_circle_title);
+				button.setAttribute("title", Waymark.config.language.add_circle_title);
 				button.onclick = function () {
 					Waymark.map.editTools.startCircle();
 				};
@@ -9948,12 +10256,12 @@ function Waymark_Map_Editor() {
 
 				var button = Waymark_L.DomUtil.create(
 					"a",
-					"waymark-edit-button waymark-edit-upload",
+					"waymark-edit-button waymark-edit-upload waymark-hidden",
 					toolbar,
 				);
 				button.innerHTML =
 					'<i class="ion ion-document"></i><i class="ion ion-arrow-up-c"></i>';
-				button.setAttribute("title", waymark_js.lang.upload_file_title);
+				button.setAttribute("title", Waymark.config.language.upload_file_title);
 
 				//Thanks to: https://stackoverflow.com/a/24939229
 				var file_input = jQuery("<input />")
@@ -10006,7 +10314,7 @@ function Waymark_Map_Editor() {
 
 				//Error?
 				if (response === null) {
-					Waymark.message(waymark_js.lang.error_file_upload, "error");
+					Waymark.message(Waymark.config.language.error_file_upload, "error");
 					Waymark.loading_stop();
 
 					return false;
@@ -10115,9 +10423,11 @@ function Waymark_Map_Editor() {
 				.addClass("button")
 				.attr(
 					"title",
-					waymark_js.lang.action_edit +
+					Waymark.config.language.action_edit +
 						" " +
-						Waymark.title_case(waymark_js.lang["object_label_" + layer_type]),
+						Waymark.title_case(
+							Waymark.config.language["object_label_" + layer_type],
+						),
 				)
 				.on("click", function (e) {
 					e.preventDefault();
@@ -10134,10 +10444,10 @@ function Waymark_Map_Editor() {
 						//Change title
 						button.attr(
 							"title",
-							waymark_js.lang.action_edit +
+							Waymark.config.language.action_edit +
 								" " +
 								Waymark.title_case(
-									waymark_js.lang["object_label_" + layer_type],
+									Waymark.config.language["object_label_" + layer_type],
 								),
 						);
 
@@ -10152,7 +10462,7 @@ function Waymark_Map_Editor() {
 						layer.closePopup();
 
 						//Change title
-						button.attr("title", waymark_js.lang.action_edit_done);
+						button.attr("title", Waymark.config.language.action_edit_done);
 
 						//Change icon
 						icon.attr("class", "ion-android-done");
@@ -10177,9 +10487,11 @@ function Waymark_Map_Editor() {
 			.addClass("button")
 			.attr(
 				"title",
-				waymark_js.lang.action_duplicate +
+				Waymark.config.language.action_duplicate +
 					" " +
-					Waymark.title_case(waymark_js.lang["object_label_" + layer_type]),
+					Waymark.title_case(
+						Waymark.config.language["object_label_" + layer_type],
+					),
 			)
 			.on("click", function (e) {
 				e.preventDefault();
@@ -10207,9 +10519,11 @@ function Waymark_Map_Editor() {
 			.addClass("button")
 			.attr(
 				"title",
-				waymark_js.lang.action_delete +
+				Waymark.config.language.action_delete +
 					" " +
-					Waymark.title_case(waymark_js.lang["object_label_" + layer_type]),
+					Waymark.title_case(
+						Waymark.config.language["object_label_" + layer_type],
+					),
 			)
 			.on("click", function (e) {
 				e.preventDefault();
@@ -10218,10 +10532,10 @@ function Waymark_Map_Editor() {
 				if (Waymark.config.editor_options.confirm_delete == "1") {
 					if (
 						!confirm(
-							waymark_js.lang.action_delete_confirm +
+							Waymark.config.language.action_delete_confirm +
 								" " +
 								Waymark.title_case(
-									waymark_js.lang["object_label_" + layer_type],
+									Waymark.config.language["object_label_" + layer_type],
 								) +
 								"?",
 						)
@@ -10250,7 +10564,7 @@ function Waymark_Map_Editor() {
 		);
 
 		//Type
-		var config_types = Waymark.config[layer_type + "_types"];
+		var config_types = Waymark.config.map_options[layer_type + "_types"];
 		var types_data = [];
 
 		// ================================
@@ -10264,13 +10578,13 @@ function Waymark_Map_Editor() {
 			jq_line_direction_select.append(
 				jQuery("<option />")
 					.val("")
-					.text(Waymark.title_case(waymark_js.lang.no_direction)),
+					.text(Waymark.title_case(Waymark.config.language.no_direction)),
 				jQuery("<option />")
 					.val("default")
-					.text(Waymark.title_case(waymark_js.lang.show_direction)),
+					.text(Waymark.title_case(Waymark.config.language.show_direction)),
 				jQuery("<option />")
 					.val("reverse")
-					.text(Waymark.title_case(waymark_js.lang.reverse_direction)),
+					.text(Waymark.title_case(Waymark.config.language.reverse_direction)),
 			);
 
 			//On change
@@ -10321,9 +10635,11 @@ function Waymark_Map_Editor() {
 					disabled: "disabled",
 				})
 				.text(
-					Waymark.title_case(waymark_js.lang["object_label_" + layer_type]) +
+					Waymark.title_case(
+						Waymark.config.language["object_label_" + layer_type],
+					) +
 						" " +
-						waymark_js.lang.object_type_label +
+						Waymark.config.language.object_type_label +
 						":",
 				),
 		);
@@ -10467,12 +10783,6 @@ function Waymark_Map_Editor() {
 			var overlay_preview_wrap = jQuery("<div />")
 				.addClass("waymark-overlay-wrap waymark-" + layer_type + "-wrap")
 				.attr("title", type_title);
-			// //Type labels?
-			// if (Waymark.config.map_options.show_type_labels == "1") {
-			// 	overlay_preview_wrap.append(
-			// 		jQuery("<div />").addClass("waymark-type-title").text(type_title),
-			// 	);
-			// }
 
 			//Append actual preview
 			overlay_preview_wrap.append(overlay_preview);
@@ -10537,10 +10847,10 @@ function Waymark_Map_Editor() {
 							value: feature.properties.title,
 							placeholder:
 								Waymark.title_case(
-									waymark_js.lang["object_label_" + layer_type],
+									Waymark.config.language["object_label_" + layer_type],
 								) +
 								" " +
-								waymark_js.lang.object_title_placeholder,
+								Waymark.config.language.object_title_placeholder,
 						})
 						.on("change", function () {
 							//Update properties
@@ -10559,10 +10869,10 @@ function Waymark_Map_Editor() {
 							class: "wp-editor",
 							placeholder:
 								Waymark.title_case(
-									waymark_js.lang["object_label_" + layer_type],
+									Waymark.config.language["object_label_" + layer_type],
 								) +
 								" " +
-								waymark_js.lang.object_description_placeholder,
+								Waymark.config.language.object_description_placeholder,
 						})
 						.val(feature.properties.description)
 						.on("change", function () {
@@ -10577,7 +10887,7 @@ function Waymark_Map_Editor() {
 					var img_input = jQuery("<input />")
 						.attr({
 							value: feature.properties.image_large_url,
-							placeholder: waymark_js.lang.object_image_placeholder,
+							placeholder: Waymark.config.language.object_image_placeholder,
 						})
 						.on("change", function () {
 							//Update properties
@@ -10619,7 +10929,7 @@ function Waymark_Map_Editor() {
 					//Upload
 
 					const img_upload = jQuery("<div />")
-						.text(waymark_js.lang.action_upload_image)
+						.text(Waymark.config.language.action_upload_image)
 						// Hide initially
 						.addClass("button button-small waymark-hidden");
 
@@ -10656,7 +10966,7 @@ function Waymark_Map_Editor() {
 			//Output
 			ele = jQuery("<small>").html(
 				"<b>" +
-					waymark_js.lang.marker_latlng_label +
+					Waymark.config.language.marker_latlng_label +
 					"</b>: " +
 					lat +
 					"," +
@@ -10682,7 +10992,7 @@ function Waymark_Map_Editor() {
 
 		//Build content
 		var title = Waymark.title_case(
-			waymark_js.lang.action_edit + " " + layer_type,
+			Waymark.config.language.action_edit + " " + layer_type,
 		);
 
 		var content = Waymark.build_content(layer_type, feature, layer);
@@ -10724,7 +11034,7 @@ function Waymark_Map_Editor() {
 
 				break;
 			default:
-				Waymark.message(waymark_js.lang.error_file_type, "error");
+				Waymark.message(Waymark.config.language.error_file_type, "error");
 		}
 
 		//Valid data
@@ -10756,7 +11066,7 @@ function Waymark_Map_Editor() {
 			this.load_json(geo_json);
 			//Invalid data
 		} else {
-			Waymark.message(waymark_js.lang.error_file_conversion, "error");
+			Waymark.message(Waymark.config.language.error_file_conversion, "error");
 		}
 	};
 

@@ -1,10 +1,10 @@
-=== Waymark ===
+=== Waymark - Create an Interactive Map, or entire GIS. Embed OpenStreetMap, OSM, MapBox & Google Maps with Leaflet | Import + Export GPX, KML & GeoJSON | Elevation, EXIF & Geo Location ===
 Contributors: morehawes
 Tags: GIS, Map maker, Maps, Leaflet, GPX, KML, GeoJSON, OpenStreetMap, EXIF, Map markers
 Requires at least: 4.6
 Tested up to: 6.4
 Requires PHP: 5.2
-Stable tag: 1.0.4
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,12 +12,13 @@ Waymark adds powerful mapping features to WordPress that are easy to use. Create
 
 == Description ==
 
-🗺 [View the Demo](https://www.ogis.app/yosemite/)
-🛠️ [Try the Editor](https://www.waymark.dev/try/)
-📼 [Watch the Video](https://www.waymark.dev/#footer)
-📖 [Read the Docs](https://www.waymark.dev/docs/)
-🌟 [Star on GitHub](https://github.com/opengis/waymark)
-❤️
+🗺 [Demo](https://www.ogis.app/yosemite/)
+🛠️ [Try](https://www.waymark.dev/try/)
+📼 [Watch](https://www.waymark.dev/#footer)
+📖 [Docs](https://www.waymark.dev/docs/)
+🌟 [GitHub](https://github.com/opengis/waymark)
+❤️ [WordPress](https://wordpress.org/plugins/waymark/)
+☕️ [Waymark JS](https://www.waymark.dev/js)
 
 ### Creating Maps
 
@@ -31,7 +32,7 @@ Use the intuitive [Editor](https://www.waymark.dev/docs/editor/) to create Maps 
 - **Import**
   - GPX
   - KML
-  - GeoJSON (including [Properties](https://www.waymark.dev/docs/settings/#properties))
+  - GeoJSON
   - EXIF (Image location metadata)
   - [Elevation data](https://www.waymark.dev/map/track-with-elevation/) (adds an interactive profile chart for Lines with elevation data)
 - **[Meta](https://www.waymark.dev/docs/meta/)** - Add extra information to your Maps; these are customisable form inputs that allow you to add additional content to your Maps.
@@ -51,7 +52,7 @@ Embed your Maps using the `[Waymark]` Shortcode, or link to the [Map Details](ht
   - Display a Basemap only, without any Overlays by providing centre and zoom parameters.
 - **[Basemaps](https://www.waymark.dev/docs/basemaps/)** - Uses [OpenStreetMap](https://www.openstreetmap.org/fixthemap) by default, with support for multiple raster tiled/"slippy" Basemaps. You can switch Basemaps using the Overlay Filter.
 - **Overlay Filter** - Allow the user to filter which Overlays are currently visible on the Map.
-- **[Export](https://www.waymark.dev/docs/shortcodes/#shortcode-export)**
+- **Export**
   - (Optionally) Let anyone Export Maps into GPX, KML and GeoJSON formats through the Shortcode Header or on the Map Details page.
   - Works on mobile devices.
 
@@ -70,7 +71,7 @@ For developers:
 - WordPress integration:
   - Maps are stored using the custom post type `waymark_map`.
   - Collections use the `waymark_collection` Taxonomy.
-  - Embed Maps using the `[Waymark]` [Shortcode](https://www.waymark.dev/docs/shortcodes/) anywhere they are supported, or dynamically using the `do_shortcode([Waymark])` [function](https://developer.wordpress.org/reference/functions/do_shortcode/).
+  - Embed Maps using the `[Waymark]` [Shortcode](https://www.waymark.dev/docs/shortcodes/) anywhere they are supported, or dynamically using the `do_shortcode(["Waymark"])` [function](https://developer.wordpress.org/reference/functions/do_shortcode/).
 - Geographical data is stored in [GeoJSON](https://geojson.org/) format. [Types](https://www.waymark.dev/docs/types/) are specified using the `type` Property, i.e. `{feature: { geometry: { type: 'Point', coordinates: [0, 0] } }, properties: { type: 'Alert', title: 'Bridge Removed!' }`.
 - Maps are displayed using the [Leaflet](https://leafletjs.com/) JavaScript library, which is bundled with Waymark and can be extended using the callback function.
 - Use the [JavaScript callback functions](https://www.waymark.dev/docs/callback-function/) to extend Waymark functionality client-side, provided either globally (for integration with *all* Waymark Maps) or provided as a [Shortcode parameter](https://www.waymark.dev/docs/shortcodes/#callback-function).
@@ -103,6 +104,10 @@ grunt
 The build script will watch for changes to the JavaScript and CSS files.
 
 Pull requests are welcome!
+
+> [!IMPORTANT]
+> [Waymark JS](https://www.waymark.dev/js) is responsible for the Viewer and Editor and is included as a Git submodule (`/waymark-js` directory). View on [GitHub](https://github.com/OpenGIS/Waymark-JS/).
+
 
 == Installation ==
 
@@ -165,6 +170,25 @@ Built on the shoulders of giants, [thank you](https://www.waymark.dev/docs/thank
 
 == Changelog ==
 
+= 1.1.3 =
+
+- Submission File Upload bug fix.
+
+= 1.1.2 =
+
+- Adding missing localisations.
+
+= 1.1.1 =
+
+- Elevation display bug fix. Thanks to [hsmeets](https://wordpress.org/support/users/hsmeets/) for [reporting this](https://wordpress.org/support/topic/height-map-no-longer-shown/).
+
+= 1.1.0 =
+
+- **[Waymark JS](https://www.waymark.dev/js)** - The plugin has been significantly refactored, with the JavaScript codebase being split into a separate [project](https://github.com/OpenGIS/Waymark-JS/). This makes the Waymark Editor and Viewer available as a standalone library, which can be used in **any web page** and does not require WordPress. 
+- Removed the Show/Hide "Type Labels" Setting. Type labels are always shown by default, but can be hidden using CSS.
+- Removed Settings for importing custom GeoJSON properties.
+- Lots of other improvements and bug fixes.
+
 = 1.0.4 =
 
 - Removed "Store Read Files" Setting, which was disabled by default and did not work reliably.
@@ -189,7 +213,7 @@ Fixed a bug with Map Exporting. Thanks to <a href="https://wordpress.org/support
 
 Thanks for helping Waymark get to Version 1! ❤️
 
-* [Map First](https://www.ogis.app/yosemite/) - A minimal WordPress theme with an *obsession* for Maps. It's open-source too and contains lots of comments about customisations. As seen in the [demo](https://www.ogis.app/yosemite/).
+* [Map First](https://github.com/opengis/map-first) - A minimal WordPress theme with an *obsession* for Maps. It's open-source too and contains lots of comments about customisations. As seen in the [demo](https://www.ogis.app/yosemite/).
 * Added Total Ascent and Descent to Elevation Profile. Thanks to <a href="https://github.com/MaximeChallon">MaximeChallon</a> for the <a href="https://github.com/OpenGIS/Waymark/pull/29">Pull Request</a> :)
 * Improved rendering of multiple Maps through the Collection Shortcode, where the initial view would sometimes not be set correctly to view all Map data.
 * Updated documentation.

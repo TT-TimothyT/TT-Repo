@@ -8,14 +8,29 @@ import ControlMeta from './classes/control/control-meta';
 
 class OptimizationControl {
 	constructor() {
+		this.controlSyncRequestInProgress = false;
+
 		this.init();
+
+		this.controlSync = new ControlSync();
 	}
 
 	init() {
 		this.initEventListeners();
 
-		const controlSync = new ControlSync();
-		setInterval( () => controlSync.run(), 5000 );
+		setInterval( () => this.runStatusCheckLoop(), 5000 );
+	}
+
+	async runStatusCheckLoop() {
+		if ( this.controlSyncRequestInProgress ) {
+			return;
+		}
+
+		this.controlSyncRequestInProgress = true;
+
+		await this.controlSync.run();
+
+		this.controlSyncRequestInProgress = false;
 	}
 
 	initEventListeners() {

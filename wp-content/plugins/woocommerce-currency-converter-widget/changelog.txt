@@ -1,5 +1,9 @@
 *** Currency Converter Changelog ***
 
+2024-02-26 - version 2.2.2
+* Tweak - Tested compatibility up to WC 8.6.
+* Fix - Fixed the currency geolocation on stores with page cache.
+
 2023-12-14 - version 2.2.1
 * Fix - Fixed issue when loading the currencies locales.
 

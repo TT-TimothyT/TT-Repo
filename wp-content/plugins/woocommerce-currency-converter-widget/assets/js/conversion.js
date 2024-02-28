@@ -15,8 +15,22 @@ jQuery(document).ready(function() {
 	money = set_default_rate_on_missing_currency( money, wc_currency_converter_params.currency );
 	money = set_default_rate_on_missing_currency( money, wc_currency_converter_params.current_currency );
 
-	if ( 'undefined' !== typeof( set_initial_currency ) ) {
-		jQuery.cookie( 'woocommerce_current_currency', set_initial_currency, { expires: 7, path: '/' } );
+	if ( ! jQuery.cookie( 'woocommerce_current_currency' ) ) {
+		jQuery.post({
+			url: wc_currency_converter_params.ajax_url,
+			dataType: 'json',
+			data: {
+				action: 'wc_currency_converter_fetch_initial_currency',
+				widget_id: wc_currency_converter_params.widget_id
+			},
+			success: function ( result ) {
+				if ( result.success && result.data.currency ) {
+					// Calling the switch_currency() doesn't update the selected currency in the widget content.
+					jQuery('ul.currency_switcher li a[data-currencycode="' + result.data.currency + '"]').trigger( 'click' );
+					jQuery( 'select.currency_switcher' ).val( result.data.currency ).trigger( 'change' );
+				}
+			}
+		});
 	}
 
 	if ( money.settings.from == 'RMB' ) {
@@ -31,7 +45,6 @@ jQuery(document).ready(function() {
 	}
 
 	function switch_currency( to_currency ) {
-
 		if ( wc_currency_converter_params.symbol_positions[ to_currency ] ) {
 			currency_position = wc_currency_converter_params.symbol_positions[ to_currency ];
 		}

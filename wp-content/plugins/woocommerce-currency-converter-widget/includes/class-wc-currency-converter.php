@@ -165,7 +165,7 @@ class WC_Currency_Converter extends Plugin {
 			$current_currency = sanitize_text_field( wp_unslash( $_COOKIE['woocommerce_current_currency'] ) );
 		} elseif ( ! $disable_location ) {
 			// If location detection is enabled, get the users local currency based on their location.
-			$users_default_currency = self::get_users_default_currency();
+			$users_default_currency = Currency_Utils::get_geolocated();
 			// If it's an allowed currency, then use it.
 			if ( isset( $users_default_currency ) && is_array( $currencies ) && in_array( $users_default_currency, $currencies ) ) {
 				$current_currency = $users_default_currency;
@@ -294,6 +294,8 @@ class WC_Currency_Converter extends Plugin {
 		$rates = new Rates();
 
 		$wc_currency_converter_params = array(
+			'ajax_url'               => admin_url( 'admin-ajax.php' ),
+			'widget_id'              => $this->widget->id, // Necessary to get the widget instance in AJAX requests.
 			'current_currency'       => isset( $_COOKIE['woocommerce_current_currency'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['woocommerce_current_currency'] ) ) : '',
 			'currencies'             => wp_json_encode( $this->get_symbols( $currencies ) ),
 			'rates'                  => $rates->get_rates( $currencies ),
@@ -396,17 +398,14 @@ class WC_Currency_Converter extends Plugin {
 	/**
 	 * Function to return the users default currency code.
 	 *
-	 * @since  1.4.1
+	 * @since 1.4.1
+	 * @deprecated 2.2.2
 	 *
-	 * @return string
+	 * @return string|false The currency code. False if not found.
 	 */
 	public static function get_users_default_currency() {
-		$location = WC_Geolocation::geolocate_ip();
+		wc_deprecated_function( __FUNCTION__, '2.2.2', '\KoiLab\WC_Currency_Converter\Utilities\Currency_Utils::get_geolocated()' );
 
-		if ( isset( $location['country'] ) ) {
-			return Currency_Utils::get_by_country( $location['country'] );
-		}
-
-		return false;
+		return Currency_Utils::get_geolocated();
 	}
 }

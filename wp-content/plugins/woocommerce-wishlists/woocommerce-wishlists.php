@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce WishLists
  * Plugin URI: https://woocommerce.com/products/woocommerce-wishlists/
  * Description:  WooCommerce Wishlists allows you to create public and personal wishlists.
- * Version: 2.3.0
+ * Version: 2.3.1
  * Author: Element Stark
  * Author URI: https://www.elementstark.com
  * Requires at least: 3.1
@@ -12,12 +12,12 @@
  * Text Domain: wc_wishlist
  * Domain Path: /lang/
 
- * Copyright: © 2009-2023 Element Stark LLC
+ * Copyright: © 2009-2024 Element Stark LLC
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
- * WC requires at least: 7.0
- * WC tested up to: 8.3
+ * WC requires at least: 8.0
+ * WC tested up to: 8.6
  * Woo: 171144:6bd20993ea96333eab6931ec2adc6d63
  */
 
@@ -44,20 +44,15 @@ if ( is_woocommerce_active() ) {
 		 * @var string
 		 * This is the database version for Wishlists, does not reflect the plugin version.
 		 */
-		var $version = '2.2.11';
+		 public $version = '2.3.1';
 
-		var $assets_version = '2.2.11';
+		public $assets_version = '2.3.1';
 
 		/**
 		 * @var string
 		 * This is a version id for the cron job for notifications.
 		 */
-		var $cron_version = '1.0.0';
-
-		/**
-		 * @var array
-		 */
-		private $_body_classes = array();
+		public $cron_version = '2.3.1';
 
 		/**
 		 * EduPress Recruiter Constructor.
@@ -154,13 +149,17 @@ if ( is_woocommerce_active() ) {
 
 			if ( is_admin() ) {
 
-				include 'classes/class-wc-wishlists-admin-settings.php';
 
+                include 'classes/class-wc-wishlist-cloner.php';
+				include 'classes/class-wc-wishlists-admin-settings.php';
 				include 'classes/class-wc-wishlists-admin-wishlist.php';
 
 				//Activate the settings tab in the WooCommerce Settings area.
 				WC_Wishlists_Settings_Admin::instance();
 				WC_Wishlists_Wishlist_Admin::instance();
+
+                // Activate the cloner
+                WC_Wishlist_Cloner::register();
 
 				//@see classes/class-wc-wishlists-admin-controller.php for further comments.
 				//include 'classes/class-wc-wishlists-admin-controller.php';

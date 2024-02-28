@@ -115,7 +115,7 @@ class Module extends Module_Base {
 		}
 
 		if ( Connect::is_connected() && Connect::is_activated() ) {
-			$plan_data = Connect::check_connect_status();
+			$plan_data = Connect::get_connect_status();
 			$usage_percentage = 0;
 
 			if ( ! empty( $plan_data ) ) {
@@ -186,7 +186,7 @@ class Module extends Module_Base {
 			[
 				'isConnected' => Connect::is_connected(),
 				'isActivated' => Connect::is_activated(),
-				'planData' => Connect::is_activated() ? Connect::check_connect_status() : null,
+				'planData' => Connect::is_activated() ? Connect::get_connect_status() : null,
 				'licenseKey' => Connect::is_activated() ? Data::get_activation_state() : null,
 				'imagesLeft' => Connect::is_activated() ? Data::images_left() : null,
 				'isOwner' => Connect::is_connected() ? Data::user_is_subscription_owner() : null,
@@ -213,6 +213,16 @@ class Module extends Module_Base {
 		return ( Utils::is_media_page() || Utils::is_plugin_page() ) && Utils::user_is_admin();
 	}
 
+	public function add_leave_feedback_footer_text(): void {
+		$link = 'https://wordpress.org/support/plugin/image-optimization/reviews/?filter=5#new-post';
+
+		printf(
+			__( "<b>Found Image Optimizer helpful?</b> Leave us a <a href='%1\$s' aria-label='%2\$s'>★★★★★</a> rating!" ),
+			$link,
+			__( 'Five stars', 'image-optimization' )
+		);
+	}
+
 	/**
 	 * Module constructor.
 	 */
@@ -227,6 +237,7 @@ class Module extends Module_Base {
 				return;
 			}
 
+			add_filter( 'admin_footer_text', [ $this, 'add_leave_feedback_footer_text' ] );
 			add_action( 'admin_notices', [ $this, 'maybe_add_quota_reached_notice' ] );
 
 			if ( Utils::is_media_page() ) {

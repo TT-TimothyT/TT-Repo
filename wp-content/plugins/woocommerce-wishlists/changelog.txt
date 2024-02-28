@@ -1,4 +1,9 @@
 *** WooCommerce Wishlist Changelog ***
+2024.02.27 - version 2.3.1
+    * Update:  WC and WP Updates.
+    * Update:  PHP 8.2+ compatibility.
+    * New: Added a Clone option on the Wishlist admin screen.  This will create a new list with the same items as the original list.
+
 2023.12.05 - version 2.3.0
     * Update:  WC and WP Updates.
     * Update: Filter the list of items on the view a list and edit list pages for published products only.

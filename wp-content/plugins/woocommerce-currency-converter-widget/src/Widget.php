@@ -9,6 +9,8 @@ namespace KoiLab\WC_Currency_Converter;
 
 defined( 'ABSPATH' ) || exit;
 
+use KoiLab\WC_Currency_Converter\Utilities\Currency_Utils;
+
 /**
  * Currency Converter Widget class.
  */
@@ -79,7 +81,6 @@ class Widget extends \WC_Widget {
 	 * @param array $instance Widget instance.
 	 */
 	public function widget( $args, $instance ) {
-		$this->maybe_set_cookie( $instance );
 		$this->widget_start( $args, $instance );
 
 		/**
@@ -98,10 +99,12 @@ class Widget extends \WC_Widget {
 	 * Sets the current currency into a cookie.
 	 *
 	 * @since 1.6.4
+	 * @deprecated 2.2.2
 	 *
 	 * @param array $instance Widget instance.
 	 */
 	public function maybe_set_cookie( $instance ) {
+		wc_deprecated_function( __FUNCTION__, '2.2.2', '\KoiLab\WC_Currency_Converter\AJAX::fetch_initial_currency()' );
 		$current_currency = $this->get_current_currency( $instance );
 
 		// Save the currency in the cookie.
@@ -118,41 +121,20 @@ class Widget extends \WC_Widget {
 	 * Gets the current currency to set the cookie.
 	 *
 	 * @since 1.9.0
+	 * @deprecated 2.2.2
 	 *
 	 * @param array $instance Widget instance.
 	 * @return string
 	 */
 	protected function get_current_currency( array $instance ) {
+		wc_deprecated_function( __FUNCTION__, '2.2.2', '\KoiLab\WC_Currency_Converter\Utilities\Currency_Utils::get_by_widget()' );
+
 		// If a cookie is set then use that.
 		if ( ! empty( $_COOKIE['woocommerce_current_currency'] ) ) {
 			return wc_clean( wp_unslash( $_COOKIE['woocommerce_current_currency'] ) );
 		}
 
-		// Assume default currency from WooCommerce.
-		$current_currency = get_woocommerce_currency();
-		$disable_location = ( isset( $instance['disable_location'] ) && wc_string_to_bool( $instance['disable_location'] ) );
-
-		/**
-		 * Filter the 'disable_location' settings value.
-		 *
-		 * @since 1.6.0
-		 *
-		 * @param bool $disable_location The 'disable_location' settings value.
-		 */
-		$disable_location = apply_filters( 'woocommerce_disable_location_based_currency', $disable_location );
-
-		// Get the currency based on the customer's location.
-		if ( ! $disable_location ) {
-			$local_currency = \WC_Currency_Converter::get_users_default_currency();
-			$currencies     = ( isset( $instance['currency_codes'] ) ? explode( "\n", $instance['currency_codes'] ) : array() );
-
-			// If it's an allowed currency, then use it.
-			if ( $local_currency && is_array( $currencies ) && in_array( $local_currency, $currencies, true ) ) {
-				$current_currency = sanitize_text_field( $local_currency );
-			}
-		}
-
-		return $current_currency;
+		return Currency_Utils::get_by_widget( $this->id );
 	}
 }
 

@@ -12,6 +12,9 @@ class WC_Wishlists_Settings_Admin {
 		return $instance;
 	}
 
+    public $current_tab;
+    public $settings_tabs;
+
 	/**
 	 * @var array Stores the fields to render on the admin page.
 	 */
@@ -25,8 +28,6 @@ class WC_Wishlists_Settings_Admin {
 			'wc_wishlists' => __( 'Wishlists', 'wc_wishlist' )
 		);
 
-		//add_action( 'woocommerce_settings_tabs', array( $this, 'on_add_tab' ), 10 );
-
 		add_filter('woocommerce_settings_tabs_array', array($this, 'on_add_tab_array'), 50);
 
 		// Run these actions when generating the settings tabs.
@@ -36,11 +37,8 @@ class WC_Wishlists_Settings_Admin {
 		}
 
 		add_action( 'woocommerce_update_options_wc_wishlists_main', array( $this, 'save_settings' ), 10 );
-		//add_action('woocommerce_update_options_wc_wishlists_email', array(&$this, 'save_settings'), 10);
-		// Add the settings fields to each tab.
 		add_action( 'woocommerce_wishlists_options_settings', array( $this, 'add_settings_fields' ), 10 );
 		add_action( 'woocommerce_admin_field_editor', array( $this, 'on_editor_field' ) );
-
 		add_action( 'woocommerce_admin_field_wishlist_styles', array( &$this, 'wishlist_styles_setting' ) );
 	}
 
@@ -176,7 +174,7 @@ class WC_Wishlists_Settings_Admin {
 			$colors['link'] = '#ffffff';
 		}
 
-		// Define main settings			
+		// Define main settings
 		$this->fields['wc_wishlists_main'] = apply_filters( 'woocommerce_wishlists_options_settings_fields', array(
 				array(
 					'name' => __( 'Wishlist Options', 'wc_wishlist' ),
@@ -497,7 +495,7 @@ class WC_Wishlists_Settings_Admin {
 	function init_email_fields() {
 		return;
 		/*
-		 * Future place for email subscription settings. 
+		 * Future place for email subscription settings.
 		  $body_default = $this->get_default_email_body();
 
 		  // Define main settings

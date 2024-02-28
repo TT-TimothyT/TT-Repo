@@ -74,13 +74,13 @@ class WC_Wishlists_Wishlist {
 			$value  = get_post_meta( $id, '_wishlist_sharing', true );
 			$result = '';
 			switch ( $value ) {
-				case 'Public' :
+				case 'Public':
 					$result = __( 'Public', 'wc_wishlist' );
 					break;
-				case 'Shared' :
+				case 'Shared':
 					$result = __( 'Shared', 'wc_wishlist' );
 					break;
-				case 'Private' :
+				case 'Private':
 					$result = __( 'Private', 'wc_wishlist' );
 					break;
 				default:
@@ -115,20 +115,29 @@ class WC_Wishlists_Wishlist {
 
 	public static function get_the_url_view( $id, $sharing = false ) {
 		if ( $sharing && self::get_the_wishlist_sharing( $id ) == 'Shared' ) {
-			return add_query_arg( array(
-				'wlid'  => $id,
-				'wlkey' => self::get_the_wishlist_sharing_key( $id )
-			), ( WC_Wishlists_Pages::get_url_for( 'view-a-list' ) ) );
+			return add_query_arg(
+				array(
+					'wlid'  => $id,
+					'wlkey' => self::get_the_wishlist_sharing_key( $id ),
+				),
+				( WC_Wishlists_Pages::get_url_for( 'view-a-list' ) )
+			);
 		} else {
 			return add_query_arg( array( 'wlid' => $id ), ( WC_Wishlists_Pages::get_url_for( 'view-a-list' ) ) );
 		}
 	}
 
 	public static function get_the_url_delete( $id ) {
-		return WC_Wishlists_Plugin::nonce_url( 'delete-list', add_query_arg( array(
-			'wlid'     => $id,
-			'wlaction' => 'delete-list'
-		), ( WC_Wishlists_Pages::get_url_for( 'my-lists' ) ) ) );
+		return WC_Wishlists_Plugin::nonce_url(
+			'delete-list',
+			add_query_arg(
+				array(
+					'wlid'     => $id,
+					'wlaction' => 'delete-list',
+				),
+				( WC_Wishlists_Pages::get_url_for( 'my-lists' ) )
+			)
+		);
 	}
 
 	public static function create_list( $title, $raw_args = array() ) {
@@ -168,7 +177,7 @@ class WC_Wishlists_Wishlist {
 			'post_status'  => 'publish',
 			'ping_status'  => 'closed',
 			'post_excerpt' => '',
-			'post_author'  => is_int( $args['wishlist_owner'] ) ? $args['wishlist_owner'] : 1
+			'post_author'  => is_int( $args['wishlist_owner'] ) ? $args['wishlist_owner'] : 1,
 		);
 
 		unset( $wishlist_data['ID'] );
@@ -236,7 +245,7 @@ class WC_Wishlists_Wishlist {
 			'wishlist_last_name'           => get_post_meta( $post_id, '_wishlist_last_name', true ),
 			'wishlist_items'               => get_post_meta( $post_id, '_wishlist_items', true ),
 			'wishlist_subscribers'         => get_post_meta( $post_id, '_wishlist_subscribers', true ),
-			'wishlist_is_default'          => get_post_meta( $post_id, '_wishlist_is_default', true)
+			'wishlist_is_default'          => get_post_meta( $post_id, '_wishlist_is_default', true ),
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -287,9 +296,7 @@ class WC_Wishlists_Wishlist {
 			update_post_meta( $wishlist_id, '_wishlist_subscribers', apply_filters( 'wc_wishlists_update_subscribers', $args['wishlist_subscribers'], $wishlist_id ) );
 			update_post_meta( $wishlist_id, '_wishlist_items', apply_filters( 'wc_wishlists_update_items', $args['wishlist_items'], $wishlist_id ) );
 
-
 			do_action( 'wc_wishlists_updated', $wishlist_id, $args );
-
 
 			return $wishlist_id;
 		}
@@ -325,4 +332,23 @@ class WC_Wishlists_Wishlist {
 		return $result;
 	}
 
+	public function get_id(): int {
+		return $this->id;
+	}
+
+	public function get_title(): string {
+		return get_the_title( $this->id );
+	}
+
+	public function get_description() {
+		return $this->post->post_content;
+	}
+
+	public function get_items( $context = 'edit' ) {
+		if ( $context == 'edit' ) {
+			return get_post_meta( $this->id, '_wishlist_items', true );
+		} else {
+			return WC_Wishlists_Wishlist_Item_Collection::get_items( $this->get_id(), true );
+		}
+	}
 }

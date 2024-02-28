@@ -52,7 +52,7 @@ class List_View_Pointer {
 
 		<style>
 			.image-optimization-list-view-pointer .wp-pointer-arrow {
-				left: 15px;
+				inset-inline-start: 15px;
 			}
 		</style>
 		<?php
