@@ -586,3 +586,8 @@ a.refineLink {
 .ais-InfiniteHits-loadMore--disabled{
     display: none;
   }
+
+/* Hide the Filter by Relevance */
+.archive #ais-sortBy {
+    display: none;
+}
