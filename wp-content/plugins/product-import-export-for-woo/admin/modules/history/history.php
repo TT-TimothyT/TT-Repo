@@ -179,7 +179,7 @@ class Wt_Import_Export_For_Woo_Basic_History
 				$ext=end($ext_arr);
 				if($ext=='log')
 				{
-					$log_file_path=Wt_Import_Export_For_Woo_Basic_Log::get_file_path($log_file_name);
+					$log_file_path=Wt_Import_Export_For_Woo_Basic_Log::get_file_path(basename($log_file_name));
 					if(file_exists($log_file_path))
 					{
 						include_once WT_P_IEW_PLUGIN_PATH.'admin/classes/class-logreader.php';

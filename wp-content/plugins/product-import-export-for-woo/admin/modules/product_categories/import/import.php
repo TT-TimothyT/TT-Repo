@@ -270,7 +270,17 @@ class Wt_Import_Export_For_Woo_Basic_Categories_Import {
      * $image_url is url
      * return attachment id
      */
-    public function image_library_attachment($image_url) {
+    public function image_library_attachment($image_url)
+    {
+
+        $allowed_extensions = apply_filters('wt_category_thumbnail_allowed_image_extensions', array('jpg', 'jpeg', 'png', 'gif'));
+
+
+        $file_extension = strtolower(pathinfo($image_url, PATHINFO_EXTENSION));
+
+        if (!in_array($file_extension, $allowed_extensions)) {
+            return false;
+        }
 
         $upload_dir = wp_upload_dir();
 
@@ -296,7 +306,7 @@ class Wt_Import_Export_For_Woo_Basic_Categories_Import {
         );
 
         $attach_id = wp_insert_attachment($attachment, $file);
-        require_once( ABSPATH . 'wp-admin/includes/image.php' );
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
         $attach_data = wp_generate_attachment_metadata($attach_id, $file);
         wp_update_attachment_metadata($attach_id, $attach_data);
 

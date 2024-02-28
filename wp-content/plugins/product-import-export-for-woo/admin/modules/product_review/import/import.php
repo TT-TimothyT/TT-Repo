@@ -34,12 +34,6 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 
         $this->parent_module = $parent_object;
         
-//        if (WC()->version < '2.7.0') {
-//            $this->log = new WC_Logger();
-//        } else {
-//            $this->log = wc_get_logger();
-//        }
-        
         $this->post_defaults     = apply_filters('alter_review_export_fields', array(
                         'comment_ID'			=> '',
                         'comment_post_ID'		=> '',
@@ -69,13 +63,6 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
     }
     
     public function hf_log_data_change($content = 'review-csv-import', $data = '') {
-//        $content = 'wt-revamp-review-csv-import';
-//        if (WC()->version < '2.7.0') {
-//            $this->log->add($content, $data);
-//        } else {
-//            $context = array('source' => $content);
-//            $this->log->log("debug", $data, $context);
-//        }
         
         Wt_Import_Export_For_Woo_Basic_Logwriter::write_log($this->parent_module->module_base, 'import', $data);
     }
@@ -87,7 +74,6 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
         $this->merge_empty_cells = isset($form_data['advanced_form_data']['wt_iew_merge_empty_cells']) ? $form_data['advanced_form_data']['wt_iew_merge_empty_cells'] : 0; 
 //        $this->delete_existing = !empty($form_data['advanced_form_data']['wt_iew_delete_existing']) ? 1 : 0;
         $this->use_sku = isset($form_data['advanced_form_data']['wt_iew_use_sku']) ? $form_data['advanced_form_data']['wt_iew_use_sku'] : 0;       
-        
         wp_defer_term_counting(true);
         wp_defer_comment_counting(true);
         wp_suspend_cache_invalidation(true);
@@ -154,14 +140,13 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 		$this->row++;
 		$postmeta = $product_review = array();
 		$post_id = ( ! empty( $item['comment_ID'] ) ) ? $item['comment_ID'] : 0;
-                                                
-                // Check if post exists when importing
-                $found_review_id = $this->product_review_exists($post_id);
-                                               
+
+        // Check if post exists when importing
+        $found_review_id = $this->product_review_exists($post_id);   
+
 		if ( $merge ) {
 			$product_review['merging'] = true;
 			$this->hf_log_data_change( 'review-csv-import', sprintf('> Row %s - preparing for merge.', $this->row ) );
-			
 			// Required fields
 			if ( ! $found_review_id )
 			{
@@ -189,9 +174,7 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 				}
 			}
 		}
-
 		if ( ! $merge ) {                    
-
 			$product_review['merging'] = false;
 			$this->hf_log_data_change( 'review-csv-import', sprintf('> Row %s - preparing for import.', $this->row ) );
                         
@@ -270,7 +253,6 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 				$postmeta[$column] = $this->postmeta_defaults[$column];
 			}
 		}
-
 		if ( ! $merge ) {
 			// Merge post meta with defaults
 			$product_review  = wp_parse_args( $product_review, $this->post_defaults );
@@ -297,9 +279,7 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 			 */
 			elseif ( strstr( $key, 'meta:' ) ) {
 
-				// Get meta key name
-//				$meta_key = ( isset( $WF_CSV_Product_Review_Import->raw_headers[$key] ) ) ? $WF_CSV_Product_Review_Import->raw_headers[$key] : $key;
-				$meta_key = trim( str_replace( 'meta:', '', $meta_key ) );
+				$meta_key = trim( str_replace( 'meta:', '', $key ) );
                                  if (is_object(json_decode($value))) //PIEPFW-512
                                 { 
                                 $value=json_decode($value,TRUE);
@@ -315,7 +295,10 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 
 		$product_review['comment_content'] = ( ! empty( $item['comment_content'] ) ) ? $item['comment_content'] : '';
 		unset( $item, $postmeta );
-                
+        if($product_review['comment_ID'] && ! $merge){
+            $product_review['comment_ID'] = $this->wt_create_review_with_given_id($product_review);
+        }
+
 		return $product_review;
             } catch (Exception $e) {
                 return new WP_Error('woocommerce_product_importer_error', $e->getMessage(), array('status' => $e->getCode()));
@@ -331,26 +314,21 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 
             $processing_product_id = absint($post['comment_ID']);
             $merge = !empty($post['merging']);
-
             $processing_product_title = $processing_product_id;
 
             if (!empty($processing_product_id) && isset($this->processed_posts[$processing_product_id])) {
-    //            $this->add_import_result('skipped', __('Product review already processed', 'wf_csv_import_export'), $processing_product_id);
                 $this->hf_log_data_change('review-csv-import', '> Post ID already processed. Skipping.', true);
                 unset($post);
                 return new WP_Error( 'parse-error',  '> Product review already processed. Skipping.' );
             }
 
             if (!empty($post['post_status']) && $post['post_status'] == 'auto-draft') {
-    //            $this->add_import_result('skipped', __('Skipping auto-draft', 'wf_csv_import_export'), $processing_product_id);
                 $this->hf_log_data_change('review-csv-import', '> Skipping auto-draft.', true);
                 unset($post);
                 return new WP_Error( 'parse-error',  '> Skipping auto-draft.' );
             }
 
             $this->cmd_type = 'review';
-
-
             if ($merge && !empty($processing_product_id)) {
 
                 // Only merge fields which are set
@@ -408,7 +386,7 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
                     if (!empty($post['rating']) || $this->merge_empty_cells)
                         update_comment_meta($post_id, 'rating', $post['rating']);
                 }
-            } else {                
+            } else { 
                 if ($this->csv_last_start === '') {
                     $last_cmt_id = $this->get_last_comment_id();
                     update_option('xa_rev_im_ex_last_import_csv_start_col', $last_cmt_id);
@@ -417,7 +395,6 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 
                 // Insert product review
                 $this->hf_log_data_change('review-csv-import', sprintf('> Inserting %s', esc_html($processing_product_id)), true);
-                
                 
                 $review_parent = $post['comment_parent'];
                 $comment_parent_session= unserialize( get_option( 'wf_prod_review_alter_id'));
@@ -429,36 +406,6 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
 
                   }
 
-                
-               
-
-                
-//                if(isset($post['comment_parent']) && $post['comment_parent']!='' ){
-//                    if ($post['comment_parent'] == '0') {
-//                        $this->parent_data = $post['comment_parent'];
-//                        $_SESSION['new_id'][$post['comment_alter_id']] = $this->get_last_comment_id();
-//                    } else {
-//                        if (!empty($_SESSION['new_id'][$post['comment_parent']])) {
-//                            $this->parent_data = $_SESSION['new_id'][$post['comment_parent']];
-//                        } else {
-//                            $this->parent_data = $post['comment_parent'];
-//                        }                    
-//                        $_SESSION['new_id'][$post['comment_alter_id']] = $this->get_last_comment_id();
-//
-//                    }
-//                    
-//
-//                    
-//
-////                    if ($post['comment_parent'] === '0') {
-////                        $this->cmd_type = 'review';
-////                    } else {
-////                        $this->cmd_type = '';
-////                    }
-//                } else {
-//                    $this->parent_data = $post['comment_parent'];
-//                    $this->cmd_type = 'review';
-//                }
                 $comment_approved = isset( $post['comment_approved'] ) ? wc_string_to_bool($post['comment_approved']) : 0;
         
                 $postdata = array(
@@ -477,16 +424,32 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
                     'user_id' => $post['user_id'],
                 );            
 
-                $post_id = wp_insert_comment($postdata, true);
+                if(isset($post['comment_ID']) && !empty($post['comment_ID']) ){
+                    if (sizeof($postdata) > 1) {
+                        global $wpdb;
+                        $updated = $wpdb->update('wp_comments', $postdata, array('comment_ID' => $post['comment_ID']));
+                        if(!$updated){
+                            if (!empty($post['comment_ID'])) {
+                                $postdata['comment_ID'] = $post['comment_ID'];
+                            }
+                            $updated = wp_update_comment($postdata);
+                        }
+                        if($updated){
+                            $post_id = $post['comment_ID'];
+                        }else{
+                            $post_id = $updated;
+                        }
+                    }
+                }else{
+                    $post_id = wp_insert_comment($postdata, true);
+                }
 
                 $comment_parent_session['wt_review_basic'][$post['comment_alter_id']] = $post_id;
                 update_option('wf_prod_review_alter_id', serialize($comment_parent_session));
                 unset($comment_parent_session);
                 
-                
-                if (is_wp_error($post_id)) {
+                if (is_wp_error($post_id) || $post_id == false) {
 
-    //                $this->add_import_result('failed', __('Failed to import product review', 'wf_csv_import_export'), $processing_product_id);
                     $this->hf_log_data_change('review-csv-import', sprintf('Failed to import product review &#8220;%s&#8221;', esc_html($processing_product_title)));
                     unset($post);
                     return new WP_Error( 'parse-error',  sprintf('Failed to import product review &#8220;%s&#8221;', esc_html($processing_product_title)) );
@@ -506,9 +469,6 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
                 if ($this->cmd_type === '') {
                     update_comment_meta($post_id, 'verified', $post['postmeta'][1]['value']);
                 } else {
-    //                update_comment_meta($post_id, 'verified', $post['postmeta'][1]['value']);
-    //                update_comment_meta($post_id, 'rating', $post['postmeta'][0]['value']);
-    //                update_comment_meta($post_id, 'title', $post['postmeta'][2]['value']);
                     foreach ($post['postmeta'] as $meta) {                        
                         if('' == $meta['value'] && !$this->merge_empty_cells)
                             continue;                                                   
@@ -516,20 +476,13 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
                     }
                 }
             }
-
-//            update_option('xa_rev_im_ex_last_import_csv_end_col', $post_id);
-
             if ($merge) {
-    //            $this->add_import_result('merged', 'Merge successful', $post_id);
                 $this->hf_log_data_change('review-csv-import', sprintf('> Finished merging post ID %s.', $post_id));
             } else {
-    //            $this->add_import_result('imported', 'Import successful', $post_id);
                 $this->hf_log_data_change('review-csv-import', sprintf('> Finished importing post ID %s.', $post_id));
             }            
             unset($post);
-            
             return array('id'=>$post_id);
-            
         } catch (Exception $e) {
             return new WP_Error('woocommerce_product_importer_error', $e->getMessage(), array('status' => $e->getCode()));
         }
@@ -543,20 +496,10 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
             return $posts_that_exist;
         }
         return false;
-//				// Check product to merge exists
-//				$db_query = $wpdb->prepare("
-//						SELECT comment_ID
-//						FROM $wpdb->comments
-//						WHERE comment_ID = %d",$post_id);
-//				$found_review_id = $wpdb->get_var($db_query); 
     }
     
     public function get_last_comment_id() {
-        global $wpdb;
-//        $query = "SELECT MAX(comment_ID) FROM $wpdb->comments";
-//        $results = $wpdb->get_var($query);
-//        return $results + 1;
-        
+        global $wpdb;        
         $get_id = $wpdb->get_row("SHOW TABLE STATUS LIKE '".$wpdb->prefix."comments'"); 
         $last_id = $get_id->Auto_increment;
         return $last_id;
@@ -570,6 +513,21 @@ class Wt_Import_Export_For_Woo_Basic_Product_Review_Import {
         if(class_exists('WC_Product_Reviews_Pro')){
             $wpdb->query("DELETE FROM `$wpdb->options` WHERE `option_name` LIKE ('%_transient_wc_product_reviews_pro_review_count_%')");
         }
+    }
+
+
+    public function wt_create_review_with_given_id($product_review){
+        global $wpdb;
+        $id = $product_review['comment_ID'];
+        $posts_that_exist = $wpdb->get_var($wpdb->prepare("SELECT comment_ID FROM $wpdb->comments WHERE comment_ID = %d ", $id));
+        $return = '';
+        if (!$posts_that_exist) {
+            $inserted_id = $wpdb->insert('wp_comments', array('comment_ID' =>  $id, 'comment_type' => 'review'));
+            if($inserted_id ){
+                $return = $id;
+            }
+        }
+        return $return;
     }
     
 }

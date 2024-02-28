@@ -5,7 +5,7 @@ Tags: product export, product import, CSV import export, woocommerce, CSV, produ
 Requires at least: 3.0.1
 Tested up to: 6.4.3
 Requires PHP: 5.6
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -62,7 +62,7 @@ With this plugin, you can export and import WooCommerce products to and from a C
 * <strong>Save frequently used import/export configurations</strong> as templates and use the template for future imports and exports.
 * The plugin <strong>stores all the past imports and exports</strong> and <strong>lets you re-run</strong> them when needed.
 * <strong>Easy debugging:</strong> View and download import log for debugging purpose.
-* Tested OK with WooCommerce 8.5.2
+* Tested OK with WooCommerce 8.6.1
 
 ###COMPATIBLE PLUGINS###
 
@@ -233,6 +233,9 @@ Yes, you can import grouped, affiliate/external products in addition to simple p
 
 == CHANGELOG ==
 
+= 2.4.2 2024-02-28 =
+* [Fix] - Added Image extension restriction in product category.
+* [Compatibility]-Tested Ok with Woocommerce 8.6.1
 = 2.4.1 2024-02-08 =
 * [Fix] - Invalid Filetype CSV.
 * [Compatibility]-Tested Ok with Woocommerce 8.5.2
@@ -669,8 +672,7 @@ Yes, you can import grouped, affiliate/external products in addition to simple p
 
 == Upgrade Notice ==
 
-= 2.4.1 =
-* [Fix] - Invalid Filetype CSV.
-* [Compatibility]-Tested Ok with Woocommerce 8.5.2
-* [Compatibility] - Tested OK with WordPress 6.4.3
+= 2.4.2 =
+* [Fix] - Added Image extension restriction in product category.
+* [Compatibility]-Tested Ok with Woocommerce 8.6.1
 
