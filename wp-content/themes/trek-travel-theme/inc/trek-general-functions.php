@@ -903,12 +903,12 @@ function trek_update_trip_checklist_action_cb()
             $booking_data['jersey_style']              = $_REQUEST['tt-jerrsey-style'];
             $booking_data['tt_jersey_size']            = $_REQUEST['tt-jerrsey-size'];
 
-            $ns_user_booking_data['custentity_height'] = isset( $_REQUEST['tt-rider-height'] ) ? $_REQUEST['tt-rider-height'] : '';
+            $ns_user_booking_data['heightId'] = isset( $_REQUEST['tt-rider-height'] ) ? $_REQUEST['tt-rider-height'] : '';
             $ns_user_booking_data['helmetId']          = isset( $_REQUEST['tt-helmet-size'] ) ? $_REQUEST['tt-helmet-size'] : '';
             $ns_user_booking_data['pedalsId']          = isset( $_REQUEST['tt-pedal-selection'] ) ? $_REQUEST['tt-pedal-selection'] : '';
             $ns_user_booking_data['jerseyId']          = isset( $_REQUEST['tt-jerrsey-size'] ) ? $_REQUEST['tt-jerrsey-size'] : '';
         } else {
-            $ns_user_booking_data['custentity_height'] = $user_order_info[0]['rider_height'];
+            $ns_user_booking_data['heightId'] = $user_order_info[0]['rider_height'];
             $ns_user_booking_data['helmetId']          = $user_order_info[0]['helmet_selection'];
             $ns_user_booking_data['pedalsId']          = $user_order_info[0]['pedal_selection'];
             $ns_user_booking_data['jerseyId']          = $user_order_info[0]['tt_jersey_size'];
