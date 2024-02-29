@@ -55,6 +55,9 @@ function tt_wc_ns_sync_hourly_event_cb()
     tt_sync_wc_products_from_ns();
     // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
     tt_ns_guest_booking_details( false, '', '', DEFAULT_TIME_RANGE, true );
+
+    //Flush the cache
+    wp_cache_flush();
 }
 
 function tt_wc_ns_sync_one_hour_event_cb() {
@@ -341,7 +344,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
             $booking_index++;
         }
         if ($ns_booking_payload) {
-            $ns_booking_result = $netSuiteClient->post(BOOKING_SCRIPT_ID . ':2', json_encode($ns_booking_payload));
+            $ns_booking_result = $netSuiteClient->post(BOOKING_SCRIPT_ID, json_encode($ns_booking_payload));
             tt_update_user_booking_info($order_id, $ns_booking_result);
             tt_add_error_log('BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, $ns_booking_payload, $ns_booking_result);
         }else{
