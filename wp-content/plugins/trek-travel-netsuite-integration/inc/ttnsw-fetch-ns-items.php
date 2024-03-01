@@ -170,19 +170,20 @@ function tt_admin_menu_page_cb()
     <div class="tt-admin-page-div tt-pl-40 tt-mt-30">
         <div class="tt-wc-ns-admin-wrap">
             <div id="tt-ns-sync-class">
+                <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">Clear Caches After Manual Trip Sync!</span>
                 <h3>Manual Sync for WC<>NS</h3>
                 <form class="tt-wp-manual-sync" action="" method="post">
                     <select name="type" required>
-                        <option value="">Select Sync TYPE</option>
-                        <option value="trip">Trip By Year from NS</option>
-                        <option value="trip-details">Trip Details by TripID - NS</option>
-                        <option value="bikes">Bike</option>
-                        <option value="hotels">Hotels</option>
-                        <option value="addons">Addons</option>
-                        <option value="product-sync">Product SyncTo WC - [By Year]</option>
-                        <option value="product-sync-all">Product SyncTo WC - [All]</option>
-                        <option value="custom-items">Custom Items</option>
-                        <option value="ns-wc-booking">NS<>WC Booking Sync</option>
+                        <option value="">Select Sync Type</option>
+                        <option value="trip">Step 1: Get All Trips By Last Modified Date</option>
+                        <option value="trip-details">Step 2: Get Trip Details By Last Modified Date</option>
+                        <option value="bikes">Step 3: Get Bikes</option>
+                        <option value="hotels">Step 4: Get Hotels</option>
+                        <option value="addons">Step 5: Get Addons</option>
+                        <option value="product-sync-all">Step 6: Create WC Trip Products - [All]</option>
+                        <option value="product-sync">Misc: Create WC Trip Products - [By Year]</option>
+                        <option value="custom-items">Misc: Custom Items</option>
+                        <option value="ns-wc-booking">Misc: NS<>WC Booking Sync</option>
                     </select>
                     <select name="time_range" required>
                         <option value="">Time Range</option>
