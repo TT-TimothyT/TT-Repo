@@ -3508,26 +3508,62 @@ if (!function_exists('tt_occupant_selection_popup')) {
         return $occupant_popup_html;
     }
 }
-add_action('woocommerce_created_customer', 'tt_sync_user_metadata_from_ns_cb', 999, 1);
+add_action( 'woocommerce_created_customer', 'tt_sync_user_metadata_from_ns_cb', 999, 1 );
 function tt_sync_user_metadata_from_ns_cb( $user_id )
 {
-    $ns_user_id = '';
-
     // Use TM NetSuite plugin to register customer in NetSuite.
     if ( class_exists('TMWNI_Loader') ) {
         $netsuite_user_client = new TMWNI_Loader();
-        $ns_user_id = $netsuite_user_client->addUpdateNetsuiteCustomer( $user_id );
-        tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => true, 'ns_user_id' => $ns_user_id ) );
+        $ns_user_id           = $netsuite_user_client->addUpdateNetsuiteCustomer( $user_id );
+
+        if( ! empty( $ns_user_id ) ) {
+            // We have NS User ID.
+            tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => true, 'ns_user_id' => $ns_user_id ) );
+
+            // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
+            as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id, DEFAULT_TIME_RANGE, true ), '[Sync] - Adding NS Trips for new register guest' );
+        } else {
+            // TM NetSuite returns 0 if something fails.
+            tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => false, 'ns_user_id' => $ns_user_id, 'message' => 'TM NetSuite plugin Failed. Check the logs in TM NetSuite::Settings::NetSuite API Logs for more information.' ) );
+
+            // Try after 3 minutes again.
+            as_schedule_single_action( time() + 180, 'tt_cron_try_sync_user_ns_again', array( $user_id, 1 ) );
+        }
     } else {
         tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => false, 'message' => 'The TMWNI_Loader class does not exist. Verify that the TM NetSuite plugin is enabled and that its API configuration is working.' ) );
     }
+}
 
-    $net_suite_client = new NetSuiteClient();
+add_action( 'tt_cron_try_sync_user_ns_again', 'tt_cron_try_sync_user_ns_again_cb', 10, 2 );
+function tt_cron_try_sync_user_ns_again_cb( $user_id, $attempt_number )
+{
+    // Use TM NetSuite plugin to register customer in NetSuite.
+    if ( class_exists('TMWNI_Loader') ) {
+        $netsuite_user_client = new TMWNI_Loader();
+        $ns_user_id           = $netsuite_user_client->addUpdateNetsuiteCustomer( $user_id );
 
-    if ( $ns_user_id ) {
-        // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
-        as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id, DEFAULT_TIME_RANGE, true ), '[Sync] - Adding NS Trips for new register guest' );
-        //tt_ns_guest_booking_details(true, $ns_user_id,$user_id);
+        if( ! empty( $ns_user_id ) ) {
+            // We have NS User ID.
+            tt_add_error_log('[TM Netsuite] NEW USER Retry', array( 'wp_user_id' => $user_id, 'attempt_number' => $attempt_number ), array( 'status' => true, 'ns_user_id' => $ns_user_id ) );
+
+            // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
+            as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id, DEFAULT_TIME_RANGE, true ), '[Sync] - Adding NS Trips for new register guest' );
+        } else {
+            // TM NetSuite returns 0 if something fails.
+            tt_add_error_log('[TM Netsuite] NEW USER Retry', array( 'wp_user_id' => $user_id, 'attempt_number' => $attempt_number ), array( 'status' => false, 'ns_user_id' => $ns_user_id, 'message' => 'TM NetSuite plugin Failed. Check the logs in TM NetSuite::Settings::NetSuite API Logs for more information.' ) );
+
+            // Stop Retry after 3 attempts.
+            if( (int) $attempt_number >= 3 ) {
+                return;
+            }
+
+            $attempt_number = (int) $attempt_number + 1;
+
+            // Try after 3 minutes again.
+            as_schedule_single_action( time() + 180, 'tt_cron_try_sync_user_ns_again', array( $user_id, $attempt_number ) );
+        }
+    } else {
+        tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => false, 'message' => 'The TMWNI_Loader class does not exist. Verify that the TM NetSuite plugin is enabled and that its API configuration is working.' ) );
     }
 }
 
@@ -5038,7 +5074,14 @@ function tt_cron_syn_usermeta_ns_cb( $user_id, $type ) {
     if ( class_exists( 'TMWNI_Loader' ) ) {
         $netsuite_user_client = new TMWNI_Loader();
         $ns_user_id           = $netsuite_user_client->addUpdateNetsuiteCustomer( $user_id );
-        tt_add_error_log( 'User update - ' . $type, array( 'user_id' => $user_id ), array( 'status' => true, 'ns_user_id' => $ns_user_id, 'dateTime' => date('Y-m-d H:i:s') ) );
+
+        // TM NetSuite returns 0 if something fails.
+        if( empty( $ns_user_id ) ) {
+            tt_add_error_log( 'User update - ' . $type, array( 'user_id' => $user_id ), array( 'status' => false, 'ns_user_id' => $ns_user_id, 'message' => 'TM NetSuite plugin Failed. Check the logs in TM NetSuite::Settings::NetSuite API Logs for more information.', 'dateTime' => date('Y-m-d H:i:s') ) );
+        } else {
+            // We have NS User ID.
+            tt_add_error_log( 'User update - ' . $type, array( 'user_id' => $user_id ), array( 'status' => true, 'ns_user_id' => $ns_user_id, 'dateTime' => date('Y-m-d H:i:s') ) );
+        }
     } else {
         tt_add_error_log( 'User update - ' . $type, array( 'user_id' => $user_id ), array( 'status' => false, 'message' => 'The TMWNI_Loader class does not exist. Verify that the TM NetSuite plugin is enabled and that its API configuration is working.' ) );
     }
@@ -5726,7 +5769,7 @@ function add_custom_line_before_tax() {
         $order_id                     = $post->ID;
         $order                        = wc_get_order($order_id);
         $trek_user_checkout_data      = get_post_meta( $order_id, 'trek_user_checkout_data', true);
-        $pay_amount                   = $trek_user_checkout_data['pay_amount'];
+        $pay_amount                   = isset( $trek_user_checkout_data['pay_amount'] ) ? $trek_user_checkout_data['pay_amount'] : '';
         $is_order_transaction_deposit = get_post_meta( $order_id, '_is_order_transaction_deposit', true );
         $applied_coupons              = $order->get_coupon_codes();
         $first_item                   = $order->get_items();

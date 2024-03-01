@@ -279,7 +279,7 @@ function tt_admin_menu_page_cb()
                 </div>
             </div>
             <hr>
-            <div id="tt-bookings-migration">
+            <div id="tt-bookings-migration" style="display:none;">
                 <h3>TT Bookings Migration</h3>
                 <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">! Under development</span>
                 <p>Extracting existing bookings from NetSuite and creating orders for them in WooCommerce programmatically.</p>
@@ -287,6 +287,12 @@ function tt_admin_menu_page_cb()
                     <input type="text" name="ns_booking_id" placeholder="Enter Booking ID" required>
                     <input type="hidden" name="action" value="tt-create-order">
                     <input type="submit" name="submit" value="Create Order Programmatically" class="button-primary">
+                </form>
+                <hr>
+                <form action="" method="post" enctype="multipart/form-data" style="padding-top:1rem;padding-bottom:1rem;">
+                    <input type="file" name="bookings-csv" value="" />
+                    <input type="hidden" name="action" value="tt-create-multiple-orders-from-file">
+                    <input type="submit" name="submit" value="Create Orders From CSV file" class="button-primary" />
                 </form>
                 <div id="tt-print_result" style="margin: 2% 0px;">
                     <?php
@@ -297,7 +303,26 @@ function tt_admin_menu_page_cb()
                                 echo 'This Booking already exists! ';
                                 print_r( $booking_check_order );
                             } else {
-                                tt_create_order( tt_get_ns_booking_info( $_REQUEST['ns_booking_id'] ) );
+                                tt_create_order( $_REQUEST['ns_booking_id'], true );
+                                // tt_create_multiple_orders( tt_get_bookings_ids_from_file() );
+                            }
+                        }
+                        if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt-create-multiple-orders-from-file' ) {
+                            // Check there are no errors.
+                            if( $_FILES['bookings-csv']['error'] == 0 ) {
+                                $name    = $_FILES['bookings-csv']['name'];
+                                $ext     = strtolower( end( explode( '.', $_FILES['bookings-csv']['name'] ) ) );
+                                $type    = $_FILES['bookings-csv']['type'];
+                                $tmpName = $_FILES['bookings-csv']['tmp_name'];
+
+                                // Check the file is a csv.
+                                if( $ext === 'csv' && $type === 'text/csv') {
+                                    $bookings_ids = tt_get_bookings_ids_from_upload_file( $tmpName );
+                                    tt_create_multiple_orders( $bookings_ids );
+                                    echo '<pre>';
+                                    print_r( $bookings_ids );
+                                    echo '</pre>';
+                                }
                             }
                         }
                     ?>

@@ -95,6 +95,22 @@ $userInfo = wp_get_current_user();
                                 $field['country'] = ! empty( $country_val ) ? $country_val : '';
                                 $woo_field_value =  $country_val;
                             }
+                            if ( $key == 'shipping_address_1' ) {
+                                $addr1 = get_user_meta( get_current_user_id(), 'shipping_address_1', true );
+                                $woo_field_value =  $addr1;
+                            }
+                            if ( $key == 'shipping_address_2' ) {
+                                $addr2 = get_user_meta( get_current_user_id(), 'shipping_address_2', true );
+                                $woo_field_value =  $addr2;
+                            }
+                            if ( $key == 'billing_address_1' ) {
+                                $addr1 = get_user_meta( get_current_user_id(), 'billing_address_1', true );
+                                $woo_field_value =  $addr1;
+                            }
+                            if ( $key == 'billing_address_2' ) {
+                                $addr2 = get_user_meta( get_current_user_id(), 'billing_address_2', true );
+                                $woo_field_value =  $addr2;
+                            }
                             $field_input = woocommerce_form_field($key, $field, $woo_field_value);
                             $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);
                             $field_input = str_ireplace('</span>', '', $field_input);

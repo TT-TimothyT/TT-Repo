@@ -46,6 +46,9 @@ $notes = $order->get_customer_order_notes();
 <?php
 
 $order = wc_get_order($order_id);
+$tt_order_type = $order->get_meta( 'tt_wc_order_type' );
+$is_order_auto_generated = 'auto-generated' == $tt_order_type ? true : false;
+$tt_auto_generated_order_total_amount = $order->get_meta( 'tt_meta_total_amount' );
 $userInfo = wp_get_current_user();
 $user_id = $userInfo->ID;
 $order_items = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
@@ -332,6 +335,33 @@ if( $parent_product_id ){
                                 <div class="order-details__content">
                                     <div class="d-flex">
                                         <table class="table">
+                                            <?php if( $is_order_auto_generated ) : ?>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <p class="fs-xl lh-xl fw-semibold">Order Details</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="mb-0 fw-normal order-details__text">Purchase Date</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 fw-normal order-details__text"><?php echo date('M d, Y', strtotime($order->get_date_created())) ?></p>
+                                                    </td>
+                                                </tr>
+                                                
+                                                
+                                                <tr class="border-white">
+                                                    <td>
+                                                        <p class="mb-0 fw-semibold fs-md lh-md">Trip Total</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 fw-semibold fs-md lh-md"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ); ?></span></p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <?php else : ?>
                                             <tbody>
                                                 <tr>
                                                     <td colspan="2">
@@ -454,11 +484,13 @@ if( $parent_product_id ){
                                                     </tr>
                                                 <?php endif; ?>
                                             </tbody>
+                                            <?php endif; ?>
                                         </table>
 
                                     </div>
 
                                 </div>
+                                <?php if( ! $is_order_auto_generated ) : ?>
                                 <hr>
                                 <div class="order-details__content">
                                     <p class="fs-xl lh-xl fw-semibold order-details__subheading">Payment Details</p>
@@ -483,6 +515,7 @@ if( $parent_product_id ){
                                         </div>
                                     </div>
                                 </div>
+                                <?php endif; ?>
                                 <hr>
                                 <div class="order-details__content">
                                     <p class="fs-xl lh-xl fw-semibold order-details__subheading">Guest Details</p>
@@ -490,6 +523,7 @@ if( $parent_product_id ){
                                     echo $guests_gears_data['guests'];
                                     ?>
                                 </div>
+                                <?php if( ! $is_order_auto_generated ) : ?>
                                 <hr>
                                 <div class="order-details__content">
                                     <p class="fs-xl lh-xl fw-semibold order-details__subheading">Room Details</p>
@@ -497,16 +531,19 @@ if( $parent_product_id ){
                                         <?php echo $rooms_html; ?>
                                     </div>
                                 </div>
+                                <?php endif; ?>
                                 <hr>
                                 <div class="order-details__content">
                                     <p class="fs-xl lh-xl fw-semibold order-details__subheading">Bikes &amp; Gear Details</p>
                                     <?php echo $guests_gears_data['bike_gears']; ?>
                                 </div>
+                                <?php if( ! $is_order_auto_generated ) : ?>
                                 <hr>
                                 <div class="order-details__content">
                                     <p class="fs-xl lh-xl fw-semibold order-details__subheading">Travel Protection Details</p>
                                     <?php echo $guest_insurance_html; ?>
                                 </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

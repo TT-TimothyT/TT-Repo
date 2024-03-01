@@ -560,11 +560,12 @@ function tt_get_ns_guest_info( $ns_user_id, $with_booking_info = 1 ) {
  * Get Guest Registrations info from NS.
  * 
  * @param int|array $booking_id The NS Booking ID.
+ * @param bool      $is_single Whether to return a single object or an array.
  * @uses NS Script GET_REGISTRATIONS_SCRIPT_ID
  * 
  * @return array|false Guest registrations data.
  */
-function tt_get_ns_guest_registrations_info( $user_reg_ids ) {
+function tt_get_ns_guest_registrations_info( $user_reg_ids, $is_single = false ) {
     if( empty( $user_reg_ids ) ) {
         return false;
     }
@@ -580,118 +581,54 @@ function tt_get_ns_guest_registrations_info( $user_reg_ids ) {
         return false;
     }
 
+    if( $is_single ) {
+        return $ns_guest_reg_data[0];
+    }
+
     return $ns_guest_reg_data;
 }
 
 /**
  * Create Orders Programmatically.
  * 
- * @param object $booking_data NS Object response with booking information.
- * @param array $file_export_data Array with data for Guest name and Email from CSV file with bookings export.
- * @return void
+ * @param object $booking_id NS Booking ID.
+ * @param bool $print_result Should print the result of order creation.
+ * @return object $order The Newly created WC order.
  */
-function tt_create_order( $booking_data = null, $file_export_data = array() ) {
-    if( ! $booking_data ) {
+function tt_create_order( $booking_id = null, $print_result = false ) {
+    if( ! $booking_id ) {
         return;
     }
 
     // *** Basic Order Billing Info ***
     $pr_guest_first_name = 'Woo';
     $pr_guest_last_name  = 'Customer';
-    $pr_guest_email      = '';
-
-    if( ! empty( $file_export_data ) ) {
-        $pr_guest_names = isset( $file_export_data['name'] ) ? explode( ' ', $file_export_data['name'], 2 ) : array();
-        $pr_guest_email = isset( $file_export_data['email'] ) ? $file_export_data['email'] : '';
-
-        if( ! empty( $pr_guest_names ) && count( $pr_guest_names ) >= 2 ) {
-            $pr_guest_first_name = $pr_guest_names[0];
-            $pr_guest_last_name  = $pr_guest_names[1];
-        }
-    }
-    
-    $trip_product_sku         = isset( $booking_data->tripCode ) ? $booking_data->tripCode : '24CARC0212-FIRST';
-    $trip_product_qty         = isset( $booking_data->guests ) ? count( $booking_data->guests ) : 1;
-    $trip_total_amount        = isset( $booking_data->totalAmount ) ? $booking_data->totalAmount : '';
-    $trip_product_guests      = isset( $booking_data->guests ) ? $booking_data->guests : array();
-    $trip_pr_guest_ns_user_id = ''; // 1305
-
-    $trip_product_price = 0;
-
-    $trip_s_qty = 0;
-    $trip_s_single_price = 0;
-
-    foreach( $trip_product_guests as $guest ) {
-        if( $guest->isPrimary ) {
-            $trip_pr_guest_ns_user_id = $guest->guestId;
-            $trip_product_price       = $guest->basePrice;
-        }
-        
-        if( 0 != $guest->singleSupplement ) {
-            $trip_s_qty++;
-            $trip_s_single_price = $guest->singleSupplement;
-        }
-    }
-
-    $trip_product_id = tt_get_product_by_sku( $trip_product_sku, true );
-    // Need set true if is a Ride Camp booking.
-    $is_nested_dates_trip = false;
-    $parent_product_id = tt_get_parent_trip_id_by_child_sku( $trip_product_sku, $is_nested_dates_trip );
-    
-    if( $trip_product_id ) {
-        // We have existing product.
-    }
     
     // *** Create Order ***
     $order = wc_create_order();
-    $trip_product = wc_get_product( $trip_product_id );
-    if( ! empty( $trip_product_price ) ) {
-        $trip_product->set_price( $trip_product_price );
-    }
-    $product_item_id = $order->add_product( $trip_product, $trip_product_qty );
-    // wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_data', $trek_user_checkout_data );
-    wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_product_id', $trip_product_id );
-
-    // TODO: Travel protection, Insurance Fees, Bike Upgrade
-    // *** Single Supplement Fees ***
-    if( ! empty( $trip_s_qty ) ) {
-        $s_product_id = tt_create_line_item_product( 'TTWP23SUPP' );
-        $s_product    = wc_get_product( $s_product_id );
-        if( ! empty( $trip_s_single_price ) ) {
-            $s_product->set_price( $trip_s_single_price );
-        }
-        $s_product_item_id = $order->add_product( $s_product, $trip_s_qty );
-    }
     
     // Add billing and shipping addresses.
     $address = array(
         'first_name' => $pr_guest_first_name,
         'last_name'  => $pr_guest_last_name,
-        'email'      => $pr_guest_email,
     );
 
     $order->set_address( $address, 'billing' );
-
     $order->set_status( 'wc-processing', 'Order Created Programmatically' );
-
-
-    $order->calculate_totals();
     $order->save();
 
-    $order_id = $order->id;
     // *** Update Order Meta ***
-    // $trek_user_checkout_data
-    // update_post_meta( $order_id, 'trek_user_checkout_data', $trek_user_checkout_data );
-    update_post_meta( $order_id, 'trek_user_checkout_product_id', $trip_product_id );
-    update_post_meta( $order_id, 'tt_meta_guest_booking_id', $booking_data->bookingId );
-    update_post_meta( $order_id, 'tt_meta_total_amount', $trip_total_amount );
-    update_post_meta( $order_id, 'tt_wc_order_finished_status', 'not-finished' );
-    // Restore product qty.
-    wc_update_product_stock( $trip_product_id, $trip_product_qty, 'increase' );
+    update_post_meta( $order->id, 'tt_meta_guest_booking_id', $booking_id );
+    update_post_meta( $order->id, 'tt_wc_order_finished_status', 'not-finished' );
+    update_post_meta( $order->id, 'tt_wc_order_type', 'auto-generated' );
 
-    echo '<pre>';
-    print_r( $order );
-    echo '</pre>';
+    if( $print_result ) {
+        echo '<pre>';
+        print_r( $order );
+        echo '</pre>';
+    }
+
+    return $order;
 }
 
 /**
@@ -721,4 +658,688 @@ function tt_get_order_by_booking( $booking_id, $full_order = true ) {
     }
 
     return false;
+}
+
+/**
+ * Take all bike info from `netsuite_trip_bikes` by given trip code/sku and bike ID.
+ *
+ * @param string     $trip_code The Trip code or SKU. 
+ * @param int|string $bike_id The Bike ID.
+ *
+ * @return bool|array false on not found result or array with bike info.
+ */
+function tt_get_bike_attributes_by_bike_id( $trip_code = '', $bike_id = 0 ) {
+	global $wpdb;
+    $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+
+	$sql        = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$trip_code}' AND ts.bikeId = '{$bike_id}'";
+	$bike_arr   = $wpdb->get_results( $sql, ARRAY_A );
+
+	if( empty( $bike_arr ) ) {
+		return false;
+	}
+
+	return $bike_arr[0];
+}
+
+/**
+ * Finish the migrated order on the first registered guest.
+ */
+function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_ns_guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $ns_guest_info_from_booking ) {
+    $order_status       = 'not-finished';
+    $order_guest_index  = 0;
+    $guests_count       = 1;
+    $order_bike_gears   = array(
+        'primary' => array(),
+        'guests'  => array(),
+    );
+
+    $order_guests       = array();
+    $order_meta_emails  = array();
+    $order_meta_primary = array();
+
+    $ns_guest_id        = $ns_guest_info_from_booking->guestId; // Ns guest.
+
+    $guest_bike_info    = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripCode, $ns_guest_info->bikeId );
+
+    $guest_bike_gears   = array(
+        'rider_level'              => tt_validate( $ns_guest_booking_result->riderType->id ),
+        'bikeTypeId'               => tt_validate( json_decode( $guest_bike_info['bikeModel'], true )['id'] ),
+        'bikeId'                   => tt_validate( $ns_guest_info->bikeId ),
+        'bike_type_id_preferences' => '',
+        'bike_size'                => tt_validate( json_decode( $guest_bike_info['bikeSize'], true )['id'] ),
+        'rider_height'             => tt_validate( $ns_guest_info->heightId ),
+        'bike_pedal'               => tt_validate( $ns_guest_info->pedalsId ),
+        'helmet_size'              => tt_validate( $ns_guest_info->helmetId ),
+        'jersey_style'             => tt_get_jersey_style( tt_validate( $ns_guest_info->jerseyId ) ),
+        'jersey_size'              => tt_validate( $ns_guest_info->jerseyId ),
+    );
+
+    // Order info.
+    $trip_product_qty    = isset( $ns_booking_data->guests ) ? count( $ns_booking_data->guests ) : 0;
+    $trip_total_amount   = isset( $ns_booking_data->totalAmount ) ? $ns_booking_data->totalAmount : '';
+    $trip_product_guests = isset( $ns_booking_data->guests ) ? $ns_booking_data->guests : array();
+    $trip_product_price  = 0;
+    $trip_s_qty          = 0;
+    $trip_s_single_price = 0;
+
+    // Here we have two options. Some of the secondary guest is registered first or the primary guest is registered first.
+    if( $ns_guest_info->isPrimary ) {
+        // Primary guest registers first.
+        $guest_index_id = 0;
+        $order_guest_index = $guest_index_id;
+
+        $order_bike_gears['primary'] = $guest_bike_gears;
+
+        $address_full                = explode( ' ', tt_validate( $ns_guest_booking_result->addressInfo->address ), 2 );
+        $address_line_1              = $address_full[0];
+        $address_line_2              = ! empty( $address_full[1] ) ? $address_full[1] : '';
+
+        $order_rf_id                 = '';
+
+        foreach( $ns_booking_data->releaseForms as $guest_release_form ) {
+            if( $ns_guest_id == $guest_release_form->guestId ) {
+                $order_rf_id = $guest_release_form->releaseFormId;
+            }
+        }
+
+        $order_meta_primary = array(
+            'first_name'  => tt_validate( $ns_guest_booking_result->firstname ),
+            'last_name'   => tt_validate( $ns_guest_booking_result->lastname ),
+            'email'       => tt_validate( $ns_guest_booking_result->email ),
+            'phone'       => tt_validate( $ns_guest_booking_result->phone ),
+            'address_1'   => $address_line_1,
+            'address_2'   => $address_line_2, 
+            'city'        => tt_validate( $ns_guest_booking_result->addressInfo->city ),
+            'state'       => tt_validate( $ns_guest_booking_result->addressInfo->state ),
+            'postcode'    => tt_validate( $ns_guest_booking_result->addressInfo->zip ),
+            'country'     => tt_validate( $ns_guest_booking_result->addressInfo->country ),
+            'dob'         => ! empty( tt_validate( $ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ) : '',
+            'gender'      => tt_validate( $ns_guest_booking_result->gender->id ),
+            'order_rf_id' => $order_rf_id,
+        );
+    } else {
+        // Secondary guest registers first.
+        $guest_index_id    = 1;
+        $order_guest_index = $guest_index_id;
+        $guests_count += 1;
+
+        $order_bike_gears['guests'][$guest_index_id] = $guest_bike_gears;
+
+        $order_guests[$guest_index_id] = array(
+            'guest_fname'  => tt_validate( $ns_guest_booking_result->firstname ),
+            'guest_lname'  => tt_validate( $ns_guest_booking_result->lastname ),
+            'guest_email'  => tt_validate( $ns_guest_booking_result->email ),
+            'guest_phone'  => tt_validate( $ns_guest_booking_result->phone ),
+            'guest_gender' => tt_validate( $ns_guest_booking_result->gender->id ),
+            'guest_dob'    => ! empty( tt_validate( $ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ) : '',
+        );
+
+        array_push( $order_meta_emails, tt_validate( $ns_guest_booking_result->email ) );
+    }
+
+    $current_guest_rf_id = '';
+
+    foreach( $ns_booking_data->releaseForms as $guest_release_form ) {
+        if( $ns_guest_id == $guest_release_form->guestId ) {
+            $current_guest_rf_id = $guest_release_form->releaseFormId;
+        }
+    }
+
+    $bookings_table_order_info = array(
+        'order_id'            => $order->id,
+        'guest_index_id'      => $order_guest_index,
+        'current_guest_rf_id' => $current_guest_rf_id,
+    );
+
+    $insert_booking_data = array(
+        'ns_guest_booking_result' => $ns_guest_booking_result,
+        'ns_booking_data'         => $ns_booking_data,
+        'ns_guest_info'           => $ns_guest_info,
+        'guest'                   => $ns_guest_info_from_booking,
+        'order_info'              => $bookings_table_order_info,
+    );
+
+    // New record insertion. This is the first insertion.
+    tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $insert_booking_data, 'insert' ), [], 'insert' );
+
+    foreach( $ns_booking_data->guests as $guest ) {
+        // Skip current guest, because we inserted data for him, and has stored in variables for the order already.
+        if( $guest->guestId == $current_ns_guest_id ) {
+            continue;
+        }
+
+        $_ns_guest_id = $guest->guestId; // Ns guest.
+
+        // Make requests to NS to take the info for every guest.
+        $_ns_guest_booking_result = tt_get_ns_guest_info( $_ns_guest_id, 0 );
+        $_ns_guest_info           = tt_get_ns_guest_registrations_info( $guest->registrationId, true );
+
+        $_guest_bike_info         = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripCode, $_ns_guest_info->bikeId );
+
+        $_guest_bike_gears        = array(
+            'rider_level'              => tt_validate( $_ns_guest_booking_result->riderType->id ),
+            'bikeTypeId'               => tt_validate( json_decode( $_guest_bike_info['bikeModel'], true )['id'] ),
+            'bikeId'                   => tt_validate( $_ns_guest_info->bikeId ),
+            'bike_type_id_preferences' => '',
+            'bike_size'                => tt_validate( json_decode( $_guest_bike_info['bikeSize'], true )['id'] ),
+            'rider_height'             => tt_validate( $_ns_guest_info->heightId ),
+            'bike_pedal'               => tt_validate( $_ns_guest_info->pedalsId ),
+            'helmet_size'              => tt_validate( $_ns_guest_info->helmetId ),
+            'jersey_style'             => tt_get_jersey_style( tt_validate( $_ns_guest_info->jerseyId ) ),
+            'jersey_size'              => tt_validate( $_ns_guest_info->jerseyId ),
+        );
+
+        if( $guest->isPrimary ) {
+            // Primary guest.
+            $guest_index_id = 0;
+            $order_guest_index = $guest_index_id;
+
+            $order_bike_gears['primary'] = $_guest_bike_gears;
+
+            $address_full   = explode( ' ', tt_validate( $_ns_guest_booking_result->addressInfo->address ), 2 );
+            $address_line_1 = $address_full[0];
+            $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
+
+            $order_rf_id = '';
+
+            foreach( $ns_booking_data->releaseForms as $guest_release_form ) {
+                if( $_ns_guest_id == $guest_release_form->guestId ) {
+                    $order_rf_id = $guest_release_form->releaseFormId;
+                }
+            }
+
+            $order_meta_primary = array(
+                'first_name'  => tt_validate( $_ns_guest_booking_result->firstname ),
+                'last_name'   => tt_validate( $_ns_guest_booking_result->lastname ),
+                'email'       => tt_validate( $_ns_guest_booking_result->email ),
+                'phone'       => tt_validate( $_ns_guest_booking_result->phone ),
+                'address_1'   => $address_line_1,
+                'address_2'   => $address_line_2, 
+                'city'        => tt_validate( $_ns_guest_booking_result->addressInfo->city ),
+                'state'       => tt_validate( $_ns_guest_booking_result->addressInfo->state ),
+                'postcode'    => tt_validate( $_ns_guest_booking_result->addressInfo->zip ),
+                'country'     => tt_validate( $_ns_guest_booking_result->addressInfo->country ),
+                'dob'         => ! empty( tt_validate( $_ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $_ns_guest_booking_result->birthdate ) ) : '',
+                'gender'      => tt_validate( $_ns_guest_booking_result->gender->id ),
+                'order_rf_id' => $order_rf_id,
+            );
+        } else {
+            // Secondary guest.
+            $guest_index_id = $guests_count; // ++
+            $order_guest_index = $guest_index_id;
+            $guests_count += 1;
+
+            $order_bike_gears['guests'][$guest_index_id] = $_guest_bike_gears;
+
+            $order_guests[$guest_index_id] = array(
+                'guest_fname'  => tt_validate( $_ns_guest_booking_result->firstname ),
+                'guest_lname'  => tt_validate( $_ns_guest_booking_result->lastname ),
+                'guest_email'  => tt_validate( $_ns_guest_booking_result->email ),
+                'guest_phone'  => tt_validate( $_ns_guest_booking_result->phone ),
+                'guest_gender' => tt_validate( $_ns_guest_booking_result->gender->id ),
+                'guest_dob'    => ! empty( tt_validate( $_ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $_ns_guest_booking_result->birthdate ) ) : '',
+            );
+
+            array_push( $order_meta_emails, tt_validate( $_ns_guest_booking_result->email ) );
+        }
+
+        $current_guest_rf_id = '';
+
+        foreach( $ns_booking_data->releaseForms as $guest_release_form ) {
+            if( $_ns_guest_id == $guest_release_form->guestId ) {
+                $current_guest_rf_id = $guest_release_form->releaseFormId;
+            }
+        }
+
+        $_bookings_table_order_info = array(
+            'order_id'            => $order->id,
+            'guest_index_id'      => $order_guest_index,
+            'current_guest_rf_id' => $current_guest_rf_id,
+        );
+
+        $_insert_booking_data = array(
+            'ns_guest_booking_result' => $_ns_guest_booking_result,
+            'ns_booking_data'         => $ns_booking_data,
+            'ns_guest_info'           => $_ns_guest_info,
+            'guest'                   => $guest,
+            'order_info'              => $_bookings_table_order_info,
+        );
+
+        // New record insertion. Every other guest insertion
+        tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $_insert_booking_data, 'insert' ), [], 'insert' );
+    }
+
+    // Finalizing the order needs to be done only one time.
+    foreach( $trip_product_guests as $guest ) {
+        if( $guest->isPrimary ) {
+            $trip_pr_guest_ns_user_id = $guest->guestId;
+            $trip_product_price       = $guest->basePrice;
+        }
+        
+        if( 0 != $guest->singleSupplement ) {
+            $trip_s_qty++;
+            $trip_s_single_price = $guest->singleSupplement;
+        }
+    }
+
+    $bike_upgrade_price      = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true );
+    $single_supplement_price = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true );
+
+    $trek_user_checkout_data = array(
+        'no_of_guests'          => count( $ns_booking_data->guests ),
+        'shipping_first_name'   => $order_meta_primary['first_name'],
+        'shipping_last_name'    => $order_meta_primary['last_name'],
+        'shipping_phone'        => $order_meta_primary['phone'],
+        'custentity_birthdate'  => $order_meta_primary['dob'],
+        'custentity_gender'     => $order_meta_primary['gender'],
+        'shipping_address_1'    => $order_meta_primary['address_1'],
+        'shipping_address_2'    => $order_meta_primary['address_2'],
+        'shipping_country'      => $order_meta_primary['country'],
+        'shipping_state'        => $order_meta_primary['state'],
+        'shipping_city'         => $order_meta_primary['city'],
+        'shipping_postcode'     => $order_meta_primary['postcode'],
+        'email'                 => $order_meta_primary['email'],
+        'guests'                => $order_guests,
+        'bike_gears'            => $order_bike_gears,
+        'tt_waiver'             => '1',
+        'parent_product_id'     => tt_get_parent_trip_id_by_child_sku( $ns_booking_data->tripCode, false ),
+        'product_id'            => $product_id,
+        'sku'                   => $ns_booking_data->tripCode,
+        'bikeUpgradePrice'      => $bike_upgrade_price,
+        'singleSupplementPrice' => $single_supplement_price,
+    );
+
+    $trip_product = wc_get_product( $product_id );
+    if( ! empty( $trip_product_price ) ) {
+        $trip_product->set_price( $trip_product_price );
+    }
+    $product_item_id = $order->add_product( $trip_product, $trip_product_qty );
+    wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_data', $trek_user_checkout_data );
+    wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_product_id', $product_id );
+
+    // TODO: Travel protection, Insurance Fees, Bike Upgrade
+    // *** Single Supplement Fees ***
+    if( ! empty( $trip_s_qty ) ) {
+        $s_product_id = tt_create_line_item_product( 'TTWP23SUPP' );
+        $s_product    = wc_get_product( $s_product_id );
+        if( ! empty( $trip_s_single_price ) ) {
+            $s_product->set_price( $trip_s_single_price );
+        }
+        $s_product_item_id = $order->add_product( $s_product, $trip_s_qty );
+    }
+
+    // Add billing and shipping addresses.
+    $address = array(
+        'first_name' => $order_meta_primary['first_name'],
+        'last_name'  => $order_meta_primary['last_name'],
+        'email'      => $order_meta_primary['email'],
+        'phone'      => $order_meta_primary['phone'],
+        'address_1'  => $order_meta_primary['address_1'],
+        'address_2'  => $order_meta_primary['address_2'],
+        'city'       => $order_meta_primary['city'],
+        'state'      => $order_meta_primary['state'],
+        'postcode'   => $order_meta_primary['postcode'],
+        'country'    => $order_meta_primary['country'],
+    );
+
+    $order->set_address( $address, 'billing' );
+    $order->set_address( $address, 'shipping' );
+
+    // Take primary guest WP ID.
+    $wp_user    = get_user_by( 'email', $order_meta_primary['email'] );
+    $wp_user_id = $wp_user->ID;
+
+    // Finish the status if primary guest has registration.
+    if( ! empty( $wp_user_id ) ) {
+        $wc_user_id = $wp_user_id;
+        $order_status = 'finished';
+    }
+
+    // Assign the first registered guest as a customer of the order if the primary guest is not registered yet.
+    if( ! empty( $wc_user_id ) ) {
+        $order->set_customer_id( $wc_user_id );
+    }
+
+    if( ! empty( $ns_booking_data->bookingDate ) ) {
+        $date_time = date( strtotime( $ns_booking_data->bookingDate ) );
+        $order->set_date_created( $date_time );
+    }
+
+    $order->calculate_totals();
+    $order->save();
+
+    // Update the order meta.
+    update_post_meta( $order->id, 'trek_user_checkout_data', $trek_user_checkout_data );
+    update_post_meta( $order->id, 'trek_user_checkout_product_id', $product_id );
+    update_post_meta( $order->id, 'tt_meta_releaseFormId', $order_meta_primary['order_rf_id'] );
+    update_post_meta( $order->id, 'tt_wc_order_ns_status', true );
+    update_post_meta( $order->id, 'tt_wc_order_trip_user_emails', $order_meta_emails );
+    update_post_meta( $order->id, 'tt_meta_total_amount', $trip_total_amount );
+    update_post_meta( $order->id, 'tt_wc_order_finished_status', $order_status );
+
+    // Restore product qty.
+    wc_update_product_stock( $product_id, $trip_product_qty, 'increase' );
+
+    tt_add_error_log( 'NS - Finalize migrated order - END.', array( 'booking_id' => $ns_booking_data->bookingId, 'order_id' => $order->id, 'customer_id' => $wc_user_id, 'ns_user_id' => $current_ns_guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'End migrated order sync.' ) );
+}
+
+/**
+ * Prepare the data to insert or update the `guest_bookings` table.
+ *
+ * @param array $all_data Array with NS Response objects. And order_info is an array with additional data when needs inserting.
+ *
+ * @return array Array with prepared to insert or update booking data.
+ */
+function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' ) {
+    $booking_table_data      = array();
+
+    $ns_guest_booking_result = $all_data['ns_guest_booking_result']; // Object.
+    $ns_booking_data         = $all_data['ns_booking_data']; // Object.
+    $ns_guest_info           = $all_data['ns_guest_info']; // Object.
+    $guest                   = $all_data['guest']; // Object.
+    $order_info              = isset( $all_data['order_info'] ) ? $all_data['order_info'] : array(); // Array.
+
+    $ns_guest_id             = $guest->guestId; // Ns guest.
+    $ns_guest_email          = tt_validate( $ns_guest_booking_result->email );
+    $wp_user                 = get_user_by( 'email', $ns_guest_email );
+    $wp_user_id              = $wp_user->ID;
+    $trip_code               = tt_validate( $ns_booking_data->tripCode );
+    $product_id              = tt_get_product_by_sku( $trip_code, true );
+    $guest_bike_info         = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripCode, $ns_guest_info->bikeId );
+
+    // Two types preparing, for insert or an update.
+    if( 'insert' === $operation_type ) {
+        // Additional data that is needed to insert a row into the table.
+
+        $address_full                                   = explode( ' ', tt_validate( $ns_guest_booking_result->addressInfo->address ), 2 );
+        $address_line_1                                 = $address_full[0];
+        $address_line_2                                 = ! empty( $address_full[1] ) ? $address_full[1] : '';
+
+        // Collect the insertion booking data.
+        $booking_table_data['order_id']                 = $order_info['order_id'];
+        $booking_table_data['wantsInsurance']           = tt_validate( $guest->tripInsurancePurchased );
+        $booking_table_data['releaseFormId']            = $order_info['current_guest_rf_id'];
+        $booking_table_data['guest_index_id']           = $order_info['guest_index_id'];
+        $booking_table_data['guest_phone_number']       = tt_validate( $ns_guest_booking_result->phone );
+        $booking_table_data['guest_gender']             = tt_validate( $ns_guest_booking_result->gender->id );
+        $booking_table_data['guest_date_of_birth']      = ! empty( tt_validate( $ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ) : '';
+
+        // Shipping Address.
+        $booking_table_data['shipping_address_1']       = $address_line_1;
+        $booking_table_data['shipping_address_2']       = $address_line_2;
+        $booking_table_data['shipping_address_city']    = tt_validate( $ns_guest_booking_result->addressInfo->city );
+        $booking_table_data['shipping_address_state']   = tt_validate( $ns_guest_booking_result->addressInfo->state );
+        $booking_table_data['shipping_address_country'] = tt_validate( $ns_guest_booking_result->addressInfo->country );
+        $booking_table_data['shipping_address_zipcode'] = tt_validate( $ns_guest_booking_result->addressInfo->zip );
+
+        // Set rider level from Guest. TODO: add check based on bike ID, because Guest data may change for any booking if there more than one.
+        $booking_table_data['rider_level']              = tt_validate( $ns_guest_booking_result->riderType->id );
+    }
+
+    // Bike info from bike ID.
+    if( !empty( $guest_bike_info ) ) {
+        $booking_table_data['bike_type_id'] = tt_validate( json_decode( $guest_bike_info['bikeModel'], true )['id'] );
+        $booking_table_data['bike_size']    = tt_validate( json_decode( $guest_bike_info['bikeSize'], true )['id'] );
+    }
+
+    if( ! empty( $product_id ) ) {
+        $booking_table_data['product_id'] = $product_id;
+    }
+
+    if ( ! empty( $wp_user_id ) ) {
+        $booking_table_data['user_id'] = $wp_user_id;
+    }
+
+    $booking_table_data['guest_email_address']                 = tt_validate( $ns_guest_booking_result->email );
+    $booking_table_data['guest_first_name']                    = tt_validate( $ns_guest_booking_result->firstname );
+    $booking_table_data['guest_last_name']                     = tt_validate( $ns_guest_booking_result->lastname );
+    $booking_table_data['netsuite_guest_registration_id']      = tt_validate( $guest->guestId );
+    $booking_table_data['guestRegistrationId']                 = tt_validate( $guest->registrationId );
+    $booking_table_data['ns_trip_booking_id']                  = tt_validate( $ns_booking_data->bookingId );
+    $booking_table_data['trip_code']                           = $trip_code;
+    $booking_table_data['trip_name']                           = tt_validate( $ns_booking_data->tripName );
+    $booking_table_data['trip_total_amount']                   = tt_validate( $ns_booking_data->totalAmount );
+    $booking_table_data['trip_number_of_guests']               = ! empty( tt_validate( $ns_booking_data->guests ) ) ? count( $ns_booking_data->guests ) : 0;
+    $booking_table_data['trip_start_date']                     = ! empty( tt_validate( $ns_booking_data->tripStartDate ) ) ? strtotime( $ns_booking_data->tripStartDate ) : '';
+    $booking_table_data['trip_end_date']                       = ! empty( tt_validate( $ns_booking_data->tripEndDate ) ) ? strtotime( $ns_booking_data->tripEndDate ) : '';
+    $booking_table_data['guest_is_primary']                    = tt_validate( $ns_guest_info->isPrimary ) == 1 ? 1 : 0;
+    $booking_table_data['bike_selection']                      = tt_validate( $ns_guest_info->bikeId );
+    $booking_table_data['bike_id']                             = tt_validate( $ns_guest_info->bikeId );
+    $booking_table_data['rider_height']                        = tt_validate( $ns_guest_info->heightId );
+    $booking_table_data['helmet_selection']                    = tt_validate( $ns_guest_info->helmetId );
+    $booking_table_data['pedal_selection']                     = tt_validate( $ns_guest_info->pedalsId );
+    $booking_table_data['saddle_height']                       = tt_validate( $ns_guest_info->saddleHeight );
+    $booking_table_data['saddle_bar_reach_from_saddle']        = tt_validate( $ns_guest_info->barReachFromSaddle );
+    $booking_table_data['saddle_bar_height_from_wheel_center'] = tt_validate( $ns_guest_info->barHeightFromWheelCenter );
+    $booking_table_data['jersey_style']                        = tt_get_jersey_style( tt_validate( $ns_guest_info->jerseyId ) );
+    $booking_table_data['tt_jersey_size']                      = tt_validate( $ns_guest_info->jerseyId );
+    $booking_table_data['tshirt_size']                         = tt_validate( $ns_guest_info->tshirtSizeId );
+    $booking_table_data['race_fit_jersey_size']                = tt_validate( $ns_guest_info->raceFitJerseyId );
+    $booking_table_data['shorts_bib_size']                     = tt_validate( $ns_guest_info->shortsBibSizeId );
+    $booking_table_data['emergency_contact_first_name']        = tt_validate( $ns_guest_info->ecFirstName );
+    $booking_table_data['emergency_contact_last_name']         = tt_validate( $ns_guest_info->ecLastName );
+    $booking_table_data['emergency_contact_phone']             = tt_validate( $ns_guest_info->ecPhone );
+    $booking_table_data['emergency_contact_relationship']      = tt_validate( $ns_guest_info->ecRelationship );
+    $booking_table_data['medical_conditions']                  = tt_validate( $ns_guest_info->medicalConditions );
+    $booking_table_data['medications']                         = tt_validate( $ns_guest_info->medications );
+    $booking_table_data['allergies']                           = tt_validate( $ns_guest_info->allergies );
+    $booking_table_data['dietary_restrictions']                = tt_validate( $ns_guest_info->dietaryPreferences );
+    $booking_table_data['waiver_signed']                       = tt_validate( $ns_guest_info->waiverAccepted ) == 1 ? 1 : 0;
+
+    return $booking_table_data;
+}
+
+/**
+ * CRUD opeartions for `guest_bookings` table.
+ *
+ * @param array  $booking_table_data The data to insert or update in the bookings table.
+ * @param string $operation_type The type of the operation. Allowed types 'update' and 'insert'.
+ * @param array  $where The where arguments for an update operation.
+ *
+ * @return void
+ */
+function tt_guest_bookings_table_crud( $booking_table_data = array(), $where = array(), $operation_type = 'update' ) {
+
+    if( empty( $booking_table_data ) || empty( $operation_type ) ) {
+        // No data provided or missing type of operation.
+        return;
+    }
+
+    if( $operation_type === 'update' && empty( $where ) ) {
+        // Missing required for an update operation, where parameter.
+        return;
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'guest_bookings';
+
+    switch ( $operation_type ) {
+
+        case 'insert':
+            // Insert booking.
+            $insert_booking = $wpdb->insert( $table_name, $booking_table_data );
+            tt_add_error_log( '4) NS<>WC - SQL [Insert]', array( 'last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ), array( 'insert_booking' => $insert_booking, 'booking_table_data' => $booking_table_data ) );
+            break;
+
+        case 'update':
+            // Update existing booking.
+            $wpdb->update( $table_name, $booking_table_data, $where );
+            tt_add_error_log( '5) NS<>WC - SQL [Update]', array( 'last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ), $booking_table_data );
+            break;
+
+        default:
+            // code...
+            break;
+    }
+}
+
+/**
+ * Update WP user meta for guest preferences from NetSuite.
+ *
+ * @param $user_id WP User ID / Customer ID.
+ * @param $guest_data NS Response from USER_BOOKINGS_SCRIPT_ID with guest data object.
+ *
+ * @return void
+ */
+function tt_sync_guest_preferences( $user_id = 0, $guest_data = [] ) {
+    if( empty( $user_id ) || empty( $guest_data ) ) {
+        return;
+    }
+
+    // Not the best solution :-(
+    $address_full   = explode( ' ', tt_validate( $guest_data->addressInfo->address ), 2 );
+    $address_line_1 = $address_full[0];
+    $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
+
+    // Take NS Guest Preferences.
+    $ns_guest_preferences = array(
+        // Collect Personal Information.
+        'first_name'                              => tt_validate( $guest_data->firstname ),
+        'last_name'                               => tt_validate( $guest_data->lastname ),
+        'billing_phone'                           => tt_validate( $guest_data->phone ),
+        'custentity_phone_number'                 => tt_validate( $guest_data->phone ),
+        'custentity_birthdate'                    => ! empty( tt_validate( $guest_data->birthdate ) ) ? date( 'm/d/Y', strtotime( $guest_data->birthdate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
+        'custentity_gender'                       => tt_validate( $guest_data->gender->id ),
+
+        // Collect Medical Information.
+        'custentity_medications'                  => tt_validate( $guest_data->medications ),
+        'custentity_allergies'                    => tt_validate( $guest_data->allergies ),
+        'custentity_medicalconditions'            => tt_validate( $guest_data->medicalconditions ),
+        'custentity_dietaryrestrictions'          => tt_validate( $guest_data->dietaryrestrictions ),
+
+        // Collect Emergency Contact.
+        'custentity_emergencycontactfirstname'    => tt_validate( $guest_data->emergencyContactPrimFirstName ),
+        'custentityemergencycontactlastname'      => tt_validate( $guest_data->emergencyContactPrimLastName ),
+        'custentity_emergencycontactphonenumber'  => tt_validate( $guest_data->emergencyContactPrimPhone ),
+        'custentity_emergencycontactrelationship' => tt_validate( $guest_data->emergencyContactPrimRelationship ),
+
+        // Collect Communication Preferences.
+        'custentity_contactmethod'                => tt_validate( $guest_data->preferredContactMethod->id ),
+
+        // These two fields below are not clear for what are they.
+        // 'custentity_addtotrektravelmailinglist' => isset( $guest_data->addToMailList->id ) ? $guest_data->addToMailList->id : '', // Example response - "addToEmailList": { "id": "2", "name": "Soft Opt-Out" } or "addToEmailList": { "id": "1", "name": "Soft Opt-In" }
+        // 'globalsubscriptionstatus'              => isset( $guest_data->addToEmailList->id ) ? $guest_data->addToEmailList->id : '', // Example response - "addToMailList": { "id": "1", "name": "Yes" },
+
+        // Collect Bike & Gear Preferences
+        // TODO: Bike type field mapping. One of the listed bellow.
+        // 'gear_preferences_bike'       => isset( $guest_data->bikeSelect ) ? $guest_data->bikeSelect : '', // this is a bike id in user meta.
+        // 'gear_preferences_bike_size'  => isset( $guest_data->bikeSelect ) ? $guest_data->bikeSelect : '', // this is a bike size in user meta.
+        // 'gear_preferences_bike_type'  => isset( $guest_data->bikeSelect ) ? $guest_data->bikeSelect : '', // this is a bike type id in user meta.
+        'gear_preferences_rider_height'           => tt_validate( $guest_data->height->id ),
+        'gear_preferences_select_pedals'          => tt_validate( $guest_data->pedalSelect->id ),
+        'gear_preferences_helmet_size'            => tt_validate( $guest_data->helmetSize->id ),
+
+        // These fields below not comming from 1305 NS Script.
+        // 'gear_preferences_jersey_size' => '',
+        // 'gear_preferences_jersey_style' => '',
+
+        // Collect Gear Optional Preferences.
+        'gear_preferences_saddle_height'          => tt_validate( $guest_data->saddleHeight ),
+        'gear_preferences_bar_height'             => tt_validate( $guest_data->barReachFromSaddle ),
+        'gear_preferences_bar_reach'              => tt_validate( $guest_data->barHeightFromWheel ),
+
+        // Collect Billing Address Preferences.
+        'billing_first_name'                      => tt_validate( $guest_data->firstname ),
+        'billing_last_name'                       => tt_validate( $guest_data->lastname ),
+        // About address from NS billing_address_1 ['World Way'] and billing_address_2 ['1'] comming as one field $guest_data->addressInfo->address ['World Way 1'].
+        'billing_address_1'                       => $address_line_1,
+        'billing_address_2'                       => $address_line_2,
+        'billing_city'                            => tt_validate( $guest_data->addressInfo->city ),
+        'billing_state'                           => tt_validate( $guest_data->addressInfo->state ),
+        'billing_postcode'                        => tt_validate( $guest_data->addressInfo->zip ),
+        'billing_country'                         => tt_validate( $guest_data->addressInfo->country ),
+
+        // Collect Shipping Address Preferences.
+        'shipping_first_name'                     => tt_validate( $guest_data->firstname ),
+        'shipping_last_name'                      => tt_validate( $guest_data->lastname ),
+        // About address from NS shipping_address_1 ['World Way'] and shipping_address_2 ['1'] comming as one field $guest_data->addressInfo->address ['World Way 1'].
+        'shipping_address_1'                      => $address_line_1,
+        'shipping_address_2'                      => $address_line_2,
+        'shipping_city'                           => tt_validate( $guest_data->addressInfo->city ),
+        'shipping_state'                          => tt_validate( $guest_data->addressInfo->state ),
+        'shipping_postcode'                       => tt_validate( $guest_data->addressInfo->zip ),
+        'shipping_country'                        => tt_validate( $guest_data->addressInfo->country ),
+
+        // Collect Passport Preferences.
+        'custentity_passport_number'              => tt_validate( $guest_data->passportNumber ),
+        'custentity_passport_exp_date'            => ! empty( tt_validate( $guest_data->passportExpirationDate ) ) ? date( 'm/d/Y', strtotime( $guest_data->passportExpirationDate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
+    );
+
+    foreach( $ns_guest_preferences as $key => $value ) {
+        if( ! empty( $value ) ) {
+            // Update user meta for this key.
+            update_user_meta( $user_id, $key, $value );
+        }
+    }
+
+    tt_add_error_log( 'NS<>WC - Sync guest preferences', array( 'customer_id' => $user_id, 'ns_guest_preferences' => $ns_guest_preferences ), array( 'status' => true, 'message' => 'Update the user metadata with info for the guest preferences from NS.' ) );
+}
+
+/**
+ * Read file with name `bookings-export.csv` uploaded in `wp-content/uploads/bookings/`
+ * and return array with bookings ids.
+ *
+ * Booking ID need to be numeric and in to first column of the file.
+ *
+ * @return array
+ */
+function tt_get_bookings_ids_from_file() {
+
+    if ( class_exists( 'Psr\Log\AbstractLogger' ) ) {
+        $upload_dir         = wp_upload_dir();
+        $base_dir           = $upload_dir['basedir'] . '/bookings/';
+        $json_bookings_path = $base_dir . 'bookings-export.csv';
+
+        $bookings_ids_arr   = array();
+
+        if ( ( $handle = fopen( $json_bookings_path, "r" ) ) !== FALSE ) {
+            while ( ( $data = fgetcsv( $handle, 1000, "," ) ) !== FALSE ) {
+				if( is_numeric( $data[0] ) ) {
+					$bookings_ids_arr[] = $data[0];
+				}
+            }
+
+            fclose( $handle );
+        }
+    }
+
+    return $bookings_ids_arr;
+}
+
+/**
+ * Return bookings ids in array from uploaded file trough input field.
+ *
+ * @param string $file_name The name of the file
+ * @return array
+ */
+function tt_get_bookings_ids_from_upload_file( $file_name ) {
+    $bookings_ids_arr = array();
+
+    if ( ( $handle = fopen( $file_name, "r" ) ) !== FALSE ) {
+        while ( ( $data = fgetcsv( $handle, 1000, "," ) ) !== FALSE ) {
+            if( is_numeric( $data[0] ) ) {
+                $bookings_ids_arr[] = $data[0];
+            }
+        }
+
+        fclose( $handle );
+    }
+
+    return $bookings_ids_arr;
+}
+
+/**
+ * Create multiple placeholder orders by given array with booking ids.
+ *
+ * @param array $bookings_ids Array with booking ids to create migrated orders.
+ */
+function tt_create_multiple_orders( $bookings_ids ) {
+    if( empty( $bookings_ids ) ) {
+        return;
+    }
+
+    foreach( $bookings_ids as $booking_id ) {
+        tt_create_order( $booking_id );
+    }
 }

@@ -7,6 +7,9 @@ $medical_fields = array(
 );
 $order_id = $_REQUEST['order_id'];
 $order = wc_get_order($order_id);
+$tt_order_type = $order->get_meta( 'tt_wc_order_type' );
+$is_order_auto_generated = 'auto-generated' == $tt_order_type ? true : false;
+$tt_auto_generated_order_total_amount = $order->get_meta( 'tt_meta_total_amount' );
 $userInfo = wp_get_current_user();
 $user_id = $userInfo->ID;
 $order_items = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
@@ -288,7 +291,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						</div>
 						<div class="trip-total">
 							<p class="fw-medium fs-lg lh-lg line-item-title">Trip Total</p>
-							<p class="fw-normal fs-md lh-md"><?php echo $order->get_formatted_order_total($order_item) ?></p>
+							<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : $order->get_formatted_order_total($order_item) ?></p>
 						</div>
 					</div>
 					<hr>
@@ -297,10 +300,12 @@ if( !empty( $confirmed_info_unserialized ) ) {
 							<p class="fw-medium fs-lg lh-lg line-item-title">Guests</p>
 							<p class="fw-normal fs-md lh-md"><?php echo $trek_checkoutData['no_of_guests']; ?> Guests Attending</p>
 						</div>
+						<?php if( ! $is_order_auto_generated ) : ?>
 						<div class="guests-room">
 							<p class="fw-medium fs-lg lh-lg line-item-title">Room Selection</p>
 							<?php echo $tt_rooms_output; ?>
 						</div>
+						<?php endif; ?>
 					</div>
 					<div class="trip-details-cta my-4">
 						<?php if ($public_view_order_url) : ?>
@@ -347,7 +352,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 							</div>
 							<div class="trip-total">
 								<p class="fw-medium fs-lg lh-lg line-item-title">Trip Total</p>
-								<p class="fw-normal fs-md lh-md"><?php echo $order->get_formatted_order_total($order_item) ?></p>
+								<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : $order->get_formatted_order_total($order_item) ?></p>
 							</div>
 						</div>
 						<hr>
@@ -356,10 +361,12 @@ if( !empty( $confirmed_info_unserialized ) ) {
 								<p class="fw-medium fs-lg lh-lg line-item-title">Guests</p>
 								<p class="fw-normal fs-md lh-md"><?php echo $trek_checkoutData['no_of_guests']; ?> Guests Attending</p>
 							</div>
+							<?php if( ! $is_order_auto_generated ) : ?>
 							<div class="guests-room">
 								<p class="fw-medium fs-lg lh-lg line-item-title">Room Selection</p>
 								<?php echo $tt_rooms_output; ?>
 							</div>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>
@@ -908,7 +915,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						</form>
 					</div> <!-- accordion-item ends -->
 				<?php } ?>
-					<?php if ($rider_level != 5 && $own_bike != 'yes' && 5270 != $bike_id ) { ?>
+					<?php if ($rider_level != 5 && $own_bike != 'yes' && 5270 != $bike_id && 5257 != $bike_id) { ?>
 						<?php $gray_out = ''; ?>
 						<?php $bike_review_string = 'Confirm your bike selection'; ?>
 						<?php if( $lockedUserBike ) { ?>

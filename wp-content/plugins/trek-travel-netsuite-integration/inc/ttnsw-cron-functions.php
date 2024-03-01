@@ -670,12 +670,12 @@ if (!function_exists('tt_ns_guest_booking_details')) {
             return;
         }
 
-        foreach( $guest_ids as $guest_id ){
+        foreach( $guest_ids as $guest_id ) {
             $args                    = array( 'guestId' => $guest_id, 'includeBookingInfo' => 1 );
             $ns_guest_booking_result = $net_suite_client->get( USER_BOOKINGS_SCRIPT_ID, $args ); // 1305
             tt_add_error_log( '1) NS - Guest includeBookingInfo', $args, $ns_guest_booking_result );
 
-            // Guest Not Found.
+            // Guest Not Found or doesn't have bookings.
             if( ! $ns_guest_booking_result || ! isset( $ns_guest_booking_result->bookings ) ) {
                 continue;
             }
@@ -692,75 +692,9 @@ if (!function_exists('tt_ns_guest_booking_details')) {
             // If we have wp user.
             // The check for $is_sync_process prevents override information during the booking process.
             if( ! empty( $wp_user_id ) && 'true' == $is_sync_process ) {
-
-                // Take NS Guest Preferences.
-                $ns_guest_preferences = array(
-                    // Collect Personal Information.
-                    'first_name'              => isset( $ns_guest_booking_result->firstname ) ? $ns_guest_booking_result->firstname : '',
-                    'last_name'               => isset( $ns_guest_booking_result->lastname ) ? $ns_guest_booking_result->lastname : '',
-                    'billing_phone'           => isset( $ns_guest_booking_result->phone ) ? $ns_guest_booking_result->phone : '',
-                    'custentity_phone_number' => isset( $ns_guest_booking_result->phone ) ? $ns_guest_booking_result->phone : '',
-                    'custentity_birthdate'    => isset( $ns_guest_booking_result->birthdate ) ? date( 'm/d/Y', strtotime( $ns_guest_booking_result->birthdate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
-                    'custentity_gender'       => isset( $ns_guest_booking_result->gender->id ) ? $ns_guest_booking_result->gender->id : '',
-    
-                    // Collect Medical Information.
-                    'custentity_medications'         => isset( $ns_guest_booking_result->medications ) ? $ns_guest_booking_result->medications : '',
-                    'custentity_allergies'           => isset( $ns_guest_booking_result->allergies ) ? $ns_guest_booking_result->allergies : '',
-                    'custentity_medicalconditions'   => isset( $ns_guest_booking_result->medicalconditions ) ? $ns_guest_booking_result->medicalconditions : '',
-                    'custentity_dietaryrestrictions' => isset( $ns_guest_booking_result->dietaryrestrictions ) ? $ns_guest_booking_result->dietaryrestrictions : '',
-
-                    // Collect Emergency Contact.
-                    'custentity_emergencycontactfirstname'    => isset( $ns_guest_booking_result->emergencyContactPrimFirstName ) ? $ns_guest_booking_result->emergencyContactPrimFirstName : '',
-                    'custentityemergencycontactlastname'      => isset( $ns_guest_booking_result->emergencyContactPrimLastName ) ? $ns_guest_booking_result->emergencyContactPrimLastName : '',
-                    'custentity_emergencycontactphonenumber'  => isset( $ns_guest_booking_result->emergencyContactPrimPhone ) ? $ns_guest_booking_result->emergencyContactPrimPhone : '',
-                    'custentity_emergencycontactrelationship' => isset( $ns_guest_booking_result->emergencyContactPrimRelationship ) ? $ns_guest_booking_result->emergencyContactPrimRelationship : '',
-
-                    // Collect Communication Preferences.
-                    'custentity_contactmethod'              => isset( $ns_guest_booking_result->preferredContactMethod->id ) ? $ns_guest_booking_result->preferredContactMethod->id : '',
-
-                    // These two fields below are not clear for what are they.
-                    // 'custentity_addtotrektravelmailinglist' => isset( $ns_guest_booking_result->addToMailList->id ) ? $ns_guest_booking_result->addToMailList->id : '', // Example response - "addToEmailList": { "id": "2", "name": "Soft Opt-Out" } or "addToEmailList": { "id": "1", "name": "Soft Opt-In" }
-                    // 'globalsubscriptionstatus'              => isset( $ns_guest_booking_result->addToEmailList->id ) ? $ns_guest_booking_result->addToEmailList->id : '', // Example response - "addToMailList": { "id": "1", "name": "Yes" },
-
-                    // Collect Bike & Gear Preferences
-                    // TODO: Bike type field mapping. One of the listed bellow.
-                    // 'gear_preferences_bike'       => isset( $ns_guest_booking_result->bikeSelect ) ? $ns_guest_booking_result->bikeSelect : '', // this is a bike id in user meta.
-                    // 'gear_preferences_bike_type'  => isset( $ns_guest_booking_result->bikeSelect ) ? $ns_guest_booking_result->bikeSelect : '', // this is a bike type id in user meta.
-                    'gear_preferences_rider_height'  => isset( $ns_guest_booking_result->height->id ) ? $ns_guest_booking_result->height->id : '',
-                    'gear_preferences_select_pedals' => isset( $ns_guest_booking_result->pedalSelect->id ) ? $ns_guest_booking_result->pedalSelect->id : '',
-                    'gear_preferences_helmet_size'   => isset( $ns_guest_booking_result->helmetSize->id ) ? $ns_guest_booking_result->helmetSize->id : '',
-
-                    // These fields below not comming from 1305 NS Script.
-                    // 'gear_preferences_jersey_size' => '',
-                    // 'gear_preferences_jersey_style' => '',
-
-                    // Collect Gear Optional Preferences.
-                    'gear_preferences_saddle_height' => isset( $ns_guest_booking_result->saddleHeight ) ? $ns_guest_booking_result->saddleHeight : '',
-                    'gear_preferences_bar_height'    => isset( $ns_guest_booking_result->barReachFromSaddle ) ? $ns_guest_booking_result->barReachFromSaddle : '',
-                    'gear_preferences_bar_reach'     => isset( $ns_guest_booking_result->barHeightFromWheel ) ? $ns_guest_booking_result->barHeightFromWheel : '',
-
-                    // Collect Address Preferences.
-                    // About address from NS billing_address_1 ['World Way'] and billing_address_2 ['1'] comming as one field $ns_guest_booking_result->addressInfo->address ['World Way 1'].
-                    // 'billing_address_1' => isset( $ns_guest_booking_result->addressInfo->address ) ? $ns_guest_booking_result->addressInfo->address : '',
-                    // 'billing_address_2' => isset( $ns_guest_booking_result->addressInfo->address ) ? $ns_guest_booking_result->addressInfo->address : '',
-                    'billing_city'     => isset( $ns_guest_booking_result->addressInfo->city ) ? $ns_guest_booking_result->addressInfo->city : '',
-                    'billing_state'    => isset( $ns_guest_booking_result->addressInfo->state ) ? $ns_guest_booking_result->addressInfo->state : '',
-                    'billing_postcode' => isset( $ns_guest_booking_result->addressInfo->zip ) ? $ns_guest_booking_result->addressInfo->zip : '',
-                    'billing_country'  => isset( $ns_guest_booking_result->addressInfo->country ) ? $ns_guest_booking_result->addressInfo->country : '',
-
-                    // Collect Passport Preferences.
-                    'custentity_passport_number'   => isset( $ns_guest_booking_result->passportNumber ) ? $ns_guest_booking_result->passportNumber : '',
-                    'custentity_passport_exp_date' => isset( $ns_guest_booking_result->passportExpirationDate ) ? date( 'm/d/Y', strtotime( $ns_guest_booking_result->passportExpirationDate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
-                );
-
-                foreach( $ns_guest_preferences as $key => $value ) {
-                    if( ! empty( $value ) ) {
-                        // Update user meta for this key.
-                        update_user_meta( $wp_user_id, $key, $value );
-                    }
-                }
+                
+                tt_sync_guest_preferences( $wp_user_id, $ns_guest_booking_result );
             }
-
 
             foreach( $ns_guest_booking_result->bookings as $booking_data ) {
 
@@ -786,35 +720,22 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                 }
 
                 $booking_id       = $ns_booking_data->bookingId;  // NS booking ID.
-                $booking_number   = $ns_booking_data->bookingNumber;
-                $booking_date     = $ns_booking_data->bookingDate;
-                $primary_guest_id = $ns_booking_data->primaryGuestId;
-                $trip_id          = $ns_booking_data->tripId;
                 $trip_code        = $ns_booking_data->tripCode;
-                $itinerary_code   = $ns_booking_data->itineraryCode;
-                $trip_name        = $ns_booking_data->tripName;
-                $trip_year        = $ns_booking_data->tripYear;
-                $trip_start_date  = $ns_booking_data->tripStartDate;
-                $trip_end_date    = $ns_booking_data->tripEndDate;
-                $total_amount     = $ns_booking_data->totalAmount;
-                $balance_paid     = $ns_booking_data->balancePaid;
-                $amount_due       = $ns_booking_data->amountDue;
-                $sales_tax        = $ns_booking_data->salesTax;
-                $payments         = $ns_booking_data->payments; // Array<>Object.
-                $product_id       = tt_get_postid_by_meta_key_value( 'tt_meta_tripId', $trip_id );
+                $product_id       = tt_get_product_by_sku( $trip_code, true );
 
                 foreach( $guests as $guest ){
 
                     $registration_id = $guest->registrationId;
+                    $ns_guest_id     = $guest->guestId; // Ns guest.
 
-                    // Guest Registration ID not found.
-                    if( ! $registration_id ) {
+                    // Guest Registration ID not found or this guest data not for current guest.
+                    if( ! $registration_id || $guest_id != $ns_guest_id ) {
                         continue;
                     }
 
                     $args_3            = array( 'registrationId' => $registration_id );
                     $ns_guest_info_arr = $net_suite_client->get( GET_REGISTRATIONS_SCRIPT_ID, $args_3 ); // 1294
-                    tt_add_error_log( 'NS - Guest includeBookingInfo', $args_3, $ns_guest_info_arr );
+                    tt_add_error_log( '3) NS - Guest includeBookingInfo', $args_3, $ns_guest_info_arr );
 
                     // Guest Registration not found.
                     if( ! $ns_guest_info_arr ) {
@@ -822,14 +743,6 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     }
 
                     $ns_guest_info = $ns_guest_info_arr[0];
-
-                    // Collect secondary guest email.
-                    $guest_email = '';
-                    $ns_guest_id = $guest->guestId; // Ns guest.
-
-                    // Fill booking table data.
-                    $booking_table_data = array();
-                    $should_insert      = false;
 
                     /**
                      * Check for existing records in DB.
@@ -843,333 +756,49 @@ if (!function_exists('tt_ns_guest_booking_details')) {
 
                     if( ! $check_booking || $check_booking <= 0 ) {
 
-                        // If booking not found in the table, most probably we have migrated order, that need to be finished.
+                        // If booking not found in the table, create an empty order and migrate this booking below.
+                        $auto_generated_order = tt_create_order( $booking_id );
+
+                        
+                        if ( $auto_generated_order ) {
+                            tt_add_error_log( '[WC] - create auto-generated order', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'New Auto generated Order was created.', 'order_id' => $auto_generated_order->id ) );
+                            tt_finalize_migrated_order( $auto_generated_order, $product_id, $wc_user_id, $guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $guest );
+                        }
+
+                        // Skip next steps and go to the next guest. By the way, we added a check to sync only the guest registration of the current NS user.
+                        continue;
+                    }
+
+                    $update_booking_data = array(
+                        'ns_guest_booking_result' => $ns_guest_booking_result,
+                        'ns_booking_data'         => $ns_booking_data,
+                        'ns_guest_info'           => $ns_guest_info,
+                        'guest'                   => $guest,
+                    );
+
+                    if( $guest->isPrimary ) {
+                        // Take the order for this booking.
                         $order = tt_get_order_by_booking( $booking_id );
 
                         if ( $order ) {
                             $order_finished_status = $order->get_meta( 'tt_wc_order_finished_status' );
 
-                            // Finish the order on the first registered guest.
+                            // If the order is not finished the last step is to set the primary guest as a customer of the order.
                             if( 'not-finished' == $order_finished_status ) {
-                                // Check if current user is primary guest.
-                                if( $ns_guest_info->isPrimary && $ns_guest_id == $ns_new_guest_id) {
-                                    // Proceed with order finishing with current data that we have. Then go back to insert info to DB.
-
-                                    $guest_index_id = 0;
-    
-                                    $ns_user_booking_data = array(
-                                        'no_of_guests'          => count( $ns_booking_data->guests ), // 1304 count guests Level 2 -> Loop trough all bookings, that means, check if this booking ID, has autogenerated order.
-                                        'shipping_first_name'   => $ns_guest_booking_result->firstname, // 1305 run it for primary guest on register some of the guests. Level 1
-                                        'shipping_last_name'    => $ns_guest_booking_result->lastname,
-                                        'shipping_phone'        => $ns_guest_booking_result->phone,
-                                        'custentity_birthdate'  => date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ),
-                                        'custentity_gender'     => $ns_guest_booking_result->gender->id,
-                                        'shipping_address_1'    => explode( ' ', $ns_guest_booking_result->addressInfo->address, 2 )[0],
-                                        'shipping_address_2'    => explode( ' ', $ns_guest_booking_result->addressInfo->address, 2 )[1],
-                                        'shipping_country'      => $ns_guest_booking_result->addressInfo->country,
-                                        'shipping_state'        => $ns_guest_booking_result->addressInfo->state,
-                                        'shipping_city'         => $ns_guest_booking_result->addressInfo->city,
-                                        'shipping_postcode'     => $ns_guest_booking_result->addressInfo->zip,
-                                        'email'                 => $ns_guest_booking_result->email,
-                                        'tt_waiver'             => '1',
-                                        'parent_product_id'     => tt_get_parent_trip_id_by_child_sku( $ns_booking_data->tripCode, false ),
-                                        'product_id'            => tt_get_product_by_sku( $ns_booking_data->tripCode, true ),
-                                        'sku'                   => $ns_booking_data->tripCode,
-                                        'bikeUpgradePrice'      => $guest->wheelUpgrade,
-                                        'singleSupplementPrice' => $guest->singleSupplement,
-                                    );
-    
-                                    $order_items    = $order->get_items( array( 'line_item' ) );
-                                    $accepted_p_ids = tt_get_line_items_product_ids();
-    
-                                    if ( $order_items ) {
-                                        foreach ( $order_items as $item_id => $item ) {
-                                            $item_product_id = $item['product_id'];
-                                            if ( ! in_array( $item_product_id, $accepted_p_ids ) ) {
-                                                // This is a trip product.
-                                                wc_add_order_item_meta( $item_id, 'trek_user_checkout_data', $ns_user_booking_data );
-                                            }
-                                        }
-    
-                                        $order_release_form_id = '';
-                                        $release_forms         = $ns_booking_data->releaseForms;
-    
-                                        foreach( $release_forms as $guest_release_form ) {
-                                            if( $ns_guest_id == $guest_release_form->guestId ) {
-                                                $order_release_form_id = $guest_release_form->releaseFormId;
-                                            }
-                                        }
-    
-                                        // Add billing and shipping addresses.
-                                        $address = array(
-                                            'first_name' => $ns_guest_booking_result->firstname,
-                                            'last_name'  => $ns_guest_booking_result->lastname,
-                                            'email'      => $ns_guest_booking_result->email,
-                                            'phone'      => $ns_guest_booking_result->phone,
-                                            'address_1'  => explode( ' ', $ns_guest_booking_result->addressInfo->address, 2 )[0],
-                                            'address_2'  => explode( ' ', $ns_guest_booking_result->addressInfo->address, 2 )[1], 
-                                            'city'       => $ns_guest_booking_result->addressInfo->city,
-                                            'state'      => $ns_guest_booking_result->addressInfo->state,
-                                            'postcode'   => $ns_guest_booking_result->addressInfo->zip,
-                                            'country'    => $ns_guest_booking_result->addressInfo->country,
-                                        );
-    
-                                        $order->set_address( $address, 'billing' );
-                                        $order->set_address( $address, 'shipping' );
-    
-                                        if( ! empty( $wc_user_id ) ){
-                                            $order->set_customer_id( $wc_user_id );
-                                        }
-    
-                                        $order->save();
-    
-                                        update_post_meta( $order->id, 'trek_user_checkout_data', $ns_user_booking_data );
-                                        update_post_meta( $order->id, 'tt_meta_releaseFormId', $order_release_form_id );
-                                        update_post_meta( $order->id, 'tt_wc_order_ns_status', true );
-                                        update_post_meta( $order->id, 'tt_wc_order_trip_user_emails', array() );
-                                        update_post_meta( $order->id, 'tt_wc_order_finished_status', 'finished' );
-                                    }
-                                } else {
-                                    // Secondary guest has booking in NetSuite, but is registered before primary guest.
-                                    // So we need info from the main profile. Run 1305 for the primary Guest to take the info.
-
-                                    $guest_index_id = 1;
-
-                                    $ns_guest_id_pr = '';
-                                    $ns_pr_wheel_upgrade = '';
-                                    $ns_pr_single_supplement = '';
-                                    foreach( $guests as $check_guest ) {
-                                        if( $check_guest->isPrimary ) {
-                                            $ns_guest_id_pr         = $check_guest->guestId;
-                                            $ns_pr_wheel_upgrade    = $check_guest->wheelUpgrade;
-                                            $ns_pr_single_supplement= $check_guest->singleSupplement;
-                                        }
-                                    }
-    
-                                    // Take Primary guest info without bookings.
-                                    $ns_guest_booking_result_pr = tt_get_ns_guest_info( $ns_guest_id_pr, 0 );
-    
-                                    if( $ns_guest_booking_result_pr ) {
-                                        // Info for primary guest of this booking.
-    
-                                        // Proceed with order finishing with current data that we have. Then go back to insert info to DB.
-                                        $ns_user_booking_data_pr = array(
-                                            'no_of_guests'          => count( $ns_booking_data->guests ), // 1304 count guests Level 2 -> Loop trough all bookings, that means, check if this booking ID, has autogenerated order.
-                                            'shipping_first_name'   => $ns_guest_booking_result_pr->firstname, // 1305 run it for primary guest on register some of the guests. Level 1
-                                            'shipping_last_name'    => $ns_guest_booking_result_pr->lastname,
-                                            'shipping_phone'        => $ns_guest_booking_result_pr->phone,
-                                            'custentity_birthdate'  => date( 'Y-m-d', strtotime( $ns_guest_booking_result_pr->birthdate ) ),
-                                            'custentity_gender'     => $ns_guest_booking_result_pr->gender->id,
-                                            'shipping_address_1'    => explode( ' ', $ns_guest_booking_result_pr->addressInfo->address, 2 )[0],
-                                            'shipping_address_2'    => explode( ' ', $ns_guest_booking_result_pr->addressInfo->address, 2 )[1],
-                                            'shipping_country'      => $ns_guest_booking_result_pr->addressInfo->country,
-                                            'shipping_state'        => $ns_guest_booking_result_pr->addressInfo->state,
-                                            'shipping_city'         => $ns_guest_booking_result_pr->addressInfo->city,
-                                            'shipping_postcode'     => $ns_guest_booking_result_pr->addressInfo->zip,
-                                            'email'                 => $ns_guest_booking_result_pr->email,
-                                            'tt_waiver'             => '1',
-                                            'parent_product_id'     => tt_get_parent_trip_id_by_child_sku( $ns_booking_data->tripCode, false ),
-                                            'product_id'            => tt_get_product_by_sku( $ns_booking_data->tripCode, true ),
-                                            'sku'                   => $ns_booking_data->tripCode,
-                                            'bikeUpgradePrice'      => $ns_pr_wheel_upgrade,
-                                            'singleSupplementPrice' => $ns_pr_single_supplement,
-                                        );
-    
-                                        $order_items    = $order->get_items( array( 'line_item' ) );
-                                        $accepted_p_ids = tt_get_line_items_product_ids();
-    
-                                        if ( $order_items ) {
-                                            foreach ( $order_items as $item_id => $item ) {
-                                                $item_product_id = $item['product_id'];
-                                                if ( ! in_array( $item_product_id, $accepted_p_ids ) ) {
-                                                    // This is a trip product.
-                                                    wc_add_order_item_meta( $item_id, 'trek_user_checkout_data', $ns_user_booking_data_pr );
-                                                }
-                                            }
-    
-                                            $order_release_form_id = '';
-                                            $release_forms         = $ns_booking_data->releaseForms;
-    
-                                            foreach( $release_forms as $guest_release_form ) {
-                                                if( $ns_guest_id_pr == $guest_release_form->guestId ) {
-                                                    $order_release_form_id = $guest_release_form->releaseFormId;
-                                                }
-                                            }
-    
-                                            // Add billing and shipping addresses.
-                                            $address = array(
-                                                'first_name' => $ns_guest_booking_result_pr->firstname,
-                                                'last_name'  => $ns_guest_booking_result_pr->lastname,
-                                                'email'      => $ns_guest_booking_result_pr->email,
-                                                'phone'      => $ns_guest_booking_result_pr->phone,
-                                                'address_1'  => explode( ' ', $ns_guest_booking_result_pr->addressInfo->address, 2 )[0],
-                                                'address_2'  => explode( ' ', $ns_guest_booking_result_pr->addressInfo->address, 2 )[1], 
-                                                'city'       => $ns_guest_booking_result_pr->addressInfo->city,
-                                                'state'      => $ns_guest_booking_result_pr->addressInfo->state,
-                                                'postcode'   => $ns_guest_booking_result_pr->addressInfo->zip,
-                                                'country'    => $ns_guest_booking_result_pr->addressInfo->country,
-                                            );
-    
-                                            $order->set_address( $address, 'billing' );
-                                            $order->set_address( $address, 'shipping' );
-    
-                                            if( ! empty( $wc_user_id ) ){
-                                                $order->set_customer_id( $wc_user_id );
-                                            }
-    
-                                            $order->save();
-    
-                                            update_post_meta( $order->id, 'trek_user_checkout_data', $ns_user_booking_data_pr );
-                                            update_post_meta( $order->id, 'tt_meta_releaseFormId', $order_release_form_id );
-                                            update_post_meta( $order->id, 'tt_wc_order_ns_status', true );
-                                            update_post_meta( $order->id, 'tt_wc_order_trip_user_emails', array() );
-                                            update_post_meta( $order->id, 'tt_wc_order_finished_status', 'finished' );
-                                        }
-                                    }
-                                }
-                                // Proceed with inserting...
-                            }
-                            // We have a migrated order that is finished from the first registered guest.
-                            // So need to insert this record also.
-
-                            $current_guest_rf_id = '';
-
-                            foreach( $ns_booking_data->releaseForms as $guest_release_form ) {
-                                if( $ns_guest_id == $guest_release_form->guestId ) {
-                                    $current_guest_rf_id = $guest_release_form->releaseFormId;
+                                // Finish the order on the primary registered guest.
+                                if( ! empty( $wp_user_id ) ) {
+                                    $order->set_customer_id( $wp_user_id );
+                                    $order->save();
+                                    update_post_meta( $order->id, 'tt_wc_order_finished_status', 'finished' );
+                                    tt_add_error_log( 'NS - Found migrated order', array( 'booking_id' => $booking_id, 'order_id' => $order->id, 'customer_id' => $wp_user_id, 'ns_user_id' => $ns_guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'Assign the primary guest as customer to the order.' ) );
                                 }
                             }
-
-                            $trip_product_id = tt_get_product_by_sku( $trip_code, true );
-
-                            // Insert booking data.
-                            $booking_table_data['order_id']            = $order->id;
-                            $booking_table_data['product_id']          = $trip_product_id;
-                            $booking_table_data['releaseFormId']       = $current_guest_rf_id;
-                            $booking_table_data['guest_index_id']      = '';
-                            $booking_table_data['guest_phone_number']  = $ns_guest_booking_result->phone;
-                            $booking_table_data['guest_gender']        = $ns_guest_booking_result->gender->id;
-                            $booking_table_data['guest_date_of_birth'] = date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) );
-
-                            // Shipping Address.
-                            $booking_table_data['shipping_address_1']       = explode( ' ', $ns_guest_booking_result->addressInfo->address, 2 )[0];
-                            $booking_table_data['shipping_address_2']       = explode( ' ', $ns_guest_booking_result->addressInfo->address, 2 )[1];
-                            $booking_table_data['shipping_address_city']    = $ns_guest_booking_result->addressInfo->city;
-                            $booking_table_data['shipping_address_state']   = $ns_guest_booking_result->addressInfo->state;
-                            $booking_table_data['shipping_address_country'] = $ns_guest_booking_result->addressInfo->country;
-                            $booking_table_data['shipping_address_zipcode'] = $ns_guest_booking_result->addressInfo->zip;
-
-                            $should_insert = true;
-                        } else {
-                            // If booking record not exist in DB and we don't have migrated order for this
-                            // skip next steps and go to the next guest.
-                            continue;
                         }
                     }
 
-                    if( $ns_new_guest_id == $ns_guest_id && ! empty( $wc_user_id ) ) {
-                        $user_info   = get_user_by( 'id' , $wc_user_id );
-                        if( $user_info ) {
-                            $guest_email = $user_info->user_email;
-                        }
-                    }
-
-                    // Collect data from $guest object.
-                    $guest_name               = $guest->guestName;
-                    $trip_insurance_purchased = $guest->tripInsurancePurchased;
-                    $waive_insurance          = $guest->waiveInsurance;
-                    $base_price               = $guest->basePrice;
-                    $insurance                = $guest->insurance;
-                    $single_supplement        = $guest->singleSupplement;
-                    $wheel_upgrade            = $guest->wheelUpgrade;
-
-                    // Collect data from $ns_guest_info object.
-                    $is_primary                   = isset( $ns_guest_info->isPrimary ) ? $ns_guest_info->isPrimary : '';
-                    $bike_id                      = isset( $ns_guest_info->bikeId ) ? $ns_guest_info->bikeId : '';
-                    $rider_height                 = isset( $ns_guest_info->heightId ) ? $ns_guest_info->heightId : '';
-                    $helmet_id                    = isset( $ns_guest_info->helmetId ) ? $ns_guest_info->helmetId : '';
-                    $pedals_id                    = isset( $ns_guest_info->pedalsId ) ? $ns_guest_info->pedalsId : '';
-                    $saddle_id                    = isset( $ns_guest_info->saddleId ) ? $ns_guest_info->saddleId : '';
-                    $saddle_height                = isset( $ns_guest_info->saddleHeight ) ? $ns_guest_info->saddleHeight : '';
-                    $bar_reach_from_saddle        = isset( $ns_guest_info->barReachFromSaddle ) ? $ns_guest_info->barReachFromSaddle : '';
-                    $bar_height_from_wheel_center = isset( $ns_guest_info->barHeightFromWheelCenter ) ? $ns_guest_info->barHeightFromWheelCenter : '';
-                    $jersey_id                    = isset( $ns_guest_info->jerseyId ) ? $ns_guest_info->jerseyId : '';
-                    $tshirt_size_id               = isset( $ns_guest_info->tshirtSizeId ) ? $ns_guest_info->tshirtSizeId : '';
-                    $race_fit_jersey_id           = isset( $ns_guest_info->raceFitJerseyId ) ? $ns_guest_info->raceFitJerseyId : '';
-                    $shorts_bib_size_id           = isset( $ns_guest_info->shortsBibSizeId ) ? $ns_guest_info->shortsBibSizeId : '';
-                    $ec_first_name                = isset( $ns_guest_info->ecFirstName ) ? $ns_guest_info->ecFirstName : '';
-                    $ec_last_name                 = isset( $ns_guest_info->ecLastName ) ? $ns_guest_info->ecLastName : '';
-                    $ec_phone                     = isset( $ns_guest_info->ecPhone ) ? $ns_guest_info->ecPhone : '';
-                    $ec_relationship              = isset( $ns_guest_info->ecRelationship ) ? $ns_guest_info->ecRelationship : '';
-                    $medical_conditions           = isset( $ns_guest_info->medicalConditions ) ? $ns_guest_info->medicalConditions : '';
-                    $medications                  = isset( $ns_guest_info->medications ) ? $ns_guest_info->medications : '';
-                    $allergies                    = isset( $ns_guest_info->allergies ) ? $ns_guest_info->allergies : '';
-                    $dietary_restrictions         = isset( $ns_guest_info->dietaryRestrictions ) ? $ns_guest_info->dietaryRestrictions : '';
-                    $dietary_preferences          = isset( $ns_guest_info->dietaryPreferences ) ? $ns_guest_info->dietaryPreferences : '';
-                    $lock_record                  = isset( $ns_guest_info->lockRecord ) ? $ns_guest_info->lockRecord : '';
-                    $lock_bike                    = isset( $ns_guest_info->lockBike ) ? $ns_guest_info->lockBike : '';
-                    $waiver_accepted              = isset( $ns_guest_info->waiverAccepted ) ? $ns_guest_info->waiverAccepted : '';
-
-                    if( ! empty( $product_id ) ) {
-                        $booking_table_data['product_id'] = $product_id;
-                    }
-                    if ( $ns_new_guest_id == $ns_guest_id && ! empty( $wc_user_id ) ) {
-                        $booking_table_data['user_id'] = $wc_user_id;
-                    }
-                    if ( ! empty( $guest_email ) ) {
-                        $booking_table_data['guest_email_address'] = $guest_email;
-                    }
-
-                    $guest_name_arr = explode( ' ', $guest_name );
-                    if( 1 != $is_primary ) {
-                        // Don't rewrite the primary guest's first and last name, because from NS for primary guest's name is email.
-                        $booking_table_data['guest_first_name'] = ( $guest_name_arr[0] ? $guest_name_arr[0] : '' );
-                        $booking_table_data['guest_last_name']  = ( $guest_name_arr[1] ? $guest_name_arr[1] : '' );
-                    }
-
-                    $booking_table_data['netsuite_guest_registration_id']      = $ns_guest_id;
-                    $booking_table_data['guestRegistrationId']                 = $registration_id;
-                    $booking_table_data['ns_trip_booking_id']                  = $booking_id;
-                    $booking_table_data['trip_code']                           = $trip_code;
-                    $booking_table_data['trip_name']                           = $trip_name;
-                    $booking_table_data['trip_total_amount']                   = $total_amount;
-                    $booking_table_data['trip_number_of_guests']               = count( $guests );
-                    $booking_table_data['trip_start_date']                     = strtotime( $trip_start_date );
-                    $booking_table_data['trip_end_date']                       = strtotime( $trip_end_date );
-                    $booking_table_data['guest_is_primary']                    = $is_primary == 1 ? 1 : 0;
-                    $booking_table_data['bike_selection']                      = $bike_id;
-                    $booking_table_data['bike_id']                             = $bike_id;
-                    $booking_table_data['rider_height']                        = $rider_height;
-                    $booking_table_data['helmet_selection']                    = $helmet_id;
-                    $booking_table_data['pedal_selection']                     = $pedals_id;
-                    $booking_table_data['saddle_height']                       = $saddle_height;
-                    $booking_table_data['saddle_bar_reach_from_saddle']        = $bar_reach_from_saddle;
-                    $booking_table_data['saddle_bar_height_from_wheel_center'] = $bar_height_from_wheel_center;
-                    $booking_table_data['jersey_style']                        = tt_get_jersey_style( $jersey_id );
-                    $booking_table_data['tt_jersey_size']                      = $jersey_id;
-                    $booking_table_data['tshirt_size']                         = $tshirt_size_id;
-                    $booking_table_data['race_fit_jersey_size']                = $race_fit_jersey_id;
-                    $booking_table_data['shorts_bib_size']                     = $shorts_bib_size_id;
-                    $booking_table_data['emergency_contact_first_name']        = $ec_first_name;
-                    $booking_table_data['emergency_contact_last_name']         = $ec_last_name;
-                    $booking_table_data['emergency_contact_phone']             = $ec_phone;
-                    $booking_table_data['emergency_contact_relationship']      = $ec_relationship;
-                    $booking_table_data['medical_conditions']                  = $medical_conditions;
-                    $booking_table_data['medications']                         = $medications;
-                    $booking_table_data['allergies']                           = $allergies;
-                    $booking_table_data['dietary_restrictions']                = $dietary_restrictions;
-                    $booking_table_data['waiver_signed']                       = $waiver_accepted == 1 ? 1 : 0;
-
-                    if( $should_insert ) {
-                        // Insert booking.
-                        $insert_booking = $wpdb->insert( $table_name, $booking_table_data );
-                        tt_add_error_log( '4) NS<>WC - SQL [Insert]', array( 'last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ), $booking_table_data );
-                    } else {
-                        // Update existing booking.
-                        $where = array( 'netsuite_guest_registration_id' => $ns_guest_id, 'ns_trip_booking_id' => $booking_id );
-                        $wpdb->update( $table_name, $booking_table_data, $where );
-                        tt_add_error_log( '5) NS<>WC - SQL [Update]', array( 'last_error' => $wpdb->last_error, 'last_query' => $wpdb->last_query ), $booking_table_data );
-                    }
+                    // Update existing booking.
+                    $where = array( 'netsuite_guest_registration_id' => $ns_guest_id, 'ns_trip_booking_id' => $booking_id );
+                    tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $update_booking_data ), $where );
                 }
             }
         }
