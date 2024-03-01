@@ -101,7 +101,7 @@ function trek_extra_register_fields($customer_id)
         update_user_meta($customer_id, 'billing_last_name', sanitize_text_field($_REQUEST['billing_last_name']));
     }
     if (isset($_REQUEST['is_subscribed']) && $_REQUEST['is_subscribed'] == 'yes') {
-        update_user_meta($customer_id, 'globalsubscriptionstatus', 1);
+        update_user_meta($customer_id, 'custentity_addtotrektravelemaillist', 1);
     }
 }
 
@@ -903,12 +903,12 @@ function trek_update_trip_checklist_action_cb()
             $booking_data['jersey_style']              = $_REQUEST['tt-jerrsey-style'];
             $booking_data['tt_jersey_size']            = $_REQUEST['tt-jerrsey-size'];
 
-            $ns_user_booking_data['heightId'] = isset( $_REQUEST['tt-rider-height'] ) ? $_REQUEST['tt-rider-height'] : '';
+            $ns_user_booking_data['heightId']          = isset( $_REQUEST['tt-rider-height'] ) ? $_REQUEST['tt-rider-height'] : '';
             $ns_user_booking_data['helmetId']          = isset( $_REQUEST['tt-helmet-size'] ) ? $_REQUEST['tt-helmet-size'] : '';
             $ns_user_booking_data['pedalsId']          = isset( $_REQUEST['tt-pedal-selection'] ) ? $_REQUEST['tt-pedal-selection'] : '';
             $ns_user_booking_data['jerseyId']          = isset( $_REQUEST['tt-jerrsey-size'] ) ? $_REQUEST['tt-jerrsey-size'] : '';
         } else {
-            $ns_user_booking_data['heightId'] = $user_order_info[0]['rider_height'];
+            $ns_user_booking_data['heightId']          = $user_order_info[0]['rider_height'];
             $ns_user_booking_data['helmetId']          = $user_order_info[0]['helmet_selection'];
             $ns_user_booking_data['pedalsId']          = $user_order_info[0]['pedal_selection'];
             $ns_user_booking_data['jerseyId']          = $user_order_info[0]['tt_jersey_size'];
@@ -1617,16 +1617,30 @@ function trek_update_communication_preferences_action_cb()
     } else {
         $user = wp_get_current_user();
         $communication_preferences_fields = array(
-            'globalsubscriptionstatus',
-            'custentity_addtotrektravelmailinglist',
+            'custentity_addtotrektravelemaillist',
+            'custentity_receivetripplanner',
             'custentity_contactmethod'
         );
         if ($communication_preferences_fields) {
             foreach ($communication_preferences_fields as $communication_preferences_field) {
                 if (isset($_REQUEST[$communication_preferences_field]) && !empty($_REQUEST[$communication_preferences_field])) {
-                    update_user_meta($user->ID, $communication_preferences_field, $_REQUEST[$communication_preferences_field]);
+                    if( 'custentity_addtotrektravelemaillist' == $communication_preferences_field ) {
+                        update_user_meta($user->ID, $communication_preferences_field, '1');
+                    } elseif ( 'custentity_receivetripplanner' == $communication_preferences_field ) {
+                        update_user_meta($user->ID, $communication_preferences_field, 'T');
+                    } else {
+
+                        update_user_meta($user->ID, $communication_preferences_field, $_REQUEST[$communication_preferences_field]);
+                    }
                 } else {
-                    update_user_meta($user->ID, $communication_preferences_field, '');
+                    if( 'custentity_addtotrektravelemaillist' == $communication_preferences_field ) {
+                        update_user_meta($user->ID, $communication_preferences_field, '2');
+                    } elseif ( 'custentity_receivetripplanner' == $communication_preferences_field ) {
+                        update_user_meta($user->ID, $communication_preferences_field, 'F');
+                    } else {
+
+                        update_user_meta($user->ID, $communication_preferences_field, '');
+                    }
                 }
             }
             as_schedule_single_action(time(), 'tt_cron_syn_usermeta_ns', array( $user->ID, '[Communication Preferences]' ));

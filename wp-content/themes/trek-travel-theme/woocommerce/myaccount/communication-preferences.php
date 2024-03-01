@@ -1,7 +1,7 @@
 <?php
 $userInfo = wp_get_current_user();
-$subscriptions = get_user_meta($userInfo->ID, 'globalsubscriptionstatus', true);
-$catalog = get_user_meta($userInfo->ID, 'custentity_addtotrektravelmailinglist', true);
+$subscriptions = get_user_meta($userInfo->ID, 'custentity_addtotrektravelemaillist', true);
+$catalog = get_user_meta($userInfo->ID, 'custentity_receivetripplanner', true);
 $contactmethod = get_user_meta($userInfo->ID, 'custentity_contactmethod', true);
 ?>
 <div class="container communication-preferences my-4">
@@ -30,10 +30,10 @@ $contactmethod = get_user_meta($userInfo->ID, 'custentity_contactmethod', true);
 						<p class="fw-normal fs-md lh-md">Subscribe to receive the latest Trek Travel news and updates right into your inbox.</p>
 						<div class="form-check form-switch my-4">
 							<!-- default unchecked switch below -->
-							<input name="globalsubscriptionstatus" <?php if( $subscriptions == 1 ) echo "checked"; ?> class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" value="Yes">
+							<input name="custentity_addtotrektravelemaillist" <?php if( $subscriptions == '1' ) echo "checked"; ?> class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" value="Yes">
 							<!-- checked switch below -->
 							<!-- <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked> -->
-							<label class="form-check-label fw-normal fs-md lh-md" for="flexSwitchCheckDefault"><?php echo $subscriptions == 1 ? "Subscribed" : " Not subscribed"; ?></label>
+							<label class="form-check-label fw-normal fs-md lh-md" for="flexSwitchCheckDefault"><?php echo $subscriptions == '1' ? "Subscribed" : " Not subscribed"; ?></label>
 						</div>
 						<p class="fw-normal fs-xs lh-xs info">By subscribing to our eNewsletter, you agree to receive marketing materials from Trek Travel and its affiliate Trek Bicycles. Your data is stored in the United States. View our <a target="_blank" href="<?php echo site_url('privacy-policy/'); ?>">privacy policy</a>.</p>
 					</div>
@@ -43,8 +43,8 @@ $contactmethod = get_user_meta($userInfo->ID, 'custentity_contactmethod', true);
 						<p class="fw-normal fs-md lh-md">Subscribe to get a printed copy of our latest Trek Travel catalog. It's FREE!</p>
 						<div class="form-check form-switch my-4">
 							<!-- default checked switch below -->
-							<input name="custentity_addtotrektravelmailinglist" <?php if( $catalog == 1 ) echo "checked"; ?> class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" value="1">
-							<label class="form-check-label fw-normal fs-md lh-md" for="flexSwitchCheckChecked"><?php echo $catalog == 1 ? "Subscribed" : " Not subscribed"; ?></label>
+							<input name="custentity_receivetripplanner" <?php if( $catalog == 'T' ) echo "checked"; ?> class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" value="T">
+							<label class="form-check-label fw-normal fs-md lh-md" for="flexSwitchCheckChecked"><?php echo $catalog == 'T' ? "Subscribed" : " Not subscribed"; ?></label>
 						</div>
 						<!-- <div class="add-mailing-address">
 							<div class="form-check form-switch my-4">

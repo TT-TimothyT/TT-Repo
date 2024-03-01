@@ -126,7 +126,7 @@
         {
             "key": "field_630f17a2ba486",
             "label": "Sign Up for Our Newsletter",
-            "name": "globalsubscriptionstatus",
+            "name": "custentity_addtotrektravelemaillist",
             "aria-label": "",
             "type": "select",
             "instructions": "",
@@ -138,8 +138,8 @@
                 "id": ""
             },
             "choices": {
-                "1": "1",
-                "2": "2"
+                "1": "Yes",
+                "2": "No"
             },
             "default_value": false,
             "return_format": "value",
@@ -152,7 +152,7 @@
         {
             "key": "field_630f1a37cf6d8",
             "label": "I Would Like a Catalog",
-            "name": "custentity_eventrequestedacatalog",
+            "name": "custentity_receivetripplanner",
             "aria-label": "",
             "type": "radio",
             "instructions": "",
