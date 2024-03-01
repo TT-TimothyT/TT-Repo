@@ -99,9 +99,6 @@ if ($wpdb->get_var($wpdb->prepare('show tables like %s', $table_name)) != $table
 //add_action('woocommerce_checkout_order_created', 'insert_records_guest_bookings_cb');
 add_action( 'woocommerce_thankyou', 'insert_records_guest_bookings_cb');
 function insert_records_guest_bookings_cb( $order_id ){
-    if ( ! session_id() ) {
-        session_start();
-    }
     $is_behalf = false;
     if ( isset( $_SESSION['admin'] ) && isset( $_SESSION['current_user_ids'] ) && $_SESSION['admin'] == 'adminisloggedin' ) {
         $is_behalf = true;

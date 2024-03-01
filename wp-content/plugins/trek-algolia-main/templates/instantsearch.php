@@ -9,7 +9,6 @@
  * @package WebDevStudios\WPSWA
  */
 $newval = get_search_query();
-@session_start();
 $tt_compare_products = ( isset($_SESSION['tt_compare_products']) ? $_SESSION['tt_compare_products'] : array()  );
 $compare_div_style = ( $tt_compare_products && count($tt_compare_products) > 0 ? 'display:flex;' : 'display:none;' );
 

@@ -5,8 +5,6 @@ get_header();
 
 // If user is logged in check if there has session variable with redirect url, and use it to redirect the user.
 if( is_user_logged_in() ){
-    // Start Session
-    session_start();
 
     // Redirect to checkout page
     if( isset( $_SESSION["return_url"] ) && !empty( $_SESSION["return_url"]) ) {
