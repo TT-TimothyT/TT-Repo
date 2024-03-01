@@ -13,9 +13,16 @@ define('TT_WAIVER_URL', 'https://661527-sb2.extforms.netsuite.com/app/site/hosti
 define('TREK_MY_ACCOUNT_PID', get_option('woocommerce_myaccount_page_id'));
 define('DEFAULT_IMG', 'https://via.placeholder.com/90?text=Trek%20Travel');
 define('G_CAPTCHA_SITEKEY', '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP');
-define('TREK_INSURANCE_UNAME', 'APIUSERTREKTRAV@test.roamright.com');
-define('TREK_INSURANCE_PASS', 'Hosing+Chips+raps1');
-define('TREK_INRURANCE_API_URL', 'https://testservices.archinsurancesolutions.com/PartnerService/api');
+
+if( ! defined( 'DX_DEV' ) ) {
+    define('TREK_INSURANCE_UNAME', 'APIWebUSERTREKTRAV@archroamright.com');
+    define('TREK_INSURANCE_PASS', '9w04U5jI]8#0');
+    define('TREK_INRURANCE_API_URL', 'https://services.archinsurancesolutions.com/PartnerService/api');
+} else {
+    define('TREK_INSURANCE_UNAME', 'APIUSERTREKTRAV@test.roamright.com');
+    define('TREK_INSURANCE_PASS', 'Hosing+Chips+raps1');
+    define('TREK_INRURANCE_API_URL', 'https://testservices.archinsurancesolutions.com/PartnerService/api');
+}
 define('TT_WC_META_PREFIX', 'tt_meta_');
 define('TT_OPTION_PREFIX', 'tt_option_');
 define('TT_CAN_POLICY_PAGE', $cancellation_policy_page_link);
