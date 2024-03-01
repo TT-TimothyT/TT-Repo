@@ -9,6 +9,20 @@ form {
             }
         }
     }
+
+    input.gform_button.button {
+        font-family: 'Roboto';
+        font-size: 16px;
+        font-weight: 500;
+        color: white;
+            background-color: black;
+            border: 2px solid black;
+            border-radius: 3px;
+        &:hover {
+            color: #000000;
+            background-color: #fff;
+        }
+    }
     @include media-breakpoint-up(lg) {
         .gform_body{
             display: flex;

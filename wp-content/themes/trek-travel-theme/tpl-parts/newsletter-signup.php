@@ -47,19 +47,26 @@ if( ! empty( get_field( 'newsletter_page', 'option' ) ) ) {
   $nl_page = get_field( 'newsletter_page', 'option' );
 }
 ?>
-<!-- newsletter component start -->		
+<?php 
+$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+if (strpos($url,'newsletter') !== false) {
+return;
+ } else { ?>
+  <!-- newsletter component start -->		
 <div class="newsletter-subscribe mt-5 py-5 container">
 	<div class="container">
     <div class="row">
       <div class="col-12">
         <div class="intro text-center">
-          <p class="newsletter">Sign up for our Newsletter</p>
-          <a href="<?php echo $nl_page; ?>" class="btn btn-white">Sign Up Here</a>					
+          <p class="newsletter">Subscribe to our Newsletter</p>
+          <a href="<?php echo $nl_page; ?>" class="btn btn-white">Subscribe</a>					
         </div>
       </div>
     </div>
 	</div>
 </div>
+<?php } ?>
 
 <!-- <script>
 // Example starter JavaScript for disabling form submissions if there are invalid fields

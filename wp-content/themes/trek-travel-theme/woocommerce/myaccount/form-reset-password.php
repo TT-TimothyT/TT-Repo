@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 do_action( 'woocommerce_before_reset_password_form' );
-$google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LfJg7MiAAAAAITw-hl0U0r2E8gSGUimzUh8-9Q0' );
+$google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP' );
 ?>
 
 <div class="row">
