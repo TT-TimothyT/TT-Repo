@@ -28,7 +28,7 @@ if ( $pdp_itineraries ) :
                             $navKey = strtolower($navKey);
                             ?>
 
-                            <button class="nav-link <?php if ($yi == 1) echo 'active';?>" id="nav-<?php echo $navKey;?>-tab" data-bs-toggle="tab" data-bs-target="#nav-<?php echo $navKey;?>" type="button" role="tab" aria-controls="nav-<?php echo $navKey;?>" aria-selected="true"><?php the_field( 'year', $itinerary->ID ); ?> Tours</button>
+                            <button class="nav-link <?php if ($yi == 1) echo 'active';?>" id="nav-<?php echo $navKey;?>-tab" data-bs-toggle="tab" data-bs-target="#nav-<?php echo $navKey;?>" type="button" role="tab" aria-controls="nav-<?php echo $navKey;?>" aria-selected="true"><?php the_field( 'year', $itinerary->ID ); ?></button>
                         <?php 
                         endforeach;
                         wp_reset_postdata(); ?>
