@@ -18157,7 +18157,10 @@ body:has(div.account-wishlist-edit) {
   bottom: 15%;
 }
 .plp-hero-banner .description-section {
+  display: flex;
+  flex-wrap: wrap;
   padding: 3rem 2rem;
+  gap: 30px;
 }
 @media (min-width: 992px) {
   .plp-hero-banner .banner-section img {
@@ -18586,6 +18589,10 @@ form .gform_body ul {
 form .gform_body ul li {
   margin: 0;
   padding: 0;
+}
+form .gform_legacy_markup_wrapper .gform_footer {
+  width: fit-content !important;
+  margin: auto !important;
 }
 form input.gform_button.button {
   font-family: "Roboto";

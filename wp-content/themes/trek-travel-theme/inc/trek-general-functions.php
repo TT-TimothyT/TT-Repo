@@ -12,7 +12,7 @@ define('TREK_PATH', get_template_directory());
 define('TT_WAIVER_URL', 'https://661527-sb2.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527_SB2&h=629b0eb96224bcaa55bd&whence=');
 define('TREK_MY_ACCOUNT_PID', get_option('woocommerce_myaccount_page_id'));
 define('DEFAULT_IMG', 'https://via.placeholder.com/90?text=Trek%20Travel');
-define('G_CAPTCHA_SITEKEY', '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP');
+define('G_CAPTCHA_SITEKEY', '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV');
 
 if( ! defined( 'DX_DEV' ) ) {
     define('TREK_INSURANCE_UNAME', 'APIWebUSERTREKTRAV@archroamright.com');

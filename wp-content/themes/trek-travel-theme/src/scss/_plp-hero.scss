@@ -20,8 +20,12 @@
         }
     }
     .description-section{
+        display: flex;
+        flex-wrap: wrap;
         padding: 3rem 2rem;
+        gap: 30px;
     }
+    
     @include media-breakpoint-up(lg) {
         .banner-section{
             img{
