@@ -13540,9 +13540,8 @@ a.refineLink {
 }
 #rider-information .tab-pane .row-miles .miles .m-flex {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 25px;
 }
 #rider-information .tab-pane .pdp-rider-level:hover {
   cursor: pointer;
@@ -14095,10 +14094,11 @@ nav .nav-tabs .nav-link.active {
 #testimonials .card .card-img-top {
   height: 266px;
   object-fit: cover;
+  object-position: top center;
 }
 @media (max-width: 991.98px) {
   #testimonials .card .card-img-top {
-    height: 190px;
+    height: 200px;
   }
 }
 #testimonials .slick-slider {
