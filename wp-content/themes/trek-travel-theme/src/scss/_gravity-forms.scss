@@ -10,6 +10,11 @@ form {
         }
     }
 
+    .gform_legacy_markup_wrapper .gform_footer {
+        width: fit-content !important;
+        margin: auto !important;
+    }
+
     input.gform_button.button {
         font-family: 'Roboto';
         font-size: 16px;
