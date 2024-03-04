@@ -39,7 +39,7 @@ function getWebDispalyStatus($status){
     return $status;
 }
 
-$requestTripFormArr = ["Limited Availability" => "book-this-trip", "Join Waitlist" => "book-this-trip"];
+// $requestTripFormArr = ["Limited Availability" => "book-this-trip", "Join Waitlist" => "book-this-trip"];
 
 $res_status = [
     // "Limited Availability",
