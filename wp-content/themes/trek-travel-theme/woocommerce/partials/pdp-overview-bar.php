@@ -20,7 +20,7 @@ if ($product_overview) :
                         <li class="breadcrumb-item active fs-sm" aria-current="page"><?php echo get_the_title(); ?></li>
                     </ol>
                 </nav>
-                <h1 class="fw-semibold"><?php echo get_the_title(); ?></h1>
+                <h1 class="h4 fw-semibold"><?php echo get_the_title(); ?></h1>
                 <?php if ($product_subtitle) : ?>
                     <p class="fw-normal fs-md lh-lg mb-0"><?php echo $product_subtitle; ?></p>
                 <?php endif; ?>
