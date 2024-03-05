@@ -120,6 +120,9 @@ foreach( $get_child_products as $year => $get_child_product ) {
 $contentFlag = false;
 
 if( $available_child_products ) {
+
+    ksort($available_child_products);
+    
     $iter = 1;
     foreach( $available_child_products as $year=>$get_child_product ){
 
