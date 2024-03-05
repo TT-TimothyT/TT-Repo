@@ -1,6 +1,9 @@
 <?php
 $order_id = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : '';
 $order = wc_get_order($order_id);
+$tt_order_type = $order->get_meta( 'tt_wc_order_type' );
+$is_order_auto_generated = 'auto-generated' == $tt_order_type ? true : false;
+$tt_auto_generated_order_total_amount = $order->get_meta( 'tt_meta_total_amount' );
 $userInfo = wp_get_current_user();
 $user_id = $userInfo->ID;
 $order_items = $order->get_items(array('line_item'));
@@ -194,7 +197,7 @@ if( $parent_product_id ){
 						</div>
 						<div class="trip-total">
 							<p class="fw-medium fs-lg lh-lg">Trip Total</p>
-							<p class="fw-normal fs-md lh-md"><?php echo $order->get_formatted_order_total($order_item) ?></p>
+							<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : $order->get_formatted_order_total($order_item) ?></p>
 						</div>
 					</div>
 					<hr>
@@ -203,10 +206,12 @@ if( $parent_product_id ){
 							<p class="fw-medium fs-lg lh-lg">Guests</p>
 							<p class="fw-normal fs-md lh-md"><?php echo $trek_checkoutData['no_of_guests']; ?> Guests Attending</p>
 						</div>
+						<?php if( ! $is_order_auto_generated ) : ?>
 						<div class="guests-room">
 							<p class="fw-medium fs-lg lh-lg">Room Selection</p>
 							<?php echo $rooms_html; ?>
 						</div>
+						<?php endif; ?>
 					</div>
 					<div class="trip-details-cta my-4">
 						<?php if ($public_view_order_url) : ?>
@@ -253,7 +258,7 @@ if( $parent_product_id ){
 							</div>
 							<div class="trip-total">
 								<p class="fw-medium fs-lg lh-lg">Trip Total</p>
-								<p class="fw-normal fs-md lh-md"><?php echo $order->get_formatted_order_total($order_item) ?></p>
+								<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : $order->get_formatted_order_total($order_item) ?></p>
 							</div>
 						</div>
 						<hr>
@@ -262,10 +267,12 @@ if( $parent_product_id ){
 								<p class="fw-medium fs-lg lh-lg">Guests</p>
 								<p class="fw-normal fs-md lh-md"><?php echo $trek_checkoutData['no_of_guests']; ?> Guests Attending</p>
 							</div>
+							<?php if( ! $is_order_auto_generated ) : ?>
 							<div class="guests-room">
 								<p class="fw-medium fs-lg lh-lg">Room Selection</p>
 								<?php echo $rooms_html; ?>
 							</div>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>

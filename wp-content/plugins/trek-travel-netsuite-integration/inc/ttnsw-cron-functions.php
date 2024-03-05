@@ -721,7 +721,7 @@ if (!function_exists('tt_ns_guest_booking_details')) {
 
                 $booking_id       = $ns_booking_data->bookingId;  // NS booking ID.
                 $trip_code        = $ns_booking_data->tripCode;
-                $product_id       = tt_get_product_by_sku( $trip_code, true );
+                $product_id       = tt_get_product_by_sku( $trip_code, true ); // If there is not found product, we have null here.
 
                 foreach( $guests as $guest ){
 
@@ -755,6 +755,12 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     $check_booking = tt_checkbooking_status( $ns_guest_id, $booking_id );
 
                     if( ! $check_booking || $check_booking <= 0 ) {
+
+                        // Need to have a product, because the data for the booking will be stored in line item metadata.
+                        if( empty( $product_id ) ) {
+                            // Skip the order creating, booking import, and booking update.
+                            continue;
+                        }
 
                         // If booking not found in the table, create an empty order and migrate this booking below.
                         $auto_generated_order = tt_create_order( $booking_id );

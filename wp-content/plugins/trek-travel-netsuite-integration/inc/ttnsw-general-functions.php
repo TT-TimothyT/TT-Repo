@@ -1330,6 +1330,30 @@ function tt_get_bookings_ids_from_upload_file( $file_name ) {
 }
 
 /**
+ * Return NS User ids in array from uploaded file trough input field.
+ *
+ * Note: we rely on that in the 5 column are the NS user IDs
+ *
+ * @param string $file_name The name of the file
+ * @return array
+ */
+function tt_get_ns_user_ids_from_upload_file( $file_name ) {
+    $ns_user_ids_arr = array();
+
+    if ( ( $handle = fopen( $file_name, "r" ) ) !== FALSE ) {
+        while ( ( $data = fgetcsv( $handle, 1000, "," ) ) !== FALSE ) {
+            if( is_numeric( $data[4] ) ) {
+                $ns_user_ids_arr[] = $data[4];
+            }
+        }
+
+        fclose( $handle );
+    }
+
+    return $ns_user_ids_arr;
+}
+
+/**
  * Create multiple placeholder orders by given array with booking ids.
  *
  * @param array $bookings_ids Array with booking ids to create migrated orders.
@@ -1342,4 +1366,70 @@ function tt_create_multiple_orders( $bookings_ids ) {
     foreach( $bookings_ids as $booking_id ) {
         tt_create_order( $booking_id );
     }
+}
+
+/**
+ * Sync multiple ns user bookings with the guest_bookings table,
+ * and create auto-generated orders for that bookings.
+ *
+ * @param $ns_user_ids Array with the NS User IDs
+ *
+ * @return bool True on success or false on empty args.
+ */
+function tt_sync_multiple_guest_bookings_details( $ns_user_ids ) {
+    if( empty( $ns_user_ids ) ) {
+        return false;
+    }
+
+    foreach( $ns_user_ids as $ns_user_id ) {
+        // This will take time... Loop through all ns_user_ids, check bookings, take data from NS, create orders, and fill the guest_bookings table.
+        tt_ns_guest_booking_details( true, $ns_user_id, '', DEFAULT_TIME_RANGE, true );
+    }
+
+    return true;
+}
+
+/**
+ * Function for the WP CLI command `migrate-bookings`.
+ * 
+ * @param array $args Array with the args provided from the command line.
+ * 
+ * @return void
+ */
+function tt_migrate_bookings_wp_cli( $args ) {
+    $filename        = $args[0];
+    $ns_user_ids_arr = array();
+
+    if( file_exists( $filename ) ) {
+        WP_CLI::success( 'File exist ' . $filename );
+        $ns_user_ids_arr = tt_get_ns_user_ids_from_upload_file( $filename );
+        
+        // Confirm before proceed.
+        if( ! empty( $ns_user_ids_arr ) ){
+            
+            WP_CLI::success( 'Found ' . count( $ns_user_ids_arr ) . ' NS User IDs. Here they are:' . json_encode( $ns_user_ids_arr ) );
+
+            WP_CLI::confirm( __( 'Do you want to proceed?', 'trek-travel' ) );
+        } else {
+            WP_CLI::error( 'NS User IDs Not Found!' );
+        }
+    } else {
+        WP_CLI::error( "File doesn't exist!" );
+    }
+
+    if( ! empty( $ns_user_ids_arr ) ) {
+
+        $import_status = tt_sync_multiple_guest_bookings_details( $ns_user_ids_arr );
+
+        if( 'true' == $import_status ) {
+            WP_CLI::success( 'The Orders were created and Bookings were imported for NS User IDs in the file!' );
+        } else {
+            WP_CLI::error( 'Something failed during the bookings import!' );
+        }
+    }
+
+}
+
+if ( class_exists( 'WP_CLI' ) ) {
+    WP_CLI::add_command( 'migrate-bookings', 'tt_migrate_bookings_wp_cli' );
 }
