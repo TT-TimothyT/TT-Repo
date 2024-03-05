@@ -217,7 +217,7 @@ function trek_wp_enqueue_scripts_cb()
 function get_child_products($linked_products = array())
 {
     $linked_product_arr = array();
-    $status_not_in = ['Hold - Not on Web', 'Cancelled', 'Initial Build'];
+    $status_not_in = ['Hold - Not on Web', 'Cancelled'];
     if ($linked_products) {
         foreach ($linked_products as $linked_product) {
             $p_obj = wc_get_product($linked_product);
