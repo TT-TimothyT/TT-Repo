@@ -102,7 +102,7 @@ if (!function_exists('tt_sync_ns_trip_details')) {
                     foreach ($trek_trip_details->trips as $trek_trip_detail) {
                         $tripCode = $trek_trip_detail->tripCode;
                         $tripsData = array(
-                            'isRideCamp' => $trek_trip_detail->isRideCamp,
+                            'isRideCamp' => $trek_trip_detail->isRideCamp ? $trek_trip_detail->isRideCamp : $trek_trip_detail->supportsNestedDates,
                             'isLateDepositAllowed' => $trek_trip_detail->isLateDepositAllowed,
                             'depositBeforeDate' => $trek_trip_detail->depositBeforeDate,
                             'removeFromStella' => $trek_trip_detail->removeFromStella,
@@ -527,9 +527,11 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
 
             foreach ( $trek_trips->trips as $trek_trip ) {
                 // Set is Ride Camp flag.
-                $is_ride_camp = ( $trek_trip->isRideCamp ? $trek_trip->isRideCamp : '' );
+                $is_ride_camp             = ( $trek_trip->isRideCamp ? $trek_trip->isRideCamp : '' );
+                // Set nested dates flag.
+                $is_supports_nested_dates = ( $trek_trip->supportsNestedDates ? $trek_trip->supportsNestedDates : '' );
 
-                if( ! empty( $is_ride_camp ) && $is_ride_camp ) {
+                if( ( ! empty( $is_ride_camp ) && $is_ride_camp ) || ( ! empty( $is_supports_nested_dates ) && $is_supports_nested_dates ) ) {
                     // This is a Ride Camp trip, store it into array for laiter usage.
                     array_push( $ride_camp_trips, $trek_trip );
                 }
