@@ -831,7 +831,7 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
         //Get the 1293 script with the modifiedAfter parameter and deploy 2
         $modifiedAfterTime = gmdate("Y-m-d\TH:i:s", strtotime($modifiedAfter));
         $netSuiteClient = new NetSuiteClient();
-        $modified_reg_ids = $netSuiteClient->get('1293:2', ['modifiedAfter' => $modifiedAfterTime ]);
+        $modified_reg_ids = $netSuiteClient->get( GET_MODIFIED_REGISTRATIONS, ['modifiedAfter' => $modifiedAfterTime ] );
 
         //Loop through the registration ids and fetch the registration details. That's done to filter out users outside of this WP installation
         foreach( $modified_reg_ids as $modified_reg_id ) {
@@ -844,7 +844,7 @@ if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
                 $wc_user_id = $user->ID;
                 //Execute the 1294 script with the registration id as parameter and deploy 2
                 $ns_registration_id = $modified_reg_id->id;
-                $ns_registration_details = $netSuiteClient->get('1294:2', ['registrationId' => $ns_registration_id ]);
+                $ns_registration_details = $netSuiteClient->get( GET_REGISTRATIONS_SCRIPT_ID, ['registrationId' => $ns_registration_id ] );
 
                 //Get "Lock Record" and "Lock Bike" values
                 $lockRecord = isset($ns_registration_details[0]->lockRecord) ? $ns_registration_details[0]->lockRecord : '';

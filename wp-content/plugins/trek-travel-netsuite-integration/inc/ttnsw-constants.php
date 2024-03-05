@@ -26,6 +26,7 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'GET_REGISTRATIONS_SCRIPT_ID', '1294:1' );
     define( 'REFERRAL_SOURCE_SCRIPT_ID', '1475:1' );
     define( 'DEFAULT_TIME_RANGE', '-12 hours' ); // Define a default time range for sync, when no parameter is passed.
+    define( 'GET_MODIFIED_REGISTRATIONS', '1293:1' );
 } else {
     define( 'TT_NS_HOST', '661527-sb2.restlets.api.netsuite.com' );
     define( 'TT_NS_RESTLET_URL', 'https://661527-sb2.restlets.api.netsuite.com/app/site/hosting/restlet.nl');
@@ -45,6 +46,8 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'GET_REGISTRATIONS_SCRIPT_ID', '1294:2' );
     define( 'REFERRAL_SOURCE_SCRIPT_ID', '1475:2' );
     define( 'DEFAULT_TIME_RANGE', '-12 hours' ); // Define a default time range for sync, when no parameter is passed.
+    define( 'GET_MODIFIED_REGISTRATIONS', '1293:2' );
+
 }
 
 // Alter Query
