@@ -111,7 +111,7 @@ $wp_user_email = $userInfo->user_email;
 						}
 					}
 				} else {
-					$trips_html .= '<p class="no-trip-text mt-2">No Upcoming trips found!</p>';
+					$trips_html .= '<p class="no-trip-text mt-2">Your trips are on the way. To view them, please reload the page after a few seconds.</p>';
 				}
 				echo $trips_html;
 				?>

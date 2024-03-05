@@ -25,6 +25,7 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'GET_BOOKING_SCRIPT_ID', '1304:1' );
     define( 'GET_REGISTRATIONS_SCRIPT_ID', '1294:1' );
     define( 'REFERRAL_SOURCE_SCRIPT_ID', '1475:1' );
+    define( 'CHECKLIST_SCRIPT_ID', '1292:1' );
     define( 'DEFAULT_TIME_RANGE', '-12 hours' ); // Define a default time range for sync, when no parameter is passed.
     define( 'GET_MODIFIED_REGISTRATIONS', '1293:1' );
 } else {
@@ -45,6 +46,7 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'GET_BOOKING_SCRIPT_ID', '1304:2' );
     define( 'GET_REGISTRATIONS_SCRIPT_ID', '1294:2' );
     define( 'REFERRAL_SOURCE_SCRIPT_ID', '1475:2' );
+    define( 'CHECKLIST_SCRIPT_ID', '1292:2' );
     define( 'DEFAULT_TIME_RANGE', '-12 hours' ); // Define a default time range for sync, when no parameter is passed.
     define( 'GET_MODIFIED_REGISTRATIONS', '1293:2' );
 

@@ -177,10 +177,10 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 					</div>
 					<h6 class="card-subtitle fs-sm lh-sm fw-medium mb-2">Upcoming</h6>
 					<?php if(empty($trips) || (isset($trips['count']) && $trips['count'] <=0 )) { ?>
-					<p class="fs-sm lh-sm fw-normal">You have 0 upcoming trips</p>
+					<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>
 					<a href="<?php echo site_url('bike-tours/all/') ?>" class="btn btn-lg btn-primary dashboard__button rounded-1 mb-4">Book a trip</a>
 					<?php }else{
-						$trips_html = '<p class="fs-sm lh-sm fw-normal">You have 0 upcoming trips</p>';
+						$trips_html = '<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>';
 						if($trips && isset($trips['data'])){
 							$trips_html = '';
 							$showTwoTripsCounter = 0;

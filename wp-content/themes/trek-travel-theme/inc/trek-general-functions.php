@@ -217,7 +217,7 @@ function trek_wp_enqueue_scripts_cb()
 function get_child_products($linked_products = array())
 {
     $linked_product_arr = array();
-    $status_not_in = ['Hold - Not on Web', 'Cancelled'];
+    $status_not_in = ['Hold - Not on Web', 'Cancelled', 'Initial Build'];
     if ($linked_products) {
         foreach ($linked_products as $linked_product) {
             $p_obj = wc_get_product($linked_product);
@@ -747,7 +747,7 @@ function tt_update_trip_checklist_ns_cb( $order_id, $ns_user_id, $user, $ns_user
     if ( $booking_id && $guest_registration_id ) {
 
         $ns_user_booking_args['registrationId'] = $guest_registration_id;
-        $ns_posted_booking_info                 = $net_suite_client->post( '1292:2', json_encode( $ns_user_booking_args ) );
+        $ns_posted_booking_info                 = $net_suite_client->post( CHECKLIST_SCRIPT_ID, json_encode( $ns_user_booking_args ) );
 
         tt_add_error_log( '[SuiteScript:1292] - Post booking', $ns_user_booking_args, $ns_posted_booking_info );
 

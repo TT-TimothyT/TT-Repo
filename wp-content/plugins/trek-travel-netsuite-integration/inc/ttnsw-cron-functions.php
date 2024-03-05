@@ -102,7 +102,7 @@ if (!function_exists('tt_sync_ns_trip_details')) {
                     foreach ($trek_trip_details->trips as $trek_trip_detail) {
                         $tripCode = $trek_trip_detail->tripCode;
                         $tripsData = array(
-                            'isRideCamp' => $trek_trip_detail->isRideCamp,
+                            'isRideCamp' => $trek_trip_detail->isRideCamp ? $trek_trip_detail->isRideCamp : $trek_trip_detail->supportsNestedDates,
                             'isLateDepositAllowed' => $trek_trip_detail->isLateDepositAllowed,
                             'depositBeforeDate' => $trek_trip_detail->depositBeforeDate,
                             'removeFromStella' => $trek_trip_detail->removeFromStella,
@@ -527,9 +527,11 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
 
             foreach ( $trek_trips->trips as $trek_trip ) {
                 // Set is Ride Camp flag.
-                $is_ride_camp = ( $trek_trip->isRideCamp ? $trek_trip->isRideCamp : '' );
+                $is_ride_camp             = ( $trek_trip->isRideCamp ? $trek_trip->isRideCamp : '' );
+                // Set nested dates flag.
+                $is_supports_nested_dates = ( $trek_trip->supportsNestedDates ? $trek_trip->supportsNestedDates : '' );
 
-                if( ! empty( $is_ride_camp ) && $is_ride_camp ) {
+                if( ( ! empty( $is_ride_camp ) && $is_ride_camp ) || ( ! empty( $is_supports_nested_dates ) && $is_supports_nested_dates ) ) {
                     // This is a Ride Camp trip, store it into array for laiter usage.
                     array_push( $ride_camp_trips, $trek_trip );
                 }
@@ -721,7 +723,7 @@ if (!function_exists('tt_ns_guest_booking_details')) {
 
                 $booking_id       = $ns_booking_data->bookingId;  // NS booking ID.
                 $trip_code        = $ns_booking_data->tripCode;
-                $product_id       = tt_get_product_by_sku( $trip_code, true );
+                $product_id       = tt_get_product_by_sku( $trip_code, true ); // If there is not found product, we have null here.
 
                 foreach( $guests as $guest ){
 
@@ -755,6 +757,12 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     $check_booking = tt_checkbooking_status( $ns_guest_id, $booking_id );
 
                     if( ! $check_booking || $check_booking <= 0 ) {
+
+                        // Need to have a product, because the data for the booking will be stored in line item metadata.
+                        if( empty( $product_id ) ) {
+                            // Skip the order creating, booking import, and booking update.
+                            continue;
+                        }
 
                         // If booking not found in the table, create an empty order and migrate this booking below.
                         $auto_generated_order = tt_create_order( $booking_id );
