@@ -333,7 +333,6 @@ if( $available_child_products ) {
                     <button class="nav-link fs-lg lh-lg" id="nav-custom-tab" data-bs-toggle="tab" data-bs-target="#nav-custom" type="button" role="tab" aria-controls="nav-custom" aria-selected="false">Custom Tour</button>
                 <?php } ?>
             </div>
-            <p class="fw-normal fs-xs lh-xs w-75 pt-md-3">*Pricing, availability and guest minimums are all subject to change at any time. Certain dates have a minimum number of guests required, please contact us for details. Private pricing is not available on Ride Camp, Race, Special Edition or Cross Country style trips.</p>
         </nav>
         <!-- year/private/custom tour tab content -->
         <div class="tab-content" id="nav-tabContent">

@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     ><![endif]-->
     <!--[if !mso]><!-->
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700;900&amp;display=swap"
+      href="https://fonts.googleapis.com/css?family=Roboto"
       rel="stylesheet"
       type="text/css"
     />
@@ -347,7 +347,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     style="
                                       padding-bottom: 20px;
                                       padding-left: 40px;
-                                      padding-right: 60px;
+                                      padding-right: 40px;
                                       padding-top: 20px;
                                     "
                                   >
@@ -367,21 +367,24 @@ if ( ! defined( 'ABSPATH' ) ) {
                                           line-height: 2;
                                         "
                                       >
-                                      <?php /* translators: %s: Customer username */ ?>
-<p style="
-margin: 0;
-font-size: 16px;
-mso-line-height-alt: 32px;
-"><?php printf( esc_html__( 'Welcome %s,', 'woocommerce' ), esc_html( $user_login ) ); ?></p>
+                                      <p
+                                          style="
+                                            margin: 0;
+                                            font-size: 16px;
+                                            mso-line-height-alt: 32px;
+                                          "
+                                        >
+                                      <?php 
+                                      /* translators: %s: Customer username */
+                                      echo sprintf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $user_login ) ) . "\n\n";
+                                      /* translators: %s: Store name */
+                                      echo sprintf( esc_html__( 'Someone has requested a new password for the following account on %s:', 'woocommerce' ), esc_html( wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES ) ) ) . "\n\n";
+                                      /* translators: %s: Customer username */
+                                      echo sprintf( esc_html__( 'Username: %s', 'woocommerce' ), esc_html( $user_login ) ) . "\n\n";
+                                      echo esc_html__( 'If you didn\'t make this request, just ignore this email. If you\'d like to proceed:', 'woocommerce' );
+                                      ?>
                                         
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            font-size: 16px;
-                                            mso-line-height-alt: 24px;
-                                          "
-                                        >
-                                          &nbsp;
+                                        
                                         </p>
                                         <p
                                           style="
@@ -390,79 +393,7 @@ mso-line-height-alt: 32px;
                                             mso-line-height-alt: 32px;
                                           "
                                         >
-                                          Thanks for creating your account with
-                                          us!
-                                        </p>
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            font-size: 16px;
-                                            mso-line-height-alt: 24px;
-                                          "
-                                        >
-                                          &nbsp;
-                                        </p>
-                                        <p style="
-                                        margin: 0;
-                                        font-size: 16px;
-                                        mso-line-height-alt: 32px;
-                                      "><?php printf( esc_html__( 'Hello %s,', 'woocommerce' ), esc_html( $user_login ) ); ?></p>
-<?php /* translators: %1$s: Site title, %2$s: Username, %3$s: My account link */ ?>
-<p><?php printf( esc_html__( 'Let’s embark on a journey crafted just for you. You can customize your information, preferences, and more, by visiting', 'woocommerce'  ) ); ?>
-&nbsp;
-<a class="link" href="<?php wc_get_page_permalink( 'myaccount' ); ?>"><?php // phpcs:ignore ?>
-		<?php esc_html_e( 'My Account', 'woocommerce' ); ?>
-	</a>
-</p>
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            font-size: 16px;
-                                            mso-line-height-alt: 24px;
-                                          "
-                                        >
-                                          &nbsp;
-                                        </p>
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            font-size: 16px;
-                                            mso-line-height-alt: 32px;
-                                          "
-                                        >
-                                          Let the adventure begin!
-                                        </p>
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            font-size: 16px;
-                                            mso-line-height-alt: 32px;
-                                          "
-                                        >
-                                          Your Friends at Trek Travel
-                                        </p>
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            mso-line-height-alt: 24px;
-                                          "
-                                        >
-                                          &nbsp;
-                                        </p>
-                                        <p style="
-                                        margin: 0;
-                                        mso-line-height-alt: 32px;
-                                      "><?php printf( esc_html__( 'Your username is: %3$s', 'woocommerce' ), esc_html( $user_login ) ); ?></p>
-                                    
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            mso-line-height-alt: 32px;
-                                          "
-                                        >
-                                          <strong
-                                            ><?php esc_html( $user_login ); ?></strong
-                                          >
+                                        <a href="<?php  echo esc_url( add_query_arg( array( 'key' => $reset_key, 'id' => $user_id ), wc_get_endpoint_url( 'lost-password', '', wc_get_page_permalink( 'myaccount' ) ) ) ) . "\n\n"; // phpcs:ignore ?>">Click to reset</a>
                                         </p>
                                       </div>
                                     </div>
@@ -571,15 +502,12 @@ mso-line-height-alt: 32px;
                                           mso-line-height-alt: 24px;
                                         "
                                       >
-                                        <span style="font-size: 12px"
-                                          >This email was sent to
-                                          ${entity.email}${company.email}</span
-                                        ><br /><span style="font-size: 12px"
-                                          >Copyright © 2024 Trek Travel, All
-                                          rights reserved.</span
-                                        ><br /><span style="font-size: 12px"
-                                          >613 Williamson St. Suite 207,
-                                          Madison, WI 53703</span
+                                        <span
+                                          style="
+                                            color: #666666;
+                                            font-size: 12px;
+                                          "
+                                          >©2024 Trek Travel</span
                                         >
                                       </p>
                                       <p
@@ -589,7 +517,14 @@ mso-line-height-alt: 32px;
                                           mso-line-height-alt: 24px;
                                         "
                                       >
-                                        &nbsp;
+                                        <span
+                                          style="
+                                            color: #666666;
+                                            font-size: 12px;
+                                          "
+                                          >613 Williamson St #207, Madison, WI
+                                          53703&nbsp;</span
+                                        >
                                       </p>
                                       <p
                                         style="
@@ -645,6 +580,7 @@ mso-line-height-alt: 32px;
     <!-- End -->
   </body>
 </html>
+
 
 
 <!-- TT CUSTOM EMAIL END -->

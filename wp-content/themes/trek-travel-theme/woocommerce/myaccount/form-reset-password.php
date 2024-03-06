@@ -9,11 +9,8 @@ $google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526e
 <div class="row">
       
     <div class="offset-lg-4 col-lg-4 form_lost_reset_password">
-    	<h4><?php esc_html_e('Create a new password', 'trek-travel-theme'); ?></h4>
+    	<h4><?php esc_html_e('Create a New Password', 'trek-travel-theme'); ?></h4>
 			<form method="post" name="email_password_reset" class="woocommerce-ResetPassword lost_reset_password needs-validation" novalidate>
-
-				<p class="fw-normal fs-lg lh-lg"><?php echo apply_filters( 'woocommerce_reset_password_message', esc_html__( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit ipsum dolor sit amet.', 'woocommerce' ) ); ?></p><?php // @codingStandardsIgnoreLine ?>
-
 
 				<div class="form-group my-4">
 					<div class="form-floating flex-grow-1">
