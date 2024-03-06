@@ -6047,7 +6047,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
 
         // Statuses that lock trip for booking.
         $in_status = [
-            "Limited Availability",
+            // "Limited Availability",
             "Sold Out",
             "Group Hold",
             "Sales Hold",
