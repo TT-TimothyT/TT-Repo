@@ -30,7 +30,7 @@ sitemap.xml.gz
 
 *.log
 .project
-.htaccess
+#.htaccess
 sitemap.xml
 sitemap.xml.gz
 wp-config.php
