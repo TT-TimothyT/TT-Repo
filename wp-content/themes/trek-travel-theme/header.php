@@ -128,7 +128,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 							<a class="nav-link d-flex align-items-center" href="<?php echo site_url('contact-us') ?>"><i class="bi bi-envelope"></i>Contact Us</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link d-flex align-items-center" href="tel:8864648735" onclick="dataLayer.push({'event': 'click_to_call'});"><i class="bi bi-telephone"></i>886-464-8735</a>
+							<a class="nav-link d-flex align-items-center" href="tel:8664648735" onclick="dataLayer.push({'event': 'click_to_call'});"><i class="bi bi-telephone"></i>866-464-8735</a>
 						</li>
 					</ul>
 				</div>
@@ -203,7 +203,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 
 	<div class="row">
 		<div class="col-2 phone-icon">
-			<a class="nav-link" href="tel:8864648735" onclick="dataLayer.push({'event': 'click_to_call'});">
+			<a class="nav-link" href="tel:8664648735" onclick="dataLayer.push({'event': 'click_to_call'});">
 				<i class="bi bi-telephone"></i>
 			</a>
 		</div>

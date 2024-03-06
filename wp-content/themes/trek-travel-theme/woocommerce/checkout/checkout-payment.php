@@ -99,6 +99,12 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
     <div class="checkout-payment__options">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-1">Payment Option</h5>
         <p class="fs-sm checkout-payment__sublabel">Minimum amount required is trip deposit. <a href="<?php echo home_url( '/cancellation-policy/' ); ?>" target="_blank">Learn more about our No-Risk Deposit.</a></p>
+        <?php if( $depositAmount && $depositAmount > 0 && $is_deposited == 1 ) { ?>
+            <div class="d-flex align-items-center checkout-timeline__warning rounded-1 mb-3">
+                <img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png" alt="warning" class="me-2">
+                <p class="mb-0 fs-sm lh-sm">Our online booking system is currently unable to process deposits. If you wish to make a reservation by placing a fully refundable deposit of $750, please contact us at <a href="tel:866-464-8735">866-464-8735</a>.</p>
+            </div>
+        <?php } ?>
         <div class="checkout-payment__pay">
             <?php
             $cart_total = WC()->cart->total;
@@ -110,7 +116,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
                 $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>0</span>';
             }
             if( $depositAmount && $depositAmount > 0 && $is_deposited == 1 ) { ?>
-            <div class="mb-4">
+            <div style="display:none;" class="mb-4">
                 <input type="radio" name="pay_amount" required="required"  value="deposite" <?php echo ( $pay_amount == 'deposite' ? 'checked' : '' ); ?>>
                 <div class="checkout-payment__paydep rounded-1 d-flex justify-content-between align-items-center">
                     <p class="fs-lg lh-lg fw-medium mb-0">Pay Deposit: <span><?php echo $depositAmountCurr; ?></span></p>

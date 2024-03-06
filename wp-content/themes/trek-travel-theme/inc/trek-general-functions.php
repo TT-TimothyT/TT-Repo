@@ -5736,6 +5736,8 @@ add_filter( 'woocommerce_calculated_total', 'update_cart_subtotal', 10, 2 );
 function update_cart_subtotal( $cart_total, $cart ) {
     $total_tax = calculate_cart_total_tax( $cart );
 
+    $cart_total = floatval( $cart->cart_contents_total );
+
     // Add the calculated tax to the cart subtotal
     $cart_total += $total_tax;
 
@@ -6047,7 +6049,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
 
         // Statuses that lock trip for booking.
         $in_status = [
-            "Limited Availability",
+            // "Limited Availability",
             "Sold Out",
             "Group Hold",
             "Sales Hold",
