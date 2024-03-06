@@ -362,7 +362,7 @@ defined( 'ABSPATH' ) || exit;
 margin: 0;
 font-size: 16px;
 mso-line-height-alt: 32px;
-"><?php printf( esc_html__( 'Welcome %s,', 'woocommerce' ), esc_html( $user_login ) ); ?></p>
+"><?php printf( esc_html__( 'Hello %s,', 'woocommerce' ), esc_html( $user_login ) ); ?></p>
                                         
                                         <p
                                           style="
@@ -373,32 +373,13 @@ mso-line-height-alt: 32px;
                                         >
                                           &nbsp;
                                         </p>
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            font-size: 16px;
-                                            mso-line-height-alt: 32px;
-                                          "
-                                        >
-                                          Thanks for creating your account with
-                                          us!
-                                        </p>
-                                        <p
-                                          style="
-                                            margin: 0;
-                                            font-size: 16px;
-                                            mso-line-height-alt: 24px;
-                                          "
-                                        >
-                                          &nbsp;
-                                        </p>
-                                        <p style="
+                                      
+<?php /* translators: %1$s: Site title, %2$s: Username, %3$s: My account link */ ?>
+<p  style="
                                         margin: 0;
                                         font-size: 16px;
                                         mso-line-height-alt: 32px;
-                                      "><?php printf( esc_html__( 'Hello %s,', 'woocommerce' ), esc_html( $user_login ) ); ?></p>
-<?php /* translators: %1$s: Site title, %2$s: Username, %3$s: My account link */ ?>
-<p><?php printf( esc_html__( 'Let’s embark on a journey crafted just for you. You can customize your information, preferences, and more, by visiting', 'woocommerce'  ) ); ?>
+                                      "><?php printf( esc_html__( 'Let’s embark on a journey crafted just for you. You can customize your information, preferences, and more, by visiting', 'woocommerce'  ) ); ?>
 &nbsp;
 <a class="link" href="https://trektravel.com/my-account/">My Account</a>
 </p>
@@ -537,10 +518,7 @@ mso-line-height-alt: 32px;
                                           mso-line-height-alt: 24px;
                                         "
                                       >
-                                        <span style="font-size: 12px"
-                                          >This email was sent to
-                                          ${entity.email}${company.email}</span
-                                        ><br /><span style="font-size: 12px"
+                                       <span style="font-size: 12px"
                                           >Copyright © 2024 Trek Travel, All
                                           rights reserved.</span
                                         ><br /><span style="font-size: 12px"
@@ -569,16 +547,7 @@ mso-line-height-alt: 32px;
                                             color: #666666;
                                             font-size: 12px;
                                           "
-                                          ><a
-                                            href="{{viewInBrowserUrl}}"
-                                            target="_blank"
-                                            rel="noopener"
-                                            style="
-                                              text-decoration: underline;
-                                              color: #666666;
-                                            "
-                                            >View in browser</a
-                                          >&nbsp; |
+                                          >
                                           <a
                                             href="https://trektravel.com/contact-us/"
                                             target="_blank"
