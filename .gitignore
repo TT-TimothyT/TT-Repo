@@ -1,7 +1,7 @@
 ### Sytem files ###
 *.log
 .DS_Store
-#.htaccess
+.htaccess
 sitemap.xml
 sitemap.xml.gz
 
@@ -30,7 +30,6 @@ sitemap.xml.gz
 
 *.log
 .project
-#.htaccess
 sitemap.xml
 sitemap.xml.gz
 wp-config.php
