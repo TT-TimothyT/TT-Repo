@@ -25,16 +25,13 @@
 				endif; ?>
 				<div class="col-12 col-lg-3 recognised">
 					<div class="row mx-0">
-						<p class="menu-title">As Recognised By</p>
+						<p class="menu-title">As Recognized By</p>
 						<div class="row mx-0 recognised-by">
 							<div class="col-2 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/travel.png" />
 							</div>
 							<div class="col-2 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/shape-travel.png" />
-							</div>
-							<div class="col-2 px-0">
-								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/awards.png" />
 							</div>
 							<div class="col-2 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/bicycle.png" />
@@ -52,7 +49,7 @@
 						<div class="social-icons d-flex">
 							<a href="https://www.facebook.com/trektravel" target="_blank"><img alt="facebook" src="<?php echo get_template_directory_uri(); ?>/assets/images/social/facebook.png" /></a>
 							<a href="https://www.instagram.com/trektravel/" target="_blank"><img alt="instagram" src="<?php echo get_template_directory_uri(); ?>/assets/images/social/IG.png" /></a>
-							<a href="https://twitter.com/TrekTravel" target="_blank"><img alt="twitter" src="<?php echo get_template_directory_uri(); ?>/assets/images/social/twitter.png" /></a>
+							<a href="https://twitter.com/TrekTravel" target="_blank"><img alt="twitter" src="<?php echo get_template_directory_uri(); ?>/assets/images/social/X-logo-white.png" /></a>
 							<a href="https://www.youtube.com/@TrekTravel-Cycling-Vacations" target="_blank"><img alt="youtube" src="<?php echo get_template_directory_uri(); ?>/assets/images/social/youtube.png" /></a>
 							<a href="https://www.pinterest.com/trektravel/" target="_blank"><img alt="pinterest" src="<?php echo get_template_directory_uri(); ?>/assets/images/social/pinterest.png" /></a>
 						</div>
