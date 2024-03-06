@@ -812,3 +812,11 @@ $args = array(
 register_taxonomy( 'activity', 'product', $args );
 
 }
+
+/**
+ * DX Keyword in the head
+ */
+function dx_keyword_in_head() {
+	echo '<meta property="trektravel:online" content="true">';
+}
+add_action( 'wp_head', 'dx_keyword_in_head' );
