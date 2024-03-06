@@ -1,7 +1,7 @@
 ### Sytem files ###
 *.log
 .DS_Store
-.htaccess
+#.htaccess
 sitemap.xml
 sitemap.xml.gz
 
