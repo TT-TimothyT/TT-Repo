@@ -102,7 +102,7 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         <?php if( $depositAmount && $depositAmount > 0 && $is_deposited == 1 ) { ?>
             <div class="d-flex align-items-center checkout-timeline__warning rounded-1 mb-3">
                 <img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png" alt="warning" class="me-2">
-                <p class="mb-0 fs-sm lh-sm">Our online booking system is currently unable to process deposits. If you wish to make a reservation by placing a fully refundable deposit of $750, please contact us at <a href="tel:886-464-8735">886-464-8735</a>.</p>
+                <p class="mb-0 fs-sm lh-sm">Our online booking system is currently unable to process deposits. If you wish to make a reservation by placing a fully refundable deposit of $750, please contact us at <a href="tel:866-464-8735">866-464-8735</a>.</p>
             </div>
         <?php } ?>
         <div class="checkout-payment__pay">
