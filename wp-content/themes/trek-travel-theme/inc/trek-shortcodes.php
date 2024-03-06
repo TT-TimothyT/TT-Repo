@@ -18,7 +18,7 @@ function trek_registration_form_cb()
    <div class="row my-4">
       <div class="offset-md-4 col-md-4 col-sm-12 register-form">
          <h4>Join Trek Travel Today!</h4>
-         <p class="re-register-info">Welcome to the new Trek Travel website. If you have previously traveled with us, please re-register your account using the email address associated with your prior booking.</p>
+         <p class="re-register-info">Welcome to the new Trek Travel website. If you have previously traveled with us, please re-register your account using the email address associated with your prior bookings.</p>
          <form method="post" class="woocommerce-form woocommerce-form-register register needs-validation" novalidate <?php do_action('woocommerce_register_form_tag'); ?>>
             <?php do_action('woocommerce_register_form_start'); ?>
 
@@ -123,6 +123,7 @@ function trek_login_form()
       <div id="trek-login-responses"></div>
       <div class="offset-lg-4 col-lg-4 login-form">
          <h2 class="login-title"><?php esc_html_e('Sign In', 'trek-travel-theme'); ?></h2>
+         <p class="re-register-info">Welcome to the new Trek Travel website. If you have previously traveled with us, please re-register your account using the email address associated with your prior bookings.</p>
          <form class="woocommerce-form woocommerce-form-login login needs-validation" method="post" name="trek-login-form" novalidate>
             <?php do_action('woocommerce_login_form_start'); ?>
 
