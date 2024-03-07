@@ -103,6 +103,7 @@ nbproject/
 /nbproject/private/
 .DS_Store
 .idea/
+.vscode/
 
 # Plugin files
 wp-content/db.php
