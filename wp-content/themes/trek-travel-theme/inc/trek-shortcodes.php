@@ -123,7 +123,7 @@ function trek_login_form()
       <div id="trek-login-responses"></div>
       <div class="offset-lg-4 col-lg-4 login-form">
          <h2 class="login-title"><?php esc_html_e('Sign In', 'trek-travel-theme'); ?></h2>
-         <p class="re-register-info">Welcome to the new Trek Travel website. If you have previously traveled with us, please re-register your account using the email address associated with your prior bookings.</p>
+         <p class="re-register-info">Welcome to the new Trek Travel website. If you have previously traveled with us, please re-register your account using the email address associated with your prior bookings. <strong>Click "sign-up" below to re-register.</strong></p>
          <form class="woocommerce-form woocommerce-form-login login needs-validation" method="post" name="trek-login-form" novalidate>
             <?php do_action('woocommerce_login_form_start'); ?>
 
