@@ -1,6 +1,6 @@
 {
     "key": "group_638bb88a7ed83",
-    "title": "Users - Bike & Gear Preferences",
+    "title": "Users - Bike &amp; Gear Preferences",
     "fields": [
         {
             "key": "field_638bb88be5c74",
@@ -17,7 +17,12 @@
                 "id": ""
             },
             "choices": {
-                "1": "Road Bike"
+                "1": "Road Bike",
+                "2": "Mountain Bike",
+                "3": "Electric-Assist Bike",
+                "4": "Hybrid Bike",
+                "5": "Electric-Assist Road Bike",
+                "6": "Gravel Bike"
             },
             "default_value": false,
             "return_format": "value",
@@ -42,10 +47,39 @@
                 "id": ""
             },
             "choices": {
+                "1": "Under 4'0\"",
                 "22": "4'0\"",
-                "23": "4'1\""
+                "23": "4'1\"",
+                "24": "4'2\"",
+                "25": "4'3\"",
+                "26": "4'4\"",
+                "27": "4'5\"",
+                "28": "4'6\"",
+                "29": "4'7\"",
+                "30": "4'8\"",
+                "31": "4'9\"",
+                "2": "4'10\"",
+                "3": "4'11\"",
+                "4": "5'0\"",
+                "5": "5'1\"",
+                "6": "5'2\"",
+                "7": "5'3\"",
+                "8": "5'4\"",
+                "9": "5'5\"",
+                "10": "5'6\"",
+                "11": "5'7\"",
+                "12": "5'8\"",
+                "13": "5'9\"",
+                "14": "5'10\"",
+                "15": "5'11\"",
+                "16": "6'0\"",
+                "17": "6'1\"",
+                "18": "6'2\"",
+                "19": "6'3\"",
+                "20": "6'4\"",
+                "21": "6'4\"+"
             },
-            "default_value": 22,
+            "default_value": false,
             "return_format": "value",
             "multiple": 0,
             "allow_null": 0,
@@ -68,7 +102,12 @@
                 "id": ""
             },
             "choices": {
-                "1": "Bringing own"
+                "9": "I don't know",
+                "1": "Bringing own",
+                "2": "Cages",
+                "3": "Flat",
+                "7": "Shimano Mountain SPD Pedals",
+                "6": "Shimano Road SPD SL Pedals"
             },
             "default_value": false,
             "return_format": "value",
@@ -93,7 +132,13 @@
                 "id": ""
             },
             "choices": {
-                "1": "Bringing own"
+                "1": "Bringing own",
+                "4": "Kid's",
+                "6": "Large (58-63cm)",
+                "2": "Medium (54-60cm)",
+                "5": "Non-Rider",
+                "3": "Small (51-57cm)",
+                "7": "X-Large (60-66cm)"
             },
             "default_value": false,
             "return_format": "value",
@@ -118,9 +163,8 @@
                 "id": ""
             },
             "choices": {
-                "a": "A",
-                "b": "B",
-                "c": "C"
+                "men": "Men's",
+                "women": "Women's"
             },
             "default_value": false,
             "return_format": "value",
@@ -145,7 +189,18 @@
                 "id": ""
             },
             "choices": {
-                "9": "Men Small"
+                "11": "Men's Large",
+                "10": "Men's Medium",
+                "9": "Men's Small",
+                "12": "Men's X-Large",
+                "45": "Men's X-Small",
+                "13": "Men's XX-Large",
+                "17": "Men's XXXL",
+                "6": "Women's Large",
+                "5": "Women's Medium",
+                "4": "Women's Small",
+                "7": "Women's X-Large",
+                "3": "Women's X-Small"
             },
             "default_value": false,
             "return_format": "value",
@@ -160,7 +215,7 @@
             "label": "Saddle Height",
             "name": "gear_preferences_saddle_height",
             "aria-label": "",
-            "type": "select",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -169,25 +224,18 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "a": "A",
-                "b": "B",
-                "c": "C"
-            },
-            "default_value": false,
-            "return_format": "value",
-            "multiple": 0,
-            "allow_null": 0,
-            "ui": 0,
-            "ajax": 0,
-            "placeholder": ""
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_638bb98a9d2de",
             "label": "Bar Reach",
             "name": "gear_preferences_bar_reach",
             "aria-label": "",
-            "type": "select",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -196,25 +244,18 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "a": "A",
-                "b": "B",
-                "c": "C"
-            },
-            "default_value": false,
-            "return_format": "value",
-            "multiple": 0,
-            "allow_null": 0,
-            "ui": 0,
-            "ajax": 0,
-            "placeholder": ""
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_638bb99d9d2df",
             "label": "Bar Height",
             "name": "gear_preferences_bar_height",
             "aria-label": "",
-            "type": "select",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -223,18 +264,11 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "a": "A",
-                "b": "B",
-                "c": "C"
-            },
-            "default_value": false,
-            "return_format": "value",
-            "multiple": 0,
-            "allow_null": 0,
-            "ui": 0,
-            "ajax": 0,
-            "placeholder": ""
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [
@@ -255,5 +289,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1706819758
+    "modified": 1709818676
 }
