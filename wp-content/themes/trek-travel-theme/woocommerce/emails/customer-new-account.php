@@ -236,7 +236,7 @@ defined( 'ABSPATH' ) || exit;
                                     align="left"
                                     style="line-height: 10px"
                                   >
-                                    <div style="max-width: 120px">
+                                    <div style="max-width: 120px;">
                                       <a
                                         href="https://www.trektravel.com/"
                                         target="_blank"
@@ -249,6 +249,7 @@ defined( 'ABSPATH' ) || exit;
                                             height: auto;
                                             border: 0;
                                             width: 100%;
+                                            max-width: 120px;
                                           "
                                           width="120"
                                       /></a>
