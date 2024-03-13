@@ -6578,3 +6578,22 @@ function tt_maybe_required_fields( $fields) {
     return $fields;
 }
 add_filter( 'woocommerce_checkout_fields', 'tt_maybe_required_fields', 11 );
+
+/**
+ * Sync the user with NetSuite,
+ * obtain ns_user_id and take all info about the preferences and existing bookings.
+ *
+ * @uses TM NetSuite plugin methods to obtain the ns_user_id.
+ *
+ * @param WP_User $user The user.
+ *
+ * @link https://developer.wordpress.org/reference/hooks/password_reset/
+ */
+function tt_password_reset_action( $user ) {
+    $user_id = $user->ID;
+
+    if( ! empty( $user_id ) ) {
+        tt_sync_user_metadata_from_ns_cb( $user_id );
+    }
+}
+add_action( 'password_reset', 'tt_password_reset_action', 10 );
