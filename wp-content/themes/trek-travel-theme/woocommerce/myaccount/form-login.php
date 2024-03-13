@@ -64,7 +64,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
                <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-primary" name="login" value="<?php esc_attr_e( 'Sign in', 'trek-travel-theme' ); ?>"><?php esc_html_e( 'Sign in', 'trek-travel-theme' ); ?></button>
             </div>
             <div class="form-group register-link">
-               <span>Not a member? <a href="<?php echo esc_url( site_url( 'register' ) ); ?>"><?php esc_html_e( 'Sign Up', 'trek-travel-theme' ); ?></a></span>
+               <span>Don't have an account? <a href="<?php echo esc_url( site_url( 'register' ) ); ?>"><?php esc_html_e( 'Sign Up', 'trek-travel-theme' ); ?></a></span>
             </div>
             <?php do_action( 'woocommerce_login_form_end' ); ?>
          </form>

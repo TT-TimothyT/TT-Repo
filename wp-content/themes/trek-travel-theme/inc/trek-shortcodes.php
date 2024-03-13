@@ -18,7 +18,7 @@ function trek_registration_form_cb()
    <div class="row my-4">
       <div class="offset-md-4 col-md-4 col-sm-12 register-form">
          <h4>Join Trek Travel Today!</h4>
-         <p class="re-register-info">Welcome to the new Trek Travel website. If you have previously traveled with us, please re-register your account using the email address associated with your prior bookings.</p>
+         <p class="re-register-info">Sign up with Trek Travel to personalize your experience and view trips. <br> Account holders, click “Sign In” which may require you to reset your password.</p>
          <form method="post" class="woocommerce-form woocommerce-form-register register needs-validation" novalidate <?php do_action('woocommerce_register_form_tag'); ?>>
             <?php do_action('woocommerce_register_form_start'); ?>
 
@@ -87,7 +87,7 @@ function trek_registration_form_cb()
                <button type="submit" class="btn btn-primary w-100" name="register" value="<?php esc_attr_e('Sign up', 'trek-travel-theme'); ?>"><?php esc_html_e('Sign up', 'trek-travel-theme'); ?></button>
             </div>
             <div class="fs-md my-4 lh-md fw-normal text-center">
-               <span>Already a member? <a href="/login">Sign In</a></span>
+               <span>Already have an account? <a href="/login">Sign In</a></span>
             </div>
       </div>
 
@@ -123,7 +123,7 @@ function trek_login_form()
       <div id="trek-login-responses"></div>
       <div class="offset-lg-4 col-lg-4 login-form">
          <h2 class="login-title"><?php esc_html_e('Sign In', 'trek-travel-theme'); ?></h2>
-         <p class="re-register-info">Welcome to the new Trek Travel website. If you have previously traveled with us, please re-register your account using the email address associated with your prior bookings. <strong>Click "sign-up" below to re-register.</strong></p>
+         <p class="re-register-info">Welcome to Trek Travel'supdated website. Existing account holders must reset their passwords. Please click <i>'forgot password'</i> and follow the instructions to regain account access. <br> Do not have an account? Sign-up below to update your preferences, see upcoming trips, and much more.</strong></p>
          <form class="woocommerce-form woocommerce-form-login login needs-validation" method="post" name="trek-login-form" novalidate>
             <?php do_action('woocommerce_login_form_start'); ?>
 
@@ -157,7 +157,7 @@ function trek_login_form()
                <input type="hidden" name="http_referer" value="<?php echo $redirect_url; ?>">
             </div>
             <div class="form-group register-link">
-               <span>Not a member? <a href="<?php echo esc_url(site_url('register')); ?>"><?php esc_html_e('Sign Up', 'trek-travel-theme'); ?></a></span>
+               <span>Don't have an account? <a href="<?php echo esc_url(site_url('register')); ?>"><?php esc_html_e('Sign Up', 'trek-travel-theme'); ?></a></span>
             </div>
             <?php do_action('woocommerce_login_form_end'); ?>
          </form>
@@ -197,7 +197,7 @@ function trek_forgot_password_form()
             </div>
             <?php wp_nonce_field('lost_password', 'woocommerce-lost-password-nonce'); ?>
             <div class="form-group text-center register-link">
-               <span>Not a member? <a href="<?php echo esc_url(site_url('register')); ?>"><?php esc_html_e('Sign Up', 'trek-travel-theme'); ?></a></span>
+               <span>Don't have an account? <a href="<?php echo esc_url(site_url('register')); ?>"><?php esc_html_e('Sign Up', 'trek-travel-theme'); ?></a></span>
             </div>
          </form>
       </div>

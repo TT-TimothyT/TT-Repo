@@ -39,12 +39,25 @@ do_action( 'woocommerce_before_lost_password_form' );
 		</div>
 		<?php wp_nonce_field( 'lost_password', 'woocommerce-lost-password-nonce' ); ?>
 		<div class="form-group text-center register-link">
-			<span>Not a member? <a href="<?php echo esc_url( site_url( 'register' ) ); ?>"><?php esc_html_e( 'Sign Up', 'trek-travel-theme' ); ?></a></span>
+			<span>Don't have an account? <a href="<?php echo esc_url( site_url( 'register' ) ); ?>"><?php esc_html_e( 'Sign Up', 'trek-travel-theme' ); ?></a></span>
 		</div>
 		</form>
 	</div>
 </div>
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Check if the current page URL contains the specific path
+    if (window.location.pathname === '/my-account/lost-password/') {
+        // Get the email parameter from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('user_email');
+
+        // Set the value of the email input field if the email parameter exists
+        if (email) {
+            document.getElementById('InputEmail').value = email;
+        }
+    }
+});
 document.addEventListener("DOMContentLoaded", function() {
     // Get the form element
     var lostPasswordForm = document.querySelector(".woocommerce-ResetPassword");
