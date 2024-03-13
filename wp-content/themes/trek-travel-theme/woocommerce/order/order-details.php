@@ -181,7 +181,10 @@ $guests_gears_data = tt_guest_details($trek_checkoutData);
 $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
 $depositAmount = $depositAmount ? str_ireplace(',','',$depositAmount) : 0;
 $depositAmount = floatval($depositAmount) * intval(isset($trek_checkoutData['no_of_guests']) ? $trek_checkoutData['no_of_guests'] : 1);
-$cart_total = $order->get_total();
+// $cart_total = $order->get_total();
+$pay_amount             = isset( $trek_checkoutData['pay_amount'] ) ? $trek_checkoutData['pay_amount'] : 'full';
+$cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) ? $trek_checkoutData['cart_total_full_amount'] : '';
+$cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total();
 $remaining_amount = $cart_total - ($depositAmount ? $depositAmount : 0);
 $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $remaining_amount .'</span>';
 $cart_totalCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $cart_total .'</span>';
@@ -212,8 +215,10 @@ $guest_emails       = trek_get_guest_emails($order_id);
 $tt_get_upgrade_qty = tt_get_upgrade_qty($trek_checkoutData);
 $dues               = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amount'] == 'full' ? false : true;
 $discount_order     = floatval( $discount_total ) * $trek_checkoutData['no_of_guests'];
-
-
+$depositAmount       += $tt_insurance_total_charges;
+$depositAmountCurr    = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $depositAmount .'</span>';
+$remaining_amount     = $cart_total - ( $depositAmount ? $depositAmount : 0 );
+$remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $remaining_amount .'</span>';
 ?>
 <div class="container-fluid order-details__banner d-flex justify-content-end flex-column">
 	<h1 class="mb-0 mb-lg-1 order-details__banner-heading">Thank You!</h1>

@@ -250,6 +250,10 @@ if( !empty( $confirmed_info_unserialized ) ) {
 	}
 }
 
+$pay_amount             = isset( $trek_checkoutData['pay_amount'] ) ? $trek_checkoutData['pay_amount'] : 'full';
+$cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) ? $trek_checkoutData['cart_total_full_amount'] : '';
+$cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_formatted_order_total($order_item);
+
 ?>
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
@@ -291,7 +295,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 						</div>
 						<div class="trip-total">
 							<p class="fw-medium fs-lg lh-lg line-item-title">Trip Total</p>
-							<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : $order->get_formatted_order_total($order_item) ?></p>
+							<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : wc_price( $cart_total ) ?></p>
 						</div>
 					</div>
 					<hr>
@@ -352,7 +356,7 @@ if( !empty( $confirmed_info_unserialized ) ) {
 							</div>
 							<div class="trip-total">
 								<p class="fw-medium fs-lg lh-lg line-item-title">Trip Total</p>
-								<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : $order->get_formatted_order_total($order_item) ?></p>
+								<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : wc_price( $cart_total ) ?></p>
 							</div>
 						</div>
 						<hr>

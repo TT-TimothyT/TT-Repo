@@ -56,6 +56,25 @@ if (isset($guest_insurance) && !empty($guest_insurance)) {
         }
     }
 }
+$insuarance_amount = 0;
+if ( ! empty ( $guest_insurance ) ) {
+    $primary_insuarance = $guest_insurance['primary'];
+    if ( '1' == $primary_insuarance['is_travel_protection'] ) {
+        $insuarance_amount += floatval( $primary_insuarance['basePremium'] );
+    }
+    foreach ( $guest_insurance['guests'] as $trek_guest_insurance ) {
+        $insuarance_amount += floatval( $trek_guest_insurance['basePremium'] );
+    }
+
+    
+    if ( ! empty ( $trek_guests_insurance['guests'] ) ) {
+        foreach ( $trek_guests_insurance['guests'] as $trek_guest_insurance ) {
+            if ( 1 == $trek_guest_insurance['is_travel_protection'] ) {
+                $insuarance_amount += floatval( $trek_guest_insurance['basePremium'] );
+            }
+        }
+    }
+}
 $tripInfo = tt_get_trip_pid_sku_from_cart();
 $depositAmount = 0;
 $depositBeforeDate = '';
@@ -99,27 +118,22 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
     <div class="checkout-payment__options">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-1">Payment Option</h5>
         <p class="fs-sm checkout-payment__sublabel">Minimum amount required is trip deposit. <a href="<?php echo home_url( '/cancellation-policy/' ); ?>" target="_blank">Learn more about our No-Risk Deposit.</a></p>
-        <?php if( $depositAmount && $depositAmount > 0 && $is_deposited == 1 ) { ?>
-            <div class="d-flex align-items-center checkout-timeline__warning rounded-1 mb-3">
-                <img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png" alt="warning" class="me-2">
-                <p class="mb-0 fs-sm lh-sm">Our online booking system is currently unable to process deposits. If you wish to make a reservation by placing a fully refundable deposit of $750, please contact us at <a href="tel:866-464-8735">866-464-8735</a>.</p>
-            </div>
-        <?php } ?>
         <div class="checkout-payment__pay">
             <?php
-            $cart_total = WC()->cart->total;
-            $remaining_amount = $cart_total - ( $depositAmount ? $depositAmount : 0 );
+            $cart_total_full_amount = isset( $tt_posted['cart_total_full_amount'] ) ? $tt_posted['cart_total_full_amount'] : '';
+            $cart_total = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : WC()->cart->total;
+            $remaining_amount = $cart_total - ( $depositAmount ? $depositAmount : 0 ) - ( $insuarance_amount ? $insuarance_amount : 0 );
             $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$remaining_amount.'</span>';
             $cart_totalCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$cart_total.'</span>';
-            $depositAmountCurr  = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$depositAmount.'</span>';
+            $depositAmountCurr  = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'. $depositAmount + $insuarance_amount .'</span>';
             if( $pay_amount == 'full' ){
                 $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>0</span>';
             }
             if( $depositAmount && $depositAmount > 0 && $is_deposited == 1 ) { ?>
-            <div style="display:none;" class="mb-4">
+            <div class="mb-4">
                 <input type="radio" name="pay_amount" required="required"  value="deposite" <?php echo ( $pay_amount == 'deposite' ? 'checked' : '' ); ?>>
                 <div class="checkout-payment__paydep rounded-1 d-flex justify-content-between align-items-center">
-                    <p class="fs-lg lh-lg fw-medium mb-0">Pay Deposit: <span><?php echo $depositAmountCurr; ?></span></p>
+                    <p class="fs-lg lh-lg fw-medium mb-0">Pay Deposit: <span><?php echo wc_price( $depositAmount ); ?></span></p>
                     <i class="checkout-payment__pay-icon"></i>
                 </div>
             </div>

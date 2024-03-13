@@ -541,6 +541,13 @@ function save_checkout_steps_action_cb()
     } else {
         $review_order_html .= '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
     }
+    $payment_option_html = '';
+    $review_order = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
+    if (is_readable($review_order)) {
+        $payment_option_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php');
+    } else {
+        $payment_option_html .= '<h3>Step 4</h3><p>Checkout payment option file is missing!</p>';
+    }
     echo json_encode(
         array(
             'status' => true,
@@ -549,6 +556,7 @@ function save_checkout_steps_action_cb()
             'insuredHTML' => $insuredHTML,
             'insuredHTMLPopup' => $insuredHTMLPopup,
             'review_order' => $review_order_html,
+            'payment_option' => $payment_option_html,
             'message' => 'Trek checkout steps data saved!'
         )
     );
@@ -2969,10 +2977,19 @@ function trek_tt_save_occupants_ajax_action_cb()
             $stepHTML .=  '<h3>Step 2</h3><p>Checkout Bike form code is missing!</p>';
         }
     }
+    $payment_option_html = '';
+    $review_order = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
+    if (is_readable($review_order)) {
+        $payment_option_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php');
+    } else {
+        $payment_option_html .= '<h3>Step 4</h3><p>Checkout payment option file is missing!</p>';
+    }
+
     echo json_encode(
         array(
             'status' => true,
             'review_order' => $review_order_html,
+            'payment_option' => $payment_option_html,
             'stepHTML' => $stepHTML,
             'step' => $_REQUEST['step'],
             'message' => 'Trek checkout occupants data saved!'
@@ -5734,6 +5751,7 @@ function recalculate_tax_on_cart_update( $cart ) {
 // Filter to adjust the cart subtotal
 add_filter( 'woocommerce_calculated_total', 'update_cart_subtotal', 10, 2 );
 function update_cart_subtotal( $cart_total, $cart ) {
+    $cart      = WC()->cart;
     $total_tax = calculate_cart_total_tax( $cart );
 
     $cart_total = floatval( $cart->cart_contents_total );
@@ -5745,7 +5763,32 @@ function update_cart_subtotal( $cart_total, $cart ) {
     $tt_posted               = $trek_user_checkout_data['posted'];
     $tt_coupon_code          = ( isset( $tt_posted['coupon_code'] ) && $tt_posted['coupon_code'] ? $tt_posted['coupon_code'] : '' );
     $no_of_guests            = isset( $tt_posted['no_of_guests'] ) ? $tt_posted['no_of_guests'] : 1;
-
+    if ( ! $cart->is_empty() ) {
+        // Get the cart items
+        $cart_items = $cart->get_cart();
+    
+        // Get the first cart item
+        $first_cart_item = reset($cart_items);
+    
+        // Access the SKU of the first item
+        $sku                   = $first_cart_item['data']->get_sku();
+        $pay_amount            = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_amount'] : '';
+        $deposit_amount        = tt_get_local_trips_detail( 'depositAmount', '', $sku, true );
+        $trek_guests_insurance = $tt_posted['trek_guest_insurance'];
+        $insuarance_amount     = 0;
+        $primary_insuarance    = $trek_guests_insurance['primary'];
+        if ( '1' == $primary_insuarance['is_travel_protection'] ) {
+            $insuarance_amount += floatval( $primary_insuarance['basePremium'] );
+        }
+        if ( ! empty ( $trek_guests_insurance['guests'] ) ) {
+            foreach ( $trek_guests_insurance['guests'] as $trek_guest_insurance ) {
+                if ( 1 == $trek_guest_insurance['is_travel_protection'] ) {
+                    $insuarance_amount += floatval( $trek_guest_insurance['basePremium'] );
+                }
+            }
+        }
+    }
+    
     if ( ! empty( $tt_coupon_code ) && tt_is_coupon_applied( $tt_coupon_code ) ) {
         $coupon = new WC_Coupon( $tt_coupon_code );
 
@@ -5756,6 +5799,22 @@ function update_cart_subtotal( $cart_total, $cart ) {
         }
         if ( 1 < $no_of_guests ) {
             $cart_total -= ( $no_of_guests - 1 ) * $coupon_amount;
+        }
+    }
+
+    $accepted_p_ids = tt_get_line_items_product_ids();
+    foreach (WC()->cart->get_cart() as $cart_item_id => $cart_item) {
+        if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
+            // Take the Cart total for the full amount only we need to keep it for reference and calculations.
+            $cart_item['trek_user_checkout_data']['cart_total_full_amount'] = $cart_total;
+            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+        }
+    }
+
+    // Adjust the cart total if we choose to pay only the deposit. Deposit eligible trips with travel protection should charge deposit amount + the travel protection amount.
+    if ( isset( $tt_posted['pay_amount'] ) ) {
+        if ( 'deposite' === $pay_amount ) {
+            $cart_total = ( $no_of_guests * floatval( $deposit_amount ) ) + $insuarance_amount;
         }
     }
 
@@ -5775,8 +5834,6 @@ function add_custom_line_before_tax() {
         $is_order_transaction_deposit = get_post_meta( $order_id, '_is_order_transaction_deposit', true );
         $applied_coupons              = $order->get_coupon_codes();
         $first_item                   = $order->get_items();
-
-
         if ( ! empty( $first_item ) ) {
             $first_item    = reset( $first_item );
             $fisrt_product = $first_item->get_product();
@@ -5803,7 +5860,7 @@ function add_custom_line_before_tax() {
         ?>
         <?php if ( 1 < $first_item_quantity && 0 < $additional_discount ) : ?>
             <tr>
-                <td class="label"><?php _e('Secondary Guests Discount:', 'trek-travel-them'); ?></td>
+                <td class="label"><?php _e('Secondary Guests Discount:', 'trek-travel-theme'); ?></td>
                 <td width="1%"></td>
                 <td class="total">
                     <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">- </span><?php echo wc_price( $additional_discount ); ?></bdi></span>
@@ -5812,16 +5869,32 @@ function add_custom_line_before_tax() {
         <?php endif; ?>
         <?php if ( 'deposite' === $pay_amount && '1' === $is_order_transaction_deposit ) : ?>
             <?php
-            $deposit_amount = tt_get_local_trips_detail( 'depositAmount', '', $fisrt_product_sku, true );
+            $deposit_amount         = tt_get_local_trips_detail( 'depositAmount', '', $fisrt_product_sku, true );
+            $cart_total_full_amount = isset( $trek_user_checkout_data['cart_total_full_amount'] ) ? $trek_user_checkout_data['cart_total_full_amount'] : '';
+            $remaining_due          = floatval( $cart_total_full_amount - $order->get_total() );
             if ( $first_item_quantity ) {
-                $deposit_amount = ( $first_item_quantity ) * floatval( $deposit_amount );
+                $deposit_amount = ( $first_item_quantity ) * floatval( $deposit_amount ); // + travel protection
             }
             ?>
             <tr>
-                <td class="label"><?php _e('Deposit Amount:', 'trek-travel-them'); ?></td>
+                <td class="label"><?php _e('Deposit Amount:', 'trek-travel-theme'); ?></td>
                 <td width="1%"></td>
                 <td class="total">
                     <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $deposit_amount ); ?></bdi></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label" style="font-weight: 700;"><?php _e('Order Total Full Amount:', 'trek-travel-theme'); ?></td>
+                <td width="1%"></td>
+                <td class="total">
+                    <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $cart_total_full_amount ); ?></bdi></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label"><?php _e('Remaining Due:', 'trek-travel-theme'); ?></td>
+                <td width="1%"></td>
+                <td class="total">
+                    <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $remaining_due ); ?></bdi></span>
                 </td>
             </tr>
         <?php endif; ?>

@@ -46,11 +46,14 @@ $tripInfo = tt_get_trip_pid_sku_from_cart();
 $depositAmount = tt_get_local_trips_detail('depositAmount', '', $tripInfo['sku'], true);
 $depositAmount = $depositAmount ? str_ireplace(',', '', $depositAmount) : 0;
 $depositAmount = floatval($depositAmount) * intval($no_of_guests);
-$cart_total = WC()->cart->total;
+// $cart_total = WC()->cart->total;
+$pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full';
+$cart_total_full_amount = isset( $tt_posted['cart_total_full_amount'] ) ? $tt_posted['cart_total_full_amount'] : '';
+$cart_total = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : WC()->cart->total;
 $remaining_amount = $cart_total - ($depositAmount ? $depositAmount : 0);
 $remaining_amountCurr = get_woocommerce_currency_symbol() . $remaining_amount;
 $cart_totalCurr = get_woocommerce_currency_symbol() . $cart_total;
-$depositAmountCurr  = get_woocommerce_currency_symbol() . $depositAmount;
+$depositAmountCurr = $depositAmount;
 $trip_booking_limit = get_trip_capacity_info();
 $parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_trip_link'] : 'javascript:';
 $arch_info = tt_get_insurance_info($tt_posted);
@@ -225,7 +228,21 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
             <?php
             $outstanding_payment = $cart_totalCurr;
             if ($pay_amount == 'deposite') {
-                $outstanding_payment = $depositAmountCurr;
+                $outstanding_payment   = floatval( $depositAmountCurr );
+                $trek_guests_insurance = $tt_posted['trek_guest_insurance'];
+                $primary_insuarance    = $trek_guests_insurance['primary'];
+                if ( "1" === $primary_insuarance['is_travel_protection'] ) {
+                    $outstanding_payment += floatval( $primary_insuarance['basePremium'] );
+                }
+                if ( ! empty ( $trek_guests_insurance['guests'] ) ) {
+                    foreach ( $trek_guests_insurance['guests'] as $trek_guest_insurance ) {
+                        if ( "1" === $trek_guest_insurance['is_travel_protection'] ) {
+                            $outstanding_payment += floatval( $trek_guest_insurance['basePremium'] );
+                        }
+                    }
+                }
+                $remaining_amount     = $cart_total - ($outstanding_payment ? $outstanding_payment : 0);
+                $remaining_amountCurr = get_woocommerce_currency_symbol() . $remaining_amount;
             } else {
                 $remaining_amountCurr = get_woocommerce_currency_symbol() . '0';
             }

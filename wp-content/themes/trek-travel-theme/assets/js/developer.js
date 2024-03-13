@@ -816,6 +816,9 @@ jQuery(document).ready(function () {
         if (response.review_order) {
           jQuery('#tt-review-order').html(response.review_order);
         }
+        if( jQuery('.checkout-payment__options').length > 0 && response.payment_option ) {
+          jQuery('.checkout-payment__options').html(response.payment_option);
+        }
         setTimeout(jQuery.unblockUI, 2000);
         window.history.replaceState(null, null, response.redirectURL);
         //window.location.href = response.redirectURL
@@ -2402,6 +2405,9 @@ if (jQuery('.tt_reset_rooms').length > 0) {
             if (response.review_order) {
               jQuery('#tt-review-order').html(response.review_order);
               jQuery("#currency_switcher").trigger("change");
+            }
+            if( jQuery('.checkout-payment__options').length > 0 && response.payment_option ) {
+              jQuery('.checkout-payment__options').html(response.payment_option);
             }
             jQuery.unblockUI();
           }

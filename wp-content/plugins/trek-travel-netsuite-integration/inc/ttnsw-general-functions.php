@@ -182,6 +182,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
     }
     $booking_index = 0;
     if ($wc_booking_result) {
+        $total_insuarance_ammount = 0;
         foreach ($wc_booking_result as $wc_booking_key => $wc_booking) {
             $ns_trip_ID = NULL;
             if ($wc_booking->product_id) {
@@ -203,7 +204,10 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
             $specialRoomRequests = tt_validate($wc_booking->specialRoomRequests);
             $promoCode = tt_validate($wc_booking->promoCode);
             $wantsInsurance = tt_validate($wc_booking->wantsInsurance, false);
-            $insuranceAmount = tt_validate($wc_booking->insuranceAmount, false);
+            $insuranceAmount = tt_validate($wc_booking->insuranceAmount, 0);
+            if( $wantsInsurance ) {
+                $total_insuarance_ammount += floatval( $insuranceAmount );
+            }
             $wc_coupon_amount = 0;
             if ($promoCode) {
                 $wc_coupon = new WC_Coupon($promoCode);
@@ -342,6 +346,9 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
                 ];
             }
             $booking_index++;
+        }
+        if ( $transaction_deposit == true ) {
+            $ns_booking_payload["paymentInfo"]["transaction_authorization_amount"] = $trip_transaction_amount + $total_insuarance_ammount;
         }
         if ($ns_booking_payload) {
             $ns_booking_result = $netSuiteClient->post(BOOKING_SCRIPT_ID, json_encode($ns_booking_payload));

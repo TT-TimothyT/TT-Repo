@@ -275,7 +275,10 @@ if( ! empty( $taxes_amount ) ) {
 
 $depositAmount = round( $depositAmount, 3 );
 
-$cart_total = $order->get_total();
+// $cart_total = $order->get_total();
+$pay_amount             = isset( $trek_checkoutData['pay_amount'] ) ? $trek_checkoutData['pay_amount'] : 'full';
+$cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) ? $trek_checkoutData['cart_total_full_amount'] : '';
+$cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total();
 $remaining_amount = $cart_total - ($depositAmount ? $depositAmount : 0);
 $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $remaining_amount . '</span>';
 $cart_totalCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $cart_total . '</span>';
@@ -387,7 +390,7 @@ if( $parent_product_id ){
                                                 <?php if ( 0 < $singleSupplementQty ) : ?>
                                                     <tr>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text">Single Supplement x <?php echo $trek_checkoutData['no_of_guests']; ?></p>
+                                                            <p class="mb-0 fw-normal order-details__text">Single Supplement x <?php echo $singleSupplementQty; ?></p>
                                                         </td>
                                                         <td>
                                                             <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplementFees; ?></span></p>
@@ -445,7 +448,7 @@ if( $parent_product_id ){
                                                         <p class="mb-0 fw-semibold fs-md lh-md">Trip Total</p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-semibold fs-md lh-md"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_total(); ?></span></p>
+                                                        <p class="mb-0 fw-semibold fs-md lh-md"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $cart_total; ?></span></p>
                                                     </td>
                                                 </tr>
                                                 <?php
@@ -457,7 +460,8 @@ if( $parent_product_id ){
                                                     <?php
                                                     $deposit_amount = tt_get_local_trips_detail( 'depositAmount', '', $trip_sku, true );
                                                     if ( $trek_checkoutData['no_of_guests'] ) {
-                                                        $deposit_amount = ( intval( $trek_checkoutData['no_of_guests'] ) ) * floatval( $deposit_amount );
+                                                        $deposit_amount              = ( intval( $trek_checkoutData['no_of_guests'] ) ) * floatval( $deposit_amount );
+                                                        $deposit_amount             += $tt_insurance_total_charges;
                                                         $remaining_amount_calculated = floatval( $cart_total ) - $deposit_amount;
                                                     }
                                                     ?>
