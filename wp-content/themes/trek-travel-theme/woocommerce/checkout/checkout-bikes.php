@@ -154,7 +154,7 @@ if ($p_own_bike == 'yes') {
                             }
                             $bikes_model_id_in[] = $bikeModelId;
                         }
-                        $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '><input name="bike_gears[primary][bike_type_id_preferences]" type="hidden" value="">';
+                        $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $primary_bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '><input name="bike_gears[primary][bike_type_id_preferences]" type="hidden" value="">';
                     } else {
                         $primary_available_bike_html .= '<strong>No bikes available!</strong>';
                     }
