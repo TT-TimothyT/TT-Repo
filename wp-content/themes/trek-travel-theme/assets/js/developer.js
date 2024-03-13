@@ -834,6 +834,7 @@ jQuery(document).ready(function () {
         jQuery('.open-to-roommate-popup-container .close-btn').on('click', function() {
           jQuery('.open-to-roommate-popup-container').fadeOut();
           jQuery('header').css('z-index','1020');
+          jQuery('body').css('overflow','');
           jQuery('html').removeClass('no-scroll');
         })
         
@@ -841,6 +842,7 @@ jQuery(document).ready(function () {
           if(jQuery(e.target).hasClass('open-to-roommate-popup-container')) {
             jQuery('.open-to-roommate-popup-container').fadeOut();
             jQuery('header').css('z-index','1020');
+            jQuery('body').css('overflow','');
             jQuery('html').removeClass('no-scroll');
           }
         })
@@ -855,6 +857,7 @@ jQuery(document).ready(function () {
         jQuery('.private-popup-container .close-btn').on('click', function() {
           jQuery('.private-popup-container').fadeOut();
           jQuery('header').css('z-index','1020');
+          jQuery('body').css('overflow','');
           jQuery('html').removeClass('no-scroll');
         })
         
@@ -862,6 +865,7 @@ jQuery(document).ready(function () {
           if(jQuery(e.target).hasClass('private-popup-container')) {
             jQuery('.private-popup-container').fadeOut();
             jQuery('header').css('z-index','1020');
+            jQuery('body').css('overflow','');
             jQuery('html').removeClass('no-scroll');
           }
         })
@@ -883,6 +887,7 @@ jQuery(document).ready(function () {
         jQuery('.travel-protection-tooltip-container .close-btn').on('click', function() {
           jQuery('.travel-protection-tooltip-container').fadeOut();
           jQuery('header').css('z-index','1020');
+          jQuery('body').css('overflow','');
           jQuery('html').removeClass('no-scroll');
         })
         
@@ -890,6 +895,7 @@ jQuery(document).ready(function () {
           if(jQuery(e.target).hasClass('travel-protection-tooltip-container')) {
             jQuery('.travel-protection-tooltip-container').fadeOut();
             jQuery('header').css('z-index','1020');
+            jQuery('body').css('overflow','');
             jQuery('html').removeClass('no-scroll');
           }
         })
@@ -4181,6 +4187,7 @@ jQuery('body').on('click', '.open-roommate-popup', function() {
 jQuery('.open-to-roommate-popup-container .close-btn').on('click', function() {
   jQuery('.open-to-roommate-popup-container').fadeOut();
   jQuery('header').css('z-index','1020');
+  jQuery('body').css('overflow','');
   jQuery('html').removeClass('no-scroll');
 })
 
@@ -4188,6 +4195,7 @@ jQuery('.open-to-roommate-popup-container').on('click', function(e) {
   if(jQuery(e.target).hasClass('open-to-roommate-popup-container')) {
     jQuery('.open-to-roommate-popup-container').fadeOut();
     jQuery('header').css('z-index','1020');
+    jQuery('body').css('overflow','');
     jQuery('html').removeClass('no-scroll');
   }
 })
@@ -4202,6 +4210,7 @@ jQuery('body').on('click', '.checkout-private-popup', function() {
 jQuery('.private-popup-container .close-btn').on('click', function() {
   jQuery('.private-popup-container').fadeOut();
   jQuery('header').css('z-index','1020');
+  jQuery('body').css('overflow','');
   jQuery('html').removeClass('no-scroll');
 })
 
@@ -4209,6 +4218,7 @@ jQuery('.private-popup-container').on('click', function(e) {
   if(jQuery(e.target).hasClass('private-popup-container')) {
     jQuery('.private-popup-container').fadeOut();
     jQuery('header').css('z-index','1020');
+    jQuery('body').css('overflow','');
     jQuery('html').removeClass('no-scroll');
   }
 })
@@ -4265,6 +4275,7 @@ jQuery('body').on('click', '.checkout-travel-protection-tooltip', function() {
 jQuery('.travel-protection-tooltip-container .close-btn').on('click', function() {
   jQuery('.travel-protection-tooltip-container').fadeOut();
   jQuery('header').css('z-index','1020');
+  jQuery('body').css('overflow','');
   jQuery('html').removeClass('no-scroll');
 })
 
@@ -4272,6 +4283,7 @@ jQuery('.travel-protection-tooltip-container').on('click', function(e) {
   if(jQuery(e.target).hasClass('travel-protection-tooltip-container')) {
     jQuery('.travel-protection-tooltip-container').fadeOut();
     jQuery('header').css('z-index','1020');
+    jQuery('body').css('overflow','');
     jQuery('html').removeClass('no-scroll');
   }
 })
