@@ -1,12 +1,4 @@
 // PDP navigation menu sticky sidebar Desktop
-
-.navigation-sticky {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: 30px;
-}
 .overview-sidebar-desktop{
     @media (max-width: 767px) {
         display: none;

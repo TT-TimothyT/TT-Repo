@@ -98,23 +98,7 @@
                 }
             }
         }
-        .nav-tabContent-months{
-            .accordion-button, .pvt-box {
-                gap: 15px;
-
-                .w-40 {
-                    width: 40%;
-                }
-                .d-box {
-                    width: 100%;
-                    display: flex;
-                    align-items: center;
-                    flex-wrap: wrap;
-                    gap: 15px;
-                }
-            }
-
-
+        #nav-tabContent-months{
             .accordion-button:not(.collapsed){
                 color: #000000;
                 box-shadow: none;
@@ -165,11 +149,6 @@
                         align-items: flex-start;
                         span{
                             width: 100% !important;
-                            &.d-rsv {
-                                width: 20px;
-                                display: flex;
-                                justify-content: flex-end;
-                            }
                         }
                         &::after{
                             position: absolute;
@@ -177,13 +156,6 @@
                         }
                     }
                     span{
-
-                        &.d-rsv {
-                            width: 20px;
-                            display: flex;
-                            justify-content: flex-end;
-                        }
-
                         @media (max-width: 540px) {
                             margin-bottom: .5rem;
                         }

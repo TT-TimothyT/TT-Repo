@@ -2,9 +2,6 @@
 // PDP - Overvew Navigation
 global $product, $post;
 $product_id = $post->ID;
-
-$activity_tax = get_field('Activity');
-$activity = $activity_tax->name;
 ?>
 
 <!-- PDP - Overview Navigation -->
@@ -14,9 +11,7 @@ $activity = $activity_tax->name;
 		<a class="nav-link" href="#dates-pricing">Dates & Pricing</a>
 		<a class="nav-link" href="#itinerary">Itinerary</a>
 		<a class="nav-link" href="#hotels">Hotels</a>
-		<?php if (!empty($activity) && $activity == 'Biking'): ?>
-			<a class="nav-link" href="#bikes-guides">Bikes & Guides</a>
-		<?php endif; ?>
+		<a class="nav-link" href="#bikes-guides">Bikes & Guides</a>
 		<a class="nav-link" href="#inclusions">Inclusions</a>
 		<a class="nav-link" href="#additional-details">Know Before You Go</a>
 		<a class="nav-link" href="#faqs">FAQs</a>

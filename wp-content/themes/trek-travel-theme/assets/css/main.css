@@ -13134,14 +13134,6 @@ a.refineLink {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-dash-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z'/%3E%3C/svg%3E");
 }
 
-.navigation-sticky {
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: 30px;
-}
-
 .overview-sidebar-desktop {
   background-color: #D3D3D3;
 }
@@ -13656,34 +13648,21 @@ a.refineLink {
   border-bottom: 4px solid #000;
   color: #000;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-button, .dates-pricing-container .dates-pricing .nav-tabContent-months .pvt-box {
-  gap: 15px;
-}
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-button .w-40, .dates-pricing-container .dates-pricing .nav-tabContent-months .pvt-box .w-40 {
-  width: 40%;
-}
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-button .d-box, .dates-pricing-container .dates-pricing .nav-tabContent-months .pvt-box .d-box {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-button:not(.collapsed) {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-button:not(.collapsed) {
   color: #000000;
   box-shadow: none;
   background-color: transparent;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-button:focus {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-button:focus {
   box-shadow: none;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-button::after {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-button::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-plus-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z'/%3E%3C/svg%3E");
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-button:not(.collapsed)::after {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-button:not(.collapsed)::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-dash-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z'/%3E%3C/svg%3E");
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .private-accordion::after, .dates-pricing-container .dates-pricing .nav-tabContent-months .private-accordion:not(.collapsed)::after {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .private-accordion::after, .dates-pricing-container .dates-pricing #nav-tabContent-months .private-accordion:not(.collapsed)::after {
   content: "Reserved \f431";
   transform: none;
   background-image: none;
@@ -13697,16 +13676,16 @@ a.refineLink {
   color: #666666;
 }
 @media (max-width: 540px) {
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .private-accordion::after, .dates-pricing-container .dates-pricing .nav-tabContent-months .private-accordion:not(.collapsed)::after {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .private-accordion::after, .dates-pricing-container .dates-pricing #nav-tabContent-months .private-accordion:not(.collapsed)::after {
     width: 25% !important;
   }
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item {
   border: 1px solid #C6C6C6;
   border-radius: 4px;
   margin: 8px auto;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box {
   display: flex;
   align-items: center;
   width: 100%;
@@ -13716,85 +13695,75 @@ a.refineLink {
   text-align: left;
 }
 @media (max-width: 540px) {
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item button, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box {
     flex-direction: column;
     align-items: flex-start;
   }
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button span, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box span {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item button span, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box span {
     width: 100% !important;
   }
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button span.d-rsv, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box span.d-rsv {
-    width: 20px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button::after, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box::after {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item button::after, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box::after {
     position: absolute;
     right: 1rem;
   }
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button span.d-rsv, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box span.d-rsv {
-  width: 20px;
-  display: flex;
-  justify-content: flex-end;
-}
 @media (max-width: 540px) {
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button span, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box span {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item button span, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box span {
     margin-bottom: 0.5rem;
   }
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button span.join-waitlist::before, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box span.join-waitlist::before {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item button span.join-waitlist::before, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box span.join-waitlist::before {
   content: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='6' fill='%23F0AA97'/%3E%3C/svg%3E");
   margin-right: 8px;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button span.limited-availability::before, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box span.limited-availability::before {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item button span.limited-availability::before, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box span.limited-availability::before {
   content: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='6' fill='%23DEB95C'/%3E%3C/svg%3E");
   margin-right: 8px;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button span.guaranteed::before, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box span.guaranteed::before {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item button span.guaranteed::before, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box span.guaranteed::before {
   content: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='6' fill='%2328AAE1'/%3E%3C/svg%3E");
   margin-right: 8px;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item button span.private::before, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .pvt-box span.private::before {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item button span.private::before, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .pvt-box span.private::before {
   content: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='6' fill='%23666666'/%3E%3C/svg%3E");
   margin-right: 8px;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .accordion-header {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .accordion-header {
   padding: 1px;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .accordion-bikes ol, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-item .accordion-hotels ol {
+.dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .accordion-bikes ol, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-item .accordion-hotels ol {
   list-style-type: disc;
 }
-.dates-pricing-container .dates-pricing .nav-tabContent-months hr {
+.dates-pricing-container .dates-pricing #nav-tabContent-months hr {
   margin: 0 auto;
   width: 95%;
 }
 @media (max-width: 540px) {
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body {
     display: flex;
     flex-direction: column;
   }
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-book-now {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-book-now {
     order: -1;
   }
 }
 @media (min-width: 540px) {
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-hotels, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-bikes {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-hotels, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-bikes {
     width: 30%;
   }
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-book-now {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-book-now {
     width: 40%;
     text-align: end;
   }
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-book-now h5, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-book-now .h5 {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-book-now h5, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-book-now .h5 {
     margin-bottom: 0;
   }
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-book-now button {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-book-now button {
     margin-bottom: 1rem;
   }
 }
 @media (max-width: 540px) {
-  .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-book-now button, .dates-pricing-container .dates-pricing .nav-tabContent-months .accordion-body .accordion-hotels {
+  .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-book-now button, .dates-pricing-container .dates-pricing #nav-tabContent-months .accordion-body .accordion-hotels {
     margin-bottom: 1rem;
   }
 }
