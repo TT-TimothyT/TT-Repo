@@ -126,21 +126,44 @@ if( $available_child_products ) {
     $iter = 1;
     foreach( $available_child_products as $year=>$get_child_product ){
 
+        
+
         //nav year tabs & button HTML creation
-        $nav_year_tab .= '<button class="nav-link '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-year'.$year.'" type="button" role="tab" aria-controls="nav-year'.$year.'" aria-selected="true">'.$year.' Tours</button>';
+        $nav_year_tab .= '<button class="nav-link '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-year'.$year.'" type="button" role="tab" aria-controls="nav-year'.$year.'" aria-selected="true"><span>'.$year.' Tours</span></button>';
         //nav year tab content HTML creation
         $nav_year_tab_content .= '<div class="tab-pane fade show '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'" role="tabpanel" aria-labelledby="nav-year'.$year.'-tab" tabindex="0">';
+
+       
+
+        $all_month_content_output = '';
+
         // <!-- months nav desktop -->
         $month_nav_desktop_btn_output = $month_nav_mobile_btn_output = $month_content_output =  '';
         if( $get_child_product ){
             $m_iter = 1;
+         
+
+            $month_nav_desktop_btn_output .= '<button class="nav-link '.$m_iter.' '.($m_iter == 1 ? 'active' : '').'" id="nav-all-'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-all-'.$year.'" type="button" role="tab" aria-controls="nav-all-'.$year.'" aria-selected="false">All</button>';
+
+            $month_nav_mobile_btn_output .= '<option value="nav-all-'.$year.'">All '.$year.'</option>';
+
+            $all_month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-all-'.$year.'" role="tabpanel" aria-labelledby="nav-all-'.$year.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$year.'-a">';
+
+            
+
             foreach($get_child_product as $month=>$get_child_product_data){
+                $m_iter++;
+               
 
                 $my = $month.$year;
                 $monthInfo = trek_get_month_info($month);
-                $month_nav_desktop_btn_output .= '<button class="nav-link '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'-tab" data-bs-toggle="tab" data-bs-target="#nav-'.$my.'" type="button" role="tab" aria-controls="nav-'.$my.'" aria-selected="true">'.$monthInfo[$month][0].'</button>';
-                $month_nav_mobile_btn_output .= '<option value="nav-'.$my.'-tab">'.$monthInfo[$month][0].'</option>';
+                
+                $month_nav_desktop_btn_output .= '<button class="nav-link '.$m_iter.'  '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'-tab" data-bs-toggle="tab" data-bs-target="#nav-'.$my.'" type="button" role="tab" aria-controls="nav-'.$my.'" aria-selected="true">'.$monthInfo[$month][0].'</button>';
+
+                $month_nav_mobile_btn_output .= '<option value="nav-'.$my.'">'.$monthInfo[$month][0].'</option>';
+
                 $month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-'.$my.'" role="tabpanel" aria-labelledby="nav-'.$my.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$my.'">';
+
                 if($get_child_product_data){
                     foreach($get_child_product_data as $index => $child_product_data){
 
@@ -163,9 +186,11 @@ if( $available_child_products ) {
                             '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
                                 <h6 class="accordion-header" id="flush-headingThree">
                                     <div class="pvt-box">
-                                        <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'</span>
+                                    <div class="d-box">
+                                        <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
                                         <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
-                                        <span class="ms-auto fw-medium fs-sm lh-sm">Reserved</span>
+                                    </div>
+                                        <span class="ms-auto fw-medium fs-sm lh-sm d-rsv">Reserved</span>
                                     </div>
                                 </h6>
                             <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
@@ -182,12 +207,39 @@ if( $available_child_products ) {
                                         <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
                                         </div>
                                     <div class="accordion-book-now">';
+
+                                    $all_month_content_output .= 
+                            '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                                <h6 class="accordion-header" id="flush-headingThree">
+                                    <div class="pvt-box">
+                                    <div class="d-box">
+                                        <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
+                                        <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                    </div>
+                                        <span class="ms-auto fw-medium fs-sm lh-sm d-rsv">Reserved</span>
+                                    </div>
+                                </h6>
+                            <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                                <hr>
+                                <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                                    <div class="accordion-hotels">
+                                        <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
+                                        '.$bike_hotels['hotels'].'
+                                        <a class="fs-sm view-details" href="#hotels">View hotels</a>
+                                    </div>
+                                    <div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>
+                                    <div class="accordion-book-now">';
+
                         } else if ($tripWebStatus == 'Not Guaranteed') {
                             $month_content_output .= 
                         '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
                             <h6 class="accordion-header" id="flush-headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
-                                    <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
+                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
                                 </button>
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
@@ -204,13 +256,63 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
                                     </div>
                                 <div class="accordion-book-now">';
+
+                                $all_month_content_output .= 
+                        '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                            <h6 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
+                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
+                                </button>
+                            </h6>
+                        <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                            <hr>
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                                <div class="accordion-hotels">
+                                    <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
+                                    '.$bike_hotels['hotels'].'
+                                    <a class="fs-sm view-details" href="#hotels">View hotels</a>
+                                </div>
+                                <div class="accordion-bikes">
+                                    <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                    '.$bike_hotels['bikes'].'
+                                    <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                    </div>
+                                <div class="accordion-book-now">';
+
                         } else {
                         $month_content_output .= 
                         '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
                             <h6 class="accordion-header" id="flush-headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
-                                    <span class="fw-medium w-25 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
+                                <div class="d-box">
+                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
                                     <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                </div>
+                                </button>
+                            </h6>
+                        <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                            <hr>
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                                <div class="accordion-hotels">
+                                    <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
+                                    '.$bike_hotels['hotels'].'
+                                    <a class="fs-sm view-details" href="#hotels">View hotels</a>
+                                </div>
+                                <div class="accordion-bikes">
+                                    <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                    '.$bike_hotels['bikes'].'
+                                    <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                    </div>
+                                <div class="accordion-book-now">';
+
+                                $all_month_content_output .= 
+                        '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                            <h6 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
+                                <div class="d-box">
+                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                </div>
                                 </button>
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
@@ -267,30 +369,49 @@ if( $available_child_products ) {
                             </div>
                         </div>
                     </div>';
+
+                    $all_month_content_output .= '<form class="cart grouped_form" action="'.esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ).'" method="post" enctype="multipart/form-data" target="_blank">
+                                    <h5 class="fw-semibold"><span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>'.$child_product_data['price'].' </span> <span class="fw-normal fs-md lh-md">per person</span></h5>
+                                    <p class="fw-normal fs-xs lh-xs text-muted">Double Occupancy</p>
+                                    '.$button.'                                    
+                                    <p class="fw-normal fs-sm lh-sm text-muted">Single Occupancy from: +'.$singleSupplementPriceCurr.' <i class="bi bi-info-circle pdp-single-occupancy"></i></p>
+                                    <input type="hidden" name="' . esc_attr( 'quantity[' . $child_product_data['product_id'] . ']' ) . '" value="1" class="wc-grouped-product-add-to-cart-checkbox" />
+                                    <input type="hidden" name="add-to-cart" value="'.$child_product_data['product_id'].'" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>';
                     }
                 }
                 $month_content_output .= '</div></div>';
-
-                $m_iter++;
+               
             }
         }
         if ($contentFlag) {
             $month_nav_desktop_output = '<nav class="nav-months-desktop"><div class="nav nav-tabs-months" id="nav-tab-month" role="tablist">';
+
+            
+
             $month_nav_desktop_output .= $month_nav_desktop_btn_output;
             $month_nav_desktop_output .='</div></nav>';
             // Months nav mobile
-            $month_nav_mobile_output = '<select class="form-select" id="select-month">';
+            $month_nav_mobile_output = '<form><select class="form-select select-months" id="select-month-'.$year.'">';
             $month_nav_mobile_output .= $month_nav_mobile_btn_output;
-            $month_nav_mobile_output .='</select>';
+            $month_nav_mobile_output .='</select></form>';
             
             $nav_year_tab_content .= $month_nav_desktop_output;
             $nav_year_tab_content .= $month_nav_mobile_output;
+
             
-            $nav_year_tab_content .= '<div class="tab-content" id="nav-tabContent-months">';
-            $nav_year_tab_content .= $month_content_output;
+            
+            $nav_year_tab_content .= '<div class="tab-content nav-tabContent-months" id="nav-tabContent-months-'.$year.'">';
+                $nav_year_tab_content .= $all_month_content_output;
+                    $nav_year_tab_content .= '</div></div>';
+                $nav_year_tab_content .= $month_content_output;
+                    $nav_year_tab_content .= '</div>';            
             $nav_year_tab_content .= '</div>';
             
-            $nav_year_tab_content .= '</div>';
             $iter++;
         } else {
             $nav_year_tab = $nav_year_tab_content = '';
@@ -327,10 +448,9 @@ if( $available_child_products ) {
                 <?php
                 if ($contentFlag) { echo $nav_year_tab; } 
                 ?>
-                <!-- <button class="nav-link active" id="nav-year-tab" data-bs-toggle="tab" data-bs-target="#nav-year" type="button" role="tab" aria-controls="nav-year" aria-selected="true">2022 Tours</button> -->
                 <?php if ( $is_tabs_visible ) { ?>
-                    <button class="nav-link fs-lg lh-lg <?php echo $contentFlag ? '' : 'active'; ?>" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">Private Tour</button>
-                    <button class="nav-link fs-lg lh-lg" id="nav-custom-tab" data-bs-toggle="tab" data-bs-target="#nav-custom" type="button" role="tab" aria-controls="nav-custom" aria-selected="false">Custom Tour</button>
+                    <button class="nav-link fs-lg lh-lg <?php echo $contentFlag ? '' : 'active'; ?>" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false"><span>Private Tour</span></button>
+                    <button class="nav-link fs-lg lh-lg" id="nav-custom-tab" data-bs-toggle="tab" data-bs-target="#nav-custom" type="button" role="tab" aria-controls="nav-custom" aria-selected="false"><span>Custom Tour</span></button>
                 <?php } ?>
             </div>
         </nav>
@@ -469,4 +589,50 @@ $data = $cartContentsArr[array_key_first($cartContentsArr)]['data'];
             dataType: 'json'
         });
     })
+
+    document.addEventListener("DOMContentLoaded", function() {
+    // Get all select dropdown elements that start with "select-month-"
+    var monthSelects = document.querySelectorAll('[id^="select-month-"]');
+
+    // Iterate over each select dropdown
+    monthSelects.forEach(function(monthSelect) {
+        console.log(monthSelect);
+
+        // Add a change event listener to each select dropdown
+        monthSelect.addEventListener('change', function() {
+            // Get the value of the selected option
+            var selectedMonthId = this.value;
+            console.log('selected: ' + selectedMonthId);
+
+            // Assuming each dropdown's corresponding tab content is grouped within a parent
+            // with a matching pattern in ID, like "nav-tabContent-months-123" for "select-month-123"
+            // First, find this dropdown's corresponding tab content container
+            var pattern = this.id.replace('select-month-', ''); // Get the unique part of ID
+            var tabContentId = 'nav-tabContent-months-' + pattern;
+            var tabContentContainer = document.getElementById(tabContentId);
+
+            if (tabContentContainer) {
+                // Hide all tab panes within this specific tab content container
+                tabContentContainer.querySelectorAll('.tab-pane').forEach(function(pane) {
+                    pane.classList.remove('show', 'active');
+                });
+
+                // Show the selected tab pane within this container
+                var selectedPane = tabContentContainer.querySelector('#' + selectedMonthId);
+                if (selectedPane) {
+                    console.log(selectedPane);
+                    selectedPane.classList.add('show', 'active');
+                    console.log('shown');
+                }
+            } else {
+                console.log("Corresponding tab content container not found for " + this.id);
+            }
+        });
+    });
+
+    if (monthSelects.length === 0) {
+        console.log("No dropdown select elements found.");
+    }
+});
+
 </script>

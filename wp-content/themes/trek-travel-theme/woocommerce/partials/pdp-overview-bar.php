@@ -6,7 +6,12 @@ global $product;
 
 $product_overview = get_field('product_overview');
 $pdp_bikes = get_field('bikes');
+$activity_tax = get_field('Activity');
+$activity = $activity_tax->name;
+?>
 
+
+<?php
 if ($product_overview) :
     $product_subtitle = $product_overview['product_subtitle'];
 ?>
@@ -46,13 +51,14 @@ if ($product_overview) :
                     <p class="fw-medium fs-md lh-md mb-0"><?php echo $product->get_attribute('pa_trip-style') ?></p>
                 </div>
                 <div class="rider-level">
-                    <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Rider Level <i class="bi bi-info-circle pdp-rider-level"></i></p>
+                    <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Activity Level <i class="bi bi-info-circle pdp-rider-level"></i></p>
                     <p class="fw-medium fs-md lh-md"><?php echo $product->get_attribute('pa_rider-level') ?></p>
                 </div>
                 <div class="hotel-level">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Hotel Level <i class="bi bi-info-circle pdp-hotel-levels"></i></p>
                     <p class="fw-medium fs-md lh-md mb-0"><?php echo $product->get_attribute('pa_hotel-level') ?></p>
                 </div>
+                <?php if (!empty($activity) && $activity == 'Biking'): ?>
                 <div class="bikes">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Bikes</p>
                     <p class="fw-medium fs-sm lh-sm mb-0">
@@ -68,11 +74,9 @@ if ($product_overview) :
                         wp_reset_postdata();
                         ?>
                     </p>
-                    <!-- <p class="view-more">
-                    <a href="#">+ more</a>
-                </p> -->
                     <a class="fs-sm view-details" href="#bikes-guides">View details</a>
                 </div>
+                <?php endif; ?>
             </div>
             <div class="col-lg-2 pricing">
                 <p class="fw-normal fs-sm lh-sm mb-0 text-muted starting-from">Starting from</p>
