@@ -183,6 +183,8 @@ get_footer( 'shop' );
 /* Omit closing PHP tag at the end of PHP files to avoid "headers already sent" issues. */
 ?>
 
+
+
 <script>
 	jQuery(document).ready(function () {
 		dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.

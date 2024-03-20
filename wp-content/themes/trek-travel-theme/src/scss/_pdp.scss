@@ -17,15 +17,49 @@
 }
 
 // Activity Type Changes
-.pdp-content-section {
+.pdp-section {
+
+    &#rider-information,&#inclusions,&#itinerary {
+
+        i {
+            font-family: 'Font Awesome 6 Pro';
+            color: $blue;
+        }
+    }
+
+    &#inclusions {
+        i {
+            font-size: 50px;
+        }
+    }
 
     &.hw {
-        #testimonials .card {
+        &#testimonials .card {
             border-color: $tt-green;
+        }
+        &#rider-information, &#inclusion, &#itinerary {
+            i {
+                color: $tt-green;
+            }
+        }
+
+        &#additional-details {
+            .additional-details {
+                background-color: #EDF9D3;
+            }
+        }
+        &#inclusions {
+
+            .tab-pane .d-flex .right-div .gratuities_description {
+                border-color: $tt-green;
+            
+            }
         }
 
     }
 }
+
+// 
 
 .pdp-section {
     padding: 40px 20px 0 20px;

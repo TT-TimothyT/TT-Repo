@@ -5,6 +5,9 @@ $get_child_products = get_child_products($linked_products);
 $nav_year_tab = $nav_year_tab_content = '';
 $trip_style = $product->get_attribute( 'pa_trip-style' );
 
+$activity_tax = get_field('Activity');
+$activity = $activity_tax->name;
+
 // Hide Custom and Private tabs for these trip styles.
 $in_trip_style = [
     'self-guided',
@@ -337,6 +340,10 @@ if( $available_child_products ) {
                                 if( in_array($trip_status, $wait_status) ){
                                     $formUrl = "waitlist";
                                 }
+
+                                if (!empty($activity) && $activity != 'Biking') {
+                                    $formUrl = "reserve-a-trip-hw";
+                                }
                               
                                 
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
@@ -462,7 +469,7 @@ if( $available_child_products ) {
             <!-- private tour tab content -->
             <div class="tab-pane fade <?php echo $contentFlag ? '' : 'active show'; ?>" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabindex="0">
                 <h5 class="fw-semibold">Looking for a Private Tour with us?</h5>
-                <p class="fw-normal fs-md lh-md">Private bike tours can range in cost based on your group size. See below for specific pricing based on your group size.</p>
+                <p class="fw-normal fs-md lh-md">Private tours can range in cost based on your group size. See below for specific pricing based on your group size.</p>
                 
                 <?php 
                 // Get Private Tour Pricing from the ACF Repeater

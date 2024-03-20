@@ -4,18 +4,14 @@
 global $post;
 $product_id = $post->ID;
 
-$activity_terms = get_the_terms( $product_id, 'activity');
-
-
-foreach ( $activity_terms as $activity_term) {
-	$activity = $activity_term->name;   
-}
+$activity_tax = get_field('Activity');
+$activity = $activity_tax->name;
 
 $product = wc_get_product($product_id);
 $r_level = $product->get_attribute('rider-level');
 
 ?>
-<div class="container pdp-section" id="rider-information">
+<div class="container pdp-section <?php if (!empty($activity) && $activity != 'Biking'):?>hw<?php endif;?>" id="rider-information">
     <div class="row">
         <div class="col-12">
 
@@ -27,10 +23,10 @@ $r_level = $product->get_attribute('rider-level');
                           echo "Rider";
                           break;
                         case "Hiking":
-                          echo "Hiker";
+                          echo "Activity";
                           break;
                         case "Walking":
-                          echo "Walker";
+                          echo "Activity";
                           break;
                       }
                 ?>
@@ -45,10 +41,10 @@ $r_level = $product->get_attribute('rider-level');
                           echo "Riders";
                           break;
                         case "Hiking":
-                          echo "Hikers";
+                          echo "Hiking + Walking";
                           break;
                         case "Walking":
-                          echo "Walkers";
+                          echo "Hiking + Walking";
                           break;
                       }
                 ?>
@@ -57,13 +53,13 @@ $r_level = $product->get_attribute('rider-level');
                     <?php
                         switch ($activity) {
                             case "Biking":
-                            echo "Non-riders";
+                            echo "Non-Riders";
                             break;
                             case "Hiking":
-                            echo "Non-hiker";
+                            echo "Other Activities";
                             break;
                             case "Walking":
-                            echo "Non-walker";
+                            echo "Other Activities";
                             break;
                         }
                     ?>
@@ -82,10 +78,10 @@ $r_level = $product->get_attribute('rider-level');
                             echo "Rider";
                             break;
                             case "Hiking":
-                            echo "Hiker";
+                            echo "Hiking + Walking";
                             break;
                             case "Walking":
-                            echo "Walker";
+                            echo "Hiking + Walking";
                             break;
                         }
                     ?>    
@@ -96,7 +92,7 @@ $r_level = $product->get_attribute('rider-level');
 
                         <?php if (!empty($rider['miles_total'])) : ?>
                             <div class="miles">
-                                <p class="rider-heading fw-bold"><img class="miles-img" src="<?php echo get_template_directory_uri(); ?>/assets/images/miles.png"> Distance</p>
+                                <p class="rider-heading fw-bold"><i class="miles-img fa-sharp fa-solid fa-compass"></i> Distance</p>
                                 <div class="m-flex">
                                     <div class="m-col">
                                         <p class="miles-h fw-medium">Daily Average</p>
@@ -110,17 +106,17 @@ $r_level = $product->get_attribute('rider-level');
                             </div>
                         <?php
                         endif;
-                        if (!empty($rider['activity_level']) && !empty($rider['average_time'])) : ?>
+                        if (!empty($rider['walking_activity_level']) && !empty($rider['average_walking_time'])) : ?>
                             <div class="miles">
                                 <p class="rider-heading fw-bold"><i class="miles-img fa-solid fa-person-hiking"></i>Details</p>
                                 <div class="m-flex">
                                     <div class="m-col">
                                         <p class="miles-h fw-medium">Activity Level</p>
-                                        <p class="miles-p fw-normal"><?php echo isset($rider['activity_level']) ? $rider['activity_level'] : ''; ?></p>
+                                        <p class="miles-p fw-normal"><?php echo isset($rider['walking_activity_level']) ? $rider['walking_activity_level'] : ''; ?></p>
                                     </div>
                                     <div class="m-col">
                                         <p class="miles-h fw-medium">Average Time</p>
-                                        <p class="miles-p fw-normal"><?php echo isset($rider['average_time']) ? $rider['average_time'] : ''; ?></p>
+                                        <p class="miles-p fw-normal"><?php echo isset($rider['average_walking_time']) ? $rider['average_walking_time'] : ''; ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +125,7 @@ $r_level = $product->get_attribute('rider-level');
                         if (isset($rider['elevation_total']) && !empty($rider['elevation_total'])) :
                         ?>
                             <div class="miles">
-                                <p class="rider-heading fw-bold"><img class="miles-img" src="<?php echo get_template_directory_uri(); ?>/assets/images/elevation.png"> Elevation</p>
+                                <p class="rider-heading fw-bold"><i class="miles-img fa-solid fa-mountains"></i> Elevation</p>
                                 <div class="m-flex">
                                     <div class="m-col">
                                         <p class="miles-h fw-medium">Daily Average</p>

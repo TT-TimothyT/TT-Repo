@@ -1,8 +1,12 @@
 <?php 
 // PDP - Trip Inclusions
+
+$activity_tax = get_field('Activity');
+$activity = $activity_tax->name;
+
 ?>
 <a class="pdp-anchor" id="inclusions"></a>
-<div class="container pdp-section" id="inclusions">
+<div class="container pdp-section <?php if (!empty($activity) && $activity != 'Biking'):?>hw<?php endif;?>" id="inclusions">
     <div class="row">
         <div class="col-12">
 
@@ -53,7 +57,7 @@
                         </div>
                         <div class="right-div">
                             <div class="gratuities_description">
-                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/coin.png" class="mx-auto d-block">
+                                <i class="mx-auto mb-5 d-flex justify-content-center fa-regular fa-hand-holding-circle-dollar"></i>
                                 <p class="gratuities_heading fw-bold text-center">Guide Gratuities</p>
                                 <p class="text-center description"><?php echo $whats_not_included['gratuities_description'];?></p>
                             </div>

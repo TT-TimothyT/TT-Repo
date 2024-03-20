@@ -31,14 +31,6 @@ if ($product_overview) :
                 <?php endif; ?>
                 <ul class="list-inline mb-0 star-rating-custom">
                 <?php function_exists('wc_yotpo_show_buttomline') ? wc_yotpo_show_buttomline() : ''; ?>
-                    <!--<li class="list-inline-item me-0"><i class="bi bi-star-fill"></i></li>
-                <li class="list-inline-item me-0"><i class="bi bi-star-fill"></i></li>
-                <li class="list-inline-item me-0"><i class="bi bi-star-fill"></i></li>
-                <li class="list-inline-item me-0"><i class="bi bi-star-fill"></i></li>
-                <li class="list-inline-item me-0"><i class="bi bi-star-half"></i></li>
-                <li class="list-inline-item fw-bold fs-sm lh-sm me-0">4.5</li>
-                <li class="list-inline-item fs-sm lh-sm me-0"><a href="#">(66) Reviews</a></li>
-                -->
                 </ul>
             </div>
             <div class="overview-details col-lg-5">

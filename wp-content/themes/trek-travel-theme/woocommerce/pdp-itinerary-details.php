@@ -3,9 +3,36 @@ defined('ABSPATH') || exit;
 global $post;
 $pdp_itineraries = [$post->ID];
 $book_no_link = get_trip_link_by_itinerary_id($post->ID);
+
+$products = get_posts(array(
+    'post_type' => 'product',
+    'meta_query' => array(
+        array(
+            'key' => 'itineraries', // name of custom field
+            'value' => '"' . get_the_ID() . '"', // matches exactly "123", not just 123. This prevents a match for "1234"
+            'compare' => 'LIKE'
+        )
+    )
+));
+
+foreach ($products as $product) {
+    $product_id = $product->ID;
+}
+
+
+$activity_terms = get_the_terms( $product_id, 'activity');
+
+foreach ( $activity_terms as $activity_term) {
+	$activity_type = $activity_term->name;   
+}
+
+
 if ( $pdp_itineraries ) :
+    print_r($product_id);
+print_r($activity_type);
+
 ?>
-    <div class="container itinerary-container itinerary-details" id="itinerary">
+    <div class="container itinerary-container itinerary-details <?php if (!empty($activity_type) && $activity_type != 'Biking'):?>hw<?php endif;?>" id="itinerary">
         <div class="row">
             <div class="col-12">
                 <div class="tour-info">
@@ -76,21 +103,21 @@ if ( $pdp_itineraries ) :
                                                     <div class="accordion-item-ad__main">
                                                         <p class="fw-medium">Where to Arrive</p>
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
-                                                            <img class="align-self-start" src="<?php echo get_template_directory_uri(); ?>/assets/images/airplane.png">
+                                                        <i class="align-self-start fa-solid fa-plane-arrival"></i>
                                                             <div class="accordion-item-ad__sub">
                                                                 <p class="mb-0 d-inline d-lg-block fw-medium">Airport<span class="d-inline d-lg-none">: </span></p>
                                                                 <p class="mb-0 d-inline d-lg-block arrival-details"><?php echo $arrivalArray['arrival_airport']; ?></p>
                                                             </div>
                                                         </div>
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
-                                                            <img class="align-self-start" src="<?php echo get_template_directory_uri(); ?>/assets/images/location.png">
+                                                        <i class="align-self-start fa-solid fa-location-dot"></i>
                                                             <div class="accordion-item-ad__sub">
                                                                 <p class="mb-0 d-inline d-lg-block fw-medium">Pick-up location<span class="d-inline d-lg-none">: </span></p>
                                                                 <p class="mb-0 d-inline d-lg-block arrival-details"><?php echo $arrivalArray['arrival_pickup_location']; ?></p>
                                                             </div>
                                                         </div>
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
-                                                            <img class="align-self-start" src="<?php echo get_template_directory_uri(); ?>/assets/images/clock.png">
+                                                        <i class="align-self-start fa-solid fa-clock"></i>
                                                             <div class="accordion-item-ad__sub">
                                                                 <p class="mb-0 d-inline d-lg-block fw-medium">Pick-up time<span class="d-inline d-lg-none">: </span></p>
                                                                 <p class="mb-0 d-inline d-lg-block"><?php echo $arrivalArray['arrival_pickup_time']; ?></p>
@@ -100,21 +127,21 @@ if ( $pdp_itineraries ) :
                                                     <div class="accordion-item-ad__main">
                                                         <p class="fw-medium">Where to Depart</p>
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
-                                                            <img class="align-self-start" src="<?php echo get_template_directory_uri(); ?>/assets/images/airplane.png">
+                                                            <i class="align-self-start fa-solid fa-plane-departure"></i>
                                                             <div class="accordion-item-ad__sub">
                                                                 <p class="mb-0 d-inline d-lg-block fw-medium">Airport<span class="d-inline d-lg-none">: </span></p>
                                                                 <p class="mb-0 d-inline d-lg-block departure-details"><?php echo $departureArray['departure_airport']; ?></p>
                                                             </div>
                                                         </div>
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
-                                                            <img class="align-self-start" src="<?php echo get_template_directory_uri(); ?>/assets/images/location.png">
+                                                        <i class="align-self-start fa-solid fa-location-dot"></i>
                                                             <div class="accordion-item-ad__sub">
                                                                 <p class="mb-0 d-inline d-lg-block fw-medium">Drop-off location<span class="d-inline d-lg-none">: </span></p>
                                                                 <p class="mb-0 d-inline d-lg-block departure-details"><?php echo $departureArray['departure_pickup_location']; ?></p>
                                                             </div>
                                                         </div>
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
-                                                            <img class="align-self-start" src="<?php echo get_template_directory_uri(); ?>/assets/images/clock.png">
+                                                        <i class="align-self-start fa-solid fa-clock"></i>
                                                             <div class="accordion-item-ad__sub">
                                                                 <p class="mb-0 d-inline d-lg-block fw-medium">Drop-off time<span class="d-inline d-lg-none">: </span></p>
                                                                 <p class="mb-0 d-inline d-lg-block"><?php echo $departureArray['departure_dropoff_time']; ?></p>
@@ -170,13 +197,13 @@ if ( $pdp_itineraries ) :
                                                                 <div class="d-flex align-items-center pdp-itinerary-day__accordion-hotels">
                                                                     <?php if (isset($day['day_hotel']) && !empty($day['day_hotel'])) { ?>
                                                                         <div class="w-25">
-                                                                            <img class="mb-3" src="<?php echo get_template_directory_uri(); ?>/assets/images/hotel.png" alt="hotel">
+                                                                        <i class="mb-3 fa-solid fa-hotel"></i>
                                                                             <p class="fs-md lh-md fw-medium mb-1 pdp-itinerary-day__accordion-heading">Hotel</p>
                                                                             <p class="mb-0 pdp-itinerary-day__accordion-text"><?php echo $day['day_hotel']; ?></p>
                                                                         </div>
                                                                     <?php } ?>
                                                                     <div class="w-25">
-                                                                        <img class="mb-3" src="<?php echo get_template_directory_uri(); ?>/assets/images/meal.png" alt="meal">
+                                                                        <i class="mb-3 fa-solid fa-plate-utensils"></i>
                                                                         <p class="fs-md lh-md fw-medium mb-1 pdp-itinerary-day__accordion-heading">Meals included</p>
                                                                         <p class="mb-0 pdp-itinerary-day__accordion-text"><?php echo $day['day_meals_included']; ?></p>
                                                                     </div>
@@ -208,15 +235,31 @@ if ( $pdp_itineraries ) :
                                                         </div>
                                                         <?php if (isset($day['ride_option_#']) && !empty($day['ride_option_#'])) { ?>
                                                             <hr class="w-100">
-                                                            <p class="fw-medium pdp-itinerary-heading">Ride Options</p>
+                                                            <p class="fw-medium pdp-itinerary-heading">
+                                                            <?php
+                                                            if (!empty($activity_type) && $activity_type == 'Biking'):?>
+                                                                Ride Options
+                                                                <?php else: ?>
+                                                                    Hiking Options
+                                                            <?php endif;?>
+                                                                </p>
                                                             <div class="pdp-itinerary-rides d-flex">
                                                                 <?php 
                                                                 $ii = 0; 
                                                                 foreach( $day['ride_option_#'] as $ride_option ): 
                                                                 $ii++ ?>
                                                                 <div class="ride-column">
-                                                                    <img class="mb-3" src="<?php echo get_template_directory_uri(); ?>/assets/images/ride.png" alt="ride">
-                                                                    <p class="fs-sm lh-sm fw-medium pdp-itinerary-rides__title mb-1">Ride Option <?php echo $ii;?></p>
+                                                                <?php if (!empty($activity_type) && $activity_type == 'Biking'):?>
+                                                                    <i class="mb-3 fa-solid fa-person-biking"></i>
+                                                                    
+                                                                    <?php else: ?>
+                                                                        <i class="fa-solid fa-person-hiking"></i>
+                                                                    <?php endif;?>
+                                                                    <p class="fs-sm lh-sm fw-medium pdp-itinerary-rides__title mb-1"><?php if (!empty($activity_type) && $activity_type == 'Biking'):?>
+                                                                Ride Option
+                                                                <?php else: ?>
+                                                                    Hike Option
+                                                            <?php endif;?><?php echo $ii;?></p>
                                                                     <p class="fs-md lh-md fw-medium pdp-itinerary-rides__subtitle mb-1"><?php echo $ride_option['ride_option_title'];?></p>
                                                                     <p class="fs-sm lh-sm pdp-itinerary-rides__distance mb-0"><?php echo $ride_option['ride_option_body'];?></p>
                                                                 </div>

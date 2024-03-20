@@ -85,12 +85,15 @@
                     width: 100%;
                 }
                 .rider-heading {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
                     font-family: 'Roboto';
                     font-size: 18px;
                     line-height: 28px;
                     .miles-img {
                         font-size: 20px;
-                        color: $blue;
+                        // color: $blue;
                         margin-right: 10px;
                         min-width: 20px;
                     }

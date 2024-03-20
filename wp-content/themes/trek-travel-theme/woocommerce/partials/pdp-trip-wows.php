@@ -1,12 +1,14 @@
 <!-- PDP trip wows start TREK-261 -->
 <?php
     if( have_rows('trip_wows_list') ):
+        $activity_tax = get_field('Activity');
+        $activity = $activity_tax->name;
 ?>
 <div class="container pdp-section trip-wows-container">
     <div class="row">
     	<h5 class="fw-semibold pdp-section__title fw-bold">Trip Wows</h5>
 
-        <div class="col-12 col-lg-7 left-wow-details">            
+        <div class="col-12 col-lg-7 left-wow-details">
             <ul class="wow-list">
             <?php							
                 // Loop through rows.
@@ -14,7 +16,7 @@
                     // Load sub field value.
                     $wow_point = get_sub_field('wow_point');                    
             ?>
-                <li><p class="fw-normal"><?php echo $wow_point; ?></p></li>
+                <li class="<?php if (!empty($activity) && $activity == 'Biking'):?>tt-blue<?php endif;?>"><p class="fw-normal"><?php echo $wow_point; ?></p></li>
             <?php endwhile; ?>		
             </ul>
         </div>

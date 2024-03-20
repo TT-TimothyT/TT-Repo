@@ -2,10 +2,13 @@
 // PDP - Additional Details
 $details = get_field('aditional_details');
 
+$activity_tax = get_field('Activity');
+$activity = $activity_tax->name;
+
 if(!empty($details)):
 ?>
 <a class="pdp-anchor" id="additional-details"></a>
-<div class="container pdp-section" id="additional-details">
+<div class="container pdp-section <?php if (!empty($activity) && $activity != 'Biking'):?>hw<?php endif;?>" id="additional-details">
     <div class="row">
         <div class="col-md-12">
 
