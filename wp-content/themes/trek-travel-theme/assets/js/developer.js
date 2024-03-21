@@ -2135,6 +2135,30 @@ function validateGuestSelectionAdds(){
     });
   }
 }
+
+//Validate if number of characters added to textarea with name special_needs is greater than 250, if so, disable tt_continue_bike_click_btn button
+jQuery('body').on('keyup', 'textarea[name="special_needs"]', function () {
+  if (jQuery(this).val().length > 250) {
+    //Enable the max-limit-notice notice
+    jQuery('#room-request-notice').show();
+    jQuery('.tt_continue_bike_click_btn').prop('disabled', true);
+  } else {
+    jQuery('.tt_continue_bike_click_btn').prop('disabled', false);
+    jQuery('#room-request-notice').hide();
+  }
+});
+
+//Do the same on step 2 load
+jQuery(document).ready(function () {
+  if (jQuery('textarea[name="special_needs"]').val().length > 250) {
+    jQuery('#room-request-notice').show();
+    jQuery('.tt_continue_bike_click_btn').prop('disabled', true);
+  } else {
+    jQuery('.tt_continue_bike_click_btn').prop('disabled', false);
+    jQuery('#room-request-notice').hide();
+  }
+});
+
 if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 0) {
   jQuery('body').on('click', '.checkout-step-two-hotel__room-options button.btn-number', function () {
     var no_of_guests = jQuery('input[name="no_of_guests"]').val();

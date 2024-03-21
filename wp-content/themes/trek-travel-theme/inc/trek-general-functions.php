@@ -3843,6 +3843,9 @@ function trek_tt_guest_rooms_selection_ajax_action_cb()
     $roommate = isset($_REQUEST['roommate']) ? $_REQUEST['roommate'] : 0;
     $private = isset($_REQUEST['private']) ? $_REQUEST['private'] : 0;
     $special_needs = isset($_REQUEST['special_needs']) ? $_REQUEST['special_needs'] : 0;
+    if (strlen($special_needs) > 250) {
+        $special_needs = substr($special_needs, 0, 250);
+    }
     foreach (WC()->cart->get_cart() as $cart_item_id => $cart_item) {
         if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
             $cart_item['trek_user_checkout_data']['single'] = $single;
@@ -6597,6 +6600,20 @@ function tt_password_reset_action( $user ) {
     }
 }
 add_action( 'password_reset', 'tt_password_reset_action', 10 );
+
+/**
+ * A little easter egg function to check if the user is admin and insert failed bookings to the guest_bookings_table
+ *
+ * @return void
+ */
+function tt_insert_failed_bookings() {
+    if ( current_user_can( 'administrator' ) && isset( $_GET['insertfailedbookingid'] ) && isset( $_GET['insertfailedbookinguser'] ) ) {
+        $booking_id  = $_GET['insertfailedbookingid'];
+        $custom_user = $_GET['insertfailedbookinguser'];
+        insert_records_guest_bookings_cb( $booking_id, $custom_user, 'true' );
+    }
+}
+add_action( 'init', 'tt_insert_failed_bookings' );
 
 /**
  * Take Bike Model Name from options table by given bike type ID.

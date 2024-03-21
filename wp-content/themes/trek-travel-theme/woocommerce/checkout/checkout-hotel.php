@@ -192,6 +192,10 @@ if ( $trek_user_checkout_posted['product_id'] ) {
     </div>
     <hr>
     <div class="checkout-step-two-hotel__special-requests">
+        <!-- Add a div that says "Sorry, there's a maximum limit of 250 characters for this field" -->
+        <div class="bi me-3" id="room-request-notice" style="display: none;">
+            <p class="fw-medium fs-md lh-md text-danger">Sorry, there's a maximum limit of 250 characters for this field.</p>
+        </div>
         <p class="fw-medium fs-xl lh-xl">Any special needs or requests?</p>
         <div class="mb-3">
             <textarea name="special_needs" class="form-control" placeholder="Extra pillows, allergic to down, extra towels, etc." id="exampleFormControlTextarea1" rows="3" required><?php echo (isset($trek_user_checkout_posted['special_needs']) ? $trek_user_checkout_posted['special_needs'] : ''); ?></textarea>

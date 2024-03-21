@@ -98,13 +98,17 @@ if ($wpdb->get_var($wpdb->prepare('show tables like %s', $table_name)) != $table
 //add_action( 'woocommerce_checkout_order_processed', 'insert_records_guest_bookings_cb',  1, 1  );
 //add_action('woocommerce_checkout_order_created', 'insert_records_guest_bookings_cb');
 add_action( 'woocommerce_thankyou', 'insert_records_guest_bookings_cb');
-function insert_records_guest_bookings_cb( $order_id ){
+function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call_from_code = 'false'){
     $is_behalf = false;
     if ( isset( $_SESSION['admin'] ) && isset( $_SESSION['current_user_ids'] ) && $_SESSION['admin'] == 'adminisloggedin' ) {
         $is_behalf = true;
     }
     //$order_id = $order->get_id();
-    $ns_order_status = get_post_meta($order_id,'tt_wc_order_ns_status', true);
+    if( $call_from_code == 'true' ){
+        $ns_order_status = 'false';
+    } else {
+        $ns_order_status = get_post_meta($order_id,'tt_wc_order_ns_status', true);
+    }
     $tt_trip_user_emails = [];
     if( $ns_order_status != 'true' ){
         global $wpdb;
@@ -112,6 +116,9 @@ function insert_records_guest_bookings_cb( $order_id ){
         $accepted_p_ids = tt_get_line_items_product_ids();
         $currentUser = wp_get_current_user();
         $user_id = $currentUser->ID;
+        if( $custom_user ){
+            $user_id = $custom_user;
+        }
         $currentUser_email = $currentUser->user_email;
         $order = new WC_Order($order_id);
         $items = $order->get_items();
@@ -159,6 +166,10 @@ function insert_records_guest_bookings_cb( $order_id ){
         $bikeUpgradePrice = isset( $checkout_data['bikeUpgradePrice'] ) ? $checkout_data['bikeUpgradePrice'] : '';
         $singleSupplementPrice = isset( $checkout_data['singleSupplementPrice'] ) ? $checkout_data['singleSupplementPrice'] : '';
         $special_needs = isset( $checkout_data['special_needs'] ) ? $checkout_data['special_needs'] : '';
+        //Trim the special needs to 250 characters max
+        if (strlen($special_needs) > 250) {
+            $special_needs = substr($special_needs, 0, 250);
+        }
         $trek_guest_insurance = isset( $checkout_data['trek_guest_insurance'] ) ? $checkout_data['trek_guest_insurance'] : [];
         $product = wc_get_product( $product_id );
         $trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
@@ -326,9 +337,10 @@ function insert_records_guest_bookings_cb( $order_id ){
         update_post_meta($order_id, 'tt_wc_order_ns_status', 'true');
         update_post_meta($order_id, 'tt_wc_order_ns_is_behalf', $is_behalf);
         //update_post_meta($order_id, 'tt_wc_order_trip_user_emails', $tt_trip_user_emails);
-        
     }
-    WC()->cart->empty_cart();
+    if( ! $custom_user ){
+        WC()->cart->empty_cart();
+    }
 }
 /*
 ==========Alter Query
