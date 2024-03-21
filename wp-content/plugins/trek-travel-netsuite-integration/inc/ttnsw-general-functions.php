@@ -1041,19 +1041,35 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
 function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' ) {
     $booking_table_data      = array();
 
+    
     $ns_guest_booking_result = $all_data['ns_guest_booking_result']; // Object.
     $ns_booking_data         = $all_data['ns_booking_data']; // Object.
     $ns_guest_info           = $all_data['ns_guest_info']; // Object.
     $guest                   = $all_data['guest']; // Object.
     $order_info              = isset( $all_data['order_info'] ) ? $all_data['order_info'] : array(); // Array.
-
+    
     $ns_guest_id             = $guest->guestId; // Ns guest.
     $ns_guest_email          = tt_validate( $ns_guest_booking_result->email );
     $wp_user                 = get_user_by( 'email', $ns_guest_email );
     $wp_user_id              = $wp_user->ID;
-    $trip_code               = tt_validate( $ns_booking_data->tripCode );
-    $product_id              = tt_get_product_by_sku( $trip_code, true );
+    
     $guest_bike_info         = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripCode, $ns_guest_info->bikeId );
+    
+    $is_ride_camp            = tt_check_is_ride_camp_trip_from_dates( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate );
+
+    if( $is_ride_camp ) {
+
+        $ride_camp_product_info = tt_take_ride_camp_product_info( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate, $ns_booking_data->tripCode );
+
+        $product_id             = tt_validate( $ride_camp_product_info['product_id'] );
+        $trip_code              = tt_validate( $ride_camp_product_info['trip_code'] );
+        $trip_name              = tt_validate( $ride_camp_product_info['trip_name'] );
+    } else {
+
+        $product_id             = tt_get_product_by_sku( $trip_code, true );
+        $trip_code              = tt_validate( $ns_booking_data->tripCode );
+        $trip_name              = tt_validate( $ns_booking_data->tripName );
+    }
 
     // Two types preparing, for insert or an update.
     if( 'insert' === $operation_type ) {
@@ -1105,7 +1121,7 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
     $booking_table_data['guestRegistrationId']                 = tt_validate( $guest->registrationId );
     $booking_table_data['ns_trip_booking_id']                  = tt_validate( $ns_booking_data->bookingId );
     $booking_table_data['trip_code']                           = $trip_code;
-    $booking_table_data['trip_name']                           = tt_validate( $ns_booking_data->tripName );
+    $booking_table_data['trip_name']                           = $trip_name;
     $booking_table_data['trip_total_amount']                   = tt_validate( $ns_booking_data->totalAmount );
     $booking_table_data['trip_number_of_guests']               = ! empty( tt_validate( $ns_booking_data->guests ) ) ? count( $ns_booking_data->guests ) : 0;
     $booking_table_data['trip_start_date']                     = ! empty( tt_validate( $ns_booking_data->tripStartDate ) ) ? strtotime( $ns_booking_data->tripStartDate ) : '';
@@ -1439,4 +1455,75 @@ function tt_migrate_bookings_wp_cli( $args ) {
 
 if ( class_exists( 'WP_CLI' ) ) {
     WP_CLI::add_command( 'migrate-bookings', 'tt_migrate_bookings_wp_cli' );
+}
+
+/**
+ * Check if the trip is with nested dates or not by given date periods.
+ *
+ * @param string $start_date      The booked start date in format MM/dd/YYYY.
+ * @param string $end_date        The booked end date in format MM/dd/YYYY.
+ * @param string $main_start_date The whole trip start date in format MM/dd/YYYY.
+ * @param string $main_end_date   The whole trip end date in format MM/dd/YYYY.
+ * 
+ * @return bool
+ */
+function tt_check_is_ride_camp_trip_from_dates( $start_date, $end_date, $main_start_date, $main_end_date ) {
+
+    if( $start_date === $main_start_date && $end_date === $main_end_date ) {
+        // This is the main trip product for full 7-day period.
+        return false;
+    }
+
+    // We have a Ride Camp trip for nested days, 4-day period.
+    return true;
+}
+
+/**
+ * Collect and return the Ride Camp/Nested Dates product info
+ * by given dates and main product trip code/sku.
+ *
+ * @param string $start_date      The booked start date in format MM/dd/YYYY.
+ * @param string $end_date        The booked end date in format MM/dd/YYYY.
+ * @param string $main_start_date The whole trip start date in format MM/dd/YYYY.
+ * @param string $main_end_date   The whole trip end date in format MM/dd/YYYY.
+ *
+ * @param string $main_trip_code  The trip code / SKU of the main product.
+ * @param bool   $product_id_only Whether to return the product ID only.
+ * 
+ * @return array|bool Array with the basic product info or false if product info not found.
+ */
+function tt_take_ride_camp_product_info( $start_date, $end_date, $main_start_date, $main_end_date, $main_trip_code, $product_id_only = false ) {
+    $ride_camp_product_sku = '';
+
+    if( $start_date === $main_start_date && $end_date !== $main_end_date ) {
+        // This is the FIRST child product, add a suffix to the SKU.
+        $ride_camp_product_sku = $main_trip_code . '-FIRST';
+
+    } elseif ( $start_date !== $main_start_date && $end_date === $main_end_date ) {
+        // This is the SECOND child product, add a suffix to the SKU.
+        $ride_camp_product_sku = $main_trip_code . '-SECOND';
+    }
+
+    $product_info = tt_get_product_by_sku( $ride_camp_product_sku, false );
+
+    if( ! empty( $product_info ) ) {
+
+        if( $product_id_only ) {
+            // Return the product ID only.
+
+            return tt_validate( $product_info->id );
+        }
+
+        // Collect and return Ride Camp product info.
+        $ride_camp_product_info = array(
+            'product_id' => tt_validate( $product_info->id ),
+            'trip_code'  => $ride_camp_product_sku,
+            'trip_name'  => tt_validate( $product_info->get_name() ),
+
+        );
+
+        return $ride_camp_product_info;
+    }
+
+    return false;
 }

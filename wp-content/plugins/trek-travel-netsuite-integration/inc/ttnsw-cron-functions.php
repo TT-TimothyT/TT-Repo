@@ -714,16 +714,14 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     continue;
                 }
 
-                $guests           = $ns_booking_data->guests;
+                $guests = $ns_booking_data->guests;
 
                 // Guests not found.
                 if( ! $guests ) {
                     continue;
                 }
 
-                $booking_id       = $ns_booking_data->bookingId;  // NS booking ID.
-                $trip_code        = $ns_booking_data->tripCode;
-                $product_id       = tt_get_product_by_sku( $trip_code, true ); // If there is not found product, we have null here.
+                $booking_id = $ns_booking_data->bookingId;  // NS booking ID.
 
                 foreach( $guests as $guest ){
 
@@ -758,8 +756,13 @@ if (!function_exists('tt_ns_guest_booking_details')) {
 
                     if( ! $check_booking || $check_booking <= 0 ) {
 
+                        $trip_code    = $ns_booking_data->tripCode;
+                        $is_ride_camp = tt_check_is_ride_camp_trip_from_dates( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate );
+                        $product_id   = $is_ride_camp ? tt_take_ride_camp_product_info( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate, $ns_booking_data->tripCode, true ) : tt_get_product_by_sku( $trip_code, true ); // If there is not found product, we have null here.
+
                         // Need to have a product, because the data for the booking will be stored in line item metadata.
                         if( empty( $product_id ) ) {
+                            tt_add_error_log( '[WC] - create auto-generated order', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary, 'trip_code' => $trip_code, 'is_ride_camp' => $is_ride_camp ), array( 'status' => 'false', 'message' => 'Attempt to create an order, but product was not found.' ) );
                             // Skip the order creating, booking import, and booking update.
                             continue;
                         }
