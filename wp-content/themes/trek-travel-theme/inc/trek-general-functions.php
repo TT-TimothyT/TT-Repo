@@ -6642,3 +6642,16 @@ function tt_ns_get_bike_type_name( $bike_type_id ) {
 
     return $bike_type_name;
 }
+
+function dx_disable_algolia_for_spefic_posts( $flag, WP_Post $post ) {
+
+    $excluded_ids = array( 97732, 90498, 90492, 90490 );
+    if ( in_array( $post->ID, $excluded_ids ) ) {
+        return false;
+    }
+
+    return $flag;
+}
+
+add_filter( 'algolia_should_index_post', 'dx_disable_algolia_for_spefic_posts', 10, 2 );
+add_filter( 'algolia_should_index_searchable_post', 'dx_disable_algolia_for_spefic_posts', 10, 2 );
