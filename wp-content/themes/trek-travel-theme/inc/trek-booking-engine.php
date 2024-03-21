@@ -214,8 +214,9 @@ function insert_records_guest_bookings_cb( $order_id ){
                 // if( $insured_emails ){
                 //     $wantsInsurance = ( in_array( $formatted_Data['guest_email'], $insured_emails  ) ? true : false );
                 // }
-                $bikeId = '';
-                $isBikeUpgrade = false;
+                $bikeId         = '';
+                $bike_type_name = '';
+                $isBikeUpgrade  = false;
                 if( $iter_key == 0 ){
                     $bike_type_id = $checkout_data['bike_gears']['primary']['bikeTypeId'];
                     if ($bike_type_id) {
@@ -223,6 +224,7 @@ function insert_records_guest_bookings_cb( $order_id ){
                         if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
                             $isBikeUpgrade = true;
                         }
+                        $bike_type_name = tt_ns_get_bike_type_name( $bike_type_id );
                     }
                     //$isBikeUpgrade = $checkout_data['bike_gears']['primary']['upgrade'];
                     $bikeId = $checkout_data['bike_gears']['primary']['bikeId'];
@@ -243,6 +245,7 @@ function insert_records_guest_bookings_cb( $order_id ){
                         if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
                             $isBikeUpgrade = true;
                         }
+                        $bike_type_name = tt_ns_get_bike_type_name( $bike_type_id );
                     }
                     //$isBikeUpgrade = $checkout_data['bike_gears']['guests'][$iter_key]['upgrade'];
                     $bikeId = $checkout_data['bike_gears']['guests'][$iter_key]['bikeId'];
@@ -274,6 +277,7 @@ function insert_records_guest_bookings_cb( $order_id ){
                     'rider_height' => $rider_height,
                     'rider_level' => $rider_level,
                     'bike_type_id' => $bike_type_id,
+                    'bikeTypeName' => $bike_type_name,
                     'bike_size' => $bike_size,
                     'bike_id' => $bikeId,
                     'bike_selection' => $bike_selection,

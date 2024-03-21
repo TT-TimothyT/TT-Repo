@@ -6597,3 +6597,31 @@ function tt_password_reset_action( $user ) {
     }
 }
 add_action( 'password_reset', 'tt_password_reset_action', 10 );
+
+/**
+ * Take Bike Model Name from options table by given bike type ID.
+ * 
+ * @param int|string $bike_type_id The bike model ID.
+ * 
+ * @return string The name of the bike model.
+ */
+function tt_ns_get_bike_type_name( $bike_type_id ) {
+    $bike_type_name    = '';
+    $ns_bike_type_info = get_option( TT_OPTION_PREFIX . 'ns_bikeType_info' );
+
+    // If options not found, run the bike type info sync process.
+    if( empty( $ns_bike_type_info ) ) {
+        tt_ns_fetch_bike_type_info();
+        $ns_bike_type_info = get_option( TT_OPTION_PREFIX . 'ns_bikeType_info' );
+    }
+
+    // Take the bike model name.
+    if( $ns_bike_type_info && $bike_type_id ) {
+        $ns_bike_type_result = json_decode( $ns_bike_type_info, true );
+        $keys                = array_column( $ns_bike_type_result, 'id' );
+        $index               = array_search( $bike_type_id, $keys );
+        $bike_type_name      = $ns_bike_type_result[$index]['name'];
+    }
+
+    return $bike_type_name;
+}

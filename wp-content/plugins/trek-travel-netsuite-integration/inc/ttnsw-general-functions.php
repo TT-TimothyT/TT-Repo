@@ -235,6 +235,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
                 $bike_id = tt_validate($wc_booking->bike_id, $default_bike_id);
                 $bike_size = tt_validate($wc_booking->bike_size);
                 $bike_selection = tt_validate($wc_booking->bike_selection);
+                $bike_type_name = tt_validate($wc_booking->bikeTypeName);
                 $isBikeUpgrade = tt_validate($wc_booking->isBikeUpgrade, '');
                 $saddle_height = tt_validate($wc_booking->saddle_height);
                 $pedal_selection = tt_validate($wc_booking->pedal_selection);
@@ -319,7 +320,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
                     "riderLevelId" => $rider_level,
                     "bikeId" => $bike_id,
                     'bike_size' => tt_validate($bike_size),
-                    "bikeTypeName" => $bike_selection,
+                    "bikeTypeName" => $bike_type_name,
                     "isBikeUpgrade" => $isBikeUpgrade,
                     "heightId" => $rider_height,
                     "pedalsId" => $pedal_selection,
