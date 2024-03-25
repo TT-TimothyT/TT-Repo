@@ -1,9 +1,19 @@
 body {
   font-family: 'Roboto';
+  // font-size: 20px;
 }
 //
 // Headings
 //
+
+h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
+  font-family: 'Poppins';
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
 .h1 {
   @extend h1;
 }
@@ -28,6 +38,10 @@ body {
   @extend h6;
 }
 
+
+.wysiwyg >*:last-child {
+   margin-bottom: 0;
+}
 
 .lead {
   @include font-size($lead-font-size);
@@ -108,7 +122,12 @@ body {
   }
 }
 
+.h1, .h2, .h3, .h4 {
+  color: $black;
+}
+
 h1, .h1{
+
   line-height: $h1-line-height;
 
   @media (max-width: 768px) {

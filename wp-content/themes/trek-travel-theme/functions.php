@@ -820,3 +820,28 @@ function dx_keyword_in_head() {
 	echo '<meta property="trektravel:online" content="true">';
 }
 add_action( 'wp_head', 'dx_keyword_in_head' );
+
+// CUSTOM BREADCRUMBS
+
+function custom_breadcrumbs() {
+    // Bail if home to avoid unnecessary breadcrumb
+    if (is_front_page()) return;
+
+    echo '<nav class="container mb-40 mt-3" aria-label="breadcrumb">';
+    echo '<ol class="breadcrumb mb-1">';
+
+    // Home link
+    echo '<li class="breadcrumb-item fs-sm"><a href="'.esc_url(get_site_url()).'">Home</a></li>';
+
+    // Current page or post
+    if (is_single() || is_page()) {
+        echo '<li class="breadcrumb-item active fs-sm" aria-current="page">'.esc_html(get_the_title()).'</li>';
+    } elseif (is_category()) {
+        $category = get_queried_object();
+        echo '<li class="breadcrumb-item active fs-sm" aria-current="page">'.esc_html($category->name).'</li>';
+    }
+    // Add more conditions as needed for custom post types, archives, etc.
+
+    echo '</ol>';
+    echo '</nav>';
+}

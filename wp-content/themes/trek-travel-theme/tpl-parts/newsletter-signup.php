@@ -54,7 +54,7 @@ if (strpos($url,'newsletter') !== false) {
 return;
  } else { ?>
   <!-- newsletter component start -->		
-<div class="newsletter-subscribe mt-5 py-5 container">
+<div class="newsletter-subscribe py-5 container">
 	<div class="container">
     <div class="row">
       <div class="col-12">
