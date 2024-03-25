@@ -28,8 +28,7 @@ foreach ( $activity_terms as $activity_term) {
 
 
 if ( $pdp_itineraries ) :
-    print_r($product_id);
-print_r($activity_type);
+
 
 ?>
     <div class="container itinerary-container itinerary-details <?php if (!empty($activity_type) && $activity_type != 'Biking'):?>hw<?php endif;?>" id="itinerary">
