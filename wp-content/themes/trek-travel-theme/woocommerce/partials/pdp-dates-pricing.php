@@ -198,7 +198,7 @@ if( $available_child_products ) {
                                 </h6>
                             <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
                                 <hr>
-                                <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                                <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">
                                     <div class="accordion-hotels">
                                         <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                         '.$bike_hotels['hotels'].'
@@ -229,7 +229,7 @@ if( $available_child_products ) {
                                 </h6>
                             <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
                                 <hr>
-                                <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                                <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">
                                     <div class="accordion-hotels">
                                         <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                         '.$bike_hotels['hotels'].'
@@ -257,7 +257,7 @@ if( $available_child_products ) {
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
                             <hr>
-                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">
                                 <div class="accordion-hotels">
                                     <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                     '.$bike_hotels['hotels'].'
@@ -284,7 +284,7 @@ if( $available_child_products ) {
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
                             <hr>
-                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">
                                 <div class="accordion-hotels">
                                     <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                     '.$bike_hotels['hotels'].'
@@ -315,7 +315,7 @@ if( $available_child_products ) {
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
                             <hr>
-                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">
                                 <div class="accordion-hotels">
                                     <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                     '.$bike_hotels['hotels'].'
@@ -345,7 +345,7 @@ if( $available_child_products ) {
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
                             <hr>
-                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex">
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">
                                 <div class="accordion-hotels">
                                     <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                     '.$bike_hotels['hotels'].'
