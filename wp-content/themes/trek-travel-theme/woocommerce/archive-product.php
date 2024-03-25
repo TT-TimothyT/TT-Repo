@@ -504,6 +504,10 @@ $emptyBlockContent .= '</div></div>';
         let endTime;
         let startTime;
 
+        let calendarStartDate;
+        let calendarEndDate;
+        let urlFlag = false;
+
 
         jQuery(function() {
 
@@ -600,10 +604,10 @@ $emptyBlockContent .= '</div></div>';
                             var url = window.location.href;
                             var splitUrl = url.split(".com");
                             var textAfterCom = splitUrl[splitUrl.length - 1];             
-                            jQuery( ".trip-card-body" ).each(function( index ) {                    
+                            jQuery( ".trip-card-body" ).each(function( index ) {
                                 let impression = {
                                     'name': jQuery( this ).find(".trip-title" ).first().text() ,
-                                    'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString(),
+                                    'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id") ? jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString() : '',
                                     'price': jQuery( this ).find(".trip-price").data("price"),
                                     'brand': '',
                                     'category': jQuery( this ).find(".trip-category" ).text(),
@@ -824,6 +828,12 @@ $emptyBlockContent .= '</div></div>';
                         calendarOptions.startDate = convertedStartEpoch
                         calendarOptions.endDate = convertedEndEpoch
                     <?php } ?>
+                    if(urlFlag) {
+                        convertedStartEpoch = convertEpochToDate(calendarStartDate)
+                        convertedEndEpoch = convertEpochToDate(calendarEndDate)
+                        calendarOptions.startDate = convertedStartEpoch
+                        calendarOptions.endDate = convertedEndEpoch
+                    }
                     jQuery('#search-daterange').daterangepicker(calendarOptions);
                     jQuery('#search-daterange').on('apply.daterangepicker', function (ev, picker) {
                         jQuery(this).val(picker.startDate.format('MMMM D') + ' - ' + picker.endDate.format('MMMM D'));
@@ -872,19 +882,42 @@ $emptyBlockContent .= '</div></div>';
                 });
                 
                 function filterTime(startTime,endTime) {
-                    currentUrl = new URL(window.location.href)
-                    // console.log(currentUrl)
-                    if (!startTime || !endTime) {
-                        currentUrl = removeParamFromUrl("start_time", currentUrl.toString())
-                        currentUrl = removeParamFromUrl("end_time", currentUrl)
-                        window.location.href = currentUrl
-                    }
-                    else {
-                        // console.log('The query parameter is set');
-                        currentUrl.searchParams.set('start_time', startTime);
-                        currentUrl.searchParams.set('end_time', endTime);
-                        window.location.href = currentUrl
-                    }
+                    
+                    let urlDateFilter = 0 < startTime && 0 < endTime ? `AND start_date_unix:${startTime} TO ${endTime}` : '';
+
+                    calendarStartDate = startTime;
+                    calendarEndDate = endTime;
+                    urlFlag = true;
+
+                    search.addWidgets([
+
+                        instantsearch.widgets.configure({
+                        filters: `taxonomies.product_cat: ' <?php
+							echo $plp_algolia_category->name;
+							?> '${urlDateFilter}`,
+                        hitsPerPage: 24,
+                        analyticsTags: ['browse', '<?php
+							echo $plp_algolia_category->name;
+							?>'],
+                        })
+                    ]);
+
+                    /**
+                     * The old logic is below, keep it for reference for now.
+                     */
+                    // currentUrl = new URL(window.location.href)
+                    // // console.log(currentUrl)
+                    // if (!startTime || !endTime) {
+                    //     currentUrl = removeParamFromUrl("start_time", currentUrl.toString())
+                    //     currentUrl = removeParamFromUrl("end_time", currentUrl)
+                    //     window.location.href = currentUrl
+                    // }
+                    // else {
+                    //     // console.log('The query parameter is set');
+                    //     currentUrl.searchParams.set('start_time', startTime);
+                    //     currentUrl.searchParams.set('end_time', endTime);
+                    //     window.location.href = currentUrl
+                    // }
                 }
                 
             }
@@ -927,7 +960,7 @@ $emptyBlockContent .= '</div></div>';
             jQuery( ".trip-card-body" ).each(function( index ) {                    
                 let impression = {
                     'name': jQuery( this ).find(".trip-title" ).first().text() ,
-                    'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString(),
+                    'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id") ? jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString() : '',
                     'price': jQuery( this ).find(".trip-price").data("price"),
                     'brand': '',
                     'category': jQuery( this ).find(".trip-category" ).text(),
@@ -944,14 +977,17 @@ $emptyBlockContent .= '</div></div>';
                 }
             })
 
-                
+            <?php if ($urlFlag == 1) { ?>                
+                convertedStartEpoch = convertEpochToDate(<?php echo $urlStartTime; ?>)
+                convertedEndEpoch = convertEpochToDate(<?php echo $urlEndTime; ?>)
+                jQuery("#ais-date-selector .fake-selector").text(moment(convertedStartEpoch).format('MMM D') + " - " + moment(convertedEndEpoch).format('MMM D'));                
+            <?php } ?>
 
-                <?php if ($urlFlag == 1) { ?>                
-                    convertedStartEpoch = convertEpochToDate(<?php echo $urlStartTime; ?>)
-                    convertedEndEpoch = convertEpochToDate(<?php echo $urlEndTime; ?>)
-                    jQuery("#ais-date-selector .fake-selector").text(moment(convertedStartEpoch).format('MMM D') + " - " + moment(convertedEndEpoch).format('MMM D'));                
-                <?php } ?>
-                    
+            if( urlFlag ) {
+                convertedStartEpoch = convertEpochToDate(calendarStartDate)
+                convertedEndEpoch = convertEpochToDate(calendarEndDate)
+                jQuery("#ais-date-selector .fake-selector").text(moment(convertedStartEpoch).format('MMM D') + " - " + moment(convertedEndEpoch).format('MMM D'));  
+            }
         })
 
         jQuery('#filterModal').on('show.bs.modal', function (event) {
@@ -964,6 +1000,15 @@ $emptyBlockContent .= '</div></div>';
                     jQuery(".range_inputs").prepend("<span id='rangeDateVal'>"+moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D')+"</span>");
                 }
             <?php } ?>
+            if( urlFlag ) {
+                convertedStartEpoch = convertEpochToDate(calendarStartDate)
+                convertedEndEpoch = convertEpochToDate(calendarEndDate)
+                if (jQuery("#rangeDateVal").parent().length) {
+                    jQuery("#rangeDateVal").html(moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D'));
+                } else {
+                    jQuery(".range_inputs").prepend("<span id='rangeDateVal'>"+moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D')+"</span>");
+                }
+            }
         })
 
         function selectItemAnalytics(id) {
