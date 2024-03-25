@@ -6602,7 +6602,7 @@ function tt_password_reset_action( $user ) {
 add_action( 'password_reset', 'tt_password_reset_action', 10 );
 
 /**
- * A little easter egg function to check if the user is admin and insert failed bookings to the guest_bookings_table
+ * git opA little easter egg function to check if the user is admin and insert failed bookings to the guest_bookings_table
  *
  * @return void
  */
@@ -6653,5 +6653,6 @@ function dx_disable_algolia_for_spefic_posts( $flag, WP_Post $post ) {
     return $flag;
 }
 
-add_filter( 'algolia_should_index_post', 'dx_disable_algolia_for_spefic_posts', 10, 2 );
-add_filter( 'algolia_should_index_searchable_post', 'dx_disable_algolia_for_spefic_posts', 10, 2 );
+// Commented out because of the Slack sync here - https://devrix.slack.com/archives/C06M2D9EGCX/p1711375691091659
+// add_filter( 'algolia_should_index_post', 'dx_disable_algolia_for_spefic_posts', 10, 2 );
+// add_filter( 'algolia_should_index_searchable_post', 'dx_disable_algolia_for_spefic_posts', 10, 2 );
