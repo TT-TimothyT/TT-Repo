@@ -14434,6 +14434,9 @@ a.refineLink {
 .archive .ais-InfiniteHits-list {
   padding: 0;
 }
+.archive .ais-InfiniteHits-list .card-body span.badge.hw {
+  background-color: #6B9214 !important;
+}
 
 @media (max-width: 767px) {
   li.ais-InfiniteHits-item .card-body {

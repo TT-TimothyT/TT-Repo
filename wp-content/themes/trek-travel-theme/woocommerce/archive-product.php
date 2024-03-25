@@ -13,6 +13,8 @@ $cate = get_queried_object();
 $cateID = $cate->term_id;
 $plp_algolia_category = get_term($cateID);
 
+print_r($cateID);
+
 $urlStartTime = $_GET['start_time'];
 $urlEndTime = $_GET['end_time'];
 $urlDateFilter = '';
@@ -296,7 +298,12 @@ $emptyBlockContent .= '</div></div>';
 
                                     <# if ( data['Rider Level'] ) { #>
                                     <ul class="list-inline mb-1">
-                                        <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
+                                        <# if (data['taxonomies.activity'] === 'Biking') { #>
+                                            <li class="list-inline-item"><i class="fa-solid fa-bicycle tt-b"></i></li>
+                                        <# } #>
+                                        <# if (data['taxonomies.activity'] != 'Biking') { #>
+                                            <li class="list-inline-item hw"><i class="fa-solid fa-person-hiking"></i></li>
+                                        <# } #>
                                         <li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level'].replace(/&amp;/g, ' & ')}}</li>
                                         <li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>
                                     </ul>
@@ -346,7 +353,11 @@ $emptyBlockContent .= '</div></div>';
                     <div class="col-lg-6 col-md-5 mobile-hideme">
                         <div class="card-body ms-md-4 pt-0">
                             <# if ( data['Badge'] ) { #>
-                            <span class="badge bg-dark">{{ data['Badge'] }}</span>
+                                <# if ( data['Badge'] == 'hiking-walking' ) { #>
+                                    <span class="badge hw">{{ data['Badge'] }}</span>
+                                <# } else { #>
+                                    <span class="badge bg-dark">{{ data['Badge'] }}</span>
+                                <# } #>
                             <# } #>
 
                             <# if ( data.taxonomies.pa_city ) { #>
