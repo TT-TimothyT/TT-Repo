@@ -203,13 +203,18 @@ if( $available_child_products ) {
                                         <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                         '.$bike_hotels['hotels'].'
                                         <a class="fs-sm view-details" href="#hotels">View hotels</a>
-                                    </div>
-                                    <div class="accordion-bikes">
-                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
-                                        '.$bike_hotels['bikes'].'
-                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
-                                        </div>
-                                    <div class="accordion-book-now">';
+                                        </div>';
+
+                                        if (!empty($activity) && $activity == 'Biking') {
+                                            $month_content_output .= 
+                                        '<div class="accordion-bikes">
+                                            <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                            '.$bike_hotels['bikes'].'
+                                            <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                            </div>';
+                                        }
+                                        $month_content_output .= 
+                                        '<div class="accordion-book-now">';
 
                                     $all_month_content_output .= 
                             '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
@@ -229,13 +234,18 @@ if( $available_child_products ) {
                                         <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                         '.$bike_hotels['hotels'].'
                                         <a class="fs-sm view-details" href="#hotels">View hotels</a>
-                                    </div>
-                                    <div class="accordion-bikes">
-                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
-                                        '.$bike_hotels['bikes'].'
-                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
-                                        </div>
-                                    <div class="accordion-book-now">';
+                                        </div>';
+
+                                        if (!empty($activity) && $activity == 'Biking') {
+                                            $all_month_content_output .= 
+                                        '<div class="accordion-bikes">
+                                            <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                            '.$bike_hotels['bikes'].'
+                                            <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                            </div>';
+                                        }
+                                        $all_month_content_output .= 
+                                        '<div class="accordion-book-now">';
 
                         } else if ($tripWebStatus == 'Not Guaranteed') {
                             $month_content_output .= 
@@ -252,13 +262,18 @@ if( $available_child_products ) {
                                     <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                     '.$bike_hotels['hotels'].'
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
-                                </div>
-                                <div class="accordion-bikes">
-                                    <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
-                                    '.$bike_hotels['bikes'].'
-                                    <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
-                                    </div>
-                                <div class="accordion-book-now">';
+                                    </div>';
+
+                                    if (!empty($activity) && $activity == 'Biking') {
+                                        $month_content_output .= 
+                                    '<div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>';
+                                    }
+                                    $month_content_output .= 
+                                    '<div class="accordion-book-now">';
 
                                 $all_month_content_output .= 
                         '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
@@ -274,13 +289,18 @@ if( $available_child_products ) {
                                     <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                     '.$bike_hotels['hotels'].'
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
-                                </div>
-                                <div class="accordion-bikes">
-                                    <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
-                                    '.$bike_hotels['bikes'].'
-                                    <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
-                                    </div>
-                                <div class="accordion-book-now">';
+                                    </div>';
+
+                                    if (!empty($activity) && $activity == 'Biking') {
+                                        $all_month_content_output .= 
+                                    '<div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>';
+                                    }
+                                    $all_month_content_output .= 
+                                    '<div class="accordion-book-now">';
 
                         } else {
                         $month_content_output .= 
@@ -300,13 +320,18 @@ if( $available_child_products ) {
                                     <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                     '.$bike_hotels['hotels'].'
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
-                                </div>
-                                <div class="accordion-bikes">
-                                    <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
-                                    '.$bike_hotels['bikes'].'
-                                    <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
-                                    </div>
-                                <div class="accordion-book-now">';
+                                    </div>';
+
+                                    if (!empty($activity) && $activity == 'Biking') {
+                                        $month_content_output .= 
+                                    '<div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>';
+                                    }
+                                    $month_content_output .= 
+                                    '<div class="accordion-book-now">';
 
                                 $all_month_content_output .= 
                         '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
@@ -325,13 +350,18 @@ if( $available_child_products ) {
                                     <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
                                     '.$bike_hotels['hotels'].'
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
-                                </div>
-                                <div class="accordion-bikes">
-                                    <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
-                                    '.$bike_hotels['bikes'].'
-                                    <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
-                                    </div>
-                                <div class="accordion-book-now">';
+                                    </div>';
+
+                                    if (!empty($activity) && $activity == 'Biking') {
+                                        $all_month_content_output .= 
+                                    '<div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>';
+                                    }
+                                    $all_month_content_output .= 
+                                    '<div class="accordion-book-now">';
                         }
                                 $formUrl = '';
                                 if( in_array($trip_status, $res_status) || $removeFromStella == true ){
