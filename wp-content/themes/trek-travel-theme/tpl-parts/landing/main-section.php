@@ -12,7 +12,6 @@ $btn_post = $main_button['link'];
 $btn_mlink = $main_button['manual_link'];
 $btn_link = get_permalink($btn_post);
 
-print_r($btn_tf);
 ?>
 
 <?php if (!empty($main_header) || !empty($main_content)): ?>
