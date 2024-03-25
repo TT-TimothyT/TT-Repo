@@ -5874,7 +5874,7 @@ function add_custom_line_before_tax() {
             <?php
             $deposit_amount         = tt_get_local_trips_detail( 'depositAmount', '', $fisrt_product_sku, true );
             $cart_total_full_amount = isset( $trek_user_checkout_data['cart_total_full_amount'] ) ? $trek_user_checkout_data['cart_total_full_amount'] : '';
-            $remaining_due          = floatval( $cart_total_full_amount - $order->get_total() );
+            $remaining_due          = floatval( $cart_total_full_amount ) - floatval( $order->get_total() );
             if ( $first_item_quantity ) {
                 $deposit_amount = ( $first_item_quantity ) * floatval( $deposit_amount ); // + travel protection
             }
