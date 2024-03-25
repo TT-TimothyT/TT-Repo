@@ -195,7 +195,10 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 								$guest_is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
 								$waiver_signed = isset( $order_details[0]['waiver_signed'] ) ? $order_details[0]['waiver_signed'] : false;
 								$product = wc_get_product( $product_id );
-								$product_name = ! empty( $product->get_name() ) ? $product->get_name() : '';
+								$product_name = '';
+								if( $product ) {
+									$product_name = $product->get_name();
+								}
 								$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
 								$is_checklist_completed = tt_is_checklist_completed( $userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $guest_is_primary, $waiver_signed );
 								if( $product ){
