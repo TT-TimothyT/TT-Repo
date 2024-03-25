@@ -13,8 +13,6 @@ $cate = get_queried_object();
 $cateID = $cate->term_id;
 $plp_algolia_category = get_term($cateID);
 
-print_r($cateID);
-
 $urlStartTime = $_GET['start_time'];
 $urlEndTime = $_GET['end_time'];
 $urlDateFilter = '';
