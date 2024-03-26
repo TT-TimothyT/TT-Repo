@@ -4641,32 +4641,30 @@ function tt_get_parent_trip($sku="")
         'link' => $parent_trip_link
     ];
 }
-function tt_get_hotel_bike_list($sku)
-{
-    $bike_list = $hotel_list = '';
-    $hotelsData = tt_get_local_trips_detail('hotels', '', $sku, true);
-    $hotels = json_decode($hotelsData, true);
-    if ($hotels) {
+function tt_get_hotel_bike_list( $sku ) {
+    $bike_list   = $hotel_list = '';
+
+    $hotels_data = tt_get_local_trips_detail( 'hotels', '', $sku, true );
+    $hotels      = json_decode($hotels_data, true);
+    if ( $hotels ) {
         $hotel_list .= '<ol>';
-        foreach ($hotels as $hotel) {
+        foreach ( $hotels as $hotel ) {
             $hotel_list .= '<li class="fw-normal fs-sm lh-sm">' . $hotel['hotelName'] . '</li>';
         }
         $hotel_list .= '</ol>';
     }
-    $bikesData = tt_get_local_trips_detail('bikes', '', $sku, true);
-    $bikes = json_decode($bikesData, true);
-    $bikes_type_id_in = [];
-    if ($bikes) {
+
+    $bikes_data   = tt_get_local_trips_detail( 'bikes', '', $sku, true );
+    $bikes        = json_decode( $bikes_data, true );
+    $bikes_models = [];
+    if ( $bikes ) {
         $bike_list .= '<ol>';
-        foreach ($bikes as $bikes) {
-            $bikeDescr = $bikes['bikeDescr'];
-            $bikeTypeId = $bikes['bikeType']['id'];
-            $bike_post_name_arr = explode(' ', $bikeDescr);
-            unset($bike_post_name_arr[0]);
-            $bike_post_name = implode(' ', $bike_post_name_arr);
-            if ($bikeTypeId && $bike_post_name && !in_array($bike_post_name, $bikes_type_id_in)) {
+        foreach ( $bikes as $bike ) {
+            $bike_post_name = tt_validate( $bike['bikeModel']['name'] );
+            $bike_type_id   = $bike['bikeType']['id']; // Prevent showing Own Bike and Non-Rider as they don't have a bike type id.
+            if ( $bike_type_id && $bike_post_name && ! in_array( $bike_post_name, $bikes_models ) ) {
                 $bike_list .= '<li class="fw-normal fs-sm lh-sm">' . $bike_post_name . '</li>';
-                $bikes_type_id_in[] = $bike_post_name;
+                $bikes_models[] = $bike_post_name;
             }
         }
         $bike_list .= '</ol>';
