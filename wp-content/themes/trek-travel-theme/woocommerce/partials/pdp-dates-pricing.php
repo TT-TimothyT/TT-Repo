@@ -84,6 +84,7 @@ function date_sort( $a, $b, $d = "/" ) {
 
 $available_child_products = array();
 
+
 // Sort the trips and store only available trips into a new array.
 foreach( $get_child_products as $year => $get_child_product ) {
 
@@ -108,6 +109,7 @@ foreach( $get_child_products as $year => $get_child_product ) {
                     $available_child_products[ $year ] = array();
                 }
 
+
                 if( ! isset( $available_child_products[ $year ][ $month ] ) ) {
                     // Make a new array for every month.
                     $available_child_products[ $year ][ $month ] = array();
@@ -115,10 +117,14 @@ foreach( $get_child_products as $year => $get_child_product ) {
 
                 // Store the available trip into the new array.
                 array_push( $available_child_products[ $year ][ $month ], $child_product_data );
+
             }
         }
+
+
     }
 }
+
 
 $contentFlag = false;
 
@@ -129,14 +135,10 @@ if( $available_child_products ) {
     $iter = 1;
     foreach( $available_child_products as $year=>$get_child_product ){
 
-        
-
         //nav year tabs & button HTML creation
         $nav_year_tab .= '<button class="nav-link '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-year'.$year.'" type="button" role="tab" aria-controls="nav-year'.$year.'" aria-selected="true"><span>'.$year.' Tours</span></button>';
         //nav year tab content HTML creation
         $nav_year_tab_content .= '<div class="tab-pane fade show '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'" role="tabpanel" aria-labelledby="nav-year'.$year.'-tab" tabindex="0">';
-
-       
 
         $all_month_content_output = '';
 
@@ -144,7 +146,6 @@ if( $available_child_products ) {
         $month_nav_desktop_btn_output = $month_nav_mobile_btn_output = $month_content_output =  '';
         if( $get_child_product ){
             $m_iter = 1;
-         
 
             $month_nav_desktop_btn_output .= '<button class="nav-link '.$m_iter.' '.($m_iter == 1 ? 'active' : '').'" id="nav-all-'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-all-'.$year.'" type="button" role="tab" aria-controls="nav-all-'.$year.'" aria-selected="false">All</button>';
 
@@ -152,11 +153,8 @@ if( $available_child_products ) {
 
             $all_month_content_output .= '<div class="tab-pane fade show '.($m_iter == 1 ? 'active' : '').'" id="nav-all-'.$year.'" role="tabpanel" aria-labelledby="nav-all-'.$year.'-tab" tabindex="0"><div class="accordion accordion-flush" id="accordionFlushExample-'.$year.'-a">';
 
-            
-
             foreach($get_child_product as $month=>$get_child_product_data){
                 $m_iter++;
-               
 
                 $my = $month.$year;
                 $monthInfo = trek_get_month_info($month);

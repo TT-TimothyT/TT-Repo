@@ -260,19 +260,20 @@ function get_child_products($linked_products = array())
                         $grouped_product['date_range'] = $date_range_2;
                     }
                     $month_range = range($sdate_info['m'], $edate_info['m']);
-                    if (count($month_range) == 1) {
-                        if (strlen($sdate_info['m']) == 1) {
-                            $sdate_info['m'] = '0' . $sdate_info['m'];
-                        }
+                    // if (count($month_range) == 1) {
+                    //     if (strlen($sdate_info['m']) == 1) {
+                    //         $sdate_info['m'] = '0' . $sdate_info['m'];
+                    //     }
                         $linked_product_arr[$sdate_info['y']][$sdate_info['m']][] = $grouped_product;
-                    } else {
-                        foreach ($month_range as $month_range_num) {
-                            if (strlen($month_range_num) == 1) {
-                                $month_range_num = '0' . $month_range_num;
-                            }
-                            $linked_product_arr[$sdate_info['y']][$month_range_num][] = $grouped_product;
-                        }
-                    }
+                    // } 
+                    // else {
+                    //     foreach ($month_range as $month_range_num) {
+                    //         if (strlen($month_range_num) == 1) {
+                    //             $month_range_num = '0' . $month_range_num;
+                    //         }
+                    //         $linked_product_arr[$sdate_info['y']][$month_range_num][] = $grouped_product;
+                    //     }
+                    // }
                 }
             }
         }

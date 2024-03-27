@@ -252,7 +252,11 @@ $emptyBlockContent .= '</div></div>';
                     <div class="col-md-6 desktop-hideme">
                        <div class="product-head-info my-3">
                             <# if ( data['Badge'] ) { #>
-                                <span class="badge bg-dark mb-2">{{ data['Badge'] }}</span>
+                                <# if ( data['Badge'] == 'hiking-walking' ) { #>
+                                    <span class="badge hw">{{ data['Badge'] }}</span>
+                                <# } else { #>
+                                    <span class="badge bg-dark">{{ data['Badge'] }}</span>
+                                <# } #>
                             <# } #>
                            <# if ( data.taxonomies.pa_city ) { #>
                            <p class="mb-0">
@@ -351,8 +355,8 @@ $emptyBlockContent .= '</div></div>';
                     <div class="col-lg-6 col-md-5 mobile-hideme">
                         <div class="card-body ms-md-4 pt-0">
                             <# if ( data['Badge'] ) { #>
-                                <# if ( data['Badge'] == 'hiking-walking' ) { #>
-                                    <span class="badge hw">{{ data['Badge'] }}</span>
+			    	<# if ( data['Badge'].includes('Hiking') ) { #>
+			    		<span class="badge hw">{{ data['Badge'] }}</span>
                                 <# } else { #>
                                     <span class="badge bg-dark">{{ data['Badge'] }}</span>
                                 <# } #>
@@ -398,11 +402,15 @@ $emptyBlockContent .= '</div></div>';
                             <# } #>
 
                             <# if ( data['Rider Level'] ) { #>
-                            <ul class="list-inline mb-0">
-                                <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
-                                <li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level'].replace(/&amp;/g, ' & ')}}</li>
-                                <li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>
-                            </ul>
+				<ul class="list-inline mb-0">
+					<# if ( data.taxonomies.activity == 'Hiking' || data.taxonomies.activity == 'Walking' ){ #>
+                                		<li class="list-inline-item"><i class="fa-solid fa-person-hiking"></i></li>
+					<# } else  { #>
+		                                <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
+					<# } #>
+                                	<li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level'].replace(/&amp;/g, ' & ')}}</li>
+                                	<li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>
+                            	</ul>
                             <# } #>
 
                             <# if ( data['Hotel Level'] ) { #>
