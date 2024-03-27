@@ -1067,8 +1067,8 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
         $trip_name              = tt_validate( $ride_camp_product_info['trip_name'] );
     } else {
 
-        $product_id             = tt_get_product_by_sku( $trip_code, true );
         $trip_code              = tt_validate( $ns_booking_data->tripCode );
+        $product_id             = tt_get_product_by_sku( $trip_code, true );
         $trip_name              = tt_validate( $ns_booking_data->tripName );
     }
 
