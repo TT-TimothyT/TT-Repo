@@ -252,7 +252,7 @@ $emptyBlockContent .= '</div></div>';
                     <div class="col-md-6 desktop-hideme">
                        <div class="product-head-info my-3">
                             <# if ( data['Badge'] ) { #>
-                                <# if ( data['Badge'] == 'hiking-walking' ) { #>
+                                <# if ( data['Badge'].includes('Hiking') ) { #>
                                     <span class="badge hw">{{ data['Badge'] }}</span>
                                 <# } else { #>
                                     <span class="badge bg-dark">{{ data['Badge'] }}</span>
@@ -355,8 +355,8 @@ $emptyBlockContent .= '</div></div>';
                     <div class="col-lg-6 col-md-5 mobile-hideme">
                         <div class="card-body ms-md-4 pt-0">
                             <# if ( data['Badge'] ) { #>
-			    	<# if ( data['Badge'].includes('Hiking') ) { #>
-			    		<span class="badge hw">{{ data['Badge'] }}</span>
+			    	            <# if ( data['Badge'].includes('Hiking') ) { #>
+			    		            <span class="badge hw">{{ data['Badge'] }}</span>
                                 <# } else { #>
                                     <span class="badge bg-dark">{{ data['Badge'] }}</span>
                                 <# } #>
