@@ -203,7 +203,7 @@ $wp_user_email = $userInfo->user_email;
 						}
 					}
 				} else {
-					$past_trips_html .= '<p class="no-trip-text mt-2">No Past trips found!</p>';
+					$past_trips_html .= '<p class="no-trip-text mt-2">Past Trips coming soon!</p>';
 				}
 				echo $past_trips_html;
 				?>
