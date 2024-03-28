@@ -14434,8 +14434,8 @@ a.refineLink {
 .archive .ais-InfiniteHits-list {
   padding: 0;
 }
-.archive .ais-InfiniteHits-list .card-body span.badge.hw {
-  background-color: #6B9214 !important;
+.archive span.badge.hw {
+  background-color: #6B9214;
 }
 
 @media (max-width: 767px) {
@@ -20035,10 +20035,20 @@ body:has(div.account-wishlist-edit) {
 }
 .plp-hero-banner .banner-section {
   position: relative;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.6);
+}
+.plp-hero-banner .banner-section:before {
+  content: "";
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background: linear-gradient(180deg, rgba(244, 244, 244, 0) 70%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.45) 100%);
 }
 .plp-hero-banner .banner-section img {
-  aspect-ratio: 7/3;
+  min-height: 33vh;
   object-fit: cover;
+  max-height: 850px;
+  height: 80vw;
 }
 .plp-hero-banner .banner-section p, .plp-hero-banner .banner-section h1, .plp-hero-banner .banner-section .h1 {
   position: absolute;

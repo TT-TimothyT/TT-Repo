@@ -251,13 +251,20 @@ $emptyBlockContent .= '</div></div>';
                     </div>
                     <div class="col-md-6 desktop-hideme">
                        <div class="product-head-info my-3">
-                            <# if ( data['Badge'] ) { #>
+                            <# if (data.taxonomies.pa_badge) { 
+                                <!-- data.taxonomies.pa_badge = data.taxonomies.pa_badge.sort(); -->
+                                #>
+                                <# data.taxonomies.pa_badge.forEach(function (badge, index) { #>
+                                    <span class="badge <# if (badge == 'Hiking + Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>
+                                <# }) #>
+                            <# } #>
+                            <!-- <# if ( data['Badge'] ) { #>
                                 <# if ( data['Badge'].includes('Hiking') ) { #>
                                     <span class="badge hw">{{ data['Badge'] }}</span>
                                 <# } else { #>
                                     <span class="badge bg-dark">{{ data['Badge'] }}</span>
                                 <# } #>
-                            <# } #>
+                            <# } #> -->
                            <# if ( data.taxonomies.pa_city ) { #>
                            <p class="mb-0">
                             <span class="trip-category d-none">{{ data.taxonomies.product_cat }}</span>
@@ -354,12 +361,13 @@ $emptyBlockContent .= '</div></div>';
 
                     <div class="col-lg-6 col-md-5 mobile-hideme">
                         <div class="card-body ms-md-4 pt-0">
-                            <# if ( data['Badge'] ) { #>
-			    	            <# if ( data['Badge'].includes('Hiking') ) { #>
-			    		            <span class="badge hw">{{ data['Badge'] }}</span>
-                                <# } else { #>
-                                    <span class="badge bg-dark">{{ data['Badge'] }}</span>
-                                <# } #>
+
+                            <# if (data.taxonomies.pa_badge) { 
+                                <!-- data.taxonomies.pa_badge = data.taxonomies.pa_badge.sort(); -->
+                                #>
+                                <# data.taxonomies.pa_badge.forEach(function (badge, index) { #>
+                                    <span class="badge <# if (badge == 'Hiking + Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>
+                                <# }) #>
                             <# } #>
 
                             <# if ( data.taxonomies.pa_city ) { #>

@@ -511,13 +511,13 @@ a.refineLink {
 .archive {
     .ais-InfiniteHits-list {
         padding: 0;
-
-        .card-body span{
-           &.badge.hw {
-            background-color: $tt-green !important;
-           }
-        }
     }
+
+    span{
+        &.badge.hw {
+         background-color: $tt-green;
+        }
+     }
 }
 @media (max-width: 767px) {
     li.ais-InfiniteHits-item{
