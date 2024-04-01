@@ -84,19 +84,33 @@ function tt_validate_phone(phone = '') {
   }
   return isValid;
 }
-function tt_validate_age(dob = null) {
-  var isValid = true;
-  if (dob) {
-    var dob = new Date(dob);
-    var month_diff = Date.now() - dob.getTime();
-    var age_dt = new Date(month_diff);
-    var year = age_dt.getUTCFullYear();
-    var age = Math.abs(year - 1970);
-    if (age < 16) {
-      isValid = false;
+function tt_validate_age( dob = null ) {
+  let isValid      = true;
+  let dobTypeError = '';
+
+  if ( dob ) {
+    var dob         = new Date(dob);
+    var dobYear     = dob.getUTCFullYear();
+    var today       = new Date();
+    var currentYear = today.getUTCFullYear();
+    var monthDiff   = Date.now() - dob.getTime();
+    var ageDt       = new Date( monthDiff );
+    var year        = ageDt.getUTCFullYear();
+    var age         = Math.abs( year - 1970 );
+    
+    if( age < 16 ) {
+      isValid      = false;
+      dobTypeError = 'invalid-age';
+    } else if( dobYear < 1900 ) {
+      isValid      = false;
+      dobTypeError = 'invalid-min-year';
+    } else if( dobYear >= currentYear ) {
+      isValid      = false;
+      dobTypeError = 'invalid-max-year';
     }
   }
-  return isValid;
+
+  return {isValid, dobTypeError};
 }
 function tt_validate_duplicate_email() {
   var emailValidate = false;
@@ -163,11 +177,24 @@ function checkout_steps_validations(step = 1) {
         CurrentVal = jQuery(`input[name="${CurrentName}"]:checked`).val();
       }
       if (isRequired == 'required') {
-        if (CurrentVal == '' || CurrentVal == undefined || CurrentVal == 'undefined') {
+        let dobValidation = tt_validate_age( CurrentVal );
+        if (CurrentVal == '' || CurrentVal == undefined || CurrentVal == 'undefined' || ( CurrentName === 'custentity_birthdate' && dobValidation.isValid == false ) || ( typeof CurrentName === 'string' && CurrentName.includes( 'guest_dob' ) && dobValidation.isValid == false ) ) {
           jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').addClass('woocommerce-invalid');
           jQuery(`input[name="${CurrentName}"]`).closest('div.form-row').removeClass('woocommerce-validated');
-          jQuery(`input[name="${CurrentName}"]`).closest('div.form-floating').find(".rider-select").css("display", "block")
-          jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+          jQuery(`input[name="${CurrentName}"]`).closest('div.form-floating').find(".rider-select").css("display", "block");
+          jQuery(this).closest('div.form-row').find(".invalid-feedback.dob-error").css("display", "none");
+          switch (dobValidation.dobTypeError) {
+            case 'invalid-min-year':
+              jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-min-year").css("display", "block");  
+              break;
+            case 'invalid-max-year':
+              jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-max-year").css("display", "block");
+              break;
+            case 'invalid-age':
+            default:
+              jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-age").css("display", "block");
+              break;
+          }
           isValidated = true;
           validationMessages.push(`Step 1: Field [name: ${CurrentName}, Value: ${CurrentVal}]`);
         } else {
@@ -358,7 +385,7 @@ jQuery(document).ready(function () {
   function addfields(countnum) {
     var add = countnum;
     var modifiedCountnum = add + 1;
-    jQuery('#qytguest').append('<div class="guest-checkout__guests guests"><p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest ' + modifiedCountnum + '</p><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_fname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="First Name" value=""><label for="floatingInputGrid">First Name</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_lname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="Last Name" value=""><label for="floatingInputGrid">Last Name</label></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="email" name="guests[' + add + '][guest_email]" class="form-control tt_guest_inputs" required="required" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value=""><label for="floatingInputGrid">Email</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" class="form-control tt_guest_inputs" required="required" data-validation="phone" data-type="input" id="floatingInputGrid" name="guests[' + add + '][guest_phone]" placeholder="Phone" value=""><label for="floatingInputGrid">Phone</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class=""><select required="required" class="form-select py-4 tt_guest_inputs" required="required" data-validation="text" data-type="input" name="guests[' + add + '][guest_gender]" id="floatingSelectGrid" aria-label="Floating label select example"><option value="1">Male</option><option value="2">Female</option></select><div class="invalid-feedback"><img class="invalid-icon" /> Please select gender.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="date" name="guests[' + add + '][guest_dob]" class="form-control tt_guest_inputs" required="required" data-validation="date" data-type="date" id="floatingInputGrid" placeholder="Date of Birth" value=""><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback"><img class="invalid-icon" /> Age must be 16 years old or above, Please enter correct date of birth.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row pt-1"><hr></div>');
+    jQuery('#qytguest').append('<div class="guest-checkout__guests guests"><p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest ' + modifiedCountnum + '</p><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_fname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="First Name" value=""><label for="floatingInputGrid">First Name</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_lname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="Last Name" value=""><label for="floatingInputGrid">Last Name</label></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="email" name="guests[' + add + '][guest_email]" class="form-control tt_guest_inputs" required="required" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value=""><label for="floatingInputGrid">Email</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" class="form-control tt_guest_inputs" required="required" data-validation="phone" data-type="input" id="floatingInputGrid" name="guests[' + add + '][guest_phone]" placeholder="Phone" value=""><label for="floatingInputGrid">Phone</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class=""><select required="required" class="form-select py-4 tt_guest_inputs" required="required" data-validation="text" data-type="input" name="guests[' + add + '][guest_gender]" id="floatingSelectGrid" aria-label="Floating label select example"><option value="1">Male</option><option value="2">Female</option></select><div class="invalid-feedback"><img class="invalid-icon" /> Please select gender.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="date" name="guests[' + add + '][guest_dob]" class="form-control tt_guest_inputs" required="required" data-validation="date" data-type="date" id="floatingInputGrid" placeholder="Date of Birth" value=""><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback invalid-age dob-error"><img class="invalid-icon" /> Age must be 16 years old or above, Please enter correct date of birth.</div><div class="invalid-feedback invalid-min-year dob-error"><img class="invalid-icon" /> The year must be greater than 1900, Please enter correct date of birth.</div><div class="invalid-feedback invalid-max-year dob-error"><img class="invalid-icon" /> The year cannot be in the future, Please enter the correct date of birth.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row pt-1"><hr></div>');
   }
   //jQuery('.guestnumber').keyup(function () {
   jQuery('.guestnumber').on('keyup', function () {
@@ -3670,14 +3697,55 @@ jQuery(document).on('change blur', 'input[name="shipping_phone"]', function () {
 
 jQuery(document).on('change blur', 'input[name="custentity_birthdate"]', function () {
   jQuery('input[name="custentity_birthdate"]').attr('required', 'required');
-  if (tt_validate_age(jQuery('input[name="custentity_birthdate"]').val()) == false || jQuery('input[name="custentity_birthdate"]').val().length == 0) {
+  let dobValidation = tt_validate_age( jQuery( 'input[name="custentity_birthdate"]' ).val() );
+  if ( dobValidation.isValid == false || jQuery('input[name="custentity_birthdate"]').val().length == 0) {
     jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').addClass('woocommerce-invalid');
     jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').removeClass('woocommerce-validated');
-    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+    jQuery(this).closest('div.form-row').find(".invalid-feedback.dob-error").css("display", "none");
+    switch (dobValidation.dobTypeError) {
+      case 'invalid-min-year':
+        jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-min-year").css("display", "block");  
+        break;
+      case 'invalid-max-year':
+        jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-max-year").css("display", "block");
+        break;
+      case 'invalid-age':
+      default:
+        jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-age").css("display", "block");
+        break;
+    }
   } else {
     jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').removeClass('woocommerce-invalid');
     jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').addClass('woocommerce-validated');
     jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  }
+});
+
+jQuery(document).on('change blur', 'input[name="account_dob"]', function () {
+  jQuery('input[name="account_dob"]').attr('required', 'required');
+  let dobValidation = tt_validate_age( jQuery( 'input[name="account_dob"]' ).val() );
+  if ( dobValidation.isValid == false || jQuery('input[name="account_dob"]').val().length == 0) {
+    this.setCustomValidity('Please enter the correct date of birth.');
+    jQuery(`input[name="account_dob"]`).closest('div.form-floating').addClass('woocommerce-invalid');
+    jQuery(`input[name="account_dob"]`).closest('div.form-floating').removeClass('woocommerce-validated');
+    jQuery(this).closest('div.form-floating').find(".invalid-feedback.dob-error").css("display", "none");
+    switch (dobValidation.dobTypeError) {
+      case 'invalid-min-year':
+        jQuery(this).closest('div.form-floating').find(".invalid-feedback.invalid-min-year").css("display", "block");  
+        break;
+      case 'invalid-max-year':
+        jQuery(this).closest('div.form-floating').find(".invalid-feedback.invalid-max-year").css("display", "block");
+        break;
+      case 'invalid-age':
+      default:
+        jQuery(this).closest('div.form-floating').find(".invalid-feedback.invalid-age").css("display", "block");
+        break;
+    }
+  } else {
+    this.setCustomValidity('');
+    jQuery(`input[name="account_dob"]`).closest('div.form-floating').removeClass('woocommerce-invalid');
+    jQuery(`input[name="account_dob"]`).closest('div.form-floating').addClass('woocommerce-validated');
+    jQuery(this).closest('div.form-floating').find(".invalid-feedback").css("display", "none");
   }
 });
 
@@ -3820,10 +3888,23 @@ jQuery(document).on('change blur', 'input[name*="[guest_gender]"]', function () 
 
 jQuery(document).on('change blur', 'input[name*="[guest_dob]"]', function () {
   jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
-  if (tt_validate_age(jQuery(this).val()) == false || jQuery(this).val() == "" ) {
+  let dobValidation = tt_validate_age( jQuery( this ).val() );
+  if ( dobValidation.isValid == false || jQuery(this).val() == "" ) {
     jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
     jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
-    jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+    jQuery(this).closest('div.form-row').find(".invalid-feedback.dob-error").css("display", "none");
+    switch (dobValidation.dobTypeError) {
+      case 'invalid-min-year':
+        jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-min-year").css("display", "block");  
+        break;
+      case 'invalid-max-year':
+        jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-max-year").css("display", "block");
+        break;
+      case 'invalid-age':
+      default:
+        jQuery(this).closest('div.form-row').find(".invalid-feedback.invalid-age").css("display", "block");
+        break;
+    }
   } else {
     jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
     jQuery(this).closest('div.form-row').addClass('woocommerce-validated');

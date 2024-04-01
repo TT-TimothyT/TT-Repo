@@ -35,10 +35,11 @@ if( isset($_REQUEST['action']) && $_REQUEST['action'] == 'save_account_details_n
 }
 // $first_name = get_user_meta($userInfo->Id, 'shipping_first_name', true);
 // $last_name = get_user_meta($userInfo->Id, 'shipping_last_name', true);
-$dob = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
+$dob    = get_user_meta($userInfo->ID, 'custentity_birthdate', true);
 $gender = get_user_meta($userInfo->ID, 'custentity_gender', true);
-$phone = get_user_meta($userInfo->ID, 'custentity_phone_number', true);
- ?>
+$phone  = get_user_meta($userInfo->ID, 'custentity_phone_number', true);
+
+?>
 
 <div class="container my-account-edit px-0">
 	<div class="row mx-0 flex-column flex-lg-row">
@@ -106,6 +107,9 @@ $phone = get_user_meta($userInfo->ID, 'custentity_phone_number', true);
 									<div class="form-floating">
 										<input type="text" name="account_dob" class="input-text form-control" id="account_dob" placeholder="Date of Birth" value="<?php echo $dob; ?>">
 										<label for="account_dob">Date of Birth</label>
+										<div class="invalid-feedback invalid-age dob-error"><img class="invalid-icon" /> Age must be 16 years old or above, Please enter correct date of birth.</div>
+										<div class="invalid-feedback invalid-min-year dob-error"><img class="invalid-icon" /> The year must be greater than 1900, Please enter correct date of birth.</div>
+										<div class="invalid-feedback invalid-max-year dob-error"><img class="invalid-icon" /> The year cannot be in the future, Please enter the correct date of birth.</div>
 									</div>
 								</div>
 								
