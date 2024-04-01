@@ -853,10 +853,10 @@ function trek_update_trip_checklist_action_cb()
         // If the confirmed section is 'medical_section', add medical data.
         if( $is_section_confirmed['medical_section'] ) {
 
-            $medical_conditions_value   = 'none';
-            $medications_value          = 'none';
-            $allergies_value            = 'none';
-            $dietary_restrictions_value = 'none';
+            $medical_conditions_value   = 'None';
+            $medications_value          = 'None';
+            $allergies_value            = 'None';
+            $dietary_restrictions_value = 'None';
 
             if( isset( $_REQUEST['custentity_medicalconditions']['value'] ) && isset( $_REQUEST['custentity_medicalconditions']['boolean'] ) && ! empty( $_REQUEST['custentity_medicalconditions']['value'] ) && 'yes' == $_REQUEST['custentity_medicalconditions']['boolean'] ) {
                 $medical_conditions_value = $_REQUEST['custentity_medicalconditions']['value'];
@@ -998,7 +998,7 @@ function trek_update_trip_checklist_action_cb()
                         update_user_meta( $user->ID, $input_post, $medical_input['value'] );
                         $update_to_ns = true;
                     } else if ( isset( $medical_input ) && $medical_input['boolean'] == 'no' ) {
-                        update_user_meta( $user->ID, $input_post, 'none' );
+                        update_user_meta( $user->ID, $input_post, 'None' );
                         $update_to_ns = true;
                     } else {
                         update_user_meta( $user->ID, $input_post, '' );
@@ -1121,7 +1121,7 @@ function trek_update_medical_information_action_cb()
                 if (isset($medical_input) && $medical_input['boolean'] == 'yes' && !empty($medical_input['value'])) {
                     update_user_meta($user->ID, $input_post, $medical_input['value']);
                 } else if ( isset( $medical_input ) && $medical_input['boolean'] == 'no' ) {
-                    update_user_meta( $user->ID, $input_post, 'none' );
+                    update_user_meta( $user->ID, $input_post, 'None' );
                 } else {
                     update_user_meta($user->ID, $input_post, '');
                 }

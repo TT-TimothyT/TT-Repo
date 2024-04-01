@@ -191,7 +191,7 @@ $current_user_preferences = dx_get_user_pb_preferences( $user_id );
 
 // Populate medical info user preferences if there is no value confirmed yet.
 // If the user confirms 'no' for any medical info field,
-// we will have a value 'none' for the given field, which is not empty.
+// we will have a value 'None' for the given field, which is not empty.
 if( empty( $medications ) && ! empty( $current_user_preferences['med_info_medications'] ) ) {
 	$medications = $current_user_preferences['med_info_medications'];
 }
@@ -558,9 +558,9 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 												if ($medical_key == 'custentity_dietaryrestrictions') {
 													$medical_val = $dietaryrestrictions;
 												}
-												$is_medical = ($medical_val && 'none' != $medical_val ? 'yes' : 'no');
+												$is_medical = ( $medical_val && 'none' != strtolower( $medical_val ) ? 'yes' : 'no' );
 
-												$toggleTextClass = ($medical_val && 'none' != $medical_val ? 'style="display:block;"' : 'style="display:none;"');
+												$toggleTextClass = ( $medical_val && 'none' != strtolower( $medical_val ) ? 'style="display:block;"' : 'style="display:none;"' );
 
 												$medical_field_html .= '<div class="form-group medical-information__item medical_item">
 												<div class="flex-grow-1">
@@ -573,7 +573,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 													<input ' . $gray_out . ' class="form-check-input medical_validation_checkboxes" type="radio" name="' . $medical_key . '[boolean]" id="inlineRadioNo' . $medical_key . '" value="no" ' . ($is_medical == 'no' ? 'checked' : '') . '>
 													<label class="form-check-label" for="inlineRadioNo' . $medical_key . '">No</label>
 													</div>
-													<textarea ' . $gray_out_text . ' name="' . $medical_key . '[value]" placeholder="Please tell us more" class="form-control rounded-1 mt-4" ' . $toggleTextClass . '>' . ( 'none' != $medical_val ? $medical_val : '') . '</textarea>
+													<textarea ' . $gray_out_text . ' name="' . $medical_key . '[value]" placeholder="Please tell us more" class="form-control rounded-1 mt-4" ' . $toggleTextClass . '>' . ( 'none' != strtolower( $medical_val ) ? $medical_val : '') . '</textarea>
 													<div class="invalid-feedback"><img class="invalid-icon" />This field is required.</div>
 												</div>
 											</div>';

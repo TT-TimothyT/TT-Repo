@@ -35,8 +35,8 @@ $userInfo = wp_get_current_user();
                             if( $medical_fields ){
                                 foreach( $medical_fields as $medical_key=>$medical_field){
                                     $medical_val = get_user_meta( get_current_user_id() , $medical_key, true );
-                                    $is_medical = ( $medical_val && 'none' != $medical_val ? 'yes' : 'no' );
-                                    $toggleTextClass = ( $medical_val && 'none' != $medical_val ? 'style="display:block;"' : 'style="display:none;"' );
+                                    $is_medical = ( $medical_val && 'none' != strtolower( $medical_val ) ? 'yes' : 'no' );
+                                    $toggleTextClass = ( $medical_val && 'none' != strtolower( $medical_val ) ? 'style="display:block;"' : 'style="display:none;"' );
                                     $medical_field_html .= '<div class="form-group medical-information__item medical_item">
                                         <div class="flex-grow-1">
                                             <p class="fw-medium fs-lg lh-lg mb-4 mb-lg-5">'.$medical_field.'</p>
@@ -48,7 +48,7 @@ $userInfo = wp_get_current_user();
                                             <input class="form-check-input" type="radio" name="'.$medical_key.'[boolean]" id="inlineRadioNo'.$medical_key.'" value="no" '.( $is_medical == 'no' ? 'checked' : '' ).'>
                                             <label class="form-check-label" for="inlineRadioNo'.$medical_key.'">No</label>
                                             </div>
-                                            <textarea name="'.$medical_key.'[value]" placeholder="Please tell us more" maxlength="450" class="form-control rounded-1 mt-4" '.$toggleTextClass.'>' . ( 'none' != $medical_val ? $medical_val : '') . '</textarea>
+                                            <textarea name="'.$medical_key.'[value]" placeholder="Please tell us more" maxlength="450" class="form-control rounded-1 mt-4" '.$toggleTextClass.'>' . ( 'none' != strtolower( $medical_val ) ? $medical_val : '') . '</textarea>
                                         </div>
                                     </div>';
                                 }
