@@ -56,40 +56,14 @@ if (isset($guest_insurance) && !empty($guest_insurance)) {
         }
     }
 }
-$insuarance_amount = 0;
-if ( ! empty ( $guest_insurance ) ) {
-    $primary_insuarance = $guest_insurance['primary'];
-    if ( '1' == $primary_insuarance['is_travel_protection'] ) {
-        $insuarance_amount += floatval( $primary_insuarance['basePremium'] );
-    }
-    foreach ( $guest_insurance['guests'] as $trek_guest_insurance ) {
-        $insuarance_amount += floatval( $trek_guest_insurance['basePremium'] );
-    }
-
-    
-    if ( ! empty ( $trek_guests_insurance['guests'] ) ) {
-        foreach ( $trek_guests_insurance['guests'] as $trek_guest_insurance ) {
-            if ( 1 == $trek_guest_insurance['is_travel_protection'] ) {
-                $insuarance_amount += floatval( $trek_guest_insurance['basePremium'] );
-            }
-        }
-    }
-}
-$tripInfo = tt_get_trip_pid_sku_from_cart();
-$depositAmount = 0;
-$depositBeforeDate = '';
-$isDeposite = '';
-$no_of_guests = isset($tt_posted['no_of_guests']) ? $tt_posted['no_of_guests'] : 1;
-if( $tripInfo && isset($tripInfo['sku']) ){
-    $depositAmount = tt_get_local_trips_detail('depositAmount', '', $tripInfo['sku'], true);
-    $depositBeforeDate = tt_get_local_trips_detail('depositBeforeDate', '', $tripInfo['sku'], true);
-    $depositAmount = $depositAmount ? str_ireplace(',','',$depositAmount) : 0;
-    if( $depositAmount ){
-        $depositAmount = floatval($depositAmount) * intval($no_of_guests);
-    }
-}
-$is_deposited = tt_get_trip_payment_mode($depositBeforeDate);
-$pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full';
+$insurance_amount        = tt_get_full_insurance_amount( $guest_insurance );
+$tripInfo                = tt_get_trip_pid_sku_from_cart();
+$no_of_guests            = isset( $tt_posted['no_of_guests'] ) ? $tt_posted['no_of_guests'] : 1;
+$deposit_info            = tt_get_deposit_info( $tripInfo['sku'], $no_of_guests, $insurance_amount );
+$deposit_amount          = $deposit_info['deposit_amount'];
+$deposit_allowed         = $deposit_info['deposit_allowed'];
+$pay_amount_default_mode = $deposit_allowed ? 'deposite' : 'full';
+$pay_amount              = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_amount'] : $pay_amount_default_mode;
 ?>
 <div class="checkout-payment" id="checkout-payment">
     <div class="checkout-payment__add-travel <?php if (!empty($guest_insurance_html)) echo 'd-none'; ?>">
@@ -121,19 +95,18 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
         <div class="checkout-payment__pay">
             <?php
             $cart_total_full_amount = isset( $tt_posted['cart_total_full_amount'] ) ? $tt_posted['cart_total_full_amount'] : '';
-            $cart_total = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : WC()->cart->total;
-            $remaining_amount = $cart_total - ( $depositAmount ? $depositAmount : 0 ) - ( $insuarance_amount ? $insuarance_amount : 0 );
-            $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$remaining_amount.'</span>';
-            $cart_totalCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$cart_total.'</span>';
-            $depositAmountCurr  = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'. $depositAmount + $insuarance_amount .'</span>';
+            $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : WC()->cart->total;
+            $remaining_amount       = $cart_total - ( $deposit_amount ? $deposit_amount : 0 );
+            $remaining_amountCurr   = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$remaining_amount.'</span>';
+            $cart_totalCurr         = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$cart_total.'</span>';
             if( $pay_amount == 'full' ){
                 $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>0</span>';
             }
-            if( $depositAmount && $depositAmount > 0 && $is_deposited == 1 ) { ?>
+            if( $deposit_allowed ) { ?>
             <div class="mb-4">
                 <input type="radio" name="pay_amount" required="required"  value="deposite" <?php echo ( $pay_amount == 'deposite' ? 'checked' : '' ); ?>>
                 <div class="checkout-payment__paydep rounded-1 d-flex justify-content-between align-items-center">
-                    <p class="fs-lg lh-lg fw-medium mb-0">Pay Deposit: <span><?php echo wc_price( $depositAmount ); ?></span></p>
+                    <p class="fs-lg lh-lg fw-medium mb-0">Pay Deposit: <span><?php echo wc_price( $deposit_amount ); ?></span></p>
                     <i class="checkout-payment__pay-icon"></i>
                 </div>
             </div>

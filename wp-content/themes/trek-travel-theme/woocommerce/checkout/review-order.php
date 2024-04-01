@@ -42,35 +42,24 @@ foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
         $end_date = $_product->get_attribute('end-date');
     }
 }
-$tripInfo = tt_get_trip_pid_sku_from_cart();
-$depositAmount = tt_get_local_trips_detail('depositAmount', '', $tripInfo['sku'], true);
-$depositAmount = $depositAmount ? str_ireplace(',', '', $depositAmount) : 0;
-$depositAmount = floatval($depositAmount) * intval($no_of_guests);
-// $cart_total = WC()->cart->total;
-$pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full';
-$cart_total_full_amount = isset( $tt_posted['cart_total_full_amount'] ) ? $tt_posted['cart_total_full_amount'] : '';
-$cart_total = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : WC()->cart->total;
-$remaining_amount = $cart_total - ($depositAmount ? $depositAmount : 0);
-$remaining_amountCurr = get_woocommerce_currency_symbol() . $remaining_amount;
-$cart_totalCurr = get_woocommerce_currency_symbol() . $cart_total;
-$depositAmountCurr = $depositAmount;
-$trip_booking_limit = get_trip_capacity_info();
-$parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_trip_link'] : 'javascript:';
-$arch_info = tt_get_insurance_info($tt_posted);
-$insuredPerson = isset($arch_info['count']) ? $arch_info['count'] : 0;
-//$insuredPerson = isset($tt_posted['insuredPerson']) ? $tt_posted['insuredPerson'] : 0;
-$tt_terms = isset($tt_posted['tt_terms']) ? $tt_posted['tt_terms'] : 0;
-$depositBeforeDate = '';
-if( $tripInfo && isset($tripInfo['sku']) ){
-    $depositAmount = tt_get_local_trips_detail('depositAmount', '', $tripInfo['sku'], true);
-    $depositBeforeDate = tt_get_local_trips_detail('depositBeforeDate', '', $tripInfo['sku'], true);
-    $depositAmount = $depositAmount ? str_ireplace(',','',$depositAmount) : 0;
-    if( $depositAmount ){
-        $depositAmount = floatval($depositAmount) * intval($no_of_guests);
-    }
-}
-$is_deposited = tt_get_trip_payment_mode($depositBeforeDate);
-$pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full';
+$guest_insurance         = isset( $tt_posted['trek_guest_insurance'] ) ? $tt_posted['trek_guest_insurance'] : array();
+$tripInfo                = tt_get_trip_pid_sku_from_cart();
+$insurance_amount        = tt_get_full_insurance_amount( $guest_insurance );
+$deposit_info            = tt_get_deposit_info( $tripInfo['sku'], $no_of_guests, $insurance_amount );
+$deposit_amount          = $deposit_info['deposit_amount'];
+$deposit_allowed         = $deposit_info['deposit_allowed'];
+$pay_amount_default_mode = $deposit_allowed ? 'deposite' : 'full';
+$pay_amount              = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_amount'] : $pay_amount_default_mode;
+$cart_total_full_amount  = isset( $tt_posted['cart_total_full_amount'] ) ? $tt_posted['cart_total_full_amount'] : '';
+$cart_total              = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : WC()->cart->total;
+$remaining_amount        = $cart_total - ( $deposit_amount ? $deposit_amount : 0 );
+$remaining_amountCurr    = get_woocommerce_currency_symbol() . $remaining_amount;
+$cart_totalCurr          = get_woocommerce_currency_symbol() . $cart_total;
+$trip_booking_limit      = get_trip_capacity_info();
+$parent_trip_link        = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_trip_link'] : 'javascript:';
+$arch_info               = tt_get_insurance_info($tt_posted);
+$insuredPerson           = isset( $arch_info['count'] ) ? $arch_info['count'] : 0;
+$tt_terms                = isset( $tt_posted['tt_terms'] ) ? $tt_posted['tt_terms'] : 0;
 ?>
 <div class="checkout-summary__mobile d-block d-lg-none text-center position-sticky" id="checkout-summary-mobile">
     <div class="closed">
@@ -225,29 +214,16 @@ $pay_amount = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amount'] : 'full
             echo $tt_fees_html;
             echo $tt_cart_tax_html;
             ?>
-            <?php
+            <?php            
             $outstanding_payment = $cart_totalCurr;
-            if ($pay_amount == 'deposite') {
-                $outstanding_payment   = floatval( $depositAmountCurr );
-                $trek_guests_insurance = $tt_posted['trek_guest_insurance'];
-                $primary_insuarance    = $trek_guests_insurance['primary'];
-                if ( "1" === $primary_insuarance['is_travel_protection'] ) {
-                    $outstanding_payment += floatval( $primary_insuarance['basePremium'] );
-                }
-                if ( ! empty ( $trek_guests_insurance['guests'] ) ) {
-                    foreach ( $trek_guests_insurance['guests'] as $trek_guest_insurance ) {
-                        if ( "1" === $trek_guest_insurance['is_travel_protection'] ) {
-                            $outstanding_payment += floatval( $trek_guest_insurance['basePremium'] );
-                        }
-                    }
-                }
-                $remaining_amount     = $cart_total - ($outstanding_payment ? $outstanding_payment : 0);
+            if ( 'deposite' == $pay_amount ) {
+                $outstanding_payment  = floatval( $deposit_amount );
                 $remaining_amountCurr = get_woocommerce_currency_symbol() . $remaining_amount;
             } else {
                 $remaining_amountCurr = get_woocommerce_currency_symbol() . '0';
             }
             ?>
-            <?php if (!empty($outstanding_payment)) : ?>
+            <?php if ( ! empty( $outstanding_payment ) ) : ?>
                 <div class="d-flex justify-content-between checkout-summary__dues">
                     <div>
                         <p class="mb-5">Trip Total</p>

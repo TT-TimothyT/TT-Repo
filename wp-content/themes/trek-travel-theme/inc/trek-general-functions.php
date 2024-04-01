@@ -204,7 +204,7 @@ function trek_wp_enqueue_scripts_cb()
         'rider_level_text' => $cart_product_info['rider_level_text'],
         'checkoutParentId' => $cart_product_info['parent_product_id'],
         'checkoutSku' => $cart_product_info['sku'],
-        'review_order' => tt_get_review_order_html(),
+        // 'review_order' => tt_get_review_order_html(), // I'm commenting this out for the moment, as I don't see a place where it can be used, and it's called on every page load, which is redundant.
         'is_order_received' => is_wc_endpoint_url( 'order-received' ),
         'order_id' => $order_id
     ));
@@ -6655,3 +6655,71 @@ function dx_disable_algolia_for_spefic_posts( $flag, WP_Post $post ) {
 // Commented out because of the Slack sync here - https://devrix.slack.com/archives/C06M2D9EGCX/p1711375691091659
 // add_filter( 'algolia_should_index_post', 'dx_disable_algolia_for_spefic_posts', 10, 2 );
 // add_filter( 'algolia_should_index_searchable_post', 'dx_disable_algolia_for_spefic_posts', 10, 2 );
+
+/**
+ * Take the full insurance amount.
+ *
+ * @param array $guest_insurance Array with info for insured persons and insurance amounts.
+ *
+ * @return int|float The full insurance amount.
+ */
+function tt_get_full_insurance_amount( $guest_insurance ) {
+    $insurance_amount = 0;
+
+    if ( ! empty( $guest_insurance ) ) {
+        $primary_insurance = $guest_insurance['primary'];
+
+        if ( '1' == $primary_insurance['is_travel_protection'] ) {
+            $insurance_amount += floatval( $primary_insurance['basePremium'] );
+        }
+        if ( ! empty( $guest_insurance['guests'] ) ) {
+            foreach ( $guest_insurance['guests'] as $trek_guest_insurance ) {
+                if ( '1' == $trek_guest_insurance['is_travel_protection'] ) {
+                    $insurance_amount += floatval( $trek_guest_insurance['basePremium'] );
+                }
+            }
+        }
+    }
+
+    return $insurance_amount;
+}
+
+/**
+ * Take deposit info with the included insurance amount.
+ *
+ * Note: Deposit eligible trips with travel protection should charge the deposit amount + the travel protection amount.
+ *
+ * @param string    $sku The trip code / product SKU.
+ * @param int       $guests_number The number of guests
+ * @param float|int $insurance_amount
+ *
+ * @return array The deposit_amount ( with travel protection included ),
+ * is_deposited weather the trip is allow for deposit based on deposit before date
+ * and deposit_allowed - true if has deposit amount and is_deposited.
+ */
+function tt_get_deposit_info( $sku = '', $guests_number = 1, $insurance_amount = 0 ) {
+    $deposit_amount      = 0;
+    $deposit_before_date = '';
+    $is_deposited        = false;
+    $deposit_allowed     = false;
+
+    if( isset( $sku ) && ! empty( $sku ) ) {
+        $deposit_amount      = tt_get_local_trips_detail( 'depositAmount', '', $sku, true );
+        $deposit_amount      = $deposit_amount ? str_ireplace( ',', '', $deposit_amount ) : 0;
+        if( $deposit_amount ) {
+            $deposit_amount = floatval( $deposit_amount ) * intval( $guests_number ) + $insurance_amount;
+        }
+        $deposit_before_date = tt_get_local_trips_detail( 'depositBeforeDate', '', $sku, true );
+    }
+
+    $is_deposited = tt_get_trip_payment_mode( $deposit_before_date ); // true/false.
+
+    if( $deposit_amount && $deposit_amount > 0 && $is_deposited == 1 ) {
+        $deposit_allowed = true;
+    }
+
+    return array(
+        'deposit_amount' => $deposit_amount,
+        'deposit_allowed'=> $deposit_allowed
+    );
+}
