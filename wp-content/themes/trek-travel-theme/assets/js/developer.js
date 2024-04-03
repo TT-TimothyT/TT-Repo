@@ -60,7 +60,7 @@ function tripCapacityValidation(is_return = true) {
 function tt_validate_email(email = '') {
   var isValid = true;
   if (email) {
-    let regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    let regex = /^(?!.*?[._%+\-]{2,})(?=[a-zA-Z0-9@._%+\-]{6,254}$)(^[a-zA-Z0-9])[a-zA-Z0-9._%+\-]{0,64}([^._%+\-]{1,})@(?:[a-zA-Z0-9\-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
     isValid = regex.test(email);
   }
   return isValid;
@@ -227,7 +227,38 @@ function checkout_steps_validations(step = 1) {
         }
       }
     });
-    tt_validate_duplicate_email();
+    let hasInvalidEmail = false;
+    jQuery(`div[data-step="${step}"] input[name*="[guest_email]"]`).each( function () {
+      jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+      var duplicatedEmail = tt_validate_duplicate_email();
+      if (tt_validate_email(jQuery(this).val()) == false || jQuery(this).val() == '' || duplicatedEmail == true) {
+        jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+        jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+        jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+        jQuery(this).closest('div.form-row').find('.form-floating').removeClass('woocommerce-validated');
+        if( ! hasInvalidEmail ) {
+          isValidated = true;
+          hasInvalidEmail = true;
+        }
+      } else {
+        jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
+        jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
+        jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+      }
+    });
+    jQuery(`div[data-step="${step}"] input[name*="[guest_phone]"]`).each( function () {
+      jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+      if (tt_validate_phone(jQuery(this).val()) == false) {
+        jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+        jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
+        jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+        jQuery(this).closest('div.form-row').find('.form-floating').removeClass('woocommerce-validated');
+      } else {
+        jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
+        jQuery(this).closest('div.form-row').addClass('woocommerce-validated');
+        jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+      }
+    });
   }
   if (step == 2) {
     checkout_steps_validations(1);
@@ -385,7 +416,7 @@ jQuery(document).ready(function () {
   function addfields(countnum) {
     var add = countnum;
     var modifiedCountnum = add + 1;
-    jQuery('#qytguest').append('<div class="guest-checkout__guests guests"><p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest ' + modifiedCountnum + '</p><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_fname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="First Name" value=""><label for="floatingInputGrid">First Name</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_lname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="Last Name" value=""><label for="floatingInputGrid">Last Name</label></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="email" name="guests[' + add + '][guest_email]" class="form-control tt_guest_inputs" required="required" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value=""><label for="floatingInputGrid">Email</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" class="form-control tt_guest_inputs" required="required" data-validation="phone" data-type="input" id="floatingInputGrid" name="guests[' + add + '][guest_phone]" placeholder="Phone" value=""><label for="floatingInputGrid">Phone</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class=""><select required="required" class="form-select py-4 tt_guest_inputs" required="required" data-validation="text" data-type="input" name="guests[' + add + '][guest_gender]" id="floatingSelectGrid" aria-label="Floating label select example"><option value="1">Male</option><option value="2">Female</option></select><div class="invalid-feedback"><img class="invalid-icon" /> Please select gender.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="date" name="guests[' + add + '][guest_dob]" class="form-control tt_guest_inputs" required="required" data-validation="date" data-type="date" id="floatingInputGrid" placeholder="Date of Birth" value=""><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback invalid-age dob-error"><img class="invalid-icon" /> Age must be 16 years old or above, Please enter correct date of birth.</div><div class="invalid-feedback invalid-min-year dob-error"><img class="invalid-icon" /> The year must be greater than 1900, Please enter correct date of birth.</div><div class="invalid-feedback invalid-max-year dob-error"><img class="invalid-icon" /> The year cannot be in the future, Please enter the correct date of birth.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row pt-1"><hr></div>');
+    jQuery('#qytguest').append('<div class="guest-checkout__guests guests"><p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest ' + modifiedCountnum + '</p><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_fname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="First Name" value=""><label for="floatingInputGrid">First Name</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_lname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="Last Name" value=""><label for="floatingInputGrid">Last Name</label></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="email" name="guests[' + add + '][guest_email]" class="form-control tt_guest_inputs" required="required" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value=""><label for="floatingInputGrid">Email</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid email address.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" class="form-control tt_guest_inputs" required="required" data-validation="phone" data-type="input" id="floatingInputGrid" name="guests[' + add + '][guest_phone]" placeholder="Phone" value=""><label for="floatingInputGrid">Phone</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class=""><select required="required" class="form-select py-4 tt_guest_inputs" required="required" data-validation="text" data-type="input" name="guests[' + add + '][guest_gender]" id="floatingSelectGrid" aria-label="Floating label select example"><option value="1">Male</option><option value="2">Female</option></select><div class="invalid-feedback"><img class="invalid-icon" /> Please select gender.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="date" name="guests[' + add + '][guest_dob]" class="form-control tt_guest_inputs" required="required" data-validation="date" data-type="date" id="floatingInputGrid" placeholder="Date of Birth" value=""><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback invalid-age dob-error"><img class="invalid-icon" /> Age must be 16 years old or above, Please enter correct date of birth.</div><div class="invalid-feedback invalid-min-year dob-error"><img class="invalid-icon" /> The year must be greater than 1900, Please enter correct date of birth.</div><div class="invalid-feedback invalid-max-year dob-error"><img class="invalid-icon" /> The year cannot be in the future, Please enter the correct date of birth.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row pt-1"><hr></div>');
   }
   //jQuery('.guestnumber').keyup(function () {
   jQuery('.guestnumber').on('keyup', function () {
@@ -3688,6 +3719,7 @@ jQuery(document).on('change blur', 'input[name="shipping_phone"]', function () {
     jQuery(`input[name="shipping_phone"]`).closest('div.form-row').addClass('woocommerce-invalid');
     jQuery(`input[name="shipping_phone"]`).closest('div.form-row').removeClass('woocommerce-validated');
     jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+    jQuery(this).closest('div.form-row').find('.form-floating').removeClass('woocommerce-validated');
   } else {
     jQuery(`input[name="shipping_phone"]`).closest('div.form-row').removeClass('woocommerce-invalid');
     jQuery(`input[name="shipping_phone"]`).closest('div.form-row').addClass('woocommerce-validated');
@@ -3866,6 +3898,7 @@ jQuery(document).on('change blur', 'input[name*="[guest_phone]"]', function () {
     jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
     jQuery(this).closest('div.form-row').removeClass('woocommerce-validated');
     jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+    jQuery(this).closest('div.form-row').find('.form-floating').removeClass('woocommerce-validated');
   } else {
     jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid');
     jQuery(this).closest('div.form-row').addClass('woocommerce-validated');

@@ -150,7 +150,11 @@ $userInfo = wp_get_current_user();
                     </div>
                     <div class="row mx-0 guest-checkout__primary-form-row">
                         <div class="col-md px-0 form-row">
-                            <div class="form-floating"><input type="email" name="guests[<?php echo $guest_num; ?>][guest_email]" class="form-control tt_guest_inputs" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value="<?php echo $guest['guest_email']; ?>" required="required"><label for="floatingInputGrid">Email</label></div>
+                            <div class="form-floating">
+                                <input type="email" name="guests[<?php echo $guest_num; ?>][guest_email]" class="form-control tt_guest_inputs" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value="<?php echo $guest['guest_email']; ?>" required="required">
+                                <label for="floatingInputGrid">Email</label>
+                                <div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid email address.</div>
+                            </div>
                         </div>
                         <div class="col-md px-0 form-row">
                             <div class="form-floating"><input type="text" class="form-control tt_guest_inputs" data-validation="phone" data-type="input" id="floatingInputGrid" name="guests[<?php echo $guest_num; ?>][guest_phone]" placeholder="Phone" value="<?php echo $guest['guest_phone']; ?>" required="required"><label for="floatingInputGrid">Phone</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div></div>
