@@ -159,7 +159,7 @@ if( $parent_product_id ){
 
 $pay_amount             = isset( $trek_checkoutData['pay_amount'] ) ? $trek_checkoutData['pay_amount'] : 'full';
 $cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) ? $trek_checkoutData['cart_total_full_amount'] : '';
-$cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_formatted_order_total( $order_item );
+$cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total( $order_item );
 ?>
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
