@@ -2062,9 +2062,19 @@ function tt_items_select_options($item_name = "", $optionId="")
         if ($options) {
             $opts .= '<option value="" data-value="' . $optionId . '">Select ' . $listName . '</option>';
 
-            // Reorder options order if item name is "syncPedals".
+            /**
+             * Reorder options order if item name is "syncPedals".
+             *
+             * 1 - Bringing own
+             * 2 - Cages
+             * 3 - Flat
+             * 9 - I don't know
+             * 4 - Non-Rider
+             * 7 - Shimano Mountain SPD Pedals
+             * 6 - Shimano Road SPD SL Pedals
+             */
             if ('syncPedals' === $item_name) {
-                // Find the "I don't know" option
+                // Find the "I don't know" option.
                 $donKnowOption = null;
                 foreach ($options as $option) {
                     if ($option['optionId'] == 9) {
@@ -2073,13 +2083,64 @@ function tt_items_select_options($item_name = "", $optionId="")
                     }
                 }
 
-                // Remove the "I don't know" option from its current position
-                if ($donKnowOption) {
-                    $index = array_search($donKnowOption, $options);
-                    unset($options[$index]);
+                // Remove the "I don't know" option from options list.
+                if ( $donKnowOption ) {
+                    $index = array_search( $donKnowOption, $options );
+                    unset( $options[$index] );
+                }
 
-                    // Insert the "I don't know" option in the first position
-                    array_unshift($options, $donKnowOption);
+                // Sort the options alphabetically in descending order.
+                $compare_by_option_value = function ( $a, $b ) {
+                    return strcmp( $b["optionValue"], $a["optionValue"] );
+                };
+
+                usort( $options, $compare_by_option_value );
+            }
+
+            /**
+             * Reorder options order if item name is "syncHelmets".
+             *
+             * 1 - Bringing own
+             * 4 - Kid's
+             * 6 - Large (58-63cm)
+             * 2 - Medium (54-60cm)
+             * 5 - Non-Rider
+             * 3 - Small (51-57cm)
+             * 7 - X-Large (60-66cm)
+             */
+            if ( 'syncHelmets' === $item_name ) {
+                // Find the "Kid's" option.
+                $kids_option = null;
+                foreach ( $options as $option ) {
+                    if ( 4 == $option['optionId'] ) {
+                        $kids_option = $option;
+                        break;
+                    }
+                }
+
+                // Find the "Non-Rider" option.
+                $non_rider_option = null;
+                foreach ( $options as $option ) {
+                    if ( 5 == $option['optionId'] ) {
+                        $non_rider_option = $option;
+                        break;
+                    }
+                }
+
+                // Remove the "Kid's" option from options list.
+                if( $kids_option ) {
+                    $index = array_search( $kids_option, $options );
+                    unset( $options[$index] );
+                }
+
+                if( $non_rider_option ) {
+                    $index = array_search( $non_rider_option, $options );
+
+                    // Remove the "Non-Rider" option from options list.
+                    unset( $options[$index] );
+
+                    // Add the "Non-Rider" option before last option.
+                    array_splice( $options, count( $options ) - 1, 0, array( $non_rider_option ) );
                 }
             }
 
