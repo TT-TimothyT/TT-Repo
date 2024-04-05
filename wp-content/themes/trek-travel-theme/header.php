@@ -176,7 +176,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 				</div>
 			<?php endif; ?>
 			<div class="account-in-header">
-				<a class="d-flex align-items-center" href="<?php echo is_user_logged_in() ? site_url('my-account') : site_url('register'); ?>"><i class="bi bi-person"></i></a>
+				<a class="d-flex align-items-center" href="<?php echo is_user_logged_in() ? site_url('my-account') : site_url('login'); ?>"><i class="bi bi-person"></i></a>
 			</div>
 			<a href="<?php echo site_url('bike-tours/all/') ?>" class="btn btn-primary find-a-trip">Find a trip</a>
 		</div>
