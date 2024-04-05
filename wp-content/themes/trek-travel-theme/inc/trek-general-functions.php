@@ -335,7 +335,7 @@ function custom_woocommerce_shipping_fields($fields)
         'clear' => false,
         'type' => 'select',
         'priority' => 24,
-        'options' => array(1 => 'Male', 2 => 'Female')
+        'options' => array('' => 'Select Gender', 1 => 'Male', 2 => 'Female')
     );
 
     return $fields;

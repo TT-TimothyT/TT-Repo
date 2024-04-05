@@ -43,10 +43,10 @@
                 "1": "Male"
             },
             "default_value": false,
-            "allow_null": 0,
-            "multiple": 0,
-            "ui": 0,
             "return_format": "value",
+            "multiple": 0,
+            "allow_null": 1,
+            "ui": 0,
             "ajax": 0,
             "placeholder": ""
         },
@@ -568,5 +568,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1706819746
+    "modified": 1712059219
 }

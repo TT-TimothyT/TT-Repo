@@ -115,6 +115,9 @@ $userInfo = wp_get_current_user();
             if ($key != 'custentity_gender') {
                 $field_html .= '<label for="shipping_' . $key . '">' . $field['placeholder'] . '</label>';
             }
+            if ($key == 'custentity_gender') {
+                $field_html .= '<label for="' . $key . '">' . $field['placeholder'] . '</label><div class="invalid-feedback"><img class="invalid-icon" /> Please select gender.</div>';
+            }
             if ($key == 'shipping_phone') {
                 $field_html .= '<div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div>';
             }
@@ -163,9 +166,15 @@ $userInfo = wp_get_current_user();
                     <div class="row mx-0 guest-checkout__primary-form-row">
                         <div class="col-md px-0 form-row">
                             <div class="form-floating"><select class="form-select tt_guest_inputs" data-validation="text" data-type="select" name="guests[<?php echo $guest_num; ?>][guest_gender]" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    <option value="" <?php echo ( empty( $guest['guest_gender'] ) ? 'selected' : '' ); ?>>Select Gender</option>
                                     <option value="1" <?php if ($guest['guest_gender'] == "1") echo "selected"; ?>>Male</option>
                                     <option value="2" <?php if ($guest['guest_gender'] == "2") echo "selected"; ?>>Female</option>
-                                </select><label for="floatingInputGrid">Gender</label></div>
+                                </select><label for="floatingInputGrid">Gender</label>
+                                <div class="invalid-feedback">
+                                    <img class="invalid-icon" />
+                                    Please select gender.
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md px-0 form-row">
                             <div class="form-floating"><input type="date" class="form-control tt_guest_inputs" data-validation="date" data-type="date" name="guests[<?php echo $guest_num; ?>][guest_dob]" class="form-control" id="floatingInputGrid" placeholder="Date of Birth" value="<?php echo $guest['guest_dob']; ?>" required="required"><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback"><img class="invalid-icon" /> Age must be 12 years old or above, Please enter correct date of birth.</div></div>

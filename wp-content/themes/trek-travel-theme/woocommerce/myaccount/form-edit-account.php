@@ -115,11 +115,16 @@ $phone  = get_user_meta($userInfo->ID, 'custentity_phone_number', true);
 								
 								<div class="col-md px-3">
 									<div class="form-floating">
-										<select name="account_gender" id="account_gender" class="form-select" autocomplete="address-level1" data-input-classes="" data-label="Gender" tabindex="-1" aria-hidden="true">
+										<select name="account_gender" id="account_gender" class="form-select" autocomplete="address-level1" data-input-classes="" data-label="Gender" tabindex="-1" aria-hidden="true" required>
+											<option value="" <?php echo ( empty( $gender ) ? 'selected' : '' ); ?>>Select Gender</option>
 											<option value="1" <?php echo ($gender == 1 ? 'selected' : ''); ?>>Male</option>
 											<option value="2" <?php echo ($gender == 2 ? 'selected' : ''); ?>>Female</option>
 										</select>
 										<label for="account_gender">Gender</label>
+										<div class="invalid-feedback">
+											<img class="invalid-icon" />
+											Please select gender.
+										</div>
 									</div>
 								</div>
 							</div>							
