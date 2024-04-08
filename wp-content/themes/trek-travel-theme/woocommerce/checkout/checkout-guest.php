@@ -64,7 +64,13 @@ $userInfo = wp_get_current_user();
                     $woo_field_value = $userInfo->user_email;
                 }
                 if ( $key == 'shipping_phone' ) {
-                    $woo_field_value = get_user_meta( $userInfo->ID, 'custentity_phone_number', true );
+                    $guest_phone_number = get_user_meta( $userInfo->ID, 'custentity_phone_number', true );
+                    
+                    if ( ! empty( tt_validate( $trek_user_checkout_posted['shipping_phone'] ) ) ) {
+                        $guest_phone_number = $trek_user_checkout_posted['shipping_phone'];
+                    }
+
+                    $woo_field_value = $guest_phone_number;
                 }
                 if ( $key == 'shipping_state' ) {
                     $field['custom_attributes']['required'] = "required";
@@ -77,13 +83,27 @@ $userInfo = wp_get_current_user();
                 $field['custom_attributes']['required'] = "required";
             }
             if ( $key === 'shipping_state' ) {
-                $country_val      = get_user_meta( get_current_user_id(), 'shipping_country', true );
-                $state_val        = get_user_meta( get_current_user_id(), 'shipping_state', true );
+                $country_val = get_user_meta( get_current_user_id(), 'shipping_country', true );
+                $state_val   = get_user_meta( get_current_user_id(), 'shipping_state', true );
+
+                if ( ! empty( tt_validate( $trek_user_checkout_posted['shipping_country'] ) ) ) {
+                    $country_val = $trek_user_checkout_posted['shipping_country'];
+                }
+
+                if ( ! empty( tt_validate( $trek_user_checkout_posted['shipping_state'] ) ) ) {
+                    $state_val = $trek_user_checkout_posted['shipping_state'];
+                }
+
                 $field['country'] = ! empty( $country_val ) ? $country_val : '';
                 $woo_field_value  = $state_val;
             }
             if ( $key === 'shipping_country' ) {
-                $country_val      = get_user_meta( get_current_user_id(), 'shipping_country', true );
+                $country_val = get_user_meta( get_current_user_id(), 'shipping_country', true );
+
+                if ( ! empty( tt_validate( $trek_user_checkout_posted['shipping_country'] ) ) ) {
+                    $country_val = $trek_user_checkout_posted['shipping_country'];
+                }
+
                 $field['country'] = ! empty( $country_val ) ? $country_val : '';
                 $woo_field_value  = $country_val;
             }

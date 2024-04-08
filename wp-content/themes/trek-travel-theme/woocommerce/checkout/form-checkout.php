@@ -166,15 +166,21 @@ $parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_tri
 							$guest_insurance_html .= '<div class="modal-body__guest">
 										<p class="mb-4 fw-medium">Primary Guest: ' . $primary_name . '</p>
 										<div class="d-flex align-items-center mb-4">
-											<input type="radio" class="guest_radio" name="trek_guest_insurance[primary][is_travel_protection]" value="1" ' . (isset($guest_insurance['primary']['is_travel_protection']) && $guest_insurance['primary']['is_travel_protection'] != 0 ? 'checked' : '') . '>
+											<input id="trek_guest_insurance_pr_add" type="radio" class="guest_radio" name="trek_guest_insurance[primary][is_travel_protection]" value="1" ' . (isset($guest_insurance['primary']['is_travel_protection']) && $guest_insurance['primary']['is_travel_protection'] != 0 ? 'checked' : '') . '>
 											<input type="hidden"  name="trek_guest_insurance[primary][basePremium]" value="' . (isset($guest_insurance['primary']['basePremium']) ? $guest_insurance['primary']['basePremium'] : 0) . '">
-											<label>Add Travel Protection <span class="fw-bold">(' . $basePremium . ')</span></label>
+											<label for="trek_guest_insurance_pr_add">Add Travel Protection <span class="fw-bold">(' . $basePremium . ')</span></label>
 										</div>
 										<div class="d-flex align-items-center">
-											<input type="radio" class="guest_radio" name="trek_guest_insurance[primary][is_travel_protection]" value="0" ' . (isset($guest_insurance['primary']['is_travel_protection']) && $guest_insurance['primary']['is_travel_protection'] == 0 ? 'checked' : '') . '>
-											<label>Decline Travel Protection</label>
+											<input id="trek_guest_insurance_pr_decline" type="radio" class="guest_radio" name="trek_guest_insurance[primary][is_travel_protection]" value="0" ' . (isset($guest_insurance['primary']['is_travel_protection']) && $guest_insurance['primary']['is_travel_protection'] == 0 ? 'checked' : '') . '>
+											<label for="trek_guest_insurance_pr_decline">Decline Travel Protection</label>
 										</div>
 									</div>';
+							if( empty( $guest_insurance['primary']['basePremium'] ) ) {
+								$guest_insurance_html .= '<div class="invalid-feedback travel-protection-feedback" style="display:block;">
+									<img class="invalid-icon">
+									Something went wrong during the calculation of the Travel Protection amount. Please double-check date of birth and address from step one to ensure they are entered correctly, and try again.
+								</div>';
+							}
 							if ($guests && !empty($guests)) {
 								foreach ($guests as $guest_k => $guest) {
 									$basePremium = (isset($guest_insurance["guests"][$guest_k]['basePremium']) ? $guest_insurance["guests"][$guest_k]['basePremium'] : 0);
@@ -182,15 +188,21 @@ $parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_tri
 									$guest_insurance_html .= '<hr><div class="modal-body__guest">
 												<p class="mb-4 fw-medium">Guest: ' . $guest['guest_fname'] . ' ' . $guest['guest_lname'] . '</p>
 												<div class="d-flex align-items-center mb-4">
-													<input type="radio" class="guest_radio" name="trek_guest_insurance[guests][' . $guest_k . '][is_travel_protection]" value="1" ' . (isset($guest_insurance["guests"][$guest_k]["is_travel_protection"]) && $guest_insurance["guests"][$guest_k]["is_travel_protection"] != 0 ? 'checked' : '') . '>
+													<input id="trek_guest_insurance_radio_add_' . $guest_k . '" type="radio" class="guest_radio" name="trek_guest_insurance[guests][' . $guest_k . '][is_travel_protection]" value="1" ' . (isset($guest_insurance["guests"][$guest_k]["is_travel_protection"]) && $guest_insurance["guests"][$guest_k]["is_travel_protection"] != 0 ? 'checked' : '') . '>
 													<input type="hidden" name="trek_guest_insurance[guests][' . $guest_k . '][basePremium]" value="' . (isset($guest_insurance["guests"][$guest_k]["basePremium"]) ? $guest_insurance["guests"][$guest_k]["basePremium"] : 0) . '">
-													<label>Add Travel Protection <span class="fw-bold">(' . $basePremium . ')</span></label>
+													<label for="trek_guest_insurance_radio_add_' . $guest_k . '">Add Travel Protection <span class="fw-bold">(' . $basePremium . ')</span></label>
 												</div>
 												<div class="d-flex align-items-center">
-													<input type="radio" class="guest_radio" name="trek_guest_insurance[guests][' . $guest_k . '][is_travel_protection]" value="0" ' . (isset($guest_insurance["guests"][$guest_k]["is_travel_protection"]) && $guest_insurance["guests"][$guest_k]["is_travel_protection"]  == 0 ? 'checked' : '') . '>
-													<label>Decline Travel Protection</label>
+													<input id="trek_guest_insurance_radio_decline_' . $guest_k . '" type="radio" class="guest_radio" name="trek_guest_insurance[guests][' . $guest_k . '][is_travel_protection]" value="0" ' . (isset($guest_insurance["guests"][$guest_k]["is_travel_protection"]) && $guest_insurance["guests"][$guest_k]["is_travel_protection"]  == 0 ? 'checked' : '') . '>
+													<label for="trek_guest_insurance_radio_decline_' . $guest_k . '">Decline Travel Protection</label>
 												</div>
 											</div>';
+									if( empty( $guest_insurance["guests"][$guest_k]['basePremium'] ) ) {
+										$insuredHTML .= '<div class="invalid-feedback travel-protection-feedback" style="display:block;">
+											<img class="invalid-icon">
+											Something went wrong during the calculation of the Travel Protection amount. Please double-check date of birth and address from step one to ensure they are entered correctly, and try again.
+										</div>';
+									}
 								}
 							}
 							//echo $guest_insurance_html;

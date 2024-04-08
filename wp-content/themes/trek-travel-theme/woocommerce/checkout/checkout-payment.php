@@ -70,8 +70,8 @@ $pay_amount              = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_a
         <h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-payment__title mb-3">Interested in Travel Protection? <i class="bi bi-info-circle checkout-travel-protection-tooltip"></i></h5>
         <p class="fs-sm checkout-payment__sublabel mb-0">In order to help protect you, your traveling party, and your trip investment, we recommend that you add travel protection to your reservation. For your convenience, Trek Travel offers this protection with a wide range of benefits through Arch RoamRight comprehensive line of insurance programs.</p>
         <div class="checkout-payment__checkbox d-flex align-items-lg-center">
-            <input type="checkbox" class="protection_modal protection_modal_ev">
-            <label>I am interested in Trek Travel's Travel Protection Plan</label>
+            <input id="protection_modal_checkbox" type="checkbox" class="protection_modal protection_modal_ev">
+            <label for="protection_modal_checkbox">I am interested in Trek Travel's Travel Protection Plan</label>
         </div>
     </div>
     <div class="checkout-payment__added-travel <?php if (empty($guest_insurance_html)) echo 'd-none'; ?>">
@@ -184,8 +184,8 @@ $pay_amount              = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_a
     <div class="checkout-payment__billing">
         <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4">Billing Address</h5>
         <div class="d-flex align-items-lg-center checkout-payment__billing-checkbox">
-            <input type="checkbox" class="billing_checkbox" name="is_same_billing_as_mailing" value="1" <?php if (isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1) echo 'checked'; ?>>
-            <label>Same as my mailing address</label>
+            <input id="is_same_billing_as_mailing_checkbox" type="checkbox" class="billing_checkbox" name="is_same_billing_as_mailing" value="1" <?php if (isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1) echo 'checked'; ?>>
+            <label for="is_same_billing_as_mailing_checkbox">Same as my mailing address</label>
         </div>
         <?php
         $fields = $woocommerce->checkout->get_checkout_fields('billing');
@@ -220,15 +220,82 @@ $pay_amount              = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_a
                         $woo_field_value = $tt_posted[$key];
                     }
                     if( $key === 'billing_state' ) {
-                        $country_val      = get_user_meta( get_current_user_id(), 'billing_country', true );
-                        $state_val        = get_user_meta( get_current_user_id(), 'billing_state', true );
+                        $country_val = get_user_meta( get_current_user_id(), 'billing_country', true );
+                        $state_val   = get_user_meta( get_current_user_id(), 'billing_state', true );
+
+                        if ( ! empty( tt_validate( $tt_posted['billing_country'] ) ) ) {
+                            $country_val = $tt_posted['billing_country'];
+                        }
+        
+                        if ( ! empty( tt_validate( $tt_posted['billing_state'] ) ) ) {
+                            $state_val = $tt_posted['billing_state'];
+                        }
+
                         $field['country'] = ! empty( $country_val ) ? $country_val : '';
                         $woo_field_value  = $state_val;
                     }
                     if ( $key === 'billing_country' ) {
-                        $country_val      = get_user_meta( get_current_user_id(), 'billing_country', true );
+                        $country_val = get_user_meta( get_current_user_id(), 'billing_country', true );
+
+                        if ( ! empty( tt_validate( $tt_posted['billing_country'] ) ) ) {
+                            $country_val = $tt_posted['billing_country'];
+                        }
+
                         $field['country'] = ! empty( $country_val ) ? $country_val : '';
                         $woo_field_value  = $country_val;
+                    }
+                    if( isset( $tt_posted['is_same_billing_as_mailing'] ) && $tt_posted['is_same_billing_as_mailing'] == 1 ) {
+                        // Use the same address as shipping.
+                        if( 'billing_first_name' === $key ) {
+                            $woo_field_value = $tt_posted['shipping_first_name'];
+                        }
+
+                        if( 'billing_last_name' === $key ) {
+                            $woo_field_value = $tt_posted['shipping_last_name'];
+                        }
+
+                        if( 'billing_address_1' === $key ) {
+                            $woo_field_value = $tt_posted['shipping_address_1'];
+                        }
+
+                        if( 'billing_address_2' === $key ) {
+                            $woo_field_value = $tt_posted['shipping_address_2'];
+                        }
+                        
+                        if( 'billing_state' === $key ) {
+                            $country_val = get_user_meta( get_current_user_id(), 'shipping_country', true );
+                            $state_val   = get_user_meta( get_current_user_id(), 'shipping_state', true );
+                            
+                            if ( ! empty( tt_validate( $tt_posted['shipping_country'] ) ) ) {
+                                $country_val = $tt_posted['shipping_country'];
+                            }
+                            
+                            if ( ! empty( tt_validate( $tt_posted['shipping_state'] ) ) ) {
+                                $state_val = $tt_posted['shipping_state'];
+                            }
+                            
+                            $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                            $woo_field_value  = $state_val;
+                        }
+                        
+                        if( 'billing_country' === $key ) {
+                            $country_val = get_user_meta( get_current_user_id(), 'shipping_country', true );
+                            
+                            if ( ! empty( tt_validate( $tt_posted['shipping_country'] ) ) ) {
+                                $country_val = $tt_posted['shipping_country'];
+                            }
+                            
+                            $field['country'] = ! empty( $country_val ) ? $country_val : '';
+                            $woo_field_value  = $country_val;
+                        }
+                        
+                        if( 'billing_city' === $key ) {
+                            $woo_field_value = $tt_posted['shipping_city'];
+                        }
+
+                        if( 'billing_postcode' === $key ) {
+                            $woo_field_value = $tt_posted['shipping_postcode'];
+                        }
                     }
                     $field_input = woocommerce_form_field($key, $field, $woo_field_value);
                     $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);
@@ -279,8 +346,8 @@ $pay_amount              = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_a
             <p class="mb-0"></p>
         </div>
         <div class="d-flex checkout-payment__billing-checkboxtwo">
-            <input type="checkbox" name="is_saved_billing" value="1" <?php if ( isset($tt_posted['is_saved_billing']) &&  $tt_posted['is_saved_billing'] == 1) echo 'checked'; ?>>
-            <label class="w-75">Save this billing address for future use. This will override your existing billing address saved on your profile.</label>
+            <input id="is_saved_billing_checkbox" type="checkbox" name="is_saved_billing" value="1" <?php if ( isset($tt_posted['is_saved_billing']) &&  $tt_posted['is_saved_billing'] == 1) echo 'checked'; ?>>
+            <label for="is_saved_billing_checkbox" class="w-75">Save this billing address for future use. This will override your existing billing address saved on your profile.</label>
         </div>
     </div>
     <hr>
@@ -299,8 +366,8 @@ $pay_amount              = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_a
             </div>
         <?php endif; ?>
         <div class="d-flex checkout-payment__billing-checkboxtwo">
-            <input class="tt_waiver_check" type="checkbox" name="tt_waiver" value="1" <?php if (isset($tt_posted['tt_waiver']) && $tt_posted['tt_waiver'] == 1) echo 'checked'; ?> required="required">
-            <label>By checking “I Agree” I acknowledge that I have read, understand and agree to this Release Form and Cancellation Policy.</label>
+            <input id="tt_waiver_checkbox" class="tt_waiver_check" type="checkbox" name="tt_waiver" value="1" <?php if (isset($tt_posted['tt_waiver']) && $tt_posted['tt_waiver'] == 1) echo 'checked'; ?> required="required">
+            <label for="tt_waiver_checkbox">By checking “I Agree” I acknowledge that I have read, understand and agree to this Release Form and Cancellation Policy.</label>
         </div>
         <div class="invalid-feedback tt_waiver_required">
             <img class="invalid-icon" />

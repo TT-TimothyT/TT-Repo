@@ -2027,6 +2027,11 @@ function tt_set_calculate_insurance_fees_api($trek_insurance_args)
         }
     }
     $res['basePremium'] = $basePremium;
+    $res_mess_arr       = json_decode( isset( $res['message']['body'] ) ? $res['message']['body'] : '', true );
+    if( isset( $res_mess_arr['quotes'] ) ) {
+        unset( $res_mess_arr['quotes'] );
+    }
+    tt_add_error_log( '[Arch insurance]', $trek_insurance_args, array( 'message->body' => $res_mess_arr ) );
     return $res;
 }
 /**
@@ -6620,32 +6625,6 @@ function tt_netsuite_customer_address_data_cb( $address_data, $customer_id ) {
     return $address_data;
 }
 add_filter( 'tm_netsuite_customer_address_data', 'tt_netsuite_customer_address_data_cb', 10, 2 );
-
-function tt_maybe_required_fields( $fields) {
-    $maybe_required                                      = true;
-    $fields['billing']['billing_first_name']['required'] = $maybe_required;
-    $fields['billing']['billing_last_name']['required']  = $maybe_required;
-    $fields['billing']['billing_address_1']['required']  = $maybe_required;
-    $fields['billing']['billing_country']['required']    = $maybe_required;
-    $fields['billing']['billing_state']['required']      = $maybe_required;
-    $fields['billing']['billing_city']['required']       = $maybe_required;
-    $fields['billing']['billing_postcode']['required']   = $maybe_required;
-
-    if ( isset( $_REQUEST['is_same_billing_as_mailing'] ) && '1' === $_REQUEST['is_same_billing_as_mailing'] ) {
-        $maybe_required                                      = false;
-        $fields['billing']['billing_first_name']['required'] = $maybe_required;
-        $fields['billing']['billing_last_name']['required']  = $maybe_required;
-        $fields['billing']['billing_address_1']['required']  = $maybe_required;
-        $fields['billing']['billing_country']['required']    = $maybe_required;
-        $fields['billing']['billing_state']['required']      = $maybe_required;
-        $fields['billing']['billing_city']['required']       = $maybe_required;
-        $fields['billing']['billing_postcode']['required']   = $maybe_required;
-        $fields['billing']['billing_postcode']['value']      = '';
-    }
-
-    return $fields;
-}
-add_filter( 'woocommerce_checkout_fields', 'tt_maybe_required_fields', 11 );
 
 /**
  * Sync the user with NetSuite,

@@ -259,6 +259,13 @@ function checkout_steps_validations(step = 1) {
         jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
       }
     });
+    tt_validate_duplicate_email();
+    // Trigger billing adress population if we have is_same_billing_as_mailing checked on step 3.
+    let isMailingChecked  = jQuery('input[name="is_same_billing_as_mailing"]').is(':checked');
+    if( isMailingChecked == true ){
+      adjustBillingAdress();
+      jQuery('.billing_checkbox').trigger('change');
+    }
   }
   if (step == 2) {
     checkout_steps_validations(1);
@@ -352,10 +359,14 @@ function checkout_steps_validations(step = 1) {
         if( isMailingChecked == true && sameMailingInputs.includes(CurrentName) == true ){
             jQuery(`input[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-invalid');
             jQuery(`input[name="${CurrentName}"]`).closest('div').addClass('woocommerce-validated');
+            jQuery(`select[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-invalid');
+            jQuery(`select[name="${CurrentName}"]`).closest('div').addClass('woocommerce-validated');
         }else{
           if (CurrentVal == '' || CurrentVal == undefined) {
             jQuery(`input[name="${CurrentName}"]`).closest('div').addClass('woocommerce-invalid');
             jQuery(`input[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-validated');
+            jQuery(`select[name="${CurrentName}"]`).closest('div').addClass('woocommerce-invalid');
+            jQuery(`select[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-validated');
             isValidated = true;
             if (CurrentName == "tt_waiver") {
               jQuery('.tt_waiver_required').css('display', "block")
@@ -364,6 +375,8 @@ function checkout_steps_validations(step = 1) {
           } else {
             jQuery(`input[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-invalid');
             jQuery(`input[name="${CurrentName}"]`).closest('div').addClass('woocommerce-validated');
+            jQuery(`select[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-invalid');
+            jQuery(`select[name="${CurrentName}"]`).closest('div').addClass('woocommerce-validated');
             if (CurrentName == "tt_waiver") {
               jQuery('.tt_waiver_required').css('display', "none")
             }
@@ -2837,38 +2850,44 @@ jQuery(document).on('change', 'select[name^="occupants["]', function () {
     }
   });
 });
-jQuery(document).on('click', 'input[name="is_same_billing_as_mailing"]', function () {
-  var isMailingChecked = jQuery('input[name="is_same_billing_as_mailing"]').is(':checked');
-  var shipping_fname = jQuery('input[name="shipping_first_name"]').val();
-  var shipping_lname = jQuery('input[name="shipping_last_name"]').val();
-  var shipping_add1 = jQuery('input[name="shipping_address_1"]').val();
-  var shipping_add2 = jQuery('input[name="shipping_address_2"]').val();
-  var shipping_country = jQuery('select[name="shipping_country"]').val();
-  var shipping_city = jQuery('input[name="shipping_city"]').val();
-  var shipping_state = jQuery('select[name="shipping_state"]').val();
-  var shipping_postcode = jQuery('input[name="shipping_postcode"]').val();
+jQuery(document).on('click', 'input[name="is_same_billing_as_mailing"]', adjustBillingAdress);
+function adjustBillingAdress() {
+  var isMailingChecked  = jQuery('input[name="is_same_billing_as_mailing"]').is(':checked');
+
+  var shipping_fname     = jQuery('input[name="shipping_first_name"]').val();
+  var shipping_lname     = jQuery('input[name="shipping_last_name"]').val();
+  var shipping_add1      = jQuery('input[name="shipping_address_1"]').val();
+  var shipping_add2      = jQuery('input[name="shipping_address_2"]').val();
+  var shipping_country   = jQuery('select[name="shipping_country"]').val();
+  var shipping_city      = jQuery('input[name="shipping_city"]').val();
+  var shipping_state_sel = jQuery('select[name="shipping_state"]').val();
+  var shipping_state_inp = jQuery('input[name="shipping_state"]').val();
+  var shipping_postcode  = jQuery('input[name="shipping_postcode"]').val();
   
-  var billingCountry = jQuery('select[name="billing_country"]').val()
-  var billingState = jQuery('select[name="billing_state"]').val()
-  var billingAddress1 = jQuery('input[name="billing_address_1"]').val();
-  var billingAddress2 = jQuery('input[name="billing_address_2"]').val();
-  var billingCity = jQuery('input[name="billing_city"]').val();
-  var billingPostcode = jQuery('input[name="billing_postcode"]').val();
+  var billingFirstName = jQuery('input[name="billing_first_name"]').val();
+  var billingLastName  = jQuery('input[name="billing_last_name"]').val();
+  var billingAddress1  = jQuery('input[name="billing_address_1"]').val();
+  var billingAddress2  = jQuery('input[name="billing_address_2"]').val();
+  var billingCountry   = jQuery('select[name="billing_country"]').val()
+  var billingCity      = jQuery('input[name="billing_city"]').val();
+  var billingStateSel  = jQuery('select[name="billing_state"]').val()
+  var billingStateInp  = jQuery('input[name="billing_state"]').val()
+  var billingPostcode  = jQuery('input[name="billing_postcode"]').val();
   
-  if( isMailingChecked == true ){
+  if( isMailingChecked == true ) {
     jQuery('input[name="billing_first_name"]').val(shipping_fname);
     jQuery('input[name="billing_last_name"]').val(shipping_lname);
     jQuery('input[name="billing_address_1"]').val(shipping_add1);
     jQuery('input[name="billing_address_2"]').val(shipping_add2);
+    jQuery('select[name="billing_country"]').val(shipping_country).trigger('change');
     jQuery('input[name="billing_city"]').val(shipping_city);
-
-    jQuery('select[name="billing_country"]').val(shipping_country);
-
-    jQuery('input[name="billing_state"]').val(shipping_state);
-
+    jQuery('select[name="billing_state"]').val(shipping_state_sel);
+    jQuery('input[name="billing_state"]').val(shipping_state_inp);
     jQuery('input[name="billing_postcode"]').val(shipping_postcode);
-  }else{
-    if (billingCountry == '') {
+  } else {
+    if ( billingCountry == '' ) {
+      jQuery('input[name="billing_first_name"]').val('').trigger('change');
+      jQuery('input[name="billing_last_name"]').val('').trigger('change');
       jQuery('select[name="billing_country"]').val('').trigger('change');
       jQuery('select[name="billing_state"]').val('').trigger('change');
       jQuery('input[name="billing_state"]').val('').trigger('change');
@@ -2877,24 +2896,18 @@ jQuery(document).on('click', 'input[name="is_same_billing_as_mailing"]', functio
       jQuery('input[name="billing_city"]').val('').trigger('change');
       jQuery('input[name="billing_postcode"]').val('').trigger('change');
     } else {
-      jQuery('select[name="billing_state"]').val(billingState);
-      jQuery('input[name="billing_state"]').val(billingState);
-      jQuery('select[name="billing_country"]').val(billingCountry);
+      jQuery('input[name="billing_first_name"]').val(billingFirstName);
+      jQuery('input[name="billing_last_name"]').val(billingLastName);
+      jQuery('select[name="billing_country"]').val(billingCountry).trigger('change');
+      jQuery('select[name="billing_state"]').val(billingStateSel);
+      jQuery('input[name="billing_state"]').val(billingStateInp);
       jQuery('input[name="billing_address_1"]').val(billingAddress1);
       jQuery('input[name="billing_address_2"]').val(billingAddress2);
       jQuery('input[name="billing_city"]').val(billingCity);
       jQuery('input[name="billing_postcode"]').val(billingPostcode);
     }
-    // jQuery('input[name="billing_first_name"]').val('');
-    // jQuery('input[name="billing_last_name"]').val('');
-    // jQuery('input[name="billing_address_1"]').val('');
-    // jQuery('input[name="billing_address_2"]').val('');
-    // jQuery('select[name="billing_country"]').trigger('change');
-    // jQuery('input[name="billing_city"]').val('');
-    // jQuery('select[name="billing_state"]').trigger('change');
-    // jQuery('input[name="billing_postcode"]').val('');
   }
-});
+}
 jQuery('body').on('click', '.bike_selectionElementchk', function () {
   var bikeTypeId = jQuery(this).attr('data-id');
   var order_id = jQuery('input[name="wc_order_id"]').val();
@@ -3146,6 +3159,9 @@ jQuery('button[data-bs-target="#protection_modal"], input.protection_modal_ev').
     data: "&action=" + action,
     dataType: 'json',
     beforeSend: function () {
+      jQuery('.travel-protection-feedback').each(function() {
+        jQuery(this).css('display', '');
+      })
       jQuery('#protection_modal .modal-content').block({
         css: {
           border: 'none',
