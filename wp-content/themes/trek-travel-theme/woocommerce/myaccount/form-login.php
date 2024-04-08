@@ -32,6 +32,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 <div class="row">
       <div class="offset-lg-4 col-lg-4 login-form">
          <h2 class="login-title"><?php esc_html_e( 'Sign In', 'trek-travel-theme' ); ?></h2>
+         <p class="re-register-info">Welcome to Trek Travel's updated website. Existing account holders must reset their passwords. Please click <i>'forgot password'</i> and follow the instructions to regain account access. <br><br> Do not have an account? Sign-up below to update your preferences, see upcoming trips, and much more.</strong></p>
          <form class="woocommerce-form woocommerce-form-login login needs-validation" method="post" novalidate>
             <?php do_action( 'woocommerce_login_form_start' ); ?>
             
