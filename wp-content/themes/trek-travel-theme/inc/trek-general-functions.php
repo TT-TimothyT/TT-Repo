@@ -1224,8 +1224,9 @@ function trek_trek_login_action_cb()
         'message' => '',
         'redirect' => $redirect_url
     );
-    $email = $_REQUEST['email'];
-    $password = $_REQUEST['password'];
+    $email         = $_REQUEST['email'];
+    $password      = $_REQUEST['password'];
+    $is_rememberme = isset( $_REQUEST['is_rememberme'] ) && 'true' === $_REQUEST['is_rememberme'] ? true : false;
     if (!isset($_POST['woocommerce-login-nonce']) || !wp_verify_nonce($_POST['woocommerce-login-nonce'], 'woocommerce-login')) {
         $res['message'] = "Sorry, your nonce did not verify.";
     } elseif (!isset($email) && empty($email)) {
@@ -1244,9 +1245,13 @@ function trek_trek_login_action_cb()
             'remember' => true
         );
         $user = wp_signon($creds, false);
-        if (is_wp_error($user)) {
+        if ( is_wp_error( $user ) ) {
             $res['message'] = $user->get_error_message();
         } else {
+            if( isset( $user->ID ) && ! empty( $user->ID ) ) {
+                wp_clear_auth_cookie();
+                wp_set_auth_cookie( $user->ID, $is_rememberme ); // Set auth details in cookie.
+            }
             $res['status'] = true;
             $res['message'] = "You have successfully loggedin!";
         }

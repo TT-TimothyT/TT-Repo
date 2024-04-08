@@ -997,10 +997,11 @@ jQuery(document).ready(function () {
     console.log(1);
       var formData = jQuery('form.woocommerce-form-login').serialize();
       var action = 'trek_login_action';
+      var is_rememberme = jQuery('form.woocommerce-form-login input[name="rememberme"]').is(':checked');
       jQuery.ajax({
         type: 'POST',
         url: trek_JS_obj.ajaxURL,
-        data: formData + "&action=" + action,
+        data: formData + "&action=" + action + "&is_rememberme=" + is_rememberme,
         dataType: 'json',
         beforeSend: function () {
           console.log(2);

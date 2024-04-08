@@ -152,6 +152,9 @@ function trek_login_form()
             </div>
             <?php do_action('woocommerce_login_form'); ?>
             <div class="form-group">
+               <label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme mb-3">
+                  <input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" id="rememberme" value="forever" /> <span><?php esc_html_e( 'Remember me', 'woocommerce' ); ?></span>
+               </label>
                <?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
                <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-primary" name="login" value="<?php esc_attr_e('Sign in', 'trek-travel-theme'); ?>"><?php esc_html_e('Sign in', 'trek-travel-theme'); ?></button>
                <input type="hidden" name="http_referer" value="<?php echo $redirect_url; ?>">
