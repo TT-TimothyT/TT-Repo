@@ -104,6 +104,14 @@ foreach( $get_child_products as $year => $get_child_product ) {
 
             if( $trip_start_date && $trip_start_date > $today_date ) {
 
+                // Check child product is marked as Private/Custom trip.
+                $is_private_custom_trip = get_field( 'is_private_custom_trip', $child_product_data['product_id'] );
+
+                // If the child product is marked as a private/custom trip, continue to the next one.
+                if( true == $is_private_custom_trip ) {
+                    continue;
+                }
+
                 if( ! isset( $available_child_products[ $year ] ) ) {
                     // Make a new array for every year.
                     $available_child_products[ $year ] = array();

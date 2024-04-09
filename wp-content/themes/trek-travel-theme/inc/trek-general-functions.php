@@ -6333,6 +6333,14 @@ function tt_get_lowest_starting_from_price( $id = 0 ) {
                                     continue;
                                 }
 
+                                // Check child product is marked as Private/Custom trip.
+                                $is_private_custom_trip = get_field( 'is_private_custom_trip', $child_product_details['product_id'] );
+
+                                // If the child product is marked as a private/custom trip, continue to the next one.
+                                if( true == $is_private_custom_trip ) {
+                                    continue;
+                                }
+
                                 // Store the prices of all available trips.
                                 array_push( $available_prices, $child_product_details['price'] );
                             }
@@ -6768,3 +6776,53 @@ function tt_get_deposit_info( $sku = '', $guests_number = 1, $insurance_amount =
         'deposit_allowed'=> $deposit_allowed
     );
 }
+
+/**
+ * Set noindex and nofollow Yoast meta,
+ * if any product marked as Private/Custom trip.
+ *
+ * Will set a flag for modified Yoast meta
+ * to restore initial values after unchecking the trip.
+ *
+ * @param int     $post_id Post ID.
+ * @param WP_Post $post    Post object.
+ * @param bool    $update  Whether this is an existing post being updated.
+ *
+ * @return void
+ */
+function tt_on_insert_update_post_cb( $post_id, $post, $update ) {
+    if ( $post->post_status != 'publish' || $post->post_type != 'product' ) {
+        return;
+    }
+
+    // If the post is not product return.
+    if ( ! $product = wc_get_product( $post ) ) {
+        return;
+    }
+
+    // Check product is marked as Private/Custom trip.
+    $is_private_custom_trip = get_field( 'is_private_custom_trip', $post );
+
+    if( $is_private_custom_trip ) {
+        // Update Yoast meta for noindex.
+        update_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex', 1 );
+        // Update Yoast meta for nofollow.
+        update_post_meta( $post_id, '_yoast_wpseo_meta-robots-nofollow', 1 );
+
+        // Create a Flag for Modified Yoast meta.
+        update_post_meta( $post_id, 'tt_yoast_wpseo_meta-robots-has-been-modified', 1 );
+    } else {
+        // Add check if has modified Yoast meta, to restore initial values.
+        $is_yoast_meta_has_been_modified = get_post_meta( $post_id, 'tt_yoast_wpseo_meta-robots-has-been-modified', true );
+
+        if( $is_yoast_meta_has_been_modified ) {
+            // Return the initial state of the Yoast meta robots tags.
+            delete_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex' );
+            delete_post_meta( $post_id, '_yoast_wpseo_meta-robots-nofollow' );
+
+            // Remove the modified flag.
+            delete_post_meta( $post_id, 'tt_yoast_wpseo_meta-robots-has-been-modified' );
+        }
+    }
+}
+add_action( 'wp_insert_post', 'tt_on_insert_update_post_cb', 10, 3 );

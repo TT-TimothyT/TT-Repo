@@ -357,7 +357,11 @@ final class Algolia_Searchable_Posts_Index extends Algolia_Index {
 					if ($children) {
 						foreach ($children as $index => $child) {
 							$child_products[$index] = wc_get_product($child);
-							if ($child_products[$index]){
+
+							// Check child product is marked as Private/Custom trip.
+							$is_private_custom_trip = get_field( 'is_private_custom_trip', $child );
+
+							if ( $child_products[$index] && true != $is_private_custom_trip ){
 
 								if ($child_products[$index]->get_regular_price()) {
 									$rolling_price[$index] = $child_products[$index]->get_regular_price();

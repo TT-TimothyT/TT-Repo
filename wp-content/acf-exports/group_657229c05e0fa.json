@@ -3,6 +3,26 @@
     "title": "PDP",
     "fields": [
         {
+            "key": "field_6613de9139831",
+            "label": "Is Private\/Custom Trip?",
+            "name": "is_private_custom_trip",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Check the box if you do not want this trip to be indexed by Algolia and Google. It will also be hidden as a booking date from the PDP page.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
             "key": "field_65aebb0c08843",
             "label": "Activity",
             "name": "Activity",
@@ -2158,5 +2178,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1710278039
+    "modified": 1712581768
 }
