@@ -179,6 +179,7 @@ add_shortcode('trek-forgot-password', 'trek_forgot_password_form');
 function trek_forgot_password_form()
 {
    do_action('woocommerce_before_lost_password_form');
+   $google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP' );
 ?>
    <div class="row">
       <div class="offset-lg-4 col-lg-4 reset-form">
@@ -191,6 +192,13 @@ function trek_forgot_password_form()
                <div class="invalid-feedback">
                   <img class="invalid-icon" />
                   Please enter valid email address.
+               </div>
+            </div>
+            <div class="form-group my-4">
+               <div class="g-recaptcha" data-sitekey="<?php echo $google_api_key; ?>"></div>
+               <div class="invalid-feedback invalid-captcha">
+                  <img class="invalid-icon" />
+                  Please complete captcha verification.
                </div>
             </div>
             <?php do_action('woocommerce_lostpassword_form'); ?>
