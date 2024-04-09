@@ -8,6 +8,13 @@ $product_overview = get_field('product_overview');
 $pdp_bikes = get_field('bikes');
 $activity_tax = get_field('Activity');
 $activity = $activity_tax->name;
+
+// $product->is_type( $type ) checks the product type, string/array $type ( 'simple', 'grouped', 'variable', 'external' ), returns boolean
+$is_simple_product = $product->is_type( 'simple' );
+
+// Check child product is marked as Private/Custom trip.
+$is_private_custom_trip = get_field( 'is_private_custom_trip', $product->id );
+
 ?>
 
 
@@ -85,7 +92,18 @@ if ($product_overview) :
                     </span>
                     <span class="fw-normal fs-sm">per person</span>
                 </p>
-                <a class="btn btn-primary btn-lg rounded-1 w-100" href="#dates-pricing">See dates</a>
+                <?php
+                    // Show Book now button if the product is simple and marked as Private/Custom trip.
+                    if( $is_simple_product && $is_private_custom_trip ):
+                ?>
+                    <form class="cart grouped_form" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ) ?>" method="post" enctype="multipart/form-data" target="_blank">
+                        <button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip=<?php echo $product->name ?>">Book now</button>                                    
+                        <input type="hidden" name="<?php echo esc_attr( 'quantity[' . $product->id . ']' ) ?>" value="1" class="wc-grouped-product-add-to-cart-checkbox" />
+                        <input type="hidden" name="add-to-cart" value="<?php echo $product->id ?>" />
+                    </form>
+                <?php else: ?>
+                    <a class="btn btn-primary btn-lg rounded-1 w-100" href="#dates-pricing">See dates</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
