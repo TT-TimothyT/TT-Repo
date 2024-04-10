@@ -8,7 +8,7 @@
             "name": "is_private_custom_trip",
             "aria-label": "",
             "type": "true_false",
-            "instructions": "Check the box if you do not want this trip to be indexed by Algolia and Google. It will also be hidden as a booking date from the PDP page.",
+            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "message": "",
+            "message": "Check the box if you do not want this PDP trips page to be indexed by Algolia and Google.",
             "default_value": 0,
             "ui": 0,
             "ui_on_text": "",
@@ -2178,5 +2178,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1712581768
+    "modified": 1712672015
 }

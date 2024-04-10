@@ -6826,3 +6826,25 @@ function tt_on_insert_update_post_cb( $post_id, $post, $update ) {
     }
 }
 add_action( 'wp_insert_post', 'tt_on_insert_update_post_cb', 10, 3 );
+
+/**
+ * Disable indexing in Algolia for posts that are marked as Private/Custom trips.
+ *
+ * @param bool $flag Current state of the post.
+ * @param WP_Post $post The post.
+ *
+ * @return bool Is it should index the post in Algolia.
+ */
+function tt_disable_algolia_for_private_custom_trips( $flag, WP_Post $post ) {
+
+    $is_private_custom_trip = get_field( 'is_private_custom_trip', $post->ID );
+
+    if( true == $is_private_custom_trip ) {
+        return false;
+    }
+
+    return $flag;
+}
+
+add_filter( 'algolia_should_index_post', 'tt_disable_algolia_for_private_custom_trips', 10, 2 );
+add_filter( 'algolia_should_index_searchable_post', 'tt_disable_algolia_for_private_custom_trips', 10, 2 );

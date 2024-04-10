@@ -354,14 +354,25 @@ final class Algolia_Searchable_Posts_Index extends Algolia_Index {
 						}
 					}
 					$children = $product->get_children();
-					if ($children) {
-						foreach ($children as $index => $child) {
+					if ( $children ) {
+
+						// Take all child products that are not marked as Private/Custom trips.
+						$filtered_children = array_values(
+							array_filter(
+								$children,
+								function( $child_product_id ) {
+									// Check child product is marked as Private/Custom trip.
+									$is_private_custom_trip = get_field( 'is_private_custom_trip', $child_product_id );
+
+									return ( true != $is_private_custom_trip );
+								}
+							)
+						);
+
+						foreach ($filtered_children as $index => $child) {
 							$child_products[$index] = wc_get_product($child);
 
-							// Check child product is marked as Private/Custom trip.
-							$is_private_custom_trip = get_field( 'is_private_custom_trip', $child );
-
-							if ( $child_products[$index] && true != $is_private_custom_trip ){
+							if ( $child_products[$index] ) {
 
 								if ($child_products[$index]->get_regular_price()) {
 									$rolling_price[$index] = $child_products[$index]->get_regular_price();
