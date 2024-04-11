@@ -123,15 +123,6 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 					<p class="fs-sm lh-sm fw-normal">Manage your email and mail subscriptions</p>
 				</div>
 			</div>
-			<div class="card mb-5 dashboard__card rounded-1">
-				<div class="card-body pb-0">
-					<div class="d-flex justify-content-between align-items-baseline mb-2">
-						<h5 class="card-title fw-bold mb-2">Payment Information</h5>
-						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/payment-methods'); ?>">Edit</a>
-					</div>
-					<p class="fs-sm lh-sm fw-normal">Manage your payment methods</p>
-				</div>
-			</div>
 		</div>
 		
 		<div class="col-lg-4">
