@@ -6322,6 +6322,8 @@ function tt_get_lowest_starting_from_price( $id = 0 ) {
                             foreach( $child_product_data as $index => $child_product_details ){
                                 ksort( $child_product_details, 1 );
 
+                                // print_r($child_product_details);
+
                                 $today_date = new DateTime('now');
 
                                 // 'start_date' => string '11/12/23' d/m/y
@@ -6341,6 +6343,11 @@ function tt_get_lowest_starting_from_price( $id = 0 ) {
                                     continue;
                                 }
 
+                                // If Trip Status is Private skip for pricing
+                                if( $child_product_details['trip_status'] == 'Private' ) {
+                                    continue;
+                                }
+                                
                                 // Store the prices of all available trips.
                                 array_push( $available_prices, $child_product_details['price'] );
                             }
