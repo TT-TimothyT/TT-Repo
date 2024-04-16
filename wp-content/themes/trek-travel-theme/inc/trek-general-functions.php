@@ -6322,8 +6322,6 @@ function tt_get_lowest_starting_from_price( $id = 0 ) {
                             foreach( $child_product_data as $index => $child_product_details ){
                                 ksort( $child_product_details, 1 );
 
-                                // print_r($child_product_details);
-
                                 $today_date = new DateTime('now');
 
                                 // 'start_date' => string '11/12/23' d/m/y
