@@ -734,7 +734,7 @@ final class Algolia_Searchable_Posts_Index extends Algolia_Index {
 		$query = new WP_Query(
 			array(
 				'post_type'              => $this->post_types,
-				'posts_per_page'         => 24,
+				'posts_per_page'         => $batch_size,
 				'post_status'            => 'any',
 				'order'                  => 'ASC',
 				'orderby'                => 'ID',

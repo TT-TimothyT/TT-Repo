@@ -6853,3 +6853,24 @@ function tt_disable_algolia_for_private_custom_trips( $flag, WP_Post $post ) {
 
 add_filter( 'algolia_should_index_post', 'tt_disable_algolia_for_private_custom_trips', 10, 2 );
 add_filter( 'algolia_should_index_searchable_post', 'tt_disable_algolia_for_private_custom_trips', 10, 2 );
+
+/**
+ * Prevent execution of [trek-my-trip] shortcode on My Trips Page,
+ * during Algolia reindexes process.
+ *
+ * @param string  $post_content The post content.
+ * @param WP_Post $post         The post to get records for.
+ *
+ * @return bool Is it should index the post in Algolia.
+ */
+function tt_modify_algolia_searchable_post_content( $post_content, WP_Post $post ) {
+
+    if( strpos( $post_content, '[trek-my-trip]' ) !== false ) {
+        // Return empty content to prevent shortcode execution.
+        return '';
+    }
+
+    return $post_content;
+}
+
+add_filter( 'algolia_searchable_post_content', 'tt_modify_algolia_searchable_post_content', 10, 2 );
