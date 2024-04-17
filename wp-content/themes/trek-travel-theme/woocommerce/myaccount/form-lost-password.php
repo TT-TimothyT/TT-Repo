@@ -17,6 +17,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP' );
+
+
 do_action( 'woocommerce_before_lost_password_form' );
 ?>
 <div class="row">
@@ -31,6 +34,9 @@ do_action( 'woocommerce_before_lost_password_form' );
 				<img class="invalid-icon" />
 				Please enter valid email address.
 			</div>
+        <div class="form-group my-4">
+            <div class="g-recaptcha" data-sitekey="<?php echo $google_api_key; ?>"></div>
+        </div>
 		</div>
 		<?php do_action( 'woocommerce_lostpassword_form' ); ?>
 		<div class="form-group">
@@ -81,6 +87,17 @@ document.addEventListener("DOMContentLoaded", function() {
         // Include the current domain when setting the cookie
         document.cookie = name + "=" + value + expires + "; path=/; domain=" + domain;
     }
+});
+document.addEventListener("DOMContentLoaded", function() {
+    jQuery(document).ready(function() {
+    setInterval(function() {
+        var form = document.querySelector('.woocommerce-ResetPassword');
+        if (form.classList.contains('was-validated')) {
+            var submit = document.querySelector('.reset-submit');
+            submit.removeAttribute('disabled');
+        }
+    }, 200);
+    });
 });
 </script>
 <?php

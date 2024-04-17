@@ -3,7 +3,6 @@
 defined( 'ABSPATH' ) || exit;
 
 do_action( 'woocommerce_before_reset_password_form' );
-$google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP' );
 ?>
 
 <div class="row">
@@ -38,10 +37,6 @@ $google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526e
 							Please enter valid and same password as above.
 						</div>
 					</div>
-				</div>
-
-				<div class="form-group my-4">
-					<div class="g-recaptcha" data-sitekey="<?php echo $google_api_key; ?>"></div>
 				</div>
 
 				<input type="hidden" name="reset_key" value="<?php echo esc_attr( $args['key'] ); ?>" />
