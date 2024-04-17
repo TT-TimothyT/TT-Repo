@@ -2155,7 +2155,7 @@ jQuery('body').on('click', '.proceed-booking-btn', function () {
     }
   });
   var myBookId = jQuery("#bookId").val();
-  jQuery("#flush-collapse-" + myBookId + " .accordion-book-now form").submit()
+  jQuery("#flush-collapse-" + myBookId + " .accordion-book-now form").first().submit()
 });
 
 jQuery('body').on('click', '.view-all-faqs button', function () {
