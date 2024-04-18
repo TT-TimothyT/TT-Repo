@@ -43,6 +43,6 @@ $pay_amount              = isset($tt_posted['pay_amount']) ? $tt_posted['pay_amo
 </div>
 <p class="mb-2">Remaining Amount Owed: <span class="fw-medium"><?php echo $remaining_amountCurr; ?></span></p>
 
-<?php if ( $remaining_amount !== 0.00) { ?>
-<p class="fs-sm lh-sm checkout-payment__gray">Our team will reach out to collect final payment prior to your trip start date.</p>
-<?php } ?>
+    <?php if ( $pay_amount !== 'full') { ?>
+        <p class="fs-sm lh-sm checkout-payment__gray">Our team will reach out to collect final payment prior to your trip start date.</p>
+    <?php } ?>
