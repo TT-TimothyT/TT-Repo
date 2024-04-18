@@ -1,0 +1,4988 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: includes/admin/views/settings/email-reports.php:78
+#: includes/admin/views/settings/sms.php:87
+#: includes/admin/views/settings/sms.php:99
+msgid ""
+msgstr ""
+"Project-Id-Version: Package Name\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-08 16:20+0530\n"
+"PO-Revision-Date: 2023-08-08 16:21+0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Eazy Po 1.0.0.0\n"
+
+#: woocommerce-ac.php:129
+msgid ""
+"We have noticed that WooCommerce plugin is not active. Please activate it to "
+"use "
+msgstr ""
+
+#: woocommerce-ac.php:197 includes/wcap_load_scripts.php:403
+#: includes/wcap_load_scripts.php:504
+msgid "Yesterday"
+msgstr ""
+
+#: woocommerce-ac.php:198 includes/wcap_load_scripts.php:404
+#: includes/wcap_load_scripts.php:505
+#: includes/admin/wcap_dashboard_widget.php:129
+msgid "Today"
+msgstr ""
+
+#: woocommerce-ac.php:199 includes/wcap_load_scripts.php:405
+#: includes/wcap_load_scripts.php:506
+msgid "Last 7 days"
+msgstr ""
+
+#: woocommerce-ac.php:200 includes/wcap_load_scripts.php:406
+#: includes/wcap_load_scripts.php:507
+msgid "Last 15 days"
+msgstr ""
+
+#: woocommerce-ac.php:201 includes/wcap_load_scripts.php:407
+#: includes/wcap_load_scripts.php:508
+msgid "Last 30 days"
+msgstr ""
+
+#: woocommerce-ac.php:202 includes/wcap_load_scripts.php:408
+#: includes/wcap_load_scripts.php:509
+msgid "Last 90 days"
+msgstr ""
+
+#: woocommerce-ac.php:203 includes/wcap_load_scripts.php:409
+#: includes/wcap_load_scripts.php:510
+msgid "Last 365"
+msgstr ""
+
+#: cron/class-wcap-follow-up-emails.php:132
+#, php-format
+msgid "Follow up template %1$s was not sent to %2$s due to rule match failure."
+msgstr ""
+
+#: cron/class-wcap-follow-up-emails.php:163
+msgid "We'd love to hear back from you"
+msgstr ""
+
+#: cron/class-wcap-follow-up-emails.php:408
+#, php-format
+msgid "Follow up template %s sent to %s at %s"
+msgstr ""
+
+#: cron/class-wcap-send-email-using-cron.php:202
+#: includes/classes/class-wcap-send-manual-email.php:101
+#: includes/classes/class_wcap_manual_email.php:244
+msgid "Abandoned cart reminder"
+msgstr ""
+
+#: includes/class-wcap-integrations.php:65
+#: includes/admin/views/settings/connectors.php:25
+msgid "Connectors"
+msgstr ""
+
+#: includes/class-wcap-integrations.php:69
+#: includes/admin/views/settings/connectors.php:28
+#, php-format
+msgid ""
+"Please note that the plugin will no longer send reminder emails to abandoned "
+"carts if integration is enabled with a third party CRM/email marketing tool. "
+"If you still wish to send reminder emails with the integration enabled, "
+"please get in touch with %s."
+msgstr ""
+
+#: includes/class-wcap-integrations.php:76 includes/wcap_ajax.php:1183
+#: includes/wcap_load_scripts.php:429
+#: includes/admin/wcap_email_template_fields.php:157
+#: includes/admin/views/abandoned_orders/index.php:40
+#: includes/admin/views/settings/connectors.php:64
+#: includes/classes/class_wcap_templates_table.php:152
+#: includes/template/rules/html-rules-edit-row.php:80
+msgid "All"
+msgstr ""
+
+#: includes/class-wcap-integrations.php:79
+#: includes/admin/views/settings/connectors.php:67
+#: includes/admin/views/settings/license.php:49
+msgid "Active"
+msgstr ""
+
+#: includes/class-wcap-integrations.php:82
+#: includes/admin/views/settings/connectors.php:70
+#: includes/admin/views/settings/license.php:50
+msgid "Inactive"
+msgstr ""
+
+#: includes/class-wcap-integrations.php:117
+#, php-format
+msgid "No %1$s connector found"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:56
+msgid "Email Address Captured via Add to Cart Popup"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:57
+msgid "Email Address Captured at Checkout"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:58
+msgid "Email Address Captured via Form Integrations"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:60
+msgid "Cart Abandoned after cut-off time"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:62
+msgid "Cart Abandonment Reminder Email Sent"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:63
+msgid "Cart Abandonment Reminder SMS Sent"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:64
+msgid "Cart Abandonment Reminder FB message Sent"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:66
+msgid "Recovery link clicked in reminders sent"
+msgstr ""
+
+#: includes/class-wcap-webhooks.php:68
+msgid "Abandoned Order Recovered"
+msgstr ""
+
+#: includes/wcap-email-functions.php:477
+msgid "SKU:"
+msgstr ""
+
+#: includes/wcap-email-functions.php:716
+#, php-format
+msgid "Coupon: %s"
+msgstr ""
+
+#: includes/wcap-email-functions.php:730
+#: includes/admin/class-wcap-abandoned-cart-details.php:862
+#: includes/classes/class_wcap_abandoned_orders_table.php:718
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:517
+msgid "includes Tax: "
+msgstr ""
+
+#: includes/wcap-email-functions.php:739
+msgid "Tax:"
+msgstr ""
+
+#: includes/wcap-email-functions.php:1016
+#: includes/wcap-email-functions.php:1139 includes/wcap_load_scripts.php:244
+#: includes/classes/class-wcap-atc-templates-table.php:138
+msgid "Add to Cart"
+msgstr ""
+
+#: includes/wcap_activate_plugin.php:45
+msgid "Once Every Fifteen Minutes"
+msgstr ""
+
+#: includes/wcap_activate_plugin.php:50
+msgid "Once Every Fifteen Days"
+msgstr ""
+
+#: includes/wcap_activate_plugin.php:378 includes/wcap_update_check.php:617
+msgid "Show on standard WooCommerce pages"
+msgstr ""
+
+#: includes/wcap_activate_plugin.php:443 includes/wcap_update_check.php:1018
+msgid "Exit Intent for all pages"
+msgstr ""
+
+#: includes/wcap_ajax.php:339
+msgid ""
+"The Enable Add to cart popup modal setting has been disabled. As the guest "
+"cart's are no longer captured !!"
+msgstr ""
+
+#: includes/wcap_ajax.php:340
+msgid "on"
+msgstr ""
+
+#: includes/wcap_ajax.php:800
+msgid "Unsubscribed successfully"
+msgstr ""
+
+#: includes/wcap_ajax.php:1127 includes/wcap_load_scripts.php:430
+#: includes/admin/class-wcap-abandoned-cart-details.php:92
+#: includes/admin/class-wcap-print-and-csv.php:582
+#: includes/admin/wcap_email_template_fields.php:150
+#: includes/admin/wcap_privacy_export.php:200
+#: includes/classes/class_wcap_abandoned_orders_table.php:737
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:535
+#: includes/template/rules/html-rules-edit-row.php:73
+msgid "Abandoned"
+msgstr ""
+
+#: includes/wcap_ajax.php:1128 includes/wcap_load_scripts.php:433
+#: includes/admin/wcap_email_template_fields.php:151
+#: includes/classes/class_wcap_abandoned_orders_table.php:743
+#: includes/template/rules/html-rules-edit-row.php:74
+msgid "Abandoned - Pending Payment"
+msgstr ""
+
+#: includes/wcap_ajax.php:1129 includes/wcap_load_scripts.php:434
+#: includes/admin/wcap_email_template_fields.php:152
+#: includes/classes/class_wcap_abandoned_orders_table.php:746
+#: includes/template/rules/html-rules-edit-row.php:75
+msgid "Abandoned - Order Cancelled"
+msgstr ""
+
+#: includes/wcap_ajax.php:1184
+#: includes/admin/wcap_email_template_fields.php:158
+#: includes/admin/views/abandoned_orders/index.php:42
+#: includes/classes/class_wcap_templates_table.php:153
+#: includes/template/rules/html-rules-edit-row.php:81
+msgid "Registered Users"
+msgstr ""
+
+#: includes/wcap_ajax.php:1185
+#: includes/admin/wcap_email_template_fields.php:159
+#: includes/admin/views/abandoned_orders/index.php:43
+#: includes/classes/class_wcap_templates_table.php:154
+#: includes/template/rules/html-rules-edit-row.php:82
+msgid "Guest Users"
+msgstr ""
+
+#: includes/wcap_ajax.php:1186
+#: includes/admin/wcap_email_template_fields.php:160
+#: includes/classes/class_wcap_templates_table.php:155
+#: includes/template/rules/html-rules-edit-row.php:83
+msgid "Customers"
+msgstr ""
+
+#: includes/wcap_ajax.php:1187
+#: includes/admin/wcap_email_template_fields.php:161
+#: includes/classes/class_wcap_templates_table.php:156
+#: includes/template/rules/html-rules-edit-row.php:84
+msgid "Admin"
+msgstr ""
+
+#: includes/wcap_ajax.php:1188
+#: includes/admin/wcap_email_template_fields.php:162
+#: includes/classes/class_wcap_templates_table.php:157
+#: includes/template/rules/html-rules-edit-row.php:85
+msgid "Customers & Admin"
+msgstr ""
+
+#: includes/wcap_ajax.php:1189
+#: includes/admin/wcap_email_template_fields.php:163
+#: includes/classes/class_wcap_templates_table.php:158
+#: includes/template/rules/html-rules-edit-row.php:86
+msgid "Email Addresses"
+msgstr ""
+
+#: includes/wcap_ajax.php:1285
+#: includes/admin/views/abandoned_orders/index.php:353
+msgid ""
+"Something went wrong. Please check whether the cart contains atleast 1 "
+"product and try again."
+msgstr ""
+
+#: includes/wcap_ajax.php:1362
+#, php-format
+msgid "%1$s: %2$d"
+msgstr ""
+
+#: includes/wcap_ajax.php:2385
+msgid "Details Updated!"
+msgstr ""
+
+#: includes/wcap_common.php:28
+msgid "Emails are not being sent to customers."
+msgstr ""
+
+#: includes/wcap_common.php:34
+msgid "Capturing of cart and other information was not satisfactory."
+msgstr ""
+
+#: includes/wcap_common.php:40
+msgid "My customers got annoyed with multiple emails sent to them."
+msgstr ""
+
+#: includes/wcap_common.php:46
+msgid "Abandoned carts data are not imported from LITE version."
+msgstr ""
+
+#: includes/wcap_common.php:562
+msgid "View WooCommerce abandoned Cart Settings"
+msgstr ""
+
+#: includes/wcap_common.php:562 includes/wcap_common.php:572
+#: includes/admin/views/ac-header.php:35
+#: includes/admin/views/settings/general-settings.php:294
+#: includes/connectors/class-wcap-display-connectors.php:110
+msgid "Settings"
+msgstr ""
+
+#: includes/wcap_common.php:572
+msgid "View WooCommerce Abandoned Cart Settings"
+msgstr ""
+
+#: includes/wcap_common.php:573
+msgid "Import data from Lite version."
+msgstr ""
+
+#: includes/wcap_common.php:573
+msgid "Import from Lite version"
+msgstr ""
+
+#: includes/wcap_common.php:591
+msgid "View WooCommerce abandoned Cart Documentation"
+msgstr ""
+
+#: includes/wcap_common.php:591
+msgid "Docs"
+msgstr ""
+
+#: includes/wcap_common.php:592
+msgid "Submit Ticket"
+msgstr ""
+
+#: includes/wcap_common.php:606
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/wcap_common.php:1543 includes/wcap_common.php:2992
+#: includes/frontend/wcap_populate_cart_of_user.php:403
+msgid ""
+"You have successfully unsubscribed and will not receive any further "
+"reminders for abandoned carts."
+msgstr ""
+
+#: includes/wcap_common.php:1943
+msgid "This order was abandoned & subsequently recovered."
+msgstr ""
+
+#: includes/wcap_common.php:2504
+msgid " selected "
+msgstr ""
+
+#: includes/wcap_common.php:2541
+msgid "Start Date:"
+msgstr ""
+
+#: includes/wcap_common.php:2544
+msgid "End Date:"
+msgstr ""
+
+#: includes/wcap_common.php:2546
+msgid "Go"
+msgstr ""
+
+#: includes/wcap_common.php:2680 includes/frontend/wcap_coupon_code.php:65
+#: includes/frontend/wcap_coupon_code.php:71
+msgid "Discount code applied successfully."
+msgstr ""
+
+#: includes/wcap_common.php:3465
+#, php-format
+msgid ""
+"Please note: No emails are currently being sent from the plugin as "
+"connection with %s is active."
+msgstr ""
+
+#: includes/wcap_common.php:3486
+msgid "The template has been successfully deleted."
+msgstr ""
+
+#: includes/wcap_common.php:3488
+msgid "There was an error. Please try again."
+msgstr ""
+
+#: includes/wcap_functions.php:1062 includes/wcap_functions.php:1086
+msgid "Copy"
+msgstr ""
+
+#: includes/wcap_functions.php:1066
+#: includes/admin/views/settings/popup-templates.php:77
+#: includes/admin/views/settings/popup_templates/add_edit.php:573
+#: includes/admin/views/settings/popup_templates/add_edit.php:779
+msgid "No Thanks"
+msgstr ""
+
+#: includes/wcap_functions.php:1068 includes/wcap_load_scripts.php:246
+msgid ""
+"We are sad to see you go but you can enter your email below and we will save "
+"the cart for you."
+msgstr ""
+
+#: includes/wcap_functions.php:1069 includes/wcap_load_scripts.php:247
+msgid "To add this item to your cart, please enter your email address."
+msgstr ""
+
+#: includes/wcap_functions.php:1071
+#: includes/admin/wcap_add_cart_popup_modal.php:84
+#: includes/admin/views/settings/popup_templates/add_edit.php:694
+#: includes/admin/views/settings/popup_templates/add_edit.php:887
+msgid "We are sad to see you leave"
+msgstr ""
+
+#: includes/wcap_functions.php:1072
+msgid ""
+"There are some items in your cart. These will not last long. Please proceed "
+"to checkout to complete the purchase.\t"
+msgstr ""
+
+#: includes/wcap_functions.php:1073 includes/wcap_load_scripts.php:245
+#: includes/admin/wcap_add_cart_popup_modal.php:88
+#: includes/admin/views/settings/popup_templates/add_edit.php:748
+#: includes/admin/views/settings/popup_templates/add_edit.php:925
+msgid "Complete my order!"
+msgstr ""
+
+#: includes/wcap_functions.php:1114
+#: includes/admin/wcap_email_template_fields.php:38
+#: includes/template/atc-rules/html-atc-rules-add-row.php:18
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:22
+#: includes/template/rules/html-rules-add-row.php:18
+#: includes/template/rules/html-rules-edit-row.php:22
+msgid "Select Rule Type"
+msgstr ""
+
+#: includes/wcap_functions.php:1115
+#: includes/template/atc-rules/html-atc-rules-add-row.php:19
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:23
+msgid "Pages"
+msgstr ""
+
+#: includes/wcap_functions.php:1116
+#: includes/admin/wcap_email_template_fields.php:46
+#: includes/template/atc-rules/html-atc-rules-add-row.php:20
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:24
+#: includes/template/rules/html-rules-add-row.php:26
+#: includes/template/rules/html-rules-edit-row.php:30
+msgid "Product Categories"
+msgstr ""
+
+#: includes/wcap_functions.php:1117
+#: includes/admin/class-wcap-print-and-csv.php:807
+#: includes/admin/class-wcap-print-and-csv.php:997
+#: includes/classes/class-wcap-atc-templates-table.php:131
+#: includes/template/atc-rules/html-atc-rules-add-row.php:21
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:25
+msgid "Products"
+msgstr ""
+
+#: includes/wcap_functions.php:1120
+#: includes/admin/wcap_email_template_fields.php:59
+#: includes/template/atc-rules/html-atc-rules-add-row.php:28
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:32
+#: includes/template/rules/html-rules-add-row.php:39
+msgid "Select Condition"
+msgstr ""
+
+#: includes/wcap_functions.php:1121 includes/wcap_load_scripts.php:280
+#: includes/wcap_load_scripts.php:339
+#: includes/admin/wcap_email_template_fields.php:60
+#: includes/template/atc-rules/html-atc-rules-add-row.php:29
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:33
+#: includes/template/rules/html-rules-add-row.php:40
+#: includes/template/rules/html-rules-edit-row.php:52
+msgid "Includes any of"
+msgstr ""
+
+#: includes/wcap_functions.php:1122 includes/wcap_load_scripts.php:281
+#: includes/wcap_load_scripts.php:340
+#: includes/admin/wcap_email_template_fields.php:61
+#: includes/template/atc-rules/html-atc-rules-add-row.php:30
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:34
+#: includes/template/rules/html-rules-add-row.php:41
+#: includes/template/rules/html-rules-edit-row.php:53
+msgid "Excludes any of"
+msgstr ""
+
+#: includes/wcap_load_hooks.php:433
+msgid ""
+"<b>Aelia Currency Switcher addon for Abandoned Cart Plugin</b> has been "
+"deactivated since the addon is now part of the core module."
+msgstr ""
+
+#: includes/wcap_load_hooks.php:476
+#: includes/template/preview_modal/preview_modal.php:58
+msgid "Insert Template"
+msgstr ""
+
+#: includes/wcap_load_hooks.php:477
+msgid "Import Template"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:73
+#: includes/admin/wcap_email_template_fields.php:168
+#: includes/admin/views/settings/general-settings.php:595
+#: includes/template/rules/html-rules-edit-row.php:91
+msgid "Select countries"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:123
+msgctxt "enhanced select"
+msgid "One result is available, press enter to select it."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:124
+msgctxt "enhanced select"
+msgid "%qty% results are available, use up and down arrow keys to navigate."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:125
+msgctxt "enhanced select"
+msgid "No matches found"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:126
+msgctxt "enhanced select"
+msgid "Loading failed"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:127
+msgctxt "enhanced select"
+msgid "Please enter 1 or more characters"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:128
+msgctxt "enhanced select"
+msgid "Please enter %qty% or more characters"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:129
+msgctxt "enhanced select"
+msgid "Please delete 1 character"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:130
+msgctxt "enhanced select"
+msgid "Please delete %qty% characters"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:131
+msgctxt "enhanced select"
+msgid "You can only select 1 item"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:132
+msgctxt "enhanced select"
+msgid "You can only select %qty% items"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:133
+msgctxt "enhanced select"
+msgid "Loading more results&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:134
+msgctxt "enhanced select"
+msgid "Searching&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:187 includes/wcap_load_scripts.php:313
+#: includes/wcap_load_scripts.php:356 includes/wcap_load_scripts.php:477
+#: includes/wcap_load_scripts.php:530 includes/wcap_load_scripts.php:549
+#: includes/admin/views/settings/connectors.php:19
+msgid "Loading"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:188 includes/wcap_load_scripts.php:531
+#: includes/wcap_load_scripts.php:550
+msgid "Saving Changes"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:189 includes/wcap_load_scripts.php:357
+msgid "Settings saved"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:190
+msgid "Resetting Usage Tracking"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:191
+msgid "Usage tracking reset"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:192
+msgid "Deleting Coupons"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:193
+msgid "Coupons Deleted"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:194
+msgid ""
+"Are you sure you want delete the expired and used coupons created by "
+"Abandonment Cart Pro for WooCommerce Plugin?"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:195 includes/admin/wcap_sms_settings.php:91
+msgid ""
+"Please make sure the Recipient Number and Message field are populated with "
+"valid details."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:196
+msgid "Sending test SMS"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:197
+#: includes/admin/views/settings/sms.php:148
+msgid "Hello World!"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:200
+msgid "License activated"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:201
+msgid "License deactivated"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:202 includes/wcap_load_scripts.php:239
+#: includes/admin/views/settings/general-settings.php:802
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:100
+msgid "Search for a Page&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:227
+msgid "Template saved"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:240 includes/wcap_load_scripts.php:291
+#: includes/wcap_load_scripts.php:350
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:116
+#: includes/template/rules/html-rules-edit-row.php:245
+#: includes/template/rules/html-rules-edit-row.php:259
+msgid "Search for a Product Category&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:241 includes/wcap_load_scripts.php:289
+#: includes/wcap_load_scripts.php:348
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:132
+#: includes/template/rules/html-rules-edit-row.php:273
+msgid "Search for a Product&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:242
+#: includes/admin/views/settings/popup_templates/add_edit.php:741
+#: includes/admin/views/settings/popup_templates/add_edit.php:918
+msgid "Link Text"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:243
+#: includes/admin/views/settings/popup_templates/add_edit.php:533
+msgid "Add to cart button text"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:284 includes/wcap_load_scripts.php:343
+#: includes/admin/wcap_email_template_fields.php:62
+#: includes/template/rules/html-rules-add-row.php:42
+#: includes/template/rules/html-rules-edit-row.php:44
+msgid "Greater than or equal to"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:285 includes/wcap_load_scripts.php:344
+#: includes/admin/wcap_email_template_fields.php:63
+#: includes/template/rules/html-rules-add-row.php:43
+#: includes/template/rules/html-rules-edit-row.php:45
+msgid "Equal to"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:286 includes/wcap_load_scripts.php:345
+#: includes/admin/wcap_email_template_fields.php:64
+#: includes/template/rules/html-rules-add-row.php:44
+#: includes/template/rules/html-rules-edit-row.php:46
+msgid "Less than or equal to"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:288 includes/wcap_load_scripts.php:347
+#: includes/template/rules/html-rules-edit-row.php:170
+msgid "Search for options&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:290 includes/wcap_load_scripts.php:349
+#: includes/admin/views/abandoned_orders/send_email.php:377
+#: includes/admin/views/settings/popup_templates/add_edit.php:330
+#: includes/admin/views/templates/add_edit_email_template.php:419
+#: includes/admin/views/templates/sms_notifications.php:239
+#: includes/classes/class_wcap_manual_email.php:454
+#: includes/classes/class_wcap_manual_email.php:467
+#: includes/template/rules/html-rules-edit-row.php:215
+msgid "Search for a Coupon&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:292 includes/wcap_load_scripts.php:351
+msgid "Search for a Product Tag&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:293 includes/wcap_load_scripts.php:352
+msgid "Search for a Cart Status&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:294 includes/wcap_load_scripts.php:353
+msgid "Search for a Order Status&hellip;"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:296 includes/wcap_load_scripts.php:312
+msgid "Please enter a valid email id."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:358
+msgid "Saving template"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:359
+msgid "Adding template"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:360
+msgid "Template added"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:361
+msgid "Updating template"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:362
+msgid "Template updated"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:363
+msgid "Deleting template"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:364
+msgid "Template deleted"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:365
+msgid "Are you sure you want to delete"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:366
+msgid "Please chose an action"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:383
+#: includes/admin/views/abandoned_orders/index.php:200
+#: includes/admin/views/abandoned_orders/index.php:312
+#: includes/admin/views/abandoned_orders/send_email.php:79
+#: includes/classes/class_wcap_manual_email.php:63
+msgid "Send Custom Email"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:384
+msgid "Move to Trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:385
+msgid "Move all Visitor carts to Trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:386
+msgid "Move all Guest User carts to Trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:387
+msgid "Move all Registered User carts to Trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:388
+msgid "Move all carts to Trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:391
+#: includes/admin/views/abandoned_orders/index.php:205
+msgid "Restore"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:392
+#: includes/admin/views/abandoned_orders/index.php:206
+msgid "Delete Permanently"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:393
+#: includes/admin/views/abandoned_orders/index.php:112
+#: includes/admin/views/abandoned_orders/index.php:264
+msgid "Empty Trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:398
+#: includes/admin/views/abandoned_orders/index.php:199
+msgid "Sync Manually"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:431
+#: includes/admin/class-wcap-orders-listing.php:74
+#: includes/admin/class-wcap-print-and-csv.php:590
+#: includes/classes/class_wcap_abandoned_orders_table.php:734
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:541
+msgid "Recovered"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:432
+#: includes/admin/class-wcap-print-and-csv.php:588
+#: includes/classes/class_wcap_abandoned_orders_table.php:749
+msgid "Abandoned - Order Received"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:437
+#: includes/admin/views/abandoned_orders/index.php:341
+#: includes/template/license_missing/license_missing.php:23
+msgid "here"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:442 includes/wcap_load_scripts.php:476
+#: includes/wcap_load_scripts.php:484
+msgid "Order ID not found. Please try again."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:443
+#: includes/admin/views/abandoned_orders/index.php:320
+#: includes/admin/views/abandoned_orders/index.php:351
+msgid "Mark as Recovered"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:444
+#: includes/admin/views/abandoned_orders/index.php:334
+msgid "Search WooCommerce Orders"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:445
+#: includes/admin/views/abandoned_orders/index.php:336
+msgid "Search"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:446
+msgid "Please enter a valid Order ID"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:447
+#: includes/admin/views/abandoned_orders/index.php:330
+msgid ""
+"Enter your WooCommerce Order ID against which you wish to link the cart and "
+"mark as Recovered."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:448
+#: includes/admin/views/abandoned_orders/index.php:328
+msgid ""
+"Create a WooCommerce Order against which the cart will be marked as "
+"recovered."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:449
+msgid " WooCommerce orders can be found "
+msgstr ""
+
+#: includes/wcap_load_scripts.php:461
+msgid "Mail sent."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:471
+msgid "Are you sure you want to"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:472
+msgid "Please select some carts"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:473
+msgid "Are you sure you want to trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:474
+msgid "Send Custom Email cannot be applied."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:478
+msgid "Moving to trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:479
+msgid "Moved to trash"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:480
+msgid "Processing"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:481
+msgid "Cart Unsubscribed"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:482
+msgid "Cart Synced"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:483
+msgid "Cart Recovered"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:485
+msgid "Cart Restored"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:486
+msgid "Cart Deleted"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:487
+msgid "Trash Emptied"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:490
+msgid "No action chosen"
+msgstr ""
+
+#: includes/wcap_load_scripts.php:588
+#: includes/frontend/class-wcap-tracking-msg.php:68
+msgid ""
+"Saving your email and cart details helps us keep you up to date with this "
+"order."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:607
+msgid ""
+"Saving your phone and cart details helps us keep you up to date with this "
+"order."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:670
+#: includes/frontend/wcap_cart_updated.php:1105
+msgid "The offer is no longer valid."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:830 includes/wcap_load_scripts.php:1279
+#, php-format
+msgid "Thank you. Coupon %s will be auto-applied to your cart."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:859
+msgid "Email address is mandatory to proceed."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:860 includes/wcap_load_scripts.php:1304
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:1302
+msgid "Email address is mandatory for adding product to the cart."
+msgstr ""
+
+#: includes/wcap_load_scripts.php:1303
+msgid ""
+"Phone number is mandatory for adding product to the cart & must be of 10 "
+"digit."
+msgstr ""
+
+#: includes/wcap_process_base.php:85
+msgid "You recovered"
+msgstr ""
+
+#: includes/wcap_process_base.php:85
+#, php-format
+msgid "in revenue this %2$s!"
+msgstr ""
+
+#: includes/wcap_process_base.php:89
+msgid "carts abandoned"
+msgstr ""
+
+#: includes/wcap_process_base.php:92
+msgid "carts recovered"
+msgstr ""
+
+#: includes/wcap_process_base.php:95
+msgid "Sales figures"
+msgstr ""
+
+#: includes/wcap_process_base.php:97
+msgid "worth carts abandoned"
+msgstr ""
+
+#: includes/wcap_process_base.php:100
+msgid "worth carts recovered"
+msgstr ""
+
+#: includes/wcap_process_base.php:104
+msgid "Campaign Engagement"
+msgstr ""
+
+#: includes/wcap_process_base.php:106 includes/admin/views/ac-header.php:36
+msgid "Reminders Sent"
+msgstr ""
+
+#: includes/wcap_process_base.php:109
+msgid "Open"
+msgstr ""
+
+#: includes/wcap_process_base.php:112
+msgid "Clicks"
+msgstr ""
+
+#: includes/wcap_process_base.php:115
+msgid "Conversions"
+msgstr ""
+
+#: includes/wcap_process_base.php:120
+msgid "View Dashboard"
+msgstr ""
+
+#: includes/wcap_process_base.php:130
+msgid "Account Summary for"
+msgstr ""
+
+#: includes/wcap_process_base.php:133
+msgid "Below is the"
+msgstr ""
+
+#: includes/wcap_process_base.php:133
+#, php-format
+msgid ""
+"summary of the revenue recovered during this %2$s using Abandoned Cart Pro "
+"for WooCommerce."
+msgstr ""
+
+#: includes/wcap_process_base.php:137
+#, php-format
+msgid "&copy; 2012-%1$s Tyche Softwares, All Rights Reserved."
+msgstr ""
+
+#: includes/wcap_process_base.php:184
+msgid "summary for"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:89
+#: includes/admin/class-wcap-print-and-csv.php:580
+#: includes/classes/class_wcap_abandoned_orders_table.php:756
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:532
+msgid "Unsubscribed"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:95
+#: includes/admin/class-wcap-print-and-csv.php:584
+msgid "Abandoned but new cart created after this"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:342
+msgid "Billing Address:"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:352
+msgid "Shipping Address:"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:429
+msgid "Shipping Method:"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:435
+msgid "IP Address:"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:437
+msgid "Shipping Charges:"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:470
+#: includes/admin/class-wcap-print-and-csv.php:571
+#: includes/classes/class_wcap_abandoned_orders_table.php:726
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:524
+msgid "item"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:472
+#: includes/admin/class-wcap-print-and-csv.php:573
+#: includes/admin/views/abandoned_orders/index.php:118
+#: includes/admin/views/abandoned_orders/index.php:270
+#: includes/admin/views/reminders/email_reminders.php:71
+#: includes/admin/views/reminders/sms_reminders.php:72
+#: includes/admin/views/reports/index.php:53
+#: includes/admin/views/reports/index.php:116
+#: includes/admin/views/templates/email_templates.php:63
+#: includes/admin/views/templates/email_templates.php:178
+#: includes/admin/views/templates/email_templates.php:205
+#: includes/admin/views/templates/sms_notifications.php:60
+#: includes/admin/views/templates/sms_notifications.php:171
+#: includes/classes/class_wcap_abandoned_orders_table.php:728
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:526
+msgid "items"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:588
+#: includes/admin/class-wcap-print-and-csv.php:805
+#: includes/admin/class-wcap-print-and-csv.php:995
+#: includes/admin/wcap_privacy_export.php:169
+#: includes/admin/views/abandoned_orders/index.php:163
+msgid "Email Address"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:589
+#: includes/admin/class-wcap-print-and-csv.php:806
+#: includes/admin/views/abandoned_orders/index.php:164
+#: includes/admin/views/abandoned_orders/index.php:238
+#: includes/admin/views/dashboard/index.php:214
+msgid "Customer Details"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:590
+#: includes/admin/class-wcap-print-and-csv.php:808
+#: includes/admin/class-wcap-print-and-csv.php:998
+msgid "Order Total"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:591
+#: includes/admin/class-wcap-print-and-csv.php:810
+#: includes/admin/class-wcap-print-and-csv.php:1000
+#: includes/admin/wcap_privacy_export.php:161
+msgid "Abandoned Date"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:606
+msgid "Item"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:607
+msgid "Item Cost"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:608
+msgid "Item Quantity"
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:856
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:511
+msgid "Tax: "
+msgstr ""
+
+#: includes/admin/class-wcap-abandoned-cart-details.php:884
+msgid "Product has been deleted"
+msgstr ""
+
+#: includes/admin/class-wcap-orders-listing.php:83
+msgid "ATC Coupon Used"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:37
+msgid "Export location or file not writable"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:95
+msgid "No data found for export parameters."
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:395
+#: includes/classes/class_wcap_abandoned_orders_table.php:603
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:406
+msgid "User Deleted"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:459
+#: includes/classes/class_wcap_abandoned_orders_table.php:906
+msgid "User Profile"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:462
+#: includes/classes/class_wcap_abandoned_orders_table.php:909
+msgid "Exit Intent Popup"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:465
+#: includes/classes/class_wcap_abandoned_orders_table.php:912
+msgid "Add to Cart Popup"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:468
+#: includes/classes/class_wcap_abandoned_orders_table.php:915
+msgid "Checkout page"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:471
+#: includes/classes/class_wcap_abandoned_orders_table.php:918
+msgid "Custom Form"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:474
+#: includes/classes/class_wcap_abandoned_orders_table.php:921
+msgid "URL"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:586
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:544
+msgid "Abandoned - Order Unpaid"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:804
+#: includes/admin/class-wcap-print-and-csv.php:994
+#: includes/admin/views/templates/facebook_messenger.php:76
+#: includes/admin/views/templates/facebook_messenger.php:118
+#: includes/admin/views/templates/sms_notifications.php:81
+#: includes/admin/views/templates/sms_notifications.php:141
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:107
+msgid "ID"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:809
+#: includes/admin/class-wcap-print-and-csv.php:999
+#: includes/connectors/class-wcap-connectors-common.php:496
+msgid "Quantity"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:814
+msgid "Coupon Code Used"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:815
+#: includes/admin/class-wcap-print-and-csv.php:1004
+msgid "Coupon Status"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:818
+#: includes/admin/class-wcap-print-and-csv.php:1006
+msgid "Email Captured By"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:819
+msgid "Status of cart"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:820
+#: includes/admin/class-wcap-print-and-csv.php:1008
+msgid "Order ID (Recovered)"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:821
+#: includes/admin/wcap_privacy_export.php:165
+msgid "IP Address"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:953
+msgid "Print Abandoned Carts"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:996
+msgid "Customer"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:1003
+msgid "Coupon Used"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:1007
+msgid "Status of Cart"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:1009
+msgid "IP"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:1061
+msgid "Nonce verification failed"
+msgstr ""
+
+#: includes/admin/class-wcap-print-and-csv.php:1061
+msgid "Error"
+msgstr ""
+
+#: includes/admin/wcap_add_cart_popup_modal.php:86
+#: includes/admin/views/settings/popup_templates/add_edit.php:713
+#: includes/admin/views/settings/popup_templates/add_edit.php:906
+msgid ""
+"There are some items in your cart. These will not last long. Please proceed "
+"to checkout to complete the purchase."
+msgstr ""
+
+#: includes/admin/wcap_admin_recovery.php:50
+#: includes/admin/wcap_admin_recovery.php:52
+msgid "New Customer Order - Recovered"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:22
+msgid "Abandoned & Recovered Carts Summary"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:56
+msgid "Current Month"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:61
+#: includes/admin/wcap_dashboard_widget.php:90
+#: includes/admin/wcap_dashboard_widget.php:135
+#: includes/admin/wcap_menu.php:25 includes/admin/wcap_privacy_export.php:120
+msgid "Abandoned Carts"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:70
+#: includes/admin/wcap_dashboard_widget.php:99
+#: includes/admin/wcap_dashboard_widget.php:143
+msgid "Recovered Carts"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:76
+#: includes/admin/wcap_dashboard_widget.php:111
+#: includes/admin/wcap_dashboard_widget.php:153
+msgid "Conversion Ratio"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:85
+#: includes/admin/views/dashboard/index.php:39
+msgid "Last Month"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:171
+msgid "Totals"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:176
+msgid "Total Abandoned Carts"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:185
+msgid "Total Recovered Carts"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:194
+msgid "Total Conversion Ratio"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:212
+msgid "Top Abandoned Product"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:213
+#: includes/admin/wcap_dashboard_widget.php:249
+msgid "View All"
+msgstr ""
+
+#: includes/admin/wcap_dashboard_widget.php:248
+msgid "Top Recovered Product"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:39
+#: includes/template/rules/html-rules-add-row.php:19
+#: includes/template/rules/html-rules-edit-row.php:23
+msgid "Coupons"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:40
+#: includes/template/rules/html-rules-add-row.php:20
+#: includes/template/rules/html-rules-edit-row.php:24
+msgid "Send Emails to"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:41
+#: includes/classes/class_wcap_abandoned_orders_table.php:893
+#: includes/template/rules/html-rules-add-row.php:21
+#: includes/template/rules/html-rules-edit-row.php:25
+msgid "Order"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:42
+#: includes/template/rules/html-rules-add-row.php:22
+#: includes/template/rules/html-rules-edit-row.php:26
+msgid "Payment Gateways"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:43
+#: includes/template/rules/html-rules-add-row.php:23
+#: includes/template/rules/html-rules-edit-row.php:27
+msgid "Order Status"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:44
+#: includes/admin/views/abandoned_orders/index.php:302
+#: includes/admin/views/reminders/email_reminders.php:157
+#: includes/admin/views/reminders/sms_reminders.php:154
+#: includes/template/rules/html-rules-add-row.php:24
+#: includes/template/rules/html-rules-edit-row.php:28
+msgid "Cart"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:45
+#: includes/admin/views/abandoned_orders/index.php:169
+#: includes/admin/views/abandoned_orders/index.php:243
+#: includes/admin/views/dashboard/index.php:217
+#: includes/template/rules/html-rules-add-row.php:25
+#: includes/template/rules/html-rules-edit-row.php:29
+msgid "Cart Status"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:47
+#: includes/template/rules/html-rules-add-row.php:27
+#: includes/template/rules/html-rules-edit-row.php:31
+msgid "Product Tags"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:48
+#: includes/template/rules/html-rules-add-row.php:28
+#: includes/template/rules/html-rules-edit-row.php:32
+msgid "Cart Items"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:49
+#: includes/template/rules/html-rules-add-row.php:29
+#: includes/template/rules/html-rules-edit-row.php:33
+msgid "Number of Cart Items"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:50
+#: includes/admin/wcap_privacy_export.php:163
+#: includes/admin/views/abandoned_orders/index.php:165
+#: includes/admin/views/abandoned_orders/index.php:239
+#: includes/admin/views/dashboard/index.php:215
+#: includes/template/rules/html-rules-add-row.php:30
+#: includes/template/rules/html-rules-edit-row.php:34
+msgid "Cart Total"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:51
+#: includes/template/rules/html-rules-add-row.php:31
+#: includes/template/rules/html-rules-edit-row.php:35
+msgid "Location"
+msgstr ""
+
+#: includes/admin/wcap_email_template_fields.php:52
+#: includes/template/rules/html-rules-add-row.php:32
+#: includes/template/rules/html-rules-edit-row.php:36
+msgid "Countries"
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:38
+#, php-format
+msgid "Welcome to %1$s version %2$s"
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:66
+msgid ""
+"We have noticed that you are using the Lite version of the Abandoned Cart "
+"plugin on your store. Thus, when activating the Pro version, you should "
+"choose if you want to import the Lite version data in Pro. We fully "
+"understand the importance of data captured in the Lite version of the plugin "
+"& hence would like to give you an option to choose what you want to do with "
+"that data."
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:68
+msgid ""
+"You can import all your data by clicking on the <strong>Yes </strong> button "
+"below. In the next step, you will be asked to select what data you want to "
+"import before beginning the actual process of import."
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:70
+msgid ""
+"If you don't wish to import the data from the Lite version of the plugin, "
+"then please click on the <strong>No </strong>button below. Selecting "
+"<strong>No </strong>will not import the data captured in the Lite version of "
+"the plugin into the Pro version."
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:74
+msgid ""
+"You can choose what data you want to import from Lite plugin using the "
+"options below:"
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:79
+msgid "Abandoned Carts:"
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:88
+msgid "Settings:"
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:96
+msgid "Email templates:"
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:104
+msgid ""
+"<strong>Note: Note: Once the import is complete, we will not send any "
+"abandoned cart reminder emails from Pro version to the carts which were "
+"imported from the Lite plugin. Please activate the email templates to ensure "
+"that reminder emails are sent to carts captured in the Pro version.</strong>"
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:186
+msgid "About Abandoned Cart Pro for WooCommerce"
+msgstr ""
+
+#: includes/admin/wcap_import_lite_to_pro.php:187
+msgid "Welcome to Abandoned Cart Pro for WooCommerce"
+msgstr ""
+
+#: includes/admin/wcap_menu.php:40
+#: includes/admin/views/dashboard/index.php:132
+#: includes/admin/views/dashboard/index.php:159
+msgid "WooCommerce - Abandon Cart"
+msgstr ""
+
+#: includes/admin/wcap_privacy_erase.php:41
+#: includes/admin/wcap_privacy_export.php:41
+msgid "Abandoned & Recovered Carts"
+msgstr ""
+
+#: includes/admin/wcap_privacy_erase.php:92
+msgid "No personal data found for any abandoned carts."
+msgstr ""
+
+#: includes/admin/wcap_privacy_erase.php:124
+#, php-format
+msgid "Removed personal data from cart %s."
+msgstr ""
+
+#: includes/admin/wcap_privacy_erase.php:128
+#, php-format
+msgid "Personal data within cart %s has been retained."
+msgstr ""
+
+#: includes/admin/wcap_privacy_erase.php:208
+msgid "ANONYMIZED"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:160
+msgid "Abandoned Cart ID"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:162
+msgid "Abandoned Cart Status"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:164
+msgid "Items Present"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:166
+msgid "Session ID"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:167
+msgid "Billing Address"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:168
+msgid "Phone Number"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:200
+#: includes/admin/wcap_privacy_export.php:203
+msgid "Cart Recovered - Order #"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:203
+msgid "Abandoned but new cart created"
+msgstr ""
+
+#: includes/admin/wcap_privacy_export.php:206
+msgid "Abandoned - Order Unpaid (Order #"
+msgstr ""
+
+#: includes/admin/wcap_sms_settings.php:85
+msgid ""
+"Incomplete Twilio Account Details. Please provide an Account SID and Auth "
+"Token to send a test message."
+msgstr ""
+
+#: includes/admin/wcap_sms_settings.php:88
+msgid "Please enter the phone number in E.164 format"
+msgstr ""
+
+#: includes/admin/views/ac-footer.php:18
+msgid "Need Support?"
+msgstr ""
+
+#: includes/admin/views/ac-footer.php:18
+msgid "We’re always happy to help you."
+msgstr ""
+
+#: includes/admin/views/ac-footer.php:24
+#, php-format
+msgid "If this plugin helped you, %s please rate it %s %s"
+msgstr ""
+
+#: includes/admin/views/ac-footer.php:31
+msgid "Thanks for your support"
+msgstr ""
+
+#: includes/admin/views/ac-header.php:32
+msgid "Dashboard"
+msgstr ""
+
+#: includes/admin/views/ac-header.php:33
+#: includes/admin/views/dashboard/index.php:80
+msgid "Abandoned Orders"
+msgstr ""
+
+#: includes/admin/views/ac-header.php:34
+msgid "Templates"
+msgstr ""
+
+#: includes/admin/views/ac-header.php:37
+#: includes/admin/views/dashboard/index.php:182
+msgid "Product Report"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:41
+#: includes/admin/views/abandoned_orders/index.php:201
+msgid "Trash"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:44
+msgid " Carts without Customer Details "
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:45
+msgid "Unsubscribed Carts"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:51
+msgid ""
+"The list below shows all the carts that were abandoned and subsequently "
+"recovered."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:65
+msgid "CSV"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:66
+msgid "Print"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:78
+#: includes/admin/views/abandoned_orders/index.php:80
+#: includes/admin/views/reminders/email_reminders.php:60
+#: includes/admin/views/reminders/email_reminders.php:62
+#: includes/admin/views/reminders/sms_reminders.php:61
+#: includes/admin/views/reminders/sms_reminders.php:63
+msgid "Select Date"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:88
+#: includes/admin/views/reminders/email_reminders.php:67
+#: includes/admin/views/reminders/sms_reminders.php:68
+msgid "Apply Filter"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:104
+#: includes/admin/views/abandoned_orders/index.php:256
+#: includes/admin/views/settings/popup-templates.php:53
+#: includes/admin/views/settings/popup-templates.php:141
+#: includes/admin/views/templates/email_templates.php:54
+#: includes/admin/views/templates/email_templates.php:199
+#: includes/admin/views/templates/facebook_messenger.php:52
+#: includes/admin/views/templates/facebook_messenger.php:142
+#: includes/admin/views/templates/sms_notifications.php:54
+#: includes/admin/views/templates/sms_notifications.php:165
+msgid "Bulk Action"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:108
+#: includes/admin/views/abandoned_orders/index.php:260
+#: includes/admin/views/settings/popup-templates.php:56
+#: includes/admin/views/settings/popup-templates.php:144
+#: includes/admin/views/templates/email_templates.php:57
+#: includes/admin/views/templates/email_templates.php:202
+#: includes/admin/views/templates/facebook_messenger.php:55
+#: includes/admin/views/templates/facebook_messenger.php:145
+#: includes/admin/views/templates/sms_notifications.php:57
+#: includes/admin/views/templates/sms_notifications.php:168
+msgid "Apply"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:162
+#: includes/admin/views/abandoned_orders/index.php:236
+msgid "Id"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:166
+msgid "Abandoned Date/ Time"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:167
+msgid "Coupon Used/ Status"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:168
+#: includes/admin/views/abandoned_orders/index.php:242
+msgid "Captured By"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:195
+#: includes/admin/views/settings/popup-templates.php:108
+msgid "View"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:196
+msgid "Mark As Recovered"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:197
+#: includes/admin/views/abandoned_orders/index.php:313
+msgid "Unsubscribe"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:237
+msgid "Email"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:240
+#: includes/admin/views/dashboard/index.php:216
+msgid "Abandoned Date / Time"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:241
+msgid "Coupon Used Status"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:314
+msgid "Close"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/index.php:341
+msgid "WooCommerce orders can be found"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:63
+#: includes/admin/views/abandoned_orders/send_email.php:406
+#: includes/admin/views/settings/popup_templates/add_edit.php:60
+#: includes/admin/views/settings/popup_templates/add_edit.php:993
+#: includes/admin/views/templates/add_edit_email_template.php:59
+#: includes/admin/views/templates/add_edit_email_template.php:448
+#: includes/template/preview_modal/preview_modal.php:40
+msgid "Back"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:64
+#: includes/admin/views/abandoned_orders/send_email.php:407
+msgid "Send Email"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:81
+#, php-format
+msgid "The abandoned cart id(s) %s will receive this email."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:91
+#: includes/classes/class_wcap_manual_email.php:80
+msgid "Load Message from existing Template:"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:95
+#: includes/classes/class_wcap_manual_email.php:98
+msgid ""
+"Select the template from which you would like to load the tepmplate data."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:131
+#: includes/classes/class_wcap_manual_email.php:99
+msgid "Note"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:131
+#: includes/classes/class_wcap_manual_email.php:99
+msgid ""
+"Any changes made on this page will not update the selected email template. "
+"Changes made here are only applicable for the email to be sent for Abandoned "
+"Orders selected in previous step."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:141
+#: includes/admin/views/templates/add_edit_email_template.php:179
+#: includes/admin/views/templates/facebook_messenger.php:188
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:42
+msgid "Subject"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:145
+#: includes/admin/views/templates/add_edit_email_template.php:183
+#: includes/classes/class_wcap_manual_email.php:122
+msgid "Enter the subject that should appear in the email sent"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:159
+#: includes/admin/views/templates/add_edit_email_template.php:197
+msgid ""
+"Add the shortcode {{customer.firstname}} or {{product.name}} to include the "
+"Customer First Name and Product name ( first in the cart ) to the Subject "
+"Line. For e.g. Hi John!! You left some Protein Bread in your cart"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:168
+#: includes/admin/views/templates/add_edit_email_template.php:206
+msgid "Email Body"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:172
+#: includes/admin/views/templates/add_edit_email_template.php:210
+#: includes/classes/class_wcap_manual_email.php:170
+msgid "Message to be sent in the reminder email."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:193
+#: includes/admin/views/templates/add_edit_email_template.php:231
+#: includes/classes/class_wcap_manual_email.php:176
+msgid ""
+"1. You can add customer & cart information in the template using this icon"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:193
+#: includes/admin/views/templates/add_edit_email_template.php:231
+#: includes/classes/class_wcap_manual_email.php:176
+msgid "in top left of the editor"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:194
+#: includes/admin/views/templates/add_edit_email_template.php:232
+#: includes/classes/class_wcap_manual_email.php:177
+msgid ""
+"2. You can now customize the product information/cart contents table that is "
+"added when using the {{products.cart}} merge field"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:195
+#: includes/admin/views/templates/add_edit_email_template.php:233
+#: includes/classes/class_wcap_manual_email.php:178
+msgid ""
+"3. Add/Remove columns from the default table by selecting the column and "
+"clicking on the Remove Column Icon in the editor"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:196
+#: includes/admin/views/templates/add_edit_email_template.php:234
+#: includes/classes/class_wcap_manual_email.php:179
+msgid ""
+"4. Insert/Remove any of the new shortcodes that have been included for the "
+"product table"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:197
+#: includes/admin/views/templates/add_edit_email_template.php:235
+#: includes/classes/class_wcap_manual_email.php:180
+msgid ""
+"5. Change the look and feel of the table by modifying the table style "
+"properties using the Edit Table Icon in the editor"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:198
+#: includes/admin/views/templates/add_edit_email_template.php:236
+#: includes/classes/class_wcap_manual_email.php:181
+msgid ""
+"6. Change the background color of the table rows by using the Edit Table Row "
+"Icon in the editor"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:207
+#: includes/admin/views/templates/add_edit_email_template.php:245
+msgid "Use WooCommerce Template Style"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:213
+#: includes/admin/views/templates/add_edit_email_template.php:251
+#: includes/classes/class_wcap_manual_email.php:220
+msgid ""
+"Use WooCommerce default style template for abandoned cart reminder emails."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:233
+#: includes/admin/views/templates/add_edit_email_template.php:273
+msgid "Preview WooCommerce Email"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:235
+#: includes/admin/views/templates/add_edit_email_template.php:275
+msgid "Preview Custom Email"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:245
+#: includes/admin/views/templates/add_edit_email_template.php:285
+msgid "Email Template Header Text"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:249
+#: includes/admin/views/templates/add_edit_email_template.php:289
+#: includes/classes/class_wcap_manual_email.php:247
+msgid ""
+"Enter the header which will appear in the abandoned WooCommerce email sent. "
+"This is only applicable when only used when \"Use WooCommerce Template Style:"
+"\" is checked."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:257
+#: includes/admin/views/templates/add_edit_email_template.php:297
+msgid "Generate unique coupon codes"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:262
+#: includes/admin/views/templates/add_edit_email_template.php:302
+#: includes/classes/class_wcap_manual_email.php:272
+msgid "Replace this coupon with unique coupon codes for each customer"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:280
+#: includes/admin/views/settings/popup_templates/add_edit.php:267
+#: includes/admin/views/templates/add_edit_email_template.php:320
+msgid "Discount Type"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:285
+#: includes/admin/views/settings/popup_templates/add_edit.php:275
+#: includes/admin/views/templates/add_edit_email_template.php:327
+msgid "Percentage Discount"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:286
+#: includes/admin/views/templates/add_edit_email_template.php:328
+msgid "Fixed Cart discount "
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:294
+#: includes/admin/views/templates/add_edit_email_template.php:336
+msgid "Coupon amount"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:298
+#: includes/admin/views/templates/add_edit_email_template.php:340
+#: includes/classes/class_wcap_manual_email.php:324
+msgid "Value of the coupon."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:306
+#: includes/admin/views/templates/add_edit_email_template.php:348
+msgid "Allow free shipping"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:311
+#: includes/admin/views/templates/add_edit_email_template.php:353
+#: includes/classes/class_wcap_manual_email.php:353
+msgid ""
+"Check this box if the coupon grants free shipping. A free shipping method "
+"must be enabled in your shipping zone and be set to require \"a valid free "
+"shipping coupon\" (see the \"Free Shipping Requires\" setting)."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:326
+#: includes/admin/views/templates/add_edit_email_template.php:368
+msgid "Coupon validity"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:330
+#: includes/admin/views/templates/add_edit_email_template.php:372
+#: includes/classes/class_wcap_manual_email.php:389
+msgid ""
+"The coupon code which will be sent in the reminder emails will be expired "
+"based the validity set here. E.g if the coupon code sent in the reminder "
+"email should be expired after 7 days then set 7 Day(s) for this option."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:334
+#: includes/admin/views/templates/add_edit_email_template.php:169
+#: includes/admin/views/templates/add_edit_email_template.php:376
+#: includes/admin/views/templates/sms_notifications.php:218
+#: includes/classes/class_wcap_templates_table.php:183
+msgid "Hours"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:335
+#: includes/admin/views/templates/add_edit_email_template.php:170
+#: includes/admin/views/templates/add_edit_email_template.php:377
+#: includes/admin/views/templates/sms_notifications.php:219
+#: includes/classes/class_wcap_templates_table.php:180
+msgid "Days"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:344
+#: includes/admin/views/templates/add_edit_email_template.php:386
+msgid "Individual use only"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:349
+#: includes/admin/views/templates/add_edit_email_template.php:391
+#: includes/classes/class_wcap_manual_email.php:407
+msgid ""
+"Check this box if the coupon cannot be used in conjunction with other "
+"coupons."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:366
+#: includes/admin/views/templates/add_edit_email_template.php:408
+msgid "OR"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:372
+#: includes/admin/views/templates/add_edit_email_template.php:414
+msgid "Enter a coupon code to add into email"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:376
+#: includes/admin/views/templates/add_edit_email_template.php:418
+msgid ""
+"Search & select one coupon code that customers should use to get a "
+"discount.  Generated coupon code which will be sent in email reminder will "
+"have the settings of coupon selected in this option."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:386
+#: includes/admin/views/templates/add_edit_email_template.php:428
+#: includes/connectors/custom_smtp/views/settings.php:110
+msgid "Send a test email to"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:390
+#: includes/admin/views/templates/add_edit_email_template.php:432
+#: includes/classes/class_wcap_manual_email.php:493
+msgid "Enter the email id to which the test email needs to be sent."
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:392
+msgid "Send a test Email"
+msgstr ""
+
+#: includes/admin/views/abandoned_orders/send_email.php:422
+#: includes/admin/views/templates/add_edit_email_template.php:464
+msgid "Email preview"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:37
+msgid "Select Date Range:"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:38
+msgid "This Month"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:40
+msgid "This Quarter"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:41
+msgid "Last Quarter"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:42
+msgid "This Year"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:43
+msgid "Last Year"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:44
+msgid "Custom"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:48
+msgid "Apply filters"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:60
+msgid "Recovered Amount"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:63
+msgid " Recovered Orders"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:64
+msgid " of Abandoned Carts Recovered"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:77
+msgid "Abandoned Amount"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:93
+msgid "Number of Emails Sent"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:96
+msgid " Emails Opened"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:97
+msgid " Emails Clicked"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:110
+msgid "Email Capture Popup Displayed"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:113
+msgid " email addresses captured from Add to Cart popups"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:114
+msgid " email addresses captured from Exit Intent popups"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:134
+#: includes/admin/views/dashboard/index.php:161
+msgid "Abandoned Revenue"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:135
+#: includes/admin/views/dashboard/index.php:162
+msgid "Recovered Revenue"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:188
+#: includes/admin/views/reports/index.php:89
+#: includes/admin/views/reports/index.php:103
+msgid "Product Name"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:189
+#: includes/admin/views/reports/index.php:90
+#: includes/admin/views/reports/index.php:104
+msgid "Number of Times Abandoned"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:190
+#: includes/admin/views/reports/index.php:91
+#: includes/admin/views/reports/index.php:105
+msgid "Number of Times Recovered"
+msgstr ""
+
+#: includes/admin/views/dashboard/index.php:208
+msgid "Abandoned Cart Details"
+msgstr ""
+
+#: includes/admin/views/faq/index.php:21
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:42
+msgid ""
+"The Report below shows emails sent, emails opened and other related stats "
+"for the selected date range"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:48
+msgid "Email Sent"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:49
+msgid "Email Opened"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:50
+#: includes/admin/views/reminders/sms_reminders.php:49
+msgid "Links Clicked"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:98
+msgid "Save Setting"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:99
+#: includes/admin/views/settings/popup_templates/add_edit.php:176
+#: includes/admin/views/templates/add_edit_email_template.php:130
+#: includes/admin/views/templates/email_templates.php:122
+#: includes/admin/views/templates/facebook_messenger.php:96
+#: includes/admin/views/templates/sms_notifications.php:128
+msgid "Edit"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:108
+#: includes/admin/views/reminders/email_reminders.php:132
+msgid "User Email Address"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:109
+#: includes/admin/views/reminders/email_reminders.php:133
+msgid "Email Sent Time"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:110
+#: includes/admin/views/reminders/email_reminders.php:134
+msgid "Date / Time Email Opened"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:111
+#: includes/admin/views/reminders/email_reminders.php:135
+#: includes/admin/views/reminders/sms_reminders.php:110
+#: includes/admin/views/reminders/sms_reminders.php:134
+msgid "Link Clicked"
+msgstr ""
+
+#: includes/admin/views/reminders/email_reminders.php:112
+#: includes/admin/views/reminders/email_reminders.php:136
+msgid "Sent Email Template"
+msgstr ""
+
+#: includes/admin/views/reminders/sms_reminders.php:42
+msgid ""
+"The report below shows the SMS sent, links clicked and other related stats."
+msgstr ""
+
+#: includes/admin/views/reminders/sms_reminders.php:48
+msgid "SMS Sent"
+msgstr ""
+
+#: includes/admin/views/reminders/sms_reminders.php:107
+#: includes/admin/views/reminders/sms_reminders.php:131
+msgid "User Phone Number"
+msgstr ""
+
+#: includes/admin/views/reminders/sms_reminders.php:108
+#: includes/admin/views/reminders/sms_reminders.php:132
+msgid "SMS Sent Time"
+msgstr ""
+
+#: includes/admin/views/reminders/sms_reminders.php:109
+#: includes/admin/views/reminders/sms_reminders.php:133
+msgid "Date / Time Link Opened"
+msgstr ""
+
+#: includes/admin/views/reminders/sms_reminders.php:111
+#: includes/admin/views/reminders/sms_reminders.php:135
+msgid "Sent SMS Template"
+msgstr ""
+
+#: includes/admin/views/reports/index.php:43
+msgid ""
+"The below list shows the products which have been abandoned and also the "
+"number of times they have been recovered."
+msgstr ""
+
+#: includes/admin/views/settings/email-reports.php:39
+msgid "Reports"
+msgstr ""
+
+#: includes/admin/views/settings/email-reports.php:45
+msgid "Frequency with which report should be sent"
+msgstr ""
+
+#: includes/admin/views/settings/email-reports.php:53
+msgid "Send emails on weekly/monthly basis."
+msgstr ""
+
+#: includes/admin/views/settings/email-reports.php:57
+msgid "Weekly"
+msgstr ""
+
+#: includes/admin/views/settings/email-reports.php:64
+msgid "Monthly"
+msgstr ""
+
+#: includes/admin/views/settings/email-reports.php:73
+msgid "Send report emails to"
+msgstr ""
+
+#: includes/admin/views/settings/email-reports.php:77
+msgid ""
+"Enter a list of email addresses. Each email address should be on a new line."
+msgstr ""
+
+#: includes/admin/views/settings/email-reports.php:86
+#: includes/admin/views/settings/facebook-messenger.php:50
+#: includes/admin/views/settings/facebook-messenger.php:178
+#: includes/admin/views/settings/sms.php:106
+#: includes/admin/views/settings/popup_templates/add_edit.php:61
+#: includes/admin/views/settings/popup_templates/add_edit.php:994
+#: includes/admin/views/templates/add_edit_email_template.php:60
+#: includes/admin/views/templates/add_edit_email_template.php:449
+msgid "Save Settings"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:40
+msgid "Facebook Messenger"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:43
+#, php-format
+msgid ""
+"Configure the plugin to send notifications to Facebook Messenger using the "
+"settings below. Please refer the %s following documentation %s to complete "
+"the setup."
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:63
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:115
+msgid "Enable Facebook Messenger Reminders"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:67
+msgid ""
+"By enabling this a check box will be shown after the Add to Cart button to "
+"get the user’s concern about connecting their Facebook account. Note: "
+"Enabling or disabling this option won’t affect the cart abandonment tracking."
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:78
+msgid "Facebook Messenger On Add To Cart Pop-Up Modal"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:82
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:128
+msgid ""
+"This option will display a checkbox on the pop-up modal to connect with "
+"Facebook."
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:93
+msgid "Icon Size Of User"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:97
+msgid ""
+"Select the size of the user icon which shall be displayed below the checkbox "
+"in case the user is logged in to their Facebook account."
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:99
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:151
+msgid "Small"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:100
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:152
+msgid "Medium"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:101
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:153
+msgid "Large"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:102
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:154
+msgid "Standard"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:103
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:155
+msgid "Extra Large"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:111
+msgid "Consent Text"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:115
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:166
+msgid ""
+"Text that will appear above the consent checkbox. HTML tags are also allowed."
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:116
+msgid "Allow Order Status to be sent to Facebook Messanger"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:123
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:171
+msgid "Facebook Page ID"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:127
+msgid "Facebook Page ID in numberic format."
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:128
+msgid "Enter Your Facebook ID"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:130
+msgid ""
+"You can find your page ID from <a href=\"https://www.tychesoftwares.com/docs/"
+"docs/abandoned-cart-pro-for-woocommerce/send-abandoned-cart-reminder-"
+"notifications-using-facebook-messenger#fbpageid\" target=\"_blank\">here.</a>"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:136
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:180
+msgid "Messenger App ID"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:140
+msgid "Enter your Messenger App ID"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:141
+msgid "Enter your Messanger App ID"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:148
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:189
+msgid "Facebook Page Token"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:152
+msgid "Enter your Facebook Page Token"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:153
+msgid "Enter Your Facebook Token"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:160
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:198
+msgid "Verify Token"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:164
+msgid "Enter your Verify Token"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:165
+msgid "Enter your verify token here."
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:182
+msgid "Domains Whitelisted for the page mentioned above"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:186
+#, php-format
+msgid ""
+"The current domain shall be listed in the below list. Please note the domain "
+"will not get listed if it is not over https due to %s Facebook restrictions. "
+"%s"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:192
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:337
+msgid "Webhook callback URL"
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:193
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:338
+msgid "Your webhook callback URL is: "
+msgstr ""
+
+#: includes/admin/views/settings/facebook-messenger.php:199
+#, php-format
+msgid ""
+"This webhook needs to added to your %s Facebook Developer App %s for the "
+"checkbox to appear on site."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:42
+msgid ""
+"Change settings for sending email notifications to Customers, to Admin, "
+"Tracking Coupons etc."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:53
+msgid "Email Settings"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:61
+msgid "Enable abandoned cart reminder emails:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:65
+msgid ""
+"Email notifications of the abandoned carts will be sent to the users. Note: "
+"Enabling or disabling this option won’t affect the cart abandonment tracking."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:76
+msgid "Email admin On Order Recovery:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:80
+msgid "Sends email to Admin if an Abandoned Cart Order is recovered."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:90
+msgid ""
+"Send reminder emails for newly abandoned carts after X days of order "
+"placement:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:94
+msgid ""
+"Reminder emails will be sent for newly abandoned carts only after X days of "
+"a previously placed order for a user with the same email address as that of "
+"the abandoned cart"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:103
+msgid "Capture email address from custom fields"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:108
+msgid "Enable this setting to capture email address from other form fields."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:119
+msgid "Class Names Of The Form Fields:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:123
+msgid ""
+"Enter class names of fields separated by commas from where email needs to be "
+"captured."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:133
+msgid " Capture Email address from URL:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:137
+msgid ""
+"If your site URL contains the same key, the plugin will capture the value as "
+"an email address of the customer."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:146
+msgid "Enable Email Verification"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:151
+msgid ""
+"Enable this checkbox to allow email verification to be done via DeBounce API "
+"services."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:162
+msgid "Enter DeBounce API Key:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:166
+msgid "Enter DeBounce JS API Key."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:173
+#: includes/admin/views/settings/general-settings.php:281
+#: includes/admin/views/settings/general-settings.php:347
+#: includes/admin/views/settings/general-settings.php:431
+#: includes/admin/views/settings/general-settings.php:482
+#: includes/admin/views/settings/general-settings.php:528
+#: includes/admin/views/settings/general-settings.php:611
+#: includes/admin/views/settings/general-settings.php:722
+#: includes/admin/views/settings/general-settings.php:816
+#: includes/admin/views/templates/facebook_messenger.php:249
+#: includes/admin/views/templates/sms_notifications.php:246
+#: includes/connectors/activecampaign/views/settings.php:62
+#: includes/connectors/custom_smtp/views/settings.php:125
+#: includes/connectors/drip/views/settings.php:56
+#: includes/connectors/fluentcrm/views/settings.php:69
+#: includes/connectors/hubspot/views/settings.php:26
+#: includes/connectors/klaviyo/views/settings.php:62
+#: includes/connectors/mailchimp/views/settings.php:56
+#: includes/connectors/mailjet/views/settings.php:62
+#: includes/connectors/sendinblue/views/settings.php:62
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:121
+msgid "Save"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:184
+msgid "Cart Settings"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:192
+msgid "Cart abandoned cut-off time for logged-in users"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:196
+msgid ""
+"For logged-in users consider cart abandoned after X minutes of item being "
+"added to cart & order not placed."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:204
+msgid "Cart abandoned cut-off time for guest users"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:208
+msgid ""
+"For guest users & visitors consider cart abandoned after X minutes of item "
+"being added to cart & order not placed."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:217
+msgid "Do not track carts of guest users"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:221
+msgid "Abandoned carts of guest users will not be tracked."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:234
+msgid "Start tracking from Cart Page"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:238
+#: includes/admin/views/settings/general-settings.php:774
+msgid ""
+"Enable tracking of abandoned products & carts even if customer does not "
+"visit the checkout page or does not enter any details on the checkout page "
+"like Name or Email. Tracking will begin as soon as a visitor adds a product "
+"to their cart and visits the cart page."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:251
+msgid "Do not track carts of logged-in users"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:255
+msgid "Abandoned carts of logged-in users will not be tracked."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:267
+msgid "Add product to cart when close icon is clicked in the popup modal?"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:271
+msgid ""
+"Enable this setting if you want the product to the added to cart when the "
+"user clicks on the Close Icon in the Add to Cart Popup Window."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:302
+msgid "Automatically Delete Abandoned Orders after X days"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:306
+msgid "Automatically delete abandoned cart orders after X days."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:315
+msgid "Remove Data on Uninstall?"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:319
+msgid ""
+"Enable this setting if you want to completely remove Abandoned Cart data "
+"when plugin is deleted."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:330
+msgid "Reset Usage Tracking"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:335
+msgid ""
+"This will reset your usage tracking settings, causing it to show the opt-in "
+"banner and not send any data."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:359
+msgid "GDPR Consent"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:368
+msgid "Enable GDPR Notice"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:384
+msgid "Message to be displayed for Guest users when tracking their carts:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:388
+msgid ""
+"In compliance with GDPR, add a message on the Shop & Product pages to inform "
+"Guest users of how their data is being used. For example: Please check our "
+"Privacy Policy to see how we use your personal data."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:396
+msgid "Message to be displayed for registered users when tracking their carts:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:400
+msgid ""
+"In compliance with GDPR, add a message on the Shop & Product pages to inform "
+"Registered users of how their data is being used. For example: Please check "
+"our Privacy Policy to see how we use your personal data."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:408
+msgid "Allow the visitor to opt out of cart tracking."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:412
+msgid ""
+"In compliance with GDPR, allow the site visitor (guests & registered users) "
+"to opt out from cart tracking. This message will be displayed in conjunction "
+"with the GDPR message above."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:420
+msgid ""
+"Message to be displayed when the user chooses to opt out of cart tracking:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:424
+msgid ""
+"Message to be displayed when the user chooses to opt out of cart tracking."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:442
+#: includes/admin/views/settings/popup_templates/add_edit.php:221
+msgid "Coupon Settings"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:450
+msgid " Delete Coupons Automatically:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:454
+msgid ""
+"Enable this setting if you want to completely remove the expired and used "
+"coupon codes created by the plugin automatically every 15 days."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:465
+msgid "Delete Coupons Manually"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:470
+msgid ""
+"If you want to completely remove the expired and used coupon code now then "
+"click on \"Delete\" button."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:493
+msgid "Setting for sending Emails & SMS using Action Scheduler"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:501
+msgid " Send Abandoned cart reminders automatically using Action Scheduler:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:505
+msgid ""
+"Enabling this setting will send the abandoned cart reminders to the customer "
+"after the set time. If disabled, automated abandoned cart reminders will not "
+"be sent by the plugin. Carts will be tracked based on the settings, but no "
+"reminders will be sent."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:511
+msgid ""
+"Please visit <a href='https://www.tychesoftwares.com/moving-to-the-action-"
+"scheduler-library/?utm_source=AcProNotice&amp;utm_medium=link&amp;"
+"utm_campaign=AbandonCartPro' target='_blank'>here</a> for more information "
+"on the Action Scheduler."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:517
+msgid "Run automated scheduler action after X minutes."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:521
+msgid ""
+"The duration in minutes after which an action should be automatically "
+"scheduled to send email, SMS & FB reminders to customers."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:539
+msgid "Rules to exclude capturing abandoned carts"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:548
+msgid "Do not capture abandoned carts for these IP addresses"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:560
+msgid "Do not capture abandoned carts for these email addresses:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:564
+msgid ""
+"Carts that are abandoned using these email addresses will not be tracked by "
+"the plugin. *Separate email addresses with commas."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:572
+msgid "Do not capture abandoned carts for email addresses from these domains:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:576
+msgid ""
+"The carts abandoned from email addresses with these domains will not be "
+"tracked by the plugin."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:584
+msgid "Do not capture carts from countries:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:588
+msgid ""
+"The carts abandoned from these countries will not be tracked by the plugin."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:622
+msgid "Settings for abandoned cart recovery emails"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:630
+msgid "\"From\" Name:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:634
+msgid "Enter the name that should appear in the email sent."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:642
+msgid "\"From\" Address:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:646
+msgid ""
+"Email address from which the reminder emails should be sent. Note: This "
+"setting shall be applicable only when PHP mail function is used by your "
+"Hosting Provider. If SMTP mail plugins are used or if mail configuration is "
+"based on SMTP then this setting wont be applicable."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:654
+msgid "Send Reply Emails to:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:658
+msgid ""
+"When a contact receives your email and clicks reply, which email address "
+"should that reply be sent to?"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:667
+msgid "Product Image:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:671
+msgid ""
+"This setting affects the dimension of the product image in the abandoned "
+"cart reminder email."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:681
+msgid "Product Name Redirects to:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:685
+msgid ""
+"Select the page where product name in reminder emails should redirect to."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:687
+#: includes/classes/class_wcap_sent_sms_table.php:286
+msgid "Checkout Page"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:688
+msgid "Product Page"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:689
+msgid "No linkback"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:697
+msgid "UTM parameters to be added to all the links in reminder emails"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:701
+msgid ""
+"UTM parameters that should be added to all the links in reminder emails."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:708
+msgid ""
+"Auto login WordPress users coming to the site using reminder email links"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:712
+msgid ""
+"Should users registered on the site be auto logged in when they click a link "
+"in the reminder emails?"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:734
+msgid "Unsubscribe Emails Settings"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:740
+msgid "Default Unsubscribe Page"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:741
+msgid "Custom Text"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:742
+msgid "Custom WordPress page"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:751
+msgid "Unsubscribe Landing Page:"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:755
+msgid ""
+"Select a source where the user must be redirected when an Unsubscribe link "
+"is clicked from reminders sent. For details, please check the documentation."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:770
+msgid "Custom Content"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:797
+msgid "Select Custom WordPress page"
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:801
+msgid "Select a WordPress page to redirect to."
+msgstr ""
+
+#: includes/admin/views/settings/general-settings.php:826
+msgid "Save All"
+msgstr ""
+
+#: includes/admin/views/settings/license.php:37
+#: includes/component/welcome-page/templates/welcome/license-activation-failed.php:24
+#: includes/component/welcome-page/templates/welcome/license-activation.php:22
+msgid "Activate License"
+msgstr ""
+
+#: includes/admin/views/settings/license.php:41
+msgid "Plugin License Options"
+msgstr ""
+
+#: includes/admin/views/settings/license.php:47
+msgid "Status"
+msgstr ""
+
+#: includes/admin/views/settings/license.php:54
+#: includes/component/welcome-page/templates/welcome/license-activation-failed.php:11
+#: includes/component/welcome-page/templates/welcome/license-activation-failed.php:15
+#: includes/component/welcome-page/templates/welcome/license-activation.php:11
+#: includes/component/welcome-page/templates/welcome/license-activation.php:15
+msgid "License Key"
+msgstr ""
+
+#: includes/admin/views/settings/license.php:64
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:77
+msgid "Deactivate"
+msgstr ""
+
+#: includes/admin/views/settings/license.php:65
+msgid "Save & Activate"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:39
+msgid ""
+"Add different Add to Cart and Exit Intent popup templates for different "
+"pages to maximize the possibility of collecting email addresses from users."
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:41
+#: includes/fb-recovery/admin/wcap_fb_templates.php:66
+msgid "Add New Template"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:54
+#: includes/admin/views/settings/popup-templates.php:142
+#: includes/admin/views/settings/popup_templates/add_edit.php:178
+#: includes/admin/views/templates/add_edit_email_template.php:131
+#: includes/admin/views/templates/email_templates.php:55
+#: includes/admin/views/templates/email_templates.php:122
+#: includes/admin/views/templates/email_templates.php:200
+#: includes/admin/views/templates/facebook_messenger.php:53
+#: includes/admin/views/templates/facebook_messenger.php:96
+#: includes/admin/views/templates/facebook_messenger.php:143
+#: includes/admin/views/templates/sms_notifications.php:55
+#: includes/admin/views/templates/sms_notifications.php:129
+#: includes/admin/views/templates/sms_notifications.php:166
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:288
+msgid "Delete"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:71
+#: includes/admin/views/templates/email_templates.php:98
+#: includes/admin/views/templates/email_templates.php:151
+msgid "Sr"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:72
+#: includes/admin/views/templates/email_templates.php:99
+#: includes/admin/views/templates/email_templates.php:152
+msgid "Name Of Template"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:73
+msgid "Type"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:74
+#: includes/admin/views/templates/add_edit_email_template.php:90
+msgid "Rules"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:75
+msgid "Email Captured"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:76
+msgid "Viewed"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:78
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:150
+msgid "See Help Documentation"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:171
+#: includes/admin/views/templates/email_templates.php:228
+msgid " Template Details"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:174
+#: includes/admin/views/settings/popup_templates/add_edit.php:78
+#: includes/admin/views/templates/add_edit_email_template.php:144
+msgid "Template Name"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:178
+#: includes/admin/views/templates/email_templates.php:235
+msgid " Template Type"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:182
+#: includes/admin/views/templates/email_templates.php:239
+msgid " Number of Views"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:186
+#: includes/admin/views/templates/email_templates.php:243
+msgid " Number of Emails captured"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:190
+#: includes/admin/views/templates/email_templates.php:247
+msgid " Number of times No Thanks was clicked"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:194
+#: includes/admin/views/templates/email_templates.php:251
+msgid " Number of times coupon was applied"
+msgstr ""
+
+#: includes/admin/views/settings/popup-templates.php:198
+#: includes/admin/views/templates/email_templates.php:255
+msgid " Number of orders placed"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:46
+msgid "SMS Reminders"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:48
+msgid ""
+"Twillio: Configure your Twillio account settings below.\n"
+"                                                    Please note that due to "
+"some restrictions from Twillio, customers may sometimes receive delayed "
+"messages"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:56
+msgid "Enable SMS"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:60
+msgid ""
+"SMS notifications of the abandoned cart will be sent to the users. Note: "
+"Enabling or disabling this option will not affect the cart abandonment "
+"tracking. "
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:71
+msgid "From"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:75
+msgid ""
+"Must be a Twilio phone number (in E.164 format) or alphanumeric sender ID."
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:83
+msgid "Account SID"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:88
+#: includes/admin/views/settings/sms.php:100
+msgid "DS5164"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:95
+msgid "Auth Token"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:118
+msgid "Send Test SMS"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:133
+msgid "Recipient"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:144
+msgid "Message"
+msgstr ""
+
+#: includes/admin/views/settings/sms.php:156
+#: includes/admin/views/templates/facebook_messenger.php:169
+#: includes/admin/views/templates/sms_notifications.php:207
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:28
+msgid "Send"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:56
+msgid "Popup Templates"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:57
+msgid ""
+"Add different Add to Cart popup templates for different pages to maximize "
+"the possibility of collecting email addresses from users."
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:70
+msgid "Edit/Add Popup Templates"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:94
+msgid "Template Type"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:102
+msgid "Add To Cart"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:103
+#: includes/classes/class-wcap-atc-templates-table.php:138
+msgid "Exit Intent"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:143
+#: includes/admin/views/templates/add_edit_email_template.php:96
+#: includes/template/atc-rules/html-atc-rules-engine.php:46
+#: includes/template/rules/html-rules-engine.php:61
+msgid "Rule Type"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:144
+#: includes/admin/views/templates/add_edit_email_template.php:97
+#: includes/template/atc-rules/html-atc-rules-engine.php:47
+#: includes/template/rules/html-rules-engine.php:62
+msgid "Conditions"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:145
+#: includes/admin/views/templates/add_edit_email_template.php:98
+#: includes/template/atc-rules/html-atc-rules-engine.php:48
+#: includes/template/rules/html-rules-engine.php:63
+msgid "Values"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:146
+#: includes/admin/views/templates/add_edit_email_template.php:99
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:113
+#: includes/template/atc-rules/html-atc-rules-engine.php:49
+#: includes/template/rules/html-rules-engine.php:64
+msgid "Actions"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:169
+#: includes/admin/views/templates/add_edit_email_template.php:122
+#: includes/template/atc-rules/html-atc-rules-add-row.php:84
+#: includes/template/rules/html-rules-add-row.php:99
+msgid "Select values"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:174
+#: includes/admin/views/templates/add_edit_email_template.php:127
+msgid "Save Rule"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:175
+#: includes/admin/views/templates/add_edit_email_template.php:128
+#: includes/admin/views/templates/sms_notifications.php:245
+#: includes/connectors/activecampaign/views/settings.php:60
+#: includes/connectors/drip/views/settings.php:54
+#: includes/connectors/fluentcrm/views/settings.php:67
+#: includes/connectors/hubspot/views/settings.php:24
+#: includes/connectors/klaviyo/views/settings.php:60
+#: includes/connectors/mailchimp/views/settings.php:54
+#: includes/connectors/mailjet/views/settings.php:60
+#: includes/connectors/sendinblue/views/settings.php:60
+msgid "Update"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:177
+#: includes/admin/views/templates/add_edit_email_template.php:129
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:78
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:130
+#: includes/template/preview_modal/preview_modal.php:66
+msgid "Cancel"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:186
+#: includes/admin/views/templates/add_edit_email_template.php:139
+#: includes/template/atc-rules/html-atc-rules-add-row.php:93
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:174
+#: includes/template/rules/html-rules-add-row.php:108
+#: includes/template/rules/html-rules-edit-row.php:326
+msgid "Add Rule"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:193
+#: includes/admin/views/templates/add_edit_email_template.php:74
+msgid "Match Rules"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:201
+msgid "Select a value"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:202
+#: includes/admin/views/templates/add_edit_email_template.php:81
+#: includes/template/atc-rules/html-atc-rules-engine.php:114
+#: includes/template/rules/html-rules-engine.php:43
+msgid "Match all rules"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:203
+#: includes/template/atc-rules/html-atc-rules-engine.php:115
+#: includes/template/rules/html-rules-engine.php:44
+msgid "Match any rule(s)"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:229
+msgid "Offer coupons on email address capture"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:247
+msgid "Type of Coupon to apply"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:255
+msgid "Existing Coupons"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:256
+msgid "Generate Unique Coupon code"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:276
+msgid "Fixed Cart Amount"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:287
+msgid "Discount Amount"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:303
+msgid "Allow Free Shiping?"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:322
+msgid "Coupon code to apply"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:342
+msgid "Coupon validity (in minutes)"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:358
+msgid "Urgency message to boost your conversions"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:380
+msgid "Merge tags available: <coupon_code>, <hh:mm:ss>"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:388
+msgid "Message to display after coupon validity is reached"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:404
+msgid ""
+"Display Urgency message on Cart page (If disabled it will  display only on "
+"Checkout page)"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:427
+msgid ""
+"Note: Orders that use the coupon selected/generated by the popup module will "
+"be marked as \"ATC Coupon Used\" in WooCommerce->Orders."
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:445
+#: includes/admin/views/settings/popup_templates/add_edit.php:455
+msgid "Configure popup"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:461
+#: includes/admin/views/settings/popup_templates/add_edit.php:671
+#: includes/admin/views/settings/popup_templates/add_edit.php:863
+msgid "Modal Image"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:478
+#: includes/admin/views/settings/popup_templates/add_edit.php:687
+#: includes/admin/views/settings/popup_templates/add_edit.php:880
+msgid "Modal Heading"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:498
+#: includes/admin/views/settings/popup_templates/add_edit.php:706
+#: includes/admin/views/settings/popup_templates/add_edit.php:899
+msgid "Modal Text"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:517
+#: includes/admin/views/settings/popup_templates/add_edit.php:725
+msgid "Email placeholder"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:557
+#: includes/admin/views/settings/popup_templates/add_edit.php:763
+msgid "Email address is mandatory?"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:566
+#: includes/admin/views/settings/popup_templates/add_edit.php:772
+msgid "Not mandatory text"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:582
+msgid "Capture Phone"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:591
+msgid "Phone placeholder"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:599
+msgid "Please enter your phone number in E.164 format"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:608
+msgid "Phone number is mandatory?"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:653
+#: includes/admin/views/settings/popup_templates/add_edit.php:663
+msgid "Configure popup for guest users"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:664
+msgid ""
+"These settings would show a popup to motivate the user to redirect to the "
+"Checkout page. Note: This popup would appear for guest users by default "
+"where email address has not been captured until then."
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:833
+#: includes/admin/views/settings/popup_templates/add_edit.php:843
+msgid "Configure popup for logged-in users"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:844
+msgid ""
+"These settings would show a popup to force the user to redirect to the "
+"Checkout page. Note: This popup would appear for logged in users by default "
+"and can be forced for Guest users without email address as well."
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:852
+msgid ""
+"Allow all users (including guest users) to checkout without capturing email"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:857
+msgid ""
+"Please note that if this setting is enabled, then the email address capture "
+"popup will not appear for Guest users."
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:940
+msgid "Link to redirect to"
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:948
+msgid ""
+"URL of the page where the popup should redirect. Leaving blank here will "
+"take the user to the Checkout page."
+msgstr ""
+
+#: includes/admin/views/settings/popup_templates/add_edit.php:988
+msgid "Reset to default configuration"
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:78
+#: includes/template/rules/html-rules-engine.php:46
+msgid ""
+"Email template will be sent depending on whether all the rule matches are "
+"met or any rule matches."
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:80
+msgid "Select a Value"
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:82
+msgid "Match any rules"
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:148
+msgid "Enter a template name for reference"
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:156
+msgid "Send this Email"
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:168
+#: includes/admin/views/templates/sms_notifications.php:113
+#: includes/admin/views/templates/sms_notifications.php:217
+#: includes/classes/class_wcap_templates_table.php:173
+#: includes/classes/class_wcap_templates_table.php:177
+msgid "Minutes"
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:172
+#: includes/admin/views/templates/sms_notifications.php:221
+msgid "after cart is abandoned."
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:290
+msgid "\"Abandoned cart reminder"
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:434
+msgid "Send a test email"
+msgstr ""
+
+#: includes/admin/views/templates/add_edit_email_template.php:473
+msgid "loading"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:45
+#: includes/admin/views/templates/facebook_messenger.php:43
+msgid "Add New Templates"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:100
+#: includes/admin/views/templates/email_templates.php:153
+#: includes/admin/views/templates/sms_notifications.php:85
+#: includes/admin/views/templates/sms_notifications.php:145
+msgid "Sent After Set Time"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:101
+#: includes/admin/views/templates/email_templates.php:154
+msgid "Send To Segment(s)"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:102
+#: includes/admin/views/templates/email_templates.php:155
+msgid "No.of Emails Sent"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:103
+#: includes/admin/views/templates/email_templates.php:156
+msgid "Open Rate(%)"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:104
+#: includes/admin/views/templates/email_templates.php:157
+msgid "Link Click Rate(%)"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:105
+#: includes/admin/views/templates/email_templates.php:158
+msgid "Coupon Redemption Rate(%)"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:106
+#: includes/admin/views/templates/email_templates.php:159
+#: includes/admin/views/templates/facebook_messenger.php:80
+#: includes/admin/views/templates/facebook_messenger.php:122
+#: includes/admin/views/templates/sms_notifications.php:87
+#: includes/admin/views/templates/sms_notifications.php:147
+msgid "Conversion Rate(%)"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:107
+#: includes/admin/views/templates/email_templates.php:160
+#: includes/admin/views/templates/facebook_messenger.php:81
+#: includes/admin/views/templates/facebook_messenger.php:123
+#: includes/admin/views/templates/sms_notifications.php:88
+#: includes/admin/views/templates/sms_notifications.php:148
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:112
+msgid "Start Sending"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:122
+msgid "Duplicate"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:208
+msgid "Open Rate"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:208
+msgid "Number of emails opened versus number of emails sent."
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:209
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:110
+msgid "Link Click Rate"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:209
+msgid ""
+"Number of links clicked versus number of emails sent. In cases where coupons "
+"are present for the template, the coupon application rate will be same as "
+"Link Click Rate, since coupons are auto applied when a link is clicked."
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:210
+msgid "Coupon Redemption Rate"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:210
+msgid ""
+"Number of Coupons applied (i.e. number of links clicked) versus number of "
+"emails opened."
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:211
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:111
+msgid "Conversion Rate"
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:211
+msgid "Number of carts recovered versus number of emails sent."
+msgstr ""
+
+#: includes/admin/views/templates/email_templates.php:231
+msgid " Template Name"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:77
+#: includes/admin/views/templates/facebook_messenger.php:119
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:108
+msgid "Text"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:78
+#: includes/admin/views/templates/facebook_messenger.php:120
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:109
+msgid "Template send time after abandonment"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:79
+#: includes/admin/views/templates/facebook_messenger.php:121
+#: includes/admin/views/templates/sms_notifications.php:86
+#: includes/admin/views/templates/sms_notifications.php:146
+msgid "Link Rate(%)"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:157
+msgid "Edit - Facebook Template #"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:158
+msgid "Add New - Facebook Template"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:177
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:34
+msgid "Minute(s)"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:178
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:35
+msgid "Hour(s)"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:179
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:36
+msgid "Day(s)"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:181
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:38
+msgid "After cart is abandoned"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:193
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:45
+msgid "Use this as an identifier and an introduction message"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:198
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:69
+msgid "Checkout Label"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:206
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:74
+msgid "Unsubscribe Text"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:229
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:96
+msgid "Cool Blue T-Shirt"
+msgstr ""
+
+#: includes/admin/views/templates/facebook_messenger.php:230
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:97
+msgid "1 x $100"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:45
+msgid "Add New Text Message"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:82
+#: includes/admin/views/templates/sms_notifications.php:142
+#: includes/admin/views/templates/sms_notifications.php:199
+#: includes/connectors/class-wcap-connectors-common.php:495
+msgid "Name"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:83
+#: includes/admin/views/templates/sms_notifications.php:143
+#: includes/admin/views/templates/sms_notifications.php:228
+msgid "Text Message"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:84
+#: includes/admin/views/templates/sms_notifications.php:144
+#: includes/admin/views/templates/sms_notifications.php:236
+msgid "Coupon Code"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:89
+#: includes/admin/views/templates/sms_notifications.php:149
+msgid "Action"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:113
+#: includes/classes/class_wcap_templates_table.php:219
+msgid "After Abandonment"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:175
+msgid "Merge tags available for Text Messages"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:175
+msgid "First Name of the User"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:175
+msgid "Shop Name"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:175
+msgid "Shop Link"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:175
+msgid "Date on which the Cart was abandoned"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:175
+msgid "Discount coupon code"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:175
+msgid "Checkout Link to complete the purchase"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:175
+msgid "Admin Phone number"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:187
+msgid "Edit - SMS Template #"
+msgstr ""
+
+#: includes/admin/views/templates/sms_notifications.php:188
+msgid "Add New - SMS Template"
+msgstr ""
+
+#: includes/classes/class-wcap-atc-templates-table.php:59
+#: includes/classes/class_wcap_templates_table.php:57
+msgid "template_id"
+msgstr ""
+
+#: includes/classes/class-wcap-atc-templates-table.php:60
+#: includes/classes/class_wcap_templates_table.php:58
+msgid "template_ids"
+msgstr ""
+
+#: includes/classes/class-wcap-atc-templates-table.php:129
+msgid "Custom Page"
+msgstr ""
+
+#: includes/classes/class-wcap-atc-templates-table.php:130
+msgid "Product Category"
+msgstr ""
+
+#: includes/classes/class-wcap-send-manual-email.php:385
+msgid "Email Sent Successfully."
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:104
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:57
+msgid "abandoned_order_id"
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:105
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:58
+msgid "abandoned_order_ids"
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:149
+#, php-format
+msgid ""
+"<b>%1$d</b> carts worth <b>%2$s</b> were recovered during the selected range."
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:155
+msgid "No carts were recovered during the selected range"
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:714
+msgid "incl. tax"
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:740
+#: includes/classes/class_wcap_abandoned_trash_orders_table.php:538
+msgid "Abandoned but <br> new cart created after this"
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:839
+msgid "Facebook Messenger consent given"
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:857
+msgid "Successfully Applied"
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:859
+msgid "Application failed"
+msgstr ""
+
+#: includes/classes/class_wcap_abandoned_orders_table.php:893
+#, php-format
+msgid "Recovered on %s"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:48
+msgid "Your settings have been saved."
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:108
+msgid "Subject:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:126
+#, php-format
+msgid ""
+"Add the shortcode %1$s or %2$s to include the Customer First Name and "
+"Product name ( %3$s ) to the Subject Line. For e.g. Hi %4$s You left some "
+"Protein Bread in your cart"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:129
+msgid "first in the cart"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:140
+msgid "Email Body:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:182
+msgid ""
+"7. Use any of icons for the table in the editor to stylize the table as per "
+"your requirements."
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:203
+msgid "Use WooCommerce Template Style:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:230
+msgid "Email Template Header Text: "
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:255
+msgid "Generate unique coupon codes:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:288
+msgid "Discount Type:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:303
+msgid "Percentage discount"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:304
+msgid "Fixed cart discount"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:312
+msgid "Coupon amount:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:331
+msgid "Allow free shipping:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:361
+msgid "Coupon validity:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:396
+msgid "Individual use only:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:418
+msgid "Enter a coupon code to add into email:"
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:473
+msgid ""
+"Search & select one coupon code that customers should use to get a discount. "
+"Generated coupon code which will be sent in email reminder will have the "
+"settings of coupon selected in this option."
+msgstr ""
+
+#: includes/classes/class_wcap_manual_email.php:486
+msgid "Send a test email to:"
+msgstr ""
+
+#: includes/classes/class_wcap_product_report_table.php:58
+msgid "product_id"
+msgstr ""
+
+#: includes/classes/class_wcap_product_report_table.php:59
+msgid "product_ids"
+msgstr ""
+
+#: includes/classes/class_wcap_sent_emails_table.php:98
+msgid "sent_email_id"
+msgstr ""
+
+#: includes/classes/class_wcap_sent_emails_table.php:99
+msgid "sent_email_ids"
+msgstr ""
+
+#: includes/classes/class_wcap_sent_sms_table.php:91
+msgid "sent_sms_id"
+msgstr ""
+
+#: includes/classes/class_wcap_sent_sms_table.php:92
+msgid "sent_sms_ids"
+msgstr ""
+
+#: includes/classes/class_wcap_sent_sms_table.php:286
+msgid "Shop Page"
+msgstr ""
+
+#: includes/classes/class_wcap_sms_templates_table.php:59
+msgid "sms_template_id"
+msgstr ""
+
+#: includes/classes/class_wcap_sms_templates_table.php:60
+msgid "sms_template_ids"
+msgstr ""
+
+#: includes/classes/class_wcap_templates_table.php:219
+msgid "After WC Order Status change"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:75
+msgid "If you have a moment, please let us know why you are deactivating"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:76
+msgid "Submit & Deactivate"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:79
+msgid "Yes - Deactivate"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:83
+msgid "I found a better plugin"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:84
+msgid "What's the plugin's name?"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:85
+msgid "I only needed the plugin for a short period"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:86
+msgid "The plugin is not working"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:87
+msgid "Kindly share what didn't work so we can fix it for future users..."
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:88
+msgid "The plugin is great, but I need specific feature that you don't support"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:89
+msgid "What feature?"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:90
+msgid "I don't like to share my information with you"
+msgstr ""
+
+#: includes/component/deactivate-survey-popup/class-ts-deactivation.php:91
+msgctxt ""
+"the text of the 'other' reason for deactivating the plugin that is shown in "
+"the modal box."
+msgid "Other"
+msgstr ""
+
+#: includes/component/faq-support/ts-faq-support.php:125
+#, php-format
+msgid "Frequently Asked Questions for %s"
+msgstr ""
+
+#: includes/component/faq-support/ts-faq-support.php:126
+msgid "Frequently Asked Questions for "
+msgstr ""
+
+#: includes/component/faq-support/ts-faq-support.php:174
+msgid "FAQ & Support"
+msgstr ""
+
+#: includes/component/license-active-notice/ts-active-license-notice.php:111
+#: includes/component/license-active-notice/ts-active-license-notice.php:169
+msgid "We have noticed that the license for <b>"
+msgstr ""
+
+#: includes/component/tracking-data/ts-tracking.php:133
+msgid "Reset usage tracking"
+msgstr ""
+
+#: includes/component/tracking-data/ts-tracking.php:137
+msgid ""
+"This will reset your usage tracking settings, causing it to show the opt-in "
+"banner again and not sending any data."
+msgstr ""
+
+#: includes/component/tracking-data/ts-tracking.php:160
+msgid "Reset"
+msgstr ""
+
+#: includes/component/tracking-data/ts-tracking.php:177
+msgid "Once in a Week"
+msgstr ""
+
+#: includes/component/tracking-data/ts-tracking.php:267
+msgid "Want to help make "
+msgstr ""
+
+#: includes/component/tracking-data/ts-tracking.php:269
+msgid "Allow"
+msgstr ""
+
+#: includes/component/tracking-data/ts-tracking.php:270
+msgid "No thanks"
+msgstr ""
+
+#: includes/component/welcome-page/ts-welcome.php:165
+#, php-format
+msgid "Welcome to %s %s"
+msgstr ""
+
+#: includes/component/welcome-page/ts-welcome.php:166
+msgid "Welcome to "
+msgstr ""
+
+#: includes/component/welcome-page/templates/social-media-elements.php:10
+#, php-format
+msgid "Follow %s"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/license-activation-failed.php:22
+msgid ""
+"Invalid or Expired License Key. Please make sure you have entered the "
+"correct value and that your key is not expired."
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/license-activation-failed.php:31
+msgid "I understand the risks"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/license-activation-failed.php:33
+msgid "Please accept the terms."
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/license-activation-failed.php:35
+#: includes/component/welcome-page/templates/welcome/license-activation.php:26
+msgid "Next"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:18
+msgid "Thank you for activating or updating to the latest version of "
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:29
+msgid "Get Started with "
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:36
+msgid "Enable Abandoned Carts Capturing"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:38
+msgid ""
+"To start capturing abandoned carts, which will help you recover lost sales "
+"configure the plugin from the settings tab"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:40
+msgid "Click Here to go to Abandoned Cart Settings page"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:50
+msgid "Some exciting features of "
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:55
+msgid "Send Facebook Notifications"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:57
+msgid ""
+"Now have the flexibility to send reminder Facebook notifications along with "
+"emails and SMS. Add new FB notification templates and start sending them "
+"right away."
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:60
+msgid "Configure Settings"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:64
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:122
+msgid "Configure Templates"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:84
+msgid "New enhanced dashboard"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:86
+msgid ""
+"A completely revamped dashboard to show statistics of your Abandoned Carts "
+"and Recovered Carts."
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:89
+msgid "Check the dasboard now"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:97
+msgid "Abandoned Orders Listing"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:98
+msgid ""
+"The ability to view the Abandoned Orders for a particular customer. "
+"Customers who have given Facebook Messenger consent from product page will "
+"be marked with a messenger icon. Also filter data based on date range from "
+"the same screen. Customized manual emails can also be sent to a particular "
+"customer from here"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:100
+msgid "Learn More"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:117
+msgid "Add rules and segmentations to your email templates"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:119
+msgid ""
+"Add rules to your email templates. For example, send particular email "
+"template if the cart has Product A or do not send the email template if the "
+"cart has Product B."
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:131
+msgid "Documentation"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:136
+msgid "Changelog"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:143
+msgid "Getting to Know Tyche Softwares"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:145
+msgid "Visit the Tyche Softwares Website"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:146
+msgid "View all Premium Plugins"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:155
+msgid "Meet the team"
+msgstr ""
+
+#: includes/component/welcome-page/templates/welcome/welcome-page.php:161
+msgid "Current Offers"
+msgstr ""
+
+#: includes/component/woocommerce-check/ts-woo-active.php:83
+msgid " plugin requires WooCommerce installed and activate."
+msgstr ""
+
+#: includes/connectors/class-wcap-call.php:35
+msgid "Api Error: No response from API"
+msgstr ""
+
+#: includes/connectors/class-wcap-call.php:102
+msgid "CURL Error"
+msgstr ""
+
+#: includes/connectors/class-wcap-connectors-common.php:263
+#: includes/connectors/class-wcap-connectors-common.php:295
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: includes/connectors/class-wcap-connectors-common.php:281
+msgid "Disconnected Successfully!"
+msgstr ""
+
+#: includes/connectors/class-wcap-connectors-common.php:318
+msgid "Please try again"
+msgstr ""
+
+#: includes/connectors/class-wcap-connectors-common.php:326
+msgid "Blank settings found. Please fill all the data."
+msgstr ""
+
+#: includes/connectors/class-wcap-connectors-common.php:351
+#: includes/connectors/drip/connector.php:311
+#: includes/connectors/mailchimp/connector.php:412
+msgid "Connected successfully!"
+msgstr ""
+
+#: includes/connectors/class-wcap-connectors-common.php:494
+msgid "Image"
+msgstr ""
+
+#: includes/connectors/class-wcap-connectors-common.php:497
+msgid "Price"
+msgstr ""
+
+#: includes/connectors/class-wcap-connectors-common.php:498
+msgid "Total"
+msgstr ""
+
+#: includes/connectors/class-wcap-display-connectors.php:109
+msgid "Disconnect"
+msgstr ""
+
+#: includes/connectors/class-wcap-display-connectors.php:112
+msgid "Sync"
+msgstr ""
+
+#: includes/connectors/class-wcap-display-connectors.php:129
+msgid "Connect"
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:195
+msgid "API Url is not provided"
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:203
+#: includes/connectors/activecampaign/connector.php:382
+#: includes/connectors/fluentcrm/connector.php:200
+#: includes/connectors/mailchimp/connector.php:126
+#: includes/connectors/mailchimp/connector.php:181
+#: includes/connectors/mailchimp/connector.php:369
+#: includes/connectors/mailjet/connector.php:204
+#: includes/connectors/mailjet/connector.php:288
+#: includes/connectors/sendinblue/connector.php:187
+#: includes/connectors/sendinblue/connector.php:359
+msgid "API Key is not provided"
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:235
+#: includes/connectors/activecampaign/includes/wcap-upsert-cart.php:309
+#: includes/connectors/drip/connector.php:137
+#: includes/connectors/drip/includes/wcap-create-order.php:73
+#: includes/connectors/drip/includes/wcap-upsert-cart.php:189
+#: includes/connectors/drip/includes/wcap-upsert-contact.php:131
+#: includes/connectors/fluentcrm/connector.php:237
+#: includes/connectors/fluentcrm/includes/wcap-upsert-cart.php:347
+#: includes/connectors/hubspot/includes/wcap-upsert-contact.php:130
+#: includes/connectors/klaviyo/connector.php:220
+#: includes/connectors/klaviyo/includes/wcap-upsert-cart.php:310
+#: includes/connectors/mailchimp/connector.php:146
+#: includes/connectors/mailchimp/connector.php:207
+#: includes/connectors/mailchimp/connector.php:249
+#: includes/connectors/mailchimp/calls/class-wcap-mailchimp-create-order.php:176
+#: includes/connectors/mailchimp/calls/class-wcap-mailchimp-upsert-cart.php:137
+#: includes/connectors/mailchimp/includes/wcap-upsert-cart.php:191
+#: includes/connectors/mailjet/connector.php:233
+#: includes/connectors/mailjet/includes/wcap-upsert-contact.php:172
+#: includes/connectors/sendinblue/connector.php:219
+#: includes/connectors/sendinblue/includes/wcap-upsert-cart.php:335
+msgid "Error Response Code: "
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:235
+#: includes/connectors/activecampaign/includes/wcap-upsert-cart.php:309
+#: includes/connectors/mailjet/includes/wcap-upsert-contact.php:172
+msgid ". Activecampaign Error: "
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:236
+#: includes/connectors/activecampaign/includes/wcap-upsert-cart.php:310
+#: includes/connectors/mailjet/includes/wcap-upsert-contact.php:173
+msgid "No Response from Activecampaign. "
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:237
+#: includes/connectors/mailchimp/connector.php:148
+msgid "Autonami Error: "
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:307
+#: includes/connectors/fluentcrm/connector.php:299
+#: includes/connectors/hubspot/connector.php:225
+#: includes/connectors/klaviyo/connector.php:317
+#: includes/connectors/mailchimp/connector.php:291
+#: includes/connectors/sendinblue/connector.php:282
+#: includes/connectors/wp_fusion/connector.php:185
+#, php-format
+msgid "%1$d of %2$d carts were synced successfully."
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:316
+#: includes/connectors/fluentcrm/connector.php:308
+#: includes/connectors/hubspot/connector.php:234
+#: includes/connectors/klaviyo/connector.php:326
+#: includes/connectors/mailchimp/connector.php:300
+#: includes/connectors/sendinblue/connector.php:291
+#: includes/connectors/wp_fusion/connector.php:194
+#, php-format
+msgid ""
+"%1$d of %2$d carts were synced. Please check for network connectivity issues "
+"and try again."
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:323
+#: includes/connectors/fluentcrm/connector.php:315
+#: includes/connectors/hubspot/connector.php:241
+#: includes/connectors/klaviyo/connector.php:333
+#: includes/connectors/mailchimp/connector.php:307
+#: includes/connectors/sendinblue/connector.php:298
+#: includes/connectors/wp_fusion/connector.php:201
+#, php-format
+msgid ""
+"%1$d of %2$d carts were synced successfully. Please try again to sync the "
+"remaining carts."
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:340
+#: includes/connectors/drip/connector.php:226
+#: includes/connectors/fluentcrm/connector.php:332
+#: includes/connectors/hubspot/connector.php:258
+#: includes/connectors/klaviyo/connector.php:350
+#: includes/connectors/mailchimp/connector.php:324
+#: includes/connectors/mailjet/connector.php:376
+#: includes/connectors/sendinblue/connector.php:315
+#: includes/connectors/wp_fusion/connector.php:218
+msgid "All carts have been synced."
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:389
+msgid "API URL is not provided"
+msgstr ""
+
+#: includes/connectors/activecampaign/connector.php:412
+#: includes/connectors/drip/connector.php:288
+#: includes/connectors/klaviyo/connector.php:422
+#: includes/connectors/mailchimp/connector.php:389
+#: includes/connectors/mailjet/connector.php:305
+#: includes/connectors/sendinblue/connector.php:389
+msgid ""
+"We were unable to connect to your store. Please disconnect and try "
+"connecting again."
+msgstr ""
+
+#: includes/connectors/activecampaign/includes/wcap-upsert-cart.php:311
+#: includes/connectors/drip/includes/wcap-create-order.php:75
+#: includes/connectors/drip/includes/wcap-upsert-cart.php:191
+#: includes/connectors/drip/includes/wcap-upsert-contact.php:133
+#: includes/connectors/fluentcrm/includes/wcap-upsert-cart.php:349
+#: includes/connectors/hubspot/includes/wcap-upsert-contact.php:132
+#: includes/connectors/klaviyo/includes/wcap-upsert-cart.php:312
+#: includes/connectors/mailchimp/connector.php:209
+#: includes/connectors/mailchimp/connector.php:251
+#: includes/connectors/mailchimp/calls/class-wcap-mailchimp-create-order.php:178
+#: includes/connectors/mailchimp/calls/class-wcap-mailchimp-upsert-cart.php:139
+#: includes/connectors/mailchimp/includes/wcap-upsert-cart.php:193
+#: includes/connectors/mailjet/includes/wcap-upsert-contact.php:174
+#: includes/connectors/sendinblue/includes/wcap-upsert-cart.php:337
+msgid "Wcap Error: "
+msgstr ""
+
+#: includes/connectors/activecampaign/views/settings.php:19
+#: includes/connectors/activecampaign/views/settings.php:22
+#: includes/connectors/klaviyo/views/settings.php:22
+#: includes/connectors/sendinblue/views/settings.php:22
+msgid "Enter API URL"
+msgstr ""
+
+#: includes/connectors/activecampaign/views/settings.php:28
+#: includes/connectors/activecampaign/views/settings.php:31
+#: includes/connectors/klaviyo/views/settings.php:31
+#: includes/connectors/mailchimp/views/settings.php:14
+#: includes/connectors/mailchimp/views/settings.php:17
+#: includes/connectors/mailjet/views/settings.php:28
+#: includes/connectors/mailjet/views/settings.php:31
+#: includes/connectors/sendinblue/views/settings.php:19
+msgid "Enter API Key"
+msgstr ""
+
+#: includes/connectors/activecampaign/views/settings.php:37
+msgid "Select Default Connection"
+msgstr ""
+
+#: includes/connectors/activecampaign/views/settings.php:41
+msgid "Choose a connection"
+msgstr ""
+
+#: includes/connectors/activecampaign/views/settings.php:51
+#: includes/connectors/activecampaign/views/settings.php:242
+#: includes/connectors/drip/views/settings.php:42
+#: includes/connectors/drip/views/settings.php:201
+#: includes/connectors/fluentcrm/views/settings.php:58
+#: includes/connectors/fluentcrm/views/settings.php:248
+#: includes/connectors/klaviyo/views/settings.php:51
+#: includes/connectors/klaviyo/views/settings.php:242
+#: includes/connectors/mailchimp/views/settings.php:45
+#: includes/connectors/mailchimp/views/settings.php:242
+#: includes/connectors/mailjet/views/settings.php:51
+#: includes/connectors/mailjet/views/settings.php:215
+#: includes/connectors/sendinblue/views/settings.php:51
+#: includes/connectors/sendinblue/views/settings.php:248
+msgid "Next Step"
+msgstr ""
+
+#: includes/connectors/activecampaign/views/settings.php:126
+#: includes/connectors/fluentcrm/views/settings.php:132
+#: includes/connectors/klaviyo/views/settings.php:126
+#: includes/connectors/mailchimp/views/settings.php:106
+#: includes/connectors/mailjet/views/settings.php:124
+#: includes/connectors/sendinblue/views/settings.php:122
+msgid "Select a list to continue"
+msgstr ""
+
+#: includes/connectors/activecampaign/views/settings.php:248
+#: includes/connectors/drip/views/settings.php:208
+#: includes/connectors/fluentcrm/views/settings.php:254
+#: includes/connectors/klaviyo/views/settings.php:248
+#: includes/connectors/mailchimp/views/settings.php:248
+#: includes/connectors/mailjet/views/settings.php:221
+#: includes/connectors/sendinblue/views/settings.php:254
+msgid "Loading..."
+msgstr ""
+
+#: includes/connectors/custom_smtp/connector.php:144
+msgid "Testing SMTP connection"
+msgstr ""
+
+#: includes/connectors/custom_smtp/connector.php:145
+msgid "Test email to check SMTP connection"
+msgstr ""
+
+#: includes/connectors/custom_smtp/connector.php:146
+msgid "This is the body in plain text for non-HTML mail clients"
+msgstr ""
+
+#: includes/connectors/custom_smtp/connector.php:153
+#: includes/connectors/custom_smtp/views/settings.php:320
+msgid "Email sent"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:24
+msgid "SMTP Host"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:27
+msgid "Enter SMTP Host"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:33
+#: includes/connectors/custom_smtp/views/settings.php:36
+msgid "SMTP Port"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:44
+msgid "SMTP Encryption"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:63
+msgid "SMTP AutoTLS"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:77
+msgid "SMTP Authentication"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:92
+msgid "SMTP Username"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:95
+msgid "Enter SMTP Username"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:101
+msgid "SMTP Password"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:104
+msgid "Enter SMTP Password"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:113
+msgid "Enter email address"
+msgstr ""
+
+#: includes/connectors/custom_smtp/views/settings.php:294
+msgid "Please enter a valid email-id"
+msgstr ""
+
+#: includes/connectors/drip/connector.php:117
+#: includes/connectors/drip/connector.php:271
+msgid "API Token/Account ID is not provided"
+msgstr ""
+
+#: includes/connectors/drip/connector.php:137
+#: includes/connectors/drip/includes/wcap-create-order.php:73
+#: includes/connectors/drip/includes/wcap-upsert-cart.php:189
+#: includes/connectors/drip/includes/wcap-upsert-contact.php:131
+msgid ". Drip Error: "
+msgstr ""
+
+#: includes/connectors/drip/connector.php:138
+#: includes/connectors/drip/includes/wcap-create-order.php:74
+#: includes/connectors/drip/includes/wcap-upsert-cart.php:190
+#: includes/connectors/drip/includes/wcap-upsert-contact.php:132
+msgid "No Response from Drip. "
+msgstr ""
+
+#: includes/connectors/drip/connector.php:139
+msgid "Abandoned Cart Error: "
+msgstr ""
+
+#: includes/connectors/drip/connector.php:195
+#, php-format
+msgid "%1d of %2d carts were synced successfully."
+msgstr ""
+
+#: includes/connectors/drip/connector.php:203
+#, php-format
+msgid ""
+"%1d of %2d carts were synced. Please check for network connectivity issues "
+"and try again."
+msgstr ""
+
+#: includes/connectors/drip/connector.php:209
+#, php-format
+msgid ""
+"%1d of %2d carts were synced successfully. Please try again to sync the "
+"remaining carts."
+msgstr ""
+
+#: includes/connectors/drip/connector.php:234
+#: includes/connectors/hubspot/connector.php:266
+#: includes/connectors/mailchimp/connector.php:332
+msgid "We were unable to connect. Please try again later."
+msgstr ""
+
+#: includes/connectors/drip/connector.php:316
+#: includes/connectors/mailchimp/connector.php:417
+msgid "Some settings are blanks. Please fill all the fields."
+msgstr ""
+
+#: includes/connectors/drip/views/settings.php:13
+#: includes/connectors/drip/views/settings.php:16
+msgid "Enter API Token"
+msgstr ""
+
+#: includes/connectors/drip/views/settings.php:21
+#: includes/connectors/drip/views/settings.php:24
+msgid "Enter Account ID"
+msgstr ""
+
+#: includes/connectors/drip/views/settings.php:29
+msgid "Select Workflow"
+msgstr ""
+
+#: includes/connectors/drip/views/settings.php:33
+msgid "Choose a workflow"
+msgstr ""
+
+#: includes/connectors/fluentcrm/connector.php:193
+#: includes/connectors/fluentcrm/connector.php:376
+msgid "API Name is not provided"
+msgstr ""
+
+#: includes/connectors/fluentcrm/connector.php:237
+msgid ". Fluentcrm Error: "
+msgstr ""
+
+#: includes/connectors/fluentcrm/connector.php:238
+#: includes/connectors/fluentcrm/includes/wcap-upsert-cart.php:348
+msgid "No Response from Fluentcrm. "
+msgstr ""
+
+#: includes/connectors/fluentcrm/connector.php:239
+#: includes/connectors/klaviyo/connector.php:222
+#: includes/connectors/sendinblue/connector.php:221
+msgid "WCAP Error: "
+msgstr ""
+
+#: includes/connectors/fluentcrm/connector.php:383
+msgid "API key is not provided"
+msgstr ""
+
+#: includes/connectors/fluentcrm/connector.php:407
+msgid ""
+"We were unable to fetch lists. Please disconnect and try connecting again."
+msgstr ""
+
+#: includes/connectors/fluentcrm/includes/wcap-upsert-cart.php:347
+#: includes/connectors/klaviyo/includes/wcap-upsert-cart.php:310
+#: includes/connectors/sendinblue/includes/wcap-upsert-cart.php:335
+msgid ". WCAP Error: "
+msgstr ""
+
+#: includes/connectors/fluentcrm/views/settings.php:21
+msgid "FluentCRM plugin is not active. Please install and activate it."
+msgstr ""
+
+#: includes/connectors/fluentcrm/views/settings.php:26
+#: includes/connectors/fluentcrm/views/settings.php:29
+msgid "Enter API Username"
+msgstr ""
+
+#: includes/connectors/fluentcrm/views/settings.php:30
+msgid "Please enter a API Username"
+msgstr ""
+
+#: includes/connectors/fluentcrm/views/settings.php:35
+#: includes/connectors/fluentcrm/views/settings.php:38
+msgid "Enter API Password"
+msgstr ""
+
+#: includes/connectors/fluentcrm/views/settings.php:39
+msgid "Please enter a API Password"
+msgstr ""
+
+#: includes/connectors/fluentcrm/views/settings.php:44
+#: includes/connectors/klaviyo/views/settings.php:37
+#: includes/connectors/mailchimp/views/settings.php:22
+#: includes/connectors/mailjet/views/settings.php:37
+#: includes/connectors/sendinblue/views/settings.php:37
+msgid "Select Default List"
+msgstr ""
+
+#: includes/connectors/fluentcrm/views/settings.php:48
+#: includes/connectors/klaviyo/views/settings.php:41
+#: includes/connectors/mailchimp/views/settings.php:26
+#: includes/connectors/mailjet/views/settings.php:41
+#: includes/connectors/sendinblue/views/settings.php:41
+msgid "Choose a list"
+msgstr ""
+
+#: includes/connectors/fluentcrm/views/settings.php:50
+#: includes/connectors/sendinblue/views/settings.php:43
+msgid "Please choose a list"
+msgstr ""
+
+#: includes/connectors/hubspot/connector.php:162
+msgid "Groups, properties, lists & workflows have been created successfully."
+msgstr ""
+
+#: includes/connectors/hubspot/connector.php:167
+msgid "We were unable to create the default setup. Please try again."
+msgstr ""
+
+#: includes/connectors/hubspot/connector.php:177
+msgid "Groups, properties, lists & workflows are already present in Hubspot."
+msgstr ""
+
+#: includes/connectors/hubspot/includes/wcap-create-defaults.php:318
+msgid "Creation of one or more properties failed. Please try again."
+msgstr ""
+
+#: includes/connectors/hubspot/includes/wcap-upsert-contact.php:130
+msgid ". Hubspot Error: "
+msgstr ""
+
+#: includes/connectors/hubspot/includes/wcap-upsert-contact.php:131
+msgid "No Response from Hubspot. "
+msgstr ""
+
+#: includes/connectors/hubspot/views/settings.php:11
+#: includes/connectors/hubspot/views/settings.php:14
+msgid "Enter Access Token"
+msgstr ""
+
+#: includes/connectors/klaviyo/connector.php:186
+#: includes/connectors/klaviyo/connector.php:393
+#: includes/connectors/wp_fusion/connector.php:138
+msgid "Private Key is not provided"
+msgstr ""
+
+#: includes/connectors/klaviyo/connector.php:220
+msgid ". Klaviyo Error: "
+msgstr ""
+
+#: includes/connectors/klaviyo/connector.php:221
+#: includes/connectors/klaviyo/includes/wcap-upsert-cart.php:311
+msgid "No Response from Klaviyo. "
+msgstr ""
+
+#: includes/connectors/klaviyo/connector.php:400
+msgid "Public URL is not provided"
+msgstr ""
+
+#: includes/connectors/klaviyo/views/settings.php:19
+msgid "Enter Public Key"
+msgstr ""
+
+#: includes/connectors/klaviyo/views/settings.php:28
+msgid "Enter Private Key"
+msgstr ""
+
+#: includes/connectors/mailchimp/connector.php:146
+#: includes/connectors/mailchimp/connector.php:207
+#: includes/connectors/mailchimp/connector.php:249
+#: includes/connectors/mailchimp/calls/class-wcap-mailchimp-create-order.php:176
+#: includes/connectors/mailchimp/calls/class-wcap-mailchimp-upsert-cart.php:137
+#: includes/connectors/mailchimp/includes/wcap-upsert-cart.php:191
+msgid ". Mailchimp Error: "
+msgstr ""
+
+#: includes/connectors/mailchimp/connector.php:147
+#: includes/connectors/mailchimp/connector.php:208
+#: includes/connectors/mailchimp/connector.php:250
+#: includes/connectors/mailchimp/calls/class-wcap-mailchimp-create-order.php:177
+#: includes/connectors/mailchimp/calls/class-wcap-mailchimp-upsert-cart.php:138
+#: includes/connectors/mailchimp/includes/wcap-upsert-cart.php:192
+msgid "No Response from Mailchimp. "
+msgstr ""
+
+#: includes/connectors/mailchimp/connector.php:188
+msgid "List ID is not provided"
+msgstr ""
+
+#: includes/connectors/mailchimp/views/settings.php:32
+msgid "Select Default Store"
+msgstr ""
+
+#: includes/connectors/mailchimp/views/settings.php:36
+msgid "Choose a Store"
+msgstr ""
+
+#: includes/connectors/mailjet/connector.php:196
+msgid "API user is not provided"
+msgstr ""
+
+#: includes/connectors/mailjet/connector.php:233
+msgid ". Mailjet Error: "
+msgstr ""
+
+#: includes/connectors/mailjet/connector.php:234
+msgid "No Response from Mailjet. "
+msgstr ""
+
+#: includes/connectors/mailjet/connector.php:235
+msgid "MAiljet Error: "
+msgstr ""
+
+#: includes/connectors/mailjet/connector.php:280
+msgid "API User is not provided"
+msgstr ""
+
+#: includes/connectors/mailjet/connector.php:343
+#, php-format
+msgid "%1$d  of %2$d  carts were synced successfully."
+msgstr ""
+
+#: includes/connectors/mailjet/connector.php:352
+#, php-format
+msgid ""
+"%1$d  of %2$d  carts were synced. Please check for network connectivity "
+"issues and try again."
+msgstr ""
+
+#: includes/connectors/mailjet/connector.php:359
+#, php-format
+msgid ""
+"%1$d  of %2$d carts were synced successfully. Please try again to sync the "
+"remaining carts."
+msgstr ""
+
+#: includes/connectors/mailjet/views/settings.php:19
+#: includes/connectors/mailjet/views/settings.php:22
+msgid "Enter API USER"
+msgstr ""
+
+#: includes/connectors/sendinblue/connector.php:219
+msgid ". Sendinblue Error: "
+msgstr ""
+
+#: includes/connectors/sendinblue/connector.php:220
+#: includes/connectors/sendinblue/includes/wcap-upsert-cart.php:336
+msgid "No Response from Sendinblue. "
+msgstr ""
+
+#: includes/connectors/sendinblue/connector.php:366
+msgid "MArketingAutomation key is not provided"
+msgstr ""
+
+#: includes/connectors/sendinblue/views/settings.php:23
+msgid "Please enter a API Key"
+msgstr ""
+
+#: includes/connectors/sendinblue/views/settings.php:28
+#: includes/connectors/sendinblue/views/settings.php:31
+msgid "Enter Marketing Automation Key"
+msgstr ""
+
+#: includes/connectors/sendinblue/views/settings.php:32
+msgid "Please enter Marketing Automation Key"
+msgstr ""
+
+#: includes/connectors/wp_fusion/views/settings.php:18
+msgid "WP Fusion plugin is not active. Please install and activate it."
+msgstr ""
+
+#: includes/connectors/wp_fusion/views/settings.php:22
+msgid "WP Fusion settings are empty. Please set up WP Fusion."
+msgstr ""
+
+#: includes/connectors/wp_fusion/views/settings.php:30
+msgid "Connected with WP Fusion. No other settings needed."
+msgstr ""
+
+#: includes/connectors/wp_fusion/views/settings.php:33
+msgid "Activate"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:108
+msgid "Facebook Messenger Settings"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:119
+msgid ""
+"This option will display a checkbox after the Add to cart button for user "
+"consent to connect with Facebook."
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:124
+msgid "Facebook Messenger on Add to Cart Pop-up modal"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:142
+msgid "Icon size of user"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:162
+msgid "Consent text"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:175
+msgid ""
+"Facebook Page ID in numberic format. You can find your page ID from <a href="
+"\"https://www.tychesoftwares.com/docs/docs/abandoned-cart-pro-for-"
+"woocommerce/send-abandoned-cart-reminder-notifications-using-facebook-"
+"messenger#fbpageid\" target=\"_blank\">here</a>"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:184
+msgid "<i>Enter your Messenger App ID</i>"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:193
+msgid "Enter your Facebook Page Token</i>"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:202
+msgid "Enter your Verify Token</i>"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:252
+msgid ""
+"Configure the plugin to send notifications to Facebook Messenger using the "
+"settings below. Please refer the <a href=\"https://www.tychesoftwares.com/"
+"docs/docs/abandoned-cart-pro-for-woocommerce/send-abandoned-cart-reminder-"
+"notifications-using-facebook-messenger\" target=\"_blank\">following "
+"documentation</a> to complete the setup."
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:314
+msgid "Domains Whitelisted for the page mentioned above:"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:316
+msgid ""
+"The current domain shall be listed in the below list. Please note the domain "
+"will not get listed if it is not over https due to <a href=\"https://"
+"developers.facebook.com/docs/messenger-platform/reference/messenger-profile-"
+"api/domain-whitelisting#requirements\" target=\"_blank\">Facebook "
+"restrictions.</a>"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_admin_settings.php:342
+msgid ""
+"This webhook needs to added to your <a href=\"https://www.tychesoftwares.com/"
+"docs/docs/abandoned-cart-pro-for-woocommerce/send-abandoned-cart-reminder-"
+"notifications-using-facebook-messenger#attachment_2719\" target=\"_blank"
+"\">Facebook Developer App</a> for the checkbox to appear on site."
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_templates.php:63
+msgid ""
+"Add Facebook Messenger templates to be sent at different intervals to "
+"maximize the possibility of recovering your abandoned carts."
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:60
+msgid "fb_template_id"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_templates_list.php:61
+msgid "fb_template_ids"
+msgstr ""
+
+#: includes/fb-recovery/admin/wcap_fb_template_editor.php:13
+msgid "Abandoned Cart Template"
+msgstr ""
+
+#: includes/frontend/wcap_on_placed_order.php:210
+msgid " Popup \""
+msgstr ""
+
+#: includes/frontend/wcap_populate_cart_of_user.php:117
+#: includes/frontend/wcap_populate_cart_of_user.php:727
+msgid "Link expired. Redirecting you to the shop.."
+msgstr ""
+
+#: includes/frontend/wcap_populate_cart_of_user.php:735
+msgid "Redirecting..."
+msgstr ""
+
+#: includes/template/atc-rules/html-atc-rules-edit-row.php:148
+msgid "Search&hellip;"
+msgstr ""
+
+#: includes/template/atc-rules/html-atc-rules-engine.php:35
+#: includes/template/rules/html-rules-engine.php:51
+msgid "Rules:"
+msgstr ""
+
+#: includes/template/atc-rules/html-atc-rules-engine.php:99
+#: includes/template/rules/html-rules-engine.php:117
+msgid "Add new"
+msgstr ""
+
+#: includes/template/atc-rules/html-atc-rules-engine.php:110
+#: includes/template/rules/html-rules-engine.php:38
+msgid "Match Rules:"
+msgstr ""
+
+#: includes/template/atc-rules/html-atc-rules-engine.php:117
+msgid ""
+"Add to Cart popup template will be displayed depending on whether all the "
+"rule matches are met or any rule matches."
+msgstr ""
+
+#: includes/template/license_missing/license_missing.php:22
+#, php-format
+msgid ""
+"Please activate your license to use this feature. License can be activated "
+"from the Settings tab above or by clicking %s Then navigate to "
+"<strong>Plugin License Options.</strong>"
+msgstr ""
+
+#: includes/template/license_missing/license_missing.php:31
+#, php-format
+msgid ""
+"If you facing any issues in activating the license then do contact us on %s "
+"and we shall be more than happy to help you."
+msgstr ""
+
+#: includes/template/license_missing/license_missing.php:40
+#, php-format
+msgid ""
+"If your license key is expired or if you don't have a valid license key, you "
+"will need to purchase a new license of the plugin. Head over to our site to "
+"purchase a license of %s"
+msgstr ""
+
+#: includes/template/license_missing/license_missing.php:46
+msgid "Buy Abandoned Cart Pro"
+msgstr ""
+
+#: includes/template/preview_modal/preview_modal.php:10
+msgid "Select a Template to insert"
+msgstr ""
+
+#: includes/template/rules/html-rules-edit-row.php:184
+msgid "Please enter email addresses separated by a comma"
+msgstr ""
+
+#: includes/template/rules/html-rules-edit-row.php:231
+#: includes/template/rules/html-rules-edit-row.php:302
+msgid "Search for a Status&hellip;"
+msgstr ""
+
+#: includes/template/unsubscribe/wcap_default_landing.php:27
+msgid "Cart Reminder Unsubscribe Confirmation"
+msgstr ""
