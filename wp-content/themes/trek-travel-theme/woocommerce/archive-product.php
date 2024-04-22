@@ -307,10 +307,10 @@ $emptyBlockContent .= '</div></div>';
 
                                     <# if ( data['Rider Level'] ) { #>
                                     <ul class="list-inline mb-1">
-                                        <# if (data['taxonomies.activity'] === 'Biking') { #>
-                                            <li class="list-inline-item"><i class="fa-solid fa-bicycle tt-b"></i></li>
+                                        <# if (data.taxonomies.activity == 'Biking') { #>
+                                            <li class="list-inline-item"><i class="fa-solid fa-person-biking"></i></li>
                                         <# } #>
-                                        <# if (data['taxonomies.activity'] != 'Biking') { #>
+                                        <# if (data.taxonomies.activity != 'Biking') { #>
                                             <li class="list-inline-item hw"><i class="fa-solid fa-person-hiking"></i></li>
                                         <# } #>
                                         <li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level'].replace(/&amp;/g, ' & ')}}</li>
@@ -414,7 +414,7 @@ $emptyBlockContent .= '</div></div>';
 					<# if ( data.taxonomies.activity == 'Hiking' || data.taxonomies.activity == 'Walking' ){ #>
                                 		<li class="list-inline-item"><i class="fa-solid fa-person-hiking"></i></li>
 					<# } else  { #>
-		                                <li class="list-inline-item"><i class="bi bi-bicycle"></i></li>
+		                                <li class="list-inline-item"><i class="fa-solid fa-person-biking"></i></li>
 					<# } #>
                                 	<li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level'].replace(/&amp;/g, ' & ')}}</li>
                                 	<li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>

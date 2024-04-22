@@ -7,6 +7,8 @@ $trip_style = $product->get_attribute( 'pa_trip-style' );
 
 $activity_tax = get_field('Activity');
 $activity = $activity_tax->name;
+$is_pc_trip = get_field( 'is_private_custom_trip');
+
 
 // Hide Custom and Private tabs for these trip styles.
 $in_trip_style = [
@@ -189,8 +191,73 @@ if( $available_child_products ) {
                         // $status_class = str_ireplace(' ', '-', $status_class);
                         $tripWebStatus = getWebDispalyStatus($trip_status);
                         $tripWebStatusClass = strtolower(str_ireplace(" ","-",getWebDispalyStatus($trip_status)));
+                        // Check child product is marked as Private/Custom trip.
+                        $is_pc_trip = get_field( 'is_private_custom_trip');                        
 
                         if ($tripWebStatus == 'Private') {
+                            if( true == $is_pc_trip ) {
+                                $month_content_output .= 
+                        '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                            <h6 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
+                                <div class="d-box">
+                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                </div>
+                                </button>
+                            </h6>
+                        <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                            <hr>
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">
+                                <div class="accordion-hotels">
+                                    <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
+                                    '.$bike_hotels['hotels'].'
+                                    <a class="fs-sm view-details" href="#hotels">View hotels</a>
+                                    </div>';
+
+                                    if (!empty($activity) && $activity == 'Biking') {
+                                        $month_content_output .= 
+                                    '<div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>';
+                                    }
+                                    $month_content_output .= 
+                                    '<div class="accordion-book-now">';
+
+                                $all_month_content_output .= 
+                        '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                            <h6 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
+                                <div class="d-box">
+                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
+                                </div>
+                                </button>
+                            </h6>
+                        <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                            <hr>
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">
+                                <div class="accordion-hotels">
+                                    <p class="fw-medium fs-sm lh-sm">Hotels you`ll stay at on this date:</p>
+                                    '.$bike_hotels['hotels'].'
+                                    <a class="fs-sm view-details" href="#hotels">View hotels</a>
+                                    </div>';
+
+                                    if (!empty($activity) && $activity == 'Biking') {
+                                        $all_month_content_output .= 
+                                    '<div class="accordion-bikes">
+                                        <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
+                                        '.$bike_hotels['bikes'].'
+                                        <a class="fs-sm view-details" href="#bikes-guides">View bikes</a>
+                                        </div>';
+                                    }
+                                    $all_month_content_output .= 
+                                    '<div class="accordion-book-now">';
+
+                            } else {
+
                             $month_content_output .= 
                             '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
                                 <h6 class="accordion-header" id="flush-headingThree">
@@ -252,7 +319,7 @@ if( $available_child_products ) {
                                         }
                                         $all_month_content_output .= 
                                         '<div class="accordion-book-now">';
-
+                                }
                         } else if ($tripWebStatus == 'Not Guaranteed') {
                             $month_content_output .= 
                         '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
