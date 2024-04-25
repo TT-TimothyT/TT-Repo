@@ -1402,11 +1402,15 @@ function trek_get_quote_travel_protection_action_cb()
     if( $edate_info && is_array($edate_info) ){
         $expirationDate = date('Y-m-d', strtotime(implode('-', $edate_info)));
     }
+
+    //Current date minus 3 hours to match with the Arch time
+    $current_date = date('Y-m-d', strtotime('-3 hours' ) );
+
     $trek_insurance_args = [
         "coverage" => [
             "effectiveDate" => $effectiveDate,
             "expirationDate" => $expirationDate,
-            "depositDate" => date('Y-m-d'),
+            "depositDate" => $current_date,
             "destinations" => [
                 [
                     "countryCode" => $tt_posted['shipping_country']
@@ -4943,11 +4947,15 @@ function tt_generate_save_insurance_quote_cb()
     if( $edate_info && is_array($edate_info) ){
         $expirationDate = date('Y-m-d', strtotime(implode('-', $edate_info)));
     }
+
+    //Current date minus 3 hours to match with the Arch time
+    $current_date = date('Y-m-d', strtotime('-3 hours' ) );
+
     $trek_insurance_args = [
         "coverage" => [
             "effectiveDate" => $effectiveDate,
             "expirationDate" => $expirationDate,
-            "depositDate" => date('Y-m-d'),
+            "depositDate" => $current_date,
             "destinations" => [
                 [
                     "countryCode" => $tt_posted['shipping_country']
