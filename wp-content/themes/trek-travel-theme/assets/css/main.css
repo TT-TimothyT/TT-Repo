@@ -15440,6 +15440,19 @@ a.refineLink {
     margin-left: 2rem;
   }
 }
+.dates-pricing-container .dates-pricing .pdp-no-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 80%;
+  margin: auto;
+}
+@media (max-width: 991.98px) {
+  .dates-pricing-container .dates-pricing .pdp-no-date {
+    width: 100%;
+  }
+}
 .dates-pricing-container .dates-pricing nav {
   margin-bottom: 20px;
 }
