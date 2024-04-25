@@ -32,10 +32,10 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'TT_NS_HOST', '661527-sb2.restlets.api.netsuite.com' );
     define( 'TT_NS_RESTLET_URL', 'https://661527-sb2.restlets.api.netsuite.com/app/site/hosting/restlet.nl');
     define( 'TT_NS_ACCOUNT_ID', '661527_SB2');
-    define( 'TT_NS_CONSUMER_KEY', 'c488f4c7b9c29e0675151134c35ed9ab40177d73107e284fdeba7e2837ef775d');
-    define( 'TT_NS_CONSUMER_SECRET', '53ac95afb58b5181e209a31b65403cbafa19fd054bac93ba15e2e0d139b6385e');
-    define( 'TT_NS_TOKEN_ID', 'e69b6d804a464844c0bf03c4050263a5e8115145702179eeca343a1c552c0be2');
-    define( 'TT_NS_TOKEN_SECRET', '2e3ea493c973bff4bb808c6ab4e283ab5775d34a0471cc4cc3942266a4382bb1');
+    define( 'TT_NS_CONSUMER_KEY', '878e51745ccd718aef92210ff20f325fd91120c762bc595934aa91d1f1d4c4f5');
+    define( 'TT_NS_CONSUMER_SECRET', '051cec7bdfc2918977a53c422dcf07112d1aec43900789f25b0a6c0fce486ab6');
+    define( 'TT_NS_TOKEN_ID', 'f442d6cbe8c00b2580c2637568cd5a84727ccb4fc8305589ab78b9f0a88a65f0');
+    define( 'TT_NS_TOKEN_SECRET', '6f0aed48174e70349aef5f7d14901ce49ecf006beaadb2250cc06b56c70142ef');
     define( 'TRIPS_SCRIPT_ID', '1296:2' ); //214 -old ID, New ID - 1296
     define( 'BOOKING_SCRIPT_ID', '1298:2' );
     define( 'TRIP_DETAIL_SCRIPT_ID', '1297:2' ); //211 -old ID, New ID - 1297
