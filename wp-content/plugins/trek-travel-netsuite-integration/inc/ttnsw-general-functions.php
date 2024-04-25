@@ -597,6 +597,46 @@ function tt_get_ns_guest_registrations_info( $user_reg_ids, $is_single = false )
 }
 
 /**
+ * Get Modified Guest Registrations data from NS starting from the given period in the past.
+ * 
+ * @param string $time_range The period in the past from which to start search modified registrations.
+ * @uses NS Script GET_MODIFIED_REGISTRATIONS
+ * 
+ * @return array Last modified Guest registrations data in array with objects from id, email and tripId.
+ */
+function tt_get_ns_guest_modified_registrations( $time_range = '-2 hours' ) {
+
+    // Fire the NS script to fetch all the registration ids for the past 2 hours.
+    $modified_after = date( 'Y-m-d H:i:s', strtotime( $time_range ) );
+
+    // Format should be YYYY-MM-DDTHH:mm:SS.
+    $modified_after_dt = gmdate( "Y-m-d\TH:i:s", strtotime( $modified_after ) );
+
+    // 1293&modifiedAfter=2024-01-25&deploy=2
+    // 1293&modifiedAfter=2024-04-18T10:19:20&deploy=2
+    $net_suite_client       = new NetSuiteClient();
+    $args                   = array( 'modifiedAfter' => $modified_after_dt );
+    $ns_guest_modified_regs = $net_suite_client->get( GET_MODIFIED_REGISTRATIONS, $args );
+
+    // Guest Registrations not found.
+    if( ! $ns_guest_modified_regs ) {
+        return false;
+    }
+
+    if( isset( $ns_guest_modified_regs->status ) && -1 == $ns_guest_modified_regs->status ) {
+        /**
+         * Possible errors:
+         *
+         * error_message: "Please provide modifiedAfter date in the format YYYY-MM-DD"
+         * error_message: "Please provide modifiedAfter Date"
+         */
+        return false;
+    }
+
+    return $ns_guest_modified_regs;
+}
+
+/**
  * Create Orders Programmatically.
  * 
  * @param object $booking_id NS Booking ID.
@@ -1527,4 +1567,110 @@ function tt_take_ride_camp_product_info( $start_date, $end_date, $main_start_dat
     }
 
     return false;
+}
+
+/**
+ * Set Lock Trip Checklist and Lock Bike Selection statuses,
+ * based on NS Guest Registrations corresponded fields.
+ *
+ * @param string     $guest_email             User email.
+ * @param string|int $guest_reg_id            The ID of the Guest registration in NS.
+ * @param object     $ns_registration_details Guest registration details.
+ *
+ * @uses tt_get_ns_guest_registrations_info() To obtain the info from NetSuite for specific Guest Registration.
+ *
+ * @return bool Whether the process finished successfully.
+ */
+function tt_set_bike_record_lock_status( $guest_email = '', $guest_reg_id = 0, $ns_registration_details = array() ) {
+    // Check if user exists in WC.
+    $user = get_user_by( 'email', $guest_email );
+
+    if( ! $user || empty( $guest_reg_id ) ) {
+        return false;
+    }
+
+    $wc_user_id = $user->ID;
+
+    if( empty( $ns_registration_details ) ) {
+        // If the registration details not provided, fetch them.
+        $ns_registration_details = tt_get_ns_guest_registrations_info( $guest_reg_id, true );
+    }
+
+    // Get "Lock Record" and "Lock Bike" values.
+    $lock_record = tt_validate( $ns_registration_details->lockRecord );
+    $lock_bike   = tt_validate( $ns_registration_details->lockBike );
+
+    // Get stored registrations values.
+    $lock_record_user_regs = get_user_meta( $wc_user_id, 'lock_record_registration_ids', true );
+    $lock_bike_user_regs   = get_user_meta( $wc_user_id, 'lock_bike_registration_ids', true );
+
+    // Set change status flags.
+    $lock_record_has_change = false;
+    $lock_bike_has_change   = false;
+
+    if( $lock_record ) {
+        // Need to store the Guest Registration ID to the user's meta for Record Locking.
+        if( empty( $lock_record_user_regs ) ) {
+            // If the user meta doesn't exist, create a new one.
+            $lock_record_user_regs = array();
+        }
+
+        // Store the Guest Registration ID if not stored yet.
+        if( is_array( $lock_record_user_regs ) && ! in_array( $guest_reg_id, $lock_record_user_regs ) ) {
+            $lock_record_user_regs[] = $guest_reg_id; // So this guest registration is a with lock record status.
+            $lock_record_has_change  = true;
+            tt_add_error_log('NS - Locked Gear For:', array( 'user_email' => $guest_email, 'guest_registration_id' => $guest_reg_id ), array( 'lock_record_registration_ids' => $lock_record_user_regs ) );
+        }
+    } else {
+        // Check if the guest registration exists in the array, if it does, remove it.
+        if( ! empty( $lock_record_user_regs ) ) {
+            // Remove all existing instances of the guest registration id, even if it's more than one.
+            $key = array_search( $guest_reg_id, $lock_record_user_regs );
+
+            if( $key !== false ) {
+                unset( $lock_record_user_regs[ $key ] );
+                $lock_record_has_change  = true;
+                tt_add_error_log( 'NS - Unlocked Gear For:', array( 'user_email' => $guest_email, 'guest_registration_id' => $guest_reg_id ), array( 'lock_record_registration_ids' => $lock_record_user_regs ) );
+            }
+        }
+    }
+
+    if( $lock_bike ) {
+        // Need to store the Guest Registration ID to the user's meta for Bike Locking.
+        if( empty( $lock_bike_user_regs ) ) {
+            // If the user meta doesn't exist, create a new one.
+            $lock_bike_user_regs = array();
+        }
+
+        // Store the Guest Registration ID if not stored yet.
+        if( is_array( $lock_bike_user_regs ) && ! in_array( $guest_reg_id, $lock_bike_user_regs ) ) {
+            $lock_bike_user_regs[] = $guest_reg_id; // So this guest registration is a with lock bike status.
+            $lock_bike_has_change  = true;
+            tt_add_error_log('NS - Locked Bike For:', array( 'user_email' => $guest_email, 'guest_registration_id' => $guest_reg_id ), array( 'lock_bike_registration_ids' => $lock_bike_user_regs ) );
+        }
+    } else {
+        // Check if the guest registration exists in the array, if it does, remove it.
+        if( ! empty( $lock_bike_user_regs ) ) {
+            // Remove all existing instances of the guest registration id, even if it's more than one.
+            $key = array_search( $guest_reg_id, $lock_bike_user_regs );
+
+            if( $key !== false ) {
+                unset( $lock_bike_user_regs[ $key ] );
+                $lock_bike_has_change  = true;
+                tt_add_error_log( 'NS - Unlocked Bike For:', array( 'user_email' => $guest_email, 'guest_registration_id' => $guest_reg_id ), array( 'lock_bike_registration_ids' => $lock_bike_user_regs ) );
+            }
+        }
+    }
+
+    if( $lock_record_has_change ) {
+        // If there is a change in the status of Record Lock, update the user meta.
+        update_user_meta( $wc_user_id, 'lock_record_registration_ids', $lock_record_user_regs );
+    }
+
+    if( $lock_bike_has_change ) {
+        // If there is a change in the status of Bike Lock, update the user meta.
+        update_user_meta( $wc_user_id, 'lock_bike_registration_ids', $lock_bike_user_regs );
+    }
+
+    return true;
 }

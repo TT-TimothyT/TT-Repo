@@ -118,22 +118,12 @@ $itinerary_link = '';
 $tt_rooms_output = tt_rooms_output($trek_checkoutData, true);
 $ns_booking_info = tt_get_ns_booking_details_by_order($order_id);
 $waiver_link = $ns_booking_info['waiver_link'];
-$locked_user_ids_bike = get_post_meta($booked_trip_id, 'ns_registration_ids_bike', true);
-$locked_user_ids_record = get_post_meta($booked_trip_id, 'ns_registration_ids_record', true);
 
 //get current user id
 $current_user_id = get_current_user_id();
 
-$lockedUserBike = 0;
-$lockedUserRecord = 0;
-//Check if current user id is in locked user ids
-if ( is_array( $locked_user_ids_bike ) && in_array( $current_user_id, $locked_user_ids_bike ) ) {
-	$lockedUserBike = 1;
-}
-
-if ( is_array( $locked_user_ids_record ) && in_array($current_user_id, $locked_user_ids_record ) ) {
-	$lockedUserRecord = 1;
-}
+$lockedUserBike   = tt_is_registration_locked( $current_user_id, $User_order_info[0]['guestRegistrationId'], 'bike' );
+$lockedUserRecord = tt_is_registration_locked( $current_user_id, $User_order_info[0]['guestRegistrationId'], 'record' );
 
 $bikeUpgradePrice = 0;
 $bikePriceCurr = '';

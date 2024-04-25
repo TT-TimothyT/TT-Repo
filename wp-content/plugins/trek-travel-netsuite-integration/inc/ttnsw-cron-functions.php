@@ -744,6 +744,9 @@ if (!function_exists('tt_ns_guest_booking_details')) {
 
                     $ns_guest_info = $ns_guest_info_arr[0];
 
+                    // Set Bike and Checklist Locking statuses during the sync process.
+                    tt_set_bike_record_lock_status( $ns_guest_email, $registration_id, $ns_guest_info );
+
                     /**
                      * Check for existing records in DB.
                      * The unique record is determined via NetSuite User ID and Booking ID.
@@ -835,151 +838,21 @@ if (!function_exists('tt_ns_fetch_bike_type_info')) {
 
 
 if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
-    function tt_ns_fetch_registration_ids() {
-        //Fire the NS script to fetch all the registration ids for the past 24 hours
-        $modifiedAfter = date('Y-m-d H:i:s', strtotime(' -2 hours'));
+    function tt_ns_fetch_registration_ids( $time_range = '-2 hours' ) {
+        // Fire the NS script to fetch all the registration ids for the past 2 hours.
+        $modified_reg_data = tt_get_ns_guest_modified_registrations( $time_range );
 
-        //Get the 1293 script with the modifiedAfter parameter and deploy 2
-        $modifiedAfterTime = gmdate("Y-m-d\TH:i:s", strtotime($modifiedAfter));
-        $netSuiteClient = new NetSuiteClient();
-        $modified_reg_ids = $netSuiteClient->get( GET_MODIFIED_REGISTRATIONS, ['modifiedAfter' => $modifiedAfterTime ] );
+        if( ! $modified_reg_data ) {
+            return;
+        }
 
-        //Loop through the registration ids and fetch the registration details. That's done to filter out users outside of this WP installation
-        foreach( $modified_reg_ids as $modified_reg_id ) {
-            $registrationEmail = $modified_reg_id->email;
-            $netsuite_trip_id = $modified_reg_id->tripId;
+        // Loop through the registration ids and fetch the registration details.
+        foreach( $modified_reg_data as $modified_reg ) {
+            $ns_reg_id    = $modified_reg->id;
+            $ns_reg_email = $modified_reg->email;
+            $ns_trip_id   = $modified_reg->tripId;
 
-            //Check if user exists in WC
-            $user = get_user_by( 'email', $registrationEmail );
-            if( $user ) {
-                $wc_user_id = $user->ID;
-                //Execute the 1294 script with the registration id as parameter and deploy 2
-                $ns_registration_id = $modified_reg_id->id;
-                $ns_registration_details = $netSuiteClient->get( GET_REGISTRATIONS_SCRIPT_ID, ['registrationId' => $ns_registration_id ] );
-
-                //Get "Lock Record" and "Lock Bike" values
-                $lockRecord = isset($ns_registration_details[0]->lockRecord) ? $ns_registration_details[0]->lockRecord : '';
-                $lockBike = isset($ns_registration_details[0]->lockBike) ? $ns_registration_details[0]->lockBike : '';
-
-                //Find the product with netsuite_trip_id  as meta value without using tt_get_postid_by_meta_key_value()
-                $args = array(
-                    'post_type' => 'product',
-                    'meta_query' => array(
-                        array(
-                            'key' => 'tt_meta_tripid',
-                            'value' => $netsuite_trip_id,
-                            'compare' => '='
-                        )
-                    )
-                );
-                $trip_product = get_posts( $args );
-
-                //If the product exists, get the ID
-                if( $trip_product ) {
-                    $trip_product_id = $trip_product[0]->ID;
-                }
-
-                //Update the lock bikes and lock record for the trip as meta values
-                if( $trip_product_id ) {
-                    update_post_meta( $trip_product_id, 'lock_record', $lockRecord );
-                    update_post_meta( $trip_product_id, 'lock_bike', $lockBike );
-                }
-                //Check if such post meta exists, if it does, add the new registration id to the array
-                $existing_registration_ids_bike = get_post_meta( $trip_product_id, 'ns_registration_ids_bike', true );
-                $existing_registration_ids_record = get_post_meta( $trip_product_id, 'ns_registration_ids_record', true );
-                //get the user email
-                $user_info = get_userdata($wc_user_id);
-                $user_email = $user_info->user_email;
-
-                if( $lockRecord || $lockBike ) {
-
-
-
-                    if( $lockBike ) {
-                        if( ! empty( $existing_registration_ids_bike ) ) {
-
-                            //Check if the user already exists in the array, if it does, don't add it again
-                            if( ! in_array( $wc_user_id, $existing_registration_ids_bike ) ) {
-                                $existing_registration_ids_bike[] += $wc_user_id;
-                                update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
-
-                                tt_add_error_log('NS - Locked Bike For:', $user_email, $trip_product_id);
-                            }
-
-                        } else {
-                            //If the post meta doesn't exist, create a new one
-                            $new_registration_ids_bike = array();
-                            $new_registration_ids_bike[] += $wc_user_id;
-                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $new_registration_ids_bike );
-                            tt_add_error_log('NS - Locked Bike For:', $user_email, $trip_product_id);
-
-                        }
-                    } else {
-                        //Check if the user exists in the array, if it does, remove it
-                        if( ! empty( $existing_registration_ids_bike ) ) {
-                            $key = array_search( $wc_user_id, $existing_registration_ids_bike );
-                            if( $key !== false ) {
-                                unset( $existing_registration_ids_bike[$key] );
-                                update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
-                                tt_add_error_log('NS - Unlocked Bike For:', $user_email, $trip_product_id);
-
-                            }
-                        }
-                    }
-
-
-                    if( $lockRecord ) {
-                        if( ! empty( $existing_registration_ids_record ) ) {
-                            //Check if the user already exists in the array, if it does, don't add it again
-                            if( ! in_array( $wc_user_id, $existing_registration_ids_record ) ) {
-                                $existing_registration_ids_record[] += $wc_user_id;
-                                update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
-                                tt_add_error_log('NS - Locked Gear For:', $user_email, $trip_product_id);
-
-                            }
-                        } else {
-                            //If the post meta doesn't exist, create a new one
-                            $new_registration_ids_record = array();
-                            $new_registration_ids_record[] += $wc_user_id;
-                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $new_registration_ids_record );
-                            tt_add_error_log('NS - Locked Gear For:', $user_email, $trip_product_id);
-
-                        }
-                    } else {
-                        //Check if the user exists in the array, if it does, remove it
-                        if( ! empty( $existing_registration_ids_record ) ) {
-                            //Remove all existing instances of the user id, even if it's more than one
-                            $key = array_search( $wc_user_id, $existing_registration_ids_record );
-                            if( $key !== false ) {
-                                unset( $existing_registration_ids_record[$key] );
-                                update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
-                                tt_add_error_log('NS - Unlocked Gear For:', $user_email, $trip_product_id);
-                            }
-                        }
-                    }
-                } else {
-                    //If both lock bike and lock record are false, remove the user from both arrays
-                    if( ! empty( $existing_registration_ids_bike ) ) {
-                        //Remove all existing instances of the user id, even if it's more than one
-                        $key = array_search( $wc_user_id, $existing_registration_ids_bike );
-                        if( $key !== false ) {
-                            unset( $existing_registration_ids_bike[$key] );
-                            update_post_meta( $trip_product_id, 'ns_registration_ids_bike', $existing_registration_ids_bike );
-                            tt_add_error_log('NS - Unlocked Bike For:', $user_email, $trip_product_id);
-                        }
-                    }
-
-                    if( ! empty( $existing_registration_ids_record ) ) {
-                        //Remove all existing instances of the user id, even if it's more than one
-                        $key = array_search( $wc_user_id, $existing_registration_ids_record );
-                        if( $key !== false ) {
-                            unset( $existing_registration_ids_record[$key] );
-                            update_post_meta( $trip_product_id, 'ns_registration_ids_record', $existing_registration_ids_record );
-                            tt_add_error_log('NS - Unlocked Gear For:', $user_email, $trip_product_id);
-                        }
-                    }
-                }
-            }
+            tt_set_bike_record_lock_status( $ns_reg_email, $ns_reg_id );
         }
     }
 }

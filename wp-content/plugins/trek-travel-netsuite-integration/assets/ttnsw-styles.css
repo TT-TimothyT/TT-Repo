@@ -280,3 +280,13 @@ table.table-old.tt-booking-table .expandable-cell.expanded .expand-cell:before {
     -webkit-transform: translate(-50%,-50%) rotate(-135deg);
     transform: translate(-50%,-50%) rotate(-135deg);
 }
+#dx-repair-tools{
+    display: none;
+}
+.dx-show-hidden {
+    opacity: 0;
+}
+.dx-show-hidden:hover {
+    opacity: 1;
+    cursor: pointer;
+}

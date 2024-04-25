@@ -20,4 +20,7 @@ jQuery(document).ready(function () {
             jQuery('td.expandable-cell').addClass('expanded')
         }
     })
+    jQuery('.dx-show-hidden').on('click', function() {
+        jQuery("#dx-repair-tools").toggle();
+    })
 })

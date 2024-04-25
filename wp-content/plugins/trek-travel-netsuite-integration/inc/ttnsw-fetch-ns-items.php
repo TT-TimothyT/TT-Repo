@@ -150,21 +150,24 @@ function tt_admin_menu_page_cb()
         tt_add_error_log('[End]', ['type'=> 'User Checklist Sync'], ['dateTime' => date('Y-m-d H:i:s')]);
 
     }
-    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'dx-rapair-bookings-table' ) {
+    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'dx-rapair-locking-status' ) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'netsuite_trip_detail';
-        //$row = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'guestRegistrationId'"  );
+        $table_name = $wpdb->prefix . 'guest_bookings';
+        $sql = "SELECT DISTINCT guestRegistrationId, guest_email_address from {$table_name} WHERE guestRegistrationId IS NOT NULL AND guestRegistrationId <> '' AND guest_email_address IS NOT NULL AND guest_email_address <> ''";
+        // Get All unique Guest registration IDs, and guest emails from guest_bookings table.
+        $results = $wpdb->get_results( $sql, ARRAY_A );
 
-
-        $new_column1_name = 'SmugMugLink';
-        $new_column2_name = 'SmugMugPassword';
-
-        $sql = "ALTER TABLE $table_name ADD COLUMN $new_column1_name VARCHAR(255) AFTER tripSpecificMessage,
-        ADD COLUMN $new_column2_name VARCHAR(255) AFTER $new_column1_name";
-
-        // Execute the query
-        $wpdb->query($sql);
-
+        if( ! empty( $results ) ) {
+            $guest_reg_ids_arr = array_chunk( $results, 15 );
+    
+            foreach( $guest_reg_ids_arr as $guest_reg_ids ) {
+                foreach( $guest_reg_ids as $guest_reg_id ) {
+                    if( isset( $guest_reg_id['guestRegistrationId'] ) && isset( $guest_reg_id['guest_email_address'] ) ) {
+                        tt_set_bike_record_lock_status( $guest_reg_id['guest_email_address'], $guest_reg_id['guestRegistrationId'] );
+                    }
+                }
+            }
+        }
     }
 ?>
     <div class="tt-admin-page-div tt-pl-40 tt-mt-30">
@@ -255,78 +258,19 @@ function tt_admin_menu_page_cb()
             </div>
             <!-- End Temp code -->
             <!-- Temp Code -->
-            <hr>
             <div id="dx-repair-tools">
-                <h3>DX Repair Tools</h3>
-                <p>This process below will add the missing column <code>SmugMugLink</code> and <code>SmugMugPassword</code> in the <code>netsuite_trip_details</code> table.</p>
-                <?php
-                    global $wpdb;
-                    $table_name = $wpdb->prefix . 'netsuite_trip_detail';
-                    $row = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'SmugMugLink'"  );
-                ?>
-                <form action="" class="tt-order-sync" method="post">
-                    <input type="hidden" name="action" value="dx-rapair-bookings-table">
-                    <input type="submit" name="submit" value="Repair Bookings Table" class="button-primary" <?php echo esc_attr( !empty($row) ? 'disabled="true"' : '' ); ?>>
-                </form>
-                <div id="dx-print_result" style="margin: 2% 0px;">
-                    <p><b>Bookings table status: </b>
-                        <?php if( empty($row) ) : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">Not repaired yet</span>
-                        <?php else : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully repaired</span>
-                        <?php endif; ?>
-                    </p>
-                </div>
-            </div>
-            <hr>
-            <div id="tt-bookings-migration" style="display:none;">
-                <h3>TT Bookings Migration</h3>
-                <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">! Under development</span>
-                <p>Extracting existing bookings from NetSuite and creating orders for them in WooCommerce programmatically.</p>
-                <form action="" class="tt-order-sync" method="post">
-                    <input type="text" name="ns_booking_id" placeholder="Enter Booking ID" required>
-                    <input type="hidden" name="action" value="tt-create-order">
-                    <input type="submit" name="submit" value="Create Order Programmatically" class="button-primary">
-                </form>
                 <hr>
-                <form action="" method="post" enctype="multipart/form-data" style="padding-top:1rem;padding-bottom:1rem;">
-                    <input type="file" name="bookings-csv" value="" />
-                    <input type="hidden" name="action" value="tt-create-multiple-orders-from-file">
-                    <input type="submit" name="submit" value="Create Orders From CSV file" class="button-primary" />
+                <h3>DX Repair Tools</h3>
+                <p>This process below will take all the Guest Registration IDs from the <code>guest_bookings</code> table and loop through them to fix the missing Bike and Checklist Locking statuses.</p>
+                <form action="" class="tt-locking-status-sync" method="post">
+                    <input type="hidden" name="action" value="dx-rapair-locking-status">
+                    <input type="submit" name="submit" value="Repair Bike / Checklist Locking" class="button-primary">
                 </form>
-                <div id="tt-print_result" style="margin: 2% 0px;">
-                    <?php
-                        if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt-create-order' && isset( $_REQUEST['ns_booking_id'] ) ) {
-                            $booking_check_order = tt_check_booking_existing( $_REQUEST['ns_booking_id'] );
-
-                            if( ! empty( $booking_check_order ) ) {
-                                echo 'This Booking already exists! ';
-                                print_r( $booking_check_order );
-                            } else {
-                                tt_create_order( $_REQUEST['ns_booking_id'], true );
-                                // tt_create_multiple_orders( tt_get_bookings_ids_from_file() );
-                            }
-                        }
-                        if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt-create-multiple-orders-from-file' ) {
-                            // Check there are no errors.
-                            if( $_FILES['bookings-csv']['error'] == 0 ) {
-                                $name    = $_FILES['bookings-csv']['name'];
-                                $ext     = strtolower( end( explode( '.', $_FILES['bookings-csv']['name'] ) ) );
-                                $type    = $_FILES['bookings-csv']['type'];
-                                $tmpName = $_FILES['bookings-csv']['tmp_name'];
-
-                                // Check the file is a csv.
-                                if( $ext === 'csv' && $type === 'text/csv') {
-                                    $bookings_ids = tt_get_bookings_ids_from_upload_file( $tmpName );
-                                    tt_create_multiple_orders( $bookings_ids );
-                                    echo '<pre>';
-                                    print_r( $bookings_ids );
-                                    echo '</pre>';
-                                }
-                            }
-                        }
-                    ?>
-                </div>
+            </div>
+            <div class="dx-hidden-section" style="position:relative">
+                <button type="button" class="dx-show-hidden" style="position:absolute;right:20px;bottom:0;width:2rem;height:2rem;display:flex;justify-content: center;align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></svg>
+                </button>
             </div>
             <!-- End Temp code -->
         </div>

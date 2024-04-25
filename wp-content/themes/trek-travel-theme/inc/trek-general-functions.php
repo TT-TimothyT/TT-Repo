@@ -6867,3 +6867,43 @@ function tt_modify_algolia_searchable_post_content( $post_content, WP_Post $post
 }
 
 add_filter( 'algolia_searchable_post_content', 'tt_modify_algolia_searchable_post_content', 10, 2 );
+
+/**
+ * Take the status for Record Locking and Bike Locking from user's meta.
+ *
+ * @param string|int $wc_user_id   Current User ID.
+ * @param string|int $guest_reg_id NS Guest Registration ID.
+ * @param string     $type         The registration locked type.
+ *
+ * @return array|bool If the Type is specified and exists will return a single true/false response else will return an array with all possible statuses.
+ */
+function tt_is_registration_locked( $wc_user_id = '', $guest_reg_id = '', $type = '' ) {
+    if( empty( $wc_user_id ) || empty( $guest_reg_id ) ) {
+        return false;
+    }
+
+    $reg_locked_status = array(
+        'record' => 0,
+        'bike'   => 0
+    );
+
+    // Get stored registrations values.
+    $lock_record_user_regs = get_user_meta( $wc_user_id, 'lock_record_registration_ids', true );
+    $lock_bike_user_regs   = get_user_meta( $wc_user_id, 'lock_bike_registration_ids', true );
+
+    if( is_array( $lock_record_user_regs ) && in_array( $guest_reg_id, $lock_record_user_regs ) ) {
+        $reg_locked_status['record'] = 1;
+    }
+
+    if( is_array( $lock_bike_user_regs ) && in_array( $guest_reg_id, $lock_bike_user_regs ) ) {
+        $reg_locked_status['bike'] = 1;
+    }
+
+    if( isset( $reg_locked_status[ $type ] ) ) {
+        // Return single status, based on the given type.
+        return $reg_locked_status[ $type ];
+    }
+
+    // Return Array with all possible locked statuses.
+    return $reg_locked_status;
+}
