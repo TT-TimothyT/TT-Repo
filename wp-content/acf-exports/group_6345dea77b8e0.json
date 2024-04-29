@@ -44,7 +44,7 @@
             "choices": {
                 "Road": "Road",
                 "E-Bike": "E-Bike",
-                "Electric road": "Electric road",
+                "Electric Road": "Electric Road",
                 "Gravel": "Gravel"
             },
             "default_value": false,
@@ -111,5 +111,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1706819404
+    "modified": 1712693706
 }
