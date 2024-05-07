@@ -397,35 +397,22 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 		</div>
 	</div> <!-- row ends -->
 
-
-	<?php if ($guest_is_primary != 1) { ?>
-		<div class="row mx-0 p-0 trip-waiver-info">
-			<div class="col-lg-10 waiver-col">
-				<div class="card dashboard__card rounded-1">
-					<p class="fw-medium fs-xl lh-xl">Trip Waiver Status</p>
-					<?php if ($waiver_status == 1) {  ?>
-						<p class="fw-medium fs-lg lh-lg status-signed">Signed</p>
-						<p class="fw-normal fs-sm lh-sm">You're all set here!</p>
-					<?php } else { ?>
-						<p class="fw-medium fs-lg lh-lg status-not-signed">
-							<img src="<?php echo TREK_DIR; ?>/assets/images/error2.png"> Not Signed
-						</p>
-						<a class="btn btn-primary fs-md lh-md" href="javascript:" target="_blank" data-bs-toggle="modal" data-bs-target="#waiver_modal">Sign Waiver</a>
-					<?php } ?>
-				</div>
+	<div class="row mx-0 p-0 trip-waiver-info">
+		<div class="col-lg-10 waiver-col">
+			<div class="card dashboard__card rounded-1">
+				<p class="fw-medium fs-xl lh-xl">Trip Waiver Status</p>
+				<?php if ($waiver_status == 1) {  ?>
+					<p class="fw-medium fs-lg lh-lg status-signed">Signed</p>
+					<p class="fw-normal fs-sm lh-sm">You're all set here!</p>
+				<?php } else { ?>
+					<p class="fw-medium fs-lg lh-lg status-not-signed">
+						<img src="<?php echo TREK_DIR; ?>/assets/images/error2.png"> Not Signed
+					</p>
+					<!-- <a class="btn btn-primary fs-md lh-md" href="javascript:" target="_blank" data-bs-toggle="modal" data-bs-target="#waiver_modal">Sign Waiver</a> -->
+				<?php } ?>
 			</div>
-		</div> <!-- row ends -->
-	<?php }else{ ?>
-		<div class="row mx-0 p-0 trip-waiver-info">
-			<div class="col-lg-10 waiver-col">
-				<div class="card dashboard__card rounded-1">
-					<p class="fw-medium fs-xl lh-xl">Trip Waiver Status</p>
-						<p class="fw-medium fs-lg lh-lg status-signed">Signed</p>
-						<p class="fw-normal fs-sm lh-sm">You're all set here!</p>
-				</div>
-			</div>
-		</div> <!-- row ends -->
-		<?php }?>
+		</div>
+	</div> <!-- row ends -->
 </div>
 <!-- Begin: Travel Waiver modal form  -->
 <!-- Modal -->

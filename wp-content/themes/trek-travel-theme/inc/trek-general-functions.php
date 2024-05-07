@@ -6,10 +6,6 @@ $cancellation_policy_page_id = get_option('tt_opt_cancellation_policy_page_id') 
 $cancellation_policy_page_link = $cancellation_policy_page_id ? get_the_permalink($cancellation_policy_page_id) : '';
 define('TREK_DIR', get_template_directory_uri());
 define('TREK_PATH', get_template_directory());
-// This "Waiver URL" below is for production NetSuite account. Use it when launch the site.
-// define('TT_WAIVER_URL', 'https://661527.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527&h=1d9367cf147b5322893e&whence=');
-// Temporary "Waiver URL" for Sandbox NetSuite Account.
-define('TT_WAIVER_URL', 'https://661527-sb2.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527_SB2&h=629b0eb96224bcaa55bd&whence=');
 define('TREK_MY_ACCOUNT_PID', get_option('woocommerce_myaccount_page_id'));
 define('DEFAULT_IMG', 'https://via.placeholder.com/90?text=Trek%20Travel');
 define('G_CAPTCHA_SITEKEY', '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV');
@@ -18,10 +14,12 @@ if( ! defined( 'DX_DEV' ) ) {
     define('TREK_INSURANCE_UNAME', 'APIWebUSERTREKTRAV@archroamright.com');
     define('TREK_INSURANCE_PASS', '9w04U5jI]8#0');
     define('TREK_INRURANCE_API_URL', 'https://services.archinsurancesolutions.com/PartnerService/api');
+    define('TT_WAIVER_URL', 'https://661527.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527&h=1d9367cf147b5322893e&whence=');
 } else {
     define('TREK_INSURANCE_UNAME', 'APIUSERTREKTRAV@test.roamright.com');
     define('TREK_INSURANCE_PASS', 'Hosing+Chips+raps1');
     define('TREK_INRURANCE_API_URL', 'https://testservices.archinsurancesolutions.com/PartnerService/api');
+    define('TT_WAIVER_URL', 'https://661527-sb2.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527_SB2&h=629b0eb96224bcaa55bd&whence=');
 }
 define('TT_WC_META_PREFIX', 'tt_meta_');
 define('TT_OPTION_PREFIX', 'tt_option_');
@@ -2580,7 +2578,7 @@ if (!function_exists('tt_validate')) {
  * @return  : Add/Update NS results of booking for Guests by order_id, email_address
  **/
 if (!function_exists('tt_update_user_booking_info')) {
-    function tt_update_user_booking_info($order_id = NULL, $ns_booking_response="")
+    function tt_update_user_booking_info( $order_id = NULL, $ns_booking_response="", $guests_email_addresses = [] )
     {
         tt_add_error_log('[Start] - Update Booking', ['order_id' => $order_id], ['dateTime' => date('Y-m-d H:i:s')]);
         global $wpdb;
@@ -2639,14 +2637,27 @@ if (!function_exists('tt_update_user_booking_info')) {
                 if( $guest_index == 0 ){
                     update_post_meta($order_id, TT_WC_META_PREFIX.'releaseFormId', $releaseFormId);
                 }
-                $bookingData['guestRegistrationId'] = isset($guests[$guest_index]['guestRegistrationId']) ? $guests[$guest_index]['guestRegistrationId'] : '';
-                if ($guest_index != 0) {
-                    $bookingData['netsuite_guest_registration_id'] = isset($guests[$guest_index]['guestId']) ? $guests[$guest_index]['guestId'] : '';
-                    $where['guest_index_id'] = $guest_index;
-                }
+                $bookingData['guestRegistrationId']            = isset($guests[$guest_index]['guestRegistrationId']) ? $guests[$guest_index]['guestRegistrationId'] : '';
+                $bookingData['netsuite_guest_registration_id'] = isset($guests[$guest_index]['guestId']) ? $guests[$guest_index]['guestId'] : '';
+                $where['guest_index_id']                       = $guest_index;
                 $wpdb->update($table_name, $bookingData, $where);
                 if( $wpdb->last_error ) {
                     tt_add_error_log( '[Faild] Update Booking', array( 'order_id' => $order_id, 'bookingId' => $bookingId ), array( 'last_error' => $wpdb->last_error ) );
+                }
+                // Try to repair the missing NS User ID, during booking creation in NetSuite, as a response we receive the NS User IDs.
+                if( ! empty( $guests_email_addresses ) ) {
+                    // Check if user exists in WP.
+                    $user = get_user_by( 'email', $guests_email_addresses[ $guest_index ] );
+                    if( $user ) {
+                        $wc_user_id = $user->ID;
+                        $ns_user_id = get_user_meta( $wc_user_id, 'ns_customer_internal_id', true );
+
+                        if( empty( $ns_user_id ) ) {
+                            $ns_customer_internal_id = tt_validate( $guests[ $guest_index ][ 'guestId' ] );
+                            // Update the NS User ID for WP User.
+                            update_user_meta( $wc_user_id, 'ns_customer_internal_id', $ns_customer_internal_id );
+                        }
+                    }
                 }
             }
         } else {
@@ -5360,12 +5371,13 @@ function tt_get_store_waiver_info( $ns_booking_id, $order_id ) {
     $user             = wp_get_current_user();
     $ns_user_id       = get_user_meta( $user->ID, 'ns_customer_internal_id', true );
     $waiver_info      = array(
-        'waiver_accepted' => false
+        'waiver_accepted' => false,
+        'status'          => false
     );
     if ( $ns_user_id ) {
 
         if ( $ns_booking_id ) {
-            $booking_info          = $net_suite_client->get( '1304:2', array( 'bookingId' => $ns_booking_id ) );
+            $booking_info          = $net_suite_client->get( GET_BOOKING_SCRIPT_ID, array( 'bookingId' => $ns_booking_id ) );
             $booking_release_forms = isset( $booking_info->releaseForms ) && $booking_info->releaseForms ? $booking_info->releaseForms : [];
             if ( $booking_release_forms ) {
                 foreach ( $booking_release_forms as $booking_release_form ) {
@@ -5396,12 +5408,19 @@ function tt_get_store_waiver_info( $ns_booking_id, $order_id ) {
                         $is_updated                      = $wpdb->update( $table_name, $booking_data, $where );
                         $waiver_info['status']           = $is_updated;
                         $waiver_info['wpdb->last_query'] = $wpdb->last_query;
+                        if( $wpdb->last_error ) {
+                            $waiver_info['wpdb->last_error'] = $wpdb->last_error;
+                        }
                         $waiver_info['booking_data']     = $booking_data;
                         $waiver_info['where']            = $where;
                     }
                 }
             }
+        } else {
+            $waiver_info['message'] = 'ns_booking_id not found.';
         }
+    } else {
+        $waiver_info['message'] = 'ns_user_id not found.';
     }
     return $waiver_info;
 }
@@ -5422,6 +5441,7 @@ function tt_ajax_get_waiver_info(){
     if( isset( $_POST['ns-booking-id'] ) && ! empty( $_POST['ns-booking-id'] ) && isset( $_POST['order-id'] ) && ! empty( $_POST['order-id'] )) {
         $waiver_info        = tt_get_store_waiver_info( $_POST['ns-booking-id'], $_POST['order-id'] );
         $res['waiver_info'] = $waiver_info;
+        tt_add_error_log( '[Post Booking] - Sign Waiver', array( 'order_id' => $_POST['order-id'], 'bookingId' => $_POST['ns-booking-id'] ), array( 'waiver_info' => $waiver_info ) );
         if( isset( $waiver_info['waiver_accepted'] ) ) {
             if( $waiver_info['waiver_accepted'] == 1 ) {
                 $res['waiver_accepted'] = true;
@@ -6525,13 +6545,10 @@ function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_
 		array_push( $available_pb_checklist_sections, 'bike_section' );
 	}
 
-    // We keep waiver signed status into guest_bookings table only.
-    if( 1 != $guest_is_primary ) {
-        // If guest is not primary, need to check waiver signed status.
-        if( 1 != $waiver_signed ) {
-            // Waiver not signed. Need to return false.
-            return false;
-        }
+    // We keep waiver signed status into guest_bookings table only. Check waiver signed status.
+    if( 1 != $waiver_signed ) {
+        // Waiver not signed. Need to return false.
+        return false;
     }
 
     // Loop the available sections and check for confirmations.

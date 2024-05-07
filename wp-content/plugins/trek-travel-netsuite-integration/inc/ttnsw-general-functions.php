@@ -77,6 +77,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
     $admin_ns_user_id = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
     $netSuiteClient = new NetSuiteClient();
     $ns_booking_payload = $ns_booking_result = [];
+    $guests_email_addresses = [];
     $user_exist = get_userdata($user_id);
     $is_booking_status = $user_exist ? false : true;
     $wc_booking_result = tt_get_booking_details($order_id, $is_booking_status);
@@ -345,6 +346,8 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
                     "insuranceAmount" => $insuranceAmount,
                     'tripDiscountAmount' => $wc_coupon_amount
                 ];
+                // Store all guest emails, so can use it in the tt_update_user_booking_info() function, to check if there existing users with these emails in WP and those users don't have ns_customer_internal_id (ns_user_id) can repair this on order creating.
+                $guests_email_addresses[$wc_booking_key] = $email;
             }
             $booking_index++;
         }
@@ -353,7 +356,7 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
         }
         if ($ns_booking_payload) {
             $ns_booking_result = $netSuiteClient->post(BOOKING_SCRIPT_ID, json_encode($ns_booking_payload));
-            tt_update_user_booking_info($order_id, $ns_booking_result);
+            tt_update_user_booking_info( $order_id, $ns_booking_result, $guests_email_addresses );
             tt_add_error_log('BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, $ns_booking_payload, $ns_booking_result);
         }else{
             tt_add_error_log('BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, [], ['message' => 'no Payload found']);

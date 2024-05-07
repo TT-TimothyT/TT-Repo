@@ -687,15 +687,25 @@ if (!function_exists('tt_ns_guest_booking_details')) {
             $wp_user        = get_user_by( 'email', $ns_guest_email );
             $wp_user_id     = $wp_user->ID;
 
-            if( ! empty( $wp_user_id ) && empty( $wc_user_id ) ) {
-                $wc_user_id = $wp_user_id;
-            }
-
             // If we have wp user.
-            // The check for $is_sync_process prevents override information during the booking process.
-            if( ! empty( $wp_user_id ) && 'true' == $is_sync_process ) {
-                
-                tt_sync_guest_preferences( $wp_user_id, $ns_guest_booking_result );
+            if( ! empty( $wp_user_id ) ) {
+
+                if( empty( $wc_user_id ) ) {
+                    $wc_user_id = $wp_user_id;
+                }
+
+                // The check for $is_sync_process prevents override information during the booking process.
+                if( 'true' == $is_sync_process ) {
+                    tt_sync_guest_preferences( $wp_user_id, $ns_guest_booking_result );
+                }
+
+                // Try to repair the missing NS User ID.
+                $ns_user_id = get_user_meta( $wp_user_id, 'ns_customer_internal_id', true );
+
+                if( empty( $ns_user_id ) ) {
+                    // Update the NS User ID for WP User.
+                    update_user_meta( $wp_user_id, 'ns_customer_internal_id', $guest_id );
+                }
             }
 
             foreach( $ns_guest_booking_result->bookings as $booking_data ) {
