@@ -163,17 +163,13 @@ $hideme = "";
 $bike_pointer_none = '';
 $gear_pointer_none = '';
 
-if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
-	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
-	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
-		if ( in_array( 712, $product_cat_matches ) || in_array( 744, $product_cat_matches ) ) {
-			$hideme = "d-none";
-		} elseif ( in_array( 710, $product_cat_matches ) && in_array( 713, $product_cat_matches ) ) {
-			$hideme = "d-none";
-		} else {
-			$hideme = "none";
-		}
-	}
+if (!empty($tripProductLine) && is_array($tripProductLine) && !empty($hideJerseyForTrips) && is_array($hideJerseyForTrips)) {
+    $product_cat_matches = array_intersect($tripProductLine, $hideJerseyForTrips);
+    if (!empty($product_cat_matches)) {
+        $hideme = "d-none"; // Hide the jersey if there's any match
+    } else {
+        $hideme = "none";  // No match found, do not hide the jersey
+    }
 }
 
 // Take user preferences from user postmeta.
