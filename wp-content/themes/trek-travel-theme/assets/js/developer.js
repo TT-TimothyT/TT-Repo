@@ -41,6 +41,33 @@ function tt_change_checkout_step(targetStep = '') {
     }
   }
 }
+/**
+ * Highlight the max online booking message.
+ * 
+ * @param {bool} highlight Whether should highlight the message.
+ */
+function highlightingMaxOnlineMessage( highlight = false ) {
+  if( highlight ) {
+    // Highlight the message if the capacity is 4 or more guests.
+    jQuery('.max-online-booking-message').addClass('bounce');
+    jQuery('.max-online-booking-message').addClass('checkout-timeline__warning');
+    jQuery('.max-online-booking-message').removeClass('checkout-timeline__info');
+    jQuery('.max-online-booking-message .warning-img').removeClass('d-none');
+    jQuery('.max-online-booking-message .info-img').addClass('d-none');
+    jQuery('.max-online-booking-message p').addClass('fw-bold');
+    setTimeout(function() {
+      jQuery('.max-online-booking-message').removeClass('bounce');
+    }, 1000);
+  } else {
+    // Remove the highlight from the message if the capacity is 4 or more guests.
+    jQuery('.max-online-booking-message').removeClass('checkout-timeline__warning');
+    jQuery('.max-online-booking-message').addClass('checkout-timeline__info');
+    jQuery('.max-online-booking-message .warning-img').addClass('d-none');
+    jQuery('.max-online-booking-message .info-img').removeClass('d-none');
+    jQuery('.max-online-booking-message p').removeClass('fw-bold');
+  }
+}
+
 function tripCapacityValidation(is_return = true) {
   jQuery('input#wc-cybersource-credit-card-tokenize-payment-method').prop('checked', true);
   if (trek_JS_obj && trek_JS_obj.is_checkout == true) {
@@ -48,12 +75,20 @@ function tripCapacityValidation(is_return = true) {
     if (trek_JS_obj.trip_booking_limit.remaining <= 0 || parseInt(no_of_guests) >= parseInt(trek_JS_obj.trip_booking_limit.remaining)) {
       jQuery('div[id="plus"]').css('pointer-events', 'none');
       jQuery('.limit-reached-feedback').css('display', 'block');
+      // Highlight the message if the capacity is 4 or more guests.
+      if( trek_JS_obj.trip_booking_limit.remaining >= 4 ) {
+        highlightingMaxOnlineMessage(true);
+      }
       if (is_return == false) {
         return false;
       }
     } else {
       jQuery('div[id="plus"]').css('pointer-events', 'auto');
       jQuery('.limit-reached-feedback').css('display', 'none');
+      // Remove the highlight from the message if the capacity is 4 or more guests.
+      if( trek_JS_obj.trip_booking_limit.remaining >= 4 ) {
+        highlightingMaxOnlineMessage(false);
+      }
     }
   }
 }
@@ -3541,9 +3576,17 @@ jQuery('body').on("change", 'input[name="no_of_guests"]', function (){
     jQuery(this).val(tripLimit)
     jQuery('div[id="plus"]').css('pointer-events', 'none');
     jQuery('.limit-reached-feedback').css('display', 'block');
+    // Highlight the message if the capacity is 4 or more guests.
+    if( tripLimit >= 4 ) {
+      highlightingMaxOnlineMessage(true);
+    }
   } else{
     jQuery('div[id="plus"]').css('pointer-events', 'auto');
     jQuery('.limit-reached-feedback').css('display', 'none');
+    // Remove the highlight from the message if the capacity is 4 or more guests.
+    if(tripLimit >= 4) {
+      highlightingMaxOnlineMessage(false);
+    }
   }
   if (checkguestNumberChangeStatus()) {
     jQuery('#checkoutGuestChangeModal').modal('toggle');

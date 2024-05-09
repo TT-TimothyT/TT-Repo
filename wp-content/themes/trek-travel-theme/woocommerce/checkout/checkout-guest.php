@@ -5,7 +5,7 @@ $trek_user_checkout_posted = $trek_user_checkout_data['posted'];
 $userInfo = wp_get_current_user();
 ?>
 <div class="guest-checkout">
-    <div class="d-flex align-items-center guest-checkout__guest-number">
+    <div class="d-flex align-items-center guest-checkout__guest-number flex-wrap">
         <p class="fw-medium mb-0">Number of Guests</p>
         <div class="d-flex guest-checkout__qty qty rounded-1">
             <div id="minus" class="guestCounterAction"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkout/checkout-minus.png"></div>
@@ -13,6 +13,11 @@ $userInfo = wp_get_current_user();
             <div id="plus" class="guestCounterAction"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkout/checkout-add.png"></div>
         </div>
         <div class="invalid-feedback limit-reached-feedback w-auto"><img class="invalid-icon" /> Max guests limit is reached.</div>
+    </div>
+    <div class="d-flex align-items-center checkout-timeline__info rounded-1 mb-3 animated max-online-booking-message">
+        <img class="warning-img d-none" src="<?php echo get_template_directory_uri(); ?>/assets/images/checkout/checkout-warning.png">
+        <img class="info-img" src="<?php echo get_template_directory_uri(); ?>/assets/images/checkout/checkout-info.png">
+        <p class="mb-0 fs-sm lh-sm">For groups larger than 4 please call us at <a href="tel:8664648735">(866) 464-8735</a></p>
     </div>
     <hr>
     <p class="guest-checkout-info fs-xl lh-xl fw-medium mb-1">Primary Guest Information</p>

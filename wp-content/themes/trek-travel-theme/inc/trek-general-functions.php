@@ -4114,6 +4114,10 @@ if (!function_exists('get_trip_capacity_info')) {
         }
         if ($remaining) {
             $res['remaining'] = $remaining;
+            if( 4 < intval( $remaining ) ) {
+                // Limit guest capacity to 4 only available per trip.
+                $res['remaining'] = 4;
+            }
         }
         return $res;
     }
