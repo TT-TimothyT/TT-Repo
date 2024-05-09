@@ -6886,7 +6886,55 @@ function tt_modify_algolia_searchable_post_content( $post_content, WP_Post $post
 add_filter( 'algolia_searchable_post_content', 'tt_modify_algolia_searchable_post_content', 10, 2 );
 
 /**
- * Take the status for Record Locking and Bike Locking from user's meta.
+ * Check the parent categories for the coupon to prevent applying the coupon.
+ *
+ * @param bool $passed Is the coupon passed.
+ * @param WC_Coupon $coupon The coupon object.
+ * @param WC_Cart $cart The cart object.
+ *
+ * @return bool Is the coupon passed.
+ */
+function check_parent_product_categories_for_coupon( $passed, $coupon, $cart ) {
+    // Get the categories excluded by the coupon
+    $excluded_categories = $coupon->get_excluded_product_categories();
+    
+    if ( empty( $excluded_categories ) ) {
+        // No excluded categories, return early
+        return $passed;
+    }
+
+    // Get cart items
+    $cart = WC()->cart->get_cart();
+
+    // Loop through cart items
+    foreach ( $cart as $cart_item_key => $cart_item ) {
+        $product_id = $cart_item['product_id'];
+
+        $product = wc_get_product( $product_id );
+        $product_sku = $product->get_sku();
+
+        $is_ride_camp = tt_get_local_trips_detail( 'isRideCamp',  '', $product_sku, true );
+
+        //Find the product ID by the parent SKU
+        $parent_product_id = tt_get_parent_trip_id_by_child_sku( $product_sku, $is_ride_camp );
+
+        $parent_categories = get_the_terms( $parent_product_id, 'product_cat' );
+
+        if ( ! empty( $parent_categories ) ) {
+            foreach ( $parent_categories as $parent_category ) {
+                if ( in_array( $parent_category->term_id, $excluded_categories ) ) {
+                    $passed = false;
+                    break 2;
+                }
+            }
+        }
+    }
+
+    return $passed;
+}
+add_filter( 'woocommerce_coupon_is_valid', 'check_parent_product_categories_for_coupon', 10, 3 );
+
+/** Take the status for Record Locking and Bike Locking from user's meta.
  *
  * @param string|int $wc_user_id   Current User ID.
  * @param string|int $guest_reg_id NS Guest Registration ID.
