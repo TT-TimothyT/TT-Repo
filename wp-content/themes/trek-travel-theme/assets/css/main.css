@@ -15019,7 +15019,7 @@ a.refineLink {
 }
 .overview-sidebar-desktop .nav-link:hover, .overview-sidebar-desktop .nav-link:focus {
   color: #000000;
-  font-weight: bold;
+  text-shadow: 0px 0px 1px black;
 }
 
 .overview-menu-mobile {
