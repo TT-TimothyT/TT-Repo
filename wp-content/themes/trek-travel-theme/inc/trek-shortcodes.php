@@ -25,19 +25,19 @@ function trek_registration_form_cb()
 
             <div class="form-group form-floating my-4">
                <!-- <label for="InputFname"><?php echo _e('First name', 'trek-travel-theme'); ?></label> -->
-               <input type="text" class="input-text form-control" name="billing_first_name" placeholder="First Name" id="InputFname" value="<?php echo (!empty($_POST['billing_first_name'])) ? esc_attr(wp_unslash($_POST['first_name'])) : ''; ?>" required />
+               <input type="text" class="input-text form-control" pattern="[A-Za-z]+" name="billing_first_name" placeholder="First Name" id="InputFname" value="<?php echo (!empty($_POST['billing_first_name'])) ? esc_attr(wp_unslash($_POST['first_name'])) : ''; ?>" required />
                <label for="InputFname" class="label-for">First Name*</label>
                <div class="invalid-feedback">
                   <img class="invalid-icon" />
-                  This field is required.
+                  This field is required and only letters are allowed.
                </div>
             </div>
             <div class="form-group form-floating my-4">
-               <input type="text" class="input-text form-control" name="billing_last_name" placeholder="Last Name" id="InputLname" value="<?php echo (!empty($_POST['billing_last_name'])) ? esc_attr(wp_unslash($_POST['last_name'])) : ''; ?>" required />
+               <input type="text" class="input-text form-control" pattern="[A-Za-z]+" name="billing_last_name" placeholder="Last Name" id="InputLname" value="<?php echo (!empty($_POST['billing_last_name'])) ? esc_attr(wp_unslash($_POST['last_name'])) : ''; ?>" required />
                <label for="InputLname" class="label-for">Last Name*</label>
                <div class="invalid-feedback">
                   <img class="invalid-icon" />
-                  This field is required.
+                  This field is required and only letters are allowed.
                </div>
 
             </div>
