@@ -3111,40 +3111,82 @@ if (!function_exists('tt_get_local_bike_detail')) {
         return $results;
     }
 }
-function tt_get_parent_trip_id_by_child_sku( $child_sku = '', $is_nested_dates_trip = false ) {
-    $parent_product_id  = '';
-    $itinerary_code_arr = [];
 
-    if( $child_sku && wc_get_product_id_by_sku( $child_sku ) ) {
+// TT
 
-        $child_product_id = wc_get_product_id_by_sku( $child_sku );
+function tt_get_parent_trip_id_by_child_sku($sku) {
+    global $wpdb;
 
-        if( $child_product_id ) {
-
-            $itinerary_code = get_post_meta( $child_product_id, TT_WC_META_PREFIX . 'itineraryCode', true );
-
-            if( $itinerary_code && $child_sku ) {
-                $itinerary_code_arr = explode( $itinerary_code, $child_sku );
-            }
-
-            if( $itinerary_code_arr && isset( $itinerary_code_arr[0] ) && $itinerary_code ) {
-                $parent_product_sku = $itinerary_code_arr[0] . $itinerary_code;
-                $parent_product_id  = wc_get_product_id_by_sku( $parent_product_sku );
-
-                if( ! $parent_product_id ) {
-
-                    if( $is_nested_dates_trip ) {
-                        $itinerary_code .= '-4';
-                    }
-
-                    $parent_product_id = wc_get_product_id_by_sku( $itinerary_code );
-                }
-            }
-        }
+    // Get the product ID from the SKU
+    $product_id = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value=%s LIMIT 1", $sku));
+    
+    // Check if the product ID was found
+    if (!$product_id) {
+        return "No product found with SKU: {$sku}";
     }
 
-    return $parent_product_id;
+    // Prepare arguments to find grouped products
+    $args = array(
+        'post_type' => 'product',
+        'post_status' => 'publish',
+        'posts_per_page' => 1,  // Query only the first grouped product
+        'meta_query' => array(
+            array(
+                'key' => '_children',
+                'value' => $product_id,  // Direct product ID
+                'compare' => 'LIKE'
+            )
+        )
+    );
+
+    // Use get_posts to fetch the first post
+    $grouped_products = get_posts($args);
+
+    // Check if we have at least one grouped product
+    if (!empty($grouped_products)) {
+        return $grouped_products[0]->ID;
+    } else {
+        return "No grouped products found for this SKU.";
+    }
 }
+
+// TT
+
+// OLD GET GROUPED PROD ID FROM CHILD SKU
+// function tt_get_parent_trip_id_by_child_sku( $child_sku = '', $is_nested_dates_trip = false ) {
+//     $parent_product_id  = '';
+//     $itinerary_code_arr = [];
+
+//     if( $child_sku && wc_get_product_id_by_sku( $child_sku ) ) {
+
+//         $child_product_id = wc_get_product_id_by_sku( $child_sku );
+
+//         if( $child_product_id ) {
+
+//             $itinerary_code = get_post_meta( $child_product_id, TT_WC_META_PREFIX . 'itineraryCode', true );
+
+//             if( $itinerary_code && $child_sku ) {
+//                 $itinerary_code_arr = explode( $itinerary_code, $child_sku );
+//             }
+            
+//             if( $itinerary_code_arr && isset( $itinerary_code_arr[0] ) && $itinerary_code ) {
+//                 $parent_product_sku = $itinerary_code_arr[0] . $itinerary_code;
+//                 $parent_product_id  = wc_get_product_id_by_sku( $itinerary_code );
+//                 if( ! $parent_product_id ) {
+
+//                     if( $is_nested_dates_trip ) {
+//                         $itinerary_code .= '-4';
+//                     }
+
+//                     $parent_product_id = wc_get_product_id_by_sku( $itinerary_code );
+//                 }
+//             }
+//         }
+//     }
+
+//     return $parent_product_id;
+// }
+
 function tt_get_trip_pid_sku_from_cart($order_id = null)
 {
     $sku = $product_id = $ns_trip_Id = '';
