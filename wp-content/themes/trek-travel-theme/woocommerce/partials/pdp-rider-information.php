@@ -56,10 +56,10 @@ $r_level = $product->get_attribute('rider-level');
                             echo "Non-Riders";
                             break;
                             case "Hiking":
-                            echo "Other Activities";
+                            echo "Companions";
                             break;
                             case "Walking":
-                            echo "Other Activities";
+                            echo "Companions";
                             break;
                         }
                     ?>
