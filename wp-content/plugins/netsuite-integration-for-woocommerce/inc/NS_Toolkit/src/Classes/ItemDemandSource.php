@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMDEMANDSOURCE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ENTEREDANDPLANNEDORDERS = '_enteredAndPlannedOrders';
 	const _FORECASTANDORDERS = '_forecastAndOrders';
 	const _FORECASTCONSUMPTION = '_forecastConsumption';

@@ -249,7 +249,7 @@ class Minification extends Page {
 	 * @since 2.6.0
 	 */
 	public function render_http2_notice() {
-		if ( apply_filters( 'wpmudev_branding_hide_branding', false ) ) {
+		if ( Utils::is_whitelabel_enabled() ) {
 			return;
 		}
 
@@ -467,6 +467,9 @@ class Minification extends Page {
 				'delay_js'                       => Settings::get_setting( 'delay_js', 'minify' ),
 				'delay_js_excludes'              => Settings::get_setting( 'delay_js_exclusions', 'minify' ),
 				'delay_js_timeout'               => Settings::get_setting( 'delay_js_timeout', 'minify' ),
+				'font_optimization'              => Settings::get_setting( 'font_optimization', 'minify' ),
+				'preload_fonts'                  => Settings::get_setting( 'preload_fonts', 'minify' ),
+				'font_swap'                      => Settings::get_setting( 'font_swap', 'minify' ),
 				'is_member'                      => Utils::is_member(),
 				'critical_css'                   => Settings::get_setting( 'critical_css', 'minify' ),
 				'critical_css_type'              => Settings::get_setting( 'critical_css_type', 'minify' ),

@@ -5,7 +5,6 @@ namespace MailPoet\EmailEditor\Integrations\Core\Renderer\Blocks;
 if (!defined('ABSPATH')) exit;
 
 
-use MailPoet\EmailEditor\Engine\Renderer\BlockRenderer;
 use MailPoet\EmailEditor\Engine\SettingsController;
 use MailPoet\EmailEditor\Integrations\Utils\DomDocumentHelper;
 
@@ -14,118 +13,88 @@ use MailPoet\EmailEditor\Integrations\Utils\DomDocumentHelper;
  * @see https://www.activecampaign.com/blog/email-buttons
  * @see https://documentation.mjml.io/#mj-button
  */
-class Button implements BlockRenderer {
-  public function render($blockContent, array $parsedBlock, SettingsController $settingsController): string {
-    // Don't render empty buttons
+class Button extends AbstractBlockRenderer {
+  private function getWrapperStyles(array $blockStyles) {
+    $properties = ['border', 'color', 'typography', 'spacing'];
+    $styles = $this->getStylesFromBlock(array_intersect_key($blockStyles, array_flip($properties)));
+    return (object)[
+      'css' => $this->compileCss($styles['declarations'], ['word-break' => 'break-word', 'display' => 'block']),
+      'classname' => $styles['classnames'],
+    ];
+  }
+
+  private function getLinkStyles(array $blockStyles) {
+    $styles = $this->getStylesFromBlock([
+      'color' => [
+        'text' => $blockStyles['color']['text'] ?? '',
+      ],
+      'typography' => $blockStyles['typography'] ?? [],
+    ]);
+    return (object)[
+      'css' => $this->compileCss($styles['declarations'], ['display' => 'block']),
+      'classname' => $styles['classnames'],
+    ];
+  }
+
+  protected function renderContent($blockContent, array $parsedBlock, SettingsController $settingsController): string {
     if (empty($parsedBlock['innerHTML'])) {
       return '';
     }
+
+    $themeData = $settingsController->getTheme()->get_data();
     $domHelper = new DomDocumentHelper($parsedBlock['innerHTML']);
+    $blockClassname = $domHelper->getAttributeValueByTagName('div', 'class') ?? '';
     $buttonLink = $domHelper->findElement('a');
 
-    if (!$buttonLink) return '';
-
-    $buttonOriginalWrapper = $domHelper->findElement('div');
-    $buttonClasses = $buttonOriginalWrapper ? $domHelper->getAttributeValue($buttonOriginalWrapper, 'class') : '';
-
-    $markup = $this->getMarkup();
-    $markup = str_replace('{classes}', $buttonClasses, $markup);
-
-    // Add Link Text
-    $markup = str_replace('{linkText}', $this->getElementInnerHTML($buttonLink) ?: '', $markup);
-    $markup = str_replace('{linkUrl}', $buttonLink->getAttribute('href') ?: '#', $markup);
-
-    // Width
-    // Parent block prepares container with proper width. If the width is set let's use full width of the container
-    // otherwise let's use auto width.
-    $width = 'auto';
-    if (isset($parsedBlock['attrs']['width'])) {
-      $width = '100%';
-    }
-    $markup = str_replace('{width}', $width, $markup);
-
-    // Background
-    $themeData = $settingsController->getTheme()->get_data();
-    $defaultColor = $themeData['styles']['blocks']['core/button']['color']['background'] ?? 'transparent';
-    $bgColor = $parsedBlock['attrs']['style']['color']['background'] ?? $defaultColor;
-    $markup = str_replace('{backgroundColor}', $bgColor, $markup);
-
-    // Styles attributes
-    $wrapperStyles = [
-      'background' => $bgColor,
-      'cursor' => 'auto',
-      'word-break' => 'break-word',
-      'box-sizing' => 'border-box',
-    ];
-    $linkStyles = [
-      'display' => 'block',
-      'line-height' => '120%',
-      'margin' => '0',
-      'mso-padding-alt' => '0px',
-    ];
-
-    // Border
-    if (isset($parsedBlock['attrs']['style']['border']) && !empty($parsedBlock['attrs']['style']['border'])) {
-      // Use text color if border color is not set
-      if (!($parsedBlock['attrs']['style']['border']['color'] ?? '')) {
-        $parsedBlock['attrs']['style']['border']['color'] = $parsedBlock['attrs']['style']['color']['text'] ?? null;
-      }
-      $wrapperStyles = array_merge($wrapperStyles, wp_style_engine_get_styles(['border' => $parsedBlock['attrs']['style']['border']])['declarations']);
-      $wrapperStyles['border-style'] = 'solid';
-    } else {
-      // Some clients render 1px border when not set as none
-      $wrapperStyles['border'] = 'none';
+    if (!$buttonLink) {
+      return '';
     }
 
-    // Spacing
-    if (isset($parsedBlock['attrs']['style']['spacing']['padding'])) {
-      $padding = $parsedBlock['attrs']['style']['spacing']['padding'];
-      $wrapperStyles['mso-padding-alt'] = "{$padding['top']} {$padding['right']} {$padding['bottom']} {$padding['left']}";
-      $linkStyles['padding-top'] = $padding['top'];
-      $linkStyles['padding-right'] = $padding['right'];
-      $linkStyles['padding-bottom'] = $padding['bottom'];
-      $linkStyles['padding-left'] = $padding['left'];
+    $buttonText = $domHelper->getElementInnerHTML($buttonLink) ?: '';
+    $buttonUrl = $buttonLink->getAttribute('href') ?: '#';
+
+    $blockAttributes = wp_parse_args($parsedBlock['attrs'] ?? [], [
+      'width' => '',
+      'style' => [],
+      'textAlign' => 'center',
+      'backgroundColor' => '',
+      'textColor' => '',
+    ]);
+
+    $blockStyles = array_replace_recursive(
+      $themeData['styles']['blocks']['core/button'] ?? [],
+      [
+        'color' => array_filter([
+          'background' => $blockAttributes['backgroundColor'] ? $settingsController->translateSlugToColor($blockAttributes['backgroundColor']) : null,
+          'text' => $blockAttributes['textColor'] ? $settingsController->translateSlugToColor($blockAttributes['textColor']) : null,
+        ]),
+      ],
+      $blockAttributes['style'] ?? []
+    );
+
+    if (!empty($blockStyles['border']) && empty($blockStyles['border']['style'])) {
+      $blockStyles['border']['style'] = 'solid';
     }
 
-    // Typography + colors
-    $typography = $parsedBlock['attrs']['style']['typography'] ?? [];
-    $color = $parsedBlock['attrs']['style']['color'] ?? [];
-    $typography['fontSize'] = $parsedBlock['email_attrs']['font-size'] ?? 'inherit';
-    $typography['textDecoration'] = $typography['textDecoration'] ?? ($parsedBlock['email_attrs']['text-decoration'] ?? 'inherit');
-    $linkStyles = array_merge($linkStyles, wp_style_engine_get_styles(['typography' => $typography, 'color' => $color])['declarations']);
+    $wrapperStyles = $this->getWrapperStyles($blockStyles);
+    $linkStyles = $this->getLinkStyles($blockStyles);
 
-    // Escaping
-    $wrapperStyles = array_map('esc_attr', $wrapperStyles);
-    $linkStyles = array_map('esc_attr', $linkStyles);
-
-    $markup = str_replace('{linkStyles}', $settingsController->convertStylesToString($linkStyles), $markup);
-    $markup = str_replace('{wrapperStyles}', $settingsController->convertStylesToString($wrapperStyles), $markup);
-
-    return $markup;
-  }
-
-  private function getMarkup(): string {
-    return '<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;border-collapse:separate;line-height:100%;width:{width};">
+    return sprintf(
+      '<table border="0" cellspacing="0" cellpadding="0" role="presentation" style="width:%1$s;">
         <tr>
-          <td align="center" class="{classes}" bgcolor="{backgroundColor}" role="presentation" style="{wrapperStyles}" valign="middle">
-            <a class="wp-block-button__link" href="{linkUrl}" style="{linkStyles}" target="_blank">{linkText}</a>
+          <td align="%2$s" valign="middle" role="presentation" class="%3$s" style="%4$s">
+            <a class="%5$s" style="%6$s" href="%7$s" target="_blank">%8$s</a>
           </td>
         </tr>
-      </table>';
-  }
-
-  /**
-   * Because the button text can contain highlighted text, we need to get the inner HTML of the button
-   */
-  private function getElementInnerHTML(\DOMElement $element): string {
-    $innerHTML = '';
-    $children = $element->childNodes;
-    foreach ($children as $child) {
-      if (!$child instanceof \DOMNode) continue;
-      $ownerDocument = $child->ownerDocument;
-      if (!$ownerDocument instanceof \DOMDocument) continue;
-      $innerHTML .= $ownerDocument->saveXML($child);
-    }
-    return $innerHTML;
+      </table>',
+      esc_attr($blockAttributes['width'] ? '100%' : 'auto'),
+      esc_attr($blockAttributes['textAlign']),
+      esc_attr($wrapperStyles->classname . ' ' . $blockClassname),
+      esc_attr($wrapperStyles->css),
+      esc_attr($linkStyles->classname),
+      esc_attr($linkStyles->css),
+      esc_url($buttonUrl),
+      $buttonText,
+    );
   }
 }

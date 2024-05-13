@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CalendarEventAccessLevel {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _PRIVATE = '_private';
 	const _PUBLIC = '_public';
 	const _SHOWASBUSY = '_showAsBusy';

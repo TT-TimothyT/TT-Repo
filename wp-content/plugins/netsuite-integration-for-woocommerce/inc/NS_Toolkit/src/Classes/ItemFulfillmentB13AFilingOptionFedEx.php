@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTB13AFILINGOPTIONFEDEX {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FILEDELECTRONICALLY = '_filedElectronically';
 	const _MANUALLYATTACHED = '_manuallyAttached';
 	const _NOTREQUIRED = '_notRequired';

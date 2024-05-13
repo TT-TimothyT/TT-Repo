@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class SearchMultiSelectFieldOperator {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const ANYOF = 'anyOf';
 	const NONEOF = 'noneOf';
 }

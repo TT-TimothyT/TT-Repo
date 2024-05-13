@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EmployeeTerminationRegretted {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NO = '_no';
 	const _UNSPECIFIED = '_unspecified';
 	const _YES = '_yes';

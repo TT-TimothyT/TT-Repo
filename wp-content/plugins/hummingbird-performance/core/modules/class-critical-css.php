@@ -10,6 +10,7 @@ namespace Hummingbird\Core\Modules;
 
 use Hummingbird\Core\Filesystem;
 use Hummingbird\Core\Module;
+use Hummingbird\Core\Modules\Minify\Fonts;
 use Hummingbird\Core\Traits\Module as ModuleContract;
 use Hummingbird\Core\Utils;
 use Hummingbird\Core\Settings;
@@ -60,11 +61,19 @@ class Critical_Css extends Module {
 	private $items = array();
 
 	/**
+	 * Fonts class.
+	 *
+	 * @var Font\Fonts
+	 */
+	private $fonts;
+
+	/**
 	 * Initialize module.
 	 *
 	 * @since 3.6.0
 	 */
 	public function init() {
+		$this->fonts = new Fonts();
 		add_filter( 'wp_hummingbird_is_active_module_critical_css', array( $this, 'module_status' ) );
 		add_filter( 'wp_hummingbird_default_options', array( $this, 'wp_hummingbird_default_options' ) );
 	}
@@ -125,8 +134,8 @@ class Critical_Css extends Module {
 	 * Function to ignore minify, if critical css is enabled.
 	 *
 	 * @param boolean $result Result.
-	 * @param string $handles Asset Handles.
-	 * @param string $type Asset type.
+	 * @param string  $handles Asset Handles.
+	 * @param string  $type Asset type.
 	 *
 	 * @return bool
 	 */
@@ -385,9 +394,11 @@ class Critical_Css extends Module {
 
 			if ( false !== $pos ) {
 				// IF critical css is generated.
-				$generated_critical = file_get_contents( $used_css_path );
+				$generated_critical = apply_filters( 'wphb_generated_used_css', file_get_contents( $used_css_path ) );
+				$generated_critical = $this->fonts->add_font_display_swap_to_all_font_faces( $generated_critical );
 				$used_css_output    = $this->get_used_css_markup( $type, $generated_critical );
 				$html               = substr_replace( $html, '</title>' . $used_css_output, $pos, 8 );
+				$html               = $this->fonts->add_preload_to_fonts_in_used_css( $html, $generated_critical );
 			}
 		}
 
@@ -1613,7 +1624,7 @@ class Critical_Css extends Module {
 
 		return sprintf(
 		// translators: %1$s = tooltip text, %2$s = sui tag, %3$s = info icon, %4$s = text for tag.
-			__( '<span id="critical_progress_tag" data-tooltip="%1$s" class="%2$s"><span class="%3$s" aria-hidden="true"></span>%4$s</span>', 'wphb' ),
+			__( '<span id="critical_progress_tag" data-tooltip="%1$s" class="wphb_progress_tag %2$s"><span class="%3$s" aria-hidden="true"></span>%4$s</span>', 'wphb' ),
 			$tooltip_text,
 			$sui_tag,
 			$sui_icon,

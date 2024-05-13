@@ -90,6 +90,7 @@ class Admin {
 
 		// Filter built-in wpmudev branding script.
 		add_filter( 'wpmudev_whitelabel_plugin_pages', array( $this, 'builtin_wpmudev_branding' ) );
+		add_action( 'wp_smush_header_notices', array( $this, 'maybe_show_local_webp_convert_original_images_notice' ) );
 	}
 
 	/**
@@ -762,6 +763,29 @@ class Admin {
 				</a>
 			</p>
 		</div>
+		<?php
+	}
+
+	public function maybe_show_local_webp_convert_original_images_notice() {
+		$redirected_from_webp = isset( $_GET['smush-action'] ) && 'start-bulk-webp-conversion' === $_GET['smush-action'];
+		$settings             = Settings::get_instance();
+		$should_show_notice   = $redirected_from_webp &&
+								current_user_can( 'manage_options' ) &&
+								$settings->has_webp_page() &&
+								! $settings->is_optimize_original_images_active();
+		if ( ! $should_show_notice ) {
+			return;
+		}
+
+		$error_message = sprintf(
+			/* translators: 1: Open a link, 2: Close the link */
+			esc_html__( 'If you wish to also convert your original uploaded images to .webp format, please enable the %1$sOptimize original images%2$s setting below.', 'wp-smushit' ),
+			'<a href="#original" class="smush-close-and-dismiss-notice">',
+			'</a>'
+		);
+		$error_message = '<p>' . $error_message . '</p>';
+		?>
+		<div role="alert" id="wp-smush-local-webp-convert-original-notice" class="sui-notice wp-smush-dismissible-header-notice" data-message="<?php echo esc_attr( $error_message ); ?>" aria-live="assertive"></div>
 		<?php
 	}
 

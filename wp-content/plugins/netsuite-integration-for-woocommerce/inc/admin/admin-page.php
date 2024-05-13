@@ -12,7 +12,7 @@
 						<a class="<?php echo esc_attr($tab_id); ?>_tab" href="?page=<?php echo esc_attr(TMWNI_Settings::$page_id); ?>&tab=<?php echo esc_attr($tab_id); ?>"><?php echo esc_attr($tab_heading); ?></a>
 				<?php
 				}
-			}		
+			}       
 			?>
 	 
   </div>
@@ -59,7 +59,7 @@ echo "target='_blank'"; }
 
 		<?php 
 		$allow_html =TMWNI_Settings::shapeSpace_allowed_html();
-		 echo  wp_kses($tab_content, $allow_html);
+		 echo wp_kses($tab_content, $allow_html);
 		 // echo  ($tab_content);
 
 

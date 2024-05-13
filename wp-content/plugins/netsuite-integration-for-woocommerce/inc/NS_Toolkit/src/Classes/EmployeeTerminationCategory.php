@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EmployeeTerminationCategory {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _INVOLUNTARY = '_involuntary';
 	const _VOLUNTARY = '_voluntary';
 }

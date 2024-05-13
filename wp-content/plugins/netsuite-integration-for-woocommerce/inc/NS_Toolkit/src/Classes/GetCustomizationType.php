@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class GetCustomizationType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const CRMCUSTOMFIELD = 'crmCustomField';
 	const CUSTOMLIST = 'customList';
 	const CUSTOMRECORDCUSTOMFIELD = 'customRecordCustomField';

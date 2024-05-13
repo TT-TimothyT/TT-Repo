@@ -91,6 +91,9 @@ class Settings {
 				'critical_css_mode'                  => '',
 				'critical_page_types'                => array(),
 				'critical_skipped_custom_post_types' => array(),
+				'font_optimization'                  => false,
+				'preload_fonts'                      => '',
+				'font_swap'                          => false,
 				'log'                                => false,
 				'file_path'                          => '',
 				// Only for multisites. Toggles minification in a subsite
@@ -140,10 +143,11 @@ class Settings {
 					'scripts' => array(),
 					'styles'  => array(),
 				),
-				'async'                             => array(
+				'async'                              => array(
 					'scripts' => array(),
 					'styles'  => array(),
 				),
+				'ao_completed_time'                  => '',
 			),
 			'uptime'      => array(
 				'enabled'       => false,
@@ -207,6 +211,7 @@ class Settings {
 				'query_string'         => false,
 				'query_strings_global' => false, // If true, will force query_string on all subsites.
 				'emoji'                => false,
+				'post_revisions'       => false,
 				'emoji_global'         => false, // If true, will force emoji on all subsites.
 				'prefetch'             => array(),
 				'preconnect'           => array(),
@@ -282,10 +287,10 @@ class Settings {
 
 		$options = array(
 			'caching'     => array( 'expiry_css', 'expiry_javascript', 'expiry_media', 'expiry_images' ),
-			'minify'      => array( 'minify_blog', 'view', 'type', 'do_assets', 'block', 'dont_minify', 'dont_combine', 'position', 'defer', 'inline', 'nocdn', 'fonts', 'preload', 'async', 'delay_js', 'delay_js_exclusions', 'delay_js_exclusion_list', 'delay_js_timeout', 'critical_css', 'critical_css_type', 'critical_css_remove_type', 'critical_css_mode', 'critical_page_types', 'critical_skipped_custom_post_types' ),
+			'minify'      => array( 'minify_blog', 'view', 'type', 'do_assets', 'block', 'dont_minify', 'dont_combine', 'position', 'defer', 'inline', 'nocdn', 'fonts', 'preload', 'async', 'ao_completed_time', 'delay_js', 'delay_js_exclusions', 'delay_js_exclusion_list', 'delay_js_timeout', 'critical_css', 'critical_css_type', 'critical_css_remove_type', 'critical_css_mode', 'critical_page_types', 'critical_skipped_custom_post_types', 'font_optimization', 'preload_fonts', 'font_swap' ),
 			'page_cache'  => array( 'cache_blog' ),
 			'performance' => array( 'dismissed', 'reports' ),
-			'advanced'    => array( 'query_string', 'emoji', 'prefetch', 'preconnect', 'cart_fragments' ),
+			'advanced'    => array( 'query_string', 'emoji', 'post_revisions', 'prefetch', 'preconnect', 'cart_fragments' ),
 			'cloudflare'  => array( 'enabled', 'connected', 'last_check', 'email', 'api_key', 'account_id', 'zone', 'zone_name', 'plan', 'page_rules', 'cache_expiry', 'apo_paid', 'apo' ),
 		);
 

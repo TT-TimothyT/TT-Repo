@@ -192,7 +192,7 @@ class Status extends React.Component {
 		let text = sprintf(
 			/* translators: %d - number of failed items */
 			__(
-				'%d of your cache types don’t meet the recommended expiry period of 1 year. Configure browser caching below.',
+				'%d of your cache types don’t meet the minimum recommended expiry period of 1 year. Configure browser caching below.',
 				'wphb'
 			),
 			failedItems
@@ -201,14 +201,14 @@ class Status extends React.Component {
 		if ( 0 === failedItems ) {
 			classes = 'sui-notice-success';
 			text = __(
-				'All of your cache types meet the recommended expiry period of 1 year. Great work!',
+				'All of your cache types meet the minimum recommended expiry period of 1 year. Great work!',
 				'wphb'
 			);
 
 			// Browser caching enabled on host site.
 			if ( false === this.props.data.htaccessWritten ) {
 				text = __(
-					'All of your cache types meet the recommended expiry period of 1 year. Your hosting has automatically pre-configured browser caching for you and no further actions are required.',
+					'All of your cache types meet the minimum recommended expiry period of 1 year. Your hosting has automatically pre-configured browser caching for you and no further actions are required.',
 					'wphb'
 				);
 			}

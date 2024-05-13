@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class SearchDateFieldOperator {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const AFTER = 'after';
 	const BEFORE = 'before';
 	const NSEMPTY = 'empty';

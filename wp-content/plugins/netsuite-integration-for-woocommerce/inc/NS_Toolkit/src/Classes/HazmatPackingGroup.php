@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class HazmatPackingGroup {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _I = '_i';
 	const _II = '_ii';
 	const _III = '_iii';

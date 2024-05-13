@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class SolutionStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _APPROVED = '_approved';
 	const _UNAPPROVED = '_unapproved';
 }

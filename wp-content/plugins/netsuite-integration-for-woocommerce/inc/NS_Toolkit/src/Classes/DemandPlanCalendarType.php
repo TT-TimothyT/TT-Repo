@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class DemandPlanCalendarType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DAILY = '_daily';
 	const _MONTHLY = '_monthly';
 	const _WEEKLY = '_weekly';

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMINVTCLASSIFICATION {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _A = '_a';
 	const _B = '_b';
 	const _C = '_c';

@@ -389,17 +389,17 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
             if (!is_wp_error($found_customer)) {
                 wp_insert_user($user_data);
                 $wp_user_object = new WP_User($found_customer);
-                 if ( ! function_exists( 'get_editable_roles' ) ) {
+                if ( ! function_exists( 'get_editable_roles' ) ) {
                     require_once ABSPATH . 'wp-admin/includes/user.php';
                 }
                 $roles = get_editable_roles();
-                $new_roles_str = str_replace(' ', '', strtolower(isset($data['user_details']['roles']) ? $data['user_details']['roles'] : ''));
+                $new_roles_str = isset($data['user_details']['roles']) ? $data['user_details']['roles'] : '';
 
                 if(empty($new_roles_str)){
                     $new_roles_str = get_option('default_role');
                 }
 
-                $new_roles = explode(',', $new_roles_str);
+                $new_roles = array_map('trim', explode(',', $new_roles_str));
                 $new_roles = array_intersect($new_roles, array_keys($roles));
                 $roles_to_remove = array();
                 $user_roles = array_intersect(array_values($wp_user_object->roles), array_keys($roles));
@@ -452,7 +452,7 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
                     }
                     $key = trim(str_replace('meta:', '', $key));
 //                    $meta = trim(str_replace('meta:', '', $meta));
-                    $meta_value = (!empty($meta_array[$key]) ) ? maybe_unserialize($meta_array[$key]) : '';
+                    $meta_value = (!empty($meta_array[$key]) ) ? $meta_array[$key] : '';
                     if ($key == $wpdb->prefix.'user_level' && $meta_value == ''){
                         $meta_value = 0;
                     }
@@ -478,11 +478,13 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
     public function hf_update_customer($found_customer, $data) { 
         $meta_array = array();
         if ($found_customer) {
-            $wp_user_object = new WP_User($found_customer);                                    
+            $wp_user_object = new WP_User($found_customer);
+            if ( ! function_exists( 'get_editable_roles' ) ) {
+                require_once ABSPATH . 'wp-admin/includes/user.php';
+            }                                    
             $roles = get_editable_roles();
-			$new_rolse_input = isset($data['user_details']['roles']) ? strtolower($data['user_details']['roles']) : '';
-            $new_roles_str = str_replace(' ', '', $new_rolse_input);
-            $new_roles = explode(',', $new_roles_str);
+			$new_rolse_input = isset($data['user_details']['roles']) ? $data['user_details']['roles'] : '';
+            $new_roles = array_map('trim', explode(',', $new_roles_str));
             $new_roles = array_intersect($new_roles, array_keys($roles));
             $roles_to_remove = array();
             $user_roles = array_intersect(array_values($wp_user_object->roles), array_keys($roles));
@@ -514,7 +516,7 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
                 }
                 $key = trim(str_replace('meta:', '', $key));
 //                    $meta = trim(str_replace('meta:', '', $meta));
-                $meta_value = (!empty($meta_array[$key]) ) ? maybe_unserialize($meta_array[$key]) : '';
+                $meta_value = (!empty($meta_array[$key]) ) ? $meta_array[$key] : '';
                 if ($key == $wpdb->prefix.'user_level' && $meta_value == ''){
                     $meta_value = 0;
                 }

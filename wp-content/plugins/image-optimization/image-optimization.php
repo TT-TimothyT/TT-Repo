@@ -3,7 +3,7 @@
  * Plugin Name: Image Optimizer by Elementor – Compress, Resize and Optimize Images
  * Description: Automatically compress and enhance your images, boosting your website speed, appearance, and SEO. Get Image Optimizer and optimize your images in seconds.
  * Plugin URI: https://go.elementor.com/wp-repo-description-tab-io-product-page/
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: Elementor.com
  * Author URI: https://go.elementor.com/wp-repo-description-tab-io-author-url/
  * Text Domain: image-optimization
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'IMAGE_OPTIMIZATION_VERSION', '1.2.0' );
+define( 'IMAGE_OPTIMIZATION_VERSION', '1.3.0' );
 define( 'IMAGE_OPTIMIZATION_PATH', plugin_dir_path( __FILE__ ) );
 define( 'IMAGE_OPTIMIZATION_URL', plugins_url( '/', __FILE__ ) );
 define( 'IMAGE_OPTIMIZATION_ASSETS_PATH', IMAGE_OPTIMIZATION_PATH . 'assets/' );
@@ -40,7 +40,7 @@ final class ImageOptimization {
 	 */
 	public function __construct() {
 		// Load translation
-		add_action( 'init', [ $this, 'i18n' ] );
+		add_action( 'plugins_loaded', [ $this, 'i18n' ] );
 
 		// Init Plugin
 		add_action( 'plugins_loaded', [ $this, 'init' ], -11 );

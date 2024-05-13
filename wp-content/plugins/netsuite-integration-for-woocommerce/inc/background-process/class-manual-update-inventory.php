@@ -10,7 +10,7 @@ class Manually_Update_Inventory extends WP_Background_Process {
 	
 	protected function task( $data ) {
 		// Actions to perform
-		require_once(TMWNI_DIR . 'inc/item.php');
+		require_once TMWNI_DIR . 'inc/item.php';
 		$netsuiteClient = new ItemClient();
 		$netsuiteClient->searchItemUpdateInventory($data['product_sku'], $data['product_id']);
 		$old_count = get_option('processed_products');
@@ -38,7 +38,6 @@ class Manually_Update_Inventory extends WP_Background_Process {
 
 			wp_clear_scheduled_hook( $this->cron_hook_identifier );
 		}
-
 	}
 
 
@@ -48,7 +47,4 @@ class Manually_Update_Inventory extends WP_Background_Process {
 
 		return $this;
 	}
-
-
-
 }

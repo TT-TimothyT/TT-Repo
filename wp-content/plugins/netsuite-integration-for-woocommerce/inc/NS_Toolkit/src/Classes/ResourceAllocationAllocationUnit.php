@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class RESOURCEALLOCATIONALLOCATIONUNIT {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _HOURS = '_hours';
 	const _PERCENTOFTIME = '_percentOfTime';
 }

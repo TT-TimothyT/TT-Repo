@@ -12,8 +12,9 @@ if ( !class_exists( 'wt_inform_server_secure' ) ) {
 		public $plugin			= "";
 		public $banner_message		= "";
 		public $sholud_show_server_info	= '';
-                public $ajax_action_name         = '';
-                public $plugin_title             = 'User Import Export';                
+        public $ajax_action_name         = '';
+        public $plugin_title             = 'User Import Export';      
+		public $banner_css_class = "";          
 
 		public function __construct( $plugin ) {
 			$this->plugin					 = $plugin;

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMOUTOFSTOCKBEHAVIOR {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ALLOWBACKORDERSBUTDISPLAYOUTOFSTOCKMESSAGE = '_allowBackOrdersButDisplayOutOfStockMessage';
 	const _ALLOWBACKORDERSWITHNOOUTOFSTOCKMESSAGE = '_allowBackOrdersWithNoOutOfStockMessage';
 	const _DEFAULT = '_default';

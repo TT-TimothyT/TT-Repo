@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class FileAttachFrom {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _COMPUTER = '_computer';
 	const _WEB = '_web';
 }

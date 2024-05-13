@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ProjectTaskConstraintType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ASSOONASPOSSIBLE = '_asSoonAsPossible';
 	const _FIXEDSTART = '_fixedStart';
 }

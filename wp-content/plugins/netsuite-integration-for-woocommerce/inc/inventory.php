@@ -14,41 +14,19 @@ class NS_Inventory {
 
 		if (TMWNI_Settings::areCredentialsDefined()) {
 			if (( isset($TMWNI_OPTIONS['enableInventorySync']) && 'on' == $TMWNI_OPTIONS['enableInventorySync'] ) || ( isset($TMWNI_OPTIONS['enablePriceSync']) && 'on' == $TMWNI_OPTIONS['enablePriceSync'] )) {
-				add_action('wp_ajax_update_woo_inventory', array($this,'tmNsUpdateWooInventory'));
-				add_action('wp_ajax_fetch_inventory_progress', array($this,'fetchInventoryUpdateStatus'));
+				add_action('wp_ajax_update_woo_inventory', array( $this, 'tmNsUpdateWooInventory' ));
+				add_action('wp_ajax_fetch_inventory_progress', array( $this, 'fetchInventoryUpdateStatus' ));
 				// add_action('wp_ajax_fetch_inventory_progress', array($this,'fetchInventoryUpdateStatus'));
-				require_once( 'background-process/class-manual-update-inventory.php' );
+				require_once 'background-process/class-manual-update-inventory.php' ;
 				
 				$this->Manual_update_inventory = new Manually_Update_Inventory();
 
-				add_action( 'init', array( $this, 'register_inventory_cron'));
-				add_action('tm_ns_process_inventories', array($this, 'updateWooInventory'));
+				add_action( 'init', array( $this, 'register_inventory_cron' ));
+				add_action('tm_ns_process_inventories', array( $this, 'updateWooInventory' ));
 			}
 		}
-		add_filter('cron_schedules', array($this,'custom_cron_schedules'));
-		// add_filter('init', array($this,'test'));
+		add_filter('cron_schedules', array( $this, 'custom_cron_schedules' ));
 	}
-
-
-	//  public function test() {
-	// // 	global $TMWNI_OPTIONS;
-	// // 	pr($TMWNI_OPTIONS); die('zz')
-	// // 	// global $TMWNI_OPTIONS;
-	// // 	// $price_levels = get_option('netstuite_price_levels');
-	// // 	// pr($price_levels);
-	// // 	// die;
-
-
-	// 	if (!empty($_GET['tester']) && 1 == $_GET['tester']) {
-	// 		require_once(TMWNI_DIR . 'inc/item.php');
-	// 		$netsuiteClient = new ItemClient();
-	// 		$netsuiteClient->searchItemUpdateInventory('5431', 29026);
-	// 		die('zzzzzz');
-
-	// 	}
-
-	//  } 
-
 
 	public function tmNsUpdateWooInventory() {
 		global $TMWNI_OPTIONS;
@@ -78,23 +56,23 @@ class NS_Inventory {
 				
 				
 				$logs = file_get_contents($log_file);
-				wp_send_json(array('success' => true, 'processed_count' => $processed_count, 'skus' => $not_found_skus, 'updated_count' => $updated_count, 'logs' => $logs, 'empty_skus' => $empty_skus));
+				wp_send_json(array( 'success' => true, 'processed_count' => $processed_count, 'skus' => $not_found_skus, 'updated_count' => $updated_count, 'logs' => $logs, 'empty_skus' => $empty_skus ));
 				die();
 			} 
 		} else {
 				die('Nonce Error');
 		}
-		
 	}
 
 	/**
 	 * Custom cron function
 	 */
-	public function custom_cron_schedules( $schedules) {
+	public function custom_cron_schedules( $schedules ) {
 		if (!isset($schedules['10min'])) {
 			$schedules['10min'] = array(
 				'interval' => 600,
-				'display' => __('Once every 10 minutes'));
+				'display' => __('Once every 10 minutes'),
+);
 		}
 
 		return $schedules;
@@ -136,7 +114,7 @@ class NS_Inventory {
 
 		$total_loop_pages = ceil($total_count/$limit);
 
-		require_once(TMWNI_DIR . 'inc/item.php');
+		require_once TMWNI_DIR . 'inc/item.php';
 		$netsuiteClient = new ItemClient();
 
 		for ($i=0; $i<=$total_loop_pages; $i++) { 
@@ -185,7 +163,7 @@ class NS_Inventory {
 		$limit = TMWNI_Settings::$inventory_sku_lot_limit;
 
 		$total_loop_pages = ceil($total_count/$limit);
-		require_once(TMWNI_DIR . 'inc/item.php');
+		require_once TMWNI_DIR . 'inc/item.php';
 		$netsuiteClient = new ItemClient();
 		for ($i=0; $i<=$total_loop_pages; $i++) { 
 			$sku_lot = $this->getProductSKULot($i);
@@ -204,14 +182,13 @@ class NS_Inventory {
 			}
 				sleep(2);
 		}
-
 	}
 
 	/**
 	 * Manually Update Inventory
 	 */
 
-	public function manualUpdateWooInventory() {		
+	public function manualUpdateWooInventory() {        
 		set_time_limit(0);
 		wp_raise_memory_limit('-1');
 		// echo date("Y-m-d H:i:s");die;
@@ -239,7 +216,7 @@ class NS_Inventory {
 
 		$total_loop_pages = ceil($total_count/$limit);
 		
-		require_once(TMWNI_DIR . 'inc/item.php');
+		require_once TMWNI_DIR . 'inc/item.php';
 		$netsuiteClient = new ItemClient();
 		$total_skus = 0;
 		for ($i=0; $i<=$total_loop_pages; $i++) { 
@@ -247,7 +224,7 @@ class NS_Inventory {
 			
 			$total_skus = $sku_lot;
 			foreach ($sku_lot as $product_id => $woo_product_sku) {
-				$this->Manual_update_inventory->push_to_queue(array('product_sku' => $woo_product_sku, 'product_id' => $product_id));
+				$this->Manual_update_inventory->push_to_queue(array( 'product_sku' => $woo_product_sku, 'product_id' => $product_id ));
 				// $netsuiteClient->searchItemUpdateInventory($woo_product_sku, $product_id);
 				// usleep(100000);
 			}
@@ -256,7 +233,7 @@ class NS_Inventory {
 
 		
 		$this->Manual_update_inventory->save()->dispatch();
-		wp_send_json(array('success' => true, 'total_count' => $total_count));
+		wp_send_json(array( 'success' => true, 'total_count' => $total_count ));
 		die();
 	}
 
@@ -264,7 +241,7 @@ class NS_Inventory {
 	/**
 	 * Get Product Sku
 	 */
-	private function getProductSKULot( $page = 0) {
+	private function getProductSKULot( $page = 0 ) {
 		global $wpdb;
 
 		$limit = TMWNI_Settings::$inventory_sku_lot_limit;
@@ -284,10 +261,10 @@ class NS_Inventory {
 			*
 			* @since 1.0.0
 
-			**/		
+			**/     
 			$products = apply_filters('tm_netsuite_get_all_woo_product', $products, $offset, $limit);
 
-			$sku_lot = []; 
+			$sku_lot = array(); 
 
 		foreach ($products as $product) {
 			$sku = get_post_meta($product->ID, '_sku', true );
@@ -299,7 +276,6 @@ class NS_Inventory {
 			
 			return $sku_lot;
 	}
-
 }
 
 	new NS_Inventory();

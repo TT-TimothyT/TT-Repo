@@ -54,7 +54,7 @@ if (!defined('ABSPATH')) {
 								<a class="wt-hide-features wt-hide-features-post-types wt-hide-features-product wt-hide-features-product_categories wt-hide-features-prroduct_tags wt-hide-features-prroduct_review" href="#"><?php _e('Show features'); ?></a><span style="color:#3176FD;font-size: 18px;" class="dashicons dashicons-arrow-down-alt"></span>				
 							</div>
 							<div style="float:right;">
-								<a class="wt-view-plugin" href="<?php echo esc_url("https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_revamp&utm_medium=basic_revamp&utm_campaign=Product_Import_Export&utm_content=" . WT_P_IEW_VERSION); ?>"><?php _e('View plugin'); ?> <span style="font-size: 18px;" class="dashicons dashicons-arrow-right-alt"></span></a>				
+								<a class="wt-view-plugin" target="_blank" href="<?php echo esc_url("https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_revamp&utm_medium=basic_revamp&utm_campaign=Product_Import_Export&utm_content=" . WT_P_IEW_VERSION); ?>"><?php _e('View plugin'); ?> <span style="font-size: 18px;" class="dashicons dashicons-arrow-right-alt"></span></a>				
 							</div>
 						</div>
 
@@ -85,7 +85,7 @@ if (!defined('ABSPATH')) {
 								<a class="wt-hide-features wt-hide-features-post-types wt-hide-features-user" href="#"><?php _e('Show features'); ?></a><span style="color:#3176FD;font-size: 18px;" class="dashicons dashicons-arrow-down-alt"></span>				
 							</div>
 							<div style="float:right;">
-								<a class="wt-view-plugin" href="<?php echo esc_url("https://www.webtoffee.com/product/wordpress-users-woocommerce-customers-import-export/?utm_source=free_plugin_revamp&utm_medium=basic_revamp&utm_campaign=User_Import_Export&utm_content=" . WT_P_IEW_VERSION); ?>"><?php _e('View plugin'); ?> <span style="font-size: 18px;" class="dashicons dashicons-arrow-right-alt"></span></a>				
+								<a class="wt-view-plugin" target="_blank" href="<?php echo esc_url("https://www.webtoffee.com/product/wordpress-users-woocommerce-customers-import-export/?utm_source=free_plugin_revamp&utm_medium=basic_revamp&utm_campaign=User_Import_Export&utm_content=" . WT_P_IEW_VERSION); ?>"><?php _e('View plugin'); ?> <span style="font-size: 18px;" class="dashicons dashicons-arrow-right-alt"></span></a>				
 							</div>
 						</div>
 

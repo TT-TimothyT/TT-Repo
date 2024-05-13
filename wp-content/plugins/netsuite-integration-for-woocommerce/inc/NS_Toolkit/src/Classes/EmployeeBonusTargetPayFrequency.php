@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EMPLOYEEBONUSTARGETPAYFREQUENCY {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ANNUALLY = '_annually';
 	const _MONTHLY = '_monthly';
 	const _ONETIME = '_oneTime';

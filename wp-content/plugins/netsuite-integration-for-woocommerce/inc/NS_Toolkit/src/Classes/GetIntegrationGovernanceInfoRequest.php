@@ -18,6 +18,5 @@
 namespace NetSuite\Classes;
 
 class GetIntegrationGovernanceInfoRequest {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 }

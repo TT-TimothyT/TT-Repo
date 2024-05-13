@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CustomizationSearchLevel {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NONE = '_none';
 	const _EDIT = '_edit';
 	const _RUN = '_run';

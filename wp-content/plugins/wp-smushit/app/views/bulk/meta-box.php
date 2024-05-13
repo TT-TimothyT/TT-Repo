@@ -25,8 +25,12 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+$start_bulk_webp_conversion = ! empty( $_GET['smush-action'] ) && 'start-bulk-webp-conversion' === wp_unslash( $_GET['smush-action'] );
+
 if ( 0 !== absint( $total_count ) ) :
-	if ( $background_processing_enabled ) {
+	if ( $start_bulk_webp_conversion && $this->settings->is_webp_module_active() ) {
+		$msg = __( 'When Local WebP is enabled, Bulk Smush will convert your images to .webp format in addition to its regular smushing for optimal performance.', 'wp-smushit' );
+	} elseif ( $background_processing_enabled ) {
 		$msg = __( 'Bulk smush detects images that can be optimized and allows you to compress them in bulk in the background without any quality loss.', 'wp-smushit' );
 	} else {
 		$msg = __( 'Bulk smush detects images that can be optimized and allows you to compress them in bulk.', 'wp-smushit' );

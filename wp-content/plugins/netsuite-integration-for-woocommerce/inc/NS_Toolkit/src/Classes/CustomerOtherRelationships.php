@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CustomerOtherRelationships {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _OTHERNAME = '_otherName';
 	const _PARTNER = '_partner';
 	const _VENDOR = '_vendor';

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class FILEENCODING {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AUTODETECT = '_autoDetect';
 	const _SHIFTJIS = '_shiftJis';
 	const _UTF8 = '_utf8';

@@ -167,6 +167,7 @@ class Utils {
 				/* Performance test strings */
 				'previousScoreMobile'     => isset( $mobile_score ) ? $mobile_score : '-',
 				'previousScoreDesktop'    => isset( $desktop_score ) ? $desktop_score : '-',
+				'aoStatus'                => self::is_ao_processing() ? 'incomplete' : 'complete',
 				'removeButtonText'        => __( 'Remove', 'wphb' ),
 				'youLabelText'            => __( 'You', 'wphb' ),
 				'scanRunning'             => __( 'Running speed test...', 'wphb' ),
@@ -264,6 +265,7 @@ class Utils {
 						'totalFiles'         => self::minified_files_count(),
 						'filesizeReductions' => absint( $get_ao_stats['compressed_size'] ),
 					),
+					'isMinifyPage' => sanitize_text_field( filter_input( INPUT_GET, 'page', FILTER_UNSAFE_RAW ) ),
 				)
 			);
 		}
@@ -1229,6 +1231,18 @@ class Utils {
 					$active_features[] = 'AO_Basic';
 				}
 			}
+
+			// Font preload feature.
+			if ( ! empty( $minify_options['critical_css'] ) && ! empty( $minify_options['font_optimization'] ) ) {
+				$active_features[] = 'font_preload_auto';
+			} elseif ( ! empty( $minify_options['font_optimization'] ) ) {
+				$active_features[] = 'font_preload_manual';
+			}
+
+			// Font swap.
+			if ( ! empty( $minify_options['font_swap'] ) ) {
+				$active_features[] = 'font_display_swap';
+			}
 		}
 
 		// GZip.
@@ -1249,6 +1263,11 @@ class Utils {
 		// Page Caching.
 		if ( self::get_module( 'page_cache' )->is_active() ) {
 			$active_features[] = 'Page Caching';
+
+			$options = self::get_module( 'page_cache' )->get_options();
+			if ( ! empty( $options['preload'] ) && ! empty( $options['preload_type'] ['home_page'] ) ) {
+				$active_features[] = 'preload_homepage';
+			}
 		}
 
 		// Redis Cache.
@@ -1262,7 +1281,7 @@ class Utils {
 		}
 
 		// Cloudflare_integration.
-		if ( self::get_module( 'cloudflare' )->is_active() ) {
+		if ( self::get_module( 'cloudflare' )->is_connected() ) {
 			$active_features[] = 'Cloudflare_integration';
 		}
 
@@ -1355,12 +1374,14 @@ class Utils {
 	 * Display unlock pro upsell link.
 	 *
 	 * @param string $location   Location of the unlock pro upsell.
-	 * @param string $utm        URM for Upsell.
+	 * @param string $utm        UTM for Upsell.
 	 * @param string $event_name Event name for MP.
-	 * @param string $display    Whether to echo or return the link. Default true.
+	 * @param bool   $display    Whether to echo or return the link. Default true.
+	 * @param bool   $is_eo_link Is EO upsell link.
 	 */
-	public static function unlock_now_link( $location, $utm, $event_name, $display = true ) {
-		$html = sprintf(
+	public static function unlock_now_link( $location, $utm, $event_name, $display = true, $is_eo_link = false ) {
+		$upsell_link = $is_eo_link ? esc_html__( 'Unlock now for Peak Performance  ️⚡️ - 80% Off!', 'wphb' ) : esc_html__( 'Unlock now', 'wphb' );
+		$html        = sprintf(
 			'<a target="_blank" data-location="%1$s" href="%2$s" data-eventname="%3$s" id="%4$s" class="wphb-upsell-link wphb-upsell-eo" onclick="WPHB_Admin.minification.hbTrackEoMPEvent( this )">
 				%5$s
 				<span class="sui-icon-open-new-window" aria-hidden="true"></span>
@@ -1369,7 +1390,7 @@ class Utils {
 			esc_url( self::get_link( 'plugin', $utm ) ),
 			$event_name,
 			'legacy_switch' === $location ? 'manual_css_switch_now' : '',
-			esc_html__( 'Unlock now', 'wphb' )
+			$upsell_link
 		);
 
 		if ( $display ) {
@@ -1404,5 +1425,107 @@ class Utils {
 	 */
 	public static function get_plugin_discount() {
 		return self::HB_PLUGIN_DISCOUNT . '%';
+	}
+
+	/**
+	 * Determines whether the site is Hosted on WPMUDEV and whitelabel is disabled.
+	 *
+	 * @since 3.8.0
+	 *
+	 * @return bool True if the site is Hosted on WPMUDEV and whitelabel is disabled, false otherwise.
+	 */
+	public static function is_site_hosted_with_whitelabel_disabled() {
+		return ! self::is_whitelabel_enabled() && isset( $_SERVER['WPMUDEV_HOSTED'] );
+	}
+
+	/**
+	 * Determines whether whitelabel is enabled.
+	 *
+	 * @since 3.8.0
+	 *
+	 * @return bool True if whitelabel is enabled, false otherwise.
+	 */
+	public static function is_whitelabel_enabled() {
+		return class_exists( 'WPMUDEV_Dashboard' ) &&
+			is_object( WPMUDEV_Dashboard::$whitelabel ) &&
+			method_exists( WPMUDEV_Dashboard::$whitelabel, 'is_whitelabel_enabled' ) &&
+			WPMUDEV_Dashboard::$whitelabel->is_whitelabel_enabled();
+	}
+
+	public static function get_performance_metrics() {
+		return array(
+			'speed-index',
+			'first-contentful-paint',
+			'largest-contentful-paint',
+			'total-blocking-time',
+			'cumulative-layout-shift',
+		);
+	}
+
+	/**
+	 * Returns Google speed metrics.
+	 *
+	 * @return array
+	 */
+	public static function get_performance_metric_for_mp() {
+		$report  = Modules\Performance::get_last_report();
+		$metrics = array(
+			'speed-index'              => 'speed',
+			'first-contentful-paint'   => 'fcp',
+			'largest-contentful-paint' => 'lcp',
+			'total-blocking-time'      => 'tbt',
+			'cumulative-layout-shift'  => 'cls',
+		);
+
+		$mobile_report  = $report->data->mobile;
+		$desktop_report = $report->data->desktop;
+		$mobile_data    = array();
+		$desktop_data   = array();
+
+		// Historic field data.
+		$mobile_data['inp_mobile']    = isset( $report->data->mobile->field_data->INTERACTION_TO_NEXT_PAINT->percentile ) ? esc_html( $report->data->mobile->field_data->INTERACTION_TO_NEXT_PAINT->percentile ) : 'N/A';
+		$desktop_data['inp_desktop']  = isset( $report->data->desktop->field_data->INTERACTION_TO_NEXT_PAINT->percentile ) ? esc_html( $report->data->desktop->field_data->INTERACTION_TO_NEXT_PAINT->percentile ) : 'N/A';
+		$mobile_data['ttfb_mobile']   = isset( $report->data->mobile->field_data->EXPERIMENTAL_TIME_TO_FIRST_BYTE->percentile ) ? esc_html( $report->data->mobile->field_data->EXPERIMENTAL_TIME_TO_FIRST_BYTE->percentile ) : 'N/A';
+		$desktop_data['ttfb_desktop'] = isset( $report->data->desktop->field_data->EXPERIMENTAL_TIME_TO_FIRST_BYTE->percentile ) ? esc_html( $report->data->desktop->field_data->EXPERIMENTAL_TIME_TO_FIRST_BYTE->percentile ) : 'N/A';
+
+		foreach ( $mobile_report->metrics as $rule => $rule_result ) {
+			if ( ! array_key_exists( $rule, $metrics ) ) {
+				continue;
+			}
+
+			$display_value                                = preg_replace( '/[^0-9,.]/', '', $rule_result->displayValue );
+			$mobile_data[ $metrics[ $rule ] . '_mobile' ] = isset( $display_value ) ? esc_html( $display_value ) : 'N/A';
+		}
+
+		foreach ( $desktop_report->metrics as $rule => $rule_result ) {
+			if ( ! array_key_exists( $rule, $metrics ) ) {
+				continue;
+			}
+
+			$display_value                                  = preg_replace( '/[^0-9,.]/', '', $rule_result->displayValue );
+			$desktop_data[ $metrics[ $rule ] . '_desktop' ] = isset( $display_value ) ? esc_html( $display_value ) : 'N/A';
+		}
+
+		return array_merge( $mobile_data, $desktop_data );
+	}
+
+	/**
+	 * Checks if AO status bar is enabled.
+	 *
+	 * @since 3.8.0
+	 *
+	 * @return bool True if AO status bar is enabled, false otherwise.
+	 */
+	public static function is_ao_status_bar_enabled() {
+		return defined( 'WPHB_ENABLED_AO_STATUS_BAR' ) && WPHB_ENABLED_AO_STATUS_BAR;
+	}
+
+	/**
+	 * Check if AO is currently processing.
+	 *
+	 * @return bool
+	 */
+	public static function is_ao_processing() {
+		return get_transient( 'wphb-processing' ); // Input var ok.
 	}
 }

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ResourceAllocationApprovalStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _APPROVED = '_approved';
 	const _PENDINGAPPROVAL = '_pendingApproval';
 	const _REJECTED = '_rejected';

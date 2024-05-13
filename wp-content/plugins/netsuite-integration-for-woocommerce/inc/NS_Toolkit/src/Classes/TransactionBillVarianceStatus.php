@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TransactionBillVarianceStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _JOURNALNOTPOSTED = '_journalNotPosted';
 	const _JOURNALPOSTED = '_journalPosted';
 	const _NOVARIANCES = '_noVariances';

@@ -9,6 +9,7 @@
  */
 
 use Hummingbird\Core\Modules\Performance;
+use Hummingbird\Core\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,6 +30,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<table class="sui-table">
 		<?php foreach ( $report->metrics as $rule => $rule_result ) : ?>
+			<?php
+			if ( ! in_array( $rule, Utils::get_performance_metrics(), true ) ) {
+				continue;
+			}
+			?>
 			<?php $score = isset( $rule_result->score ) ? $rule_result->score : 0; ?>
 			<tr class="wphb-performance-report-item" data-performance-url="<?php echo esc_attr( $performance_url . '#' . $rule ); ?>">
 				<td>

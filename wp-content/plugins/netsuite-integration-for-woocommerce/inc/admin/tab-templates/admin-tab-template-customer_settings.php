@@ -2,7 +2,6 @@
 	<h3>Customer Sync Settings</h3>
 	<div class="col-md-12">
 		<h4>General Settings</h4>
-
 		<form class="well"  action="admin-post.php" method="post" id="settings_tm_ns"> 
 			<input type="hidden" name="action" value="save_tm_ns_settings"> 
 			<input type="hidden" name="current_tab_id" value="<?php echo esc_attr($current_tab_id); ?>">
@@ -91,7 +90,7 @@
 		
 						* @since 1.0.0
  
-					**/					
+					**/                 
 					do_action('tm_ns_after_customer_settings');
 					?>
 					<tr valign="top">
@@ -200,16 +199,11 @@
 							</tr>
 							<?php 
 							 $allow_html =TMWNI_Settings::shapeSpace_allowed_html();
-							echo  wp_kses($cm_option['template'], $allow_html);
-
-							//echo ($cm_option['template']); 
-							
-
+							echo wp_kses($cm_option['template'], $allow_html);                         
 							?>
 							</tbody>
 						</table>
 					</div>
-
 				<?php } ?>
 			<?php } else { ?>
 				<div class="well" data-index="1">

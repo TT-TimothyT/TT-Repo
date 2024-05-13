@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentMethodOfTransportUps {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AIR = '_air';
 	const _AIRCONTAINERIZED = '_airContainerized';
 	const _AUTO = '_auto';

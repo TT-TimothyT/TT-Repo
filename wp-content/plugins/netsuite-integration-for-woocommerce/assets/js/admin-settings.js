@@ -8,8 +8,6 @@ function tm_ns_validateForm() {
 }
 
 jQuery(document).ready(function ($) {
-
-
     $("#ns_promo_custform_id").attr('placeholder', 'NS Promo Custom Form ID' );
     $("#ns_promo_discount_id").attr('placeholder', 'NS Promo Discount ID' );
     $("#sku_mapping_custom_field").attr('placeholder', 'Custom Field ID' );
@@ -17,9 +15,6 @@ jQuery(document).ready(function ($) {
     $("#ns_order_shipping_courier").attr('placeholder', 'Shipping courier Meta Key' );
     $("#ns_order_pickup_date").attr('placeholder', 'Order Pickup Date Meta Key');
     $("#importfile").attr('accept', 'application/json');
-
-
-
 
     makeSelectfieldsSelect2($);
     $('#ns_order_shiping_line_item_enable').click(function(){
@@ -42,12 +37,10 @@ jQuery(document).ready(function ($) {
         }else{
             $('#ns_order_admin_email').addClass('ns_order_admin_email_field');
             $("input[name='ns_order_admin_email']").prop('required',false);
-            // $('#ns_order_shiping_line_item').css('display','none');
         }
     });
 
-
-     $('#order_item_tax_code_enable').click(function(){
+    $('#order_item_tax_code_enable').click(function(){
         if($('#order_item_tax_code_enable:checked').length > 0){
             $('#order_tax_code_field').removeClass('ns_order_shiping_line_item');
         }else{
@@ -55,15 +48,37 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    $('#ns_auto_invoice_sync').click(function(){
+        if($('#ns_auto_invoice_sync:checked').length > 0){
+            $('#ns_auto_invoice_field').removeClass('ns_order_shiping_line_item');
+        }else{
+            $('#ns_auto_invoice_field').addClass('ns_order_shiping_line_item');
+        }
+    });
 
+    $('#ns_order_record_type').change(function() {
+        var recordType = $('#ns_order_record_type').val();
+        if (recordType === 'salesorder') {
+            $('#customer_deposit_field').removeClass('ns_order_shiping_line_item');
+            } else {
+            $('#customer_deposit_field').addClass('ns_order_shiping_line_item');
+            }    
+        });
+
+    $('#ns_order_record_type').change(function() {
+        var recordType = $('#ns_order_record_type').val();
+        if (recordType === 'salesorder') {
+            $('#invoice_fields').removeClass('ns_order_shiping_line_item');
+            } else {
+            $('#invoice_fields').addClass('ns_order_shiping_line_item');
+            }    
+        });
 
     $('#enableFulfilmentSync').click(function(){
         if($('#enableFulfilmentSync:checked').length > 0){
-            // $('#ns_order_shiping_line_item').css('display','');
             $('#order_fulfilment_fields').removeClass('order_fulfilment_fields');
         }else{
             $('#order_fulfilment_fields').addClass('order_fulfilment_fields');
-            // $('#ns_order_shiping_line_item').css('display','none');
         }
     });
 
@@ -124,8 +139,8 @@ jQuery(document).ready(function ($) {
             $("#hidden_tr_input").addClass('hidden_tr_input');
 
              // $(".hidden_tr_input").hide();
-         }
-     });
+        }
+    });
 
     $('#ns_coupon_netsuite_sync').click(function(e){
         if($('#ns_coupon_netsuite_sync:checked').length > 0){
@@ -186,13 +201,13 @@ jQuery(function ($) {
                 url: tmwni_admin_settings_js.ajax_url,
                 data: {'action':'tm_validate_ns_credentials',nonce : tmwni_admin_settings_js.nonce,},
                 success: function (response) {
-                   $("#test_api_creds").attr('disabled', false);
-                   alert(response.message);
-               },
-               complete: function(x) {
-                   $("#test_api_creds").attr('disabled', false);
-               }
-           });
+                 $("#test_api_creds").attr('disabled', false);
+                 alert(response.message);
+             },
+             complete: function(x) {
+                 $("#test_api_creds").attr('disabled', false);
+             }
+         });
         } else {
             alert("Please 'enter & save' API credentials first");
         }
@@ -241,13 +256,8 @@ jQuery(function ($) {
         return false;
     });
 
-
-
-
     jQuery(document).on('click', '#import_settings',function(e){
         e.preventDefault();
-
-
         var file = jQuery('#importfile')[0].files[0];
         if(file){
             var fd = new FormData();
@@ -263,37 +273,20 @@ jQuery(function ($) {
                 url: tmwni_admin_settings_js.ajax_url,
                 data: fd,
         //processData: false,        
-        success: function(response){
-            if(response.status == 'false'){
-                $.notify(' '+response.msg, {type: "danger", icon:"exclamation", align:"right"});
-            }else{
-             $.notify(' '+response.msg, {type: "success", icon:"check", align:"right"});
-
-         }
-
-         jQuery('input[name=importfile').val('');
-
-     }
-
- });
-
+                success: function(response){
+                    if(response.status == 'false'){
+                        $.notify(' '+response.msg, {type: "danger", icon:"exclamation", align:"right"});
+                    }else{
+                       $.notify(' '+response.msg, {type: "success", icon:"check", align:"right"});
+                   }
+                   jQuery('input[name=importfile').val('');
+               }
+           });
         }else{
             $.notify(' '+'Please Choose a file', {type: "danger", icon:"exclamation", align:"right"});
         }
         return false;
-
-
     });
-
-
-
-
-
-
-
-
-
-
 });
 
 
@@ -470,10 +463,10 @@ jQuery(function ($) {
                 current.find('.glyphicon-refresh').addClass("glyphicon-spin");
             },
             complete: function (response) {
-             current.find('.glyphicon-refresh').removeClass("glyphicon-spin");
-             location.reload(true);                 
-         },
-     });
+               current.find('.glyphicon-refresh').removeClass("glyphicon-spin");
+               location.reload(true);                 
+           },
+       });
     });
 
 
@@ -499,8 +492,8 @@ jQuery(function ($) {
                     alert("Something went wrong");
 
                 }                 
-         },
-     });
+            },
+        });
     });
 
 
@@ -528,9 +521,9 @@ jQuery(function ($) {
                     alert("Something went wrong");
 
                 }
-                             
-         },
-     });
+
+            },
+        });
     });
 
 
@@ -557,9 +550,9 @@ jQuery(function ($) {
                     alert("Something went wrong");
 
                 }
-                             
-         },
-     });
+
+            },
+        });
     });
 
 
@@ -586,9 +579,9 @@ jQuery(function ($) {
                     alert("Something went wrong");
 
                 }
-                             
-         },
-     });
+
+            },
+        });
     });
 
 
@@ -697,22 +690,18 @@ jQuery(document).on('click', '.manual-update-inventory',function(e){
         dataType: "json",
         url: tmwni_admin_settings_js.ajax_url,
         data: {action: "update_woo_inventory"},
-        
         success: function(response){
             if(response.success){
                 if(!jQuery('.progress').length){
                     jQuery('.form-table-last').after('<div class="progress"><div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:0%"><span class="sr-only">0% Complete</span></div></div>');
                 }
                 fetchWooInventoryStatus(response.total_count);
-
             }
         }
     });
 });
 
-
 function fetchWooInventoryStatus(total_count){
-
     jQuery.ajax({
         type: "POST",
         dataType: "json",
@@ -721,8 +710,6 @@ function fetchWooInventoryStatus(total_count){
         // async: false,
         success: function(response){
             if(response.success){
-
-
                 var percent = response.processed_count / total_count * 100;
                 var html="<div class='progress-bar progress-bar-striped active' role='progressbar' aria-valuenow="+Math.ceil(percent)+" aria-valuemin='0' aria-valuemax='100' style='width:"+Math.ceil(percent)+"%'>"+Math.ceil(percent)+"%</div>";
                 jQuery(".progress").html(html);
@@ -741,32 +728,17 @@ function fetchWooInventoryStatus(total_count){
                 }, 2000);
                 var $t = jQuery('.inventory-logs');
                 $t.animate({"scrollTop": jQuery('.inventory-logs')[0].scrollHeight}, "slow");
-
-
             }
         },
         complete:function(response){
             if(total_count === response.responseJSON.processed_count){
-             clearTimeout(timeOutId);
-             jQuery('.manual-update-inventory').attr("disabled", false);
-             jQuery('.progress').remove();
-
-         } else {
+               clearTimeout(timeOutId);
+               jQuery('.manual-update-inventory').attr("disabled", false);
+               jQuery('.progress').remove();
+           } else {
             timeOutId = setTimeout(fetchWooInventoryStatus, 2000, total_count);
         }
     }
 
 });
 }
-
-
-
-
-
-
-
-
-
-
-
-

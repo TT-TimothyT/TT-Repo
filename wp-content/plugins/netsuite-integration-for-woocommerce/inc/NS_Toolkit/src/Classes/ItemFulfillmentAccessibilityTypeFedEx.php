@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTACCESSIBILITYTYPEFEDEX {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACCESSIBLE = '_accessible';
 	const _INACCESSIBLE = '_inaccessible';
 }

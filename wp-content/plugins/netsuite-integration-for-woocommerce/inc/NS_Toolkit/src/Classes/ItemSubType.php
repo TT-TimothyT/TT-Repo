@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemSubType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FORPURCHASE = '_forPurchase';
 	const _FORRESALE = '_forResale';
 	const _FORSALE = '_forSale';

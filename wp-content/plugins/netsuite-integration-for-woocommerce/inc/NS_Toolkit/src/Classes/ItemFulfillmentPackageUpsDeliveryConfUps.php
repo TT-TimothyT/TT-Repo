@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentPackageUpsDeliveryConfUps {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NONESELECTED = '_noneSelected';
 	const _ADULTSIGNATUREREQUIRED = '_adultSignatureRequired';
 	const _DELIVERYCONFIRMATION = '_deliveryConfirmation';

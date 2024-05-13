@@ -1,14 +1,14 @@
-=== Hummingbird – Optimize Speed, Enable Cache, Minify CSS & Defer Critical JS ===
-Plugin Name: Hummingbird – Optimize Speed, Enable Cache, Minify CSS & Defer Critical JS
-Version: 3.7.2
+=== Hummingbird - Cache & Page Speed Optimization for Core Web Vitals | Critical CSS | Minify CSS | Defer CSS Javascript ===
+Plugin Name: Hummingbird - Cache & Page Speed Optimization for Core Web Vitals | Critical CSS | Minify CSS | Defer CSS Javascript
+Version: 3.8.1
 Author: WPMU DEV
 Author URI: https://wpmudev.com/
 Contributors: WPMUDEV
-Tags: defer css javascript, cache, minify css, minify javascript, speed up wordpress, page cache, wordpress speed optimization, page speed, wordpress cache plugin, wordpress performance optimization, lazy load, performance optimization, seo, pagespeed, wp cache, delay javascript, brotli compression, generate critical css
+Tags: cache, critical css, javascript delay, minify css, defer css javascript, page cache, wordpress speed optimization, page speed, wordpress cache plugin, wordpress performance optimization, lazy load, performance optimization, seo, pagespeed, wp cache, delay javascript, brotli compression, generate critical css
 Requires at least: 5.2
-Tested up to: 6.4
+Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 3.7.2
+Stable tag: 3.8.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ Hummingbird is brought to you by the WordPress speed specialists that created [S
 
 ### If PageSpeed Insights is making these speed recommendations Hummingbird can help:
 
-- Enable text compression - Use gzip to make your site fly.
+- Enable text compression - Use gzip to make your site fly (Brotli Compression via CDN included with Pro).
 - Preconnect to required origins - Use Hummingbird to establish earlier connections.
 - Preload key requests - Prioritize resources based on order.
 - Avoid enormous network payloads - Consider Lazy Load for comments or breaking up smaller posts.
@@ -50,6 +50,7 @@ You’ll get faster loading pages, higher search rankings (SERP) and PageSpeed s
 - Increase Your Conversion Rate - Don’t keep visitors waiting: faster sites convert better.
 - GZIP Compression – Blazing-fast HTML, JavaScript, and stylesheet (CSS) transfer.
 - Configs – Set your preferred performance settings, save them as config, and instantly upload to any other site.
+- Font Optimization - Improve site speed, Core Web Vitals, and visual stability by preloading critical fonts and enabling fallbacks.
 
 ### Learn The Ropes With These Hands-On Hummingbird Tutorials
 
@@ -75,7 +76,7 @@ Make your site load even faster with Hummingbird’s complete set of cache tools
 
 ### Asset Optimization
 
-Did you know that the more files you add to your site’s header, the slower it will load? With Hummingbird, you can easily customize the load position of your CSS, JavaScript (defer CSS and Javascript), Google Fonts, and other files to increase your page speed.
+Did you know that the more files you add to your site’s header, the slower it will load? With Hummingbird, you can easily customize the load position of your CSS, JavaScript (defer CSS and Javascript), Fonts, and other files to increase your page speed.
 
 Quickly reorder, compress, and reposition files with Hummingbird’s minification feature. Reset any changes you make in one click, or use Asset Optimization Safe Mode to test changes before pushing live.
 
@@ -88,6 +89,10 @@ Sending zipped files is faster and can save you money on hosting. And don’t wo
 ### Built-in Cloudflare Integration
 
 Hummingbird can be used to control your [Cloudflare](https://www.cloudflare.com/) browser cache and Automatic Platform Optimizations (APO) settings as well! Simply add your Cloudflare API key and configure away.
+
+### Font Optimization
+
+Boost site speed, Core Web Vitals, and the visual stability of pages for users with Hummingbird’s one-click font optimization features: **Preload Fonts,** which instructs browsers to preload essential fonts, and **Swap Web Fonts,** which applies a temporary fallback font until the primary one loads.
 
 ### Fully Compatible With Smush Image Optimization
 
@@ -198,6 +203,25 @@ We take plugin security incredibly seriously; if you have a bug or vulnerability
 4. Use suggestions to make improvements and speed up your site.
 
 == Changelog ==
+
+= 3.8.1 ( 2024-05-02 ) =
+- Fix: Font optimization causes issue with RSS feeds
+- Fix: PHP errors and warnings
+
+= 3.8.0 ( 2024-04-29 ) =
+- New: Load local fonts early with font preloading
+- New: Font swapping to ensure that text remains visible while webfont is downloading
+- Improvement: Better caching compatibility with popular third-party plugins
+- Improvement: Auto-populate CDN and web font domains in Advanced Tools > Preconnect
+- Fix: PHP warnings
+- Fix: Delay JS compatibility issue with Avada
+- Fix: Asset optimization bug fixes
+
+= 3.7.4 ( 2024-03-27 ) =
+- Improvement: Security hardening
+
+= 3.7.3 ( 2024-03-21 ) =
+- New: Replaced deprecated FID check with INP in performance test
 
 = 3.7.2 ( 2024-01-16 ) =
 - New: Use static IPs for Critical CSS service

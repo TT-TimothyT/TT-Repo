@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TransactionLineType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ADJUSTEDQUANTITY = '_adjustedQuantity';
 	const _ADVANCETOAPPLYAMOUNT = '_advanceToApplyAmount';
 	const _BILLEXCHANGERATEVARIANCE = '_billExchangeRateVariance';

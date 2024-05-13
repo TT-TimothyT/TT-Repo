@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ChargeUse {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACTUAL = '_actual';
 	const _FORECAST = '_forecast';
 }

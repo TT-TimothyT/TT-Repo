@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemCostEstimateType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AVERAGECOST = '_averageCost';
 	const _CUSTOM = '_custom';
 	const _DERIVEDFROMMEMBERITEMS = '_derivedFromMemberItems';

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMSUPPLYREPLENISHMENTMETHOD {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _MATERIALREQUIREMENTSPLANNING = '_materialRequirementsPlanning';
 	const _REORDERPOINT = '_reorderPoint';
 	const _TIMEPHASED = '_timePhased';

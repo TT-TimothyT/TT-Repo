@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemCustomFieldItemSubType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BOTH = '_both';
 	const _PURCHASE = '_purchase';
 	const _SALE = '_sale';

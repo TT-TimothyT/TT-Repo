@@ -39,6 +39,9 @@ class Wt_Import_Export_For_Woo_Basic_Import
         public $step_need_validation_filter=array();     
 		public $allowed_mime_types = array();
 
+		private $skip_from_evaluation_array = array();
+    	private $decimal_columns = array();
+
 	public function __construct()
 	{
 		$this->module_id=Wt_Import_Export_For_Woo_Basic::get_module_id($this->module_base);
@@ -1174,6 +1177,9 @@ class Wt_Import_Export_For_Woo_Basic_Import
 			'mapping_fields'=>array(),
 			'meta_mapping_fields'=>array()
 		);
+
+		$this->skip_from_evaluation_array = $this->get_skip_from_evaluation();
+		$this->decimal_columns = $this->get_decimal_columns();  
 		
 		/**
 		*  	Default columns
@@ -1219,8 +1225,11 @@ class Wt_Import_Export_For_Woo_Basic_Import
 	}
 	protected function evaluate_data($key, $value, $data_row, $mapping_fields, $input_date_format)
 	{
-		$value=$this->add_input_file_data($key, $value, $data_row, $mapping_fields, $input_date_format);
+		$value=$this->add_input_file_data($key, $value, $data_row, $mapping_fields, $input_date_format,true);
 		$value=$this->do_arithmetic($value);
+		if(!Wt_Iew_IE_Basic_Helper::wt_string_is_json($value) && !is_serialized($value)){
+            $value = $this->add_input_file_data($key, $value, $data_row, $mapping_fields, $input_date_format);
+        }
 		$data_row=null;
 		unset($data_row);
 		return $value;
@@ -1280,75 +1289,89 @@ class Wt_Import_Export_For_Woo_Basic_Import
 
 		return $val;
 	}
-	protected function add_input_file_data($key, $str, $data_row, $mapping_fields, $input_date_format)
-	{
-		$re = '/\{([^}]+)\}/m';
-		$matches=array();
-		preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-		$find=array();
-		$replace=array();
-		foreach ($matches as $key => $value)
+		protected function add_input_file_data($key, $str, $data_row, $mapping_fields, $input_date_format, $skip_from_evaluation = false)
 		{
-			if(is_array($value) && count($value)>1)
-			{
-				$data_key=trim($value[1]);
+			@set_time_limit(0);
+			$re = '/\{([^}]+)\}/m';
+			$matches = array();
+			preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+			$find = array();
+			$replace = array();
+			foreach ($matches as $key => $value) {
+				if (is_array($value) && count($value) > 1) {
+					$data_key = trim($value[1]);
 
-				/* Check for date formatting */
-				$data_key_arr=explode("@", $data_key);
-				$data_format='';
-				if(count($data_key_arr)==2) /* date format field given while on import */
-				{
-					$data_key=$data_key_arr[0]; //first value is the field key
-					$data_format=$data_key_arr[1]; //second value will be the format
-				}
-
-				/* Pre-defined date field */
-				if(isset($mapping_fields[$data_key]) && isset($mapping_fields[$data_key][2]) && $mapping_fields[$data_key][2]='date') 
-				{
-					/** 
-					*	Always give preference to evaluation section
-					*	If not specified in evaluation section. Use default format
-					*/
-					if($data_format=="") 
-					{
-						$data_format=$input_date_format;
+					/* Check for date formatting */
+					$data_key_arr = explode("@", $data_key);
+					$data_format = '';
+					if (count($data_key_arr) == 2) /* date format field given while on import */ {
+						$data_key = $data_key_arr[0]; //first value is the field key
+						$data_format = $data_key_arr[1]; //second value will be the format
 					}
-				}
 
-				$output_val='';
-				if(isset($data_row[$data_key]))
-				{
-//					$output_val=sanitize_text_field($data_row[$data_key]);   sanitize_text_field stripping html content
-                                        $output_val=($data_row[$data_key]);   
-				}
-
-				/**
-				* 	This is a date field 
-				*/
-				if(trim($data_format)!="" && trim($output_val)!="")
-				{
-					if(version_compare(PHP_VERSION, '5.6.0', '>='))
-					{
-						$date_obj=DateTime::createFromFormat($data_format, $output_val);
-						if($date_obj)
-						{
-							$output_val=$date_obj->format('Y-m-d H:i:s');
+					/* Pre-defined date field */
+					if (isset($mapping_fields[$data_key]) && isset($mapping_fields[$data_key][2]) && $mapping_fields[$data_key][2] = 'date') {
+						/** 
+						 *	Always give preference to evaluation section
+						 *	If not specified in evaluation section. Use default format
+						 */
+						if ($data_format == "") {
+							$data_format = $input_date_format;
 						}
-					}else
-					{
-						$output_val=date("Y-m-d H:i:s", strtotime(trim(str_replace('/', '-', str_replace('-', '', $output_val)))));
 					}
-				}
 
-				$replace[]=$output_val;
-				$find[]=$value[0];
-				unset($data_key);
-			}		
+					$output_val = '';
+					if (isset($data_row[$data_key])) {
+						//					$output_val=sanitize_text_field($data_row[$data_key]);   sanitize_text_field stripping html content
+						$output_val = ($data_row[$data_key]);
+					}
+
+					/**
+					 * 	This is a date field 
+					 */
+					if (trim($data_format) != "" && trim($output_val) != "") {
+						if (version_compare(PHP_VERSION, '5.6.0', '>=')) {
+							$date_obj = DateTime::createFromFormat($data_format, $output_val);
+							if ($date_obj) {
+								$output_val = $date_obj->format('Y-m-d H:i:s');
+							}
+						} else {
+							$output_val = date("Y-m-d H:i:s", strtotime(trim(str_replace('/', '-', str_replace('-', '', $output_val)))));
+						}
+					}
+
+					$is_need_to_replace = false;
+					if ($skip_from_evaluation) {   /* check whether skip or not */
+						if (!in_array($value[1], $this->skip_from_evaluation_array)) {      /*  current item dont skip */
+							$is_need_to_replace = true;
+						}
+					} else { /* no needed to skip, so add all items to find and replace list */
+						$is_need_to_replace = true;
+					}
+					if ($is_need_to_replace) {
+						if (in_array($value[1], $this->decimal_columns)) { /* check if it is a decimal column , if yes, format it */
+							$output_val =  wt_format_decimal($output_val);
+						}
+						$replace[] = $output_val;
+						$find[] = $value[0];
+					}
+					unset($data_key);
+				}
+			}
+			$data_row = null;
+			unset($data_row);
+			return str_replace($find, $replace, $str);
 		}
-		$data_row=null;
-		unset($data_row);
-		return str_replace($find, $replace, $str);
+		public function get_skip_from_evaluation()
+		{
+			// return apply_filters('wt_iew_importer_skip_from_evaluation', array('post_title', 'description','post_content','short_description','post_excerpt','line_item_','shipping_items', 'fee_items', 'customer_note', 'meta:wc_productdata_options', 'order_items', 'shipping_method'));        
+			return apply_filters('wt_iew_importer_skip_from_evaluation', array('post_title', 'description', 'post_content', 'short_description', 'post_excerpt'));
+		}
+		public function get_decimal_columns()
+		{
+			return apply_filters('wt_iew_importer_decimal_columns', array('price', 'regular_price', '_regular_price', 'sale_price', '_sale_price'));
+		}
 	}
 }
-}
+
 Wt_Import_Export_For_Woo_Basic::$loaded_modules['import']=new Wt_Import_Export_For_Woo_Basic_Import();

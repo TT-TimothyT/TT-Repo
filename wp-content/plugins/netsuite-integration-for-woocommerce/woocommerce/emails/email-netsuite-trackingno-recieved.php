@@ -41,9 +41,9 @@ $order_id = $order->ID;
 $ups_trackingno = tm_ns_get_post_meta($order_id, 'ywot_tracking_code');
 if (isset($TMWNI_OPTIONS['ns_order_shipping_courier']) && !empty($TMWNI_OPTIONS['ns_order_shipping_courier'])) {
 
-	$shipping_carrier =	tm_ns_get_post_meta($order_id, $TMWNI_OPTIONS['ns_order_shipping_courier']);
+	$shipping_carrier = tm_ns_get_post_meta($order_id, $TMWNI_OPTIONS['ns_order_shipping_courier']);
 } else {
-	$shipping_carrier = 	tm_ns_get_post_meta($order_id, 'ywot_carrier_name');
+	$shipping_carrier =     tm_ns_get_post_meta($order_id, 'ywot_carrier_name');
 }
 
 ?>

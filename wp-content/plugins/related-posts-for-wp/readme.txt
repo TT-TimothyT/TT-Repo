@@ -3,8 +3,8 @@ Contributors: never5, barrykooij
 Donate link: http://www.barrykooij.com/donate/
 Tags: related, inline related posts, similar posts, contextual relations, seo bounce rate, internal links
 Requires at least: 3.6
-Tested up to: 6.4.3
-Stable tag: 2.2.2
+Tested up to: 6.5.2
+Stable tag: 2.2.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 7.2
@@ -120,6 +120,9 @@ There is one custom table created for the post cache, this table will however no
 5. Related posts are automatically added below your posts!
 
 == Changelog ==
+
+= 2.2.3: April 16, 2024 =
+* Tweak: Adding empty string instead of null in add_submenu_page, fixes PHP 8.1 warnings.
 
 = 2.2.2: March 11, 2024 =
 * Tweak: Fixed a WPCLI issue where HTTP_HOST notices were logged.

@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class SearchDate {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const FISCALHALFBEFORELAST = 'fiscalHalfBeforeLast';
 	const FISCALHALFBEFORELASTTODATE = 'fiscalHalfBeforeLastToDate';
 	const FISCALQUARTERBEFORELAST = 'fiscalQuarterBeforeLast';

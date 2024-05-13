@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FME Addons: Shop as a Customer for WooCommerce
  * Author: fmeaddons
- * Version: 1.2.7
+ * Version: 1.2.8
  * Developed By: fmeaddons Team
  * Description:Switch to any customer profile from administration panel and use WooCommerce store as customer, Create orders    and Edit user profile.
  * License:    GPL-2.0+
@@ -20,15 +20,9 @@ error_reporting(0);
 if ( ! defined( 'ABSPATH' ) ) { 
 	exit; // Exit if accessed directly
 }
-
 if (! function_exists('is_plugin_active')) {
 	include_once ABSPATH . 'wp-admin/includes/plugin.php' ;
 }
-
-/**
- * Check if WooCommerce is active
- * if wooCommerce is not active FME Addons: Shop as a Customer for WooCommerce module will not work.
- **/
 
 class MainFmeaddonsClass {
 
@@ -61,17 +55,21 @@ class MainFmeaddonsClass {
 		add_action('wp_ajax_editprofile', array( $this, 'fmeaddons_edit_profile' ));
 		
 		add_action( 'woocommerce_thankyou', array( $this, 'fmeaddons_custom_content_thankyou' ), 10, 1 );
-		
+		 
 		add_action('init', array( $this, 'fmeaddons_start_session' ));        
 		add_action('admin_footer', array( $this, 'fmeaddons_modal' ));
 		add_action('admin_bar_menu', array( $this, 'fmeaddons_custom_toolbar_link' ), 999);
 		add_action('wp_logout', array( $this, 'fmeaddons_end_session' ));
 		add_action('woocommerce_settings_tabs_array', array( $this, 'fmeaddons_menu_pages' ), 50);
 		add_action( 'woocommerce_settings_shop_as_a_customer_for_woocommerce', array( $this, 'fmeaddons_customerlogs' ) );
+		
+		// PIN: ajax action for getting results for popup search 
 		add_action('wp_ajax_my_action' , array( $this, 'data_fetch' ));
 		
 		add_action('wp_ajax_nextdatafind' , array( $this, 'nextdatafind' ));
 		add_action('wp_ajax_saveallroles' , array( $this, 'fme_saveallroles' ));
+
+		// PIN : Get data for datatable request 
 		add_action('wp_ajax_getcustomersfordatatables' , array( $this, 'getcustomersfordatatables' ));
 
 		add_action('wp_ajax_getcustomerslogs' , array( $this, 'getcustomerslogs' ));
@@ -80,7 +78,38 @@ class MainFmeaddonsClass {
 		add_filter( 'load_textdomain_mofile', array( $this, 'my_plugin_load_my_own_textdomain' ), 10, 2 );
 
 		add_action( 'requests-curl.before_request', array( $this, 'fma_curl_before_request' ), 9999 );
+	
+	 
+		// AJAX action to send email
+		add_action('wp_ajax_send_email_ajax', array( $this, 'send_email_ajax' ));
+		add_action('wp_ajax_nopriv_send_email_ajax', array( $this, 'send_email_ajax' )); // Allow non-logged-in users to access the AJAX endpoint
 	}
+
+
+	/**
+	 * Ajax callback for sending invoices to users from thankyou page
+	 *
+	 * @return void
+	 */
+	public function send_email_ajax() {
+		// Get the order ID from AJAX data
+		$order_id = isset($_REQUEST['order_id']) ? intval($_REQUEST['order_id']) : 0;
+
+		// Get the order object
+		$order = wc_get_order($order_id);
+
+		if ($order) {
+
+			// Send payment email to the user
+			$email = new WC_Emails();
+			$email->customer_invoice( $order_id );
+
+			  wp_send_json_success('Email sent successfully!');
+		} else {
+			wp_send_json_error('Invalid order ID.');
+		}
+	}
+
 	public function my_admin_notice() {
 
 		// Deactivate the plugin
@@ -89,8 +118,6 @@ class MainFmeaddonsClass {
 		echo esc_attr( $error_message );
 		die();
 	}
-	
-
 
 	public function fma_curl_before_request( $curlhandle ) {
 		session_write_close();
@@ -141,6 +168,7 @@ class MainFmeaddonsClass {
 			$allrolessaved= map_deep( wp_unslash( $_REQUEST['allroless']), 'sanitize_text_field' );
 		}
 
+		 
 		//////////////////////////////////////////updated/////////////////////////
 		
 		$allrolessaved= map_deep( wp_unslash( $_REQUEST['allroless']), 'sanitize_text_field' );
@@ -154,10 +182,14 @@ class MainFmeaddonsClass {
 
 		update_option('fme_defselectedp', $defselectedp);
 		update_option('fme_tabselect', $fme_tabselect);
+	 
 
 		wp_die();
 	}
 
+ 
+
+	// PIN: search in Selected fields
 	public function getcustomersfordatatables() {
 
 		global $wpdb;
@@ -165,21 +197,71 @@ class MainFmeaddonsClass {
 		if (isset($_REQUEST['search']['value'])) {
 			$search_value=sanitize_text_field($_REQUEST['search']['value']);
 		}
+		$customFilterValue = isset($_REQUEST['customFilterValue'])  ? sanitize_text_field($_REQUEST['customFilterValue']): '';
+		// $customFilterValue = "billing_company";
+		// $search_value = "equina";
 		
 		$currIndStart=0;
 		if (isset($_REQUEST['start'])) {
 			$currIndStart = sanitize_text_field( $_REQUEST['start'] );
 		}
 		$return_json = array();
+
+		 
+		if (empty($customFilterValue)) {
+			$blogusers = get_users( array(
+				'fields' => array( 'display_name', 'user_email', 'ID' ), 
+				'role__not_in' => array( 'administrator' ), 
+				'offset' =>$currIndStart, 
+				'number' =>10, 
+				'orderby' => 'ID', 
+				'order'=>'asc', 
+				'search' => '*' . esc_attr( $search_value ) . '*',
+				'search_columns' => array(
+					'display_name',
+					'user_email',
+					'ID',
+				),
+			));
+		} else {
+			$meta_key = '';
+			if ('address' == $customFilterValue) {
+				$meta_keys = array( 'billing_address_1', 'shipping_address_1', 'billing_address_2', 'shipping_address_2' );
+			} elseif ( 'company' == $customFilterValue) {
+				$meta_keys = array( 'billing_company', 'shipping_company' );
+			} elseif ('phone' == $customFilterValue) {
+				$meta_keys = array( 'billing_phone', 'shipping_phone' );
+			}
+
+			if ( ! empty( $meta_keys ) ) {
+				$meta_query = array(
+					'relation' => 'OR',
+				);
+				foreach ( $meta_keys as $key ) {
+					$meta_query[] = array(
+						'key' => $key,
+						'value' => esc_attr( $search_value ),
+						'compare' => 'LIKE',
+					);
+				}
+			}
+
+			$args = array(
+				'fields' => array( 'display_name', 'user_email', 'ID' ), 
+				'role__not_in' => array( 'administrator' ), 
+				'meta_query' => isset( $meta_query ) ? $meta_query : array(),
+				'offset' => $currIndStart, 
+				'number' => 10, 
+				'orderby' => 'ID', 
+				'order' => 'ASC',
+			);
+
+			$blogusers = get_users( $args );
+			 
+		}
+
 		
-		$blogusers = get_users( array(
-'fields' => array( 'display_name', 'user_email', 'ID' ), 'role__not_in' => array( 'administrator' ), 'offset' =>$currIndStart, 'number' =>10, 'orderby' => 'ID', 'order'=>'asc', 'search'         => '*' . esc_attr( $search_value ) . '*',
-			'search_columns' => array(
-		'display_name',
-		'user_email',
-		'ID',
-		),
-		 ) );
+		
 		
 		foreach ($blogusers as $key => $value) {
 		 
@@ -202,8 +284,12 @@ class MainFmeaddonsClass {
 		}
 
 		echo json_encode(array( 'data' => $return_json ));
-			wp_die();
-	}
+		// echo json_encode(array( 'data' => $return_json, 'blogusers' => $blogusers, 'which_query' => $which_query));
+		wp_die();
+	}   
+
+	 
+
 	public function getcustomerslogs() {
 
 		$start=0;
@@ -226,14 +312,14 @@ class MainFmeaddonsClass {
 
 		}
 		$return_json = array();
-		$counter=0;
-			$counnnt=$counnnt-( $currIndStart );
+		$counter = 0;
+		$counnnt = $counnnt-( $currIndStart );
 		for ($i=$counnnt-1; $i >= 0 ; $i--) { 
-						$idd = $array_for_log[$i]['id'];
-						$time = $array_for_log[$i]['time'];
-						$customer = $array_for_log[$i]['customer'];
-						$customer = explode(' ', $customer);
-						$order_billing_phone = $array_for_log[$i]['phone'];
+			$idd = $array_for_log[$i]['id'];
+			$time = $array_for_log[$i]['time'];
+			$customer = $array_for_log[$i]['customer'];
+			$customer = explode(' ', $customer);
+			$order_billing_phone = $array_for_log[$i]['phone'];
 			if (isset($array_for_log[$i]['products'])) {
 				$products=$array_for_log[$i]['products'];
 			} else {
@@ -244,23 +330,23 @@ class MainFmeaddonsClass {
 				$disabled = 'disabled';
 			}
 
-							$whatsapp='<center>
-									<a class="' . ( $disabled ) . '" target="_blank" href="https://web.whatsapp.com/send?phone=' . ( $order_billing_phone ) . '&text=" >
-										<img style="width: 18%;" src="' . plugin_dir_url( __FILE__ ) . 'whatsapp.png">
-									</a>
-								</center>';
-								$row=array();
+			$whatsapp='<center>
+						<a class="' . ( $disabled ) . '" target="_blank" href="https://web.whatsapp.com/send?phone=' . ( $order_billing_phone ) . '&text=" >
+							<img style="width: 18%;" src="' . plugin_dir_url( __FILE__ ) . 'whatsapp.png">
+						</a>
+					</center>';
+			$row=array();
 			if ('' == $search_value) {
 				$row = array(
 
-				'ID' => '<center>' . $idd . '</center>',
-				'Logged_in_At' =>'<center>' . $time . '</center>',
-				'Customer' =>'<center>' . $customer[0] . '</center>',
-				'Products' =>$products,
-				'Message_On_Whatsapp' => $whatsapp,
+					'ID' => '<center>' . $idd . '</center>',
+					'Logged_in_At' =>'<center>' . $time . '</center>',
+					'Customer' =>'<center>' . $customer[0] . '</center>',
+					'Products' =>$products,
+					'Message_On_Whatsapp' => $whatsapp,
 
-								);
-			} else if ($search_value == $idd || ( str_contains($customer[0], $search_value) )) {
+				);  
+			} else if ($search_value == $idd || ( strtolower($customer[0]) === strtolower($search_value) )) {
 				$row = array(
 
 				'ID' => '<center>' . $idd . '</center>',
@@ -274,7 +360,7 @@ class MainFmeaddonsClass {
 			if (!empty($row)) {
 				$return_json[] = $row;
 			}
-						$counter++;
+			$counter++;
 			if (10 == $counter) {
 				break;
 			}
@@ -306,21 +392,82 @@ class MainFmeaddonsClass {
 		echo json_encode( $results);
 		exit();
 	}
+	
 	public function data_fetch() {
+
+
 		check_ajax_referer('ajax_nonce', 'security');
-		
+
+		$search_value = '';
 		if (isset($_REQUEST['value'])) {
-			$find=sanitize_text_field($_REQUEST['value']);
-
+			// $find = '%' . sanitize_text_field($_REQUEST['value']) . '%'; // Adding '%' wildcards for the search term
+			$search_value =  sanitize_text_field($_REQUEST['value']); // Adding '%' wildcards for the search term
 		}
+
+		$customFilterValue = isset($_REQUEST['customFilterValue'])  ? sanitize_text_field($_REQUEST['customFilterValue']): '';
+		
+		 
 		global $wpdb;
+ 
+		$blogusers = array();
 
+		if (empty($customFilterValue)) {
+			$blogusers = get_users( array(
+				'fields' => array( 'display_name', 'user_email', 'ID' ), 
+				'role__not_in' => array( 'administrator' ), 
+				'offset' =>$currIndStart, 
+				'number' =>10, 
+				'orderby' => 'ID', 
+				'order'=>'asc', 
+				'search' => '*' . esc_attr( $search_value ) . '*',
+				'search_columns' => array(
+					'display_name',
+					'user_email',
+					'ID',
+				),
+			));
+		} else {
+			$meta_key = '';
+			if ('address' == $customFilterValue) {
+				$meta_keys = array( 'billing_address_1', 'shipping_address_1', 'billing_address_2', 'shipping_address_2' );
+			} elseif ('company' == $customFilterValue) {
+				$meta_keys = array( 'billing_company', 'shipping_company' );
+			} elseif ( 'phone' == $customFilterValue ) {
+				$meta_keys = array( 'billing_phone', 'shipping_phone' );
+			}
 
-		$results = $wpdb->get_results($wpdb->prepare('SELECT u.ID, u.user_email, u.display_name FROM  ' . $wpdb->prefix . 'users u, ' . $wpdb->prefix . 'usermeta m WHERE u.ID = m.user_id AND m.meta_key = "' . $wpdb->prefix . 'capabilities" AND m.meta_value NOT LIKE %s AND (u.user_email LIKE %s OR u.display_name LIKE %s OR u.user_login LIKE %s) LIMIT 10', '%administrator%', '%' . $find . '%', '%' . $find . '%', '%' . $find . '%'));
-		echo json_encode( $results);
+			if ( ! empty( $meta_keys ) ) {
+				$meta_query = array(
+					'relation' => 'OR',
+				);
+				foreach ( $meta_keys as $key ) {
+					$meta_query[] = array(
+						'key' => $key,
+						'value' => esc_attr( $search_value ),
+						'compare' => 'LIKE',
+					);
+				}
+			}
+
+			$args = array(
+				'fields' => array( 'display_name', 'user_email', 'ID' ), 
+				'role__not_in' => array( 'administrator' ), 
+				'meta_query' => isset( $meta_query ) ? $meta_query : array(),
+				'offset' => $currIndStart, 
+				'number' => 10, 
+				'orderby' => 'ID', 
+				'order' => 'ASC',
+			);
+
+			$blogusers = get_users( $args );
+			 
+		}
+
+		echo json_encode($blogusers);
 
 		exit();
 	}
+
 
 
 	public function fmeaddons_menu_pages( $tabs ) {
@@ -362,26 +509,29 @@ class MainFmeaddonsClass {
 	
 		<div id="savediv"style="display: none;font-weight:bold; color:green;font-size:15px "><br><?php echo esc_html_e('Your settings has been saved!', 'shop-as-a-customer-for-woocommerce'); ?><br><br></div><br>
 		<br>		
-		<ul class="subsubsub">
+		<div>
+			<ul class="subsubsub">
 
-			<li>
-				<a href="#" class="fme_tabsss current" id="fme_customerlogsbtn">
-					<?php echo esc_html_e('Switch To Customers', 'shop-as-a-customer-for-woocommerce'); ?>
-				</a>|
-			</li>
+				<li>
+					<a href="#" class="fme_tabsss current" id="fme_customerlogsbtn">
+						<?php echo esc_html_e('Switch To Customers', 'shop-as-a-customer-for-woocommerce'); ?>
+					</a>|
+				</li>
 
-			<li>
-				<a href="#" class="fme_tabsss" id="fme_switchcustomerbtn">
-					<?php echo esc_html_e('Customer Logs', 'shop-as-a-customer-for-woocommerce'); ?>
-				</a>|
-			</li>
+				<li>
+					<a href="#" class="fme_tabsss" id="fme_switchcustomerbtn">
+						<?php echo esc_html_e('Customer Logs', 'shop-as-a-customer-for-woocommerce'); ?>
+					</a>|
+				</li>
 
-			<li>
-				<a href="#" class="fme_tabsss" id="fme_settingsbtn">
-					<?php echo esc_html_e('Settings', 'shop-as-a-customer-for-woocommerce'); ?>
-				</a>
-			</li>
-		</ul>
+				<li>
+					<a href="#" class="fme_tabsss" id="fme_settingsbtn">
+						<?php echo esc_html_e('Settings', 'shop-as-a-customer-for-woocommerce'); ?>
+					</a>
+				</li>
+			</ul>
+			
+		</div>
 		<br>
 		<input type="hidden" id="pageefound" value="found">
 
@@ -498,11 +648,25 @@ class MainFmeaddonsClass {
 						</select>
 					</td>
 				</tr>
+
+
+
+
+				 
+
+
+
+
+
+
+
+
 				<tr>
 					<th>
 						<button style="padding: 0px 10px 0px 10px;" class="button-primary saveroles"><?php echo esc_html_e('Save Settings', 'shop-as-a-customer-for-woocommerce'); ?></button>
 					</th>
 				<td>
+
 				<span id="fme_settings_global_msg" class="fme_alert fme_alert-success" style="display:none;">
 					<b><?php esc_html_e('Success!', 'shop-as-a-customer-for-woocommerce'); ?></b> <?php echo esc_html__('Settings saved successfully', 'shop-as-a-customer-for-woocommerce'); ?>
 				</span>
@@ -514,6 +678,8 @@ class MainFmeaddonsClass {
 			</tbody>
 		</table>		
 
+		<!-- PIN  customers table-->
+		<!--  -->
 		<div  id="fme_tableofswitch" style="display:block;">
 			<table id="allcustomers" class="display responsive widefat ">
 				<thead>
@@ -528,7 +694,7 @@ class MainFmeaddonsClass {
 							<?php echo esc_html_e('Name', 'shop-as-a-customer-for-woocommerce'); ?>
 						</center>
 					</th>
-
+				 
 					<th>
 						<center>
 							<?php echo esc_html_e('Email', 'shop-as-a-customer-for-woocommerce'); ?>
@@ -554,7 +720,7 @@ class MainFmeaddonsClass {
 							<?php echo esc_html_e('Name', 'shop-as-a-customer-for-woocommerce'); ?>
 						</center>
 					</th>
-
+ 
 					<th>
 						<center>
 							<?php echo esc_html_e('Email', 'shop-as-a-customer-for-woocommerce'); ?>
@@ -680,6 +846,7 @@ class MainFmeaddonsClass {
 			}	
 
 		</style>
+		<!-- PIN: logs table -->
 		<div id="fme_taboflogs" style="display: none;">
 			<table id="customers" class="display responsive widefat">
 				<thead>
@@ -868,6 +1035,8 @@ class MainFmeaddonsClass {
 				$found=true;
 			}
 			if ($found) {
+		$_SESSION['is_switched']=1;
+
 				$id='';
 				$username = 'Admin';
 				$array_for_log_child=array();
@@ -911,7 +1080,7 @@ class MainFmeaddonsClass {
 				echo esc_attr('usernotmatched');
 			}
 		} else {
-			echo esc_attr('You don not have the access');
+			echo esc_attr('access denied');
 		
 		}
 	
@@ -943,6 +1112,8 @@ class MainFmeaddonsClass {
 		
 		$user_meta=get_userdata(get_current_user_ID());
 		
+		$_SESSION['is_switched']=1;
+		
 		$user_roles=$user_meta->roles;
 		if (!empty(get_option('fme_allrolessaved')) || '' != get_option('fme_allrolessaved')) {
 
@@ -967,12 +1138,9 @@ class MainFmeaddonsClass {
 				if (isset($_SESSION['current_user_ids'])) {
 		 $admin_id = sanitize_text_field($_SESSION['current_user_ids']);
 				}
-			
-
 			}
 
 			$user = get_user_by('login', $username );
-
 
 			if ( !is_wp_error( $user ) ) {
 				wp_clear_auth_cookie();
@@ -998,7 +1166,7 @@ class MainFmeaddonsClass {
 				array_push ($admin, $current_id);
 				$_SESSION['admin']='adminisloggedin';
 				if (isset($_SESSION['current_user_ids'])) {
-		  $admin_id = sanitize_text_field($_SESSION['current_user_ids']);
+					$admin_id = sanitize_text_field($_SESSION['current_user_ids']);
 	
 				}
 				
@@ -1009,7 +1177,7 @@ class MainFmeaddonsClass {
 
 			}
 		} else {
-			echo esc_attr('usernotmatched');
+			echo esc_html('usernotmatched');
 		}
 		session_write_close();
 		wp_die();
@@ -1021,7 +1189,7 @@ class MainFmeaddonsClass {
 	   $_SESSION['current_user_ids']=$current_user_id;
 
 		if (!current_user_can('manage_woocommerce')) {
-			echo esc_attr('You are not allowed to switch customer');
+			echo esc_html('access denied');
 			wp_die();
 		}
 		check_ajax_referer('ajax_nonce', 'security');
@@ -1039,6 +1207,7 @@ class MainFmeaddonsClass {
 		
 		if (isset($_REQUEST['switchbtn_refferer'])) {
 			$_SESSION['switchbtn_refferer_page']=filter_var( $_REQUEST['switchbtn_refferer'] );
+			$_SESSION['is_switched']=1;
 		}
 
 
@@ -1192,13 +1361,13 @@ class MainFmeaddonsClass {
 		global $woocommerce;
 		 // $admin_id=  $_SESSION['current_user_ids'];
 		if (isset($_SESSION['current_user_ids'])) {
-	$admin_id = sanitize_text_field($_SESSION['current_user_ids']);
+			$admin_id = sanitize_text_field($_SESSION['current_user_ids']);
 	
 		}
 		 $username = 'Admin';
 		 $user = get_user_by('login', $username );
 		$url_to_be_redirected=admin_url();
-
+	
 		if (isset($_SESSION['switchbtn_refferer_page'])) {
 			$url_to_be_redirected = sanitize_text_field($_SESSION['switchbtn_refferer_page']);
 		}
@@ -1211,6 +1380,7 @@ class MainFmeaddonsClass {
 			$redirect_to = $url_to_be_redirected;
 			//wp_safe_redirect( $redirect_to );
 
+				$_SESSION['is_switched']=0;
 			echo filter_var( $redirect_to );
 			session_write_close();
 			wp_die();
@@ -1243,9 +1413,28 @@ class MainFmeaddonsClass {
 
 	public function fmeaddons_custom_content_thankyou( $order_id ) {
 		session_start();
-		// $admin_id= $_SESSION['current_user_ids'];
+		 
+
+		// Get the order object
+		$order = wc_get_order( $order_id );
+ 
+
+		// Check if "switched" value is 1
+		$is_switched = isset($_SESSION['is_switched']) ? sanitize_text_field($_SESSION['is_switched']) : 0;
+		$order_status =  $order->get_status();
+				
+		// If payment email is true and "switched" value is 1
+		if (  1 == $is_switched && 'pending' == $order_status ) {
+
+			echo wp_kses_post('<div id="manual-email-button-container"><button id="send-email-button-for-custom-payment" data-order-id="' . $order_id . '">' . __('Send invoice to customer', 'shop-as-a-customer-for-woocommerce') . '</button></div>');
+		
+		}
+
+		
+
+		
 		if (isset($_SESSION['current_user_ids'])) {
-	$admin_id = sanitize_text_field($_SESSION['current_user_ids']);
+			$admin_id = sanitize_text_field($_SESSION['current_user_ids']);
 	
 		}
 		$id= get_current_user_ID();
@@ -1261,8 +1450,6 @@ class MainFmeaddonsClass {
 			$array_for_log[count($array_for_log)-1]['products']=$products_array;
 			
 			update_option('all_logs', $array_for_log);
-			
-			
 			?>
 			
 			<?php
@@ -1271,6 +1458,10 @@ class MainFmeaddonsClass {
 		session_write_close();
 	}
 
+
+
+
+	 
 
 	public function fmeaddons_script() {
 		
@@ -1352,7 +1543,7 @@ class MainFmeaddonsClass {
 		wp_enqueue_script('bootstrap-min-js', plugin_dir_url( __FILE__ ) . 'bootstrap-4.3.1-dist/js/bootstrap.js', false, '1.0', 'all' );
 		wp_enqueue_script('jquery-form');
 		wp_enqueue_script('jquery');    
-		wp_enqueue_script('myyy_custom_script', plugin_dir_url( __FILE__ ) . 'ajax.js', false, '1.2.2', 'all' );
+		wp_enqueue_script('myyy_custom_script', plugin_dir_url( __FILE__ ) . 'ajax.js', false, '1.2.8', 'all' );
 
 		$ewcpm_data = array(
 			'admin_url' => admin_url('admin-ajax.php'),
@@ -1420,9 +1611,20 @@ class MainFmeaddonsClass {
 
 						<div class="searchable">
 							<input type="text" id="cusname" autocomplete="off" placeholder="Search customers by user email or name" >
+							<select id="customFilter" style="width: 200px;">
+								<option value="">Search In</option>
+								<option value="">Name/Email</option>
+								<option value="address">Address</option>
+								<option value="company">Company</option>
+								<option value="phone">Phone</option>
+								
+							</select>
+
+						 
 							<input type="hidden" id="cusname1">
 							
 						</div>
+						<div id="found-results"></div>
 						<label id="fmse_nrf"style="display: none;"><?php echo esc_html_e('No Records found', 'shop-as-a-customer-for-woocommerce'); ?></label>
 						<button id="nextfind" class="button-primary" style="margin-top:1%;display: none;"><?php echo esc_html_e('next', 'shop-as-a-customer-for-woocommerce'); ?></button>
 						<style>
@@ -1438,10 +1640,11 @@ class MainFmeaddonsClass {
 							}
 							div.searchable {
 								width: 100%;
+								display:flex;
 
 							}
 							.searchable input {
-								width: 100%;
+								width: 70%;
 								height: 50px;
 								font-size: 18px;
 								padding: 10px;
@@ -1459,8 +1662,11 @@ class MainFmeaddonsClass {
 								transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 								background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right .75rem center/8px 10px;
 							}
+							.searchable select{
+								width:30%:
+							}
 
-							.searchable ul {
+							#found-results ul {
 								list-style-type: none;
 								background-color: #fff;
 								border-radius: 0 0 5px 5px;
@@ -1472,17 +1678,32 @@ class MainFmeaddonsClass {
 
 							}
 
-							.searchable ul li {
+							#found-results ul li {
 
 								border-bottom: 1px solid #e1e1e1;
 								cursor: pointer;
 								color: #6e6e6e;
 							}
 
-							.searchable ul li.selected {
+							#found-results ul li.selected {
 								background-color: #e8e8e8;
 								color: #333;
 							}
+
+							#modale-footer{
+								display: flex;
+								align-items: center;
+								justify-content: space-between;
+							}
+
+							#modale-footer #selcted-user {
+								background: lightblue;
+								padding: 3px 11px;
+								border-radius: 20px;
+								color: blue;
+							}
+
+
 						</style>
 
 						<script type="text/javascript">
@@ -1491,10 +1712,13 @@ class MainFmeaddonsClass {
 								container = jQuery(that).closest(".searchable");
 								input_val = container.find("input").val().toUpperCase();
 
+								 
+								let newContainer = jQuery('.modal-body #found-results');
 								if (["ArrowDown", "ArrowUp", "Enter"].indexOf(event.key) != -1) {
-									keyControl(event, container)
+									keyControl(event, newContainer)
 								} else {
-									li = container.find("ul li");
+									
+									li = newContainer.find("ul li");
 									li.each(function (i, obj) {
 										if (jQuery(this).text().toUpperCase().indexOf(input_val) > -1) {
 											jQuery(this).show();
@@ -1503,9 +1727,9 @@ class MainFmeaddonsClass {
 										}
 									});
 
-									container.find("ul li").removeClass("selected");
+									newContainer.find("ul li").removeClass("selected");
 									setTimeout(function () {
-										container.find("ul li:visible").first().addClass("selected");
+										newContainer.find("ul li:visible").first().addClass("selected");
 									}, 100)
 								}
 							}
@@ -1542,27 +1766,36 @@ class MainFmeaddonsClass {
 								 jQuery('#nextfind').hide();
 
 								jQuery('#cusname1').val(val);
+								
+
 							}
 
 							jQuery(".searchable input").focus(function () {
-								jQuery(this).closest(".searchable").find("ul").show();
-								jQuery(this).closest(".searchable").find("ul li").show();
+								// jQuery(this).closest(".searchable").find("ul").show();
+								// jQuery(this).closest(".searchable").find("ul li").show();
+								jQuery(".modal-body #found-results").find("ul").show();
+								jQuery(".modal-body #found-results").find("ul li").show();
 							});
 							jQuery(".searchable input").blur(function () {
 								let that = this;
 								setTimeout(function () {
-									jQuery(that).closest(".searchable").find("ul").hide();
+									// jQuery(that).closest(".searchable").find("ul").hide();
+									jQuery(".modal-body #found-results").find("ul").hide();
 								}, 300);
 							});
 
-							jQuery(document).on('click', '.searchable ul li', function () {
+							jQuery(document).on('click', '.modal-body #found-results ul li', function (e) {
 								// console.log(jQuery(this).innerHTML)
 								jQuery(this).closest(".searchable").find("input").val(jQuery(this)[0]['innerHTML'].trim()).blur();
+								
+								let email = jQuery(e.target).text().split(":")[1]
+								jQuery('#selcted-user').html("Selected User: "+email)
 								onSelect(jQuery(this)[0]['value']);
 							});
 
-							jQuery(".searchable ul li").hover(function () {
-								jQuery(this).closest(".searchable").find("ul li.selected").removeClass("selected");
+							jQuery(".modal-body #found-results ul li").hover(function () {
+								// jQuery(this).closest(".searchable").find("ul li.selected").removeClass("selected");
+								jQuery(".modal-body #found-results").find("ul li.selected").removeClass("selected");
 								jQuery(this).addClass("selected");
 							});
 						</script>
@@ -1579,17 +1812,22 @@ class MainFmeaddonsClass {
 						</center>
 
 					</div>
-					<strong style="padding: 1rem;"><label id="label1"><?php echo esc_html_e('Recent Customer:', 'shop-as-a-customer-for-woocommerce'); ?>
-						<?php
-						if ( '' != $datau->display_name) {
-							echo esc_attr($datau->display_name);
-						} else {
-							echo esc_attr('Guest');
-						}
-						?>
-						
-						</label>
-					</strong>
+					<div id="modale-footer">
+						<strong style="padding: 1rem;"><label id="label1"><?php echo esc_html_e('Recent Customer:', 'shop-as-a-customer-for-woocommerce'); ?>
+							<?php
+							if ( '' != $datau->display_name) {
+								echo esc_attr($datau->display_name);
+							} else {
+								echo esc_attr('Guest');
+							}
+							?>
+							
+							</label>
+						</strong>
+						<p class="selcted-user" id="selcted-user">
+							Selected User :
+						</p>
+					</div>
 				</div>
 
 			</div>

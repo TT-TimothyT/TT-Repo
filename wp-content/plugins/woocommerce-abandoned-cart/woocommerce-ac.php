@@ -3,14 +3,14 @@
  * Plugin Name: Abandoned Cart Lite for WooCommerce
  * Plugin URI: http://www.tychesoftwares.com/store/premium-plugins/woocommerce-abandoned-cart-pro
  * Description: This plugin captures abandoned carts by logged-in users & emails them about it. <strong><a href="http://www.tychesoftwares.com/store/premium-plugins/woocommerce-abandoned-cart-pro">Click here to get the PRO Version.</a></strong>
- * Version: 5.19.0
+ * Version: 5.20.0
  * Author: Tyche Softwares
  * Author URI: http://www.tychesoftwares.com/
  * Text Domain: woocommerce-abandoned-cart
  * Domain Path: /i18n/languages/
  * Requires PHP: 7.4 or higher
  * WC requires at least: 4.0.0
- * WC tested up to: 8.5.2
+ * WC tested up to: 8.7.0
  *
  * @package Abandoned-Cart-Lite-for-WooCommerce
  */
@@ -126,7 +126,7 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 			}
 
 			if ( ! defined( 'WCAL_PLUGIN_VERSION' ) ) {
-				define( 'WCAL_PLUGIN_VERSION', '5.19.0' );
+				define( 'WCAL_PLUGIN_VERSION', '5.20.0' );
 			}
 
 			if ( ! defined( 'WCAL_PLUGIN_PATH' ) ) {
@@ -240,10 +240,6 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 				add_action( 'wp_ajax_wcal_dismiss_admin_notice', array( &$this, 'wcal_dismiss_admin_notice' ) );
 				add_filter( 'pre_update_option_wcal_auto_login_users', array( &$this, 'wcal_update_admin_notice_value' ), 10, 2 );
 
-				add_filter( 'ts_tracker_data', array( 'wcal_common', 'ts_add_plugin_tracking_data' ), 10, 1 );
-				add_filter( 'ts_tracker_opt_out_data', array( 'wcal_common', 'ts_get_data_for_opt_out' ), 10, 1 );
-				add_filter( 'ts_deativate_plugin_questions', array( &$this, 'wcal_deactivate_add_questions' ), 10, 1 );
-
 				add_action( 'wp_ajax_wcal_json_find_coupons', array( &$this, 'wcal_json_find_coupons' ) );
 			}
 
@@ -282,8 +278,40 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 			if ( '' === get_option( 'wcal_auto_login_users', '' ) ) {
 				add_filter( 'woocommerce_login_redirect', array( &$this, 'ts_redirect_login' ), 10, 1 );
 			}
+
+			// 5.20.0 - Deactivation and Tracking v2.
+			add_action( 'init', array( &$this, 'wcal_include_files_tracking' ) );
 		}
 
+		/**
+		 * Include tracking & deactivation survey files.
+		 */
+		public static function wcal_include_files_tracking() {
+			require_once WCAL_PLUGIN_PATH . '/includes/component/plugin-deactivation/class-tyche-plugin-deactivation.php';
+
+				new Tyche_Plugin_Deactivation(
+					array(
+						'plugin_name'       => 'Abandoned Cart Lite for WooCommerce',
+						'plugin_base'       => 'woocommerce-abandoned-cart/woocommerce-ac.php',
+						'script_file'       => WCAL_PLUGIN_URL . '/assets/js/admin/plugin-deactivation.js',
+						'plugin_short_name' => 'acp_lite',
+						'version'           => WCAL_PLUGIN_VERSION,
+						'plugin_locale'     => 'woocommerce-abandoned-cart',
+					)
+				);
+				// Tracking v2 files.
+				require_once WCAL_PLUGIN_PATH . '/includes/component/plugin-tracking/class-tyche-plugin-tracking.php';
+				new Tyche_Plugin_Tracking(
+					array(
+						'plugin_name'       => 'Abandoned Cart Lite for WooCommerce',
+						'plugin_locale'     => 'woocommerce-abandoned-cart',
+						'plugin_short_name' => 'wcal',
+						'version'           => WCAL_PLUGIN_VERSION,
+						'blog_link'         => 'https://www.tychesoftwares.com/abandoned-cart-lite-usage-tracking/',
+					)
+				);
+				require_once WCAL_PLUGIN_PATH . '/includes/class-wcal-data-tracking.php';
+		}
 		/**
 		 * Action Scheduler library load failed. So add an admin notice.
 		 *
@@ -338,44 +366,6 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 				require_once 'includes/class-wcal-all-component.php';
 
 			}
-		}
-		/**
-		 * It will add the Questions while admin deactivate the plugin.
-		 *
-		 * @hook ts_deativate_plugin_questions.
-		 * @param array $wcal_add_questions Blank array.
-		 * @return array $wcal_add_questions List of all questions.
-		 */
-		public static function wcal_deactivate_add_questions( $wcal_add_questions ) {
-
-			$wcal_add_questions = array(
-				0 => array(
-					'id'                => 4,
-					'text'              => __( 'Emails are not being sent to customers.', 'woocommerce-abandoned-cart' ),
-					'input_type'        => '',
-					'input_placeholder' => '',
-				),
-				1 => array(
-					'id'                => 5,
-					'text'              => __( 'Capturing of cart and other information was not satisfactory.', 'woocommerce-abandoned-cart' ),
-					'input_type'        => '',
-					'input_placeholder' => '',
-				),
-				2 => array(
-					'id'                => 6,
-					'text'              => __( 'I cannot see abandoned cart reminder emails records.', 'woocommerce-abandoned-cart' ),
-					'input_type'        => '',
-					'input_placeholder' => '',
-				),
-				3 => array(
-					'id'                => 7,
-					'text'              => __( 'I want to upgrade the plugin to the PRO version.', 'woocommerce-abandoned-cart' ),
-					'input_type'        => '',
-					'input_placeholder' => '',
-				),
-
-			);
-			return $wcal_add_questions;
 		}
 
 		/**
@@ -601,6 +591,10 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 		public static function wcal_deactivate() {
 			if ( false !== as_next_scheduled_action( 'woocommerce_ac_send_email_action' ) ) {
 				as_unschedule_action( 'woocommerce_ac_send_email_action' ); // Remove the scheduled action.
+			}
+			$next_scheduled = wp_next_scheduled( 'wcal_ts_tracker_send_event' );
+			if ( $next_scheduled ) {
+				wp_unschedule_event( $next_scheduled, 'wcal_ts_tracker_send_event' );
 			}
 			do_action( 'wcal_deactivate' );
 		}
@@ -2411,6 +2405,15 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 			$page   = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 			$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 
+			// Tyche JS constructor - needed for deactivation survey.
+			wp_register_script(
+				'tyche',
+				WCAL_PLUGIN_URL . '/assets/js/tyche.js',
+				array( 'jquery' ),
+				1.1,
+				true
+			);
+			wp_enqueue_script( 'tyche' );
 			if ( '' === $page || 'woocommerce_ac_page' !== $page ) {
 				return;
 			} else {

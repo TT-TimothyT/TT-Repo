@@ -5,6 +5,7 @@
  *
  * @author Max Tsiplyakov <makstsiplyakov@gmail.com>
  */
+#[\AllowDynamicProperties]
 class PMXE_Admin_Export extends PMXE_Controller_Admin
 {
 

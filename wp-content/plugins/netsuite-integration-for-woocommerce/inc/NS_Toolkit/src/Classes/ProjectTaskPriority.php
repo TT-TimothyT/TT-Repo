@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ProjectTaskPriority {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _HIGH = '_high';
 	const _LOW = '_low';
 	const _MEDIUM = '_medium';

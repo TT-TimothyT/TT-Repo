@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class RecordType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const ACCOUNT = 'account';
 	const ACCOUNTINGPERIOD = 'accountingPeriod';
 	const ADVINTERCOMPANYJOURNALENTRY = 'advInterCompanyJournalEntry';

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTPACKAGEUPSPACKAGINGUPS {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _UPSEXPRESSBOX = '_upsExpressBox';
 	const _UPSLETTER = '_upsLetter';
 	const _UPSPAK = '_upsPak';

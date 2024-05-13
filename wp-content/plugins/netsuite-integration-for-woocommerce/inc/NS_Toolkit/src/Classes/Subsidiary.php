@@ -25,7 +25,7 @@ class Subsidiary extends Record {
 	public $name;
 	/**
 	 * Var \NetSuite\Classes\RecordRef
-	 Var	public $parent;
+	 Var    public $parent;
 	/**
 	 * Var boolean
 	 */

@@ -3,11 +3,13 @@ jQuery(document).ready(function ($) {
         "processing": true,
         "serverSide": true,
         "columns": [//columns options
+            {"orderable": true, "searchable": false, "width": "5%"},
+            {"orderable": true, "searchable": false, "width": "10%"},
+            {"orderable": true, "searchable": false, "width": "10%"},
+            {"orderable": true, "searchable": true, "width": "5%"},
+            {"orderable": false, "searchable": true, "width": "30%"},
             {"orderable": true, "searchable": false, "width": "10%"},
             {"orderable": true, "searchable": false, "width": "15%"},
-            {"orderable": true, "searchable": false, "width": "10%"},
-            {"orderable": true, "searchable": true, "width": "10%"},
-            {"orderable": false, "searchable": true, "width": "40%"},
             {"orderable": true, "searchable": false, "width": "15%"},
         ],
         "pagingType": "full_numbers", //pagination

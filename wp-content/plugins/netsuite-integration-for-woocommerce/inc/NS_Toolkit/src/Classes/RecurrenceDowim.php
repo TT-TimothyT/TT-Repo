@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class RECURRENCEDOWIM {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FIRST = '_first';
 	const _SECOND = '_second';
 	const _THIRD = '_third';

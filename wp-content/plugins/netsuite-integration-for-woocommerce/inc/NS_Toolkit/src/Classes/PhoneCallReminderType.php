@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PhoneCallReminderType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _EMAIL = '_eMail';
 	const _POPUPWINDOW = '_popupWindow';
 }

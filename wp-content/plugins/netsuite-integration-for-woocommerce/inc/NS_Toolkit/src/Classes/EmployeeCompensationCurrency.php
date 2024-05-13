@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EmployeeCompensationCurrency {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AED = '_aed';
 	const _AFA = '_afa';
 	const _AFN = '_afn';

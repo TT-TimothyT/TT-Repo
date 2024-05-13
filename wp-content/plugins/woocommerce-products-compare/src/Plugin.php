@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Products Compare.
+ * Products Compare for WooCommerce.
  *
  * @since 1.2.0
  */
@@ -35,7 +35,7 @@ class Plugin {
 	 * @since 1.2.0
 	 */
 	private function define_constants() {
-		$this->define( 'WC_PRODUCTS_COMPARE_VERSION', '1.4.0' );
+		$this->define( 'WC_PRODUCTS_COMPARE_VERSION', '1.4.1' );
 		$this->define( 'WC_PRODUCTS_COMPARE_PATH', plugin_dir_path( WC_PRODUCTS_COMPARE_FILE ) );
 		$this->define( 'WC_PRODUCTS_COMPARE_URL', plugin_dir_url( WC_PRODUCTS_COMPARE_FILE ) );
 		$this->define( 'WC_PRODUCTS_COMPARE_BASENAME', plugin_basename( WC_PRODUCTS_COMPARE_FILE ) );

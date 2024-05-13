@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: FME Addons: Shop as a Customer for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-13 07:41+0000\n"
-"PO-Revision-Date: 2023-03-08 11:20+0000\n"
+"PO-Revision-Date: 2024-04-19 07:17+0000\n"
 "Last-Translator: \n"
 "Language-Team: Spanish (Spain)\n"
 "Language: es_ES\n"
@@ -12,170 +12,203 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.5.2; wp-5.7\n"
+"X-Loco-Version: 2.6.4; wp-6.5.2\n"
 "X-Domain: shop-as-a-customer-for-woocommerce"
 
-#: shop-as-a-customer-for-woocommerce.php:559
-#: shop-as-a-customer-for-woocommerce.php:585
+#: shop-as-a-customer-for-woocommerce.php:720
+#: shop-as-a-customer-for-woocommerce.php:746
 msgid "Action"
 msgstr "Acción"
 
-#: shop-as-a-customer-for-woocommerce.php:497
+#: shop-as-a-customer-for-woocommerce.php:642
 msgid "By Default Order Status During Offline Payment"
-msgstr "Por estado de pedido predeterminado durante el pago fuera de línea"
+msgstr "Estado del pedido predeterminado durante el pago fuera de línea"
 
-#: shop-as-a-customer-for-woocommerce.php:1147
+#: shop-as-a-customer-for-woocommerce.php:1356
 msgid "compress to left"
 msgstr "comprimir a la izquierda"
 
-#: shop-as-a-customer-for-woocommerce.php:1120
-#: shop-as-a-customer-for-woocommerce.php:1130
+#: shop-as-a-customer-for-woocommerce.php:1329
+#: shop-as-a-customer-for-woocommerce.php:1339
 msgid "compress to right"
 msgstr "comprimir a la derecha"
 
-#: shop-as-a-customer-for-woocommerce.php:723
-#: shop-as-a-customer-for-woocommerce.php:753
+#: shop-as-a-customer-for-woocommerce.php:881
+#: shop-as-a-customer-for-woocommerce.php:911
 msgid "Customer"
 msgstr "Cliente"
 
-#: shop-as-a-customer-for-woocommerce.php:396
+#: shop-as-a-customer-for-woocommerce.php:538
 msgid "Customer Logs"
 msgstr "Registros de clientes"
 
-#: shop-as-a-customer-for-woocommerce.php:1560
+#: shop-as-a-customer-for-woocommerce.php:271
+#: shop-as-a-customer-for-woocommerce.php:1822
 msgid "Edit Profile"
 msgstr "Editar perfil"
 
-#: shop-as-a-customer-for-woocommerce.php:554
-#: shop-as-a-customer-for-woocommerce.php:580
+#: shop-as-a-customer-for-woocommerce.php:715
+#: shop-as-a-customer-for-woocommerce.php:741
 msgid "Email"
 msgstr "Correo electrónico"
 
 #. Name of the plugin
 msgid "FME Addons: Shop as a Customer for WooCommerce"
-msgstr "Complementos FME: Compre como cliente para WooCommerce"
+msgstr "Complementos de FME: compre como cliente de WooCommerce"
 
 #. Author of the plugin
 msgid "fmeaddons"
-msgstr "fmeaddons"
+msgstr "complementos"
 
 #. URI of the plugin
 #. Author URI of the plugin
 msgid "https://www.fmeaddons.com/"
 msgstr "https://www.fmeaddons.com/"
 
-#: shop-as-a-customer-for-woocommerce.php:542
-#: shop-as-a-customer-for-woocommerce.php:568
-#: shop-as-a-customer-for-woocommerce.php:711
-#: shop-as-a-customer-for-woocommerce.php:741
+#: shop-as-a-customer-for-woocommerce.php:703
+#: shop-as-a-customer-for-woocommerce.php:729
+#: shop-as-a-customer-for-woocommerce.php:869
+#: shop-as-a-customer-for-woocommerce.php:899
 msgid "ID"
 msgstr "IDENTIFICACIÓN"
 
-#: shop-as-a-customer-for-woocommerce.php:717
-#: shop-as-a-customer-for-woocommerce.php:747
+#: shop-as-a-customer-for-woocommerce.php:875
+#: shop-as-a-customer-for-woocommerce.php:905
 msgid "Logged in At"
-msgstr "Inicia sesión en"
+msgstr "Iniciado sesión en"
 
-#: shop-as-a-customer-for-woocommerce.php:733
-#: shop-as-a-customer-for-woocommerce.php:763
+#: shop-as-a-customer-for-woocommerce.php:891
+#: shop-as-a-customer-for-woocommerce.php:921
 msgid "Message On Whatsapp"
 msgstr "mensaje en whatsapp"
 
-#: shop-as-a-customer-for-woocommerce.php:548
-#: shop-as-a-customer-for-woocommerce.php:574
+#: shop-as-a-customer-for-woocommerce.php:709
+#: shop-as-a-customer-for-woocommerce.php:735
 msgid "Name"
 msgstr "Nombre"
 
-#: shop-as-a-customer-for-woocommerce.php:1403
+#: shop-as-a-customer-for-woocommerce.php:1639
 msgid "next"
 msgstr "próximo"
 
-#: shop-as-a-customer-for-woocommerce.php:1402
+#: shop-as-a-customer-for-woocommerce.php:1638
 msgid "No Records found"
 msgstr "No se encontraron registros"
 
-#: shop-as-a-customer-for-woocommerce.php:728
-#: shop-as-a-customer-for-woocommerce.php:758
+#: shop-as-a-customer-for-woocommerce.php:597
+#, fuzzy
+msgid ""
+"Only Selected Roles will be allowed to switch & View orders. If no role is "
+"selected all roles will be considered as selected"
+msgstr ""
+"Solo los roles seleccionados podrán cambiar y ver pedidos. Si no se "
+"selecciona ningún rol, todos los roles se considerarán seleccionados."
+
+#: shop-as-a-customer-for-woocommerce.php:886
+#: shop-as-a-customer-for-woocommerce.php:916
 msgid "Products"
 msgstr "Productos"
 
-#: shop-as-a-customer-for-woocommerce.php:1565
+#: shop-as-a-customer-for-woocommerce.php:1828
 msgid "Recent Customer:"
 msgstr "Cliente reciente:"
 
-#: shop-as-a-customer-for-woocommerce.php:523
+#: shop-as-a-customer-for-woocommerce.php:681
 msgid "Save Settings"
 msgstr "Guardar ajustes"
 
-#: shop-as-a-customer-for-woocommerce.php:453
+#: shop-as-a-customer-for-woocommerce.php:596
 msgid "Select Role(s)"
-msgstr "Seleccionar rol(es)"
+msgstr "Seleccionar roles"
 
-#: shop-as-a-customer-for-woocommerce.php:421
+#: shop-as-a-customer-for-woocommerce.php:561
 msgid "Select Tab to Switch as Customer/Guest"
-msgstr "Seleccionar pestaña para cambiar como cliente/invitado"
+msgstr "Seleccione la pestaña para cambiar como cliente/invitado"
 
-#: shop-as-a-customer-for-woocommerce.php:402
+#: shop-as-a-customer-for-woocommerce.php:564
+#, fuzzy
+msgid "Select The Tab in Which Admin Will be Switch as a Cutomer or Guest"
+msgstr ""
+"Seleccione la pestaña en la que el administrador cambiará como cliente o "
+"invitado"
+
+#: shop-as-a-customer-for-woocommerce.php:1441
+#, fuzzy
+msgid "Send invoice to customer"
+msgstr "Enviar factura al cliente"
+
+#: shop-as-a-customer-for-woocommerce.php:544
 msgid "Settings"
 msgstr "Ajustes"
 
-#: shop-as-a-customer-for-woocommerce.php:527
+#: shop-as-a-customer-for-woocommerce.php:686
 msgid "Settings saved successfully"
-msgstr "Configuración guardada con éxito"
+msgstr "Configuración guardada exitosamente"
 
-#: shop-as-a-customer-for-woocommerce.php:1393
+#: shop-as-a-customer-for-woocommerce.php:489
+#, fuzzy
+msgid "Shop As a Customer"
+msgstr "Comprar como cliente"
+
+#: shop-as-a-customer-for-woocommerce.php:1620
 msgid "Shop as Customer"
 msgstr "Comprar como cliente"
 
-#: shop-as-a-customer-for-woocommerce.php:527
+#: shop-as-a-customer-for-woocommerce.php:686
 msgid "Success!"
 msgstr "¡Éxito!"
 
-#: shop-as-a-customer-for-woocommerce.php:1555
+#: shop-as-a-customer-for-woocommerce.php:269
+#: shop-as-a-customer-for-woocommerce.php:1817
 msgid "Switch"
 msgstr "Cambiar"
 
-#: shop-as-a-customer-for-woocommerce.php:1145
+#: shop-as-a-customer-for-woocommerce.php:1354
 msgid "Switch Back "
 msgstr "Volver a su posición"
 
 #. Description of the plugin
+#, fuzzy
+#| msgid ""
+#| "Switch to any customer profile from administration panel and use "
+#| "WooCommerce store as customer, Create orders  \tand Edit user profile."
 msgid ""
 "Switch to any customer profile from administration panel and use WooCommerce "
-"store as customer, Create orders  \tand Edit user profile."
+"store as customer, Create orders    and Edit user profile."
 msgstr ""
 "Cambie a cualquier perfil de cliente desde el panel de administración y use "
 "la tienda WooCommerce como cliente, cree pedidos y edite el perfil de "
 "usuario."
 
-#: shop-as-a-customer-for-woocommerce.php:1358
+#: shop-as-a-customer-for-woocommerce.php:1587
 msgid "Switch To Customer"
 msgstr "Cambiar a cliente"
 
-#: shop-as-a-customer-for-woocommerce.php:1365
+#: shop-as-a-customer-for-woocommerce.php:1594
 msgid "switch to customer"
 msgstr "cambiar a cliente"
 
-#: shop-as-a-customer-for-woocommerce.php:390
+#: shop-as-a-customer-for-woocommerce.php:532
 msgid "Switch To Customers"
 msgstr "Cambiar a clientes"
 
-#: shop-as-a-customer-for-woocommerce.php:1344
+#: shop-as-a-customer-for-woocommerce.php:1573
 msgid "Switch To Guest"
 msgstr "Cambiar a invitado"
 
-#: shop-as-a-customer-for-woocommerce.php:1351
+#: shop-as-a-customer-for-woocommerce.php:1580
 msgid "switch to Guest"
 msgstr "cambiar a invitado"
 
-#: shop-as-a-customer-for-woocommerce.php:1558
+#: shop-as-a-customer-for-woocommerce.php:270
+#: shop-as-a-customer-for-woocommerce.php:1820
 msgid "View Orders"
 msgstr "Ver pedidos"
 
-#: shop-as-a-customer-for-woocommerce.php:1137
+#: shop-as-a-customer-for-woocommerce.php:1346
 msgid "You are now login as "
-msgstr "Ahora estás registrado como"
+msgstr "Ahora estás iniciando sesión como"
 
-#: shop-as-a-customer-for-woocommerce.php:376
+#: shop-as-a-customer-for-woocommerce.php:525
 msgid "Your settings has been saved!"
-msgstr "¡Su configuración ha sido guardada!"
+msgstr "¡Tu configuración ha sido guardada!"

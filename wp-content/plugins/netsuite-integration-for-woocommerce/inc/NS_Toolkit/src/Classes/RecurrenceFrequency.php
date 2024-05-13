@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class RecurrenceFrequency {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NONE = '_none';
 	const _DAY = '_day';
 	const _WEEK = '_week';

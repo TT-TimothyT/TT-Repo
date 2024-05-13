@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentThirdPartyTypeFedEx {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BILLRECIPIENT = '_billRecipient';
 	const _BILLTHIRDPARTY = '_billThirdParty';
 	const _NONESELECTED = '_noneSelected';

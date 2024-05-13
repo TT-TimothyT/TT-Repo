@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemEbayAuctionDuration {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _10DAYS = '_10days';
 	const _120DAYS = '_120days';
 	const _1DAYS = '_1day';

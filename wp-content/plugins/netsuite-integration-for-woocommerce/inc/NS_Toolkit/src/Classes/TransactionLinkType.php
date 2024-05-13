@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TransactionLinkType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ADVANCEDCOSTAMORTIZATION = '_advancedCostAmortization';
 	const _ADVANCEDEXPENSEAMORTIZATION = '_advancedExpenseAmortization';
 	const _AUTHORIZATIONDEPOSIT = '_authorizationDeposit';

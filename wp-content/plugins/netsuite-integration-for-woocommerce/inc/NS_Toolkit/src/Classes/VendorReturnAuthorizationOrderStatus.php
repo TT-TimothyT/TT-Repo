@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class VendorReturnAuthorizationOrderStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CANCELLED = '_cancelled';
 	const _CLOSED = '_closed';
 	const _CREDITED = '_credited';

@@ -14,11 +14,6 @@ foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
 	require_once $filename;
 }
 
-
-
-
-
-
 use NetSuite\NetSuiteService;
 use NetSuite\Classes\SearchStringField;
 use NetSuite\Classes\ItemSearchBasic;
@@ -46,6 +41,17 @@ use NetSuite\Classes\DoubleCustomFieldRef;
 use Netsuite\Classes\SearchCustomFieldList;
 use NetSuite\Classes\SearchCustomField;
 use NetSuite\Classes\SearchStringCustomField;
+use NetSuite\Classes\CashSale;
+use NetSuite\Classes\CashSaleItemList;
+use NetSuite\Classes\CashSaleItem;
+use NetSuite\Classes\InitializeRecord;
+use NetSuite\Classes\InitializeRef;
+use NetSuite\Classes\Invoice;
+use NetSuite\Classes\InitializeRequest;
+use NetSuite\Classes\InvoiceItemList;
+use NetSuite\Classes\InvoiceItem;
+use NetSuite\Classes\CustomerDeposit;
+use NetSuite\Classes\SearchBooleanField;
 
 
 class OrderClient extends CommonIntegrationFunctions {
@@ -66,14 +72,14 @@ class OrderClient extends CommonIntegrationFunctions {
 	 * Search item using woocommerce product SKU
 	 * ref: samples provided in Netsuite API toolkit
 	 */
-	public function searchItem( $item_sku, $product_id = 0, $variation_id = 0) {
+	public function searchItem( $item_sku, $product_id = 0, $variation_id = 0 ) {
 		/** 
 			*Order  item  search sku  hook.
 		
 			* @since 1.4.8
  
 			**/
-			$item_sku = apply_filters('tm_netsuite_order_item_search_sku', $item_sku, $product_id);
+			$item_sku = apply_filters('tm_netsuite_order_item_search_sku', $item_sku, $product_id, $variation_id);
 
 			$this->netsuiteService->setSearchPreferences(false, 20);
 
@@ -97,17 +103,19 @@ class OrderClient extends CommonIntegrationFunctions {
 			$search->{$TMWNI_OPTIONS['sku_mapping_field']} = $SearchField;
 
 		}
-
-		/** 
-			*Search item on NetSuite hook.
+			$inactive = new SearchBooleanField();
+			$inactive->searchValue = false;
+			$search->isInactive = $inactive;
+			/** 
+				*Search item on NetSuite hook.
 		
-			* @since 1.0.0
+				* @since 1.0.0
  
-			**/
-			$search = apply_filters('tm_ns_order_search_item', $search, $item_sku, $product_id);
-			$request = new SearchRequest();
-			$request->searchRecord = $search;
-			$item_internal_id = 0;
+				**/
+				$search = apply_filters('tm_ns_order_search_item', $search, $item_sku, $product_id);
+				$request = new SearchRequest();
+				$request->searchRecord = $search;
+				$item_internal_id = 0;
 		if (!empty($variation_id)) {
 			$object_id = $variation_id;
 			$object = 'order product_variation search';
@@ -115,18 +123,14 @@ class OrderClient extends CommonIntegrationFunctions {
 			$object_id = $product_id;
 			$object = 'order product search';
 		}
-		// pr($search);
-		// die('**');
 		try {
 			$searchResponse = $this->netsuiteService->search($request);
-			// pr($searchResponse); 
 			if (!$searchResponse->searchResult->status->isSuccess) {
 				$error_msg = "'" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $object_id . '. ';
 				$error_msg .= 'Search Keyword:' . $item_sku . '. ';
 				$error_msg .= 'Error Message : ' . $response->writeResponse->status->statusDetail[0]->message;
 				$this->handleLog(0, $object_id, $object, $error_msg);
 			} else {
-				//check if search record found
 				if (1 == $searchResponse->searchResult->status->isSuccess) {
 					/** 
 						*After search item hook.
@@ -134,28 +138,24 @@ class OrderClient extends CommonIntegrationFunctions {
 						* @since 1.0.0
  
 						**/
-					apply_filters('tm_ns_after_search_item', $searchResponse, $item_sku, $product_id);
-					//get items location id 
-					$item_internal_id = $searchResponse->searchResult->recordList->record[0]->internalId;
-					// pr($searchResponse);
-					// pr($item_internal_id);die('!**');
+				apply_filters('tm_ns_after_search_item', $searchResponse, $item_sku, $product_id);
+				$item_internal_id = $searchResponse->searchResult->recordList->record[0]->internalId;
 					if (!empty($variation_id)) {
-						tm_ns_update_post_meta($variation_id, TMWNI_Settings::$ns_product_id, $item_internal_id);
+							update_post_meta($variation_id, TMWNI_Settings::$ns_product_id, $item_internal_id);
 					} else {
-						tm_ns_update_post_meta($product_id, TMWNI_Settings::$ns_product_id, $item_internal_id);
+						update_post_meta($product_id, TMWNI_Settings::$ns_product_id, $item_internal_id);
 					}
-					//get items location id 
-					$item_location_id = isset($searchResponse->searchResult->recordList->record[0]->location->internalId) ? $searchResponse->searchResult->recordList->record[0]->location->internalId : '' ;
+						$item_location_id = isset($searchResponse->searchResult->recordList->record[0]->location->internalId) ? $searchResponse->searchResult->recordList->record[0]->location->internalId : '' ;
 					if (!empty($item_location_id)  || !is_null($item_location_id)) { 
 						if (!empty($variation_id)) {
-							tm_ns_update_post_meta($variation_id, 'ns_item_location_id', $item_location_id);
+							update_post_meta($variation_id, 'ns_item_location_id', $item_location_id);
 						} else {
-							tm_ns_update_post_meta($product_id, 'ns_item_location_id', $item_location_id);
+							update_post_meta($product_id, 'ns_item_location_id', $item_location_id);
 						}
 					}
-					$this->handleLog(1, $object_id, $object);
+						$this->handleLog(1, $object_id, $object);
 				}
-				return $item_internal_id;
+			return $item_internal_id;
 			}
 		} catch (SoapFault $e) {
 			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $object_id . '. ';
@@ -169,11 +169,100 @@ class OrderClient extends CommonIntegrationFunctions {
 		}
 	}
 
+	public function OrderNSRequest( $order_data, $customer_internal_id , $order_internal_id=0) {
+			
+		global $TMWNI_OPTIONS;
 
+		$order = $order_data['order'];
+		if (isset($TMWNI_OPTIONS['ns_order_record_type']) && 'cashsale' == $TMWNI_OPTIONS['ns_order_record_type']) {
+			$so = new CashSale();
+			$so->itemList = new CashSaleItemList();
+			$record_type =  'cashsale.nl';
+		} else {
+			$so = new SalesOrder();
+			$so->itemList = new SalesOrderItemList();
+			$record_type = 'salesord.nl';
+		}
+
+		$so->entity = new RecordRef();
+		$so->entity->internalId = $customer_internal_id;
+
+		$this->salesOrderConditionalMapping($order_data, $order, $order_internal_id);
+
+		$this->createRequest($so, $order_data);
+
+		$so->billingAddress = $this->getBillingAddress($order_data, $so);
+		$so->shippingAddress = $this->getShippingAddress($order_data, $so);
+
+		$items = $this->_setOrderItems($order_data['items'], $order_data['total_shipping']);
+
+		$so->itemList->item = $items;
+		/** 
+			* Order item object hook.
+	
+			* @since 1.0.0
+
+			**/         
+		$so->itemList->item = apply_filters('tm_ns_order_item', $items, $order_data['items'], $order_data['total_shipping'], $order_data['order_id']);
+
+		if (isset($TMWNI_OPTIONS['ns_coupon_netsuite_sync']) && !empty($TMWNI_OPTIONS['ns_coupon_netsuite_sync'])) {
+
+			$promoCodes = array();
+
+			$order = new WC_Order($order_data['order_id']);
+
+			$applied_coupons = $order->get_coupon_codes();
+
+			$coupon_sync_status = true;
+			/** 
+				* Coupon sync status hook.
+	
+				* @since 1.4.8
+
+				**/
+			$coupon_sync_status = apply_filters('tm_ns_add_netsuite_coupon', $order_data, $customer_internal_id);
+
+			if (!empty($applied_coupons) && true == $coupon_sync_status) {
+				foreach ( $applied_coupons as $key => $value) {
+					if (isset($TMWNI_OPTIONS['ns_promo_discount_id']) && !empty($TMWNI_OPTIONS['ns_promo_discount_id']) ) {
+						$promoCodes[] = $this->_addNSpromo($value, $TMWNI_OPTIONS['ns_promo_discount_id']);
+					} else {
+						$promoCodes[] = $this->_addNSpromo($value);
+					}
+				}
+			}
+
+			if ( isset($promoCodes) && !empty($promoCodes) ) {
+
+				$so->canHaveStackable = 1;
+
+				$promoListObj = new PromotionsList();
+				$promoListObj->promotions = array();
+				foreach ($promoCodes as $codeKey => $codeValue) {
+
+					$recRef = new RecordRef();
+					$recRef->internalId = $codeValue;
+					$promoListObj->promotions[$codeKey] = new Promotions();
+					$promoListObj->promotions[$codeKey]->promoCode = $recRef;
+				}
+
+				$so->promotionsList = $promoListObj;
+
+			}
+		}
+
+		$so->logId = $order_data['order_id'];
+		$so->requestType = 'order';
+
+		tm_ns_update_post_meta($order_data['order_id'], TMWNI_Settings::$ns_external_order_id, $order_data['order_id']);
+		tm_ns_update_post_meta($order_data['order_id'], 'ns_record_type', $record_type);
+
+		return $so;
+	}
 	/**
 	 * Adding sales order to Netsuite
 	 */
-	public function addOrder( $order_data, $customer_internal_id) {
+	public function addOrder( $order_data, $customer_internal_id ) {
 
 		$order_sync_status = true;
 		global $TMWNI_OPTIONS;
@@ -184,7 +273,7 @@ class OrderClient extends CommonIntegrationFunctions {
 			* @since 1.0.0
  
 			**/
-		do_action('before_add_netsuite_order', $order_data, $customer_internal_id);
+			do_action('before_add_netsuite_order', $order_data, $customer_internal_id);
 
 
 		/** 
@@ -195,130 +284,41 @@ class OrderClient extends CommonIntegrationFunctions {
 			**/
 			$order_sync_status  = apply_filters('tm_netsuite_order_sync_status', $order_sync_status, $order_data);
 		if (false != $order_sync_status) {
+			$this->netsuiteService->logRequests(true);
 
 			$order = $order_data['order'];
 
 			$this->object_id = $order_data['order_id'];
-			$so = new SalesOrder();
 
-		//order customer
-			$so->entity = new RecordRef();
-			$so->entity->internalId = $customer_internal_id;
+			$so = $this->OrderNSRequest($order_data, $customer_internal_id);
 
-			$this->salesOrderConditionalMapping($order_data, $order);
-
-			$this->createRequest($so, $order_data);
-
-		//currency
-			$order_currency = $order_data['order_currency'];
-			if (isset($TMWNI_OPTIONS['ns_order_woo_currency']) && !empty($TMWNI_OPTIONS['ns_order_woo_currency'])) {
-				$saved_order_currency = array_combine($TMWNI_OPTIONS['ns_order_woo_currency'], $TMWNI_OPTIONS['ns_order_netsuite_currency_internal_id']);
-				if (isset($saved_order_currency[$order_currency]) && !empty($saved_order_currency[$order_currency])) {
-					$so->currency = $saved_order_currency[$order_currency];
-				}
-			}
-
-			$so->billingAddress = $this->getBillingAddress($order_data, $so);
-			$so->shippingAddress = $this->getShippingAddress($order_data, $so);
-
-			$order_payment_method = $order_data['order_payment_method'];
-			if (isset($TMWNI_OPTIONS['ns_order_woo_payment_method']) && !empty($TMWNI_OPTIONS['ns_order_woo_payment_method'])) {
-				$saved_order_payment_method = array_combine($TMWNI_OPTIONS['ns_order_woo_payment_method'], $TMWNI_OPTIONS['ns_order_netsuite_payment_method']);
-				if (isset($saved_order_payment_method[$order_payment_method]) && !empty($saved_order_payment_method[$order_payment_method])) {
-					$so->paymentMethod = new RecordRef();
-					$so->paymentMethod->internalId = $saved_order_payment_method[$order_payment_method];
-				}
-			}
-
-			$so->itemList = new SalesOrderItemList();
-
-
-			$items = $this->_setOrderItems($order_data['items'], $order_data['total_shipping']);
-
-			$so->itemList->item = $items;
 			/** 
-				* Order item object hook.
-		
-				* @since 1.0.0
- 
-				**/			
-			$so->itemList->item = apply_filters('tm_ns_order_item', $items, $order_data['items'], $order_data['total_shipping'], $order_data['order_id']);
-
-
-
-			if (isset($TMWNI_OPTIONS['ns_coupon_netsuite_sync']) && !empty($TMWNI_OPTIONS['ns_coupon_netsuite_sync'])) {
-
-				$promoCodes = array();
-
-				$order = new WC_Order($order_data['order_id']);
-
-				$applied_coupons = $order->get_coupon_codes();
-
-				$coupon_sync_status = true;
-				/** 
-			* Coupon sync status hook.
+				*Order add request data hook.
 	
-			* @since 1.4.8
-
-			**/
-			$coupon_sync_status = apply_filters('tm_ns_add_netsuite_coupon', $order_data, $customer_internal_id);
-
-				if (!empty($applied_coupons) && true == $coupon_sync_status) {
-					foreach ( $applied_coupons as $key => $value) {
-						if (isset($TMWNI_OPTIONS['ns_promo_discount_id']) && !empty($TMWNI_OPTIONS['ns_promo_discount_id']) ) {
-							$promoCodes[] = $this->_addNSpromo($value, $TMWNI_OPTIONS['ns_promo_discount_id']);
-						} else {
-							$promoCodes[] = $this->_addNSpromo($value);
-						}
-					}
-				}
-
-				if ( isset($promoCodes) && !empty($promoCodes) ) {
-
-					$so->canHaveStackable = 1;
-
-					$promoListObj = new PromotionsList();
-					$promoListObj->promotions = array();
-					foreach ($promoCodes as $codeKey => $codeValue) {
-
-						$recRef = new RecordRef();
-						$recRef->internalId = $codeValue;
-						$promoListObj->promotions[$codeKey] = new Promotions();
-						$promoListObj->promotions[$codeKey]->promoCode = $recRef;
-					}
-
-					$so->promotionsList = $promoListObj;
-
-				}
-			}
-
-
-			if (isset($TMWNI_OPTIONS['ns_order_prefix']) && !empty($TMWNI_OPTIONS['ns_order_prefix'])) {
-				$ns_public_order_id = $TMWNI_OPTIONS['ns_order_prefix'] . $order_data['order_id'];
-			} else {
-				$ns_public_order_id = $order_data['order_id'];
-			}
-
-		tm_ns_update_post_meta($order_data['order_id'], TMWNI_Settings::$ns_external_order_id, $ns_public_order_id);
-
-			/** 
-				* Add order data hook.
-		
 				* @since 1.0.0
- 
+
 				**/
-			$so = apply_filters('tm_add_request_order_data', $so, $order_data['order_id']);		
+			$so = apply_filters('tm_add_request_order_data', $so, $order_data['order_id']);     
+
 			$request = new AddRequest();
 			$request->record = $so;
-			// pr($so);
 			try {
-
 				$addResponse = $this->netsuiteService->add($request);
-				// pr($addResponse); die('oneeee');
 				if (1 == $addResponse->writeResponse->status->isSuccess) {
 					tm_ns_update_post_meta($order_data['order_id'], TMWNI_Settings::$ns_customer_id, $customer_internal_id);
 
 					$order_internal_id = $addResponse->writeResponse->baseRef->internalId;
+					//Customer Deposit code
+					if ('salesorder' == $TMWNI_OPTIONS['ns_order_record_type'] && isset($TMWNI_OPTIONS['enableCustomerDeposit']) && !empty($TMWNI_OPTIONS['enableCustomerDeposit'])) {
+						$this->createCustomerDeposite($order_data, $customer_internal_id, $order_internal_id, $so);
+					}
+
+					if ('salesorder' == $TMWNI_OPTIONS['ns_order_record_type'] && isset($TMWNI_OPTIONS['ns_auto_invoice_sync']) && !empty($TMWNI_OPTIONS['ns_auto_invoice_sync'])) {
+						$order = wc_get_order($order_data['order_id']);
+						if ( $order->has_status($TMWNI_OPTIONS['ns_auto_invoice_status']) ) {
+							$this->createSOInvoice($order_data['order_id'], $customer_internal_id, $order_internal_id);
+						}			
+					}
 					/** 
 						*After Add order data response hook.
 		
@@ -326,18 +326,13 @@ class OrderClient extends CommonIntegrationFunctions {
  
 						**/
 					do_action('tm_netsuite_after_order_add', $order_data, $customer_internal_id, $order_internal_id);
-				} else {
-					if (isset($TMWNI_OPTIONS['ns_order_send_email_to_admin_enable']) && 'on' == $TMWNI_OPTIONS['ns_order_send_email_to_admin_enable'] && !empty($TMWNI_OPTIONS['ns_order_admin_email'])) {
+				} elseif (isset($TMWNI_OPTIONS['ns_order_send_email_to_admin_enable']) && 'on' == $TMWNI_OPTIONS['ns_order_send_email_to_admin_enable'] && !empty($TMWNI_OPTIONS['ns_order_admin_email'])) {
 
-						$this->sendEmailIfOrderFailed($addResponse, $order_data, $order_data['order_id'], $order_data['items']);
-
-					}
+					$this->sendEmailIfOrderFailed($addResponse, $order_data, $order_data['order_id'], $order_data['items']);
 				}
-
-
-				return $this->handleAPIAddResponse($addResponse, 'order');
+				return $this->handleAPIAddResponse($addResponse, 'order-add');
 			} catch (SoapFault $e) {
-				$object = 'order';
+				$object = 'order-add';
 
 				$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Add' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
 				$error_msg .= 'Error Message: ' . $e->getMessage();
@@ -348,17 +343,15 @@ class OrderClient extends CommonIntegrationFunctions {
 
 				return 0;
 			}
-		}	
+		}   
 	}
 
 	/**
 	 * Update Order
 	 *
 	*/ 
-	public function updateOrder( $order_data, $customer_internal_id, $order_internal_id) {
+	public function updateOrder( $order_data, $customer_internal_id, $order_internal_id ) {
 		global $TMWNI_OPTIONS;
-		// pr($order_data); die;
-
 		$order_sync_status = true;
 		/**
 			* Before order update hook
@@ -366,9 +359,7 @@ class OrderClient extends CommonIntegrationFunctions {
 			* @since 1.0.0
 			*
 		*/ 
-		do_action('before_update_netsuite_order', $order_data, $customer_internal_id, $order_internal_id);
-
-
+			do_action('before_update_netsuite_order', $order_data, $customer_internal_id, $order_internal_id);
 		/** 
 			*Update order status hook.
 		
@@ -378,87 +369,15 @@ class OrderClient extends CommonIntegrationFunctions {
 			$order_sync_status  = apply_filters('tm_netsuite_order_update_status', $order_sync_status, $order_data, $order_sync_status);
 
 		if (false != $order_sync_status) {
-
+			$this->netsuiteService->logRequests(true);
 
 			$order = $order_data['order'];
 
 			$this->object_id = $order_data['order_id'];
 
-			$so = new SalesOrder();
+			$so = $this->OrderNSRequest($order_data, $customer_internal_id, $order_internal_id);
 
-			$this->salesOrderConditionalMapping($order_data, $order, $order_internal_id);
-
-			$this->createRequest($so, $order_data);
-
-			$so->billingAddress = $this->getBillingAddress($order_data, $so);
-			$so->shippingAddress = $this->getShippingAddress($order_data, $so);
-
-			$so->itemList = new SalesOrderItemList();
-
-
-			$items = $this->_setOrderItems($order_data['items'], $order_data['total_shipping']);
-
-			$so->itemList->item = $items;
-
-			/** 
-				* Order item hook.
-		
-				* @since 1.0.0
- 
-				**/
-			$so->itemList->item = apply_filters('tm_ns_order_item', $items, $order_data['items'], $order_data['total_shipping'], $order_data['order_id']);
-
-			if (isset($TMWNI_OPTIONS['ns_coupon_netsuite_sync']) && !empty($TMWNI_OPTIONS['ns_coupon_netsuite_sync'])) {
-
-				$promoCodes = array();
-
-				$order = new WC_Order($order_data['order_id']);
-
-				$applied_coupons = $order->get_coupon_codes();
-
-
-				$coupon_sync_status = true;
-				/** 
-			* Coupon sync status hook.
-	
-			* @since 1.4.8
-
-			**/
-			$coupon_sync_status = apply_filters('tm_ns_add_netsuite_coupon', $order_data, $customer_internal_id);
-
-				if (!empty($applied_coupons) && true == $coupon_sync_status) {
-					foreach ( $applied_coupons as $key => $value) {
-						if (isset($TMWNI_OPTIONS['ns_promo_discount_id']) && !empty($TMWNI_OPTIONS['ns_promo_discount_id']) ) {
-							$promoCodes[] = $this->_addNSpromo($value, $TMWNI_OPTIONS['ns_promo_discount_id']);
-						} else {
-							$promoCodes[] = $this->_addNSpromo($value);
-						}
-					}
-				}
-
-				if ( isset($promoCodes) && !empty($promoCodes) ) {
-
-					$so->canHaveStackable = 1;
-
-					$promoListObj = new PromotionsList();
-					$promoListObj->promotions = array();
-					foreach ($promoCodes as $codeKey => $codeValue) {
-
-						$recRef = new RecordRef();
-						$recRef->internalId = $codeValue;
-
-						// $recRef->internalId = 3842;
-						$promoListObj->promotions[$codeKey] = new Promotions();
-						$promoListObj->promotions[$codeKey]->promoCode = $recRef;
-					}
-
-					$so->promotionsList = $promoListObj;
-
-				}
-			}
-
-		$so->internalId = $order_internal_id;
-
+			$so->internalId = $order_internal_id;
 			/** 
 				*Update order data request hook.
 		
@@ -467,14 +386,11 @@ class OrderClient extends CommonIntegrationFunctions {
 				**/
 			$so = apply_filters('tm_update_request_order_data', $so, $order_data['order_id']);
 
-
 			$request = new UpdateRequest();
 			$request->record = $so;
-			// pr($so);
- 
 			try {
 				$updateResponse = $this->netsuiteService->update($request);
-				// pr($updateResponse); die('update');
+				// pr($updateResponse); die('zzzz');
 				if (isset($updateResponse->writeResponse->status->isSuccess) && 1 == $updateResponse->writeResponse->status->isSuccess) {
 					/** 
 						*After Update order hook.
@@ -482,11 +398,11 @@ class OrderClient extends CommonIntegrationFunctions {
 						* @since 1.0.0
  
 						**/
-					do_action('tm_netsuite_after_order_update', $order_data, $customer_internal_id, $order_internal_id);
+					do_action('tm_netsuite_after_order_update', $order_data, $customer_internal_id, $order_internal_id, $so);
 				}
-				return $this->handleAPIAddResponse($updateResponse, 'order');
+				return $this->handleAPIAddResponse($updateResponse, 'order-update');
 			} catch (SoapFault $e) {
-				$object = 'order';
+				$object = 'order-update';
 				$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Add' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
 				$error_msg .= 'Error Message: ' . $e->getMessage();
 
@@ -495,11 +411,38 @@ class OrderClient extends CommonIntegrationFunctions {
 				return 0;
 			}
 		}
-
 	}
+	public function createSOInvoice($order_id,$customer_internal_id,$order_internal_id) {
+		$this->object_id = $order_id;
 
+		$invoice = new Invoice();
+			
+		$invoice->createdFrom = new RecordRef();
+		$invoice->createdFrom->internalId = $order_internal_id;
+			
+		$invoice->entity = new RecordRef();
+		$invoice->entity->internalId = $customer_internal_id; // Replace with the customer internal ID
 
-	public function getBillingAddress( $order_data, $so) {
+		// Submit the Invoice
+		$request = new AddRequest();
+		$request->record = $invoice;
+
+		try {
+			$addResponse = $this->netsuiteService->add($request);   
+			$invoice_id =  $this->handleAPIAddResponse($addResponse, 'invoice');  
+			tm_ns_update_post_meta($order_id, TMWNI_Settings::$ns_invoice_id, $invoice_id);
+		} catch (SoapFault $e) {
+			$object = 'invoice';
+			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Add' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
+			$error_msg .= 'Error Message: ' . $e->getMessage();
+
+			$this->handleLog(0, $this->object_id, $object, $error_msg);
+
+			return 0;
+		}
+	} 
+
+	public function getBillingAddress( $order_data, $so ) {
 		if (isset($order_data['billing_address']['country']) && !empty($order_data['billing_address']['country'])) {
 			$ns_billing_country = $order_data['billing_address']['country'];
 			;
@@ -528,7 +471,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	}
 
 
-	public function getShippingAddress( $order_data, $so) {
+	public function getShippingAddress( $order_data, $so ) {
 		if (isset($order_data['shipping_address']['country']) && !empty($order_data['shipping_address']['country'])) {
 			$ns_shipping_country = $order_data['shipping_address']['country'];
 		} else {
@@ -553,21 +496,21 @@ class OrderClient extends CommonIntegrationFunctions {
 
 
 		return $so->shippingAddress;
-
 	}
-
-
-
 	/**
 	 * Setting sales order items
 	 */
-	private function _setOrderItems( $order_items, $shipping_cost) {
+	private function _setOrderItems( $order_items, $shipping_cost ) {
 		global $TMWNI_OPTIONS;
 		$soi = array();
 		if (!empty($order_items)) {
 			foreach ($order_items as $key => $item) {
 
-				$soi[$key] = new SalesOrderItem();
+				if (isset($TMWNI_OPTIONS['ns_order_record_type']) && 'cashsale' == $TMWNI_OPTIONS['ns_order_record_type']) {
+					$soi[$key] =  new CashSaleItem();
+				} else {
+					$soi[$key] = new SalesOrderItem();
+				}
 				$soi[$key]->item = new RecordRef();
 				$soi[$key]->item->internalId = $item['internalId'];
 				$soi[$key]->quantity = $item['qty'];
@@ -588,7 +531,6 @@ class OrderClient extends CommonIntegrationFunctions {
 					}
 				}
 
-
 				if (isset($TMWNI_OPTIONS['order_item_price_level_name_enable']) && !empty($TMWNI_OPTIONS['order_item_price_level_name_enable']) ) {
 					$price = new RecordRef();
 					$price->internalId = $TMWNI_OPTIONS['order_item_price_level_name'];
@@ -605,10 +547,6 @@ class OrderClient extends CommonIntegrationFunctions {
 
 
 				}
-
-
-
-
 				//For order line item tax codes
 				if (isset($TMWNI_OPTIONS['order_item_tax_code_enable']) && !empty($TMWNI_OPTIONS['order_item_tax_code_enable']) ) {
 
@@ -618,21 +556,20 @@ class OrderClient extends CommonIntegrationFunctions {
 					$soi[$key]->taxCode = $taxcode;
 
 
-				}	
+				}   
 
-
-
-				
-				//$soi[$key]->amount = $item['total'];
 			}
-
 
 			$soi = array_reverse($soi);
 
-
 			if (isset($TMWNI_OPTIONS['ns_order_shiping_line_item']) && !empty($TMWNI_OPTIONS['ns_order_shiping_line_item']) && isset($TMWNI_OPTIONS['ns_order_shiping_line_item_enable']) && !empty($TMWNI_OPTIONS['ns_order_shiping_line_item_enable']) ) {
 				$key = ++$key;
-				$soi[$key] = new SalesOrderItem();
+				if (isset($TMWNI_OPTIONS['ns_order_record_type']) && 'cashsale' == $TMWNI_OPTIONS['ns_order_record_type']) {
+					$soi[$key] =  new CashSaleItem();
+				} else {
+					$soi[$key] = new SalesOrderItem();
+				}
+
 				$soi[$key]->item = new RecordRef();
 				$soi[$key]->item->internalId = $TMWNI_OPTIONS['ns_order_shiping_line_item'];
 				$soi[$key]->quantity = 1;
@@ -656,8 +593,7 @@ class OrderClient extends CommonIntegrationFunctions {
 		return $soi;
 	}
 
-
-	public function getPromoData( $value, $discount_internal_id, $promoInternalID) {
+	public function getPromoData( $value, $discount_internal_id, $promoInternalID ) {
 
 		$coupon_post_obj = get_page_by_title($value, OBJECT, 'shop_coupon');
 
@@ -690,8 +626,6 @@ class OrderClient extends CommonIntegrationFunctions {
 			$coupon_data->internalId = $promoInternalID;
 		}
 
-
-
 		$discRef = new RecordRef();
 
 		$discRef->internalId = $discount_internal_id;
@@ -712,21 +646,20 @@ class OrderClient extends CommonIntegrationFunctions {
 						//"useType" => $usetype,                                               //INSUFFICIENT_PERMISSION or Readonly field
 						'description' => $coupon_post_obj->post_excerpt,
 						'startDate' => gmdate(DATE_ATOM, strtotime($coupon_post_obj->post_date)),
-						'endDate' => $coupan_expiry
+						'endDate' => $coupan_expiry,
 					);
 
 		setFields($coupon_data, $fieldsArray);
 
 
 		return $coupon_data;
-
 	}
 
 
 	/**
 	 * Add order promo to NetSuite
 	 */
-	public function _addNSpromo( $value, $discount_internal_id = 0) {
+	public function _addNSpromo( $value, $discount_internal_id = 0 ) {
 
 		global $TMWNI_OPTIONS;
 
@@ -782,7 +715,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Search order promo on NetSuite
 	 */
-	public function searchPromoCode( $PromotionCode) {
+	public function searchPromoCode( $PromotionCode ) {
 
 
 		$this->netsuiteService->setSearchPreferences(false, 20);
@@ -820,31 +753,70 @@ class OrderClient extends CommonIntegrationFunctions {
 			return 0;
 
 		}
-
 	}
+	/**
+	 * Adding customer deposite on NetSuite
+	 */
+	public function createCustomerDeposite( $order_data, $customer_internal_id, $order_internal_id ) {
+		global $TMWNI_OPTIONS;
+		$order_id = $order_data['order_id'];
+		$order = wc_get_order($order_id);
+
+		$this->object_id = 'CustomerDeposite';
+
+		$customer_deposite = new CustomerDeposit();
+
+		$customer_deposite->customer = new RecordRef();
+		$customer_deposite->customer->internalId = $customer_internal_id;
+
+		$customer_deposite->salesOrder = new RecordRef();
+		$customer_deposite->salesOrder->internalId = $order_internal_id;
+
+		$customer_deposite->payment = $order->total;
+
+		$request = new AddRequest();
+		$request->record = $customer_deposite;
+
+		try {
+			$addResponse = $this->netsuiteService->add($request);
+			return $this->handleAPIAddResponse($addResponse, 'customer deposite');
+		} catch (SoapFault $e) {
+			$object = 'customer deposite';
+			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Add' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
+			$error_msg .= 'Error Message: ' . $e->getMessage();
+
+			$this->handleLog(0, $this->object_id, $object, $error_msg);
+
+			return 0;
+		}
+	} 
 
 
 	/**
 	 * Delete Order
 	 *
 	*/ 
-	public function deleteOrder( $nsOrderInternalId, $order_id) {
+	public function deleteOrder( $nsOrderInternalId, $order_id ) {
 		$this->object_id = $order_id;
 
+		$record_type = tm_ns_get_post_meta($order_id, 'ns_record_type', true);
+		if ('cashsale.nl' == $record_type) {
+			$type = 'cashSale';
+		} else {
+			$type = 'salesOrder';
+		}
+
 		$nsSalesOrder = new RecordRef();
-		$nsSalesOrder->type = 'salesOrder';
+		$nsSalesOrder->type = $type;
 		$nsSalesOrder->internalId = $nsOrderInternalId;
 
 		$deleteOrder = new DeleteRequest();
 		$deleteOrder->baseRef = $nsSalesOrder;
-		// $deleteOrder->deletionReason = "Trashed from the store";
-
-		// pr($deleteOrder);
 
 		try {
 			$delResponse = $this->netsuiteService->delete($deleteOrder);
-			// pr($delResponse); die('1');
-			return $this->handleAPIAddResponse($delResponse, 'order Delete');
+			$this->handleAPIAddResponse($delResponse, 'order Delete');
+			return;
 		} catch (SoapFault $e) {
 			$object = 'order';
 			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . "Delete' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
@@ -852,18 +824,16 @@ class OrderClient extends CommonIntegrationFunctions {
 			$this->handleLog(0, $this->object_id, $object, $error_msg);
 			return 0;
 		}     
-
 	}
 
 	/**
 	 * Create mapping Request
 	 *
 	*/ 
-	public function createRequest( &$so, $order_data) {
+	public function createRequest( &$so, $order_data ) {
 		foreach ($order_data['ns_salesorder_fields'] as $nsfield => $value) {
 
-			if ( isset($value['type']) && 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type']) {
-
+			if (isset($value['type']) && ( 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type'] )) {
 				if ('phone'==$nsfield && strlen($value['value']) > 6) {
 					$so->$nsfield = $value['value'];
 				} else {
@@ -925,7 +895,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom field list array.
 	 */
-	public function customFieldList( $custfield) {
+	public function customFieldList( $custfield ) {
 		$this->custFields[] = $custfield;
 		$customFieldList = new customFieldList();
 		$customFieldList->customField = $this->custFields;
@@ -936,7 +906,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom string field instance.
 	 */
-	public function customField( $scriptId, $value) {
+	public function customField( $scriptId, $value ) {
 		$custfield = new StringCustomFieldRef();
 		$custfield->scriptId = $scriptId;
 		$custfield->value = $value;
@@ -946,7 +916,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom string field instance.
 	 */
-	public function customRecordRefField( $scriptId, $value) {
+	public function customRecordRefField( $scriptId, $value ) {
 		$custfield = new StringCustomFieldRef();
 		$custfield->scriptId = $scriptId;
 		$custfield->value = new RecordRef();
@@ -957,7 +927,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom select field instance.
 	 */
-	public function customFieldSelect( $scriptId, $value) {
+	public function customFieldSelect( $scriptId, $value ) {
 		$custfieldselect = new SelectCustomFieldRef();
 		$custfieldselect->scriptId = $scriptId;
 		$recref = new ListOrRecordRef();
@@ -970,7 +940,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom multiselect field instance.
 	 */
-	public function customFieldMultiSelect( $scriptId, array $value) {
+	public function customFieldMultiSelect( $scriptId, array $value ) {
 		$multivalues = array();
 		$custfieldmultiselect = new MultiSelectCustomFieldRef();
 		$custfieldmultiselect->scriptId = $scriptId;
@@ -987,7 +957,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom boolean field instance.
 	 */
-	public function customFieldboolean( $scriptId, $value) {
+	public function customFieldboolean( $scriptId, $value ) {
 		$custfieldselect = new BooleanCustomFieldRef();
 		$custfieldselect->scriptId = $scriptId;
 		$custfieldselect->value = $value;
@@ -998,9 +968,9 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom field list array.
 	 */
-	public function customSearchFieldList( $custfield) {
+	public function customSearchFieldList( $custfield ) {
 		$customFieldList = new SearchCustomFieldList();
-		$customFieldList->customField = [$custfield];
+		$customFieldList->customField = array( $custfield );
 		return $customFieldList;
 	}
 
@@ -1008,7 +978,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom string field instance.
 	 */
-	public function customSearchField( $scriptId, $value) {
+	public function customSearchField( $scriptId, $value ) {
 		$custfield = new SearchStringCustomField();
 		$custfield->scriptId = $scriptId;
 		$custfield->searchValue = $value;
@@ -1019,7 +989,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating conditional mapping for orders.
 	 */
-	public function salesOrderConditionalMapping( &$order_data, $order, $order_internal_id = 0) {
+	public function salesOrderConditionalMapping( &$order_data, $order, $order_internal_id = 0 ) {
 		$order_data['ns_salesorder_fields']=array();
 		if (!empty($order->get_user_id())) {
 			$this->user_id = $order->get_user_id();
@@ -1027,7 +997,7 @@ class OrderClient extends CommonIntegrationFunctions {
 		$cm_options = get_option('order_cm_options');
 		if (!empty($cm_options)) {
 			foreach ($cm_options as $key => $mapping) {
-				if (0 != $order_internal_id && isset($mapping['exlcude_in_update']) && 'on'  == $mapping['exlcude_in_update']) { //skip if admin wants to exlcude this update request
+				if (( !empty($order_internal_id) && isset($mapping['exlcude_in_update']) && 'on' == $mapping['exlcude_in_update'] ) ) {
 					continue;
 				}
 				$saved_value = '';
@@ -1035,7 +1005,6 @@ class OrderClient extends CommonIntegrationFunctions {
 					case 1:
 						if ('' != $mapping['wc_field_key'] && '' != $mapping['wc_field_value'] && '' != $mapping ['ns_field_key'] && '' != $mapping['ns_field_value']) {
 							if (1 == $mapping['type']) {
-								// pr($mapping['wc_field_key']);//die('*');
 								if ('user_id' == $mapping['wc_field_key']) {
 									$saved_value = $this->user_id;
 								} elseif ('email' == $mapping['wc_field_key']) {
@@ -1054,42 +1023,41 @@ class OrderClient extends CommonIntegrationFunctions {
 							} else if (4 == $mapping ['type']) {
 								if (!empty($order)) {
 									$saved_value = tm_ns_get_post_meta($order->get_id(), $mapping['wc_field_key']);
-									// pr($saved_value); die('zzzz');
 								}
 							}
 						
 
 							if ('contains'  == $mapping['wc_where_op'] ) {
 								if (false !== strpos(strtolower($saved_value), strtolower($mapping['wc_field_value']))) {
-									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							} elseif ('doesnotcontain' == $mapping['wc_where_op']) {
 								if (false === strpos(strtolower($saved_value), strtolower($mapping['wc_field_value']))) {
-									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							} elseif ('is' == $mapping['wc_where_op']) {
 								if ('null' == strtolower($mapping['wc_field_value'])) {
 									if (empty($saved_value)) {
-									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+										$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 									}
 								} elseif (html_entity_decode(strtolower($mapping['wc_field_value']))  == html_entity_decode(strtolower($saved_value))) {
-									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 
 								}
 							} elseif ('isnot' == $mapping['wc_where_op']) {
 								if ('null' == strtolower($mapping['wc_field_value'])) {
 									if (!empty($saved_value)) {
-								$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+										$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 									}
 								} elseif ( strtolower($saved_value) != strtolower($mapping['wc_field_value'])) {
-													$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							}
 						}
 						break;
 					case 2:
 						if ('' != $mapping['ns_field_key'] && '' != $mapping['ns_field_value']) {
-							$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+							$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 						}
 						break;
 					case 3:
@@ -1117,7 +1085,7 @@ class OrderClient extends CommonIntegrationFunctions {
 							}
 
 							if (isset($saved_value) && !empty($saved_value)) {
-								$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$prefix . $saved_value);
+								$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$prefix . $saved_value );
 							}
 						}
 						break;
@@ -1127,15 +1095,14 @@ class OrderClient extends CommonIntegrationFunctions {
 			}
 		}
 		return true;
-		
 	}
 
 
-	public function sendEmailIfOrderFailed( $addResponse, $order_data, $order_id, $order_items) {
+	public function sendEmailIfOrderFailed( $addResponse, $order_data, $order_id, $order_items ) {
 		global $TMWNI_OPTIONS;
 		$admin_email = $TMWNI_OPTIONS['ns_order_admin_email'];
 		$subject = 'Order Failed on NetSuite';
-		$headers = array('Content-Type: text/html; charset=UTF-8');
+		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
 		$Order = $order_data['order'];
 
@@ -1215,10 +1182,5 @@ class OrderClient extends CommonIntegrationFunctions {
  
 			**/
 			do_action('tm_woocommerce_netsuite_order_failed', $addResponse, $order_data, $order_id, $order_items);
-
-
-
-
 	}
-
 }

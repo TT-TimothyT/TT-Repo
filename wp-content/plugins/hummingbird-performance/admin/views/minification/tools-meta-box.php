@@ -11,6 +11,9 @@
  * @var bool   $delay_js                       Delay JS status.
  * @var string $delay_js_timeout               Delay JS Timeout.
  * @var string $delay_js_excludes              Delay JS Exclusion lists.
+ * @var bool   $font_optimization              Font Optimization.
+ * @var string $preload_fonts                  Preload Fonts.
+ * @var bool   $font_swap                      Font swap
  * @var string $critical_css                   Critical CSS.
  * @var string $critical_css_mode              Critical CSS Mode.
  * @var string $critical_css_type              Critical CSS type.
@@ -68,11 +71,8 @@ if ( ! $critical_css_mode ) {
 					<span id="non_logged_in_delay_js-label" class="sui-toggle-label">
 						<?php esc_html_e( 'Delay JavaScript Execution', 'wphb' ); ?>
 					</span>
-					<span class="sui-description">
-						<?php esc_html_e( 'Upgrade to Pro for instant access and fully optimized JS.', 'wphb' ); ?>
-					</span>
 				</label>
-				<?php Utils::unlock_now_link( 'eo_settings', 'hummingbird_delay_js_ao_extra', 'delayjs' ); ?>
+				<?php Utils::unlock_now_link( 'eo_settings', 'hummingbird_delay_js_ao_extra', 'delayjs', true, true ); ?>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -190,11 +190,8 @@ script id"><?php echo esc_html( $delay_js_excludes ); ?></textarea>
 					<span id="non_logged_in_critical_css-label" class="sui-toggle-label">
 						<?php esc_html_e( 'Generate Critical CSS', 'wphb' ); ?>
 					</span>
-					<span class="sui-description">
-						<?php esc_html_e( 'Another way to boost site speed. Even faster pages, better user experience and improved SEO. You will love it!', 'wphb' ); ?>
-					</span>
 				</label>
-				<?php Utils::unlock_now_link( 'eo_settings', 'hummingbird_criticalcss_ao_extra', 'critical_css' ); ?>
+				<?php Utils::unlock_now_link( 'eo_settings', 'hummingbird_criticalcss_ao_extra', 'critical_css', true, true ); ?>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -405,5 +402,60 @@ script id"><?php echo esc_html( $delay_js_excludes ); ?></textarea>
 				<?php esc_html_e( 'Next, switch to the manual mode in asset optimization and move all of your CSS files to the footer area.', 'wphb' ); ?>
 			</li>
 		</ol>
+	</div>
+</div>
+
+<div class="sui-box-settings-row">
+	<div class="sui-box-settings-col-1">
+			<span class="sui-list-label"><strong><?php esc_html_e( 'Font Optimization', 'wphb' ); ?></strong>
+			</span>
+			<span class="sui-description">
+				<?php esc_html_e( 'Improve performance, PageSpeed, and user experience by preloading critical fonts and enabling fallbacks.', 'wphb' ); ?>
+			</span>
+	</div>
+
+	<div class="sui-box-settings-col-2">
+	<div class="sui-form-field" id="font_swap_settings">
+			<label for="font_swap" class="sui-toggle">
+				<input type="checkbox" id="font_swap" name="font_swap" aria-labelledby="font_swap-label" aria-describedby="font_swap-desc" <?php checked( $font_swap ); ?>>
+				<span class="sui-toggle-slider" aria-hidden="true"></span>
+				<span id="font_swap-label" class="sui-toggle-label">
+					<?php esc_html_e( 'Swap Web Fonts', 'wphb' ); ?>
+				</span>
+				<span class="sui-description sui-toggle-description">
+					<?php esc_html_e( 'Ensure text visibility for web fonts, by applying a similar fallback font that visitors will temporarily see until the primary font loads.', 'wphb' ); ?>
+				</span>
+			</label>
+		</div>
+		<div class="sui-form-field">
+			<label for="font_optimization" class="sui-toggle">
+				<input type="checkbox" name="font_optimization" id="font_optimization" aria-labelledby="font_optimization-label" <?php checked( $font_optimization ); ?>>
+				<span class="sui-toggle-slider" aria-hidden="true"></span>
+				<span id="font_optimization-label" class="sui-toggle-label">
+					<?php esc_html_e( 'Preload Fonts', 'wphb' ); ?>
+				</span>
+				<?php
+				$font_optimization_classes = array( 'sui-description', 'sui-toggle-description' );
+
+				if ( ! $font_optimization ) {
+					$font_optimization_classes[] = 'sui-hidden';
+				}
+				?>
+				<span class="sui-description">
+					<?php esc_html_e( 'Instruct browsers to preload fonts that are critical to your site\'s user experience (e.g., content users are likely to interact with first).', 'wphb' ); ?>
+				</span>
+				<span class="<?php echo esc_attr( implode( ' ', $font_optimization_classes ) ); ?>" id="font_optimization_preload_box">
+					<label class="sui-label" for="preload_fonts">
+						<?php esc_html_e( 'Enter the URLs of the font files you wish to preload (one per line).', 'wphb' ); ?>
+					</label>
+					<textarea class="sui-form-control" id="preload_fonts" name="preload_fonts" placeholder="/wp-content/themes/your-theme/assets/fonts/font-file.otf"><?php echo esc_html( $preload_fonts ); ?></textarea>
+					<?php
+					printf(
+						esc_html__( 'The domain component of the URL will be removed automatically if included. Accepted font extensions: otf, ttf, svg, woff, and woff2.', 'wphb' )
+					);
+					?>
+				</span>
+			</label>
+		</div>
 	</div>
 </div>

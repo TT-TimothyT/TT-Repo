@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class VsoeSopGroup {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _EXCLUDE = '_exclude';
 	const _NORMAL = '_normal';
 	const _SOFTWARE = '_software';

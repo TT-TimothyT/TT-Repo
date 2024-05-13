@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class BillingScheduleType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CHARGEBASED = '_chargeBased';
 	const _FIXEDBIDINTERVAL = '_fixedBidInterval';
 	const _FIXEDBIDMILESTONE = '_fixedBidMilestone';

@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class TransactionChargeType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CONCESSION = '_concession';
 	const _FIXEDDATE = '_fixedDate';
 	const _FIXEDUSAGE = '_fixedUsage';

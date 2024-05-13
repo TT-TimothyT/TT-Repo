@@ -355,6 +355,9 @@ class Minify {
 		// Remove notice.
 		delete_site_option( 'wphb-notice-minification-optimized-show' );
 
+		// Reset Complete time.
+		$minify::update_ao_completion_time( true );
+
 		// Clear all the page cache.
 		do_action( 'wphb_clear_page_cache' );
 	}
@@ -593,6 +596,9 @@ class Minify {
 		unset( $options['critical_css_mode'] );
 		unset( $options['critical_page_types'] );
 		unset( $options['critical_skipped_custom_post_types'] );
+		unset( $options['font_optimization'] );
+		unset( $options['preload_fonts'] );
+		unset( $options['font_swap'] );
 		return $options;
 	}
 

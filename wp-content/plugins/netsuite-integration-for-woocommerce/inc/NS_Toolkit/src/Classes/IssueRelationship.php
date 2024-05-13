@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class IssueRelationship {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BLOCKS = '_blocks';
 	const _DEPENDSON = '_dependsOn';
 	const _DUPLICATEDBY = '_duplicatedBy';

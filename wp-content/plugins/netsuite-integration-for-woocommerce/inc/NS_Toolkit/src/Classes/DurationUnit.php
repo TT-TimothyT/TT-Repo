@@ -18,7 +18,6 @@
 namespace NetSuite\Classes;
 
 class DurationUnit {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const HOUR = 'hour';
 }

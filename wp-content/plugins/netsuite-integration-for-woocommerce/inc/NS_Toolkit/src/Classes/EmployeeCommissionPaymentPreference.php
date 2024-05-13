@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EmployeeCommissionPaymentPreference {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACCOUNTSPAYABLE = '_accountsPayable';
 	const _PAYROLL = '_payroll';
 	const _SYSTEMPREFERENCE = '_systemPreference';

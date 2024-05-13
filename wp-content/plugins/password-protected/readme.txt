@@ -2,9 +2,9 @@
 Contributors: wpexpertsio
 Tags: password, maintenance mode, coming soon page, password protect, login
 Requires at least: 4.6
-Tested up to: 6.4.3
+Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 2.6.8
+Stable tag: 2.7.1
 License: GPLv2 or later
 
 The ultimate password protection plugin that protects your WordPress site with a single password.
@@ -26,7 +26,7 @@ Password Protected does not protect images or uploaded files, so if you enter an
 * Allow logged-in users - Option to give logged-in users access to the website.
 * Allow RSS Feeds - Option to allow access to feeds.
 * Allow Rest API Access - Allow admin to access pages and posts.
-* Customization – Customize the password-protected screen, including the background, font, logo, and colors (using [Login Designer](https://wp.org/plugins/login-designer))
+* Customization - Customize the password-protected screen, including the background, font, logo, and colors (using [Login Designer](https://wp.org/plugins/login-designer))
 
 > Please note, this plugin works by setting a cookie to allow access to the site. If you are using a caching plugin or web hosting such as WP Engine that has in-built caching, you will need to configure the caching service to be disabled if the Password Protected cookie is set.
 
@@ -35,7 +35,7 @@ Password Protected does not protect images or uploaded files, so if you enter an
 [Password Protected Pro](https://passwordprotectedwp.com/pricing/?utm_source=wp_org&utm_medium=readme) is a [Kinsta recommended plugin](https://kinsta.com/blog/password-protect-wordpress-site/) that offers powerful features that will take your WordPress website password protected to the next level.
 
 * Exclude page posts & post types - Option to exclude specific pages and post types from password protection.
-* Limit login attempts - Limit the user’s attempts to enter a password for a specified interval.
+* Limit login attempts - Limit the user's attempts to enter a password for a specified interval.
 * Lockdown time - Set a time (in minutes) during which users can not enter the password after their login attempts are limited.
 * Usage limits - Set a usage limit after which a password can not be used.
 * Status control - You can change the status of the password (Active, Deactivated, Expired).
@@ -57,14 +57,14 @@ Password Protected has the ability to secure your entire website with a single p
 You can allow RSS feeds to show a login page after which user accessing the feed can view the password protected content. Disabling the option will restrict any user's access to the website even if the RSS feed is public.  
 
 = Password usage limits and complexities =
-Limits users from entering the password using Password Protected’s Usage Limit counter. Password greater than that limit can not be applicable on the login page.
+Limits users from entering the password using Password Protected's Usage Limit counter. Password greater than that limit can not be applicable on the login page.
 
 Usage limits can also be restricted by setting a password expiry from the calendar settings. This prevents users from re-using any given password. Regular password changes mitigate the risk of any security breach.
 
-Limiting password attempts prevents security issues like the Brute Force attack, where hackers keep trying to guess your password until they get it right. A complimentary solution to this feature is the Lockdown Timer, which resets the user’s right to log in after exceeding their login attempt limit. 
+Limiting password attempts prevents security issues like the Brute Force attack, where hackers keep trying to guess your password until they get it right. A complimentary solution to this feature is the Lockdown Timer, which resets the userâ€™s right to log in after exceeding their login attempt limit. 
 
 = Monitor and review activity logs for Password Protected =
-Password Protected’s Activity Log is similar to an audit log that gives you a record of the events that have taken place on your website. To provide you with a better understanding, here is a list of the details you will find in the activity log:
+Password Protected's Activity Log is similar to an audit log that gives you a record of the events that have taken place on your website. To provide you with a better understanding, here is a list of the details you will find in the activity log:
 
 * Filter options for passwords used in a specific range (All-time, Today, Yesterday, This Week, This Month)
 * IP addresses of the system from where the passwords were attempted.
@@ -138,6 +138,13 @@ If you would like to translate this plugin you can easily contribute at the [Tra
 4. Password Protected advanced settings page.
 
 == Changelog ==
+= 2.7.1 =
+- Fixed - Disabled activity report by default.
+
+= 2.7 =
+- New: Added Password Activity Report to provide weekly insights on access attempts to your protected sites.
+- New: Added Categoric Tabs and Sub-Tabs User Interface for easy navigation and better user experience.
+
 = 2.6.8 =
 - Fix: Gutenberg compatibility issue fixed - REST API was getting blocked
 

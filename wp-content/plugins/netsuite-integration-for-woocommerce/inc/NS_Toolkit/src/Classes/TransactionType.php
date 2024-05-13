@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TransactionType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ASSEMBLYBUILD = '_assemblyBuild';
 	const _ASSEMBLYUNBUILD = '_assemblyUnbuild';
 	const _BINTRANSFER = '_binTransfer';

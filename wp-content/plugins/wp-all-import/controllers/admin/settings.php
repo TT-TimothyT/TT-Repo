@@ -271,7 +271,12 @@ class PMXI_Admin_Settings extends PMXI_Controller_Admin {
 	
 	public function cleanup(){
 
-		$removedFiles = 0;
+        $nonce = (!empty($_REQUEST['_wpnonce'])) ? $_REQUEST['_wpnonce'] : '';
+        if ( ! wp_verify_nonce( $nonce, '_wpnonce-cleanup_logs' ) ) {
+            die( __('Security check', 'wp_all_import_plugin') );
+        }
+
+        $removedFiles = 0;
 
 		$wp_uploads = wp_upload_dir();
 
@@ -281,7 +286,8 @@ class PMXI_Admin_Settings extends PMXI_Controller_Admin {
 
 		$files = array_diff(@scandir($dir), array('.','..'));
 
-		$cacheFiles = @array_diff(@scandir($cacheDir), array('.','..'));
+		$cacheFiles = @scandir($cacheDir);
+		$cacheFiles = is_array($cacheFiles) ? @array_diff($cacheFiles, array('.','..')) : [];
 
 		$msg = __('Files not found', 'wp_all_import_plugin');
 
@@ -369,12 +375,20 @@ class PMXI_Admin_Settings extends PMXI_Controller_Admin {
 
 	public function dismiss(){
 
+		if ( ! check_ajax_referer( 'wp_all_import_secure', 'security', false )){
+			exit( __('Security check', 'wp_all_import_plugin'));
+		}
+
 		PMXI_Plugin::getInstance()->updateOption("dismiss", 1);
 
 		exit('OK');
 	}
 
 	public function dismiss_speed_up(){
+
+		if ( ! check_ajax_referer( 'wp_all_import_secure', 'security', false )){
+			exit( __('Security check', 'wp_all_import_plugin'));
+		}
 
 		PMXI_Plugin::getInstance()->updateOption("dismiss_speed_up", 1);
 
@@ -383,12 +397,20 @@ class PMXI_Admin_Settings extends PMXI_Controller_Admin {
 
 	public function dismiss_manage_top(){
 
+		if ( ! check_ajax_referer( 'wp_all_import_secure', 'security', false )){
+			exit( json_encode(array('result' => array(), 'failed_msgs' => array(__('Security check', 'wp_all_import_plugin')))));
+		}
+
 		PMXI_Plugin::getInstance()->updateOption("dismiss_manage_top", 1);
 
 		exit( json_encode(array('result' => 'OK')) );
 	}
 
 	public function dismiss_manage_bottom(){
+
+		if ( ! check_ajax_referer( 'wp_all_import_secure', 'security', false )){
+			exit( json_encode(array('result' => array(), 'failed_msgs' => array(__('Security check', 'wp_all_import_plugin')))));
+		}
 
 		PMXI_Plugin::getInstance()->updateOption("dismiss_manage_bottom", 1);
 

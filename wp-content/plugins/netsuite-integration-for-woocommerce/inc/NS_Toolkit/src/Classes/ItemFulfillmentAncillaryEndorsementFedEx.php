@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTANCILLARYENDORSEMENTFEDEX {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ADDRESSCORRECTION = '_addressCorrection';
 	const _CARRIERLEAVEIFNORESPONSE = '_carrierLeaveIfNoResponse';
 	const _CHANGESERVICE = '_changeService';

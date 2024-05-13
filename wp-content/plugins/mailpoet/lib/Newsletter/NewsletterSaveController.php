@@ -26,6 +26,7 @@ use MailPoet\NotFoundException;
 use MailPoet\Services\AuthorizedEmailsController;
 use MailPoet\Settings\SettingsController;
 use MailPoet\UnexpectedValueException;
+use MailPoet\Util\CdnAssetUrl;
 use MailPoet\Util\Security;
 use MailPoet\WP\Emoji;
 use MailPoet\WP\Functions as WPFunctions;
@@ -81,6 +82,8 @@ class NewsletterSaveController {
   /*** @var NewsletterCoupon */
   private $newsletterCoupon;
 
+  private CdnAssetUrl $cdnAssetUrl;
+
   public function __construct(
     AuthorizedEmailsController $authorizedEmailsController,
     Emoji $emoji,
@@ -97,7 +100,8 @@ class NewsletterSaveController {
     WPFunctions $wp,
     ApiDataSanitizer $dataSanitizer,
     Scheduler $scheduler,
-    NewsletterCoupon $newsletterCoupon
+    NewsletterCoupon $newsletterCoupon,
+    CdnAssetUrl $cdnAssetUrl
   ) {
     $this->authorizedEmailsController = $authorizedEmailsController;
     $this->emoji = $emoji;
@@ -115,6 +119,7 @@ class NewsletterSaveController {
     $this->dataSanitizer = $dataSanitizer;
     $this->scheduler = $scheduler;
     $this->newsletterCoupon = $newsletterCoupon;
+    $this->cdnAssetUrl = $cdnAssetUrl;
   }
 
   public function save(array $data = []): NewsletterEntity {
@@ -207,6 +212,18 @@ class NewsletterSaveController {
         // translators: %s is the campaign name of the mail which has been copied.
         'post_title' => sprintf(__('Copy of %s', 'mailpoet'), $post->post_title), // @phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
       ]);
+      // Post meta duplication
+      $originalPostMeta = $this->wp->getPostMeta($post->ID);
+      foreach ($originalPostMeta as $key => $values) {
+        foreach ($values as $value) {
+          // Unserialize the value if it was serialized to avoid invalid data format
+          if (is_string($value) && is_serialized($value)) {
+            $value = unserialize($value);
+          }
+          update_post_meta($newPostId, $key, $value);
+        }
+      }
+
       $duplicate->setWpPost($this->entityManager->getReference(WpPostEntity::class, $newPostId));
     }
 
@@ -449,7 +466,7 @@ class NewsletterSaveController {
     }
 
     $newPostId = $this->wp->wpInsertPost([
-      'post_content' => '',
+      'post_content' => $this->getEmailDefaultContent(),
       'post_type' => EmailEditor::MAILPOET_EMAIL_POST_TYPE,
       'post_status' => 'draft',
       'post_author' => $this->wp->getCurrentUserId(),
@@ -457,5 +474,28 @@ class NewsletterSaveController {
     ]);
     $newsletter->setWpPost($this->entityManager->getReference(WpPostEntity::class, $newPostId));
     $this->entityManager->flush();
+  }
+
+  private function getEmailDefaultContent(): string {
+    return '
+      <!-- wp:image {"width":"130px"} -->
+      <figure class="wp-block-image is-resized"><img src="' . esc_url($this->cdnAssetUrl->generateCdnUrl("email-editor/your-logo-placeholder.png")) . '" alt="Your Logo" style="width:130px"/></figure>
+      <!-- /wp:image -->
+      <!-- wp:heading {"style":{"spacing":{"padding":{"top":"var:preset|spacing|10","bottom":"var:preset|spacing|10"}}}} -->
+      <h2 class="wp-block-heading" style="padding-top:var(--wp--preset--spacing--10);padding-bottom:var(--wp--preset--spacing--10)"></h2>
+      <!-- /wp:heading -->
+      <!-- wp:image -->
+      <figure class="wp-block-image"><img alt=""/></figure>
+      <!-- /wp:image -->
+      <!-- wp:paragraph {"style":{"spacing":{"padding":{"top":"var:preset|spacing|20","bottom":"var:preset|spacing|20"}}}} -->
+      <p style="padding-top:var(--wp--preset--spacing--20);padding-bottom:var(--wp--preset--spacing--20)"></p>
+      <!-- /wp:paragraph -->
+      <!-- wp:paragraph {"fontSize":"small"} -->
+      <p class="has-small-font-size">' . esc_html__('You received this email because you are subscribed to the [site:title]', 'mailpoet') . '</p>
+      <!-- /wp:paragraph -->
+      <!-- wp:paragraph {"fontSize":"small"} -->
+      <p class="has-small-font-size"><a href="[link:subscription_unsubscribe_url]">' . esc_html__('Unsubscribe', 'mailpoet') . '</a> | <a href="[link:subscription_manage_url]">' . esc_html__('Manage subscription', 'mailpoet') . '</a></p>
+      <!-- /wp:paragraph -->
+    ';
   }
 }

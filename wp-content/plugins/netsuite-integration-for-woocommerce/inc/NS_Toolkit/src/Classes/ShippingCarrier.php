@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ShippingCarrier {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FEDEXUSPSMORE = '_fedexUspsMore';
 	const _UPS = '_ups';
 }

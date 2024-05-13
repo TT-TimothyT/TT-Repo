@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class SalesOrderOrderStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _PENDINGAPPROVAL = '_pendingApproval';
 	const _PENDINGFULFILLMENT = '_pendingFulfillment';
 	const _CANCELLED = '_cancelled';

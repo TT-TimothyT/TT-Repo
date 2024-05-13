@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTPACKAGEFEDEXCODMETHODFEDEX {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ANY = '_any';
 	const _CASH = '_cash';
 	const _GUARANTEEDFUNDS = '_guaranteedFunds';

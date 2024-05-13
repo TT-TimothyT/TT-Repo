@@ -6,12 +6,12 @@ Domain Path: /languages
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl.txt
 Assets URI: https://jsmoriss.github.io/jsm-show-post-meta/assets/
-Tags: posts, custom fields, meta, metadata, post types, delete, debug, inspector
+Tags: posts, custom fields, metadata, post types, inspector
 Contributors: jsmoriss
 Requires PHP: 7.2.34
 Requires At Least: 5.8
-Tested Up To: 6.4.3
-Stable Tag: 4.1.0
+Tested Up To: 6.5.2
+Stable Tag: 4.3.0
 
 Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.
 
@@ -82,6 +82,35 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 
 <h3>Changelog / Release Notes</h3>
 
+**Version 4.3.0 (2024/04/18)**
+
+* **New Features**
+	* None.
+* **Improvements**
+	* None.
+* **Bugfixes**
+	* None.
+* **Developer Notes**
+	* Updated the `SucomUtil` class.
+* **Requires At Least**
+	* PHP v7.2.34.
+	* WordPress v5.8.
+
+**Version 4.2.0 (2024/03/10)**
+
+* **New Features**
+	* None.
+* **Improvements**
+	* None.
+* **Bugfixes**
+	* None.
+* **Developer Notes**
+	* Added extra sanitation for method arguments in `SucomUtilMetabox::get_table_metadata()`.
+	* Added extra sanitation for 'post_ID' and 'action' values in `SucomUtilWP::doing_block_editor()`.
+* **Requires At Least**
+	* PHP v7.2.34.
+	* WordPress v5.8.
+
 **Version 4.1.0 (2024/02/03)**
 
 * **New Features**
@@ -113,6 +142,14 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 	* WordPress v5.8.
 
 == Upgrade Notice ==
+
+= 4.3.0 =
+
+(2024/04/18) Updated the `SucomUtil` class.
+
+= 4.2.0 =
+
+(2024/03/10) Added extra sanitation.
 
 = 4.1.0 =
 

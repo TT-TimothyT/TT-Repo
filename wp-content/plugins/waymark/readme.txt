@@ -1,18 +1,18 @@
-=== Waymark - Create an Interactive Map, or entire GIS. Embed OpenStreetMap, OSM, MapBox & Google Maps with Leaflet | Import + Export GPX, KML & GeoJSON | Elevation, EXIF & Geo Location ===
+=== Waymark  ===
 Contributors: morehawes
-Tags: GIS, Map maker, Maps, Leaflet, GPX, KML, GeoJSON, OpenStreetMap, EXIF, Map markers
+Tags: GIS, Map maker, GPX, Track, Elevation
 Requires at least: 4.6
 Tested up to: 6.4
 Requires PHP: 5.2
-Stable tag: 1.1.3
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Waymark adds powerful mapping features to WordPress that are easy to use. Create beautiful, interactive Maps that you can customise to suit your needs.
+Waymark adds powerful mapping features to WordPress that are easy to use. Create beautiful, interactive Maps customised to suit your needs.
 
 == Description ==
 
-🗺 [Demo](https://www.ogis.app/yosemite/)
+🗺 [Demo](https://www.waymark.dev/)
 🛠️ [Try](https://www.waymark.dev/try/)
 📼 [Watch](https://www.waymark.dev/#footer)
 📖 [Docs](https://www.waymark.dev/docs/)
@@ -169,6 +169,14 @@ Built on the shoulders of giants, [thank you](https://www.waymark.dev/docs/thank
 10. Documentation and Help is available from the <a href="https://www.waymark.dev/">Waymark</a> website.
 
 == Changelog ==
+
+= 1.1.5 =
+
+- Chinese character fix. Thanks to [hlv008](https://wordpress.org/support/users/hlv008/) for [reporting this](https://wordpress.org/support/topic/the-icon-cannot-be-replaced-or-changed/).
+
+= 1.1.4 =
+
+- Map height bug fix.
 
 = 1.1.3 =
 

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class JOBBILLINGTYPE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NONE = '_none';
 	const _CHARGEBASED = '_chargeBased';
 	const _FIXEDBIDINTERVAL = '_fixedBidInterval';

@@ -1,0 +1,8 @@
+.DS_Store
+composer.json
+composer.lock
+phpcs.xml
+error.txt
+vendor/*
+!vendor/ryanwinchester
+!vendor/autoload.php

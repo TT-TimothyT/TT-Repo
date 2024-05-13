@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentHomeDeliveryTypeFedEx {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _APPOINTMENT = '_appointment';
 	const _DATECERTAIN = '_dateCertain';
 	const _EVENING = '_evening';

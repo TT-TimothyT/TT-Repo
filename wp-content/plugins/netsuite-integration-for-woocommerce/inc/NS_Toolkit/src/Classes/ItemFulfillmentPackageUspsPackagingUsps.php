@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentPackageUspsPackagingUsps {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _PARCEL = '_parcel';
 	const _FLATRATEBOX = '_flatRateBox';
 	const _FLATRATEENVELOPE = '_flatRateEnvelope';

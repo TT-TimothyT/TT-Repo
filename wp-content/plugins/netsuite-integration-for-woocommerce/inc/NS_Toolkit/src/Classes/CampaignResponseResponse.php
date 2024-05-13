@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CampaignResponseResponse {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BOUNCED = '_bounced';
 	const _CLICKEDTHRU = '_clickedThru';
 	const _PURCHASED = '_purchased';

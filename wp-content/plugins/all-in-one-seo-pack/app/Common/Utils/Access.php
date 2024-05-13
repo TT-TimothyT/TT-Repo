@@ -73,7 +73,7 @@ class Access {
 	 */
 	public function __construct() {
 		// First load the roles so that we can pull the roles from the other plugins.
-		$this->setRoles();
+		add_action( 'plugins_loaded', [ $this, 'setRoles' ], 999 );
 
 		// Load later again so that we can pull the roles lately registered.
 		// This needs to run before 1000 so that our update migrations and other hook callbacks can pull the roles.
@@ -185,27 +185,31 @@ class Access {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param  string      $capability The capability to check against.
-	 * @param  string|null $checkRole  A role to check against.
-	 * @return bool                    Whether or not the user has this capability.
+	 * @param  string|array $capability The capability to check against.
+	 * @param  string|null  $checkRole  A role to check against.
+	 * @return bool                     Whether or not the user has this capability.
 	 */
 	public function hasCapability( $capability, $checkRole = null ) {
-		// Only admins have access.
 		if ( $this->isAdmin( $checkRole ) ) {
 			return true;
 		}
 
-		if (
-			(
-				$this->can( 'publish_posts', $checkRole ) ||
-				$this->can( 'edit_posts', $checkRole )
-			) &&
-			false !== strpos( $capability, 'aioseo_page_' )
-		) {
-			return true;
+		$canPublishOrEdit = $this->can( 'publish_posts', $checkRole ) || $this->can( 'edit_posts', $checkRole );
+		if ( ! $canPublishOrEdit ) {
+			return false;
 		}
 
-		return false;
+		if ( is_array( $capability ) ) {
+			foreach ( $capability as $cap ) {
+				if ( false !== strpos( $cap, 'aioseo_page_' ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		return false !== strpos( $capability, 'aioseo_page_' );
 	}
 
 	/**
@@ -254,6 +258,10 @@ class Access {
 				return true;
 			}
 
+			return false;
+		}
+
+		if ( ! function_exists( 'wp_get_current_user' ) ) {
 			return false;
 		}
 

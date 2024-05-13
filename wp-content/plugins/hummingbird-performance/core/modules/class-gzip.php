@@ -48,8 +48,9 @@ class Gzip extends Module_Server {
 			'CSS'        => WPHB_DIR_URL . 'core/modules/dummy/dummy-style.css',
 		);
 
-		$results = array();
-		$try_api = false;
+		$results     = array();
+		$try_api     = false;
+		$compression = '';
 		foreach ( $files as $type => $file ) {
 			// We don't use wp_remote, getting the content-encoding is not working.
 			if ( ! class_exists( 'SimplePie' ) ) {
@@ -70,6 +71,9 @@ class Gzip extends Module_Server {
 				$results[ $type ] = 'privacy';
 			} elseif ( ! empty( $headers ) && isset( $headers['content-encoding'] ) && 'gzip' === $headers['content-encoding'] ) {
 				$results[ $type ] = true;
+			} elseif ( ! empty( $headers ) && isset( $headers['content-encoding'] ) && 'br' === $headers['content-encoding'] ) {
+				$results[ $type ] = true;
+				$compression      = 'br';
 			} else {
 				$try_api = true;
 			}
@@ -99,6 +103,8 @@ class Gzip extends Module_Server {
 				}
 			}
 		}
+
+		update_option( 'wphb_compression_type', $compression );
 
 		return $results;
 	}

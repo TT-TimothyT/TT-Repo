@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TimeBillTimeType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACTUALTIME = '_actualTime';
 	const _ALLOCATEDTIME = '_allocatedTime';
 	const _PLANNEDTIME = '_plannedTime';

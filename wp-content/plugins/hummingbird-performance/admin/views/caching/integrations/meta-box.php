@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="sui-accordion-item <?php echo $cf_is_connected || $has_cloudflare ? 'sui-accordion-item--open' : ''; ?>" id="wphb-react-cloudflare"></div>
 
 	<?php
-	if ( ! is_multisite() || is_network_admin() ) :
+	if ( $redis_connected && ( ! is_multisite() || is_network_admin() ) ) :
 		/**
 		 * Redis integration part.
 		 */

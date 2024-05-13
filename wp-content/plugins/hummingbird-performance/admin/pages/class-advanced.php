@@ -158,6 +158,7 @@ class Advanced extends Page {
 				'query_strings_global' => $options['query_strings_global'],
 				'cart_fragments'       => $options['cart_fragments'],
 				'emoji'                => $remove_emoji,
+				'post_revisions'       => $options['post_revisions'],
 				'emoji_global'         => $options['emoji_global'],
 				'prefetch'             => trim( $prefetch ),
 				'preconnect'           => trim( $preconnect ),

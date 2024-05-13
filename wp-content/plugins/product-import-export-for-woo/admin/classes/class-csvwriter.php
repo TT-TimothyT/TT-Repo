@@ -15,6 +15,8 @@ class Wt_Import_Export_For_Woo_Basic_Csvwriter
 	public $file_path='';
 	public $data_ar='';
 	public $csv_delimiter='';
+	public $file_pointer = '';
+	public $export_data = '';
 	public $use_bom=true;
 	public function __construct($file_path, $offset, $csv_delimiter=",", $use_bom=true)
 	{

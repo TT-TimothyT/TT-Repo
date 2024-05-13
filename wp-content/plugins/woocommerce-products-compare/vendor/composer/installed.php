@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'koilabcode/woocommerce-products-compare',
-        'pretty_version' => '1.4.0',
-        'version' => '1.4.0.0',
-        'reference' => '46d20ecb122261ec6947ccf47e88e604b13fbcf9',
+        'name' => 'kestrelwp/woocommerce-products-compare',
+        'pretty_version' => '1.4.1',
+        'version' => '1.4.1.0',
+        'reference' => '67d45aa63d71dc456e7f43b8197690d260f0eeb2',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => false,
     ),
     'versions' => array(
-        'koilabcode/woocommerce-products-compare' => array(
-            'pretty_version' => '1.4.0',
-            'version' => '1.4.0.0',
-            'reference' => '46d20ecb122261ec6947ccf47e88e604b13fbcf9',
+        'kestrelwp/woocommerce-products-compare' => array(
+            'pretty_version' => '1.4.1',
+            'version' => '1.4.1.0',
+            'reference' => '67d45aa63d71dc456e7f43b8197690d260f0eeb2',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

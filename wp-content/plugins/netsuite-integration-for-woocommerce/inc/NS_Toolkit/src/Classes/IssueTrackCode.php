@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class IssueTrackCode {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NEVER = '_never';
 	const _ONANYCHANGE = '_onAnyChange';
 	const _WHENBASESTATUSISCLOSED = '_whenBaseStatusIsClosed';

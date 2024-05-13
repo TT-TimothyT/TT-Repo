@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class PromotionCodeApplyDiscountTo {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ALLSALES = '_allSales';
 	const _FIRSTSALEONLY = '_firstSaleOnly';
 }

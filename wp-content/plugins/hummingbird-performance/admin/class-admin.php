@@ -103,6 +103,8 @@ class Admin {
 		// Filter built-in wpmudev branding script.
 		add_filter( 'wpmudev_whitelabel_plugin_pages', array( $this, 'builtin_wpmudev_branding' ) );
 
+		add_action( 'admin_head', array( $this, 'wphb_style_upgrade_pro_upsell' ) );
+
 		// Triggered when Hummingbird Admin is loaded.
 		do_action( 'wphb_admin_loaded' );
 	}
@@ -453,4 +455,26 @@ class Admin {
 		return $submenu_file;
 	}
 
+	/**
+	 * Apply inline styles to the "Upgrade to Pro" option in the left sidebar menu.
+	 */
+	public function wphb_style_upgrade_pro_upsell() {
+		if ( Utils::is_member() ) {
+			return;
+		}
+
+		echo '<style>
+			#toplevel_page_wphb ul.wp-submenu li:last-child a[href^="https://wpmudev.com"] {
+				background-color: #8d00b1 !important;
+				color: #fff !important;
+				font-weight: 600 !important;
+			}
+		</style>';
+
+		echo '<script>
+				jQuery(function() {
+					jQuery(\'#toplevel_page_wphb ul.wp-submenu li:last-child a[href^="https://wpmudev.com"]\').attr("target", "_blank");
+				});
+			</script>';
+	}
 }

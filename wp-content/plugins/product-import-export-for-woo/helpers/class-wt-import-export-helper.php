@@ -234,6 +234,10 @@ if(!class_exists('Wt_Iew_IE_Basic_Helper'))
 			$text = (strlen($text) > $length) ? substr($text, 0, $length - strlen($dots)) . $dots : $text;
 			return esc_html($text);
 		}
+
+		public static function wt_string_is_json($string) {
+            return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
+        } 
 		
 	}
 

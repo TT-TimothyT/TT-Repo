@@ -98,6 +98,14 @@ import MinifyScanner from '../scanners/MinifyScanner';
 				window.WPHB_Admin.minification.criticalCSSSwitchMode( 'critical_css' );
 			} );
 
+			// Font optimization checkbox update status.
+			$( 'input[type=checkbox][name=font_optimization]' ).on(
+				'change',
+				function() {
+					$( '#font_optimization_preload_box' ).toggleClass( 'sui-hidden' );
+				}
+			);
+
 			$( 'input[type=checkbox][name=debug_log]' ).on(
 				'change',
 				function() {
@@ -136,6 +144,14 @@ import MinifyScanner from '../scanners/MinifyScanner';
 									'Timeout': response.delay_js_timeout,
 									'Excluded Files': (response.delay_js_exclude) ? 'yes' : 'no',
 								} );
+							}
+
+							if ( response.fontOptimizationUpdateType ) {
+								window.wphbMixPanel.trackFontOptimizationEvent( response.fontOptimizationUpdateType, 'font_preload' );
+							}
+
+							if ( response.fontSwapUpdateType ) {
+								window.wphbMixPanel.trackFontOptimizationEvent( response.fontSwapUpdateType, 'font_swapping' );
 							}
 
 							if ( response.isCriticalValueUpdated ) {

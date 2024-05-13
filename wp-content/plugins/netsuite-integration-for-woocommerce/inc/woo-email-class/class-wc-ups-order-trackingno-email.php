@@ -36,7 +36,7 @@ if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 			$this->heading = 'Order Tracking No.';
 			$this->subject = 'Order Tracking No.';
 
-			$this->template_base  = TMWNI_DIR . 'woocommerce/' ;	// Fix the template base lookup for use on admin screen template path display
+			$this->template_base  = TMWNI_DIR . 'woocommerce/' ;    // Fix the template base lookup for use on admin screen template path display
 
 			$this->template_html  = 'emails/email-ups-trackingno-recieved.php';
 			$this->template_plain = 'emails/plain/email-ups-trackingno-recieved.php';
@@ -73,7 +73,6 @@ if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 			}
 
 			$this->restore_locale();
-
 		}
 
 		/**
@@ -126,14 +125,14 @@ if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 				'type'        => 'text',
 				'description' => sprintf( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', $this->subject ),
 				'placeholder' => '',
-				'default'     => ''
+				'default'     => '',
 			),
 			'heading'    => array(
 				'title'       => 'Email Heading',
 				'type'        => 'text',
 				'description' => 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', $this->heading,
 				'placeholder' => '',
-				'default'     => ''
+				'default'     => '',
 			),
 			'email_type' => array(
 				'title'       => 'Email type',
@@ -145,11 +144,10 @@ if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 					'plain'     => 'Plain text',
 					'html'      => 'HTML', 'woocommerce',
 					'multipart' => 'Multipart', 'woocommerce',
-				)
-			)
+				),
+			),
 			);
 		}
-
 	}
 
 endif;

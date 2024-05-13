@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CASHREFUNDHANDLINGMODE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _PROCESS = '_process';
 	const _RECORDEXTERNALEVENT = '_recordExternalEvent';
 	const _SAVEONLY = '_saveOnly';

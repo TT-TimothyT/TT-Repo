@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TaskReminderType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _EMAIL = '_eMail';
 	const _POPUPWINDOW = '_popupWindow';
 }

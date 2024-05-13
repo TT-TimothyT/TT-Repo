@@ -84,13 +84,13 @@ import PerfScanner from '../scanners/PerfScanner';
 
 				google.charts.setOnLoadCallback( () => {
 					this.drawChart(
-						wphbHistoricFieldData.fid,
-						'first_input_delay'
+						wphbHistoricFieldData.inp,
+						'interaction_to_next_paint'
 					);
 					$( window ).resize( () =>
 						this.drawChart(
-							wphbHistoricFieldData.fid,
-							'first_input_delay'
+							wphbHistoricFieldData.inp,
+							'interaction_to_next_paint'
 						)
 					);
 				} );

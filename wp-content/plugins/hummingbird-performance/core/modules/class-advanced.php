@@ -13,6 +13,7 @@ namespace Hummingbird\Core\Modules;
 
 use Hummingbird\Core\Module;
 use Hummingbird\Core\Settings;
+use Hummingbird\Core\Utils;
 use Hummingbird\Core\Traits\Module as ModuleContract;
 use stdClass;
 
@@ -26,6 +27,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Advanced extends Module {
 
 	use ModuleContract;
+
+	/**
+	 * Font awesome domain.
+	 *
+	 * @since 3.8.0
+	 * @var string $font_awesome_domain
+	 */
+	private $font_awesome_domain = 'use.fontawesome.com';
+
+	/**
+	 * Google font domain.
+	 *
+	 * @since 3.8.0
+	 * @var string $google_font_domain
+	 */
+	private $google_font_domain = 'fonts.googleapis.com';
 
 	/**
 	 * Initializes the module. Always executed even if the module is deactivated.
@@ -86,7 +103,7 @@ class Advanced extends Module {
 		}
 
 		// DNS prefetch.
-		add_filter( 'wp_resource_hints', array( $this, 'prefetch_dns' ), 10, 2 );
+		add_filter( 'wp_resource_hints', array( $this, 'prefetch_dns' ), 9, 2 );
 
 		// Preconnect.
 		add_filter( 'wp_resource_hints', array( $this, 'add_preconnect_urls' ), 10, 2 );
@@ -95,6 +112,8 @@ class Advanced extends Module {
 		if ( isset( $options['lazy_load'] ) && $options['lazy_load']['enabled'] ) {
 			add_filter( 'comments_template', array( $this, 'filter_comments_template' ), 100 );
 		}
+
+		add_filter( 'wp_revisions_to_keep', array( $this, 'set_revisions_to_keep' ), 10, 2 );
 	}
 
 	/**
@@ -167,6 +186,14 @@ class Advanced extends Module {
 			return $hints;
 		}
 
+		if ( ! in_array( $this->font_awesome_domain, $hints, true ) ) {
+			$this->font_awesome_domain = false;
+		}
+
+		if ( ! in_array( $this->google_font_domain, $hints, true ) ) {
+			$this->google_font_domain = false;
+		}
+
 		$urls = Settings::get_setting( 'prefetch', 'advanced' );
 
 		// If not urls set, return default WP hints array.
@@ -220,6 +247,25 @@ class Advanced extends Module {
 		}
 
 		$urls = Settings::get_setting( 'preconnect', 'advanced' );
+		if ( ! is_array( $urls ) ) {
+			$url = array();
+		}
+
+		if ( Utils::get_module( 'minify' )->get_cdn_status() && ! in_array( '//hb.wpmucdn.com', $urls, true ) ) {
+			$urls[] = '//hb.wpmucdn.com';
+		}
+
+		if ( $this->font_awesome_domain && ! in_array( '//' . $this->font_awesome_domain, $urls, true ) ) {
+			$urls[] = $this->font_awesome_domain . ' crossorigin';
+		}
+
+		if ( $this->google_font_domain && ! in_array( '//' . $this->google_font_domain, $urls, true ) ) {
+			$urls[] = $this->google_font_domain;
+
+			if ( ! in_array( '//fonts.gstatic.com', $urls, true ) ) {
+				$urls[] = '//fonts.gstatic.com crossorigin';
+			}
+		}
 
 		// If not urls set, return default WP hints array.
 		if ( ! is_array( $urls ) || empty( $urls ) ) {
@@ -1203,4 +1249,19 @@ class Advanced extends Module {
 		return ( 'newest' === $dcp ) ? 'desc' : 'asc';
 	}
 
+	/**
+	 * Set the post revisions.
+	 *
+	 * @param int     $num  Number of revisions to store.
+	 * @param WP_Post $post Post object.
+	 * @return int
+	 **/
+	public function set_revisions_to_keep( $num, $post ) {
+		$options = Settings::get_settings( 'advanced' );
+		if ( isset( $options['post_revisions'] ) && $options['post_revisions'] >= 0 ) {
+			return (int) $options['post_revisions'];
+		}
+
+		return $num;
+	}
 }

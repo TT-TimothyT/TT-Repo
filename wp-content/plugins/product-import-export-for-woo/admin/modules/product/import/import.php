@@ -21,6 +21,8 @@ class Wt_Import_Export_For_Woo_Basic_Product_Import {
     public $merge_with = 'id';
     public $found_action = 'skip';
     public $id_conflict = 'skip';
+    public $delete_existing = "";
+    public $product_id = "";
 
 
     var $processed_posts = array();

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class SalesOrderItemCommitInventory {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AVAILABLEQTY = '_availableQty';
 	const _COMPLETEQTY = '_completeQty';
 	const _DONOTCOMMIT = '_doNotCommit';

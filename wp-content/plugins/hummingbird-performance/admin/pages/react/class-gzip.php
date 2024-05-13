@@ -82,6 +82,7 @@ class Gzip extends Page {
 					'module'   => array(
 						'is_wpmu_hosting'   => isset( $_SERVER['WPMUDEV_HOSTED'] ),
 						'is_white_labeled'  => apply_filters( 'wpmudev_branding_hide_branding', false ),
+						'compression_type'  => get_option( 'wphb_compression_type' ),
 						'cdn'               => Utils::get_module( 'minify' )->is_active() && Utils::get_module( 'minify' )->get_cdn_status(),
 						'htaccess_error'    => isset( $_GET['htaccess-error'] ), // Input data ok.
 						'htaccess_writable' => Module_Server::is_htaccess_writable(),

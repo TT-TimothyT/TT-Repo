@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CalendarEventReminderMinutes {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NONE = '_none';
 	const _0MINUTES = '_0minutes';
 	const _10MINUTES = '_10minutes';

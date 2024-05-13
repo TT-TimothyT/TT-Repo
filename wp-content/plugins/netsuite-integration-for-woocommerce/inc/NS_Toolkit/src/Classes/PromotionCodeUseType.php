@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class PromotionCodeUseType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _MULTIPLEUSES = '_multipleUses';
 	const _SINGLEUSE = '_singleUse';
 }

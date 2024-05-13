@@ -209,8 +209,24 @@ class Core extends Stats {
 		new Integrations\Gutenberg();
 		new Integrations\Composer();
 		new Integrations\Gravity_Forms();
-		new Integrations\Envira( $this->mod->cdn );
-		new Integrations\Avada( $this->mod->cdn );
+		$avada = new Integrations\Avada();
+		$avada->init();
+		$envira = new Integrations\Envira();
+		$envira->init();
+		$hummingbird = new Integrations\Hummingbird_Integration();
+		$hummingbird->init();
+
+		$woo = new Integrations\WooCommerce();
+		$woo->init();
+
+		$amp = new Integrations\AMP_Integration();
+		$amp->init();
+
+		$essential_grid = new Integrations\Essential_Grid_Integration();
+		$essential_grid->init();
+
+		$elementor = new Integrations\Elementor_Integration();
+		$elementor->init();
 
 		// Register logger to schedule cronjob.
 		Helper::logger();
@@ -328,7 +344,7 @@ class Core extends Stats {
 				'<a href=' . esc_url( menu_page_url( 'smush-tutorials', false ) ) . '>',
 				'</a>'
 			),
-			'smush_cdn_activation_notice'  => WP_Smush::is_pro() && ! $this->mod->cdn->is_active() ?
+			'smush_cdn_activation_notice'  => WP_Smush::is_pro() && ! Settings::get_instance()->is_cdn_active() ?
 				sprintf(
 					/* translators: 1 - Number of CDN PoP locations, 2 - opening a tag, 3 - closing a tag */
 					esc_html__( 'Activate Smush CDN to bulk smush and serve animated GIF’s via %1$d worldwide locations. %2$sActivate CDN%3$s', 'wp-smushit' ),
@@ -426,7 +442,7 @@ class Core extends Stats {
 	 *
 	 * @param bool   $reset  To hard reset the transient.
 	 * @param string $key    Transient Key - bulk_sent_count/dir_sent_count.
-	 * 
+	 *
 	 * TODO: remove this (and all related code) because the limit has been lifted in 3.12.0
 	 *
 	 * @return bool
@@ -436,7 +452,7 @@ class Core extends Stats {
 		if ( $is_pre_3_12_6_site ) {
 			return true;
 		}
-		
+
 		$transient_name = 'wp-smush-' . $key;
 
 		// If we JUST need to reset the transient.

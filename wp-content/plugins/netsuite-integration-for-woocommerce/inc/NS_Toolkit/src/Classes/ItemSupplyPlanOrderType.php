@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMSUPPLYPLANORDERTYPE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _PURCHASEORDER = '_purchaseOrder';
 	const _TRANSFERORDER = '_transferOrder';
 	const _WORKORDER = '_workOrder';

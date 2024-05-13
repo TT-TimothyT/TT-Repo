@@ -21,7 +21,7 @@ class Widget extends \WC_Widget {
 	 */
 	public function __construct() {
 		$this->widget_id          = 'compared_products';
-		$this->widget_name        = __( 'WooCommerce Products Compare', 'woocommerce-products-compare' );
+		$this->widget_name        = __( 'Products Compare for WooCommerce', 'woocommerce-products-compare' );
 		$this->widget_cssclass    = 'woocommerce woocommerce-products-compare-widget';
 		$this->widget_description = __( 'Displays a running list of compared products.', 'woocommerce-products-compare' );
 		$this->settings           = array(

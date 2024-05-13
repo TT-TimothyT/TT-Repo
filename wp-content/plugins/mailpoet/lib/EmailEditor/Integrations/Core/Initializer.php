@@ -5,23 +5,22 @@ namespace MailPoet\EmailEditor\Integrations\Core;
 if (!defined('ABSPATH')) exit;
 
 
-use MailPoet\EmailEditor\Engine\Renderer\BlocksRegistry;
-use MailPoet\EmailEditor\Engine\Renderer\Layout\FlexLayoutRenderer;
+use MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\BlocksRegistry;
+use MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Layout\FlexLayoutRenderer;
 
 class Initializer {
   public function initialize(): void {
     add_action('mailpoet_blocks_renderer_initialized', [$this, 'registerCoreBlocksRenderers'], 10, 1);
     add_filter('mailpoet_email_editor_theme_json', [$this, 'adjustThemeJson'], 10, 1);
-    add_filter('mailpoet_email_editor_editor_styles', [$this, 'addEditorStyles'], 10, 1);
-    add_filter('mailpoet_email_renderer_styles', [$this, 'addRendererStyles'], 10, 1);
+    add_filter('safe_style_css', [$this, 'allowStyles']);
   }
 
   /**
    * Register core blocks email renderers when the blocks renderer is initialized.
    */
   public function registerCoreBlocksRenderers(BlocksRegistry $blocksRegistry): void {
-    $blocksRegistry->addBlockRenderer('core/paragraph', new Renderer\Blocks\Paragraph());
-    $blocksRegistry->addBlockRenderer('core/heading', new Renderer\Blocks\Heading());
+    $blocksRegistry->addBlockRenderer('core/paragraph', new Renderer\Blocks\Text());
+    $blocksRegistry->addBlockRenderer('core/heading', new Renderer\Blocks\Text());
     $blocksRegistry->addBlockRenderer('core/column', new Renderer\Blocks\Column());
     $blocksRegistry->addBlockRenderer('core/columns', new Renderer\Blocks\Columns());
     $blocksRegistry->addBlockRenderer('core/list', new Renderer\Blocks\ListBlock());
@@ -41,15 +40,14 @@ class Initializer {
     return $editorThemeJson;
   }
 
-  public function addEditorStyles(array $styles) {
-    $declaration = (string)file_get_contents(dirname(__FILE__) . '/styles.css');
-    $styles[] = ['css' => $declaration];
-    return $styles;
-  }
-
-  public function addRendererStyles(string $styles) {
-    $declaration = (string)file_get_contents(dirname(__FILE__) . '/styles.css');
-    $styles .= $declaration;
-    return $styles;
+  /**
+   * Allow styles for the email editor.
+   */
+  public function allowStyles(array $allowedStyles): array {
+    $allowedStyles[] = 'display';
+    $allowedStyles[] = 'mso-padding-alt';
+    $allowedStyles[] = 'mso-font-width';
+    $allowedStyles[] = 'mso-text-raise';
+    return $allowedStyles;
   }
 }

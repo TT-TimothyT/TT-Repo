@@ -67,9 +67,8 @@ class Wt_Import_Export_For_Woo_Basic_Activator_Product {
 		//creating table for saving template data================
         $search_query = "SHOW TABLES LIKE %s";
         $tb='wt_iew_mapping_template';
-        $like = '%' . $wpdb->prefix.$tb.'%';
         $table_name = $wpdb->prefix.$tb;
-        if(!$wpdb->get_results($wpdb->prepare($search_query, $like), ARRAY_N)) 
+        if(!$wpdb->get_results($wpdb->prepare($search_query,  $table_name), ARRAY_N)) 
         {
             $sql_settings = "CREATE TABLE IF NOT EXISTS `$table_name` (
 				`id` INT NOT NULL AUTO_INCREMENT, 
@@ -86,9 +85,8 @@ class Wt_Import_Export_For_Woo_Basic_Activator_Product {
         //creating table for saving export/import history================
         $search_query = "SHOW TABLES LIKE %s";
         $tb='wt_iew_action_history';
-        $like = '%'.$wpdb->prefix.$tb.'%';
         $table_name = $wpdb->prefix.$tb;
-        if(!$wpdb->get_results($wpdb->prepare($search_query, $like), ARRAY_N)) 
+        if(!$wpdb->get_results($wpdb->prepare($search_query,  $table_name), ARRAY_N)) 
         {
             $sql_settings = "CREATE TABLE IF NOT EXISTS `$table_name` (
 				`id` INT NOT NULL AUTO_INCREMENT, 

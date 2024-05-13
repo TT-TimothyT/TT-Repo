@@ -222,6 +222,21 @@ class Wt_Import_Export_For_Woo_basic_User {
 		
 		$arr['user'] = __('Users');
 		if (class_exists('woocommerce')) {
+			if(is_plugin_active('users-customers-import-export-for-wp-woocommerce/users-customers-import-export-for-wp-woocommerce.php'))
+            {
+                $arr['user'] = __('User/Customer', 'users-customers-import-export-for-wp-woocommerce'); 
+            }
+            if(is_plugin_active('product-import-export-for-woo/product-import-export-for-woo.php')){
+                $arr['product'] = __('Product', 'users-customers-import-export-for-wp-woocommerce');
+                $arr['product_review'] = __('Product Review', 'users-customers-import-export-for-wp-woocommerce');
+                $arr['product_categories'] = __('Product Categories', 'users-customers-import-export-for-wp-woocommerce');
+                $arr['product_tags'] = __('Product Tags', 'users-customers-import-export-for-wp-woocommerce');
+            }
+            if(is_plugin_active('order-import-export-for-woocommerce/order-import-export-for-woocommerce.php')){
+                $arr['order'] = __('Order', 'users-customers-import-export-for-wp-woocommerce');
+                $arr['coupon'] = __('Coupon', 'users-customers-import-export-for-wp-woocommerce');
+            }
+            
 			$arr['order'] = __('Order', 'users-customers-import-export-for-wp-woocommerce');
 			$arr['coupon'] = __('Coupon', 'users-customers-import-export-for-wp-woocommerce');
 			$arr['product'] = __('Product', 'users-customers-import-export-for-wp-woocommerce');

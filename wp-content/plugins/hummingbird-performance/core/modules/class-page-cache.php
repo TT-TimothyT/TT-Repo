@@ -110,6 +110,7 @@ class Page_Cache extends Module {
 		 * @param int $post_id  Post ID.
 		 */
 		add_action( 'wphb_clear_page_cache', array( $this, 'clear_cache_action' ) );
+		add_action( 'wp_update_nav_menu', array( $this, 'clear_cache_after_menu_update' ), 10, 2 );
 		add_action( 'wphb_clear_cache_url', array( $this, 'clear_external_cache' ), 50 );
 
 		// Post status transitions.
@@ -1277,7 +1278,7 @@ class Page_Cache extends Module {
 			self::log_msg( 'Page not cached. Asset optimization processing in progress. Sending buffer to user.' );
 			return $buffer;
 		}
-		
+
 		if ( apply_filters( 'wphb_should_cache_exit', false ) ) {
 			// Exit early.
 			return $buffer;
@@ -1459,6 +1460,12 @@ class Page_Cache extends Module {
 	 */
 	private function purge_post_cache( $post_id ) {
 		global $post_trashed, $wphb_cache_config;
+
+		if ( apply_filters( 'wphb_post_cache_purged', false, $post_id ) ) {
+			self::log_msg( 'Cache has been purged already for post id : ' . $post_id );
+
+			return;
+		}
 
 		$replacement = preg_replace( '|https?://[^/]+|i', '', home_url() );
 		$permalink   = trailingslashit( str_replace( home_url(), $replacement, get_permalink( $post_id ) ) );
@@ -2239,4 +2246,13 @@ class Page_Cache extends Module {
 		}
 	}
 
+	/**
+	 * Call the clear page cache after menu update.
+	 *
+	 * @param int   $menu_id   ID of the updated menu.
+	 * @param array $menu_data An array of menu data.
+	 */
+	public function clear_cache_after_menu_update( $menu_id, $menu_data = array() ) {
+		$this->clear_cache();
+	}
 }

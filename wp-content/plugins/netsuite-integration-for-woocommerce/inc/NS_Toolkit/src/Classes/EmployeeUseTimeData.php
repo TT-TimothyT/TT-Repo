@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EMPLOYEEUSETIMEDATA {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _WAGE = '_wage';
 	const _SALARY = '_salary';
 }

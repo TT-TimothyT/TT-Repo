@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PostingPeriodDate {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FIRSTFISCALQUARTEROFLASTFY = '_firstFiscalQuarterOfLastFy';
 	const _FIRSTFISCALQUARTEROFTHISFY = '_firstFiscalQuarterOfThisFy';
 	const _FISCALQUARTERBEFORELAST = '_fiscalQuarterBeforeLast';

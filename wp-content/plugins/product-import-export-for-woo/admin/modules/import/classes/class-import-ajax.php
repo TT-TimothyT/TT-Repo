@@ -577,6 +577,8 @@ class Wt_Import_Export_For_Woo_Basic_Import_Ajax
 		$post_types=apply_filters('wt_iew_importer_post_types_basic', array());
 		$post_types=(!is_array($post_types) ? array() : $post_types);
 		$this->step='post_type';
+		$item_type=$this->to_import;
+
 		
 		$this->prepare_step_summary();
 		$this->prepare_footer_button_list();

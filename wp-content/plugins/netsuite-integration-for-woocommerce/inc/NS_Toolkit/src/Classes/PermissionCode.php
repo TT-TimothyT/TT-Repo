@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PermissionCode {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACCESSPAYMENTAUDITLOG = '_accessPaymentAuditLog';
 	const _ACCESSTOKENMANAGEMENT = '_accessTokenManagement';
 	const _ACCOUNTDETAIL = '_accountDetail';

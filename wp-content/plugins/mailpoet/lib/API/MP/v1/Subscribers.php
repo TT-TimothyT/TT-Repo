@@ -185,6 +185,11 @@ class Subscribers {
     $subscriber = $this->findSubscriber($subscriberId);
     $foundSegments = $this->getAndValidateSegments($listIds, self::CONTEXT_SUBSCRIBE);
 
+    // restore trashed subscriber
+    if ($subscriber->getDeletedAt()) {
+      $subscriber->setDeletedAt(null);
+    }
+
     $this->subscribersSegmentRepository->subscribeToSegments($subscriber, $foundSegments);
 
     // set status depending on signup confirmation setting
@@ -220,7 +225,8 @@ class Subscribers {
     $foundSegmentsIds = array_map(
       function(SegmentEntity $segment) {
         return $segment->getId();
-      }, $foundSegments
+      },
+      $foundSegments
     );
     if ($scheduleWelcomeEmail && $subscriber->getStatus() === SubscriberEntity::STATUS_SUBSCRIBED) {
       $this->_scheduleWelcomeNotification($subscriber, $foundSegmentsIds);

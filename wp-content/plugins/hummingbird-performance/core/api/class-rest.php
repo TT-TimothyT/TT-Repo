@@ -335,7 +335,17 @@ class Rest {
 	 * @return WP_REST_Response
 	 */
 	public function get_minify_settings() {
-		$options = Utils::get_module( 'minify' )->get_options();
+		$minify_module  = Utils::get_module( 'minify' );
+		$options        = $minify_module->get_options();
+		$ao_queue_count = Utils::is_ao_status_bar_enabled() ? count( $minify_module->get_pending_persistent_queue() ) : 0;
+		$ao_queue       = array(
+			'aoQueueCount'    => $ao_queue_count,
+			'aoCompletedTime' => Utils::is_ao_status_bar_enabled() ? $options['ao_completed_time'] : '',
+		);
+
+		if ( $ao_queue_count ) {
+			$minify_module->process_queue();
+		}
 
 		$response = array(
 			'cdn'          => $options['use_cdn'],
@@ -344,6 +354,7 @@ class Rest {
 			'safeMode'     => Minify::get_safe_mode_status(),
 			'delay_js'     => $options['delay_js'],
 			'critical_css' => $options['critical_css'],
+			'ao_queue'     => $ao_queue,
 		);
 
 		return rest_ensure_response( $response );

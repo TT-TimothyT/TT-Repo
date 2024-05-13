@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentPackageFedExPackagingFedEx {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FEDEXBOX = '_fedExBox';
 	const _FEDEX10KGBOX = '_fedEx10kgBox';
 	const _FEDEX25KGBOX = '_fedEx25kgBox';

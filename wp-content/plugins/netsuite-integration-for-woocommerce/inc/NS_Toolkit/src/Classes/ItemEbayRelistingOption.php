@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMEBAYRELISTINGOPTION {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DONOTRELIST = '_doNotRelist';
 	const _RELISTWHENITEMEXPIRES = '_relistWhenItemExpires';
 	const _RELISTWHENITEMISSOLD = '_relistWhenItemIsSold';

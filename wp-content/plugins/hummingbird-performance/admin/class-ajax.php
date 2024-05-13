@@ -226,6 +226,13 @@ class AJAX {
 	 * @since 1.9.3
 	 */
 	public function clear_frontend_cache() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		// Check permission.
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) {
+			die();
+		}
+
 		$pc_module = Utils::get_module( 'page_cache' );
 		$status    = $pc_module->clear_cache();
 
@@ -242,6 +249,13 @@ class AJAX {
 	 * @since 1.9.3
 	 */
 	public function clear_global_cache() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		// Check permission.
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) {
+			die();
+		}
+
 		$modules = Utils::get_active_cache_modules();
 
 		foreach ( $modules as $module => $name ) {
@@ -336,6 +350,13 @@ class AJAX {
 	 * @since 2.7.2
 	 */
 	public function clear_frontend_cloudflare() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		// Check permission.
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) {
+			die();
+		}
+
 		$status = Utils::get_module( 'cloudflare' )->clear_cache();
 
 		if ( ! $status ) {
@@ -510,10 +531,12 @@ class AJAX {
 				Performance::set_doing_report( false );
 				wp_send_json_success(
 					array(
-						'finished'        => true,
-						'mobileScore'     => $mobile,
-						'desktopScore'    => $desktop,
-						'HBSmushFeatures' => Utils::get_active_features(),
+						'finished'            => true,
+						'mobileScore'         => $mobile,
+						'desktopScore'        => $desktop,
+						'HBSmushFeatures'     => Utils::get_active_features(),
+						'hbPerformanceMetric' => Utils::get_performance_metric_for_mp(),
+						'aoStatus'            => Utils::is_ao_processing() ? 'incomplete' : 'complete',
 					)
 				);
 			}
@@ -559,10 +582,12 @@ class AJAX {
 
 			wp_send_json_success(
 				array(
-					'finished'        => true,
-					'mobileScore'     => $mobile,
-					'desktopScore'    => $desktop,
-					'HBSmushFeatures' => Utils::get_active_features(),
+					'finished'            => true,
+					'mobileScore'         => $mobile,
+					'desktopScore'        => $desktop,
+					'HBSmushFeatures'     => Utils::get_active_features(),
+					'hbPerformanceMetric' => Utils::get_performance_metric_for_mp(),
+					'aoStatus'            => Utils::is_ao_processing() ? 'incomplete' : 'complete',
 				)
 			);
 		}
@@ -1194,6 +1219,13 @@ class AJAX {
 	 * Set a flag that marks the minification check files as started.
 	 */
 	public function minification_start_check() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		// Check permission.
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) {
+			die();
+		}
+
 		$minify_module = Utils::get_module( 'minify' );
 		$minify_module->init_scan();
 
@@ -1208,6 +1240,13 @@ class AJAX {
 	 * Process step during minification scan.
 	 */
 	public function minification_check_step() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		// Check permission.
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) {
+			die();
+		}
+
 		$minify_module = Utils::get_module( 'minify' );
 
 		$urls         = $minify_module->scanner->get_scan_urls();
@@ -1228,6 +1267,13 @@ class AJAX {
 	 * @since 1.4.5
 	 */
 	public function minification_cancel_scan() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		// Check permission.
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) {
+			die();
+		}
+
 		$minify_module = Utils::get_module( 'minify' );
 		$minify_module->toggle_service( false );
 		$minify_module->clear_cache();
@@ -1239,6 +1285,13 @@ class AJAX {
 	 * Finish minification scan.
 	 */
 	public function minification_finish_scan() {
+		check_ajax_referer( 'wphb-fetch', 'nonce' );
+
+		// Check permission.
+		if ( ! current_user_can( Utils::get_admin_capability() ) ) {
+			die();
+		}
+
 		Utils::get_module( 'minify' )->scanner->finish_scan();
 
 		wp_send_json_success(
@@ -1295,6 +1348,21 @@ class AJAX {
 		Settings::update_setting( 'delay_js', $delay_js, 'minify' );
 		Settings::update_setting( 'delay_js_exclusions', $delay_js_exclude, 'minify' );
 		Settings::update_setting( 'delay_js_timeout', $delay_js_timeout, 'minify' );
+
+		// Preload fonts.
+		$prev_font_optimization = Settings::get_setting( 'font_optimization', 'minify' );
+		$prev_font_swap = Settings::get_setting( 'font_swap', 'minify' );
+		$font_optimization      = ! empty( $form['font_optimization'] );
+		$preload_fonts          = $form['preload_fonts'];
+		$preload_fonts          = html_entity_decode( $preload_fonts );
+		$font_swap              = ! empty( $form['font_swap'] );
+		Settings::update_setting( 'font_optimization', $font_optimization, 'minify' );
+		Settings::update_setting( 'preload_fonts', $preload_fonts, 'minify' );
+		Settings::update_setting( 'font_swap', $font_swap, 'minify' );
+
+		// Track font value to MP.
+		$font_optimization_update_type = $prev_font_optimization !== $font_optimization ? ( ! empty( $font_optimization ) ? 'activate' : 'deactivate' ) : '';
+		$font_swap_update_type         = $prev_font_swap !== $font_swap ? ( ! empty( $font_swap ) ? 'activate' : 'deactivate' ) : '';
 
 		// Update Critical CSS option.
 		$critical_css_mode          = $form['critical_css_mode'];
@@ -1394,22 +1462,24 @@ class AJAX {
 
 		wp_send_json_success(
 			array(
-				'delay_js'               => $delay_js,
-				'delay_js_update_type'   => $delay_js_update_type,
-				'is_delay_value_updated' => $is_delay_value_updated,
-				'delay_js_timeout'       => $delay_js_timeout,
-				'delay_js_exclude'       => $delay_js_exclude,
-				'updateType'             => $critical_css_update_type,
-				'isCriticalValueUpdated' => $is_critical_value_updated,
-				'critical_css'           => $critical_css_option,
-				'settingsModified'       => implode( ',', $settings_modified ),
-				'settingsDefault'        => implode( ',', $settings_default ),
-				'mode'                   => $critical_mode,
-				'location'               => $location,
-				'success'                => $status['success'],
-				'message'                => $message,
-				'isStatusTagNeedsUpdate' => $is_status_tag_needs_update,
-				'htmlForStatusTag'       => Utils::get_module( 'critical_css' )->get_html_for_status_tag(),
+				'delay_js'                   => $delay_js,
+				'delay_js_update_type'       => $delay_js_update_type,
+				'is_delay_value_updated'     => $is_delay_value_updated,
+				'delay_js_timeout'           => $delay_js_timeout,
+				'delay_js_exclude'           => $delay_js_exclude,
+				'updateType'                 => $critical_css_update_type,
+				'isCriticalValueUpdated'     => $is_critical_value_updated,
+				'critical_css'               => $critical_css_option,
+				'settingsModified'           => implode( ',', $settings_modified ),
+				'settingsDefault'            => implode( ',', $settings_default ),
+				'mode'                       => $critical_mode,
+				'location'                   => $location,
+				'success'                    => $status['success'],
+				'message'                    => $message,
+				'isStatusTagNeedsUpdate'     => $is_status_tag_needs_update,
+				'htmlForStatusTag'           => Utils::get_module( 'critical_css' )->get_html_for_status_tag(),
+				'fontOptimizationUpdateType' => $font_optimization_update_type,
+				'fontSwapUpdateType'         => $font_swap_update_type,
 			)
 		);
 	}
@@ -1683,6 +1753,11 @@ class AJAX {
 			if ( ! $skip ) {
 				$options['emoji']        = isset( $data['emojis'] ) && 'on' === $data['emojis'];
 				$options['emoji_global'] = isset( $data['emojis_global'] ) && 'on' === $data['emojis_global'];
+			}
+
+			$options['post_revisions'] = '';
+			if ( isset( $data['post_revisions'] ) && $data['post_revisions'] >= 0 ) {
+				$options['post_revisions'] = $data['post_revisions'];
 			}
 
 			$options['prefetch'] = array();

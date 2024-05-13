@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class AssemblyItemEffectiveBomControl {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _EFFECTIVEDATE = '_effectiveDate';
 	const _REVISIONCONTROL = '_revisionControl';
 }

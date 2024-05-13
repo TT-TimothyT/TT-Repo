@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CUSTOMIZATIONACCESSLEVEL {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NONE = '_none';
 	const _EDIT = '_edit';
 	const _VIEW = '_view';

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMSUPPLYLOTSIZINGMETHOD {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FIXEDLOTSIZE = '_fixedLotSize';
 	const _LOTFORLOT = '_lotForLot';
 	const _PERIODSOFSUPPLY = '_periodsOfSupply';

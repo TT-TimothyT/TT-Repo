@@ -9,7 +9,7 @@
  */
 
 // Including development toolkit provided by Netsuite
-require_once(TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php');
+require_once TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php';
 require_once TMWNI_DIR . 'inc/common.php';
 foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
 	require_once $filename;
@@ -33,38 +33,22 @@ use NetSuite\Classes\UpdateResponse;
 use NetSuite\Classes\DateCustomFieldRef;
 use NetSuite\Classes\SearchMultiSelectField;
 
-
-
-
-
-
-
 class CustomerClient extends CommonIntegrationFunctions {
 
 	public $netsuiteService;
-	public $object_id;	
+	public $object_id;  
 	public $user_id;
 	public $custFields = array();
 
-			//public $service = new NetSuiteService();
-
-
 	public function __construct() {
-		//set netsuite API client object
 		if (TMWNI_Settings::areCredentialsDefined()) {
-			$this->netsuiteService = new NetSuiteService(null, array('exceptions' => true));
+			$this->netsuiteService = new NetSuiteService(null, array( 'exceptions' => true ));
 		}
 	}
-
-
-	/**
-	 * Add customer to Nestuite using API add operation
-	 */
-
 	/**
 	 * Search customer using email
 	 */
-	public function searchCustomer( $email, $customer_id = 0) {
+	public function searchCustomer( $email, $customer_id = 0 ) {
 		$search_customer_status = true;
 
 		/** 
@@ -75,22 +59,14 @@ class CustomerClient extends CommonIntegrationFunctions {
 			**/
 			$search_customer_status  = apply_filters('tm_netsuite_search_customer_status', $search_customer_status, $email, $customer_id);
 
-
-			// pr($search_customer_status);
-			// die('zzzzzzz');
-
 		if (false != $search_customer_status) {
 			$this->object_id = $customer_id;
-
 			$this->netsuiteService->setSearchPreferences(false, 20);
-
 			$SearchField = new SearchStringField();
 			$SearchField->operator = 'is';
 			$SearchField->searchValue = $email;
 			$search = new CustomerSearchBasic();
 			$search->email = $SearchField;
-
-
 		/** 
 			*Hook for search customer to netsuite.
 		
@@ -98,19 +74,11 @@ class CustomerClient extends CommonIntegrationFunctions {
  
 			**/
 			$search = apply_filters('tm_ns_search_customer_request', $search, $email, $customer_id);
-
-
 			$request = new SearchRequest();
 			$request->searchRecord = $search;
-
-
-			// pr($search);
-
-
-
 			try {
 				$searchResponse = $this->netsuiteService->search($request);
-				$customer_internalId = $this->handleAPISearchResponse($searchResponse, 'customerS', $email);
+				$customer_internalId = $this->handleAPISearchResponse($searchResponse, 'customer Search', $email);
 			/** 
 				*Hook for netsuite customer response.
 		
@@ -122,9 +90,6 @@ class CustomerClient extends CommonIntegrationFunctions {
 				if (isset($searchResponse->searchResult->totalRecords) && $searchResponse->searchResult->totalRecords > 0) {
 					$customer_internalId = $searchResponse->searchResult->recordList->record[0]->internalId;
 				}
-
-
-
 
 				if (!empty($customer_internalId)) {
 					return $searchResponse;
@@ -143,42 +108,22 @@ class CustomerClient extends CommonIntegrationFunctions {
 			}
 
 		}
-
-
 		return 0;
-
-		
 	}
 
-
-
-
-
-	public function searchCustomerByInternalId( $internal_id, $customer_id = 0) {
+	public function searchCustomerByInternalId( $internal_id, $customer_id = 0 ) {
 		$this->object_id = $customer_id;
-
 		$this->netsuiteService->setSearchPreferences(false, 20);
-
 
 		$record = new RecordRef();
 		$record->internalId = $internal_id;
-
-
-
 		$SearchField = new SearchMultiSelectField();
 		$SearchField->operator = 'anyOf';
 		$SearchField->searchValue = $record;
-
-
 		$search = new CustomerSearchBasic();
 		$search->internalId = $SearchField;
-
-
-
 		$request = new SearchRequest();
 		$request->searchRecord = $search;
-
-
 		try {
 			$searchResponse = $this->netsuiteService->search($request);
 			/** 
@@ -188,7 +133,12 @@ class CustomerClient extends CommonIntegrationFunctions {
  
 					**/
 					apply_filters('tm_ns_customer_internal_id_response', $searchResponse, $customer_id);
+			if (isset($searchResponse->searchResult->recordList->record[0]->addressbookList) && !empty($searchResponse->searchResult->recordList->record[0]->addressbookList)) {
+				if (isset($searchResponse->searchResult->recordList->record[0]->addressbookList) && !empty($searchResponse->searchResult->recordList->record[0]->addressbookList)) {
 					return $searchResponse->searchResult->recordList->record[0]->addressbookList;
+				}
+				
+			}       
 		} catch (SoapFault $e) {
 			$object = 'customer';
 			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
@@ -201,85 +151,70 @@ class CustomerClient extends CommonIntegrationFunctions {
 		}
 	}
 
-
+	public function CustomerRequestData( $customer_data, $add_list, $order_id,$customer_internal_id=0 ) {
+		global $TMWNI_OPTIONS;
+		$order = wc_get_order($order_id);
+		$log_id = !empty($customer_data['customer_id'])? $customer_data['customer_id'] : $order_id;
+		$customer = new Customer();
+		$this->customerConditionalMapping($customer_data, $order, $customer_internal_id);
+		if (!isset($TMWNI_OPTIONS['isEntityIdAuto'])) {
+			$customer->entityId = $customer_data['email'];
+		}
+		if (isset($TMWNI_OPTIONS['customer_subsidiary']) && !empty($TMWNI_OPTIONS['customer_subsidiary'])) {
+			$subsidiary = new RecordRef();
+			$subsidiary->internalId = $TMWNI_OPTIONS['customer_subsidiary'];
+			$customer->subsidiary = $subsidiary;
+		}
+		$customer->addressbookList = $add_list;
+		if (isset($TMWNI_OPTIONS['enableSendCustomersAsCo']) && 'on' == $TMWNI_OPTIONS['enableSendCustomersAsCo'] ) {
+			$customer->isPerson = false;
+			if (!empty($customer_data['companyName'])) {
+				$customer->companyName = $customer_data['companyName'];
+			} else {
+			$customer->companyName = $customer_data['firstName'] . ' ' . $customer_data['lastName']; //set customer as company 
+			}               
+		} else {
+			$customer->isPerson = true;
+			$customer->firstName = !empty($customer_data['firstName'])? $customer_data['firstName'] : TMWNI_Settings::$customerDummyFisrtName;
+			$customer->lastName = !empty($customer_data['lastName'])? $customer_data['lastName'] : TMWNI_Settings::$customerDummyLastName;
+		}
+	$customer->email = $customer_data['email'];
+	$customer->phone = $customer_data['phone'];
+	$customer->logId = $log_id;
+	$customer->requestType = 'customer';
+	$this->createRequest($customer, $customer_data);
+	return $customer;
+	} 
 	/**
 	 * Adding customer in Netsuite based on woocommerce customer data
 	 */
-	public function addCustomer( $customer_data, $add_list, $order_id = 0) {
+	public function addCustomer( $customer_data, $add_list, $order_id = 0 ) {
 		$customer_sync_status = true;
 		/** 
 				* Hook for  add customer status.
 		
 				* @since 1.0.0
  
-				**/				
+				**/             
 				$customer_sync_status  = apply_filters('tm_netsuite_customer_sync_status', $customer_sync_status, $customer_data, $add_list, $order_id);
 		if (false != $customer_sync_status) {
-
+			if (!empty($customer_data['customer_id'])) {
+				$this->netsuiteService->logRequests(true);
+			}
 			global $TMWNI_OPTIONS;
-
 			$this->object_id = $customer_data['customer_id'];
+			$customer = $this->CustomerRequestData($customer_data, $add_list, $order_id);
+		/** 
+			* Hook for  add customer request data .
 
-			$order = wc_get_order($order_id);
+			* @since 1.0.0
 
-			$customer = new Customer();
-
-			$this->customerConditionalMapping($customer_data, $order);
-
-			if (!isset($TMWNI_OPTIONS['isEntityIdAuto'])) {
-				$customer->entityId = $customer_data['email'];
-			}
-
-
-
-
-			$this->createRequest($customer, $customer_data);
-
-
-
-			if (isset($TMWNI_OPTIONS['customer_subsidiary']) && !empty($TMWNI_OPTIONS['customer_subsidiary'])) {
-				$subsidiary = new RecordRef();
-				$subsidiary->internalId = $TMWNI_OPTIONS['customer_subsidiary'];
-				$customer->subsidiary = $subsidiary;
-			}
-
-
-			$customer->addressbookList = $add_list;
-
-			if (isset($TMWNI_OPTIONS['enableSendCustomersAsCo']) && 'on' == $TMWNI_OPTIONS['enableSendCustomersAsCo'] ) {
-				$customer->isPerson = false;
-				if (!empty($customer_data['companyName'])) {
-					$customer->companyName = $customer_data['companyName'];
-				} else {
-					$customer->companyName = $customer_data['firstName'] . ' ' . $customer_data['lastName']; //set customer as company 
-				}				
-			} else {
-				$customer->isPerson = true;
-				$customer->firstName = !empty($customer_data['firstName'])? $customer_data['firstName'] : TMWNI_Settings::$customerDummyFisrtName;
-				$customer->lastName = !empty($customer_data['lastName'])? $customer_data['lastName'] : TMWNI_Settings::$customerDummyLastName;
-			}
-
-
-			$customer->email = $customer_data['email'];
-			$customer->phone = $customer_data['phone'];
-			/** 
-				* Hook for  add customer request data .
-		
-				* @since 1.0.0
- 
-				**/
+		**/
 		$customer = apply_filters('tm_add_request_customer_data', $customer, $customer_data['customer_id'], $order_id);
-
-
 		$request = new AddRequest();
 		$request->record = $customer;
-
-
-
-
 			try {
 					$addResponse = $this->netsuiteService->add($request);
-					// pr($addResponse); die('zzzzzzzz');
 				if (1 == $addResponse->writeResponse->status->isSuccess) {
 					/** 
 						* Hook for  after add customer.
@@ -289,24 +224,22 @@ class CustomerClient extends CommonIntegrationFunctions {
 						**/
 					do_action('tm_netsuite_after_customer_add', $addResponse, $customer_data, $add_list, $order_id);
 				}
-					return $this->handleAPIAddResponse($addResponse, 'customer');
+					return $this->handleAPIAddResponse($addResponse, 'customer-add', $order_id);
 			} catch (SoapFault $e) {
-				$object = 'customer';
+				$object = 'customer-add';
 				$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Add' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
 				$error_msg .= 'Error Message: ' . $e->getMessage();
 
-				$this->handleLog(0, $this->object_id, $object, $error_msg);
+				$this->handleLog(0, $this->object_id, $object, $error_msg, $order_id);
 
 				return 0;
 			}
 		}
 	}
-
-
 	/**
 	 * Updating customer based on its internal id
 	 */
-	public function updateCustomer( $customer_data, $customer_internal_id, $add_list, $order_id = 0) {
+	public function updateCustomer( $customer_data, $customer_internal_id, $add_list, $order_id = 0 ) {
 		$customer_sync_status = true;
 		/** 
 				* Hook for  update customer status.
@@ -316,41 +249,16 @@ class CustomerClient extends CommonIntegrationFunctions {
 				**/
 				$customer_sync_status  = apply_filters('tm_netsuite_customer_update_status', $customer_sync_status, $customer_data, $add_list, $order_id);
 		if (false != $customer_sync_status) {
-
-			global $TMWNI_OPTIONS;
-
-			$this->object_id = $customer_data['customer_id'];
-
-			$order = wc_get_order($order_id);
-
-			$this->customerConditionalMapping($customer_data, $order, $customer_internal_id);
-
-			$customer = new Customer();
-
-			$this->createRequest($customer, $customer_data);
-
-			$customer->addressbookList = $add_list;
-
-			if (isset($TMWNI_OPTIONS['enableSendCustomersAsCo']) && 'on' == $TMWNI_OPTIONS['enableSendCustomersAsCo'] ) {
-				$customer->isPerson = false;
-				if (!empty($customer_data['companyName'])) {
-					$customer->companyName = $customer_data['companyName'];
-				} else {
-					$customer->companyName = $customer_data['firstName'] . ' ' . $customer_data['lastName']; //set customer as company 
-				}
-			} else {
-				$customer->isPerson = true;
-				$customer->firstName = !empty($customer_data['firstName'])? $customer_data['firstName'] : TMWNI_Settings::$customerDummyFisrtName;
-				$customer->lastName = !empty($customer_data['lastName'])? $customer_data['lastName'] : TMWNI_Settings::$customerDummyLastName;
+			if (!empty($customer_data['customer_id'])) {
+				$this->netsuiteService->logRequests(true);
 			}
 
+			global $TMWNI_OPTIONS;
+			$this->object_id = $customer_data['customer_id'];
 
-			$customer->email = $customer_data['email'];
-			$customer->phone = $customer_data['phone'];
-
+			$customer = $this->CustomerRequestData($customer_data, $add_list, $order_id, $customer_internal_id);
 
 			$customer->internalId = $customer_internal_id;
-
 		/** 
 				* Hook for  update customer data.
 		
@@ -359,22 +267,12 @@ class CustomerClient extends CommonIntegrationFunctions {
 				**/
 		$customer = apply_filters('tm_update_request_customer_data', $customer, $customer_data['customer_id'], $order_id);
 
-
-
-
 		$request = new UpdateRequest();
 		$request->record = $customer;
 
-
-			// pr($customer);  
-
-
-
-
-
 			try {
 					$updateResponse = $this->netsuiteService->update($request);
-					// pr($updateResponse); die('ddff');
+					// pr($updateResponse); die('zzz');
 				if (1 == $updateResponse->writeResponse->status->isSuccess) {
 					/** 
 						* Hook for  after update customer data.
@@ -383,31 +281,28 @@ class CustomerClient extends CommonIntegrationFunctions {
  
 						**/
 					do_action('tm_netsuite_after_customer_update', $customer_data, $add_list, $order_id);
-				}		
-					return $this->handleAPIUpdateResponse($updateResponse, 'customer');
+				}       
+					return $this->handleAPIUpdateResponse($updateResponse, 'customer-update', $order_id);
 			} catch (SoapFault $e) {
-				$object = 'customer';
+				$object = 'customer-update';
 				$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Update' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
 				$error_msg .= 'Error Message: ' . $e->getMessage();
+				$this->handleLog(0, $this->object_id, $object, $error_msg, $order_id);
 
 
 				return 0;
 			}
 		} else {
 			return 0;
-		}	
+		}   
 	}
-
-
 	/**
 	 * Creating customer request.
 	 */
-	public function createRequest( &$customer, $customer_data) {
-
-		// pr($customer_data['ns_customer_fields']); 
+	public function createRequest( &$customer, $customer_data ) {
+		// pr($customer_data['ns_customer_fields']); die;
 		foreach ($customer_data['ns_customer_fields'] as $nsfield => $value) {
-
-			if ( isset($value['type']) && 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type'] || 'GlobalSubscriptionStatus' == $value['type']) {
+			if (isset($value['type']) && ( 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type'] || 'GlobalSubscriptionStatus' == $value['type'] )) {
 
 				if ('phone'==$nsfield && strlen($value['value']) > 6) {
 					$customer->$nsfield = $value['value'];
@@ -467,7 +362,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom field list array.
 	 */
-	public function customFieldList( $custfield) {
+	public function customFieldList( $custfield ) {
 		$this->custFields[] = $custfield;
 		$customFieldList = new customFieldList();
 		$customFieldList->customField = $this->custFields;
@@ -478,7 +373,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom string field instance.
 	 */
-	public function customField( $scriptId, $value) {
+	public function customField( $scriptId, $value ) {
 		$custfield = new StringCustomFieldRef();
 		$custfield->scriptId = $scriptId;
 		$custfield->value = $value;
@@ -488,7 +383,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom string field instance.
 	 */
-	public function customRecordRefField( $scriptId, $value) {
+	public function customRecordRefField( $scriptId, $value ) {
 		$custfield = new StringCustomFieldRef();
 		$custfield->scriptId = $scriptId;
 		$custfield->value = new RecordRef();
@@ -499,7 +394,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom select field instance.
 	 */
-	public function customFieldSelect( $scriptId, $value) {
+	public function customFieldSelect( $scriptId, $value ) {
 		$custfieldselect = new SelectCustomFieldRef();
 		$custfieldselect->scriptId = $scriptId;
 		$recref = new ListOrRecordRef();
@@ -512,7 +407,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom multiselect field instance.
 	 */
-	public function customFieldMultiSelect( $scriptId, array $value) {
+	public function customFieldMultiSelect( $scriptId, array $value ) {
 		$multivalues = array();
 		$custfieldmultiselect = new MultiSelectCustomFieldRef();
 		$custfieldmultiselect->scriptId = $scriptId;
@@ -529,7 +424,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating custom boolean field instance.
 	 */
-	public function customFieldboolean( $scriptId, $value) {
+	public function customFieldboolean( $scriptId, $value ) {
 		$custfieldselect = new BooleanCustomFieldRef();
 		$custfieldselect->scriptId = $scriptId;
 		$custfieldselect->value = $value;
@@ -540,15 +435,13 @@ class CustomerClient extends CommonIntegrationFunctions {
 	/**
 	 * Creating conditional mapping for customer.
 	 */
-	public function customerConditionalMapping( &$customer_data, $order, $customer_internal_id = '') {
+	public function customerConditionalMapping( &$customer_data, $order, $customer_internal_id = '' ) {
 		$this->user_id = $customer_data['customer_id'];
 		$customer_data['ns_customer_fields'] = array(); 
 		$cm_options = get_option('customer_cm_options');
-
-		// pr($cm_options); die('zzzz');
 		if (!empty($cm_options)) {
 			foreach ($cm_options as $key => $mapping) {
-				if (!empty($customer_internal_id) && isset($mapping['exlcude_in_update']) && 'on'  == $mapping['exlcude_in_update'] ) {
+				if (( !empty($customer_internal_id) && isset($mapping['exlcude_in_update']) && 'on' == $mapping['exlcude_in_update'] ) ) {
 					continue;
 				}
 				$saved_value = '';
@@ -579,29 +472,28 @@ class CustomerClient extends CommonIntegrationFunctions {
 							}
 
 							if ('contains'  == $mapping['wc_where_op'] ) {
-								// pr(var_dump(strpos($saved_value, $mapping['wc_field_value'])));die;
 								if (false !== strpos(strtolower($saved_value), strtolower($mapping['wc_field_value']))) {
-									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							} elseif ('doesnotcontain' == $mapping['wc_where_op']) {
 								if ( false === strpos(strtolower($saved_value), strtolower($mapping['wc_field_value']))) {
-									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							} elseif ('is' == $mapping['wc_where_op']) {
 								if ('null' == strtolower($mapping['wc_field_value'])) {
 									if (empty($saved_value)) {
-										$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+										$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 									}
 								} elseif ( strtolower($saved_value) == strtolower($mapping['wc_field_value'])) {
-									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							} elseif ('isnot' == $mapping['wc_where_op']) {
 								if ('null' == strtolower($mapping['wc_field_value'])) {
 									if (!empty($saved_value)) {
-										$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+										$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 									}
 								} elseif ( strtolower($saved_value) != strtolower($mapping['wc_field_value'])) {
-									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+									$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 
 							}
@@ -610,7 +502,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 						break;
 					case 2:
 						if ('' != $mapping['ns_field_key'] && '' != $mapping['ns_field_value']) {
-							$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$mapping['ns_field_value']);
+							$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 						}
 						break;
 					case 3:
@@ -636,7 +528,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 								}
 							}
 							if (isset($saved_value) && !empty($saved_value)) {
-								$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array('type'=>trim($mapping['ns_field_type_value']),'value'=>$prefix . $saved_value);
+								$customer_data['ns_customer_fields'][$mapping['ns_field_key']] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$prefix . $saved_value );
 							}
 						}
 						break;
@@ -646,8 +538,6 @@ class CustomerClient extends CommonIntegrationFunctions {
 			}
 		}
 
-
 		return true;
 	}
-
 }

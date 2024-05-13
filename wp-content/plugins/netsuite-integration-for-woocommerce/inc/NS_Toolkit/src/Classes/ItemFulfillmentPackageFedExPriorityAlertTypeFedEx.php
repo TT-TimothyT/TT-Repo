@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentPackageFedExPriorityAlertTypeFedEx {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FEDEXPRIORITYALERT = '_fedexPriorityAlert';
 	const _FEDEXPRIORITYALERTPLUS = '_fedexPriorityAlertPlus';
 	const _NONESELECTED = '_noneSelected';

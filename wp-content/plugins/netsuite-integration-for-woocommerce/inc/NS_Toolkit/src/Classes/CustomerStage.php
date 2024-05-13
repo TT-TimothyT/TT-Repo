@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CUSTOMERSTAGE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CUSTOMER = '_customer';
 	const _LEAD = '_lead';
 	const _PROSPECT = '_prospect';

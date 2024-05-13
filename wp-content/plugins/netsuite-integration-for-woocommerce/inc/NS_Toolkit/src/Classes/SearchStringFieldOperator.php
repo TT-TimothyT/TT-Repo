@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class SearchStringFieldOperator {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const CONTAINS = 'contains';
 	const DOESNOTCONTAIN = 'doesNotContain';
 	const DOESNOTSTARTWITH = 'doesNotStartWith';

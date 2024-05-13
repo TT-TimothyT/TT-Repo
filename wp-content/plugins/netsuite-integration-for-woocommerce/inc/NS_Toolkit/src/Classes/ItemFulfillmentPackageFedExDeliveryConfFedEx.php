@@ -18,7 +18,6 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentPackageFedExDeliveryConfFedEx {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _SIGNATUREREQUIRED = '_signatureRequired';
 }

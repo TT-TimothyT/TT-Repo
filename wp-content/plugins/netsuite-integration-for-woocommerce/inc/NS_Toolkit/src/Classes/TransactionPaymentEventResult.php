@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TransactionPaymentEventResult {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACCEPT = '_accept';
 	const _HOLDOVERRIDE = '_holdOverride';
 	const _PAYMENTHOLD = '_paymentHold';

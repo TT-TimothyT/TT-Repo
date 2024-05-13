@@ -89,15 +89,54 @@ class Notices {
 
 		if ( is_multisite() ) {
 			add_action( 'network_admin_notices', array( $this, 'upgrade_to_pro' ) );
+			add_action( 'network_admin_notices', array( $this, 'redis_deprecation_notice' ) );
 			add_action( 'network_admin_notices', array( $this, 'free_version_deactivated' ) );
 			add_action( 'network_admin_notices', array( $this, 'free_version_rate' ) );
 			add_action( 'network_admin_notices', array( $this, 'plugin_compat_check' ) );
 		} else {
 			add_action( 'admin_notices', array( $this, 'upgrade_to_pro' ) );
+			add_action( 'admin_notices', array( $this, 'redis_deprecation_notice' ) );
 			add_action( 'admin_notices', array( $this, 'free_version_deactivated' ) );
 			add_action( 'admin_notices', array( $this, 'free_version_rate' ) );
 			add_action( 'admin_notices', array( $this, 'plugin_compat_check' ) );
 		}
+	}
+
+	/**
+	 * Show notice about Redis deprecation.
+	 *
+	 * @since 3.8.0
+	 */
+	public function redis_deprecation_notice() {
+		if ( $this->is_dismissed( 'redis-deprecation', 'option' ) ) {
+			return;
+		}
+
+		if ( ! Utils::is_admin_dashboard() && ! preg_match( '/^(toplevel|hummingbird)(-pro)*_page_wphb/', get_current_screen()->id ) ) {
+			return;
+		}
+
+		$redis_vars = Utils::get_module( 'redis' )->get_status_related_vars();
+
+		if ( ! $redis_vars['redis_connected'] ) {
+			return;
+		}
+
+		$heading = __( 'Important Update: Redis Integration Changes in Hummingbird', 'wphb' );
+		$message = __( '🚨 Heads Up! We’re streamlining our services and the Redis integration will soon be removed. Please be sure to migrate your data or adjust your settings before updating the plugin to the next version.', 'wphb' );
+		$message = '<h3>' . $heading . '</h3><p>' . $message . '</p>';
+
+		$dismiss_url = wp_nonce_url( add_query_arg( 'wphb-dismiss', 'redis-deprecation' ), 'wphb-dismiss-notice' );
+		?>
+		<div class="notice-warning notice wphb-notice">
+			<?php echo wp_kses_post( $message ); ?>
+			<p>
+				<a href="<?php echo esc_url( $dismiss_url ); ?>">
+					<?php esc_html_e( 'I Understand', 'wphb' ); ?>
+				</a>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
@@ -233,6 +272,7 @@ class Notices {
 			'free-deactivated',
 			'free-rated',
 			'cache-cleaned',
+			'redis-deprecation',
 		);
 
 		if ( in_array( $notice, $user_notices, true ) ) {

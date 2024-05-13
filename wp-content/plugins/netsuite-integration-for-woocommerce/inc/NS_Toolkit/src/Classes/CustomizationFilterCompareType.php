@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CustomizationFilterCompareType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _EQUAL = '_equal';
 	const _GREATERTHAN = '_greaterThan';
 	const _GREATERTHANOREQUAL = '_greaterThanOrEqual';

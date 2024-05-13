@@ -72,7 +72,7 @@ class Background_Bulk_Smush {
 
 		if ( ! Helper::loopback_supported() ) {
 			$this->logger->error( 'Loopback check failed. Not starting a new background process.' );
-			$doc_link = 'https://wpmudev.com/docs/wpmu-dev-plugins/smush/#background-processing';
+			$doc_link = 'https://wpmudev.com/docs/wpmu-dev-plugins/smush/#loopback-request-issue';
 			if ( ! WP_Smush::is_pro() ) {
 				$doc_link = add_query_arg(
 					array(
@@ -87,7 +87,7 @@ class Background_Bulk_Smush {
 				'message' => sprintf(
 					/* translators: %s: a doc link */
 					esc_html__( 'Your site seems to have an issue with loopback requests. Please try again and if the problem persists find out more %s.', 'wp-smushit' ),
-					sprintf( '<a target="_blank" href="%1$s">%2$s</a>', esc_html__( 'here', 'wp-smushit' ) )
+					sprintf( '<a target="_blank" href="%1$s">%2$s</a>', $doc_link, esc_html__( 'here', 'wp-smushit' ) )
 				),
 			) );
 		} else {

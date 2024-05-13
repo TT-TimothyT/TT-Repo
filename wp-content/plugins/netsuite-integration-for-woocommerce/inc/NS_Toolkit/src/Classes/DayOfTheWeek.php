@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class DAYOFTHEWEEK {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _SUNDAY = '_sunday';
 	const _MONDAY = '_monday';
 	const _TUESDAY = '_tuesday';

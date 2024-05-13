@@ -4,8 +4,10 @@
  *
  * @package Hummingbird
  *
- * @var array  $status    Array of results.
- * @var int    $inactive_types    Number of inactive types.
+ * @var array  $status           Array of results.
+ * @var int    $inactive_types   Number of inactive types.
+ * @var bool   $use_cdn          CDN status.
+ * @var string $compression_type Compression type.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +17,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <p><?php esc_html_e( 'Gzip compresses your webpages and style sheets before sending them over to the browser.', 'wphb' ); ?></p>
 <?php
-if ( $inactive_types ) {
+if ( true === $use_cdn || 'br' === $compression_type ) {
+	?>
+	<div class="sui-notice sui-notice-success">
+		<div class="sui-notice-content">
+			<div class="sui-notice-message">
+				<span class="sui-notice-icon sui-icon-info sui-md" aria-hidden="true"></span>
+				<p>
+					<?php
+					printf( /* translators: %1$s - opening <a> tag, %2$s - closing </a> tag */
+						esc_html__( 'Brotli Compression is active and working well via CDN, for enhanced performance in supported browsers. For browsers that don’t support Brotli, we’ll automatically use GZip instead. %1$sCheck browser support here%2$s.', 'wphb' ),
+						'<a href="' . esc_url( 'https://caniuse.com/brotli' ) . '" onclick="wphbMixPanel.track(' . "'check_brotli_support'" . ')" target="_blank">',
+						'</a>'
+					)
+					?>
+				</p>
+			</div>
+		</div>
+	</div>
+	<?php
+} elseif ( $inactive_types ) {
 	$this->admin_notices->show_inline(
 		sprintf( /* translators: %s: Number of inactive types */
 			__( '%s of your compression types are inactive.', 'wphb' ),

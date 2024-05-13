@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentShipStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _PACKED = '_packed';
 	const _PICKED = '_picked';
 	const _SHIPPED = '_shipped';

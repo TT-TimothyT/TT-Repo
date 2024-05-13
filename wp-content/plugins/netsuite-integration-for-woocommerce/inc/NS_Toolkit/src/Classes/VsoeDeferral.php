@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class VSOEDEFERRAL {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DEFERBUNDLEUNTILDELIVERED = '_deferBundleUntilDelivered';
 	const _DEFERUNTILITEMDELIVERED = '_deferUntilItemDelivered';
 }

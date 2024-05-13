@@ -396,8 +396,10 @@
 																	</th>
 																</tr>
 																<?php 
-																if (isset($options['enableInventorySync']) && 'on' == $options['enableInventorySync'] || ( isset($options['enablePriceSync']) && 'on' == $options['enablePriceSync'] )) {
-
+																if (
+																		 ( isset($options['enableInventorySync']) && 'on' == $options['enableInventorySync'] ) || 
+																			( ( isset($options['enablePriceSync']) && 'on' == $options['enablePriceSync'] ) )
+																		) {
 																	?>
 																	<tr>
 																		<th scope="row" class="titledesc">

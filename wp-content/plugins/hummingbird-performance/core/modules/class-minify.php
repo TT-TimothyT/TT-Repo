@@ -106,6 +106,20 @@ class Minify extends Module {
 	private $fonts = array();
 
 	/**
+	 * Transient expiration timeout.
+	 *
+	 * @var string
+	 */
+	const AO_TRANSIENT_EXPIRATION = 60;
+
+	/**
+	 * Transient name.
+	 *
+	 * @var string
+	 */
+	const AO_TRANSIENT_NAME = 'wphb-processing';
+
+	/**
 	 * Initializes the module. Always executed even if the module is deactivated.
 	 *
 	 * We need the scanner module to be always active, because HB uses is_scanning to detect
@@ -202,7 +216,7 @@ class Minify extends Module {
 			$this->disable_minify_on_page();
 		}
 
-		if ( is_admin() || is_customize_preview() || ( $wp_customize instanceof WP_Customize_Manager ) ) {
+		if ( is_admin() || is_customize_preview() || ( $wp_customize instanceof WP_Customize_Manager ) || apply_filters( 'wphb_do_not_run_ao_files', false ) ) {
 			return;
 		}
 
@@ -216,7 +230,6 @@ class Minify extends Module {
 		// Google fonts optimization.
 		$this->fonts = Settings::get_setting( 'fonts', 'minify' );
 		if ( $this->fonts ) {
-			add_filter( 'wp_resource_hints', array( $this, 'prefetch_fonts' ), 10, 2 );
 			add_filter( 'style_loader_tag', array( $this, 'preload_fonts' ), 10, 3 );
 		}
 	}
@@ -897,7 +910,7 @@ class Minify extends Module {
 	 */
 	public function process_queue() {
 		// Process the queue.
-		if ( get_transient( 'wphb-processing' ) ) {
+		if ( get_transient( self::AO_TRANSIENT_NAME ) ) {
 			// Still processing. Try again.
 			if ( ! ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) ) {
 				self::schedule_process_queue_cron();
@@ -907,7 +920,7 @@ class Minify extends Module {
 
 		$queue = $this->get_pending_persistent_queue();
 
-		set_transient( 'wphb-processing', true, 60 );
+		set_transient( self::AO_TRANSIENT_NAME, true, self::AO_TRANSIENT_EXPIRATION );
 		// Process 10 groups max in a request.
 		$count = 0;
 
@@ -940,7 +953,9 @@ class Minify extends Module {
 
 		if ( empty( $new_queue ) ) {
 			// Finish processing.
-			delete_transient( 'wphb-processing' );
+			delete_transient( self::AO_TRANSIENT_NAME );
+			// Update AO completion date.
+			self::update_ao_completion_time();
 			if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
 				/**
 				 * Unfortunately, during cron we are not able to detect the first page load, so it will get cached.
@@ -955,7 +970,7 @@ class Minify extends Module {
 			}
 		} else {
 			// Refresh transient.
-			set_transient( 'wphb-processing', true, 60 );
+			set_transient( self::AO_TRANSIENT_NAME, true, self::AO_TRANSIENT_EXPIRATION );
 		}
 	}
 
@@ -983,7 +998,7 @@ class Minify extends Module {
 
 		$current_queue = $this->get_pending_persistent_queue();
 		if ( empty( $current_queue ) ) {
-			update_option( 'wphb_process_queue', $items );
+			update_option( 'wphb_process_queue', $items, 'no' );
 			return;
 		}
 
@@ -998,7 +1013,7 @@ class Minify extends Module {
 		}
 
 		if ( $updated ) {
-			update_option( 'wphb_process_queue', $current_queue );
+			update_option( 'wphb_process_queue', $current_queue, 'no' );
 		}
 	}
 
@@ -1032,7 +1047,7 @@ class Minify extends Module {
 			return;
 		}
 
-		update_option( 'wphb_process_queue', $queue );
+		update_option( 'wphb_process_queue', $queue, 'no' );
 	}
 
 	/**
@@ -1063,6 +1078,9 @@ class Minify extends Module {
 	 */
 	public function clear_cache( $reset_settings = true, $reset_minify = true, $keep_collection = false ) {
 		$this->clear_files();
+
+		// Reset AO completion time.
+		self::update_ao_completion_time( true );
 
 		if ( $reset_settings ) {
 			// This one when cleared will trigger a new scan.
@@ -1105,9 +1123,25 @@ class Minify extends Module {
 		delete_transient( 'wphb_infinite_loop_warning' );
 		delete_option( 'wphb_process_queue' );
 		wp_cache_delete( 'wphb_process_queue', 'options' );
-		delete_transient( 'wphb-processing' );
+		delete_transient( self::AO_TRANSIENT_NAME );
 	}
 
+	/**
+	 * Update AO completion time.
+	 *
+	 * @param bool $reset Reset completed time.
+	 */
+	public static function update_ao_completion_time( $reset = false ) {
+		if ( ! Utils::is_ao_status_bar_enabled() ) {
+			return;
+		}
+
+		$get_date_time = date_i18n( get_option( 'date_format' ) ) . ' @ ' . date_i18n( get_option( 'time_format' ) );
+		$get_date_time = $reset ? '' : $get_date_time;
+
+		// Update setting.
+		Settings::update_setting( 'ao_completed_time', $get_date_time, 'minify' );
+	}
 	/**
 	 * Disable minification module.
 	 */
@@ -1219,6 +1253,11 @@ class Minify extends Module {
 			return false;
 		}
 
+		// If handle is already available in error, then ignore the handle.
+		if ( $this->errors_controller->get_handle_error( $handle, $type ) ) {
+			return false;
+		}
+
 		// Filter already minified resources.
 		if ( preg_match( '/\.min\.(css|js)/', basename( $url ) ) ) {
 			return false;
@@ -1253,6 +1292,10 @@ class Minify extends Module {
 		 * @param string $type   Script or style..
 		 */
 		if ( apply_filters( 'wphb_dont_combine_handles', false, $handle, $type ) ) {
+			return false;
+		}
+
+		if ( $this->errors_controller->get_handle_error( $handle, $type ) ) {
 			return false;
 		}
 
@@ -1720,35 +1763,6 @@ class Minify extends Module {
 		$fonts .= str_replace( "media='all'", "media='print' onload='this.media=&#34;all&#34;'", $tag );
 
 		return $fonts;
-	}
-
-	/**
-	 * Prefetch Google fonts.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param array  $hints          URLs to print for resource hints.
-	 * @param string $relation_type  The relation type the URLs are printed for, e.g. 'preconnect' or 'prerender'.
-	 *
-	 * @return array
-	 */
-	public function prefetch_fonts( $hints, $relation_type ) {
-		if ( 'preconnect' !== $relation_type ) {
-			return $hints;
-		}
-
-		if ( ! in_array( 'https://fonts.gstatic.com', $hints, true ) ) {
-			$hints[] = array(
-				'href'        => 'https://fonts.gstatic.com',
-				'crossorigin' => '',
-			);
-		}
-
-		if ( ! in_array( 'https://fonts.googleapis.com', $hints, true ) ) {
-			$hints[] = 'https://fonts.googleapis.com';
-		}
-
-		return $hints;
 	}
 
 	/**

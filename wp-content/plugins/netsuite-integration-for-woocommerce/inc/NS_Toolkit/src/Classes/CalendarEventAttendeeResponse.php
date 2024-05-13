@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CALENDAREVENTATTENDEERESPONSE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACCEPTED = '_ACCEPTED';
 	const _DECLINED = '_DECLINED';
 	const _NORESPONSE = '_NORESPONSE';

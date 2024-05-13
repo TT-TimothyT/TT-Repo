@@ -26,6 +26,7 @@ class Wt_Import_Export_For_Woo_Basic_Export_Ajax
 	protected $last_page=false;
 	protected $total_steps=0;
 	protected $step_summary='';
+	protected $step_description='';
 	protected $mapping_enabled_fields=array();
 	protected $mapping_templates=array();
 	protected $selected_template=0;
@@ -592,6 +593,7 @@ class Wt_Import_Export_For_Woo_Basic_Export_Ajax
 		$this->step_keys=array_keys($this->steps);
 		$this->current_step_index=array_search($this->step, $this->step_keys);
 		$this->current_step_number=$this->current_step_index+1;
+		$this->step_description = $step_info['description'];
 		$this->last_page=(!isset($this->step_keys[$this->current_step_index+1]) ? true : false);
 		$this->total_steps=count($this->step_keys);
 		$this->step_summary=__(sprintf("Step %d of %d", $this->current_step_number, $this->total_steps));

@@ -38,190 +38,298 @@
 					>
 					<tr valign="top">
 						<th scope="row" class="titledesc">
-							<label for="ns_order_autosync_status">Sync Orders Status (Default: Processing)
+							<label for="ns_order_record_type">Sync Order as
 							</label>
 							<div class="tooltip dashicons-before dashicons-editor-help">
-								<span class="tooltiptext">This will be the status for which this plugin will auto sync the WooCommerce orders to NetSuite. Default status will be WC-PROCESSING 
+								<span class="tooltiptext">Select the type of record you want sync order as sales order or cash sale.
 								</span>
 							</div>
-
 						</th>
 						<td class="forminp">
 							<fieldset>
-								<?php
-								$wc_order_status = wc_get_order_statuses();
-								?>
-								<select class="input-text  " type="text" name="ns_order_autosync_status" id="ns_order_autosync_status">
-									<option value="">Please select</option>
+								<select class="input-text  " type="text" name="ns_order_record_type" id="ns_order_record_type">
+									<option value="salesorder" 
 									<?php
-									foreach ($wc_order_status as $status_key => $status_label) :
-										?>
-										<?php
-										if ('wc-cancelled' != $status_key && 'wc-refunded' != $status_key && 'wc-failed' != $status_key) :
-											?>
-											<option value="<?php echo wp_kses_data(str_replace('wc-', '', $status_key)); ?>" 
-												<?php
-												if (isset($options['ns_order_autosync_status']) && wp_kses_data(str_replace('wc-', '', $status_key)) == $options['ns_order_autosync_status']) {
-													echo 'selected';
-												}
-												?>
-												>
-												<?php
-												echo esc_attr(trim($status_label));
-												?>
-											</option>
-											<?php
-										endif;
-										?>
-										<?php
-									endforeach;
-									?>
-								</select>
-							</fieldset>
-						</td>
-					</tr>
-					<tr valign="top">
-						<th scope="row" class="titledesc">
-							<label for="ns_autosync_on_order_status_changes">Order Delete From NetSuite If WC Delete</label>
-							<div class="tooltip dashicons-before dashicons-editor-help">
-								<span class="tooltiptext">Delete Order from NetSuite When it get deleted on WooCommerce</span>
-							</div>
-						</th>
-						<td class="forminp forminp-checkbox">
-							<input name="syncDeletedOrders" 
-							<?php
-							if (isset($options['syncDeletedOrders']) && 'on' == $options['syncDeletedOrders']) {
-								echo 'checked ';
-							}
-							?>
-							id="syncDeletedOrders" type="checkbox">                        
-						</td>
-					</tr>
-					<tr valign="top" class="">
-						<th scope="row" class="titledesc">
-							Enable Coupon Sync
-							<div class="tooltip dashicons-before dashicons-editor-help">
-								<span class="tooltiptext">Enables coupon sync. to NetSuite.</span>
-							</div>
-						</th>
-
-						<td class="forminp forminp-checkbox">
-														<input name="ns_coupon_netsuite_sync" 
-							<?php
-							if (isset($options['ns_coupon_netsuite_sync']) && 'on' == $options['ns_coupon_netsuite_sync']) {
-								echo 'checked ';
-							}
-							?>
-							id="ns_coupon_netsuite_sync" type="checkbox">                        
-						</td>
-
-					</tr>
-					<tr >
-						<td id="promo_required_fields"
-						<?php
-						if (!isset($options['ns_coupon_netsuite_sync'])) {
-							?>
-							class="promo_required_fields forminp forminp-select"
-							<?php
-						}
-						?>
-						>
-						<fieldset>	
-
-
-							<select id="ns_promo_discount_id" name="ns_promo_discount_id">
-								<option value="">Choose Discount Item for accounting</option>
-								<?php
-								$discountItem = get_option('netsuite_promo_discountItem');
-								if (!empty($discountItem)) {
-									foreach ($discountItem as $item_key => $item_value) {
-										if (!empty($options['ns_promo_discount_id']) && ( $item_key == $options['ns_promo_discount_id'] )) {
-											?>
-											<option value="<?php echo esc_attr($item_key); ?>" selected="selected">
-												<?php
-												echo esc_attr($item_value);
-												?>
-											</option>
-											<?php
-										} else {
-											?>
-
-											<option value="<?php echo esc_attr($item_key); ?>">
-												<?php
-												echo esc_attr($item_value);
-												?>
-
-											</option>
-											<?php
-										}
+									if (isset($options['ns_order_record_type']) && 'salesorder' == $options['ns_order_record_type']) {
+										echo 'selected';
 									}
-
+									?>
+									>SalesOrder
+								</option>
+								<option value="cashsale" 
+								<?php
+								if (isset($options['ns_order_record_type']) && 'cashsale' == $options['ns_order_record_type']) {
+									echo 'selected';
 								}
 								?>
+								>CashSale
+							</option>
+						</select>
+					</fieldset>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row" class="titledesc">
+					<label for="ns_order_autosync_status">Sync Orders Status (Default: Processing)
+					</label>
+					<div class="tooltip dashicons-before dashicons-editor-help">
+						<span class="tooltiptext">This will be the status for which this plugin will auto sync the WooCommerce orders to NetSuite. Default status will be WC-PROCESSING 
+						</span>
+					</div>
 
-
-
-							</select>
-							<a href="#" title="get customform and discount item from netsuite" id="Promofields">
-								<i class="glyphicon glyphicon-refresh" ></i>
-							</a>
-
-
-
-						</fieldset>
-					</td>
-				</tr>
-
-				<tr valign="top" class="">
-					<th scope="row" class="titledesc">
-						Display Tracking Number   
-						<div class="tooltip dashicons-before dashicons-editor-help">
-							<span class="tooltiptext">Display NetSuite order tracking number on Customer My Account dashboard
-							</span>
-						</div>
-					</th>
-					<td class="forminp forminp-checkbox">
-						<input name="enableDisplayOrderTrackingNumber" 
+				</th>
+				<td class="forminp">
+					<fieldset>
 						<?php
-						if (isset($options['enableDisplayOrderTrackingNumber']) && 'on' == $options['enableDisplayOrderTrackingNumber']) {
-							echo 'checked ';
-						}
+						$wc_order_status = wc_get_order_statuses();
 						?>
-						id="enableDisplayOrderTrackingNumber" type="checkbox">                        
-					</td>
-				</tr>
-				<tr valign="top">
-					<th scope="row" class="titledesc">
-						<label for="ns_order_send_email_to_admin">Enable Error Notifications</label>
-						<div class="tooltip dashicons-before dashicons-editor-help">
-							<span class="tooltiptext">Send email when an error occurs on order</span>
-						</div>
-					</th>
-					<td class="forminp">
-						<input name="ns_order_send_email_to_admin_enable" 
-						<?php
-						if (isset($options['ns_order_send_email_to_admin_enable']) && 'on' == $options['ns_order_send_email_to_admin_enable']) {
-							echo 'checked ';
-						}
-						?>
-						id="ns_order_send_email_to_admin_enable" type="checkbox"> 
-
-						<span>
-							<input 
+						<select class="input-text  " type="text" name="ns_order_autosync_status" id="ns_order_autosync_status">
+							<option value="">Please select</option>
 							<?php
-							if (!isset($options['ns_order_send_email_to_admin_enable'])) {
+							foreach ($wc_order_status as $status_key => $status_label) :
 								?>
-								class= "ns_order_admin_email_field" 
+								<?php
+								if ('wc-cancelled' != $status_key && 'wc-refunded' != $status_key && 'wc-failed' != $status_key) :
+									?>
+									<option value="<?php echo wp_kses_data(str_replace('wc-', '', $status_key)); ?>" 
+										<?php
+										if (isset($options['ns_order_autosync_status']) && wp_kses_data(str_replace('wc-', '', $status_key)) == $options['ns_order_autosync_status']) {
+											echo 'selected';
+										}
+										?>
+										>
+										<?php
+										echo esc_attr(trim($status_label));
+										?>
+									</option>
+									<?php
+								endif;
+								?>
+								<?php
+							endforeach;
+							?>
+						</select>
+					</fieldset>
+				</td>
+			</tr>
+			<tr valign="top" id="customer_deposit_field" class="<?php echo ( isset($options['ns_order_record_type']) && 'cashsale' !== $options['ns_order_record_type'] ) ? '' : 'ns_order_shiping_line_item'; ?>" >
+				<th scope="row" class="titledesc">
+					Create Woo Orders deposit
+					<span class="woocommerce-help-tip" data-tip="To enable order sync"></span>
+					<div class="tooltip dashicons-before dashicons-editor-help">
+						<span class="tooltiptext">Checked if you want to create customer deposit transaction records 
+						</span>
+					</div>
+				</th>
+				<td class="forminp forminp-checkbox">
+					<input name="enableCustomerDeposit" 
+					<?php
+					if (isset($options['enableCustomerDeposit']) && 'on' == $options['enableCustomerDeposit']) {
+						echo 'checked ';
+					}
+					?>
+					id="enableCustomerDeposit" type="checkbox">                        
+				</td>
+			</tr>
+			<tr valign="top" id="invoice_fields" class="<?php echo ( !isset($options['ns_order_record_type']) || 'cashsale' !== $options['ns_order_record_type'] ? '' : 'ns_order_shiping_line_item' ); ?>">
+
+				<th scope="row" class="titledesc">
+					Auto Create Invoice
+					<div class="tooltip dashicons-before dashicons-editor-help">
+						<span class="tooltiptext">Transform Invoice from Sales order</span>
+					</div>
+				</th>
+				<td class="forminp forminp-select">
+					<input name="ns_auto_invoice_sync" 
+					<?php
+					if (isset($options['ns_auto_invoice_sync']) && 'on' == $options['ns_auto_invoice_sync']) {
+						echo 'checked ';
+					}
+					?>
+					id="ns_auto_invoice_sync" type="checkbox"> 
+					<span  id="ns_auto_invoice_field" 
+					<?php
+					if (!isset($options['ns_auto_invoice_sync'])) {
+						?>
+						class= "ns_order_shiping_line_item" 
+						<?php
+					}
+					?>
+					>
+					<select name="ns_auto_invoice_status" id="ns_auto_invoice_status" style="" >
+						<?php
+						$wc_order_status = wc_get_order_statuses();
+						?>
+						<option value="">Please select</option>
+						<?php
+						foreach ($wc_order_status as $status_key => $status_label) :
+							?>
+							<?php
+							if ('wc-cancelled' != $status_key && 'wc-refunded' != $status_key && 'wc-failed' != $status_key) :
+								?>
+								<option value="<?php echo wp_kses_data(str_replace('wc-', '', $status_key)); ?>" 
+									<?php
+									if (isset($options['ns_auto_invoice_status']) && wp_kses_data(str_replace('wc-', '', $status_key)) == $options['ns_auto_invoice_status']) {
+										echo 'selected';
+									}
+									?>
+									>
+									<?php
+									echo esc_attr(trim($status_label));
+									?>
+								</option>
+								<?php
+							endif;
+							?>
+							<?php
+						endforeach;
+						?>
+					</select>
+				</span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row" class="titledesc">
+				<label for="ns_autosync_on_order_status_changes">Order Delete From NetSuite If WC Delete</label>
+				<div class="tooltip dashicons-before dashicons-editor-help">
+					<span class="tooltiptext">Delete Order from NetSuite When it get deleted on WooCommerce</span>
+				</div>
+			</th>
+			<td class="forminp forminp-checkbox">
+				<input name="syncDeletedOrders" 
+				<?php
+				if (isset($options['syncDeletedOrders']) && 'on' == $options['syncDeletedOrders']) {
+					echo 'checked ';
+				}
+				?>
+				id="syncDeletedOrders" type="checkbox">                        
+			</td>
+		</tr>
+		<tr valign="top" class="">
+			<th scope="row" class="titledesc">
+				Enable Coupon Sync
+				<div class="tooltip dashicons-before dashicons-editor-help">
+					<span class="tooltiptext">Enables coupon sync. to NetSuite.</span>
+				</div>
+			</th>
+
+			<td class="forminp forminp-checkbox">
+				<input name="ns_coupon_netsuite_sync" 
+				<?php
+				if (isset($options['ns_coupon_netsuite_sync']) && 'on' == $options['ns_coupon_netsuite_sync']) {
+					echo 'checked ';
+				}
+				?>
+				id="ns_coupon_netsuite_sync" type="checkbox">                        
+			</td>
+
+		</tr>
+		<tr >
+			<td id="promo_required_fields"
+			<?php
+			if (!isset($options['ns_coupon_netsuite_sync'])) {
+				?>
+				class="promo_required_fields forminp forminp-select"
+				<?php
+			}
+			?>
+			>
+			<fieldset>	
+
+
+				<select id="ns_promo_discount_id" name="ns_promo_discount_id">
+					<option value="">Choose Discount Item for accounting</option>
+					<?php
+					$discountItem = get_option('netsuite_promo_discountItem');
+					if (!empty($discountItem)) {
+						foreach ($discountItem as $item_key => $item_value) {
+							if (!empty($options['ns_promo_discount_id']) && ( $item_key == $options['ns_promo_discount_id'] )) {
+								?>
+								<option value="<?php echo esc_attr($item_key); ?>" selected="selected">
+									<?php
+									echo esc_attr($item_value);
+									?>
+								</option>
+								<?php
+							} else {
+								?>
+
+								<option value="<?php echo esc_attr($item_key); ?>">
+									<?php
+									echo esc_attr($item_value);
+									?>
+
+								</option>
 								<?php
 							}
-							?>
-							type="text" name="ns_order_admin_email" id="ns_order_admin_email" value="<?php isset($options['ns_order_admin_email']) ? esc_attr_e(trim($options['ns_order_admin_email'])) : ''; ?>">
-						</span>
-					</td>
+						}
 
-				</tr>
+					}
+					?>
 
+
+
+				</select>
+				<a href="#" title="get customform and discount item from netsuite" id="Promofields">
+					<i class="glyphicon glyphicon-refresh" ></i>
+				</a>
+
+
+
+			</fieldset>
+		</td>
+	</tr>
+
+	<tr valign="top" class="">
+		<th scope="row" class="titledesc">
+			Display Tracking Number   
+			<div class="tooltip dashicons-before dashicons-editor-help">
+				<span class="tooltiptext">Display NetSuite order tracking number on Customer My Account dashboard
+				</span>
+			</div>
+		</th>
+		<td class="forminp forminp-checkbox">
+			<input name="enableDisplayOrderTrackingNumber" 
+			<?php
+			if (isset($options['enableDisplayOrderTrackingNumber']) && 'on' == $options['enableDisplayOrderTrackingNumber']) {
+				echo 'checked ';
+			}
+			?>
+			id="enableDisplayOrderTrackingNumber" type="checkbox">                        
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row" class="titledesc">
+			<label for="ns_order_send_email_to_admin">Enable Error Notifications</label>
+			<div class="tooltip dashicons-before dashicons-editor-help">
+				<span class="tooltiptext">Send email when an error occurs on order</span>
+			</div>
+		</th>
+		<td class="forminp">
+			<input name="ns_order_send_email_to_admin_enable" 
+			<?php
+			if (isset($options['ns_order_send_email_to_admin_enable']) && 'on' == $options['ns_order_send_email_to_admin_enable']) {
+				echo 'checked ';
+			}
+			?>
+			id="ns_order_send_email_to_admin_enable" type="checkbox"> 
+
+			<span>
+				<input 
 				<?php
+				if (!isset($options['ns_order_send_email_to_admin_enable'])) {
+					?>
+					class= "ns_order_admin_email_field" 
+					<?php
+				}
+				?>
+				type="text" name="ns_order_admin_email" id="ns_order_admin_email" value="<?php isset($options['ns_order_admin_email']) ? esc_attr_e(trim($options['ns_order_admin_email'])) : ''; ?>">
+			</span>
+		</td>
+
+	</tr>
+
+	<?php
 /**
  * Order setting hook.
  *
@@ -229,7 +337,7 @@
  
  **/
 do_action('tm_ns_after_order_settings');
-				?>
+	?>
 
 </tbody>
 <tr valign="top">
@@ -440,103 +548,103 @@ do_action('tm_ns_after_order_general_settings');
 
 
 
-							?>
-
-							<option value="-1" 
-							<?php
-							echo esc_attr($selected);
-							?>
-							>Custom Price Level</option>
-						</select>
-
-					</span>
-
-				</td>
-
-			</tr>
-			<tr valign="top" class="">
-				<th scope="row" class="titledesc">
-					Order Item Tax Code
-					<div class="tooltip dashicons-before dashicons-editor-help">
-						<span class="tooltiptext">select the taxcode of the Order Item</span>
-					</div>
-				</th>
-				<td class="forminp forminp-select" id="tm_select">
-					<input name="order_item_tax_code_enable" 
-					<?php
-					if (isset($options['order_item_tax_code_enable']) && 'on' == $options['order_item_tax_code_enable']) {
-						echo 'checked ';
-					}
-					?>
-					id="order_item_tax_code_enable" type="checkbox"> 
-					<span  id="order_tax_code_field" 
-					<?php
-					if (!isset($options['order_item_tax_code_enable'])) {
 						?>
-						class= "ns_order_shiping_line_item" 
+
+						<option value="-1" 
 						<?php
-					}
-					?>
-					>
-					<select name="order_item_tax_code" id="order_item_tax_code" style="" >
-						<option 
-						<?php
-
-						$tax_codes = get_option('netsuite_tax_codes');
-						if (!empty($tax_codes)) {
-							
-							foreach ($tax_codes as $key => $tax_code) {
-								if (isset($options['order_item_tax_code']) && !empty($options['order_item_tax_code']) && $options['order_item_tax_code'] == $key) {
-									?>
-									<option selected="selected" value="<?php echo esc_attr($key); ?>">
-										<?php
-										echo esc_attr($tax_code);
-										?>
-									</option>
-
-									<?php
-								} else {
-									?>
-									<option value="<?php echo esc_attr($key); ?>">
-										<?php
-										echo esc_attr($tax_code);
-										?>
-									</option>
-
-									<?php
-								}
-							}
-							
-						}
+						echo esc_attr($selected);
 						?>
+						>Custom Price Level</option>
 					</select>
-					<a href="#" title="get tax code from netsuite" id="taxCodeRefresh">
-						<span class="loaderSpiner">
-							<i class="glyphicon glyphicon-refresh"></i>
-						</span>
-					</a>
 
 				</span>
 
 			</td>
 
 		</tr>
-
-
-	</tbody>
-	<tbody>
-
-
-
-
-		<tr valign="top">
+		<tr valign="top" class="">
 			<th scope="row" class="titledesc">
-				<input type="submit" class="button-primary" name="save_post" value="Save Settings" /> 
+				Order Item Tax Code
+				<div class="tooltip dashicons-before dashicons-editor-help">
+					<span class="tooltiptext">select the taxcode of the Order Item</span>
+				</div>
 			</th>
+			<td class="forminp forminp-select" id="tm_select">
+				<input name="order_item_tax_code_enable" 
+				<?php
+				if (isset($options['order_item_tax_code_enable']) && 'on' == $options['order_item_tax_code_enable']) {
+					echo 'checked ';
+				}
+				?>
+				id="order_item_tax_code_enable" type="checkbox"> 
+				<span  id="order_tax_code_field" 
+				<?php
+				if (!isset($options['order_item_tax_code_enable'])) {
+					?>
+					class= "ns_order_shiping_line_item" 
+					<?php
+				}
+				?>
+				>
+				<select name="order_item_tax_code" id="order_item_tax_code" style="" >
+					<option 
+					<?php
 
-		</tr>
+					$tax_codes = get_option('netsuite_tax_codes');
+					if (!empty($tax_codes)) {
 
-	</tbody>
+						foreach ($tax_codes as $key => $tax_code) {
+							if (isset($options['order_item_tax_code']) && !empty($options['order_item_tax_code']) && $options['order_item_tax_code'] == $key) {
+								?>
+								<option selected="selected" value="<?php echo esc_attr($key); ?>">
+									<?php
+									echo esc_attr($tax_code);
+									?>
+								</option>
+
+								<?php
+							} else {
+								?>
+								<option value="<?php echo esc_attr($key); ?>">
+									<?php
+									echo esc_attr($tax_code);
+									?>
+								</option>
+
+								<?php
+							}
+						}
+
+					}
+					?>
+				</select>
+				<a href="#" title="get tax code from netsuite" id="taxCodeRefresh">
+					<span class="loaderSpiner">
+						<i class="glyphicon glyphicon-refresh"></i>
+					</span>
+				</a>
+
+			</span>
+
+		</td>
+
+	</tr>
+
+
+</tbody>
+<tbody>
+
+
+
+
+	<tr valign="top">
+		<th scope="row" class="titledesc">
+			<input type="submit" class="button-primary" name="save_post" value="Save Settings" /> 
+		</th>
+
+	</tr>
+
+</tbody>
 </table>
 </td>
 </form>
@@ -598,61 +706,60 @@ do_action('tm_ns_after_order_general_settings');
 						<option value="_returnAuthorizationPendingReceipt" 
 						<?php
 						if (isset($options['ns_order_refund_status']) && '_returnAuthorizationPendingReceipt' == $options['ns_order_refund_status']) {
-echo 'selected';}
+							echo 'selected';}
 						?>
-						>PENDING BILLING</option>
-						<option value="_returnAuthorizationRefunded" 
+							>PENDING BILLING</option>
+							<option value="_returnAuthorizationRefunded" 
+							<?php
+							if (isset($options['ns_order_refund_status']) && '_returnAuthorizationRefunded' == $options['ns_order_refund_status']) {
+								echo 'selected';
+							}
+							?>
+							>REFUNDED</option>
+
+						</select>
+					</fieldset>
+				</td>
+				<tr valign="top" class="">
+					<th scope="row" class="titledesc">
+						Woo to NetSuite
+						<div class="tooltip dashicons-before dashicons-editor-help">
+							<span class="tooltiptext">Refunds the orders on NetSuite if orders  refunds on woocommerce</span>
+						</div>
+					</th>
+					<td class="forminp forminp-checkbox">
+						<input name="refund_order_woo_to_ns" 
 						<?php
-						if (isset($options['ns_order_refund_status']) && '_returnAuthorizationRefunded' == $options['ns_order_refund_status']) {
-							echo 'selected';
+						if (isset($options['refund_order_woo_to_ns']) && 'on' == $options['refund_order_woo_to_ns']) {
+							echo 'checked ';
 						}
 						?>
-						>REFUNDED</option>
+						id="refund_order_woo_to_ns" type="checkbox">                        
+					</td>
+				</tr>
+			</tbody>
+			<tbody>
+				<tr valign="top">
+					<th scope="row" class="titledesc">
+						<input type="submit" class="button-primary" name="save_post" value="Save Settings" /> 
+					</th>
 
-					</select>
-				</fieldset>
-			</td>
-			<tr valign="top" class="">
-				<th scope="row" class="titledesc">
-					Woo to NetSuite
-					<div class="tooltip dashicons-before dashicons-editor-help">
-						<span class="tooltiptext">Refunds the orders on NetSuite if orders  refunds on woocommerce</span>
-					</div>
-				</th>
-				<td class="forminp forminp-checkbox">
-					<input name="refund_order_woo_to_ns" 
-					<?php
-					if (isset($options['refund_order_woo_to_ns']) && 'on' == $options['refund_order_woo_to_ns']) {
-						echo 'checked ';
-					}
-					?>
-					id="refund_order_woo_to_ns" type="checkbox">                        
-				</td>
-			</tr>
+				</tr>
 
-
-
-
-
-		</tbody>
-		<tbody>
-
-
-
-
-			<tr valign="top">
-				<th scope="row" class="titledesc">
-					<input type="submit" class="button-primary" name="save_post" value="Save Settings" /> 
-				</th>
-
-			</tr>
-
-		</tbody>
-	</table>
-</td>
+			</tbody>
+		</table>
+	</td>
 </form>
 </div>
 <!-- refund settings close -->
+<?php
+if (isset($options['ns_order_record_type']) && 'cashsale' == $options['ns_order_record_type']) {
+	$record_type = 'cash_sale';
+} else {
+	$record_type = 'sales_order';
+}
+if ('cash_sale' !== $record_type) :
+	?>
 <h4>Fulfillment Sync</h4>
 <form   action="admin-post.php" method="post" id="settings_tm_ns"> 
 	<div class="well">
@@ -744,7 +851,7 @@ echo 'selected';}
 					Shipping Courier
 				</th>
 				<td class="forminp">
-										<input class="input-text" name="ns_order_shipping_courier" 
+					<input class="input-text" name="ns_order_shipping_courier" 
 					value="<?php isset($options['ns_order_shipping_courier']) ? esc_attr_e($options['ns_order_shipping_courier']) : ''; ?>" type="text" id="ns_order_shipping_courier">                      
 				</td>
 			</tr>
@@ -765,26 +872,21 @@ echo 'selected';}
  **/
 do_action('tm_ns_after_order_fulfillment_settings');
 			?>
-
-
-</tbody><tbody>
-	
-
-	
-
+</tbody>
+<tbody>
 	<tr valign="top">
 		<th scope="row" class="titledesc">
 			<input type="submit" class="button-primary" name="save_post" value="Save Settings" /> 
 		</th>
 
 	</tr>
-	
-
 </tbody>
 </table>
 </td>
 </form>
 </div>
+<?php endif; ?>
+
 
 <div class="col-md-12">
 	<form class="tm_netsuite_ajax_form_save" role="form">
@@ -810,9 +912,9 @@ do_action('tm_ns_after_order_fulfillment_settings');
 							</span>
 
 							<?php if (isset($cm_option['required']) && 1 == $cm_option['required']) { ?>    
-							<span class="text-danger requiredCM pull-right">(*) Required Field</span>  
+								<span class="text-danger requiredCM pull-right">(*) Required Field</span>  
 							<?php } else { ?>
-							<span style="float:right;" class='btn btn-danger removeCMRow'>X</span>                       
+								<span style="float:right;" class='btn btn-danger removeCMRow'>X</span>                       
 							<?php } ?>
 							<tr>
 								<td>
@@ -843,84 +945,84 @@ do_action('tm_ns_after_order_fulfillment_settings');
 									</select>
 								</td>
 								<?php if (2 != $cm_option['operator']) { ?>
-								<td>
-									<span class="h6 required">WC Field Source</span><br/>
-									<select class="cm_type input-sm" name="cm[<?php echo esc_attr($index); ?>][type]">
-										<option value="0">-- select field type --</option>
-										<option value="1" 
-										<?php
-										if (1 == $cm_option['type']) {
-											echo 'selected';
-										}
-										?>
-										>Customer Field</option>
-										<option value="2" 
-										<?php
-										if (2 == $cm_option['type']) {
-											echo 'selected';
-										}
-										?>
-										>Customer Meta Field</option>
-										<option value="3" 
-										<?php
-										if (3 == $cm_option['type']) {
-											echo 'selected';
-										}
-										?>
-										>Order Field</option>
+									<td>
+										<span class="h6 required">WC Field Source</span><br/>
+										<select class="cm_type input-sm" name="cm[<?php echo esc_attr($index); ?>][type]">
+											<option value="0">-- select field type --</option>
+											<option value="1" 
+											<?php
+											if (1 == $cm_option['type']) {
+												echo 'selected';
+											}
+											?>
+											>Customer Field</option>
+											<option value="2" 
+											<?php
+											if (2 == $cm_option['type']) {
+												echo 'selected';
+											}
+											?>
+											>Customer Meta Field</option>
+											<option value="3" 
+											<?php
+											if (3 == $cm_option['type']) {
+												echo 'selected';
+											}
+											?>
+											>Order Field</option>
 
-										<option value="4" 
-										<?php
-										if (4 == $cm_option['type']) {
-											echo 'selected';
-										}
-										?>
-										>Order Meta Field</option>
-									</select>
-								</td>
+											<option value="4" 
+											<?php
+											if (4 == $cm_option['type']) {
+												echo 'selected';
+											}
+											?>
+											>Order Meta Field</option>
+										</select>
+									</td>
 
 								<?php } ?>
 							</tr>
 
 							<?php 
 							$allow_html =TMWNI_Settings::shapeSpace_allowed_html();
-							echo  wp_kses($cm_option['template'], $allow_html);
+							echo wp_kses($cm_option['template'], $allow_html);
 							//echo ($cm_option['template']); 
 							?>
 						</tbody>
 					</table>
 				</div>
 
-				<?php } ?>
-				<?php } else { ?>
+			<?php } ?>
+		<?php } else { ?>
 
-				<div class="well" data-index="1">
-					<table class="netsuite_conditional_mapping table" cellspacing="0" cellpadding="0">
-						<tbody>
-							<span class="exlcude_in_update"></span>
-							<span style="float:right;" class='btn btn-danger removeCMRow'>X</span>
-							<tr>
-								<td>
-									<span class="h5">Operation</span><br />
-									<select class="cm_operator input-sm" name="cm[1][operator]">
-										<option value="0" selected>-- select operator --</option>
-										<option value="1">Map NetSuite Field to Fixed Value Based on WC Field Value</option>
-										<option value="2">Map NetSuite Field to Fixed Value</option>
-										<option value="3">Map NetSuite Field to WC Field</option>
-									</select>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+			<div class="well" data-index="1">
+				<table class="netsuite_conditional_mapping table" cellspacing="0" cellpadding="0">
+					<tbody>
+						<span class="exlcude_in_update"></span>
+						<span style="float:right;" class='btn btn-danger removeCMRow'>X</span>
+						<tr>
+							<td>
+								<span class="h5">Operation</span><br />
+								<select class="cm_operator input-sm" name="cm[1][operator]">
+									<option value="0" selected>-- select operator --</option>
+									<option value="1">Map NetSuite Field to Fixed Value Based on WC Field Value</option>
+									<option value="2">Map NetSuite Field to Fixed Value</option>
+									<option value="3">Map NetSuite Field to WC Field</option>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-				<?php } ?>
+		<?php } ?>
 
-				<input type="button" class="btn btn-primary" value="(+) Add More" id="addMoreConditionalMappingRows" style="float: right; margin-top: 10px;" />
-				<input type="hidden" name="action" value="tm_netsuite_cm_save" >
-				<input type="hidden" name="cm_type" value="order" >																	
-				<button class="btn btn-success btn-lg">Save</button>
-				<hr />
-			</form>
-		</div>
-	</div>
+		<input type="button" class="btn btn-primary" value="(+) Add More" id="addMoreConditionalMappingRows" style="float: right; margin-top: 10px;" />
+		<input type="hidden" name="action" value="tm_netsuite_cm_save" >
+		<input type="hidden" name="cm_type" value="order" >																	
+		<button class="btn btn-success btn-lg">Save</button>
+		<hr />
+	</form>
+</div>
+</div>

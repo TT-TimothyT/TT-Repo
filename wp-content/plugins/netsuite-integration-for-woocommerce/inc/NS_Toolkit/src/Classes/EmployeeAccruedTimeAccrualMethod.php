@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EmployeeAccruedTimeAccrualMethod {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _LUMPSUMS = '_lumpSums';
 	const _PERHOURWORKED = '_perHourWorked';
 	const _PERPAYPERIOD = '_perPayPeriod';

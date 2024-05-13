@@ -3,7 +3,7 @@
 Plugin Name: WP All Export
 Plugin URI: http://www.wpallimport.com/upgrade-to-wp-all-export-pro/?utm_source=export-plugin-free&utm_medium=wp-plugins-page&utm_campaign=upgrade-to-pro
 Description: Export any post type to a CSV or XML file. Edit the exported data, and then re-import it later using WP All Import.
-Version: 1.4.1
+Version: 1.4.3
 Author: Soflyy
 */
 
@@ -59,7 +59,7 @@ else {
 	 */
 	define('PMXE_PREFIX', 'pmxe_');
 
-	define('PMXE_VERSION', '1.4.1');
+	define('PMXE_VERSION', '1.4.3');
 
     define('PMXE_ASSETS_VERSION', '-1.0.2');
 
@@ -383,21 +383,11 @@ else {
 
             if(!wp_doing_ajax()) {
 
-                $addons_not_included = get_option('wp_all_export_free_addons_not_included', false);
+	            $addons_not_included = get_option('wp_all_export_free_addons_not_included', false);
 
-                if (!get_option('wp_all_export_free_addons_not_included', false) && current_user_can('manage_options') && (!XmlExportEngine::get_addons_service()->isAcfAddonActive() || !XmlExportEngine::get_addons_service()->isWooCommerceAddonActive())) {
+                if (!$addons_not_included && current_user_can('manage_options') && (!XmlExportEngine::get_addons_service()->isAcfAddonActive() || !XmlExportEngine::get_addons_service()->isWooCommerceAddonActive())) {
 
-                    $website = get_site_url();
-                    $salt = "datacaptain";
-                    $hash = base64_encode($website . $salt);
-                    $product = "wpae-free-upgrade";
-
-                    $wpae_add_on_discount_link = "https://www.wpallimport.com?discount-site=" . urlencode($website) . "&discount-hash=" . $hash . "&discount-item=" . $product;
-
-                    $this->showDismissibleNotice('<h1 style="padding-top:0">Important Notice Regarding WP All Export</h1><br><strong>WP All Export now requires paid add-ons to export ACF and WooCommerce data.<br/>We are providing these Pro add-ons to everyone who was using WP All Export before the change, free of charge.
-<br/><br/>
-<a href="' . $wpae_add_on_discount_link . '&utm_source=export-plugin-free&utm_medium=wpae-addons-notice&utm_campaign=free-export-acf-woo-add-ons
-" target="_blank">Click here to download your free Pro add-ons.</a></strong>', 'wpae_free_export_addons_notice');
+                    $this->showDismissibleNotice('<h1 style="padding-top:0">Important Notice Regarding WP All Export</h1><br><strong>WP All Export now requires paid add-ons to export ACF and WooCommerce data.<br/>We are providing these Pro add-ons to everyone who was using WP All Export before the change, free of charge. Please contact support for further assistance: <a href="https://www.wpallimport.com/support/" target="_blank">https://www.wpallimport.com/support/</a>', 'wpae_free_export_addons_notice');
                 }
 
                 // create history folder

@@ -34,9 +34,10 @@ import useSummaryUpdate from './utils/summaryUpdate'
 export const MinifySummary = ( props ) => {
 	const summaryUpdate = useSummaryUpdate();
 	const didMount = useRef( false );
+	const aoQueueRef = useRef( null );
 	const api = new HBAPIFetch();
 	const [ loading, setLoading ] = useState( true );
-	const { cdn, safeMode, assets, hasResolved, delayJs, criticalCss } = useSelect( ( select ) => {
+	const { cdn, safeMode, assets, hasResolved, delayJs, criticalCss, aoQueue } = useSelect( ( select ) => {
 		if ( ! select( STORE_NAME ).hasStartedResolution( 'getOptions' ) ) {
 			select( STORE_NAME ).getOptions();
 		}
@@ -48,6 +49,8 @@ export const MinifySummary = ( props ) => {
 			hasResolved: select( STORE_NAME ).hasFinishedResolution( 'getOptions' ) && select( STORE_NAME ).hasFinishedResolution( 'getAssets' ),
 			delayJs: select( STORE_NAME ).getOption( 'delay_js' ),
 			criticalCss: select( STORE_NAME ).getOption( 'critical_css' ),
+			aoQueue: select( STORE_NAME ).getOption( 'ao_queue' ),
+
 		};
 	}, [] );
 
@@ -85,6 +88,29 @@ export const MinifySummary = ( props ) => {
 			didMount.current = true;
 		}				
 	}, [ delayJs, criticalCss ] );
+
+	useEffect( () => {
+		let preValue       = aoQueueRef.current;
+		aoQueueRef.current = aoQueue;
+		if ( preValue?.aoQueueCount > 0 && aoQueueRef?.current?.aoQueueCount <= 0 ) {
+			dispatch( STORE_NAME ).invalidateResolution( 'getAssets' );
+		}
+	}, [aoQueue]);
+
+	useEffect( () => {
+		const intervalAOQueue = setInterval( () => {
+			const currentAoQueue = aoQueueRef.current;
+			if ( currentAoQueue?.aoQueueCount > 0 ) {
+				dispatch( STORE_NAME ).invalidateResolution( 'getOptions' );
+			} else {
+				clearInterval(intervalAOQueue);
+			}
+		}, 15000);
+		// Cleanup function to clear the interval when the component unmounts or the dependencies change
+		return () => clearInterval( intervalAOQueue );
+		
+	}, [loading]);
+
 
 	/**
 	 * Get original/compressed sizes.
@@ -231,7 +257,7 @@ export const MinifySummary = ( props ) => {
 	 *
 	 * @return {JSX.Element} Summary segment
 	 */
-	const getSummarySegmentLeft = () => {
+	const getSummarySegmentLeft = ( aoQueue ) => {
 		const percentage = getPercentOptimized();
 
 		return (
@@ -247,8 +273,25 @@ export const MinifySummary = ( props ) => {
 					<span className="sui-summary-large">
 						{ percentage }%
 					</span> }
-				<span className="sui-summary-sub" style={{ marginBottom: 20 }}>{ __( 'Compression savings', 'wphb' ) }</span>
-				<span className="sui-summary-detail">{ __( 'Total Files', 'wphb' ) }</span>
+				<span className="sui-summary-sub" style={{ marginBottom: 20 }}> { __( 'Compression savings', 'wphb' ) } </span>
+				<span classes={ [ 'sui-summary-detail wphb-summary-detail-total-files' ] }>
+						{ __( 'Total Files', 'wphb' ) }
+					{aoQueue?.aoQueueCount ? (
+						<Tooltip text={__('Optimizing assets, this could take a while, please hold on.', 'wphb')} classes={['wphb_progress_tag sui-tag sui-tag-blue sui-tooltip-constrained']}>
+							<span className={['sui-icon-loader sui-loading']} aria-hidden="true"></span>
+							{__('Optimizing', 'wphb')}
+						</Tooltip>
+					) : aoQueue?.aoCompletedTime ? (
+						<Tooltip
+							text={__('Last Generated:', 'wphb') + (aoQueue.aoCompletedTime ? ` ${aoQueue.aoCompletedTime}` : '')}
+							classes={['wphb_progress_tag sui-tag sui-tag-green sui-tooltip-constrained']}
+						>
+							<span className="sui-icon-info" aria-hidden="true"></span>
+							{__('Optimized', 'wphb')}
+						</Tooltip>
+					) : null
+					}
+				</span>
 				<span className="sui-summary-sub">{ getEnqueuedFiles() }</span>
 			</div>
 		);
@@ -390,7 +433,7 @@ export const MinifySummary = ( props ) => {
 				loading={ loading || ! hasResolved }
 				brandingHeroImage={ props.wphbData.brandingHeroImage }
 				hideBranding={ Boolean( props.wphbData.hideBranding ) }
-				summarySegmentLeft={ getSummarySegmentLeft() }
+				summarySegmentLeft={ getSummarySegmentLeft( aoQueue ) }
 				summarySegmentRight={ getSummarySegmentRight() }
 			/>
 		);

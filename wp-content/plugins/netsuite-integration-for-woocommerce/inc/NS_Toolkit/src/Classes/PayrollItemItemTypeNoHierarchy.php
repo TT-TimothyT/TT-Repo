@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PayrollItemItemTypeNoHierarchy {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ADDITION = '_addition';
 	const _COMMISSION = '_commission';
 	const _DEDUCTION = '_deduction';

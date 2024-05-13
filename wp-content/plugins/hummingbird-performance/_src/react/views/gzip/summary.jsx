@@ -197,16 +197,13 @@ class GzipSummary extends React.Component {
 			}
 
 			// Replace notice if CDN is enabled.
-			if (
-				false === this.props.data.is_white_labeled &&
-				true === this.props.data.cdn
-			) {
+			if ( ( false === this.props.data.is_white_labeled && true === this.props.data.cdn ) || 'br' === this.props.data.compression_type ) {
 				text = createInterpolateElement(
-				__('Gzip compression is already running smoothly on your site. Since you have enabled the WPMU DEV CDN, your files will be served with the more performant Brotli compression instead of GZip to browsers that support it. <a>Check browser support here</a>.', 'wphb'),
+				__('Brotli Compression is active and working well via CDN, for enhanced performance in supported browsers. For browsers that don’t support Brotli, we’ll automatically use GZip instead. <a>Check browser support here</a>.', 'wphb'),
 				{
-					a: <a onClick={this.trackMPEvent} href="https://caniuse.com/brotli"/>
+					a: <a onClick={this.trackMPEvent} href="https://caniuse.com/brotli" target='_blank'/>
 				}
-			);;
+			);
 			}
 		}
 

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EmailPreference {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DEFAULT = '_default';
 	const _HTML = '_hTML';
 	const _PDF = '_pDF';

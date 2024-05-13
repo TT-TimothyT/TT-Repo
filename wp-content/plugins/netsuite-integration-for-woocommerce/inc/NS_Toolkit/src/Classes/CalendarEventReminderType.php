@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CalendarEventReminderType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NONE = '_none';
 	const _EMAIL = '_eMail';
 	const _POPUPWINDOW = '_popupWindow';

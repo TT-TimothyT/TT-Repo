@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class JobSchedulingMethod {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BACKWARD = '_backward';
 	const _FORWARD = '_forward';
 }

@@ -75,7 +75,7 @@
 			<tr>
 				<th scope="row"><label><?php _e('Clean Up Temp Files', 'wp_all_import_plugin'); ?></label></th>
 				<td>
-					<a class="button-primary wpallimport-clean-up-tmp-files" href="<?php echo esc_url(add_query_arg(array('action' => 'cleanup'), $this->baseUrl)); ?>"><?php _e('Clean Up', 'wp_all_import_plugin'); ?></a>
+					<a class="button-primary wpallimport-clean-up-tmp-files" href="<?php echo esc_url(add_query_arg(array('action' => 'cleanup', '_wpnonce' => wp_create_nonce( '_wpnonce-cleanup_logs' )), $this->baseUrl)); ?>"><?php _e('Clean Up', 'wp_all_import_plugin'); ?></a>
 					<p class="description"><?php _e('Attempt to remove temp files left over by imports that were improperly terminated.', 'wp_all_import_plugin'); ?></p>
 				</td>
 			</tr>

@@ -114,7 +114,7 @@ input.form-control.update_checkbox::before, .forminp input[type="checkbox"]::bef
 input.form-control.update_checkbox:focus, .forminp input[type="checkbox"]:focus {
     outline: none;
 }
-input#ns_order_shiping_line_item_enable,#ns_order_send_email_to_admin_enable {
+input#ns_order_shiping_line_item_enable,#ns_order_send_email_to_admin_enable,#ns_auto_invoice_sync{
     margin-right: 10px;
 }
 .general-form-table tr {

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class BillingScheduleYearDowimMonth {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _JANUARY = '_january';
 	const _FEBRUARY = '_february';
 	const _MARCH = '_march';

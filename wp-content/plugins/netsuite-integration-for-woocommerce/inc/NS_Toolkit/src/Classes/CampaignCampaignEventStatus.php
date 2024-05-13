@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CampaignCampaignEventStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _COMPLETED = '_completed';
 	const _EXECUTE = '_execute';
 	const _INPROGRESS = '_inProgress';

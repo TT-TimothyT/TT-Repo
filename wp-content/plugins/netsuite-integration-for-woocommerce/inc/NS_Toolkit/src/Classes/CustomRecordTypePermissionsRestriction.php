@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CUSTOMRECORDTYPEPERMISSIONSRESTRICTION {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _EDITINGONLY = '_editingOnly';
 	const _VIEWINGANDEDITING = '_viewingAndEditing';
 }

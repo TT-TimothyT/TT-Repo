@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CURRENCYFXRATEUPDATETIMEZONE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AMERICANEWYORK = '_americaNewYork';
 	const _ASIAMAGADAN = '_asiaMagadan';
 	const _ASIATOKYO = '_asiaTokyo';

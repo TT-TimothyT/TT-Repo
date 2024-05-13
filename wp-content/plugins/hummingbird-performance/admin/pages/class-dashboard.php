@@ -993,11 +993,15 @@ class Dashboard extends Page {
 	 * Dashboard gzip meta box.
 	 */
 	public function dashboard_gzip_module_metabox() {
+		$minify = Utils::get_module( 'minify' );
+
 		$this->view(
 			'dashboard/gzip/module-meta-box',
 			array(
-				'status'         => $this->gzip_status,
-				'inactive_types' => Utils::get_number_of_issues( 'gzip', $this->gzip_status ),
+				'status'           => $this->gzip_status,
+				'use_cdn'          => $minify->get_cdn_status(),
+				'compression_type' => get_option( 'wphb_compression_type' ),
+				'inactive_types'   => Utils::get_number_of_issues( 'gzip', $this->gzip_status ),
 			)
 		);
 	}

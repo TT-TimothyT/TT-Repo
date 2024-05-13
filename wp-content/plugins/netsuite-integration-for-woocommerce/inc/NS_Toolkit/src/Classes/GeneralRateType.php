@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class GeneralRateType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AVERAGE = '_average';
 	const _CURRENT = '_current';
 	const _HISTORICAL = '_historical';

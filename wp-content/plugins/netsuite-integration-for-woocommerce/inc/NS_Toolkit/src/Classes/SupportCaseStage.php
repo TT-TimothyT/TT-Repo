@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class SupportCaseStage {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CLOSED = '_closed';
 	const _ESCALATED = '_escalated';
 	const _OPEN = '_open';

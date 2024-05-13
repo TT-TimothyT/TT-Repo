@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CustomRecordTypePermissionsPermittedLevel {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CREATE = '_create';
 	const _EDIT = '_edit';
 	const _FULL = '_full';

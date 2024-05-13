@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTTERMSOFSALEFEDEX {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CFR = '_cfr';
 	const _CIF = '_cif';
 	const _CIP = '_cip';

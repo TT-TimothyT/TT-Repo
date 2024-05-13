@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PayrollItemAccountCategory {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _EXPENSE = '_expense';
 	const _LIABILITY = '_liability';
 }

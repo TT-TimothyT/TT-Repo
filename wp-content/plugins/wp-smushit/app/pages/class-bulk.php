@@ -269,7 +269,7 @@ class Bulk extends Abstract_Summary_Page implements Interface_Page {
 					}
 					break;
 				case 'original':
-					esc_html_e( 'By default, WordPress will only compress the generated attachments when you upload images, not the original ones. Enable this feature to compress the original images.', 'wp-smushit' );
+					esc_html_e( 'By default, WordPress will only optimize the generated attachments when you upload images, not the original ones. Enable this feature to optimize the original images.', 'wp-smushit' );
 					break;
 				case 'strip_exif':
 					esc_html_e(
@@ -440,7 +440,7 @@ class Bulk extends Abstract_Summary_Page implements Interface_Page {
 							<p>
 								<?php
 								printf( /* translators: %1$s - <strong>, %2$s - </strong> */
-									esc_html__( '%1$sCompress original images%2$s is disabled, which means that enabling %1$sBackup original images%2$s won’t yield additional benefits and will use more storage space. We recommend enabling %1$sBackup original images%2$s only if %1$sCompress original images%2$s is also enabled.', 'wp-smushit' ),
+									esc_html__( '%1$sOptimize original images%2$s is disabled, which means that enabling %1$sBackup original images%2$s won’t yield additional benefits and will use more storage space. We recommend enabling %1$sBackup original images%2$s only if %1$sOptimize original images%2$s is also enabled.', 'wp-smushit' ),
 									'<strong>',
 									'</strong>'
 								);

@@ -8,6 +8,7 @@
  * @var bool   $query_strings_global  Is URL Query Strings a global option.
  * @var bool   $cart_fragments        WooCommerce cart fragments.
  * @var bool   $emoji                 Remove Emojis file enabled or disabled.
+ * @var string $post_revisions        Post revision.
  * @var bool   $emoji_global          Is Emoji clearing a global option.
  * @var string $prefetch              Prefetch DNS URLs.
  * @var string $preconnect            Preconnect URLs.
@@ -171,6 +172,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	</div>
 <?php endif; ?>
+
+<div class="sui-box-settings-row">
+	<div class="sui-box-settings-col-1">
+		<span class="sui-settings-label"><?php esc_html_e( 'Post Revisions', 'wphb' ); ?></span>
+		<span class="sui-description">
+			<?php esc_html_e( 'WordPress post revisions track and save every content edit, allowing for easy comparison, restoration, and collaboration by storing each change.', 'wphb' ); ?>
+		</span>
+	</div>
+	<div class="sui-box-settings-col-2">
+		<div class="sui-form-field">
+			<input type="text" placeholder="Example: 5 (Default value)" name="post_revisions" id="post_revisions" class="sui-form-control" aria-labelledby="post_revisions-label" value="<?php echo esc_attr( $post_revisions ); ?>">
+			<span id="post_revisions-id" class="sui-description">
+				<?php esc_html_e( 'Limit revisions to any number by entering it here, or disable revisions by entering "0".', 'wphb' ); ?>
+			</span>
+		</div>
+	</div>
+</div>
 
 <div class="sui-box-settings-row">
 	<div class="sui-box-settings-col-1">

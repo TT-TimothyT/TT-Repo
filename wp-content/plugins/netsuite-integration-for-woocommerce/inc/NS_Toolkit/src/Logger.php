@@ -5,10 +5,11 @@ namespace NetSuite;
 class Logger {
 
 	private $path;
-
-	public function __construct( $path = null) {
-		//$this->path = $path ?: __DIR__.'/../logs';
-		$this->path= isset( $path ) ? $path : __DIR__ . '/../logs';
+	//wp-content/uploads/TM-NetSuite/order-request-1000.xml
+	//wp-content/uploads/TM-NetSuite/order-response-1000.xml
+	public function __construct( $path = null ) {
+		$uploads_dir = wp_upload_dir();
+		$this->path = $uploads_dir['basedir'] . '/TM-NetSuite';
 	}
 
 	/**
@@ -17,20 +18,25 @@ class Logger {
 	 * @param \SoapClient $client
 	 * @param string $operation
 	 */
-	public function logSoapCall( $client, $operation) {
+	public function logSoapCall( $client, $operation, $parameter ) {
 		if (file_exists($this->path)) {
 			$fileName = 'ryanwinchester-netsuite-php-' . gmdate('Ymd.His') . '-' . $operation;
+			if (!empty($parameter)) {
+				$fileName = $parameter->record->requestType . '-' . $operation . '-request-' . $parameter->record->logId;
+			}
+			
 			$logFile = $this->path . '/' . $fileName;
 
 			// REQUEST
 			$request = $logFile . '-request.xml';
 			$Handle = fopen($request, 'w');
 			$Data = $client->__getLastRequest();
-			$Data = cleanUpNamespaces($Data);
+			// $Data = cleanUpNamespaces($Data);
+
 
 			$xml = simplexml_load_string($Data, 'SimpleXMLElement', LIBXML_NOCDATA);
 
-			$privateFieldXpaths = [
+			$privateFieldXpaths = array(
 				'//password',
 				'//password2',
 				'//currentPassword',
@@ -39,7 +45,7 @@ class Logger {
 				'//ccNumber',
 				'//ccSecurityCode',
 				'//socialSecurityNumber',
-			];
+			);
 
 			$privateFields = $xml->xpath(implode(' | ', $privateFieldXpaths));
 
@@ -67,4 +73,6 @@ class Logger {
 			fclose($Handle);
 		}
 	}
+
+	
 }

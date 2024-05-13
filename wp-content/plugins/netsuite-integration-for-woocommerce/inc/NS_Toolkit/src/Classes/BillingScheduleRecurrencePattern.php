@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class BILLINGSCHEDULERECURRENCEPATTERN {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ANNIVERSARYBILLDATE = '_anniversaryBillDate';
 	const _FIXEDBILLDATE = '_fixedBillDate';
 }

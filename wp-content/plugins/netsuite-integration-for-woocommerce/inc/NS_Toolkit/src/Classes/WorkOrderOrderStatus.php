@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class WorkOrderOrderStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BUILT = '_built';
 	const _CANCELLED = '_cancelled';
 	const _CLOSED = '_closed';

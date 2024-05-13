@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TaxAcctType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _SALE = '_sale';
 	const _PURCHASE = '_PURCHASE';
 }

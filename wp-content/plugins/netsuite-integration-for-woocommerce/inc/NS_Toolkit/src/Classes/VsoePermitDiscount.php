@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class VsoePermitDiscount {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ASALLOWED = '_asAllowed';
 	const _NEVER = '_never';
 }

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemAtpMethod {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CUMULATIVEATPWITHLOOKAHEAD = '_cumulativeAtpWithLookAhead';
 	const _DISCRETEATP = '_discreteAtp';
 }

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemAccountMappingItemAccount {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ASSET = '_asset';
 	const _COSTOFGOODS = '_costOfGoods';
 	const _CUSTOMERRETURNVARIANCE = '_customerReturnVariance';

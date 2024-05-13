@@ -262,7 +262,7 @@ $generated_i18n_strings = array(
 
 	// Reference: _src/react/modules/caching/integrations.jsx:527
 	// Reference: _src/react/views/caching/browser/status.jsx:410
-	// Reference: _src/react/views/gzip/summary.jsx:323
+	// Reference: _src/react/views/gzip/summary.jsx:320
 	// Reference: _src/react/views/setup/wizard.jsx:521
 	__( 'Status', 'wphb' ),
 
@@ -275,7 +275,7 @@ $generated_i18n_strings = array(
 
 	// Reference: _src/react/modules/caching/integrations.jsx:576
 	// Reference: _src/react/views/caching/browser/status.jsx:374
-	// Reference: _src/react/views/gzip/summary.jsx:305
+	// Reference: _src/react/views/gzip/summary.jsx:302
 	// Reference: _src/react/views/setup/wizard.jsx:312
 	__( 'Re-check status', 'wphb' ),
 
@@ -306,7 +306,7 @@ $generated_i18n_strings = array(
 	__( 'Are you sure you want to apply the %s config to this site? We recommend you have a backup available as your existing settings configuration will be overridden.', 'wphb' ),
 
 	// Reference: _src/react/modules/configs.jsx:108
-	// Reference: _src/react/views/minify/assets-manual.jsx:341
+	// Reference: _src/react/views/minify/assets-manual.jsx:343
 	__( 'Apply', 'wphb' ),
 
 	// Reference: _src/react/modules/configs.jsx:111
@@ -441,7 +441,7 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/modules/configs.jsx:99
 	__( 'Apply Config', 'wphb' ),
 
-	// Reference: _src/react/modules/minify.jsx:53
+	// Reference: _src/react/modules/minify.jsx:54
 	__( 'Your cache has been successfully cleared. Your assets will regenerate the next time someone visits your website.', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:308
@@ -457,7 +457,7 @@ $generated_i18n_strings = array(
 	__( 'Get Hummingbird Pro for our full WordPress speed optimization suite, including uptime monitoring and enhanced CDN.', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:326
-	// Reference: _src/react/views/minify/summary.jsx:312
+	// Reference: _src/react/views/minify/summary.jsx:355
 	__( 'UPGRADE TO PRO', 'wphb' ),
 
 	// Reference: _src/react/modules/setup.jsx:337
@@ -550,20 +550,20 @@ $generated_i18n_strings = array(
 
 	// Reference: _src/react/views/caching/browser/status.jsx:194
 	/* translators: %d - number of failed items */
-	__( '%d of your cache types don’t meet the recommended expiry period of 1 year. Configure browser caching below.', 'wphb' ),
+	__( '%d of your cache types don’t meet the minimum recommended expiry period of 1 year. Configure browser caching below.', 'wphb' ),
 
 	// Reference: _src/react/views/caching/browser/status.jsx:203
-	__( 'All of your cache types meet the recommended expiry period of 1 year. Great work!', 'wphb' ),
+	__( 'All of your cache types meet the minimum recommended expiry period of 1 year. Great work!', 'wphb' ),
 
 	// Reference: _src/react/views/caching/browser/status.jsx:210
-	__( 'All of your cache types meet the recommended expiry period of 1 year. Your hosting has automatically pre-configured browser caching for you and no further actions are required.', 'wphb' ),
+	__( 'All of your cache types meet the minimum recommended expiry period of 1 year. Your hosting has automatically pre-configured browser caching for you and no further actions are required.', 'wphb' ),
 
 	// Reference: _src/react/views/caching/browser/status.jsx:235
 	/* translators: %s - recommended value label */
 	__( 'The recommended value for this file type is at least %s.', 'wphb' ),
 
 	// Reference: _src/react/views/caching/browser/status.jsx:316
-	// Reference: _src/react/views/gzip/summary.jsx:281
+	// Reference: _src/react/views/gzip/summary.jsx:278
 	__( 'File type', 'wphb' ),
 
 	// Reference: _src/react/views/caching/browser/status.jsx:317
@@ -691,29 +691,29 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/views/gzip/summary.jsx:193
 	__( 'GZip compression is already running smoothly on your site. Since your site is hosted with WPMU DEV, GZip compression has been automatically configured and no further actions are required.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:205
-	__( 'Gzip compression is already running smoothly on your site. Since you have enabled the WPMU DEV CDN, your files will be served with the more performant Brotli compression instead of GZip to browsers that support it. <a>Check browser support here</a>.', 'wphb' ),
+	// Reference: _src/react/views/gzip/summary.jsx:202
+	__( 'Brotli Compression is active and working well via CDN, for enhanced performance in supported browsers. For browsers that don’t support Brotli, we’ll automatically use GZip instead. <a>Check browser support here</a>.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:215
+	// Reference: _src/react/views/gzip/summary.jsx:212
 	__( 'Inactive', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:219
+	// Reference: _src/react/views/gzip/summary.jsx:216
 	__( 'Active', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:244
+	// Reference: _src/react/views/gzip/summary.jsx:241
 	/* translators: %1$s - status label, %2$s - type */
 	__( 'Gzip compression is %1$s for %2$s', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:250
+	// Reference: _src/react/views/gzip/summary.jsx:247
 	__( 'While Privacy Mode is active, we can’t accurately detect if HTML compression is active and working. Re-check this once you’ve disabled Privacy Mode.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:271
+	// Reference: _src/react/views/gzip/summary.jsx:268
 	__( 'Gzip compresses your web pages and style sheets before sending them over to the browser. This drastically reduces transfer time since the files are much smaller.', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:282
+	// Reference: _src/react/views/gzip/summary.jsx:279
 	__( 'Current status', 'wphb' ),
 
-	// Reference: _src/react/views/gzip/summary.jsx:302
+	// Reference: _src/react/views/gzip/summary.jsx:299
 	__( 'Made changes?', 'wphb' ),
 
 	// Reference: _src/react/views/gzip/summary.jsx:92
@@ -740,103 +740,103 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/views/minify/assets-auto.jsx:91
 	__( 'Settings restored to defaults', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:108
+	// Reference: _src/react/views/minify/assets-manual.jsx:100
+	__( 'Your safe mode changes have been published and are now live!', 'wphb' ),
+
+	// Reference: _src/react/views/minify/assets-manual.jsx:109
 	__( 'Safe mode has been disabled!', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:320
+	// Reference: _src/react/views/minify/assets-manual.jsx:322
 	__( 'Compress', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:321
+	// Reference: _src/react/views/minify/assets-manual.jsx:323
 	__( 'Combine', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:322
+	// Reference: _src/react/views/minify/assets-manual.jsx:324
 	__( 'Inline', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:323
+	// Reference: _src/react/views/minify/assets-manual.jsx:325
 	__( 'Async', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:328
+	// Reference: _src/react/views/minify/assets-manual.jsx:330
 	__( 'Move to Footer', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:329
+	// Reference: _src/react/views/minify/assets-manual.jsx:331
 	__( 'Preload', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:330
+	// Reference: _src/react/views/minify/assets-manual.jsx:332
 	__( 'Defer', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:349
+	// Reference: _src/react/views/minify/assets-manual.jsx:351
 	__( 'Choose what bulk update actions you’d like to apply to the selected files. You still have to publish your changes before they will be set live.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:368
+	// Reference: _src/react/views/minify/assets-manual.jsx:370
 	__( 'Discard', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:380
+	// Reference: _src/react/views/minify/assets-manual.jsx:382
 	__( 'Publish', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:387
+	// Reference: _src/react/views/minify/assets-manual.jsx:389
 	__( 'Unpublished changes', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:388
+	// Reference: _src/react/views/minify/assets-manual.jsx:390
 	__( 'There are unpublished changes made in safe mode. Do you want to publish the changes to live or discard them?', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:575
+	// Reference: _src/react/views/minify/assets-manual.jsx:577
 	__( 'Test different settings in a safe environment without affecting visitors\' experience. The changes done in the safe mode will be only visible to you (as an admin).', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:578
+	// Reference: _src/react/views/minify/assets-manual.jsx:580
 	__( 'Safe mode', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:594
+	// Reference: _src/react/views/minify/assets-manual.jsx:596
 	__( 'All', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:600
+	// Reference: _src/react/views/minify/assets-manual.jsx:602
 	__( 'Hosted', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:606
+	// Reference: _src/react/views/minify/assets-manual.jsx:608
 	__( 'External', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:615
+	// Reference: _src/react/views/minify/assets-manual.jsx:617
 	__( 'Preview your changes on the front-end, then publish to live if no errors are found.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:621
+	// Reference: _src/react/views/minify/assets-manual.jsx:623
 	__( 'Preview', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:628
+	// Reference: _src/react/views/minify/assets-manual.jsx:630
 	// Reference: _src/react/views/minify/configurations.jsx:54
 	__( 'Publish changes', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:643
+	// Reference: _src/react/views/minify/assets-manual.jsx:644
 	__( 'Bulk update', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:659
+	// Reference: _src/react/views/minify/assets-manual.jsx:660
 	__( 'Display files', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:672
+	// Reference: _src/react/views/minify/assets-manual.jsx:673
 	__( 'Sort by', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:673
+	// Reference: _src/react/views/minify/assets-manual.jsx:674
 	__( 'Choose plugin or theme', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:680
+	// Reference: _src/react/views/minify/assets-manual.jsx:681
 	__( 'Search by name or extension', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:690
+	// Reference: _src/react/views/minify/assets-manual.jsx:691
 	__( 'Clear filters', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:882
+	// Reference: _src/react/views/minify/assets-manual.jsx:883
 	__( 'We\'ve completed the file check but haven\'t been able to load the files. Please try clearing your object cache, refresh the page and wait a few seconds to load the files, or visit your homepage to trigger the file list to show.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:898
+	// Reference: _src/react/views/minify/assets-manual.jsx:899
 	__( 'Visit homepage', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:925
+	// Reference: _src/react/views/minify/assets-manual.jsx:926
 	__( 'You are currently using <strong>safe mode</strong> which enables you to test different settings without affecting your website visitors\' experience. You can update the assets, and preview the changes in the frontend of your website to check for any errors in your browser\'s console or broken UI. When no issues are found, publish your changes to live.<span><strong>Note:</strong> Asset minification is disabled while safe mode is active, which can cause slower page load times. We recommend exiting safe mode or publishing the changes you\'ve made as soon as possible to avoid page load issues.</span>', 'wphb' ),
 
-	// Reference: _src/react/views/minify/assets-manual.jsx:951
+	// Reference: _src/react/views/minify/assets-manual.jsx:952
 	// Reference: _src/react/views/minify/configurations.jsx:90
 	__( 'Fonts', 'wphb' ),
-
-	// Reference: _src/react/views/minify/assets-manual.jsx:99
-	__( 'Your safe mode changes have been published and are now live!', 'wphb' ),
 
 	// Reference: _src/react/views/minify/assets.jsx:151
 	__( 'Optimizing your assets will compress and organize them in a way that improves page load times. You can choose to use our automated options, or manually configure each file yourself.', 'wphb' ),
@@ -907,51 +907,63 @@ $generated_i18n_strings = array(
 	// Reference: _src/react/views/minify/configurations.jsx:91
 	__( 'Enable this option to optimize the delivery of your fonts so they don\'t trigger the "Eliminate render-blocking resources" recommendation in your performance tests.', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:240
+	// Reference: _src/react/views/minify/summary.jsx:266
 	__( 'All assets are auto-compressed', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:250
+	// Reference: _src/react/views/minify/summary.jsx:276
 	__( 'Compression savings', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:251
+	// Reference: _src/react/views/minify/summary.jsx:278
 	__( 'Total Files', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:265
+	// Reference: _src/react/views/minify/summary.jsx:280
+	__( 'Optimizing assets, this could take a while, please hold on.', 'wphb' ),
+
+	// Reference: _src/react/views/minify/summary.jsx:282
+	__( 'Optimizing', 'wphb' ),
+
+	// Reference: _src/react/views/minify/summary.jsx:286
+	__( 'Last Generated:', 'wphb' ),
+
+	// Reference: _src/react/views/minify/summary.jsx:290
+	__( 'Optimized', 'wphb' ),
+
+	// Reference: _src/react/views/minify/summary.jsx:308
 	__( 'Unlock now  ', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:296
+	// Reference: _src/react/views/minify/summary.jsx:339
 	__( 'Files are compressed', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:306
+	// Reference: _src/react/views/minify/summary.jsx:349
 	__( 'Enable WPMU DEV CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:311
+	// Reference: _src/react/views/minify/summary.jsx:354
 	__( 'Host your files on WPMU DEV’s blazing-fast CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:317
+	// Reference: _src/react/views/minify/summary.jsx:360
 	__( 'The Network Admin has the WPMU DEV CDN turned on', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:322
+	// Reference: _src/react/views/minify/summary.jsx:365
 	__( 'The Network Admin has the WPMU DEV CDN turned off', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:323
+	// Reference: _src/react/views/minify/summary.jsx:366
 	// Reference: _src/react/views/setup/wizard.jsx:619
 	__( 'Disabled', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:351
+	// Reference: _src/react/views/minify/summary.jsx:394
 	__( 'Filesize reductions', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:356
+	// Reference: _src/react/views/minify/summary.jsx:399
 	// Reference: _src/react/views/setup/wizard.jsx:391
 	__( 'WPMU DEV CDN', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:367
+	// Reference: _src/react/views/minify/summary.jsx:410
 	__( 'Delay JavaScript Execution', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:374
+	// Reference: _src/react/views/minify/summary.jsx:417
 	__( 'Generate Critical CSS', 'wphb' ),
 
-	// Reference: _src/react/views/minify/summary.jsx:375
+	// Reference: _src/react/views/minify/summary.jsx:418
 	// Reference: _src/react/views/setup/wizard.jsx:141
 	__( 'Pro', 'wphb' ),
 

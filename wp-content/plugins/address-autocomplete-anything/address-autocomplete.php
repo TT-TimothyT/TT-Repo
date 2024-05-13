@@ -5,13 +5,13 @@
  * Description: Add address autocomplete to any form including many popular e-commerce, form, LMS or any plugins.
  * Author:      WP Sunshine
  * Author URI:  https://wpsunshine.com
- * Version:     1.1.4
+ * Version:     1.1.5
  * Text Domain: address-autocomplete-anything
  */
 
- if ( !defined( 'WPS_AA_VERSION' ) ) {
+ if ( ! defined( 'WPS_AA_VERSION' ) ) {
 
-    define( 'WPS_AA_VERSION', '1.1.4' );
+    define( 'WPS_AA_VERSION', '1.1.5' );
     define( 'WPS_AA_PATH', plugin_dir_path( __FILE__ ) );
     define( 'WPS_AA_URL', plugin_dir_url( __FILE__ ) );
 

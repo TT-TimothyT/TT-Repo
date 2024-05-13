@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ProjectTaskPredecessorPredecessorType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _FINISHTOFINISH = '_finishToFinish';
 	const _FINISHTOSTART = '_finishToStart';
 	const _STARTTOFINISH = '_startToFinish';

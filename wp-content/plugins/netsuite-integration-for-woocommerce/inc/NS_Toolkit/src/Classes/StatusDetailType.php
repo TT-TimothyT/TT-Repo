@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class StatusDetailType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const ERROR = 'ERROR';
 	const WARN = 'WARN';
 	const INFO = 'INFO';

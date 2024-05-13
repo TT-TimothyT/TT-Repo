@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class GENDER {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _OMITTED = '_omitted';
 	const _FEMALE = '_female';
 	const _MALE = '_male';

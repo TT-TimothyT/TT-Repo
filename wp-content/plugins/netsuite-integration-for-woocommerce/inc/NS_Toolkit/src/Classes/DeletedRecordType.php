@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class DeletedRecordType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const ADVINTERCOMPANYJOURNALENTRY = 'advInterCompanyJournalEntry';
 	const ASSEMBLYBUILD = 'assemblyBuild';
 	const ASSEMBLYITEM = 'assemblyItem';

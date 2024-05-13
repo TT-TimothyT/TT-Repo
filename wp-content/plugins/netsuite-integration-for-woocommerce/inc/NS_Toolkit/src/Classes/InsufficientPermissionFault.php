@@ -18,6 +18,5 @@
 namespace NetSuite\Classes;
 
 class InsufficientPermissionFault extends NSSoapFault {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 }

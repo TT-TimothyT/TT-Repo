@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class LANDEDCOSTSOURCE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _MANUAL = '_manual';
 	const _OTHERTRANSACTION = '_otherTransaction';
 	const _OTHERTRANSACTIONEXCLUDETAX = '_otherTransactionExcludeTax';

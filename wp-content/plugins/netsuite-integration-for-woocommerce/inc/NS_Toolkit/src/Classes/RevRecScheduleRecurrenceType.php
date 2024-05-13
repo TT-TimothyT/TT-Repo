@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class RevRecScheduleRecurrenceType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CUSTOM = '_custom';
 	const _STRAIGHTLINEBYEVENPERIODS = '_straightLineByEvenPeriods';
 	const _STRAIGHTLINEPRORATEFIRSTANDLASTPERIOD = '_straightLineProrateFirstAndLastPeriod';

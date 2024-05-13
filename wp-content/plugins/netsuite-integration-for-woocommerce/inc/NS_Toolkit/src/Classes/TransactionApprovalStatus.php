@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TRANSACTIONAPPROVALSTATUS {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _APPROVED = '_approved';
 	const _OPEN = '_open';
 	const _PENDINGAPPROVAL = '_pendingApproval';

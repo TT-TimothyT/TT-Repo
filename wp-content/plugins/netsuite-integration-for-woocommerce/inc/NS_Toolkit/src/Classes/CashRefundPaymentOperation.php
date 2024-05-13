@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CashRefundPaymentOperation {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AUTHORIZATION = '_authorization';
 	const _CAPTURE = '_capture';
 	const _SALE = '_sale';

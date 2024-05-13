@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class BillingScheduleRecurrenceMode {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DOM = '_dom';
 	const _DOWIM = '_dowim';
 }

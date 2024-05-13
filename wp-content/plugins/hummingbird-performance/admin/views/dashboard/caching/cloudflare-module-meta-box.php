@@ -25,14 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( $issues ) {
 	$this->admin_notices->show_inline(
 		sprintf( /* translators: %1$s - number of issues, %2$s - configure caching url */
-			__( '%1$s of your cache types don’t meet the recommended expiry period of 1 year. Configure browser caching <a href="%2$s" id="configure-link">here</a>.', 'wphb' ),
+			__( '%1$s of your cache types don’t meet the minimum recommended expiry period of 1 year. Configure browser caching <a href="%2$s" id="configure-link">here</a>.', 'wphb' ),
 			absint( $issues ),
 			esc_attr( $configure_caching_url )
 		),
 		'warning'
 	);
 } else {
-	$this->admin_notices->show_inline( esc_html__( 'All of your cache types meet the recommended expiry period of 1 year. Great work!', 'wphb' ) );
+	$this->admin_notices->show_inline( esc_html__( 'All of your cache types meet the minimum recommended expiry period of 1 year. Great work!', 'wphb' ) );
 }
 ?>
 

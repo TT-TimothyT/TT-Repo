@@ -71,7 +71,6 @@ $metrics = array(
 	'speed-index'              => 0,
 	'first-contentful-paint'   => 0,
 	'largest-contentful-paint' => 0,
-	'interactive'              => 0,
 	'total-blocking-time'      => 0,
 	'cumulative-layout-shift'  => 0,
 );
@@ -88,41 +87,35 @@ foreach ( $last_test->metrics as $rule => $rule_result ) {
 	<div class="wphb-performance-score">
 		<svg class="wphb-gauge__wrapper" viewBox="-65 -65 129 129">
 			<text class="wphb-gauge__percentage"><?php echo (int) $last_test->score; ?></text>
-			<g class="metric metric--FCP" style="--metric-offset: 56; --i: 0;">
+			<g class="metric metric--FCP" style="--metric-offset: 32; --i: 0;">
 				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--bg" stroke-dasharray="23 211"></circle>
 				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--fill" style="--metric-array: <?php echo (float) ( 23 * $metrics['first-contentful-paint'] ); ?> <?php echo (float) ( 234 - 23 * $metrics['first-contentful-paint'] ); ?>;"></circle>
-				<text class="metric__label" x="11.07" y="-53.42">FCP</text>
-				<text class="metric__value" text-anchor="end" dominant-baseline="hanging" x="11.44" y="-18.29"><?php echo (int) ( $metrics['first-contentful-paint'] * 10 ); ?>/10</text>
+				<text class="metric__label" x="43.07" y="-33.42">FCP</text>
+				<text class="metric__value" text-anchor="end" dominant-baseline="hanging" x="16.44" y="-12.29"><?php echo (int) ( $metrics['first-contentful-paint'] * 10 ); ?>/10</text>
 			</g>
-			<g class="metric metric--SI" style="--metric-offset: 32; --i: 1;">
+			<g class="metric metric--SI" style="--metric-offset: 8; --i: 1;">
 				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--bg" stroke-dasharray="23 211"></circle>
 				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--fill" style="--metric-array: <?php echo (float) ( 23 * $metrics['speed-index'] ); ?> <?php echo (float) ( 234 - 23 * $metrics['speed-index'] ); ?>;"></circle>
-				<text class="metric__label" x="42.48" y="-33">SI</text>
-				<text class="metric__value" text-anchor="end" dominant-baseline="hanging" x="16.58" y="-13.32"><?php echo (int) ( $metrics['speed-index'] * 10 ); ?>/10</text>
+				<text class="metric__label" x="54.48" y="3">SI</text>
+				<text class="metric__value" text-anchor="end" dominant-baseline="hanging" x="20.58" y="-3.32"><?php echo (int) ( $metrics['speed-index'] * 10 ); ?>/10</text>
 			</g>
-			<g class="metric metric--LCP" style="--metric-offset: 8; --i: 2;">
+			<g class="metric metric--LCP" style="--metric-offset: -16; --i: 2;">
 				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--bg" stroke-dasharray="58 177"></circle>
 				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--fill" style="--metric-array: <?php echo (float) ( 58 * $metrics['largest-contentful-paint'] ); ?> <?php echo (float) ( 234 - 58 * $metrics['largest-contentful-paint'] ); ?>;"></circle>
-				<text class="metric__label" dominant-baseline="hanging" x="49.07" y="23.42">LCP</text>
-				<text class="metric__value" text-anchor="end" x="19.44" y="9.29"><?php echo (int) ( $metrics['largest-contentful-paint'] * 25 ); ?>/25</text>
+				<text class="metric__label" dominant-baseline="hanging" x="19.07" y="50.42">LCP</text>
+				<text class="metric__value" text-anchor="end" x="12.44" y="17.29"><?php echo (int) ( $metrics['largest-contentful-paint'] * 25 ); ?>/25</text>
 			</g>
-			<g class="metric metric--TTI" style="--metric-offset: -51; --i: 3;">
-				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--bg" stroke-dasharray="23 211"></circle>
-				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--fill" style="--metric-array: <?php echo (float) ( 23 * $metrics['interactive'] ); ?> <?php echo (float) ( 234 - 23 * $metrics['interactive'] ); ?>;"></circle>
-				<text class="metric__label" text-anchor="end" dominant-baseline="hanging" x="0.70" y="54.70">TTI</text>
-				<text class="metric__value" x="-10.04" y="19.04"><?php echo (int) ( $metrics['interactive'] * 10 ); ?>/10</text>
-			</g>
-			<g class="metric metric--TBT" style="--metric-offset: -75; --i: 4;">
+			<g class="metric metric--TBT" style="--metric-offset: -75; --i: 3;">
 				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--bg" stroke-dasharray="67 170"></circle>
 				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--fill" style="--metric-array: <?php echo (float) ( 67 * $metrics['total-blocking-time'] ); ?> <?php echo (float) ( 234 - 67 * $metrics['total-blocking-time'] ); ?>;"></circle>
 				<text class="metric__label" text-anchor="end" x="-52.42" y="20.07">TBT</text>
 				<text class="metric__value" dominant-baseline="hanging" x="-19.54" y="1.44"><?php echo (int) ( $metrics['total-blocking-time'] * 30 ); ?>/30</text>
 			</g>
-			<g class="metric metric--CLS" style="--metric-offset: -143; --i: 5;">
-				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--bg" stroke-dasharray="34 200"></circle>
-				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--fill" style="--metric-array: <?php echo (float) ( 34 * $metrics['cumulative-layout-shift'] ); ?> <?php echo (float) ( 234 - 34 * $metrics['cumulative-layout-shift'] ); ?>;"></circle>
+			<g class="metric metric--CLS" style="--metric-offset: -143; --i: 4;">
+				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--bg" stroke-dasharray="58 200"></circle>
+				<circle class="wphb-gauge speed-metric-gauge wphb-gauge--fill" style="--metric-array: <?php echo (float) ( 58 * $metrics['cumulative-layout-shift'] ); ?> <?php echo (float) ( 234 - 58 * $metrics['cumulative-layout-shift'] ); ?>;"></circle>
 				<text class="metric__label" text-anchor="end" x="-22.37" y="-49.48">CLS</text>
-				<text class="metric__value" dominant-baseline="hanging" x="-12" y="-18"><?php echo (int) ( $metrics['cumulative-layout-shift'] * 15 ); ?>/15</text>
+				<text class="metric__value" dominant-baseline="hanging" x="-12" y="-18"><?php echo (int) ( $metrics['cumulative-layout-shift'] * 25 ); ?>/25</text>
 			</g>
 		</svg>
 	</div>
@@ -260,9 +253,9 @@ foreach ( $last_test->metrics as $rule => $rule_result ) {
 		<div class="sui-col">
 			<div class="wphb-border-frame">
 				<div class="table-header">
-					<strong><?php esc_html_e( 'First Input Delay (FID)', 'wphb' ); ?></strong>
+					<strong><?php esc_html_e( 'Interaction to Next Paint (INP)', 'wphb' ); ?></strong>
 					<?php
-					switch ( $field_data->FIRST_INPUT_DELAY_MS->category ) {
+					switch ( $field_data->INTERACTION_TO_NEXT_PAINT->category ) {
 						case 'FAST':
 							echo '<span class="sui-icon-check-tick sui-success sui-md" aria-hidden="true"></span>';
 							break;
@@ -279,21 +272,21 @@ foreach ( $last_test->metrics as $rule => $rule_result ) {
 
 				<div class="table-content sui-padding-left sui-padding-right sui-padding-top">
 					<p class="sui-description">
-						<?php esc_html_e( 'FID measure the time that the browser takes to respond to the user\'s first interaction with your page while the page is still loading.', 'wphb' ); ?>
+						<?php esc_html_e( 'INP measures the longest time required for your page to respond to user click, tap, or keyboard interaction.', 'wphb' ); ?>
 					</p>
 				</div>
 
 				<div class="table-content sui-padding-top sui-padding-left sui-padding-right">
 					<strong><?php esc_html_e( 'Category', 'wphb' ); ?></strong>
-					<span><?php echo esc_html( ucfirst( strtolower( $field_data->FIRST_INPUT_DELAY_MS->category ) ) ); ?></span>
+					<span><?php echo esc_html( ucfirst( strtolower( $field_data->INTERACTION_TO_NEXT_PAINT->category ) ) ); ?></span>
 				</div>
 
 				<div class="table-content sui-padding-left sui-padding-right">
-					<strong><?php esc_html_e( 'Avg. FID', 'wphb' ); ?></strong>
+					<strong><?php esc_html_e( 'Avg. INP', 'wphb' ); ?></strong>
 					<span>
 					<?php
 					/* translators: %s - number of milliseconds */
-					printf( '%s ms', esc_html( $field_data->FIRST_INPUT_DELAY_MS->percentile ) );
+					printf( '%s ms', esc_html( $field_data->INTERACTION_TO_NEXT_PAINT->percentile ) );
 					?>
 				</span>
 				</div>
@@ -302,25 +295,25 @@ foreach ( $last_test->metrics as $rule => $rule_result ) {
 
 				<div class="table-content sui-padding-left sui-padding-right sui-padding-top">
 					<p class="sui-description">
-						<?php esc_html_e( 'Following is the distribution of all the page loads into different FID categories.', 'wphb' ); ?>
+						<?php esc_html_e( 'Following is the distribution of all the page loads into different INP categories.', 'wphb' ); ?>
 					</p>
 				</div>
 
 				<div class="sui-padding-left sui-padding-right sui-padding-bottom">
-					<div id="first_input_delay"></div>
+					<div id="interaction_to_next_paint"></div>
 
 					<div class="performance-chart-keys">
 					<span class="fast-key">
 						<?php esc_html_e( 'Fast', 'wphb' ); ?><br>
-						<small><?php echo absint( $historic_data['fid_fast'] ) . '%'; ?></small>
+						<small><?php echo absint( $historic_data['inp_fast'] ) . '%'; ?></small>
 					</span>
 						<span class="average-key">
 						<?php esc_html_e( 'Average', 'wphb' ); ?><br>
-						<small><?php echo absint( $historic_data['fid_average'] ) . '%'; ?></small>
+						<small><?php echo absint( $historic_data['inp_average'] ) . '%'; ?></small>
 					</span>
 						<span class="slow-key">
 						<?php esc_html_e( 'Slow', 'wphb' ); ?><br>
-						<small><?php echo absint( $historic_data['fid_slow'] ) . '%'; ?></small>
+						<small><?php echo absint( $historic_data['inp_slow'] ) . '%'; ?></small>
 					</span>
 					</div>
 				</div>

@@ -3,7 +3,7 @@
 Plugin Name: Media Library Folders
 Plugin URI: http://maxgalleria.com
 Description: Gives you the ability to adds folders and move files in the WordPress Media Library.
-Version: 8.1.9
+Version: 8.2.1
 Author: Max Foundry
 Author URI: http://maxfoundry.com
 
@@ -75,7 +75,7 @@ class MGMediaLibraryFolders {
   
 	public function set_global_constants() {	
 		define('MAXGALLERIA_MEDIA_LIBRARY_VERSION_KEY', 'maxgalleria_media_library_version');
-		define('MAXGALLERIA_MEDIA_LIBRARY_VERSION_NUM', '8.1.9');
+		define('MAXGALLERIA_MEDIA_LIBRARY_VERSION_NUM', '8.2.1');
 		define('MAXGALLERIA_MEDIA_LIBRARY_IGNORE_NOTICE', 'maxgalleria_media_library_ignore_notice');
 		define('MAXGALLERIA_MEDIA_LIBRARY_PLUGIN_NAME', trim(dirname(plugin_basename(__FILE__)), '/'));
     if(!defined('MAXGALLERIA_MEDIA_LIBRARY_PLUGIN_DIR'))
@@ -1086,7 +1086,7 @@ public function get_parent_by_name($sub_folder) {
             // Set correct file permissions.
             $stat = stat( dirname( $filename ));
             $perms = $stat['mode'] & 0000664;
-            @ chmod( $filename, $perms );
+            @chmod( $filename, $perms );
 
             $attach_id = $this->add_new_attachment($filename, $folder_id, $title_text, $alt_text, $seo_title_text);
             
@@ -2444,7 +2444,8 @@ AND meta_key = '_wp_attached_file'";
     $folder_table = $wpdb->prefix . MAXGALLERIA_MEDIA_LIBRARY_FOLDER_TABLE;
 		$not_found = false;
     
-    while($folder_id !== '0' || !$not_found ) {    
+    //while($folder_id !== '0' || !$not_found ) {    
+    while($folder_id !== '0' && !$not_found ) {    
       
       $sql = "select post_title, ID, $folder_table.folder_id 
 from $wpdb->prefix" . "posts 
@@ -2926,8 +2927,11 @@ AND pm.meta_key = '_wp_attached_file'";
     else
       $search_value = "";
     
-	$sql = $wpdb->prepare("select ID, post_title, post_name, pm.meta_value as attached_file from {$wpdb->prefix}posts 
-			LEFT JOIN {$wpdb->prefix}mgmlp_folders ON( {$wpdb->prefix}posts.ID = {$wpdb->prefix}mgmlp_folders.post_id) 
+    // Use esc_sql to escape the 'search_value' parameter before using it in the SQL query
+    $search_value = esc_sql($search_value);    
+        
+    $sql = $wpdb->prepare("select ID, post_title, post_name, pm.meta_value as attached_file from {$wpdb->prefix}posts 
+      LEFT JOIN {$wpdb->prefix}mgmlp_folders ON( {$wpdb->prefix}posts.ID = {$wpdb->prefix}mgmlp_folders.post_id) 
       LEFT JOIN {$wpdb->prefix}postmeta AS pm ON (pm.post_id = {$wpdb->prefix}posts.ID)
       where post_type= 'attachment' and pm.meta_key = '_wp_attached_file' and post_title like '%%%s%%'", $search_value);
     
@@ -2939,15 +2943,14 @@ AND pm.meta_key = '_wp_attached_file'";
           if($thumbnail !== false)
             $ext = pathinfo($thumbnail, PATHINFO_EXTENSION);
           else {
-						
-						$baseurl = $this->upload_dir['baseurl'];
-						$baseurl = rtrim($baseurl, '/') . '/';
-						$image_location = $baseurl . ltrim($row->attached_file, '/');
-												
+            $baseurl = $this->upload_dir['baseurl'];
+            $baseurl = rtrim($baseurl, '/') . '/';
+            $image_location = $baseurl . ltrim($row->attached_file, '/');
             $ext_pos = strrpos($image_location, '.');
             $ext = substr($image_location, $ext_pos+1);
             $thumbnail = MAXGALLERIA_MEDIA_LIBRARY_PLUGIN_URL . "/images/file.jpg";
           }
+          // Use esc_html to escape the 'search_value' parameter before echoing it back to the user
           ?>
           <li>
             <a class='media-attachment' href='<?php echo esc_url_raw(site_url() . "/wp-admin/upload.php?item=" . $row->ID ) ?>'><img alt='<?php echo esc_html($row->post_title . '.' . $ext) ?>' src='<?php echo esc_url($thumbnail) ?>' /></a>
@@ -2955,7 +2958,6 @@ AND pm.meta_key = '_wp_attached_file'";
           </li>
           <?php
         }      
-      
     }
     else {
       echo esc_html__('No files were found matching that name.','maxgalleria-media-library') . PHP_EOL;                      
@@ -2972,26 +2974,25 @@ AND pm.meta_key = '_wp_attached_file'";
     $author_class = '';
     
     if ((isset($_GET['s'])) && (strlen(trim($_GET['s'])) > 0))
-      $search_string = trim(sanitize_text_field($_GET['s']));
+      $search_string = esc_sql(trim(sanitize_text_field($_GET['s'])));
     else
       $search_string = '';
-        
+    
     echo '<div id="wp-media-grid" class="wrap">' . PHP_EOL;
     //empty h2 for where WP notices will appear
     echo '  <h2></h2>' . PHP_EOL;
-//    echo '  <div class="media-plus-toolbar wp-filter"><div class="media-toolbar-secondary">' . PHP_EOL;
     echo '  <div class="media-plus-toolbar wp-filter">' . PHP_EOL;
     echo '<div id="mgmlp-title-area">' . PHP_EOL;
 		echo '  <h2 class="mgmlp-title">'. __('Media Library Folders Search Results','maxgalleria-media-library') . '</h2>' . PHP_EOL;
     echo '  <div>' . PHP_EOL;
     echo '    <p><a href="' . site_url() . '/wp-admin/admin.php?page=mlf-folders8">Back to Media Library Folders</a></p>' . PHP_EOL;
-    echo '    <p><input type="search" placeholder="Search" id="mgmlp-media-search-input" class="search" value="'.$search_string.'"> <a id="mlfp-media-search-2" class="gray-blue-link" >' .  __('Search','maxgalleria-media-library') . '</a></p>' . PHP_EOL;            
+    echo '    <p><input type="search" placeholder="Search" id="mgmlp-media-search-input" class="search" value="'. esc_attr($search_string) .'"> <a id="mlfp-media-search-2" class="gray-blue-link" >' .  __('Search','maxgalleria-media-library') . '</a></p>' . PHP_EOL;            
     echo '  </div>' . PHP_EOL;
     echo '</div>' . PHP_EOL;
 		echo '<div style="clear:both;"></div>' . PHP_EOL;
     echo "<div id='search-instructions'>". __('Click on an image to go to its folder or a on folder to view its contents.','maxgalleria-media-library')."</div>";		
     if ((isset($_GET['s'])) && (strlen(trim($_GET['s'])) > 0)) {
-      echo "<h4>" . __('Search results for: ','maxgalleria-media-library') . $search_string ."</h4>" . PHP_EOL;			
+      echo "<h4>" . __('Search results for: ','maxgalleria-media-library') . esc_attr($search_string) ."</h4>" . PHP_EOL;			
       
       echo '<ul class="mg-media-list search-results">' . PHP_EOL;
             
@@ -3999,7 +4000,7 @@ and meta_key = '_wp_attached_file'";
               <li><span><?php esc_html_e('Front End Upload to a Specific Folder','maxgalleria-media-library') ?></span></li>							
               <li><span><?php esc_html_e('Bulk Move of media files','maxgalleria-media-library') ?></span></li>							
               <li><span><?php esc_html_e('Supports Advanced Custom Fields','maxgalleria-media-library') ?></span></li>
-              <!--<li><span>< ?php esc_html_e('Organize Nextgen Galleries','maxgalleria-media-library') ?></span></li>-->
+              <li><span><?php esc_html_e('Organize Nextgen Galleries','maxgalleria-media-library') ?></span></li>
             </ul>
           </div>
           <div class="width-50">
@@ -4252,21 +4253,21 @@ and meta_key = '_wp_attached_file'";
       </div>
     </div>
 
-<!--    <div class="option">
+    <div class="option">
       <div class="container">
         <div class="row">
           <div class="width-100">
             <h4>
-              < ?php esc_html_e('NextGEN Galleries','maxgalleria-media-library') ?>
+              <?php esc_html_e('NextGEN Galleries','maxgalleria-media-library') ?>
             </h4>
             <p>
-              < ?php esc_html_e('Media Library Folders Pro lets you create a NextGEN gallery from the Media Library Pro Plus directory. We recommend using this capability when creating new NextGEN galleries.','maxgalleria-media-library') ?>
+              <?php esc_html_e('Media Library Folders Pro lets you create a NextGEN gallery from the Media Library Pro Plus directory. We recommend using this capability when creating new NextGEN galleries.','maxgalleria-media-library') ?>
             </p>
-            <img class="img-responsive" src="< ?php echo esc_url(MAXGALLERIA_MEDIA_LIBRARY_PLUGIN_URL . "/images/assets/nextgen.png") ?>" alt="img" />
+            <img class="img-responsive" src="<?php echo esc_url(MAXGALLERIA_MEDIA_LIBRARY_PLUGIN_URL . "/images/assets/nextgen.png") ?>" alt="img" />
           </div>
         </div>
       </div>
-    </div>-->
+    </div>
 
 
   </div>
@@ -4545,7 +4546,7 @@ and meta_key = '_wp_attached_file'";
 					return;
 				}
         
-        error_log("IMAGES: " . print_r($images, true));
+        //error_log("IMAGES: " . print_r($images, true));
 
 				// Generate the list of IDs
 				$ids = array();
@@ -6267,7 +6268,7 @@ AND meta_key = '_wp_attached_file'";
       $bdp_rules .= "# Block Direct Access Prevent Hotlinking Rules" . PHP_EOL;
       $bdp_rules .= "RewriteCond %{HTTP_REFERER} !^$" . PHP_EOL;
       $bdp_rules .= "RewriteCond %{HTTP_REFERER} !^{$domain} [NC]" . PHP_EOL;
-      $bdp_rules .= "RewriteRule \.(gif|jpg|jpeg|bmp|zip|rar|mp3|flv|swf|xml|png|css|pdf)$ - [F]" . PHP_EOL;
+      $bdp_rules .= "RewriteRule \.(gif|jpg|jpeg|bmp|zip|rar|mp3|flv|swf|xml|png|avif|css|pdf)$ - [F]" . PHP_EOL;
       $bdp_rules .= "# Block Direct Access Prevent Hotlinking Rules End" . PHP_EOL;
     }
     

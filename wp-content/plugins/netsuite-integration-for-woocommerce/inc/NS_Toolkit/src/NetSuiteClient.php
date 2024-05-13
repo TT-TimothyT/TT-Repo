@@ -11,15 +11,15 @@
  */
 namespace NetSuite;
 
-require_once(TMWNI_DIR . '/inc/NS_Toolkit/samples/config.php');
-require_once('Logger.php');
-require_once(TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/ApplicationInfo.php');
- require_once(TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/Passport.php');
-require_once(TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/Preferences.php');
-require_once(TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/RecordRef.php');
-require_once(TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/SearchPreferences.php');
-require_once(TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/TokenPassport.php');
-require_once(TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/TokenPassportSignature.php');
+require_once TMWNI_DIR . '/inc/NS_Toolkit/samples/config.php';
+require_once 'Logger.php';
+require_once TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/ApplicationInfo.php';
+ require_once TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/Passport.php';
+require_once TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/Preferences.php';
+require_once TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/RecordRef.php';
+require_once TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/SearchPreferences.php';
+require_once TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/TokenPassport.php';
+require_once TMWNI_DIR . '/inc/NS_Toolkit/src/Classes/TokenPassportSignature.php';
 
 use NetSuite\Classes\ApplicationInfo;
 use NetSuite\Classes\GetDataCenterUrlsRequest;
@@ -50,11 +50,11 @@ class NetSuiteClient {
 	/**
 	 * Var array
 	 */
-	private $clientOptions = [];
+	private $clientOptions = array();
 	/**
 	 * Var array
 	 */
-	private $soapHeaders = [];
+	private $soapHeaders = array();
 	/**
 	 * Var \NetSuite\Logger
 	 */
@@ -65,7 +65,7 @@ class NetSuiteClient {
 	 * Param array $options
 	 * Param SoapClient $client
 	 */
-	public function __construct( $config = null, $options = [], $client = null, $ajaxValidateCreds = array()) {
+	public function __construct( $config = null, $options = array(), $client = null, $ajaxValidateCreds = array() ) {
 		if ($config) {
 			$this->config = $config;
 		} else {
@@ -83,7 +83,6 @@ class NetSuiteClient {
 		$this->logger = new Logger(
 			isset($this->config['log_path']) ? $this->config['log_path'] : null
 		);
-
 	}
 
 	/**
@@ -93,7 +92,7 @@ class NetSuiteClient {
 	 *
 	 * @return void
 	 */
-	public function setDataCenterUrl( array $config) {
+	public function setDataCenterUrl( array $config ) {
 		$params = new GetDataCenterUrlsRequest();
 		$params->account = $config['account'];
 		$result = $this->getDataCenterUrls($params)->getDataCenterUrlsResult;
@@ -109,24 +108,25 @@ class NetSuiteClient {
 	 */
 	public static function getEnvConfig() {
 
-		 $config = [
+		 $config = array(
 			'endpoint'           => NS_ENDPOINT,
 			'host'               => NS_HOST,
 			'role'               => '3',
 			'account'            => NS_ACCOUNT,
 			'app_id'             => '4AD027CA-88B3-46EC-9D3E-41C6E6A325E2',
-		];
+			// 'logging'            => true,
+		);
 
 		// These config keys aren't required by all users, but if they are
 		// defined in the config array, then they must be correct, thus we
 		// will omit ones that have been left empty in the .env file.
-		$optKeys = [
+		$optKeys = array(
 			'consumerKey'    => NS_CONSUMER_KEY,
 			'consumerSecret' => NS_CONSUMER_SECRET,
 			'token'       => NS_TOKEN_ID,
 			'tokenSecret'    => NS_TOKEN_SECRET,
-			'signatureAlgorithm'       => NS_HMAC_METHOD
-		];
+			'signatureAlgorithm'       => NS_HMAC_METHOD,
+		);
 		 foreach ($optKeys as $optKey => $cfgKey) {
 			 // if ($optVal = getenv($optKey)) {
 			 //     $config[$cfgKey] = $optVal;
@@ -145,15 +145,15 @@ class NetSuiteClient {
 	 *
 	 * @return void
 	 */
-	public function validateConfig( array $config) {
-		$requiredParams = [
+	public function validateConfig( array $config ) {
+		$requiredParams = array(
 			'endpoint',
 			'host',
 			'account',
-		];
+		);
 		foreach ($requiredParams as $key) {
 			if (!isset($config[$key]) || empty($config[$key])) {
-				throw new \RuntimeException('Config key missing: ' . $key);
+				throw new \RuntimeException('Config key missing: ' . esc_html($key));
 			}
 		}
 	}
@@ -175,7 +175,7 @@ class NetSuiteClient {
 	 * @return \NetSuite\NetSuiteClient
 	 */
 	public static function createFromEnv(
-		array $options = [],
+		array $options = array(),
 		\SoapClient $client = null
 	) {
 		$config = self::getEnvConfig();
@@ -190,7 +190,7 @@ class NetSuiteClient {
 	 * @param mixed $parameter
 	 * @return mixed
 	 */
-	protected function makeSoapCall( $operation, $parameter) {
+	protected function makeSoapCall( $operation, $parameter ) {
 		$this->fixWtfCookieBug();
 		if (isset($this->config['token'])) {
 			$this->addHeader('tokenPassport', $this->createTokenPassportFromConfig($this->config));
@@ -200,13 +200,11 @@ class NetSuiteClient {
 		}
 
 		try {
-			$response = $this->getClient()->__soapCall($operation, [$parameter], null, $this->soapHeaders);
-			// pr($response); die('abcd');
-			$this->logSoapCall($operation);
+			$response = $this->getClient()->__soapCall($operation, array( $parameter ), null, $this->soapHeaders);
+			$this->logSoapCall($operation, $parameter);
 			return $response;
 		} catch (\Exception $e) {
-			// pr($e); die('zzzzn');
-			$this->logSoapCall($operation);
+			$this->logSoapCall($operation, $parameter);
 			// throw $e;
 			return $e;
 		}
@@ -219,8 +217,8 @@ class NetSuiteClient {
 	 * @param array $overrides
 	 * @return array
 	 */
-	private function createOptions( $config, $overrides = []) {
-		return array_merge([
+	private function createOptions( $config, $overrides = array() ) {
+		return array_merge(array(
 			'classmap' => require __DIR__ . '/includes/classmap.php',
 			'trace' => 1,
 			'connection_timeout' => 5,
@@ -229,7 +227,7 @@ class NetSuiteClient {
 			'keep_alive' => false,
 			'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
 			'user_agent' => 'PHP-SOAP/' . phpversion() . ' + ryanwinchester/netsuite-php',
-		], $overrides);
+		), $overrides);
 	}
 
 	/**
@@ -238,7 +236,7 @@ class NetSuiteClient {
 	 * @param array $config
 	 * @return string
 	 */
-	private function createWsdl( $config) {
+	private function createWsdl( $config ) {
 		return $config['host'] . '/wsdl/v' . $config['endpoint'] . '_0/netsuite.wsdl';
 	}
 
@@ -248,7 +246,7 @@ class NetSuiteClient {
 	 * @param array $config
 	 * @return Passport
 	 */
-	private function createPassportFromConfig( $config) {
+	private function createPassportFromConfig( $config ) {
 		$passport = new Passport();
 		$passport->account = $config['account'];
 		$passport->email = $config['email'];
@@ -265,7 +263,7 @@ class NetSuiteClient {
 	 * @param array $config
 	 * @return TokenPassport
 	 */
-	private function createTokenPassportFromConfig( $config) {
+	private function createTokenPassportFromConfig( $config ) {
 		$tokenPassport = new TokenPassport();
 		$tokenPassport->account = $config['account'];
 		$tokenPassport->consumerKey = $config['consumerKey'];
@@ -297,7 +295,7 @@ class NetSuiteClient {
 	 * @param string $header
 	 * @param mixed $value
 	 */
-	public function addHeader( $header, $value) {
+	public function addHeader( $header, $value ) {
 		$this->soapHeaders[$header] = new SoapHeader('ns', $header, $value);
 	}
 
@@ -306,7 +304,7 @@ class NetSuiteClient {
 	 *
 	 * @param string $header
 	 */
-	public function clearHeader( $header) {
+	public function clearHeader( $header ) {
 		unset($this->soapHeaders[$header]);
 	}
 
@@ -315,7 +313,7 @@ class NetSuiteClient {
 	 *
 	 * @param string $appId
 	 */
-	public function setApplicationInfo( $appId = null) {
+	public function setApplicationInfo( $appId = null ) {
 		$applicationInfo = new ApplicationInfo();
 		$applicationInfo->applicationId = $appId;
 		$this->addHeader('applicationInfo', $applicationInfo);
@@ -357,7 +355,7 @@ class NetSuiteClient {
 	 * @param int $pageSize
 	 * @param bool $returnSearchColumns
 	 */
-	public function setSearchPreferences( $bodyFieldsOnly = true, $pageSize = 50, $returnSearchColumns = true) {
+	public function setSearchPreferences( $bodyFieldsOnly = true, $pageSize = 50, $returnSearchColumns = true ) {
 		$preferences = new SearchPreferences();
 		$preferences->bodyFieldsOnly = $bodyFieldsOnly;
 		$preferences->pageSize = $pageSize;
@@ -407,7 +405,7 @@ class NetSuiteClient {
 	 *
 	 * @param bool $on
 	 */
-	public function logRequests( $on = true) {
+	public function logRequests( $on = true ) {
 		$this->config['logging'] = $on;
 	}
 
@@ -416,7 +414,7 @@ class NetSuiteClient {
 	 *
 	 * @param string $logPath
 	 */
-	public function setLogPath( $logPath) {
+	public function setLogPath( $logPath ) {
 		$this->config['log_path'] = $logPath;
 		$this->logger = new Logger($logPath);
 	}
@@ -426,9 +424,9 @@ class NetSuiteClient {
 	 *
 	 * @param string $operation
 	 */
-	private function logSoapCall( $operation) {
+	private function logSoapCall( $operation, $parameter ) {
 		if (isset($this->config['logging']) && $this->config['logging']) {
-			$this->logger->logSoapCall($this->getClient(), $operation);
+			$this->logger->logSoapCall($this->getClient(), $operation, $parameter);
 		}
 	}
 
@@ -445,8 +443,8 @@ class NetSuiteClient {
 	 * @param string $signatureAlgorithm
 	 * @return string
 	 */
-	private function computeTokenPassportSignature( $account, $consumerKey, $consumerSecret, $token, $tokenSecret, $nonce, $timestamp, $signatureAlgorithm) {
-		$baseString = implode('&', [$account, $consumerKey, $token, $nonce, $timestamp]);
+	private function computeTokenPassportSignature( $account, $consumerKey, $consumerSecret, $token, $tokenSecret, $nonce, $timestamp, $signatureAlgorithm ) {
+		$baseString = implode('&', array( $account, $consumerKey, $token, $nonce, $timestamp ));
 		$key = $consumerSecret . '&' . $tokenSecret;
 		$result = base64_encode(hash_hmac($signatureAlgorithm, $baseString, $key, true));
 		return $result; 
@@ -455,7 +453,7 @@ class NetSuiteClient {
 	/**
 	 * Generate random (or sufficiently enough so) string of characters
 	 */
-	private function generateTokenPassportNonce( $length = 32) {
+	private function generateTokenPassportNonce( $length = 32 ) {
 		$noncePool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		$key = '';
 		for ($i = 0; $i < $length; $i++) {

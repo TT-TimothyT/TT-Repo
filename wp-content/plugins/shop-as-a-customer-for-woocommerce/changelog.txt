@@ -1,5 +1,10 @@
 ** FME Addons: Shop as a Customer for WooCommerce **
 
+2024-05-03 - version 1.2.8
+* Added option to search customers by company, address, phone
+* Added option to send order invoice to customers on thankyou page
+* Minor bug fixes
+
 2023-10-26 - version 1.2.7
 *Fixed bug causing switched account to roll back to first admin account instead of their own
 

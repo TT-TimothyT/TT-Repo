@@ -4,7 +4,7 @@ Tags: address, autocomplete, form, woocommerce, gravityforms, checkout, google
 Requires at least: 5.0
 Tested up to: 6.3
 Requires PHP: 7.4
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 License: GPLv3 or later License
 URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -57,6 +57,9 @@ You only need to [get a Google Maps API key](https://wpsunshine.com/documentatio
 2. Sample form showing how address autocompletes works
 
 == Changelog ==
+
+= 1.1.5 =
+* Fix - Load Google maps with async
 
 = 1.1.4 =
 * Fix - Handle address1 when there is no street number

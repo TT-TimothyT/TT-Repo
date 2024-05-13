@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTPACKAGEUSPSDELIVERYCONFUSPS {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DELIVERYCONFIRMATION = '_deliveryConfirmation';
 	const _SIGNATURECONFIRMATION = '_signatureConfirmation';
 }

@@ -88,6 +88,14 @@ abstract class Page {
 				$render ? array( $this, 'render' ) : null,
 				$this->get_menu_icon()
 			);
+		} elseif ( 'wphb-upgrade' === $slug ) {
+			$this->page_id = add_submenu_page(
+				$parent,
+				$page_title,
+				__( 'Upgrade for 80% Off!', 'wphb' ),
+				Utils::get_admin_capability(),
+				esc_url( Utils::get_link( 'plugin', 'hummingbird_submenu_upsell' ) ),
+			);
 		} else {
 			$this->page_id = add_submenu_page(
 				$parent,

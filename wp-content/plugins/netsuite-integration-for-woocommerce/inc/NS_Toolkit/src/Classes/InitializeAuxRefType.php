@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class InitializeAuxRefType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const SHIPPINGGROUP = 'shippingGroup';
 	const ARACCOUNT = 'arAccount';
 	const APACCOUNT = 'apAccount';

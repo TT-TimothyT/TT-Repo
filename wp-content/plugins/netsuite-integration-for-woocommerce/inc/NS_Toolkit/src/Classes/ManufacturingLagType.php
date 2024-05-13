@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class MANUFACTURINGLAGTYPE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _QUANTITY = '_quantity';
 	const _QUANTITYPERCENTAGE = '_quantityPercentage';
 	const _TIME = '_time';

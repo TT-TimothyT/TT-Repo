@@ -87,6 +87,9 @@ const MixPanel = require( 'mixpanel-browser' );
 						score_desktop_previous: getString(
 							'previousScoreDesktop'
 						),
+						'AO Status': getString(
+							'aoStatus'
+						),
 					} );
 				}
 			);

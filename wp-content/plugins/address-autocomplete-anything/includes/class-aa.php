@@ -134,10 +134,10 @@ class WPSunshine_Address_Autocomplete {
 
             }
 
-            if ( !empty( $instances_data ) && apply_filters( 'wps_aa_load_scripts', true ) ) {
+            if ( ! empty( $instances_data ) && apply_filters( 'wps_aa_load_scripts', true ) ) {
 				wp_enqueue_script( 'wps-aa-frontend', WPS_AA_URL . 'assets/js/frontend.min.js', array( 'jquery' ), WPS_AA_VERSION, true );
                 wp_localize_script( 'wps-aa-frontend', 'wps_aa_vars', array( 'instances' => $instances_data ) );
-                wp_enqueue_script( 'wps-aa-google-maps', 'https://maps.googleapis.com/maps/api/js?key=' . sanitize_text_field( $google_api_key ) . '&callback=wps_aa&libraries=places&v=weekly', '', WPS_AA_VERSION, true );
+				wp_enqueue_script( 'wps-aa-google-maps', 'https://maps.googleapis.com/maps/api/js?key=' . sanitize_text_field( $google_api_key ) . '&callback=wps_aa&libraries=places&v=weekly&loading=async', '', WPS_AA_VERSION, array( 'strategy' => 'async', 'in_footer' => true ) );
             }
 
         }

@@ -63,18 +63,18 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 			$post_id       = false;
 			$can_edit_id   = false;
 			$can_edit_type = false;
-			$req_action    = empty( $_REQUEST[ 'action' ] ) ? false : $_REQUEST[ 'action' ];
+			$req_action    = empty( $_REQUEST[ 'action' ] ) ? false : sanitize_text_field( $_REQUEST[ 'action' ] );
 			$is_meta_box   = empty( $_REQUEST[ 'meta-box-loader' ] ) && empty( $_REQUEST[ 'meta_box' ] ) ? false : true;
 			$is_gutenbox   = empty( $_REQUEST[ 'gutenberg_meta_boxes' ] ) ? false : true;
 			$is_classic    = isset( $_REQUEST[ 'classic-editor' ] ) && empty( $_REQUEST[ 'classic-editor' ] ) ? false : true;
 
-			if ( ! empty( $_REQUEST[ 'post_ID' ] ) ) {
+			if ( ! empty( $_REQUEST[ 'post_ID' ] ) && is_numeric( $_REQUEST[ 'post_ID' ] ) ) {
 
-				$post_id = $_REQUEST[ 'post_ID' ];
+				$post_id = SucomUtil::sanitize_int( $_REQUEST[ 'post_ID' ] );	// Returns integer or null.
 
 			} elseif ( ! empty( $_REQUEST[ 'post' ] ) && is_numeric( $_REQUEST[ 'post' ] ) ) {
 
-				$post_id = $_REQUEST[ 'post' ];
+				$post_id = SucomUtil::sanitize_int( $_REQUEST[ 'post' ] );	// Returns integer or null.
 			}
 
 			if ( $post_id ) {
@@ -146,7 +146,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 					$local_cache = true;
 
-				} elseif ( $post_id && $req_action === 'edit' ) {
+				} elseif ( $post_id && 'edit' === $req_action ) {
 
 					$local_cache = true;
 				}
@@ -1538,115 +1538,28 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		/*
 		 * GET SITE INFORMATION METHODS:
 		 *
+		 * 	get_home_url()
+		 * 	get_minimum_image_wh()
 		 *	get_screen_base()
 		 *	get_screen_id()
 		 * 	get_site_name()
 		 * 	get_site_name_alt()
 		 * 	get_site_description()
-		 * 	get_home_url()
-		 * 	get_minimum_image_wh()
 		 * 	get_wp_config_file_path()
 		 * 	get_wp_url()
 		 *
-		 * Returns false or the admin screen base string.
-		 */
-		public static function get_screen_base( $screen = false ) {
-
-			if ( false === $screen ) {
-
-				if ( function_exists( 'get_current_screen' ) ) {
-
-					$screen = get_current_screen();
-				}
-			}
-
-			if ( isset( $screen->base ) ) {
-
-				return $screen->base;
-			}
-
-			return false;
-		}
-
-		/*
-		 * Returns false or the admin screen id string.
-		 */
-		public static function get_screen_id( $screen = false ) {
-
-			if ( false === $screen ) {
-
-				if ( function_exists( 'get_current_screen' ) ) {
-
-					$screen = get_current_screen();
-				}
-			}
-
-			if ( isset( $screen->id ) ) {
-
-				return $screen->id;
-			}
-
-			return false;
-		}
-
-		/*
-		 * Site Title.
-		 *
-		 * Returns a custom site name or the default WordPress site name.
-		 *
-		 * $mixed = 'default' | 'current' | post ID | $mod array
-		 */
-		public static function get_site_name( array $opts = array(), $mixed = 'current' ) {
-
-			$site_name = empty( $opts ) ? '' : self::get_key_value( 'site_name', $opts, $mixed );
-
-			if ( empty( $site_name ) ) {	// Fallback to default WordPress value.
-
-				$site_name = get_bloginfo( $show = 'name', $filter = 'raw' );
-			}
-
-			return $site_name;
-		}
-
-		/*
-		 * Site Alternate Title.
-		 *
-		 * Returns a custom site alternate name or an empty string.
-		 *
-		 * $mixed = 'default' | 'current' | post ID | $mod array
-		 */
-		public static function get_site_name_alt( array $opts, $mixed = 'current' ) {
-
-			return empty( $opts ) ? '' : self::get_key_value( 'site_name_alt', $opts, $mixed );
-		}
-
-		/*
-		 * Site Tagline.
-		 *
-		 * Returns a custom site description or the default WordPress site description / tagline.
-		 *
-		 * $mixed = 'default' | 'current' | post ID | $mod array
-		 */
-		public static function get_site_description( array $opts = array(), $mixed = 'current' ) {
-
-			$site_desc = empty( $opts ) ? '' : self::get_key_value( 'site_desc', $opts, $mixed );
-
-			if ( empty( $site_desc ) ) {	// Fallback to default WordPress value.
-
-				$site_desc = get_bloginfo( $show = 'description', $filter = 'raw' );
-			}
-
-			return $site_desc;
-		}
-
-		/*
 		 * Returns the website URL from the options array, or the WordPress get_home_url() value.
 		 *
 		 * $mixed = 'default' | 'current' | post ID | $mod array
 		 */
 		public static function get_home_url( array $opts = array(), $mixed = 'current' ) {
 
-			$home_url = empty( $opts ) ? '' : self::get_key_value( 'site_home_url', $opts, $mixed );
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			$home_url = empty( $opts ) ? '' : SucomUtilOptions::get_key_value( 'site_home_url', $opts, $mixed );
 
 			if ( empty( $home_url ) ) {	// Fallback to default WordPress value.
 
@@ -1734,6 +1647,113 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 			return $local_cache = array( $min_width, $min_height, $size_count );
 		}
 
+		/*
+		 * Returns false or the admin screen base string.
+		 */
+		public static function get_screen_base( $screen = false ) {
+
+			if ( false === $screen ) {
+
+				if ( function_exists( 'get_current_screen' ) ) {
+
+					$screen = get_current_screen();
+				}
+			}
+
+			if ( isset( $screen->base ) ) {
+
+				return $screen->base;
+			}
+
+			return false;
+		}
+
+		/*
+		 * Returns false or the admin screen id string.
+		 */
+		public static function get_screen_id( $screen = false ) {
+
+			if ( false === $screen ) {
+
+				if ( function_exists( 'get_current_screen' ) ) {
+
+					$screen = get_current_screen();
+				}
+			}
+
+			if ( isset( $screen->id ) ) {
+
+				return $screen->id;
+			}
+
+			return false;
+		}
+
+		/*
+		 * Site Title.
+		 *
+		 * Returns a custom site name or the default WordPress site name.
+		 *
+		 * $mixed = 'default' | 'current' | post ID | $mod array
+		 */
+		public static function get_site_name( array $opts = array(), $mixed = 'current' ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			$site_name = empty( $opts ) ? '' : SucomUtilOptions::get_key_value( 'site_name', $opts, $mixed );
+
+			if ( empty( $site_name ) ) {	// Fallback to default WordPress value.
+
+				$site_name = get_bloginfo( $show = 'name', $filter = 'raw' );
+			}
+
+			return $site_name;
+		}
+
+		/*
+		 * Site Alternate Title.
+		 *
+		 * Returns a custom site alternate name or an empty string.
+		 *
+		 * $mixed = 'default' | 'current' | post ID | $mod array
+		 */
+		public static function get_site_name_alt( array $opts, $mixed = 'current' ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			return empty( $opts ) ? '' : SucomUtilOptions::get_key_value( 'site_name_alt', $opts, $mixed );
+		}
+
+		/*
+		 * Site Tagline.
+		 *
+		 * Returns a custom site description or the default WordPress site description / tagline.
+		 *
+		 * $mixed = 'default' | 'current' | post ID | $mod array
+		 */
+		public static function get_site_description( array $opts = array(), $mixed = 'current' ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			$site_desc = empty( $opts ) ? '' : SucomUtilOptions::get_key_value( 'site_desc', $opts, $mixed );
+
+			if ( empty( $site_desc ) ) {	// Fallback to default WordPress value.
+
+				$site_desc = get_bloginfo( $show = 'description', $filter = 'raw' );
+			}
+
+			return $site_desc;
+		}
+
 		public static function get_wp_config_file_path() {
 
 			$parent_abspath = trailingslashit( dirname( ABSPATH ) );
@@ -1757,7 +1777,12 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		 */
 		public static function get_wp_url( array $opts = array(), $mixed = 'current' ) {
 
-			$wp_url = empty( $opts ) ? '' : self::get_key_value( 'site_wp_url', $opts, $mixed );
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			$wp_url = empty( $opts ) ? '' : SucomUtilOptions::get_key_value( 'site_wp_url', $opts, $mixed );
 
 			if ( empty( $wp_url ) ) {	// Fallback to default WordPress value.
 
@@ -1807,7 +1832,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 			require_once trailingslashit( ABSPATH ) . 'wp-admin/includes/translation-install.php';
 
-			$translations  = wp_get_available_translations();
+			$translations  = wp_get_available_translations();	// Array of translations, each an array of data, keyed by the language.
 			$avail_locales = self::get_available_locales();		// Uses a local cache.
 			$local_cache   = array();
 
@@ -1831,6 +1856,11 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 			return $local_cache;
 		}
 
+		/*
+		 * Returns an array of locales.
+		 *
+		 * See https://developer.wordpress.org/reference/functions/get_available_languages/.
+		 */
 		public static function get_available_locales() {
 
 			static $local_cache = null;
@@ -2599,10 +2629,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 						self::raw_do_option( $action = 'update', $opt_name = 'siteurl', $url );
 					}
 
-				} else {
-
-					$url = self::raw_do_option( $action = 'get', $opt_name = 'siteurl' );
-				}
+				} else $url = self::raw_do_option( $action = 'get', $opt_name = 'siteurl' );
 
 			} else {
 

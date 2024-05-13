@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemPreferenceCriterion {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _A = '_A';
 	const _B = '_B';
 	const _C = '_C';

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class FAIRVALUEPRICEFAIRVALUERANGEPOLICY {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BOUNDARY = '_boundary';
 	const _FAIRVALUE = '_fairValue';
 	const _HIGH = '_high';

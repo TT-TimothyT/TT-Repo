@@ -8,7 +8,7 @@ function tm_ns_get_post_meta( $post_id, $meta_key) {
 	if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled() ) {
 		// HPOS usage is enabled.
 		$order = wc_get_order($post_id);
-		$meta_value = $order->get_meta($meta_key, true);		
+		$meta_value = $order ? $order->get_meta($meta_key, true) : null;		
 	} else {
 		$meta_value =  get_post_meta($post_id, $meta_key, true);    
 	}

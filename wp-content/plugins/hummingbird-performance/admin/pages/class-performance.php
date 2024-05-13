@@ -299,16 +299,16 @@ class Performance extends Page {
 		$field_data = $this->report->data->{$this->type}->field_data;
 
 		$fcp_fast = $fcp_average = $fcp_slow = false;
-		$fid_fast = $fid_average = $fid_slow = false;
+		$inp_fast = $inp_average = $inp_slow = false;
 
 		if ( $field_data ) {
 			$fcp_fast    = round( $field_data->FIRST_CONTENTFUL_PAINT_MS->distributions[0]->proportion * 100 );
 			$fcp_average = round( $field_data->FIRST_CONTENTFUL_PAINT_MS->distributions[1]->proportion * 100 );
 			$fcp_slow    = round( $field_data->FIRST_CONTENTFUL_PAINT_MS->distributions[2]->proportion * 100 );
 
-			$fid_fast    = round( $field_data->FIRST_INPUT_DELAY_MS->distributions[0]->proportion * 100 );
-			$fid_average = round( $field_data->FIRST_INPUT_DELAY_MS->distributions[1]->proportion * 100 );
-			$fid_slow    = round( $field_data->FIRST_INPUT_DELAY_MS->distributions[2]->proportion * 100 );
+			$inp_fast    = round( $field_data->INTERACTION_TO_NEXT_PAINT->distributions[0]->proportion * 100 );
+			$inp_average = round( $field_data->INTERACTION_TO_NEXT_PAINT->distributions[1]->proportion * 100 );
+			$inp_slow    = round( $field_data->INTERACTION_TO_NEXT_PAINT->distributions[2]->proportion * 100 );
 
 			$i10n = array(
 				'fcp' => array(
@@ -331,24 +331,24 @@ class Performance extends Page {
 						absint( $fcp_slow )
 					),
 				),
-				'fid' => array(
-					'fast'         => $fid_fast,
+				'inp' => array(
+					'fast'         => $inp_fast,
 					'fast_desc'    => sprintf(
 					/* translators: %d - number of percent */
-						esc_html__( '%d%% of loads for this page have a fast (< 50 ms) First Input Delay (FID).', 'wphb' ),
-						absint( $fid_fast )
+						esc_html__( '%d%% of loads for this page have a fast (< 200 ms) Interaction to Next Paint (INP).', 'wphb' ),
+						absint( $inp_fast )
 					),
-					'average'      => $fid_average,
+					'average'      => $inp_average,
 					'average_desc' => sprintf(
 					/* translators: %d - number of percent */
-						esc_html__( '%d%% of loads for this page have an average (50 ms ~ 250 ms) First Input Delay (FID).', 'wphb' ),
-						absint( $fid_average )
+						esc_html__( '%d%% of loads for this page have an average (200 ms ~ 500 ms) Interaction to Next Paint (INP).', 'wphb' ),
+						absint( $inp_average )
 					),
-					'slow'         => $fid_slow,
+					'slow'         => $inp_slow,
 					'slow_desc'    => sprintf(
 					/* translators: %d - number of percent */
-						esc_html__( '%d%% of loads for this page have a slow (> 250 ms) First Input Delay (FID).', 'wphb' ),
-						absint( $fid_slow )
+						esc_html__( '%d%% of loads for this page have a slow (> 500 ms) Interaction to Next Paint (INP).', 'wphb' ),
+						absint( $inp_slow )
 					),
 				),
 			);
@@ -365,9 +365,9 @@ class Performance extends Page {
 					'fcp_fast'    => $fcp_fast,
 					'fcp_average' => $fcp_average,
 					'fcp_slow'    => $fcp_slow,
-					'fid_fast'    => $fid_fast,
-					'fid_average' => $fid_average,
-					'fid_slow'    => $fid_slow,
+					'inp_fast'    => $inp_fast,
+					'inp_average' => $inp_average,
+					'inp_slow'    => $inp_slow,
 				),
 				'last_test'        => $this->report->data->{$this->type},
 				'links'            => array(
@@ -541,5 +541,4 @@ class Performance extends Page {
 			)
 		);
 	}
-
 }

@@ -18,7 +18,7 @@
 
 namespace NetSuite\Classes;
 
-require_once('SearchRowBasic.php');
+require_once 'SearchRowBasic.php';
 
 class AssemblyItemBomSearchRowBasic extends SearchRowBasic {
 	/**

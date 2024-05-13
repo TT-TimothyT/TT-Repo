@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class INTERCOSTATUS {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _PAIRED = '_paired';
 	const _PENDING = '_pending';
 	const _REJECTED = '_rejected';

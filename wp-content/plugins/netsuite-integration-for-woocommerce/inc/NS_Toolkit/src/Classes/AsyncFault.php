@@ -22,6 +22,5 @@ require_once 'NSSoapFault.php';
 
 
 class AsyncFault extends NSSoapFault {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 }

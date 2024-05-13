@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTHAZMATTYPEFEDEX {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DANGEROUSGOODS = '_dangerousGoods';
 	const _HAZMAT = '_hazmat';
 }

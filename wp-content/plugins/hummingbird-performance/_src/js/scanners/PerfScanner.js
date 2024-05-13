@@ -92,6 +92,10 @@ class PerfScanner extends Scanner {
 		return Promise.resolve();
 	}
 
+	retrieveValueFromObject( obj, prop ) {
+		return obj && typeof obj[prop] !== 'undefined' ? obj[prop] : 'N/A';
+	}
+
 	onFinish( response ) {
 		super.onFinish();
 
@@ -99,6 +103,21 @@ class PerfScanner extends Scanner {
 			score_mobile: response.mobileScore,
 			score_desktop: response.desktopScore,
 			active_features: response.HBSmushFeatures,
+			'AO Status': response.aoStatus,
+			cls_desktop: this.retrieveValueFromObject( response.hbPerformanceMetric, 'cls_desktop' ),
+			cls_mobile: this.retrieveValueFromObject( response.hbPerformanceMetric, 'cls_mobile' ),
+			fcp_desktop: this.retrieveValueFromObject( response.hbPerformanceMetric, 'fcp_desktop' ),
+			fcp_mobile: this.retrieveValueFromObject( response.hbPerformanceMetric, 'fcp_mobile' ),
+			inp_desktop: this.retrieveValueFromObject( response.hbPerformanceMetric, 'inp_desktop' ),
+			inp_mobile: this.retrieveValueFromObject( response.hbPerformanceMetric, 'inp_mobile' ),
+			lcp_desktop: this.retrieveValueFromObject( response.hbPerformanceMetric, 'lcp_desktop' ),
+			lcp_mobile: this.retrieveValueFromObject( response.hbPerformanceMetric, 'lcp_mobile' ),
+			speed_desktop: this.retrieveValueFromObject( response.hbPerformanceMetric, 'speed_desktop' ),
+			speed_mobile: this.retrieveValueFromObject( response.hbPerformanceMetric, 'speed_mobile' ),
+			tbt_desktop: this.retrieveValueFromObject( response.hbPerformanceMetric, 'tbt_desktop' ),
+			tbt_mobile: this.retrieveValueFromObject( response.hbPerformanceMetric, 'tbt_mobile' ),
+			ttfb_desktop: this.retrieveValueFromObject( response.hbPerformanceMetric, 'ttfb_desktop' ),
+			ttfb_mobile: this.retrieveValueFromObject( response.hbPerformanceMetric, 'ttfb_mobile' ),
 		} );
 
 		// Give a second for the report to be saved to the db.

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PaymentCardBrand {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AMEX = '_amex';
 	const _CIRRUS = '_cirrus';
 	const _DINERSCLUB = '_dinersClub';
@@ -33,4 +32,3 @@ class PaymentCardBrand {
 	const _UNIONPAY = '_unionPay';
 	const _VISA = '_visa';
 }
-

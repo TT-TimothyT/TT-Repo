@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Products Compare Uninstall.
+ * Products Compare for WooCommerce Uninstall.
  *
  * Deletes the plugin options.
  *

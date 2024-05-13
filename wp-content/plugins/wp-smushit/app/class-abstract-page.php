@@ -442,7 +442,7 @@ abstract class Abstract_Page {
 			$this->has_onload_modal()
 			|| $hide_upgrade_modal
 			|| $whitelabel_hide_doc_link
-			|| ( $is_on_subsite_screen && ! $this->settings->has_bulk_smush_page() )
+			|| ( $is_on_subsite_screen && ! $this->settings->has_webp_page() )
 		) {
 			$should_ignore_upgrade_modal = $whitelabel_hide_doc_link || $this->has_onload_modal( 'onboarding' );
 			if ( $should_ignore_upgrade_modal ) {
@@ -451,7 +451,7 @@ abstract class Abstract_Page {
 			return;
 		}
 
-		$cta_url                 = $this->settings->has_bulk_smush_page() ? Helper::get_page_url( 'smush-bulk' ) : '';
+		$cta_url                 = Helper::get_page_url( 'smush-webp' );
 		$this->modals['updated'] = array(
 			'cta_url' => $cta_url,
 		);

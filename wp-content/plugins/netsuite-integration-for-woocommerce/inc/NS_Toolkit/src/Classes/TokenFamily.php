@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TokenFamily {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ADYEN = '_adyen';
 	const _ALTAPAY = '_altaPay';
 	const _CYBERSOURCE = '_cyberSource';

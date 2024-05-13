@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class EntityGroupType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CONTACT = '_contact';
 	const _CUSTOMER = '_customer';
 	const _EMPLOYEE = '_employee';

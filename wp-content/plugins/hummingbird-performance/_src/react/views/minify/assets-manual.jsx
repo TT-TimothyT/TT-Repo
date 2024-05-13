@@ -75,12 +75,13 @@ export const ManualAssets = ( props ) => {
 	const [ filters, setFilters ] = useState( defaultFilters );
 	const [ selectedOptions, setSelectedOptions ] = useState( {} );
 	const [ initialized, setInitialized ] = useState( false );
-	const { safeMode, collection, hasResolved, isResolving } = useSelect( ( select ) => {
+	const { safeMode, collection, hasResolved, isResolving, aoQueue } = useSelect( ( select ) => {
 		return {
 			safeMode: select( STORE_NAME ).getOption( 'safeMode' ),
 			collection: select( STORE_NAME ).getAssets(),
 			hasResolved: select( STORE_NAME ).hasFinishedResolution( 'getAssets' ),
 			isResolving: select( STORE_NAME ).hasStartedResolution( 'getAssets' ),
+			aoQueue: select( STORE_NAME ).getOption( 'ao_queue' ),
 		};
 	}, [] );
 
@@ -159,6 +160,7 @@ export const ManualAssets = ( props ) => {
 			.post( action, getOptions() )
 			.then( ( response ) => {
 				dispatch( STORE_NAME ).invalidateResolution( 'getAssets' );
+				dispatch( STORE_NAME ).invalidateResolution( 'getOptions' );
 				updateStateFromApiResponse( response );
 				setSelected( defaultSelection );
 				setLoading( false );
@@ -627,7 +629,6 @@ export const ManualAssets = ( props ) => {
 			classes={['sui-button', 'sui-button-blue', {disabled: !hasUpdates()}]}
 			text={__('Publish changes', 'wphb')}
 		/>;
-
 		return (
 			<Box
 				stickyType = { true }	

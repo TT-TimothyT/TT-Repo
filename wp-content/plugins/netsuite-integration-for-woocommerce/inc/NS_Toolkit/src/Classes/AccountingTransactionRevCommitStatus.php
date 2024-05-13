@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ACCOUNTINGTRANSACTIONREVCOMMITSTATUS {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _COMMITTED = '_committed';
 	const _PARTIALLYCOMMITTED = '_partiallyCommitted';
 	const _PENDINGCOMMITMENT = '_pendingCommitment';

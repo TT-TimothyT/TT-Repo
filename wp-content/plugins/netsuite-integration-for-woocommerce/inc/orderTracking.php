@@ -97,10 +97,11 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 				$searchResponse = $ns_service->search($request);
 				if (isset($searchResponse->searchResult->status->isSuccess) && 1 == $searchResponse->searchResult->status->isSuccess) {
 					$records = $searchResponse->searchResult->recordList->record;
-					foreach ($records as $key => $record) {
+					if (!empty($records)) {
+						foreach ($records as $key => $record) {
 						$this->updateFulFIllment($record);
+						}
 					}
-
 				}
 
 			} catch (SoapFault $e) {
@@ -110,8 +111,6 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 		}
 
 	}
-
-
 
 	public static function updateFulFIllment( $record) {
 		global $TMWNI_OPTIONS; 
@@ -126,37 +125,25 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 		$order = wc_get_orders($args);
 		$order_id = $order[0]->get_id();
 
-
-
 		if (isset($record->linkedTrackingNumbers) && !empty($record->linkedTrackingNumbers)) {
-			$trackingNo = $record->linkedTrackingNumbers;
+			$trackingNo = str_replace(' ', ',', $record->linkedTrackingNumbers);
 			if (isset($TMWNI_OPTIONS['ns_order_tracking_number']) && !empty($TMWNI_OPTIONS['ns_order_tracking_number'])) {
 				tm_ns_update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_tracking_number'], $trackingNo);
 			}	
 			tm_ns_update_post_meta($order_id, 'ywot_tracking_code', $trackingNo);
 			tm_ns_update_post_meta($order_id, 'ywot_picked_up', 'on');
 
-
-
 			if (empty(tm_ns_get_post_meta($order_id, 'trackingno_email_sent'))) {
 				if (isset($TMWNI_OPTIONS['ns_order_tracking_email']) && !empty($TMWNI_OPTIONS['ns_order_tracking_email'])) {
 
 					$wc_emails = WC()->mailer()->get_emails();
-
-
 					$wc_emails['WC_NetSuite_Order_Tracking_No']->trigger($order_id);
-
-
-
 					tm_ns_update_post_meta($order_id, 'trackingno_email_sent', 'sent');
 
-					//die;
-									// die('helloooo');
 				}
 			}
 
 		}
-
 
 		if (isset($record->shipMethod) && !empty($record->shipMethod)) {
 
@@ -168,9 +155,7 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 				tm_ns_update_post_meta($order_id, 'ywot_carrier_name', $ShippingCarrier);
 			}	
 
-
 		}
-
 
 		if (isset($record->shipDate) && !empty($record->shipDate)) {
 
@@ -186,8 +171,6 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 
 		}
 
-
-
 		if (!empty($record->orderStatus) || !empty($record->status)) {
 			if ('_fullyBilled' ==  $record->orderStatus || 'Billed' ==  $record->orderStatus || '_fullyBilled' ==  $record->status || 'Billed' ==  $record->status) {
 				if (isset($TMWNI_OPTIONS['ns_order_auto_complete']) && !empty($TMWNI_OPTIONS['ns_order_auto_complete'])) {
@@ -199,14 +182,7 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 			}
 		}
 
-
-		
-
 	}
-
-
-
-
 }
 
 $this->netsuiteOrderTrackingClient = new OrdertrackingClient();

@@ -5,10 +5,10 @@
   Description: Export and Import User/Customers details From and To your WordPress/WooCommerce.
   Author: WebToffee
   Author URI: https://www.webtoffee.com/product/wordpress-users-woocommerce-customers-import-export/
-  Version: 2.5.3
+  Version: 2.5.4
   Text Domain: users-customers-import-export-for-wp-woocommerce
   Domain Path: /languages
-  WC tested up to: 8.6.1
+  WC tested up to: 8.7.0
   Requires at least: 3.0
   Requires PHP: 5.6
   License: GPLv3
@@ -48,17 +48,20 @@ if (!defined('WT_IEW_DEBUG_BASIC_TROUBLESHOOT')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('WT_U_IEW_VERSION', '2.5.3');
+define('WT_U_IEW_VERSION', '2.5.4');
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-wt-import-export-for-woo-activator.php
  */
 function activate_wt_import_export_for_woo_basic_user() {
-   
+    wt_user_activation_check();
     require_once plugin_dir_path(__FILE__) . 'includes/class-wt-import-export-for-woo-activator.php';
     Wt_Import_Export_For_Woo_Basic_Activator_User::activate();
 }
+
+require_once plugin_dir_path( __FILE__ ) . 'user_import_export_welcome-script.php';
+
 
 /**
  * The code that runs during plugin deactivation.

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TAXROUNDING {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ROUNDDOWN = '_roundDown';
 	const _ROUNDOFF = '_roundOff';
 	const _ROUNDUP = '_roundUp';

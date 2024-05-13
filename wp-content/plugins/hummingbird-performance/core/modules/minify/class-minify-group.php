@@ -243,6 +243,27 @@ class Minify_Group {
 	}
 
 	/**
+	 * Check if a script or style enqueued file version is in format like x.x.x.
+	 *
+	 * @param string $version The version number to validate.
+	 *
+	 * @return bool True if the version is valid, false otherwise.
+	 */
+	public function is_valid_enqueue_version( $version ) {
+		if ( empty( $version ) ) {
+			return false;
+		}
+
+		$pattern = '/^\d+\.\d+(\.\d+)?$/';
+
+		// Perform the regular expression match.
+		$is_valid = preg_match( $pattern, $version );
+
+		// Return true if the version matches the pattern, false otherwise.
+		return (bool) $is_valid;
+	}
+
+	/**
 	 * Add a single handle to the group
 	 *
 	 * @param string $handle   Handle.
@@ -263,6 +284,17 @@ class Minify_Group {
 		if ( is_int( $version ) && 10 === strlen( $version ) ) {
 			$version = false;
 		}
+
+		// Make sure version is not array otherwise it will through PHP warning while imploding the multidimensional array.
+		if ( is_array( $version ) ) {
+			$version = false;
+		}
+
+		// Make sure enqueue file version is in format like x.x.x if not it means the version is dynamic and set it to false otherwise it will end up in a forever loop.
+		if ( ! $this->is_valid_enqueue_version( $version ) ) {
+			$version = false;
+		}
+
 		$this->handle_versions[ $handle ] = $version;
 
 		$this->handle_dependencies[ $handle ]     = array();
@@ -1093,7 +1125,7 @@ class Minify_Group {
 					$this->type,
 					'empty-content',
 					__( 'It looks like this file is empty', 'wphb' ),
-					array( 'minify', 'combine' ) // Disallow minification/concat.
+					array( 'minify', 'combine', 'nocdn' ) // Disallow minification/concat.
 				);
 				continue;
 			} else {
@@ -1122,8 +1154,8 @@ class Minify_Group {
 						$this->type,
 						'import-not-allowed',
 						__( 'import directive is not allowed in scripts', 'wphb' ),
-						array( 'combine', 'nocdn' ),
-						array( 'combine', 'nocdn' )
+						array( 'minify', 'combine', 'nocdn' ),
+						array( 'minify', 'combine', 'nocdn' )
 					);
 					continue;
 				}
@@ -1494,6 +1526,11 @@ class Minify_Group {
 		$handles = $this->get_handles();
 
 		if ( ! $handles ) {
+			return false;
+		}
+
+		if ( ! $this->should_generate_file() ) {
+			// Nothing to process.
 			return false;
 		}
 

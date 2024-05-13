@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PERMISSIONLEVEL {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CREATE = '_create';
 	const _EDIT = '_edit';
 	const _FULL = '_full';

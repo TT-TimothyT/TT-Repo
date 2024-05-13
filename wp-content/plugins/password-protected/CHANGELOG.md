@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.1 2024-03-27
+- Fixed - Disabled activity report by default.
+
+## 2.7 - 2024-03-26
+- New: Added Password Activity Report to provide weekly insights on access attempts to your protected sites.
+- New: Added Categoric Tabs and Sub-Tabs User Interface for easy navigation and better user experience.
+
 ## 2.6.5.1 - 2023-11-20
 - Ensured seamless compatibility with the latest WordPress version
 

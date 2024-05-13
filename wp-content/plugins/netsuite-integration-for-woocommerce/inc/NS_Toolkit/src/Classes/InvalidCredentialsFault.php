@@ -18,9 +18,8 @@
 
 namespace NetSuite\Classes;
 
-require_once  'NSSoapFault.php';
+require_once 'NSSoapFault.php';
 
 class InvalidCredentialsFault extends NSSoapFault {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 }

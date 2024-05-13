@@ -2,8 +2,8 @@
 Contributors: samuelaguilera
 Tags: gravityforms, Gravity Forms, duplicated submission, duplicated entry, duplicates
 Requires at least: 4.9
-Tested up to: 6.4.3
-Stable tag: 1.1.1
+Tested up to: 6.5.2
+Stable tag: 1.2
 Requires PHP: 7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.en.html
@@ -43,7 +43,9 @@ To put in another way, the add-on is intended to **block automated resend of the
 = Usage =
 
 * Install and activate it as you do with any other plugin.
-* Enjoy! No settings!
+* Enjoy!
+
+Optionally, you can customize the duplicate submission message shown to users from the settings page or using a filter (see the FAQ).
 
 = Note about Caching =
 
@@ -59,14 +61,20 @@ You can also use [Fresh Forms](https://wordpress.org/plugins/fresh-forms-for-gra
 
 = Is it possible to customize the message shown for duplicate submissions? =
 
-Yes. You can use the gnd_duplicate_submission_message filter for it. See the example below:
+Yes. You can do this from the Forms > Settings > GF No Duplicates settings page. Or using the gnd_duplicate_submission_message filter. See the example below:
 
 `add_filter( 'gnd_duplicate_submission_message', function( $message, $form ) {
 	$message = 'Your custom text goes here';
 	return $message;
 }, 10, 2 );`
 
+Using the filter will override the default message and any custom message that you may have added in the settings page.
+
 == Changelog ==
+
+= 1.2 =
+
+* Added a settings page to allow customizing the duplicate submission message.
 
 = 1.1.1 =
 

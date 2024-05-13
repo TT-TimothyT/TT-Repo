@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMPRODUCTFEED {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _GOOGLEBASE = '_googleBase';
 	const _NEXTAG = '_nexTag';
 	const _SHOPPINGCOM = '_shoppingCom';

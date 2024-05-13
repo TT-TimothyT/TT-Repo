@@ -55,7 +55,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<ol>
 		<li>
 		<?php
-		if ( apply_filters( 'wpmudev_branding_hide_branding', false ) ) {
+		if ( Utils::is_whitelabel_enabled() ) {
 			esc_html_e( 'If yours is a high traffic site, upgrade your server resources to improve your server response time. Not happy with your server response time? Talk with your current host about server resource upgrades.', 'wphb' );
 		} else {
 			if ( ! isset( $_SERVER['WPMUDEV_HOSTED'] ) ) {

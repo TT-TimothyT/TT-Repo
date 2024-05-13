@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class RevRecScheduleAmortizationType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _STANDARD = '_standard';
 	const _VARIABLE = '_variable';
 }

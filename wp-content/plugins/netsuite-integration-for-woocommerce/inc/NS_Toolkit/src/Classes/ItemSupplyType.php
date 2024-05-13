@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMSUPPLYTYPE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BUILD = '_build';
 	const _PURCHASE = '_purchase';
 	const _TRANSFER = '_transfer';

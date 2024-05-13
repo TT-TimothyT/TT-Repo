@@ -107,6 +107,21 @@ const MixPanel = require( 'mixpanel-browser' );
 		},
 
 		/**
+		 * Track Font Optimization event.
+		 *
+		 * @param {object} properties Properties.
+		 */
+		trackFontOptimizationEvent( updateType, feature ) {
+			if ( 'activate' === updateType ) {
+				this.enableFeature( feature );
+			}
+
+			if ( 'deactivate' === updateType ) {
+				this.disableFeature( feature );
+			}
+		},
+
+		/**
 		 * Track Critical Upsell event.
 		 *
 		 * @param {string} updateType       Update type.

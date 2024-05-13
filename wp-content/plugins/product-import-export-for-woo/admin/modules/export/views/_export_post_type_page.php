@@ -1,68 +1,120 @@
 <?php
 if (!defined('ABSPATH')) {
-    exit;
+	exit;
 }
 ?>
 <div class="wt_iew_export_main">
-	<p><?php echo $step_info['description']; ?></p>
-	<div class="wt_iew_warn wt_iew_post_type_wrn" style="display:none;">
-		<?php _e( 'Please select a post type', 'product-import-export-for-woo' );?>
-	</div>
-	<table class="form-table wt-iew-form-table">
-		<tr>
-			<th><label><?php _e( 'Select a post type to export', 'product-import-export-for-woo' ); ?></label></th>
-			<td>
-				<select name="wt_iew_export_post_type">
-					<option value="">-- <?php _e( 'Select post type', 'product-import-export-for-woo' ); ?> --</option>
+	<p><?php echo $this->step_description; ?></p>
+	<div class="wt_iew_post-type-cards">
+		<?php
+		foreach ($post_types as $key => $value) {
+			$postTypeLink = wt_iew_get_post_type_link($key);
+			if (!$postTypeLink) {
+				continue;
+			}
+			$postImageLink = WT_P_IEW_PLUGIN_URL . 'assets/images/post_types/' . strtolower($key) . '.svg';
+			$postImageLinkactive = WT_P_IEW_PLUGIN_URL . 'assets/images/post_types/' . strtolower($key) . 'active.svg';
+		?>
+			<div class="wt_iew_post-type-card <?php echo ($item_type == $key) ? 'selected' : ''; ?>" data-post-type="<?php echo esc_attr($key); ?>">
+				<div class="wt_iew_post-type-card2">
+   				 	<div class="wt_iew_image <?php echo 'wt_iew_image_' . esc_html($key); ?>" style="display : <?php echo ($item_type == $key) ? 'none' : 'block'; ?>">
+					<img src="<?php echo esc_url($postImageLink); ?>" />
+					</div>
+					<div class="<?php echo 'wt_iew_active_image_' . esc_html($key); ?>" style="display : <?php echo ($item_type == $key) ? 'block' : 'none'; ?>">
+						<img src="<?php echo esc_url($postImageLinkactive); ?>" />
+					</div>
+
+				</div>
+				<h3 class="wt_iew_post-type-card-hd"><?php echo esc_html($value); ?></h3>
+				<div class="wt_iew_free_addon_warn <?php echo 'wt_iew_type_' . esc_html($key); ?>" style="display:block;">
 					<?php
-					foreach($post_types as $key=>$value)
-					{
-						?>
-						<option value="<?php echo $key;?>" <?php echo ($item_type==$key ? 'selected' : '');?>><?php echo $value;?></option>
-						<?php
+					$btn_href   = '';
+					$btn_text   = '';
+					$btn_class  = '';
+					if (!file_exists(WP_PLUGIN_DIR . '/' . $postTypeLink['basic_plugin'])) 
+                    {
+						$btn_href = $postTypeLink['link'];
+                        $btn_text   = __('Install now', 'product-import-export-for-woo');
+                        $btn_class  = '';
+                        $btn_target = '_self';
+                    } elseif (!is_plugin_active($postTypeLink['basic_plugin'])) {
+                        $btn_href   = wp_nonce_url(self_admin_url('plugins.php?action=activate&plugin=' . urlencode($postTypeLink['basic_plugin']) . '&plugin_status=all&paged=1&s'), 'activate-plugin_' . $postTypeLink['basic_plugin']);
+                        $btn_text   = __('Activate', 'product-import-export-for-woo');
+                        $btn_class  = 'activate';
+                        $btn_target = '_self';
+                    }
+
+                    if ('subscription' === $key) {
+                        $btn_href = $postTypeLink['link'];
+                        $btn_text   = __('Premium', 'product-import-export-for-woo');
+                        $btn_class  = 'premium-button';
+                        $btn_target = '_blank';
+                    }
+
+					if ($btn_href) {
+					?>
+						<a class="<?php echo esc_attr($btn_class); ?>" href="<?php echo esc_url($btn_href); ?>" <?php if ($btn_target) echo 'target="' . esc_attr($btn_target) . '"'; ?>><?php echo esc_html($btn_text); ?></a>
+					<?php
 					}
 					?>
-				</select>
-			</td>
-			<td></td>
-		</tr>
-	</table>
-	<br/>
-	<?php 
-	$wt_iew_post_types = array(
-		'order' => array(
-			'message' => __( 'The <b>Order Export & Order Import for WooCommerce Add-On</b> is required to export WooCommerce Orders.', 'product-import-export-for-woo' ),
-			'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=order-import-export-for-woocommerce')
-		),
-		'coupon' => array(
-			'message' => __( 'The <b>Order Export & Order Import for WooCommerce Add-On</b> is required to export WooCommerce Coupons.', 'product-import-export-for-woo' ),
-			'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=order-import-export-for-woocommerce')
-		),		
-		'user' => array(
-			'message' => __( 'The <b>Import Export WordPress Users and WooCommerce Customers Add-On</b> is required to export users/customers.', 'product-import-export-for-woo' ),
-			'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=users-customers-import-export-for-wp-woocommerce')
-		),
-		'subscription' => array(
-			'message' => __( 'The <b>Order, Coupon, Subscription Export Import for WooCommerce</b> premium is required to export WooCommerce Subscriptions.', 'product-import-export-for-woo' ),
-			'link' => esc_url( 'https://www.webtoffee.com/product/order-import-export-plugin-for-woocommerce/?utm_source=free_plugin_revamp_post_type&utm_medium=basic_revamp&utm_campaign=Order_Import_Export&utm_content=' . WT_P_IEW_VERSION )
-		)		
-	);
-	foreach ($wt_iew_post_types as $wt_iew_post_type => $wt_iew_post_type_detail) { ?>
-			
-	<div class="wt_iew_free_addon wt_iew_free_addon_warn <?php echo 'wt_iew_type_'.$wt_iew_post_type; ?>" style="display:none">
-		<p><?php echo $wt_iew_post_type_detail['message']; ?></p>
-		<?php 
-		$install_now = esc_html( 'Install now for free', 'product-import-export-for-woo' ); 
-		$is_pro = false;
-		if( 'subscription' === $wt_iew_post_type ){
-			$install_now = esc_html( 'Get the plugin', 'product-import-export-for-woo' ); 
-			$is_pro = true;
+				</div>
+
+			</div>
+		<?php
 		}
-		?>		
-		<a target="_blank" href="<?php echo $wt_iew_post_type_detail['link']; ?>"><?php esc_attr_e( $install_now ); ?></a>
+		?>
 	</div>
-	
+	<br />
 	<?php
+	function wt_iew_get_post_type_link($post_type)
+	{
+		$wt_iew_post_types = array(
+			'product' => array(
+				'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=product-import-export-for-woo'),
+				'basic_plugin' => 'product-import-export-for-woo/product-import-export-for-woo.php',
+			),
+			'product_review' => array(
+				'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=product-import-export-for-woo'),
+				'basic_plugin' => 'product-import-export-for-woo/product-import-export-for-woo.php'
+
+			),
+			'product_categories' => array(
+				'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=product-import-export-for-woo'),
+				'basic_plugin' => 'product-import-export-for-woo/product-import-export-for-woo.php'
+
+			),
+			'product_tags' => array(
+				'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=product-import-export-for-woo'),
+				'basic_plugin' => 'product-import-export-for-woo/product-import-export-for-woo.php'
+
+			),
+
+			'order' => array(
+				'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=order-import-export-for-woocommerce'),
+				'basic_plugin'  => 'order-import-export-for-woocommerce/order-import-export-for-woocommerce.php',
+			),
+			'coupon' => array(
+				'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=order-import-export-for-woocommerce'),
+				'basic_plugin'  => 'order-import-export-for-woocommerce/order-import-export-for-woocommerce.php',
+			),
+
+			'user' => array(
+				'link' => admin_url('plugin-install.php?tab=plugin-information&plugin=users-customers-import-export-for-wp-woocommerce'),
+				'basic_plugin' => 'users-customers-import-export-for-wp-woocommerce/users-customers-import-export-for-wp-woocommerce.php'
+
+			),
+			'subscription' => array(
+				'link' => esc_url('https://www.webtoffee.com/product/order-import-export-plugin-for-woocommerce/?utm_source=free_plugin_revamp_post_type&utm_medium=basic_revamp&utm_campaign=Order_Import_Export&utm_content=' .  WT_P_IEW_VERSION),
+				'basic_plugin' => 'order-import-export-for-woocommerce/order-import-export-for-woocommerce.php'
+			)
+
+		);
+
+		if (isset($wt_iew_post_types[$post_type])) {
+			return $wt_iew_post_types[$post_type];
+		} else {
+			return false;
+		}
 	}
 	?>
 </div>

@@ -21,6 +21,5 @@ namespace NetSuite\Classes;
 require_once 'SearchRecord.php';
 
 class SearchRecordBasic extends SearchRecord {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 }

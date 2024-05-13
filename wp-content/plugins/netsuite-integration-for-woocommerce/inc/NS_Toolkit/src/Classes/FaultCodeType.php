@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class FaultCodeType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const ACCT_TEMP_UNAVAILABLE = 'ACCT_TEMP_UNAVAILABLE';
 	const EMAIL_ADDRS_REQD = 'EMAIL_ADDRS_REQD';
 	const INSUFFICIENT_PERMISSION = 'INSUFFICIENT_PERMISSION';

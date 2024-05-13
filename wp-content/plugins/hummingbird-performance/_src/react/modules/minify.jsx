@@ -45,6 +45,7 @@ export const MinifyPage = ( props ) => {
 		api.post( 'minify_clear_cache' )
 			.then( ( response ) => {
 				dispatch( STORE_NAME ).invalidateResolution( 'getAssets' );
+				dispatch( STORE_NAME ).invalidateResolution( 'getOptions' );
 				if ( response.isCriticalActive ) {
 					window.wphbMixPanel.track( 'critical_css_cache_purge', {
 						location: 'ao_settings'

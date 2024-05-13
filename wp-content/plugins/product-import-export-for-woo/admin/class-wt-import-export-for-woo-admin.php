@@ -105,6 +105,7 @@ class Wt_Import_Export_For_Woo_Admin_Basic {
 		
 		$order_addon_active_status = false;
 		$user_addon_active_status = false;
+
 		if(is_plugin_active( 'order-import-export-for-woocommerce/order-import-export-for-woocommerce.php' )){
 			$order_addon_active_status = true;
 		}
@@ -112,11 +113,12 @@ class Wt_Import_Export_For_Woo_Admin_Basic {
 			$user_addon_active_status = true;
 		}
 		
+		
 		$is_variable_product_exist = false;
                 
 		$variable_products_count = isset( wp_count_posts( 'product_variation' )->publish ) ? wp_count_posts( 'product_variation' )->publish : 0;
 		if ( $variable_products_count > 0 ) {
-			// At least one variable product exists in the database with published status and ad banner is not dissmissed earlier.
+			// At least one variable product exists in the database with published status and ad banner is not dismissed earlier.
 			$is_banner_dismissed = get_option('wt_ier_pro_banner_dismissed');
 			if(!$is_banner_dismissed){
 				$is_variable_product_exist = true;

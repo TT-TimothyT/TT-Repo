@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemOverheadType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AMOUNTBASEUNIT = '_amountBaseUnit';
 	const _PERCENTOFMATERIAL = '_percentOfMaterial';
 	const _PERCENTOFTOTAL = '_percentOfTotal';

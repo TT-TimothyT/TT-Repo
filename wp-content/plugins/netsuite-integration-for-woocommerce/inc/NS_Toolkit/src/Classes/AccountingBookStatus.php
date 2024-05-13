@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class AccountingBookStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACTIVE = '_active';
 	const _INACTIVE = '_inactive';
 	const _PENDING = '_pending';

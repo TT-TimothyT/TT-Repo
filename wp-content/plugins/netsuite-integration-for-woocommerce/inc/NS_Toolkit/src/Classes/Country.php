@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class Country {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AFGHANISTAN = '_afghanistan';
 	const _ALANDISLANDS = '_alandIslands';
 	const _ALBANIA = '_albania';

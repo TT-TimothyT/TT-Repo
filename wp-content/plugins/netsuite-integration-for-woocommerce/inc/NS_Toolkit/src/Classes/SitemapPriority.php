@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class SitemapPriority {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _00 = '_00';
 	const _01 = '_01';
 	const _02 = '_02';

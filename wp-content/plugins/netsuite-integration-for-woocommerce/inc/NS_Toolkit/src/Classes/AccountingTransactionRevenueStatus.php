@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ACCOUNTINGTRANSACTIONREVENUESTATUS {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _COMPLETED = '_completed';
 	const _INPROGRESS = '_inProgress';
 	const _ONREVCOMMITMENT = '_onRevCommitment';

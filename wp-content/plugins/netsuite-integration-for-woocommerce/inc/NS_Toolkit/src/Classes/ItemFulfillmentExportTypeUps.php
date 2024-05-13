@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentExportTypeUps {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DOMESTICEXPORTS = '_domesticExports';
 	const _FOREIGNEXPORTS = '_foreignExports';
 	const _FOREIGNMILITARYSALES = '_foreignMilitarySales';

@@ -92,6 +92,8 @@ class Core {
 		new Integration\Wpengine();
 		new Integration\WPMUDev();
 		new Integration\Defender();
+		new Integration\Avada();
+		new Integration\OxygenBuilder();
 	}
 
 	/**

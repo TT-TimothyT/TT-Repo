@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CampaignChannelEventType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _DIRECTMAIL = '_directMail';
 	const _EMAIL = '_email';
 	const _INTEGRATION = '_integration';

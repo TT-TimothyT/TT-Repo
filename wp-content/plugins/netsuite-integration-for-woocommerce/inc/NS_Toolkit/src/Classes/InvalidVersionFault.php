@@ -19,6 +19,5 @@
 namespace NetSuite\Classes;
 
 class InvalidVersionFault extends NSSoapFault {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 }

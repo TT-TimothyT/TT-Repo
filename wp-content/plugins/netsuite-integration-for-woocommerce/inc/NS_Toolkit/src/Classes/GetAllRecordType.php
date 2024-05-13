@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class GetAllRecordType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const BUDGETCATEGORY = 'budgetCategory';
 	const CAMPAIGNAUDIENCE = 'campaignAudience';
 	const CAMPAIGNCATEGORY = 'campaignCategory';

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class TIMEITEMTIMETYPE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACTUALTIME = '_actualTime';
 	const _PLANNEDTIME = '_plannedTime';
 }

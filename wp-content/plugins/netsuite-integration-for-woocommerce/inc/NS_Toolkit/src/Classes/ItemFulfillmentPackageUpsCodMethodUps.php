@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemFulfillmentPackageUpsCodMethodUps {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CASHIERSCHECKMONEYORDER = '_cashiersCheckMoneyOrder';
 	const _CHECKCASHIERSCHECKMONEYORDER = '_checkCashiersCheckMoneyOrder';
 }

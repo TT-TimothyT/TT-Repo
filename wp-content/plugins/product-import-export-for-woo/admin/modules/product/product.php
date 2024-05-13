@@ -214,6 +214,21 @@ class Wt_Import_Export_For_Woo_Basic_Product {
      *
      */
     public function wt_iew_exporter_post_types_basic($arr) {
+        
+        if(is_plugin_active('product-import-export-for-woo/product-import-export-for-woo.php')){
+            $arr['product'] = __('Product', 'product-import-export-for-woo');
+            $arr['product_review'] = __('Product Review', 'product-import-export-for-woo');
+            $arr['product_categories'] = __('Product Categories', 'product-import-export-for-woo');
+            $arr['product_tags'] = __('Product Tags', 'product-import-export-for-woo');
+        }
+        if(is_plugin_active('order-import-export-for-woocommerce/order-import-export-for-woocommerce.php')){
+            $arr['order'] = __('Order', 'product-import-export-for-woo');
+		    $arr['coupon'] = __('Coupon', 'product-import-export-for-woo');
+        }
+        if(is_plugin_active('users-customers-import-export-for-wp-woocommerce/users-customers-import-export-for-wp-woocommerce.php'))
+        {
+            $arr['user'] = __('User/Customer', 'product-import-export-for-woo'); 
+        }
 		$arr['order'] = __('Order', 'product-import-export-for-woo');
 		$arr['coupon'] = __('Coupon', 'product-import-export-for-woo');
 		$arr['product'] = __('Product', 'product-import-export-for-woo');

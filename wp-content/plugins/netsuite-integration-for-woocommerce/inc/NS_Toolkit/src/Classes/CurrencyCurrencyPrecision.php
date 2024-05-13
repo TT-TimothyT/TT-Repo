@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CurrencyCurrencyPrecision {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _TWO = '_two';
 	const _ZERO = '_zero';
 }

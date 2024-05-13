@@ -1,7 +1,7 @@
 <?php
 class Datatables {
 	//datatables
-	public function limit( $request) {
+	public function limit( $request ) {
 		$limit = '';
 		if (isset($request['start']) && -1 != $request['length']) {
 			 $limit = 'LIMIT ' . intval($request['start']) . ', ' . intval($request['length']);
@@ -18,7 +18,7 @@ class Datatables {
 	 *  @param  array $columns Column information array
 	 *  @return string SQL order by clause
 	 */
-	public function order( $request, $columns) {
+	public function order( $request, $columns ) {
 		$order = '';
 		if (isset($request['order']) && count($request['order'])) {
 			$orderBy = array();
@@ -55,7 +55,7 @@ class Datatables {
 	 *    sql_exec() function
 	 *  @return string SQL where clause
 	 */
-	public function filter( $request, $columns, &$bindings) {
+	public function filter( $request, $columns, &$bindings ) {
 		$globalSearch = array();
 		$columnSearch = array();
 		$dtColumns = $this->pluck($columns, 'dt');
@@ -101,7 +101,7 @@ class Datatables {
 		}
 		return $where;
 	}
-	public function pluck( $a, $prop) {
+	public function pluck( $a, $prop ) {
 		$out = array();
 		for ($i = 0, $len = count($a); $i < $len; $i++) {
 			$out[] = $a[$i][$prop];
@@ -118,12 +118,12 @@ class Datatables {
 	 * @return string       Bound key to be used in the SQL where this parameter
 	 *   would be used.
 	 */
-	public function bind( &$a, $val, $type) {
+	public function bind( &$a, $val, $type ) {
 		$key = ':binding_' . count($a);
 		$a[] = array(
 			'key' => $key,
 			'val' => $val,
-			'type' => $type
+			'type' => $type,
 		);
 		return $key;
 	}
@@ -134,7 +134,7 @@ class Datatables {
 	 *  @param  array $data    Data from the SQL get
 	 *  @return array          Formatted data in a row based format
 	 */
-	public function data_output( $columns, $data) {
+	public function data_output( $columns, $data ) {
 //       
 		$out = array();
 		for ($i = 0, $ien = count($data); $i < $ien; $i++) {
@@ -150,4 +150,3 @@ class Datatables {
 		return $out;
 	}
 }
-

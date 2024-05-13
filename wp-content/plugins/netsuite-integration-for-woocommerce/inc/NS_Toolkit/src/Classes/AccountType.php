@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class AccountType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ACCOUNTSPAYABLE = '_accountsPayable';
 	const _ACCOUNTSRECEIVABLE = '_accountsReceivable';
 	const _BANK = '_bank';

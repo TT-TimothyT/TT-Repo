@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class InboundShipmentShipmentStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CLOSED = '_closed';
 	const _INTRANSIT = '_inTransit';
 	const _PARTIALLYRECEIVED = '_partiallyReceived';

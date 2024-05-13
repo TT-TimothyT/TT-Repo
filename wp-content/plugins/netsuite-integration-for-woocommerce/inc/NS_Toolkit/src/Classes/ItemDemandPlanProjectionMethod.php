@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ItemDemandPlanProjectionMethod {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _LINEARREGRESSION = '_linearRegression';
 	const _MOVINGAVERAGE = '_movingAverage';
 	const _SALESFORECAST = '_salesForecast';

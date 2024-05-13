@@ -15,6 +15,9 @@ class TMWNI_Settings {
 	public static $ns_customer_id = 'ns_customer_internal_id';
 	public static $ns_guest_customer_id = 'ns_guest_customer_internal_id';
 	public static $ns_order_refund_internal_id = 'ns_order_refund_internal_id';
+	public static $ns_invoice_id = 'ns_invoice_internal_id';
+	public static $ns_cash_sale_id = 'ns_cash_sale_internal_id';
+	public static $ns_customer_deposit_id = 'ns_customer_deposit_internal_id';
 
 	public static $page_id = 'tmwni';
 	public static $error_log_file_name = 'tmwni_errors.log';
@@ -280,10 +283,10 @@ class TMWNI_Settings {
 		'EH' => '_westernSahara',
 		'YE' => '_yemen',
 		'ZM' => '_zambia',
-		'ZW' => '_zimbabwe'
+		'ZW' => '_zimbabwe',
 	);
 	//map tab ids to tab names
-	public static $tabs = [
+	public static $tabs = array(
 	'general_settings' => 'General Settings',
 	'inventory_settings' => 'Inventory Settings',
 	'customer_settings' => 'Customer Settings',
@@ -291,24 +294,24 @@ class TMWNI_Settings {
 	'logs' => 'NetSuite API Logs',
 	'help' => 'Help & Support',
 	'dashboard' => 'Dashboard',
-	'import_export_settings' => 'Import/Export Settings'
+	'import_export_settings' => 'Import/Export Settings',
 
-];
-	public static $inventory_sync_frequency = [
+);
+	public static $inventory_sync_frequency = array(
 	'hourly' => 'Hourly',
 	'twicedaily' => 'Twice a day',
-	'daily' => 'Every day'
-];
-	public static $hma_method = [
+	'daily' => 'Every day',
+);
+	public static $hma_method = array(
 	'HMAC-SHA1' => 'HMAC-SHA1',
 	'HMAC-SHA256' => 'HMAC-SHA256',
-];
+);
 
 	/**
 	 * Get Tab Settings
 	 *
 	*/ 
-	public static function getTabSettings( $tab_id = '', $sub_tab = '') {
+	public static function getTabSettings( $tab_id = '', $sub_tab = '' ) {
 		$settings = array();
 		if ('' == $tab_id) {
 			foreach (self::$tabs as $tab_id => $tab_heading) {
@@ -363,7 +366,7 @@ class TMWNI_Settings {
 	 * Get Tab
 	 *
 	*/ 
-	public static function getTabOptionKey( $tab_id, $sub_tab = '') {
+	public static function getTabOptionKey( $tab_id, $sub_tab = '' ) {
 		if ('' != $sub_tab) {
 			$sub_tab = '_' . $sub_tab;
 		}
@@ -373,13 +376,12 @@ class TMWNI_Settings {
 	 * Save Options
 	 *
 	*/ 
-	public static function saveOption( $data, $tab_id = '') {
+	public static function saveOption( $data, $tab_id = '' ) {
 		if ('' == $tab_id) {
 			$tab_id = self::$default_tab;
 		}
 		$option_key = self::getTabOptionKey($tab_id);
 		update_option($option_key, $data, 'no');
-
 	}
 
 	//Check if required amazon creds are saved by admin
@@ -390,20 +392,13 @@ class TMWNI_Settings {
 		}
 		return true;
 	}
-
-
-
-
-
-
-
 	/**
 	 * Write Logs to DB
 	 *
 	*/ 
-	public static function writeLogtoDB( $status, $object_id, $object, $error = '') {
+	public static function writeLogtoDB( $status, $object_id, $object, $error = '' ) {
 		global $wpdb;
-		$query_array = ['status' => $status, 'woo_object_id' => $object_id, 'operation' => $object];
+		$query_array = array( 'status' => $status, 'woo_object_id' => $object_id, 'operation' => $object );
 		$query_array['notes'] = $error;
 		$wpdb->insert($wpdb->prefix . 'tm_woo_netsuite_logs', $query_array);
 		return false;
@@ -426,7 +421,6 @@ class TMWNI_Settings {
 			'rev'        => array(),
 			'target'     => array(),
 			'novalidate' => array(),
-			'type'       => array(),
 			'value'      => array(),
 			'name'       => array(),
 			'tabindex'   => array(),
@@ -443,28 +437,25 @@ class TMWNI_Settings {
 			'selected'=>array(),
 			'multiple'=>array(),
 		);
-		$fields['form'] = array('action'         => true,
+		$fields['form'] = array(
+'action'         => true,
 			'accept'         => true,
 			'accept-charset' => true,
 			'enctype'        => true,
 			'method'         => array(),
 			'name'           => true,
 			'target'         => true,
-			'class'         => true);
+			'class'         => true,
+);
 		$fields['input'] = $allowed_atts;
 		$fields['select'] = $allowed_atts;
 		$fields['option'] = $allowed_atts;
-
-
 		$fields['script']   = $allowed_atts;
 		$fields['style']    = $allowed_atts;
+		// $fields['div']    = $allowed_atts;
 
 
 
-		return $fields;		
-
-
+		return $fields;     
 	}
-
-
 }

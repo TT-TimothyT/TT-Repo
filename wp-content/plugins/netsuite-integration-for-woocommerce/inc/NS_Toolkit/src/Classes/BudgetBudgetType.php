@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class BudgetBudgetType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _GLOBAL = '_global';
 	const _LOCAL = '_local';
 }

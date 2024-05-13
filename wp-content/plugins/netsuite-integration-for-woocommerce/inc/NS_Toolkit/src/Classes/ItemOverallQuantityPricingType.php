@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMOVERALLQUANTITYPRICINGTYPE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BYLINEQUANTITY = '_byLineQuantity';
 	const _BYOVERALLITEMQUANTITY = '_byOverallItemQuantity';
 	const _BYOVERALLPARENTQUANTITY = '_byOverallParentQuantity';

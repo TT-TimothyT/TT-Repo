@@ -1,0 +1,196 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FME Addons: Shop as a Customer for WooCommerce\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-26 06:04+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.5.2; wp-5.7\n"
+"X-Domain: shop-as-a-customer-for-woocommerce"
+
+#: shop-as-a-customer-for-woocommerce.php:539
+#: shop-as-a-customer-for-woocommerce.php:565
+msgid "Action"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:477
+msgid "By Default Order Status During Offline Payment"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1175
+msgid "compress to left"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1148
+#: shop-as-a-customer-for-woocommerce.php:1158
+msgid "compress to right"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:700
+#: shop-as-a-customer-for-woocommerce.php:730
+msgid "Customer"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:375
+msgid "Customer Logs"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:189
+#: shop-as-a-customer-for-woocommerce.php:1577
+msgid "Edit Profile"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:534
+#: shop-as-a-customer-for-woocommerce.php:560
+msgid "Email"
+msgstr ""
+
+#. Name of the plugin
+msgid "FME Addons: Shop as a Customer for WooCommerce"
+msgstr ""
+
+#. Author of the plugin
+msgid "fmeaddons"
+msgstr ""
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://www.fmeaddons.com/"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:522
+#: shop-as-a-customer-for-woocommerce.php:548
+#: shop-as-a-customer-for-woocommerce.php:688
+#: shop-as-a-customer-for-woocommerce.php:718
+msgid "ID"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:694
+#: shop-as-a-customer-for-woocommerce.php:724
+msgid "Logged in At"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:710
+#: shop-as-a-customer-for-woocommerce.php:740
+msgid "Message On Whatsapp"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:528
+#: shop-as-a-customer-for-woocommerce.php:554
+msgid "Name"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1427
+msgid "next"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1426
+msgid "No Records found"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:432
+msgid ""
+"Only Selected Roles will be allowed to switch & View orders. If no role is "
+"selected all roles will be considered as selected"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:705
+#: shop-as-a-customer-for-woocommerce.php:735
+msgid "Products"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1582
+msgid "Recent Customer:"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:503
+msgid "Save Settings"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:431
+msgid "Select Role(s)"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:396
+msgid "Select Tab to Switch as Customer/Guest"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:399
+msgid "Select The Tab in Which Admin Will be Switch as a Cutomer or Guest"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:381
+msgid "Settings"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:507
+msgid "Settings saved successfully"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:327
+msgid "Shop As a Customer"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1417
+msgid "Shop as Customer"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:507
+msgid "Success!"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:187
+#: shop-as-a-customer-for-woocommerce.php:1572
+msgid "Switch"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1173
+msgid "Switch Back "
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Switch to any customer profile from administration panel and use WooCommerce "
+"store as customer, Create orders    and Edit user profile."
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1384
+msgid "Switch To Customer"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1391
+msgid "switch to customer"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:369
+msgid "Switch To Customers"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1370
+msgid "Switch To Guest"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1377
+msgid "switch to Guest"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:188
+#: shop-as-a-customer-for-woocommerce.php:1575
+msgid "View Orders"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:1165
+msgid "You are now login as "
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:363
+msgid "Your settings has been saved!"
+msgstr ""

@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: WooCommerce Products Compare
+ * Plugin Name: Products Compare for WooCommerce
  * Plugin URI: https://woo.com/products/woocommerce-products-compare/
- * Description: Have your customers to compare similar products side by side.
- * Version: 1.4.0
- * Author: KoiLab
- * Author URI: https://koilab.com
+ * Description: Allow your customers to easily compare similar products side by side.
+ * Version: 1.4.1
+ * Author: Kestrel
+ * Author URI: https://kestrelwp.com
  * Requires PHP: 7.0
  * Requires at least: 5.0
  * Tested up to: 6.4
@@ -13,8 +13,10 @@
  * Domain Path: /languages
  *
  * WC requires at least: 4.0
- * WC tested up to: 8.5
+ * WC tested up to: 8.7
  * Woo: 853117:c3ba0a4a3199a0cc7a6112eb24414548
+ *
+ * Copyright: (c) 2015-2024 Kestrel [hey@kestrelwp.com]
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html

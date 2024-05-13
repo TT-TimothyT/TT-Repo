@@ -8,10 +8,12 @@
         <tr>
             <th style="width:10%;">Log ID</th>
             <th style="width:20%;" >Created Date</th>
-            <th style="width:20%;">Operation</th>
+            <th style="width:20%;">Operation</th>         
             <th style="width:20%;">Status</th>
             <th style="width:15%;">Message</th>
             <th style="width:10%;">Object Id</th>
+            <th style="width:20%;">Request</th>
+            <th style="width:20%;">Response</th> 
         </tr>
     </thead>
 </table>

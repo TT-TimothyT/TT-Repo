@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PurchaseOrderOrderStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CLOSED = '_closed';
 	const _FULLYBILLED = '_fullyBilled';
 	const _PARTIALLYRECEIVED = '_partiallyReceived';

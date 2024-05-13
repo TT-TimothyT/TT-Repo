@@ -26,6 +26,7 @@ class Divi {
 			add_filter( 'wphb_minify_resource', array( $this, 'wphb_et_maybe_exclude_divi_essential_scripts' ), 10, 3 );
 			add_filter( 'wphb_combine_resource', array( $this, 'wphb_et_maybe_exclude_divi_essential_scripts' ), 10, 3 );
 			add_filter( 'wphb_minification_display_enqueued_file', array( $this, 'wphb_et_maybe_exclude_divi_essential_scripts' ), 10, 3 );
+			add_filter( 'wphb_post_cache_purged', array( $this, 'wphb_post_cache_purged' ), 10, 2 );
 		}
 	}
 
@@ -135,4 +136,23 @@ class Divi {
 		return $action;
 	}
 
+	/**
+	 * Return true if cache is already purge for given Post ID, default otherwise..
+	 *
+	 * @param bool $purge   Cache purge.
+	 * @param int  $post_id Post ID.
+	 *
+	 * @return bool
+	 */
+	public function wphb_post_cache_purged( $purge, $post_id ) {
+		static $purged_post_ids = array();
+
+		if ( isset( $purged_post_ids[ $post_id ] ) ) {
+			return true;
+		}
+
+		$purged_post_ids[ $post_id ] = 1;
+
+		return $purge;
+	}
 }

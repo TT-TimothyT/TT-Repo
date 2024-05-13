@@ -1,9 +1,9 @@
 === MailPoet - Newsletters, Email Marketing, and Automation ===
 Contributors: mailpoet, woocommerce, automattic
 Tags: email, email marketing, post notification, woocommerce emails, email automation, newsletter, newsletter builder, newsletter subscribers
-Requires at least: 6.3
-Tested up to: 6.4
-Stable tag: 4.44.1
+Requires at least: 6.4
+Tested up to: 6.5
+Stable tag: 4.49.1
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -11,6 +11,14 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Send beautiful newsletters from WordPress. Collect subscribers with signup forms, automate your emails for WooCommerce, blog post notifications & more
 
 == Description ==
+
+= Save up to 30% on MailPoet annual plans and upgrades =
+
+Our sale is live. Save up to 30% when you switch to or upgrade an annual plan — no coupon needed. Offer ends 3 pm UTC on March 29, 2024.
+
+[Shop annual plans](https://account.mailpoet.com/?billing=yearly&ref=sale-2024-h1-wporg&utm_source=wordpress.org&utm_medium=description&utm_campaign=2024-h1-sale)
+
+= What is MailPoet? =
 
 Use MailPoet to create, send, manage, and grow your email marketing campaigns – all without leaving your WordPress dashboard.
 
@@ -20,7 +28,7 @@ Schedule your newsletters, send them right away, or set up new blog post notific
 
 Trusted by 700,000 WordPress websites since 2011.
 
-**With a free plan for up to 1,000 subscribers, and scaling paid plans with enhanced functionality available, MailPoet is an email marketing solution suitable for both beginners and proficient email marketers.**
+**With a free plan to get started, and scaling paid plans with enhanced functionality available, MailPoet is an email marketing solution suitable for both beginners and proficient email marketers.**
 
 [Visit our website for more information on plans and pricing](https://www.mailpoet.com/)
 
@@ -68,7 +76,7 @@ In addition, you’ll also be able to increase brand recognition by customizing 
 
 = MailPoet Sending Service =
 
-**The MailPoet Sending Service is free for your first 1,000 subscribers, with scaling plans available thereafter. [Read more.](https://www.mailpoet.com/pricing/)**
+**The MailPoet Sending Service is free if you only have a few subscribers, with scaling plans available thereafter. [Read more.](https://www.mailpoet.com/pricing/)**
 
 Sending emails and newsletters with your host is not a good idea. You might face sending speed limitations and see your emails ending up in the spam box.
 
@@ -91,7 +99,7 @@ MailPoet is available to download for free. Our free download includes all of th
 
 Or if you opt for a MailPoet plan, you’ll get access to the MailPoet Sending Service.
 
-A free Starter plan is available for those who have 1,000 subscribers or less and would like to use the MailPoet Sending Service. And our paid plans offer features and functionality for those with larger lists who are looking to grow their business using email marketing.
+A free plan is available for those who want to get started with a few subscribers and would like to use the MailPoet Sending Service. And our paid plans offer features and functionality for those with larger lists who are looking to grow their business using email marketing.
 
 Take a look at [our pricing page](https://www.mailpoet.com/pricing) for full details on what’s included in each plan.
 
@@ -227,6 +235,47 @@ Check our [Knowledge Base](https://kb.mailpoet.com) or contact us through our [s
 6. WooCommerce emails
 
 == Changelog ==
+
+= 4.49.1 - 2024-04-29 =
+* Improved: Add additional transactional email triggers;
+* Improved: new design of Segments listing page.
+
+= 4.49.0 - 2024-04-23 =
+* Fixed: manually confirming a subscriber in the UI doesn't trigger automations;
+* Fixed: some automation filter values rendering as "Unknown value".
+
+= 4.48.2 - 2024-04-08 =
+* Improved: 1-click unsubscribe headers for non MailPoet sending methods;
+* Fixed: rare issue of abandoned cart block rendered in preview for non abandoned cart automations.
+
+= 4.48.1 - 2024-04-03 =
+* Improved: when creating a tag, pressing Enter is no longer required.
+
+= 4.48.0 - 2024-03-22 =
+* Improved: minor changes and fixes.
+
+= 4.47.0 - 2024-03-18 =
+* Added: Automations are now generally available;
+* Added: new automation templates for WooCommerce marketing flows;
+* Added: Customer fields in automations now work also for guest users;
+* Improved: Optimize loading automation editor for large shops;
+* Improved: Consider tracking settings when adding utm_parameters into links;
+* Improved: new segment "purchased product by tag" introduced;
+* Fixed: filter details in automation template preview are not visible;
+* Fixed: Use less confusing language Segments vs Lists;
+* Fixed: Rare issue when a multi-column popup form was displayed in one column;
+* Fixed: background job runner may get stuck on an invalid email address;
+* Fixed: rendering of some special characters on Lists page.
+
+= 4.46.0 - 2024-03-11 =
+* Improved: new segment "purchased product by attribute" introduced;
+* Improved: trigger filters are now alphabetically sorted;
+* Fixed: Pop-Up forms did not appear on some product pages.
+
+= 4.45.0 - 2024-03-05 =
+* Improved: when the domain authentication service is unavailable, regard the old authentication status as the current one and continue to allow sending for authenticated domains.
+* Improved: when reentering the onboarding flow, continue where the user left the flow.
+* Fixed: a method in the "subscriber counter" background job could get a wrongly typed parameter.
 
 = 4.44.1 - 2024-02-26 =
 * Improvement: utm_source and utm_type parameters are added to links by default;
@@ -576,7 +625,7 @@ Check our [Knowledge Base](https://kb.mailpoet.com) or contact us through our [s
 * Added: filter allowing to configure PHPMailer when sending via SMTP;
 * Added: a coupon block in email editor;
 * Added: notice when a MailPoet subscription is pending approval;
-* Improved: Starter plan users are directed to upgrade their plan from the Upgrade page;
+* Improved: Free plan users are directed to upgrade their plan from the Upgrade page;
 * Improved: email templates now include coupon block;
 * Fixed: inactive subscribers weren't recalculated since August 2022. They'll be again recalculated within one week after updating. Sorry about this bug.
 

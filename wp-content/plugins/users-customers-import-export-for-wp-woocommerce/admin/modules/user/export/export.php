@@ -199,7 +199,7 @@ class Wt_Import_Export_For_Woo_basic_User_Export {
                 continue;
             }            
             if ($key == 'customer_id') {
-                $customer_data[$key] = !empty($user->ID) ? maybe_serialize($user->ID) : '';
+                $customer_data[$key] = !empty($user->ID) ? $user->ID : '';
                 continue;
             }            
             if ($key == 'session_tokens') {
@@ -256,12 +256,12 @@ class Wt_Import_Export_For_Woo_basic_User_Export {
                 }
                 continue;
             }
+
             if($key == 'is_geuest_user'){
                 $customer_data[$key] = 0;
                 continue;
             }
-
-            $customer_data[$key] = isset($user->{$key}) ? maybe_serialize($user->{$key}) : '';
+            $customer_data[$key] = isset($user->{$key}) ? $user->{$key} : '';
         }
         /*
          * CSV Customer Export Row.
@@ -303,7 +303,7 @@ class Wt_Import_Export_For_Woo_basic_User_Export {
 					$data = $order->$method_name();
 				}
                 if ( !empty( $data ) ) {
-                    $data = maybe_serialize( $order->$method_name() );
+                    $data =  $order->$method_name() ;
                 } else {
                     $data = '';
                 }

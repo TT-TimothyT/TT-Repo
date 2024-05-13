@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class RecurrenceDow {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _SUNDAY = '_sunday';
 	const _MONDAY = '_monday';
 	const _TUESDAY = '_tuesday';
@@ -28,4 +27,3 @@ class RecurrenceDow {
 	const _FRIDAY = '_friday';
 	const _SATURDAY = '_saturday';
 }
-

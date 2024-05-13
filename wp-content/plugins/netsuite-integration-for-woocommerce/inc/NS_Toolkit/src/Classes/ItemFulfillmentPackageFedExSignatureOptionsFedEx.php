@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ITEMFULFILLMENTPACKAGEFEDEXSIGNATUREOPTIONSFEDEX {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ADULT = '_adult';
 	const _DIRECT = '_direct';
 	const _INDIRECT = '_indirect';

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class PhoneCallStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _COMPLETED = '_completed';
 	const _SCHEDULED = '_scheduled';
 }

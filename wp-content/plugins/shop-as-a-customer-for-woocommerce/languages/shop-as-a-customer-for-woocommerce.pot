@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FME Addons: Shop as a Customer for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 06:04+0000\n"
+"POT-Creation-Date: 2024-04-19 07:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,40 +16,40 @@ msgstr ""
 "X-Loco-Version: 2.5.2; wp-5.7\n"
 "X-Domain: shop-as-a-customer-for-woocommerce"
 
-#: shop-as-a-customer-for-woocommerce.php:539
-#: shop-as-a-customer-for-woocommerce.php:565
+#: shop-as-a-customer-for-woocommerce.php:720
+#: shop-as-a-customer-for-woocommerce.php:746
 msgid "Action"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:477
+#: shop-as-a-customer-for-woocommerce.php:642
 msgid "By Default Order Status During Offline Payment"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1175
+#: shop-as-a-customer-for-woocommerce.php:1356
 msgid "compress to left"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1148
-#: shop-as-a-customer-for-woocommerce.php:1158
+#: shop-as-a-customer-for-woocommerce.php:1329
+#: shop-as-a-customer-for-woocommerce.php:1339
 msgid "compress to right"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:700
-#: shop-as-a-customer-for-woocommerce.php:730
+#: shop-as-a-customer-for-woocommerce.php:881
+#: shop-as-a-customer-for-woocommerce.php:911
 msgid "Customer"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:375
+#: shop-as-a-customer-for-woocommerce.php:538
 msgid "Customer Logs"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:189
-#: shop-as-a-customer-for-woocommerce.php:1577
+#: shop-as-a-customer-for-woocommerce.php:271
+#: shop-as-a-customer-for-woocommerce.php:1822
 msgid "Edit Profile"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:534
-#: shop-as-a-customer-for-woocommerce.php:560
+#: shop-as-a-customer-for-woocommerce.php:715
+#: shop-as-a-customer-for-woocommerce.php:741
 msgid "Email"
 msgstr ""
 
@@ -66,93 +66,97 @@ msgstr ""
 msgid "https://www.fmeaddons.com/"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:522
-#: shop-as-a-customer-for-woocommerce.php:548
-#: shop-as-a-customer-for-woocommerce.php:688
-#: shop-as-a-customer-for-woocommerce.php:718
+#: shop-as-a-customer-for-woocommerce.php:703
+#: shop-as-a-customer-for-woocommerce.php:729
+#: shop-as-a-customer-for-woocommerce.php:869
+#: shop-as-a-customer-for-woocommerce.php:899
 msgid "ID"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:694
-#: shop-as-a-customer-for-woocommerce.php:724
+#: shop-as-a-customer-for-woocommerce.php:875
+#: shop-as-a-customer-for-woocommerce.php:905
 msgid "Logged in At"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:710
-#: shop-as-a-customer-for-woocommerce.php:740
+#: shop-as-a-customer-for-woocommerce.php:891
+#: shop-as-a-customer-for-woocommerce.php:921
 msgid "Message On Whatsapp"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:528
-#: shop-as-a-customer-for-woocommerce.php:554
+#: shop-as-a-customer-for-woocommerce.php:709
+#: shop-as-a-customer-for-woocommerce.php:735
 msgid "Name"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1427
+#: shop-as-a-customer-for-woocommerce.php:1639
 msgid "next"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1426
+#: shop-as-a-customer-for-woocommerce.php:1638
 msgid "No Records found"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:432
+#: shop-as-a-customer-for-woocommerce.php:597
 msgid ""
 "Only Selected Roles will be allowed to switch & View orders. If no role is "
 "selected all roles will be considered as selected"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:705
-#: shop-as-a-customer-for-woocommerce.php:735
+#: shop-as-a-customer-for-woocommerce.php:886
+#: shop-as-a-customer-for-woocommerce.php:916
 msgid "Products"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1582
+#: shop-as-a-customer-for-woocommerce.php:1828
 msgid "Recent Customer:"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:503
+#: shop-as-a-customer-for-woocommerce.php:681
 msgid "Save Settings"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:431
+#: shop-as-a-customer-for-woocommerce.php:596
 msgid "Select Role(s)"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:396
+#: shop-as-a-customer-for-woocommerce.php:561
 msgid "Select Tab to Switch as Customer/Guest"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:399
+#: shop-as-a-customer-for-woocommerce.php:564
 msgid "Select The Tab in Which Admin Will be Switch as a Cutomer or Guest"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:381
+#: shop-as-a-customer-for-woocommerce.php:1441
+msgid "Send invoice to customer"
+msgstr ""
+
+#: shop-as-a-customer-for-woocommerce.php:544
 msgid "Settings"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:507
+#: shop-as-a-customer-for-woocommerce.php:686
 msgid "Settings saved successfully"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:327
+#: shop-as-a-customer-for-woocommerce.php:489
 msgid "Shop As a Customer"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1417
+#: shop-as-a-customer-for-woocommerce.php:1620
 msgid "Shop as Customer"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:507
+#: shop-as-a-customer-for-woocommerce.php:686
 msgid "Success!"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:187
-#: shop-as-a-customer-for-woocommerce.php:1572
+#: shop-as-a-customer-for-woocommerce.php:269
+#: shop-as-a-customer-for-woocommerce.php:1817
 msgid "Switch"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1173
+#: shop-as-a-customer-for-woocommerce.php:1354
 msgid "Switch Back "
 msgstr ""
 
@@ -162,35 +166,35 @@ msgid ""
 "store as customer, Create orders    and Edit user profile."
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1384
+#: shop-as-a-customer-for-woocommerce.php:1587
 msgid "Switch To Customer"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1391
+#: shop-as-a-customer-for-woocommerce.php:1594
 msgid "switch to customer"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:369
+#: shop-as-a-customer-for-woocommerce.php:532
 msgid "Switch To Customers"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1370
+#: shop-as-a-customer-for-woocommerce.php:1573
 msgid "Switch To Guest"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1377
+#: shop-as-a-customer-for-woocommerce.php:1580
 msgid "switch to Guest"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:188
-#: shop-as-a-customer-for-woocommerce.php:1575
+#: shop-as-a-customer-for-woocommerce.php:270
+#: shop-as-a-customer-for-woocommerce.php:1820
 msgid "View Orders"
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:1165
+#: shop-as-a-customer-for-woocommerce.php:1346
 msgid "You are now login as "
 msgstr ""
 
-#: shop-as-a-customer-for-woocommerce.php:363
+#: shop-as-a-customer-for-woocommerce.php:525
 msgid "Your settings has been saved!"
 msgstr ""

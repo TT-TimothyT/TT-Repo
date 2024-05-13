@@ -1415,6 +1415,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				$mt_pre . ':size'                        => null,
 				$mt_pre . ':size_group'                  => null,	// Internal meta tag.
 				$mt_pre . ':size_system'                 => null,	// Internal meta tag.
+				$mt_pre . ':is_virtual'                  => null,	// Internal meta tag.
 
 				/*
 				 * Product net dimensions and weight.
@@ -1514,15 +1515,15 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				$mt_pre . ':video:stream_url'      => null,	// Internal meta tag. VideoObject contentUrl.
 				$mt_pre . ':video:stream_size'     => null,	// Internal meta tag. VideoObject contentSize.
 				$mt_pre . ':video:has_image'       => false,	// Internal meta tag.
-				$mt_pre . ':video:iphone_name'     => null,	// Internal meta tag for Twitter player card.
-				$mt_pre . ':video:iphone_id'       => null,	// Internal meta tag for Twitter player card.
-				$mt_pre . ':video:iphone_url'      => null,	// Internal meta tag for Twitter player card.
-				$mt_pre . ':video:ipad_name'       => null,	// Internal meta tag for Twitter player card.
-				$mt_pre . ':video:ipad_id'         => null,	// Internal meta tag for Twitter player card.
-				$mt_pre . ':video:ipad_url'        => null,	// Internal meta tag for Twitter player card.
-				$mt_pre . ':video:googleplay_name' => null,	// Internal meta tag for Twitter player card.
-				$mt_pre . ':video:googleplay_id'   => null,	// Internal meta tag for Twitter player card.
-				$mt_pre . ':video:googleplay_url'  => null,	// Internal meta tag for Twitter player card.
+				$mt_pre . ':video:iphone_name'     => null,	// Internal meta tag for X (Twitter) player card.
+				$mt_pre . ':video:iphone_id'       => null,	// Internal meta tag for X (Twitter) player card.
+				$mt_pre . ':video:iphone_url'      => null,	// Internal meta tag for X (Twitter) player card.
+				$mt_pre . ':video:ipad_name'       => null,	// Internal meta tag for X (Twitter) player card.
+				$mt_pre . ':video:ipad_id'         => null,	// Internal meta tag for X (Twitter) player card.
+				$mt_pre . ':video:ipad_url'        => null,	// Internal meta tag for X (Twitter) player card.
+				$mt_pre . ':video:googleplay_name' => null,	// Internal meta tag for X (Twitter) player card.
+				$mt_pre . ':video:googleplay_id'   => null,	// Internal meta tag for X (Twitter) player card.
+				$mt_pre . ':video:googleplay_url'  => null,	// Internal meta tag for X (Twitter) player card.
 			);
 
 			$mt_ret += self::get_mt_image_seed( $mt_pre );
@@ -1776,6 +1777,11 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return trim( $input_name, $characters = '-' );
 		}
 
+		/*
+		 * There is no WordPress function to sanitize post IDs and integers.
+		 *
+		 * Returns an integer or null.
+		 */
 		public static function sanitize_int( $value ) {
 
 			if ( is_numeric( $value ) ) {
@@ -2093,6 +2099,11 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 */
 		public static function get_file_path_locale( $file_path ) {
 
+			if ( ! class_exists( 'SucomUtilWP' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-wp.php';
+			}
+
 			if ( preg_match( '/^(.*)(\.[a-z0-9]+)$/', $file_path, $matches ) ) {
 
 				if ( ! empty( $matches[ 2 ] ) ) {	// Just in case.
@@ -2264,14 +2275,12 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return 'http';
 		}
 
+		/*
+		 * $method = 'ANY' uses the current request method.
+		 */
 		public static function get_request_value( $key, $method = 'ANY', $default = '' ) {
 
-			if ( $method === 'ANY' ) {
-
-				$method = $_SERVER[ 'REQUEST_METHOD' ];
-			}
-
-			switch( $method ) {
+			switch ( 'ANY' === $method ? $_SERVER[ 'REQUEST_METHOD' ] : $method ) {
 
 				case 'POST':
 
@@ -2604,376 +2613,6 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			}
 
 			return preg_replace( '/^([a-z]+:\/\/)/', $prot_slash, $url );
-		}
-
-		/*
-		 * GETTEXT METHODS:
-		 *
-		 *	get_html_gettext()
-		 *	get_html_transl()
-		 *	show_html_gettext_php()
-		 *	show_lib_gettext_php()
-		 */
-		public static function get_html_gettext( $html, $text_domain ) {
-
-			$gettext = array();
-
-			foreach ( array(
-				'/(<h[0-9][^>]*>)(.*)(<\/h[0-9]>)/Uis'         => 'html header',
-				'/(<p>|<p [^>]*>)(.*)(<\/p>)/Uis'              => 'html paragraph',	// Get paragraphs before list items.
-				'/(<li[^>]*>)(.*)(<\/li>)/Uis'                 => 'html list item',
-				'/(<blockquote[^>]*>)(.*)(<\/blockquote>)/Uis' => 'html blockquote',
-			) as $pattern => $context ) {
-
-				if ( preg_match_all( $pattern, $html, $all_matches, PREG_SET_ORDER ) ) {
-
-					foreach ( $all_matches as $num => $matches ) {
-
-						list( $match, $begin, $text, $end ) = $matches;
-
-						$html = str_replace( $match, '', $html );	// Do not match again.
-
-						$text = trim( $text );	// Just in case.
-
-						if ( '' === $text ) {	// Ignore HTML tags with no content.
-
-							continue;
-						}
-
-						$text = preg_replace( '/[\s\n\r]+/s', ' ', $text );	// Put everything on one line.
-
-						$gettext[ $match ] = array(
-							'begin'       => $begin,
-							'text'        => $text,
-							'end'         => $end,
-							'context'     => $context,
-							'text_domain' => $text_domain,
-						);
-					}
-				}
-			}
-
-			return $gettext;
-		}
-
-		/*
-		 * Translate HTML headers, paragraphs, list items, and blockquotes.
-		 */
-		public static function get_html_transl( $html, $text_domain ) {
-
-			$gettext = self::get_html_gettext( $html, $text_domain );
-
-			foreach ( $gettext as $repl => $arr ) {
-
-				$transl = _x( $arr[ 'text' ], $arr[ 'context' ], $arr[ 'text_domain' ] );
-
-				$html = str_replace( $repl, $arr[ 'begin' ] . $transl . $arr[ 'end' ], $html );
-			}
-
-			return $html;
-		}
-
-		public static function show_html_gettext_php( $html, $text_domain ) {
-
-			$gettext = self::get_html_gettext( $html, $text_domain );
-
-			foreach ( $gettext as $repl => $arr ) {
-
-				$arr[ 'text' ] = str_replace( '\'', '\\\'', $arr[ 'text' ] );
-
-				echo '_x( \'' . $arr[ 'text' ] . '\', \'' . $arr[ 'context' ] . '\', \'' . $arr[ 'text_domain' ] . '\' );' . "\n";
-			}
-		}
-
-		public static function show_lib_gettext_php( $mixed, $context, $text_domain ) {
-
-			if ( is_array( $mixed ) ) {
-
-				foreach ( $mixed as $key => $val ) {
-
-					if ( 'admin' === $key ) {
-
-						continue;
-					}
-
-					self::show_lib_gettext_php( $val, $context, $text_domain );
-				}
-
-				return;
-
-			} elseif ( is_numeric( $mixed ) ) {	// Number.
-
-				return;
-
-			} elseif ( empty( $mixed ) ) {	// Empty.
-
-				return;
-
-			} elseif ( 0 === strpos( $mixed, '/' ) ) {	// Regular expression.
-
-				return;
-
-			} elseif ( false !== filter_var( $mixed, FILTER_VALIDATE_URL ) ) {	// URL is valid.
-
-				return;
-			}
-
-			$mixed = str_replace( '\'', '\\\'', $mixed );
-
-			echo '_x( \'' . $mixed . '\', \'' . $context . '\', \'' . $text_domain . '\' );' . "\n";
-
-			/*
-			 * Include values without their comment / qualifier (for example, 'Adult (13 years old or more)').
-			 */
-			if ( 'option value' === $context ) {
-
-				if ( false !== ( $pos = strpos( $mixed, '(' ) ) ) {
-
-					$mixed = trim( substr( $mixed, 0, $pos ) );
-
-					echo '_x( \'' . $mixed . '\', \'' . $context . '\', \'' . $text_domain . '\' );' . "\n";
-				}
-
-				if ( 0 === strpos( $mixed, '[' ) ) {
-
-					$mixed = trim( $mixed, '[]' );
-
-					echo '_x( \'' . $mixed . '\', \'' . $context . '\', \'' . $text_domain . '\' );' . "\n";
-				}
-			}
-		}
-
-		/*
-		 * OPTIONS ARRAY METHODS:
-		 *
-		 *	get_opts_begin()
-		 *	get_opts_hm_tz()
-		 *	get_opts_labels_transl()
-		 *	get_opts_values_transl()
-		 *	get_key_locale()
-		 *	get_key_value()
-		 *	get_key_values_multi()
-		 *	set_key_value()
-		 *	set_key_value_disabled()
-		 *	set_key_value_locale()
-		 *	set_key_value_locale_disabled()
-		 *	transl_key_values()
-		 */
-		public static function get_opts_begin( $opts, $str ) {
-
-			if ( ! is_array( $opts ) && is_array( $str ) ) {	// Backwards compatibility.
-
-				$arr = $str; $str = $opts; $opts = $arr ; unset( $arr );
-			}
-
-			$found = array();
-
-			foreach ( $opts as $key => $value ) {
-
-				if ( 0 === strpos( $key, $str ) ) {
-
-					$found[ $key ] = $value;
-				}
-			}
-
-			return $found;
-		}
-
-		public static function get_opts_hm_tz( array $opts, $key_hm, $key_tz = '' ) {
-
-			if ( ! empty( $opts[ $key_hm ] ) ) {
-
-				$timezone  = empty( $key_tz ) || empty( $opts[ $key_tz ] ) ? self::get_default_timezone() : $opts[ $key_tz ];
-
-				$tz_offset = self::get_timezone_offset_hours( $timezone );
-
-				return $opts[ $key_hm ] . ':00' . $tz_offset;
-			}
-
-			return false;
-		}
-
-		public static function get_opts_labels_transl( array $opts, $text_domain ) {
-
-			foreach ( $opts as $opt_key => &$opt_label ) {
-
-				$opt_label = _x( $opt_label, 'option label', $text_domain );
-			}
-
-			self::natasort( $opts );
-
-			return $opts;
-		}
-
-		public static function get_opts_values_transl( array $opts, $text_domain ) {
-
-			foreach ( $opts as $opt_key => &$opt_label ) {
-
-				$opt_label = _x( $opt_label, 'option value', $text_domain );
-			}
-
-			return $opts;
-		}
-
-		/*
-		 * Localize an options array key.
-		 *
-		 * $opts = false | array
-		 *
-		 * $mixed = 'default' | 'current' | post ID | $mod array
-		 */
-		public static function get_key_locale( $key, $opts = false, $mixed = 'current' ) {
-
-			if ( false !== ( $pos = strpos( $key, '#' ) ) ) {	// Maybe remove pre-existing locale.
-
-				$key = substr( $key, 0, $pos );
-			}
-
-			$locale     = SucomUtilWP::get_locale( $mixed );	// Uses a local cache.
-			$def_locale = SucomUtilWP::get_locale( 'default' );	// Uses a local cache.
-			$key_locale = $key . '#' . $locale;		// Maybe add the current or default locale.
-
-			if ( $locale === $def_locale ) {
-
-				/*
-				 * The default language for the WordPress site may have changed in the past, so if we're using the
-				 * default, check for a locale version of the default language.
-				 */
-				if ( isset( $opts[ $key_locale ] ) ) {
-
-					return $key_locale;
-				}
-
-				return $key;
-			}
-
-			return $key_locale;
-		}
-
-		/*
-		 * Returns a localized option value or null.
-		 *
-		 * Note that for non-existing keys or empty value strings, this methods returns the default non-localized value.
-		 *
-		 * $mixed = 'default' | 'current' | post ID | $mod array
-		 */
-		public static function get_key_value( $key, array $opts, $mixed = 'current' ) {
-
-			$key_locale = self::get_key_locale( $key, $opts, $mixed );
-
-			$value = isset( $opts[ $key_locale ] ) ? $opts[ $key_locale ] : null;	// Null if key does not exist.
-
-			if ( null === $value || '' === $value ) {	// Maybe fallback to the default non-localized value.
-
-				if ( false === strpos( $key_locale, '#' ) ) {	// The option key not localized, return null or empty string.
-
-					return $value;
-				}
-
-				$key_default = self::get_key_locale( $key_locale, $opts, 'default' );
-
-				if ( $key_locale !== $key_default ) {	// The option key is localized and it's not the default locale.
-
-					/*
-					 * If the $key_locale value is an empty string, and $key_default does not exist, then
-					 * return the emty string.
-					 */
-					return isset( $opts[ $key_default ] ) ? $opts[ $key_default ] : $value;
-				}
-			}
-
-			return $value;
-		}
-
-		public static function get_key_values_multi( $prefix, array &$opts, $add_none = false ) {
-
-			$current    = SucomUtilWP::get_locale();	// Uses a local cache.
-			$def_locale = SucomUtilWP::get_locale( 'default' );	// Uses a local cache.
-			$matches    = self::preg_grep_keys( '/^' . $prefix . '_([0-9]+)(#.*)?$/', $opts );
-			$results    = array();
-
-			foreach ( $matches as $key => $value ) {
-
-				$num = preg_replace( '/^' . $prefix . '_([0-9]+)(#.*)?$/', '$1', $key );
-
-				if ( ! empty( $results[ $num ] ) ) {	// Preserve the first non-blank value.
-
-					continue;
-
-				} elseif ( ! empty( $opts[ $prefix . '_' . $num . '#' . $current ] ) ) {	// Current locale.
-
-					$results[ $num ] = $opts[ $prefix . '_' . $num . '#' . $current ];
-
-				} elseif ( ! empty( $opts[ $prefix . '_' . $num . '#' . $def_locale ] ) ) {	// Default locale.
-
-					$results[ $num ] = $opts[ $prefix . '_' . $num . '#' . $def_locale ];
-
-				} elseif ( ! empty( $opts[ $prefix . '_' . $num ] ) ) {	// No locale.
-
-					$results[ $num ] = $opts[ $prefix . '_' . $num ];
-
-				} else {	// Use value (could be empty).
-
-					$results[ $num ] = $value;
-				}
-			}
-
-			asort( $results );	// Sort values for display.
-
-			if ( $add_none ) {
-
-				/*
-				 * The union operator (+) gives priority to values in the first array, while array_replace() gives
-				 * priority to values in the the second array.
-				 */
-				$results = array( 'none' => 'none' ) + $results;	// Maintains numeric index.
-			}
-
-			return $results;
-		}
-
-		public static function set_key_value( $key, $value, array &$opts ) {
-
-			$opts[ $key ] = $value;
-		}
-
-		public static function set_key_value_disabled( $key, $value, array &$opts ) {
-
-			$opts[ $key ]               = $value;
-			$opts[ $key . ':disabled' ] = true;
-		}
-
-		public static function set_key_value_locale( $key, $value, array &$opts, $mixed = 'current' ) {
-
-			$key_locale = self::get_key_locale( $key, $opts, $mixed );
-
-			$opts[ $key_locale ] = $value;
-		}
-
-		public static function set_key_value_locale_disabled( $key, $value, array &$opts, $mixed = 'current' ) {
-
-			$key_locale = self::get_key_locale( $key, $opts, $mixed );
-
-			$opts[ $key_locale ]               = $value;
-			$opts[ $key_locale . ':disabled' ] = true;
-		}
-
-		public static function transl_key_values( $pattern, array &$opts, $text_domain ) {
-
-			foreach ( self::preg_grep_keys( $pattern, $opts ) as $key => $val ) {
-
-				$locale_key = self::get_key_locale( $key );
-
-				if ( $locale_key !== $key && empty( $opts[ $locale_key ] ) ) {
-
-					$val_transl = _x( $val, 'option value', $text_domain );
-
-					if ( $val_transl !== $val ) {
-
-						$opts[ $locale_key ] = $val_transl;
-					}
-				}
-			}
 		}
 
 		/*
@@ -3440,6 +3079,175 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		public static function update_transient_array( $cache_id, $cache_array, $cache_exp_secs ) {
 
 			return SucomUtilWP::update_transient_array( $cache_id, $cache_array, $cache_exp_secs );
+		}
+
+		/*
+		 * Deprecated on 2024/02/11.
+		 */
+		public static function get_html_transl( $html, $text_domain ) {
+
+			if ( ! class_exists( 'SucomGetText' ) ) {
+
+				require_once dirname( __FILE__ ) . '/gettext.php';
+			}
+
+			return SucomGetText::get_html_transl( $html, $text_domain );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function get_opts_begin( $opts, $str ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			return SucomUtilOptions::get_opts_begin( $opts, $str );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function get_opts_hm_tz( array $opts, $key_hm, $key_tz = '' ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			return SucomUtilOptions::get_opts_hm_tz( $opts, $key_hm, $key_tz );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function get_opts_labels_transl( array $opts, $text_domain ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			return SucomUtilOptions::get_opts_labels_transl( $opts, $text_domain );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function get_opts_values_transl( array $opts, $text_domain ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			return SucomUtilOptions::get_opts_values_transl( $opts, $text_domain );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function get_key_locale( $key, $opts = false, $mixed = 'current' ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			return SucomUtilOptions::get_key_locale( $key, $opts, $mixed );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function get_key_value( $key, array $opts, $mixed = 'current' ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			return SucomUtilOptions::get_key_value( $key, $opts, $mixed );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function get_key_values_multi( $prefix, array &$opts, $add_none = false ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			return SucomUtilOptions::get_key_values_multi( $prefix, $opts, $add_none );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function set_key_value( $key, $value, array &$opts ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			SucomUtilOptions::set_key_value( $key, $value, $opts );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function set_key_value_disabled( $key, $value, array &$opts ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			SucomUtilOptions::set_key_value_disabled( $key, $value, $opts );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function set_key_value_locale( $key, $value, array &$opts, $mixed = 'current' ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			SucomUtilOptions::set_key_value_locale( $key, $value, $opts, $mixed );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function set_key_value_locale_disabled( $key, $value, array &$opts, $mixed = 'current' ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			SucomUtilOptions::set_key_value_locale_disabled( $key, $value, $opts, $mixed );
+		}
+
+		/*
+		 * Deprecated on 2024/04/16.
+		 */
+		public static function transl_key_values( $pattern, array &$opts, $text_domain ) {
+
+			if ( ! class_exists( 'SucomUtilOptions' ) ) {	// Just in case.
+
+				require_once dirname( __FILE__ ) . '/util-options.php';
+			}
+
+			SucomUtilOptions::transl_key_values( $pattern, $opts, $text_domain );
 		}
 	}
 }

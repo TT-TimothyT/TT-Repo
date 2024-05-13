@@ -1,4 +1,12 @@
 *** NetSuite Integration for WooCommerce Changelog ***
+2024-04-30 - version 1.5.9
+* Fix - Conditional mapping issue.
+
+2024-04-24 - version 1.5.8
+* Add - Customer Deposit functionality added.
+* Add - Cash Sale support added.
+* Add - Invoice generation now supported.
+
 2023-09-12 - version 1.5.7
 * Fix - Revert to old version.
 

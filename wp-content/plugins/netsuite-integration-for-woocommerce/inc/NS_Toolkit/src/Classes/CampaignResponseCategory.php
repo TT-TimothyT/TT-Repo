@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CampaignResponseCategory {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _BOUNCED = '_bounced';
 	const _CLICKEDTHROUGH = '_clickedThrough';
 	const _FAILED = '_failed';

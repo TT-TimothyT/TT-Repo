@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class LocationTimeZone {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _AFRICACAIRO = '_africaCairo';
 	const _AFRICACASABLANCA = '_africaCasablanca';
 	const _AFRICAJOHANNESBURG = '_africaJohannesburg';

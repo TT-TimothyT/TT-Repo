@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class SalesOrderItemFulfillmentChoice {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _SHIP = '_ship';
 	const _STOREPICKUP = '_storePickup';
 }

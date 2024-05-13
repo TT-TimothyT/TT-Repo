@@ -19,8 +19,7 @@
 namespace NetSuite\Classes;
 
 class SearchRecordType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const ACCOUNT = 'account';
 	const ACCOUNTINGPERIOD = 'accountingPeriod';
 	const ACCOUNTINGTRANSACTION = 'accountingTransaction';
@@ -37,7 +36,7 @@ class SearchRecordType {
 	const CONTACT = 'contact';
 	const CONTACTCATEGORY = 'contactCategory';
 	const CONTACTROLE = 'contactRole';
-	const COSTCATEGORY = 'costCategory';	
+	const COSTCATEGORY = 'costCategory';    
 	const CONSOLIDATEDEXCHANGERATE = 'consolidatedExchangeRate';
 	const COUPONCODE = 'couponCode';
 	const CURRENCYRATE = 'currencyRate';

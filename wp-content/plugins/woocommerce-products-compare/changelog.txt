@@ -1,4 +1,8 @@
-*** WooCommerce Products Compare Changelog ***
+*** Products Compare for WooCommerce Changelog ***
+
+2024-03-26 - version 1.4.1
+* Tweak - Change plugin name to Products Compare for WooCommerce
+* Tweak - Update brand to Kestrel
 
 2024-01-29 - version 1.4.0
 * Feature - Declare compatibility with the WooCommerce Cart and Checkout blocks.

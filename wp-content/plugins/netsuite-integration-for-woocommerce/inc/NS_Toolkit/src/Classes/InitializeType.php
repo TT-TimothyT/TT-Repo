@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class InitializeType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const ASSEMBLYBUILD = 'assemblyBuild';
 	const ASSEMBLYUNBUILD = 'assemblyUnbuild';
 	const BINWORKSHEET = 'binWorksheet';

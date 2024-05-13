@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class FolderFolderType {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _APPPACKAGES = '_appPackages';
 	const _ATTACHMENTSRECEIVED = '_attachmentsReceived';
 	const _ATTACHMENTSSENT = '_attachmentsSent';

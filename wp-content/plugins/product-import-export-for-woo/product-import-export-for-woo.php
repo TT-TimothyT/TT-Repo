@@ -5,12 +5,12 @@
   Description: Import and Export Products From and To your WooCommerce Store.
   Author: WebToffee
   Author URI: https://www.webtoffee.com/product/product-import-export-woocommerce/
-  Version: 2.4.2
+  Version: 2.4.3
   License:           GPLv3
   License URI:       https://www.gnu.org/licenses/gpl-3.0.html
   Text Domain: product-import-export-for-woo
   Domain Path: /languages
-  WC tested up to: 8.6.1
+  WC tested up to: 8.7.0
   Requires at least: 3.0
   Requires PHP: 5.6
  */
@@ -46,18 +46,19 @@ if ( !defined( 'WT_IEW_DEBUG_BASIC_TROUBLESHOOT' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WT_P_IEW_VERSION', '2.4.2' );
+define( 'WT_P_IEW_VERSION', '2.4.3' );
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-wt-import-export-for-woo-activator.php
  */
 function activate_wt_import_export_for_woo_basic_product() {
-  
+	wt_product_activation_check();
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wt-import-export-for-woo-activator.php';
 	Wt_Import_Export_For_Woo_Basic_Activator_Product::activate();
 }
 
+require_once plugin_dir_path( __FILE__ ) . 'wt_product_import_export_welcome-script.php';
 
 
 /* Checking WC is actived or not */

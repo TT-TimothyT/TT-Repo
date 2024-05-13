@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class SearchTextNumberFieldOperator {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const BETWEEN = 'between';
 	const NSEMPTY = 'empty';
 	const EQUALTO = 'equalTo';

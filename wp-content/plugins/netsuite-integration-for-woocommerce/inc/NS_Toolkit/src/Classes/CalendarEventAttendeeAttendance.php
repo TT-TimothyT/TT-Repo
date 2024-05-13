@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CalendarEventAttendeeAttendance {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _OPTIONAL = '_optional';
 	const _REQUIRED = '_required';
 }

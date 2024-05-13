@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class GLOBALSUBSCRIPTIONSTATUS {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CONFIRMEDOPTIN = '_confirmedOptIn';
 	const _CONFIRMEDOPTOUT = '_confirmedOptOut';
 	const _SOFTOPTIN = '_softOptIn';

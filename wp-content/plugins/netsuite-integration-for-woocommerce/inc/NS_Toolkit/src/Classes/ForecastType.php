@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class FORECASTTYPE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _OMITTED = '_omitted';
 	const _WORSTCASE = '_worstCase';
 	const _MOSTLIKELY = '_mostLikely';

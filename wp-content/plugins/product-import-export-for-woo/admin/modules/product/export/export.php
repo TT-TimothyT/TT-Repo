@@ -8,6 +8,9 @@ if(!class_exists('Wt_Import_Export_For_Woo_Basic_Product_Export')){
 class Wt_Import_Export_For_Woo_Basic_Product_Export {
 
     public $parent_module = null;
+    public $export_children_sku = "";
+    public $export_shortcodes = "";
+    public $export_images_zip = "";
 
     public function __construct($parent_object) {
 

@@ -183,9 +183,9 @@
 
 .wt_iew_warn_box{padding:20px; padding-bottom:0px;}
 .wt_iew_warn{ display:inline-block; width:100%; box-sizing:border-box; padding:10px; background-color:#fff8e5; border-left:solid 2px #ffb900; color:#333; }
-.wt_iew_free_addon_warn{ display:inline-block; width:100%; box-sizing:border-box; padding:10px; background-color:#fff8e5; border:solid 1px #ffb900; color:#333; text-align: center; }
+/* .wt_iew_free_addon_warn{ display:inline-block; width:100%; box-sizing:border-box; padding:10px; background-color:#fff8e5; border:solid 1px #ffb900; color:#333; text-align: center; } */
 .wt_iew_rerun_warn{ width:95%; margin:30px 2.5%; }
-.wt_iew_type_subscription{ background-color:#dbeddd;border: solid 1px #c3c0b9; }
+/* .wt_iew_type_subscription{ background-color:#dbeddd;border: solid 1px #c3c0b9; } */
 
 .wt_iew_info_box{padding:20px; padding-bottom:0px;}
 .wt_iew_info{ display:inline-block; width:100%; box-sizing:border-box; padding:10px; background-color:#d1ecf1; border-left:solid 2px #0c5460; color:#185b8d; }
@@ -1521,4 +1521,102 @@ ul.wt-ierpro-newfeat li {
 
 .wt-view-plugin, .wt-hide-features{
     text-decoration:none;color:#3176FD;
+}
+.wt_iew_post-type-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.wt_iew_post-type-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  height: 65px;
+  width: 122px;
+  margin: 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+@media (min-width: 1200px) {
+  .wt_iew_post-type-card {
+     width: 113px;
+  }
+} 
+
+@media (min-width: 992px) {
+  .wt_iew_post-type-card {
+     width: 119px;
+  }
+}
+
+@media (max-width: 768px) {
+  .wt_iew_post-type-card {
+    width: 100px;
+  }
+}
+
+.wt_iew_post-type-card h3 {
+  margin: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  position: absolute;
+  bottom: 9px;
+  left: 5px;
+}
+
+.wt_iew_post-type-card2 {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.wt_iew_free_addon_warn a {
+    display: inline-block;
+    color: #0b0b0b;
+    background: rgba(255, 242, 184, 1);
+    border-radius: 25px;
+    padding: 1px 10px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 450;
+    position: absolute;
+    top: 10px;
+    right: 8px;
+}
+
+.wt_iew_free_addon_warn .activate {
+  color: rgba(0, 128, 96, 1);
+  background: rgba(225, 244, 244, 1);
+}
+
+.wt_iew_free_addon_warn .premium-button {
+  background-color: rgba(233, 242, 252, 1);
+  color: rgba(58, 111, 172, 1);
+}
+
+.wt_iew_free_addon_warn a:hover {
+  text-decoration: underline;
+}
+
+.wt_iew_image {
+  margin-bottom: 10px;
+}
+
+.wt_iew_post-type-card.selected .wt_iew_image img {
+  color: rgba(58, 111, 172, 1);
+}
+
+.wt_iew_post-type-card.selected {
+  border-color: rgba(58, 111, 172, 1);
+  background-color: rgba(233, 242, 252, 1);
+}
+
+.wt_iew_post-type-card-hd {
+  position: absolute;
+  bottom: 1px;
 }

@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CustomizationDynamicDefault {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _CURRENTDATETIME = '_currentDateTime';
 	const _CURRENTUSER = '_currentUser';
 	const _CURRENTUSERSDEPARTMENT = '_currentUsersDepartment';

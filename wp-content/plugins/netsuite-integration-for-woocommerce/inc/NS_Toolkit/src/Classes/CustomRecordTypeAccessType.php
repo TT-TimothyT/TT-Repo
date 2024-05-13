@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class CUSTOMRECORDTYPEACCESSTYPE {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _NOPERMISSIONREQUIRED = '_noPermissionRequired';
 	const _REQUIRECUSTOMRECORDENTRIESPERMISSION = '_requireCustomRecordEntriesPermission';
 	const _USEPERMISSIONLIST = '_usePermissionList';

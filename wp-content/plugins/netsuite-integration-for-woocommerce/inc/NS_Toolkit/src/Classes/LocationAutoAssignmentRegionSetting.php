@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class LOCATIONAUTOASSIGNMENTREGIONSETTING {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ALLOWSPECIFIEDREGIONSONLY = '_allowSpecifiedRegionsOnly';
 	const _ALLOWWORLDWIDE = '_allowWorldwide';
 	const _ALLOWWORLDWIDEEXCEPTEXCLUDEDREGIONS = '_allowWorldwideExceptExcludedRegions';

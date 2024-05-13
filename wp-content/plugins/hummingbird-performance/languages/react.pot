@@ -409,7 +409,7 @@ msgstr ""
 
 #: _src/react/modules/caching/integrations.jsx:527
 #: _src/react/views/caching/browser/status.jsx:410
-#: _src/react/views/gzip/summary.jsx:323
+#: _src/react/views/gzip/summary.jsx:320
 #: _src/react/views/setup/wizard.jsx:521
 msgid "Status"
 msgstr ""
@@ -425,7 +425,7 @@ msgstr ""
 
 #: _src/react/modules/caching/integrations.jsx:576
 #: _src/react/views/caching/browser/status.jsx:374
-#: _src/react/views/gzip/summary.jsx:305
+#: _src/react/views/gzip/summary.jsx:302
 #: _src/react/views/setup/wizard.jsx:312
 msgid "Re-check status"
 msgstr ""
@@ -470,7 +470,7 @@ msgid ""
 msgstr ""
 
 #: _src/react/modules/configs.jsx:108
-#: _src/react/views/minify/assets-manual.jsx:341
+#: _src/react/views/minify/assets-manual.jsx:343
 msgid "Apply"
 msgstr ""
 
@@ -660,7 +660,7 @@ msgstr ""
 msgid "Apply Config"
 msgstr ""
 
-#: _src/react/modules/minify.jsx:53
+#: _src/react/modules/minify.jsx:54
 msgid ""
 "Your cache has been successfully cleared. Your assets will regenerate the "
 "next time someone visits your website."
@@ -685,7 +685,7 @@ msgid ""
 msgstr ""
 
 #: _src/react/modules/setup.jsx:326
-#: _src/react/views/minify/summary.jsx:312
+#: _src/react/views/minify/summary.jsx:355
 msgid "UPGRADE TO PRO"
 msgstr ""
 
@@ -835,21 +835,21 @@ msgstr ""
 #: _src/react/views/caching/browser/status.jsx:194
 #. %d - number of failed items
 msgid ""
-"%d of your cache types don’t meet the recommended expiry period of 1 year. "
-"Configure browser caching below."
+"%d of your cache types don’t meet the minimum recommended expiry period of "
+"1 year. Configure browser caching below."
 msgstr ""
 
 #: _src/react/views/caching/browser/status.jsx:203
 msgid ""
-"All of your cache types meet the recommended expiry period of 1 year. Great "
-"work!"
+"All of your cache types meet the minimum recommended expiry period of 1 "
+"year. Great work!"
 msgstr ""
 
 #: _src/react/views/caching/browser/status.jsx:210
 msgid ""
-"All of your cache types meet the recommended expiry period of 1 year. Your "
-"hosting has automatically pre-configured browser caching for you and no "
-"further actions are required."
+"All of your cache types meet the minimum recommended expiry period of 1 "
+"year. Your hosting has automatically pre-configured browser caching for you "
+"and no further actions are required."
 msgstr ""
 
 #: _src/react/views/caching/browser/status.jsx:235
@@ -858,7 +858,7 @@ msgid "The recommended value for this file type is at least %s."
 msgstr ""
 
 #: _src/react/views/caching/browser/status.jsx:316
-#: _src/react/views/gzip/summary.jsx:281
+#: _src/react/views/gzip/summary.jsx:278
 msgid "File type"
 msgstr ""
 
@@ -1065,46 +1065,45 @@ msgid ""
 "and no further actions are required."
 msgstr ""
 
-#: _src/react/views/gzip/summary.jsx:205
+#: _src/react/views/gzip/summary.jsx:202
 msgid ""
-"Gzip compression is already running smoothly on your site. Since you have "
-"enabled the WPMU DEV CDN, your files will be served with the more "
-"performant Brotli compression instead of GZip to browsers that support it. "
-"<a>Check browser support here</a>."
+"Brotli Compression is active and working well via CDN, for enhanced "
+"performance in supported browsers. For browsers that don’t support Brotli, "
+"we’ll automatically use GZip instead. <a>Check browser support here</a>."
 msgstr ""
 
-#: _src/react/views/gzip/summary.jsx:215
+#: _src/react/views/gzip/summary.jsx:212
 msgid "Inactive"
 msgstr ""
 
-#: _src/react/views/gzip/summary.jsx:219
+#: _src/react/views/gzip/summary.jsx:216
 msgid "Active"
 msgstr ""
 
-#: _src/react/views/gzip/summary.jsx:244
+#: _src/react/views/gzip/summary.jsx:241
 #. %1$s - status label, %2$s - type
 msgid "Gzip compression is %1$s for %2$s"
 msgstr ""
 
-#: _src/react/views/gzip/summary.jsx:250
+#: _src/react/views/gzip/summary.jsx:247
 msgid ""
 "While Privacy Mode is active, we can’t accurately detect if HTML "
 "compression is active and working. Re-check this once you’ve disabled "
 "Privacy Mode."
 msgstr ""
 
-#: _src/react/views/gzip/summary.jsx:271
+#: _src/react/views/gzip/summary.jsx:268
 msgid ""
 "Gzip compresses your web pages and style sheets before sending them over to "
 "the browser. This drastically reduces transfer time since the files are "
 "much smaller."
 msgstr ""
 
-#: _src/react/views/gzip/summary.jsx:282
+#: _src/react/views/gzip/summary.jsx:279
 msgid "Current status"
 msgstr ""
 
-#: _src/react/views/gzip/summary.jsx:302
+#: _src/react/views/gzip/summary.jsx:299
 msgid "Made changes?"
 msgstr ""
 
@@ -1152,125 +1151,129 @@ msgstr ""
 msgid "Settings restored to defaults"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:108
+#: _src/react/views/minify/assets-manual.jsx:100
+msgid "Your safe mode changes have been published and are now live!"
+msgstr ""
+
+#: _src/react/views/minify/assets-manual.jsx:109
 msgid "Safe mode has been disabled!"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:320
+#: _src/react/views/minify/assets-manual.jsx:322
 msgid "Compress"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:321
+#: _src/react/views/minify/assets-manual.jsx:323
 msgid "Combine"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:322
+#: _src/react/views/minify/assets-manual.jsx:324
 msgid "Inline"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:323
+#: _src/react/views/minify/assets-manual.jsx:325
 msgid "Async"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:328
+#: _src/react/views/minify/assets-manual.jsx:330
 msgid "Move to Footer"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:329
+#: _src/react/views/minify/assets-manual.jsx:331
 msgid "Preload"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:330
+#: _src/react/views/minify/assets-manual.jsx:332
 msgid "Defer"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:349
+#: _src/react/views/minify/assets-manual.jsx:351
 msgid ""
 "Choose what bulk update actions you’d like to apply to the selected files. "
 "You still have to publish your changes before they will be set live."
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:368
+#: _src/react/views/minify/assets-manual.jsx:370
 msgid "Discard"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:380
+#: _src/react/views/minify/assets-manual.jsx:382
 msgid "Publish"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:387
+#: _src/react/views/minify/assets-manual.jsx:389
 msgid "Unpublished changes"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:388
+#: _src/react/views/minify/assets-manual.jsx:390
 msgid ""
 "There are unpublished changes made in safe mode. Do you want to publish the "
 "changes to live or discard them?"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:575
+#: _src/react/views/minify/assets-manual.jsx:577
 msgid ""
 "Test different settings in a safe environment without affecting visitors' "
 "experience. The changes done in the safe mode will be only visible to you "
 "(as an admin)."
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:578
+#: _src/react/views/minify/assets-manual.jsx:580
 msgid "Safe mode"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:594
+#: _src/react/views/minify/assets-manual.jsx:596
 msgid "All"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:600
+#: _src/react/views/minify/assets-manual.jsx:602
 msgid "Hosted"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:606
+#: _src/react/views/minify/assets-manual.jsx:608
 msgid "External"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:615
+#: _src/react/views/minify/assets-manual.jsx:617
 msgid ""
 "Preview your changes on the front-end, then publish to live if no errors "
 "are found."
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:621
+#: _src/react/views/minify/assets-manual.jsx:623
 msgid "Preview"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:628
+#: _src/react/views/minify/assets-manual.jsx:630
 #: _src/react/views/minify/configurations.jsx:54
 msgid "Publish changes"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:643
+#: _src/react/views/minify/assets-manual.jsx:644
 msgid "Bulk update"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:659
+#: _src/react/views/minify/assets-manual.jsx:660
 msgid "Display files"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:672
+#: _src/react/views/minify/assets-manual.jsx:673
 msgid "Sort by"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:673
+#: _src/react/views/minify/assets-manual.jsx:674
 msgid "Choose plugin or theme"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:680
+#: _src/react/views/minify/assets-manual.jsx:681
 msgid "Search by name or extension"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:690
+#: _src/react/views/minify/assets-manual.jsx:691
 msgid "Clear filters"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:882
+#: _src/react/views/minify/assets-manual.jsx:883
 msgid ""
 "We've completed the file check but haven't been able to load the files. "
 "Please try clearing your object cache, refresh the page and wait a few "
@@ -1278,11 +1281,11 @@ msgid ""
 "to show."
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:898
+#: _src/react/views/minify/assets-manual.jsx:899
 msgid "Visit homepage"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:925
+#: _src/react/views/minify/assets-manual.jsx:926
 msgid ""
 "You are currently using <strong>safe mode</strong> which enables you to "
 "test different settings without affecting your website visitors' "
@@ -1295,13 +1298,9 @@ msgid ""
 "to avoid page load issues.</span>"
 msgstr ""
 
-#: _src/react/views/minify/assets-manual.jsx:951
+#: _src/react/views/minify/assets-manual.jsx:952
 #: _src/react/views/minify/configurations.jsx:90
 msgid "Fonts"
-msgstr ""
-
-#: _src/react/views/minify/assets-manual.jsx:99
-msgid "Your safe mode changes have been published and are now live!"
 msgstr ""
 
 #: _src/react/views/minify/assets.jsx:151
@@ -1416,65 +1415,81 @@ msgid ""
 "performance tests."
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:240
+#: _src/react/views/minify/summary.jsx:266
 msgid "All assets are auto-compressed"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:250
+#: _src/react/views/minify/summary.jsx:276
 msgid "Compression savings"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:251
+#: _src/react/views/minify/summary.jsx:278
 msgid "Total Files"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:265
+#: _src/react/views/minify/summary.jsx:280
+msgid "Optimizing assets, this could take a while, please hold on."
+msgstr ""
+
+#: _src/react/views/minify/summary.jsx:282
+msgid "Optimizing"
+msgstr ""
+
+#: _src/react/views/minify/summary.jsx:286
+msgid "Last Generated:"
+msgstr ""
+
+#: _src/react/views/minify/summary.jsx:290
+msgid "Optimized"
+msgstr ""
+
+#: _src/react/views/minify/summary.jsx:308
 msgid "Unlock now  "
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:296
+#: _src/react/views/minify/summary.jsx:339
 msgid "Files are compressed"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:306
+#: _src/react/views/minify/summary.jsx:349
 msgid "Enable WPMU DEV CDN"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:311
+#: _src/react/views/minify/summary.jsx:354
 msgid "Host your files on WPMU DEV’s blazing-fast CDN"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:317
+#: _src/react/views/minify/summary.jsx:360
 msgid "The Network Admin has the WPMU DEV CDN turned on"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:322
+#: _src/react/views/minify/summary.jsx:365
 msgid "The Network Admin has the WPMU DEV CDN turned off"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:323
+#: _src/react/views/minify/summary.jsx:366
 #: _src/react/views/setup/wizard.jsx:619
 msgid "Disabled"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:351
+#: _src/react/views/minify/summary.jsx:394
 msgid "Filesize reductions"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:356
+#: _src/react/views/minify/summary.jsx:399
 #: _src/react/views/setup/wizard.jsx:391
 msgid "WPMU DEV CDN"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:367
+#: _src/react/views/minify/summary.jsx:410
 msgid "Delay JavaScript Execution"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:374
+#: _src/react/views/minify/summary.jsx:417
 msgid "Generate Critical CSS"
 msgstr ""
 
-#: _src/react/views/minify/summary.jsx:375
+#: _src/react/views/minify/summary.jsx:418
 #: _src/react/views/setup/wizard.jsx:141
 msgid "Pro"
 msgstr ""

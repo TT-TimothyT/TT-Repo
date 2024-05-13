@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class BillingScheduleFrequency {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _ANNUALLY = '_annually';
 	const _CUSTOM = '_custom';
 	const _DAILY = '_daily';

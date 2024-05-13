@@ -18,8 +18,7 @@
 namespace NetSuite\Classes;
 
 class ReturnAuthorizationOrderStatus {
-	public static $paramtypesmap = array(
-	);
+	public static $paramtypesmap = array();
 	const _PENDINGAPPROVAL = '_pendingApproval';
 	const _PENDINGRECEIPT = '_pendingReceipt';
 }

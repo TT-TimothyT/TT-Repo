@@ -198,13 +198,15 @@
 
 	$('.dismiss-speed-up-notify').click(function(e){
 		e.preventDefault();
-		$.post('admin.php?page=pmxi-admin-settings&action=dismiss_speed_up', {dismiss: true}, function (data) {}, 'html');
+		$.post('admin.php?page=pmxi-admin-settings&action=dismiss_speed_up', {dismiss: true,
+            security: wp_all_import_security }, function (data) {}, 'html');
 		$('.wpallimport-speed-up-notify').addClass('dont_show_again').slideUp();
 	});
 
 	$('.wpallimport-speed-up-notify-read-more').click(function(e){
 		e.preventDefault();
-		$.post('admin.php?page=pmxi-admin-settings&action=dismiss_speed_up', {dismiss: true}, function (data) {}, 'html');
+		$.post('admin.php?page=pmxi-admin-settings&action=dismiss_speed_up', {dismiss: true,
+            security: wp_all_import_security }, function (data) {}, 'html');
 		$('.wpallimport-speed-up-notify').addClass('dont_show_again').slideUp();
 		window.open($(this).attr('href'), '_blank');
 	});

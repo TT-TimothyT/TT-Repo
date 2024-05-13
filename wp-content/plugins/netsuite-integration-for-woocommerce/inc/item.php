@@ -25,6 +25,7 @@ use Netsuite\Classes\GetItemAvailabilityRequest;
 use Netsuite\Classes\SearchCustomFieldList;
 use NetSuite\Classes\SearchCustomField;
 use NetSuite\Classes\SearchStringCustomField;
+use NetSuite\Classes\SearchBooleanField;
 
 
 
@@ -114,10 +115,6 @@ class ItemClient extends CommonIntegrationFunctions {
 
 
 	public function searchItemUpdateInventory( $item_sku, $product_id) {
-		
-
-
-		// die('one');
 		$this->object_id = $product_id;
 		$kit_item_sync_status = true;
 		$item_sync_status  = true;
@@ -143,8 +140,6 @@ class ItemClient extends CommonIntegrationFunctions {
 		file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
 		
 		$response = $this->_searchItem($item_sku, $product_id);
-		// pr($response); die('dvv');
-
 
 		if ($response['status']) {
 			
@@ -262,6 +257,10 @@ class ItemClient extends CommonIntegrationFunctions {
 		} else {
 			$search->{$TMWNI_OPTIONS['sku_mapping_field']} = $SearchField;
 		}
+
+		$inactive = new SearchBooleanField();
+		$inactive->searchValue = false;
+		$search->isInactive = $inactive;
 
 		/**
 			* Filter search item on netsuite request.

@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Products Compare Admin.
+ * Products Compare for WooCommerce Admin.
  *
  * @since 1.2.0
  */
@@ -40,7 +40,7 @@ class Admin {
 		$links['docs'] = sprintf(
 			'<a href="%1$s" aria-label="%2$s" target="_blank">%3$s</a>',
 			esc_url( 'https://woo.com/document/woocommerce-products-compare/' ),
-			esc_attr_x( 'View WooCommerce Products Compare documentation', 'aria-label: documentation link', 'woocommerce-products-compare' ),
+			esc_attr_x( 'View Products Compare for WooCommerce documentation', 'aria-label: documentation link', 'woocommerce-products-compare' ),
 			esc_html_x( 'Docs', 'plugin row link', 'woocommerce-products-compare' )
 		);
 
