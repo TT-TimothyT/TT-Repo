@@ -63,9 +63,12 @@
             font-weight: 600;
             margin-top: 32px;
             width: 90%;
+            font-size: 28px;
+            line-height: 2.25rem;
 
             @media screen and (max-width: 768px) {
                 margin-top: 24px;
+                font-size: 24px;
             }
         }
         span.price, a.button, p.woocommerce-products-compare-compare-button{
