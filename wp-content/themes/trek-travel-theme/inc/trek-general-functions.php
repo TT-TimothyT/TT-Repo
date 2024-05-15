@@ -6483,16 +6483,16 @@ function tt_get_itinerary_link_from_trip_itineraries($trip_sku, $parent_product_
     $next_year = date('Y', strtotime('+1 year'));
     $sku_suffix = substr($trip_sku, 0, 2);  // Get the first 2 characters of $trip_sku
     $nested_dates_period = explode('-', $trip_sku)[1];
+    $date_id = tt_get_product_by_sku($trip_sku, true);
 
     if ($nested_dates_period) {
         $is_nested_dates_trip = true;
     }
 
     // Look for itineraries relation field on the product.
-    $itinerary_posts = get_field('itineraries', $parent_product_id);
-
+    $itinerary_posts = get_field('itineraries', $date_id);
     if (!$itinerary_posts) {
-        return '';  // Exit if no itineraries are found.
+        $itinerary_posts = get_field('itineraries', $parent_product_id);
     }
 
     // Filter itineraries by the current year and next year in one pass.
