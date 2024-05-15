@@ -6296,18 +6296,23 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
  * we need to make a reference to the main product that stores 
  * this information in the trip details table in DB.
  * 
- * @param string $tripCode Trip Code or SKU like this 24CARC0122
+ * @param string $trip_code Trip Code or SKU like this 24CARC0122 or 24NC0908-3 or 24CARC0122-FIRST
  * 
  * @return string A modified trip code that is without the suffix, if any.
  */
-function tt_get_local_trip_code( $tripCode ) {
+function tt_get_local_trip_code( $trip_code ) {
 
-    if( is_string( $tripCode ) ) {
-        //Take the base of SKU if is it with suffix like this 24CARC0122-FIRST.
-        $tripCode = explode('-', $tripCode)[0];
+    if( is_string( $trip_code ) ) {
+        
+        $trip_code_parts = explode( '-', $trip_code );
+
+        // Take the base of SKU if is it with suffix like this 24CARC0122-FIRST or 24CARC0122-SECOND.
+        if( ! empty( $trip_code_parts[1] ) && ( 'FIRST' === $trip_code_parts[1] || 'SECOND' === $trip_code_parts[1] ) ) {
+            $trip_code = $trip_code_parts[0];
+        }
     }
 
-    return $tripCode;
+    return $trip_code;
 }
 
 /**
