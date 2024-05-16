@@ -6954,6 +6954,13 @@ function check_parent_product_categories_for_coupon( $passed, $coupon, $cart ) {
         return $passed;
     }
 
+    // Check if WC()->cart is not null
+    if ( ! WC()->cart ) {
+        wc_add_notice( __('Error: Cart is not available.', 'trek-travel-theme'), 'error' );
+        error_log('Error: WC()->cart is null in ' . __FILE__ . ' on line ' . __LINE__);
+        return $passed; 
+    }
+
     // Get cart items
     $cart = WC()->cart->get_cart();
 
