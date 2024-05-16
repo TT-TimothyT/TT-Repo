@@ -6956,9 +6956,14 @@ function check_parent_product_categories_for_coupon( $passed, $coupon, $cart ) {
 
     // Check if WC()->cart is not null
     if ( ! WC()->cart ) {
-        wc_add_notice( __('Error: Cart is not available.', 'trek-travel-theme'), 'error' );
-        error_log('Error: WC()->cart is null in ' . __FILE__ . ' on line ' . __LINE__);
-        return $passed; 
+        // Check if WC()->session is not null before adding notice
+        if ( WC()->session ) {
+            wc_add_notice( __('Error: Cart is not available.', 'trek-travel-theme'), 'error' );
+        } else {
+            // Log an error message if WC()->session is null
+            error_log('Error: WC()->cart and WC()->session are null in ' . __FILE__ . ' on line ' . __LINE__);
+        }
+        return $passed; // Or handle as needed
     }
 
     // Get cart items
