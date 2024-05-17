@@ -96,7 +96,7 @@
 	wp_footer();
 	?>
 	<script src='https://www.google.com/recaptcha/api.js'></script>
-	<script src="https://www.google.com/recaptcha/api.js?render=6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP"></script>
+	<script src="https://www.google.com/recaptcha/api.js?render=6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV"></script>
 
 	</body>
 

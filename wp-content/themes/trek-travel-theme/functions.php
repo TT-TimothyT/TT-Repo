@@ -854,7 +854,15 @@ function yoast_noindex_nofollow_simple_products($robots) {
         global $post;
         $product = wc_get_product($post->ID);
 
+        // Debugging: Log the type and value of $robots
+        error_log('Type of $robots: ' . gettype($robots));
+        error_log('Value of $robots: ' . print_r($robots, true));
+
         if ($product && $product->is_type('simple')) {
+            if (!is_array($robots)) {
+                $robots = array();
+            }
+
             $robots['index'] = 'noindex';
             $robots['follow'] = 'nofollow';
         }
@@ -864,3 +872,4 @@ function yoast_noindex_nofollow_simple_products($robots) {
 }
 
 add_filter('wpseo_robots', 'yoast_noindex_nofollow_simple_products');
+

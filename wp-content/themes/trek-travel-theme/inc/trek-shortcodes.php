@@ -12,7 +12,7 @@ function trek_registration_form_cb()
    update_option( 'woocommerce_registration_generate_password', 'no' );
    if (is_admin() || is_user_logged_in()) return;
    do_action('woocommerce_before_customer_login_form');
-   $google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP' );
+   $google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV' );
 ?>
 
    <div class="row my-4">
@@ -179,7 +179,7 @@ add_shortcode('trek-forgot-password', 'trek_forgot_password_form');
 function trek_forgot_password_form()
 {
    do_action('woocommerce_before_lost_password_form');
-   $google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP' );
+   $google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV' );
 ?>
    <div class="row">
       <div class="offset-lg-4 col-lg-4 reset-form">

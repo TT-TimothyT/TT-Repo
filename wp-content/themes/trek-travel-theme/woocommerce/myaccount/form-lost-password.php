@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LcwloIpAAAAAMR526emPgUfi-IxtNbdIT0eB0dP' );
+$google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV' );
 
 
 do_action( 'woocommerce_before_lost_password_form' );
