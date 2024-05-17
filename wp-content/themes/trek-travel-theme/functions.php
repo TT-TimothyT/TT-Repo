@@ -845,3 +845,22 @@ function custom_breadcrumbs() {
     echo '</ol>';
     echo '</nav>';
 }
+
+
+// Woocommerce Simple Products NOINDEX
+
+function yoast_noindex_nofollow_simple_products($robots) {
+    if (is_singular('product')) {
+        global $post;
+        $product = wc_get_product($post->ID);
+
+        if ($product && $product->is_type('simple')) {
+            $robots['index'] = 'noindex';
+            $robots['follow'] = 'nofollow';
+        }
+    }
+
+    return $robots;
+}
+
+add_filter('wpseo_robots', 'yoast_noindex_nofollow_simple_products');
