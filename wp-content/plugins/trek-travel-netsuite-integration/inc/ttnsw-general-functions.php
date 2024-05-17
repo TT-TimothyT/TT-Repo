@@ -42,9 +42,12 @@ function tt_wc_ns_fire_one_hour_cron() {
         wp_schedule_event(time(), 'every_one_hour', 'tt_wc_ns_sync_one_hour_event');
     }
 }
-add_action( 'wp', 'tt_wc_ns_fire_one_hour_cron' );
+if( ! defined( 'DX_DEV' ) ) {
+    // Run the CRON JOBS only on production website.
+    add_action( 'wp', 'tt_wc_ns_fire_one_hour_cron' );
 
-add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
+    add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
+}
 function tt_wc_ns_sync_hourly_event_cb()
 {
     tt_sync_ns_trips();
