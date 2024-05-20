@@ -1003,12 +1003,6 @@ get_header();
                 jQuery(".search-summary, #search-nav-tabs, hr.card-divider, .algolia-search-box-wrapper").removeClass("d-none")
                 jQuery("#searchCount").text(resultCount)
             }
-
-            if ( resultCount = 1 ) {
-                jQuery('.filter-results-number span.ais-Stats-text').text(resultCount + ' result');
-            } else {
-                jQuery('.filter-results-number span.ais-Stats-text').text(resultCount + ' results');
-            }
         }
 
         function selectItemAnalytics(id) {
