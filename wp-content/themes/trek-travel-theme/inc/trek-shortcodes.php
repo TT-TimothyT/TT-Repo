@@ -396,7 +396,7 @@ function trek_my_trip_shortcode_cb(){
       $guest_emails_arr   = explode(', ', $guest_emails);
    }
 
-   if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 30 || $trip_status['days_2'] >= 30 ) ) {
+   if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 0 || $trip_status['days_2'] >= 0 ) ) {
       $my_trip = TREK_PATH . '/woocommerce/myaccount/my-trip-checklist.php';  
    }
 
@@ -406,7 +406,7 @@ function trek_my_trip_shortcode_cb(){
          // See is user belongs to the order.
          if( !empty( $current_user_email ) &&  in_array( $current_user_email, $guest_emails_arr ) ) {
             // Show the checklist template or Past Details template.
-            if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 30 || $trip_status['days_2'] >= 30 ) ) {
+            if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 0 || $trip_status['days_2'] >= 0 ) ) {
                wc_get_template('woocommerce/myaccount/my-trip-checklist.php');
             } else {
                wc_get_template('woocommerce/myaccount/my-trip-past-details.php');

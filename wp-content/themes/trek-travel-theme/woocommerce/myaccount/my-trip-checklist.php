@@ -368,7 +368,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 	<div class="row mx-0">
 		<div class="col-lg-10">
 			<h4 class="fw-semibold">Additional Trip Information</h4>
-			<p class="fw-normal fs-lg lh-lg">Please confirm the following items below [30] days before your trip start date.</p>
+			<p class="fw-normal fs-lg lh-lg">Please confirm the following items below 14 days before your trip start date.</p>
 		</div>
 	</div><!-- row ends -->
 
