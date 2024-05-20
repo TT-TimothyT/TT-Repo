@@ -549,12 +549,14 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
                 // Take the info for the additional trips that need to be made.
                 $bookable_periods = $trek_trip->bookablePeriods;
 
-                $main_start_date  = $trek_trip->startDate;
-                $main_end_date    = $trek_trip->endDate;
+                $main_start_date = $trek_trip->startDate;
+                $main_end_date   = $trek_trip->endDate;
 
                 // Keep SKU base.
-                $main_trip_code   = $trek_trip->tripCode;
-                $main_trip_name   = $trek_trip->tripName;
+                $main_trip_code = $trek_trip->tripCode;
+                $main_trip_name = $trek_trip->tripName;
+
+                $main_trip_status = $trek_trip->status;
 
                 foreach( $bookable_periods as $period ) {
                     $start_date = $period->startDate;
@@ -576,6 +578,13 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
                         $trek_trip->tripCode = $main_trip_code . '-SECOND';
                         // Add suffix on the name.
                         $trek_trip->tripName = $main_trip_name . '-SECOND';
+                    }
+
+                    $period_status = $period->status;
+                    if ( ! empty( $period_status->id ) ) {
+                        $trek_trip->status = $period_status;
+                    } else {
+                        $trek_trip->status = $main_trip_status;
                     }
                     
                     $trek_trip->startDate             = $start_date;
