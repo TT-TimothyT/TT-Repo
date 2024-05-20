@@ -1145,6 +1145,20 @@ jQuery(document).ready(function () {
     // Take the confirmed section from the data attribute on the submit button that submits the form.
     let confirmedSection = jQuery( ev.originalEvent.submitter ).attr('data-confirm');
     var formData = jQuery(this).serialize();
+    if( 'bike_section' === confirmedSection ) {
+      let bikeIdObj = jQuery(this).serializeArray().find( data => data.name == "bikeId" );
+      if( bikeIdObj ) {
+        if( bikeIdObj.hasOwnProperty('value') ) {
+          if( bikeIdObj.value.trim().length <= 0 ) {
+            jQuery('select[name="tt-bike-size"]').val('');
+            this.classList.add('was-validated');
+            ev.preventDefault()
+            ev.stopPropagation()
+            return false;
+          }
+        }
+      }
+    }
     var action = 'update_trip_checklist_action';
     jQuery.ajax({
       type: 'POST',

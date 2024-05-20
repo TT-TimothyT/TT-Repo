@@ -688,7 +688,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 					</form>
 				</div> <!-- accordion-item ends -->
 				<?php $gray_out = ''; ?>
-					<?php if ($rider_level != 5) { ?>
+					<?php if ( 5257 != $bike_id ) { ?>
 						<?php $title_string = 'Confirm your gear information'; ?>
 					<?php if( $lockedUserRecord == 1 ) { ?>
 						<?php $title_string = 'Review your gear information'; ?>
@@ -905,7 +905,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 						</form>
 					</div> <!-- accordion-item ends -->
 				<?php } ?>
-					<?php if ($rider_level != 5 && $own_bike != 'yes' && 5270 != $bike_id && 5257 != $bike_id) { ?>
+					<?php if ( 5270 != $bike_id && 5257 != $bike_id ) { ?>
 						<?php $gray_out = ''; ?>
 						<?php $bike_review_string = 'Confirm your bike selection'; ?>
 						<?php if( $lockedUserBike ) { ?>

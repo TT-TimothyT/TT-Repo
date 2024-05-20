@@ -944,9 +944,11 @@ function trek_update_trip_checklist_action_cb()
             $booking_data['bike_id']        = $_REQUEST['bikeId'];
             $booking_data['bike_size']      = $_REQUEST['tt-bike-size'];
 
-            $ns_user_booking_data['bikeId'] = isset( $_REQUEST['bikeId'] ) ? $_REQUEST['bikeId'] : '';
+            $ns_user_booking_data['bikeId']       = isset( $_REQUEST['bikeId'] ) ? $_REQUEST['bikeId'] : '';
+            $ns_user_booking_data['bikeTypeName'] = tt_ns_get_bike_type_name( tt_validate( $_REQUEST['bikeTypeId'] ) );
         } else {
-            $ns_user_booking_data['bikeId'] = $user_order_info[0]['bike_id'];
+            $ns_user_booking_data['bikeId']       = $user_order_info[0]['bike_id'];
+            $ns_user_booking_data['bikeTypeName'] = tt_ns_get_bike_type_name( $user_order_info[0]['bike_type_id'] );
         }
 
         // If the confirmed section is 'gear_optional_section', add gear optional data.

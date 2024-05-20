@@ -351,7 +351,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 					<p class="fw-medium fs-xl lh-xl">Gear Information</p>
 					<div class="sub-head">
 						<p class="fw-normal fs-sm lh-sm">Rider level: <?php echo $rider_level; ?></p>
-						<?php if ($rider_levelVal != 5) { ?>
+						<?php if ( 5257 != $bike_id ) { ?>
 							<p class="fw-normal fs-sm lh-sm">Bike Size: <?php echo $bike_size; ?></p>
 							<p class="fw-normal fs-sm lh-sm">Rider Height: <?php echo $rider_height; ?></p>
 							<p class="fw-normal fs-sm lh-sm">Pedals: <?php echo $bike_pedal; ?></p>
