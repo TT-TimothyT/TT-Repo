@@ -6497,6 +6497,10 @@ function tt_get_itinerary_link_from_trip_itineraries($trip_sku, $parent_product_
         $itinerary_posts = get_field('itineraries', $parent_product_id);
     }
 
+    if ( empty( $itinerary_posts ) ) {
+        return '';
+    }
+
     // Filter itineraries by the current year and next year in one pass.
     $all_active_itineraries = array_filter($itinerary_posts, function($itinerary) use ($current_year, $next_year) {
         $itinerary_title = $itinerary->post_title;
