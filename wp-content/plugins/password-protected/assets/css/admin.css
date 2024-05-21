@@ -8,11 +8,11 @@
     padding: 0px 20px;
 }
 .wrap-col-70 {
-    flex: 0 0 70%;
-    width: 70%;
+    flex: 0 0 80%;
+    width: 80%;
 }
 .wrap-col-25 {
-    flex: 0 1 25%;
+    flex: 0 1 15%;
 }
 .wrap-row {
     display: flex;
@@ -24,7 +24,7 @@ h2.nav-tab-wrapper {
 div#pp-sidebar-box {
     border: 3px solid #fff;
     /*border-radius: 10px;*/
-    margin-top: 9px;
+    /*margin-top: 9px;*/
 }
 #pp-sidebar-box {
     line-height: 1.5;
@@ -389,6 +389,10 @@ input#password_protected_password_new, input#password_protected_password_confirm
     background: #8076ff;
 }
 
+.pp-pro-tab .dashicons-superhero-alt {
+    color: #fff;
+}
+
 .pp-pro-tab.pp-nav-tab-active {
     background: #8076ff;
 }
@@ -664,3 +668,78 @@ input#password_protected_password_new, input#password_protected_password_confirm
     display: table;
 }
 
+.disabled-content {
+    opacity: 0.8;
+    position: relative;
+}
+
+.pp-wrap-content {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#pro-popup {
+    width: 100vw;
+    height: 100vh;
+    position:fixed;
+    top: 0;
+    left: 0;
+    background: rgba( 0, 0, 0, 0.05 );
+    backdrop-filter: blur( 1px );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#pro-popup .pp-container {
+    width: 514px;
+    background: #fff;
+    position:relative;
+    padding: 15px;
+    border: 1px solid #DAD7FF;
+    background: linear-gradient(175deg, #DAD7FF 0%, #FFFFFF 100%);
+    border-radius: 8px;
+}
+
+#pro-popup .pp-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #2D3748;
+    cursor: pointer;
+}
+
+#pro-popup .pp-body {
+    text-align: center;
+    padding: 15px 0;
+    margin: 15px 0;
+}
+
+#pro-popup .pp-body img {
+    margin-bottom: 10px;
+}
+
+#pro-popup .pp-body .pp-description {
+    text-align: center;
+    color: #2D3748;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+#pro-popup .pp-body .pp-link {
+    margin-top: 10px;
+    display: inline-block;
+    padding: 16px 32px;
+    border-radius: 24px;
+    background: #8076FF;
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    text-decoration: none;
+}

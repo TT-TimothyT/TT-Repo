@@ -267,8 +267,6 @@ if (!class_exists('WF_OrderImpExp_Uninstall_Feedback')) :
                 wp_send_json_error();
             }
 
-            //$current_user = wp_get_current_user();
-
             $data = array(
                 'reason_id' => sanitize_text_field($_POST['reason_id']),
                 'plugin' => $this->plugin_id,
@@ -283,6 +281,8 @@ if (!class_exists('WF_OrderImpExp_Uninstall_Feedback')) :
                 'wp_version' => get_bloginfo('version'),
                 'wc_version' => (!defined('WC_VERSION')) ? '' : WC_VERSION,
                 'locale' => get_locale(),
+                'languages' => implode( ",", get_available_languages() ),
+                'theme' => wp_get_theme()->get('Name'),
                 'multisite' => is_multisite() ? 'Yes' : 'No',
                 'wforderimpexp_version' => $this->current_version,
             );

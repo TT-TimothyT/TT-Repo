@@ -1,11 +1,10 @@
 === Export and Import Users and Customers ===
 Contributors: webtoffee
-Donate link: https://www.webtoffee.com/plugins/
 Tags: user import, user export, csv, woocommerce, customers, export import users, export customers, import customers, import, export, export users to csv, import users from csv 
 Requires at least: 3.0.1
-Tested up to: 6.5
+Tested up to: 6.5.3
 Requires PHP: 5.6
-Stable tag: 2.5.4
+Stable tag: 2.5.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,9 +22,9 @@ You can import or export user/customer data using CSV files. This helps in migra
 &#128312; Change values (bulk modify) while importing user data using Evaluation Fields
 &#128312; Export guest users - Include data of WooCommerce guest customers (users who bought products from the site without creating an account)
 &#128312; Export specific users based on username/email - Suggests email addresses and names in export data filter fields while you type in
-&#128312; Tested OK with WordPress 6.5
-&#128312; Tested OK with WooCommerce 8.7.0
-&#128312; Tested OK with PHP 8.2
+&#128312; Tested OK with WordPress 6.5.3
+&#128312; Tested OK with WooCommerce 8.8.3
+&#128312; Tested OK with PHP 8.3
 
 = How does it work? =
 
@@ -209,6 +208,9 @@ Please refer the article on how to <a href="https://www.webtoffee.com/refresh-wo
 
 == Changelog ==
 
+= 2.5.5 2024-05-13 =
+* [Compatibility]-Tested Ok with Woocommerce 8.8.3
+* [Compatibility] - Tested OK with WordPress 6.5.3
 = 2.5.4 2024-03-27 =
 * [Improvement] - Implemented a user interface update for the import/export screen, transitioning to a card-based layout for post type selection.
 * [Fix] -  Vulnerable to PHP Object Injection.
@@ -498,8 +500,6 @@ Please refer the article on how to <a href="https://www.webtoffee.com/refresh-wo
 
 == Upgrade Notice ==
 
-= 2.5.4 =
-* [Improvement] - Implemented a user interface update for the import/export screen, transitioning to a card-based layout for post type selection.
-* [Fix] -  Vulnerable to PHP Object Injection.
-* [Compatibility]-Tested Ok with Woocommerce 8.7.0
-* [Compatibility] - Tested OK with WordPress 6.5
+= 2.5.5 =
+* [Compatibility]-Tested Ok with Woocommerce 8.8.3
+* [Compatibility] - Tested OK with WordPress 6.5.3

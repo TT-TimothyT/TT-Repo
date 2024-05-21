@@ -7,24 +7,19 @@ if (!defined('ABSPATH')) exit;
 
 use MailPoet\EmailEditor\Engine\SettingsController;
 use MailPoet\EmailEditor\Engine\ThemeController;
-use MailPoet\Util\pQuery\DomNode;
-use MailPoetVendor\CSS;
+use MailPoetVendor\Pelago\Emogrifier\CssInliner;
 use WP_Block_Template;
 use WP_Post;
 
 class ContentRenderer {
-  private CSS $cssInliner;
   private BlocksRegistry $blocksRegistry;
   private ProcessManager $processManager;
   private SettingsController $settingsController;
   private ThemeController $themeController;
-  private $layoutSettings;
-  private $themeStyles;
 
   const CONTENT_STYLES_FILE = 'content.css';
 
   public function __construct(
-    CSS $cssInliner,
     ProcessManager $preprocessManager,
     BlocksRegistry $blocksRegistry,
     SettingsController $settingsController,
@@ -33,16 +28,42 @@ class ContentRenderer {
     $this->processManager = $preprocessManager;
     $this->blocksRegistry = $blocksRegistry;
     $this->settingsController = $settingsController;
-    $this->cssInliner = $cssInliner;
     $this->themeController = $themeController;
   }
 
   private function initialize() {
-    $this->layoutSettings = $this->settingsController->getLayout();
-    $this->themeStyles = $this->settingsController->getEmailStyles();
+    add_filter('render_block', [$this, 'renderBlock'], 10, 2);
     add_filter('block_parser_class', [$this, 'blockParser']);
     add_filter('mailpoet_blocks_renderer_parsed_blocks', [$this, 'preprocessParsedBlocks']);
+
     do_action('mailpoet_blocks_renderer_initialized', $this->blocksRegistry);
+  }
+
+  public function render(WP_Post $post, WP_Block_Template $template): string {
+    $this->setTemplateGlobals($post, $template);
+    $this->initialize();
+
+    $renderedHtml = $this->processManager->postprocess(get_the_block_template_html());
+
+    $this->reset();
+
+    return $this->inlineStyles($renderedHtml, $post);
+  }
+
+  public function blockParser() {
+    return 'MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\BlocksParser';
+  }
+
+  public function preprocessParsedBlocks(array $parsedBlocks): array {
+    return $this->processManager->preprocess($parsedBlocks, $this->settingsController->getLayout(), $this->themeController->getStyles());
+  }
+
+  public function renderBlock($blockContent, $parsedBlock) {
+    if (!$this->blocksRegistry->hasBlockRenderer($parsedBlock['blockName'])) {
+      return $blockContent;
+    }
+    $renderer = $this->blocksRegistry->getBlockRenderer($parsedBlock['blockName']);
+    return $renderer ? $renderer->render($blockContent, $parsedBlock, $this->settingsController) : $blockContent;
   }
 
   private function setTemplateGlobals(WP_Post $post, WP_Block_Template $template) {
@@ -57,28 +78,10 @@ class ContentRenderer {
   * so that we don't interfere with possible post rendering that might happen later.
   */
   private function reset() {
-    $this->blocksRegistry->removeAllBlockRendererFilters();
+    $this->blocksRegistry->removeAllBlockRenderers();
+    remove_filter('render_block', [$this, 'renderBlock']);
     remove_filter('block_parser_class', [$this, 'blockParser']);
     remove_filter('mailpoet_blocks_renderer_parsed_blocks', [$this, 'preprocessParsedBlocks']);
-  }
-
-  public function blockParser() {
-    return 'MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\BlocksParser';
-  }
-
-  public function preprocessParsedBlocks(array $parsedBlocks): array {
-    return $this->processManager->preprocess($parsedBlocks, $this->layoutSettings, $this->themeStyles);
-  }
-
-  public function render(WP_Post $post, WP_Block_Template $template): string {
-    $this->initialize();
-    $this->setTemplateGlobals($post, $template);
-
-    $renderedHtml = $this->processManager->postprocess(get_the_block_template_html());
-
-    $this->reset();
-
-    return $this->inlineStyles($renderedHtml, $post);
   }
 
   /**
@@ -88,21 +91,16 @@ class ContentRenderer {
   private function inlineStyles($html, WP_Post $post) {
     $styles = (string)file_get_contents(dirname(__FILE__) . '/' . self::CONTENT_STYLES_FILE);
     $styles .= $this->themeController->getStylesheetForRendering($post);
+    // Get styles from block-supports stylesheet. This includes rules such as layout (contentWidth) that some blocks use.
+    // @see https://github.com/WordPress/WordPress/blob/3c5da9c74344aaf5bf8097f2e2c6a1a781600e03/wp-includes/script-loader.php#L3134
+    // @internal :where is not supported by emogrifier, so we need to replace it with *.
+    $styles .= str_replace(
+      ':where(:not(.alignleft):not(.alignright):not(.alignfull))',
+      '*:not(.alignleft):not(.alignright):not(.alignfull)',
+      \wp_style_engine_get_stylesheet_from_context('block-supports', [])
+    );
     $styles = '<style>' . (string)apply_filters('mailpoet_email_content_renderer_styles', $styles, $post) . '</style>';
 
-    return $this->postProcessTemplate(
-      $this->cssInliner->inlineCSS($styles . $html)
-    );
-  }
-
-  /**
-   * @param DomNode $templateDom
-   * @return string
-   */
-  private function postProcessTemplate(DomNode $templateDom) {
-    // because tburry/pquery contains a bug and replaces the opening non mso condition incorrectly we have to replace the opening tag with correct value
-    $template = $templateDom->__toString();
-    $template = str_replace('<!--[if !mso]><![endif]-->', '<!--[if !mso]><!-- -->', $template);
-    return $template;
+    return CssInliner::fromHtml($styles . $html)->inlineCss()->render();
   }
 }

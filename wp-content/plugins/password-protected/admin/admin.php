@@ -137,7 +137,7 @@ class Password_Protected_Admin {
         $this->setting_tabs['getpro'] = array(
 	        'title' => __( 'Get Pro', 'password-protected' ),
 	        'slug'  => 'getpro',
-	        'icon'  => 'dashicons-privacy',
+	        'icon'  => 'dashicons-superhero-alt',
         );
 
         if ( class_exists( 'Password_Protected_Pro' ) ) {
@@ -153,8 +153,25 @@ class Password_Protected_Admin {
 	public function admin_enqueue_scripts( $hooks ) {
 		
 	    if ( 'settings_page_password-protected' === $hooks || 'toplevel_page_password-protected' === $hooks ) {
-	        wp_enqueue_style( 'password-protected-page-script', PASSWORD_PROTECTED_URL . 'assets/css/admin.css', array(), '2.6.2' );
-	        wp_enqueue_script( 'password-protected-admin-script', PASSWORD_PROTECTED_URL . 'assets/js/admin.js', array('jquery'), '2.6.2' );
+            global $Password_Protected;
+	        wp_enqueue_style( 'password-protected-page-script', PASSWORD_PROTECTED_URL . 'assets/css/admin.css', array(), $Password_Protected->version );
+	        wp_enqueue_script( 'password-protected-admin-script', PASSWORD_PROTECTED_URL . 'assets/js/admin.js', array('jquery'), $Password_Protected->version );
+            wp_localize_script(
+                'password-protected-admin-script',
+                'passwordProtectedAdminObject',
+                array(
+                    'imageURL'       => PASSWORD_PROTECTED_URL . 'assets/images/',
+                    'description'    => __( 'Unlock unmatched website protection with<br>advanced security features', 'password-protected' ),
+                    'buttonText'     => __( 'Get Password Protected Pro', 'password-protected' ),
+                    'buttonRedirect' => add_query_arg(
+                        array(
+                            'page' => 'password-protected',
+                            'tab'  => 'getpro',
+                        ),
+                        admin_url( 'admin.php' )
+                    ),
+                )
+            );
         }
     }
 
@@ -542,6 +559,15 @@ class Password_Protected_Admin {
 			);
 		}
 
+        if ( ! $this->login_designer_is_installed_and_activated() ) {
+            add_settings_section(
+                'password-protected-login-designer',
+                '',
+                array( $this, 'password_protected_login_designer' ),
+                'password-protected-login-designer'
+            );
+        }
+
 		// registering settings
 		register_setting( $this->options_group, 'password_protected_status', 'intval' );
 		register_setting( $this->options_group, 'password_protected_feeds', 'intval' );
@@ -821,11 +847,43 @@ class Password_Protected_Admin {
                     </ul>
                 </div>
                 <div class="pp-sidebar-footer">
-                    <a target="_blank" href="https://passwordprotectedwp.com/pricing?utm_source=plugin&utm_medium=sidebar">' . esc_html__( 'Get Password Protected Pro', 'password-protected' ) . '</a>
+                    <a target="_blank" href="https://passwordprotectedwp.com/pricing/?utm_source=plugin&utm_medium=side_banner&utm_campaign=plugin">' . esc_html__( 'Get Password Protected Pro', 'password-protected' ) . '</a>
                 </div>
             </div>
         </div>';
 	}
+
+    public function password_protected_login_designer() {
+        $search_login_designer = add_query_arg(
+	        array(
+		        's'    => 'login designer',
+		        'tab'  => 'search',
+		        'type' => 'term',
+	        ),
+	        admin_url( 'plugin-install.php' )
+        );
+        echo '<div class="pp-sidebar-widget">
+            <div id="pp-sidebar-box">
+                <h3>' .
+                 sprintf(
+                     __( '%1$s Now you can customize your Password Protected screen with the %3$s %2$s', 'password-protected' ),
+                     '🎨',
+                     '🌈',
+                     '<a href="' . $search_login_designer . '">' . __( 'Login Designer Plugin', 'password-protected' ) . '</a>'
+                 )
+                 . '</h3>
+                
+                <img width="100%" src="'. PASSWORD_PROTECTED_URL .'assets/images/login-designer-demo.gif" alt="Login Designer Demo GIF">
+                
+                <h3>
+                    <a class="pp-try button-primary" href="' . $search_login_designer . '">
+                        👉 ' . __( 'Try it now! It\'s Free', 'password-protected' ) . '
+                    </a>
+                </h3>
+            </div>
+        </div>';
+    }
+
 	/**
 	 * Pre-update 'password_protected_password' Option
 	 *
@@ -1002,6 +1060,10 @@ class Password_Protected_Admin {
 		return class_exists( 'Password_Protected_Pro' );
 	}
 
+    public function login_designer_is_installed_and_activated() {
+        return class_exists( 'Login_designer' );
+    }
+
 	/**
 	 * @return  void
 	 * Display Pro Features
@@ -1116,19 +1178,30 @@ class Password_Protected_Admin {
                 </div>
                 
                 <div class="pp-banner-footer">
-                    <a target="_blank" href="https://passwordprotectedwp.com/pricing?utm_source=plugin&utm_medium=protab">' . esc_html__( 'Get Password Protected Pro', 'password-protected' ) . '</a>
+                    <a target="_blank" href="https://passwordprotectedwp.com/pricing/?utm_source=plugin&utm_medium=pro_tab&utm_campaign=plugin">' . esc_html__( 'Get Password Protected Pro', 'password-protected' ) . '</a>
                 </div>
             </div>
         </div>';
 	}
 
     public function dummy_content( $k ) {
-        echo '<div class="pp-pro-branding" style="margin-top: 10px" >';
+        echo '<div class="disabled-content click-to-display-popup">
+            <div class="pp-wrap-content"></div>
+            <div class="pp-pro-branding" style="margin-top: 10px" >';
 
         switch ( $k['slug'] ) {
             case 'exclude-from-protection':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'exclude_protection'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>Exclude From Password Protection <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>Exclude From Password Protection <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
                     <table class="form-table">
                         <tr>
                             <th><label for="">Exclude Pages</label></th>
@@ -1154,8 +1227,17 @@ class Password_Protected_Admin {
                 </div>';
                 break;
             case 'attempt-limitation':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'attempt_limitation'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>Limit Password Attempts <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>Limit Password Attempts <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
                     <table class="form-table">
                         <tr>
                             <th><label for="">No of Attempts</label></th>
@@ -1174,8 +1256,17 @@ class Password_Protected_Admin {
                 </div>';
                 break;
             case 'bypass-url':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'bypass_url'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>Bypass URL <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>Bypass URL <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
                     <table class="form-table">
                         <tr>
                             <th>
@@ -1212,8 +1303,17 @@ class Password_Protected_Admin {
                 </div>';
                 break;
             case 'manage_passwords':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'multiple_passwords'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>Manage Passwords <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>Manage Passwords <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
                     <button disabled class="button button-secondary">Add New Password</button>
                     <br><br>
                     
@@ -1249,8 +1349,17 @@ class Password_Protected_Admin {
                 </div>';
                 break;
             case 'activity_logs':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'activity_logs'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>Activity Logs <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>Activity Logs <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
                     <table class="wp-list-table widefat fixed striped table-view-list toplevel_page_password-protected">
                         <thead>
                             <tr>
@@ -1281,8 +1390,17 @@ class Password_Protected_Admin {
                 </div>';
                 break;
             case 'post-type-protection':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'post_protection'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>Post type protection <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>Post type protection <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
                     <table class="form-table">
                         <tr>
                             <th>Post Type</th>
@@ -1304,8 +1422,17 @@ class Password_Protected_Admin {
                 </div>';
                 break;
             case 'taxonomy-protection':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'taxonomy_protection'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>Category/Taxonomy protection <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>Category/Taxonomy protection <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
 
                     <table class="form-table">
                         <tr>
@@ -1320,8 +1447,17 @@ class Password_Protected_Admin {
                 </div>';
                 break;
             case 'whitelist-user-role':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'whitelist_user_role'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>White List User Roles <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>White List User Roles <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
                     <table class="form-table">
                         <tr>
                             <th>Enable Whitelist User Roles</th>
@@ -1362,8 +1498,17 @@ class Password_Protected_Admin {
                 </div>';
                 break;
             case 'wp-admin-protection':
+                $url = add_query_arg(
+                        array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'pop_up',
+                                'utm_campaign' => 'plugin',
+                                'utm_content'  => 'wpadmin_protection'
+                        ),
+                    'https://passwordprotectedwp.com/pricing/'
+                );
                 echo '<div>
-                    <h2>Enable Admin Protection <span class="pro-badge"><a href="admin.php?page=password-protected&tab=getpro">PRO</a></span></h2>
+                    <h2>Enable Admin Protection <span class="pro-badge"><a href="' . $url . '">PRO</a></span></h2>
                     <table class="form-table">
                         <tr>
                             <th>Enable</th>
@@ -1419,7 +1564,8 @@ class Password_Protected_Admin {
                 </div>';
                 break;
         }
-        echo '</div>';
+            echo '</div>
+        </div>';
     }
 
 }

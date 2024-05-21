@@ -110,7 +110,7 @@
 								<div class="wpallimport-note" style="margin: 0 auto; font-size: 13px;">
 									<?php printf(__('Files uploaded to <strong>%s</strong> will appear in this list.', 'wp_all_import_plugin'), esc_attr($upload_dir['basedir'] . '/wpallimport/files')) ?>
 									<div class="wpallimport-free-edition-notice">									
-										<a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707176&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=use-existing-file" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to Use Existing Files', 'wp_all_import_plugin');?></a>
+										<a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839966&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=use-existing-file" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to Use Existing Files', 'wp_all_import_plugin');?></a>
 										<p><?php _e('If you already own it, remove the free edition and install the Pro edition.', 'wp_all_import_plugin'); ?></p>
 									</div>
 								</div>
@@ -130,7 +130,7 @@
                                     <div class="wpallimport-note" style="margin: 20px auto 0; font-size: 13px;">
 										<?php _e('<strong>Hint:</strong> After you create this import, you can schedule it to run automatically, on a pre-defined schedule, with cron jobs.', 'wp_all_import_plugin'); ?>
                                         <div class="wpallimport-free-edition-notice" style="display:none;">
-                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707176&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to Download from URL', 'wp_all_import_plugin');?></a>
+                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839966&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to Download from URL', 'wp_all_import_plugin');?></a>
                                             <p><?php _e('If you already own it, remove the free edition and install the Pro edition.', 'wp_all_import_plugin'); ?></p>
                                         </div>
                                     </div>
@@ -207,7 +207,7 @@
 
                                     <div class="wpallimport-note" style="margin: 20px auto 0; font-size: 13px;">
                                         <div class="wpallimport-free-edition-notice" style="display:none;">
-                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707176&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to Download from FTP/SFTP', 'wp_all_import_plugin');?></a>
+                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839966&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to Download from FTP/SFTP', 'wp_all_import_plugin');?></a>
                                             <p><?php _e('If you already own it, remove the free edition and install the Pro edition.', 'wp_all_import_plugin'); ?></p>
                                         </div>
                                     </div>
@@ -395,13 +395,13 @@
                                         <?php if ( ! class_exists('PMUI_Plugin') ): ?>
                                             <div class="wpallimport-upgrade-notice" rel="import_users">
                                                 <p><?php _e('The User Add-On is Required to Import Users', 'wp_all_import_plugin'); ?></p>
-                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707221&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-users" target="_blank" class="upgrade_link"><?php _e('Purchase the User Add-On', 'wp_all_import_plugin');?></a>
+                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839963&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-users" target="_blank" class="upgrade_link"><?php _e('Purchase the User Add-On', 'wp_all_import_plugin');?></a>
                                             </div>
                                         <?php endif; ?>
                                         <?php if ( class_exists('WooCommerce') && ! class_exists('PMWI_Plugin') ): ?>
                                             <div class="wpallimport-upgrade-notice" rel="product">
                                                 <p><?php _e('The WooCommerce Add-On is Required to Import Products', 'wp_all_import_plugin'); ?></p>
-                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707227&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-wooco-products" target="_blank" class="upgrade_link"><?php _e('Purchase the WooCommerce Add-On', 'wp_all_import_plugin');?></a>
+                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839961&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-wooco-products" target="_blank" class="upgrade_link"><?php _e('Purchase the WooCommerce Add-On', 'wp_all_import_plugin');?></a>
                                             </div>
                                         <?php endif; ?>
                                         <?php if ( class_exists('WooCommerce') &&  ( ! class_exists('PMWI_Plugin') || class_exists('PMWI_Plugin') && PMWI_EDITION == 'free') ): ?>
@@ -411,7 +411,7 @@
                                                 <?php else: ?>
                                                     <p><?php _e('The WooCommerce Add-On Pro is Required to Import Orders', 'wp_all_import_plugin'); ?></p>
                                                 <?php endif; ?>
-                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707227&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-wooco-orders" target="_blank" class="upgrade_link"><?php _e('Purchase the WooCommerce Add-On', 'wp_all_import_plugin');?></a>
+                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839961&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-wooco-orders" target="_blank" class="upgrade_link"><?php _e('Purchase the WooCommerce Add-On', 'wp_all_import_plugin');?></a>
                                             </div>
                                             <div class="wpallimport-upgrade-notice" rel="shop_coupon">
                                                 <?php if (class_exists('PMWI_Plugin') && PMWI_EDITION == 'free'): ?>
@@ -419,25 +419,25 @@
                                                 <?php else: ?>
                                                     <p><?php _e('The WooCommerce Add-On Pro is Required to Import Coupons', 'wp_all_import_plugin'); ?></p>
                                                 <?php endif; ?>
-                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707227&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-wooco-coupons" target="_blank" class="upgrade_link"><?php _e('Purchase the WooCommerce Add-On', 'wp_all_import_plugin');?></a>
+                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839961&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-wooco-coupons" target="_blank" class="upgrade_link"><?php _e('Purchase the WooCommerce Add-On', 'wp_all_import_plugin');?></a>
                                             </div>
                                         <?php endif; ?>
                                         <div class="wpallimport-upgrade-notice" rel="taxonomies">
                                             <p><?php _e('WP All Import Pro is Required to Import Taxonomies', 'wp_all_import_plugin'); ?></p>
-                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707176&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-taxonomies" target="_blank" class="upgrade_link"><?php _e('Purchase WP All Import Pro', 'wp_all_import_plugin');?></a>
+                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839966&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-taxonomies" target="_blank" class="upgrade_link"><?php _e('Purchase WP All Import Pro', 'wp_all_import_plugin');?></a>
                                         </div>
                                         <div class="wpallimport-upgrade-notice" rel="comments">
                                             <p><?php _e('WP All Import Pro is Required to Import Comments', 'wp_all_import_plugin'); ?></p>
-                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707176&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-comments" target="_blank" class="upgrade_link"><?php _e('Purchase WP All Import Pro', 'wp_all_import_plugin');?></a>
+                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839966&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-comments" target="_blank" class="upgrade_link"><?php _e('Purchase WP All Import Pro', 'wp_all_import_plugin');?></a>
                                         </div>
                                         <div class="wpallimport-upgrade-notice" rel="woo_reviews">
                                             <p><?php _e('The WooCommerce Import Package is Required to Import Reviews', 'wp_all_import_plugin'); ?></p>
-                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707227&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-reviews" target="_blank" class="upgrade_link"><?php _e('Purchase the WooCommerce Import Package', 'wp_all_import_plugin');?></a>
+                                            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839961&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-reviews" target="_blank" class="upgrade_link"><?php _e('Purchase the WooCommerce Import Package', 'wp_all_import_plugin');?></a>
                                         </div>
                                         <?php if ( class_exists('WooCommerce') && ! class_exists('PMUI_Plugin') ): ?>
                                             <div class="wpallimport-upgrade-notice" rel="shop_customer">
                                                 <p><?php _e('The User Add-On is Required to Import Customers', 'wp_all_import_plugin'); ?></p>
-                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707221&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-users"><?php _e('Purchase the User Add-On', 'wp_all_import_plugin');?></a>
+                                                <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839963&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=import-users"><?php _e('Purchase the User Add-On', 'wp_all_import_plugin');?></a>
                                             </div>
                                         <?php endif; ?>
 

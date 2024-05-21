@@ -342,7 +342,8 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
             if ( strlen($data['user_details']['user_pass']) === 34 && strpos( $data['user_details']['user_pass'], '$P$B') === 0){
                 $is_wordpress_password = true;
             }
-            $password = ($is_wordpress_password) ? $data['user_details']['user_pass'] : wp_hash_password($data['user_details']['user_pass']);
+            $password = ($is_wordpress_password) ? $data['user_details']['user_pass'] : wp_hash_password(str_replace("'", "\'",$data['user_details']['user_pass']));
+
             $password_generated = false;
         } else {
             $password = wp_generate_password(12, true);
@@ -549,7 +550,7 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
                 $user_data['user_registered'] = $data['user_details']['user_registered'];
             }
             if (isset($data['user_details']['user_pass'])) {
-                $user_data['user_pass'] = $data['user_details']['user_pass'];                
+                $user_data['user_pass'] = str_replace("'", "\'",$data['user_details']['user_pass']);                
             }
             if (isset($data['user_details']['display_name'])) {
                 $user_data['display_name'] = $data['user_details']['display_name'];

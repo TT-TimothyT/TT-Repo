@@ -156,7 +156,7 @@
 							<div class="wpallimport-collapsed-content" style="padding: 0;">
 								<div class="wpallimport-collapsed-content-inner">
 									<div class="wpallimport-free-edition-notice" style="text-align:center; margin-top:0; margin-bottom: 40px;">
-										<a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707176&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=function-editor" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to use the Function Editor', 'wp_all_import_plugin');?></a>
+										<a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839966&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=function-editor" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to use the Function Editor', 'wp_all_import_plugin');?></a>
 										<p><?php _e('If you already own it, remove the free edition and install the Pro edition.', 'wp_all_import_plugin'); ?></p>
 									</div>
 
@@ -218,7 +218,7 @@
 							<input type="hidden" value="<?php _e('Upgrade to the Pro edition of WP All Import to Import Custom Fields', 'wp_all_import_plugin');?>" class="wpallimport-dynamic-notice-cf-text"/>
 							<input type="hidden" value="<?php _e('Upgrade to the Pro edition of WP All Import to Import Images', 'wp_all_import_plugin');?>" class="wpallimport-dynamic-notice-images-text"/>
 							<input type="hidden" value="<?php _e('Upgrade to the Pro edition of WP All Import to Import Images and Custom Fields', 'wp_all_import_plugin');?>" class="wpallimport-dynamic-notice-cf-image-text"/>
-							<a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707176&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=images-and-or-custom-fields" target="_blank" class="upgrade_link"></a>
+							<a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839966&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=upgrade-notice&utm_campaign=images-and-or-custom-fields" target="_blank" class="upgrade_link"></a>
 							<p><?php _e('If you already own it, remove the free edition and install the Pro edition.', 'wp_all_import_plugin'); ?></p>
 						</div>
 

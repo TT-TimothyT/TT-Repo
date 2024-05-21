@@ -1,8 +1,9 @@
 === Import any XML or CSV File to WordPress ===
 Contributors: soflyy, wpallimport
-Requires at least: 4.1
+Requires at least: 5.0
 Tested up to: 6.5
-Stable tag: 3.7.4
+Stable tag: 3.7.5
+Requires PHP: 7.4
 Tags: wordpress csv import, wordpress xml import, xml, csv, datafeed, import, migrate, import csv to wordpress, import xml to wordpress, advanced xml import, advanced csv import, bulk csv import, bulk xml import, bulk data import, xml to custom post type, csv to custom post type, woocommerce csv import, woocommerce xml import, csv import, import csv, xml import, import xml, csv importer
 
 WP All Import is an extremely powerful importer that makes it easy to import any XML or CSV file to WordPress.
@@ -83,7 +84,7 @@ A [developer API](http://www.wpallimport.com/documentation/developers/action-ref
 == Premium Support ==
 Support for the free version of WP All Import is handled through the WordPress.org community forums.
 
-Support is not guaranteed and is based on ability. For premium support over email, [purchase WP All Import.](https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=2707176&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=readme&utm_campaign=premium-support)
+Support is not guaranteed and is based on ability. For premium support over email, [purchase WP All Import.](https://www.wpallimport.com/checkout/?edd_action=add_to_cart&download_id=5839966&edd_options%5Bprice_id%5D=1&utm_source=import-plugin-free&utm_medium=readme&utm_campaign=premium-support)
 
 == Import To WooCommerce ==
 
@@ -181,6 +182,10 @@ If you are using the free version of the plugin, you can obtain support through 
 4. Manage imports.
 
 == Changelog ==
+
+= 3.7.5 =
+* improvement: update upgrade links
+* bug fix: fatal error with PHP 8.3
 
 = 3.7.4 =
 * security improvement

@@ -35,6 +35,7 @@ class Password_Protected_reCAPTCHA {
 		}
 
 		add_action( 'admin_init', array( $this, 'register_reCAPTCHA_settings' ), 6 );
+        add_action( 'password_protected_subtab_google-recaptcha_content', array( $this, 'google_recaptcha_settings' ) );
 
 		add_action( 'password_protected_after_password_field', array( $this, 'add_recaptcha' ) );
 
@@ -60,6 +61,21 @@ class Password_Protected_reCAPTCHA {
 			'v2_theme'      => 'light',
 		);
 	}
+
+    public function google_recaptcha_settings() {
+        ?>
+        <div class="wrap">
+            <h1><?php _e( 'Google reCAPTCHA Settings', 'password-protected' ); ?></h1>
+            <form method="post" action="options.php">
+                <?php
+                settings_fields( 'password-protected-advanced' );
+                do_settings_sections( 'password-protected&tab=advanced' );
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
+    }
 
 	/**
 	 * reCAPTCHA  Settings Info
@@ -174,15 +190,21 @@ class Password_Protected_reCAPTCHA {
 	 * @return  void  password protected reCAPTCHA status field
 	 */
 	public function reCAPTCHA_enable() {
-		echo '<label>
-                <input 
-                    name="' . esc_attr( $this->options_name ) . '[enable]" 
-                    id="pp_enable_recaptcha" 
-                    type="checkbox" 
-                    value="1" ' . checked( 1, @$this->settings['enable'], false ) . ' 
-                /> ' .
+        echo '<div class="pp-toggle-wrapper">
+            <input 
+                name="' . esc_attr( $this->options_name ) . '[enable]" 
+                id="pp_enable_recaptcha" 
+                type="checkbox" 
+                value="1" ' . checked( 1, @$this->settings['enable'], false ) . ' 
+            />
+            <label class="pp-toggle" for="pp_enable_recaptcha">
+                <span class="pp-toggle-slider"></span>
+            </label>
+        </div>
+        <label for="pp_enable_recaptcha">
+                 ' .
 				__( 'Enabled', 'password-protected' ) . '
-            </label>';
+        </label>';
 	}
 
 	/**
@@ -461,7 +483,8 @@ class Password_Protected_reCAPTCHA {
 	 * @return  void  password protected reCAPTCHA v2 field
 	 */
 	public function display_recaptcha_v2() {
-		wp_enqueue_style( 'pp-recaptcha-style', plugin_dir_url( __DIR__ ) . 'assets/css/recaptcha.css', array(), '2.6.2' );
+        global $Password_Protected;
+		wp_enqueue_style( 'pp-recaptcha-style', plugin_dir_url( __DIR__ ) . 'assets/css/recaptcha.css', array(), $Password_Protected->version );
 		wp_enqueue_script( 'pp-recaptcha-api-v2', esc_url( 'https://www.google.com/recaptcha/api.js' ), array(), null );
 		echo '<div 
                 class="g-recaptcha" 

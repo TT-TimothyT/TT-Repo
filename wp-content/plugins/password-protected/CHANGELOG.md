@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
+## 2.7.2 2024-05-07
+- Fix: Updated depreciated PHP function to make it compatible with the latest PHP version.
+- Added: Login designer compatibility banner.
+- Improvement: Implement few UI tweaks.
 
 ## 2.7.1 2024-03-27
 - Fixed - Disabled activity report by default.

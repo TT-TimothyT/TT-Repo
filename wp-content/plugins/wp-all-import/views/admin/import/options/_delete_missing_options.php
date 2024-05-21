@@ -19,7 +19,7 @@
 <div class="switcher-target-is_delete_missing" style="padding-left:17px;">
     <?php if ($post['wizard_type'] == 'matching'): ?>
         <div class="wpallimport-free-edition-notice delete-missing-existing-items" style="margin-top: 10px; display: none;">
-            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&amp;download_id=2707176&amp;edd_options%5Bprice_id%5D=1&amp;utm_source=import-plugin-free&amp;utm_medium=upgrade-notice&amp;utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to use this option', 'wp_all_import_plugin'); ?></a>
+            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&amp;download_id=5839966&amp;edd_options%5Bprice_id%5D=1&amp;utm_source=import-plugin-free&amp;utm_medium=upgrade-notice&amp;utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to use this option', 'wp_all_import_plugin'); ?></a>
             <p style="margin-top:16px;"><?php _e('If you already own it, remove the free edition and install the Pro edition.', 'wp_all_import_plugin'); ?></p>
         </div>
     <?php endif; ?>
@@ -31,7 +31,7 @@
 
     <div class="switcher-target-delete_missing_logic_all" style="padding-left:17px;">
         <div class="wpallimport-free-edition-notice" style="margin: 0 0 30px 7px;">
-            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&amp;download_id=2707176&amp;edd_options%5Bprice_id%5D=1&amp;utm_source=import-plugin-free&amp;utm_medium=upgrade-notice&amp;utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to use this option', 'wp_all_import_plugin'); ?></a>
+            <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&amp;download_id=5839966&amp;edd_options%5Bprice_id%5D=1&amp;utm_source=import-plugin-free&amp;utm_medium=upgrade-notice&amp;utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to use this option', 'wp_all_import_plugin'); ?></a>
             <p style="margin-top:16px;"><?php _e('If you already own it, remove the free edition and install the Pro edition.', 'wp_all_import_plugin'); ?></p>
         </div>
     </div>
@@ -58,7 +58,7 @@
                         <a href="#help" class="wpallimport-help" style="position: relative; top: -2px;" title="<?php printf(__('This option is not available when importing %s.', 'wp_all_import_plugin'), $cpt_name) ?>">?</a>
                     <?php endif;?>
                     <div class="wpallimport-free-edition-notice send-removed-to_trash-notice" style="margin: 0 0 10px 7px; display: none;">
-                        <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&amp;download_id=2707176&amp;edd_options%5Bprice_id%5D=1&amp;utm_source=import-plugin-free&amp;utm_medium=upgrade-notice&amp;utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to use this option', 'wp_all_import_plugin'); ?></a>
+                        <a href="https://www.wpallimport.com/checkout/?edd_action=add_to_cart&amp;download_id=5839966&amp;edd_options%5Bprice_id%5D=1&amp;utm_source=import-plugin-free&amp;utm_medium=upgrade-notice&amp;utm_campaign=download-from-url" target="_blank" class="upgrade_link"><?php _e('Upgrade to the Pro edition of WP All Import to use this option', 'wp_all_import_plugin'); ?></a>
                         <p style="margin-top:16px;"><?php _e('If you already own it, remove the free edition and install the Pro edition.', 'wp_all_import_plugin'); ?></p>
                     </div>
                 </div>

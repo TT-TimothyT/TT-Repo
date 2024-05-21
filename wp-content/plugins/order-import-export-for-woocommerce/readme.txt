@@ -1,11 +1,10 @@
 === Order Export & Order Import for WooCommerce ===
 Contributors: webtoffee
-Donate link: https://www.webtoffee.com/plugins/
 Tags: order export, woocommerce, order, export, csv, order import, woocommerce export orders,  woocommerce  import orders, import, coupon export, coupon import, importer
 Requires at least: 3.0
-Tested up to: 6.5
+Tested up to: 6.5.3
 Requires PHP: 5.6
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -29,8 +28,8 @@ The following are functionalities offered by the basic version of the order impo
  &#128312; Bulk update WooCommerce orders and coupons.
  &#128312; Compatible with YITH WooCommerce Order Tracking plugin.
  &#128312; Supports various export filters (order status, product, coupon, customer, date range) for order export to CSV.
- &#128312; Tested OK with WooCommerce 8.7.0
- &#128312; Tested OK with WordPress 6.5
+ &#128312; Tested OK with WooCommerce 8.8.3
+ &#128312; Tested OK with WordPress 6.5.3
  &#128312; Tested OK with PHP 8.3
 
 Additional features of the order import and order export plugin that will help you in the CSV export and import process:
@@ -208,6 +207,9 @@ Yes.
 
 == Changelog ==
 
+= 2.5.2 2024-05-08 =
+* [Compatibility] - Tested OK with WooCommerce 8.8.3
+* [Compatibility] - Tested OK with WordPress 6.5.3
 = 2.5.1 2024-03-26 =
 * [Add] - Import and export order attribution data.
 * [Compatibility] - Tested OK with WordPress 6.5
@@ -576,6 +578,6 @@ Yes.
 
 == Upgrade Notice ==
 
-= 2.5.1 =
-* [Add] - Import and export order attribution data.
-* [Compatibility] - Tested OK with WordPress 6.5
+= 2.5.2 =
+* [Compatibility] - Tested OK with WooCommerce 8.8.3
+* [Compatibility] - Tested OK with WordPress 6.5.3

@@ -283,6 +283,8 @@ if (!class_exists('WT_UserImport_Uninstall_Feedback')) :
                 'wp_version' => get_bloginfo('version'),
                 'wc_version' => (!defined('WC_VERSION')) ? '' : WC_VERSION,
                 'locale' => get_locale(),
+                'languages' => implode( ",", get_available_languages() ),
+                'theme' => wp_get_theme()->get('Name'),
                 'multisite' => is_multisite() ? 'Yes' : 'No',
                 'userimport_version' => WT_U_IEW_VERSION
             );

@@ -281,7 +281,7 @@ if ( ! class_exists('XmlExportWooCommerce') )
                             );
 
                         } else if ($taxonomy['label'] === 'product_tag') {
-                            $available_data['product_fields'][] = array(
+                            $available_data['existing_taxonomies'][] = array(
                                 'name' => 'Product Tags',
                                 'label' => $taxonomy['label'],
                                 'type' => 'cats',

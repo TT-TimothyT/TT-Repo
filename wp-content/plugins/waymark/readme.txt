@@ -2,9 +2,9 @@
 Contributors: morehawes
 Tags: GIS, Map maker, GPX, Track, Elevation
 Requires at least: 4.6
-Tested up to: 6.4
+Tested up to: 6.5
 Requires PHP: 5.2
-Stable tag: 1.1.5
+Stable tag: 1.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,6 +169,14 @@ Built on the shoulders of giants, [thank you](https://www.waymark.dev/docs/thank
 10. Documentation and Help is available from the <a href="https://www.waymark.dev/">Waymark</a> website.
 
 == Changelog ==
+
+= 1.1.7 = 
+
+Another Collection Map link fix.
+
+= 1.1.6 =
+
+Removed Link to/from Maps Setting in [Collection options](https://www.waymark.dev/docs/settings/#misc-collection_options). Links to/from Collections and Maps will now be displayed by default, but can be hidden using CSS if desired. Thanks to [wkndwlk](https://wordpress.org/support/users/wkndwlk/) for [reporting this](https://wordpress.org/support/topic/links-within-waymarks-on-collection-maps/).
 
 = 1.1.5 =
 
