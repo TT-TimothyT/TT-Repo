@@ -2214,29 +2214,33 @@ function tt_is_coupon_applied( $coupon_code ) {
  * @version : 1.0.0
  * @return  : Ajax action for adding compare product Ids in @Session
  **/
-add_action('wp_ajax_tt_apply_remove_coupan_action', 'trek_tt_apply_remove_coupan_action_cb');
-add_action('wp_ajax_nopriv_tt_apply_remove_coupan_action', 'trek_tt_apply_remove_coupan_action_cb');
+add_action( 'wp_ajax_tt_apply_remove_coupan_action', 'trek_tt_apply_remove_coupan_action_cb' );
+add_action( 'wp_ajax_nopriv_tt_apply_remove_coupan_action', 'trek_tt_apply_remove_coupan_action_cb' );
 function trek_tt_apply_remove_coupan_action_cb()
 {
-    $res['status'] = false;
+    $res['status']  = false;
     $res['message'] = '';
-    $res['html'] = '';
-    $coupon_code = $_REQUEST['coupon_code'];
-    $type = $_REQUEST['type'];
-    $resHtml = '';
-    $is_applied = false;
-    if ($coupon_code && $type) {
-        if ($type == 'add') {
-            if (!WC()->cart->has_discount($coupon_code)) {
-                $coupon = new WC_Coupon($coupon_code);
-                $coupon_post = get_post($coupon->id);
-                if ($coupon_post) {
-                    WC()->cart->apply_coupon($coupon_code);
-                    $is_applied = true;
+    $res['html']    = '';
+    $coupon_code    = $_REQUEST['coupon_code'];
+    $type           = $_REQUEST['type'];
+    $resHtml        = '';
+    $is_applied     = false;
+    if ( $coupon_code && $type ) {
+        if ( $type == 'add' ) {
+            if ( ! WC()->cart->has_discount( $coupon_code ) ) {
+                $coupon      = new WC_Coupon( $coupon_code );
+                $coupon_post = get_post( $coupon->id );
+                if ( $coupon_post ) {
+                    WC()->cart->apply_coupon( $coupon_code );
+                    if ( ! WC()->cart->has_discount( $coupon_code ) ) {
+                        $is_applied = false;
+                    } else {
+                        $is_applied = true;
+                    }
                 }
             }
         } else {
-            WC()->cart->remove_coupon($coupon_code);
+            WC()->cart->remove_coupon( $coupon_code );
             $is_applied = false;
         }
         WC()->cart->calculate_totals();
@@ -6973,7 +6977,11 @@ function check_parent_product_categories_for_coupon( $passed, $coupon, $cart ) {
     }
 
     // Get cart items
-    $cart = WC()->cart->get_cart();
+    if ( WC()->cart ) {
+        $cart = WC()->cart->get_cart();
+    } else {
+        return true;
+    }
 
     // Loop through cart items
     foreach ( $cart as $cart_item_key => $cart_item ) {
