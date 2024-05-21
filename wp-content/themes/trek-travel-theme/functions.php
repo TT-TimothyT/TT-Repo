@@ -873,3 +873,13 @@ function yoast_noindex_nofollow_simple_products($robots) {
 
 add_filter('wpseo_robots', 'yoast_noindex_nofollow_simple_products');
 
+// Post Type NOINDEX NOFOLLOW
+
+function yoast_seo_noindex_non_published($robots) {
+    if (is_single() && !is_preview() && get_post_status() !== 'publish') {
+        $robots['index'] = 'noindex';
+        $robots['follow'] = 'nofollow';
+    }
+    return $robots;
+}
+add_filter('wpseo_robots', 'yoast_seo_noindex_non_published');
