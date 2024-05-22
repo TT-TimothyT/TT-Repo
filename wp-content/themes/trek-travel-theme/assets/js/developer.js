@@ -1404,7 +1404,9 @@ jQuery(window).load(function () {
   })
   jQuery('input[name="trek_destination"]').change(function () {
     var destination = jQuery('.destination-option input[name="trek_destination"]:checked').attr('id');
-    jQuery('.trek-trip-finder-form').attr('action', `${destination}`);
+    if (destination !== undefined) {
+      jQuery('.trek-trip-finder-form').attr('action', `${destination}`);
+    }
     dataLayer.push({
       'event': 'trip_finder',
       'finder_step': 'select a destination' //find a trip, select a date, select a destination, show trips
