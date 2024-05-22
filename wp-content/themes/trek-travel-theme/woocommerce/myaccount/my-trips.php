@@ -210,4 +210,84 @@ $wp_user_email = $userInfo->user_email;
 			</div>
 		</div>
 	</div>
+
+	<div class="row mx-0">
+		<div class="col-lg-10">
+			<div class="card dashboard__card rounded-1">
+				<h5 class="fw-semibold past-title">Cancelled Trips</h5>
+				<?php
+					$cancelled_trips_html = '';
+					$cancelled_trips      = tt_get_cancelled_guest_trips( get_current_user_id(), '', $is_log );
+					if ( ! empty( $cancelled_trips ) && isset( $cancelled_trips['count'] ) && $cancelled_trips['count'] != 0 && is_user_logged_in() ) {
+						if ( $cancelled_trips && isset( $cancelled_trips['data'] ) ) {
+							foreach ( $cancelled_trips['data'] as $cancelled_trip ) {
+								$trip_name  = $trip_sdate = $trip_edate = $trip_sku = '';
+								$product_id = $cancelled_trip['product_id'];
+								$trip_name  = $cancelled_trip['trip_name'];
+								if ( $trip_name ) {
+									$order_id      = $cancelled_trip['order_id'];
+									$order_details = trek_get_user_order_info( $userInfo->ID, $order_id );
+									$is_primary    = isset( $order_details[0]['guest_is_primary']) ? $order_details[0]['guest_is_primary'] : 0; 
+									$product       = wc_get_product( $product_id );
+									$trip_sdate    = $product->get_attribute( 'pa_start-date' ); 
+									$trip_edate    = $product->get_attribute( 'pa_end-date' );
+									$sdate_obj     = explode( '/', $trip_sdate );
+									$sdate_info    = array(
+										'd' => $sdate_obj[0],
+										'm' => $sdate_obj[1],
+										'y' => substr(date('Y'),0,2).$sdate_obj[2]
+									);
+									$edate_obj  = explode( '/', $trip_edate );
+									$edate_info = array(
+										'd' => $edate_obj[0],
+										'm' => $edate_obj[1],
+										'y' => substr(date('Y'),0,2).$edate_obj[2]
+									);
+									$start_date_text = date('F jS, Y', strtotime(implode('-', $sdate_info)));
+									$end_date_text_1 = date('F jS, Y', strtotime(implode('-', $edate_info)));
+									$end_date_text_2 = date('jS, Y', strtotime(implode('-', $edate_info)));
+									$date_range_1    = $start_date_text. ' - '.$end_date_text_2;
+									$date_range_2    = $start_date_text. ' - '.$end_date_text_1;
+									$date_range      = $date_range_1;
+									if( $sdate_info['m'] != $edate_info['m'] ) {
+										$date_range = $date_range_2;
+									}
+									$product_image_url = 'https://via.placeholder.com/150?text=Trek Travel';
+									$trip_sku          = $product ? $product->get_sku() : '';
+									$parentTrip        = tt_get_parent_trip($trip_sku);
+									$trip_link         = 'javascript:';
+									$tripRegion        = tt_get_local_trips_detail( 'tripRegion', '', $trip_sku, true );
+									$parent_product_id = $pa_city = '';
+									$parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
+									if( $parent_product_id ){
+										$p_product = wc_get_product( $parent_product_id );
+										$pa_city   = $p_product ? $p_product->get_attribute( 'pa_city' ) : '';
+									}
+									if ( $order_id ) {
+										$trip_link = esc_url(add_query_arg('order_id', $order_id, get_permalink(TREK_MY_ACCOUNT_PID) . 'my-trip'));
+									}
+									$trip_address = [$pa_city,$tripRegion];
+									$trip_address = array_filter( $trip_address );
+									$cancelled_trips_html .= '<div class="trips-list-item past-trip-item">
+										<div class="trip-image">
+											<img src="' . $parentTrip['image'] . '">
+										</div>
+										<div class="trip-info">
+											<p class="fw-normal fs-sm lh-sm mb-0 mt-4">'.implode( ', ', $trip_address ).'</p>
+											<h5 class="fw-semibold">' . $trip_name . '</h5>
+											<p class="fw-medium fs-sm lh-sm">' . $date_range . '</p>
+											<i class="bi bi-info-circle me-3 text-danger"></i><p class="fw-normal fs-sm lh-sm d-inline text-danger">This trip was cancelled!</p>
+										</div>
+									</div><hr>';
+								}
+							}
+						}
+					} else {
+						$cancelled_trips_html .= '<p class="no-trip-text mt-2">You don&apos;t have Cancelled Trips Yet.</p>';
+					}
+					echo $cancelled_trips_html;
+					?>
+			</div>
+		</div>
+	</div>
 </div>

@@ -1724,6 +1724,7 @@ function trek_get_guest_trips($user_id = '', $is_upcoming = 1, $order_id = '',$i
         $sql = "SELECT DISTINCT gb.order_id,gb.product_id, gb.user_id, gb.trip_name, gb.trip_start_date, gb.trip_end_date from {$table_name} as gb WHERE gb.trip_start_date < '{$current_date}' AND  gb.trip_end_date < '{$current_date}' ";
     }
     $sql .= " AND gb.trip_name != '' ";
+    $sql .= " AND gb.is_guestreg_cancelled != '1' ";
     if ($wp_user_email || $user_id) {
         $sql .= " AND ( gb.guest_email_address = '{$wp_user_email}' OR gb.user_id = '{$user_id}' )";
     }
@@ -7048,4 +7049,47 @@ function tt_is_registration_locked( $wc_user_id = '', $guest_reg_id = '', $type 
 
     // Return Array with all possible locked statuses.
     return $reg_locked_status;
+}
+
+/**
+ * Get the Cancelled trips.
+ *
+ * @param int|string $user_id  The WP user ID.
+ * @param int|string $order_id The order ID.
+ * @param bool       $is_log   Whether to log the request and response.
+ *
+ * @return array The cancelled trip data and count.
+ */
+function tt_get_cancelled_guest_trips( $user_id = '', $order_id = '', $is_log = false ) {
+    global $wpdb;
+
+    $table_name    = $wpdb->prefix . 'guest_bookings';
+    $user_info     = get_user_by( 'ID', $user_id );
+    $wp_user_email = $user_info->user_email;
+
+    $sql = "SELECT DISTINCT gb.order_id,gb.product_id, gb.user_id, gb.trip_name, gb.trip_start_date, gb.trip_end_date from {$table_name} as gb WHERE gb.is_guestreg_cancelled = '1' ";
+    $sql .= " AND gb.trip_name != '' ";
+
+    if ( $wp_user_email || $user_id ) {
+        $sql .= " AND ( gb.guest_email_address = '{$wp_user_email}' OR gb.user_id = '{$user_id}' )";
+    }
+
+    $sql .= " ORDER BY gb.id DESC";
+
+    if ( $order_id ) {
+        $sql .= " AND gb.order_id = {$order_id}";
+        $sql .= " ORDER BY gb.order_id DESC";
+    }
+
+    $results = $wpdb->get_results( $sql, ARRAY_A );
+    $res     = array(
+        'count' => count( $results ),
+        'data'  => $results
+    );
+
+    if( $is_log == true ){
+        tt_add_error_log('[SQL] My Cancelled Trips Dashboard', ['sql'=>$sql], $res );
+    }
+
+    return $res;
 }

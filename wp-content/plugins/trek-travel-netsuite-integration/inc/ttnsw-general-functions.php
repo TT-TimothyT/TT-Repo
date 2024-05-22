@@ -1196,6 +1196,7 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
     $booking_table_data['allergies']                           = tt_validate( $ns_guest_info->allergies );
     $booking_table_data['dietary_restrictions']                = tt_validate( $ns_guest_info->dietaryPreferences );
     $booking_table_data['waiver_signed']                       = tt_validate( $ns_guest_info->waiverAccepted ) == 1 ? 1 : 0;
+    $booking_table_data['is_guestreg_cancelled']               = tt_validate( $ns_guest_info->isCancelled ) == 1 ? 1 : 0;
 
     return $booking_table_data;
 }

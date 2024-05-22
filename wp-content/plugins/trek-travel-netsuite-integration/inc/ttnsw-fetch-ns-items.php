@@ -150,23 +150,47 @@ function tt_admin_menu_page_cb()
         tt_add_error_log('[End]', ['type'=> 'User Checklist Sync'], ['dateTime' => date('Y-m-d H:i:s')]);
 
     }
-    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'dx-rapair-locking-status' ) {
+    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'dx-add-is-cancelled' ) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'guest_bookings';
-        $sql = "SELECT DISTINCT guestRegistrationId, guest_email_address from {$table_name} WHERE guestRegistrationId IS NOT NULL AND guestRegistrationId <> '' AND guest_email_address IS NOT NULL AND guest_email_address <> ''";
-        // Get All unique Guest registration IDs, and guest emails from guest_bookings table.
-        $results = $wpdb->get_results( $sql, ARRAY_A );
+        $table_name      = $wpdb->prefix . 'guest_bookings';
+        $new_column_name = 'is_guestreg_cancelled';
 
-        if( ! empty( $results ) ) {
-            $guest_reg_ids_arr = array_chunk( $results, 15 );
-    
-            foreach( $guest_reg_ids_arr as $guest_reg_ids ) {
-                foreach( $guest_reg_ids as $guest_reg_id ) {
-                    if( isset( $guest_reg_id['guestRegistrationId'] ) && isset( $guest_reg_id['guest_email_address'] ) ) {
-                        tt_set_bike_record_lock_status( $guest_reg_id['guest_email_address'], $guest_reg_id['guestRegistrationId'] );
+        $column_exist    = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = '{$new_column_name}'"  );
+
+        if( empty( $column_exist ) ) {
+            $sql = "ALTER TABLE $table_name ADD COLUMN $new_column_name INT(11) DEFAULT 0 AFTER guestRegistrationId";
+
+            // Execute the query
+            $wpdb->query($sql);
+        }
+    }
+    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'dx-sync-is-cancelled' ) {
+        global $wpdb;
+        $table_name      = $wpdb->prefix . 'guest_bookings';
+        $new_column_name = 'is_guestreg_cancelled';
+
+        $column_exist    = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = '{$new_column_name}'"  );
+
+        // Do Sync if the column is_guestreg_cancelled exist in the guest_bookings table.
+        if( ! empty( $column_exist ) ) {
+
+            $sql = "SELECT DISTINCT netsuite_guest_registration_id from {$table_name} WHERE guestRegistrationId IS NOT NULL AND guestRegistrationId <> '' AND netsuite_guest_registration_id IS NOT NULL AND netsuite_guest_registration_id <> ''";
+            // Get All unique Guest registration IDs, from the guest_bookings table.
+            $results = $wpdb->get_results( $sql, ARRAY_A );
+
+            tt_add_error_log('[Start] Sync isCancelled status', array( 'Found NS Users in the guest_bookings table'=> $results ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
+            if( ! empty( $results ) ) {
+                $ns_guest_reg_ids_arr = array_chunk( $results, 15 );
+
+                foreach( $ns_guest_reg_ids_arr as $ns_guest_reg_ids ) {
+                    foreach( $ns_guest_reg_ids as $ns_guest_reg_id ) {
+                        if( isset( $ns_guest_reg_id['netsuite_guest_registration_id'] ) ) {
+                            tt_ns_guest_booking_details( true, $ns_guest_reg_id['netsuite_guest_registration_id'] );
+                        }
                     }
                 }
             }
+            tt_add_error_log('[End] Sync isCancelled status', array( 'Found NS Users in the guest_bookings table'=> $results ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
         }
     }
 ?>
@@ -261,11 +285,42 @@ function tt_admin_menu_page_cb()
             <div id="dx-repair-tools">
                 <hr>
                 <h3>DX Repair Tools</h3>
-                <p>This process below will take all the Guest Registration IDs from the <code>guest_bookings</code> table and loop through them to fix the missing Bike and Checklist Locking statuses.</p>
+                <p>This process below will add the column <code>is_guestreg_cancelled</code> in the <code>guest_bookings</code> table.</p>
+                <?php
+                    global $wpdb;
+                    $table_name = $wpdb->prefix . 'guest_bookings';
+                    $row        = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'is_guestreg_cancelled'"  );
+                ?>
                 <form action="" class="tt-locking-status-sync" method="post">
-                    <input type="hidden" name="action" value="dx-rapair-locking-status">
-                    <input type="submit" name="submit" value="Repair Bike / Checklist Locking" class="button-primary">
+                    <input type="hidden" name="action" value="dx-add-is-cancelled">
+                    <input type="submit" name="submit" value="Add is_guestreg_cancelled column" class="button-primary" <?php echo esc_attr( !empty($row) ? 'disabled="true"' : '' ); ?>>
                 </form>
+                <div id="dx-print_result" style="margin: 2% 0px;">
+                    <p><b>Bookings table status: </b>
+                        <?php if( empty($row) ) : ?>
+                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code>is_guestreg_cancelled</code> column missing yet</span>
+                        <?php else : ?>
+                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code>is_guestreg_cancelled</code> column</span>
+                        <?php endif; ?>
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <hr>
+                    <p>This process below will take all the Guest Registration IDs from the <code>guest_bookings</code> table and loop through them to set the <code>isCancelled</code> status from NS.</p>
+                    <form action="" class="tt-locking-status-sync" method="post">
+                        <input type="hidden" name="action" value="dx-sync-is-cancelled">
+                        <input type="submit" name="submit" value="Sync isCancelled status" class="button-primary" <?php echo esc_attr( empty($row) ? 'disabled="true"' : '' ); ?>>
+                    </form>
+                    <div id="dx-print_result" style="margin: 2% 0px;">
+                        <p><b>Ready to sync - status: </b>
+                            <?php if( empty($row) ) : ?>
+                            <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">Not ready for sync! The <code>is_guestreg_cancelled</code> column missing yet</span>
+                            <?php else : ?>
+                            <span style="padding: 2px 5px;border-radius:4px; background-color:#00f; color: white;">Ready to sync <code>isCancelled</code> status</span>
+                            <?php endif; ?>
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="dx-hidden-section" style="position:relative">
                 <button type="button" class="dx-show-hidden" style="position:absolute;right:20px;bottom:0;width:2rem;height:2rem;display:flex;justify-content: center;align-items: center;">
