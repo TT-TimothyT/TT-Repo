@@ -252,15 +252,17 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 					} ?>
 				</div>
 			</div>
-			<div class="card mb-3 dashboard__card rounded-1">
+			<!-- <div class="card mb-3 dashboard__card rounded-1">
 				<div class="card-body pb-0">
 					<div class="d-flex justify-content-between align-items-baseline mb-2">
 						<h5 class="card-title fw-bold mb-2">Bike & Gear Preferences</h5>
-						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/bike-gear-preferences'); ?>">Edit</a>
+						<a class="fs-sm lh-sm fw-medium" href="<?php 
+						// echo site_url('my-account/bike-gear-preferences'); 
+						?>">Edit</a>
 					</div>
 					<p class="fs-sm lh-sm fw-normal">Manage your jersey size, helmet size, and more</p>
 				</div>
-			</div>
+			</div> -->
 		</div>
 		<div class="col-lg-4">
 			<div class="card mb-5 dashboard__card rounded-1">
