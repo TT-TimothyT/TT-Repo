@@ -158,7 +158,7 @@ if ( $pdp_itineraries ) :
 	;
                                     foreach( $days as $day ): 
                                         $i++;
-                                        if ( $i <= 7 ): 
+                                        if ( $i <= 13 ): 
                                     ?>
                                         
                                             <div class="accordion-item">
@@ -281,7 +281,7 @@ if ( $pdp_itineraries ) :
                                         endif;
                                     endforeach;
                                     if( ! empty( $days ) ) {
-                                        if (  $days > 7 ):
+                                        if (  $days > 13 ):
                                         ?>
                                         <div class="accordion-item">
                                             <h6 class="accordion-header" id="flush-headingOne">
