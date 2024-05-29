@@ -7,16 +7,20 @@ use TTNetSuite\NetSuiteClient;
  * @return  : TT CRON Interval added for every 4 hours
  **/
 function tt_custom_cron_schedule( $schedules ) {
-    $schedules['every_four_hours'] = array(
-        'interval' => 14400,
-        'display'  => __( 'Every 4 hours' ),
-    );
 
-    //Add every 1 hour to the existing schedules.
-    $schedules['every_one_hour'] = array(
-        'interval' => 3600,
-        'display'  => __( 'Every 1 hour' ),
-    );
+    if( ! defined( 'DX_DEV' ) ) {
+        // Run the CRON JOBS only on production website.
+        $schedules['every_four_hours'] = array(
+            'interval' => 14400,
+            'display'  => __( 'Every 4 hours' ),
+        );
+
+        //Add every 1 hour to the existing schedules.
+        $schedules['every_one_hour'] = array(
+            'interval' => 3600,
+            'display'  => __( 'Every 1 hour' ),
+        );
+    }
 
     return $schedules;
 }
