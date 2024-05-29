@@ -357,6 +357,18 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
         if ( $transaction_deposit == true ) {
             $ns_booking_payload["paymentInfo"]["transaction_authorization_amount"] = $trip_transaction_amount + $total_insuarance_ammount;
         }
+        // Check if the order is with a deposit to overwrite the order total that is sent to NS with the real full order amount.
+        $pay_amount = tt_validate( $trek_checkoutData['pay_amount'] );
+        if( ! empty( $pay_amount ) ) {
+            if( 'deposite' === $pay_amount ) {
+                $order_total_full_amount = tt_validate( $trek_checkoutData['cart_total_full_amount'] );
+                if( ! empty( $order_total_full_amount ) ) {
+                    $ns_booking_payload["paymentInfo"]["order_total"] = $order_total_full_amount;
+                }
+            }
+        }
+        // NS Expects The Order Total without Travel Protections!
+        $ns_booking_payload["paymentInfo"]["order_total"] = round( $ns_booking_payload["paymentInfo"]["order_total"] - $total_insuarance_ammount, 2 );
         if ($ns_booking_payload) {
             $ns_booking_result = $netSuiteClient->post(BOOKING_SCRIPT_ID, json_encode($ns_booking_payload));
             tt_update_user_booking_info( $order_id, $ns_booking_result, $guests_email_addresses );
