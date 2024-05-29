@@ -196,6 +196,7 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
             // Save guest_phone as billing_phone to prevent overwriting the primary phone from TM NetSuite plugin.
             update_user_meta( $user_id, 'custentity_phone_number', $checkout_data['shipping_phone'] );
             update_user_meta( $user_id, 'billing_phone', $checkout_data['shipping_phone'] );
+            update_user_meta( $user_id, 'shipping_phone', $checkout_data['shipping_phone'] );
         }
         if( $product ){
             $trip_status = $product->get_attribute( 'pa_trip-status' );
