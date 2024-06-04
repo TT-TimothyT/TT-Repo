@@ -2221,6 +2221,7 @@ function validateGuestSelectionAdds(){
     jQuery(buttonEle).each(function(){
       var CurrentName = jQuery(this).attr('data-field');
       var CurrentVal = jQuery(`input[name="${CurrentName}"]`).val();
+      var isOpenToRoommateDisabled = jQuery(`input[name="is_open_to_roommate_disabled"]`).val();
       var remainingRooms = no_of_guests - totalOccupatns;
       jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").html(remainingRooms)
       if( no_of_guests == 1 || remainingRooms == 1 ){
@@ -2240,7 +2241,11 @@ function validateGuestSelectionAdds(){
           if( no_of_guests == totalOccupatns ){
             jQuery(`button[data-type="plus"][data-field="${CurrentName}"]`).attr('disabled', true);
           }else{
-            jQuery(`button[data-type="plus"][data-field="${CurrentName}"]`).attr('disabled', false);
+            if (isOpenToRoommateDisabled == 1 && CurrentName == 'roommate') {
+              jQuery(`button[data-type="plus"][data-field="${CurrentName}"]`).attr('disabled', true);
+            } else {
+              jQuery(`button[data-type="plus"][data-field="${CurrentName}"]`).attr('disabled', false);
+            }
           }
         }
       }else{
@@ -2252,7 +2257,11 @@ function validateGuestSelectionAdds(){
         if( no_of_guests == totalOccupatns ){
           jQuery(`button[data-type="plus"][data-field="${CurrentName}"]`).attr('disabled', true);
         }else{
-          jQuery(`button[data-type="plus"][data-field="${CurrentName}"]`).attr('disabled', false);
+          if (isOpenToRoommateDisabled == 1 && CurrentName == 'roommate') {
+            jQuery(`button[data-type="plus"][data-field="${CurrentName}"]`).attr('disabled', true);
+          } else {
+            jQuery(`button[data-type="plus"][data-field="${CurrentName}"]`).attr('disabled', false);
+          }
         }
       }
     });

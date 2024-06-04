@@ -54,12 +54,15 @@ if ( $trek_user_checkout_posted['product_id'] ) {
     $singleSupplementPrice = get_post_meta( $trek_user_checkout_posted['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
     $singleSupplementPriceCurr = get_woocommerce_currency_symbol() . $singleSupplementPrice;
 }
+
+$is_open_to_roommate_disabled = tt_get_local_trips_detail( 'isOpenToRoommateDisabled', '', $trip_sku, true );
 ?>
 <div class="checkout-step-two-hotel collapse multi-collapse show" id="multiCollapseExample1">
     <p class="fw-medium fs-xl lh-xl">1. Select Room & Occupants</p>
     <div class="checkout-step-two-hotel__guests-left-counter d-flex">
         <p class="fw-medium fs-lg lh-lg">Guests left to assign</p><span class="badge"><?php echo $guest_left; ?></span>
     </div>
+    <input type="hidden" name="is_open_to_roommate_disabled" value="<?php echo esc_attr( $is_open_to_roommate_disabled ); ?>" />
     <hr>
     <div class="checkout-step-two-hotel__room-options">
         <div class="checkout-step-two-hotel__one-bed">
@@ -131,7 +134,7 @@ if ( $trek_user_checkout_posted['product_id'] ) {
                 <div class="input-group mb-3">
                     <button class="btn btn-number" type="button" disabled="disabled" data-type="minus" data-field="roommate"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/room_counter_minus.svg" /></button>
                     <input type="text" name="roommate" class="form-control border-0 input-number" value="<?php echo (isset($trek_user_checkout_posted['roommate']) ? $trek_user_checkout_posted['roommate'] : '0'); ?>" min="0" max="<?php echo isset($trek_user_checkout_posted['no_of_guests']) ? $trek_user_checkout_posted['no_of_guests'] : 0; ?>" aria-label="Example text with two button addons">
-                    <button class="btn btn-number<?php echo esc_attr( $roommate_button_plus_class ); ?>" type="button" data-type="plus" data-field="roommate"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/room_counter_plus.svg" /></button>
+                    <button class="btn btn-number<?php echo esc_attr( $roommate_button_plus_class ); ?>" <?php echo ( $is_open_to_roommate_disabled === '1' ? 'disabled="disabled"' : ''); ?> type="button" data-type="plus" data-field="roommate"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/room_counter_plus.svg" /></button>
                 </div>
             </div>
             <p class="fw-normal fs-sm lh-sm mb-4 text-muted checkout-step-two-hotel__room-occupancy">Double Occupancy <i class="bi bi-info-circle pdp-double-occupancy checkout-double-occupancy"></i></p>
