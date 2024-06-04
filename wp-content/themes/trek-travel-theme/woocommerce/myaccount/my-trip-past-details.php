@@ -22,6 +22,7 @@ if ($guest_is_primary == 1) {
 	$public_view_order_url = esc_url($order->get_view_order_url());
 }
 if ($order_items) {
+	$is_passport_required = '';
 	foreach ($order_items as $item_id => $item) {
 		$product_id = $item['product_id'];
 		if (!in_array($product_id, $accepted_p_ids)) {
@@ -30,6 +31,7 @@ if ($order_items) {
 			$trek_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_checkout_data', true);
 			$trek_formatted_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_formatted_checkout_data', true);
 			if ($product) {
+				$is_passport_required = get_post_meta( $product_id, TT_WC_META_PREFIX . 'isPassportRequired', true );
 				$trip_status = $product->get_attribute('pa_trip-status');
 				$trip_sdate = $product->get_attribute('pa_start-date');
 				$trip_edate = $product->get_attribute('pa_end-date');
@@ -137,6 +139,24 @@ $bike_type_id = $User_order_info[0]['bike_type_id'];
 $bikeTypeInfo = tt_ns_get_bike_type_info( $bike_type_id );
 if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
 	$wheel_upgrade = 'Yes';
+}
+
+// Set the bike name based on bike_id value.
+$local_bike_details     = tt_get_local_bike_detail( $trip_sku );
+$local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
+$bike_name              = '';
+if ( ( isset( $bike_id ) && $bike_id ) || 0 == $bike_id ) {
+	switch ( $bike_id ) {
+		case 5270: // I am bringing my own bike.
+			$bike_name = 'Bringing own';
+			break;
+		case 0: // If set to 0, it means "I don't know" was picked for bike size and the bikeTypeName property will be used.
+			$bike_name = $bikeTypeId;
+			break;
+		default: // Take the name of the bike.
+			$bike_name = json_decode( $local_bike_models_info[ $bike_id ], true)[ 'name' ];
+			break;
+	}
 }
 
 $is_nested_dates_trip = false;
@@ -313,15 +333,6 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 	<div class="row mx-0 p-0 additional-trip-info">
 		<div class="col-lg-10">
 			<div class="card dashboard__card rounded-1">
-				<div class="emergency-info">
-					<p class="fw-medium fs-xl lh-xl">Shipping Address</p>
-					<div class="sub-head">
-						<p class="fw-medium fs-md lh-md"><?php echo $primary_address_1; ?></p>
-						<p class="fw-normal fs-sm lh-sm"><?php echo $primary_address_2; ?></p>
-						<p class="fw-normal fs-sm lh-sm"><?php echo $primary_country; ?></p>
-					</div>
-				</div> <!-- info ends -->
-				<hr>
 				<div class="medical-info">
 					<p class="fw-medium fs-xl lh-xl">Medical Information</p>
 					<div class="sub-head">
@@ -341,9 +352,9 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 				<div class="emergency-info">
 					<p class="fw-medium fs-xl lh-xl">Emergency Contact</p>
 					<div class="sub-head">
-						<p class="fw-medium fs-md lh-md">Name: <?php echo ($emergence_cfname ? $emergence_cfname . ' ' . $emergence_clname : ''); ?></p>
-						<p class="fw-normal fs-sm lh-sm">Phone: <?php echo ($emergence_cphone ? $emergence_cphone : ''); ?> </p>
-						<p class="fw-normal fs-sm lh-sm">Relationship: <?php echo ($emergence_crelationship ? '[' . $emergence_crelationship . ']' : ''); ?></p>
+						<p class="fw-medium fs-md lh-md">Name: <?php echo ( $emergence_cfname ? $emergence_cfname . ' ' . $emergence_clname : '' ); ?></p>
+						<p class="fw-normal fs-sm lh-sm">Phone: <?php echo ( $emergence_cphone ? $emergence_cphone : '' ); ?> </p>
+						<p class="fw-normal fs-sm lh-sm">Relationship: <?php echo ( $emergence_crelationship ? $emergence_crelationship : '' ); ?></p>
 					</div>
 				</div> <!-- info ends -->
 				<hr>
@@ -352,26 +363,26 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 					<div class="sub-head">
 						<p class="fw-normal fs-sm lh-sm">Rider level: <?php echo $rider_level; ?></p>
 						<?php if ( 5257 != $bike_id ) { ?>
-							<p class="fw-normal fs-sm lh-sm">Bike Size: <?php echo $bike_size; ?></p>
+							<p class="fw-normal fs-sm lh-sm">Bike Size: <?php echo $bike_size . ' ' . $bike_name; ?></p>
 							<p class="fw-normal fs-sm lh-sm">Rider Height: <?php echo $rider_height; ?></p>
 							<p class="fw-normal fs-sm lh-sm">Pedals: <?php echo $bike_pedal; ?></p>
 							<p class="fw-normal fs-sm lh-sm">Helmet Size: <?php echo $helmet_size; ?></p>
 							<p class="fw-normal fs-sm lh-sm">Jersey Size: <?php echo $jersey_size; ?></p>
-							<p class="fw-normal fs-sm lh-sm">Jersey Style: <?php echo $jersey_style; ?></p>
-							<p class="fw-normal fs-sm lh-sm">Wheel Upgrade: <?php echo $wheel_upgrade; ?></p>
 						<?php } ?>
 					</div>
 				</div> <!-- info ends -->
-				<hr>
-				<div class="emergency-info">
-					<p class="fw-medium fs-xl lh-xl">Passport Information</p>
-					<div class="sub-head">
-						<p class="fw-medium fs-md lh-md"><?php echo $full_name_on_passport; ?></p>
-						<p class="fw-normal fs-sm lh-sm">Passport number: <?php echo $passport_number; ?></p>
-						<p class="fw-normal fs-sm lh-sm">Passport issue date: <?php echo $passport_issue_date; ?></p>
-						<p class="fw-normal fs-sm lh-sm">Passport expiration date: <?php echo $passport_expiration_date; ?></p>
-					</div>
-				</div> <!-- info ends -->
+				<?php if ( '1' === $is_passport_required ) : ?>
+					<hr>
+					<div class="emergency-info">
+						<p class="fw-medium fs-xl lh-xl">Passport Information</p>
+						<div class="sub-head">
+							<p class="fw-medium fs-md lh-md"><?php echo $full_name_on_passport; ?></p>
+							<p class="fw-normal fs-sm lh-sm">Passport number: <?php echo $passport_number; ?></p>
+							<p class="fw-normal fs-sm lh-sm">Passport issue date: <?php echo $passport_issue_date; ?></p>
+							<p class="fw-normal fs-sm lh-sm">Passport expiration date: <?php echo $passport_expiration_date; ?></p>
+						</div>
+					</div> <!-- info ends -->
+				<?php endif; ?>
 				<?php /* ?>
                 <hr>
                 <div class="gear-info">
@@ -392,7 +403,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
                     </div>
                 </div>	
 				<?php */ ?>
-				<hr>
+				<!-- <hr> -->
 			</div>
 		</div>
 	</div> <!-- row ends -->
