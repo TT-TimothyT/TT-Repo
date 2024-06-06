@@ -3131,24 +3131,36 @@ window.addEventListener("afterprint", (event) => {
 
 
 jQuery('body').on('change', '.tt_rider_level_select', function () {
-  var selectedRiderLevel = jQuery(this).val()
+  var selectedRiderLevel = parseInt(jQuery(this).val(), 10);
   if (selectedRiderLevel && selectedRiderLevel > 0) {    
-    var tripRiderLevel = trek_JS_obj.rider_level
-    var riderLevelText = trek_JS_obj.rider_level_text
-    if (selectedRiderLevel < tripRiderLevel) {
-      jQuery(".modal-rider-level-warning #rider_level_text").text(riderLevelText)
+    var tripRiderLevel = trek_JS_obj.rider_level; // This can be a string like "2&3" or "3&4"
+    var riderLevelText = trek_JS_obj.rider_level_text;
+
+    // Add spaces before and after the '&' in tripRiderLevel
+    var formattedTripRiderLevel = tripRiderLevel.replace(/&/g, ' & ');
+
+    // Split the tripRiderLevel string by '&' and find the minimum number
+    var tripRiderLevels = tripRiderLevel.split('&').map(function(level) {
+      return parseInt(level, 10);
+    });
+    var minTripRiderLevel = Math.min.apply(null, tripRiderLevels);
+
+    // Compare selectedRiderLevel with minTripRiderLevel
+    if (selectedRiderLevel <= minTripRiderLevel) {
+      jQuery(".modal-rider-level-warning #rider_level_text").text(formattedTripRiderLevel);
       jQuery('#checkoutRiderLevelModal').modal('toggle');    
     }
-    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none")
+
+    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none");
     jQuery(this).closest('div.form-floating').removeClass('woocommerce-invalid');
     jQuery(this).closest('div.form-floating').addClass('woocommerce-validated');
   } else {
-    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none")
+    jQuery(this).closest('div.form-floating').find(".rider-select").css("display", "none");
     jQuery(this).closest('div.form-floating').addClass('woocommerce-invalid');
     jQuery(this).closest('div.form-floating').removeClass('woocommerce-validated');
-
   }
-})
+});
+
 
 jQuery('body').on('change', '.form-select', function () {
   var selectValue = jQuery(this).val()
