@@ -14,6 +14,7 @@ $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat'
 $hideJerseyForTrips = [ 710, 744, 712, 713 ];
 $hideme = "";
 
+
 if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
 	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
 	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
@@ -426,8 +427,8 @@ if ($p_own_bike == 'yes') {
                     </span>
                 </div>
                 <div class="modal-body">
-                    <p class="fw-medium fs-xl lh-xl">Did you know?</p>
-                    <p class="fw-normal fs-md lh-md">Did you know this is a Level <span id="rider_level_text"></span> trip, which may not be recommended for the rider level you selected. We want to ensure this is the right trip for you. <a href="/rider-levels">Learn more</a> about rider levels or <a href="/contact-us">contact a trip consultant</a> for any questions!</p>
+                    <p class="fw-medium fs-xl lh-xl">Wait!</p>
+                    <p class="fw-normal fs-md lh-md">Doe is a Level <span><?php echo $tripInfo['rider_level_text']; ?></span> trip, which may not be recommended for the rider level you selected. We want to ensure this is the right trip for you. <a href="/activity-levels">Learn more</a> about rider levels or <a href="/contact-us">contact a trip consultant</a> for any questions!</p>
                 </div>
                 <div class="modal-footer">
                     <div class="container">

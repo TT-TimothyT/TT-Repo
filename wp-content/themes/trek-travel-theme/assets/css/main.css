@@ -11390,10 +11390,12 @@ textarea.form-control-lg {
 }
 .tf-cat-select > i.toggle {
   position: absolute;
-  z-index: 4;
+  z-index: 1;
   right: 1rem;
-  top: 0.5rem;
+  top: 0;
+  bottom: 0;
   color: #000;
+  align-content: center;
 }
 .tf-cat-select .title,
 .tf-cat-select .placeholder {
@@ -11409,7 +11411,7 @@ textarea.form-control-lg {
   position: absolute;
   left: 0px;
   top: 0px;
-  z-index: 1;
+  z-index: 4;
   width: 100%;
   height: 100%;
   display: block;
@@ -20052,14 +20054,6 @@ body:has(div.account-wishlist-edit) {
 .plp-hero-banner .banner-section {
   position: relative;
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.6);
-  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.6);
-}
-.plp-hero-banner .banner-section:before {
-  content: "";
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  background: linear-gradient(180deg, rgba(244, 244, 244, 0) 70%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.45) 100%);
 }
 .plp-hero-banner .banner-section:before {
   content: "";
