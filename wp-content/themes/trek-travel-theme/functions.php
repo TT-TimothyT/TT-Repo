@@ -883,3 +883,27 @@ function yoast_seo_noindex_non_published($robots) {
     return $robots;
 }
 add_filter('wpseo_robots', 'yoast_seo_noindex_non_published');
+
+
+// SEND USER PASSWORD CHANGE
+
+add_action('password_reset', 'notify_user_password_reset', 10, 2);
+function notify_user_password_reset($user, $new_pass) {
+    send_password_changed_email($user);
+}
+
+function send_password_changed_email($user) {
+    $to = $user->user_email;
+    $subject = __('Your Password Has Been Changed', 'textdomain');
+    $message = get_password_changed_email_content($user);
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+
+    wp_mail($to, $subject, $message, $headers);
+}
+
+function get_password_changed_email_content($user) {
+    ob_start();
+    include get_template_directory() . '/woocommerce/emails/customer-password-changed.php';
+    return ob_get_clean();
+}
+

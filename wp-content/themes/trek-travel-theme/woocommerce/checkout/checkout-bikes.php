@@ -14,13 +14,17 @@ $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat'
 $hideJerseyForTrips = [ 710, 744, 712, 713 ];
 $hideme = "";
 
-if (!empty($tripProductLine) && is_array($tripProductLine) && !empty($hideJerseyForTrips) && is_array($hideJerseyForTrips)) {
-    $product_cat_matches = array_intersect($tripProductLine, $hideJerseyForTrips);
-    if (!empty($product_cat_matches)) {
-        $hideme = "d-none"; // Hide the jersey if there's any match
-    } else {
-        $hideme = "none";  // No match found, do not hide the jersey
-    }
+if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
+	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
+	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
+		if ( in_array( 712, $product_cat_matches ) || in_array( 744, $product_cat_matches ) ) {
+			$hideme = "d-none";
+		} elseif ( in_array( 710, $product_cat_matches ) && in_array( 713, $product_cat_matches ) ) {
+			$hideme = "d-none";
+		} else {
+			$hideme = "none";
+		}
+	}
 }
 
 $singleSupplementPrice = $bikeUpgradePrice = 0;
@@ -150,7 +154,7 @@ if ($p_own_bike == 'yes') {
                             }
                             $bikes_model_id_in[] = $bikeModelId;
                         }
-                        $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $primary_bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '><input name="bike_gears[primary][bike_type_id_preferences]" type="hidden" value="">';
+                        $primary_available_bike_html .= '<input name="bike_gears[primary][bikeId]" type="hidden" value="' . $bikeId . '" ' . ( $p_rider_level != 5 && $p_own_bike == 'yes' ? '' : $primary_required) . '><input name="bike_gears[primary][bike_type_id_preferences]" type="hidden" value="">';
                     } else {
                         $primary_available_bike_html .= '<strong>No bikes available!</strong>';
                     }
