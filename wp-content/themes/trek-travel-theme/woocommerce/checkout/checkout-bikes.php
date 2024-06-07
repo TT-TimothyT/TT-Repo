@@ -9,7 +9,7 @@ if ($tt_posted) {
 }
 $tripInfo           = tt_get_trip_pid_sku_from_cart();
 $parent_product_sku = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX.'itineraryCode', true );
-$parent_product_id  = wc_get_product_id_by_sku($parent_product_sku);
+$parent_product_id  = wc_get_parent_grouped_id($tripInfo['product_id']);
 $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat' );
 $hideJerseyForTrips = [ 710, 744, 712, 713 ];
 $hideme = "";

@@ -203,7 +203,7 @@ if( $available_child_products ) {
                         // Check child product is marked as Private/Custom trip.
                         $is_pc_trip = get_field( 'is_private_custom_trip');                        
                         // Check child product is marked as Private/Custom trip.
-                        $is_pc_trip = get_field( 'is_private_custom_trip');                        
+                        $is_pc_trip = get_field( 'is_private_custom_trip');                   
 
                         if ($tripWebStatus == 'Private') {
                             if( true == $is_pc_trip ) {

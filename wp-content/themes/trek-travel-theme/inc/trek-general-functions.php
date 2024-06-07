@@ -3121,6 +3121,47 @@ if (!function_exists('tt_get_local_bike_detail')) {
 
 // TT
 
+if ( ! function_exists( 'wc_get_parent_grouped_id' ) ) {
+
+    function wc_get_parent_grouped_id( $id ){
+    
+        global $wpdb;
+    
+        $cdata = wp_cache_get( __FUNCTION__, 'woocommerce' );
+    
+        if ( ! is_array($cdata) )
+            $cdata = array();
+    
+        if ( ! isset($cdata[$id]) ) {
+    
+            $cdata[$id] = $parent_id = $children = false;
+    
+            $qdata = $wpdb->get_row("SELECT post_id, meta_value
+                                     FROM $wpdb->postmeta
+                                     WHERE meta_key = '_children' 
+                                     AND meta_value LIKE '%$id%'");
+    
+            if ( is_object($qdata) ) {
+    
+                $parent_id = $qdata->post_id;
+                $children = $qdata->meta_value;
+    
+                if ( is_string($children) )
+                    $children = unserialize($children);
+    
+                if ( is_array($children) && count($children) > 0 )
+                    foreach ($children as $child_id)
+                        $cdata[$child_id] = $parent_id;
+            }
+    
+            wp_cache_set( __FUNCTION__, apply_filters( __FUNCTION__ . '_filter', $cdata, $id, $parent_id, $children, $qdata ), 'woocommerce' );
+        }
+    
+        return $cdata[$id];
+    }
+}
+
+
 function tt_get_parent_trip_id_by_child_sku($sku) {
     global $wpdb;
 
