@@ -144,14 +144,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier impleme
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 32)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) < 12)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be bigger than or equal to 12.";
-        }
-
         return $invalid_properties;
     }
 
@@ -164,12 +156,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier impleme
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['id']) < 12) {
-            return false;
-        }
         return true;
     }
 
@@ -185,18 +171,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier impleme
 
     /**
      * Sets id
-     * @param string $id The id of the Instrument Identifier token linked to the Payment Instrument.
+     * @param string $id The Id of the Instrument Identifier linked to the Payment Instrument.
      * @return $this
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier., must be smaller than or equal to 32.');
-        }
-        if (!is_null($id) && (strlen($id) < 12)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier., must be bigger than or equal to 12.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -206,6 +185,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier impleme
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -216,6 +196,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier impleme
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -227,6 +208,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier impleme
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -241,6 +223,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentInstrumentIdentifier impleme
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -150,14 +150,6 @@ class Ptsv2paymentsPaymentInformationCustomer implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 32)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) < 1)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be bigger than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Ptsv2paymentsPaymentInformationCustomer implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['id']) < 1) {
-            return false;
-        }
         return true;
     }
 
@@ -191,7 +177,7 @@ class Ptsv2paymentsPaymentInformationCustomer implements ArrayAccess
 
     /**
      * Sets customerId
-     * @param string $customerId Unique identifier for the customer's card and billing information.  When you use Payment Tokenization or Recurring Billing and you include this value in your request, many of the fields that are normally required for an authorization or credit become optional.  **NOTE** When you use Payment Tokenization or Recurring Billing, the value for the Customer ID is actually the Cybersource payment token for a customer. This token stores information such as the consumer’s card number so it can be applied towards bill payments, recurring payments, or one-time payments. By using this token in a payment API request, the merchant doesn't need to pass in data such as the card number or expiration date in the request itself.  For details, see the `subscription_id` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $customerId Unique identifier for the customer's card and billing information.  When you use Payment Tokenization or Recurring Billing and you include this value in your request, many of the fields that are normally required for an authorization or credit become optional.  **NOTE** When you use Payment Tokenization or Recurring Billing, the value for the Customer ID is actually the Cybersource payment token for a customer. This token stores information such as the consumer's card number so it can be applied towards bill payments, recurring payments, or one-time payments. By using this token in a payment API request, the merchant doesn't need to pass in data such as the card number or expiration date in the request itself.  For details, see the `subscription_id` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setCustomerId($customerId)
@@ -217,13 +203,6 @@ class Ptsv2paymentsPaymentInformationCustomer implements ArrayAccess
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Ptsv2paymentsPaymentInformationCustomer., must be smaller than or equal to 32.');
-        }
-        if (!is_null($id) && (strlen($id) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Ptsv2paymentsPaymentInformationCustomer., must be bigger than or equal to 1.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -233,6 +212,7 @@ class Ptsv2paymentsPaymentInformationCustomer implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -243,6 +223,7 @@ class Ptsv2paymentsPaymentInformationCustomer implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -254,6 +235,7 @@ class Ptsv2paymentsPaymentInformationCustomer implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -268,6 +250,7 @@ class Ptsv2paymentsPaymentInformationCustomer implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

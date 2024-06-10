@@ -186,14 +186,6 @@ class PtsV1TransactionBatchesIdGet200Response implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 8)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) < 1)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be bigger than or equal to 1.";
-        }
-
         if (!is_null($this->container['id']) && !preg_match("/^[a-zA-Z0-9_+-]*$/", $this->container['id'])) {
             $invalid_properties[] = "invalid value for 'id', must be conform to the pattern /^[a-zA-Z0-9_+-]*$/.";
         }
@@ -210,12 +202,6 @@ class PtsV1TransactionBatchesIdGet200Response implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['id']) < 1) {
-            return false;
-        }
         if (!preg_match("/^[a-zA-Z0-9_+-]*$/", $this->container['id'])) {
             return false;
         }
@@ -239,16 +225,9 @@ class PtsV1TransactionBatchesIdGet200Response implements ArrayAccess
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling PtsV1TransactionBatchesIdGet200Response., must be smaller than or equal to 8.');
-        }
-        if (!is_null($id) && (strlen($id) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling PtsV1TransactionBatchesIdGet200Response., must be bigger than or equal to 1.');
-        }
         if (!is_null($id) && (!preg_match("/^[a-zA-Z0-9_+-]*$/", $id))) {
             throw new \InvalidArgumentException("invalid value for $id when calling PtsV1TransactionBatchesIdGet200Response., must conform to the pattern /^[a-zA-Z0-9_+-]*$/.");
         }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -405,6 +384,7 @@ class PtsV1TransactionBatchesIdGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -415,6 +395,7 @@ class PtsV1TransactionBatchesIdGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -426,6 +407,7 @@ class PtsV1TransactionBatchesIdGet200Response implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -440,6 +422,7 @@ class PtsV1TransactionBatchesIdGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

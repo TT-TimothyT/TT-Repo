@@ -150,10 +150,6 @@ class Riskv1decisionsMerchantInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['merchantName']) && (strlen($this->container['merchantName']) > 25)) {
-            $invalid_properties[] = "invalid value for 'merchantName', the character length must be smaller than or equal to 25.";
-        }
-
         return $invalid_properties;
     }
 
@@ -166,9 +162,6 @@ class Riskv1decisionsMerchantInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['merchantName']) > 25) {
-            return false;
-        }
         return true;
     }
 
@@ -205,15 +198,11 @@ class Riskv1decisionsMerchantInformation implements ArrayAccess
 
     /**
      * Sets merchantName
-     * @param string $merchantName Your company’s name as you want it to appear to the customer in the issuing bank’s authentication form. This value overrides the value specified by your merchant bank.
+     * @param string $merchantName Your company's name as you want it to appear to the customer in the issuing bank's authentication form. This value overrides the value specified by your merchant bank.
      * @return $this
      */
     public function setMerchantName($merchantName)
     {
-        if (!is_null($merchantName) && (strlen($merchantName) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $merchantName when calling Riskv1decisionsMerchantInformation., must be smaller than or equal to 25.');
-        }
-
         $this->container['merchantName'] = $merchantName;
 
         return $this;
@@ -223,6 +212,7 @@ class Riskv1decisionsMerchantInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -233,6 +223,7 @@ class Riskv1decisionsMerchantInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -244,6 +235,7 @@ class Riskv1decisionsMerchantInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -258,6 +250,7 @@ class Riskv1decisionsMerchantInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

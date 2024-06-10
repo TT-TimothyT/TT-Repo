@@ -204,50 +204,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['declineAvsFlags']) && (strlen($this->container['declineAvsFlags']) > 15)) {
-            $invalid_properties[] = "invalid value for 'declineAvsFlags', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['secCode']) && (strlen($this->container['secCode']) > 3)) {
-            $invalid_properties[] = "invalid value for 'secCode', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['terminalCity']) && (strlen($this->container['terminalCity']) > 4)) {
-            $invalid_properties[] = "invalid value for 'terminalCity', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['terminalState']) && (strlen($this->container['terminalState']) > 2)) {
-            $invalid_properties[] = "invalid value for 'terminalState', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['effectiveDate']) && (strlen($this->container['effectiveDate']) > 8)) {
-            $invalid_properties[] = "invalid value for 'effectiveDate', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['partialPaymentId']) && (strlen($this->container['partialPaymentId']) > 25)) {
-            $invalid_properties[] = "invalid value for 'partialPaymentId', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['customerMemo']) && (strlen($this->container['customerMemo']) > 80)) {
-            $invalid_properties[] = "invalid value for 'customerMemo', the character length must be smaller than or equal to 80.";
-        }
-
-        if (!is_null($this->container['paymentCategoryCode']) && (strlen($this->container['paymentCategoryCode']) > 1)) {
-            $invalid_properties[] = "invalid value for 'paymentCategoryCode', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['settlementMethod']) && (strlen($this->container['settlementMethod']) > 1)) {
-            $invalid_properties[] = "invalid value for 'settlementMethod', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['fraudScreeningLevel']) && (strlen($this->container['fraudScreeningLevel']) > 1)) {
-            $invalid_properties[] = "invalid value for 'fraudScreeningLevel', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['customerPresent']) && (strlen($this->container['customerPresent']) > 1)) {
-            $invalid_properties[] = "invalid value for 'customerPresent', the character length must be smaller than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -260,39 +216,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['declineAvsFlags']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['secCode']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['terminalCity']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['terminalState']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['effectiveDate']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['partialPaymentId']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['customerMemo']) > 80) {
-            return false;
-        }
-        if (strlen($this->container['paymentCategoryCode']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['settlementMethod']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['fraudScreeningLevel']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['customerPresent']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -308,15 +231,11 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
 
     /**
      * Sets declineAvsFlags
-     * @param string $declineAvsFlags Space-separated list of AVS flags that cause the request to be declined for AVS reasons.  **Important** To receive declines for the AVS code `N`, you must include the value `N` in the space-separated list.  ### AVS Codes for Cielo 3.0 and CyberSource Latin American Processing  **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports. In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America. The information in this section is for the specific processing connection called CyberSource Latin American Processing. It is not for any other Latin American processors that CyberSource supports.  |AVS Code|Description| |--- |--- | |D|Partial match: postal code and address match.| |E|Not supported: AVS is not supported for this card type. _or_ Invalid: the acquirer returned an unrecognized value for the AVS response.| |F|Partial match: postal code matches, but CPF and address do not match.*| |G|Not supported: AVS not supported or not verified.| |I|No match: AVS information is not available.| |K|Partial match: CPF matches, but postal code and address do not match.*| |L|Partial match: postal code and CPF match, but address does not match.*| |N|No match: postal code, CPF, and address do not match.*| |O|Partial match: CPF and address match, but postal code does not match.*| |R|Not supported: your implementation does not support AVS _or_ System unavailable.| |T|Partial match: address matches, but postal code and CPF do not match.*| |V|Match: postal code, CPF, and address match.*| |* CPF (Cadastro de Pessoas Fisicas) is required only for Redecard in Brazil.||  ### AVS Codes for All Other Processors  **Note** The list of AVS codes for all other processors follows these descriptions of the processor-specific information for these codes.  #### American Express Cards For American Express cards only, you can receive Visa and CyberSource AVS codes in addition to the American Express AVS codes.  **Note** For CyberSource through VisaNet, the American Express AVS codes are converted to Visa AVS codes before they are returned to you. As a result, you will not receive American Express AVS codes for the American Express card type.  _American Express Card codes_: `F`, `H`, `K`, `L`, `O`, `T`, `V`  #### Domestic and International Visa Cards The international and domestic alphabetic AVS codes are the Visa standard AVS codes. CyberSource maps the standard AVS return codes for other types of payment cards, including American Express cards, to the Visa standard AVS codes.  AVS is considered either domestic or international, depending on the location of the bank that issued the customer’s payment card: - When the bank is in the U.S., the AVS is domestic. - When the bank is outside the U.S., the AVS is international.  You should be prepared to handle both domestic and international AVS result codes: - For international cards, you can receive domestic AVS codes in addition to the international AVS codes. - For domestic cards, you can receive international AVS codes in addition to the domestic AVS codes.  _International Visa Codes_: `B`, `C`, `D`, `G`, `I`, `M`, `P`  _Domestic Visa Codes_: `A`, `E`,`N`, `R`, `S`, `U`, `W`, `X`, `Y`, `Z`  #### CyberSource Codes The numeric AVS codes are created by CyberSource and are not standard Visa codes. These AVS codes can be returned for any card type.  _CyberSource Codes_: `1`, `2`, `3`, `4`  ### Table of AVS Codes for All Other Processors  |AVS Code|Description| |--- |--- | |A|Partial match: street address matches, but 5-digit and 9-digit postal codes do not match.| |B|Partial match: street address matches, but postal code is not verified. Returned only for Visa cards not issued in the U.S.| |C|No match: street address and postal code do not match. Returned only for Visa cards not issued in the U.S.| |D & M|Match: street address and postal code match. Returned only for Visa cards not issued in the U.S.| |E|Invalid: AVS data is invalid or AVS is not allowed for this card type.| |F|Partial match: card member’s name does not match, but billing postal code matches.| |G|Not supported: issuing bank outside the U.S. does not support AVS.| |H|Partial match: card member’s name does not match, but street address and postal code match. Returned only for the American Express card type.| |I|No match: address not verified. Returned only for Visa cards not issued in the U.S.| |K|Partial match: card member’s name matches, but billing address and billing postal code do not match. Returned only for the American Express card type.| |L|Partial match: card member’s name and billing postal code match, but billing address does not match. Returned only for the American Express card type.| |M|See the entry for D & M.| |N|No match: one of the following: street address and postal code do not match _or_ (American Express card type only) card member’s name, street address, and postal code do not match.| |O|Partial match: card member’s name and billing address match, but billing postal code does not match. Returned only for the American Express card type.| |P|Partial match: postal code matches, but street address not verified. Returned only for Visa cards not issued in the U.S.| |R|System unavailable.| |S|Not supported: issuing bank in the U.S. does not support AVS.| |T|Partial match: card member’s name does not match, but street address matches. Returned only for the American Express card type.| |U|System unavailable: address information unavailable for one of these reasons: The U.S. bank does not support AVS outside the U.S. _or_ The AVS in a U.S. bank is not functioning properly.| |V|Match: card member’s name, billing address, and billing postal code match. Returned only for the American Express card type.| |W|Partial match: street address does not match, but 9-digit postal code matches.| |X|Match: street address and 9-digit postal code match.| |Y|Match: street address and 5-digit postal code match.| |Z|Partial match: street address does not match, but 5-digit postal code matches.| |1|Not supported: one of the following: AVS is not supported for this processor or card type _or_ AVS is disabled for your CyberSource account. To enable AVS, contact CyberSource Customer Support.| |2|Unrecognized: the processor returned an unrecognized value for the AVS response.| |3|Match: address is confirmed. Returned only for PayPal Express Checkout.| |4|No match: address is not confirmed. Returned only for PayPal Express Checkout.| |5|No match: no AVS code was returned by the processor.|
+     * @param string $declineAvsFlags Space-separated list of AVS flags that cause the request to be declined for AVS reasons.  **Important** To receive declines for the AVS code `N`, you must include the value `N` in the space-separated list.  ### AVS Codes for Cielo 3.0 and CyberSource Latin American Processing  **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports. In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America. The information in this section is for the specific processing connection called CyberSource Latin American Processing. It is not for any other Latin American processors that CyberSource supports.  |AVS Code|Description| |--- |--- | |D|Partial match: postal code and address match.| |E|Not supported: AVS is not supported for this card type. _or_ Invalid: the acquirer returned an unrecognized value for the AVS response.| |F|Partial match: postal code matches, but CPF and address do not match.*| |G|Not supported: AVS not supported or not verified.| |I|No match: AVS information is not available.| |K|Partial match: CPF matches, but postal code and address do not match.*| |L|Partial match: postal code and CPF match, but address does not match.*| |N|No match: postal code, CPF, and address do not match.*| |O|Partial match: CPF and address match, but postal code does not match.*| |R|Not supported: your implementation does not support AVS _or_ System unavailable.| |T|Partial match: address matches, but postal code and CPF do not match.*| |V|Match: postal code, CPF, and address match.*| |* CPF (Cadastro de Pessoas Fisicas) is required only for Redecard in Brazil.||  ### AVS Codes for All Other Processors  **Note** The list of AVS codes for all other processors follows these descriptions of the processor-specific information for these codes.  #### American Express Cards For American Express cards only, you can receive Visa and CyberSource AVS codes in addition to the American Express AVS codes.  **Note** For CyberSource through VisaNet, the American Express AVS codes are converted to Visa AVS codes before they are returned to you. As a result, you will not receive American Express AVS codes for the American Express card type.  _American Express Card codes_: `F`, `H`, `K`, `L`, `O`, `T`, `V`  #### Domestic and International Visa Cards The international and domestic alphabetic AVS codes are the Visa standard AVS codes. CyberSource maps the standard AVS return codes for other types of payment cards, including American Express cards, to the Visa standard AVS codes.  AVS is considered either domestic or international, depending on the location of the bank that issued the customer's payment card: - When the bank is in the U.S., the AVS is domestic. - When the bank is outside the U.S., the AVS is international.  You should be prepared to handle both domestic and international AVS result codes: - For international cards, you can receive domestic AVS codes in addition to the international AVS codes. - For domestic cards, you can receive international AVS codes in addition to the domestic AVS codes.  _International Visa Codes_: `B`, `C`, `D`, `G`, `I`, `M`, `P`  _Domestic Visa Codes_: `A`, `E`,`N`, `R`, `S`, `U`, `W`, `X`, `Y`, `Z`  #### CyberSource Codes The numeric AVS codes are created by CyberSource and are not standard Visa codes. These AVS codes can be returned for any card type.  _CyberSource Codes_: `1`, `2`, `3`, `4`  ### Table of AVS Codes for All Other Processors  |AVS Code|Description| |--- |--- | |A|Partial match: street address matches, but 5-digit and 9-digit postal codes do not match.| |B|Partial match: street address matches, but postal code is not verified. Returned only for Visa cards not issued in the U.S.| |C|No match: street address and postal code do not match. Returned only for Visa cards not issued in the U.S.| |D & M|Match: street address and postal code match. Returned only for Visa cards not issued in the U.S.| |E|Invalid: AVS data is invalid or AVS is not allowed for this card type.| |F|Partial match: card member's name does not match, but billing postal code matches.| |G|Not supported: issuing bank outside the U.S. does not support AVS.| |H|Partial match: card member's name does not match, but street address and postal code match. Returned only for the American Express card type.| |I|No match: address not verified. Returned only for Visa cards not issued in the U.S.| |K|Partial match: card member's name matches, but billing address and billing postal code do not match. Returned only for the American Express card type.| |L|Partial match: card member's name and billing postal code match, but billing address does not match. Returned only for the American Express card type.| |M|See the entry for D & M.| |N|No match: one of the following: street address and postal code do not match _or_ (American Express card type only) card member's name, street address, and postal code do not match.| |O|Partial match: card member's name and billing address match, but billing postal code does not match. Returned only for the American Express card type.| |P|Partial match: postal code matches, but street address not verified. Returned only for Visa cards not issued in the U.S.| |R|System unavailable.| |S|Not supported: issuing bank in the U.S. does not support AVS.| |T|Partial match: card member's name does not match, but street address matches. Returned only for the American Express card type.| |U|System unavailable: address information unavailable for one of these reasons: The U.S. bank does not support AVS outside the U.S. _or_ The AVS in a U.S. bank is not functioning properly.| |V|Match: card member's name, billing address, and billing postal code match. Returned only for the American Express card type.| |W|Partial match: street address does not match, but 9-digit postal code matches.| |X|Match: street address and 9-digit postal code match.| |Y|Match: street address and 5-digit postal code match.| |Z|Partial match: street address does not match, but 5-digit postal code matches.| |1|Not supported: one of the following: AVS is not supported for this processor or card type _or_ AVS is disabled for your CyberSource account. To enable AVS, contact CyberSource Customer Support.| |2|Unrecognized: the processor returned an unrecognized value for the AVS response.| |3|Match: address is confirmed. Returned only for PayPal Express Checkout.| |4|No match: address is not confirmed. Returned only for PayPal Express Checkout.| |5|No match: no AVS code was returned by the processor.|
      * @return $this
      */
     public function setDeclineAvsFlags($declineAvsFlags)
     {
-        if (!is_null($declineAvsFlags) && (strlen($declineAvsFlags) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $declineAvsFlags when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 15.');
-        }
-
         $this->container['declineAvsFlags'] = $declineAvsFlags;
 
         return $this;
@@ -338,10 +257,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setSecCode($secCode)
     {
-        if (!is_null($secCode) && (strlen($secCode) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $secCode when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 3.');
-        }
-
         $this->container['secCode'] = $secCode;
 
         return $this;
@@ -363,10 +278,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setTerminalCity($terminalCity)
     {
-        if (!is_null($terminalCity) && (strlen($terminalCity) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $terminalCity when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 4.');
-        }
-
         $this->container['terminalCity'] = $terminalCity;
 
         return $this;
@@ -388,10 +299,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setTerminalState($terminalState)
     {
-        if (!is_null($terminalState) && (strlen($terminalState) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $terminalState when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 2.');
-        }
-
         $this->container['terminalState'] = $terminalState;
 
         return $this;
@@ -413,10 +320,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setEffectiveDate($effectiveDate)
     {
-        if (!is_null($effectiveDate) && (strlen($effectiveDate) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $effectiveDate when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 8.');
-        }
-
         $this->container['effectiveDate'] = $effectiveDate;
 
         return $this;
@@ -438,10 +341,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setPartialPaymentId($partialPaymentId)
     {
-        if (!is_null($partialPaymentId) && (strlen($partialPaymentId) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $partialPaymentId when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 25.');
-        }
-
         $this->container['partialPaymentId'] = $partialPaymentId;
 
         return $this;
@@ -458,15 +357,11 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
 
     /**
      * Sets customerMemo
-     * @param string $customerMemo Payment related information.  This information is included on the customer’s statement.
+     * @param string $customerMemo Payment related information.  This information is included on the customer's statement.
      * @return $this
      */
     public function setCustomerMemo($customerMemo)
     {
-        if (!is_null($customerMemo) && (strlen($customerMemo) > 80)) {
-            throw new \InvalidArgumentException('invalid length for $customerMemo when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 80.');
-        }
-
         $this->container['customerMemo'] = $customerMemo;
 
         return $this;
@@ -488,10 +383,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setPaymentCategoryCode($paymentCategoryCode)
     {
-        if (!is_null($paymentCategoryCode) && (strlen($paymentCategoryCode) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $paymentCategoryCode when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 1.');
-        }
-
         $this->container['paymentCategoryCode'] = $paymentCategoryCode;
 
         return $this;
@@ -513,10 +404,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setSettlementMethod($settlementMethod)
     {
-        if (!is_null($settlementMethod) && (strlen($settlementMethod) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $settlementMethod when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 1.');
-        }
-
         $this->container['settlementMethod'] = $settlementMethod;
 
         return $this;
@@ -538,10 +425,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setFraudScreeningLevel($fraudScreeningLevel)
     {
-        if (!is_null($fraudScreeningLevel) && (strlen($fraudScreeningLevel) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $fraudScreeningLevel when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 1.');
-        }
-
         $this->container['fraudScreeningLevel'] = $fraudScreeningLevel;
 
         return $this;
@@ -563,10 +446,6 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      */
     public function setCustomerPresent($customerPresent)
     {
-        if (!is_null($customerPresent) && (strlen($customerPresent) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $customerPresent when calling Ptsv2paymentsProcessingInformationBankTransferOptions., must be smaller than or equal to 1.');
-        }
-
         $this->container['customerPresent'] = $customerPresent;
 
         return $this;
@@ -576,6 +455,7 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -586,6 +466,7 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -597,6 +478,7 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -611,6 +493,7 @@ class Ptsv2paymentsProcessingInformationBankTransferOptions implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

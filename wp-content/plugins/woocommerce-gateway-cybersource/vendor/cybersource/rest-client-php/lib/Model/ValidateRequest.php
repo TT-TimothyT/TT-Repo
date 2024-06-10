@@ -54,11 +54,13 @@ class ValidateRequest implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'clientReferenceInformation' => '\CyberSource\Model\Riskv1authenticationsetupsClientReferenceInformation',
+        'clientReferenceInformation' => '\CyberSource\Model\Riskv1decisionsClientReferenceInformation',
         'processingInformation' => '\CyberSource\Model\Riskv1authenticationsetupsProcessingInformation',
         'orderInformation' => '\CyberSource\Model\Riskv1authenticationresultsOrderInformation',
         'paymentInformation' => '\CyberSource\Model\Riskv1authenticationresultsPaymentInformation',
-        'consumerAuthenticationInformation' => '\CyberSource\Model\Riskv1authenticationresultsConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => '\CyberSource\Model\Riskv1authenticationresultsConsumerAuthenticationInformation',
+        'deviceInformation' => '\CyberSource\Model\Riskv1authenticationresultsDeviceInformation',
+        'tokenInformation' => '\CyberSource\Model\Riskv1decisionsTokenInformation'
     ];
 
     /**
@@ -70,7 +72,9 @@ class ValidateRequest implements ArrayAccess
         'processingInformation' => null,
         'orderInformation' => null,
         'paymentInformation' => null,
-        'consumerAuthenticationInformation' => null
+        'consumerAuthenticationInformation' => null,
+        'deviceInformation' => null,
+        'tokenInformation' => null
     ];
 
     public static function swaggerTypes()
@@ -92,7 +96,9 @@ class ValidateRequest implements ArrayAccess
         'processingInformation' => 'processingInformation',
         'orderInformation' => 'orderInformation',
         'paymentInformation' => 'paymentInformation',
-        'consumerAuthenticationInformation' => 'consumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'consumerAuthenticationInformation',
+        'deviceInformation' => 'deviceInformation',
+        'tokenInformation' => 'tokenInformation'
     ];
 
 
@@ -105,7 +111,9 @@ class ValidateRequest implements ArrayAccess
         'processingInformation' => 'setProcessingInformation',
         'orderInformation' => 'setOrderInformation',
         'paymentInformation' => 'setPaymentInformation',
-        'consumerAuthenticationInformation' => 'setConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'setConsumerAuthenticationInformation',
+        'deviceInformation' => 'setDeviceInformation',
+        'tokenInformation' => 'setTokenInformation'
     ];
 
 
@@ -118,7 +126,9 @@ class ValidateRequest implements ArrayAccess
         'processingInformation' => 'getProcessingInformation',
         'orderInformation' => 'getOrderInformation',
         'paymentInformation' => 'getPaymentInformation',
-        'consumerAuthenticationInformation' => 'getConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'getConsumerAuthenticationInformation',
+        'deviceInformation' => 'getDeviceInformation',
+        'tokenInformation' => 'getTokenInformation'
     ];
 
     public static function attributeMap()
@@ -157,6 +167,8 @@ class ValidateRequest implements ArrayAccess
         $this->container['orderInformation'] = isset($data['orderInformation']) ? $data['orderInformation'] : null;
         $this->container['paymentInformation'] = isset($data['paymentInformation']) ? $data['paymentInformation'] : null;
         $this->container['consumerAuthenticationInformation'] = isset($data['consumerAuthenticationInformation']) ? $data['consumerAuthenticationInformation'] : null;
+        $this->container['deviceInformation'] = isset($data['deviceInformation']) ? $data['deviceInformation'] : null;
+        $this->container['tokenInformation'] = isset($data['tokenInformation']) ? $data['tokenInformation'] : null;
     }
 
     /**
@@ -186,7 +198,7 @@ class ValidateRequest implements ArrayAccess
 
     /**
      * Gets clientReferenceInformation
-     * @return \CyberSource\Model\Riskv1authenticationsetupsClientReferenceInformation
+     * @return \CyberSource\Model\Riskv1decisionsClientReferenceInformation
      */
     public function getClientReferenceInformation()
     {
@@ -195,7 +207,7 @@ class ValidateRequest implements ArrayAccess
 
     /**
      * Sets clientReferenceInformation
-     * @param \CyberSource\Model\Riskv1authenticationsetupsClientReferenceInformation $clientReferenceInformation
+     * @param \CyberSource\Model\Riskv1decisionsClientReferenceInformation $clientReferenceInformation
      * @return $this
      */
     public function setClientReferenceInformation($clientReferenceInformation)
@@ -288,11 +300,54 @@ class ValidateRequest implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets deviceInformation
+     * @return \CyberSource\Model\Riskv1authenticationresultsDeviceInformation
+     */
+    public function getDeviceInformation()
+    {
+        return $this->container['deviceInformation'];
+    }
+
+    /**
+     * Sets deviceInformation
+     * @param \CyberSource\Model\Riskv1authenticationresultsDeviceInformation $deviceInformation
+     * @return $this
+     */
+    public function setDeviceInformation($deviceInformation)
+    {
+        $this->container['deviceInformation'] = $deviceInformation;
+
+        return $this;
+    }
+
+    /**
+     * Gets tokenInformation
+     * @return \CyberSource\Model\Riskv1decisionsTokenInformation
+     */
+    public function getTokenInformation()
+    {
+        return $this->container['tokenInformation'];
+    }
+
+    /**
+     * Sets tokenInformation
+     * @param \CyberSource\Model\Riskv1decisionsTokenInformation $tokenInformation
+     * @return $this
+     */
+    public function setTokenInformation($tokenInformation)
+    {
+        $this->container['tokenInformation'] = $tokenInformation;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -303,6 +358,7 @@ class ValidateRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -314,6 +370,7 @@ class ValidateRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -328,6 +385,7 @@ class ValidateRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

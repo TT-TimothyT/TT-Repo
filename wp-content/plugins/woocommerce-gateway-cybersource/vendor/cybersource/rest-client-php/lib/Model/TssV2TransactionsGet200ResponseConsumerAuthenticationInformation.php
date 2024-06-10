@@ -57,7 +57,8 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
         'eciRaw' => 'string',
         'cavv' => 'string',
         'xid' => 'string',
-        'transactionId' => 'string'
+        'transactionId' => 'string',
+        'strongAuthentication' => '\CyberSource\Model\TssV2TransactionsGet200ResponseConsumerAuthenticationInformationStrongAuthentication'
     ];
 
     /**
@@ -68,7 +69,8 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
         'eciRaw' => null,
         'cavv' => null,
         'xid' => null,
-        'transactionId' => null
+        'transactionId' => null,
+        'strongAuthentication' => null
     ];
 
     public static function swaggerTypes()
@@ -89,7 +91,8 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
         'eciRaw' => 'eciRaw',
         'cavv' => 'cavv',
         'xid' => 'xid',
-        'transactionId' => 'transactionId'
+        'transactionId' => 'transactionId',
+        'strongAuthentication' => 'strongAuthentication'
     ];
 
 
@@ -101,7 +104,8 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
         'eciRaw' => 'setEciRaw',
         'cavv' => 'setCavv',
         'xid' => 'setXid',
-        'transactionId' => 'setTransactionId'
+        'transactionId' => 'setTransactionId',
+        'strongAuthentication' => 'setStrongAuthentication'
     ];
 
 
@@ -113,7 +117,8 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
         'eciRaw' => 'getEciRaw',
         'cavv' => 'getCavv',
         'xid' => 'getXid',
-        'transactionId' => 'getTransactionId'
+        'transactionId' => 'getTransactionId',
+        'strongAuthentication' => 'getStrongAuthentication'
     ];
 
     public static function attributeMap()
@@ -151,6 +156,7 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
         $this->container['cavv'] = isset($data['cavv']) ? $data['cavv'] : null;
         $this->container['xid'] = isset($data['xid']) ? $data['xid'] : null;
         $this->container['transactionId'] = isset($data['transactionId']) ? $data['transactionId'] : null;
+        $this->container['strongAuthentication'] = isset($data['strongAuthentication']) ? $data['strongAuthentication'] : null;
     }
 
     /**
@@ -161,18 +167,6 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['eciRaw']) && (strlen($this->container['eciRaw']) > 2)) {
-            $invalid_properties[] = "invalid value for 'eciRaw', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['cavv']) && (strlen($this->container['cavv']) > 40)) {
-            $invalid_properties[] = "invalid value for 'cavv', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['xid']) && (strlen($this->container['xid']) > 40)) {
-            $invalid_properties[] = "invalid value for 'xid', the character length must be smaller than or equal to 40.";
-        }
 
         return $invalid_properties;
     }
@@ -186,15 +180,6 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
     public function valid()
     {
 
-        if (strlen($this->container['eciRaw']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['cavv']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['xid']) > 40) {
-            return false;
-        }
         return true;
     }
 
@@ -215,10 +200,6 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
      */
     public function setEciRaw($eciRaw)
     {
-        if (!is_null($eciRaw) && (strlen($eciRaw) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $eciRaw when calling TssV2TransactionsGet200ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['eciRaw'] = $eciRaw;
 
         return $this;
@@ -240,10 +221,6 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
      */
     public function setCavv($cavv)
     {
-        if (!is_null($cavv) && (strlen($cavv) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $cavv when calling TssV2TransactionsGet200ResponseConsumerAuthenticationInformation., must be smaller than or equal to 40.');
-        }
-
         $this->container['cavv'] = $cavv;
 
         return $this;
@@ -265,10 +242,6 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
      */
     public function setXid($xid)
     {
-        if (!is_null($xid) && (strlen($xid) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $xid when calling TssV2TransactionsGet200ResponseConsumerAuthenticationInformation., must be smaller than or equal to 40.');
-        }
-
         $this->container['xid'] = $xid;
 
         return $this;
@@ -294,11 +267,33 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
 
         return $this;
     }
+
+    /**
+     * Gets strongAuthentication
+     * @return \CyberSource\Model\TssV2TransactionsGet200ResponseConsumerAuthenticationInformationStrongAuthentication
+     */
+    public function getStrongAuthentication()
+    {
+        return $this->container['strongAuthentication'];
+    }
+
+    /**
+     * Sets strongAuthentication
+     * @param \CyberSource\Model\TssV2TransactionsGet200ResponseConsumerAuthenticationInformationStrongAuthentication $strongAuthentication
+     * @return $this
+     */
+    public function setStrongAuthentication($strongAuthentication)
+    {
+        $this->container['strongAuthentication'] = $strongAuthentication;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -309,6 +304,7 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -320,6 +316,7 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -334,6 +331,7 @@ class TssV2TransactionsGet200ResponseConsumerAuthenticationInformation implement
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

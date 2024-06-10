@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\API\Responses\Reporting\Conversion_Detail;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 /**
  * Orders handler class.
@@ -115,12 +115,14 @@ class Orders {
 			// no API errors, so set now as the last query time in case new decisions are posted during this cycle's processing
 			$this->set_last_order_update( $gateway->get_id(), time() );
 
+			$orders_meta_table = Framework\SV_WC_Plugin_Compatibility::is_hpos_enabled() ? $wpdb->prefix . 'wc_orders_meta' : $wpdb->postmeta;
+
 			// find an associated order for each case decision and update it accordingly
 			foreach ( $response->get_conversion_details() as $conversion_detail ) {
 
 				// find the order with the given transaction ID
 				$order_id = $wpdb->get_var( $wpdb->prepare(
-					"SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_transaction_id' AND meta_value = %s",
+					"SELECT post_id FROM $orders_meta_table WHERE meta_key = '_transaction_id' AND meta_value = %s",
 					$conversion_detail->get_request_id()
 				) );
 

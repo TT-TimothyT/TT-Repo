@@ -56,6 +56,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
     protected static $swaggerTypes = [
         'address1' => 'string',
         'address2' => 'string',
+        'address3' => 'string',
         'administrativeArea' => 'string',
         'country' => 'string',
         'locality' => 'string',
@@ -73,6 +74,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
     protected static $swaggerFormats = [
         'address1' => null,
         'address2' => null,
+        'address3' => null,
         'administrativeArea' => null,
         'country' => null,
         'locality' => null,
@@ -100,6 +102,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
     protected static $attributeMap = [
         'address1' => 'address1',
         'address2' => 'address2',
+        'address3' => 'address3',
         'administrativeArea' => 'administrativeArea',
         'country' => 'country',
         'locality' => 'locality',
@@ -118,6 +121,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
     protected static $setters = [
         'address1' => 'setAddress1',
         'address2' => 'setAddress2',
+        'address3' => 'setAddress3',
         'administrativeArea' => 'setAdministrativeArea',
         'country' => 'setCountry',
         'locality' => 'setLocality',
@@ -136,6 +140,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
     protected static $getters = [
         'address1' => 'getAddress1',
         'address2' => 'getAddress2',
+        'address3' => 'getAddress3',
         'administrativeArea' => 'getAdministrativeArea',
         'country' => 'getCountry',
         'locality' => 'getLocality',
@@ -179,6 +184,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
     {
         $this->container['address1'] = isset($data['address1']) ? $data['address1'] : null;
         $this->container['address2'] = isset($data['address2']) ? $data['address2'] : null;
+        $this->container['address3'] = isset($data['address3']) ? $data['address3'] : null;
         $this->container['administrativeArea'] = isset($data['administrativeArea']) ? $data['administrativeArea'] : null;
         $this->container['country'] = isset($data['country']) ? $data['country'] : null;
         $this->container['locality'] = isset($data['locality']) ? $data['locality'] : null;
@@ -201,64 +207,24 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
         if ($this->container['address1'] === null) {
             $invalid_properties[] = "'address1' can't be null";
         }
-        if ((strlen($this->container['address1']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address1', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address2']) && (strlen($this->container['address2']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address2', the character length must be smaller than or equal to 60.";
-        }
-
         if ($this->container['administrativeArea'] === null) {
             $invalid_properties[] = "'administrativeArea' can't be null";
         }
-        if ((strlen($this->container['administrativeArea']) > 20)) {
-            $invalid_properties[] = "invalid value for 'administrativeArea', the character length must be smaller than or equal to 20.";
-        }
-
         if ($this->container['country'] === null) {
             $invalid_properties[] = "'country' can't be null";
         }
-        if ((strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['locality']) && (strlen($this->container['locality']) > 50)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 50.";
-        }
-
         if ($this->container['firstName'] === null) {
             $invalid_properties[] = "'firstName' can't be null";
         }
-        if ((strlen($this->container['firstName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'firstName', the character length must be smaller than or equal to 60.";
-        }
-
         if ($this->container['lastName'] === null) {
             $invalid_properties[] = "'lastName' can't be null";
         }
-        if ((strlen($this->container['lastName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'lastName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['phoneNumber']) && (strlen($this->container['phoneNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'phoneNumber', the character length must be smaller than or equal to 15.";
-        }
-
         if ($this->container['email'] === null) {
             $invalid_properties[] = "'email' can't be null";
         }
-        if ((strlen($this->container['email']) > 255)) {
-            $invalid_properties[] = "invalid value for 'email', the character length must be smaller than or equal to 255.";
-        }
-
         if ($this->container['postalCode'] === null) {
             $invalid_properties[] = "'postalCode' can't be null";
         }
-        if ((strlen($this->container['postalCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 10.";
-        }
-
         return $invalid_properties;
     }
 
@@ -274,52 +240,22 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
         if ($this->container['address1'] === null) {
             return false;
         }
-        if (strlen($this->container['address1']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address2']) > 60) {
-            return false;
-        }
         if ($this->container['administrativeArea'] === null) {
-            return false;
-        }
-        if (strlen($this->container['administrativeArea']) > 20) {
             return false;
         }
         if ($this->container['country'] === null) {
             return false;
         }
-        if (strlen($this->container['country']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['locality']) > 50) {
-            return false;
-        }
         if ($this->container['firstName'] === null) {
-            return false;
-        }
-        if (strlen($this->container['firstName']) > 60) {
             return false;
         }
         if ($this->container['lastName'] === null) {
             return false;
         }
-        if (strlen($this->container['lastName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['phoneNumber']) > 15) {
-            return false;
-        }
         if ($this->container['email'] === null) {
             return false;
         }
-        if (strlen($this->container['email']) > 255) {
-            return false;
-        }
         if ($this->container['postalCode'] === null) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 10) {
             return false;
         }
         return true;
@@ -337,15 +273,11 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
 
     /**
      * Sets address1
-     * @param string $address1 Payment card billing street address as it appears on the credit card issuer’s records.  #### Atos This field must not contain colons (:).  #### CyberSource through VisaNet **Important** When you populate orderInformation.billTo.address1 and orderInformation.billTo.address2, CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters, CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank. Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks. Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### FDMS Nashville When the street name is numeric, it must be sent in numeric format. For example, if the address is _One First Street_, it must be sent as _1 1st Street_.  Required if keyed; not used if swiped.  String (20)  #### TSYS Acquiring Solutions Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.  #### All other processors: Optional. String (60)  #### For Payouts This field may be sent only for FDC Compass.  **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+     * @param string $address1 Payment card billing street address as it appears on the credit card issuer's records.  #### Atos This field must not contain colons (:).  #### CyberSource through VisaNet **Important** When you populate orderInformation.billTo.address1 and orderInformation.billTo.address2, CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters, CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank. Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks. Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### FDMS Nashville When the street name is numeric, it must be sent in numeric format. For example, if the address is _One First Street_, it must be sent as _1 1st Street_.  Required if keyed; not used if swiped.  String (20)  #### TSYS Acquiring Solutions Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.  #### All other processors: Optional. String (60)  #### For Payouts This field may be sent only for FDC Compass.  **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
      * @return $this
      */
     public function setAddress1($address1)
     {
-        if ((strlen($address1) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address1 when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address1'] = $address1;
 
         return $this;
@@ -367,11 +299,28 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      */
     public function setAddress2($address2)
     {
-        if (!is_null($address2) && (strlen($address2) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address2 when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address2'] = $address2;
+
+        return $this;
+    }
+
+    /**
+     * Gets address3
+     * @return string
+     */
+    public function getAddress3()
+    {
+        return $this->container['address3'];
+    }
+
+    /**
+     * Sets address3
+     * @param string $address3 Additional address information (third line of the billing address)
+     * @return $this
+     */
+    public function setAddress3($address3)
+    {
+        $this->container['address3'] = $address3;
 
         return $this;
     }
@@ -392,10 +341,6 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      */
     public function setAdministrativeArea($administrativeArea)
     {
-        if ((strlen($administrativeArea) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $administrativeArea when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 20.');
-        }
-
         $this->container['administrativeArea'] = $administrativeArea;
 
         return $this;
@@ -417,10 +362,6 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      */
     public function setCountry($country)
     {
-        if ((strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -442,10 +383,6 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      */
     public function setLocality($locality)
     {
-        if (!is_null($locality) && (strlen($locality) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 50.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -462,15 +399,11 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
 
     /**
      * Sets firstName
-     * @param string $firstName Customer’s first name. This name must be the same as the name on the card.  **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.  #### CyberSource Latin American Processing **Important** For an authorization request, CyberSource Latin American Processing concatenates `orderInformation.billTo.firstName` and `orderInformation.billTo.lastName`. If the concatenated value exceeds 30 characters, CyberSource Latin American Processing declines the authorization request.\\ **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports. In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America. The information in this field description is for the specific processing connection called _CyberSource Latin American Processing_. It is not for any other Latin American processors that CyberSource supports.  #### CyberSource through VisaNet Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### For Payouts: This field may be sent only for FDC Compass.  #### Chase Paymentech Solutions Optional field.  ####  Credit Mutuel-CIC Optional field.  #### OmniPay Direct Optional field.  #### SIX Optional field.  #### TSYS Acquiring Solutions Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.  #### Worldpay VAP Optional field.  #### All other processors Not used.
+     * @param string $firstName Customer's first name. This name must be the same as the name on the card.  **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.  #### CyberSource Latin American Processing **Important** For an authorization request, CyberSource Latin American Processing concatenates `orderInformation.billTo.firstName` and `orderInformation.billTo.lastName`. If the concatenated value exceeds 30 characters, CyberSource Latin American Processing declines the authorization request.\\ **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports. In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America. The information in this field description is for the specific processing connection called _CyberSource Latin American Processing_. It is not for any other Latin American processors that CyberSource supports.  #### CyberSource through VisaNet Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### For Payouts: This field may be sent only for FDC Compass.  #### Chase Paymentech Solutions Optional field.  ####  Credit Mutuel-CIC Optional field.  #### OmniPay Direct Optional field.  #### SIX Optional field.  #### TSYS Acquiring Solutions Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.  #### Worldpay VAP Optional field.  #### All other processors Not used.
      * @return $this
      */
     public function setFirstName($firstName)
     {
-        if ((strlen($firstName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $firstName when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['firstName'] = $firstName;
 
         return $this;
@@ -487,15 +420,11 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
 
     /**
      * Sets lastName
-     * @param string $lastName Customer’s last name. This name must be the same as the name on the card.  **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.  #### Chase Paymentech Solutions Optional field.  ####  Credit Mutuel-CIC Optional field.  #### CyberSource Latin American Processing **Important** For an authorization request, CyberSource Latin American Processing concatenates `orderInformation.billTo.firstName` and `orderInformation.billTo.lastName`. If the concatenated value exceeds 30 characters, CyberSource Latin American Processing declines the authorization request.\\ **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports. In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America. The information in this field description is for the specific processing connection called CyberSource Latin American Processing. It is not for any other Latin American processors that CyberSource supports.  #### CyberSource through VisaNet Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### For Payouts: This field may be sent only for FDC Compass.  #### OmniPay Direct Optional field.  #### RBS WorldPay Atlanta Optional field.  #### SIX Optional field.  #### TSYS Acquiring Solutions Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.  #### Worldpay VAP Optional field.  #### All other processors Not used.
+     * @param string $lastName Customer's last name. This name must be the same as the name on the card.  **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.  #### Chase Paymentech Solutions Optional field.  ####  Credit Mutuel-CIC Optional field.  #### CyberSource Latin American Processing **Important** For an authorization request, CyberSource Latin American Processing concatenates `orderInformation.billTo.firstName` and `orderInformation.billTo.lastName`. If the concatenated value exceeds 30 characters, CyberSource Latin American Processing declines the authorization request.\\ **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports. In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America. The information in this field description is for the specific processing connection called CyberSource Latin American Processing. It is not for any other Latin American processors that CyberSource supports.  #### CyberSource through VisaNet Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### For Payouts: This field may be sent only for FDC Compass.  #### OmniPay Direct Optional field.  #### RBS WorldPay Atlanta Optional field.  #### SIX Optional field.  #### TSYS Acquiring Solutions Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.  #### Worldpay VAP Optional field.  #### All other processors Not used.
      * @return $this
      */
     public function setLastName($lastName)
     {
-        if ((strlen($lastName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $lastName when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['lastName'] = $lastName;
 
         return $this;
@@ -512,15 +441,11 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
 
     /**
      * Sets phoneNumber
-     * @param string $phoneNumber Customer’s phone number.  It is recommended that you include the country code when the order is from outside the U.S.  #### Chase Paymentech Solutions Optional field.  ####  Credit Mutuel-CIC Optional field.  #### CyberSource through VisaNet Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### For Payouts: This field may be sent only for FDC Compass.  #### OmniPay Direct Optional field.  #### SIX Optional field.  #### TSYS Acquiring Solutions Optional field.  #### Worldpay VAP Optional field.  #### All other processors Not used.
+     * @param string $phoneNumber Customer's phone number.  It is recommended that you include the country code when the order is from outside the U.S.  #### Chase Paymentech Solutions Optional field.  ####  Credit Mutuel-CIC Optional field.  #### CyberSource through VisaNet Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### For Payouts: This field may be sent only for FDC Compass.  #### OmniPay Direct Optional field.  #### SIX Optional field.  #### TSYS Acquiring Solutions Optional field.  #### Worldpay VAP Optional field.  #### All other processors Not used.
      * @return $this
      */
     public function setPhoneNumber($phoneNumber)
     {
-        if (!is_null($phoneNumber) && (strlen($phoneNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $phoneNumber when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 15.');
-        }
-
         $this->container['phoneNumber'] = $phoneNumber;
 
         return $this;
@@ -542,10 +467,6 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      */
     public function setEmail($email)
     {
-        if ((strlen($email) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $email when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 255.');
-        }
-
         $this->container['email'] = $email;
 
         return $this;
@@ -567,10 +488,6 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      */
     public function setPostalCode($postalCode)
     {
-        if ((strlen($postalCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling Riskv1authenticationsOrderInformationBillTo., must be smaller than or equal to 10.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -580,6 +497,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -590,6 +508,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -601,6 +520,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -615,6 +535,7 @@ class Riskv1authenticationsOrderInformationBillTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

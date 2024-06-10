@@ -156,10 +156,6 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['locality']) && (strlen($this->container['locality']) > 13)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 13.";
-        }
-
         return $invalid_properties;
     }
 
@@ -172,9 +168,6 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
     public function valid()
     {
 
-        if (strlen($this->container['locality']) > 13) {
-            return false;
-        }
         return true;
     }
 
@@ -190,7 +183,7 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
 
     /**
      * Sets name
-     * @param string $name Your merchant name.  **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.  #### PIN debit Your business name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.  #### Airline processing Your merchant name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.  **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.  **Important** This value must consist of English characters.  Required for captures and credits.
+     * @param string $name Your merchant name.  **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.  #### PIN debit Your business name. This name is displayed on the cardholder's statement. When you include more than one consecutive space, extra spaces are removed.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.  #### Airline processing Your merchant name. This name is displayed on the cardholder's statement. When you include more than one consecutive space, extra spaces are removed.  **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.  **Important** This value must consist of English characters.  Required for captures and credits.
      * @return $this
      */
     public function setName($name)
@@ -211,15 +204,11 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
 
     /**
      * Sets locality
-     * @param string $locality Merchant's City.  #### PIN debit City for your business location. This value might be displayed on the cardholder’s statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.
+     * @param string $locality Merchant's City.  #### PIN debit City for your business location. This value might be displayed on the cardholder's statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.
      * @return $this
      */
     public function setLocality($locality)
     {
-        if (!is_null($locality) && (strlen($locality) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor., must be smaller than or equal to 13.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -236,7 +225,7 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
 
     /**
      * Sets country
-     * @param string $country Merchant's country.  #### PIN debit Country code for your business location. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf) This value might be displayed on the cardholder’s statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters. **Note** If your business is located in the U.S. or Canada and you include this field in a request, you must also include `merchantInformation.merchantDescriptor.administrativeArea`.  Optional field for PIN debit credit or PIN debit purchase.
+     * @param string $country Merchant's country.  #### PIN debit Country code for your business location. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf) This value might be displayed on the cardholder's statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters. **Note** If your business is located in the U.S. or Canada and you include this field in a request, you must also include `merchantInformation.merchantDescriptor.administrativeArea`.  Optional field for PIN debit credit or PIN debit purchase.
      * @return $this
      */
     public function setCountry($country)
@@ -250,6 +239,7 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -260,6 +250,7 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -271,6 +262,7 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -285,6 +277,7 @@ class PtsV2PayoutsPost201ResponseMerchantInformationMerchantDescriptor implement
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

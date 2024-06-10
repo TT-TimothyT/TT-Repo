@@ -32,67 +32,20 @@ jQuery( document ).ready( ( $ ) => {
 			this.enabled_card_types      = args.enabled_card_types;
 			this.enabled_card_type_names = args.enabled_card_type_names;
 			this.i18n                    = args.i18n;
+			this.has_validated           = false;
 
-			// enable Cardinal logging if enabled in the gateway
-			if ( this.logging_enabled ) {
-
-				Cardinal.configure( {
-					logging: {
-						level: 'on'
-					}
-				} );
-			}
-
-			Cardinal.on( 'payments.setupComplete', ( setupCompleteData ) => {
-
-				let maskedCardNumber = this.handler.card_number;
-
-				if ( this.handler.saved_payment_method_selected ) {
-					maskedCardNumber = this.handler.form.find('input#wc-cybersource-credit-card-payment-token-' + this.handler.saved_payment_method_selected).data('card-bin').toString();
-				}
-
-				Cardinal.trigger( 'bin.process', maskedCardNumber.substring( 0, 6 ) ).then( ( result ) => {
-
-					if ( result.Status ) {
-
-						this.log( 'BIN detection successful' );
-
-						if ( this.handler.saved_payment_method_selected ) {
-							// using existing tokenized card
-							this.check_enrollment( this.handler.saved_payment_method_selected, false );
-						} else {
-							// new card being tokenized
-							this.check_enrollment( this.token, true );
-						}
-
-					} else {
-
-						this.log( 'BIN detection failed', 'error' );
-
-						this.handler.render_errors( [ this.i18n.error_general ] );
-					}
-
-					this.log( result );
-				} );
-			} );
-
-			Cardinal.on( 'payments.validated', ( data, jwt ) => {
-				this.validate_results( data, jwt );
-			} );
-
-			this.has_validated = false;
-
+			// intercept the form submission, trigger 3DSecure processing if necessary
 			$( document.body ).on( 'wc_cybersource_flex_form_submitted', ( event, data ) => {
 
 				this.handler = data.payment_form;
 
 				// assume new card
-				let cardType = this.handler.card_type;
+				let cardType         = this.handler.card_type;
 				let enabledCardTypes = this.enabled_card_types;
 
 				// tokenized payment method handling
 				if ( this.handler.saved_payment_method_selected ) {
-					cardType = this.handler.form.find('input#wc-cybersource-credit-card-payment-token-' + this.handler.saved_payment_method_selected).data('card-type');
+					cardType         = this.handler.form.find( 'input#wc-cybersource-credit-card-payment-token-' + this.handler.saved_payment_method_selected ).data( 'card-type' );
 					enabledCardTypes = this.enabled_card_type_names;
 				}
 
@@ -117,13 +70,84 @@ jQuery( document ).ready( ( $ ) => {
 				return false;
 
 			} );
+		}
 
 
+		/**
+		 * Start Device Data Collection
+		 *
+		 * @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-ddc-intro.html
+		 *
+		 * @param collection_url
+		 * @param access_token
+		 */
+		collect_device_information(collection_url, access_token) {
+
+			const parsedUrl = new URL( collection_url )
+
+			this.log( 'Collecting Device Data' )
+
+			const handleDeviceDataCollection = (result = null) => {
+
+				window.removeEventListener( 'message', collectionListener )
+
+				if (timeout) {
+					clearTimeout( timeout )
+				}
+
+				// note: we don't need to do anything with the result, it's just for logging purposes
+				if (result) {
+					this.log( result )
+				}
+
+				this.check_enrollment()
+			}
+
+			const collectionListener = (event) => {
+				if (event.origin === parsedUrl.origin && event.source === iframeWindow) {
+					this.log( 'Device Data collection complete' )
+					handleDeviceDataCollection( event.data )
+				}
+			}
+
+			window.addEventListener(
+				'message',
+				collectionListener,
+				false
+			)
+
+			let $deviceDataCollectionComponents = $( '#cardinal_device_data_collection' )
+
+			// Insert the iframe and form if not already present
+			if ( ! $deviceDataCollectionComponents.length ) {
+				$deviceDataCollectionComponents = $(`
+					<div id="cardinal_device_data_collection">
+						<iframe id="cardinal_collection_iframe" name="collectionIframe" height="10" width="10" style="display:none;"></iframe>
+						<form id="cardinal_collection_form" method="POST" target="collectionIframe" action="">
+							<input id="cardinal_collection_form_input" type="hidden" name="JWT" />
+						</form>
+					</div>
+				`)
+				$( document.body ).append( $deviceDataCollectionComponents )
+			}
+
+			$deviceDataCollectionComponents.find( '#cardinal_collection_form_input' ).val( access_token )
+			$deviceDataCollectionComponents.find( '#cardinal_collection_form' ).prop( 'action', collection_url ).submit()
+
+			const iframeWindow = $deviceDataCollectionComponents.find( '#cardinal_collection_iframe' )[0].contentWindow;
+
+			// time out DDC after 10 seconds
+			const timeout = setTimeout( () => {
+				this.log( 'Device Data collection timed out' )
+				handleDeviceDataCollection();
+			}, 10000 )
 		}
 
 
 		/**
 		 * Sets up the 3D Secure JS.
+		 *
+		 * @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-setup-intro.html
 		 *
 		 * @since 2.3.0
 		 *
@@ -131,6 +155,9 @@ jQuery( document ).ready( ( $ ) => {
 		 * @param {Boolean} isTransient
 		 */
 		setup( token, isTransient ) {
+
+			this.log( 'Setting up Payer Authentication' )
+
 			$.post( this.ajax_url, {
 				order_id:     this.order_id,
 				action:       this.setup_action,
@@ -141,11 +168,11 @@ jQuery( document ).ready( ( $ ) => {
 
 				if ( response.success && response.data && response.data.jwt ) {
 
+					this.log( 'Payer Authentication setup complete' )
+
 					this.reference_id = response.data.reference_id;
 
-					Cardinal.setup( 'init', {
-						jwt: response.data.jwt
-					} );
+					this.collect_device_information( response.data.device_data_collection_url, response.data.jwt )
 
 				} else {
 
@@ -165,61 +192,55 @@ jQuery( document ).ready( ( $ ) => {
 		/**
 		 * Checks the given token for 3D Secure enrollment.
 		 *
-		 * @since 2.3.0
+		 * @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-enroll-intro.html
 		 *
-		 * @param {String} token
-		 * @param {Boolean} isTransient
+		 * @since 2.3.0
 		 */
-		check_enrollment( token, isTransient ) {
+		check_enrollment() {
+
+			this.log( 'Checking enrollment' )
+
+			const token       = this.handler.saved_payment_method_selected || this.token;
+			const isTransient = ! this.handler.saved_payment_method_selected;
 
 			$.post( this.ajax_url, {
-				order_id:     this.order_id,
-				reference_id: this.reference_id,
-				action:       this.check_enrollment_action,
-				nonce:        this.check_enrollment_nonce,
-				token:        token,
-				is_transient: isTransient
+				order_id:         this.order_id,
+				reference_id:     this.reference_id,
+				action:           this.check_enrollment_action,
+				nonce:            this.check_enrollment_nonce,
+				token:            token,
+				expiration_month: this.handler.card_expiration_month,
+				expiration_year:  this.handler.card_expiration_year,
+				is_transient:     isTransient,
+				device_data:      this.collect_backup_device_data(),
 			}, ( response ) => {
 
-				if ( response.success && response.data && response.data.order ) {
+				if ( response.success && response.data && response.data.consumerAuthenticationInformation ) {
 
-					this.handler.form.find( '#wc_cybersource_threed_secure_ecommerce_indicator' ).val( response.data.order.OrderDetails.ecommerceIndicator );
-					this.handler.form.find( '#wc_cybersource_threed_secure_ucaf_collection_indicator' ).val( response.data.order.OrderDetails.ucafCollectionIndicator );
-					this.handler.form.find( '#wc_cybersource_threed_secure_cavv' ).val( response.data.order.OrderDetails.cavv );
-					this.handler.form.find( '#wc_cybersource_threed_secure_ucaf_authentication_data' ).val( response.data.order.OrderDetails.ucafAuthenticationData );
-					this.handler.form.find( '#wc_cybersource_threed_secure_xid' ).val( response.data.order.OrderDetails.xid );
-					this.handler.form.find( '#wc_cybersource_threed_secure_veres_enrolled' ).val( response.data.order.OrderDetails.veresEnrolled );
-					this.handler.form.find( '#wc_cybersource_threed_secure_specification_version' ).val( response.data.order.OrderDetails.specificationVersion);
-					this.handler.form.find( '#wc_cybersource_threed_secure_directory_server_transaction_id' ).val( response.data.order.OrderDetails.directoryServerTransactionId );
-					this.handler.form.find( '#wc_cybersource_threed_secure_card_type' ).val( response.data.order.OrderDetails.cardType );
+					const consumerAuthenticationInformation = response.data.consumerAuthenticationInformation
 
-					if ( response.data.continue && response.data.continue.AcsUrl ) {
+					// @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-stepup-frame-intro.html
+					if ( consumerAuthenticationInformation.stepUpUrl ) {
 
-						this.log( 'calling Cardinal.continue()' );
+						this.log( 'Step-up URL provided, present challenge' );
 
-						Cardinal.continue( 'cca', response.data.continue, response.data.order  );
+						this.present_challenge( consumerAuthenticationInformation )
 
 					} else {
 
-						this.log( 'No ACS URL, submitting form' );
+						this.log( 'No Step-Up URL, submitting form' );
 
-						this.set_transaction_id( response.data.order.OrderDetails.TransactionId );
-						this.set_reference_id( this.reference_id );
-
-						// no redirect? consider it validated
-						this.has_validated = true;
-
-						this.handler.form.submit();
+						this.submit()
 					}
 
 				} else {
 
-					this.log( 'Invalid data', 'error' );
 					this.log( response );
 
-					this.handler.render_errors( [ this.i18n.error_general ] );
-				}
+					const errors = response.data.length ? response.data.map( error => error.message ) : [ this.i18n.error_general ]
 
+					this.handler.render_errors( errors );
+				}
 
 			} ).fail( ( response ) => {
 
@@ -230,55 +251,92 @@ jQuery( document ).ready( ( $ ) => {
 
 
 		/**
-		 * Validates the 3D Secure results.
+		 * Presents the 3DS challenge.
 		 *
-		 * @since 2.3.0
+		 * @since 2.8.0
 		 *
-		 * @param {Object} data
-		 * @param {String} jwt
+		 * @param {Object} consumerAuthenticationInformation
 		 */
-		validate_results( data, jwt ) {
+		present_challenge( consumerAuthenticationInformation ) {
 
-			this.set_transaction_id( data.Payment.ProcessorTransactionId );
-			this.set_reference_id( this.reference_id );
-			this.handler.form.find( '#wc_cybersource_threed_secure_eci_flag' ).val( data.Payment.ExtendedData.ECIFlag );
+			this.log( 'Presenting 3DS challenge' )
 
-			// if available from the challenge request, override the CAVV from the check enrollment response
-			if ( data.Payment.ExtendedData.CAVV ) {
-				this.handler.form.find( '#wc_cybersource_threed_secure_cavv' ).val( data.Payment.ExtendedData.CAVV );
+			// @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-stepup-frame-intro/pa2-ccdc-stepup-frame-building-iframe-parameters.html
+			const pareq      = JSON.parse( atob( consumerAuthenticationInformation.pareq ) );
+			const stepUpUrl  = consumerAuthenticationInformation.stepUpUrl;
+			const token      = consumerAuthenticationInformation.accessToken;
+			const dimensions = this.get_challenge_window_dimensions( pareq.challengeWindowSize || '05' );
+
+			const stepUpMessageListener = (event) => {
+				// ensure origin and source are correct
+				if (event.origin === window.location.origin && event.source === iframeWindow) {
+
+					this.log( 'Step-up challenge complete' )
+
+					$( document.body ).css( "overflow", "auto" );
+
+					console.log( event.data )
+
+					challengeWindowComponents.hide() // hide the modal as soon as we have a response
+
+					this.submit()
+				}
 			}
 
-			this.handler.form.find( '#wc_cybersource_threed_secure_jwt' ).val( jwt );
+			window.addEventListener(
+				'message',
+				stepUpMessageListener,
+				false
+			)
+
+			let challengeWindowComponents = $( '#wc-cybersource-3ds-challenge' )
+
+			// Insert the iframe and form if not already present
+			if ( ! challengeWindowComponents.length ) {
+				challengeWindowComponents = $(`
+					<div id="wc-cybersource-3ds-challenge">
+						<div class="modal">
+							<iframe name="step-up-iframe" id="step-up-iframe"></iframe>
+						</div>
+						<form id="step-up-form" target="step-up-iframe" method="post">
+							<input type="hidden" name="JWT" id="step-up-token" />
+						</form>
+					</div>
+				`)
+				$( document.body ).append( challengeWindowComponents )
+			}
+
+			$( document.body ).css( "overflow", "hidden" );
+
+			challengeWindowComponents.find( '#step-up-iframe' )
+				.width( dimensions.width )
+				.height( dimensions.height )
+
+			challengeWindowComponents.find( '#step-up-token' ).val( token )
+
+			challengeWindowComponents.find( '#step-up-form' )
+				.prop( 'action', stepUpUrl )
+				.submit()
+
+			challengeWindowComponents.show() // ensure modal is visible
+
+			const iframeWindow = challengeWindowComponents.find( '#step-up-iframe' )[0].contentWindow;
+		}
+
+		/**
+		 * Submits the form for payment authorization.
+		 *
+		 * This is where 3DSecure is completed, the backend still needs to pass the payment authorization data to CyberSource.
+		 *
+		 * @since 2.8.0
+		 */
+		submit() {
+
+			this.log( 'Payer Authentication complete, submitting form for payment authorization' )
 
 			this.has_validated = true;
 
 			this.handler.form.submit();
-		}
-
-
-		/**
-		 * Sets the transaction ID.
-		 *
-		 * @since 2.3.0
-		 *
-		 * @param {String} transaction_id
-		 */
-		set_transaction_id( transaction_id ) {
-
-			this.handler.form.find( '#wc_cybersource_threed_secure_transaction_id' ).val( transaction_id );
-		}
-
-
-		/**
-		 * Sets the reference ID to the payment form.
-		 *
-		 * @since 2.5.1
-		 *
-		 * @param {String} reference_id
-		 */
-		set_reference_id( reference_id ) {
-
-			this.handler.form.find( '#wc_cybersource_threed_secure_reference_id' ).val( reference_id );
 		}
 
 
@@ -316,6 +374,46 @@ jQuery( document ).ready( ( $ ) => {
 			} else {
 				console.log( message );
 			}
+		}
+
+
+		/**
+		 * Gets backup details for device data collection.
+		 *
+		 * @ince 2.8.0
+		 *
+		 * @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-enroll-intro.html
+		 */
+		collect_backup_device_data() {
+			return {
+				httpBrowserColorDepth: window.screen.colorDepth,
+				httpBrowserJavaEnabled: window.navigator.javaEnabled(),
+				httpBrowserJavaScriptEnabled: true, // If this script is running, JS is enabled
+				httpBrowserLanguage: window.navigator.language,
+				httpBrowserScreenHeight: window.screen.height,
+				httpBrowserScreenWidth: window.screen.width,
+				httpBrowserTimeDifference: new Date().getTimezoneOffset()
+			};
+		}
+
+
+		/**
+		 * Returns the challenge window dimensions.
+		 *
+		 * @since 2.8.0
+		 *
+		 * @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-stepup-frame-intro/pa2-ccdc-stepup-frame-building-iframe-parameters.html
+		 *
+		 * @param {String} windowSize
+		 */
+		get_challenge_window_dimensions(windowSize) {
+			return {
+				'01': { width: 250, height: 400 },
+				'02': { width: 390, height: 400 },
+				'03': { width: 500, height: 600 },
+				'04': { width: 600, height: 400 },
+				'05': { width: 1000, height: 600 }
+			}[windowSize]
 		}
 
 

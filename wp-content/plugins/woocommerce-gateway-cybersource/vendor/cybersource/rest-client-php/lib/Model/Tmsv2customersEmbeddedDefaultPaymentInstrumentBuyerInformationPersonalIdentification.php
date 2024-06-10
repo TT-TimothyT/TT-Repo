@@ -156,10 +156,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIden
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 26)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 26.";
-        }
-
         return $invalid_properties;
     }
 
@@ -172,9 +168,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIden
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 26) {
-            return false;
-        }
         return true;
     }
 
@@ -195,10 +188,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIden
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIdentification., must be smaller than or equal to 26.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -215,7 +204,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIden
 
     /**
      * Sets type
-     * @param string $type The type of the identification.  Valid values:   - driver license
+     * @param string $type The type of the identification.  Possible Values:   - driver license
      * @return $this
      */
     public function setType($type)
@@ -250,6 +239,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIden
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -260,6 +250,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIden
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -271,6 +262,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIden
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -285,6 +277,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationPersonalIden
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -35,7 +35,7 @@ use \ArrayAccess;
  * Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierCard Class Doc Comment
  *
  * @category    Class
- * @description The expirationMonth, expirationYear and securityCode is sent to the issuer as part of network token enrollment and is not stored under the Instrument Identifier token.
+ * @description The expirationMonth, expirationYear and securityCode is sent to the issuer as part of network token enrollment and is not stored under the Instrument Identifier.
  * @package     CyberSource
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
@@ -163,26 +163,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['number']) && (strlen($this->container['number']) > 19)) {
-            $invalid_properties[] = "invalid value for 'number', the character length must be smaller than or equal to 19.";
-        }
-
-        if (!is_null($this->container['number']) && (strlen($this->container['number']) < 12)) {
-            $invalid_properties[] = "invalid value for 'number', the character length must be bigger than or equal to 12.";
-        }
-
-        if (!is_null($this->container['expirationMonth']) && (strlen($this->container['expirationMonth']) > 2)) {
-            $invalid_properties[] = "invalid value for 'expirationMonth', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['expirationYear']) && (strlen($this->container['expirationYear']) > 4)) {
-            $invalid_properties[] = "invalid value for 'expirationYear', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['securityCode']) && (strlen($this->container['securityCode']) > 4)) {
-            $invalid_properties[] = "invalid value for 'securityCode', the character length must be smaller than or equal to 4.";
-        }
-
         return $invalid_properties;
     }
 
@@ -195,21 +175,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
     public function valid()
     {
 
-        if (strlen($this->container['number']) > 19) {
-            return false;
-        }
-        if (strlen($this->container['number']) < 12) {
-            return false;
-        }
-        if (strlen($this->container['expirationMonth']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['expirationYear']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['securityCode']) > 4) {
-            return false;
-        }
         return true;
     }
 
@@ -225,18 +190,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
 
     /**
      * Sets number
-     * @param string $number The customer’s payment card number, also known as the Primary Account Number (PAN). You can also use this field for encoded account numbers.
+     * @param string $number The customer's payment card number, also known as the Primary Account Number (PAN). You can also use this field for encoded account numbers.
      * @return $this
      */
     public function setNumber($number)
     {
-        if (!is_null($number) && (strlen($number) > 19)) {
-            throw new \InvalidArgumentException('invalid length for $number when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierCard., must be smaller than or equal to 19.');
-        }
-        if (!is_null($number) && (strlen($number) < 12)) {
-            throw new \InvalidArgumentException('invalid length for $number when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierCard., must be bigger than or equal to 12.');
-        }
-
         $this->container['number'] = $number;
 
         return $this;
@@ -253,15 +211,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
 
     /**
      * Sets expirationMonth
-     * @param string $expirationMonth Two-digit month in which the payment card expires.  Format: `MM`.  Valid values: `01` through `12`.
+     * @param string $expirationMonth Two-digit month in which the payment card expires.  Format: `MM`.  Possible Values: `01` through `12`.
      * @return $this
      */
     public function setExpirationMonth($expirationMonth)
     {
-        if (!is_null($expirationMonth) && (strlen($expirationMonth) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $expirationMonth when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierCard., must be smaller than or equal to 2.');
-        }
-
         $this->container['expirationMonth'] = $expirationMonth;
 
         return $this;
@@ -283,10 +237,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      */
     public function setExpirationYear($expirationYear)
     {
-        if (!is_null($expirationYear) && (strlen($expirationYear) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $expirationYear when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['expirationYear'] = $expirationYear;
 
         return $this;
@@ -303,15 +253,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
 
     /**
      * Sets securityCode
-     * @param string $securityCode Card Verification Number.
+     * @param string $securityCode Card Verification Code.  This value is sent to the issuer to support the approval of a network token provision. It is not persisted against the Instrument Identifier.
      * @return $this
      */
     public function setSecurityCode($securityCode)
     {
-        if (!is_null($securityCode) && (strlen($securityCode) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $securityCode when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['securityCode'] = $securityCode;
 
         return $this;
@@ -321,6 +267,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -331,6 +278,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -342,6 +290,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -356,6 +305,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

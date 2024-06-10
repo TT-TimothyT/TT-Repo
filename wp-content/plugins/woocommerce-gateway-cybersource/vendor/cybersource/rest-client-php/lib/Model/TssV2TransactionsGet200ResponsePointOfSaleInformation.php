@@ -57,6 +57,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
         'terminalId' => 'string',
         'entryMode' => 'string',
         'terminalCapability' => 'int',
+        'cardholderVerificationMethodUsed' => 'int',
         'emv' => '\CyberSource\Model\Ptsv2paymentsidreversalsPointOfSaleInformationEmv'
     ];
 
@@ -68,6 +69,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
         'terminalId' => null,
         'entryMode' => null,
         'terminalCapability' => null,
+        'cardholderVerificationMethodUsed' => null,
         'emv' => null
     ];
 
@@ -89,6 +91,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
         'terminalId' => 'terminalId',
         'entryMode' => 'entryMode',
         'terminalCapability' => 'terminalCapability',
+        'cardholderVerificationMethodUsed' => 'cardholderVerificationMethodUsed',
         'emv' => 'emv'
     ];
 
@@ -101,6 +104,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
         'terminalId' => 'setTerminalId',
         'entryMode' => 'setEntryMode',
         'terminalCapability' => 'setTerminalCapability',
+        'cardholderVerificationMethodUsed' => 'setCardholderVerificationMethodUsed',
         'emv' => 'setEmv'
     ];
 
@@ -113,6 +117,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
         'terminalId' => 'getTerminalId',
         'entryMode' => 'getEntryMode',
         'terminalCapability' => 'getTerminalCapability',
+        'cardholderVerificationMethodUsed' => 'getCardholderVerificationMethodUsed',
         'emv' => 'getEmv'
     ];
 
@@ -150,6 +155,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
         $this->container['terminalId'] = isset($data['terminalId']) ? $data['terminalId'] : null;
         $this->container['entryMode'] = isset($data['entryMode']) ? $data['entryMode'] : null;
         $this->container['terminalCapability'] = isset($data['terminalCapability']) ? $data['terminalCapability'] : null;
+        $this->container['cardholderVerificationMethodUsed'] = isset($data['cardholderVerificationMethodUsed']) ? $data['cardholderVerificationMethodUsed'] : null;
         $this->container['emv'] = isset($data['emv']) ? $data['emv'] : null;
     }
 
@@ -161,22 +167,6 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['terminalId']) && (strlen($this->container['terminalId']) > 8)) {
-            $invalid_properties[] = "invalid value for 'terminalId', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['entryMode']) && (strlen($this->container['entryMode']) > 11)) {
-            $invalid_properties[] = "invalid value for 'entryMode', the character length must be smaller than or equal to 11.";
-        }
-
-        if (!is_null($this->container['terminalCapability']) && ($this->container['terminalCapability'] > 5)) {
-            $invalid_properties[] = "invalid value for 'terminalCapability', must be smaller than or equal to 5.";
-        }
-
-        if (!is_null($this->container['terminalCapability']) && ($this->container['terminalCapability'] < 1)) {
-            $invalid_properties[] = "invalid value for 'terminalCapability', must be bigger than or equal to 1.";
-        }
 
         return $invalid_properties;
     }
@@ -190,18 +180,6 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['terminalId']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['entryMode']) > 11) {
-            return false;
-        }
-        if ($this->container['terminalCapability'] > 5) {
-            return false;
-        }
-        if ($this->container['terminalCapability'] < 1) {
-            return false;
-        }
         return true;
     }
 
@@ -222,10 +200,6 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
      */
     public function setTerminalId($terminalId)
     {
-        if (!is_null($terminalId) && (strlen($terminalId) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $terminalId when calling TssV2TransactionsGet200ResponsePointOfSaleInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['terminalId'] = $terminalId;
 
         return $this;
@@ -247,10 +221,6 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
      */
     public function setEntryMode($entryMode)
     {
-        if (!is_null($entryMode) && (strlen($entryMode) > 11)) {
-            throw new \InvalidArgumentException('invalid length for $entryMode when calling TssV2TransactionsGet200ResponsePointOfSaleInformation., must be smaller than or equal to 11.');
-        }
-
         $this->container['entryMode'] = $entryMode;
 
         return $this;
@@ -267,20 +237,33 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
 
     /**
      * Sets terminalCapability
-     * @param int $terminalCapability POS terminal’s capability. Possible values:   - `1`: Terminal has a magnetic stripe reader only.  - `2`: Terminal has a magnetic stripe reader and manual entry capability.  - `3`: Terminal has manual entry capability only.  - `4`: Terminal can read chip cards.  - `5`: Terminal can read contactless chip cards; cannot use contact to read chip cards.  For an EMV transaction, the value of this field must be `4` or `5`.  #### PIN debit Required for PIN debit purchase and PIN debit credit request.  #### Used by **Authorization** Required for the following processors: - American Express Direct - Chase Paymentech Solutions - Credit Mutuel-CIC - FDC Nashville Global - FDMS Nashville - OmniPay Direct - SIX - Worldpay VAP  Optional for the following processors: - CyberSource through VisaNet - GPN - GPX - JCN Gateway - RBS WorldPay Atlanta - TSYS Acquiring Solutions
+     * @param int $terminalCapability POS terminal's capability. Possible values:   - `1`: Terminal has a magnetic stripe reader only.  - `2`: Terminal has a magnetic stripe reader and manual entry capability.  - `3`: Terminal has manual entry capability only.  - `4`: Terminal can read chip cards.  - `5`: Terminal can read contactless chip cards; cannot use contact to read chip cards.  For an EMV transaction, the value of this field must be `4` or `5`.  #### PIN debit Required for PIN debit purchase and PIN debit credit request.  #### Used by **Authorization** Required for the following processors: - American Express Direct - Chase Paymentech Solutions - Credit Mutuel-CIC - FDC Nashville Global - FDMS Nashville - OmniPay Direct - SIX - Worldpay VAP  Optional for the following processors: - CyberSource through VisaNet - GPN - GPX - JCN Gateway - RBS WorldPay Atlanta - TSYS Acquiring Solutions
      * @return $this
      */
     public function setTerminalCapability($terminalCapability)
     {
-
-        if (!is_null($terminalCapability) && ($terminalCapability > 5)) {
-            throw new \InvalidArgumentException('invalid value for $terminalCapability when calling TssV2TransactionsGet200ResponsePointOfSaleInformation., must be smaller than or equal to 5.');
-        }
-        if (!is_null($terminalCapability) && ($terminalCapability < 1)) {
-            throw new \InvalidArgumentException('invalid value for $terminalCapability when calling TssV2TransactionsGet200ResponsePointOfSaleInformation., must be bigger than or equal to 1.');
-        }
-
         $this->container['terminalCapability'] = $terminalCapability;
+
+        return $this;
+    }
+
+    /**
+     * Gets cardholderVerificationMethodUsed
+     * @return int
+     */
+    public function getCardholderVerificationMethodUsed()
+    {
+        return $this->container['cardholderVerificationMethodUsed'];
+    }
+
+    /**
+     * Sets cardholderVerificationMethodUsed
+     * @param int $cardholderVerificationMethodUsed Method that was used to verify the cardholder's identity. Possible values:    - `0`: No verification   - `1`: Signature   - `2`: PIN   - `3`: Cardholder device CVM
+     * @return $this
+     */
+    public function setCardholderVerificationMethodUsed($cardholderVerificationMethodUsed)
+    {
+        $this->container['cardholderVerificationMethodUsed'] = $cardholderVerificationMethodUsed;
 
         return $this;
     }
@@ -310,6 +293,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -320,6 +304,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -331,6 +316,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -345,6 +331,7 @@ class TssV2TransactionsGet200ResponsePointOfSaleInformation implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

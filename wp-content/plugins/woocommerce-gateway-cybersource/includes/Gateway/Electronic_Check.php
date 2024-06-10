@@ -17,15 +17,16 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 
+use SkyVerge\WooCommerce\Cybersource\Blocks\Electronic_Check_Checkout_Block_Integration;
 use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -34,6 +35,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 2.0.0
  */
+#[\AllowDynamicProperties]
 class Electronic_Check extends Gateway {
 
 
@@ -46,11 +48,14 @@ class Electronic_Check extends Gateway {
 	/** @var bool whether the authorization message should be displayed at checkout */
 	protected $authorization_message_enabled;
 
+	/** @var Electronic_Check_Checkout_Block_Integration|null */
+	protected ?Electronic_Check_Checkout_Block_Integration $electronic_check_checkout_block_integration = null;
+
 
 	/**
 	 * Constructs the gateway.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 
@@ -110,6 +115,26 @@ class Electronic_Check extends Gateway {
 
 
 	/**
+	 * Gets the checkout block integration instance.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return Electronic_Check_Checkout_Block_Integration
+	 */
+	public function get_checkout_block_integration_instance(): ?Framework\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration {
+
+		if ( null === $this->electronic_check_checkout_block_integration ) {
+
+			require_once( $this->get_plugin()->get_plugin_path() . '/includes/Blocks/Electronic_Check_Checkout_Block_Integration.php' );
+
+			$this->electronic_check_checkout_block_integration = new Electronic_Check_Checkout_Block_Integration( $this->get_plugin(), $this );
+		}
+
+		return $this->electronic_check_checkout_block_integration;
+	}
+
+
+	/**
 	 * Gets the IDs of sibling gateways that this gateway can inherit settings from.
 	 *
 	 * The eCheck gateway can inherit settings from the Credit Card gateway only.
@@ -132,12 +157,16 @@ class Electronic_Check extends Gateway {
 	/**
 	 * Adds check number field to the payment form.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @param array $fields
 	 * @return array
 	 */
 	public function add_payment_form_fields( $fields ) {
+
+		if ( ! $this->is_check_number_enabled() ) {
+			return $fields;
+		}
 
 		// add check number
 		$fields['check-number'] = [
@@ -145,11 +174,11 @@ class Electronic_Check extends Gateway {
 			'label'             => __( 'Check Number', 'woocommerce-gateway-cybersource' ),
 			'id'                => 'wc-' . $this->get_id_dasherized() . '-check-number',
 			'name'              => 'wc-' . $this->get_id_dasherized() . '-check-number',
-			'required'          => true,
+			'required'          => $this->is_check_number_required(),
 			'input_class'       => [ 'wc-' . $this->get_id_dasherized() . '-check-number' ],
 			'maxlength'         => 8,
 			'custom_attributes' => [ 'autocomplete' => 'off' ],
-			'value'             => $this->is_test_environment() ? '123456' : '',
+			'value'             => $this->get_payment_method_defaults()['check-number'] ?? '',
 		];
 
 		return $fields;
@@ -157,9 +186,35 @@ class Electronic_Check extends Gateway {
 
 
 	/**
+	 * Determines whether the check number field should be required.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return bool
+	 */
+	public function is_check_number_required() : bool {
+
+		return $this->get_option( 'check_number_mode' ) === 'required';
+	}
+
+
+	/**
+	 * Determines whether the check number field is enabled.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return bool
+	 */
+	public function is_check_number_enabled() : bool {
+
+		return $this->get_option( 'check_number_mode' ) !== 'off';
+	}
+
+
+	/**
 	 * Displays the authorization message.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 */
 	public function display_authorization_message() {
 
@@ -171,7 +226,7 @@ class Electronic_Check extends Gateway {
 		/**
 		 * Filters the authorization message HTML displayed at checkout.
 		 *
-		 * @since 2.0.0-dev.5
+		 * @since 2.0.0
 		 * @param string $html the message HTML
 		 * @param Electronic_Check $gateway the gateway object
 		 */
@@ -185,7 +240,7 @@ class Electronic_Check extends Gateway {
 	 * Returns the default values for this payment method, used to pre-fill
 	 * a valid test account number when in testing mode.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @see Framework\SV_WC_Payment_Gateway::get_payment_method_defaults()
 	 * @return array
@@ -198,6 +253,7 @@ class Electronic_Check extends Gateway {
 
 			$defaults['routing-number'] = '071923284';
 			$defaults['account-number'] = '41001111';
+			$defaults['check-number']   = '123456';
 		}
 
 		return $defaults;
@@ -207,7 +263,7 @@ class Electronic_Check extends Gateway {
 	/**
 	 * Gets the authorization message displayed at checkout.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
@@ -233,7 +289,7 @@ class Electronic_Check extends Gateway {
 		/**
 		 * Filters the authorization message displayed at checkout, before replacing the placeholders.
 		 *
-		 * @since 2.0.0-dev.5
+		 * @since 2.0.0
 		 * @param string $message the raw authorization message text
 		 * @param Electronic_Check $gateway the gateway object
 		 */
@@ -244,7 +300,7 @@ class Electronic_Check extends Gateway {
 		/**
 		 * Filters the authorization message placeholders.
 		 *
-		 * @since 2.0.0-dev.5
+		 * @since 2.0.0
 		 * @param array $placeholders the authorization message placeholders
 		 * @param Electronic_Check $gateway the gateway object
 		 */
@@ -259,7 +315,7 @@ class Electronic_Check extends Gateway {
 		/**
 		 * Filters the authorization message displayed at checkout.
 		 *
-		 * @since 2.0.0-dev.5
+		 * @since 2.0.0
 		 * @param string $message the authorization message text
 		 * @param Electronic_Check $gateway the gateway object
 		 */
@@ -272,7 +328,7 @@ class Electronic_Check extends Gateway {
 	 *
 	 * Mainly changing the authorization date to match if on the Change Payment screen.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @param array $placeholders the authorization message placeholders
 	 * @param Electronic_Check $gateway the gateway object
@@ -296,7 +352,7 @@ class Electronic_Check extends Gateway {
 	/**
 	 * Gets the default authorization message.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
@@ -315,7 +371,7 @@ class Electronic_Check extends Gateway {
 	/**
 	 * Gets the default recurring authorization message.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
@@ -334,7 +390,7 @@ class Electronic_Check extends Gateway {
 	/**
 	 * Determines if the authorization message should be displayed at checkout.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @return bool
 	 */
@@ -343,7 +399,7 @@ class Electronic_Check extends Gateway {
 		/**
 		 * Filters whether the authorization message should be displayed at checkout.
 		 *
-		 * @since 2.0.0-dev.5
+		 * @since 2.0.0
 		 * @param bool $enabled
 		 */
 		return (bool) apply_filters( 'wc_' . $this->get_id() . '_authorization_message_enabled', 'yes' === $this->authorization_message_enabled );
@@ -355,7 +411,7 @@ class Electronic_Check extends Gateway {
 	 *
 	 * We need to override this because account number minimum length is different than the default.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @param bool $is_valid true if the fields are valid, false otherwise
 	 * @return bool
@@ -364,9 +420,7 @@ class Electronic_Check extends Gateway {
 
 		$account_number = Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-account-number' );
 		$routing_number = Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-routing-number' );
-
-		// optional fields (excluding account type for now)
-		$check_number = Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-check-number' );
+		$check_number   = Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-check-number' );
 
 		// routing number exists?
 		if ( empty( $routing_number ) ) {
@@ -383,7 +437,7 @@ class Electronic_Check extends Gateway {
 			}
 
 			// routing number length validation
-			if ( 9 != strlen( $routing_number ) ) {
+			if ( 9 !== strlen( $routing_number ) ) {
 				Framework\SV_WC_Helper::wc_add_notice( esc_html__( 'Routing number is invalid (must be 9 digits)', 'woocommerce-gateway-cybersource' ), 'error' );
 				$is_valid = false;
 			}
@@ -406,23 +460,28 @@ class Electronic_Check extends Gateway {
 
 			// account number length validation
 			if ( strlen( $account_number ) < 4 || strlen( $account_number ) > 17 ) {
-				Framework\SV_WC_Helper::wc_add_notice( esc_html__( 'Account number is invalid (must be between 4 and 17 digits)', 'woocommerce-gateway-cybersource' ), 'error' );
+				Framework\SV_WC_Helper::wc_add_notice( esc_html_x( 'Account number is invalid (must be between 4 and 17 digits)', 'Bank account', 'woocommerce-gateway-cybersource' ), 'error' );
 				$is_valid = false;
 			}
 		}
 
-		// optional check number validation
-		if ( ! empty( $check_number ) ) {
+		// check number validation
+		if ( empty( $check_number ) && $this->is_check_number_required() ) {
+			Framework\SV_WC_Helper::wc_add_notice( esc_html_x( 'Check Number is missing', 'Bank check (noun)', 'woocommerce-gateway-cybersource' ), 'error' );
+			$is_valid = false;
+		}
+
+		if ( ! empty( $check_number ) && $this->is_check_number_enabled() ) {
 
 			// check number digit validation
 			if ( ! ctype_digit( $check_number ) ) {
-				Framework\SV_WC_Helper::wc_add_notice( esc_html__( 'Check Number is invalid (only digits are allowed)', 'woocommerce-gateway-cybersource' ), 'error' );
+				Framework\SV_WC_Helper::wc_add_notice( esc_html_x( 'Check Number is invalid (only digits are allowed)', 'Bank check (noun)', 'woocommerce-gateway-cybersource' ), 'error' );
 				$is_valid = false;
 			}
 
 			// check number length validation
 			if ( strlen( $check_number ) > 8 ) {
-				Framework\SV_WC_Helper::wc_add_notice( esc_html__( 'Check number is invalid (must be 8 digits or less)', 'woocommerce-gateway-cybersource' ), 'error' );
+				Framework\SV_WC_Helper::wc_add_notice( esc_html_x( 'Check number is invalid (must be 8 digits or less)', 'Bank check (noun)', 'woocommerce-gateway-cybersource' ), 'error' );
 				$is_valid = false;
 			}
 		}
@@ -432,7 +491,7 @@ class Electronic_Check extends Gateway {
 		 *
 		 * Allow actors to filter the eCheck field validation.
 		 *
-		 * @since 2.0.0-dev.5
+		 * @since 2.0.0
 		 * @param bool $is_valid true for validation to pass
 		 * @param Framework\SV_WC_Payment_Gateway_Direct $this direct gateway class instance
 		 */
@@ -448,7 +507,7 @@ class Electronic_Check extends Gateway {
 	 *
 	 * @see SV_WC_Payment_Gateway::get_method_form_fields()
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @return array of form fields
 	 */
@@ -461,9 +520,9 @@ class Electronic_Check extends Gateway {
 			'title'    => __( 'Check Number Field', 'woocommerce-gateway-cybersource' ),
 			'type'     => 'select',
 			'options'  => [
-				'off'      => 'Hidden',
-				'optional' => 'Optional',
-				'required' => 'Required',
+				'off'      => __( 'Hidden', 'woocommerce-gateway-cybersource' ),
+				'optional' => __( 'Optional', 'woocommerce-gateway-cybersource' ),
+				'required' => __( 'Required', 'woocommerce-gateway-cybersource' ),
 			],
 			'default'  => 'required',
 			'desc_tip' => __( 'Control whether a Check Number field is hidden, shown, or required during checkout.', 'woocommerce-gateway-cybersource' ),
@@ -512,7 +571,7 @@ class Electronic_Check extends Gateway {
 	/**
 	 * Adds some inline JS to show/hide the authorization message settings fields.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @see WC_Settings_API::admin_options()
 	 */

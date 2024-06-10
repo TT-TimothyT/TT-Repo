@@ -56,7 +56,7 @@ class AddNegativeListRequest implements ArrayAccess
     protected static $swaggerTypes = [
         'orderInformation' => '\CyberSource\Model\Riskv1liststypeentriesOrderInformation',
         'paymentInformation' => '\CyberSource\Model\Riskv1liststypeentriesPaymentInformation',
-        'clientReferenceInformation' => '\CyberSource\Model\Riskv1decisionsClientReferenceInformation',
+        'clientReferenceInformation' => '\CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation',
         'deviceInformation' => '\CyberSource\Model\Riskv1liststypeentriesDeviceInformation',
         'riskInformation' => '\CyberSource\Model\Riskv1liststypeentriesRiskInformation',
         'buyerInformation' => '\CyberSource\Model\Riskv1liststypeentriesBuyerInformation'
@@ -234,7 +234,7 @@ class AddNegativeListRequest implements ArrayAccess
 
     /**
      * Gets clientReferenceInformation
-     * @return \CyberSource\Model\Riskv1decisionsClientReferenceInformation
+     * @return \CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation
      */
     public function getClientReferenceInformation()
     {
@@ -243,7 +243,7 @@ class AddNegativeListRequest implements ArrayAccess
 
     /**
      * Sets clientReferenceInformation
-     * @param \CyberSource\Model\Riskv1decisionsClientReferenceInformation $clientReferenceInformation
+     * @param \CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation $clientReferenceInformation
      * @return $this
      */
     public function setClientReferenceInformation($clientReferenceInformation)
@@ -320,6 +320,7 @@ class AddNegativeListRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -330,6 +331,7 @@ class AddNegativeListRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -341,6 +343,7 @@ class AddNegativeListRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -355,6 +358,7 @@ class AddNegativeListRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -150,14 +150,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationSta
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['withApartment']) && (strlen($this->container['withApartment']) > 255)) {
-            $invalid_properties[] = "invalid value for 'withApartment', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['withoutApartment']) && (strlen($this->container['withoutApartment']) > 255)) {
-            $invalid_properties[] = "invalid value for 'withoutApartment', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationSta
     public function valid()
     {
 
-        if (strlen($this->container['withApartment']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['withoutApartment']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +182,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationSta
      */
     public function setWithApartment($withApartment)
     {
-        if (!is_null($withApartment) && (strlen($withApartment) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $withApartment when calling RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationStandardAddressAddress1., must be smaller than or equal to 255.');
-        }
-
         $this->container['withApartment'] = $withApartment;
 
         return $this;
@@ -221,10 +203,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationSta
      */
     public function setWithoutApartment($withoutApartment)
     {
-        if (!is_null($withoutApartment) && (strlen($withoutApartment) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $withoutApartment when calling RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationStandardAddressAddress1., must be smaller than or equal to 255.');
-        }
-
         $this->container['withoutApartment'] = $withoutApartment;
 
         return $this;
@@ -234,6 +212,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationSta
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationSta
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationSta
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationSta
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -57,7 +57,8 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
         'country' => 'string',
         'discretionaryData' => 'string',
         'countrySpecificDiscretionaryData' => 'string',
-        'responseCode' => 'string'
+        'responseCode' => 'string',
+        'pinRequestIndicator' => 'string'
     ];
 
     /**
@@ -68,7 +69,8 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
         'country' => null,
         'discretionaryData' => null,
         'countrySpecificDiscretionaryData' => null,
-        'responseCode' => null
+        'responseCode' => null,
+        'pinRequestIndicator' => null
     ];
 
     public static function swaggerTypes()
@@ -89,7 +91,8 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
         'country' => 'country',
         'discretionaryData' => 'discretionaryData',
         'countrySpecificDiscretionaryData' => 'countrySpecificDiscretionaryData',
-        'responseCode' => 'responseCode'
+        'responseCode' => 'responseCode',
+        'pinRequestIndicator' => 'pinRequestIndicator'
     ];
 
 
@@ -101,7 +104,8 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
         'country' => 'setCountry',
         'discretionaryData' => 'setDiscretionaryData',
         'countrySpecificDiscretionaryData' => 'setCountrySpecificDiscretionaryData',
-        'responseCode' => 'setResponseCode'
+        'responseCode' => 'setResponseCode',
+        'pinRequestIndicator' => 'setPinRequestIndicator'
     ];
 
 
@@ -113,7 +117,8 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
         'country' => 'getCountry',
         'discretionaryData' => 'getDiscretionaryData',
         'countrySpecificDiscretionaryData' => 'getCountrySpecificDiscretionaryData',
-        'responseCode' => 'getResponseCode'
+        'responseCode' => 'getResponseCode',
+        'pinRequestIndicator' => 'getPinRequestIndicator'
     ];
 
     public static function attributeMap()
@@ -151,6 +156,7 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
         $this->container['discretionaryData'] = isset($data['discretionaryData']) ? $data['discretionaryData'] : null;
         $this->container['countrySpecificDiscretionaryData'] = isset($data['countrySpecificDiscretionaryData']) ? $data['countrySpecificDiscretionaryData'] : null;
         $this->container['responseCode'] = isset($data['responseCode']) ? $data['responseCode'] : null;
+        $this->container['pinRequestIndicator'] = isset($data['pinRequestIndicator']) ? $data['pinRequestIndicator'] : null;
     }
 
     /**
@@ -161,22 +167,6 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 3)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['discretionaryData']) && (strlen($this->container['discretionaryData']) > 255)) {
-            $invalid_properties[] = "invalid value for 'discretionaryData', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['countrySpecificDiscretionaryData']) && (strlen($this->container['countrySpecificDiscretionaryData']) > 140)) {
-            $invalid_properties[] = "invalid value for 'countrySpecificDiscretionaryData', the character length must be smaller than or equal to 140.";
-        }
-
-        if (!is_null($this->container['responseCode']) && (strlen($this->container['responseCode']) > 6)) {
-            $invalid_properties[] = "invalid value for 'responseCode', the character length must be smaller than or equal to 6.";
-        }
 
         return $invalid_properties;
     }
@@ -190,18 +180,6 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['country']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['discretionaryData']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['countrySpecificDiscretionaryData']) > 140) {
-            return false;
-        }
-        if (strlen($this->container['responseCode']) > 6) {
-            return false;
-        }
         return true;
     }
 
@@ -222,10 +200,6 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling PtsV2PaymentsPost201ResponseIssuerInformation., must be smaller than or equal to 3.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -247,10 +221,6 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
      */
     public function setDiscretionaryData($discretionaryData)
     {
-        if (!is_null($discretionaryData) && (strlen($discretionaryData) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $discretionaryData when calling PtsV2PaymentsPost201ResponseIssuerInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['discretionaryData'] = $discretionaryData;
 
         return $this;
@@ -272,10 +242,6 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
      */
     public function setCountrySpecificDiscretionaryData($countrySpecificDiscretionaryData)
     {
-        if (!is_null($countrySpecificDiscretionaryData) && (strlen($countrySpecificDiscretionaryData) > 140)) {
-            throw new \InvalidArgumentException('invalid length for $countrySpecificDiscretionaryData when calling PtsV2PaymentsPost201ResponseIssuerInformation., must be smaller than or equal to 140.');
-        }
-
         $this->container['countrySpecificDiscretionaryData'] = $countrySpecificDiscretionaryData;
 
         return $this;
@@ -297,11 +263,28 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
      */
     public function setResponseCode($responseCode)
     {
-        if (!is_null($responseCode) && (strlen($responseCode) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $responseCode when calling PtsV2PaymentsPost201ResponseIssuerInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['responseCode'] = $responseCode;
+
+        return $this;
+    }
+
+    /**
+     * Gets pinRequestIndicator
+     * @return string
+     */
+    public function getPinRequestIndicator()
+    {
+        return $this->container['pinRequestIndicator'];
+    }
+
+    /**
+     * Sets pinRequestIndicator
+     * @param string $pinRequestIndicator This field contains value '1' which is sent by Issuer in the response when PIN is requested by issuer,   This field is only supported for Visa Platform Connect.
+     * @return $this
+     */
+    public function setPinRequestIndicator($pinRequestIndicator)
+    {
+        $this->container['pinRequestIndicator'] = $pinRequestIndicator;
 
         return $this;
     }
@@ -310,6 +293,7 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -320,6 +304,7 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -331,6 +316,7 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -345,6 +331,7 @@ class PtsV2PaymentsPost201ResponseIssuerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -64,6 +64,7 @@ class CapturePaymentRequest implements ArrayAccess
         'aggregatorInformation' => '\CyberSource\Model\Ptsv2paymentsidcapturesAggregatorInformation',
         'pointOfSaleInformation' => '\CyberSource\Model\Ptsv2paymentsidcapturesPointOfSaleInformation',
         'merchantDefinedInformation' => '\CyberSource\Model\Ptsv2paymentsMerchantDefinedInformation[]',
+        'merchantDefinedSecureInformation' => '\CyberSource\Model\Ptsv2paymentsMerchantDefinedSecureInformation',
         'installmentInformation' => '\CyberSource\Model\Ptsv2paymentsidcapturesInstallmentInformation',
         'travelInformation' => '\CyberSource\Model\Ptsv2paymentsTravelInformation',
         'promotionInformation' => '\CyberSource\Model\Ptsv2paymentsPromotionInformation'
@@ -84,6 +85,7 @@ class CapturePaymentRequest implements ArrayAccess
         'aggregatorInformation' => null,
         'pointOfSaleInformation' => null,
         'merchantDefinedInformation' => null,
+        'merchantDefinedSecureInformation' => null,
         'installmentInformation' => null,
         'travelInformation' => null,
         'promotionInformation' => null
@@ -114,6 +116,7 @@ class CapturePaymentRequest implements ArrayAccess
         'aggregatorInformation' => 'aggregatorInformation',
         'pointOfSaleInformation' => 'pointOfSaleInformation',
         'merchantDefinedInformation' => 'merchantDefinedInformation',
+        'merchantDefinedSecureInformation' => 'merchantDefinedSecureInformation',
         'installmentInformation' => 'installmentInformation',
         'travelInformation' => 'travelInformation',
         'promotionInformation' => 'promotionInformation'
@@ -135,6 +138,7 @@ class CapturePaymentRequest implements ArrayAccess
         'aggregatorInformation' => 'setAggregatorInformation',
         'pointOfSaleInformation' => 'setPointOfSaleInformation',
         'merchantDefinedInformation' => 'setMerchantDefinedInformation',
+        'merchantDefinedSecureInformation' => 'setMerchantDefinedSecureInformation',
         'installmentInformation' => 'setInstallmentInformation',
         'travelInformation' => 'setTravelInformation',
         'promotionInformation' => 'setPromotionInformation'
@@ -156,6 +160,7 @@ class CapturePaymentRequest implements ArrayAccess
         'aggregatorInformation' => 'getAggregatorInformation',
         'pointOfSaleInformation' => 'getPointOfSaleInformation',
         'merchantDefinedInformation' => 'getMerchantDefinedInformation',
+        'merchantDefinedSecureInformation' => 'getMerchantDefinedSecureInformation',
         'installmentInformation' => 'getInstallmentInformation',
         'travelInformation' => 'getTravelInformation',
         'promotionInformation' => 'getPromotionInformation'
@@ -202,6 +207,7 @@ class CapturePaymentRequest implements ArrayAccess
         $this->container['aggregatorInformation'] = isset($data['aggregatorInformation']) ? $data['aggregatorInformation'] : null;
         $this->container['pointOfSaleInformation'] = isset($data['pointOfSaleInformation']) ? $data['pointOfSaleInformation'] : null;
         $this->container['merchantDefinedInformation'] = isset($data['merchantDefinedInformation']) ? $data['merchantDefinedInformation'] : null;
+        $this->container['merchantDefinedSecureInformation'] = isset($data['merchantDefinedSecureInformation']) ? $data['merchantDefinedSecureInformation'] : null;
         $this->container['installmentInformation'] = isset($data['installmentInformation']) ? $data['installmentInformation'] : null;
         $this->container['travelInformation'] = isset($data['travelInformation']) ? $data['travelInformation'] : null;
         $this->container['promotionInformation'] = isset($data['promotionInformation']) ? $data['promotionInformation'] : null;
@@ -443,6 +449,27 @@ class CapturePaymentRequest implements ArrayAccess
     }
 
     /**
+     * Gets merchantDefinedSecureInformation
+     * @return \CyberSource\Model\Ptsv2paymentsMerchantDefinedSecureInformation
+     */
+    public function getMerchantDefinedSecureInformation()
+    {
+        return $this->container['merchantDefinedSecureInformation'];
+    }
+
+    /**
+     * Sets merchantDefinedSecureInformation
+     * @param \CyberSource\Model\Ptsv2paymentsMerchantDefinedSecureInformation $merchantDefinedSecureInformation
+     * @return $this
+     */
+    public function setMerchantDefinedSecureInformation($merchantDefinedSecureInformation)
+    {
+        $this->container['merchantDefinedSecureInformation'] = $merchantDefinedSecureInformation;
+
+        return $this;
+    }
+
+    /**
      * Gets installmentInformation
      * @return \CyberSource\Model\Ptsv2paymentsidcapturesInstallmentInformation
      */
@@ -509,6 +536,7 @@ class CapturePaymentRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -519,6 +547,7 @@ class CapturePaymentRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -530,6 +559,7 @@ class CapturePaymentRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -544,6 +574,7 @@ class CapturePaymentRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -64,7 +64,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
         'sort' => 'string',
         'count' => 'int',
         'totalCount' => 'int',
-        'status' => 'string',
         'submitTimeUtc' => 'string',
         'embedded' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbedded',
         'links' => '\CyberSource\Model\PtsV2IncrementalAuthorizationPatch201ResponseLinks'
@@ -85,7 +84,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
         'sort' => null,
         'count' => null,
         'totalCount' => null,
-        'status' => null,
         'submitTimeUtc' => null,
         'embedded' => null,
         'links' => null
@@ -116,7 +114,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
         'sort' => 'sort',
         'count' => 'count',
         'totalCount' => 'totalCount',
-        'status' => 'status',
         'submitTimeUtc' => 'submitTimeUtc',
         'embedded' => '_embedded',
         'links' => '_links'
@@ -138,7 +135,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
         'sort' => 'setSort',
         'count' => 'setCount',
         'totalCount' => 'setTotalCount',
-        'status' => 'setStatus',
         'submitTimeUtc' => 'setSubmitTimeUtc',
         'embedded' => 'setEmbedded',
         'links' => 'setLinks'
@@ -160,7 +156,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
         'sort' => 'getSort',
         'count' => 'getCount',
         'totalCount' => 'getTotalCount',
-        'status' => 'getStatus',
         'submitTimeUtc' => 'getSubmitTimeUtc',
         'embedded' => 'getEmbedded',
         'links' => 'getLinks'
@@ -207,7 +202,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
         $this->container['sort'] = isset($data['sort']) ? $data['sort'] : null;
         $this->container['count'] = isset($data['count']) ? $data['count'] : null;
         $this->container['totalCount'] = isset($data['totalCount']) ? $data['totalCount'] : null;
-        $this->container['status'] = isset($data['status']) ? $data['status'] : null;
         $this->container['submitTimeUtc'] = isset($data['submitTimeUtc']) ? $data['submitTimeUtc'] : null;
         $this->container['embedded'] = isset($data['embedded']) ? $data['embedded'] : null;
         $this->container['links'] = isset($data['links']) ? $data['links'] : null;
@@ -222,10 +216,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['searchId']) && (strlen($this->container['searchId']) > 60)) {
-            $invalid_properties[] = "invalid value for 'searchId', the character length must be smaller than or equal to 60.";
-        }
-
         return $invalid_properties;
     }
 
@@ -238,9 +228,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['searchId']) > 60) {
-            return false;
-        }
         return true;
     }
 
@@ -261,10 +248,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
      */
     public function setSearchId($searchId)
     {
-        if (!is_null($searchId) && (strlen($searchId) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $searchId when calling TssV2TransactionsPost201Response., must be smaller than or equal to 60.');
-        }
-
         $this->container['searchId'] = $searchId;
 
         return $this;
@@ -323,7 +306,7 @@ class TssV2TransactionsPost201Response implements ArrayAccess
 
     /**
      * Sets timezone
-     * @param string $timezone Merchant’s time zone in ISO standard, using the TZ database format. For example: `America/Chicago`
+     * @param string $timezone Merchant's time zone in ISO standard, using the TZ database format. For example: `America/Chicago`
      * @return $this
      */
     public function setTimezone($timezone)
@@ -344,7 +327,7 @@ class TssV2TransactionsPost201Response implements ArrayAccess
 
     /**
      * Sets query
-     * @param string $query String that contains the filters and variables for which you want to search. For information about supported field-filters and operators, see the [Query Filters]( https://developer.cybersource.com/api/developer-guides/dita-txn-search-details-rest-api-dev-guide-102718/txn_search_api/creating_txn_search_request.html) section of the Transaction Search Developer Guide.
+     * @param string $query String that contains the filters and variables for which you want to search. For information about supported field-filters and operators, see the [Query Filters]( https://developer.cybersource.com/api/developer-guides/dita-txn-search-details-rest-api-dev-guide-102718/txn-search-intro/txn-filtering.html) section of the Transaction Search Developer Guide.
      * @return $this
      */
     public function setQuery($query)
@@ -386,7 +369,7 @@ class TssV2TransactionsPost201Response implements ArrayAccess
 
     /**
      * Sets limit
-     * @param int $limit Controls the maximum number of items that may be returned for a single request. The default is 20, the maximum is 2000.
+     * @param int $limit Controls the maximum number of items that may be returned for a single request. The default is 20, the maximum is 2500.
      * @return $this
      */
     public function setLimit($limit)
@@ -460,27 +443,6 @@ class TssV2TransactionsPost201Response implements ArrayAccess
     }
 
     /**
-     * Gets status
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->container['status'];
-    }
-
-    /**
-     * Sets status
-     * @param string $status The status of the submitted transaction.
-     * @return $this
-     */
-    public function setStatus($status)
-    {
-        $this->container['status'] = $status;
-
-        return $this;
-    }
-
-    /**
      * Gets submitTimeUtc
      * @return string
      */
@@ -491,7 +453,7 @@ class TssV2TransactionsPost201Response implements ArrayAccess
 
     /**
      * Sets submitTimeUtc
-     * @param string $submitTimeUtc Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by authorization service.  #### PIN debit Time when the PIN debit credit, PIN debit purchase or PIN debit reversal was requested.  Returned by PIN debit credit, PIN debit purchase or PIN debit reversal.
+     * @param string $submitTimeUtc Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by Cybersource for all services.
      * @return $this
      */
     public function setSubmitTimeUtc($submitTimeUtc)
@@ -547,6 +509,7 @@ class TssV2TransactionsPost201Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -557,6 +520,7 @@ class TssV2TransactionsPost201Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -568,6 +532,7 @@ class TssV2TransactionsPost201Response implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -582,6 +547,7 @@ class TssV2TransactionsPost201Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

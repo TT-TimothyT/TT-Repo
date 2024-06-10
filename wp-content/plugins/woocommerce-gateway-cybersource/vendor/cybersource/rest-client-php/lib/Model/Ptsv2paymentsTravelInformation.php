@@ -58,7 +58,8 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
         'agency' => '\CyberSource\Model\Ptsv2paymentsTravelInformationAgency',
         'autoRental' => '\CyberSource\Model\Ptsv2paymentsTravelInformationAutoRental',
         'lodging' => '\CyberSource\Model\Ptsv2paymentsTravelInformationLodging',
-        'transit' => '\CyberSource\Model\Ptsv2paymentsTravelInformationTransit'
+        'transit' => '\CyberSource\Model\Ptsv2paymentsTravelInformationTransit',
+        'vehicleData' => '\CyberSource\Model\Ptsv2paymentsTravelInformationVehicleData'
     ];
 
     /**
@@ -70,7 +71,8 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
         'agency' => null,
         'autoRental' => null,
         'lodging' => null,
-        'transit' => null
+        'transit' => null,
+        'vehicleData' => null
     ];
 
     public static function swaggerTypes()
@@ -92,7 +94,8 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
         'agency' => 'agency',
         'autoRental' => 'autoRental',
         'lodging' => 'lodging',
-        'transit' => 'transit'
+        'transit' => 'transit',
+        'vehicleData' => 'vehicleData'
     ];
 
 
@@ -105,7 +108,8 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
         'agency' => 'setAgency',
         'autoRental' => 'setAutoRental',
         'lodging' => 'setLodging',
-        'transit' => 'setTransit'
+        'transit' => 'setTransit',
+        'vehicleData' => 'setVehicleData'
     ];
 
 
@@ -118,7 +122,8 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
         'agency' => 'getAgency',
         'autoRental' => 'getAutoRental',
         'lodging' => 'getLodging',
-        'transit' => 'getTransit'
+        'transit' => 'getTransit',
+        'vehicleData' => 'getVehicleData'
     ];
 
     public static function attributeMap()
@@ -157,6 +162,7 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
         $this->container['autoRental'] = isset($data['autoRental']) ? $data['autoRental'] : null;
         $this->container['lodging'] = isset($data['lodging']) ? $data['lodging'] : null;
         $this->container['transit'] = isset($data['transit']) ? $data['transit'] : null;
+        $this->container['vehicleData'] = isset($data['vehicleData']) ? $data['vehicleData'] : null;
     }
 
     /**
@@ -167,10 +173,6 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['duration']) && (strlen($this->container['duration']) > 2)) {
-            $invalid_properties[] = "invalid value for 'duration', the character length must be smaller than or equal to 2.";
-        }
 
         return $invalid_properties;
     }
@@ -184,9 +186,6 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['duration']) > 2) {
-            return false;
-        }
         return true;
     }
 
@@ -207,10 +206,6 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
      */
     public function setDuration($duration)
     {
-        if (!is_null($duration) && (strlen($duration) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $duration when calling Ptsv2paymentsTravelInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['duration'] = $duration;
 
         return $this;
@@ -299,11 +294,33 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets vehicleData
+     * @return \CyberSource\Model\Ptsv2paymentsTravelInformationVehicleData
+     */
+    public function getVehicleData()
+    {
+        return $this->container['vehicleData'];
+    }
+
+    /**
+     * Sets vehicleData
+     * @param \CyberSource\Model\Ptsv2paymentsTravelInformationVehicleData $vehicleData
+     * @return $this
+     */
+    public function setVehicleData($vehicleData)
+    {
+        $this->container['vehicleData'] = $vehicleData;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -314,6 +331,7 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -325,6 +343,7 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -339,6 +358,7 @@ class Ptsv2paymentsTravelInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

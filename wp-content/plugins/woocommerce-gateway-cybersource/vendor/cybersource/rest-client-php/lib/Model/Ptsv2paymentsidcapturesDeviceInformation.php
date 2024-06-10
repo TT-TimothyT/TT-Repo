@@ -156,18 +156,6 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['hostName']) && (strlen($this->container['hostName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'hostName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['ipAddress']) && (strlen($this->container['ipAddress']) > 48)) {
-            $invalid_properties[] = "invalid value for 'ipAddress', the character length must be smaller than or equal to 48.";
-        }
-
-        if (!is_null($this->container['userAgent']) && (strlen($this->container['userAgent']) > 40)) {
-            $invalid_properties[] = "invalid value for 'userAgent', the character length must be smaller than or equal to 40.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['hostName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['ipAddress']) > 48) {
-            return false;
-        }
-        if (strlen($this->container['userAgent']) > 40) {
-            return false;
-        }
         return true;
     }
 
@@ -209,10 +188,6 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
      */
     public function setHostName($hostName)
     {
-        if (!is_null($hostName) && (strlen($hostName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $hostName when calling Ptsv2paymentsidcapturesDeviceInformation., must be smaller than or equal to 60.');
-        }
-
         $this->container['hostName'] = $hostName;
 
         return $this;
@@ -234,10 +209,6 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
      */
     public function setIpAddress($ipAddress)
     {
-        if (!is_null($ipAddress) && (strlen($ipAddress) > 48)) {
-            throw new \InvalidArgumentException('invalid length for $ipAddress when calling Ptsv2paymentsidcapturesDeviceInformation., must be smaller than or equal to 48.');
-        }
-
         $this->container['ipAddress'] = $ipAddress;
 
         return $this;
@@ -254,15 +225,11 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
 
     /**
      * Sets userAgent
-     * @param string $userAgent Customer’s browser as identified from the HTTP header data. For example, `Mozilla` is the value that identifies the Netscape browser.
+     * @param string $userAgent Customer's browser as identified from the HTTP header data. For example, `Mozilla` is the value that identifies the Netscape browser.
      * @return $this
      */
     public function setUserAgent($userAgent)
     {
-        if (!is_null($userAgent) && (strlen($userAgent) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $userAgent when calling Ptsv2paymentsidcapturesDeviceInformation., must be smaller than or equal to 40.');
-        }
-
         $this->container['userAgent'] = $userAgent;
 
         return $this;
@@ -272,6 +239,7 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class Ptsv2paymentsidcapturesDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

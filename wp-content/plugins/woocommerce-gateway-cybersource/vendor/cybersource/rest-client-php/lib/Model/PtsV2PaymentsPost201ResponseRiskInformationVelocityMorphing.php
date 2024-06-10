@@ -156,14 +156,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing implements Arr
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['fieldName']) && (strlen($this->container['fieldName']) > 255)) {
-            $invalid_properties[] = "invalid value for 'fieldName', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['informationCode']) && (strlen($this->container['informationCode']) > 255)) {
-            $invalid_properties[] = "invalid value for 'informationCode', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -176,12 +168,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing implements Arr
     public function valid()
     {
 
-        if (strlen($this->container['fieldName']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['informationCode']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -223,10 +209,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing implements Arr
      */
     public function setFieldName($fieldName)
     {
-        if (!is_null($fieldName) && (strlen($fieldName) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $fieldName when calling PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing., must be smaller than or equal to 255.');
-        }
-
         $this->container['fieldName'] = $fieldName;
 
         return $this;
@@ -243,15 +225,11 @@ class PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing implements Arr
 
     /**
      * Sets informationCode
-     * @param string $informationCode Identifier that CyberSource assigned to the velocity rule specified by the number #.  For all possible values, see the `decision_velocity_morphing_#_info_code` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @param string $informationCode Identifier that CyberSource assigned to the velocity rule specified by the number #.  For all possible values, see the `decision_velocity_morphing_#_info_code` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** >
      * @return $this
      */
     public function setInformationCode($informationCode)
     {
-        if (!is_null($informationCode) && (strlen($informationCode) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $informationCode when calling PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing., must be smaller than or equal to 255.');
-        }
-
         $this->container['informationCode'] = $informationCode;
 
         return $this;
@@ -261,6 +239,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing implements Arr
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -271,6 +250,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing implements Arr
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -282,6 +262,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing implements Arr
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -296,6 +277,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationVelocityMorphing implements Arr
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

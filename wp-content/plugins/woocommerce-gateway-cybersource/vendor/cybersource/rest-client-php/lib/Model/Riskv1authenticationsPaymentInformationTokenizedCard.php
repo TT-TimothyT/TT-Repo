@@ -54,9 +54,12 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
       * @var string[]
       */
     protected static $swaggerTypes = [
+        'transactionType' => 'string',
         'type' => 'string',
         'expirationMonth' => 'string',
         'expirationYear' => 'string',
+        'cryptogram' => 'string',
+        'securityCode' => 'string',
         'number' => 'string'
     ];
 
@@ -65,9 +68,12 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
       * @var string[]
       */
     protected static $swaggerFormats = [
+        'transactionType' => null,
         'type' => null,
         'expirationMonth' => null,
         'expirationYear' => null,
+        'cryptogram' => null,
+        'securityCode' => null,
         'number' => null
     ];
 
@@ -86,9 +92,12 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      * @var string[]
      */
     protected static $attributeMap = [
+        'transactionType' => 'transactionType',
         'type' => 'type',
         'expirationMonth' => 'expirationMonth',
         'expirationYear' => 'expirationYear',
+        'cryptogram' => 'cryptogram',
+        'securityCode' => 'securityCode',
         'number' => 'number'
     ];
 
@@ -98,9 +107,12 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      * @var string[]
      */
     protected static $setters = [
+        'transactionType' => 'setTransactionType',
         'type' => 'setType',
         'expirationMonth' => 'setExpirationMonth',
         'expirationYear' => 'setExpirationYear',
+        'cryptogram' => 'setCryptogram',
+        'securityCode' => 'setSecurityCode',
         'number' => 'setNumber'
     ];
 
@@ -110,9 +122,12 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      * @var string[]
      */
     protected static $getters = [
+        'transactionType' => 'getTransactionType',
         'type' => 'getType',
         'expirationMonth' => 'getExpirationMonth',
         'expirationYear' => 'getExpirationYear',
+        'cryptogram' => 'getCryptogram',
+        'securityCode' => 'getSecurityCode',
         'number' => 'getNumber'
     ];
 
@@ -147,9 +162,12 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      */
     public function __construct(array $data = null)
     {
+        $this->container['transactionType'] = isset($data['transactionType']) ? $data['transactionType'] : null;
         $this->container['type'] = isset($data['type']) ? $data['type'] : null;
         $this->container['expirationMonth'] = isset($data['expirationMonth']) ? $data['expirationMonth'] : null;
         $this->container['expirationYear'] = isset($data['expirationYear']) ? $data['expirationYear'] : null;
+        $this->container['cryptogram'] = isset($data['cryptogram']) ? $data['cryptogram'] : null;
+        $this->container['securityCode'] = isset($data['securityCode']) ? $data['securityCode'] : null;
         $this->container['number'] = isset($data['number']) ? $data['number'] : null;
     }
 
@@ -162,30 +180,27 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
     {
         $invalid_properties = [];
 
+        if ($this->container['transactionType'] === null) {
+            $invalid_properties[] = "'transactionType' can't be null";
+        }
         if ($this->container['type'] === null) {
             $invalid_properties[] = "'type' can't be null";
         }
         if ($this->container['expirationMonth'] === null) {
             $invalid_properties[] = "'expirationMonth' can't be null";
         }
-        if ((strlen($this->container['expirationMonth']) > 2)) {
-            $invalid_properties[] = "invalid value for 'expirationMonth', the character length must be smaller than or equal to 2.";
-        }
-
         if ($this->container['expirationYear'] === null) {
             $invalid_properties[] = "'expirationYear' can't be null";
         }
-        if ((strlen($this->container['expirationYear']) > 4)) {
-            $invalid_properties[] = "invalid value for 'expirationYear', the character length must be smaller than or equal to 4.";
+        if ($this->container['cryptogram'] === null) {
+            $invalid_properties[] = "'cryptogram' can't be null";
         }
-
+        if ($this->container['securityCode'] === null) {
+            $invalid_properties[] = "'securityCode' can't be null";
+        }
         if ($this->container['number'] === null) {
             $invalid_properties[] = "'number' can't be null";
         }
-        if ((strlen($this->container['number']) > 20)) {
-            $invalid_properties[] = "invalid value for 'number', the character length must be smaller than or equal to 20.";
-        }
-
         return $invalid_properties;
     }
 
@@ -198,30 +213,51 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
     public function valid()
     {
 
+        if ($this->container['transactionType'] === null) {
+            return false;
+        }
         if ($this->container['type'] === null) {
             return false;
         }
         if ($this->container['expirationMonth'] === null) {
             return false;
         }
-        if (strlen($this->container['expirationMonth']) > 2) {
-            return false;
-        }
         if ($this->container['expirationYear'] === null) {
             return false;
         }
-        if (strlen($this->container['expirationYear']) > 4) {
+        if ($this->container['cryptogram'] === null) {
+            return false;
+        }
+        if ($this->container['securityCode'] === null) {
             return false;
         }
         if ($this->container['number'] === null) {
             return false;
         }
-        if (strlen($this->container['number']) > 20) {
-            return false;
-        }
         return true;
     }
 
+
+    /**
+     * Gets transactionType
+     * @return string
+     */
+    public function getTransactionType()
+    {
+        return $this->container['transactionType'];
+    }
+
+    /**
+     * Sets transactionType
+     * @param string $transactionType Type of transaction that provided the token data. This value does not specify the token service provider; it specifies the entity that provided you with information about the token.  Possible value: - `2`: Near-field communication (NFC) transaction. The customer's mobile device provided the token data for a contactless EMV transaction. For recurring transactions, use this value if the original transaction was a contactless EMV transaction.  #### Visa Platform Connect - `1`: For Rupay and In App tokenization. Example: InApp apple pay. - `3`: Card/Credential On File Tokenization.  **NOTE** No CyberSource through VisaNet acquirers support EMV at this time.  Required field for PIN debit credit or PIN debit purchase transactions that use payment network tokens; otherwise, not used.  #### Rupay - `3`: Card/Credential On File Tokenization. - `4`: Tokenizined Transaction. Should be used for Guest Checkout transactions with token.
+     * @return $this
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->container['transactionType'] = $transactionType;
+
+        return $this;
+    }
 
     /**
      * Gets type
@@ -234,7 +270,7 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
 
     /**
      * Sets type
-     * @param string $type Three-digit value that indicates the card type.  **IMPORTANT** It is strongly recommended that you include the card type field in request messages even if it is optional for your processor and card type. Omitting the card type can cause the transaction to be processed with the wrong card type.  Possible values: - `001`: Visa. For card-present transactions on all processors except SIX, the Visa Electron card type is processed the same way that the Visa debit card is processed. Use card type value `001` for Visa Electron. - `002`: Mastercard, Eurocard[^1], which is a European regional brand of Mastercard. - `003`: American Express - `004`: Discover - `005`: Diners Club - `006`: Carte Blanche[^1] - `007`: JCB[^1] - `014`: Enroute[^1] - `021`: JAL[^1] - `024`: Maestro (UK Domestic)[^1] - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types. - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types. - `034`: Dankort[^1] - `036`: Cartes Bancaires[^1] - `037`: Carta Si[^1] - `039`: Encoded account number[^1] - `040`: UATP[^1] - `042`: Maestro (International)[^1] - `050`: Hipercard[^2,3] - `051`: Aura - `054`: Elo[^3] - `062`: China UnionPay  [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit. [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5. [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit.  #### Used by **Authorization** Required for Carte Blanche and JCB. Optional for all other card types.  #### Card Present reply This field is included in the reply message when the client software that is installed on the POS terminal uses the token management service (TMS) to retrieve tokenized payment details. You must contact customer support to have your account enabled to receive these fields in the credit reply message.  Returned by the Credit service.  This reply field is only supported by the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  #### GPX This field only supports transactions from the following card types: - Visa - Mastercard - AMEX - Discover - Diners - JCB - Union Pay International
+     * @param string $type Three-digit value that indicates the card type.  **IMPORTANT** It is strongly recommended that you include the card type field in request messages even if it is optional for your processor and card type. Omitting the card type can cause the transaction to be processed with the wrong card type.  Possible values: - `001`: Visa. For card-present transactions on all processors except SIX, the Visa Electron card type is processed the same way that the Visa debit card is processed. Use card type value `001` for Visa Electron. - `002`: Mastercard, Eurocard[^1], which is a European regional brand of Mastercard. - `003`: American Express - `004`: Discover - `005`: Diners Club - `006`: Carte Blanche[^1] - `007`: JCB[^1] - `014`: Enroute[^1] - `021`: JAL[^1] - `024`: Maestro (UK Domestic)[^1] - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types. - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types. - `034`: Dankort[^1] - `036`: Cartes Bancaires[^1,4] - `037`: Carta Si[^1] - `039`: Encoded account number[^1] - `040`: UATP[^1] - `042`: Maestro (International)[^1] - `050`: Hipercard[^2,3] - `051`: Aura - `054`: Elo[^3] - `062`: China UnionPay - '070': EFTPOS  [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit. [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5. [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. [^4]: For this card type, you must include the `paymentInformation.card.type` in your request for any payer authentication services.  #### Used by **Authorization** Required for Carte Blanche and JCB. Optional for all other card types.  #### Card Present reply This field is included in the reply message when the client software that is installed on the POS terminal uses the token management service (TMS) to retrieve tokenized payment details. You must contact customer support to have your account enabled to receive these fields in the credit reply message.  Returned by the Credit service.  This reply field is only supported by the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  #### Google Pay transactions For PAN-based Google Pay transactions, this field is returned in the API response.  #### GPX This field only supports transactions from the following card types: - Visa - Mastercard - AMEX - Discover - Diners - JCB - Union Pay International
      * @return $this
      */
     public function setType($type)
@@ -260,10 +296,6 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      */
     public function setExpirationMonth($expirationMonth)
     {
-        if ((strlen($expirationMonth) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $expirationMonth when calling Riskv1authenticationsPaymentInformationTokenizedCard., must be smaller than or equal to 2.');
-        }
-
         $this->container['expirationMonth'] = $expirationMonth;
 
         return $this;
@@ -285,11 +317,49 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      */
     public function setExpirationYear($expirationYear)
     {
-        if ((strlen($expirationYear) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $expirationYear when calling Riskv1authenticationsPaymentInformationTokenizedCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['expirationYear'] = $expirationYear;
+
+        return $this;
+    }
+
+    /**
+     * Gets cryptogram
+     * @return string
+     */
+    public function getCryptogram()
+    {
+        return $this->container['cryptogram'];
+    }
+
+    /**
+     * Sets cryptogram
+     * @param string $cryptogram This field contains token information.
+     * @return $this
+     */
+    public function setCryptogram($cryptogram)
+    {
+        $this->container['cryptogram'] = $cryptogram;
+
+        return $this;
+    }
+
+    /**
+     * Gets securityCode
+     * @return string
+     */
+    public function getSecurityCode()
+    {
+        return $this->container['securityCode'];
+    }
+
+    /**
+     * Sets securityCode
+     * @param string $securityCode Card Verification Number (CVN).  #### Ingenico ePayments Do not include this field when **commerceIndicator=recurring**. **Note** Ingenico ePayments was previously called _Global Collect_.  For details, see `customer_cc_cv_number` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @return $this
+     */
+    public function setSecurityCode($securityCode)
+    {
+        $this->container['securityCode'] = $securityCode;
 
         return $this;
     }
@@ -305,15 +375,11 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
 
     /**
      * Sets number
-     * @param string $number Customer’s payment network token value.
+     * @param string $number Customer's payment network token value.
      * @return $this
      */
     public function setNumber($number)
     {
-        if ((strlen($number) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $number when calling Riskv1authenticationsPaymentInformationTokenizedCard., must be smaller than or equal to 20.');
-        }
-
         $this->container['number'] = $number;
 
         return $this;
@@ -323,6 +389,7 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -333,6 +400,7 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -344,6 +412,7 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -358,6 +427,7 @@ class Riskv1authenticationsPaymentInformationTokenizedCard implements ArrayAcces
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

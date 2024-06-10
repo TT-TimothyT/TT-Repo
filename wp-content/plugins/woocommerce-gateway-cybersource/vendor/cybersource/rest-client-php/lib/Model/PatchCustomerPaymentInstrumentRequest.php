@@ -57,7 +57,9 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
         'links' => '\CyberSource\Model\Tmsv2customersEmbeddedDefaultPaymentInstrumentLinks',
         'id' => 'string',
         'object' => 'string',
+        'default' => 'bool',
         'state' => 'string',
+        'type' => 'string',
         'bankAccount' => '\CyberSource\Model\Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount',
         'card' => '\CyberSource\Model\Tmsv2customersEmbeddedDefaultPaymentInstrumentCard',
         'buyerInformation' => '\CyberSource\Model\Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformation',
@@ -77,7 +79,9 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
         'links' => null,
         'id' => null,
         'object' => null,
+        'default' => null,
         'state' => null,
+        'type' => null,
         'bankAccount' => null,
         'card' => null,
         'buyerInformation' => null,
@@ -107,7 +111,9 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
         'links' => '_links',
         'id' => 'id',
         'object' => 'object',
+        'default' => 'default',
         'state' => 'state',
+        'type' => 'type',
         'bankAccount' => 'bankAccount',
         'card' => 'card',
         'buyerInformation' => 'buyerInformation',
@@ -128,7 +134,9 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
         'links' => 'setLinks',
         'id' => 'setId',
         'object' => 'setObject',
+        'default' => 'setDefault',
         'state' => 'setState',
+        'type' => 'setType',
         'bankAccount' => 'setBankAccount',
         'card' => 'setCard',
         'buyerInformation' => 'setBuyerInformation',
@@ -149,7 +157,9 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
         'links' => 'getLinks',
         'id' => 'getId',
         'object' => 'getObject',
+        'default' => 'getDefault',
         'state' => 'getState',
+        'type' => 'getType',
         'bankAccount' => 'getBankAccount',
         'card' => 'getCard',
         'buyerInformation' => 'getBuyerInformation',
@@ -195,7 +205,9 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
         $this->container['links'] = isset($data['links']) ? $data['links'] : null;
         $this->container['id'] = isset($data['id']) ? $data['id'] : null;
         $this->container['object'] = isset($data['object']) ? $data['object'] : null;
+        $this->container['default'] = isset($data['default']) ? $data['default'] : null;
         $this->container['state'] = isset($data['state']) ? $data['state'] : null;
+        $this->container['type'] = isset($data['type']) ? $data['type'] : null;
         $this->container['bankAccount'] = isset($data['bankAccount']) ? $data['bankAccount'] : null;
         $this->container['card'] = isset($data['card']) ? $data['card'] : null;
         $this->container['buyerInformation'] = isset($data['buyerInformation']) ? $data['buyerInformation'] : null;
@@ -216,14 +228,6 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 32)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) < 1)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be bigger than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -236,12 +240,6 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['id']) < 1) {
-            return false;
-        }
         return true;
     }
 
@@ -278,18 +276,11 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
 
     /**
      * Sets id
-     * @param string $id The id of the Payment Instrument Token.
+     * @param string $id The Id of the Payment Instrument Token.
      * @return $this
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling PatchCustomerPaymentInstrumentRequest., must be smaller than or equal to 32.');
-        }
-        if (!is_null($id) && (strlen($id) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling PatchCustomerPaymentInstrumentRequest., must be bigger than or equal to 1.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -306,12 +297,33 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
 
     /**
      * Sets object
-     * @param string $object The type of token.  Valid values: - paymentInstrument
+     * @param string $object The type.  Possible Values: - paymentInstrument
      * @return $this
      */
     public function setObject($object)
     {
         $this->container['object'] = $object;
+
+        return $this;
+    }
+
+    /**
+     * Gets default
+     * @return bool
+     */
+    public function getDefault()
+    {
+        return $this->container['default'];
+    }
+
+    /**
+     * Sets default
+     * @param bool $default Flag that indicates whether customer payment instrument is the dafault. Possible Values:  - `true`: Payment instrument is customer's default.  - `false`: Payment instrument is not customer's default.
+     * @return $this
+     */
+    public function setDefault($default)
+    {
+        $this->container['default'] = $default;
 
         return $this;
     }
@@ -327,12 +339,33 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
 
     /**
      * Sets state
-     * @param string $state Issuers state for the card number. Valid values: - ACTIVE - CLOSED : The account has been closed.
+     * @param string $state Issuers state for the card number. Possible Values: - ACTIVE - CLOSED : The account has been closed.
      * @return $this
      */
     public function setState($state)
     {
         $this->container['state'] = $state;
+
+        return $this;
+    }
+
+    /**
+     * Gets type
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->container['type'];
+    }
+
+    /**
+     * Sets type
+     * @param string $type The type of Payment Instrument. Possible Values: - cardHash
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->container['type'] = $type;
 
         return $this;
     }
@@ -530,6 +563,7 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -540,6 +574,7 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -551,6 +586,7 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -565,6 +601,7 @@ class PatchCustomerPaymentInstrumentRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -56,7 +56,9 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
     protected static $swaggerTypes = [
         'accountId' => 'string',
         'lastName' => 'string',
-        'postalCode' => 'string'
+        'middleName' => 'string',
+        'postalCode' => 'string',
+        'dateOfBirth' => 'string'
     ];
 
     /**
@@ -66,7 +68,9 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
     protected static $swaggerFormats = [
         'accountId' => null,
         'lastName' => null,
-        'postalCode' => null
+        'middleName' => null,
+        'postalCode' => null,
+        'dateOfBirth' => null
     ];
 
     public static function swaggerTypes()
@@ -86,7 +90,9 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
     protected static $attributeMap = [
         'accountId' => 'accountId',
         'lastName' => 'lastName',
-        'postalCode' => 'postalCode'
+        'middleName' => 'middleName',
+        'postalCode' => 'postalCode',
+        'dateOfBirth' => 'dateOfBirth'
     ];
 
 
@@ -97,7 +103,9 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
     protected static $setters = [
         'accountId' => 'setAccountId',
         'lastName' => 'setLastName',
-        'postalCode' => 'setPostalCode'
+        'middleName' => 'setMiddleName',
+        'postalCode' => 'setPostalCode',
+        'dateOfBirth' => 'setDateOfBirth'
     ];
 
 
@@ -108,7 +116,9 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
     protected static $getters = [
         'accountId' => 'getAccountId',
         'lastName' => 'getLastName',
-        'postalCode' => 'getPostalCode'
+        'middleName' => 'getMiddleName',
+        'postalCode' => 'getPostalCode',
+        'dateOfBirth' => 'getDateOfBirth'
     ];
 
     public static function attributeMap()
@@ -144,7 +154,9 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
     {
         $this->container['accountId'] = isset($data['accountId']) ? $data['accountId'] : null;
         $this->container['lastName'] = isset($data['lastName']) ? $data['lastName'] : null;
+        $this->container['middleName'] = isset($data['middleName']) ? $data['middleName'] : null;
         $this->container['postalCode'] = isset($data['postalCode']) ? $data['postalCode'] : null;
+        $this->container['dateOfBirth'] = isset($data['dateOfBirth']) ? $data['dateOfBirth'] : null;
     }
 
     /**
@@ -155,18 +167,6 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['accountId']) && (strlen($this->container['accountId']) > 10)) {
-            $invalid_properties[] = "invalid value for 'accountId', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['lastName']) && (strlen($this->container['lastName']) > 6)) {
-            $invalid_properties[] = "invalid value for 'lastName', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['postalCode']) && (strlen($this->container['postalCode']) > 6)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 6.";
-        }
 
         return $invalid_properties;
     }
@@ -180,15 +180,6 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['accountId']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['lastName']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 6) {
-            return false;
-        }
         return true;
     }
 
@@ -204,15 +195,11 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
 
     /**
      * Sets accountId
-     * @param string $accountId Identifier for the recipient’s account. Use the first six digits and last four digits of the recipient’s account number. This field is a _pass-through_, which means that CyberSource does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For details, see the `recipient_account_id` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $accountId Identifier for the recipient's account. Use the first six digits and last four digits of the recipient's account number. This field is a _pass-through_, which means that CyberSource does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For details, see the `recipient_account_id` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setAccountId($accountId)
     {
-        if (!is_null($accountId) && (strlen($accountId) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $accountId when calling Ptsv2paymentsRecipientInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['accountId'] = $accountId;
 
         return $this;
@@ -229,16 +216,33 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
 
     /**
      * Sets lastName
-     * @param string $lastName Recipient’s last name. This field is a _passthrough_, which means that CyberSource does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For details, see the `recipient_lastname` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $lastName Recipient's last name. This field is a _passthrough_, which means that CyberSource does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For details, see the `recipient_lastname` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setLastName($lastName)
     {
-        if (!is_null($lastName) && (strlen($lastName) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $lastName when calling Ptsv2paymentsRecipientInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['lastName'] = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Gets middleName
+     * @return string
+     */
+    public function getMiddleName()
+    {
+        return $this->container['middleName'];
+    }
+
+    /**
+     * Sets middleName
+     * @param string $middleName Recipient's middle name. This field is a _passthrough_, which means that CyberSource does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For details, see the `recipient_middlename` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @return $this
+     */
+    public function setMiddleName($middleName)
+    {
+        $this->container['middleName'] = $middleName;
 
         return $this;
     }
@@ -254,16 +258,33 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
 
     /**
      * Sets postalCode
-     * @param string $postalCode Partial postal code for the recipient’s address. For example, if the postal code is **NN5 7SG**, the value for this field should be the first part of the postal code: **NN5**. This field is a _pass-through_, which means that CyberSource does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For details, see the `recipient_postal_code` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $postalCode Partial postal code for the recipient's address. For example, if the postal code is **NN5 7SG**, the value for this field should be the first part of the postal code: **NN5**. This field is a _pass-through_, which means that CyberSource does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For details, see the `recipient_postal_code` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setPostalCode($postalCode)
     {
-        if (!is_null($postalCode) && (strlen($postalCode) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling Ptsv2paymentsRecipientInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['postalCode'] = $postalCode;
+
+        return $this;
+    }
+
+    /**
+     * Gets dateOfBirth
+     * @return string
+     */
+    public function getDateOfBirth()
+    {
+        return $this->container['dateOfBirth'];
+    }
+
+    /**
+     * Sets dateOfBirth
+     * @param string $dateOfBirth Recipient's date of birth. **Format**: `YYYYMMDD`.  This field is a `pass-through`, which means that CyberSource ensures that the value is eight numeric characters but otherwise does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For more details, see `recipient_date_of_birth` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @return $this
+     */
+    public function setDateOfBirth($dateOfBirth)
+    {
+        $this->container['dateOfBirth'] = $dateOfBirth;
 
         return $this;
     }
@@ -272,6 +293,7 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +304,7 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +316,7 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +331,7 @@ class Ptsv2paymentsRecipientInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

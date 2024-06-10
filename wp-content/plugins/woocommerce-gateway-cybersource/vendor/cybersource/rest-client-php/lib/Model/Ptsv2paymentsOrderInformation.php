@@ -61,6 +61,8 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
         'invoiceDetails' => '\CyberSource\Model\Ptsv2paymentsOrderInformationInvoiceDetails',
         'shippingDetails' => '\CyberSource\Model\Ptsv2paymentsOrderInformationShippingDetails',
         'returnsAccepted' => 'bool',
+        'isCryptocurrencyPurchase' => 'string',
+        'cutoffDateTime' => 'string',
         'preOrder' => 'string',
         'preOrderDate' => 'string',
         'reordered' => 'bool',
@@ -79,6 +81,8 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
         'invoiceDetails' => null,
         'shippingDetails' => null,
         'returnsAccepted' => null,
+        'isCryptocurrencyPurchase' => null,
+        'cutoffDateTime' => null,
         'preOrder' => null,
         'preOrderDate' => null,
         'reordered' => null,
@@ -107,6 +111,8 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
         'invoiceDetails' => 'invoiceDetails',
         'shippingDetails' => 'shippingDetails',
         'returnsAccepted' => 'returnsAccepted',
+        'isCryptocurrencyPurchase' => 'isCryptocurrencyPurchase',
+        'cutoffDateTime' => 'cutoffDateTime',
         'preOrder' => 'preOrder',
         'preOrderDate' => 'preOrderDate',
         'reordered' => 'reordered',
@@ -126,6 +132,8 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
         'invoiceDetails' => 'setInvoiceDetails',
         'shippingDetails' => 'setShippingDetails',
         'returnsAccepted' => 'setReturnsAccepted',
+        'isCryptocurrencyPurchase' => 'setIsCryptocurrencyPurchase',
+        'cutoffDateTime' => 'setCutoffDateTime',
         'preOrder' => 'setPreOrder',
         'preOrderDate' => 'setPreOrderDate',
         'reordered' => 'setReordered',
@@ -145,6 +153,8 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
         'invoiceDetails' => 'getInvoiceDetails',
         'shippingDetails' => 'getShippingDetails',
         'returnsAccepted' => 'getReturnsAccepted',
+        'isCryptocurrencyPurchase' => 'getIsCryptocurrencyPurchase',
+        'cutoffDateTime' => 'getCutoffDateTime',
         'preOrder' => 'getPreOrder',
         'preOrderDate' => 'getPreOrderDate',
         'reordered' => 'getReordered',
@@ -189,6 +199,8 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
         $this->container['invoiceDetails'] = isset($data['invoiceDetails']) ? $data['invoiceDetails'] : null;
         $this->container['shippingDetails'] = isset($data['shippingDetails']) ? $data['shippingDetails'] : null;
         $this->container['returnsAccepted'] = isset($data['returnsAccepted']) ? $data['returnsAccepted'] : null;
+        $this->container['isCryptocurrencyPurchase'] = isset($data['isCryptocurrencyPurchase']) ? $data['isCryptocurrencyPurchase'] : null;
+        $this->container['cutoffDateTime'] = isset($data['cutoffDateTime']) ? $data['cutoffDateTime'] : null;
         $this->container['preOrder'] = isset($data['preOrder']) ? $data['preOrder'] : null;
         $this->container['preOrderDate'] = isset($data['preOrderDate']) ? $data['preOrderDate'] : null;
         $this->container['reordered'] = isset($data['reordered']) ? $data['reordered'] : null;
@@ -204,14 +216,6 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['preOrderDate']) && (strlen($this->container['preOrderDate']) > 10)) {
-            $invalid_properties[] = "invalid value for 'preOrderDate', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['totalOffersCount']) && (strlen($this->container['totalOffersCount']) > 2)) {
-            $invalid_properties[] = "invalid value for 'totalOffersCount', the character length must be smaller than or equal to 2.";
-        }
-
         return $invalid_properties;
     }
 
@@ -224,12 +228,6 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['preOrderDate']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['totalOffersCount']) > 2) {
-            return false;
-        }
         return true;
     }
 
@@ -382,6 +380,48 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
     }
 
     /**
+     * Gets isCryptocurrencyPurchase
+     * @return string
+     */
+    public function getIsCryptocurrencyPurchase()
+    {
+        return $this->container['isCryptocurrencyPurchase'];
+    }
+
+    /**
+     * Sets isCryptocurrencyPurchase
+     * @param string $isCryptocurrencyPurchase #### Visa Platform Connect : This API will contain the Flag that specifies whether the payment is for the purchase of cryptocurrency. Additional values to add : This API will contain the Flag that specifies whether the payment is for the purchase of cryptocurrency. valid values are - Y/y, true - N/n, false
+     * @return $this
+     */
+    public function setIsCryptocurrencyPurchase($isCryptocurrencyPurchase)
+    {
+        $this->container['isCryptocurrencyPurchase'] = $isCryptocurrencyPurchase;
+
+        return $this;
+    }
+
+    /**
+     * Gets cutoffDateTime
+     * @return string
+     */
+    public function getCutoffDateTime()
+    {
+        return $this->container['cutoffDateTime'];
+    }
+
+    /**
+     * Sets cutoffDateTime
+     * @param string $cutoffDateTime Starting date and time for an event or a journey that is independent of which transportation mechanism, in UTC. The cutoffDateTime will supersede travelInformation.transit.airline.legs[].departureDate and travelInformation.transit.airline.legs[].departureTime if these fields are supplied in the request. Format: YYYY-MM-DDThh:mm:ssZ. Example 2016-08-11T22:47:57Z equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The T separates the date and the time. The Z indicates UTC.
+     * @return $this
+     */
+    public function setCutoffDateTime($cutoffDateTime)
+    {
+        $this->container['cutoffDateTime'] = $cutoffDateTime;
+
+        return $this;
+    }
+
+    /**
      * Gets preOrder
      * @return string
      */
@@ -418,10 +458,6 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
      */
     public function setPreOrderDate($preOrderDate)
     {
-        if (!is_null($preOrderDate) && (strlen($preOrderDate) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $preOrderDate when calling Ptsv2paymentsOrderInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['preOrderDate'] = $preOrderDate;
 
         return $this;
@@ -464,10 +500,6 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
      */
     public function setTotalOffersCount($totalOffersCount)
     {
-        if (!is_null($totalOffersCount) && (strlen($totalOffersCount) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $totalOffersCount when calling Ptsv2paymentsOrderInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['totalOffersCount'] = $totalOffersCount;
 
         return $this;
@@ -477,6 +509,7 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -487,6 +520,7 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -498,6 +532,7 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -512,6 +547,7 @@ class Ptsv2paymentsOrderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

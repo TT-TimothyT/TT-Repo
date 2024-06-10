@@ -144,10 +144,6 @@ class TssV2TransactionsPost201ResponseEmbeddedPointOfSaleInformationPartner impl
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['originalTransactionId']) && (strlen($this->container['originalTransactionId']) > 32)) {
-            $invalid_properties[] = "invalid value for 'originalTransactionId', the character length must be smaller than or equal to 32.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class TssV2TransactionsPost201ResponseEmbeddedPointOfSaleInformationPartner impl
     public function valid()
     {
 
-        if (strlen($this->container['originalTransactionId']) > 32) {
-            return false;
-        }
         return true;
     }
 
@@ -178,15 +171,11 @@ class TssV2TransactionsPost201ResponseEmbeddedPointOfSaleInformationPartner impl
 
     /**
      * Sets originalTransactionId
-     * @param string $originalTransactionId Value that links the previous transaction to the current follow-on request. This value is assigned by the client software that is installed on the POS terminal, which makes it available to the terminal’s software and to CyberSource. Therefore, you can use this value to reconcile transactions between CyberSource and the terminal’s software.  CyberSource does not forward this value to the processor. Instead, the value is forwarded to the CyberSource reporting functionality.  This field is supported only on American Express Direct, FDC Nashville Global, and SIX.
+     * @param string $originalTransactionId Value that links the previous transaction to the current follow-on request. This value is assigned by the client software that is installed on the POS terminal, which makes it available to the terminal's software and to CyberSource. Therefore, you can use this value to reconcile transactions between CyberSource and the terminal's software.  CyberSource does not forward this value to the processor. Instead, the value is forwarded to the CyberSource reporting functionality.  This field is supported only on American Express Direct, FDC Nashville Global, and SIX.
      * @return $this
      */
     public function setOriginalTransactionId($originalTransactionId)
     {
-        if (!is_null($originalTransactionId) && (strlen($originalTransactionId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $originalTransactionId when calling TssV2TransactionsPost201ResponseEmbeddedPointOfSaleInformationPartner., must be smaller than or equal to 32.');
-        }
-
         $this->container['originalTransactionId'] = $originalTransactionId;
 
         return $this;
@@ -196,6 +185,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPointOfSaleInformationPartner impl
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPointOfSaleInformationPartner impl
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPointOfSaleInformationPartner impl
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPointOfSaleInformationPartner impl
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

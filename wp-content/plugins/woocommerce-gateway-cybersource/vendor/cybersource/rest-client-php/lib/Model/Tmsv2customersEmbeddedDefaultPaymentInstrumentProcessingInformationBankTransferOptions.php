@@ -144,10 +144,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentProcessingInformationBankTra
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['sECCode']) && (strlen($this->container['sECCode']) > 3)) {
-            $invalid_properties[] = "invalid value for 'sECCode', the character length must be smaller than or equal to 3.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentProcessingInformationBankTra
     public function valid()
     {
 
-        if (strlen($this->container['sECCode']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -178,15 +171,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentProcessingInformationBankTra
 
     /**
      * Sets sECCode
-     * @param string $sECCode Specifies the authorization method for the transaction.  #### TeleCheck Valid values: - `ARC`: account receivable conversion - `CCD`: corporate cash disbursement - `POP`: point of purchase conversion - `PPD`: prearranged payment and deposit entry - `TEL`: telephone-initiated entry - `WEB`: internet-initiated entry  For details, see `ecp_sec_code` field description in the [Electronic Check Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/EChecks_SCMP_API/html/)
+     * @param string $sECCode Specifies the authorization method for the transaction.  #### TeleCheck Possible Values: - `ARC`: account receivable conversion - `CCD`: corporate cash disbursement - `POP`: point of purchase conversion - `PPD`: prearranged payment and deposit entry - `TEL`: telephone-initiated entry - `WEB`: internet-initiated entry  For details, see `ecp_sec_code` field description in the [Electronic Check Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/EChecks_SCMP_API/html/)
      * @return $this
      */
     public function setSECCode($sECCode)
     {
-        if (!is_null($sECCode) && (strlen($sECCode) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $sECCode when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentProcessingInformationBankTransferOptions., must be smaller than or equal to 3.');
-        }
-
         $this->container['sECCode'] = $sECCode;
 
         return $this;
@@ -196,6 +185,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentProcessingInformationBankTra
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentProcessingInformationBankTra
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentProcessingInformationBankTra
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentProcessingInformationBankTra
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -144,10 +144,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationIssuedBy imp
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['administrativeArea']) && (strlen($this->container['administrativeArea']) > 20)) {
-            $invalid_properties[] = "invalid value for 'administrativeArea', the character length must be smaller than or equal to 20.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationIssuedBy imp
     public function valid()
     {
 
-        if (strlen($this->container['administrativeArea']) > 20) {
-            return false;
-        }
         return true;
     }
 
@@ -178,15 +171,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationIssuedBy imp
 
     /**
      * Sets administrativeArea
-     * @param string $administrativeArea The State or province where the customer’s driver’s license was issued.  Use the two-character State, Province, and Territory Codes for the United States and Canada.
+     * @param string $administrativeArea The State or province where the customer's driver's license was issued.  Use the two-character State, Province, and Territory Codes for the United States and Canada.
      * @return $this
      */
     public function setAdministrativeArea($administrativeArea)
     {
-        if (!is_null($administrativeArea) && (strlen($administrativeArea) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $administrativeArea when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationIssuedBy., must be smaller than or equal to 20.');
-        }
-
         $this->container['administrativeArea'] = $administrativeArea;
 
         return $this;
@@ -196,6 +185,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationIssuedBy imp
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationIssuedBy imp
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationIssuedBy imp
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBuyerInformationIssuedBy imp
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

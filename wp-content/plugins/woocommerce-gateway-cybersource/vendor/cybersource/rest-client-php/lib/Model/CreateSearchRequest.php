@@ -249,7 +249,7 @@ class CreateSearchRequest implements ArrayAccess
 
     /**
      * Sets timezone
-     * @param string $timezone Merchant’s time zone in ISO standard, using the TZ database format. For example: `America/Chicago`
+     * @param string $timezone Merchant's time zone in ISO standard, using the TZ database format. For example: `America/Chicago`
      * @return $this
      */
     public function setTimezone($timezone)
@@ -270,7 +270,7 @@ class CreateSearchRequest implements ArrayAccess
 
     /**
      * Sets query
-     * @param string $query String that contains the filters and variables for which you want to search. For information about supported field-filters and operators, see the [Query Filters]( https://developer.cybersource.com/api/developer-guides/dita-txn-search-details-rest-api-dev-guide-102718/txn_search_api/creating_txn_search_request.html) section of the Transaction Search Developer Guide.
+     * @param string $query String that contains the filters and variables for which you want to search. For information about supported field-filters and operators, see the [Query Filters]( https://developer.cybersource.com/api/developer-guides/dita-txn-search-details-rest-api-dev-guide-102718/txn-search-intro/txn-filtering.html) section of the Transaction Search Developer Guide.
      * @return $this
      */
     public function setQuery($query)
@@ -312,7 +312,7 @@ class CreateSearchRequest implements ArrayAccess
 
     /**
      * Sets limit
-     * @param int $limit Controls the maximum number of items that may be returned for a single request. The default is 20, the maximum is 2000.
+     * @param int $limit Controls the maximum number of items that may be returned for a single request. The default is 20, the maximum is 2500.
      * @return $this
      */
     public function setLimit($limit)
@@ -347,6 +347,7 @@ class CreateSearchRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -357,6 +358,7 @@ class CreateSearchRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -368,6 +370,7 @@ class CreateSearchRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -382,6 +385,7 @@ class CreateSearchRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

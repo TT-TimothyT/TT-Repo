@@ -180,34 +180,6 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['administrativeArea']) && (strlen($this->container['administrativeArea']) > 2)) {
-            $invalid_properties[] = "invalid value for 'administrativeArea', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['locality']) && (strlen($this->container['locality']) > 50)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['postalCode']) && (strlen($this->container['postalCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['address1']) && (strlen($this->container['address1']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address1', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address2']) && (strlen($this->container['address2']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address2', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address3']) && (strlen($this->container['address3']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address3', the character length must be smaller than or equal to 60.";
-        }
-
         return $invalid_properties;
     }
 
@@ -220,27 +192,6 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['country']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['administrativeArea']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['locality']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['address1']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address2']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address3']) > 60) {
-            return false;
-        }
         return true;
     }
 
@@ -256,15 +207,11 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets country
-     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling Vasv2taxOrderInformationShipTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -281,15 +228,11 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets administrativeArea
-     * @param string $administrativeArea State or province of the shipping address. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf)  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $administrativeArea State or province of the shipping address. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf) (maximum length: 2)   Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAdministrativeArea($administrativeArea)
     {
-        if (!is_null($administrativeArea) && (strlen($administrativeArea) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $administrativeArea when calling Vasv2taxOrderInformationShipTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['administrativeArea'] = $administrativeArea;
 
         return $this;
@@ -306,15 +249,11 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets locality
-     * @param string $locality City of the shipping address.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $locality City of the shipping address.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setLocality($locality)
     {
-        if (!is_null($locality) && (strlen($locality) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling Vasv2taxOrderInformationShipTo., must be smaller than or equal to 50.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -331,15 +270,11 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets postalCode
-     * @param string $postalCode Postal code for the shipping address. The postal code must consist of 5 to 9 digits.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  When the billing country is the U.S., the 9-digit postal code must follow this format: [5 digits][dash][4 digits]  Example 12345-6789  When the billing country is Canada, the 6-digit postal code must follow this format: [alpha][numeric][alpha][space][numeric][alpha][numeric]  Example A1B 2C3  #### American Express Direct Before sending the postal code to the processor, all nonalphanumeric characters are removed and, if the remaining value is longer than nine characters, the value is truncated starting from the right side. #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $postalCode Postal code for the shipping address. The postal code must consist of 5 to 9 digits.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  When the billing country is the U.S., the 9-digit postal code must follow this format: [5 digits][dash][4 digits]  Example 12345-6789  When the billing country is Canada, the 6-digit postal code must follow this format: [alpha][numeric][alpha][space][numeric][alpha][numeric]  Example A1B 2C3  #### American Express Direct Before sending the postal code to the processor, all nonalphanumeric characters are removed and, if the remaining value is longer than nine characters, the value is truncated starting from the right side. #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setPostalCode($postalCode)
     {
-        if (!is_null($postalCode) && (strlen($postalCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling Vasv2taxOrderInformationShipTo., must be smaller than or equal to 10.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -356,15 +291,11 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets address1
-     * @param string $address1 First line of the shipping address.  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $address1 First line of the shipping address.  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAddress1($address1)
     {
-        if (!is_null($address1) && (strlen($address1) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address1 when calling Vasv2taxOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address1'] = $address1;
 
         return $this;
@@ -381,15 +312,11 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets address2
-     * @param string $address2 Second line of the shipping address.  Optional field.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $address2 Second line of the shipping address.  Optional field.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAddress2($address2)
     {
-        if (!is_null($address2) && (strlen($address2) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address2 when calling Vasv2taxOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address2'] = $address2;
 
         return $this;
@@ -406,15 +333,11 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets address3
-     * @param string $address3 Third line of the shipping address.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $address3 Third line of the shipping address.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAddress3($address3)
     {
-        if (!is_null($address3) && (strlen($address3) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address3 when calling Vasv2taxOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address3'] = $address3;
 
         return $this;
@@ -424,6 +347,7 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -434,6 +358,7 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -445,6 +370,7 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -459,6 +385,7 @@ class Vasv2taxOrderInformationShipTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

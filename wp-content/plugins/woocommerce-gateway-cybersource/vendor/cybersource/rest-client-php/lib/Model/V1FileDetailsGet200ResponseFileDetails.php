@@ -60,7 +60,7 @@ class V1FileDetailsGet200ResponseFileDetails implements ArrayAccess
         'lastModifiedTime' => '\DateTime',
         'date' => '\DateTime',
         'mimeType' => 'string',
-        'size' => 'int'
+        'size' => 'float'
     ];
 
     /**
@@ -324,7 +324,7 @@ class V1FileDetailsGet200ResponseFileDetails implements ArrayAccess
 
     /**
      * Gets size
-     * @return int
+     * @return float
      */
     public function getSize()
     {
@@ -333,7 +333,7 @@ class V1FileDetailsGet200ResponseFileDetails implements ArrayAccess
 
     /**
      * Sets size
-     * @param int $size Size of the file in bytes
+     * @param float $size Size of the file in bytes
      * @return $this
      */
     public function setSize($size)
@@ -347,6 +347,7 @@ class V1FileDetailsGet200ResponseFileDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -357,6 +358,7 @@ class V1FileDetailsGet200ResponseFileDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -368,6 +370,7 @@ class V1FileDetailsGet200ResponseFileDetails implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -382,6 +385,7 @@ class V1FileDetailsGet200ResponseFileDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

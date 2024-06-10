@@ -156,18 +156,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['firstName']) && (strlen($this->container['firstName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'firstName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['lastName']) && (strlen($this->container['lastName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'lastName', the character length must be smaller than or equal to 60.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['country']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['firstName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['lastName']) > 60) {
-            return false;
-        }
         return true;
     }
 
@@ -204,15 +183,11 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
 
     /**
      * Sets country
-     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling Riskv1exportcomplianceinquiriesOrderInformationShipTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -234,10 +209,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
      */
     public function setFirstName($firstName)
     {
-        if (!is_null($firstName) && (strlen($firstName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $firstName when calling Riskv1exportcomplianceinquiriesOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['firstName'] = $firstName;
 
         return $this;
@@ -259,10 +230,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
      */
     public function setLastName($lastName)
     {
-        if (!is_null($lastName) && (strlen($lastName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $lastName when calling Riskv1exportcomplianceinquiriesOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['lastName'] = $lastName;
 
         return $this;
@@ -272,6 +239,7 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class Riskv1exportcomplianceinquiriesOrderInformationShipTo implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

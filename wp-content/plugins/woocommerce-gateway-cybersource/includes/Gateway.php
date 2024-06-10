@@ -17,15 +17,17 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource;
 
 use Firebase\JWT\JWT;
+use SkyVerge\WooCommerce\Cybersource\Blocks\Credit_Card_Checkout_Block_Integration;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Base_Payment_Form;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\Cybersource\Gateway\Payment_Form;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -33,6 +35,8 @@ defined( 'ABSPATH' ) or exit;
  * CyberSource Base Gateway Class
  *
  * @since 2.0.0
+ *
+ * @method Plugin get_plugin()
  */
 abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 
@@ -100,6 +104,9 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 
 		// add the device data iframe to the checkout markup
 		add_action( 'woocommerce_before_checkout_form', [ $this, 'add_device_data_iframe' ] );
+
+		// blocks initialize (and enqueue scripts) at 5, so we need to register the scripts before that
+		add_action( 'init', [ $this, 'register_scripts' ], 1 );
 	}
 
 
@@ -110,13 +117,49 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 	 *
 	 * @since 2.3.0
 	 */
-	public function add_device_data_iframe() {
+	public function add_device_data_iframe(): void {
 
 		if ( ! $this->is_available() || ! $this->is_decision_manager_enabled() ) {
 			return;
 		}
 
-		Device_Data::render_noscript_iframe( $this->get_organization_id(), $this->get_merchant_id(), Device_Data::get_session_id( $this->get_id() ) );
+		Device_Data::render_noscript_iframe( $this->get_organization_id(), $this->get_merchant_id(), Device_Data::get_session_id() );
+	}
+
+
+	/**
+	 * Registers scripts for the gateway.
+	 *
+	 * This method is called early, so that the scripts are available for the checkout block.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @internal
+	 * @see \Automattic\WooCommerce\Blocks\Payments::init()
+	 */
+	public function register_scripts(): void {
+
+		/**
+		 * Flex Microform will be enqueued by the shortcode payment form and the checkout block.
+		 *
+		 * @see Credit_Card_Checkout_Block_Integration::__construct()
+		 * @see Payment_Form::render_js()
+		 */
+		wp_register_script( 'wc-cybersource-flex-microform', $this->get_flex_microform_js_url(), [], $this->get_plugin()->get_version() );
+
+		/**
+		 * Device Data JS will be enqueued by the shortcode payment form and the checkout block.
+		 *
+		 * @see Credit_Card_Checkout_Block_Integration::__construct()
+		 * @see Payment_Form::render_js()
+		 */
+		if ( $this->is_decision_manager_enabled() && ! is_admin() && ! wp_script_is( 'wc-cybersource-device-data', 'registered' ) ) {
+
+			$session_id = Device_Data::start_session();
+
+			wp_register_script( "wc-cybersource-device-data", Device_Data::get_js_url( $this->get_organization_id(), $this->get_merchant_id(), $session_id ), [], Plugin::VERSION, false );
+		}
+
 	}
 
 
@@ -137,11 +180,7 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 		// if enabled, enqueue the device data collection JS and generate a new session ID
 		if ( $this->is_decision_manager_enabled() && is_checkout() ) {
 
-			$session_id = Device_Data::generate_session_id();
-
-			Device_Data::set_session_id( $this->get_id(), $session_id );
-
-			wp_enqueue_script( "wc-{$this->get_id()}-device-data", Device_Data::get_js_url( $this->get_organization_id(), $this->get_merchant_id(), $session_id ), [], Plugin::VERSION, false );
+			wp_enqueue_script( "wc-cybersource-device-data" );
 		}
 	}
 
@@ -260,19 +299,22 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 
 		$form_fields = parent::add_tokenization_form_fields( $form_fields );
 
+		// Tokenization Profile ID is no longer required, but we need to keep the fields for backwards compatibility,
+		// in case a merchant tries to downgrade.
+		// TODO: remove in 2.9.0 {@itambek 2024-01-18}
 		$form_fields['tokenization_profile_id'] = array(
 			'title'       => __( 'Tokenization Profile ID', 'woocommerce-gateway-cybersource' ),
 			'description' => __( 'Your Token Management Server profile ID, provided by CyberSource.', 'woocommerce-gateway-cybersource' ),
-			'type'        => 'text',
-			'class'       => 'environment-field production-field profile-id-field',
+			'type'        => 'hidden',
+			'class'       => 'environment-field deprecated-field profile-id-field',
 			'placeholder' => 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
 		);
 
 		$form_fields['test_tokenization_profile_id'] = array(
 			'title'       => __( 'Tokenization Profile ID', 'woocommerce-gateway-cybersource' ),
 			'description' => __( 'Your Token Management Server profile ID, provided by CyberSource.', 'woocommerce-gateway-cybersource' ),
-			'type'        => 'text',
-			'class'       => 'environment-field test-field profile-id-field',
+			'type'        => 'hidden',
+			'class'       => 'environment-field deprecated-field profile-id-field',
 			'placeholder' => 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
 		);
 
@@ -408,7 +450,7 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 		$order->use_decision_manager = $this->is_decision_manager_enabled();
 
 		// if the session ID was present, add it to the order
-		if ( $session_id = Framework\SV_WC_Helper::get_posted_value( 'wc_' . $this->get_id() . '_device_data_session_id' ) ) {
+		if ( $session_id = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_device_data_session_id' ) ) {
 			$order->decision_manager_session_id = $session_id;
 		}
 
@@ -530,7 +572,7 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 	/**
 	 * Adds any necessary flex tokenization data to the order's payment property.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param \WC_Order $order WooCommerce order object
 	 * @param array $payload tokenization data from CyberSource
@@ -573,24 +615,9 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 
 
 	/**
-	 * Determines if tokenization is enabled.
-	 *
-	 * Overridden to check configuration for the Profile ID.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return bool
-	 */
-	public function tokenization_enabled() {
-
-		return parent::tokenization_enabled() && $this->get_tokenization_profile_id();
-	}
-
-
-	/**
 	 * Tokenize with sale.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @return bool
 	 */
@@ -647,7 +674,7 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 		/**
 		 * Filters the transaction URL for admin use.
 		 *
-		 * @since 2.4.1-dev.1
+		 * @since 2.4.1
 		 *
 		 * @param string $transaction_url the transaction URL
 		 * @param \WC_Order $order the order object
@@ -754,10 +781,14 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 	 *
 	 * @since 2.0.0
 	 *
+	 * @deprecated 2.8.0 Tokenization Profile ID is no longer required
+	 *
 	 * @param string $environment_id optional one of 'test' or 'production', defaults to current configured environment
 	 * @return string
 	 */
 	public function get_tokenization_profile_id( $environment_id = null ) {
+
+		_deprecated_function( __METHOD__, '2.8.0' );
 
 		if ( null === $environment_id ) {
 			$environment_id = $this->get_environment();
@@ -801,7 +832,7 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 	 *
 	 * @return string
 	 */
-	public function get_organization_id() {
+	public function get_organization_id(): string {
 
 		/**
 		 * Filters the organization ID.
@@ -822,9 +853,26 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 	 *
 	 * @return bool
 	 */
-	public function is_decision_manager_enabled() {
+	public function is_decision_manager_enabled(): bool {
 
 		return 'yes' === $this->enable_decision_manager && $this->get_organization_id();
+	}
+
+
+	/**
+	 * Gets the FLex Microform asset url.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string
+	 */
+	public function get_flex_microform_js_url() :string {
+
+		// Note: this URL can also be extracted from the capture context JWT, which might be a more resilient option
+		// when upgrading the Microform client version
+		return $this->is_production_environment()
+			? 'https://flex.cybersource.com/microform/bundle/v2/flex-microform.min.js'
+			: 'https://testflex.cybersource.com/microform/bundle/v2/flex-microform.min.js';
 	}
 
 

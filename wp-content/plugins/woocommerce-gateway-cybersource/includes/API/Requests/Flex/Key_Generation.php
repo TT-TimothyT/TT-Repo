@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -44,22 +44,20 @@ class Key_Generation extends Request {
 	 */
 	public function __construct() {
 
-		$this->path = '/flex/v1/keys';
-
-		$this->params = [
-			'format' => 'JWT',
-		];
+		$this->path = '/microform/v2/sessions';
 	}
 
 
 	/**
-	 * Creates a Flex microform public key request.
+	 * Creates a Flex Microform public key / capture context request
 	 *
 	 * @since 2.0.0
 	 *
+	 * @link https://developer.cybersource.com/docs/cybs/en-us/digital-accept-flex/developer/all/rest/digital-accept-flex/microform-integ-v2/microform-integ-getting-started-v2/creating-server-side-context-v2.html
+	 *
 	 * @param string $encryption_type type of encryption to use
 	 */
-	public function set_generate_public_key_data( $encryption_type ) {
+	public function set_generate_public_key_data( string $encryption_type, array $allowed_card_types = [] ): void {
 
 		$this->method = self::REQUEST_METHOD_POST;
 
@@ -68,8 +66,11 @@ class Key_Generation extends Request {
 		$base_url = $complete_url['scheme'] . "://" . $complete_url['host'];
 
 		$this->data = [
-			'encryptionType' => $encryption_type,
-			'targetOrigin'   => $base_url,
+			'encryptionType'      => $encryption_type,
+			'targetOrigins'       => [ $base_url ],
+			// using v2 instead of v2.0 will create the context for the latest version of Microform (2.1.1 at the time)
+			'clientVersion'       => 'v2',
+			'allowedCardNetworks' => $allowed_card_types,
 		];
 	}
 

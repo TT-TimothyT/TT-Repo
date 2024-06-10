@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -25,9 +25,12 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 
 use SkyVerge\WooCommerce\Cybersource\API\Helper;
 use SkyVerge\WooCommerce\Cybersource\Gateway;
+use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\Frontend;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
+use SkyVerge\WooCommerce\Cybersource\Blocks\Credit_Card_Checkout_Block_Integration;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2\SV_WC_Helper;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -53,6 +56,9 @@ class Credit_Card extends Gateway {
 
 	/** @var ThreeD_Secure|null 3D Secure handler */
 	private $threed_secure;
+
+	/** @var Credit_Card_Checkout_Block_Integration|null */
+	protected ?Credit_Card_Checkout_Block_Integration $credit_card_checkout_block_integration = null;
 
 
 	/**
@@ -133,6 +139,26 @@ class Credit_Card extends Gateway {
 
 		// this is done in the parent constructor, but it's too early and we need the settings to be available
 		$this->order_button_text = $this->get_order_button_text();
+	}
+
+
+	/**
+	 * Gets the checkout block integration instance.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return Credit_Card_Checkout_Block_Integration
+	 */
+	public function get_checkout_block_integration_instance(): ?Framework\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration {
+
+		if ( null === $this->credit_card_checkout_block_integration ) {
+
+			require_once( $this->get_plugin()->get_plugin_path() . '/includes/Blocks/Credit_Card_Checkout_Block_Integration.php' );
+
+			$this->credit_card_checkout_block_integration = new Credit_Card_Checkout_Block_Integration( $this->get_plugin(), $this );
+		}
+
+		return $this->credit_card_checkout_block_integration;
 	}
 
 
@@ -244,12 +270,12 @@ class Credit_Card extends Gateway {
 	 *
 	 * @return array
 	 */
-	public function get_payment_method_defaults() {
+	public function get_payment_method_defaults(): array {
 
 		$defaults = parent::get_payment_method_defaults();
 
 		if ( $this->is_test_environment() ) {
-			$defaults['account-number'] = '41111111111111111';
+			$defaults['account-number'] = '4111111111111111';
 		}
 
 		return $defaults;
@@ -290,26 +316,12 @@ class Credit_Card extends Gateway {
 
 		$order = parent::get_order( $order_id );
 
-		// if enabled, set the 3D Secure data
-		if ( $this->is_3d_secure_enabled() ) {
-
-			$order->threed_secure = new \stdClass();
-
-			$order->threed_secure->transaction_id = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_transaction_id' );
-			$order->threed_secure->reference_id   = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_reference_id' );
-			$order->threed_secure->jwt            = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_jwt' );
-
-			// check enrollment response fields that are passed to the authorization request
-			$order->threed_secure->ecommerce_indicator             = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_ecommerce_indicator' );
-			$order->threed_secure->ucaf_collection_indicator       = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_ucaf_collection_indicator' );
-			$order->threed_secure->cavv                            = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_cavv' );
-			$order->threed_secure->ucaf_authentication_data        = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_ucaf_authentication_data' );
-			$order->threed_secure->xid                             = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_xid' );
-			$order->threed_secure->veres_enrolled                  = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_veres_enrolled' );
-			$order->threed_secure->specification_version           = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_specification_version' );
-			$order->threed_secure->directory_server_transaction_id = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_directory_server_transaction_id' );
-			$order->threed_secure->card_type                       = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_card_type' );
-			$order->threed_secure->eci_flag                        = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_threed_secure_eci_flag' );
+		if ( $this->is_3d_secure_enabled() && ! empty( $threed_secure_reference_id = $this->threed_secure->get_reference_id() ) ) {
+			$order->threed_secure = (object) [
+				'reference_id'                        => $threed_secure_reference_id,
+				'enrollment_status'                   => $this->threed_secure->get_enrollment_status(),
+				'consumer_authentication_information' => $this->threed_secure->get_consumer_authentication_information(),
+			];
 		}
 
 		// if testing and a specific amount was set
@@ -324,20 +336,20 @@ class Credit_Card extends Gateway {
 	/**
 	 * Adds credit card data to the order's payment property.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param \WC_Order $order WooCommerce order object
-	 * @param array $payload tokenization data from CyberSource
+	 * @param array $payload tokenization payload from CyberSource
 	 * @return \WC_Order
 	 */
 	public function get_flex_form_order( \WC_Order $order, $payload = [] ) {
 
 		$order = parent::get_flex_form_order( $order, $payload );
 
-		if ( ! empty( $payload['data'] ) ) {
-			$order = $this->get_order_with_flex_card_number( $order, $payload['data'] );
-			$order = $this->get_order_with_flex_card_type( $order, $payload['data'] );
-			$order = $this->get_order_with_flex_card_expiration( $order, $payload['data'] );
+		if ( ! empty( $data = $payload['content']['paymentInformation']['card'] ) ) {
+			$order = $this->get_order_with_flex_card_number( $order, $data );
+			$order = $this->get_order_with_flex_card_type( $order, $data );
+			$order = $this->get_order_with_flex_card_expiration( $order, $data );
 		}
 
 		return $order;
@@ -347,18 +359,18 @@ class Credit_Card extends Gateway {
 	/**
 	 * Gets the order object with card number data attached.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param \WC_Order $order WooCommerce order object
-	 * @param array $data tokenization data from CyberSource
+	 * @param array $data card tokenization data from CyberSource
 	 * @return \WC_Order
 	 */
 	private function get_order_with_flex_card_number( \WC_Order $order, array $data ) {
 
 		if ( ! empty( $data['number'] ) ) {
-			$order->payment->account_number = $data['number'];
+			$order->payment->account_number = $data['number']['maskedValue'];
 			$order->payment->last_four      = substr( $order->payment->account_number, -4 );
-			$order->payment->first_six      = substr( $order->payment->account_number, 0, 6 );
+			$order->payment->first_six      = $data['number']['bin'];
 		}
 
 		return $order;
@@ -368,16 +380,16 @@ class Credit_Card extends Gateway {
 	/**
 	 * Gets the order object with card type data attached.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param \WC_Order $order WooCommerce order object
-	 * @param array $data tokenization data from CyberSource
+	 * @param array $data card tokenization data from CyberSource
 	 * @return \WC_Order
 	 */
 	private function get_order_with_flex_card_type( \WC_Order $order, array $data ) {
 
-		if ( ! empty( $data['type'] ) ) {
-			$order->payment->card_type = Helper::convert_code_to_card_type( $data['type'] );
+		if ( ! empty( $type = $data['number']['detectedCardTypes'][0] ) ) {
+			$order->payment->card_type = Helper::convert_code_to_card_type( $type );
 		}
 
 		return $order;
@@ -387,20 +399,20 @@ class Credit_Card extends Gateway {
 	/**
 	 * Gets the order object with card expiration data attached.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param \WC_Order $order WooCommerce order object
-	 * @param array $data tokenization data from CyberSource
+	 * @param array $data card tokenization data from CyberSource
 	 * @return \WC_Order
 	 */
 	private function get_order_with_flex_card_expiration( \WC_Order $order, array $data ) {
 
-		if ( ! empty( $data['expirationMonth'] ) ) {
-			$order->payment->exp_month = $data['expirationMonth'];
+		if ( ! empty( $month = $data['expirationMonth']['value'] ) ) {
+			$order->payment->exp_month = $month;
 		}
 
-		if ( ! empty( $data['expirationYear'] ) ) {
-			$order->payment->exp_year = substr( $data['expirationYear'], -2 );
+		if ( ! empty( $year = $data['expirationYear']['value'] ) ) {
+			$order->payment->exp_year = substr( $year, -2 );
 		}
 
 		return $order;
@@ -415,14 +427,14 @@ class Credit_Card extends Gateway {
 	 *
 	 * @since 2.3.0
 	 */
-	protected function init_threed_secure_handler() {
+	protected function init_threed_secure_handler(): void {
 
 		$this->threed_secure = new ThreeD_Secure();
 
 		$this->threed_secure
 			->set_gateway( $this )
 			->set_enabled( $this->is_3d_secure_enabled() )
-			->set_enabled_card_types( (array) $this->threed_secure_card_types )
+			->set_enabled_card_types( $this->threed_secure_card_types )
 			->set_test_mode( $this->is_test_environment() )
 			->init();
 	}
@@ -464,6 +476,10 @@ class Credit_Card extends Gateway {
 	 */
 	public function payment_page( $order_id ) {
 
+		$order_button_text = $this->is_hosted_gateway() && ! is_checkout_pay_page()
+			? __( 'Continue to Payment', 'woocommerce-gateway-cybersource' )
+			: __( 'Place order', 'woocommerce-gateway-cybersource' );
+
 		?>
 		<form id="order_review" method="post">
 			<div id="payment">
@@ -471,7 +487,7 @@ class Credit_Card extends Gateway {
 					<?php $this->get_payment_form_instance()->render(); ?>
 				</div>
 			</div>
-			<button type="submit" id="place_order" class="button alt"><?php echo esc_html( $this->get_order_button_text() ); ?></button>
+			<button type="submit" id="place_order" class="button alt"><?php echo esc_html( $order_button_text ); ?></button>
 			<input type="radio" name="payment_method" value="<?php echo esc_attr( $this->get_id() ); ?>" />
 			<input type="hidden" name="woocommerce_pay" value="1" />
 			<?php wp_nonce_field( 'woocommerce-pay', 'woocommerce-pay-nonce' ); ?>
@@ -491,8 +507,8 @@ class Credit_Card extends Gateway {
 	 */
 	public function validate_fields(): bool {
 
-		// skip validation on the Checkout page if 3D Secure is being used
-		if (  ! is_checkout_pay_page() && $this->is_3d_secure_enabled() ) {
+		// skip validation on shortcode-based checkout page if 3D Secure is being used
+		if (  ! is_checkout_pay_page() && ! $this->is_processing_block_checkout() && $this->is_3d_secure_enabled() ) {
 			return true;
 		}
 
@@ -530,14 +546,9 @@ class Credit_Card extends Gateway {
 	 * @param int $order_id WooCommerce order ID
 	 * @return array
 	 */
-	public function process_payment( $order_id ) {
+	public function process_payment( $order_id ): array {
 
-		// 3D Secure can't be used for automatic subscription renewals
-		$is_renewal           = function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order_id );
-		$is_automatic_renewal = $is_renewal && did_action( 'woocommerce_scheduled_subscription_payment' );
-
-		// special handling if 3D Secure is enabled and we're not already in the middle of the 3DS flow
-		if ( ! $this->is_external_checkout( $order_id ) && ! $is_automatic_renewal && $this->is_3d_secure_enabled() && ! is_checkout_pay_page() ) {
+		if ( $this->should_redirect_to_pay_page( (int) $order_id ) ) {
 
 			$order = wc_get_order( $order_id );
 
@@ -549,7 +560,54 @@ class Credit_Card extends Gateway {
 		}
 
 		// process normally
-		return parent::process_payment( $order_id );
+		$result = parent::process_payment( $order_id );
+
+		if ( $result['result'] === 'success' && $this->is_3d_secure_enabled() ) {
+			$this->threed_secure->clear_session_data();
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * Determines whether the payment should be processed on the Pay Page.
+	 *
+	 * Payment should be processed on the Pay Page if:
+	 * - 3D Secure is enabled
+	 * - and the order is not a renewal
+	 * - and the payment is not being made via the block checkout
+	 * - and we're not already in the middle of the 3DS flow
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param int $order_id
+	 * @return bool
+	 */
+	protected function should_redirect_to_pay_page( int $order_id ): bool {
+
+		return   $this->is_3d_secure_enabled()
+			&& ! $this->is_automatic_renewal( $order_id ) // 3D Secure can't be used for automatic subscription renewals
+			&& ! $this->is_processing_block_checkout()
+			&& ! is_checkout_pay_page()
+			&& ! $this->is_external_checkout( $order_id )
+			&& ! $this->is_tokenized_checkout( $order_id );
+	}
+
+
+	/**
+	 * Checks whether the current payment is an automatic renewal.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param int $order_id
+	 * @return bool
+	 */
+	protected function is_automatic_renewal( int $order_id ): bool {
+
+		return function_exists( 'wcs_order_contains_renewal' )
+			&& wcs_order_contains_renewal( $order_id )
+			&& did_action( 'woocommerce_scheduled_subscription_payment' );
 	}
 
 
@@ -558,7 +616,7 @@ class Credit_Card extends Gateway {
 	 *
 	 * This should be false if the flex form is enabled, as it's a hosted field  in Flex v0.11.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @return bool
 	 */
@@ -571,16 +629,14 @@ class Credit_Card extends Gateway {
 	/**
 	 * Determines whether this is a "hosted" gateway.
 	 *
-	 * This only controls the checkout "Place Order" button. Overridden here to display "Continue to Payment" if 3D
-	 * Secure is enabled.
-	 *
 	 * @since 2.3.0
 	 *
 	 * @return bool
 	 */
 	public function is_hosted_gateway(): bool {
 
-		return $this->is_3d_secure_enabled() && ! is_checkout_pay_page();
+		// in the blocks checkout flow we can perform 3DS validation directly in the checkout without sending the user to the pay page
+		return ! Framework\Blocks\Blocks_Handler::is_checkout_block_in_use() && $this->is_3d_secure_enabled();
 	}
 
 
@@ -592,11 +648,19 @@ class Credit_Card extends Gateway {
 	 * @param int $order_id WooCommerce order ID
 	 * @return bool
 	 */
-	public function is_external_checkout( $order_id ) {
+	public function is_external_checkout( $order_id ): bool {
 
 		$order = wc_get_order( $order_id );
 
-		return $order && ( self::FEATURE_GOOGLE_PAY == $order->get_created_via() || self::FEATURE_APPLE_PAY == $order->get_created_via() );
+		return $order && ( self::FEATURE_GOOGLE_PAY === $order->get_created_via() || self::FEATURE_APPLE_PAY === $order->get_created_via() );
+	}
+
+
+	public function is_tokenized_checkout( $order_id ): bool {
+
+		$order = wc_get_order( $order_id );
+
+		return $order && $order->get_created_via() === 'store-api' && ! empty( SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id() . '-payment-token' ) );
 	}
 
 
@@ -610,6 +674,23 @@ class Credit_Card extends Gateway {
 	public function is_3d_secure_enabled(): bool {
 
 		return 'yes' === $this->enable_threed_secure;
+	}
+
+
+	/**
+	 * Enqueues the gateway assets.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return void
+	 */
+	protected function enqueue_gateway_assets() {
+
+		parent::enqueue_gateway_assets();
+
+		$assets_version = $this->get_plugin()->get_version();
+
+		wp_register_script( Frontend::THREED_SECURE_SCRIPT_HANDLE, wc_cybersource()->get_plugin_url() . '/assets/js/frontend/wc-cybersource-threed-secure.min.js', [ 'jquery' ], $assets_version );
 	}
 
 

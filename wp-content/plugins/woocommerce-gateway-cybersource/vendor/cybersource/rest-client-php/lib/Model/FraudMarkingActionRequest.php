@@ -54,7 +54,8 @@ class FraudMarkingActionRequest implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'riskInformation' => '\CyberSource\Model\Riskv1decisionsidmarkingRiskInformation'
+        'riskInformation' => '\CyberSource\Model\Riskv1decisionsidmarkingRiskInformation',
+        'clientReferenceInformation' => '\CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation'
     ];
 
     /**
@@ -62,7 +63,8 @@ class FraudMarkingActionRequest implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'riskInformation' => null
+        'riskInformation' => null,
+        'clientReferenceInformation' => null
     ];
 
     public static function swaggerTypes()
@@ -80,7 +82,8 @@ class FraudMarkingActionRequest implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'riskInformation' => 'riskInformation'
+        'riskInformation' => 'riskInformation',
+        'clientReferenceInformation' => 'clientReferenceInformation'
     ];
 
 
@@ -89,7 +92,8 @@ class FraudMarkingActionRequest implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'riskInformation' => 'setRiskInformation'
+        'riskInformation' => 'setRiskInformation',
+        'clientReferenceInformation' => 'setClientReferenceInformation'
     ];
 
 
@@ -98,7 +102,8 @@ class FraudMarkingActionRequest implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'riskInformation' => 'getRiskInformation'
+        'riskInformation' => 'getRiskInformation',
+        'clientReferenceInformation' => 'getClientReferenceInformation'
     ];
 
     public static function attributeMap()
@@ -133,6 +138,7 @@ class FraudMarkingActionRequest implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['riskInformation'] = isset($data['riskInformation']) ? $data['riskInformation'] : null;
+        $this->container['clientReferenceInformation'] = isset($data['clientReferenceInformation']) ? $data['clientReferenceInformation'] : null;
     }
 
     /**
@@ -180,11 +186,33 @@ class FraudMarkingActionRequest implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets clientReferenceInformation
+     * @return \CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation
+     */
+    public function getClientReferenceInformation()
+    {
+        return $this->container['clientReferenceInformation'];
+    }
+
+    /**
+     * Sets clientReferenceInformation
+     * @param \CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation $clientReferenceInformation
+     * @return $this
+     */
+    public function setClientReferenceInformation($clientReferenceInformation)
+    {
+        $this->container['clientReferenceInformation'] = $clientReferenceInformation;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -195,6 +223,7 @@ class FraudMarkingActionRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -206,6 +235,7 @@ class FraudMarkingActionRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -220,6 +250,7 @@ class FraudMarkingActionRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

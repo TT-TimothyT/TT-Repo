@@ -258,78 +258,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['productCode']) && (strlen($this->container['productCode']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productCode', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['productName']) && (strlen($this->container['productName']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productName', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['productSku']) && (strlen($this->container['productSku']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productSku', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['quantity']) && ($this->container['quantity'] > 999999999)) {
-            $invalid_properties[] = "invalid value for 'quantity', must be smaller than or equal to 999999999.";
-        }
-
-        if (!is_null($this->container['quantity']) && ($this->container['quantity'] < 1)) {
-            $invalid_properties[] = "invalid value for 'quantity', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['unitPrice']) && (strlen($this->container['unitPrice']) > 15)) {
-            $invalid_properties[] = "invalid value for 'unitPrice', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['unitOfMeasure']) && (strlen($this->container['unitOfMeasure']) > 12)) {
-            $invalid_properties[] = "invalid value for 'unitOfMeasure', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['totalAmount']) && (strlen($this->container['totalAmount']) > 13)) {
-            $invalid_properties[] = "invalid value for 'totalAmount', the character length must be smaller than or equal to 13.";
-        }
-
-        if (!is_null($this->container['taxAmount']) && (strlen($this->container['taxAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'taxAmount', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['taxRate']) && (strlen($this->container['taxRate']) > 7)) {
-            $invalid_properties[] = "invalid value for 'taxRate', the character length must be smaller than or equal to 7.";
-        }
-
-        if (!is_null($this->container['taxAppliedAfterDiscount']) && (strlen($this->container['taxAppliedAfterDiscount']) > 1)) {
-            $invalid_properties[] = "invalid value for 'taxAppliedAfterDiscount', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['taxStatusIndicator']) && (strlen($this->container['taxStatusIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'taxStatusIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['taxTypeCode']) && (strlen($this->container['taxTypeCode']) > 4)) {
-            $invalid_properties[] = "invalid value for 'taxTypeCode', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['typeOfSupply']) && (strlen($this->container['typeOfSupply']) > 2)) {
-            $invalid_properties[] = "invalid value for 'typeOfSupply', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['commodityCode']) && (strlen($this->container['commodityCode']) > 15)) {
-            $invalid_properties[] = "invalid value for 'commodityCode', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['discountAmount']) && (strlen($this->container['discountAmount']) > 13)) {
-            $invalid_properties[] = "invalid value for 'discountAmount', the character length must be smaller than or equal to 13.";
-        }
-
-        if (!is_null($this->container['discountRate']) && (strlen($this->container['discountRate']) > 6)) {
-            $invalid_properties[] = "invalid value for 'discountRate', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['invoiceNumber']) && (strlen($this->container['invoiceNumber']) > 23)) {
-            $invalid_properties[] = "invalid value for 'invoiceNumber', the character length must be smaller than or equal to 23.";
-        }
-
         return $invalid_properties;
     }
 
@@ -342,60 +270,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['productCode']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['productName']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['productSku']) > 255) {
-            return false;
-        }
-        if ($this->container['quantity'] > 999999999) {
-            return false;
-        }
-        if ($this->container['quantity'] < 1) {
-            return false;
-        }
-        if (strlen($this->container['unitPrice']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['unitOfMeasure']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['totalAmount']) > 13) {
-            return false;
-        }
-        if (strlen($this->container['taxAmount']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['taxRate']) > 7) {
-            return false;
-        }
-        if (strlen($this->container['taxAppliedAfterDiscount']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['taxStatusIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['taxTypeCode']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['typeOfSupply']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['commodityCode']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['discountAmount']) > 13) {
-            return false;
-        }
-        if (strlen($this->container['discountRate']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['invoiceNumber']) > 23) {
-            return false;
-        }
         return true;
     }
 
@@ -411,15 +285,11 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
 
     /**
      * Sets productCode
-     * @param string $productCode Type of product. The value for this field is used to identify the product category (electronic, handling, physical, service, or shipping). The default value is `default`.  If you are performing an authorization transaction (`processingOptions.capture` is set to `false`), and you set this field to a value other than `default` or one of the values related to shipping and/or handling, then `orderInformation.lineItems[].quantity`, `orderInformation.lineItems[].productName`, and `orderInformation.lineItems[].productSku` fields are required.  Optional field.  For details, see the `product_code` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes.  To use the tax calculation service, use values listed in the Tax Product Code Guide. For information about this document, contact customer support. See \"Product Codes,\" page 14, for more information.
+     * @param string $productCode Type of product. The value for this field is used to identify the product category (electronic, handling, physical, service, or shipping). The default value is `default`.  If you are performing an authorization transaction (`processingOptions.capture` is set to `false`), and you set this field to a value other than `default` or one of the values related to shipping and/or handling, then `orderInformation.lineItems[].quantity`, `orderInformation.lineItems[].productName`, and `orderInformation.lineItems[].productSku` fields are required.  Optional field.  For details, see the `product_code` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes.  The Product Codes for the tax service are located in the Cybersource Tax Codes guide. Contact Customer Support to request the guide. If you don't send a tax service Product Code in your tax request, product-based rules or exemptions will not be applied and the transaction will default to fully taxable in the locations where you've indicated you need to collect tax [by way of nexus, no nexus, or seller registration number fields].
      * @return $this
      */
     public function setProductCode($productCode)
     {
-        if (!is_null($productCode) && (strlen($productCode) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productCode when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productCode'] = $productCode;
 
         return $this;
@@ -441,10 +311,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setProductName($productName)
     {
-        if (!is_null($productName) && (strlen($productName) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productName when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productName'] = $productName;
 
         return $this;
@@ -466,10 +332,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setProductSku($productSku)
     {
-        if (!is_null($productSku) && (strlen($productSku) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productSku when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productSku'] = $productSku;
 
         return $this;
@@ -491,14 +353,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setQuantity($quantity)
     {
-
-        if (!is_null($quantity) && ($quantity > 999999999)) {
-            throw new \InvalidArgumentException('invalid value for $quantity when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 999999999.');
-        }
-        if (!is_null($quantity) && ($quantity < 1)) {
-            throw new \InvalidArgumentException('invalid value for $quantity when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be bigger than or equal to 1.');
-        }
-
         $this->container['quantity'] = $quantity;
 
         return $this;
@@ -520,10 +374,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setUnitPrice($unitPrice)
     {
-        if (!is_null($unitPrice) && (strlen($unitPrice) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $unitPrice when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['unitPrice'] = $unitPrice;
 
         return $this;
@@ -545,10 +395,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setUnitOfMeasure($unitOfMeasure)
     {
-        if (!is_null($unitOfMeasure) && (strlen($unitOfMeasure) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $unitOfMeasure when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 12.');
-        }
-
         $this->container['unitOfMeasure'] = $unitOfMeasure;
 
         return $this;
@@ -570,10 +416,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setTotalAmount($totalAmount)
     {
-        if (!is_null($totalAmount) && (strlen($totalAmount) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $totalAmount when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 13.');
-        }
-
         $this->container['totalAmount'] = $totalAmount;
 
         return $this;
@@ -595,10 +437,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setTaxAmount($taxAmount)
     {
-        if (!is_null($taxAmount) && (strlen($taxAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $taxAmount when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['taxAmount'] = $taxAmount;
 
         return $this;
@@ -620,10 +458,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setTaxRate($taxRate)
     {
-        if (!is_null($taxRate) && (strlen($taxRate) > 7)) {
-            throw new \InvalidArgumentException('invalid length for $taxRate when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 7.');
-        }
-
         $this->container['taxRate'] = $taxRate;
 
         return $this;
@@ -645,10 +479,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setTaxAppliedAfterDiscount($taxAppliedAfterDiscount)
     {
-        if (!is_null($taxAppliedAfterDiscount) && (strlen($taxAppliedAfterDiscount) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $taxAppliedAfterDiscount when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 1.');
-        }
-
         $this->container['taxAppliedAfterDiscount'] = $taxAppliedAfterDiscount;
 
         return $this;
@@ -670,10 +500,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setTaxStatusIndicator($taxStatusIndicator)
     {
-        if (!is_null($taxStatusIndicator) && (strlen($taxStatusIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $taxStatusIndicator when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 1.');
-        }
-
         $this->container['taxStatusIndicator'] = $taxStatusIndicator;
 
         return $this;
@@ -695,10 +521,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setTaxTypeCode($taxTypeCode)
     {
-        if (!is_null($taxTypeCode) && (strlen($taxTypeCode) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $taxTypeCode when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 4.');
-        }
-
         $this->container['taxTypeCode'] = $taxTypeCode;
 
         return $this;
@@ -741,10 +563,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setTypeOfSupply($typeOfSupply)
     {
-        if (!is_null($typeOfSupply) && (strlen($typeOfSupply) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $typeOfSupply when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 2.');
-        }
-
         $this->container['typeOfSupply'] = $typeOfSupply;
 
         return $this;
@@ -766,10 +584,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setCommodityCode($commodityCode)
     {
-        if (!is_null($commodityCode) && (strlen($commodityCode) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $commodityCode when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['commodityCode'] = $commodityCode;
 
         return $this;
@@ -791,10 +605,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setDiscountAmount($discountAmount)
     {
-        if (!is_null($discountAmount) && (strlen($discountAmount) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $discountAmount when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 13.');
-        }
-
         $this->container['discountAmount'] = $discountAmount;
 
         return $this;
@@ -837,10 +647,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setDiscountRate($discountRate)
     {
-        if (!is_null($discountRate) && (strlen($discountRate) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $discountRate when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 6.');
-        }
-
         $this->container['discountRate'] = $discountRate;
 
         return $this;
@@ -862,10 +668,6 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      */
     public function setInvoiceNumber($invoiceNumber)
     {
-        if (!is_null($invoiceNumber) && (strlen($invoiceNumber) > 23)) {
-            throw new \InvalidArgumentException('invalid length for $invoiceNumber when calling Ptsv2paymentsidrefundsOrderInformationLineItems., must be smaller than or equal to 23.');
-        }
-
         $this->container['invoiceNumber'] = $invoiceNumber;
 
         return $this;
@@ -896,6 +698,7 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -906,6 +709,7 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -917,6 +721,7 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -931,6 +736,7 @@ class Ptsv2paymentsidrefundsOrderInformationLineItems implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

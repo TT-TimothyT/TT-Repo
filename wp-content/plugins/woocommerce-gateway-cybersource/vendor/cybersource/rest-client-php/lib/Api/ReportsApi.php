@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * ReportsApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class ReportsApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class ReportsApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -93,13 +100,16 @@ class ReportsApi
      * Create Adhoc Report
      *
      * @param \CyberSource\Model\CreateAdhocReportRequest $createAdhocReportRequest Report subscription request payload (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of void, HTTP status code, HTTP response headers (array of strings)
      */
     public function createReport($createAdhocReportRequest, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD createReport STARTED');
         list($response, $statusCode, $httpHeader) = $this->createReportWithHttpInfo($createAdhocReportRequest, $organizationId);
+        self::$logger->info('CALL TO METHOD createReport ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -109,7 +119,7 @@ class ReportsApi
      * Create Adhoc Report
      *
      * @param \CyberSource\Model\CreateAdhocReportRequest $createAdhocReportRequest Report subscription request payload (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -117,16 +127,12 @@ class ReportsApi
     {
         // verify the required parameter 'createAdhocReportRequest' is set
         if ($createAdhocReportRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $createAdhocReportRequest when calling createReport");
             throw new \InvalidArgumentException('Missing the required parameter $createAdhocReportRequest when calling createReport');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportsApi.createReport, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportsApi.createReport, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportsApi.createReport, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportsApi.createReport, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportsApi.createReport, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -150,6 +156,9 @@ class ReportsApi
         if (isset($createAdhocReportRequest)) {
             $_tempBody = $createAdhocReportRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\CreateAdhocReportRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -157,6 +166,21 @@ class ReportsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : null");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -168,6 +192,8 @@ class ReportsApi
                 null,
                 '/reporting/v3/reports'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$response, $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -178,6 +204,7 @@ class ReportsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -188,13 +215,16 @@ class ReportsApi
      * Get Report Based on Report Id
      *
      * @param string $reportId Valid Report Id (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportsIdGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
     public function getReportByReportId($reportId, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD getReportByReportId STARTED');
         list($response, $statusCode, $httpHeader) = $this->getReportByReportIdWithHttpInfo($reportId, $organizationId);
+        self::$logger->info('CALL TO METHOD getReportByReportId ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -204,7 +234,7 @@ class ReportsApi
      * Get Report Based on Report Id
      *
      * @param string $reportId Valid Report Id (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportsIdGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
@@ -212,16 +242,12 @@ class ReportsApi
     {
         // verify the required parameter 'reportId' is set
         if ($reportId === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $reportId when calling getReportByReportId");
             throw new \InvalidArgumentException('Missing the required parameter $reportId when calling getReportByReportId');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportsApi.getReportByReportId, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportsApi.getReportByReportId, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportsApi.getReportByReportId, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportsApi.getReportByReportId, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportsApi.getReportByReportId, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -248,6 +274,9 @@ class ReportsApi
                 $resourcePath
             );
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -255,6 +284,21 @@ class ReportsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\ReportingV3ReportsIdGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -266,6 +310,8 @@ class ReportsApi
                 '\CyberSource\Model\ReportingV3ReportsIdGet200Response',
                 '/reporting/v3/reports/{reportId}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\ReportingV3ReportsIdGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -280,6 +326,7 @@ class ReportsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -292,7 +339,7 @@ class ReportsApi
      * @param \DateTime $startTime Valid report Start Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
      * @param \DateTime $endTime Valid report End Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
      * @param string $timeQueryType Specify time you would like to search  Valid values: - reportTimeFrame - executedTime (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @param string $reportMimeType Valid Report Format  Valid values: - application/xml - text/csv (optional)
      * @param string $reportFrequency Valid Report Frequency  Valid values: - DAILY - WEEKLY - MONTHLY - USER_DEFINED - ADHOC (optional)
      * @param string $reportName Valid Report Name (optional)
@@ -303,7 +350,10 @@ class ReportsApi
      */
     public function searchReports($startTime, $endTime, $timeQueryType, $organizationId = null, $reportMimeType = null, $reportFrequency = null, $reportName = null, $reportDefinitionId = null, $reportStatus = null)
     {
+        self::$logger->info('CALL TO METHOD searchReports STARTED');
         list($response, $statusCode, $httpHeader) = $this->searchReportsWithHttpInfo($startTime, $endTime, $timeQueryType, $organizationId, $reportMimeType, $reportFrequency, $reportName, $reportDefinitionId, $reportStatus);
+        self::$logger->info('CALL TO METHOD searchReports ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -315,7 +365,7 @@ class ReportsApi
      * @param \DateTime $startTime Valid report Start Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
      * @param \DateTime $endTime Valid report End Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
      * @param string $timeQueryType Specify time you would like to search  Valid values: - reportTimeFrame - executedTime (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @param string $reportMimeType Valid Report Format  Valid values: - application/xml - text/csv (optional)
      * @param string $reportFrequency Valid Report Frequency  Valid values: - DAILY - WEEKLY - MONTHLY - USER_DEFINED - ADHOC (optional)
      * @param string $reportName Valid Report Name (optional)
@@ -328,24 +378,22 @@ class ReportsApi
     {
         // verify the required parameter 'startTime' is set
         if ($startTime === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $startTime when calling searchReports");
             throw new \InvalidArgumentException('Missing the required parameter $startTime when calling searchReports');
         }
         // verify the required parameter 'endTime' is set
         if ($endTime === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $endTime when calling searchReports");
             throw new \InvalidArgumentException('Missing the required parameter $endTime when calling searchReports');
         }
         // verify the required parameter 'timeQueryType' is set
         if ($timeQueryType === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $timeQueryType when calling searchReports");
             throw new \InvalidArgumentException('Missing the required parameter $timeQueryType when calling searchReports');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportsApi.searchReports, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportsApi.searchReports, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportsApi.searchReports, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportsApi.searchReports, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportsApi.searchReports, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -396,6 +444,9 @@ class ReportsApi
         if ($reportStatus !== null) {
             $queryParams['reportStatus'] = $this->apiClient->getSerializer()->toQueryValue($reportStatus);
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -403,6 +454,29 @@ class ReportsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\ReportingV3ReportsGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -414,6 +488,8 @@ class ReportsApi
                 '\CyberSource\Model\ReportingV3ReportsGet200Response',
                 '/reporting/v3/reports'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\ReportingV3ReportsGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -428,6 +504,7 @@ class ReportsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

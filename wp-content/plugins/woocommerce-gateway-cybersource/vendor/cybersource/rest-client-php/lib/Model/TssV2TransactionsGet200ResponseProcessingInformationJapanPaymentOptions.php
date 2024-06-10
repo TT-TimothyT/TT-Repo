@@ -162,22 +162,6 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['paymentMethod']) && (strlen($this->container['paymentMethod']) > 2)) {
-            $invalid_properties[] = "invalid value for 'paymentMethod', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['terminalId']) && (strlen($this->container['terminalId']) > 13)) {
-            $invalid_properties[] = "invalid value for 'terminalId', the character length must be smaller than or equal to 13.";
-        }
-
-        if (!is_null($this->container['businessName']) && (strlen($this->container['businessName']) > 25)) {
-            $invalid_properties[] = "invalid value for 'businessName', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['businessNameKatakana']) && (strlen($this->container['businessNameKatakana']) > 25)) {
-            $invalid_properties[] = "invalid value for 'businessNameKatakana', the character length must be smaller than or equal to 25.";
-        }
-
         return $invalid_properties;
     }
 
@@ -190,18 +174,6 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
     public function valid()
     {
 
-        if (strlen($this->container['paymentMethod']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['terminalId']) > 13) {
-            return false;
-        }
-        if (strlen($this->container['businessName']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['businessNameKatakana']) > 25) {
-            return false;
-        }
         return true;
     }
 
@@ -222,10 +194,6 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
      */
     public function setPaymentMethod($paymentMethod)
     {
-        if (!is_null($paymentMethod) && (strlen($paymentMethod) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $paymentMethod when calling TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions., must be smaller than or equal to 2.');
-        }
-
         $this->container['paymentMethod'] = $paymentMethod;
 
         return $this;
@@ -247,10 +215,6 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
      */
     public function setTerminalId($terminalId)
     {
-        if (!is_null($terminalId) && (strlen($terminalId) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $terminalId when calling TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions., must be smaller than or equal to 13.');
-        }
-
         $this->container['terminalId'] = $terminalId;
 
         return $this;
@@ -272,10 +236,6 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
      */
     public function setBusinessName($businessName)
     {
-        if (!is_null($businessName) && (strlen($businessName) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $businessName when calling TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions., must be smaller than or equal to 25.');
-        }
-
         $this->container['businessName'] = $businessName;
 
         return $this;
@@ -297,10 +257,6 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
      */
     public function setBusinessNameKatakana($businessNameKatakana)
     {
-        if (!is_null($businessNameKatakana) && (strlen($businessNameKatakana) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $businessNameKatakana when calling TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions., must be smaller than or equal to 25.');
-        }
-
         $this->container['businessNameKatakana'] = $businessNameKatakana;
 
         return $this;
@@ -310,6 +266,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -320,6 +277,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -331,6 +289,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -345,6 +304,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationJapanPaymentOptions im
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

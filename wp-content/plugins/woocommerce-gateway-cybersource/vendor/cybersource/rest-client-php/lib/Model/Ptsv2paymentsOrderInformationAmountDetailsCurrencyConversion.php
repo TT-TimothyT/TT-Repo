@@ -156,18 +156,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['indicator']) && (strlen($this->container['indicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'indicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['reconciliationId']) && (strlen($this->container['reconciliationId']) > 60)) {
-            $invalid_properties[] = "invalid value for 'reconciliationId', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 26)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 26.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
     public function valid()
     {
 
-        if (strlen($this->container['indicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['reconciliationId']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['id']) > 26) {
-            return false;
-        }
         return true;
     }
 
@@ -209,10 +188,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
      */
     public function setIndicator($indicator)
     {
-        if (!is_null($indicator) && (strlen($indicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $indicator when calling Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion., must be smaller than or equal to 1.');
-        }
-
         $this->container['indicator'] = $indicator;
 
         return $this;
@@ -234,10 +209,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
      */
     public function setReconciliationId($reconciliationId)
     {
-        if (!is_null($reconciliationId) && (strlen($reconciliationId) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $reconciliationId when calling Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion., must be smaller than or equal to 60.');
-        }
-
         $this->container['reconciliationId'] = $reconciliationId;
 
         return $this;
@@ -259,10 +230,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion., must be smaller than or equal to 26.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -272,6 +239,7 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class Ptsv2paymentsOrderInformationAmountDetailsCurrencyConversion implements Ar
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -150,14 +150,6 @@ class Vasv2taxidClientReferenceInformationPartner implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['solutionId']) && (strlen($this->container['solutionId']) > 8)) {
-            $invalid_properties[] = "invalid value for 'solutionId', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['developerId']) && (strlen($this->container['developerId']) > 8)) {
-            $invalid_properties[] = "invalid value for 'developerId', the character length must be smaller than or equal to 8.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Vasv2taxidClientReferenceInformationPartner implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['solutionId']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['developerId']) > 8) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +182,6 @@ class Vasv2taxidClientReferenceInformationPartner implements ArrayAccess
      */
     public function setSolutionId($solutionId)
     {
-        if (!is_null($solutionId) && (strlen($solutionId) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $solutionId when calling Vasv2taxidClientReferenceInformationPartner., must be smaller than or equal to 8.');
-        }
-
         $this->container['solutionId'] = $solutionId;
 
         return $this;
@@ -221,10 +203,6 @@ class Vasv2taxidClientReferenceInformationPartner implements ArrayAccess
      */
     public function setDeveloperId($developerId)
     {
-        if (!is_null($developerId) && (strlen($developerId) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $developerId when calling Vasv2taxidClientReferenceInformationPartner., must be smaller than or equal to 8.');
-        }
-
         $this->container['developerId'] = $developerId;
 
         return $this;
@@ -234,6 +212,7 @@ class Vasv2taxidClientReferenceInformationPartner implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Vasv2taxidClientReferenceInformationPartner implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Vasv2taxidClientReferenceInformationPartner implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Vasv2taxidClientReferenceInformationPartner implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -17,14 +17,14 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests;
 
 use SkyVerge\WooCommerce\Cybersource\API\Visa_Checkout\Traits\Can_Add_Visa_Checkout_Request_Data;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -71,7 +71,7 @@ abstract class Payments extends Transaction {
 			'code'    => $code,
 			'partner' => [
 				// a.k.a PSID, this should be updated with a new value from CyberSource with each major/minor release
-				'solutionId' => 'CIXN77TB',
+				'solutionId' => 'E39VEQD3',
 			],
 		];
 

@@ -55,12 +55,15 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
       */
     protected static $swaggerTypes = [
         'authenticationTransactionId' => 'string',
+        'authenticationTransactionContext' => 'string',
+        'otpToken' => 'string',
         'authenticationType' => 'string',
         'effectiveAuthenticationType' => 'string',
         'responseAccessToken' => 'string',
         'signedParesStatusReason' => 'string',
         'signedPares' => 'string',
-        'whiteListStatus' => 'string'
+        'whiteListStatus' => 'string',
+        'credentialEncrypted' => 'string'
     ];
 
     /**
@@ -69,12 +72,15 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
       */
     protected static $swaggerFormats = [
         'authenticationTransactionId' => null,
+        'authenticationTransactionContext' => null,
+        'otpToken' => null,
         'authenticationType' => null,
         'effectiveAuthenticationType' => null,
         'responseAccessToken' => null,
         'signedParesStatusReason' => null,
         'signedPares' => null,
-        'whiteListStatus' => null
+        'whiteListStatus' => null,
+        'credentialEncrypted' => null
     ];
 
     public static function swaggerTypes()
@@ -93,12 +99,15 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      */
     protected static $attributeMap = [
         'authenticationTransactionId' => 'authenticationTransactionId',
+        'authenticationTransactionContext' => 'authenticationTransactionContext',
+        'otpToken' => 'otpToken',
         'authenticationType' => 'authenticationType',
         'effectiveAuthenticationType' => 'effectiveAuthenticationType',
         'responseAccessToken' => 'responseAccessToken',
         'signedParesStatusReason' => 'signedParesStatusReason',
         'signedPares' => 'signedPares',
-        'whiteListStatus' => 'whiteListStatus'
+        'whiteListStatus' => 'whiteListStatus',
+        'credentialEncrypted' => 'credentialEncrypted'
     ];
 
 
@@ -108,12 +117,15 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      */
     protected static $setters = [
         'authenticationTransactionId' => 'setAuthenticationTransactionId',
+        'authenticationTransactionContext' => 'setAuthenticationTransactionContext',
+        'otpToken' => 'setOtpToken',
         'authenticationType' => 'setAuthenticationType',
         'effectiveAuthenticationType' => 'setEffectiveAuthenticationType',
         'responseAccessToken' => 'setResponseAccessToken',
         'signedParesStatusReason' => 'setSignedParesStatusReason',
         'signedPares' => 'setSignedPares',
-        'whiteListStatus' => 'setWhiteListStatus'
+        'whiteListStatus' => 'setWhiteListStatus',
+        'credentialEncrypted' => 'setCredentialEncrypted'
     ];
 
 
@@ -123,12 +135,15 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      */
     protected static $getters = [
         'authenticationTransactionId' => 'getAuthenticationTransactionId',
+        'authenticationTransactionContext' => 'getAuthenticationTransactionContext',
+        'otpToken' => 'getOtpToken',
         'authenticationType' => 'getAuthenticationType',
         'effectiveAuthenticationType' => 'getEffectiveAuthenticationType',
         'responseAccessToken' => 'getResponseAccessToken',
         'signedParesStatusReason' => 'getSignedParesStatusReason',
         'signedPares' => 'getSignedPares',
-        'whiteListStatus' => 'getWhiteListStatus'
+        'whiteListStatus' => 'getWhiteListStatus',
+        'credentialEncrypted' => 'getCredentialEncrypted'
     ];
 
     public static function attributeMap()
@@ -163,12 +178,15 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
     public function __construct(array $data = null)
     {
         $this->container['authenticationTransactionId'] = isset($data['authenticationTransactionId']) ? $data['authenticationTransactionId'] : null;
+        $this->container['authenticationTransactionContext'] = isset($data['authenticationTransactionContext']) ? $data['authenticationTransactionContext'] : null;
+        $this->container['otpToken'] = isset($data['otpToken']) ? $data['otpToken'] : null;
         $this->container['authenticationType'] = isset($data['authenticationType']) ? $data['authenticationType'] : null;
         $this->container['effectiveAuthenticationType'] = isset($data['effectiveAuthenticationType']) ? $data['effectiveAuthenticationType'] : null;
         $this->container['responseAccessToken'] = isset($data['responseAccessToken']) ? $data['responseAccessToken'] : null;
         $this->container['signedParesStatusReason'] = isset($data['signedParesStatusReason']) ? $data['signedParesStatusReason'] : null;
         $this->container['signedPares'] = isset($data['signedPares']) ? $data['signedPares'] : null;
         $this->container['whiteListStatus'] = isset($data['whiteListStatus']) ? $data['whiteListStatus'] : null;
+        $this->container['credentialEncrypted'] = isset($data['credentialEncrypted']) ? $data['credentialEncrypted'] : null;
     }
 
     /**
@@ -179,33 +197,6 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['authenticationTransactionId']) && (strlen($this->container['authenticationTransactionId']) > 20)) {
-            $invalid_properties[] = "invalid value for 'authenticationTransactionId', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['authenticationType']) && (strlen($this->container['authenticationType']) > 2)) {
-            $invalid_properties[] = "invalid value for 'authenticationType', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['effectiveAuthenticationType']) && (strlen($this->container['effectiveAuthenticationType']) > 2)) {
-            $invalid_properties[] = "invalid value for 'effectiveAuthenticationType', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['responseAccessToken']) && (strlen($this->container['responseAccessToken']) > 2048)) {
-            $invalid_properties[] = "invalid value for 'responseAccessToken', the character length must be smaller than or equal to 2048.";
-        }
-
-        if (!is_null($this->container['signedParesStatusReason']) && (strlen($this->container['signedParesStatusReason']) > 2)) {
-            $invalid_properties[] = "invalid value for 'signedParesStatusReason', the character length must be smaller than or equal to 2.";
-        }
-
-        if ($this->container['signedPares'] === null) {
-            $invalid_properties[] = "'signedPares' can't be null";
-        }
-        if (!is_null($this->container['whiteListStatus']) && (strlen($this->container['whiteListStatus']) > 1)) {
-            $invalid_properties[] = "invalid value for 'whiteListStatus', the character length must be smaller than or equal to 1.";
-        }
 
         return $invalid_properties;
     }
@@ -219,27 +210,6 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
     public function valid()
     {
 
-        if (strlen($this->container['authenticationTransactionId']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['authenticationType']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['effectiveAuthenticationType']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['responseAccessToken']) > 2048) {
-            return false;
-        }
-        if (strlen($this->container['signedParesStatusReason']) > 2) {
-            return false;
-        }
-        if ($this->container['signedPares'] === null) {
-            return false;
-        }
-        if (strlen($this->container['whiteListStatus']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -255,16 +225,54 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
 
     /**
      * Sets authenticationTransactionId
-     * @param string $authenticationTransactionId Payer authentication transaction identifier passed to link the check enrollment and validate authentication messages. **Note**: Required for Standard integration for enroll service. Required for Hybrid integration for validate service.
+     * @param string $authenticationTransactionId Payer authentication transaction identifier passed to link the check enrollment and validate authentication messages.For Rupay,this is passed only in Re-Send OTP usecase. **Note**: Required for Standard integration, Rupay Seamless server to server integration for enroll service. Required for Hybrid integration for validate service.
      * @return $this
      */
     public function setAuthenticationTransactionId($authenticationTransactionId)
     {
-        if (!is_null($authenticationTransactionId) && (strlen($authenticationTransactionId) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $authenticationTransactionId when calling Riskv1authenticationresultsConsumerAuthenticationInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['authenticationTransactionId'] = $authenticationTransactionId;
+
+        return $this;
+    }
+
+    /**
+     * Gets authenticationTransactionContext
+     * @return string
+     */
+    public function getAuthenticationTransactionContext()
+    {
+        return $this->container['authenticationTransactionContext'];
+    }
+
+    /**
+     * Sets authenticationTransactionContext
+     * @param string $authenticationTransactionContext Authentication transaction context is used as a unique identifier to link enroll and validate call.
+     * @return $this
+     */
+    public function setAuthenticationTransactionContext($authenticationTransactionContext)
+    {
+        $this->container['authenticationTransactionContext'] = $authenticationTransactionContext;
+
+        return $this;
+    }
+
+    /**
+     * Gets otpToken
+     * @return string
+     */
+    public function getOtpToken()
+    {
+        return $this->container['otpToken'];
+    }
+
+    /**
+     * Sets otpToken
+     * @param string $otpToken OTP entered by the card holder.
+     * @return $this
+     */
+    public function setOtpToken($otpToken)
+    {
+        $this->container['otpToken'] = $otpToken;
 
         return $this;
     }
@@ -280,15 +288,11 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
 
     /**
      * Sets authenticationType
-     * @param string $authenticationType Indicates the type of authentication that will be used to challenge the card holder.  Possible Values:  01 - Static  02 - Dynamic  03 - OOB (Out of Band)  04 - Decoupled **NOTE**:  EMV 3-D Secure version 2.1.0 supports values 01-03.  Version 2.2.0 supports values 01-04.  Decoupled authentication is not supported at this time.
+     * @param string $authenticationType Indicates the type of authentication that will be used to challenge the card holder.  Possible Values:  01 - Static  02 - Dynamic  03 - OOB (Out of Band)  04 - Decoupled  20 - OTP hosted at merchant end. (Rupay S2S flow) **NOTE**:  EMV 3-D Secure version 2.1.0 supports values 01-03.  Version 2.2.0 supports values 01-04.  Decoupled authentication is not supported at this time.
      * @return $this
      */
     public function setAuthenticationType($authenticationType)
     {
-        if (!is_null($authenticationType) && (strlen($authenticationType) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $authenticationType when calling Riskv1authenticationresultsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['authenticationType'] = $authenticationType;
 
         return $this;
@@ -310,10 +314,6 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      */
     public function setEffectiveAuthenticationType($effectiveAuthenticationType)
     {
-        if (!is_null($effectiveAuthenticationType) && (strlen($effectiveAuthenticationType) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $effectiveAuthenticationType when calling Riskv1authenticationresultsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['effectiveAuthenticationType'] = $effectiveAuthenticationType;
 
         return $this;
@@ -330,15 +330,11 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
 
     /**
      * Sets responseAccessToken
-     * @param string $responseAccessToken A JWT returned by 3DS provider once the authentication is complete, required in cruise hybrid integration method when using CyberSource generated access token.
+     * @param string $responseAccessToken JWT returned by the 3D Secure provider when the authentication is complete. Required for Hybrid integration if you use the Cybersource-generated access token. Note: Max. length of this field is 2048 characters.
      * @return $this
      */
     public function setResponseAccessToken($responseAccessToken)
     {
-        if (!is_null($responseAccessToken) && (strlen($responseAccessToken) > 2048)) {
-            throw new \InvalidArgumentException('invalid length for $responseAccessToken when calling Riskv1authenticationresultsConsumerAuthenticationInformation., must be smaller than or equal to 2048.');
-        }
-
         $this->container['responseAccessToken'] = $responseAccessToken;
 
         return $this;
@@ -360,10 +356,6 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      */
     public function setSignedParesStatusReason($signedParesStatusReason)
     {
-        if (!is_null($signedParesStatusReason) && (strlen($signedParesStatusReason) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $signedParesStatusReason when calling Riskv1authenticationresultsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['signedParesStatusReason'] = $signedParesStatusReason;
 
         return $this;
@@ -406,11 +398,28 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      */
     public function setWhiteListStatus($whiteListStatus)
     {
-        if (!is_null($whiteListStatus) && (strlen($whiteListStatus) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $whiteListStatus when calling Riskv1authenticationresultsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['whiteListStatus'] = $whiteListStatus;
+
+        return $this;
+    }
+
+    /**
+     * Gets credentialEncrypted
+     * @return string
+     */
+    public function getCredentialEncrypted()
+    {
+        return $this->container['credentialEncrypted'];
+    }
+
+    /**
+     * Sets credentialEncrypted
+     * @param string $credentialEncrypted A flag to indicate if the passed credential has been encrypted by the Merchant.
+     * @return $this
+     */
+    public function setCredentialEncrypted($credentialEncrypted)
+    {
+        $this->container['credentialEncrypted'] = $credentialEncrypted;
 
         return $this;
     }
@@ -419,6 +428,7 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -429,6 +439,7 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -440,6 +451,7 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -454,6 +466,7 @@ class Riskv1authenticationresultsConsumerAuthenticationInformation implements Ar
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

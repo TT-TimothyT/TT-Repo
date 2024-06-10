@@ -156,26 +156,6 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['captureSequenceNumber']) && ($this->container['captureSequenceNumber'] > 99)) {
-            $invalid_properties[] = "invalid value for 'captureSequenceNumber', must be smaller than or equal to 99.";
-        }
-
-        if (!is_null($this->container['captureSequenceNumber']) && ($this->container['captureSequenceNumber'] < 1)) {
-            $invalid_properties[] = "invalid value for 'captureSequenceNumber', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['totalCaptureCount']) && ($this->container['totalCaptureCount'] > 99)) {
-            $invalid_properties[] = "invalid value for 'totalCaptureCount', must be smaller than or equal to 99.";
-        }
-
-        if (!is_null($this->container['totalCaptureCount']) && ($this->container['totalCaptureCount'] < 1)) {
-            $invalid_properties[] = "invalid value for 'totalCaptureCount', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['dateToCapture']) && (strlen($this->container['dateToCapture']) > 4)) {
-            $invalid_properties[] = "invalid value for 'dateToCapture', the character length must be smaller than or equal to 4.";
-        }
-
         return $invalid_properties;
     }
 
@@ -188,21 +168,6 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
     public function valid()
     {
 
-        if ($this->container['captureSequenceNumber'] > 99) {
-            return false;
-        }
-        if ($this->container['captureSequenceNumber'] < 1) {
-            return false;
-        }
-        if ($this->container['totalCaptureCount'] > 99) {
-            return false;
-        }
-        if ($this->container['totalCaptureCount'] < 1) {
-            return false;
-        }
-        if (strlen($this->container['dateToCapture']) > 4) {
-            return false;
-        }
         return true;
     }
 
@@ -223,14 +188,6 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
      */
     public function setCaptureSequenceNumber($captureSequenceNumber)
     {
-
-        if (!is_null($captureSequenceNumber) && ($captureSequenceNumber > 99)) {
-            throw new \InvalidArgumentException('invalid value for $captureSequenceNumber when calling Ptsv2paymentsProcessingInformationCaptureOptions., must be smaller than or equal to 99.');
-        }
-        if (!is_null($captureSequenceNumber) && ($captureSequenceNumber < 1)) {
-            throw new \InvalidArgumentException('invalid value for $captureSequenceNumber when calling Ptsv2paymentsProcessingInformationCaptureOptions., must be bigger than or equal to 1.');
-        }
-
         $this->container['captureSequenceNumber'] = $captureSequenceNumber;
 
         return $this;
@@ -252,14 +209,6 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
      */
     public function setTotalCaptureCount($totalCaptureCount)
     {
-
-        if (!is_null($totalCaptureCount) && ($totalCaptureCount > 99)) {
-            throw new \InvalidArgumentException('invalid value for $totalCaptureCount when calling Ptsv2paymentsProcessingInformationCaptureOptions., must be smaller than or equal to 99.');
-        }
-        if (!is_null($totalCaptureCount) && ($totalCaptureCount < 1)) {
-            throw new \InvalidArgumentException('invalid value for $totalCaptureCount when calling Ptsv2paymentsProcessingInformationCaptureOptions., must be bigger than or equal to 1.');
-        }
-
         $this->container['totalCaptureCount'] = $totalCaptureCount;
 
         return $this;
@@ -281,10 +230,6 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
      */
     public function setDateToCapture($dateToCapture)
     {
-        if (!is_null($dateToCapture) && (strlen($dateToCapture) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $dateToCapture when calling Ptsv2paymentsProcessingInformationCaptureOptions., must be smaller than or equal to 4.');
-        }
-
         $this->container['dateToCapture'] = $dateToCapture;
 
         return $this;
@@ -294,6 +239,7 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -304,6 +250,7 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -315,6 +262,7 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -329,6 +277,7 @@ class Ptsv2paymentsProcessingInformationCaptureOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

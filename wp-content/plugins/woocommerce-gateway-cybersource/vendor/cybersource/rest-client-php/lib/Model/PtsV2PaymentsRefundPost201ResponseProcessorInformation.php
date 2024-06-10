@@ -54,11 +54,14 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
       * @var string[]
       */
     protected static $swaggerTypes = [
+        'approvalCode' => 'string',
         'transactionId' => 'string',
         'forwardedAcquirerCode' => 'string',
         'merchantNumber' => 'string',
         'responseCode' => 'string',
-        'achVerification' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseProcessorInformationAchVerification'
+        'achVerification' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseProcessorInformationAchVerification',
+        'networkTransactionId' => 'string',
+        'settlementDate' => 'string'
     ];
 
     /**
@@ -66,11 +69,14 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
       * @var string[]
       */
     protected static $swaggerFormats = [
+        'approvalCode' => null,
         'transactionId' => null,
         'forwardedAcquirerCode' => null,
         'merchantNumber' => null,
         'responseCode' => null,
-        'achVerification' => null
+        'achVerification' => null,
+        'networkTransactionId' => null,
+        'settlementDate' => null
     ];
 
     public static function swaggerTypes()
@@ -88,11 +94,14 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      * @var string[]
      */
     protected static $attributeMap = [
+        'approvalCode' => 'approvalCode',
         'transactionId' => 'transactionId',
         'forwardedAcquirerCode' => 'forwardedAcquirerCode',
         'merchantNumber' => 'merchantNumber',
         'responseCode' => 'responseCode',
-        'achVerification' => 'achVerification'
+        'achVerification' => 'achVerification',
+        'networkTransactionId' => 'networkTransactionId',
+        'settlementDate' => 'settlementDate'
     ];
 
 
@@ -101,11 +110,14 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      * @var string[]
      */
     protected static $setters = [
+        'approvalCode' => 'setApprovalCode',
         'transactionId' => 'setTransactionId',
         'forwardedAcquirerCode' => 'setForwardedAcquirerCode',
         'merchantNumber' => 'setMerchantNumber',
         'responseCode' => 'setResponseCode',
-        'achVerification' => 'setAchVerification'
+        'achVerification' => 'setAchVerification',
+        'networkTransactionId' => 'setNetworkTransactionId',
+        'settlementDate' => 'setSettlementDate'
     ];
 
 
@@ -114,11 +126,14 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      * @var string[]
      */
     protected static $getters = [
+        'approvalCode' => 'getApprovalCode',
         'transactionId' => 'getTransactionId',
         'forwardedAcquirerCode' => 'getForwardedAcquirerCode',
         'merchantNumber' => 'getMerchantNumber',
         'responseCode' => 'getResponseCode',
-        'achVerification' => 'getAchVerification'
+        'achVerification' => 'getAchVerification',
+        'networkTransactionId' => 'getNetworkTransactionId',
+        'settlementDate' => 'getSettlementDate'
     ];
 
     public static function attributeMap()
@@ -152,11 +167,14 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      */
     public function __construct(array $data = null)
     {
+        $this->container['approvalCode'] = isset($data['approvalCode']) ? $data['approvalCode'] : null;
         $this->container['transactionId'] = isset($data['transactionId']) ? $data['transactionId'] : null;
         $this->container['forwardedAcquirerCode'] = isset($data['forwardedAcquirerCode']) ? $data['forwardedAcquirerCode'] : null;
         $this->container['merchantNumber'] = isset($data['merchantNumber']) ? $data['merchantNumber'] : null;
         $this->container['responseCode'] = isset($data['responseCode']) ? $data['responseCode'] : null;
         $this->container['achVerification'] = isset($data['achVerification']) ? $data['achVerification'] : null;
+        $this->container['networkTransactionId'] = isset($data['networkTransactionId']) ? $data['networkTransactionId'] : null;
+        $this->container['settlementDate'] = isset($data['settlementDate']) ? $data['settlementDate'] : null;
     }
 
     /**
@@ -167,22 +185,6 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['transactionId']) && (strlen($this->container['transactionId']) > 18)) {
-            $invalid_properties[] = "invalid value for 'transactionId', the character length must be smaller than or equal to 18.";
-        }
-
-        if (!is_null($this->container['forwardedAcquirerCode']) && (strlen($this->container['forwardedAcquirerCode']) > 32)) {
-            $invalid_properties[] = "invalid value for 'forwardedAcquirerCode', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['merchantNumber']) && (strlen($this->container['merchantNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'merchantNumber', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['responseCode']) && (strlen($this->container['responseCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'responseCode', the character length must be smaller than or equal to 10.";
-        }
 
         return $invalid_properties;
     }
@@ -196,21 +198,30 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
     public function valid()
     {
 
-        if (strlen($this->container['transactionId']) > 18) {
-            return false;
-        }
-        if (strlen($this->container['forwardedAcquirerCode']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['merchantNumber']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['responseCode']) > 10) {
-            return false;
-        }
         return true;
     }
 
+
+    /**
+     * Gets approvalCode
+     * @return string
+     */
+    public function getApprovalCode()
+    {
+        return $this->container['approvalCode'];
+    }
+
+    /**
+     * Sets approvalCode
+     * @param string $approvalCode Authorization code. Returned only when the processor returns this value.  The length of this value depends on your processor.  Returned by authorization service.  #### PIN debit Authorization code that is returned by the processor.  Returned by PIN debit credit.  #### Elavon Encrypted Account Number Program The returned value is OFFLINE.  #### TSYS Acquiring Solutions The returned value for a successful zero amount authorization is 000000.
+     * @return $this
+     */
+    public function setApprovalCode($approvalCode)
+    {
+        $this->container['approvalCode'] = $approvalCode;
+
+        return $this;
+    }
 
     /**
      * Gets transactionId
@@ -228,10 +239,6 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      */
     public function setTransactionId($transactionId)
     {
-        if (!is_null($transactionId) && (strlen($transactionId) > 18)) {
-            throw new \InvalidArgumentException('invalid length for $transactionId when calling PtsV2PaymentsRefundPost201ResponseProcessorInformation., must be smaller than or equal to 18.');
-        }
-
         $this->container['transactionId'] = $transactionId;
 
         return $this;
@@ -253,10 +260,6 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      */
     public function setForwardedAcquirerCode($forwardedAcquirerCode)
     {
-        if (!is_null($forwardedAcquirerCode) && (strlen($forwardedAcquirerCode) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $forwardedAcquirerCode when calling PtsV2PaymentsRefundPost201ResponseProcessorInformation., must be smaller than or equal to 32.');
-        }
-
         $this->container['forwardedAcquirerCode'] = $forwardedAcquirerCode;
 
         return $this;
@@ -278,10 +281,6 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      */
     public function setMerchantNumber($merchantNumber)
     {
-        if (!is_null($merchantNumber) && (strlen($merchantNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $merchantNumber when calling PtsV2PaymentsRefundPost201ResponseProcessorInformation., must be smaller than or equal to 15.');
-        }
-
         $this->container['merchantNumber'] = $merchantNumber;
 
         return $this;
@@ -303,10 +302,6 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      */
     public function setResponseCode($responseCode)
     {
-        if (!is_null($responseCode) && (strlen($responseCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $responseCode when calling PtsV2PaymentsRefundPost201ResponseProcessorInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['responseCode'] = $responseCode;
 
         return $this;
@@ -332,11 +327,54 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
 
         return $this;
     }
+
+    /**
+     * Gets networkTransactionId
+     * @return string
+     */
+    public function getNetworkTransactionId()
+    {
+        return $this->container['networkTransactionId'];
+    }
+
+    /**
+     * Sets networkTransactionId
+     * @param string $networkTransactionId Same value as `processorInformation.transactionId`
+     * @return $this
+     */
+    public function setNetworkTransactionId($networkTransactionId)
+    {
+        $this->container['networkTransactionId'] = $networkTransactionId;
+
+        return $this;
+    }
+
+    /**
+     * Gets settlementDate
+     * @return string
+     */
+    public function getSettlementDate()
+    {
+        return $this->container['settlementDate'];
+    }
+
+    /**
+     * Sets settlementDate
+     * @param string $settlementDate Field contains a settlement date. The date is in mmdd format, where: mm = month and dd = day.
+     * @return $this
+     */
+    public function setSettlementDate($settlementDate)
+    {
+        $this->container['settlementDate'] = $settlementDate;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -347,6 +385,7 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -358,6 +397,7 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -372,6 +412,7 @@ class PtsV2PaymentsRefundPost201ResponseProcessorInformation implements ArrayAcc
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

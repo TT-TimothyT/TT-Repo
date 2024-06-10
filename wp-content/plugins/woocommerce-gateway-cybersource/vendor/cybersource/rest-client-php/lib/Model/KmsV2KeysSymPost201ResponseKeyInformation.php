@@ -56,6 +56,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'organizationId' => 'string',
+        'externalOrganizationId' => 'string',
         'referenceNumber' => 'string',
         'keyId' => 'string',
         'key' => 'string',
@@ -71,6 +72,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'organizationId' => null,
+        'externalOrganizationId' => null,
         'referenceNumber' => null,
         'keyId' => null,
         'key' => null,
@@ -96,6 +98,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
      */
     protected static $attributeMap = [
         'organizationId' => 'organizationId',
+        'externalOrganizationId' => 'externalOrganizationId',
         'referenceNumber' => 'referenceNumber',
         'keyId' => 'keyId',
         'key' => 'key',
@@ -112,6 +115,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
      */
     protected static $setters = [
         'organizationId' => 'setOrganizationId',
+        'externalOrganizationId' => 'setExternalOrganizationId',
         'referenceNumber' => 'setReferenceNumber',
         'keyId' => 'setKeyId',
         'key' => 'setKey',
@@ -128,6 +132,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
      */
     protected static $getters = [
         'organizationId' => 'getOrganizationId',
+        'externalOrganizationId' => 'getExternalOrganizationId',
         'referenceNumber' => 'getReferenceNumber',
         'keyId' => 'getKeyId',
         'key' => 'getKey',
@@ -169,6 +174,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['organizationId'] = isset($data['organizationId']) ? $data['organizationId'] : null;
+        $this->container['externalOrganizationId'] = isset($data['externalOrganizationId']) ? $data['externalOrganizationId'] : null;
         $this->container['referenceNumber'] = isset($data['referenceNumber']) ? $data['referenceNumber'] : null;
         $this->container['keyId'] = isset($data['keyId']) ? $data['keyId'] : null;
         $this->container['key'] = isset($data['key']) ? $data['key'] : null;
@@ -225,6 +231,27 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
     }
 
     /**
+     * Gets externalOrganizationId
+     * @return string
+     */
+    public function getExternalOrganizationId()
+    {
+        return $this->container['externalOrganizationId'];
+    }
+
+    /**
+     * Sets externalOrganizationId
+     * @param string $externalOrganizationId Payworks MerchantId for given organizationId.
+     * @return $this
+     */
+    public function setExternalOrganizationId($externalOrganizationId)
+    {
+        $this->container['externalOrganizationId'] = $externalOrganizationId;
+
+        return $this;
+    }
+
+    /**
      * Gets referenceNumber
      * @return string
      */
@@ -235,7 +262,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
 
     /**
      * Sets referenceNumber
-     * @param string $referenceNumber Reference number is a unique identifier provided by the client along with the organization Id. This is an optional field provided solely for the client’s convenience. If client specifies value for this field in the request, it is expected to be available in the response.
+     * @param string $referenceNumber Reference number is a unique identifier provided by the client along with the organization Id. This is an optional field provided solely for the client's convenience. If client specifies value for this field in the request, it is expected to be available in the response.
      * @return $this
      */
     public function setReferenceNumber($referenceNumber)
@@ -375,6 +402,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -385,6 +413,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -396,6 +425,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -410,6 +440,7 @@ class KmsV2KeysSymPost201ResponseKeyInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

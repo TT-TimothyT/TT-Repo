@@ -54,14 +54,19 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'card' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformationCard',
+        'card' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentAccountInformationCard',
         'tokenizedCard' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformationTokenizedCard',
         'accountFeatures' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformationAccountFeatures',
         'bank' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformationBank',
         'customer' => '\CyberSource\Model\Ptsv2paymentsPaymentInformationCustomer',
         'paymentInstrument' => '\CyberSource\Model\Ptsv2paymentsPaymentInformationPaymentInstrument',
         'instrumentIdentifier' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier',
-        'shippingAddress' => '\CyberSource\Model\Ptsv2paymentsPaymentInformationShippingAddress'
+        'shippingAddress' => '\CyberSource\Model\Ptsv2paymentsPaymentInformationShippingAddress',
+        'scheme' => 'string',
+        'bin' => 'string',
+        'accountType' => 'string',
+        'issuer' => 'string',
+        'binCountry' => 'string'
     ];
 
     /**
@@ -76,7 +81,12 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
         'customer' => null,
         'paymentInstrument' => null,
         'instrumentIdentifier' => null,
-        'shippingAddress' => null
+        'shippingAddress' => null,
+        'scheme' => null,
+        'bin' => null,
+        'accountType' => null,
+        'issuer' => null,
+        'binCountry' => null
     ];
 
     public static function swaggerTypes()
@@ -101,7 +111,12 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
         'customer' => 'customer',
         'paymentInstrument' => 'paymentInstrument',
         'instrumentIdentifier' => 'instrumentIdentifier',
-        'shippingAddress' => 'shippingAddress'
+        'shippingAddress' => 'shippingAddress',
+        'scheme' => 'scheme',
+        'bin' => 'bin',
+        'accountType' => 'accountType',
+        'issuer' => 'issuer',
+        'binCountry' => 'binCountry'
     ];
 
 
@@ -117,7 +132,12 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
         'customer' => 'setCustomer',
         'paymentInstrument' => 'setPaymentInstrument',
         'instrumentIdentifier' => 'setInstrumentIdentifier',
-        'shippingAddress' => 'setShippingAddress'
+        'shippingAddress' => 'setShippingAddress',
+        'scheme' => 'setScheme',
+        'bin' => 'setBin',
+        'accountType' => 'setAccountType',
+        'issuer' => 'setIssuer',
+        'binCountry' => 'setBinCountry'
     ];
 
 
@@ -133,7 +153,12 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
         'customer' => 'getCustomer',
         'paymentInstrument' => 'getPaymentInstrument',
         'instrumentIdentifier' => 'getInstrumentIdentifier',
-        'shippingAddress' => 'getShippingAddress'
+        'shippingAddress' => 'getShippingAddress',
+        'scheme' => 'getScheme',
+        'bin' => 'getBin',
+        'accountType' => 'getAccountType',
+        'issuer' => 'getIssuer',
+        'binCountry' => 'getBinCountry'
     ];
 
     public static function attributeMap()
@@ -175,6 +200,11 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
         $this->container['paymentInstrument'] = isset($data['paymentInstrument']) ? $data['paymentInstrument'] : null;
         $this->container['instrumentIdentifier'] = isset($data['instrumentIdentifier']) ? $data['instrumentIdentifier'] : null;
         $this->container['shippingAddress'] = isset($data['shippingAddress']) ? $data['shippingAddress'] : null;
+        $this->container['scheme'] = isset($data['scheme']) ? $data['scheme'] : null;
+        $this->container['bin'] = isset($data['bin']) ? $data['bin'] : null;
+        $this->container['accountType'] = isset($data['accountType']) ? $data['accountType'] : null;
+        $this->container['issuer'] = isset($data['issuer']) ? $data['issuer'] : null;
+        $this->container['binCountry'] = isset($data['binCountry']) ? $data['binCountry'] : null;
     }
 
     /**
@@ -204,7 +234,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
 
     /**
      * Gets card
-     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformationCard
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentAccountInformationCard
      */
     public function getCard()
     {
@@ -213,7 +243,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
 
     /**
      * Sets card
-     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformationCard $card
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentAccountInformationCard $card
      * @return $this
      */
     public function setCard($card)
@@ -369,11 +399,117 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets scheme
+     * @return string
+     */
+    public function getScheme()
+    {
+        return $this->container['scheme'];
+    }
+
+    /**
+     * Sets scheme
+     * @param string $scheme Subtype of card account. This field can contain one of the following values: - Maestro International - Maestro UK Domestic - MasterCard Credit - MasterCard Debit - Visa Credit - Visa Debit - Visa Electron  **Note** Additional values may be present.  For all possible values, see the `score_card_scheme` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @return $this
+     */
+    public function setScheme($scheme)
+    {
+        $this->container['scheme'] = $scheme;
+
+        return $this;
+    }
+
+    /**
+     * Gets bin
+     * @return string
+     */
+    public function getBin()
+    {
+        return $this->container['bin'];
+    }
+
+    /**
+     * Sets bin
+     * @param string $bin Credit card BIN (the first six digits of the credit card).Derived either from the `cc_bin` request field or from the first six characters of the `customer_cc_num` field.  For all possible values, see the `score_cc_bin` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @return $this
+     */
+    public function setBin($bin)
+    {
+        $this->container['bin'] = $bin;
+
+        return $this;
+    }
+
+    /**
+     * Gets accountType
+     * @return string
+     */
+    public function getAccountType()
+    {
+        return $this->container['accountType'];
+    }
+
+    /**
+     * Sets accountType
+     * @param string $accountType Type of payment card account. This field can refer to a credit card, debit card, or prepaid card account type.  For all possible values, see the `score_card_account_type` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @return $this
+     */
+    public function setAccountType($accountType)
+    {
+        $this->container['accountType'] = $accountType;
+
+        return $this;
+    }
+
+    /**
+     * Gets issuer
+     * @return string
+     */
+    public function getIssuer()
+    {
+        return $this->container['issuer'];
+    }
+
+    /**
+     * Sets issuer
+     * @param string $issuer Name of the bank or entity that issued the card account.  For all possible values, see the `score_card_issuer` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @return $this
+     */
+    public function setIssuer($issuer)
+    {
+        $this->container['issuer'] = $issuer;
+
+        return $this;
+    }
+
+    /**
+     * Gets binCountry
+     * @return string
+     */
+    public function getBinCountry()
+    {
+        return $this->container['binCountry'];
+    }
+
+    /**
+     * Sets binCountry
+     * @param string $binCountry Country (two-digit country code) associated with the BIN of the customer's card used for the payment. Returned if the information is available. Use this field for additional information when reviewing orders. This information is also displayed in the details page of the CyberSource Business Center.  For all possible values, see the `bin_country` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @return $this
+     */
+    public function setBinCountry($binCountry)
+    {
+        $this->container['binCountry'] = $binCountry;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -384,6 +520,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -395,6 +532,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -409,6 +547,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

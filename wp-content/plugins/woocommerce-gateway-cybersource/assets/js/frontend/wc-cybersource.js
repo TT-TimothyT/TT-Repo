@@ -6,7 +6,7 @@ jQuery( document ).ready( ( $ ) => {
 	'use strict';
 
 	// the base non-flex form handler for eChecks or credit cards with Flex disabled
-	window.WC_Cybersource_Payment_Form_Handler = window.SV_WC_Payment_Form_Handler_v5_11_12;
+	window.WC_Cybersource_Payment_Form_Handler = window.SV_WC_Payment_Form_Handler_v5_12_2;
 
 	// dispatch loaded event
 	$( document.body ).trigger( 'wc_cybersource_payment_form_handler_loaded' );
@@ -18,7 +18,7 @@ jQuery( document ).ready( ( $ ) => {
 	 *
 	 * @since 2.0.0-dev-2
 	 */
-	window.WC_Cybersource_Flex_Payment_Form_Handler = class WC_Cybersource_Flex_Payment_Form_Handler extends SV_WC_Payment_Form_Handler_v5_11_12 {
+	window.WC_Cybersource_Flex_Payment_Form_Handler = class WC_Cybersource_Flex_Payment_Form_Handler extends SV_WC_Payment_Form_Handler_v5_12_2 {
 
 		/**
 		 * Instantiates Payment Form Handler.
@@ -48,6 +48,15 @@ jQuery( document ).ready( ( $ ) => {
 
 					// if a saved method is selected, we have a token
 					if ( this.saved_payment_method_selected || this.get_flex_token() ) {
+
+						let token_input = this.form.find( 'input#wc-cybersource-credit-card-payment-token-' + this.saved_payment_method_selected )
+
+						// these values are accessed by 3DS handler later on
+						if (token_input.length) {
+							this.card_expiration_month = token_input.data( 'card-expiration-month' ).toString();
+							this.card_expiration_year  = token_input.data( 'card-expiration-year' ).toString();
+						}
+
 						return $( document.body ).triggerHandler( 'wc_cybersource_flex_form_submitted', { payment_form: data.payment_form } ) !== false;
 					}
 
@@ -121,7 +130,7 @@ jQuery( document ).ready( ( $ ) => {
 			delete this.initializing_microform_instance;
 
 			let numberField = this.microform_instance.createField( 'number', { placeholder: this.number_placeholder } ),
-				cscField    = this.microform_instance.createField( 'securityCode', { placeholder: this.csc_placeholder } );
+				cscField       = this.microform_instance.createField( 'securityCode', { placeholder: this.csc_placeholder } );
 
 			// handle card type changes
 			numberField.on( 'change', function( data ) {
@@ -209,13 +218,14 @@ jQuery( document ).ready( ( $ ) => {
 				} else {
 
 					let payload = JSON.parse( atob( token.split( '.' )[1] ) );
+					let card    = payload.content.paymentInformation.card
 
-					if ( payload.data && payload.data.type ) {
-						this.card_type = payload.data.type;
-					}
-
-					if ( payload.data && payload.data.number ) {
-						this.card_number = payload.data.number;
+					// these values are accessed by the 3DS handler later on
+					if (card) {
+						this.card_type             = card.number && card.number.detectedCardTypes && card.number.detectedCardTypes.length ? card.number.detectedCardTypes[0] : null
+						this.card_bin              = card.number && card.number.bin ? card.number.bin : null
+						this.card_expiration_month = card.expirationMonth ? card.expirationMonth.value : null
+						this.card_expiration_year  = card.expirationYear ? card.expirationYear.value : null
 					}
 
 					if ( payload.jti ) {

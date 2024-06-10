@@ -144,10 +144,6 @@ class PtsV2PaymentsCapturesPost201ResponsePointOfSaleInformation implements Arra
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['terminalId']) && (strlen($this->container['terminalId']) > 8)) {
-            $invalid_properties[] = "invalid value for 'terminalId', the character length must be smaller than or equal to 8.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class PtsV2PaymentsCapturesPost201ResponsePointOfSaleInformation implements Arra
     public function valid()
     {
 
-        if (strlen($this->container['terminalId']) > 8) {
-            return false;
-        }
         return true;
     }
 
@@ -183,10 +176,6 @@ class PtsV2PaymentsCapturesPost201ResponsePointOfSaleInformation implements Arra
      */
     public function setTerminalId($terminalId)
     {
-        if (!is_null($terminalId) && (strlen($terminalId) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $terminalId when calling PtsV2PaymentsCapturesPost201ResponsePointOfSaleInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['terminalId'] = $terminalId;
 
         return $this;
@@ -196,6 +185,7 @@ class PtsV2PaymentsCapturesPost201ResponsePointOfSaleInformation implements Arra
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class PtsV2PaymentsCapturesPost201ResponsePointOfSaleInformation implements Arra
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class PtsV2PaymentsCapturesPost201ResponsePointOfSaleInformation implements Arra
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class PtsV2PaymentsCapturesPost201ResponsePointOfSaleInformation implements Arra
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

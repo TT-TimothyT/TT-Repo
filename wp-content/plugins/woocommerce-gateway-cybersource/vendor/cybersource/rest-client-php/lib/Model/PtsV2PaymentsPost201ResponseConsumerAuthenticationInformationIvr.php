@@ -180,26 +180,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['encryptionKey']) && (strlen($this->container['encryptionKey']) > 16)) {
-            $invalid_properties[] = "invalid value for 'encryptionKey', the character length must be smaller than or equal to 16.";
-        }
-
-        if (!is_null($this->container['encryptionType']) && (strlen($this->container['encryptionType']) > 20)) {
-            $invalid_properties[] = "invalid value for 'encryptionType', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['label']) && (strlen($this->container['label']) > 20)) {
-            $invalid_properties[] = "invalid value for 'label', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['prompt']) && (strlen($this->container['prompt']) > 80)) {
-            $invalid_properties[] = "invalid value for 'prompt', the character length must be smaller than or equal to 80.";
-        }
-
-        if (!is_null($this->container['statusMessage']) && (strlen($this->container['statusMessage']) > 80)) {
-            $invalid_properties[] = "invalid value for 'statusMessage', the character length must be smaller than or equal to 80.";
-        }
-
         return $invalid_properties;
     }
 
@@ -212,21 +192,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
     public function valid()
     {
 
-        if (strlen($this->container['encryptionKey']) > 16) {
-            return false;
-        }
-        if (strlen($this->container['encryptionType']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['label']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['prompt']) > 80) {
-            return false;
-        }
-        if (strlen($this->container['statusMessage']) > 80) {
-            return false;
-        }
         return true;
     }
 
@@ -268,10 +233,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      */
     public function setEncryptionKey($encryptionKey)
     {
-        if (!is_null($encryptionKey) && (strlen($encryptionKey) > 16)) {
-            throw new \InvalidArgumentException('invalid length for $encryptionKey when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr., must be smaller than or equal to 16.');
-        }
-
         $this->container['encryptionKey'] = $encryptionKey;
 
         return $this;
@@ -314,10 +275,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      */
     public function setEncryptionType($encryptionType)
     {
-        if (!is_null($encryptionType) && (strlen($encryptionType) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $encryptionType when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr., must be smaller than or equal to 20.');
-        }
-
         $this->container['encryptionType'] = $encryptionType;
 
         return $this;
@@ -339,10 +296,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      */
     public function setLabel($label)
     {
-        if (!is_null($label) && (strlen($label) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $label when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr., must be smaller than or equal to 20.');
-        }
-
         $this->container['label'] = $label;
 
         return $this;
@@ -364,10 +317,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      */
     public function setPrompt($prompt)
     {
-        if (!is_null($prompt) && (strlen($prompt) > 80)) {
-            throw new \InvalidArgumentException('invalid length for $prompt when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr., must be smaller than or equal to 80.');
-        }
-
         $this->container['prompt'] = $prompt;
 
         return $this;
@@ -389,10 +338,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      */
     public function setStatusMessage($statusMessage)
     {
-        if (!is_null($statusMessage) && (strlen($statusMessage) > 80)) {
-            throw new \InvalidArgumentException('invalid length for $statusMessage when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr., must be smaller than or equal to 80.');
-        }
-
         $this->container['statusMessage'] = $statusMessage;
 
         return $this;
@@ -402,6 +347,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -412,6 +358,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -423,6 +370,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -437,6 +385,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr implement
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

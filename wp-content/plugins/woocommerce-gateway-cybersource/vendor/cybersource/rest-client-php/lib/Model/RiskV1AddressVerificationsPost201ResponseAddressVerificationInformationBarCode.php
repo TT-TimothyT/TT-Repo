@@ -150,10 +150,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationBar
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['value']) && (strlen($this->container['value']) > 255)) {
-            $invalid_properties[] = "invalid value for 'value', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -166,9 +162,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationBar
     public function valid()
     {
 
-        if (strlen($this->container['value']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -189,10 +182,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationBar
      */
     public function setValue($value)
     {
-        if (!is_null($value) && (strlen($value) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $value when calling RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationBarCode., must be smaller than or equal to 255.');
-        }
-
         $this->container['value'] = $value;
 
         return $this;
@@ -223,6 +212,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationBar
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -233,6 +223,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationBar
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -244,6 +235,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationBar
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -258,6 +250,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformationBar
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

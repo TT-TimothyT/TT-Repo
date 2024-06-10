@@ -62,7 +62,7 @@ class CreateAdhocReportRequest implements ArrayAccess
         'timezone' => 'string',
         'reportStartTime' => '\DateTime',
         'reportEndTime' => '\DateTime',
-        'reportFilters' => 'map[string,string[]]',
+        'reportFilters' => '\CyberSource\Model\Reportingv3reportsReportFilters',
         'reportPreferences' => '\CyberSource\Model\Reportingv3reportsReportPreferences',
         'groupName' => 'string'
     ];
@@ -208,24 +208,8 @@ class CreateAdhocReportRequest implements ArrayAccess
             $invalid_properties[] = "invalid value for 'organizationId', must be conform to the pattern /[a-zA-Z0-9-_]+/.";
         }
 
-        if (!is_null($this->container['reportDefinitionName']) && (strlen($this->container['reportDefinitionName']) > 80)) {
-            $invalid_properties[] = "invalid value for 'reportDefinitionName', the character length must be smaller than or equal to 80.";
-        }
-
-        if (!is_null($this->container['reportDefinitionName']) && (strlen($this->container['reportDefinitionName']) < 1)) {
-            $invalid_properties[] = "invalid value for 'reportDefinitionName', the character length must be bigger than or equal to 1.";
-        }
-
         if (!is_null($this->container['reportDefinitionName']) && !preg_match("/[a-zA-Z0-9-]+/", $this->container['reportDefinitionName'])) {
             $invalid_properties[] = "invalid value for 'reportDefinitionName', must be conform to the pattern /[a-zA-Z0-9-]+/.";
-        }
-
-        if (!is_null($this->container['reportName']) && (strlen($this->container['reportName']) > 128)) {
-            $invalid_properties[] = "invalid value for 'reportName', the character length must be smaller than or equal to 128.";
-        }
-
-        if (!is_null($this->container['reportName']) && (strlen($this->container['reportName']) < 1)) {
-            $invalid_properties[] = "invalid value for 'reportName', the character length must be bigger than or equal to 1.";
         }
 
         if (!is_null($this->container['reportName']) && !preg_match("/[a-zA-Z0-9-_ ]+/", $this->container['reportName'])) {
@@ -251,19 +235,7 @@ class CreateAdhocReportRequest implements ArrayAccess
         if (!preg_match("/[a-zA-Z0-9-_]+/", $this->container['organizationId'])) {
             return false;
         }
-        if (strlen($this->container['reportDefinitionName']) > 80) {
-            return false;
-        }
-        if (strlen($this->container['reportDefinitionName']) < 1) {
-            return false;
-        }
         if (!preg_match("/[a-zA-Z0-9-]+/", $this->container['reportDefinitionName'])) {
-            return false;
-        }
-        if (strlen($this->container['reportName']) > 128) {
-            return false;
-        }
-        if (strlen($this->container['reportName']) < 1) {
             return false;
         }
         if (!preg_match("/[a-zA-Z0-9-_ ]+/", $this->container['reportName'])) {
@@ -292,11 +264,9 @@ class CreateAdhocReportRequest implements ArrayAccess
      */
     public function setOrganizationId($organizationId)
     {
-
         if (!is_null($organizationId) && (!preg_match("/[a-zA-Z0-9-_]+/", $organizationId))) {
             throw new \InvalidArgumentException("invalid value for $organizationId when calling CreateAdhocReportRequest., must conform to the pattern /[a-zA-Z0-9-_]+/.");
         }
-
         $this->container['organizationId'] = $organizationId;
 
         return $this;
@@ -318,16 +288,9 @@ class CreateAdhocReportRequest implements ArrayAccess
      */
     public function setReportDefinitionName($reportDefinitionName)
     {
-        if (!is_null($reportDefinitionName) && (strlen($reportDefinitionName) > 80)) {
-            throw new \InvalidArgumentException('invalid length for $reportDefinitionName when calling CreateAdhocReportRequest., must be smaller than or equal to 80.');
-        }
-        if (!is_null($reportDefinitionName) && (strlen($reportDefinitionName) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $reportDefinitionName when calling CreateAdhocReportRequest., must be bigger than or equal to 1.');
-        }
         if (!is_null($reportDefinitionName) && (!preg_match("/[a-zA-Z0-9-]+/", $reportDefinitionName))) {
             throw new \InvalidArgumentException("invalid value for $reportDefinitionName when calling CreateAdhocReportRequest., must conform to the pattern /[a-zA-Z0-9-]+/.");
         }
-
         $this->container['reportDefinitionName'] = $reportDefinitionName;
 
         return $this;
@@ -391,16 +354,9 @@ class CreateAdhocReportRequest implements ArrayAccess
      */
     public function setReportName($reportName)
     {
-        if (!is_null($reportName) && (strlen($reportName) > 128)) {
-            throw new \InvalidArgumentException('invalid length for $reportName when calling CreateAdhocReportRequest., must be smaller than or equal to 128.');
-        }
-        if (!is_null($reportName) && (strlen($reportName) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $reportName when calling CreateAdhocReportRequest., must be bigger than or equal to 1.');
-        }
         if (!is_null($reportName) && (!preg_match("/[a-zA-Z0-9-_ ]+/", $reportName))) {
             throw new \InvalidArgumentException("invalid value for $reportName when calling CreateAdhocReportRequest., must conform to the pattern /[a-zA-Z0-9-_ ]+/.");
         }
-
         $this->container['reportName'] = $reportName;
 
         return $this;
@@ -471,7 +427,7 @@ class CreateAdhocReportRequest implements ArrayAccess
 
     /**
      * Gets reportFilters
-     * @return map[string,string[]]
+     * @return \CyberSource\Model\Reportingv3reportsReportFilters
      */
     public function getReportFilters()
     {
@@ -480,7 +436,7 @@ class CreateAdhocReportRequest implements ArrayAccess
 
     /**
      * Sets reportFilters
-     * @param map[string,string[]] $reportFilters List of filters to apply
+     * @param \CyberSource\Model\Reportingv3reportsReportFilters $reportFilters
      * @return $this
      */
     public function setReportFilters($reportFilters)
@@ -527,11 +483,9 @@ class CreateAdhocReportRequest implements ArrayAccess
      */
     public function setGroupName($groupName)
     {
-
         if (!is_null($groupName) && (!preg_match("/[0-9]*/", $groupName))) {
             throw new \InvalidArgumentException("invalid value for $groupName when calling CreateAdhocReportRequest., must conform to the pattern /[0-9]*/.");
         }
-
         $this->container['groupName'] = $groupName;
 
         return $this;
@@ -541,6 +495,7 @@ class CreateAdhocReportRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -551,6 +506,7 @@ class CreateAdhocReportRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -562,6 +518,7 @@ class CreateAdhocReportRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -576,6 +533,7 @@ class CreateAdhocReportRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

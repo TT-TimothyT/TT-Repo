@@ -151,10 +151,6 @@ class Riskv1decisionsOrderInformationShippingDetails implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['shippingMethod']) && (strlen($this->container['shippingMethod']) > 10)) {
-            $invalid_properties[] = "invalid value for 'shippingMethod', the character length must be smaller than or equal to 10.";
-        }
-
         return $invalid_properties;
     }
 
@@ -167,9 +163,6 @@ class Riskv1decisionsOrderInformationShippingDetails implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['shippingMethod']) > 10) {
-            return false;
-        }
         return true;
     }
 
@@ -211,10 +204,6 @@ class Riskv1decisionsOrderInformationShippingDetails implements ArrayAccess
      */
     public function setShippingMethod($shippingMethod)
     {
-        if (!is_null($shippingMethod) && (strlen($shippingMethod) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $shippingMethod when calling Riskv1decisionsOrderInformationShippingDetails., must be smaller than or equal to 10.');
-        }
-
         $this->container['shippingMethod'] = $shippingMethod;
 
         return $this;
@@ -224,6 +213,7 @@ class Riskv1decisionsOrderInformationShippingDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -234,6 +224,7 @@ class Riskv1decisionsOrderInformationShippingDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -245,6 +236,7 @@ class Riskv1decisionsOrderInformationShippingDetails implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -259,6 +251,7 @@ class Riskv1decisionsOrderInformationShippingDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

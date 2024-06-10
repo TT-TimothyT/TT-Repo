@@ -183,7 +183,7 @@ class PtsV2PaymentsPost201ResponseErrorInformation implements ArrayAccess
 
     /**
      * Sets reason
-     * @param string $reason The reason of the status.  Possible values:  - AVS_FAILED  - CONTACT_PROCESSOR  - EXPIRED_CARD  - PROCESSOR_DECLINED  - INSUFFICIENT_FUND  - STOLEN_LOST_CARD  - ISSUER_UNAVAILABLE  - UNAUTHORIZED_CARD  - CVN_NOT_MATCH  - EXCEEDS_CREDIT_LIMIT  - INVALID_CVN  - DECLINED_CHECK  - BLACKLISTED_CUSTOMER  - SUSPENDED_ACCOUNT  - PAYMENT_REFUSED  - CV_FAILED  - INVALID_ACCOUNT  - GENERAL_DECLINE  - INVALID_MERCHANT_CONFIGURATION  - DECISION_PROFILE_REJECT  - SCORE_EXCEEDS_THRESHOLD  - PENDING_AUTHENTICATION  - ACH_VERIFICATION_FAILED  - DECISION_PROFILE_REVIEW  - CONSUMER_AUTHENTICATION_REQUIRED  - CONSUMER_AUTHENTICATION_FAILED
+     * @param string $reason The reason of the status.  Possible values:  - AVS_FAILED  - CONTACT_PROCESSOR  - EXPIRED_CARD  - PROCESSOR_DECLINED  - INSUFFICIENT_FUND  - STOLEN_LOST_CARD  - ISSUER_UNAVAILABLE  - UNAUTHORIZED_CARD  - CVN_NOT_MATCH  - EXCEEDS_CREDIT_LIMIT  - INVALID_CVN  - DECLINED_CHECK  - BLACKLISTED_CUSTOMER  - SUSPENDED_ACCOUNT  - PAYMENT_REFUSED  - CV_FAILED  - INVALID_ACCOUNT  - GENERAL_DECLINE  - INVALID_MERCHANT_CONFIGURATION  - DECISION_PROFILE_REJECT  - SCORE_EXCEEDS_THRESHOLD  - PENDING_AUTHENTICATION  - ACH_VERIFICATION_FAILED  - DECISION_PROFILE_REVIEW  - CONSUMER_AUTHENTICATION_REQUIRED  - CONSUMER_AUTHENTICATION_FAILED  - ALLOWABLE_PIN_RETRIES_EXCEEDED  - PROCESSOR_ERROR  - CUSTOMER_WATCHLIST_MATCH  - ADDRESS_COUNTRY_WATCHLIST_MATCH  - EMAIL_COUNTRY_WATCHLIST_MATCH  - IP_COUNTRY_WATCHLIST_MATCH  - INVALID_MERCHANT_CONFIGURATION
      * @return $this
      */
     public function setReason($reason)
@@ -239,6 +239,7 @@ class PtsV2PaymentsPost201ResponseErrorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -249,6 +250,7 @@ class PtsV2PaymentsPost201ResponseErrorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -260,6 +262,7 @@ class PtsV2PaymentsPost201ResponseErrorInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -274,6 +277,7 @@ class PtsV2PaymentsPost201ResponseErrorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

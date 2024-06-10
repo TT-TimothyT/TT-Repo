@@ -156,18 +156,6 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['trueIpaddress']) && (strlen($this->container['trueIpaddress']) > 255)) {
-            $invalid_properties[] = "invalid value for 'trueIpaddress', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['hash']) && (strlen($this->container['hash']) > 255)) {
-            $invalid_properties[] = "invalid value for 'hash', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['smartId']) && (strlen($this->container['smartId']) > 255)) {
-            $invalid_properties[] = "invalid value for 'smartId', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
     public function valid()
     {
 
-        if (strlen($this->container['trueIpaddress']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['hash']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['smartId']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -204,15 +183,11 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
 
     /**
      * Sets trueIpaddress
-     * @param string $trueIpaddress Customer’s true IP address detected by the application.  For details, see the `true_ipaddress` field description in _Device Fingerprinting Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Device Fingerprinting Guide_ (PDF link).
+     * @param string $trueIpaddress Customer's true IP address detected by the application.  For details, see the `true_ipaddress` field description in _Device Fingerprinting Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Device Fingerprinting Guide_ (PDF link).
      * @return $this
      */
     public function setTrueIpaddress($trueIpaddress)
     {
-        if (!is_null($trueIpaddress) && (strlen($trueIpaddress) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $trueIpaddress when calling TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprint., must be smaller than or equal to 255.');
-        }
-
         $this->container['trueIpaddress'] = $trueIpaddress;
 
         return $this;
@@ -234,10 +209,6 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
      */
     public function setHash($hash)
     {
-        if (!is_null($hash) && (strlen($hash) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $hash when calling TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprint., must be smaller than or equal to 255.');
-        }
-
         $this->container['hash'] = $hash;
 
         return $this;
@@ -259,10 +230,6 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
      */
     public function setSmartId($smartId)
     {
-        if (!is_null($smartId) && (strlen($smartId) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $smartId when calling TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprint., must be smaller than or equal to 255.');
-        }
-
         $this->container['smartId'] = $smartId;
 
         return $this;
@@ -272,6 +239,7 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class TssV2TransactionsPost201ResponseEmbeddedRiskInformationProvidersFingerprin
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

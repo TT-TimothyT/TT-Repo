@@ -54,7 +54,7 @@ class PayerAuthSetupRequest implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'clientReferenceInformation' => '\CyberSource\Model\Riskv1authenticationsetupsClientReferenceInformation',
+        'clientReferenceInformation' => '\CyberSource\Model\Riskv1decisionsClientReferenceInformation',
         'paymentInformation' => '\CyberSource\Model\Riskv1authenticationsetupsPaymentInformation',
         'processingInformation' => '\CyberSource\Model\Riskv1authenticationsetupsProcessingInformation',
         'tokenInformation' => '\CyberSource\Model\Riskv1authenticationsetupsTokenInformation'
@@ -180,7 +180,7 @@ class PayerAuthSetupRequest implements ArrayAccess
 
     /**
      * Gets clientReferenceInformation
-     * @return \CyberSource\Model\Riskv1authenticationsetupsClientReferenceInformation
+     * @return \CyberSource\Model\Riskv1decisionsClientReferenceInformation
      */
     public function getClientReferenceInformation()
     {
@@ -189,7 +189,7 @@ class PayerAuthSetupRequest implements ArrayAccess
 
     /**
      * Sets clientReferenceInformation
-     * @param \CyberSource\Model\Riskv1authenticationsetupsClientReferenceInformation $clientReferenceInformation
+     * @param \CyberSource\Model\Riskv1decisionsClientReferenceInformation $clientReferenceInformation
      * @return $this
      */
     public function setClientReferenceInformation($clientReferenceInformation)
@@ -266,6 +266,7 @@ class PayerAuthSetupRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -276,6 +277,7 @@ class PayerAuthSetupRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -287,6 +289,7 @@ class PayerAuthSetupRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -301,6 +304,7 @@ class PayerAuthSetupRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

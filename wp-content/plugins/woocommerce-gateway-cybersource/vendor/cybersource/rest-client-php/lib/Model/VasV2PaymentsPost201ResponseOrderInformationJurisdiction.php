@@ -192,42 +192,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['type']) && (strlen($this->container['type']) > 15)) {
-            $invalid_properties[] = "invalid value for 'type', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['taxName']) && (strlen($this->container['taxName']) > 15)) {
-            $invalid_properties[] = "invalid value for 'taxName', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['taxAmount']) && (strlen($this->container['taxAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'taxAmount', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['taxable']) && (strlen($this->container['taxable']) > 15)) {
-            $invalid_properties[] = "invalid value for 'taxable', the character length must be smaller than or equal to 15.";
-        }
-
-        // if (!is_null($this->container['name']) && (strlen($this->container['name']) > 15)) {
-            // $invalid_properties[] = "invalid value for 'name', the character length must be smaller than or equal to 15.";
-        // }
-
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 15)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['rate']) && (strlen($this->container['rate']) > 15)) {
-            $invalid_properties[] = "invalid value for 'rate', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['region']) && (strlen($this->container['region']) > 15)) {
-            $invalid_properties[] = "invalid value for 'region', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 15)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 15.";
-        }
-
         return $invalid_properties;
     }
 
@@ -240,33 +204,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
     public function valid()
     {
 
-        if (strlen($this->container['type']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['taxName']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['taxAmount']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['taxable']) > 15) {
-            return false;
-        }
-        // if (strlen($this->container['name']) > 15) {
-            // return false;
-        // }
-        if (strlen($this->container['code']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['rate']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['region']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['country']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -287,10 +224,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setType($type)
     {
-        if (!is_null($type) && (strlen($type) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $type when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        }
-
         $this->container['type'] = $type;
 
         return $this;
@@ -312,10 +245,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setTaxName($taxName)
     {
-        if (!is_null($taxName) && (strlen($taxName) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $taxName when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        }
-
         $this->container['taxName'] = $taxName;
 
         return $this;
@@ -337,10 +266,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setTaxAmount($taxAmount)
     {
-        if (!is_null($taxAmount) && (strlen($taxAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $taxAmount when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        }
-
         $this->container['taxAmount'] = $taxAmount;
 
         return $this;
@@ -362,10 +287,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setTaxable($taxable)
     {
-        if (!is_null($taxable) && (strlen($taxable) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $taxable when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        }
-
         $this->container['taxable'] = $taxable;
 
         return $this;
@@ -387,10 +308,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setName($name)
     {
-        // if (!is_null($name) && (strlen($name) > 15)) {
-            // throw new \InvalidArgumentException('invalid length for $name when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        // }
-
         $this->container['name'] = $name;
 
         return $this;
@@ -412,10 +329,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        }
-
         $this->container['code'] = $code;
 
         return $this;
@@ -437,10 +350,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setRate($rate)
     {
-        if (!is_null($rate) && (strlen($rate) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $rate when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        }
-
         $this->container['rate'] = $rate;
 
         return $this;
@@ -462,10 +371,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setRegion($region)
     {
-        if (!is_null($region) && (strlen($region) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $region when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        }
-
         $this->container['region'] = $region;
 
         return $this;
@@ -487,10 +392,6 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling VasV2PaymentsPost201ResponseOrderInformationJurisdiction., must be smaller than or equal to 15.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -500,6 +401,7 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -510,6 +412,7 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -521,6 +424,7 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -535,6 +439,7 @@ class VasV2PaymentsPost201ResponseOrderInformationJurisdiction implements ArrayA
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

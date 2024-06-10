@@ -57,7 +57,8 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
         'acquirerBin' => 'string',
         'country' => 'string',
         'password' => 'string',
-        'merchantId' => 'string'
+        'merchantId' => 'string',
+        'acquirerMerchantId' => 'string'
     ];
 
     /**
@@ -68,7 +69,8 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
         'acquirerBin' => null,
         'country' => null,
         'password' => null,
-        'merchantId' => null
+        'merchantId' => null,
+        'acquirerMerchantId' => null
     ];
 
     public static function swaggerTypes()
@@ -89,7 +91,8 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
         'acquirerBin' => 'acquirerBin',
         'country' => 'country',
         'password' => 'password',
-        'merchantId' => 'merchantId'
+        'merchantId' => 'merchantId',
+        'acquirerMerchantId' => 'acquirerMerchantId'
     ];
 
 
@@ -101,7 +104,8 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
         'acquirerBin' => 'setAcquirerBin',
         'country' => 'setCountry',
         'password' => 'setPassword',
-        'merchantId' => 'setMerchantId'
+        'merchantId' => 'setMerchantId',
+        'acquirerMerchantId' => 'setAcquirerMerchantId'
     ];
 
 
@@ -113,7 +117,8 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
         'acquirerBin' => 'getAcquirerBin',
         'country' => 'getCountry',
         'password' => 'getPassword',
-        'merchantId' => 'getMerchantId'
+        'merchantId' => 'getMerchantId',
+        'acquirerMerchantId' => 'getAcquirerMerchantId'
     ];
 
     public static function attributeMap()
@@ -151,6 +156,7 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
         $this->container['country'] = isset($data['country']) ? $data['country'] : null;
         $this->container['password'] = isset($data['password']) ? $data['password'] : null;
         $this->container['merchantId'] = isset($data['merchantId']) ? $data['merchantId'] : null;
+        $this->container['acquirerMerchantId'] = isset($data['acquirerMerchantId']) ? $data['acquirerMerchantId'] : null;
     }
 
     /**
@@ -161,22 +167,6 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['acquirerBin']) && (strlen($this->container['acquirerBin']) > 6)) {
-            $invalid_properties[] = "invalid value for 'acquirerBin', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['password']) && (strlen($this->container['password']) > 8)) {
-            $invalid_properties[] = "invalid value for 'password', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['merchantId']) && (strlen($this->container['merchantId']) > 15)) {
-            $invalid_properties[] = "invalid value for 'merchantId', the character length must be smaller than or equal to 15.";
-        }
 
         return $invalid_properties;
     }
@@ -190,18 +180,6 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['acquirerBin']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['country']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['password']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['merchantId']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -222,10 +200,6 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
      */
     public function setAcquirerBin($acquirerBin)
     {
-        if (!is_null($acquirerBin) && (strlen($acquirerBin) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $acquirerBin when calling Ptsv2paymentsAcquirerInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['acquirerBin'] = $acquirerBin;
 
         return $this;
@@ -247,10 +221,6 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling Ptsv2paymentsAcquirerInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -272,10 +242,6 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
      */
     public function setPassword($password)
     {
-        if (!is_null($password) && (strlen($password) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $password when calling Ptsv2paymentsAcquirerInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['password'] = $password;
 
         return $this;
@@ -297,11 +263,28 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
      */
     public function setMerchantId($merchantId)
     {
-        if (!is_null($merchantId) && (strlen($merchantId) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $merchantId when calling Ptsv2paymentsAcquirerInformation., must be smaller than or equal to 15.');
-        }
-
         $this->container['merchantId'] = $merchantId;
+
+        return $this;
+    }
+
+    /**
+     * Gets acquirerMerchantId
+     * @return string
+     */
+    public function getAcquirerMerchantId()
+    {
+        return $this->container['acquirerMerchantId'];
+    }
+
+    /**
+     * Sets acquirerMerchantId
+     * @param string $acquirerMerchantId Acquirer assigned merchant id. Check if your processor supports this field.
+     * @return $this
+     */
+    public function setAcquirerMerchantId($acquirerMerchantId)
+    {
+        $this->container['acquirerMerchantId'] = $acquirerMerchantId;
 
         return $this;
     }
@@ -310,6 +293,7 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -320,6 +304,7 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -331,6 +316,7 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -345,6 +331,7 @@ class Ptsv2paymentsAcquirerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

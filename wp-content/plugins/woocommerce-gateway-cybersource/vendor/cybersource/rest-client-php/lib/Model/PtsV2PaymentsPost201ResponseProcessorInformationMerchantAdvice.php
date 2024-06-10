@@ -55,7 +55,8 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
       */
     protected static $swaggerTypes = [
         'code' => 'string',
-        'codeRaw' => 'string'
+        'codeRaw' => 'string',
+        'nameMatch' => 'string'
     ];
 
     /**
@@ -64,7 +65,8 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
       */
     protected static $swaggerFormats = [
         'code' => null,
-        'codeRaw' => null
+        'codeRaw' => null,
+        'nameMatch' => null
     ];
 
     public static function swaggerTypes()
@@ -83,7 +85,8 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      */
     protected static $attributeMap = [
         'code' => 'code',
-        'codeRaw' => 'codeRaw'
+        'codeRaw' => 'codeRaw',
+        'nameMatch' => 'nameMatch'
     ];
 
 
@@ -93,7 +96,8 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      */
     protected static $setters = [
         'code' => 'setCode',
-        'codeRaw' => 'setCodeRaw'
+        'codeRaw' => 'setCodeRaw',
+        'nameMatch' => 'setNameMatch'
     ];
 
 
@@ -103,7 +107,8 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      */
     protected static $getters = [
         'code' => 'getCode',
-        'codeRaw' => 'getCodeRaw'
+        'codeRaw' => 'getCodeRaw',
+        'nameMatch' => 'getNameMatch'
     ];
 
     public static function attributeMap()
@@ -139,6 +144,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
     {
         $this->container['code'] = isset($data['code']) ? $data['code'] : null;
         $this->container['codeRaw'] = isset($data['codeRaw']) ? $data['codeRaw'] : null;
+        $this->container['nameMatch'] = isset($data['nameMatch']) ? $data['nameMatch'] : null;
     }
 
     /**
@@ -149,14 +155,6 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 2)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['codeRaw']) && (strlen($this->container['codeRaw']) > 4)) {
-            $invalid_properties[] = "invalid value for 'codeRaw', the character length must be smaller than or equal to 4.";
-        }
 
         return $invalid_properties;
     }
@@ -170,12 +168,6 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
     public function valid()
     {
 
-        if (strlen($this->container['code']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['codeRaw']) > 4) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +188,6 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice., must be smaller than or equal to 2.');
-        }
-
         $this->container['code'] = $code;
 
         return $this;
@@ -221,11 +209,28 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      */
     public function setCodeRaw($codeRaw)
     {
-        if (!is_null($codeRaw) && (strlen($codeRaw) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $codeRaw when calling PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice., must be smaller than or equal to 4.');
-        }
-
         $this->container['codeRaw'] = $codeRaw;
+
+        return $this;
+    }
+
+    /**
+     * Gets nameMatch
+     * @return string
+     */
+    public function getNameMatch()
+    {
+        return $this->container['nameMatch'];
+    }
+
+    /**
+     * Sets nameMatch
+     * @param string $nameMatch #### Visa Platform Connect The field contains will contain the Account Name Request Result for zero amount Authorization request. Valid values are:  00 = Name Match Performed 01 = Name Match not Performed 02 = Name Match not supported
+     * @return $this
+     */
+    public function setNameMatch($nameMatch)
+    {
+        $this->container['nameMatch'] = $nameMatch;
 
         return $this;
     }
@@ -234,6 +239,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +250,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +262,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +277,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationMerchantAdvice implements 
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

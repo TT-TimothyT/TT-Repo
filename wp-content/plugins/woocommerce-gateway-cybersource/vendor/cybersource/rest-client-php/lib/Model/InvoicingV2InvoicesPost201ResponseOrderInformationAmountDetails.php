@@ -193,22 +193,6 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['totalAmount']) && (strlen($this->container['totalAmount']) > 19)) {
-            $invalid_properties[] = "invalid value for 'totalAmount', the character length must be smaller than or equal to 19.";
-        }
-
-        if (!is_null($this->container['currency']) && (strlen($this->container['currency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['balanceAmount']) && (strlen($this->container['balanceAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'balanceAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['discountAmount']) && (strlen($this->container['discountAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'discountAmount', the character length must be smaller than or equal to 15.";
-        }
-
         return $invalid_properties;
     }
 
@@ -221,18 +205,6 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
     public function valid()
     {
 
-        if (strlen($this->container['totalAmount']) > 19) {
-            return false;
-        }
-        if (strlen($this->container['currency']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['balanceAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['discountAmount']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -253,10 +225,6 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
      */
     public function setTotalAmount($totalAmount)
     {
-        if (!is_null($totalAmount) && (strlen($totalAmount) > 19)) {
-            throw new \InvalidArgumentException('invalid length for $totalAmount when calling InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails., must be smaller than or equal to 19.');
-        }
-
         $this->container['totalAmount'] = $totalAmount;
 
         return $this;
@@ -278,10 +246,6 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
      */
     public function setCurrency($currency)
     {
-        if (!is_null($currency) && (strlen($currency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails., must be smaller than or equal to 3.');
-        }
-
         $this->container['currency'] = $currency;
 
         return $this;
@@ -303,10 +267,6 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
      */
     public function setBalanceAmount($balanceAmount)
     {
-        if (!is_null($balanceAmount) && (strlen($balanceAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $balanceAmount when calling InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails., must be smaller than or equal to 12.');
-        }
-
         $this->container['balanceAmount'] = $balanceAmount;
 
         return $this;
@@ -328,10 +288,6 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
      */
     public function setDiscountAmount($discountAmount)
     {
-        if (!is_null($discountAmount) && (strlen($discountAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $discountAmount when calling InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails., must be smaller than or equal to 15.');
-        }
-
         $this->container['discountAmount'] = $discountAmount;
 
         return $this;
@@ -446,6 +402,7 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -456,6 +413,7 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -467,6 +425,7 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -481,6 +440,7 @@ class InvoicingV2InvoicesPost201ResponseOrderInformationAmountDetails implements
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

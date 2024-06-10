@@ -35,7 +35,7 @@ use \ArrayAccess;
  * Vasv2taxOrderInformationOrderAcceptance Class Doc Comment
  *
  * @category    Class
- * @description The place of business where you accept/approve the customer’s order, thereby becoming contractually obligated to make the sale.
+ * @description The Order Acceptance address fields may be used by the tax service to determine the taxability of the order or applicable taxing jurisdictions. You should consult your tax, legal and/or accounting advisors to determine if you should include an Order Acceptance address in your tax service request for some or all of your transactions based on your business.
  * @package     CyberSource
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
@@ -163,22 +163,6 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['locality']) && (strlen($this->container['locality']) > 50)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['administrativeArea']) && (strlen($this->container['administrativeArea']) > 2)) {
-            $invalid_properties[] = "invalid value for 'administrativeArea', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['postalCode']) && (strlen($this->container['postalCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
         return $invalid_properties;
     }
 
@@ -191,18 +175,6 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['locality']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['administrativeArea']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['country']) > 2) {
-            return false;
-        }
         return true;
     }
 
@@ -218,15 +190,11 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
 
     /**
      * Sets locality
-     * @param string $locality Order acceptance city. This field is not used unless the `orderInformation.orderAcceptance.administrativeArea` and `orderInformation.orderAcceptance.country` fields are present.  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. The place of business where you accept/approve the customer’s order, thereby becoming contractually obligated to make the sale.
+     * @param string $locality Order acceptance city. This field is not used unless the `orderInformation.orderAcceptance.administrativeArea` and `orderInformation.orderAcceptance.country` fields are present.  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
      * @return $this
      */
     public function setLocality($locality)
     {
-        if (!is_null($locality) && (strlen($locality) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling Vasv2taxOrderInformationOrderAcceptance., must be smaller than or equal to 50.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -243,15 +211,11 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
 
     /**
      * Sets administrativeArea
-     * @param string $administrativeArea Order acceptance state. This field is not used unless the `orderInformation.orderAcceptance.locality` and `orderInformation.orderAcceptance.country` fields are present. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. The place of business where you accept/approve the customer’s order, thereby becoming contractually obligated to make the sale.
+     * @param string $administrativeArea Order acceptance state. This field is not used unless the `orderInformation.orderAcceptance.locality` and `orderInformation.orderAcceptance.country` fields are present. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
      * @return $this
      */
     public function setAdministrativeArea($administrativeArea)
     {
-        if (!is_null($administrativeArea) && (strlen($administrativeArea) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $administrativeArea when calling Vasv2taxOrderInformationOrderAcceptance., must be smaller than or equal to 2.');
-        }
-
         $this->container['administrativeArea'] = $administrativeArea;
 
         return $this;
@@ -268,15 +232,11 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
 
     /**
      * Sets postalCode
-     * @param string $postalCode Order acceptance postal code. This field is not used unless the `orderInformation.orderAcceptance.locality`, `orderInformation.orderAcceptance.administrativeArea`, and `orderInformation.orderAcceptance.country` fields are present. Must be sent at the line or offer level to be surfaced in the Tax Detail Report.  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. The place of business where you accept/approve the customer’s order, thereby becoming contractually obligated to make the sale.
+     * @param string $postalCode Order acceptance postal code. This field is not used unless the `orderInformation.orderAcceptance.locality`, `orderInformation.orderAcceptance.administrativeArea`, and `orderInformation.orderAcceptance.country` fields are present. Must be sent at the line or offer level to be surfaced in the Tax Detail Report.  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
      * @return $this
      */
     public function setPostalCode($postalCode)
     {
-        if (!is_null($postalCode) && (strlen($postalCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling Vasv2taxOrderInformationOrderAcceptance., must be smaller than or equal to 10.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -293,15 +253,11 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
 
     /**
      * Sets country
-     * @param string $country Order acceptance country. This field is not used unless the `orderInformation.orderAcceptance.administrativeArea` and `orderInformation.orderAcceptance.locality` fields are present. Use the [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. The place of business where you accept/approve the customer’s order, thereby becoming contractually obligated to make the sale.
+     * @param string $country Order acceptance country. This field is not used unless the `orderInformation.orderAcceptance.administrativeArea` and `orderInformation.orderAcceptance.locality` fields are present. Use the [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
      * @return $this
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling Vasv2taxOrderInformationOrderAcceptance., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -311,6 +267,7 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -321,6 +278,7 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -332,6 +290,7 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -346,6 +305,7 @@ class Vasv2taxOrderInformationOrderAcceptance implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

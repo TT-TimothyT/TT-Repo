@@ -163,14 +163,6 @@ class Riskv1decisionsidmarkingRiskInformationMarkingDetails implements ArrayAcce
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['notes']) && (strlen($this->container['notes']) > 120)) {
-            $invalid_properties[] = "invalid value for 'notes', the character length must be smaller than or equal to 120.";
-        }
-
-        if (!is_null($this->container['reason']) && (strlen($this->container['reason']) > 25)) {
-            $invalid_properties[] = "invalid value for 'reason', the character length must be smaller than or equal to 25.";
-        }
-
         return $invalid_properties;
     }
 
@@ -183,12 +175,6 @@ class Riskv1decisionsidmarkingRiskInformationMarkingDetails implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['notes']) > 120) {
-            return false;
-        }
-        if (strlen($this->container['reason']) > 25) {
-            return false;
-        }
         return true;
     }
 
@@ -209,10 +195,6 @@ class Riskv1decisionsidmarkingRiskInformationMarkingDetails implements ArrayAcce
      */
     public function setNotes($notes)
     {
-        if (!is_null($notes) && (strlen($notes) > 120)) {
-            throw new \InvalidArgumentException('invalid length for $notes when calling Riskv1decisionsidmarkingRiskInformationMarkingDetails., must be smaller than or equal to 120.');
-        }
-
         $this->container['notes'] = $notes;
 
         return $this;
@@ -234,10 +216,6 @@ class Riskv1decisionsidmarkingRiskInformationMarkingDetails implements ArrayAcce
      */
     public function setReason($reason)
     {
-        if (!is_null($reason) && (strlen($reason) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $reason when calling Riskv1decisionsidmarkingRiskInformationMarkingDetails., must be smaller than or equal to 25.');
-        }
-
         $this->container['reason'] = $reason;
 
         return $this;
@@ -289,6 +267,7 @@ class Riskv1decisionsidmarkingRiskInformationMarkingDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -299,6 +278,7 @@ class Riskv1decisionsidmarkingRiskInformationMarkingDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -310,6 +290,7 @@ class Riskv1decisionsidmarkingRiskInformationMarkingDetails implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -324,6 +305,7 @@ class Riskv1decisionsidmarkingRiskInformationMarkingDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

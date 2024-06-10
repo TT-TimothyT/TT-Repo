@@ -17,14 +17,14 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Responses\Payer_Authentication;
 
 use SkyVerge\WooCommerce\Cybersource\API\Response;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -43,9 +43,9 @@ class Setup extends Response {
 	 *
 	 * @return string
 	 */
-	public function get_jwt() {
+	public function get_jwt(): string {
 
-		return ! empty( $this->response_data->consumerAuthenticationInformation->accessToken ) ? $this->response_data->consumerAuthenticationInformation->accessToken : '';
+		return $this->response_data->consumerAuthenticationInformation->accessToken ?? '';
 	}
 
 
@@ -56,9 +56,22 @@ class Setup extends Response {
 	 *
 	 * @return string
 	 */
-	public function get_reference_id() {
+	public function get_reference_id(): string {
 
-		return ! empty( $this->response_data->consumerAuthenticationInformation->referenceId ) ? $this->response_data->consumerAuthenticationInformation->referenceId : '';
+		return $this->response_data->consumerAuthenticationInformation->referenceId ?? '';
+	}
+
+
+	/**
+	 * Gets the device data collection URL.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string
+	 */
+	public function get_device_data_collection_url(): string {
+
+		return $this->response_data->consumerAuthenticationInformation->deviceDataCollectionUrl ?? '';
 	}
 
 

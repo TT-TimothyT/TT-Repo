@@ -60,6 +60,8 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
         'companyTaxId' => 'string',
         'personalIdentification' => '\CyberSource\Model\Ptsv2paymentsBuyerInformationPersonalIdentification[]',
         'hashedPassword' => 'string',
+        'gender' => 'string',
+        'language' => 'string',
         'mobilePhone' => 'int'
     ];
 
@@ -74,6 +76,8 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
         'companyTaxId' => null,
         'personalIdentification' => null,
         'hashedPassword' => null,
+        'gender' => null,
+        'language' => null,
         'mobilePhone' => null
     ];
 
@@ -98,6 +102,8 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
         'companyTaxId' => 'companyTaxId',
         'personalIdentification' => 'personalIdentification',
         'hashedPassword' => 'hashedPassword',
+        'gender' => 'gender',
+        'language' => 'language',
         'mobilePhone' => 'mobilePhone'
     ];
 
@@ -113,6 +119,8 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
         'companyTaxId' => 'setCompanyTaxId',
         'personalIdentification' => 'setPersonalIdentification',
         'hashedPassword' => 'setHashedPassword',
+        'gender' => 'setGender',
+        'language' => 'setLanguage',
         'mobilePhone' => 'setMobilePhone'
     ];
 
@@ -128,6 +136,8 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
         'companyTaxId' => 'getCompanyTaxId',
         'personalIdentification' => 'getPersonalIdentification',
         'hashedPassword' => 'getHashedPassword',
+        'gender' => 'getGender',
+        'language' => 'getLanguage',
         'mobilePhone' => 'getMobilePhone'
     ];
 
@@ -168,6 +178,8 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
         $this->container['companyTaxId'] = isset($data['companyTaxId']) ? $data['companyTaxId'] : null;
         $this->container['personalIdentification'] = isset($data['personalIdentification']) ? $data['personalIdentification'] : null;
         $this->container['hashedPassword'] = isset($data['hashedPassword']) ? $data['hashedPassword'] : null;
+        $this->container['gender'] = isset($data['gender']) ? $data['gender'] : null;
+        $this->container['language'] = isset($data['language']) ? $data['language'] : null;
         $this->container['mobilePhone'] = isset($data['mobilePhone']) ? $data['mobilePhone'] : null;
     }
 
@@ -179,26 +191,6 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['merchantCustomerId']) && (strlen($this->container['merchantCustomerId']) > 100)) {
-            $invalid_properties[] = "invalid value for 'merchantCustomerId', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['dateOfBirth']) && (strlen($this->container['dateOfBirth']) > 8)) {
-            $invalid_properties[] = "invalid value for 'dateOfBirth', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['vatRegistrationNumber']) && (strlen($this->container['vatRegistrationNumber']) > 20)) {
-            $invalid_properties[] = "invalid value for 'vatRegistrationNumber', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['companyTaxId']) && (strlen($this->container['companyTaxId']) > 9)) {
-            $invalid_properties[] = "invalid value for 'companyTaxId', the character length must be smaller than or equal to 9.";
-        }
-
-        if (!is_null($this->container['hashedPassword']) && (strlen($this->container['hashedPassword']) > 100)) {
-            $invalid_properties[] = "invalid value for 'hashedPassword', the character length must be smaller than or equal to 100.";
-        }
 
         return $invalid_properties;
     }
@@ -212,21 +204,6 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['merchantCustomerId']) > 100) {
-            return false;
-        }
-        if (strlen($this->container['dateOfBirth']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['vatRegistrationNumber']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['companyTaxId']) > 9) {
-            return false;
-        }
-        if (strlen($this->container['hashedPassword']) > 100) {
-            return false;
-        }
         return true;
     }
 
@@ -242,15 +219,11 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
 
     /**
      * Sets merchantCustomerId
-     * @param string $merchantCustomerId Your identifier for the customer.  When a subscription or customer profile is being created, the maximum length for this field for most processors is 30. Otherwise, the maximum length is 100.  #### Comercio Latino For recurring payments in Mexico, the value is the customer’s contract number. Note Before you request the authorization, you must inform the issuer of the customer contract numbers that will be used for recurring transactions.  #### Worldpay VAP For a follow-on credit with Worldpay VAP, CyberSource checks the following locations, in the order given, for a customer account ID value and uses the first value it finds: 1. `customer_account_id` value in the follow-on credit request 2. Customer account ID value that was used for the capture that is being credited 3. Customer account ID value that was used for the original authorization If a customer account ID value cannot be found in any of these locations, then no value is used.  For processor-specific information, see the `customer_account_id` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+     * @param string $merchantCustomerId Your identifier for the customer.  When a subscription or customer profile is being created, the maximum length for this field for most processors is 30. Otherwise, the maximum length is 100.  #### Comercio Latino For recurring payments in Mexico, the value is the customer's contract number. Note Before you request the authorization, you must inform the issuer of the customer contract numbers that will be used for recurring transactions.  #### Worldpay VAP For a follow-on credit with Worldpay VAP, CyberSource checks the following locations, in the order given, for a customer account ID value and uses the first value it finds: 1. `customer_account_id` value in the follow-on credit request 2. Customer account ID value that was used for the capture that is being credited 3. Customer account ID value that was used for the original authorization If a customer account ID value cannot be found in any of these locations, then no value is used.  For processor-specific information, see the `customer_account_id` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
      * @return $this
      */
     public function setMerchantCustomerId($merchantCustomerId)
     {
-        if (!is_null($merchantCustomerId) && (strlen($merchantCustomerId) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $merchantCustomerId when calling Ptsv2paymentsBuyerInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['merchantCustomerId'] = $merchantCustomerId;
 
         return $this;
@@ -267,15 +240,11 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
 
     /**
      * Sets dateOfBirth
-     * @param string $dateOfBirth Recipient’s date of birth. **Format**: `YYYYMMDD`.  This field is a `pass-through`, which means that CyberSource ensures that the value is eight numeric characters but otherwise does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For more details, see `recipient_date_of_birth` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $dateOfBirth Recipient's date of birth. **Format**: `YYYYMMDD`.  This field is a `pass-through`, which means that CyberSource ensures that the value is eight numeric characters but otherwise does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For more details, see `recipient_date_of_birth` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setDateOfBirth($dateOfBirth)
     {
-        if (!is_null($dateOfBirth) && (strlen($dateOfBirth) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $dateOfBirth when calling Ptsv2paymentsBuyerInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['dateOfBirth'] = $dateOfBirth;
 
         return $this;
@@ -292,15 +261,11 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
 
     /**
      * Sets vatRegistrationNumber
-     * @param string $vatRegistrationNumber Customer’s government-assigned tax identification number.  #### Tax Calculation Optional for international and value added taxes only. Not applicable to U.S. and Canadian taxes.  For processor-specific information, see the purchaser_vat_registration_number field in [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
+     * @param string $vatRegistrationNumber Customer's government-assigned tax identification number.  #### Tax Calculation Optional for international and value added taxes only. Not applicable to U.S. and Canadian taxes.  For processor-specific information, see the purchaser_vat_registration_number field in [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
      * @return $this
      */
     public function setVatRegistrationNumber($vatRegistrationNumber)
     {
-        if (!is_null($vatRegistrationNumber) && (strlen($vatRegistrationNumber) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $vatRegistrationNumber when calling Ptsv2paymentsBuyerInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['vatRegistrationNumber'] = $vatRegistrationNumber;
 
         return $this;
@@ -317,15 +282,11 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
 
     /**
      * Sets companyTaxId
-     * @param string $companyTaxId Company’s tax identifier. This is only used for eCheck service.  ** TeleCheck ** Contact your TeleCheck representative to find out whether this field is required or optional.  ** All Other Processors ** Not used.
+     * @param string $companyTaxId Company's tax identifier. This is only used for eCheck service.  ** TeleCheck ** Contact your TeleCheck representative to find out whether this field is required or optional.  ** All Other Processors ** Not used.
      * @return $this
      */
     public function setCompanyTaxId($companyTaxId)
     {
-        if (!is_null($companyTaxId) && (strlen($companyTaxId) > 9)) {
-            throw new \InvalidArgumentException('invalid length for $companyTaxId when calling Ptsv2paymentsBuyerInformation., must be smaller than or equal to 9.');
-        }
-
         $this->container['companyTaxId'] = $companyTaxId;
 
         return $this;
@@ -368,11 +329,49 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
      */
     public function setHashedPassword($hashedPassword)
     {
-        if (!is_null($hashedPassword) && (strlen($hashedPassword) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $hashedPassword when calling Ptsv2paymentsBuyerInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['hashedPassword'] = $hashedPassword;
+
+        return $this;
+    }
+
+    /**
+     * Gets gender
+     * @return string
+     */
+    public function getGender()
+    {
+        return $this->container['gender'];
+    }
+
+    /**
+     * Sets gender
+     * @param string $gender Customer's gender. Possible values are F (female), M (male),O (other).
+     * @return $this
+     */
+    public function setGender($gender)
+    {
+        $this->container['gender'] = $gender;
+
+        return $this;
+    }
+
+    /**
+     * Gets language
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->container['language'];
+    }
+
+    /**
+     * Sets language
+     * @param string $language language setting of the user
+     * @return $this
+     */
+    public function setLanguage($language)
+    {
+        $this->container['language'] = $language;
 
         return $this;
     }
@@ -388,7 +387,7 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
 
     /**
      * Sets mobilePhone
-     * @param int $mobilePhone Cardholder’s mobile phone number. **Important** Required for Visa Secure transactions in Brazil. Do not use this request field for any other types of transactions.
+     * @param int $mobilePhone Cardholder's mobile phone number. **Important** Required for Visa Secure transactions in Brazil. Do not use this request field for any other types of transactions.
      * @return $this
      */
     public function setMobilePhone($mobilePhone)
@@ -402,6 +401,7 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -412,6 +412,7 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -423,6 +424,7 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -437,6 +439,7 @@ class Ptsv2paymentsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

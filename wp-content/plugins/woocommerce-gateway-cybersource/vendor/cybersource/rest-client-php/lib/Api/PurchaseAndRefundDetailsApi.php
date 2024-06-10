@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * PurchaseAndRefundDetailsApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class PurchaseAndRefundDetailsApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class PurchaseAndRefundDetailsApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -94,7 +101,7 @@ class PurchaseAndRefundDetailsApi
      *
      * @param \DateTime $startTime Valid report Start Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
      * @param \DateTime $endTime Valid report End Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @param string $paymentSubtype Payment Subtypes.   - **ALL**:  All Payment Subtypes   - **VI** :  Visa   - **MC** :  Master Card   - **AX** :  American Express   - **DI** :  Discover   - **DP** :  Pinless Debit (optional, default to ALL)
      * @param string $viewBy View results by Request Date or Submission Date.   - **requestDate** : Request Date   - **submissionDate**: Submission Date (optional, default to requestDate)
      * @param string $groupName Valid CyberSource Group Name.User can define groups using CBAPI and Group Management Module in EBC2. Groups are collection of organizationIds (optional)
@@ -105,7 +112,10 @@ class PurchaseAndRefundDetailsApi
      */
     public function getPurchaseAndRefundDetails($startTime, $endTime, $organizationId = null, $paymentSubtype = 'ALL', $viewBy = 'requestDate', $groupName = null, $offset = null, $limit = '2000')
     {
+        self::$logger->info('CALL TO METHOD getPurchaseAndRefundDetails STARTED');
         list($response, $statusCode, $httpHeader) = $this->getPurchaseAndRefundDetailsWithHttpInfo($startTime, $endTime, $organizationId, $paymentSubtype, $viewBy, $groupName, $offset, $limit);
+        self::$logger->info('CALL TO METHOD getPurchaseAndRefundDetails ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -116,7 +126,7 @@ class PurchaseAndRefundDetailsApi
      *
      * @param \DateTime $startTime Valid report Start Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
      * @param \DateTime $endTime Valid report End Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @param string $paymentSubtype Payment Subtypes.   - **ALL**:  All Payment Subtypes   - **VI** :  Visa   - **MC** :  Master Card   - **AX** :  American Express   - **DI** :  Discover   - **DP** :  Pinless Debit (optional, default to ALL)
      * @param string $viewBy View results by Request Date or Submission Date.   - **requestDate** : Request Date   - **submissionDate**: Submission Date (optional, default to requestDate)
      * @param string $groupName Valid CyberSource Group Name.User can define groups using CBAPI and Group Management Module in EBC2. Groups are collection of organizationIds (optional)
@@ -129,28 +139,19 @@ class PurchaseAndRefundDetailsApi
     {
         // verify the required parameter 'startTime' is set
         if ($startTime === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $startTime when calling getPurchaseAndRefundDetails");
             throw new \InvalidArgumentException('Missing the required parameter $startTime when calling getPurchaseAndRefundDetails');
         }
         // verify the required parameter 'endTime' is set
         if ($endTime === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $endTime when calling getPurchaseAndRefundDetails");
             throw new \InvalidArgumentException('Missing the required parameter $endTime when calling getPurchaseAndRefundDetails');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling PurchaseAndRefundDetailsApi.getPurchaseAndRefundDetails, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling PurchaseAndRefundDetailsApi.getPurchaseAndRefundDetails, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling PurchaseAndRefundDetailsApi.getPurchaseAndRefundDetails, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling PurchaseAndRefundDetailsApi.getPurchaseAndRefundDetails, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling PurchaseAndRefundDetailsApi.getPurchaseAndRefundDetails, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
-        if (!is_null($limit) && ($limit > 2000)) {
-            throw new \InvalidArgumentException('invalid value for "$limit" when calling PurchaseAndRefundDetailsApi.getPurchaseAndRefundDetails, must be smaller than or equal to 2000.');
-        }
-        if (!is_null($limit) && ($limit < 1)) {
-            throw new \InvalidArgumentException('invalid value for "$limit" when calling PurchaseAndRefundDetailsApi.getPurchaseAndRefundDetails, must be bigger than or equal to 1.');
-        }
 
         // parse inputs
         $resourcePath = "/reporting/v3/purchase-refund-details";
@@ -196,6 +197,9 @@ class PurchaseAndRefundDetailsApi
         if ($limit !== null) {
             $queryParams['limit'] = $this->apiClient->getSerializer()->toQueryValue($limit);
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -203,6 +207,28 @@ class PurchaseAndRefundDetailsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\ReportingV3PurchaseRefundDetailsGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -214,6 +240,8 @@ class PurchaseAndRefundDetailsApi
                 '\CyberSource\Model\ReportingV3PurchaseRefundDetailsGet200Response',
                 '/reporting/v3/purchase-refund-details'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\ReportingV3PurchaseRefundDetailsGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -240,6 +268,7 @@ class PurchaseAndRefundDetailsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

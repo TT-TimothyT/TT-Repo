@@ -1,20 +1,189 @@
-# Copyright (C) 2023 SkyVerge
+# Copyright (C) 2024 SkyVerge
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce CyberSource Gateway 2.7.2\n"
-"Report-Msgid-Bugs-To: "
-"https://woocommerce.com/my-account/marketplace-ticket-form/\n"
-"POT-Creation-Date: 2023-11-16 06:27:11+00:00\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2023-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: WooCommerce CyberSource Gateway 2.8.0\n"
+"Report-Msgid-Bugs-To: https://woocommerce.com/my-account/marketplace-ticket-form/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-03-26T02:18:08+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: woocommerce-gateway-cybersource\n"
 
-#: includes/API/Message_Helper.php:183
+#. Plugin Name of the plugin
+msgid "WooCommerce CyberSource Gateway"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "http://www.woocommerce.com/products/cybersource-payment-gateway/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Accept credit cards in WooCommerce with the CyberSource (SOAP) payment gateway"
+msgstr ""
+
+#. Author of the plugin
+msgid "SkyVerge"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://www.woocommerce.com/"
+msgstr ""
+
+#: includes/API/Message_Helper.php:191
 msgid "We're sorry, this order could not be processed due to fraud risks."
+msgstr ""
+
+#: includes/API/Message_Helper.php:194
+msgid "Please verify your billing information and try again."
+msgstr ""
+
+#: includes/API/Requests/Payments.php:68
+#: includes/Legacy/Gateway.php:201
+msgctxt "hash before order number"
+msgid "#"
+msgstr ""
+
+#: includes/Blocks/Electronic_Check_Checkout_Block_Integration.php:124
+#: includes/Gateway/Electronic_Check.php:470
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgctxt "Bank check (noun)"
+msgid "Check Number is missing"
+msgstr ""
+
+#: includes/Blocks/Electronic_Check_Checkout_Block_Integration.php:125
+#: includes/Gateway/Electronic_Check.php:478
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgctxt "Bank check (noun)"
+msgid "Check Number is invalid (only digits are allowed)"
+msgstr ""
+
+#: includes/Blocks/Electronic_Check_Checkout_Block_Integration.php:126
+#: includes/Gateway/Electronic_Check.php:484
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgctxt "Bank check (noun)"
+msgid "Check number is invalid (must be 8 digits or less)"
+msgstr ""
+
+#: includes/Gateway.php:219
+#: includes/Legacy/Gateway.php:126
+msgid "Merchant ID"
+msgstr ""
+
+#: includes/Gateway.php:222
+msgid "The Merchant ID for your CyberSource account."
+msgstr ""
+
+#: includes/Gateway.php:226
+msgid "API Key Detail"
+msgstr ""
+
+#: includes/Gateway.php:229
+msgid "The API key ID for your CyberSource account."
+msgstr ""
+
+#: includes/Gateway.php:233
+msgid "API Shared Secret Key"
+msgstr ""
+
+#: includes/Gateway.php:236
+msgid "The API shared secret key for your CyberSource account."
+msgstr ""
+
+#: includes/Gateway.php:241
+msgid "Test Merchant ID"
+msgstr ""
+
+#: includes/Gateway.php:244
+msgid "The Merchant ID for your CyberSource sandbox account."
+msgstr ""
+
+#: includes/Gateway.php:248
+msgid "Test API Key Detail"
+msgstr ""
+
+#: includes/Gateway.php:251
+msgid "The API key ID for your CyberSource sandbox account."
+msgstr ""
+
+#: includes/Gateway.php:255
+msgid "Test API Shared Secret Key"
+msgstr ""
+
+#: includes/Gateway.php:258
+msgid "The API shared secret key for your CyberSource sandbox account."
+msgstr ""
+
+#: includes/Gateway.php:271
+msgid "Migrate historical orders"
+msgstr ""
+
+#: includes/Gateway.php:278
+msgid "Fraud management"
+msgstr ""
+
+#: includes/Gateway.php:279
+msgid "Enable fraud management fraud prevention for your orders"
+msgstr ""
+
+#: includes/Gateway.php:280
+#: includes/Gateway/Credit_Card.php:182
+msgid "Your merchant account must have this optional service enabled."
+msgstr ""
+
+#: includes/Gateway.php:306
+#: includes/Gateway.php:314
+msgid "Tokenization Profile ID"
+msgstr ""
+
+#: includes/Gateway.php:307
+#: includes/Gateway.php:315
+msgid "Your Token Management Server profile ID, provided by CyberSource."
+msgstr ""
+
+#: includes/Gateway.php:378
+msgid "Update records"
+msgstr ""
+
+#: includes/Gateway.php:379
+msgid "Please save your API credentials before migrating your historical orders"
+msgstr ""
+
+#: includes/Gateway.php:382
+msgid "Migrate orders and subscriptions to use this gateway instead of the legacy CyberSource plugin"
+msgstr ""
+
+#: includes/Gateway.php:383
+msgid "This action will update the payment method on historical orders and subscriptions to use the new CyberSource gateway. This allows you to capture existing payments or process refunds for historical transactions. For subscription records with manual renewals, this will not enable automatic renewals, as customers need to save a payment method first."
+msgstr ""
+
+#: includes/Gateway.php:385
+msgid "Migrate orders to use this gateway instead of the legacy CyberSource plugin"
+msgstr ""
+
+#: includes/Gateway.php:386
+msgid "This action will update the payment method on historical orders to use the new CyberSource gateway. This allows you to capture existing payments or process refunds for historical transactions."
+msgstr ""
+
+#: includes/Gateway.php:470
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "An error occurred, please try again or try an alternate form of payment."
+msgstr ""
+
+#: includes/Gateway.php:554
+msgid "Order authorized by CyberSource fraud management."
+msgstr ""
+
+#: includes/Gateway.php:558
+msgid "Order requires manual review in CyberSource Case Management system."
+msgstr ""
+
+#: includes/Gateway.php:562
+msgid "Order rejected by CyberSource fraud management. View the CyberSource Case Management system for more details."
 msgstr ""
 
 #: includes/Gateway/Base_Payment_Form.php:71
@@ -22,124 +191,138 @@ msgid "Test Amount"
 msgstr ""
 
 #: includes/Gateway/Base_Payment_Form.php:73
-msgid ""
-"Enter a test amount to trigger a specific error response, or leave blank to "
-"use the order total."
+msgid "Enter a test amount to trigger a specific error response, or leave blank to use the order total."
 msgstr ""
 
-#: includes/Gateway/Credit_Card.php:87
+#: includes/Gateway/Credit_Card.php:93
 msgid "CyberSource Credit Card"
 msgstr ""
 
-#: includes/Gateway/Credit_Card.php:96
+#: includes/Gateway/Credit_Card.php:102
 msgid "Allow customers to securely pay using their credit cards with CyberSource."
 msgstr ""
 
-#: includes/Gateway/Credit_Card.php:154
+#: includes/Gateway/Credit_Card.php:130
+#: includes/Gateway/Electronic_Check.php:96
+#: includes/Gateway/Visa_Checkout.php:96
+#: includes/Legacy/Gateway.php:104
+msgctxt "software environment"
+msgid "Production"
+msgstr ""
+
+#: includes/Gateway/Credit_Card.php:131
+#: includes/Gateway/Electronic_Check.php:97
+#: includes/Gateway/Visa_Checkout.php:97
+#: includes/Legacy/Gateway.php:105
+msgctxt "software environment"
+msgid "Test"
+msgstr ""
+
+#: includes/Gateway/Credit_Card.php:180
 msgid "3D Secure"
 msgstr ""
 
-#: includes/Gateway/Credit_Card.php:155
+#: includes/Gateway/Credit_Card.php:181
 msgid "Enable 3D Secure"
 msgstr ""
 
-#: includes/Gateway/Credit_Card.php:156 includes/Gateway.php:241
-msgid "Your merchant account must have this optional service enabled."
-msgstr ""
-
-#: includes/Gateway/Credit_Card.php:163
+#: includes/Gateway/Credit_Card.php:189
 msgid "Card types"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:64
+#: includes/Gateway/Credit_Card.php:480
+msgid "Continue to Payment"
+msgstr ""
+
+#: includes/Gateway/Credit_Card.php:481
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Place order"
+msgstr ""
+
+#: includes/Gateway/Electronic_Check.php:69
 msgid "CyberSource eCheck"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:73
-msgid ""
-"Allow customers to securely pay using their checking/savings accounts with "
-"CyberSource."
+#: includes/Gateway/Electronic_Check.php:78
+msgid "Allow customers to securely pay using their checking/savings accounts with CyberSource."
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:145
+#: includes/Gateway/Electronic_Check.php:174
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
 msgid "Check Number"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:307
-msgid ""
-"By clicking the button below, I authorize %1$s to charge my bank account on "
-"%2$s for the amount of %3$s."
+#: includes/Gateway/Electronic_Check.php:363
+msgid "By clicking the button below, I authorize %1$s to charge my bank account on %2$s for the amount of %3$s."
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:326
-msgid ""
-"By clicking the button below, I authorize %1$s to charge my bank account "
-"for the amount of %2$s on %3$s, then according to the above recurring "
-"totals thereafter."
+#: includes/Gateway/Electronic_Check.php:382
+msgid "By clicking the button below, I authorize %1$s to charge my bank account for the amount of %2$s on %3$s, then according to the above recurring totals thereafter."
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:374
+#: includes/Gateway/Electronic_Check.php:428
 msgid "Routing Number is missing"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:381
+#: includes/Gateway/Electronic_Check.php:435
 msgid "Routing Number is invalid (only digits are allowed)"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:387
+#: includes/Gateway/Electronic_Check.php:441
 msgid "Routing number is invalid (must be 9 digits)"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:396
+#: includes/Gateway/Electronic_Check.php:450
 msgid "Account Number is missing"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:403
+#: includes/Gateway/Electronic_Check.php:457
 msgid "Account Number is invalid (only digits are allowed)"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:409
+#: includes/Gateway/Electronic_Check.php:463
+msgctxt "Bank account"
 msgid "Account number is invalid (must be between 4 and 17 digits)"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:419
-msgid "Check Number is invalid (only digits are allowed)"
-msgstr ""
-
-#: includes/Gateway/Electronic_Check.php:425
-msgid "Check number is invalid (must be 8 digits or less)"
-msgstr ""
-
-#: includes/Gateway/Electronic_Check.php:461
+#: includes/Gateway/Electronic_Check.php:520
 msgid "Check Number Field"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:469
-msgid ""
-"Control whether a Check Number field is hidden, shown, or required during "
-"checkout."
+#: includes/Gateway/Electronic_Check.php:523
+msgid "Hidden"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:473
+#: includes/Gateway/Electronic_Check.php:524
+msgid "Optional"
+msgstr ""
+
+#: includes/Gateway/Electronic_Check.php:525
+msgid "Required"
+msgstr ""
+
+#: includes/Gateway/Electronic_Check.php:528
+msgid "Control whether a Check Number field is hidden, shown, or required during checkout."
+msgstr ""
+
+#: includes/Gateway/Electronic_Check.php:532
 msgid "Authorization"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:474
+#: includes/Gateway/Electronic_Check.php:533
 msgid "Display an authorization confirmation message at checkout"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:480
+#: includes/Gateway/Electronic_Check.php:539
 msgid "Authorization Message"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:483
-#: includes/Gateway/Electronic_Check.php:498
-msgid ""
-"Use these tags to customize your message: %1$s{merchant_name}%2$s, "
-"%1$s{order_date}%2$s, and %1$s{order_total}%2$s"
+#: includes/Gateway/Electronic_Check.php:542
+#: includes/Gateway/Electronic_Check.php:557
+msgid "Use these tags to customize your message: %1$s{merchant_name}%2$s, %1$s{order_date}%2$s, and %1$s{order_total}%2$s"
 msgstr ""
 
-#: includes/Gateway/Electronic_Check.php:495
+#: includes/Gateway/Electronic_Check.php:554
 msgid "Recurring Authorization Message"
 msgstr ""
 
@@ -147,376 +330,196 @@ msgstr ""
 msgid "Test card number: %s"
 msgstr ""
 
-#: includes/Gateway/Payment_Form.php:114
 #. translators: Placeholders: %1$s - <div> tag, %2$s - </div> tag
+#: includes/Gateway/Payment_Form.php:114
 msgid "%1$sCurrently unavailable. Please try a different payment method.%2$s"
 msgstr ""
 
-#: includes/Gateway/Payment_Form.php:219 includes/Gateway.php:428
-msgid "An error occurred, please try again or try an alternate form of payment."
-msgstr ""
-
-#: includes/Gateway/ThreeD_Secure/Frontend.php:157
-#: includes/Gateway/Visa_Checkout/Payment_Form.php:99
-#: includes/Legacy/Gateway.php:413
-msgid "An error occurred, please try again or try an alternate form of payment"
-msgstr ""
-
-#: includes/Gateway/ThreeD_Secure.php:216
+#: includes/Gateway/ThreeD_Secure.php:218
 msgid "American Express SafeKey"
 msgstr ""
 
-#: includes/Gateway/ThreeD_Secure.php:217
+#: includes/Gateway/ThreeD_Secure.php:219
 msgid "Diners International"
 msgstr ""
 
-#: includes/Gateway/ThreeD_Secure.php:218
+#: includes/Gateway/ThreeD_Secure.php:220
 msgid "Discover ProtectBuy"
 msgstr ""
 
-#: includes/Gateway/ThreeD_Secure.php:219
+#: includes/Gateway/ThreeD_Secure.php:221
 msgid "JCB J-Secure"
 msgstr ""
 
-#: includes/Gateway/ThreeD_Secure.php:220
+#: includes/Gateway/ThreeD_Secure.php:222
 msgid "MasterCard SecureCode and Identity Check"
 msgstr ""
 
-#: includes/Gateway/ThreeD_Secure.php:221
+#: includes/Gateway/ThreeD_Secure.php:223
 msgid "Verified by Visa"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout/Payment_Form.php:100
-msgid "An error occurred trying to setup Visa Checkout."
+#: includes/Gateway/ThreeD_Secure/AJAX.php:163
+msgid "Payer authentication failed"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout/Payment_Form.php:101
-#: includes/Gateway/Visa_Checkout.php:427
-msgid "Visa Checkout payment response is missing"
+#: includes/Gateway/ThreeD_Secure/Frontend.php:195
+#: includes/Gateway/Visa_Checkout/Payment_Form.php:99
+#: includes/Legacy/Gateway.php:415
+msgid "An error occurred, please try again or try an alternate form of payment"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout/Payment_Form.php:174
-msgid "Visa Checkout button"
-msgstr ""
-
-#: includes/Gateway/Visa_Checkout.php:65
+#: includes/Gateway/Visa_Checkout.php:66
 msgid "CyberSource Visa Checkout"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:74
-msgid ""
-"Allow customers to securely pay using their Visa Checkout digital wallet "
-"and CyberSource."
+#: includes/Gateway/Visa_Checkout.php:75
+msgid "Allow customers to securely pay using their Visa Checkout digital wallet and CyberSource."
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:187
+#: includes/Gateway/Visa_Checkout.php:188
 msgid "Visa Checkout"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:202
-msgid ""
-"Click the Visa Checkout button below to sign into your Visa Checkout "
-"account and pay securely."
+#: includes/Gateway/Visa_Checkout.php:203
+msgid "Click the Visa Checkout button below to sign into your Visa Checkout account and pay securely."
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:364
+#: includes/Gateway/Visa_Checkout.php:365
 msgid "Visa Checkout API Key"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:367
+#: includes/Gateway/Visa_Checkout.php:368
 msgid "The Visa Checkout API key for your CyberSource account"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:373
+#: includes/Gateway/Visa_Checkout.php:374
 msgid "Test Visa Checkout API Key"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:376
+#: includes/Gateway/Visa_Checkout.php:377
 msgid "The Visa Checkout API key for your CyberSource sandbox account"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:398
-msgid "Accepted Card Brands"
+#: includes/Gateway/Visa_Checkout.php:428
+#: includes/Gateway/Visa_Checkout/Payment_Form.php:101
+msgid "Visa Checkout payment response is missing"
 msgstr ""
 
-#: includes/Gateway/Visa_Checkout.php:402
-#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag
-msgid "This setting %1$schanges%2$s which card types Visa Checkout will accept."
-msgstr ""
-
-#: includes/Gateway.php:180 includes/Legacy/Gateway.php:124
-msgid "Merchant ID"
-msgstr ""
-
-#: includes/Gateway.php:183
-msgid "The Merchant ID for your CyberSource account."
-msgstr ""
-
-#: includes/Gateway.php:187
-msgid "API Key Detail"
-msgstr ""
-
-#: includes/Gateway.php:190
-msgid "The API key ID for your CyberSource account."
-msgstr ""
-
-#: includes/Gateway.php:194
-msgid "API Shared Secret Key"
-msgstr ""
-
-#: includes/Gateway.php:197
-msgid "The API shared secret key for your CyberSource account."
-msgstr ""
-
-#: includes/Gateway.php:202
-msgid "Test Merchant ID"
-msgstr ""
-
-#: includes/Gateway.php:205
-msgid "The Merchant ID for your CyberSource sandbox account."
-msgstr ""
-
-#: includes/Gateway.php:209
-msgid "Test API Key Detail"
-msgstr ""
-
-#: includes/Gateway.php:212
-msgid "The API key ID for your CyberSource sandbox account."
-msgstr ""
-
-#: includes/Gateway.php:216
-msgid "Test API Shared Secret Key"
-msgstr ""
-
-#: includes/Gateway.php:219
-msgid "The API shared secret key for your CyberSource sandbox account."
-msgstr ""
-
-#: includes/Gateway.php:232
-msgid "Migrate historical orders"
-msgstr ""
-
-#: includes/Gateway.php:239
-msgid "Fraud management"
-msgstr ""
-
-#: includes/Gateway.php:240
-msgid "Enable fraud management fraud prevention for your orders"
-msgstr ""
-
-#: includes/Gateway.php:264 includes/Gateway.php:272
-msgid "Tokenization Profile ID"
-msgstr ""
-
-#: includes/Gateway.php:265 includes/Gateway.php:273
-msgid "Your Token Management Server profile ID, provided by CyberSource."
-msgstr ""
-
-#: includes/Gateway.php:336
-msgid "Update records"
-msgstr ""
-
-#: includes/Gateway.php:337
-msgid "Please save your API credentials before migrating your historical orders"
-msgstr ""
-
-#: includes/Gateway.php:340
-msgid ""
-"Migrate orders and subscriptions to use this gateway instead of the legacy "
-"CyberSource plugin"
-msgstr ""
-
-#: includes/Gateway.php:341
-msgid ""
-"This action will update the payment method on historical orders and "
-"subscriptions to use the new CyberSource gateway. This allows you to "
-"capture existing payments or process refunds for historical transactions. "
-"For subscription records with manual renewals, this will not enable "
-"automatic renewals, as customers need to save a payment method first."
-msgstr ""
-
-#: includes/Gateway.php:343
-msgid "Migrate orders to use this gateway instead of the legacy CyberSource plugin"
-msgstr ""
-
-#: includes/Gateway.php:344
-msgid ""
-"This action will update the payment method on historical orders to use the "
-"new CyberSource gateway. This allows you to capture existing payments or "
-"process refunds for historical transactions."
-msgstr ""
-
-#: includes/Gateway.php:356
-msgid "Error executing the migration, please check the debug logs."
-msgstr ""
-
-#: includes/Gateway.php:512
-msgid "Order authorized by CyberSource fraud management."
-msgstr ""
-
-#: includes/Gateway.php:516
-msgid "Order requires manual review in CyberSource Case Management system."
-msgstr ""
-
-#: includes/Gateway.php:520
-msgid ""
-"Order rejected by CyberSource fraud management. View the CyberSource Case "
-"Management system for more details."
-msgstr ""
-
-#: includes/Legacy/Gateway.php:92
+#: includes/Legacy/Gateway.php:94
 msgid "CyberSource"
 msgstr ""
 
-#: includes/Legacy/Gateway.php:93
-msgid ""
-"CyberSource Simple Order (SOAP) provides a seamless and secure checkout "
-"process for your customers"
+#: includes/Legacy/Gateway.php:95
+msgid "CyberSource Simple Order (SOAP) provides a seamless and secure checkout process for your customers"
 msgstr ""
 
-#: includes/Legacy/Gateway.php:126
-msgid ""
-"Your CyberSource merchant id.  This is what you use to log into the "
-"CyberSource Business Center."
+#: includes/Legacy/Gateway.php:128
+msgid "Your CyberSource merchant id.  This is what you use to log into the CyberSource Business Center."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:130
+#: includes/Legacy/Gateway.php:132
 msgid "Test Transaction Security Key"
 msgstr ""
 
-#: includes/Legacy/Gateway.php:133
-msgid ""
-"The transaction security key for your test account.  Find this by logging "
-"into your Test CyberSource Business Center and going to Account Management "
-"&gt; Transaction Security Keys &gt; Security Keys for the SOAP Toolkit API "
-"and clicking 'Generate'."
+#: includes/Legacy/Gateway.php:135
+msgid "The transaction security key for your test account.  Find this by logging into your Test CyberSource Business Center and going to Account Management &gt; Transaction Security Keys &gt; Security Keys for the SOAP Toolkit API and clicking 'Generate'."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:137
+#: includes/Legacy/Gateway.php:139
 msgid "Live Transaction Security Key"
 msgstr ""
 
-#: includes/Legacy/Gateway.php:140
-msgid ""
-"The transaction security key for your live account.  Find this by logging "
-"into your Live CyberSource Business Center and going to Account Management "
-"&gt; Transaction Security Keys &gt; Security Keys for the SOAP Toolkit API "
-"and clicking 'Generate'."
+#: includes/Legacy/Gateway.php:142
+msgid "The transaction security key for your live account.  Find this by logging into your Live CyberSource Business Center and going to Account Management &gt; Transaction Security Keys &gt; Security Keys for the SOAP Toolkit API and clicking 'Generate'."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:351
+#: includes/Legacy/Gateway.php:353
 msgid "Credit Card Transaction Approved: %s ending in %s (%s)"
 msgstr ""
 
-#: includes/Legacy/Gateway.php:352
+#: includes/Legacy/Gateway.php:354
 msgid "TEST MODE Credit Card Transaction Approved: %s ending in %s (%s)"
 msgstr ""
 
-#: includes/Legacy/Gateway.php:365
-msgid ""
-"The authorization request was approved by the issuing bank but declined by "
-"CyberSource because it did not pass the CVN check.  You must log into your "
-"CyberSource account and decline or settle the transaction."
+#: includes/Legacy/Gateway.php:367
+msgid "The authorization request was approved by the issuing bank but declined by CyberSource because it did not pass the CVN check.  You must log into your CyberSource account and decline or settle the transaction."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:373
+#: includes/Legacy/Gateway.php:375
 msgid "Code %s %s"
 msgstr ""
 
-#: includes/Legacy/Gateway.php:380
-msgid ""
-"This order is being placed on hold for review due to an incorrect card "
-"verification number. You may contact the store to complete the transaction."
+#: includes/Legacy/Gateway.php:382
+msgid "This order is being placed on hold for review due to an incorrect card verification number. You may contact the store to complete the transaction."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:385
-msgid ""
-"This order is being placed on hold for review. You may contact the store to "
-"complete the transaction."
+#: includes/Legacy/Gateway.php:387
+msgid "This order is being placed on hold for review. You may contact the store to complete the transaction."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:392
+#: includes/Legacy/Gateway.php:394
 msgid "CyberSource Credit Card payment failed"
 msgstr ""
 
-#: includes/Legacy/Gateway.php:398
-msgid ""
-"The provided card is expired, please use an alternate card or other form of "
-"payment."
-msgstr ""
-
-#: includes/Legacy/Gateway.php:399
-msgid ""
-"The provided card was declined, please use an alternate card or other form "
-"of payment."
-msgstr ""
-
 #: includes/Legacy/Gateway.php:400
-msgid ""
-"Insufficient funds in account, please use an alternate card or other form "
-"of payment."
+msgid "The provided card is expired, please use an alternate card or other form of payment."
 msgstr ""
 
 #: includes/Legacy/Gateway.php:401
-msgid ""
-"The card is inactivate or not authorized for card-not-present transactions, "
-"please use an alternate card or other form of payment."
+msgid "The provided card was declined, please use an alternate card or other form of payment."
 msgstr ""
 
 #: includes/Legacy/Gateway.php:402
-msgid ""
-"The credit limit for the card has been reached, please use an alternate "
-"card or other form of payment."
+msgid "Insufficient funds in account, please use an alternate card or other form of payment."
 msgstr ""
 
 #: includes/Legacy/Gateway.php:403
-msgid "The card verification number is invalid, please try again."
+msgid "The card is inactivate or not authorized for card-not-present transactions, please use an alternate card or other form of payment."
 msgstr ""
 
 #: includes/Legacy/Gateway.php:404
-msgid ""
-"The provided card number was invalid, or card type was incorrect.  Please "
-"try again."
+msgid "The credit limit for the card has been reached, please use an alternate card or other form of payment."
 msgstr ""
 
 #: includes/Legacy/Gateway.php:405
-msgid ""
-"That card type is not accepted, please use an alternate card or other form "
-"of payment."
+msgid "The card verification number is invalid, please try again."
 msgstr ""
 
 #: includes/Legacy/Gateway.php:406
-msgid ""
-"The card type is invalid or does not correlate with the credit card number. "
-" Please try again or use an alternate card or other form of payment."
+msgid "The provided card number was invalid, or card type was incorrect.  Please try again."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:415
-msgid ""
-"We cannot process your order with the payment information that you "
-"provided.  Please use a different payment account or an alternate payment "
-"method."
+#: includes/Legacy/Gateway.php:407
+msgid "That card type is not accepted, please use an alternate card or other form of payment."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:448
-msgid ""
-"This order is being placed on hold for review due to a communication error. "
-"You may contact the store to complete the transaction."
+#: includes/Legacy/Gateway.php:408
+msgid "The card type is invalid or does not correlate with the credit card number.  Please try again or use an alternate card or other form of payment."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:460
+#: includes/Legacy/Gateway.php:417
+msgid "We cannot process your order with the payment information that you provided.  Please use a different payment account or an alternate payment method."
+msgstr ""
+
+#: includes/Legacy/Gateway.php:450
+msgid "This order is being placed on hold for review due to a communication error. You may contact the store to complete the transaction."
+msgstr ""
+
+#: includes/Legacy/Gateway.php:462
 msgid "Connection error: \"%s\""
 msgstr ""
 
-#: includes/Legacy/Gateway.php:500
+#: includes/Legacy/Gateway.php:502
 msgid "Transaction requires review."
 msgstr ""
 
-#: includes/Legacy/Gateway.php:534
+#: includes/Legacy/Gateway.php:536
 msgid "CyberSource Response:"
 msgstr ""
 
 #: includes/Lifecycle.php:379
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
 msgid "Credit Card"
 msgstr ""
 
@@ -524,9 +527,8 @@ msgstr ""
 msgid "Pay securely using your credit card."
 msgstr ""
 
-#: includes/Orders.php:172
-#. translators: Placeholders: %1$s - order fraud decision, such as ACCEPT or
-#. REJECT, %2$s - order fraud decision, such as ACCEPT or REJECT
+#. translators: Placeholders: %1$s - order fraud decision, such as ACCEPT or REJECT, %2$s - order fraud decision, such as ACCEPT or REJECT
+#: includes/Orders.php:174
 msgid "Order changed from %1$s to %2$s in decision manager."
 msgstr ""
 
@@ -554,13 +556,9 @@ msgstr ""
 msgid "Configure Credit Cards"
 msgstr ""
 
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s - <code> tag, %4$s - </code> tag
 #: includes/Plugin.php:466
-#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
-#. <code> tag, %4$s - </code> tag
-msgid ""
-"%1$sCyberSource Gateway%2$s: A request to CyberSource timed out. Try "
-"increasing the value of %3$sdefault_socket_timeout%4$s in your PHP "
-"configuration to prevent future timeouts."
+msgid "%1$sCyberSource Gateway%2$s: A request to CyberSource timed out. Try increasing the value of %3$sdefault_socket_timeout%4$s in your PHP configuration to prevent future timeouts."
 msgstr ""
 
 #: includes/Plugin.php:479
@@ -572,46 +570,26 @@ msgid "CyberSource Gateway is now active."
 msgstr ""
 
 #: includes/Plugin.php:488
-msgid ""
-"Migration successful! Your historical orders will now use the new "
-"CyberSource gateway."
+msgid "Migration successful! Your historical orders will now use the new CyberSource gateway."
 msgstr ""
 
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s - <a> tag, %4$s - </a> tag, %5$s - <a> tag, %6$s - </a> tag
 #: includes/Plugin.php:501
-#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
-#. <a> tag, %4$s - </a> tag, %5$s - <a> tag, %6$s - </a> tag
-msgid ""
-"%1$sMigration successful!%2$s The new WooCommerce CyberSource plugin has "
-"been installed and activated on your site. %3$sClick here to learn how to "
-"retrieve the credentials needed to start accepting payments.%4$s Once "
-"you've saved these credentials in the %5$splugin settings%6$s, you can "
-"migrate orders from SOP if you'd like to manage those on the new gateway "
-"and deactivate the SOP plugin."
+msgid "%1$sMigration successful!%2$s The new WooCommerce CyberSource plugin has been installed and activated on your site. %3$sClick here to learn how to retrieve the credentials needed to start accepting payments.%4$s Once you've saved these credentials in the %5$splugin settings%6$s, you can migrate orders from SOP if you'd like to manage those on the new gateway and deactivate the SOP plugin."
 msgstr ""
 
 #: includes/Plugin.php:519
-msgid ""
-"Thank you for installing the WooCommerce CyberSource Gateway! To start "
-"accepting payments, %1$sset your CyberSource API credentials%2$s. Need "
-"help? See the %3$sdocumentation%4$s."
+msgid "Thank you for installing the WooCommerce CyberSource Gateway! To start accepting payments, %1$sset your CyberSource API credentials%2$s. Need help? See the %3$sdocumentation%4$s."
 msgstr ""
 
 #: includes/Plugin.php:553
-msgid ""
-"%1$sHeads up!%2$s CyberSource’s %3$sFlex Microform%4$s feature is now "
-"active on your site to make your checkout more secure. Please %5$scontact "
-"support%6$s with any questions or concerns."
+msgid "%1$sHeads up!%2$s CyberSource’s %3$sFlex Microform%4$s feature is now active on your site to make your checkout more secure. Please %5$scontact support%6$s with any questions or concerns."
 msgstr ""
 
+#. translators: Placeholders: %1$s - plugin name, %2$s - a currency/comma-separated list of currencies, %3$s - <a> tag, %4$s - </a> tag
 #: includes/Plugin.php:601
-#. translators: Placeholders: %1$s - plugin name, %2$s - a
-#. currency/comma-separated list of currencies, %3$s - <a> tag, %4$s - </a> tag
-msgid ""
-"%1$s accepts payment in %2$s only. %3$sConfigure%4$s WooCommerce to accept "
-"%2$s to enable this gateway for checkout."
-msgid_plural ""
-"%1$s accepts payment in one of %2$s only. %3$sConfigure%4$s WooCommerce to "
-"accept one of %2$s to enable this gateway for checkout."
+msgid "%1$s accepts payment in %2$s only. %3$sConfigure%4$s WooCommerce to accept %2$s to enable this gateway for checkout."
+msgid_plural "%1$s accepts payment in one of %2$s only. %3$sConfigure%4$s WooCommerce to accept one of %2$s to enable this gateway for checkout."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -619,43 +597,87 @@ msgstr[1] ""
 msgid "WooCommerce CyberSource"
 msgstr ""
 
-#. Plugin Name of the plugin/theme
-msgid "WooCommerce CyberSource Gateway"
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your account number is incomplete."
 msgstr ""
 
-#. Plugin URI of the plugin/theme
-msgid "http://www.woocommerce.com/products/cybersource-payment-gateway/"
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your account number is too long."
 msgstr ""
 
-#. Description of the plugin/theme
-msgid ""
-"Accept credit cards in WooCommerce with the CyberSource (SOAP) payment "
-"gateway"
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your card's expiration date is invalid."
 msgstr ""
 
-#. Author of the plugin/theme
-msgid "SkyVerge"
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your card's expiration date is incomplete."
 msgstr ""
 
-#. Author URI of the plugin/theme
-msgid "http://www.woocommerce.com/"
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your card's expiration date is in the past."
 msgstr ""
 
-#: includes/API/Requests/Payments.php:68 includes/Legacy/Gateway.php:199
-msgctxt "hash before order number"
-msgid "#"
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your card number is invalid."
 msgstr ""
 
-#: includes/Gateway/Credit_Card.php:124
-#: includes/Gateway/Electronic_Check.php:91
-#: includes/Gateway/Visa_Checkout.php:95 includes/Legacy/Gateway.php:102
-msgctxt "software environment"
-msgid "Production"
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your {card_type} card is invalid."
 msgstr ""
 
-#: includes/Gateway/Credit_Card.php:125
-#: includes/Gateway/Electronic_Check.php:92
-#: includes/Gateway/Visa_Checkout.php:96 includes/Legacy/Gateway.php:103
-msgctxt "software environment"
-msgid "Test"
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your card's security code is invalid."
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Your routing number should be 9 digits."
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "eCheck"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgctxt "Credit card test number"
+msgid "Test card number: "
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Card Number"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Expiration (MM/YY)"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Card Security Code"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Continue"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Where do I find this?"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Routing Number"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Account Number"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Account Type"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Checking"
+msgstr ""
+
+#: assets/js/blocks/wc-cybersource-checkout-block.js:1
+msgid "Savings"
 msgstr ""

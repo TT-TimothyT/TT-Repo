@@ -205,7 +205,7 @@ class Kmsv2keyssymKeyInformation implements ArrayAccess
 
     /**
      * Sets referenceNumber
-     * @param string $referenceNumber Reference number is a unique identifier provided by the client along with the organization Id. This is an optional field provided solely for the client’s convenience. If client specifies value for this field in the request, it is expected to be available in the response.
+     * @param string $referenceNumber Reference number is a unique identifier provided by the client along with the organization Id. This is an optional field provided solely for the client's convenience. If client specifies value for this field in the request, it is expected to be available in the response.
      * @return $this
      */
     public function setReferenceNumber($referenceNumber)
@@ -219,6 +219,7 @@ class Kmsv2keyssymKeyInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -229,6 +230,7 @@ class Kmsv2keyssymKeyInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -240,6 +242,7 @@ class Kmsv2keyssymKeyInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -254,6 +257,7 @@ class Kmsv2keyssymKeyInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -180,18 +180,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['checkNumber']) && (strlen($this->container['checkNumber']) > 8)) {
-            $invalid_properties[] = "invalid value for 'checkNumber', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['type']) && (strlen($this->container['type']) > 1)) {
-            $invalid_properties[] = "invalid value for 'type', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['encoderId']) && (strlen($this->container['encoderId']) > 3)) {
-            $invalid_properties[] = "invalid value for 'encoderId', the character length must be smaller than or equal to 3.";
-        }
-
         return $invalid_properties;
     }
 
@@ -204,15 +192,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
     public function valid()
     {
 
-        if (strlen($this->container['checkNumber']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['type']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['encoderId']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -228,7 +207,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
 
     /**
      * Sets suffix
-     * @param string $suffix Last four digits of the customer’s payment account number.
+     * @param string $suffix Last four digits of the customer's payment account number.
      * @return $this
      */
     public function setSuffix($suffix)
@@ -275,10 +254,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
      */
     public function setCheckNumber($checkNumber)
     {
-        if (!is_null($checkNumber) && (strlen($checkNumber) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $checkNumber when calling TssV2TransactionsGet200ResponsePaymentInformationBankAccount., must be smaller than or equal to 8.');
-        }
-
         $this->container['checkNumber'] = $checkNumber;
 
         return $this;
@@ -300,10 +275,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
      */
     public function setType($type)
     {
-        if (!is_null($type) && (strlen($type) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $type when calling TssV2TransactionsGet200ResponsePaymentInformationBankAccount., must be smaller than or equal to 1.');
-        }
-
         $this->container['type'] = $type;
 
         return $this;
@@ -341,7 +312,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
 
     /**
      * Sets checkDigit
-     * @param string $checkDigit Code used to validate the customer’s account number. Required for some countries if you do not or are not allowed to provide the IBAN instead. You may use this field only when scoring a direct debit transaction.  For all possible values, see the `bank_check_digit` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @param string $checkDigit Code used to validate the customer's account number. Required for some countries if you do not or are not allowed to provide the IBAN instead. You may use this field only when scoring a direct debit transaction.  For all possible values, see the `bank_check_digit` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
      * @return $this
      */
     public function setCheckDigit($checkDigit)
@@ -362,15 +333,11 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
 
     /**
      * Sets encoderId
-     * @param string $encoderId Identifier for the bank that provided the customer’s encoded account number.  To obtain the bank identifier, contact your processor.  For details, see `account_encoder_id` request-level field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $encoderId Identifier for the bank that provided the customer's encoded account number.  To obtain the bank identifier, contact your processor.  For details, see `account_encoder_id` request-level field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setEncoderId($encoderId)
     {
-        if (!is_null($encoderId) && (strlen($encoderId) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $encoderId when calling TssV2TransactionsGet200ResponsePaymentInformationBankAccount., must be smaller than or equal to 3.');
-        }
-
         $this->container['encoderId'] = $encoderId;
 
         return $this;
@@ -380,6 +347,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -390,6 +358,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -401,6 +370,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -415,6 +385,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationBankAccount implements Ar
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

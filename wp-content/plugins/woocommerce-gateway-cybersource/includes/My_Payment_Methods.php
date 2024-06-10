@@ -17,13 +17,13 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -47,7 +47,7 @@ class My_Payment_Methods extends Framework\SV_WC_Payment_Gateway_My_Payment_Meth
 		parent::maybe_enqueue_styles_scripts();
 
 		if ( $this->has_tokens ) {
-			wp_enqueue_script( 'wc-cybersource-my-payment-methods', $this->get_plugin()->get_plugin_url() . '/assets/js/frontend/wc-cybersource-my-payment-methods.min.js', [ 'jquery', 'sv-wc-payment-gateway-my-payment-methods-v5_11_12' ], $this->get_plugin()->get_version() );
+			wp_enqueue_script( 'wc-cybersource-my-payment-methods', $this->get_plugin()->get_plugin_url() . '/assets/js/frontend/wc-cybersource-my-payment-methods.min.js', [ 'jquery', 'sv-wc-payment-gateway-my-payment-methods-v5_12_2' ], $this->get_plugin()->get_version() );
 		}
 	}
 

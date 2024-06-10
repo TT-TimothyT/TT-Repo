@@ -156,14 +156,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationScore implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['modelUsed']) && (strlen($this->container['modelUsed']) > 255)) {
-            $invalid_properties[] = "invalid value for 'modelUsed', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['result']) && (strlen($this->container['result']) > 255)) {
-            $invalid_properties[] = "invalid value for 'result', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -176,12 +168,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationScore implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['modelUsed']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['result']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -218,15 +204,11 @@ class PtsV2PaymentsPost201ResponseRiskInformationScore implements ArrayAccess
 
     /**
      * Sets modelUsed
-     * @param string $modelUsed Name of the score model used for the transaction. If you did not include a custom model in your request, this field contains the name of CyberSource’s default model.  For all possible values, see the `score_model_used` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @param string $modelUsed Name of the score model used for the transaction. If you did not include a custom model in your request, this field contains the name of CyberSource's default model.  For all possible values, see the `score_model_used` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
      * @return $this
      */
     public function setModelUsed($modelUsed)
     {
-        if (!is_null($modelUsed) && (strlen($modelUsed) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $modelUsed when calling PtsV2PaymentsPost201ResponseRiskInformationScore., must be smaller than or equal to 255.');
-        }
-
         $this->container['modelUsed'] = $modelUsed;
 
         return $this;
@@ -248,10 +230,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationScore implements ArrayAccess
      */
     public function setResult($result)
     {
-        if (!is_null($result) && (strlen($result) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $result when calling PtsV2PaymentsPost201ResponseRiskInformationScore., must be smaller than or equal to 255.');
-        }
-
         $this->container['result'] = $result;
 
         return $this;
@@ -261,6 +239,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationScore implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -271,6 +250,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationScore implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -282,6 +262,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationScore implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -296,6 +277,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationScore implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -55,7 +55,7 @@ class Riskv1exportcomplianceinquiriesExportComplianceInformation implements Arra
       */
     protected static $swaggerTypes = [
         'addressOperator' => 'string',
-        'weights' => '\CyberSource\Model\Riskv1exportcomplianceinquiriesExportComplianceInformationWeights',
+        'weights' => '\CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformationWeights',
         'sanctionLists' => 'string[]'
     ];
 
@@ -183,7 +183,7 @@ class Riskv1exportcomplianceinquiriesExportComplianceInformation implements Arra
 
     /**
      * Sets addressOperator
-     * @param string $addressOperator Parts of the customer’s information that must match with an entry in the DPL (denied parties list) before a match occurs. This field can contain one of the following values: - AND: (default) The customer’s name or company and the customer’s address must appear in the database. - OR: The customer’s name must appear in the database. - IGNORE: You want the service to detect a match only of the customer’s name or company but not of the address.
+     * @param string $addressOperator Parts of the customer's information that must match with an entry in the DPL (denied parties list) before a match occurs. This field can contain one of the following values: - AND: (default) The customer's name or company and the customer's address must appear in the database. - OR: The customer's name must appear in the database. - IGNORE: You want the service to detect a match only of the customer's name or company but not of the address.
      * @return $this
      */
     public function setAddressOperator($addressOperator)
@@ -195,7 +195,7 @@ class Riskv1exportcomplianceinquiriesExportComplianceInformation implements Arra
 
     /**
      * Gets weights
-     * @return \CyberSource\Model\Riskv1exportcomplianceinquiriesExportComplianceInformationWeights
+     * @return \CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformationWeights
      */
     public function getWeights()
     {
@@ -204,7 +204,7 @@ class Riskv1exportcomplianceinquiriesExportComplianceInformation implements Arra
 
     /**
      * Sets weights
-     * @param \CyberSource\Model\Riskv1exportcomplianceinquiriesExportComplianceInformationWeights $weights
+     * @param \CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformationWeights $weights
      * @return $this
      */
     public function setWeights($weights)
@@ -239,6 +239,7 @@ class Riskv1exportcomplianceinquiriesExportComplianceInformation implements Arra
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -249,6 +250,7 @@ class Riskv1exportcomplianceinquiriesExportComplianceInformation implements Arra
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -260,6 +262,7 @@ class Riskv1exportcomplianceinquiriesExportComplianceInformation implements Arra
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -274,6 +277,7 @@ class Riskv1exportcomplianceinquiriesExportComplianceInformation implements Arra
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

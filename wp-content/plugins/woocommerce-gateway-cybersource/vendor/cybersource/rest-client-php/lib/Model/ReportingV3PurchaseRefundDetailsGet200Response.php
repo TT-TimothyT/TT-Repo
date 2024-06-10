@@ -35,6 +35,7 @@ use \ArrayAccess;
  * ReportingV3PurchaseRefundDetailsGet200Response Class Doc Comment
  *
  * @category    Class
+ * @description PurchaseAndRefundDetails
  * @package     CyberSource
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
@@ -401,6 +402,7 @@ class ReportingV3PurchaseRefundDetailsGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -411,6 +413,7 @@ class ReportingV3PurchaseRefundDetailsGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -422,6 +425,7 @@ class ReportingV3PurchaseRefundDetailsGet200Response implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -436,6 +440,7 @@ class ReportingV3PurchaseRefundDetailsGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

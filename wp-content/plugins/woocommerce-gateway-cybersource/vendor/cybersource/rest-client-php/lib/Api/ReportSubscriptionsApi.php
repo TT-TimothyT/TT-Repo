@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * ReportSubscriptionsApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class ReportSubscriptionsApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class ReportSubscriptionsApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -93,13 +100,16 @@ class ReportSubscriptionsApi
      * Create a Standard or Classic Subscription
      *
      * @param \CyberSource\Model\PredefinedSubscriptionRequestBean $predefinedSubscriptionRequestBean Report subscription request payload (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of void, HTTP status code, HTTP response headers (array of strings)
      */
     public function createStandardOrClassicSubscription($predefinedSubscriptionRequestBean, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD createStandardOrClassicSubscription STARTED');
         list($response, $statusCode, $httpHeader) = $this->createStandardOrClassicSubscriptionWithHttpInfo($predefinedSubscriptionRequestBean, $organizationId);
+        self::$logger->info('CALL TO METHOD createStandardOrClassicSubscription ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -109,7 +119,7 @@ class ReportSubscriptionsApi
      * Create a Standard or Classic Subscription
      *
      * @param \CyberSource\Model\PredefinedSubscriptionRequestBean $predefinedSubscriptionRequestBean Report subscription request payload (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -117,16 +127,12 @@ class ReportSubscriptionsApi
     {
         // verify the required parameter 'predefinedSubscriptionRequestBean' is set
         if ($predefinedSubscriptionRequestBean === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $predefinedSubscriptionRequestBean when calling createStandardOrClassicSubscription");
             throw new \InvalidArgumentException('Missing the required parameter $predefinedSubscriptionRequestBean when calling createStandardOrClassicSubscription');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.createStandardOrClassicSubscription, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.createStandardOrClassicSubscription, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportSubscriptionsApi.createStandardOrClassicSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.createStandardOrClassicSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.createStandardOrClassicSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -150,6 +156,9 @@ class ReportSubscriptionsApi
         if (isset($predefinedSubscriptionRequestBean)) {
             $_tempBody = $predefinedSubscriptionRequestBean;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\PredefinedSubscriptionRequestBean')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -157,6 +166,21 @@ class ReportSubscriptionsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : PUT $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : null");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -168,16 +192,19 @@ class ReportSubscriptionsApi
                 null,
                 '/reporting/v3/predefined-report-subscriptions'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$response, $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 400:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4001', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4004', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -188,13 +215,16 @@ class ReportSubscriptionsApi
      * Create Report Subscription for a Report Name by Organization
      *
      * @param \CyberSource\Model\CreateReportSubscriptionRequest $createReportSubscriptionRequest Report subscription request payload (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of void, HTTP status code, HTTP response headers (array of strings)
      */
     public function createSubscription($createReportSubscriptionRequest, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD createSubscription STARTED');
         list($response, $statusCode, $httpHeader) = $this->createSubscriptionWithHttpInfo($createReportSubscriptionRequest, $organizationId);
+        self::$logger->info('CALL TO METHOD createSubscription ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -204,7 +234,7 @@ class ReportSubscriptionsApi
      * Create Report Subscription for a Report Name by Organization
      *
      * @param \CyberSource\Model\CreateReportSubscriptionRequest $createReportSubscriptionRequest Report subscription request payload (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -212,16 +242,12 @@ class ReportSubscriptionsApi
     {
         // verify the required parameter 'createReportSubscriptionRequest' is set
         if ($createReportSubscriptionRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $createReportSubscriptionRequest when calling createSubscription");
             throw new \InvalidArgumentException('Missing the required parameter $createReportSubscriptionRequest when calling createSubscription');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.createSubscription, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.createSubscription, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportSubscriptionsApi.createSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.createSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.createSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -245,6 +271,9 @@ class ReportSubscriptionsApi
         if (isset($createReportSubscriptionRequest)) {
             $_tempBody = $createReportSubscriptionRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\CreateReportSubscriptionRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -252,6 +281,21 @@ class ReportSubscriptionsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : PUT $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : null");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -263,16 +307,19 @@ class ReportSubscriptionsApi
                 null,
                 '/reporting/v3/report-subscriptions'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$response, $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 400:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4001', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4004', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -283,13 +330,16 @@ class ReportSubscriptionsApi
      * Delete Subscription of a Report Name by Organization
      *
      * @param string $reportName Name of the Report to Delete (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of void, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteSubscription($reportName, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD deleteSubscription STARTED');
         list($response, $statusCode, $httpHeader) = $this->deleteSubscriptionWithHttpInfo($reportName, $organizationId);
+        self::$logger->info('CALL TO METHOD deleteSubscription ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -299,7 +349,7 @@ class ReportSubscriptionsApi
      * Delete Subscription of a Report Name by Organization
      *
      * @param string $reportName Name of the Report to Delete (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -307,26 +357,17 @@ class ReportSubscriptionsApi
     {
         // verify the required parameter 'reportName' is set
         if ($reportName === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $reportName when calling deleteSubscription");
             throw new \InvalidArgumentException('Missing the required parameter $reportName when calling deleteSubscription');
         }
-        if ((strlen($reportName) > 80)) {
-            throw new \InvalidArgumentException('invalid length for "$reportName" when calling ReportSubscriptionsApi.deleteSubscription, must be smaller than or equal to 80.');
-        }
-        if ((strlen($reportName) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$reportName" when calling ReportSubscriptionsApi.deleteSubscription, must be bigger than or equal to 1.');
-        }
         if (!preg_match("/[a-zA-Z0-9-_+]+/", $reportName)) {
-            throw new \InvalidArgumentException("invalid value for \"reportName\" when calling ReportSubscriptionsApi.deleteSubscription, must conform to the pattern /[a-zA-Z0-9-_+]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"reportName\" when calling ReportSubscriptionsApi.deleteSubscription, must conform to the pattern /[a-zA-Z0-9-_+]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"reportName\" when calling ReportSubscriptionsApi.deleteSubscription, must conform to the pattern /[a-zA-Z0-9-_+]+/.');
         }
 
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.deleteSubscription, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.deleteSubscription, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportSubscriptionsApi.deleteSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.deleteSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.deleteSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -353,6 +394,9 @@ class ReportSubscriptionsApi
                 $resourcePath
             );
         }
+        if ('DELETE' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -360,6 +404,21 @@ class ReportSubscriptionsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : DELETE $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : null");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -371,6 +430,8 @@ class ReportSubscriptionsApi
                 null,
                 '/reporting/v3/report-subscriptions/{reportName}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$response, $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -385,6 +446,7 @@ class ReportSubscriptionsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -394,13 +456,16 @@ class ReportSubscriptionsApi
      *
      * Get All Subscriptions
      *
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportSubscriptionsGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
     public function getAllSubscriptions($organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD getAllSubscriptions STARTED');
         list($response, $statusCode, $httpHeader) = $this->getAllSubscriptionsWithHttpInfo($organizationId);
+        self::$logger->info('CALL TO METHOD getAllSubscriptions ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -409,20 +474,15 @@ class ReportSubscriptionsApi
      *
      * Get All Subscriptions
      *
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportSubscriptionsGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
     public function getAllSubscriptionsWithHttpInfo($organizationId = null)
     {
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.getAllSubscriptions, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.getAllSubscriptions, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportSubscriptionsApi.getAllSubscriptions, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.getAllSubscriptions, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.getAllSubscriptions, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -441,6 +501,9 @@ class ReportSubscriptionsApi
         if ($organizationId !== null) {
             $queryParams['organizationId'] = $this->apiClient->getSerializer()->toQueryValue($organizationId);
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -448,6 +511,21 @@ class ReportSubscriptionsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\ReportingV3ReportSubscriptionsGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -459,6 +537,8 @@ class ReportSubscriptionsApi
                 '\CyberSource\Model\ReportingV3ReportSubscriptionsGet200Response',
                 '/reporting/v3/report-subscriptions'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\ReportingV3ReportSubscriptionsGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -473,6 +553,7 @@ class ReportSubscriptionsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -483,13 +564,16 @@ class ReportSubscriptionsApi
      * Get Subscription for Report Name
      *
      * @param string $reportName Name of the Report to Retrieve (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportSubscriptionsGet200ResponseSubscriptions, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSubscription($reportName, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD getSubscription STARTED');
         list($response, $statusCode, $httpHeader) = $this->getSubscriptionWithHttpInfo($reportName, $organizationId);
+        self::$logger->info('CALL TO METHOD getSubscription ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -499,7 +583,7 @@ class ReportSubscriptionsApi
      * Get Subscription for Report Name
      *
      * @param string $reportName Name of the Report to Retrieve (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportSubscriptionsGet200ResponseSubscriptions, HTTP status code, HTTP response headers (array of strings)
      */
@@ -507,26 +591,17 @@ class ReportSubscriptionsApi
     {
         // verify the required parameter 'reportName' is set
         if ($reportName === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $reportName when calling getSubscription");
             throw new \InvalidArgumentException('Missing the required parameter $reportName when calling getSubscription');
         }
-        if ((strlen($reportName) > 80)) {
-            throw new \InvalidArgumentException('invalid length for "$reportName" when calling ReportSubscriptionsApi.getSubscription, must be smaller than or equal to 80.');
-        }
-        if ((strlen($reportName) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$reportName" when calling ReportSubscriptionsApi.getSubscription, must be bigger than or equal to 1.');
-        }
         if (!preg_match("/[a-zA-Z0-9-_+]+/", $reportName)) {
-            throw new \InvalidArgumentException("invalid value for \"reportName\" when calling ReportSubscriptionsApi.getSubscription, must conform to the pattern /[a-zA-Z0-9-_+]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"reportName\" when calling ReportSubscriptionsApi.getSubscription, must conform to the pattern /[a-zA-Z0-9-_+]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"reportName\" when calling ReportSubscriptionsApi.getSubscription, must conform to the pattern /[a-zA-Z0-9-_+]+/.');
         }
 
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.getSubscription, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportSubscriptionsApi.getSubscription, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportSubscriptionsApi.getSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.getSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportSubscriptionsApi.getSubscription, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -553,6 +628,9 @@ class ReportSubscriptionsApi
                 $resourcePath
             );
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -560,6 +638,21 @@ class ReportSubscriptionsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\ReportingV3ReportSubscriptionsGet200ResponseSubscriptions");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -571,6 +664,8 @@ class ReportSubscriptionsApi
                 '\CyberSource\Model\ReportingV3ReportSubscriptionsGet200ResponseSubscriptions',
                 '/reporting/v3/report-subscriptions/{reportName}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\ReportingV3ReportSubscriptionsGet200ResponseSubscriptions', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -585,6 +680,7 @@ class ReportSubscriptionsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

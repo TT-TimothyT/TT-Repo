@@ -56,7 +56,8 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
     protected static $swaggerTypes = [
         'code' => 'string',
         'applicationName' => 'string',
-        'applicationUser' => 'string'
+        'applicationUser' => 'string',
+        'partner' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformationPartner'
     ];
 
     /**
@@ -66,7 +67,8 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
     protected static $swaggerFormats = [
         'code' => null,
         'applicationName' => null,
-        'applicationUser' => null
+        'applicationUser' => null,
+        'partner' => null
     ];
 
     public static function swaggerTypes()
@@ -86,7 +88,8 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
     protected static $attributeMap = [
         'code' => 'code',
         'applicationName' => 'applicationName',
-        'applicationUser' => 'applicationUser'
+        'applicationUser' => 'applicationUser',
+        'partner' => 'partner'
     ];
 
 
@@ -97,7 +100,8 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
     protected static $setters = [
         'code' => 'setCode',
         'applicationName' => 'setApplicationName',
-        'applicationUser' => 'setApplicationUser'
+        'applicationUser' => 'setApplicationUser',
+        'partner' => 'setPartner'
     ];
 
 
@@ -108,7 +112,8 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
     protected static $getters = [
         'code' => 'getCode',
         'applicationName' => 'getApplicationName',
-        'applicationUser' => 'getApplicationUser'
+        'applicationUser' => 'getApplicationUser',
+        'partner' => 'getPartner'
     ];
 
     public static function attributeMap()
@@ -145,6 +150,7 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
         $this->container['code'] = isset($data['code']) ? $data['code'] : null;
         $this->container['applicationName'] = isset($data['applicationName']) ? $data['applicationName'] : null;
         $this->container['applicationUser'] = isset($data['applicationUser']) ? $data['applicationUser'] : null;
+        $this->container['partner'] = isset($data['partner']) ? $data['partner'] : null;
     }
 
     /**
@@ -155,10 +161,6 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 50)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 50.";
-        }
 
         return $invalid_properties;
     }
@@ -172,9 +174,6 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
     public function valid()
     {
 
-        if (strlen($this->container['code']) > 50) {
-            return false;
-        }
         return true;
     }
 
@@ -195,10 +194,6 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['code'] = $code;
 
         return $this;
@@ -245,11 +240,33 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
 
         return $this;
     }
+
+    /**
+     * Gets partner
+     * @return \CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformationPartner
+     */
+    public function getPartner()
+    {
+        return $this->container['partner'];
+    }
+
+    /**
+     * Sets partner
+     * @param \CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformationPartner $partner
+     * @return $this
+     */
+    public function setPartner($partner)
+    {
+        $this->container['partner'] = $partner;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -260,6 +277,7 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -271,6 +289,7 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -285,6 +304,7 @@ class TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation impleme
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -150,14 +150,6 @@ class Ptsv2paymentsidOrderInformationAmountDetails implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['additionalAmount']) && (strlen($this->container['additionalAmount']) > 19)) {
-            $invalid_properties[] = "invalid value for 'additionalAmount', the character length must be smaller than or equal to 19.";
-        }
-
-        if (!is_null($this->container['currency']) && (strlen($this->container['currency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 3.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Ptsv2paymentsidOrderInformationAmountDetails implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['additionalAmount']) > 19) {
-            return false;
-        }
-        if (strlen($this->container['currency']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +182,6 @@ class Ptsv2paymentsidOrderInformationAmountDetails implements ArrayAccess
      */
     public function setAdditionalAmount($additionalAmount)
     {
-        if (!is_null($additionalAmount) && (strlen($additionalAmount) > 19)) {
-            throw new \InvalidArgumentException('invalid length for $additionalAmount when calling Ptsv2paymentsidOrderInformationAmountDetails., must be smaller than or equal to 19.');
-        }
-
         $this->container['additionalAmount'] = $additionalAmount;
 
         return $this;
@@ -221,10 +203,6 @@ class Ptsv2paymentsidOrderInformationAmountDetails implements ArrayAccess
      */
     public function setCurrency($currency)
     {
-        if (!is_null($currency) && (strlen($currency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling Ptsv2paymentsidOrderInformationAmountDetails., must be smaller than or equal to 3.');
-        }
-
         $this->container['currency'] = $currency;
 
         return $this;
@@ -234,6 +212,7 @@ class Ptsv2paymentsidOrderInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Ptsv2paymentsidOrderInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Ptsv2paymentsidOrderInformationAmountDetails implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Ptsv2paymentsidOrderInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

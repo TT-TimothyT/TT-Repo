@@ -59,7 +59,8 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
         'country' => 'string',
         'administrativeArea' => 'string',
         'postalCode' => 'string',
-        'contact' => 'string'
+        'contact' => 'string',
+        'address1' => 'string'
     ];
 
     /**
@@ -72,7 +73,8 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
         'country' => null,
         'administrativeArea' => null,
         'postalCode' => null,
-        'contact' => null
+        'contact' => null,
+        'address1' => null
     ];
 
     public static function swaggerTypes()
@@ -95,7 +97,8 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
         'country' => 'country',
         'administrativeArea' => 'administrativeArea',
         'postalCode' => 'postalCode',
-        'contact' => 'contact'
+        'contact' => 'contact',
+        'address1' => 'address1'
     ];
 
 
@@ -109,7 +112,8 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
         'country' => 'setCountry',
         'administrativeArea' => 'setAdministrativeArea',
         'postalCode' => 'setPostalCode',
-        'contact' => 'setContact'
+        'contact' => 'setContact',
+        'address1' => 'setAddress1'
     ];
 
 
@@ -123,7 +127,8 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
         'country' => 'getCountry',
         'administrativeArea' => 'getAdministrativeArea',
         'postalCode' => 'getPostalCode',
-        'contact' => 'getContact'
+        'contact' => 'getContact',
+        'address1' => 'getAddress1'
     ];
 
     public static function attributeMap()
@@ -163,6 +168,7 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
         $this->container['administrativeArea'] = isset($data['administrativeArea']) ? $data['administrativeArea'] : null;
         $this->container['postalCode'] = isset($data['postalCode']) ? $data['postalCode'] : null;
         $this->container['contact'] = isset($data['contact']) ? $data['contact'] : null;
+        $this->container['address1'] = isset($data['address1']) ? $data['address1'] : null;
     }
 
     /**
@@ -173,18 +179,6 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['locality']) && (strlen($this->container['locality']) > 13)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 13.";
-        }
-
-        if (!is_null($this->container['postalCode']) && (strlen($this->container['postalCode']) > 14)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 14.";
-        }
-
-        if (!is_null($this->container['contact']) && (strlen($this->container['contact']) > 14)) {
-            $invalid_properties[] = "invalid value for 'contact', the character length must be smaller than or equal to 14.";
-        }
 
         return $invalid_properties;
     }
@@ -198,15 +192,6 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['locality']) > 13) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 14) {
-            return false;
-        }
-        if (strlen($this->container['contact']) > 14) {
-            return false;
-        }
         return true;
     }
 
@@ -222,7 +207,7 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
 
     /**
      * Sets name
-     * @param string $name Your merchant name.  **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.  #### PIN debit Your business name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.  #### Airline processing Your merchant name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.  **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.  **Important** This value must consist of English characters.  Required for captures and credits.
+     * @param string $name Your merchant name.  **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.  #### PIN debit Your business name. This name is displayed on the cardholder's statement. When you include more than one consecutive space, extra spaces are removed.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.  #### Airline processing Your merchant name. This name is displayed on the cardholder's statement. When you include more than one consecutive space, extra spaces are removed.  **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.  **Important** This value must consist of English characters.  Required for captures and credits.
      * @return $this
      */
     public function setName($name)
@@ -243,15 +228,11 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
 
     /**
      * Sets locality
-     * @param string $locality Merchant's City.  #### PIN debit City for your business location. This value might be displayed on the cardholder’s statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.
+     * @param string $locality Merchant's City.  #### PIN debit City for your business location. This value might be displayed on the cardholder's statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.
      * @return $this
      */
     public function setLocality($locality)
     {
-        if (!is_null($locality) && (strlen($locality) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling Ptsv2payoutsMerchantInformationMerchantDescriptor., must be smaller than or equal to 13.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -268,7 +249,7 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
 
     /**
      * Sets country
-     * @param string $country Merchant's country.  #### PIN debit Country code for your business location. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf) This value might be displayed on the cardholder’s statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters. **Note** If your business is located in the U.S. or Canada and you include this field in a request, you must also include `merchantInformation.merchantDescriptor.administrativeArea`.  Optional field for PIN debit credit or PIN debit purchase.
+     * @param string $country Merchant's country.  #### PIN debit Country code for your business location. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf) This value might be displayed on the cardholder's statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters. **Note** If your business is located in the U.S. or Canada and you include this field in a request, you must also include `merchantInformation.merchantDescriptor.administrativeArea`.  Optional field for PIN debit credit or PIN debit purchase.
      * @return $this
      */
     public function setCountry($country)
@@ -289,7 +270,7 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
 
     /**
      * Sets administrativeArea
-     * @param string $administrativeArea The state where the merchant is located.  #### PIN debit State code or region code for your business. Use the Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf) This value might be displayed on the cardholder’s statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  **Note** This field is supported only for businesses located in the U.S. or Canada.  Optional field for PIN debit credit or PIN debit purchase.
+     * @param string $administrativeArea The state where the merchant is located.  #### PIN debit State code or region code for your business. Use the Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf) This value might be displayed on the cardholder's statement.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  **Note** This field is supported only for businesses located in the U.S. or Canada.  Optional field for PIN debit credit or PIN debit purchase.
      * @return $this
      */
     public function setAdministrativeArea($administrativeArea)
@@ -310,15 +291,11 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
 
     /**
      * Sets postalCode
-     * @param string $postalCode Merchant's postal code.  #### PIN debit Postal code for your business location. This value might be displayed on the cardholder’s statement.  If your business is domiciled in the U.S., you can use a 5-digit or 9-digit postal code. A 9-digit postal code must follow this format: [5 digits][dash][4 digits] Example: `12345-6789`  If your business is domiciled in Canada, you can use a 6-digit or 9-digit postal code. A 6-digit postal code must follow this format: [alpha][numeric][alpha][space] [numeric][alpha][numeric] Example: `A1B 2C3`  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  **Note** This field is supported only for businesses located in the U.S. or Canada. **Important** Mastercard requires a postal code for any country that uses postal codes. You can provide the postal code in your account or you can include this field in your request.  Optional field for PIN debit credit or PIN debit purchase.
+     * @param string $postalCode Merchant's postal code.  #### PIN debit Postal code for your business location. This value might be displayed on the cardholder's statement.  If your business is domiciled in the U.S., you can use a 5-digit or 9-digit postal code. A 9-digit postal code must follow this format: [5 digits][dash][4 digits] Example: `12345-6789`  If your business is domiciled in Canada, you can use a 6-digit or 9-digit postal code. A 6-digit postal code must follow this format: [alpha][numeric][alpha][space] [numeric][alpha][numeric] Example: `A1B 2C3`  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  **Note** This field is supported only for businesses located in the U.S. or Canada. **Important** Mastercard requires a postal code for any country that uses postal codes. You can provide the postal code in your account or you can include this field in your request.  Optional field for PIN debit credit or PIN debit purchase.
      * @return $this
      */
     public function setPostalCode($postalCode)
     {
-        if (!is_null($postalCode) && (strlen($postalCode) > 14)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling Ptsv2payoutsMerchantInformationMerchantDescriptor., must be smaller than or equal to 14.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -340,11 +317,28 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
      */
     public function setContact($contact)
     {
-        if (!is_null($contact) && (strlen($contact) > 14)) {
-            throw new \InvalidArgumentException('invalid length for $contact when calling Ptsv2payoutsMerchantInformationMerchantDescriptor., must be smaller than or equal to 14.');
-        }
-
         $this->container['contact'] = $contact;
+
+        return $this;
+    }
+
+    /**
+     * Gets address1
+     * @return string
+     */
+    public function getAddress1()
+    {
+        return $this->container['address1'];
+    }
+
+    /**
+     * Sets address1
+     * @param string $address1 First line of merchant's address. For the descriptions, used-by information, data types, and lengths for these fields, see `merchant_descriptor_street` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+     * @return $this
+     */
+    public function setAddress1($address1)
+    {
+        $this->container['address1'] = $address1;
 
         return $this;
     }
@@ -353,6 +347,7 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -363,6 +358,7 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -374,6 +370,7 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -388,6 +385,7 @@ class Ptsv2payoutsMerchantInformationMerchantDescriptor implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

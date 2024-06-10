@@ -144,10 +144,6 @@ class Vasv2taxBuyerInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['vatRegistrationNumber']) && (strlen($this->container['vatRegistrationNumber']) > 20)) {
-            $invalid_properties[] = "invalid value for 'vatRegistrationNumber', the character length must be smaller than or equal to 20.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class Vasv2taxBuyerInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['vatRegistrationNumber']) > 20) {
-            return false;
-        }
         return true;
     }
 
@@ -178,15 +171,11 @@ class Vasv2taxBuyerInformation implements ArrayAccess
 
     /**
      * Sets vatRegistrationNumber
-     * @param string $vatRegistrationNumber Customer’s government-assigned tax identification number.  #### Tax Calculation Optional for international and value added taxes only. Not applicable to U.S. and Canadian taxes.  For processor-specific information, see the purchaser_vat_registration_number field in [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
+     * @param string $vatRegistrationNumber Customer's government-assigned tax identification number.  #### Tax Calculation Optional for international and value added taxes only. Not applicable to U.S. and Canadian taxes.  For processor-specific information, see the purchaser_vat_registration_number field in [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
      * @return $this
      */
     public function setVatRegistrationNumber($vatRegistrationNumber)
     {
-        if (!is_null($vatRegistrationNumber) && (strlen($vatRegistrationNumber) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $vatRegistrationNumber when calling Vasv2taxBuyerInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['vatRegistrationNumber'] = $vatRegistrationNumber;
 
         return $this;
@@ -196,6 +185,7 @@ class Vasv2taxBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class Vasv2taxBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class Vasv2taxBuyerInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class Vasv2taxBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

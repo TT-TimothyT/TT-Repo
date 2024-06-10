@@ -54,7 +54,9 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
+        'title' => 'string',
         'firstName' => 'string',
+        'middleName' => 'string',
         'lastName' => 'string',
         'address1' => 'string',
         'address2' => 'string',
@@ -76,7 +78,9 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
+        'title' => null,
         'firstName' => null,
+        'middleName' => null,
         'lastName' => null,
         'address1' => null,
         'address2' => null,
@@ -108,7 +112,9 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
+        'title' => 'title',
         'firstName' => 'firstName',
+        'middleName' => 'middleName',
         'lastName' => 'lastName',
         'address1' => 'address1',
         'address2' => 'address2',
@@ -131,7 +137,9 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
+        'title' => 'setTitle',
         'firstName' => 'setFirstName',
+        'middleName' => 'setMiddleName',
         'lastName' => 'setLastName',
         'address1' => 'setAddress1',
         'address2' => 'setAddress2',
@@ -154,7 +162,9 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
+        'title' => 'getTitle',
         'firstName' => 'getFirstName',
+        'middleName' => 'getMiddleName',
         'lastName' => 'getLastName',
         'address1' => 'getAddress1',
         'address2' => 'getAddress2',
@@ -202,7 +212,9 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
+        $this->container['title'] = isset($data['title']) ? $data['title'] : null;
         $this->container['firstName'] = isset($data['firstName']) ? $data['firstName'] : null;
+        $this->container['middleName'] = isset($data['middleName']) ? $data['middleName'] : null;
         $this->container['lastName'] = isset($data['lastName']) ? $data['lastName'] : null;
         $this->container['address1'] = isset($data['address1']) ? $data['address1'] : null;
         $this->container['address2'] = isset($data['address2']) ? $data['address2'] : null;
@@ -228,62 +240,6 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['firstName']) && (strlen($this->container['firstName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'firstName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['lastName']) && (strlen($this->container['lastName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'lastName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address1']) && (strlen($this->container['address1']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address1', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address2']) && (strlen($this->container['address2']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address2', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['locality']) && (strlen($this->container['locality']) > 50)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['administrativeArea']) && (strlen($this->container['administrativeArea']) > 2)) {
-            $invalid_properties[] = "invalid value for 'administrativeArea', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['postalCode']) && (strlen($this->container['postalCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['district']) && (strlen($this->container['district']) > 50)) {
-            $invalid_properties[] = "invalid value for 'district', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['buildingNumber']) && (strlen($this->container['buildingNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'buildingNumber', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['phoneNumber']) && (strlen($this->container['phoneNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'phoneNumber', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['company']) && (strlen($this->container['company']) > 60)) {
-            $invalid_properties[] = "invalid value for 'company', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['destinationTypes']) && (strlen($this->container['destinationTypes']) > 25)) {
-            $invalid_properties[] = "invalid value for 'destinationTypes', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['method']) && (strlen($this->container['method']) > 10)) {
-            $invalid_properties[] = "invalid value for 'method', the character length must be smaller than or equal to 10.";
-        }
-
         return $invalid_properties;
     }
 
@@ -296,51 +252,30 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['firstName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['lastName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address1']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address2']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['locality']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['administrativeArea']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['country']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['district']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['buildingNumber']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['phoneNumber']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['company']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['destinationTypes']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['method']) > 10) {
-            return false;
-        }
         return true;
     }
 
+
+    /**
+     * Gets title
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->container['title'];
+    }
+
+    /**
+     * Sets title
+     * @param string $title The title of the person receiving the product.
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->container['title'] = $title;
+
+        return $this;
+    }
 
     /**
      * Gets firstName
@@ -358,11 +293,28 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      */
     public function setFirstName($firstName)
     {
-        if (!is_null($firstName) && (strlen($firstName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $firstName when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['firstName'] = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * Gets middleName
+     * @return string
+     */
+    public function getMiddleName()
+    {
+        return $this->container['middleName'];
+    }
+
+    /**
+     * Sets middleName
+     * @param string $middleName Middle name of the recipient.  #### Litle Maximum length: 25  #### All other processors Maximum length: 60  Optional field.
+     * @return $this
+     */
+    public function setMiddleName($middleName)
+    {
+        $this->container['middleName'] = $middleName;
 
         return $this;
     }
@@ -383,10 +335,6 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      */
     public function setLastName($lastName)
     {
-        if (!is_null($lastName) && (strlen($lastName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $lastName when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['lastName'] = $lastName;
 
         return $this;
@@ -403,15 +351,11 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets address1
-     * @param string $address1 First line of the shipping address.  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $address1 First line of the shipping address.  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAddress1($address1)
     {
-        if (!is_null($address1) && (strlen($address1) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address1 when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address1'] = $address1;
 
         return $this;
@@ -428,15 +372,11 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets address2
-     * @param string $address2 Second line of the shipping address.  Optional field.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $address2 Second line of the shipping address.  Optional field.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAddress2($address2)
     {
-        if (!is_null($address2) && (strlen($address2) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address2 when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address2'] = $address2;
 
         return $this;
@@ -453,15 +393,11 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets locality
-     * @param string $locality City of the shipping address.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $locality City of the shipping address.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setLocality($locality)
     {
-        if (!is_null($locality) && (strlen($locality) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 50.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -478,15 +414,11 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets administrativeArea
-     * @param string $administrativeArea State or province of the shipping address. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf)  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $administrativeArea State or province of the shipping address. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf) (maximum length: 2)   Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAdministrativeArea($administrativeArea)
     {
-        if (!is_null($administrativeArea) && (strlen($administrativeArea) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $administrativeArea when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['administrativeArea'] = $administrativeArea;
 
         return $this;
@@ -503,15 +435,11 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets postalCode
-     * @param string $postalCode Postal code for the shipping address. The postal code must consist of 5 to 9 digits.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  When the billing country is the U.S., the 9-digit postal code must follow this format: [5 digits][dash][4 digits]  Example 12345-6789  When the billing country is Canada, the 6-digit postal code must follow this format: [alpha][numeric][alpha][space][numeric][alpha][numeric]  Example A1B 2C3  #### American Express Direct Before sending the postal code to the processor, all nonalphanumeric characters are removed and, if the remaining value is longer than nine characters, the value is truncated starting from the right side. #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $postalCode Postal code for the shipping address. The postal code must consist of 5 to 9 digits.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  When the billing country is the U.S., the 9-digit postal code must follow this format: [5 digits][dash][4 digits]  Example 12345-6789  When the billing country is Canada, the 6-digit postal code must follow this format: [alpha][numeric][alpha][space][numeric][alpha][numeric]  Example A1B 2C3  #### American Express Direct Before sending the postal code to the processor, all nonalphanumeric characters are removed and, if the remaining value is longer than nine characters, the value is truncated starting from the right side. #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setPostalCode($postalCode)
     {
-        if (!is_null($postalCode) && (strlen($postalCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 10.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -528,15 +456,11 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets country
-     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -558,10 +482,6 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      */
     public function setDistrict($district)
     {
-        if (!is_null($district) && (strlen($district) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $district when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 50.');
-        }
-
         $this->container['district'] = $district;
 
         return $this;
@@ -583,10 +503,6 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      */
     public function setBuildingNumber($buildingNumber)
     {
-        if (!is_null($buildingNumber) && (strlen($buildingNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $buildingNumber when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 15.');
-        }
-
         $this->container['buildingNumber'] = $buildingNumber;
 
         return $this;
@@ -608,10 +524,6 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      */
     public function setPhoneNumber($phoneNumber)
     {
-        if (!is_null($phoneNumber) && (strlen($phoneNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $phoneNumber when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 15.');
-        }
-
         $this->container['phoneNumber'] = $phoneNumber;
 
         return $this;
@@ -628,15 +540,11 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
 
     /**
      * Sets company
-     * @param string $company Name of the customer’s company.  For processor-specific information, see the company_name field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+     * @param string $company Name of the customer's company.  For processor-specific information, see the company_name field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
      * @return $this
      */
     public function setCompany($company)
     {
-        if (!is_null($company) && (strlen($company) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $company when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['company'] = $company;
 
         return $this;
@@ -658,10 +566,6 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      */
     public function setDestinationTypes($destinationTypes)
     {
-        if (!is_null($destinationTypes) && (strlen($destinationTypes) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $destinationTypes when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 25.');
-        }
-
         $this->container['destinationTypes'] = $destinationTypes;
 
         return $this;
@@ -704,10 +608,6 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      */
     public function setMethod($method)
     {
-        if (!is_null($method) && (strlen($method) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $method when calling Ptsv2paymentsOrderInformationShipTo., must be smaller than or equal to 10.');
-        }
-
         $this->container['method'] = $method;
 
         return $this;
@@ -717,6 +617,7 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -727,6 +628,7 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -738,6 +640,7 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -752,6 +655,7 @@ class Ptsv2paymentsOrderInformationShipTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

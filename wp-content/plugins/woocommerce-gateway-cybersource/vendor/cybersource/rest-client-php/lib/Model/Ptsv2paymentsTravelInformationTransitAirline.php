@@ -366,122 +366,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['bookingReferenceNumber']) && (strlen($this->container['bookingReferenceNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'bookingReferenceNumber', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['carrierName']) && (strlen($this->container['carrierName']) > 15)) {
-            $invalid_properties[] = "invalid value for 'carrierName', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['ticketNumber']) && (strlen($this->container['ticketNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'ticketNumber', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['checkDigit']) && (strlen($this->container['checkDigit']) > 1)) {
-            $invalid_properties[] = "invalid value for 'checkDigit', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['extendedPaymentCode']) && (strlen($this->container['extendedPaymentCode']) > 3)) {
-            $invalid_properties[] = "invalid value for 'extendedPaymentCode', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['passengerName']) && (strlen($this->container['passengerName']) > 42)) {
-            $invalid_properties[] = "invalid value for 'passengerName', the character length must be smaller than or equal to 42.";
-        }
-
-        if (!is_null($this->container['customerCode']) && (strlen($this->container['customerCode']) > 40)) {
-            $invalid_properties[] = "invalid value for 'customerCode', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['documentType']) && (strlen($this->container['documentType']) > 1)) {
-            $invalid_properties[] = "invalid value for 'documentType', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['documentNumber']) && (strlen($this->container['documentNumber']) > 14)) {
-            $invalid_properties[] = "invalid value for 'documentNumber', the character length must be smaller than or equal to 14.";
-        }
-
-        if (!is_null($this->container['invoiceNumber']) && (strlen($this->container['invoiceNumber']) > 25)) {
-            $invalid_properties[] = "invalid value for 'invoiceNumber', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['additionalCharges']) && (strlen($this->container['additionalCharges']) > 20)) {
-            $invalid_properties[] = "invalid value for 'additionalCharges', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['totalFeeAmount']) && (strlen($this->container['totalFeeAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'totalFeeAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['clearingSequence']) && (strlen($this->container['clearingSequence']) > 2)) {
-            $invalid_properties[] = "invalid value for 'clearingSequence', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['clearingCount']) && (strlen($this->container['clearingCount']) > 2)) {
-            $invalid_properties[] = "invalid value for 'clearingCount', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['totalClearingAmount']) && (strlen($this->container['totalClearingAmount']) > 20)) {
-            $invalid_properties[] = "invalid value for 'totalClearingAmount', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['reservationSystemCode']) && (strlen($this->container['reservationSystemCode']) > 4)) {
-            $invalid_properties[] = "invalid value for 'reservationSystemCode', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['processIdentifier']) && (strlen($this->container['processIdentifier']) > 3)) {
-            $invalid_properties[] = "invalid value for 'processIdentifier', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['ticketIssueDate']) && (strlen($this->container['ticketIssueDate']) > 8)) {
-            $invalid_properties[] = "invalid value for 'ticketIssueDate', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['originalTicketNumber']) && (strlen($this->container['originalTicketNumber']) > 14)) {
-            $invalid_properties[] = "invalid value for 'originalTicketNumber', the character length must be smaller than or equal to 14.";
-        }
-
-        if (!is_null($this->container['purchaseType']) && (strlen($this->container['purchaseType']) > 3)) {
-            $invalid_properties[] = "invalid value for 'purchaseType', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['creditReasonIndicator']) && (strlen($this->container['creditReasonIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'creditReasonIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['ticketChangeIndicator']) && (strlen($this->container['ticketChangeIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'ticketChangeIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['planNumber']) && (strlen($this->container['planNumber']) > 1)) {
-            $invalid_properties[] = "invalid value for 'planNumber', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['arrivalDate']) && (strlen($this->container['arrivalDate']) > 8)) {
-            $invalid_properties[] = "invalid value for 'arrivalDate', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['restrictedTicketDesciption']) && (strlen($this->container['restrictedTicketDesciption']) > 20)) {
-            $invalid_properties[] = "invalid value for 'restrictedTicketDesciption', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['exchangeTicketAmount']) && (strlen($this->container['exchangeTicketAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'exchangeTicketAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['exchangeTicketFeeAmount']) && (strlen($this->container['exchangeTicketFeeAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'exchangeTicketFeeAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['reservationType']) && (strlen($this->container['reservationType']) > 32)) {
-            $invalid_properties[] = "invalid value for 'reservationType', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['boardingFeeAmount']) && (strlen($this->container['boardingFeeAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'boardingFeeAmount', the character length must be smaller than or equal to 12.";
-        }
-
         return $invalid_properties;
     }
 
@@ -494,93 +378,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['bookingReferenceNumber']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['carrierName']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['ticketNumber']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['checkDigit']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['extendedPaymentCode']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['passengerName']) > 42) {
-            return false;
-        }
-        if (strlen($this->container['customerCode']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['documentType']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['documentNumber']) > 14) {
-            return false;
-        }
-        if (strlen($this->container['invoiceNumber']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['additionalCharges']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['totalFeeAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['clearingSequence']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['clearingCount']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['totalClearingAmount']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['reservationSystemCode']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['processIdentifier']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['ticketIssueDate']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['originalTicketNumber']) > 14) {
-            return false;
-        }
-        if (strlen($this->container['purchaseType']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['creditReasonIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['ticketChangeIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['planNumber']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['arrivalDate']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['restrictedTicketDesciption']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['exchangeTicketAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['exchangeTicketFeeAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['reservationType']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['boardingFeeAmount']) > 12) {
-            return false;
-        }
         return true;
     }
 
@@ -601,10 +398,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setBookingReferenceNumber($bookingReferenceNumber)
     {
-        if (!is_null($bookingReferenceNumber) && (strlen($bookingReferenceNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $bookingReferenceNumber when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 15.');
-        }
-
         $this->container['bookingReferenceNumber'] = $bookingReferenceNumber;
 
         return $this;
@@ -626,10 +419,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setCarrierName($carrierName)
     {
-        if (!is_null($carrierName) && (strlen($carrierName) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $carrierName when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 15.');
-        }
-
         $this->container['carrierName'] = $carrierName;
 
         return $this;
@@ -672,10 +461,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setTicketNumber($ticketNumber)
     {
-        if (!is_null($ticketNumber) && (strlen($ticketNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $ticketNumber when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 15.');
-        }
-
         $this->container['ticketNumber'] = $ticketNumber;
 
         return $this;
@@ -697,10 +482,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setCheckDigit($checkDigit)
     {
-        if (!is_null($checkDigit) && (strlen($checkDigit) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $checkDigit when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 1.');
-        }
-
         $this->container['checkDigit'] = $checkDigit;
 
         return $this;
@@ -764,10 +545,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setExtendedPaymentCode($extendedPaymentCode)
     {
-        if (!is_null($extendedPaymentCode) && (strlen($extendedPaymentCode) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $extendedPaymentCode when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 3.');
-        }
-
         $this->container['extendedPaymentCode'] = $extendedPaymentCode;
 
         return $this;
@@ -789,10 +566,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setPassengerName($passengerName)
     {
-        if (!is_null($passengerName) && (strlen($passengerName) > 42)) {
-            throw new \InvalidArgumentException('invalid length for $passengerName when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 42.');
-        }
-
         $this->container['passengerName'] = $passengerName;
 
         return $this;
@@ -814,10 +587,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setCustomerCode($customerCode)
     {
-        if (!is_null($customerCode) && (strlen($customerCode) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $customerCode when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 40.');
-        }
-
         $this->container['customerCode'] = $customerCode;
 
         return $this;
@@ -839,10 +608,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setDocumentType($documentType)
     {
-        if (!is_null($documentType) && (strlen($documentType) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $documentType when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 1.');
-        }
-
         $this->container['documentType'] = $documentType;
 
         return $this;
@@ -864,10 +629,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setDocumentNumber($documentNumber)
     {
-        if (!is_null($documentNumber) && (strlen($documentNumber) > 14)) {
-            throw new \InvalidArgumentException('invalid length for $documentNumber when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 14.');
-        }
-
         $this->container['documentNumber'] = $documentNumber;
 
         return $this;
@@ -910,10 +671,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setInvoiceNumber($invoiceNumber)
     {
-        if (!is_null($invoiceNumber) && (strlen($invoiceNumber) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $invoiceNumber when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 25.');
-        }
-
         $this->container['invoiceNumber'] = $invoiceNumber;
 
         return $this;
@@ -956,10 +713,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setAdditionalCharges($additionalCharges)
     {
-        if (!is_null($additionalCharges) && (strlen($additionalCharges) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $additionalCharges when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 20.');
-        }
-
         $this->container['additionalCharges'] = $additionalCharges;
 
         return $this;
@@ -981,10 +734,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setTotalFeeAmount($totalFeeAmount)
     {
-        if (!is_null($totalFeeAmount) && (strlen($totalFeeAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $totalFeeAmount when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 12.');
-        }
-
         $this->container['totalFeeAmount'] = $totalFeeAmount;
 
         return $this;
@@ -1006,10 +755,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setClearingSequence($clearingSequence)
     {
-        if (!is_null($clearingSequence) && (strlen($clearingSequence) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $clearingSequence when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 2.');
-        }
-
         $this->container['clearingSequence'] = $clearingSequence;
 
         return $this;
@@ -1031,10 +776,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setClearingCount($clearingCount)
     {
-        if (!is_null($clearingCount) && (strlen($clearingCount) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $clearingCount when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 2.');
-        }
-
         $this->container['clearingCount'] = $clearingCount;
 
         return $this;
@@ -1056,10 +797,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setTotalClearingAmount($totalClearingAmount)
     {
-        if (!is_null($totalClearingAmount) && (strlen($totalClearingAmount) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $totalClearingAmount when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 20.');
-        }
-
         $this->container['totalClearingAmount'] = $totalClearingAmount;
 
         return $this;
@@ -1102,10 +839,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setReservationSystemCode($reservationSystemCode)
     {
-        if (!is_null($reservationSystemCode) && (strlen($reservationSystemCode) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $reservationSystemCode when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 4.');
-        }
-
         $this->container['reservationSystemCode'] = $reservationSystemCode;
 
         return $this;
@@ -1122,15 +855,11 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
 
     /**
      * Sets processIdentifier
-     * @param string $processIdentifier Airline process identifier. This value is the airline’s three-digit IATA1 code which is used to process extended payment airline tickets.
+     * @param string $processIdentifier Airline process identifier. This value is the airline's three-digit IATA1 code which is used to process extended payment airline tickets.
      * @return $this
      */
     public function setProcessIdentifier($processIdentifier)
     {
-        if (!is_null($processIdentifier) && (strlen($processIdentifier) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $processIdentifier when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 3.');
-        }
-
         $this->container['processIdentifier'] = $processIdentifier;
 
         return $this;
@@ -1152,10 +881,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setTicketIssueDate($ticketIssueDate)
     {
-        if (!is_null($ticketIssueDate) && (strlen($ticketIssueDate) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $ticketIssueDate when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 8.');
-        }
-
         $this->container['ticketIssueDate'] = $ticketIssueDate;
 
         return $this;
@@ -1198,10 +923,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setOriginalTicketNumber($originalTicketNumber)
     {
-        if (!is_null($originalTicketNumber) && (strlen($originalTicketNumber) > 14)) {
-            throw new \InvalidArgumentException('invalid length for $originalTicketNumber when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 14.');
-        }
-
         $this->container['originalTicketNumber'] = $originalTicketNumber;
 
         return $this;
@@ -1223,10 +944,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setPurchaseType($purchaseType)
     {
-        if (!is_null($purchaseType) && (strlen($purchaseType) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $purchaseType when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 3.');
-        }
-
         $this->container['purchaseType'] = $purchaseType;
 
         return $this;
@@ -1248,10 +965,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setCreditReasonIndicator($creditReasonIndicator)
     {
-        if (!is_null($creditReasonIndicator) && (strlen($creditReasonIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $creditReasonIndicator when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 1.');
-        }
-
         $this->container['creditReasonIndicator'] = $creditReasonIndicator;
 
         return $this;
@@ -1273,10 +986,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setTicketChangeIndicator($ticketChangeIndicator)
     {
-        if (!is_null($ticketChangeIndicator) && (strlen($ticketChangeIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $ticketChangeIndicator when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 1.');
-        }
-
         $this->container['ticketChangeIndicator'] = $ticketChangeIndicator;
 
         return $this;
@@ -1298,10 +1007,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setPlanNumber($planNumber)
     {
-        if (!is_null($planNumber) && (strlen($planNumber) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $planNumber when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 1.');
-        }
-
         $this->container['planNumber'] = $planNumber;
 
         return $this;
@@ -1323,10 +1028,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setArrivalDate($arrivalDate)
     {
-        if (!is_null($arrivalDate) && (strlen($arrivalDate) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $arrivalDate when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 8.');
-        }
-
         $this->container['arrivalDate'] = $arrivalDate;
 
         return $this;
@@ -1348,10 +1049,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setRestrictedTicketDesciption($restrictedTicketDesciption)
     {
-        if (!is_null($restrictedTicketDesciption) && (strlen($restrictedTicketDesciption) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $restrictedTicketDesciption when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 20.');
-        }
-
         $this->container['restrictedTicketDesciption'] = $restrictedTicketDesciption;
 
         return $this;
@@ -1373,10 +1070,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setExchangeTicketAmount($exchangeTicketAmount)
     {
-        if (!is_null($exchangeTicketAmount) && (strlen($exchangeTicketAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $exchangeTicketAmount when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 12.');
-        }
-
         $this->container['exchangeTicketAmount'] = $exchangeTicketAmount;
 
         return $this;
@@ -1398,10 +1091,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setExchangeTicketFeeAmount($exchangeTicketFeeAmount)
     {
-        if (!is_null($exchangeTicketFeeAmount) && (strlen($exchangeTicketFeeAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $exchangeTicketFeeAmount when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 12.');
-        }
-
         $this->container['exchangeTicketFeeAmount'] = $exchangeTicketFeeAmount;
 
         return $this;
@@ -1423,10 +1112,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setReservationType($reservationType)
     {
-        if (!is_null($reservationType) && (strlen($reservationType) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $reservationType when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 32.');
-        }
-
         $this->container['reservationType'] = $reservationType;
 
         return $this;
@@ -1448,10 +1133,6 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      */
     public function setBoardingFeeAmount($boardingFeeAmount)
     {
-        if (!is_null($boardingFeeAmount) && (strlen($boardingFeeAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $boardingFeeAmount when calling Ptsv2paymentsTravelInformationTransitAirline., must be smaller than or equal to 12.');
-        }
-
         $this->container['boardingFeeAmount'] = $boardingFeeAmount;
 
         return $this;
@@ -1503,6 +1184,7 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -1513,6 +1195,7 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -1524,6 +1207,7 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1538,6 +1222,7 @@ class Ptsv2paymentsTravelInformationTransitAirline implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -65,9 +65,11 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
         'travelInformation' => '\CyberSource\Model\Riskv1decisionsTravelInformation',
         'merchantDefinedInformation' => '\CyberSource\Model\Riskv1decisionsMerchantDefinedInformation[]',
         'merchantInformation' => '\CyberSource\Model\Riskv1decisionsMerchantInformation',
-        'acquirerInformation' => '\CyberSource\Model\Ptsv2paymentsAcquirerInformation',
+        'acquirerInformation' => '\CyberSource\Model\Riskv1decisionsAcquirerInformation',
         'recurringPaymentInformation' => '\CyberSource\Model\Ptsv2paymentsRecurringPaymentInformation',
-        'consumerAuthenticationInformation' => '\CyberSource\Model\Riskv1decisionsConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => '\CyberSource\Model\Riskv1decisionsConsumerAuthenticationInformation',
+        'watchlistScreeningInformation' => '\CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformation',
+        'tokenInformation' => '\CyberSource\Model\Riskv1decisionsTokenInformation'
     ];
 
     /**
@@ -88,7 +90,9 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
         'merchantInformation' => null,
         'acquirerInformation' => null,
         'recurringPaymentInformation' => null,
-        'consumerAuthenticationInformation' => null
+        'consumerAuthenticationInformation' => null,
+        'watchlistScreeningInformation' => null,
+        'tokenInformation' => null
     ];
 
     public static function swaggerTypes()
@@ -119,7 +123,9 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
         'merchantInformation' => 'merchantInformation',
         'acquirerInformation' => 'acquirerInformation',
         'recurringPaymentInformation' => 'recurringPaymentInformation',
-        'consumerAuthenticationInformation' => 'consumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'consumerAuthenticationInformation',
+        'watchlistScreeningInformation' => 'watchlistScreeningInformation',
+        'tokenInformation' => 'tokenInformation'
     ];
 
 
@@ -141,7 +147,9 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
         'merchantInformation' => 'setMerchantInformation',
         'acquirerInformation' => 'setAcquirerInformation',
         'recurringPaymentInformation' => 'setRecurringPaymentInformation',
-        'consumerAuthenticationInformation' => 'setConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'setConsumerAuthenticationInformation',
+        'watchlistScreeningInformation' => 'setWatchlistScreeningInformation',
+        'tokenInformation' => 'setTokenInformation'
     ];
 
 
@@ -163,7 +171,9 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
         'merchantInformation' => 'getMerchantInformation',
         'acquirerInformation' => 'getAcquirerInformation',
         'recurringPaymentInformation' => 'getRecurringPaymentInformation',
-        'consumerAuthenticationInformation' => 'getConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'getConsumerAuthenticationInformation',
+        'watchlistScreeningInformation' => 'getWatchlistScreeningInformation',
+        'tokenInformation' => 'getTokenInformation'
     ];
 
     public static function attributeMap()
@@ -211,6 +221,8 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
         $this->container['acquirerInformation'] = isset($data['acquirerInformation']) ? $data['acquirerInformation'] : null;
         $this->container['recurringPaymentInformation'] = isset($data['recurringPaymentInformation']) ? $data['recurringPaymentInformation'] : null;
         $this->container['consumerAuthenticationInformation'] = isset($data['consumerAuthenticationInformation']) ? $data['consumerAuthenticationInformation'] : null;
+        $this->container['watchlistScreeningInformation'] = isset($data['watchlistScreeningInformation']) ? $data['watchlistScreeningInformation'] : null;
+        $this->container['tokenInformation'] = isset($data['tokenInformation']) ? $data['tokenInformation'] : null;
     }
 
     /**
@@ -471,7 +483,7 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
 
     /**
      * Gets acquirerInformation
-     * @return \CyberSource\Model\Ptsv2paymentsAcquirerInformation
+     * @return \CyberSource\Model\Riskv1decisionsAcquirerInformation
      */
     public function getAcquirerInformation()
     {
@@ -480,7 +492,7 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
 
     /**
      * Sets acquirerInformation
-     * @param \CyberSource\Model\Ptsv2paymentsAcquirerInformation $acquirerInformation
+     * @param \CyberSource\Model\Riskv1decisionsAcquirerInformation $acquirerInformation
      * @return $this
      */
     public function setAcquirerInformation($acquirerInformation)
@@ -531,11 +543,54 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets watchlistScreeningInformation
+     * @return \CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformation
+     */
+    public function getWatchlistScreeningInformation()
+    {
+        return $this->container['watchlistScreeningInformation'];
+    }
+
+    /**
+     * Sets watchlistScreeningInformation
+     * @param \CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformation $watchlistScreeningInformation
+     * @return $this
+     */
+    public function setWatchlistScreeningInformation($watchlistScreeningInformation)
+    {
+        $this->container['watchlistScreeningInformation'] = $watchlistScreeningInformation;
+
+        return $this;
+    }
+
+    /**
+     * Gets tokenInformation
+     * @return \CyberSource\Model\Riskv1decisionsTokenInformation
+     */
+    public function getTokenInformation()
+    {
+        return $this->container['tokenInformation'];
+    }
+
+    /**
+     * Sets tokenInformation
+     * @param \CyberSource\Model\Riskv1decisionsTokenInformation $tokenInformation
+     * @return $this
+     */
+    public function setTokenInformation($tokenInformation)
+    {
+        $this->container['tokenInformation'] = $tokenInformation;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -546,6 +601,7 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -557,6 +613,7 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -571,6 +628,7 @@ class CreateBundledDecisionManagerCaseRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

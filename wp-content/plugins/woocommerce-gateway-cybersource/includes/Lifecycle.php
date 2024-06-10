@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\Gateway\Credit_Card;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 /**
  * Plugin lifecycle handler.
@@ -313,8 +313,8 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 				}
 			}
 
-		}
-		else{
+		} else {
+
 			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key='_wc_cybersource_trans_id'         WHERE meta_key='_cybersource_request_id'" );
 
 			$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_value='test'                           WHERE meta_key='_cybersource_orderpage_environment' AND meta_value='TEST'" );

@@ -56,11 +56,11 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
     protected static $swaggerTypes = [
         'terminalId' => 'string',
         'terminalSerialNumber' => 'string',
+        'cardholderVerificationMethodUsed' => 'int',
         'laneNumber' => 'string',
         'catLevel' => 'int',
         'entryMode' => 'string',
         'terminalCapability' => 'int',
-        'pinEntryCapability' => 'int',
         'operatingEnvironment' => 'string',
         'emv' => '\CyberSource\Model\Ptsv2paymentsPointOfSaleInformationEmv',
         'amexCapnData' => 'string',
@@ -71,6 +71,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'terminalCardCaptureCapability' => 'string',
         'terminalOutputCapability' => 'string',
         'terminalPinCapability' => 'int',
+        'pinEntrySolution' => 'string',
         'deviceId' => 'string',
         'pinBlockEncodingFormat' => 'int',
         'encryptedPin' => 'string',
@@ -78,7 +79,10 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'partnerSdkVersion' => 'string',
         'emvApplicationIdentifierAndDedicatedFileName' => 'string',
         'terminalCompliance' => 'string',
-        'isDedicatedHardwareTerminal' => 'string'
+        'isDedicatedHardwareTerminal' => 'string',
+        'terminalModel' => 'string',
+        'terminalMake' => 'string',
+        'serviceCode' => 'string'
     ];
 
     /**
@@ -88,11 +92,11 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
     protected static $swaggerFormats = [
         'terminalId' => null,
         'terminalSerialNumber' => null,
+        'cardholderVerificationMethodUsed' => null,
         'laneNumber' => null,
         'catLevel' => null,
         'entryMode' => null,
         'terminalCapability' => null,
-        'pinEntryCapability' => null,
         'operatingEnvironment' => null,
         'emv' => null,
         'amexCapnData' => null,
@@ -103,6 +107,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'terminalCardCaptureCapability' => null,
         'terminalOutputCapability' => null,
         'terminalPinCapability' => null,
+        'pinEntrySolution' => null,
         'deviceId' => null,
         'pinBlockEncodingFormat' => null,
         'encryptedPin' => null,
@@ -110,7 +115,10 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'partnerSdkVersion' => null,
         'emvApplicationIdentifierAndDedicatedFileName' => null,
         'terminalCompliance' => null,
-        'isDedicatedHardwareTerminal' => null
+        'isDedicatedHardwareTerminal' => null,
+        'terminalModel' => null,
+        'terminalMake' => null,
+        'serviceCode' => null
     ];
 
     public static function swaggerTypes()
@@ -130,11 +138,11 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
     protected static $attributeMap = [
         'terminalId' => 'terminalId',
         'terminalSerialNumber' => 'terminalSerialNumber',
+        'cardholderVerificationMethodUsed' => 'cardholderVerificationMethodUsed',
         'laneNumber' => 'laneNumber',
         'catLevel' => 'catLevel',
         'entryMode' => 'entryMode',
         'terminalCapability' => 'terminalCapability',
-        'pinEntryCapability' => 'pinEntryCapability',
         'operatingEnvironment' => 'operatingEnvironment',
         'emv' => 'emv',
         'amexCapnData' => 'amexCapnData',
@@ -145,6 +153,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'terminalCardCaptureCapability' => 'terminalCardCaptureCapability',
         'terminalOutputCapability' => 'terminalOutputCapability',
         'terminalPinCapability' => 'terminalPinCapability',
+        'pinEntrySolution' => 'pinEntrySolution',
         'deviceId' => 'deviceId',
         'pinBlockEncodingFormat' => 'pinBlockEncodingFormat',
         'encryptedPin' => 'encryptedPin',
@@ -152,7 +161,10 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'partnerSdkVersion' => 'partnerSdkVersion',
         'emvApplicationIdentifierAndDedicatedFileName' => 'emvApplicationIdentifierAndDedicatedFileName',
         'terminalCompliance' => 'terminalCompliance',
-        'isDedicatedHardwareTerminal' => 'isDedicatedHardwareTerminal'
+        'isDedicatedHardwareTerminal' => 'isDedicatedHardwareTerminal',
+        'terminalModel' => 'terminalModel',
+        'terminalMake' => 'terminalMake',
+        'serviceCode' => 'serviceCode'
     ];
 
 
@@ -163,11 +175,11 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
     protected static $setters = [
         'terminalId' => 'setTerminalId',
         'terminalSerialNumber' => 'setTerminalSerialNumber',
+        'cardholderVerificationMethodUsed' => 'setCardholderVerificationMethodUsed',
         'laneNumber' => 'setLaneNumber',
         'catLevel' => 'setCatLevel',
         'entryMode' => 'setEntryMode',
         'terminalCapability' => 'setTerminalCapability',
-        'pinEntryCapability' => 'setPinEntryCapability',
         'operatingEnvironment' => 'setOperatingEnvironment',
         'emv' => 'setEmv',
         'amexCapnData' => 'setAmexCapnData',
@@ -178,6 +190,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'terminalCardCaptureCapability' => 'setTerminalCardCaptureCapability',
         'terminalOutputCapability' => 'setTerminalOutputCapability',
         'terminalPinCapability' => 'setTerminalPinCapability',
+        'pinEntrySolution' => 'setPinEntrySolution',
         'deviceId' => 'setDeviceId',
         'pinBlockEncodingFormat' => 'setPinBlockEncodingFormat',
         'encryptedPin' => 'setEncryptedPin',
@@ -185,7 +198,10 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'partnerSdkVersion' => 'setPartnerSdkVersion',
         'emvApplicationIdentifierAndDedicatedFileName' => 'setEmvApplicationIdentifierAndDedicatedFileName',
         'terminalCompliance' => 'setTerminalCompliance',
-        'isDedicatedHardwareTerminal' => 'setIsDedicatedHardwareTerminal'
+        'isDedicatedHardwareTerminal' => 'setIsDedicatedHardwareTerminal',
+        'terminalModel' => 'setTerminalModel',
+        'terminalMake' => 'setTerminalMake',
+        'serviceCode' => 'setServiceCode'
     ];
 
 
@@ -196,11 +212,11 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
     protected static $getters = [
         'terminalId' => 'getTerminalId',
         'terminalSerialNumber' => 'getTerminalSerialNumber',
+        'cardholderVerificationMethodUsed' => 'getCardholderVerificationMethodUsed',
         'laneNumber' => 'getLaneNumber',
         'catLevel' => 'getCatLevel',
         'entryMode' => 'getEntryMode',
         'terminalCapability' => 'getTerminalCapability',
-        'pinEntryCapability' => 'getPinEntryCapability',
         'operatingEnvironment' => 'getOperatingEnvironment',
         'emv' => 'getEmv',
         'amexCapnData' => 'getAmexCapnData',
@@ -211,6 +227,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'terminalCardCaptureCapability' => 'getTerminalCardCaptureCapability',
         'terminalOutputCapability' => 'getTerminalOutputCapability',
         'terminalPinCapability' => 'getTerminalPinCapability',
+        'pinEntrySolution' => 'getPinEntrySolution',
         'deviceId' => 'getDeviceId',
         'pinBlockEncodingFormat' => 'getPinBlockEncodingFormat',
         'encryptedPin' => 'getEncryptedPin',
@@ -218,7 +235,10 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         'partnerSdkVersion' => 'getPartnerSdkVersion',
         'emvApplicationIdentifierAndDedicatedFileName' => 'getEmvApplicationIdentifierAndDedicatedFileName',
         'terminalCompliance' => 'getTerminalCompliance',
-        'isDedicatedHardwareTerminal' => 'getIsDedicatedHardwareTerminal'
+        'isDedicatedHardwareTerminal' => 'getIsDedicatedHardwareTerminal',
+        'terminalModel' => 'getTerminalModel',
+        'terminalMake' => 'getTerminalMake',
+        'serviceCode' => 'getServiceCode'
     ];
 
     public static function attributeMap()
@@ -254,11 +274,11 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
     {
         $this->container['terminalId'] = isset($data['terminalId']) ? $data['terminalId'] : null;
         $this->container['terminalSerialNumber'] = isset($data['terminalSerialNumber']) ? $data['terminalSerialNumber'] : null;
+        $this->container['cardholderVerificationMethodUsed'] = isset($data['cardholderVerificationMethodUsed']) ? $data['cardholderVerificationMethodUsed'] : null;
         $this->container['laneNumber'] = isset($data['laneNumber']) ? $data['laneNumber'] : null;
         $this->container['catLevel'] = isset($data['catLevel']) ? $data['catLevel'] : null;
         $this->container['entryMode'] = isset($data['entryMode']) ? $data['entryMode'] : null;
         $this->container['terminalCapability'] = isset($data['terminalCapability']) ? $data['terminalCapability'] : null;
-        $this->container['pinEntryCapability'] = isset($data['pinEntryCapability']) ? $data['pinEntryCapability'] : null;
         $this->container['operatingEnvironment'] = isset($data['operatingEnvironment']) ? $data['operatingEnvironment'] : null;
         $this->container['emv'] = isset($data['emv']) ? $data['emv'] : null;
         $this->container['amexCapnData'] = isset($data['amexCapnData']) ? $data['amexCapnData'] : null;
@@ -269,6 +289,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         $this->container['terminalCardCaptureCapability'] = isset($data['terminalCardCaptureCapability']) ? $data['terminalCardCaptureCapability'] : null;
         $this->container['terminalOutputCapability'] = isset($data['terminalOutputCapability']) ? $data['terminalOutputCapability'] : null;
         $this->container['terminalPinCapability'] = isset($data['terminalPinCapability']) ? $data['terminalPinCapability'] : null;
+        $this->container['pinEntrySolution'] = isset($data['pinEntrySolution']) ? $data['pinEntrySolution'] : null;
         $this->container['deviceId'] = isset($data['deviceId']) ? $data['deviceId'] : null;
         $this->container['pinBlockEncodingFormat'] = isset($data['pinBlockEncodingFormat']) ? $data['pinBlockEncodingFormat'] : null;
         $this->container['encryptedPin'] = isset($data['encryptedPin']) ? $data['encryptedPin'] : null;
@@ -277,6 +298,9 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
         $this->container['emvApplicationIdentifierAndDedicatedFileName'] = isset($data['emvApplicationIdentifierAndDedicatedFileName']) ? $data['emvApplicationIdentifierAndDedicatedFileName'] : null;
         $this->container['terminalCompliance'] = isset($data['terminalCompliance']) ? $data['terminalCompliance'] : null;
         $this->container['isDedicatedHardwareTerminal'] = isset($data['isDedicatedHardwareTerminal']) ? $data['isDedicatedHardwareTerminal'] : null;
+        $this->container['terminalModel'] = isset($data['terminalModel']) ? $data['terminalModel'] : null;
+        $this->container['terminalMake'] = isset($data['terminalMake']) ? $data['terminalMake'] : null;
+        $this->container['serviceCode'] = isset($data['serviceCode']) ? $data['serviceCode'] : null;
     }
 
     /**
@@ -287,98 +311,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['terminalId']) && (strlen($this->container['terminalId']) > 8)) {
-            $invalid_properties[] = "invalid value for 'terminalId', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['terminalSerialNumber']) && (strlen($this->container['terminalSerialNumber']) > 32)) {
-            $invalid_properties[] = "invalid value for 'terminalSerialNumber', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['laneNumber']) && (strlen($this->container['laneNumber']) > 8)) {
-            $invalid_properties[] = "invalid value for 'laneNumber', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['catLevel']) && ($this->container['catLevel'] > 9)) {
-            $invalid_properties[] = "invalid value for 'catLevel', must be smaller than or equal to 9.";
-        }
-
-        if (!is_null($this->container['catLevel']) && ($this->container['catLevel'] < 1)) {
-            $invalid_properties[] = "invalid value for 'catLevel', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['entryMode']) && (strlen($this->container['entryMode']) > 11)) {
-            $invalid_properties[] = "invalid value for 'entryMode', the character length must be smaller than or equal to 11.";
-        }
-
-        if (!is_null($this->container['terminalCapability']) && ($this->container['terminalCapability'] > 5)) {
-            $invalid_properties[] = "invalid value for 'terminalCapability', must be smaller than or equal to 5.";
-        }
-
-        if (!is_null($this->container['terminalCapability']) && ($this->container['terminalCapability'] < 1)) {
-            $invalid_properties[] = "invalid value for 'terminalCapability', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['pinEntryCapability']) && ($this->container['pinEntryCapability'] > 1)) {
-            $invalid_properties[] = "invalid value for 'pinEntryCapability', must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['pinEntryCapability']) && ($this->container['pinEntryCapability'] < 1)) {
-            $invalid_properties[] = "invalid value for 'pinEntryCapability', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['operatingEnvironment']) && (strlen($this->container['operatingEnvironment']) > 1)) {
-            $invalid_properties[] = "invalid value for 'operatingEnvironment', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['amexCapnData']) && (strlen($this->container['amexCapnData']) > 15)) {
-            $invalid_properties[] = "invalid value for 'amexCapnData', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['storeAndForwardIndicator']) && (strlen($this->container['storeAndForwardIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'storeAndForwardIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['terminalCardCaptureCapability']) && (strlen($this->container['terminalCardCaptureCapability']) > 1)) {
-            $invalid_properties[] = "invalid value for 'terminalCardCaptureCapability', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['terminalOutputCapability']) && (strlen($this->container['terminalOutputCapability']) > 1)) {
-            $invalid_properties[] = "invalid value for 'terminalOutputCapability', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['deviceId']) && (strlen($this->container['deviceId']) > 32)) {
-            $invalid_properties[] = "invalid value for 'deviceId', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['pinBlockEncodingFormat']) && ($this->container['pinBlockEncodingFormat'] > 9)) {
-            $invalid_properties[] = "invalid value for 'pinBlockEncodingFormat', must be smaller than or equal to 9.";
-        }
-
-        if (!is_null($this->container['encryptedPin']) && (strlen($this->container['encryptedPin']) > 16)) {
-            $invalid_properties[] = "invalid value for 'encryptedPin', the character length must be smaller than or equal to 16.";
-        }
-
-        if (!is_null($this->container['encryptedKeySerialNumber']) && (strlen($this->container['encryptedKeySerialNumber']) > 20)) {
-            $invalid_properties[] = "invalid value for 'encryptedKeySerialNumber', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['partnerSdkVersion']) && (strlen($this->container['partnerSdkVersion']) > 32)) {
-            $invalid_properties[] = "invalid value for 'partnerSdkVersion', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['emvApplicationIdentifierAndDedicatedFileName']) && (strlen($this->container['emvApplicationIdentifierAndDedicatedFileName']) > 32)) {
-            $invalid_properties[] = "invalid value for 'emvApplicationIdentifierAndDedicatedFileName', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['terminalCompliance']) && (strlen($this->container['terminalCompliance']) > 2)) {
-            $invalid_properties[] = "invalid value for 'terminalCompliance', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['isDedicatedHardwareTerminal']) && (strlen($this->container['isDedicatedHardwareTerminal']) > 1)) {
-            $invalid_properties[] = "invalid value for 'isDedicatedHardwareTerminal', the character length must be smaller than or equal to 1.";
-        }
 
         return $invalid_properties;
     }
@@ -392,75 +324,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['terminalId']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['terminalSerialNumber']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['laneNumber']) > 8) {
-            return false;
-        }
-        if ($this->container['catLevel'] > 9) {
-            return false;
-        }
-        if ($this->container['catLevel'] < 1) {
-            return false;
-        }
-        if (strlen($this->container['entryMode']) > 11) {
-            return false;
-        }
-        if ($this->container['terminalCapability'] > 5) {
-            return false;
-        }
-        if ($this->container['terminalCapability'] < 1) {
-            return false;
-        }
-        if ($this->container['pinEntryCapability'] > 1) {
-            return false;
-        }
-        if ($this->container['pinEntryCapability'] < 1) {
-            return false;
-        }
-        if (strlen($this->container['operatingEnvironment']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['amexCapnData']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['storeAndForwardIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['terminalCardCaptureCapability']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['terminalOutputCapability']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['deviceId']) > 32) {
-            return false;
-        }
-        if ($this->container['pinBlockEncodingFormat'] > 9) {
-            return false;
-        }
-        if (strlen($this->container['encryptedPin']) > 16) {
-            return false;
-        }
-        if (strlen($this->container['encryptedKeySerialNumber']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['partnerSdkVersion']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['emvApplicationIdentifierAndDedicatedFileName']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['terminalCompliance']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['isDedicatedHardwareTerminal']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -481,10 +344,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setTerminalId($terminalId)
     {
-        if (!is_null($terminalId) && (strlen($terminalId) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $terminalId when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['terminalId'] = $terminalId;
 
         return $this;
@@ -506,11 +365,28 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setTerminalSerialNumber($terminalSerialNumber)
     {
-        if (!is_null($terminalSerialNumber) && (strlen($terminalSerialNumber) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $terminalSerialNumber when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 32.');
-        }
-
         $this->container['terminalSerialNumber'] = $terminalSerialNumber;
+
+        return $this;
+    }
+
+    /**
+     * Gets cardholderVerificationMethodUsed
+     * @return int
+     */
+    public function getCardholderVerificationMethodUsed()
+    {
+        return $this->container['cardholderVerificationMethodUsed'];
+    }
+
+    /**
+     * Sets cardholderVerificationMethodUsed
+     * @param int $cardholderVerificationMethodUsed Method that was used to verify the cardholder's identity. Possible values:    - `0`: No verification   - `1`: Signature   - `2`: PIN   - `3`: Cardholder device CVM
+     * @return $this
+     */
+    public function setCardholderVerificationMethodUsed($cardholderVerificationMethodUsed)
+    {
+        $this->container['cardholderVerificationMethodUsed'] = $cardholderVerificationMethodUsed;
 
         return $this;
     }
@@ -531,10 +407,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setLaneNumber($laneNumber)
     {
-        if (!is_null($laneNumber) && (strlen($laneNumber) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $laneNumber when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['laneNumber'] = $laneNumber;
 
         return $this;
@@ -556,14 +428,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setCatLevel($catLevel)
     {
-
-        if (!is_null($catLevel) && ($catLevel > 9)) {
-            throw new \InvalidArgumentException('invalid value for $catLevel when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 9.');
-        }
-        if (!is_null($catLevel) && ($catLevel < 1)) {
-            throw new \InvalidArgumentException('invalid value for $catLevel when calling Ptsv2paymentsPointOfSaleInformation., must be bigger than or equal to 1.');
-        }
-
         $this->container['catLevel'] = $catLevel;
 
         return $this;
@@ -585,10 +449,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setEntryMode($entryMode)
     {
-        if (!is_null($entryMode) && (strlen($entryMode) > 11)) {
-            throw new \InvalidArgumentException('invalid length for $entryMode when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 11.');
-        }
-
         $this->container['entryMode'] = $entryMode;
 
         return $this;
@@ -605,49 +465,12 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
 
     /**
      * Sets terminalCapability
-     * @param int $terminalCapability POS terminal’s capability. Possible values:   - `1`: Terminal has a magnetic stripe reader only.  - `2`: Terminal has a magnetic stripe reader and manual entry capability.  - `3`: Terminal has manual entry capability only.  - `4`: Terminal can read chip cards.  - `5`: Terminal can read contactless chip cards; cannot use contact to read chip cards.  For an EMV transaction, the value of this field must be `4` or `5`.  #### PIN debit Required for PIN debit purchase and PIN debit credit request.  #### Used by **Authorization** Required for the following processors: - American Express Direct - Chase Paymentech Solutions - Credit Mutuel-CIC - FDC Nashville Global - FDMS Nashville - OmniPay Direct - SIX - Worldpay VAP  Optional for the following processors: - CyberSource through VisaNet - GPN - GPX - JCN Gateway - RBS WorldPay Atlanta - TSYS Acquiring Solutions
+     * @param int $terminalCapability POS terminal's capability. Possible values:   - `1`: Terminal has a magnetic stripe reader only.  - `2`: Terminal has a magnetic stripe reader and manual entry capability.  - `3`: Terminal has manual entry capability only.  - `4`: Terminal can read chip cards.  - `5`: Terminal can read contactless chip cards; cannot use contact to read chip cards.  For an EMV transaction, the value of this field must be `4` or `5`.  #### PIN debit Required for PIN debit purchase and PIN debit credit request.  #### Used by **Authorization** Required for the following processors: - American Express Direct - Chase Paymentech Solutions - Credit Mutuel-CIC - FDC Nashville Global - FDMS Nashville - OmniPay Direct - SIX - Worldpay VAP  Optional for the following processors: - CyberSource through VisaNet - GPN - GPX - JCN Gateway - RBS WorldPay Atlanta - TSYS Acquiring Solutions
      * @return $this
      */
     public function setTerminalCapability($terminalCapability)
     {
-
-        if (!is_null($terminalCapability) && ($terminalCapability > 5)) {
-            throw new \InvalidArgumentException('invalid value for $terminalCapability when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 5.');
-        }
-        if (!is_null($terminalCapability) && ($terminalCapability < 1)) {
-            throw new \InvalidArgumentException('invalid value for $terminalCapability when calling Ptsv2paymentsPointOfSaleInformation., must be bigger than or equal to 1.');
-        }
-
         $this->container['terminalCapability'] = $terminalCapability;
-
-        return $this;
-    }
-
-    /**
-     * Gets pinEntryCapability
-     * @return int
-     */
-    public function getPinEntryCapability()
-    {
-        return $this->container['pinEntryCapability'];
-    }
-
-    /**
-     * Sets pinEntryCapability
-     * @param int $pinEntryCapability A one-digit code that identifies the capability of terminal to capture PINs.  This code does not necessarily mean that a PIN was entered or is included in this message.  POS terminal’s capability. Possible values: - `1`: Terminal has a magnetic stripe reader only. - `2`: Terminal has a magnetic stripe reader and manual entry capability. - `3`: Terminal has manual entry capability only. - `4`: Terminal can read chip cards.* - `5`: Terminal can read contactless chip cards.* * The values of 4 and 5 are supported only for EMV transactions.  For Payouts: This field is applicable for CtV.
-     * @return $this
-     */
-    public function setPinEntryCapability($pinEntryCapability)
-    {
-
-        if (!is_null($pinEntryCapability) && ($pinEntryCapability > 1)) {
-            throw new \InvalidArgumentException('invalid value for $pinEntryCapability when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 1.');
-        }
-        if (!is_null($pinEntryCapability) && ($pinEntryCapability < 1)) {
-            throw new \InvalidArgumentException('invalid value for $pinEntryCapability when calling Ptsv2paymentsPointOfSaleInformation., must be bigger than or equal to 1.');
-        }
-
-        $this->container['pinEntryCapability'] = $pinEntryCapability;
 
         return $this;
     }
@@ -668,10 +491,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setOperatingEnvironment($operatingEnvironment)
     {
-        if (!is_null($operatingEnvironment) && (strlen($operatingEnvironment) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $operatingEnvironment when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['operatingEnvironment'] = $operatingEnvironment;
 
         return $this;
@@ -714,10 +533,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setAmexCapnData($amexCapnData)
     {
-        if (!is_null($amexCapnData) && (strlen($amexCapnData) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $amexCapnData when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 15.');
-        }
-
         $this->container['amexCapnData'] = $amexCapnData;
 
         return $this;
@@ -734,7 +549,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
 
     /**
      * Sets trackData
-     * @param string $trackData Card’s track 1 and 2 data. For all processors except FDMS Nashville, this value consists of one of the following:   - Track 1 data  - Track 2 data  - Data for both tracks 1 and 2  For FDMS Nashville, this value consists of one of the following:  - Track 1 data  - Data for both tracks 1 and 2  Example: %B4111111111111111^SMITH/JOHN ^1612101976110000868000000?;4111111111111111=16121019761186800000?  #### Used by **Authorization** Required for Chase Paymentech Solutions, Credit Mutuel-CIC, CyberSource through VisaNet, FDC Nashville Global, JCN Gateway, OmniPay Direct, and SIX if `pointOfSaleInformation.entryMode` is equal to one of these values: - `contact` - `contactless` - `msd` - `swiped` Otherwise, this field not used.  Required for all other processors if `pointOfSaleInformation.entryMode=swiped`; otherwise, this field is not used.  #### GPX This field only supports transactions from the following card types: - Visa - Mastercard - AMEX - Discover - Diners - JCB - Union Pay International  #### PIN debit Track 2 data from the debit card. The sentinels are required. Required field for a PIN debit purchase and a PIN debit credit.
+     * @param string $trackData Card's track 1 and 2 data. For all processors except FDMS Nashville, this value consists of one of the following:   - Track 1 data  - Track 2 data  - Data for both tracks 1 and 2  For FDMS Nashville, this value consists of one of the following:  - Track 1 data  - Data for both tracks 1 and 2  Example: %B4111111111111111^SMITH/JOHN ^1612101976110000868000000?;4111111111111111=16121019761186800000?  #### Used by **Authorization** Required for Chase Paymentech Solutions, Credit Mutuel-CIC, CyberSource through VisaNet, FDC Nashville Global, JCN Gateway, OmniPay Direct, and SIX if `pointOfSaleInformation.entryMode` is equal to one of these values: - `contact` - `contactless` - `msd` - `swiped` Otherwise, this field not used.  Required for all other processors if `pointOfSaleInformation.entryMode=swiped`; otherwise, this field is not used.  #### GPX This field only supports transactions from the following card types: - Visa - Mastercard - AMEX - Discover - Diners - JCB - Union Pay International  #### PIN debit Track 2 data from the debit card. The sentinels are required. Required field for a PIN debit purchase and a PIN debit credit.
      * @return $this
      */
     public function setTrackData($trackData)
@@ -760,10 +575,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setStoreAndForwardIndicator($storeAndForwardIndicator)
     {
-        if (!is_null($storeAndForwardIndicator) && (strlen($storeAndForwardIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $storeAndForwardIndicator when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['storeAndForwardIndicator'] = $storeAndForwardIndicator;
 
         return $this;
@@ -780,7 +591,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
 
     /**
      * Sets cardholderVerificationMethod
-     * @param string[] $cardholderVerificationMethod
+     * @param string[] $cardholderVerificationMethod Complete list of cardholder verification methods (CVMs) supported by the terminal. Optional field. Possible values: - `PIN`: For terminals with a PIN Pad - `Signature`: For terminals capable of receiving a signature - `pinOnGlass`: For terminals where PIN is entered on a glass-based capture mechanism  **EXAMPLE**: [\"PIN\",\"Signature\"]; [\"pinOnGlass\",\"Signature\"]
      * @return $this
      */
     public function setCardholderVerificationMethod($cardholderVerificationMethod)
@@ -801,7 +612,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
 
     /**
      * Sets terminalInputCapability
-     * @param string[] $terminalInputCapability
+     * @param string[] $terminalInputCapability Complete list of card input methods supported by the terminal.  Possible values: - `Keyed`: Terminal can accept card data that is entered manually. - `Swiped`: Terminal can accept card data from a magnetic stripe reader. - `Contact`: Terminal can accept card data in EMV contact mode (\"dipping a card\"). - `Contactless`: Terminal can accept card data in EMV contactless mode (\"tapping a card\"). - `BarCode`: Terminal can read bar codes. - `QRcode`: Terminal can read or scan QR codes. - `OCR`: Terminal can perform optical character recognition (OCT) on the card.  **EXAMPLE**: [\"Keyed\",\"Swiped\",\"Contact\",\"Contactless\"]  #### Used by **Authorization and Credit** Optional. This field is supported only by client software that is installed on your POS terminals for the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX
      * @return $this
      */
     public function setTerminalInputCapability($terminalInputCapability)
@@ -827,10 +638,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setTerminalCardCaptureCapability($terminalCardCaptureCapability)
     {
-        if (!is_null($terminalCardCaptureCapability) && (strlen($terminalCardCaptureCapability) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $terminalCardCaptureCapability when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['terminalCardCaptureCapability'] = $terminalCardCaptureCapability;
 
         return $this;
@@ -847,15 +654,11 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
 
     /**
      * Sets terminalOutputCapability
-     * @param string $terminalOutputCapability Indicates whether the terminal can print or display messages.  Possible values: - 1: Neither - 2: Print only - 3: Display only - 4: Print and display  This field is supported for authorizations and credits only on the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  Optional field.
+     * @param string $terminalOutputCapability Indicates whether the terminal can print or display messages.  Possible values: - 1: Neither - 2: Print only - 3: Display only - 4: Print and display - 5: Merchant terminal supports purchase only approvals  This field is supported for authorizations and credits only on the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX - VisaNet  Optional field.
      * @return $this
      */
     public function setTerminalOutputCapability($terminalOutputCapability)
     {
-        if (!is_null($terminalOutputCapability) && (strlen($terminalOutputCapability) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $terminalOutputCapability when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['terminalOutputCapability'] = $terminalOutputCapability;
 
         return $this;
@@ -872,12 +675,33 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
 
     /**
      * Sets terminalPinCapability
-     * @param int $terminalPinCapability Maximum PIN length that the terminal can capture.  Possible values: -  0: No PIN capture capability -  1: PIN capture capability unknown -  4: Four characters -  5: Five characters -  6: Six characters -  7: Seven characters -  8: Eight characters -  9: Nine characters - 10: Ten characters - 11: Eleven characters - 12: Twelve characters  This field is supported for authorizations and credits only on the following processors: - American Express Direct - Credit Mutuel-CIC - OmniPay Direct - SIX  Required field for authorization or credit of PIN transactions.
+     * @param int $terminalPinCapability Maximum PIN length that the terminal can capture.  Possible values: -  0: No PIN capture capability -  1: PIN capture capability unknown -  2: PIN Pad down -  4: Four characters -  5: Five characters -  6: Six characters -  7: Seven characters -  8: Eight characters -  9: Nine characters - 10: Ten characters - 11: Eleven characters - 12: Twelve characters  This field is supported for authorizations and credits only on the following processors: - American Express Direct - Credit Mutuel-CIC - OmniPay Direct - SIX - Visa Platform Connect  Required field for authorization or credit of PIN transactions.
      * @return $this
      */
     public function setTerminalPinCapability($terminalPinCapability)
     {
         $this->container['terminalPinCapability'] = $terminalPinCapability;
+
+        return $this;
+    }
+
+    /**
+     * Gets pinEntrySolution
+     * @return string
+     */
+    public function getPinEntrySolution()
+    {
+        return $this->container['pinEntrySolution'];
+    }
+
+    /**
+     * Sets pinEntrySolution
+     * @param string $pinEntrySolution This field will contain the type of Pin Pad the terminal has.  Possible values: -   PCI-SPoC: Where the pin is being put on screen -   PCI-PTS: Where the pin is being put on actual hardware pin pad
+     * @return $this
+     */
+    public function setPinEntrySolution($pinEntrySolution)
+    {
+        $this->container['pinEntrySolution'] = $pinEntrySolution;
 
         return $this;
     }
@@ -898,10 +722,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setDeviceId($deviceId)
     {
-        if (!is_null($deviceId) && (strlen($deviceId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $deviceId when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 32.');
-        }
-
         $this->container['deviceId'] = $deviceId;
 
         return $this;
@@ -923,11 +743,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setPinBlockEncodingFormat($pinBlockEncodingFormat)
     {
-
-        if (!is_null($pinBlockEncodingFormat) && ($pinBlockEncodingFormat > 9)) {
-            throw new \InvalidArgumentException('invalid value for $pinBlockEncodingFormat when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 9.');
-        }
-
         $this->container['pinBlockEncodingFormat'] = $pinBlockEncodingFormat;
 
         return $this;
@@ -949,10 +764,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setEncryptedPin($encryptedPin)
     {
-        if (!is_null($encryptedPin) && (strlen($encryptedPin) > 16)) {
-            throw new \InvalidArgumentException('invalid length for $encryptedPin when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 16.');
-        }
-
         $this->container['encryptedPin'] = $encryptedPin;
 
         return $this;
@@ -974,10 +785,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setEncryptedKeySerialNumber($encryptedKeySerialNumber)
     {
-        if (!is_null($encryptedKeySerialNumber) && (strlen($encryptedKeySerialNumber) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $encryptedKeySerialNumber when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['encryptedKeySerialNumber'] = $encryptedKeySerialNumber;
 
         return $this;
@@ -999,10 +806,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setPartnerSdkVersion($partnerSdkVersion)
     {
-        if (!is_null($partnerSdkVersion) && (strlen($partnerSdkVersion) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $partnerSdkVersion when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 32.');
-        }
-
         $this->container['partnerSdkVersion'] = $partnerSdkVersion;
 
         return $this;
@@ -1024,10 +827,6 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      */
     public function setEmvApplicationIdentifierAndDedicatedFileName($emvApplicationIdentifierAndDedicatedFileName)
     {
-        if (!is_null($emvApplicationIdentifierAndDedicatedFileName) && (strlen($emvApplicationIdentifierAndDedicatedFileName) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $emvApplicationIdentifierAndDedicatedFileName when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 32.');
-        }
-
         $this->container['emvApplicationIdentifierAndDedicatedFileName'] = $emvApplicationIdentifierAndDedicatedFileName;
 
         return $this;
@@ -1044,15 +843,11 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
 
     /**
      * Sets terminalCompliance
-     * @param string $terminalCompliance Flag that indicates whether the terminal is compliant with standards mandated by the Reserve Bank of India for card-present domestic transactions in India.  Format: - First character indicates whether the terminal supports terminal line encryption (TLE). Possible values:   - 1: Not certified   - 2: Certified - Second character indicates whether the terminal supports Unique Key Per Transaction (UKPT) and Derived Unique Key Per Transaction (DUKPT). Possible values:   - 1: Not certified   - 2: Certified  **Example** `21` indicates that the terminal supports TLE but does not support UKPT/DUKPT.  You and the terminal vendors are responsible for terminal certification. If you have questions, contact your acquirer.  This field is supported only for Mastercard transactions on CyberSource through VisaNet.  **Note** On CyberSource through VisaNet, the value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCR6 - Position: 92-93 - Field: Mastercard Terminal Compliance Indicator  The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment networks.  #### Used by **Authorization** Required for card-present transactions in India. Otherwise, not used.
+     * @param string $terminalCompliance Flag that indicates whether the terminal is compliant with standards mandated by the Reserve Bank of India for card-present domestic transactions in India.  Format: - First character indicates whether the terminal supports terminal line encryption (TLE). Possible values:   - 1: Not certified   - 2: Certified - Second character indicates whether the terminal supports Unique Key Per Transaction (UKPT) and Derived Unique Key Per Transaction (DUKPT). Possible values:   - 1: Not certified   - 2: Certified  **Example** `21` indicates that the terminal supports TLE but does not support UKPT/DUKPT.  You and the terminal vendors are responsible for terminal certification. If you have questions, contact your acquirer.  This field is supported only for Mastercard transactions on CyberSource through VisaNet.  **Note** On CyberSource through VisaNet, the value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCR6 - Position: 92-93 - Field: Mastercard Terminal Compliance Indicator  The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant's acquirer, who uses this information to facilitate end-of-day clearing processing with payment networks.  #### Used by **Authorization** Required for card-present transactions in India. Otherwise, not used.
      * @return $this
      */
     public function setTerminalCompliance($terminalCompliance)
     {
-        if (!is_null($terminalCompliance) && (strlen($terminalCompliance) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $terminalCompliance when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['terminalCompliance'] = $terminalCompliance;
 
         return $this;
@@ -1069,16 +864,75 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
 
     /**
      * Sets isDedicatedHardwareTerminal
-     * @param string $isDedicatedHardwareTerminal Type of mPOS device. Possible values: - 0: Dongle - 1: Phone or tablet  This optional field is supported only for Mastercard transactions on CyberSource through VisaNet.  The value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCR6 - Position: 141 - Field: Mastercard mPOS Transaction  The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment networks.
+     * @param string $isDedicatedHardwareTerminal Type of mPOS device. Possible values: - 0: Dongle - 1: Phone or tablet  This optional field is supported only for Mastercard transactions on CyberSource through VisaNet.  The value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCR6 - Position: 141 - Field: Mastercard mPOS Transaction  The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant's acquirer, who uses this information to facilitate end-of-day clearing processing with payment networks.
      * @return $this
      */
     public function setIsDedicatedHardwareTerminal($isDedicatedHardwareTerminal)
     {
-        if (!is_null($isDedicatedHardwareTerminal) && (strlen($isDedicatedHardwareTerminal) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $isDedicatedHardwareTerminal when calling Ptsv2paymentsPointOfSaleInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['isDedicatedHardwareTerminal'] = $isDedicatedHardwareTerminal;
+
+        return $this;
+    }
+
+    /**
+     * Gets terminalModel
+     * @return string
+     */
+    public function getTerminalModel()
+    {
+        return $this->container['terminalModel'];
+    }
+
+    /**
+     * Sets terminalModel
+     * @param string $terminalModel This is the model name of the reader which is used to accept the payment. Possible values:  - E3555  - P400  - A920
+     * @return $this
+     */
+    public function setTerminalModel($terminalModel)
+    {
+        $this->container['terminalModel'] = $terminalModel;
+
+        return $this;
+    }
+
+    /**
+     * Gets terminalMake
+     * @return string
+     */
+    public function getTerminalMake()
+    {
+        return $this->container['terminalMake'];
+    }
+
+    /**
+     * Sets terminalMake
+     * @param string $terminalMake This is the manufacturer name of the reader which is used to accept the payment. Possible values:  - PAX  - Verifone  - Ingenico
+     * @return $this
+     */
+    public function setTerminalMake($terminalMake)
+    {
+        $this->container['terminalMake'] = $terminalMake;
+
+        return $this;
+    }
+
+    /**
+     * Gets serviceCode
+     * @return string
+     */
+    public function getServiceCode()
+    {
+        return $this->container['serviceCode'];
+    }
+
+    /**
+     * Sets serviceCode
+     * @param string $serviceCode #### Visa Platform Connect Mastercard service code that is included in the track data.  This field is supported only for Mastercard on Visa Platform Connect.   You can extract the service code from the track data and provide it in this API field.   When not provided it will be extracted from:   - Track2Data for MSR transactions   - EMV tag 5F30 for EMV transactions  To enable this feature please call support.
+     * @return $this
+     */
+    public function setServiceCode($serviceCode)
+    {
+        $this->container['serviceCode'] = $serviceCode;
 
         return $this;
     }
@@ -1087,6 +941,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -1097,6 +952,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -1108,6 +964,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1122,6 +979,7 @@ class Ptsv2paymentsPointOfSaleInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

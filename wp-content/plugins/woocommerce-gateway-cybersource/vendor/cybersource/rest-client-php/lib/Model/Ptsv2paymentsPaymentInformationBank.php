@@ -55,7 +55,10 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'account' => '\CyberSource\Model\Ptsv2paymentsPaymentInformationBankAccount',
-        'routingNumber' => 'string'
+        'routingNumber' => 'string',
+        'iban' => 'string',
+        'swiftCode' => 'string',
+        'code' => 'string'
     ];
 
     /**
@@ -64,7 +67,10 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'account' => null,
-        'routingNumber' => null
+        'routingNumber' => null,
+        'iban' => null,
+        'swiftCode' => null,
+        'code' => null
     ];
 
     public static function swaggerTypes()
@@ -83,7 +89,10 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
      */
     protected static $attributeMap = [
         'account' => 'account',
-        'routingNumber' => 'routingNumber'
+        'routingNumber' => 'routingNumber',
+        'iban' => 'iban',
+        'swiftCode' => 'swiftCode',
+        'code' => 'code'
     ];
 
 
@@ -93,7 +102,10 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
      */
     protected static $setters = [
         'account' => 'setAccount',
-        'routingNumber' => 'setRoutingNumber'
+        'routingNumber' => 'setRoutingNumber',
+        'iban' => 'setIban',
+        'swiftCode' => 'setSwiftCode',
+        'code' => 'setCode'
     ];
 
 
@@ -103,7 +115,10 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
      */
     protected static $getters = [
         'account' => 'getAccount',
-        'routingNumber' => 'getRoutingNumber'
+        'routingNumber' => 'getRoutingNumber',
+        'iban' => 'getIban',
+        'swiftCode' => 'getSwiftCode',
+        'code' => 'getCode'
     ];
 
     public static function attributeMap()
@@ -139,6 +154,9 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
     {
         $this->container['account'] = isset($data['account']) ? $data['account'] : null;
         $this->container['routingNumber'] = isset($data['routingNumber']) ? $data['routingNumber'] : null;
+        $this->container['iban'] = isset($data['iban']) ? $data['iban'] : null;
+        $this->container['swiftCode'] = isset($data['swiftCode']) ? $data['swiftCode'] : null;
+        $this->container['code'] = isset($data['code']) ? $data['code'] : null;
     }
 
     /**
@@ -149,10 +167,6 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['routingNumber']) && (strlen($this->container['routingNumber']) > 9)) {
-            $invalid_properties[] = "invalid value for 'routingNumber', the character length must be smaller than or equal to 9.";
-        }
 
         return $invalid_properties;
     }
@@ -166,9 +180,6 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['routingNumber']) > 9) {
-            return false;
-        }
         return true;
     }
 
@@ -210,11 +221,70 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
      */
     public function setRoutingNumber($routingNumber)
     {
-        if (!is_null($routingNumber) && (strlen($routingNumber) > 9)) {
-            throw new \InvalidArgumentException('invalid length for $routingNumber when calling Ptsv2paymentsPaymentInformationBank., must be smaller than or equal to 9.');
-        }
-
         $this->container['routingNumber'] = $routingNumber;
+
+        return $this;
+    }
+
+    /**
+     * Gets iban
+     * @return string
+     */
+    public function getIban()
+    {
+        return $this->container['iban'];
+    }
+
+    /**
+     * Sets iban
+     * @param string $iban International Bank Account Number (IBAN) for the bank account. For some countries you can provide this number instead of the traditional bank account information. You can use this field only when scoring a direct debit transaction.  For all possible values, see the `bank_iban` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @return $this
+     */
+    public function setIban($iban)
+    {
+        $this->container['iban'] = $iban;
+
+        return $this;
+    }
+
+    /**
+     * Gets swiftCode
+     * @return string
+     */
+    public function getSwiftCode()
+    {
+        return $this->container['swiftCode'];
+    }
+
+    /**
+     * Sets swiftCode
+     * @param string $swiftCode Bank's SWIFT code. You can use this field only when scoring a direct debit transaction. Required only for crossborder transactions.  For all possible values, see the `bank_swiftcode` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
+     * @return $this
+     */
+    public function setSwiftCode($swiftCode)
+    {
+        $this->container['swiftCode'] = $swiftCode;
+
+        return $this;
+    }
+
+    /**
+     * Gets code
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->container['code'];
+    }
+
+    /**
+     * Sets code
+     * @param string $code Bank code of the consumer's account
+     * @return $this
+     */
+    public function setCode($code)
+    {
+        $this->container['code'] = $code;
 
         return $this;
     }
@@ -223,6 +293,7 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -233,6 +304,7 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -244,6 +316,7 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -258,6 +331,7 @@ class Ptsv2paymentsPaymentInformationBank implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

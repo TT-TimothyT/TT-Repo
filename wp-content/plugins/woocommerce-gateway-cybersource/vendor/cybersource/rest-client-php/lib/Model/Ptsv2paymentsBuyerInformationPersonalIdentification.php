@@ -56,7 +56,8 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
     protected static $swaggerTypes = [
         'type' => 'string',
         'id' => 'string',
-        'issuedBy' => 'string'
+        'issuedBy' => 'string',
+        'verificationResults' => 'string'
     ];
 
     /**
@@ -66,7 +67,8 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
     protected static $swaggerFormats = [
         'type' => null,
         'id' => null,
-        'issuedBy' => null
+        'issuedBy' => null,
+        'verificationResults' => null
     ];
 
     public static function swaggerTypes()
@@ -86,7 +88,8 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
     protected static $attributeMap = [
         'type' => 'type',
         'id' => 'id',
-        'issuedBy' => 'issuedBy'
+        'issuedBy' => 'issuedBy',
+        'verificationResults' => 'verificationResults'
     ];
 
 
@@ -97,7 +100,8 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
     protected static $setters = [
         'type' => 'setType',
         'id' => 'setId',
-        'issuedBy' => 'setIssuedBy'
+        'issuedBy' => 'setIssuedBy',
+        'verificationResults' => 'setVerificationResults'
     ];
 
 
@@ -108,7 +112,8 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
     protected static $getters = [
         'type' => 'getType',
         'id' => 'getId',
-        'issuedBy' => 'getIssuedBy'
+        'issuedBy' => 'getIssuedBy',
+        'verificationResults' => 'getVerificationResults'
     ];
 
     public static function attributeMap()
@@ -145,6 +150,7 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
         $this->container['type'] = isset($data['type']) ? $data['type'] : null;
         $this->container['id'] = isset($data['id']) ? $data['id'] : null;
         $this->container['issuedBy'] = isset($data['issuedBy']) ? $data['issuedBy'] : null;
+        $this->container['verificationResults'] = isset($data['verificationResults']) ? $data['verificationResults'] : null;
     }
 
     /**
@@ -155,10 +161,6 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 26)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 26.";
-        }
 
         return $invalid_properties;
     }
@@ -172,9 +174,6 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 26) {
-            return false;
-        }
         return true;
     }
 
@@ -190,7 +189,7 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
 
     /**
      * Sets type
-     * @param string $type The type of the identification.  Possible values:   - `NATIONAL`   - `CPF`   - `CPNJ`   - `CURP`   - `SSN`   - `DRIVER_LICENSE`  This field is supported only on the following processors.  #### ComercioLatino Set this field to the Cadastro de Pessoas Fisicas (CPF).  #### CyberSource Latin American Processing Supported for Redecard in Brazil. Set this field to the Cadastro de Pessoas Fisicas (CPF), which is required for AVS for Redecard in Brazil. **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports. In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America. The information in this field description is for the specific processing connection called CyberSource Latin American Processing. It is not for any other Latin American processors that CyberSource supports.  For processor-specific information, see the `personal_id` field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+     * @param string $type The type of the identification.  Possible values:   - `NATIONAL`   - `CPF`   - `CPNJ`   - `CURP`   - `SSN`   - `DRIVER_LICENSE`   - `PASSPORT_NUMBER`   - `PERSONAL_ID`   - `TAX_ID`  This field is supported only on the following processors.  #### ComercioLatino Set this field to the Cadastro de Pessoas Fisicas (CPF).  #### CyberSource Latin American Processing Supported for Redecard in Brazil. Set this field to the Cadastro de Pessoas Fisicas (CPF), which is required for AVS for Redecard in Brazil. **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports. In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America. The information in this field description is for the specific processing connection called CyberSource Latin American Processing. It is not for any other Latin American processors that CyberSource supports.  For processor-specific information, see the `personal_id` field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
      * @return $this
      */
     public function setType($type)
@@ -216,10 +215,6 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Ptsv2paymentsBuyerInformationPersonalIdentification., must be smaller than or equal to 26.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -236,7 +231,7 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
 
     /**
      * Sets issuedBy
-     * @param string $issuedBy The government agency that issued the driver's license or passport.  If **type**` = DRIVER_LICENSE`, this is the State or province where the customer’s driver’s license was issued.  If **type**` = PASSPORT`, this is the Issuing country for the cardholder’s passport. Recommended for Discover ProtectBuy.  Use the two-character [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).  #### TeleCheck Contact your TeleCheck representative to find out whether this field is required or optional.  #### All Other Processors Not used.  For details about the country that issued the passport, see `customer_passport_country` field description in [CyberSource Payer Authentication Using the SCMP API] (https://apps.cybersource.com/library/documentation/dev_guides/Payer_Authentication_SCMP_API/html/)  For details about the state or province that issued the passport, see `driver_license_state` field description in [Electronic Check Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/EChecks_SCMP_API/html/)
+     * @param string $issuedBy The government agency that issued the driver's license or passport.  If **type**` = DRIVER_LICENSE`, this is the State or province where the customer's driver's license was issued.  If **type**` = PASSPORT`, this is the Issuing country for the cardholder's passport. Recommended for Discover ProtectBuy.  Use the two-character [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).  #### TeleCheck Contact your TeleCheck representative to find out whether this field is required or optional.  #### All Other Processors Not used.  For details about the country that issued the passport, see `customer_passport_country` field description in [CyberSource Payer Authentication Using the SCMP API] (https://apps.cybersource.com/library/documentation/dev_guides/Payer_Authentication_SCMP_API/html/)  For details about the state or province that issued the passport, see `driver_license_state` field description in [Electronic Check Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/EChecks_SCMP_API/html/)
      * @return $this
      */
     public function setIssuedBy($issuedBy)
@@ -245,11 +240,33 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets verificationResults
+     * @return string
+     */
+    public function getVerificationResults()
+    {
+        return $this->container['verificationResults'];
+    }
+
+    /**
+     * Sets verificationResults
+     * @param string $verificationResults Verification results received from Issuer or Card Network for verification transactions. Response Only Field.
+     * @return $this
+     */
+    public function setVerificationResults($verificationResults)
+    {
+        $this->container['verificationResults'] = $verificationResults;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -260,6 +277,7 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -271,6 +289,7 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -285,6 +304,7 @@ class Ptsv2paymentsBuyerInformationPersonalIdentification implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

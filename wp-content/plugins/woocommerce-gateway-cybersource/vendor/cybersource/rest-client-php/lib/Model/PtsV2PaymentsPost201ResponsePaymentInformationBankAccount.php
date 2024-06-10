@@ -144,10 +144,6 @@ class PtsV2PaymentsPost201ResponsePaymentInformationBankAccount implements Array
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['correctedAccountNumber']) && (strlen($this->container['correctedAccountNumber']) > 17)) {
-            $invalid_properties[] = "invalid value for 'correctedAccountNumber', the character length must be smaller than or equal to 17.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class PtsV2PaymentsPost201ResponsePaymentInformationBankAccount implements Array
     public function valid()
     {
 
-        if (strlen($this->container['correctedAccountNumber']) > 17) {
-            return false;
-        }
         return true;
     }
 
@@ -183,10 +176,6 @@ class PtsV2PaymentsPost201ResponsePaymentInformationBankAccount implements Array
      */
     public function setCorrectedAccountNumber($correctedAccountNumber)
     {
-        if (!is_null($correctedAccountNumber) && (strlen($correctedAccountNumber) > 17)) {
-            throw new \InvalidArgumentException('invalid length for $correctedAccountNumber when calling PtsV2PaymentsPost201ResponsePaymentInformationBankAccount., must be smaller than or equal to 17.');
-        }
-
         $this->container['correctedAccountNumber'] = $correctedAccountNumber;
 
         return $this;
@@ -196,6 +185,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformationBankAccount implements Array
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformationBankAccount implements Array
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformationBankAccount implements Array
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformationBankAccount implements Array
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

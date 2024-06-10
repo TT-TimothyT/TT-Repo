@@ -157,14 +157,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['expirationMonth']) && (strlen($this->container['expirationMonth']) > 2)) {
-            $invalid_properties[] = "invalid value for 'expirationMonth', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['expirationYear']) && (strlen($this->container['expirationYear']) > 4)) {
-            $invalid_properties[] = "invalid value for 'expirationYear', the character length must be smaller than or equal to 4.";
-        }
-
         return $invalid_properties;
     }
 
@@ -177,12 +169,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
     public function valid()
     {
 
-        if (strlen($this->container['expirationMonth']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['expirationYear']) > 4) {
-            return false;
-        }
         return true;
     }
 
@@ -198,7 +184,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
 
     /**
      * Sets suffix
-     * @param string $suffix The customer’s latest payment card number suffix
+     * @param string $suffix The customer's latest payment card number suffix
      * @return $this
      */
     public function setSuffix($suffix)
@@ -219,15 +205,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
 
     /**
      * Sets expirationMonth
-     * @param string $expirationMonth Two-digit month in which the customer’s latest payment card expires.  Format: `MM`.  Valid values: `01` through `12`.
+     * @param string $expirationMonth Two-digit month in which the customer's latest payment card expires.  Format: `MM`.  Possible Values: `01` through `12`.
      * @return $this
      */
     public function setExpirationMonth($expirationMonth)
     {
-        if (!is_null($expirationMonth) && (strlen($expirationMonth) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $expirationMonth when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierTokenizedCardCard., must be smaller than or equal to 2.');
-        }
-
         $this->container['expirationMonth'] = $expirationMonth;
 
         return $this;
@@ -244,15 +226,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
 
     /**
      * Sets expirationYear
-     * @param string $expirationYear Four-digit year in which the customer’s latest payment card expires.  Format: `YYYY`.
+     * @param string $expirationYear Four-digit year in which the customer's latest payment card expires.  Format: `YYYY`.
      * @return $this
      */
     public function setExpirationYear($expirationYear)
     {
-        if (!is_null($expirationYear) && (strlen($expirationYear) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $expirationYear when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierTokenizedCardCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['expirationYear'] = $expirationYear;
 
         return $this;
@@ -262,6 +240,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -272,6 +251,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -283,6 +263,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -297,6 +278,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

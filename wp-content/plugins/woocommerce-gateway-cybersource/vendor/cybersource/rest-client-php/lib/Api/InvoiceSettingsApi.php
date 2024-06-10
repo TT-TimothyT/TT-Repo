@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * InvoiceSettingsApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class InvoiceSettingsApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class InvoiceSettingsApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -97,7 +104,10 @@ class InvoiceSettingsApi
      */
     public function getInvoiceSettings()
     {
+        self::$logger->info('CALL TO METHOD getInvoiceSettings STARTED');
         list($response, $statusCode, $httpHeader) = $this->getInvoiceSettingsWithHttpInfo();
+        self::$logger->info('CALL TO METHOD getInvoiceSettings ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -117,12 +127,15 @@ class InvoiceSettingsApi
         $queryParams = [];
         $headerParams = [];
         $formParams = [];
-        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json;charset=utf-8']);
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json', 'application/hal+json', 'application/json;charset=utf-8', 'application/hal+json;charset=utf-8']);
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json;charset=utf-8']);
 
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -130,6 +143,20 @@ class InvoiceSettingsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\InvoicingV2InvoiceSettingsGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -141,6 +168,8 @@ class InvoiceSettingsApi
                 '\CyberSource\Model\InvoicingV2InvoiceSettingsGet200Response',
                 '/invoicing/v2/invoiceSettings'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\InvoicingV2InvoiceSettingsGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -159,6 +188,7 @@ class InvoiceSettingsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -174,7 +204,10 @@ class InvoiceSettingsApi
      */
     public function updateInvoiceSettings($invoiceSettingsRequest)
     {
+        self::$logger->info('CALL TO METHOD updateInvoiceSettings STARTED');
         list($response, $statusCode, $httpHeader) = $this->updateInvoiceSettingsWithHttpInfo($invoiceSettingsRequest);
+        self::$logger->info('CALL TO METHOD updateInvoiceSettings ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -191,6 +224,7 @@ class InvoiceSettingsApi
     {
         // verify the required parameter 'invoiceSettingsRequest' is set
         if ($invoiceSettingsRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $invoiceSettingsRequest when calling updateInvoiceSettings");
             throw new \InvalidArgumentException('Missing the required parameter $invoiceSettingsRequest when calling updateInvoiceSettings');
         }
         // parse inputs
@@ -199,7 +233,7 @@ class InvoiceSettingsApi
         $queryParams = [];
         $headerParams = [];
         $formParams = [];
-        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json;charset=utf-8']);
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json', 'application/hal+json', 'application/json;charset=utf-8', 'application/hal+json;charset=utf-8']);
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
@@ -210,6 +244,9 @@ class InvoiceSettingsApi
         if (isset($invoiceSettingsRequest)) {
             $_tempBody = $invoiceSettingsRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\InvoiceSettingsRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -217,6 +254,20 @@ class InvoiceSettingsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : PUT $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\InvoicingV2InvoiceSettingsGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -228,6 +279,8 @@ class InvoiceSettingsApi
                 '\CyberSource\Model\InvoicingV2InvoiceSettingsGet200Response',
                 '/invoicing/v2/invoiceSettings'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\InvoicingV2InvoiceSettingsGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -246,6 +299,7 @@ class InvoiceSettingsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

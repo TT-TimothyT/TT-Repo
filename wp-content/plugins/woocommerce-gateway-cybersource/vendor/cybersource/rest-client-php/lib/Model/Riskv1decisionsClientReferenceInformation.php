@@ -55,7 +55,9 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'code' => 'string',
-        'comments' => 'string'
+        'pausedRequestId' => 'string',
+        'comments' => 'string',
+        'partner' => '\CyberSource\Model\Riskv1decisionsClientReferenceInformationPartner'
     ];
 
     /**
@@ -64,7 +66,9 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'code' => null,
-        'comments' => null
+        'pausedRequestId' => null,
+        'comments' => null,
+        'partner' => null
     ];
 
     public static function swaggerTypes()
@@ -83,7 +87,9 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      */
     protected static $attributeMap = [
         'code' => 'code',
-        'comments' => 'comments'
+        'pausedRequestId' => 'pausedRequestId',
+        'comments' => 'comments',
+        'partner' => 'partner'
     ];
 
 
@@ -93,7 +99,9 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      */
     protected static $setters = [
         'code' => 'setCode',
-        'comments' => 'setComments'
+        'pausedRequestId' => 'setPausedRequestId',
+        'comments' => 'setComments',
+        'partner' => 'setPartner'
     ];
 
 
@@ -103,7 +111,9 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      */
     protected static $getters = [
         'code' => 'getCode',
-        'comments' => 'getComments'
+        'pausedRequestId' => 'getPausedRequestId',
+        'comments' => 'getComments',
+        'partner' => 'getPartner'
     ];
 
     public static function attributeMap()
@@ -138,7 +148,9 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['code'] = isset($data['code']) ? $data['code'] : null;
+        $this->container['pausedRequestId'] = isset($data['pausedRequestId']) ? $data['pausedRequestId'] : null;
         $this->container['comments'] = isset($data['comments']) ? $data['comments'] : null;
+        $this->container['partner'] = isset($data['partner']) ? $data['partner'] : null;
     }
 
     /**
@@ -150,14 +162,9 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 50)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 50.";
+        if ($this->container['code'] === null) {
+            $invalid_properties[] = "'code' can't be null";
         }
-
-        if (!is_null($this->container['comments']) && (strlen($this->container['comments']) > 255)) {
-            $invalid_properties[] = "invalid value for 'comments', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,10 +177,7 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['code']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['comments']) > 255) {
+        if ($this->container['code'] === null) {
             return false;
         }
         return true;
@@ -196,11 +200,28 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling Riskv1decisionsClientReferenceInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['code'] = $code;
+
+        return $this;
+    }
+
+    /**
+     * Gets pausedRequestId
+     * @return string
+     */
+    public function getPausedRequestId()
+    {
+        return $this->container['pausedRequestId'];
+    }
+
+    /**
+     * Sets pausedRequestId
+     * @param string $pausedRequestId Used to resume a transaction that was paused for an order modification rule to allow for payer authentication to complete. To resume and continue with the authorization/decision service flow, call the services and include the request id from the prior decision call.
+     * @return $this
+     */
+    public function setPausedRequestId($pausedRequestId)
+    {
+        $this->container['pausedRequestId'] = $pausedRequestId;
 
         return $this;
     }
@@ -221,11 +242,28 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      */
     public function setComments($comments)
     {
-        if (!is_null($comments) && (strlen($comments) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $comments when calling Riskv1decisionsClientReferenceInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['comments'] = $comments;
+
+        return $this;
+    }
+
+    /**
+     * Gets partner
+     * @return \CyberSource\Model\Riskv1decisionsClientReferenceInformationPartner
+     */
+    public function getPartner()
+    {
+        return $this->container['partner'];
+    }
+
+    /**
+     * Sets partner
+     * @param \CyberSource\Model\Riskv1decisionsClientReferenceInformationPartner $partner
+     * @return $this
+     */
+    public function setPartner($partner)
+    {
+        $this->container['partner'] = $partner;
 
         return $this;
     }
@@ -234,6 +272,7 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +283,7 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +295,7 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +310,7 @@ class Riskv1decisionsClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

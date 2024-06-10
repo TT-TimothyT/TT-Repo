@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -28,10 +28,13 @@ use CyberSource\ApiException;
 use CyberSource\Authentication\Core\MerchantConfiguration;
 use CyberSource\Authentication\Util\GlobalParameter;
 use CyberSource\Configuration;
-use SkyVerge\WooCommerce\Cybersource\API\Helper;
+use CyberSource\Logging\LogConfiguration;
+use Exception;
 use SkyVerge\WooCommerce\Cybersource\API\Requests;
 use SkyVerge\WooCommerce\Cybersource\API\Responses;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2\SV_WC_Payment_Gateway_Helper;
+use WC_Log_Handler_File;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -58,6 +61,9 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 
 	/** @var ApiClient instance of the SDK API client */
 	protected $sdk_api_client;
+
+	/** @var MerchantConfiguration|null instance of the SDK merchant configuration */
+	protected ?MerchantConfiguration $merchant_configuration = null;
 
 
 	/**
@@ -153,7 +159,7 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 	 *
 	 * An amount will be debited from the customer's account to the merchant's account.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @param \WC_Order $order order object
 	 * @return Responses\Payments\Electronic_Check_Payment
@@ -174,7 +180,7 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 	/**
 	 * Performs a refund for the given order.
 	 *
-	 * @since 2.0.0-dev.4
+	 * @since 2.0.0
 	 *
 	 * @param \WC_Order $order order object
 	 * @return Responses\Payments\Refund
@@ -195,7 +201,7 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 	/**
 	 * Performs a void for the given order.
 	 *
-	 * @since 2.0.0-dev.4
+	 * @since 2.0.0
 	 *
 	 * @param \WC_Order $order order object
 	 * @return Responses\Payments\Authorization_Reversal
@@ -216,17 +222,24 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 	/**
 	 * Creates a transaction specific public key used to initiate the Flex Microform.
 	 *
+	 * @link https://developer.cybersource.com/docs/cybs/en-us/digital-accept-flex/developer/all/rest/digital-accept-flex/microform-integ-v2/microform-integ-getting-started-v2/creating-server-side-context-v2.html
+	 *
 	 * @since 2.0.0
 	 *
 	 * @param string $encryption_type type of encryption to use
 	 * @return Responses\Flex\Key_Generation
 	 * @throws Framework\SV_WC_API_Exception
 	 */
-	public function generate_public_key( $encryption_type = 'RsaOaep256' ) {
+	public function generate_public_key( string $encryption_type = 'RsaOaep256' ) {
 
 		$request = $this->get_new_key_generation_request();
 
-		$request->set_generate_public_key_data( $encryption_type );
+		$enabled_card_types = array_map( 'strtoupper', array_map(
+			[ SV_WC_Payment_Gateway_Helper::class, 'normalize_card_type' ],
+			$this->get_gateway()->get_card_types()
+		) );
+
+		$request->set_generate_public_key_data( $encryption_type, $enabled_card_types );
 
 		return $this->perform_request( $request );
 	}
@@ -696,14 +709,10 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 	 */
 	protected function get_new_payment_instrument_request() {
 
-		$this->set_request_header( 'profile-id', $this->get_gateway()->get_tokenization_profile_id() );
-
-		$request = $this->get_new_request( [
+		return $this->get_new_request( [
 			'request_class'  => Requests\Payment_Instruments::class,
 			'response_class' => Responses\Payment_Instruments::class,
 		] );
-
-		return $request;
 	}
 
 
@@ -717,7 +726,8 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 	 */
 	protected function get_new_key_generation_request() {
 
-		$this->set_request_accept_header( 'application/json' );
+		$this->set_request_accept_header( 'application/jwt' );
+		$this->set_request_content_type_header( 'application/json;charset=utf-8' );
 
 		return $this->get_new_request( [
 			'request_class'  => Requests\Flex\Key_Generation::class,
@@ -761,63 +771,25 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 
 
 	/**
-	 * Initializes (if needed) and returns an instance of the SDK API client.
+	 * Returns a fresh SDK API client instance.
 	 *
-	 * Ensures only one instance is/can be loaded.
+	 * Ensures that we re-use the same merchant configuration, but create a new API client and API configuration,
+	 * because Cybersource SDK API client is not designed to be re-used across requests - it can mix up request data
+	 * from previous requests, resulting in incorrect request data being sent to the API or auth failures.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return ApiClient
+	 * @throws Exception
 	 */
-	public function get_sdk_api_client() {
+	public function get_sdk_api_client(): ApiClient {
 
-		if ( null === $this->sdk_api_client ) {
+		$merchant_configuration = $this->get_merchant_configuration();
 
-			$merchant_config = $this->get_merchant_configuration();
-
-			/**
-			 * Filters the API Merchant ID used when initializing the SDK API client.
-			 *
-			 * @since 2.0.2
-			 *
-			 * @param string $merchant_id the merchant ID
-			 * @param \WC_Order $order order instance
-			 */
-			$merchant_config->setMerchantID( apply_filters( 'wc_cybersource_api_credentials_merchant_id', $this->get_gateway()->get_merchant_id(), $this->get_order() ) );
-
-			/**
-			 * Filters the API Key used when initializing the SDK API client.
-			 *
-			 * @since 2.0.2
-			 *
-			 * @param string $api_key the API key
-			 * @param \WC_Order $order order instance
-			 */
-			$merchant_config->setApiKeyID( apply_filters( 'wc_cybersource_api_credentials_api_key', $this->get_gateway()->get_api_key(), $this->get_order() ) );
-
-			/**
-			 * Filters the API Shared Secret used to Initialize the SDK API client.
-			 *
-			 * @since 2.0.2
-			 *
-			 * @param string $api_shared_secret the shared secret
-			 * @param \WC_Order $order order instance
-			 */
-			$merchant_config->setSecretKey( apply_filters( 'wc_cybersource_api_credentials_api_shared_secret', $this->get_gateway()->get_api_shared_secret(), $this->get_order() ) );
-
-			$merchant_config->setAuthenticationType( GlobalParameter::HTTP_SIGNATURE );
-
-			$config = new Configuration();
-			$config = $config->setHost( $merchant_config->getHost() );
-			// TODO: set based on the show debug setting {2019-08-01 DM}
-			//$config = $config->setDebug( $merchant_config->getDebug() );
-			// TODO: set based on the log debug setting {2019-08-01 DM}
-			//$config = $config->setDebugFile( $merchant_config->getDebugFile() . DIRECTORY_SEPARATOR . $merchant_config->getLogFileName() );
-
-			$this->sdk_api_client = new ApiClient( $config, $merchant_config );
-		}
-
-		return $this->sdk_api_client;
+		return new ApiClient(
+			( new Configuration() )->setHost( $merchant_configuration->getHost() ),
+			$merchant_configuration
+		);
 	}
 
 
@@ -827,23 +799,83 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 	 * @since 2.3.0
 	 *
 	 * @return MerchantConfiguration
+	 * @throws Exception
 	 */
-	private function get_merchant_configuration() {
+	private function get_merchant_configuration(): MerchantConfiguration {
 
-		$merchant_config = new MerchantConfiguration();
+		if ( null === $this->merchant_configuration ) {
 
-		if ( $custom_host = $this->get_custom_host() ) {
+			$merchant_configuration = new MerchantConfiguration();
 
-			$merchant_config->setHost( $custom_host );
+			if ( $custom_host = $this->get_custom_host() ) {
 
-		} else {
+				$merchant_configuration->setHost( $custom_host );
 
-			$run_environment = $this->gateway->is_test_environment() ? GlobalParameter::RUNENVIRONMENT : GlobalParameter::RUNPRODENVIRONMENT;
+			} else {
 
-			$merchant_config->setRunEnvironment( $run_environment );
+				$run_environment = $this->gateway->is_test_environment()
+					? 'apitest.cybersource.com'
+					: 'api.cybersource.com';
+
+				$merchant_configuration->setRunEnvironment( $run_environment );
+			}
+
+			/**
+			 * Filters the API Merchant ID used when initializing the SDK API client.
+			 *
+			 * @since 2.0.2
+			 *
+			 * @param string $merchant_id the merchant ID
+			 * @param \WC_Order $order order instance
+			 */
+			$merchant_configuration->setMerchantID( apply_filters( 'wc_cybersource_api_credentials_merchant_id', $this->get_gateway()->get_merchant_id(), $this->get_order() ) );
+
+			/**
+			 * Filters the API Key used when initializing the SDK API client.
+			 *
+			 * @since 2.0.2
+			 *
+			 * @param string $api_key the API key
+			 * @param \WC_Order $order order instance
+			 */
+			$merchant_configuration->setApiKeyID( apply_filters( 'wc_cybersource_api_credentials_api_key', $this->get_gateway()->get_api_key(), $this->get_order() ) );
+
+			/**
+			 * Filters the API Shared Secret used to Initialize the SDK API client.
+			 *
+			 * @since 2.0.2
+			 *
+			 * @param string $api_shared_secret the shared secret
+			 * @param \WC_Order $order order instance
+			 */
+			$merchant_configuration->setSecretKey( apply_filters( 'wc_cybersource_api_credentials_api_shared_secret', $this->get_gateway()->get_api_shared_secret(), $this->get_order() ) );
+
+			$merchant_configuration->setAuthenticationType( GlobalParameter::HTTP_SIGNATURE );
+			$merchant_configuration->setLogConfiguration( $this->get_log_configuration() );
+
+			$this->merchant_configuration = $merchant_configuration;
 		}
 
-		return $merchant_config;
+		return $this->merchant_configuration;
+	}
+
+
+	/**
+	 * Gets the SDK log configuration.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return LogConfiguration
+	 */
+	private function get_log_configuration(): LogConfiguration {
+
+		$log_config = new LogConfiguration();
+		$log_config->enableLogging( ! $this->get_gateway()->debug_off() );
+		$log_config->setDebugLogFile( WC_Log_Handler_File::get_log_file_path( $this->get_gateway()->get_id() . '-SDK' ) );
+		$log_config->setLogLevel( 'debug' );
+		$log_config->enableMasking( true );
+
+		return $log_config;
 	}
 
 

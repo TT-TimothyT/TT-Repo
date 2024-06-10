@@ -140,7 +140,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 			// Main Nav Menu ////////////////////
 			?>
 			<!-- search bar -->
-			
+
 <!-- search bar end -->
 
 <nav id="header" class="navbar <?php if (!WC()->cart->is_empty()) : echo 'pb-0';
@@ -185,7 +185,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 
 	<!-- saved cart bar -->
 	<?php
-	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
+	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true);
 	$cart = WC()->session->get( 'cart', null );
 	$persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
 	if ( !is_null($cart) && $persistent_cart_count > 0 ) {
@@ -249,7 +249,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 
 	<!-- saved cart bar -->
 	<?php
-	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
+	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true);
 	$cart = WC()->session->get( 'cart', null );
 	$persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
 	if ( !is_null($cart) && $persistent_cart_count > 0 ) {
@@ -313,133 +313,115 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 
 <!-- Modal -->
 <div class="modal fade" id="globalSearchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-fullscreen-md-down">
-    <div class="modal-content">
-      <!-- <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div> -->
-      <div class="modal-body">
-	  <?php
-			if ('1' == $search_enabled) :
-			?>
-
-				<div class="search-container p-0" id="">
-					<form class="search-form mb-4" role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
-
-						<div class="input-group mb-4 mx-auto search-input-wrapper">
-							<i class="bi bi-search"></i>
-							<input class="search-form__input form-control bg-gray-100 border-0" type="text" id="search-input" name="s" placeholder="<?php esc_attr_e('Search', 'trek-travel-theme'); ?>" title="<?php esc_attr_e('Search', 'trek-travel-theme'); ?>" >
-							<a class="clear-input" onclick="document.getElementById('search-input').value = ''">Clear</a>
-							<span id="search-close" class="search-from__icon search-form__icon--close input-group-text bg-transparent border-0" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></span>
-						</div>
-					</form>
-
-					<?php
-					$popular1 = $popular2 = $popular3 = $popular4 = new stdClass();
-					$results = array();
-					$algolia_results = trek_algolia_popular_search();
-					if ($algolia_results) {
-						$results = $algolia_results['results'];
-						$popular1 = $algolia_results['popular_1'];
-						$popular2 = $algolia_results['popular_2'];
-						$popular3 = $algolia_results['popular_3'];
-						$popular4 = $algolia_results['popular_4'];
-					}
-					// 
-					?>
-					<div class="result-container">
-						<div class="container">
-							<div class="row">
-								<div class="col-md-3 border-end">
-								<?php if (isset($results) && $results && isset($results['hits'])) { ?>
-									<h6 class="fw-bold ps-4">Popular Searches</h6>
-									<div class="list-group list-group-flush">
-										<?php
-										$popular_search_output = '';
-										for ($iter = 0; $iter <= 4; $iter++) {
-											$hits = $results["hits"][$iter]["query"];
-											$popular_search_output .= '<a href="/?s=algolia&wp_searchable_posts[query]=' . $hits . '&wp_searchable_posts[menu][post_type_label]=Trips" class="list-group-item border-0">' . $hits . '</a>';
-										}
-										echo $popular_search_output;
-										?>
-									</div>
-								</div>
-						<?php } ?>
-
-						<!-- </div> -->
-						<div class="col-md-9">
-							<div class="row">
-								<span class="fw-bold mb-2">Popular Trips</span>
-								<?php if ($popular1 != new stdClass()) { ?>
-									<div class="col-3">
-										<div class="card border-0">
-											<a href="<?php echo ($popular1 ? $popular1->Permalink : '');  ?>">
-												<img src="<?php echo ($popular1 ? $popular1->gallery_images[0] : DEFAULT_IMG); ?>" class="card-img-top rounded-1" alt="...">
-												<div class="card-body ps-0">
-													<p class="card-text text-start fw-semibold"><?php echo ($popular1 ? $popular1->Title : ''); ?></p>
-												</div>
-											</a>
-										</div>
-									</div>
-								<?php } ?>
-								<?php if ($popular2 != new stdClass()) { ?>
-									<div class="col-3">
-										<div class="card border-0">
-											<a href="<?php echo ($popular2 ? $popular2->Permalink : ''); ?>">
-												<img src="<?php echo ($popular2 ? $popular2->gallery_images[0] : DEFAULT_IMG); ?>" class="card-img-top rounded-1" alt="...">
-												<div class="card-body ps-0">
-													<p class="card-text text-start fw-semibold"><?php echo ($popular2 ? $popular2->Title : ''); ?></p>
-												</div>
-											</a>
-										</div>
-									</div>
-								<?php } ?>
-								<?php if ($popular3 != new stdClass()) { ?>
-									<div class="col-3">
-										<div class="card border-0">
-											<a href="<?php echo ($popular3 ? $popular3->Permalink : ''); ?>">
-												<img src="<?php echo ($popular3 ? $popular3->gallery_images[0] : DEFAULT_IMG); ?>" class="card-img-top rounded-1" alt="...">
-												<div class="card-body ps-0">
-													<p class="card-text text-start fw-semibold"><?php echo ($popular3 ?  $popular3->Title : ''); ?></p>
-												</div>
-											</a>
-										</div>
-									</div>
-								<?php } ?>
-								<?php if ($popular4 != new stdClass()) { ?>
-									<div class="col-3">
-										<div class="card border-0">
-											<a href="<?php echo ($popular4 ? $popular4->Permalink : ''); ?>">
-												<img src="<?php echo ($popular4 ? $popular4->gallery_images[0] : DEFAULT_IMG); ?>" class="card-img-top rounded-1" alt="...">
-												<div class="card-body ps-0">
-													<p class="card-text text-start fw-semibold"><?php echo ($popular4 ? $popular4->Title : ''); ?></p>
-												</div>
-											</a>
-										</div>
-									</div>
-								<?php } ?>
-								<?php
-								if ($popular1 == new stdClass() && $popular2 == new stdClass() && $popular3 == new stdClass() && $popular4 == new stdClass()) {
-									echo '<p class="no-results">No popular post found!</p>';
-								}
-								?>
+  	<div class="modal-dialog modal-xl modal-fullscreen-md-down">
+    	<div class="modal-content">
+      		<div class="modal-body">
+	  			<?php if ('1' == $search_enabled) : ?>
+					<div class="search-container p-0" id="">
+						<form class="search-form mb-4" role="search" method="get" action="<?php echo esc_url( home_url('/') ); ?>">
+							<div class="input-group mb-4 mx-auto search-input-wrapper">
+								<i class="bi bi-search"></i>
+								<input class="search-form__input form-control bg-gray-100 border-0" type="text" id="search-input" name="s" placeholder="<?php esc_attr_e('Search', 'trek-travel-theme'); ?>" title="<?php esc_attr_e('Search', 'trek-travel-theme'); ?>" >
+								<a class="clear-input" onclick="document.getElementById('search-input').value = ''">Clear</a>
+								<span id="search-close" class="search-from__icon search-form__icon--close input-group-text bg-transparent border-0" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></span>
 							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-				</div>
-<?php
-			endif;
-?>
+						</form>
 
+						<?php
+							$popular1 = $popular2 = $popular3 = $popular4 = new stdClass();
+							$results = array();
+							$algolia_results = trek_algolia_popular_search();
+							if ($algolia_results) {
+								$results = $algolia_results['results'];
+								$popular1 = $algolia_results['popular_1'];
+								$popular2 = $algolia_results['popular_2'];
+								$popular3 = $algolia_results['popular_3'];
+								$popular4 = $algolia_results['popular_4'];
+							}
+						?>
 
-      </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div> -->
-    </div>
-  </div>
-</div>
+						<div class="result-container">
+							<div class="container">
+								<div class="row">
+									<div class="col-md-3 border-end">
+										<?php if (isset($results) && $results && isset($results['hits'])) { ?>
+											<h6 class="fw-bold ps-4">Popular Searches</h6>
+											<div class="list-group list-group-flush">
+												<?php
+													$popular_search_output = '';
+													for ($iter = 0; $iter <= 4; $iter++) {
+														$hits = $results["hits"][$iter]["query"];
+														$popular_search_output .= '<a href="/?s=algolia&wp_searchable_posts[query]=' . $hits . '&wp_searchable_posts[menu][post_type_label]=Trips" class="list-group-item border-0">' . $hits . '</a>';
+													}
+													echo $popular_search_output;
+												?>
+											</div>
+										<?php } ?>
+									</div>
+									<div class="col-md-9">
+										<div class="row">
+											<span class="fw-bold mb-2">Popular Trips</span>
+											<?php if ( $popular1 != new stdClass() && ! empty( $popular1 ) ) { ?>
+												<div class="col-3">
+													<div class="card border-0">
+														<a href="<?php echo ($popular1 ? $popular1->Permalink : '');  ?>">
+															<img src="<?php echo ($popular1 ? $popular1->gallery_images[0] : DEFAULT_IMG); ?>" class="card-img-top rounded-1" alt="...">
+															<div class="card-body ps-0">
+																<p class="card-text text-start fw-semibold"><?php echo ($popular1 ? $popular1->Title : ''); ?></p>
+															</div>
+														</a>
+													</div>
+												</div>
+											<?php } ?>
+											<?php if ( $popular2 != new stdClass() && ! empty( $popular2 ) ) { ?>
+												<div class="col-3">
+													<div class="card border-0">
+														<a href="<?php echo ($popular2 ? $popular2->Permalink : ''); ?>">
+															<img src="<?php echo ($popular2 ? $popular2->gallery_images[0] : DEFAULT_IMG); ?>" class="card-img-top rounded-1" alt="...">
+															<div class="card-body ps-0">
+																<p class="card-text text-start fw-semibold"><?php echo ($popular2 ? $popular2->Title : ''); ?></p>
+															</div>
+														</a>
+													</div>
+												</div>
+											<?php } ?>
+											<?php if ( $popular3 != new stdClass() && ! empty( $popular3 ) ) { ?>
+												<div class="col-3">
+													<div class="card border-0">
+														<a href="<?php echo ($popular3 ? $popular3->Permalink : ''); ?>">
+															<img src="<?php echo ($popular3 ? $popular3->gallery_images[0] : DEFAULT_IMG); ?>" class="card-img-top rounded-1" alt="...">
+															<div class="card-body ps-0">
+																<p class="card-text text-start fw-semibold"><?php echo ($popular3 ?  $popular3->Title : ''); ?></p>
+															</div>
+														</a>
+													</div>
+												</div>
+											<?php } ?>
+											<?php if ( $popular4 != new stdClass() && ! empty( $popular4 ) ) { ?>
+												<div class="col-3">
+													<div class="card border-0">
+														<a href="<?php echo ($popular4 ? $popular4->Permalink : ''); ?>">
+															<img src="<?php echo ($popular4 ? $popular4->gallery_images[0] : DEFAULT_IMG); ?>" class="card-img-top rounded-1" alt="...">
+															<div class="card-body ps-0">
+																<p class="card-text text-start fw-semibold"><?php echo ($popular4 ? $popular4->Title : ''); ?></p>
+															</div>
+														</a>
+													</div>
+												</div>
+											<?php } ?>
+											<?php
+											if ( ( $popular1 == new stdClass() || empty( $popular1 ) ) && ( $popular2 == new stdClass() || empty( $popular2 ) ) && ( $popular3 == new stdClass() || empty( $popular3 ) ) && ( $popular4 == new stdClass() || empty( $popular4 ) ) ) {
+												echo '<p class="no-results">No popular post found!</p>';
+											}
+											?>
+										</div>
+									</div>
+								</div><!-- .row -->
+							</div><!-- .container -->
+						</div><!-- .result-container -->
+					</div><!-- .search-container -->
+				<?php endif; ?>
+			</div><!-- .modal-body -->
+    	</div><!-- .modal-content -->
+  	</div><!-- .modal-dialog -->
+</div><!-- .modal -->

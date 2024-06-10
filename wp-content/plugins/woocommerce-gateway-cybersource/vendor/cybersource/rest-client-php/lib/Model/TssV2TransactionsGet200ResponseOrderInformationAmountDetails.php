@@ -59,7 +59,8 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
         'taxAmount' => 'string',
         'authorizedAmount' => 'string',
         'settlementAmount' => 'string',
-        'settlementCurrency' => 'string'
+        'settlementCurrency' => 'string',
+        'surcharge' => '\CyberSource\Model\Ptsv2payoutsOrderInformationAmountDetailsSurcharge'
     ];
 
     /**
@@ -72,7 +73,8 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
         'taxAmount' => null,
         'authorizedAmount' => null,
         'settlementAmount' => null,
-        'settlementCurrency' => null
+        'settlementCurrency' => null,
+        'surcharge' => null
     ];
 
     public static function swaggerTypes()
@@ -95,7 +97,8 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
         'taxAmount' => 'taxAmount',
         'authorizedAmount' => 'authorizedAmount',
         'settlementAmount' => 'settlementAmount',
-        'settlementCurrency' => 'settlementCurrency'
+        'settlementCurrency' => 'settlementCurrency',
+        'surcharge' => 'surcharge'
     ];
 
 
@@ -109,7 +112,8 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
         'taxAmount' => 'setTaxAmount',
         'authorizedAmount' => 'setAuthorizedAmount',
         'settlementAmount' => 'setSettlementAmount',
-        'settlementCurrency' => 'setSettlementCurrency'
+        'settlementCurrency' => 'setSettlementCurrency',
+        'surcharge' => 'setSurcharge'
     ];
 
 
@@ -123,7 +127,8 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
         'taxAmount' => 'getTaxAmount',
         'authorizedAmount' => 'getAuthorizedAmount',
         'settlementAmount' => 'getSettlementAmount',
-        'settlementCurrency' => 'getSettlementCurrency'
+        'settlementCurrency' => 'getSettlementCurrency',
+        'surcharge' => 'getSurcharge'
     ];
 
     public static function attributeMap()
@@ -163,6 +168,7 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
         $this->container['authorizedAmount'] = isset($data['authorizedAmount']) ? $data['authorizedAmount'] : null;
         $this->container['settlementAmount'] = isset($data['settlementAmount']) ? $data['settlementAmount'] : null;
         $this->container['settlementCurrency'] = isset($data['settlementCurrency']) ? $data['settlementCurrency'] : null;
+        $this->container['surcharge'] = isset($data['surcharge']) ? $data['surcharge'] : null;
     }
 
     /**
@@ -173,30 +179,6 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['totalAmount']) && (strlen($this->container['totalAmount']) > 19)) {
-            $invalid_properties[] = "invalid value for 'totalAmount', the character length must be smaller than or equal to 19.";
-        }
-
-        if (!is_null($this->container['currency']) && (strlen($this->container['currency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['taxAmount']) && (strlen($this->container['taxAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'taxAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['authorizedAmount']) && (strlen($this->container['authorizedAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'authorizedAmount', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['settlementAmount']) && (strlen($this->container['settlementAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'settlementAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['settlementCurrency']) && (strlen($this->container['settlementCurrency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'settlementCurrency', the character length must be smaller than or equal to 3.";
-        }
 
         return $invalid_properties;
     }
@@ -210,24 +192,6 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
     public function valid()
     {
 
-        if (strlen($this->container['totalAmount']) > 19) {
-            return false;
-        }
-        if (strlen($this->container['currency']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['taxAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['authorizedAmount']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['settlementAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['settlementCurrency']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -248,10 +212,6 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
      */
     public function setTotalAmount($totalAmount)
     {
-        if (!is_null($totalAmount) && (strlen($totalAmount) > 19)) {
-            throw new \InvalidArgumentException('invalid length for $totalAmount when calling TssV2TransactionsGet200ResponseOrderInformationAmountDetails., must be smaller than or equal to 19.');
-        }
-
         $this->container['totalAmount'] = $totalAmount;
 
         return $this;
@@ -273,10 +233,6 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
      */
     public function setCurrency($currency)
     {
-        if (!is_null($currency) && (strlen($currency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling TssV2TransactionsGet200ResponseOrderInformationAmountDetails., must be smaller than or equal to 3.');
-        }
-
         $this->container['currency'] = $currency;
 
         return $this;
@@ -298,10 +254,6 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
      */
     public function setTaxAmount($taxAmount)
     {
-        if (!is_null($taxAmount) && (strlen($taxAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $taxAmount when calling TssV2TransactionsGet200ResponseOrderInformationAmountDetails., must be smaller than or equal to 12.');
-        }
-
         $this->container['taxAmount'] = $taxAmount;
 
         return $this;
@@ -323,10 +275,6 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
      */
     public function setAuthorizedAmount($authorizedAmount)
     {
-        if (!is_null($authorizedAmount) && (strlen($authorizedAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $authorizedAmount when calling TssV2TransactionsGet200ResponseOrderInformationAmountDetails., must be smaller than or equal to 15.');
-        }
-
         $this->container['authorizedAmount'] = $authorizedAmount;
 
         return $this;
@@ -343,15 +291,11 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
 
     /**
      * Sets settlementAmount
-     * @param string $settlementAmount This is a multicurrency field. It contains the transaction amount (field 4), converted to the Currency used to bill the cardholder’s account.
+     * @param string $settlementAmount This is a multicurrency field. It contains the transaction amount (field 4), converted to the Currency used to bill the cardholder's account. This field is returned for OCT transactions.
      * @return $this
      */
     public function setSettlementAmount($settlementAmount)
     {
-        if (!is_null($settlementAmount) && (strlen($settlementAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $settlementAmount when calling TssV2TransactionsGet200ResponseOrderInformationAmountDetails., must be smaller than or equal to 12.');
-        }
-
         $this->container['settlementAmount'] = $settlementAmount;
 
         return $this;
@@ -368,16 +312,33 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
 
     /**
      * Sets settlementCurrency
-     * @param string $settlementCurrency This is a multicurrency-only field. It contains a 3-digit numeric code that identifies the currency used by the issuer to bill the cardholder's account.
+     * @param string $settlementCurrency This is a multicurrency-only field. It contains a 3-digit numeric code that identifies the currency used by the issuer to bill the cardholder's account. This field is returned for OCT transactions.
      * @return $this
      */
     public function setSettlementCurrency($settlementCurrency)
     {
-        if (!is_null($settlementCurrency) && (strlen($settlementCurrency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $settlementCurrency when calling TssV2TransactionsGet200ResponseOrderInformationAmountDetails., must be smaller than or equal to 3.');
-        }
-
         $this->container['settlementCurrency'] = $settlementCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Gets surcharge
+     * @return \CyberSource\Model\Ptsv2payoutsOrderInformationAmountDetailsSurcharge
+     */
+    public function getSurcharge()
+    {
+        return $this->container['surcharge'];
+    }
+
+    /**
+     * Sets surcharge
+     * @param \CyberSource\Model\Ptsv2payoutsOrderInformationAmountDetailsSurcharge $surcharge
+     * @return $this
+     */
+    public function setSurcharge($surcharge)
+    {
+        $this->container['surcharge'] = $surcharge;
 
         return $this;
     }
@@ -386,6 +347,7 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -396,6 +358,7 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -407,6 +370,7 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -421,6 +385,7 @@ class TssV2TransactionsGet200ResponseOrderInformationAmountDetails implements Ar
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

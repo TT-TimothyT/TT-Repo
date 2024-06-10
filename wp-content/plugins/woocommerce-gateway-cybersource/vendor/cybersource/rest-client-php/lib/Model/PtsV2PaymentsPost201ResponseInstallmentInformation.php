@@ -294,102 +294,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['additionalCosts']) && (strlen($this->container['additionalCosts']) > 12)) {
-            $invalid_properties[] = "invalid value for 'additionalCosts', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['additionalCostsPercentage']) && (strlen($this->container['additionalCostsPercentage']) > 4)) {
-            $invalid_properties[] = "invalid value for 'additionalCostsPercentage', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['amount']) && (strlen($this->container['amount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'amount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['amountFunded']) && (strlen($this->container['amountFunded']) > 12)) {
-            $invalid_properties[] = "invalid value for 'amountFunded', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['amountRequestedPercentage']) && (strlen($this->container['amountRequestedPercentage']) > 4)) {
-            $invalid_properties[] = "invalid value for 'amountRequestedPercentage', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['annualFinancingCost']) && (strlen($this->container['annualFinancingCost']) > 7)) {
-            $invalid_properties[] = "invalid value for 'annualFinancingCost', the character length must be smaller than or equal to 7.";
-        }
-
-        if (!is_null($this->container['annualInterestRate']) && (strlen($this->container['annualInterestRate']) > 7)) {
-            $invalid_properties[] = "invalid value for 'annualInterestRate', the character length must be smaller than or equal to 7.";
-        }
-
-        if (!is_null($this->container['expenses']) && (strlen($this->container['expenses']) > 12)) {
-            $invalid_properties[] = "invalid value for 'expenses', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['expensesPercentage']) && (strlen($this->container['expensesPercentage']) > 4)) {
-            $invalid_properties[] = "invalid value for 'expensesPercentage', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['fees']) && (strlen($this->container['fees']) > 12)) {
-            $invalid_properties[] = "invalid value for 'fees', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['feesPercentage']) && (strlen($this->container['feesPercentage']) > 4)) {
-            $invalid_properties[] = "invalid value for 'feesPercentage', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['frequency']) && (strlen($this->container['frequency']) > 1)) {
-            $invalid_properties[] = "invalid value for 'frequency', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['insurance']) && (strlen($this->container['insurance']) > 12)) {
-            $invalid_properties[] = "invalid value for 'insurance', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['insurancePercentage']) && (strlen($this->container['insurancePercentage']) > 4)) {
-            $invalid_properties[] = "invalid value for 'insurancePercentage', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['invoiceData']) && (strlen($this->container['invoiceData']) > 20)) {
-            $invalid_properties[] = "invalid value for 'invoiceData', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['monthlyInterestRate']) && (strlen($this->container['monthlyInterestRate']) > 7)) {
-            $invalid_properties[] = "invalid value for 'monthlyInterestRate', the character length must be smaller than or equal to 7.";
-        }
-
-        if (!is_null($this->container['planType']) && (strlen($this->container['planType']) > 1)) {
-            $invalid_properties[] = "invalid value for 'planType', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['sequence']) && ($this->container['sequence'] > 99)) {
-            $invalid_properties[] = "invalid value for 'sequence', must be smaller than or equal to 99.";
-        }
-
-        if (!is_null($this->container['taxes']) && (strlen($this->container['taxes']) > 12)) {
-            $invalid_properties[] = "invalid value for 'taxes', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['taxesPercentage']) && (strlen($this->container['taxesPercentage']) > 4)) {
-            $invalid_properties[] = "invalid value for 'taxesPercentage', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['totalAmount']) && (strlen($this->container['totalAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'totalAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['totalCount']) && ($this->container['totalCount'] > 99)) {
-            $invalid_properties[] = "invalid value for 'totalCount', must be smaller than or equal to 99.";
-        }
-
-        if (!is_null($this->container['firstInstallmentAmount']) && (strlen($this->container['firstInstallmentAmount']) > 13)) {
-            $invalid_properties[] = "invalid value for 'firstInstallmentAmount', the character length must be smaller than or equal to 13.";
-        }
-
-        if (!is_null($this->container['firstInstallmentDate']) && (strlen($this->container['firstInstallmentDate']) > 6)) {
-            $invalid_properties[] = "invalid value for 'firstInstallmentDate', the character length must be smaller than or equal to 6.";
-        }
-
         return $invalid_properties;
     }
 
@@ -402,78 +306,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['additionalCosts']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['additionalCostsPercentage']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['amount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['amountFunded']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['amountRequestedPercentage']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['annualFinancingCost']) > 7) {
-            return false;
-        }
-        if (strlen($this->container['annualInterestRate']) > 7) {
-            return false;
-        }
-        if (strlen($this->container['expenses']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['expensesPercentage']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['fees']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['feesPercentage']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['frequency']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['insurance']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['insurancePercentage']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['invoiceData']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['monthlyInterestRate']) > 7) {
-            return false;
-        }
-        if (strlen($this->container['planType']) > 1) {
-            return false;
-        }
-        if ($this->container['sequence'] > 99) {
-            return false;
-        }
-        if (strlen($this->container['taxes']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['taxesPercentage']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['totalAmount']) > 12) {
-            return false;
-        }
-        if ($this->container['totalCount'] > 99) {
-            return false;
-        }
-        if (strlen($this->container['firstInstallmentAmount']) > 13) {
-            return false;
-        }
-        if (strlen($this->container['firstInstallmentDate']) > 6) {
-            return false;
-        }
         return true;
     }
 
@@ -494,10 +326,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setAdditionalCosts($additionalCosts)
     {
-        if (!is_null($additionalCosts) && (strlen($additionalCosts) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $additionalCosts when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['additionalCosts'] = $additionalCosts;
 
         return $this;
@@ -519,10 +347,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setAdditionalCostsPercentage($additionalCostsPercentage)
     {
-        if (!is_null($additionalCostsPercentage) && (strlen($additionalCostsPercentage) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $additionalCostsPercentage when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 4.');
-        }
-
         $this->container['additionalCostsPercentage'] = $additionalCostsPercentage;
 
         return $this;
@@ -544,10 +368,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setAmount($amount)
     {
-        if (!is_null($amount) && (strlen($amount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $amount when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['amount'] = $amount;
 
         return $this;
@@ -569,10 +389,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setAmountFunded($amountFunded)
     {
-        if (!is_null($amountFunded) && (strlen($amountFunded) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $amountFunded when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['amountFunded'] = $amountFunded;
 
         return $this;
@@ -594,10 +410,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setAmountRequestedPercentage($amountRequestedPercentage)
     {
-        if (!is_null($amountRequestedPercentage) && (strlen($amountRequestedPercentage) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $amountRequestedPercentage when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 4.');
-        }
-
         $this->container['amountRequestedPercentage'] = $amountRequestedPercentage;
 
         return $this;
@@ -619,10 +431,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setAnnualFinancingCost($annualFinancingCost)
     {
-        if (!is_null($annualFinancingCost) && (strlen($annualFinancingCost) > 7)) {
-            throw new \InvalidArgumentException('invalid length for $annualFinancingCost when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 7.');
-        }
-
         $this->container['annualFinancingCost'] = $annualFinancingCost;
 
         return $this;
@@ -644,10 +452,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setAnnualInterestRate($annualInterestRate)
     {
-        if (!is_null($annualInterestRate) && (strlen($annualInterestRate) > 7)) {
-            throw new \InvalidArgumentException('invalid length for $annualInterestRate when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 7.');
-        }
-
         $this->container['annualInterestRate'] = $annualInterestRate;
 
         return $this;
@@ -669,10 +473,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setExpenses($expenses)
     {
-        if (!is_null($expenses) && (strlen($expenses) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $expenses when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['expenses'] = $expenses;
 
         return $this;
@@ -694,10 +494,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setExpensesPercentage($expensesPercentage)
     {
-        if (!is_null($expensesPercentage) && (strlen($expensesPercentage) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $expensesPercentage when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 4.');
-        }
-
         $this->container['expensesPercentage'] = $expensesPercentage;
 
         return $this;
@@ -719,10 +515,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setFees($fees)
     {
-        if (!is_null($fees) && (strlen($fees) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $fees when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['fees'] = $fees;
 
         return $this;
@@ -744,10 +536,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setFeesPercentage($feesPercentage)
     {
-        if (!is_null($feesPercentage) && (strlen($feesPercentage) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $feesPercentage when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 4.');
-        }
-
         $this->container['feesPercentage'] = $feesPercentage;
 
         return $this;
@@ -769,10 +557,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setFrequency($frequency)
     {
-        if (!is_null($frequency) && (strlen($frequency) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $frequency when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['frequency'] = $frequency;
 
         return $this;
@@ -794,10 +578,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setInsurance($insurance)
     {
-        if (!is_null($insurance) && (strlen($insurance) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $insurance when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['insurance'] = $insurance;
 
         return $this;
@@ -819,10 +599,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setInsurancePercentage($insurancePercentage)
     {
-        if (!is_null($insurancePercentage) && (strlen($insurancePercentage) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $insurancePercentage when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 4.');
-        }
-
         $this->container['insurancePercentage'] = $insurancePercentage;
 
         return $this;
@@ -844,10 +620,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setInvoiceData($invoiceData)
     {
-        if (!is_null($invoiceData) && (strlen($invoiceData) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $invoiceData when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['invoiceData'] = $invoiceData;
 
         return $this;
@@ -869,10 +641,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setMonthlyInterestRate($monthlyInterestRate)
     {
-        if (!is_null($monthlyInterestRate) && (strlen($monthlyInterestRate) > 7)) {
-            throw new \InvalidArgumentException('invalid length for $monthlyInterestRate when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 7.');
-        }
-
         $this->container['monthlyInterestRate'] = $monthlyInterestRate;
 
         return $this;
@@ -889,15 +657,11 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
 
     /**
      * Sets planType
-     * @param string $planType #### American Express Direct, Cielo, and CyberSource Latin American Processing Flag that indicates the type of funding for the installment plan associated with the payment.  Possible values: - `1`: Merchant-funded installment plan - `2`: Issuer-funded installment plan If you do not include this field in the request, CyberSource uses the value in your CyberSource account.  To change the value in your CyberSource account, contact CyberSource Customer Service. For details, see `installment_plan_type` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet and American Express Defined code that indicates the type of installment plan for this transaction.  Contact American Express for: - Information about the kinds of installment plans that American Express provides - Values for this field  For installment payments with American Express in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP07 TCR3 - Position: 5-6 - Field: Plan Type  * The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.  #### CyberSource through VisaNet with Visa or Mastercard Flag indicating the type of funding for the installment plan associated with the payment. Possible values: - 1 or 01: Merchant-funded installment plan - 2 or 02: Issuer-funded installment plan - 43: Crediario installment plan—only with Visa in Brazil For details, see \"Installment Payments on CyberSource through VisaNet\" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  For installment payments with Visa in Brazil, the value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP07 TCR1 - Position: 5-6 - Field: Installment Type  For all other kinds of installment payments, the value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP01 TCR5 - Position: 39-40 - Field: Installment Plan Type (Issuer or Merchant)
+     * @param string $planType #### American Express Direct, Cielo, and CyberSource Latin American Processing Flag that indicates the type of funding for the installment plan associated with the payment.  Possible values: - `1`: Merchant-funded installment plan - `2`: Issuer-funded installment plan If you do not include this field in the request, CyberSource uses the value in your CyberSource account.  To change the value in your CyberSource account, contact CyberSource Customer Service. For details, see `installment_plan_type` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet and American Express Defined code that indicates the type of installment plan for this transaction.  Contact American Express for: - Information about the kinds of installment plans that American Express provides - Values for this field  For installment payments with American Express in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP07 TCR3 - Position: 5-6 - Field: Plan Type  * The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant's acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.  #### CyberSource through VisaNet with Visa or Mastercard Flag indicating the type of funding for the installment plan associated with the payment. Possible values: - 1 or 01: Merchant-funded installment plan - 2 or 02: Issuer-funded installment plan - 43: Crediario installment plan—only with Visa in Brazil For details, see \"Installment Payments on CyberSource through VisaNet\" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  For installment payments with Visa in Brazil, the value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP07 TCR1 - Position: 5-6 - Field: Installment Type  For all other kinds of installment payments, the value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP01 TCR5 - Position: 39-40 - Field: Installment Plan Type (Issuer or Merchant)
      * @return $this
      */
     public function setPlanType($planType)
     {
-        if (!is_null($planType) && (strlen($planType) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $planType when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['planType'] = $planType;
 
         return $this;
@@ -914,16 +678,11 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
 
     /**
      * Sets sequence
-     * @param int $sequence Installment number when making payments in installments. Used along with `totalCount` to track which payment is being processed.  For example, the second of 5 payments would be passed to CyberSource as `sequence` = 2 and `totalCount` = 5.  For details, see \"Installment Payments\" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### Chase Paymentech Solutions and FDC Compass This field is optional because this value is required in the merchant descriptors. For details, see \"Chase Paymentech Solutions Merchant Descriptors\" and \"FDC Compass Merchant Descriptors\" in the [Merchant Descriptors Using the SCMP API] (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)  #### CyberSource through VisaNet When you do not include this field in a request for a Crediario installment payment, CyberSource sends a value of 0 to the processor.  For Crediario installment payments, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP01 TCR9 - Position: 38-40 - Field: Installment Payment Number  * The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
+     * @param int $sequence Installment number when making payments in installments. Used along with `totalCount` to track which payment is being processed.  For example, the second of 5 payments would be passed to CyberSource as `sequence` = 2 and `totalCount` = 5.  For details, see \"Installment Payments\" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### Chase Paymentech Solutions and FDC Compass This field is optional because this value is required in the merchant descriptors. For details, see \"Chase Paymentech Solutions Merchant Descriptors\" and \"FDC Compass Merchant Descriptors\" in the [Merchant Descriptors Using the SCMP API] (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)  #### CyberSource through VisaNet When you do not include this field in a request for a Crediario installment payment, CyberSource sends a value of 0 to the processor.  For Crediario installment payments, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP01 TCR9 - Position: 38-40 - Field: Installment Payment Number  * The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant's acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
      * @return $this
      */
     public function setSequence($sequence)
     {
-
-        if (!is_null($sequence) && ($sequence > 99)) {
-            throw new \InvalidArgumentException('invalid value for $sequence when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 99.');
-        }
-
         $this->container['sequence'] = $sequence;
 
         return $this;
@@ -945,10 +704,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setTaxes($taxes)
     {
-        if (!is_null($taxes) && (strlen($taxes) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $taxes when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['taxes'] = $taxes;
 
         return $this;
@@ -970,10 +725,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setTaxesPercentage($taxesPercentage)
     {
-        if (!is_null($taxesPercentage) && (strlen($taxesPercentage) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $taxesPercentage when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 4.');
-        }
-
         $this->container['taxesPercentage'] = $taxesPercentage;
 
         return $this;
@@ -995,10 +746,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setTotalAmount($totalAmount)
     {
-        if (!is_null($totalAmount) && (strlen($totalAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $totalAmount when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['totalAmount'] = $totalAmount;
 
         return $this;
@@ -1015,16 +762,11 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
 
     /**
      * Sets totalCount
-     * @param int $totalCount Total number of installments when making payments in installments.  For details, see \"Installment Payments\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### Chase Paymentech Solutions and FDC Compass This field is optional because this value is required in the merchant descriptors.  For details, see \"Chase Paymentech Solutions Merchant Descriptors\" and \"FDC Compass Merchant Descriptors\" in the [Merchant Descriptors Using the SCMP API.] (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)  #### American Express Direct, Cielo, and Comercio Latino This value is the total number of installments you approved.  #### CyberSource Latin American Processing in Brazil This value is the total number of installments that you approved. The default is 1.  #### All Other Processors This value is used along with _sequence_ to track which payment is being processed.  For example, the second of 5 payments would be passed to CyberSource as _sequence_ = 2 and _totalCount_ = 5.  #### CyberSource through VisaNet For Crediario installment payments, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP01 TCR9 - Position: 23-25 - Field: Number of Installments  For installment payments with American Express in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP07 TCR3 - Position: 7-8 - Field: Number of Installments  For installment payments with Visa in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP07 TCR1 - Position: 7-8 - Field: Number of Installments  For all other kinds of installment payments, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP01 TCR5 - Position: 20-22 - Field: Installment Total Count  **Note** The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
+     * @param int $totalCount Total number of installments when making payments in installments.  For details, see \"Installment Payments\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### Chase Paymentech Solutions and FDC Compass This field is optional because this value is required in the merchant descriptors.  For details, see \"Chase Paymentech Solutions Merchant Descriptors\" and \"FDC Compass Merchant Descriptors\" in the [Merchant Descriptors Using the SCMP API.] (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)  #### American Express Direct, Cielo, and Comercio Latino This value is the total number of installments you approved.  #### CyberSource Latin American Processing in Brazil This value is the total number of installments that you approved. The default is 1.  #### All Other Processors This value is used along with _sequence_ to track which payment is being processed.  For example, the second of 5 payments would be passed to CyberSource as _sequence_ = 2 and _totalCount_ = 5.  #### CyberSource through VisaNet For Crediario installment payments, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP01 TCR9 - Position: 23-25 - Field: Number of Installments  For installment payments with American Express in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP07 TCR3 - Position: 7-8 - Field: Number of Installments  For installment payments with Visa in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP07 TCR1 - Position: 7-8 - Field: Number of Installments  For all other kinds of installment payments, the value for this field corresponds to the following data in the TC 33 capture file*: - Record: CP01 TCR5 - Position: 20-22 - Field: Installment Total Count  **Note** The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant's acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
      * @return $this
      */
     public function setTotalCount($totalCount)
     {
-
-        if (!is_null($totalCount) && ($totalCount > 99)) {
-            throw new \InvalidArgumentException('invalid value for $totalCount when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 99.');
-        }
-
         $this->container['totalCount'] = $totalCount;
 
         return $this;
@@ -1088,10 +830,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setFirstInstallmentAmount($firstInstallmentAmount)
     {
-        if (!is_null($firstInstallmentAmount) && (strlen($firstInstallmentAmount) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $firstInstallmentAmount when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 13.');
-        }
-
         $this->container['firstInstallmentAmount'] = $firstInstallmentAmount;
 
         return $this;
@@ -1113,10 +851,6 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      */
     public function setFirstInstallmentDate($firstInstallmentDate)
     {
-        if (!is_null($firstInstallmentDate) && (strlen($firstInstallmentDate) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $firstInstallmentDate when calling PtsV2PaymentsPost201ResponseInstallmentInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['firstInstallmentDate'] = $firstInstallmentDate;
 
         return $this;
@@ -1126,6 +860,7 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -1136,6 +871,7 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -1147,6 +883,7 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1161,6 +898,7 @@ class PtsV2PaymentsPost201ResponseInstallmentInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

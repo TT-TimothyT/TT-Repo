@@ -168,26 +168,6 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['firstName']) && (strlen($this->container['firstName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'firstName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['lastName']) && (strlen($this->container['lastName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'lastName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address1']) && (strlen($this->container['address1']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address1', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['phoneNumber']) && (strlen($this->container['phoneNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'phoneNumber', the character length must be smaller than or equal to 15.";
-        }
-
         return $invalid_properties;
     }
 
@@ -200,21 +180,6 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
     public function valid()
     {
 
-        if (strlen($this->container['firstName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['lastName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address1']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['country']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['phoneNumber']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -235,10 +200,6 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
      */
     public function setFirstName($firstName)
     {
-        if (!is_null($firstName) && (strlen($firstName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $firstName when calling TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['firstName'] = $firstName;
 
         return $this;
@@ -260,10 +221,6 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
      */
     public function setLastName($lastName)
     {
-        if (!is_null($lastName) && (strlen($lastName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $lastName when calling TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['lastName'] = $lastName;
 
         return $this;
@@ -280,15 +237,11 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
 
     /**
      * Sets address1
-     * @param string $address1 First line of the shipping address.  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $address1 First line of the shipping address.  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAddress1($address1)
     {
-        if (!is_null($address1) && (strlen($address1) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address1 when calling TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address1'] = $address1;
 
         return $this;
@@ -305,15 +258,11 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
 
     /**
      * Sets country
-     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -335,10 +284,6 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
      */
     public function setPhoneNumber($phoneNumber)
     {
-        if (!is_null($phoneNumber) && (strlen($phoneNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $phoneNumber when calling TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo., must be smaller than or equal to 15.');
-        }
-
         $this->container['phoneNumber'] = $phoneNumber;
 
         return $this;
@@ -348,6 +293,7 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -358,6 +304,7 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -369,6 +316,7 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -383,6 +331,7 @@ class TssV2TransactionsPost201ResponseEmbeddedOrderInformationShipTo implements 
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -198,46 +198,6 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['email']) && (strlen($this->container['email']) > 1)) {
-            $invalid_properties[] = "invalid value for 'email', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['emailRaw']) && (strlen($this->container['emailRaw']) > 1)) {
-            $invalid_properties[] = "invalid value for 'emailRaw', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['name']) && (strlen($this->container['name']) > 30)) {
-            $invalid_properties[] = "invalid value for 'name', the character length must be smaller than or equal to 30.";
-        }
-
-        if (!is_null($this->container['nameRaw']) && (strlen($this->container['nameRaw']) > 30)) {
-            $invalid_properties[] = "invalid value for 'nameRaw', the character length must be smaller than or equal to 30.";
-        }
-
-        if (!is_null($this->container['phoneNumber']) && (strlen($this->container['phoneNumber']) > 1)) {
-            $invalid_properties[] = "invalid value for 'phoneNumber', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['phoneNumberRaw']) && (strlen($this->container['phoneNumberRaw']) > 1)) {
-            $invalid_properties[] = "invalid value for 'phoneNumberRaw', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['street']) && (strlen($this->container['street']) > 1)) {
-            $invalid_properties[] = "invalid value for 'street', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['streetRaw']) && (strlen($this->container['streetRaw']) > 1)) {
-            $invalid_properties[] = "invalid value for 'streetRaw', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['postalCode']) && (strlen($this->container['postalCode']) > 1)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['postalCodeRaw']) && (strlen($this->container['postalCodeRaw']) > 1)) {
-            $invalid_properties[] = "invalid value for 'postalCodeRaw', the character length must be smaller than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -250,36 +210,6 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
     public function valid()
     {
 
-        if (strlen($this->container['email']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['emailRaw']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['name']) > 30) {
-            return false;
-        }
-        if (strlen($this->container['nameRaw']) > 30) {
-            return false;
-        }
-        if (strlen($this->container['phoneNumber']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['phoneNumberRaw']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['street']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['streetRaw']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['postalCodeRaw']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -295,15 +225,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets email
-     * @param string $email Mapped Electronic Verification response code for the customer’s email address.  For details, see `auth_ev_email` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $email Mapped Electronic Verification response code for the customer's email address.  For details, see `auth_ev_email` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setEmail($email)
     {
-        if (!is_null($email) && (strlen($email) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $email when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 1.');
-        }
-
         $this->container['email'] = $email;
 
         return $this;
@@ -320,15 +246,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets emailRaw
-     * @param string $emailRaw Raw Electronic Verification response code from the processor for the customer’s email address.
+     * @param string $emailRaw Raw Electronic Verification response code from the processor for the customer's email address.
      * @return $this
      */
     public function setEmailRaw($emailRaw)
     {
-        if (!is_null($emailRaw) && (strlen($emailRaw) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $emailRaw when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 1.');
-        }
-
         $this->container['emailRaw'] = $emailRaw;
 
         return $this;
@@ -345,15 +267,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets name
-     * @param string $name Mapped Electronic Verification response code for the customer’s name.
+     * @param string $name #### Visa Platform Connect Mapped Electronic Verification response code for the customer's name.  Valid values :  'Y'   Yes, the data Matches 'N'   No Match 'O'   Partial Match
      * @return $this
      */
     public function setName($name)
     {
-        if (!is_null($name) && (strlen($name) > 30)) {
-            throw new \InvalidArgumentException('invalid length for $name when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 30.');
-        }
-
         $this->container['name'] = $name;
 
         return $this;
@@ -370,15 +288,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets nameRaw
-     * @param string $nameRaw Raw Electronic Verification response code from the processor for the customer’s name.
+     * @param string $nameRaw #### Visa Platform Connect Raw Electronic Verification response code from the processor for the customer's name.  Valid values :  '01'     Match '50'     Partial Match '99'     No Match
      * @return $this
      */
     public function setNameRaw($nameRaw)
     {
-        if (!is_null($nameRaw) && (strlen($nameRaw) > 30)) {
-            throw new \InvalidArgumentException('invalid length for $nameRaw when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 30.');
-        }
-
         $this->container['nameRaw'] = $nameRaw;
 
         return $this;
@@ -395,15 +309,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets phoneNumber
-     * @param string $phoneNumber Mapped Electronic Verification response code for the customer’s phone number.  For details, see `auth_ev_phone_number` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $phoneNumber Mapped Electronic Verification response code for the customer's phone number.  For details, see `auth_ev_phone_number` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setPhoneNumber($phoneNumber)
     {
-        if (!is_null($phoneNumber) && (strlen($phoneNumber) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $phoneNumber when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 1.');
-        }
-
         $this->container['phoneNumber'] = $phoneNumber;
 
         return $this;
@@ -420,15 +330,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets phoneNumberRaw
-     * @param string $phoneNumberRaw Raw Electronic Verification response code from the processor for the customer’s phone number.
+     * @param string $phoneNumberRaw Raw Electronic Verification response code from the processor for the customer's phone number.
      * @return $this
      */
     public function setPhoneNumberRaw($phoneNumberRaw)
     {
-        if (!is_null($phoneNumberRaw) && (strlen($phoneNumberRaw) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $phoneNumberRaw when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 1.');
-        }
-
         $this->container['phoneNumberRaw'] = $phoneNumberRaw;
 
         return $this;
@@ -445,15 +351,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets street
-     * @param string $street Mapped Electronic Verification response code for the customer’s street address.  For details, see `auth_ev_street` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $street Mapped Electronic Verification response code for the customer's street address.  For details, see `auth_ev_street` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setStreet($street)
     {
-        if (!is_null($street) && (strlen($street) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $street when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 1.');
-        }
-
         $this->container['street'] = $street;
 
         return $this;
@@ -470,15 +372,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets streetRaw
-     * @param string $streetRaw Raw Electronic Verification response code from the processor for the customer’s street address.
+     * @param string $streetRaw Raw Electronic Verification response code from the processor for the customer's street address.
      * @return $this
      */
     public function setStreetRaw($streetRaw)
     {
-        if (!is_null($streetRaw) && (strlen($streetRaw) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $streetRaw when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 1.');
-        }
-
         $this->container['streetRaw'] = $streetRaw;
 
         return $this;
@@ -495,15 +393,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets postalCode
-     * @param string $postalCode Mapped Electronic Verification response code for the customer’s postal code.  For details, see `auth_ev_postal_code` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $postalCode Mapped Electronic Verification response code for the customer's postal code.  For details, see `auth_ev_postal_code` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setPostalCode($postalCode)
     {
-        if (!is_null($postalCode) && (strlen($postalCode) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 1.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -520,15 +414,11 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
 
     /**
      * Sets postalCodeRaw
-     * @param string $postalCodeRaw Raw Electronic Verification response code from the processor for the customer’s postal code.
+     * @param string $postalCodeRaw Raw Electronic Verification response code from the processor for the customer's postal code.
      * @return $this
      */
     public function setPostalCodeRaw($postalCodeRaw)
     {
-        if (!is_null($postalCodeRaw) && (strlen($postalCodeRaw) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $postalCodeRaw when calling TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults., must be smaller than or equal to 1.');
-        }
-
         $this->container['postalCodeRaw'] = $postalCodeRaw;
 
         return $this;
@@ -538,6 +428,7 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -548,6 +439,7 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -559,6 +451,7 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -573,6 +466,7 @@ class TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationR
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

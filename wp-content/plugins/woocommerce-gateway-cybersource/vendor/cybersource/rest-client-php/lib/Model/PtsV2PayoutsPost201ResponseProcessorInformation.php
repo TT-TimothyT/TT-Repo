@@ -168,26 +168,6 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['approvalCode']) && (strlen($this->container['approvalCode']) > 6)) {
-            $invalid_properties[] = "invalid value for 'approvalCode', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['responseCode']) && (strlen($this->container['responseCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'responseCode', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['transactionId']) && (strlen($this->container['transactionId']) > 15)) {
-            $invalid_properties[] = "invalid value for 'transactionId', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['systemTraceAuditNumber']) && (strlen($this->container['systemTraceAuditNumber']) > 6)) {
-            $invalid_properties[] = "invalid value for 'systemTraceAuditNumber', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['responseCodeSource']) && (strlen($this->container['responseCodeSource']) > 1)) {
-            $invalid_properties[] = "invalid value for 'responseCodeSource', the character length must be smaller than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -200,21 +180,6 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['approvalCode']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['responseCode']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['transactionId']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['systemTraceAuditNumber']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['responseCodeSource']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -235,10 +200,6 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
      */
     public function setApprovalCode($approvalCode)
     {
-        if (!is_null($approvalCode) && (strlen($approvalCode) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $approvalCode when calling PtsV2PayoutsPost201ResponseProcessorInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['approvalCode'] = $approvalCode;
 
         return $this;
@@ -260,10 +221,6 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
      */
     public function setResponseCode($responseCode)
     {
-        if (!is_null($responseCode) && (strlen($responseCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $responseCode when calling PtsV2PayoutsPost201ResponseProcessorInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['responseCode'] = $responseCode;
 
         return $this;
@@ -285,10 +242,6 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
      */
     public function setTransactionId($transactionId)
     {
-        if (!is_null($transactionId) && (strlen($transactionId) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $transactionId when calling PtsV2PayoutsPost201ResponseProcessorInformation., must be smaller than or equal to 15.');
-        }
-
         $this->container['transactionId'] = $transactionId;
 
         return $this;
@@ -305,15 +258,11 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
 
     /**
      * Sets systemTraceAuditNumber
-     * @param string $systemTraceAuditNumber This field is returned only for **American Express Direct** and **CyberSource through VisaNet**. Returned by authorization and incremental authorization services.  #### American Express Direct  System trace audit number (STAN). This value identifies the transaction and is useful when investigating a chargeback dispute.  #### CyberSource through VisaNet  System trace number that must be printed on the customer’s receipt.
+     * @param string $systemTraceAuditNumber This field is returned only for **American Express Direct** and **CyberSource through VisaNet**. Returned by authorization and incremental authorization services.  #### American Express Direct  System trace audit number (STAN). This value identifies the transaction and is useful when investigating a chargeback dispute.  #### CyberSource through VisaNet  System trace number that must be printed on the customer's receipt.
      * @return $this
      */
     public function setSystemTraceAuditNumber($systemTraceAuditNumber)
     {
-        if (!is_null($systemTraceAuditNumber) && (strlen($systemTraceAuditNumber) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $systemTraceAuditNumber when calling PtsV2PayoutsPost201ResponseProcessorInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['systemTraceAuditNumber'] = $systemTraceAuditNumber;
 
         return $this;
@@ -335,10 +284,6 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
      */
     public function setResponseCodeSource($responseCodeSource)
     {
-        if (!is_null($responseCodeSource) && (strlen($responseCodeSource) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $responseCodeSource when calling PtsV2PayoutsPost201ResponseProcessorInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['responseCodeSource'] = $responseCodeSource;
 
         return $this;
@@ -348,6 +293,7 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -358,6 +304,7 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -369,6 +316,7 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -383,6 +331,7 @@ class PtsV2PayoutsPost201ResponseProcessorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

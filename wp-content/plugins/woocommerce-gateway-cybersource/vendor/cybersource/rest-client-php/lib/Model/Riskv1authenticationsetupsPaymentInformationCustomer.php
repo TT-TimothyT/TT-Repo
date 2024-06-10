@@ -144,14 +144,6 @@ class Riskv1authenticationsetupsPaymentInformationCustomer implements ArrayAcces
     {
         $invalid_properties = [];
 
-        // if (!is_null($this->container['customerId']) && (strlen($this->container['customerId']) > 22)) {
-        //     $invalid_properties[] = "invalid value for 'customerId', the character length must be smaller than or equal to 22.";
-        // }
-
-        if (!is_null($this->container['customerId']) && (strlen($this->container['customerId']) < 16)) {
-            $invalid_properties[] = "invalid value for 'customerId', the character length must be bigger than or equal to 16.";
-        }
-
         return $invalid_properties;
     }
 
@@ -164,12 +156,6 @@ class Riskv1authenticationsetupsPaymentInformationCustomer implements ArrayAcces
     public function valid()
     {
 
-        // if (strlen($this->container['customerId']) > 22) {
-        //     return false;
-        // }
-        if (strlen($this->container['customerId']) < 16) {
-            return false;
-        }
         return true;
     }
 
@@ -190,13 +176,6 @@ class Riskv1authenticationsetupsPaymentInformationCustomer implements ArrayAcces
      */
     public function setCustomerId($customerId)
     {
-        // if (!is_null($customerId) && (strlen($customerId) > 22)) {
-        //     throw new \InvalidArgumentException('invalid length for $customerId when calling Riskv1authenticationsetupsPaymentInformationCustomer., must be smaller than or equal to 22.');
-        // }
-        if (!is_null($customerId) && (strlen($customerId) < 16)) {
-            throw new \InvalidArgumentException('invalid length for $customerId when calling Riskv1authenticationsetupsPaymentInformationCustomer., must be bigger than or equal to 16.');
-        }
-
         $this->container['customerId'] = $customerId;
 
         return $this;
@@ -206,6 +185,7 @@ class Riskv1authenticationsetupsPaymentInformationCustomer implements ArrayAcces
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -216,6 +196,7 @@ class Riskv1authenticationsetupsPaymentInformationCustomer implements ArrayAcces
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -227,6 +208,7 @@ class Riskv1authenticationsetupsPaymentInformationCustomer implements ArrayAcces
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -241,6 +223,7 @@ class Riskv1authenticationsetupsPaymentInformationCustomer implements ArrayAcces
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

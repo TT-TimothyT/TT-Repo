@@ -157,14 +157,6 @@ class Ptsv2paymentsOrderInformationShippingDetails implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['shippingMethod']) && (strlen($this->container['shippingMethod']) > 10)) {
-            $invalid_properties[] = "invalid value for 'shippingMethod', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['shipFromPostalCode']) && (strlen($this->container['shipFromPostalCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'shipFromPostalCode', the character length must be smaller than or equal to 10.";
-        }
-
         return $invalid_properties;
     }
 
@@ -177,12 +169,6 @@ class Ptsv2paymentsOrderInformationShippingDetails implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['shippingMethod']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['shipFromPostalCode']) > 10) {
-            return false;
-        }
         return true;
     }
 
@@ -224,10 +210,6 @@ class Ptsv2paymentsOrderInformationShippingDetails implements ArrayAccess
      */
     public function setShippingMethod($shippingMethod)
     {
-        if (!is_null($shippingMethod) && (strlen($shippingMethod) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $shippingMethod when calling Ptsv2paymentsOrderInformationShippingDetails., must be smaller than or equal to 10.');
-        }
-
         $this->container['shippingMethod'] = $shippingMethod;
 
         return $this;
@@ -249,10 +231,6 @@ class Ptsv2paymentsOrderInformationShippingDetails implements ArrayAccess
      */
     public function setShipFromPostalCode($shipFromPostalCode)
     {
-        if (!is_null($shipFromPostalCode) && (strlen($shipFromPostalCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $shipFromPostalCode when calling Ptsv2paymentsOrderInformationShippingDetails., must be smaller than or equal to 10.');
-        }
-
         $this->container['shipFromPostalCode'] = $shipFromPostalCode;
 
         return $this;
@@ -262,6 +240,7 @@ class Ptsv2paymentsOrderInformationShippingDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -272,6 +251,7 @@ class Ptsv2paymentsOrderInformationShippingDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -283,6 +263,7 @@ class Ptsv2paymentsOrderInformationShippingDetails implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -297,6 +278,7 @@ class Ptsv2paymentsOrderInformationShippingDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

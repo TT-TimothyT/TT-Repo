@@ -150,14 +150,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts implements
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 3)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['amount']) && (strlen($this->container['amount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'amount', the character length must be smaller than or equal to 12.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts implements
     public function valid()
     {
 
-        if (strlen($this->container['code']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['amount']) > 12) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +182,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts implements
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts., must be smaller than or equal to 3.');
-        }
-
         $this->container['code'] = $code;
 
         return $this;
@@ -221,10 +203,6 @@ class Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts implements
      */
     public function setAmount($amount)
     {
-        if (!is_null($amount) && (strlen($amount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $amount when calling Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts., must be smaller than or equal to 12.');
-        }
-
         $this->container['amount'] = $amount;
 
         return $this;
@@ -234,6 +212,7 @@ class Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts implements
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts implements
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts implements
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Ptsv2paymentsOrderInformationAmountDetailsAmexAdditionalAmounts implements
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

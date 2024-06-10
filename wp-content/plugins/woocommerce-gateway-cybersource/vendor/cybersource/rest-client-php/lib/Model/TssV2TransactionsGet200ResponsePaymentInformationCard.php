@@ -62,6 +62,8 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
         'startYear' => 'string',
         'issueNumber' => 'string',
         'type' => 'string',
+        'brandName' => 'string',
+        'currency' => 'string',
         'accountEncoderId' => 'string',
         'useAs' => 'string'
     ];
@@ -79,6 +81,8 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
         'startYear' => null,
         'issueNumber' => null,
         'type' => null,
+        'brandName' => null,
+        'currency' => null,
         'accountEncoderId' => null,
         'useAs' => null
     ];
@@ -106,6 +110,8 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
         'startYear' => 'startYear',
         'issueNumber' => 'issueNumber',
         'type' => 'type',
+        'brandName' => 'brandName',
+        'currency' => 'currency',
         'accountEncoderId' => 'accountEncoderId',
         'useAs' => 'useAs'
     ];
@@ -124,6 +130,8 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
         'startYear' => 'setStartYear',
         'issueNumber' => 'setIssueNumber',
         'type' => 'setType',
+        'brandName' => 'setBrandName',
+        'currency' => 'setCurrency',
         'accountEncoderId' => 'setAccountEncoderId',
         'useAs' => 'setUseAs'
     ];
@@ -142,6 +150,8 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
         'startYear' => 'getStartYear',
         'issueNumber' => 'getIssueNumber',
         'type' => 'getType',
+        'brandName' => 'getBrandName',
+        'currency' => 'getCurrency',
         'accountEncoderId' => 'getAccountEncoderId',
         'useAs' => 'getUseAs'
     ];
@@ -185,6 +195,8 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
         $this->container['startYear'] = isset($data['startYear']) ? $data['startYear'] : null;
         $this->container['issueNumber'] = isset($data['issueNumber']) ? $data['issueNumber'] : null;
         $this->container['type'] = isset($data['type']) ? $data['type'] : null;
+        $this->container['brandName'] = isset($data['brandName']) ? $data['brandName'] : null;
+        $this->container['currency'] = isset($data['currency']) ? $data['currency'] : null;
         $this->container['accountEncoderId'] = isset($data['accountEncoderId']) ? $data['accountEncoderId'] : null;
         $this->container['useAs'] = isset($data['useAs']) ? $data['useAs'] : null;
     }
@@ -198,38 +210,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['prefix']) && (strlen($this->container['prefix']) > 6)) {
-            $invalid_properties[] = "invalid value for 'prefix', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['expirationMonth']) && (strlen($this->container['expirationMonth']) > 2)) {
-            $invalid_properties[] = "invalid value for 'expirationMonth', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['expirationYear']) && (strlen($this->container['expirationYear']) > 4)) {
-            $invalid_properties[] = "invalid value for 'expirationYear', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['startMonth']) && (strlen($this->container['startMonth']) > 2)) {
-            $invalid_properties[] = "invalid value for 'startMonth', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['startYear']) && (strlen($this->container['startYear']) > 4)) {
-            $invalid_properties[] = "invalid value for 'startYear', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['issueNumber']) && (strlen($this->container['issueNumber']) > 5)) {
-            $invalid_properties[] = "invalid value for 'issueNumber', the character length must be smaller than or equal to 5.";
-        }
-
-        if (!is_null($this->container['accountEncoderId']) && (strlen($this->container['accountEncoderId']) > 3)) {
-            $invalid_properties[] = "invalid value for 'accountEncoderId', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['useAs']) && (strlen($this->container['useAs']) > 20)) {
-            $invalid_properties[] = "invalid value for 'useAs', the character length must be smaller than or equal to 20.";
-        }
-
         return $invalid_properties;
     }
 
@@ -242,30 +222,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['prefix']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['expirationMonth']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['expirationYear']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['startMonth']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['startYear']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['issueNumber']) > 5) {
-            return false;
-        }
-        if (strlen($this->container['accountEncoderId']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['useAs']) > 20) {
-            return false;
-        }
         return true;
     }
 
@@ -281,7 +237,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
 
     /**
      * Sets suffix
-     * @param string $suffix Last four digits of the cardholder’s account number. This field is included in the reply message when the client software that is installed on the POS terminal uses the token management service (TMS) to retrieve tokenized payment details.  You must contact customer support to have your account enabled to receive these fields in the credit reply message.  #### PIN debit This field is returned only for tokenized transactions. You can use this value on the receipt that you give to the cardholder.  Returned by PIN debit credit and PIN debit purchase.  This field is supported only by the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX
+     * @param string $suffix Last four digits of the cardholder's account number. This field is included in the reply message when the client software that is installed on the POS terminal uses the token management service (TMS) to retrieve tokenized payment details.  You must contact customer support to have your account enabled to receive these fields in the credit reply message.  #### Google Pay transactions For PAN-based Google Pay transactions, this field is returned in the API response.  #### PIN debit This field is returned only for tokenized transactions. You can use this value on the receipt that you give to the cardholder.  Returned by PIN debit credit and PIN debit purchase.  This field is supported only by the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX
      * @return $this
      */
     public function setSuffix($suffix)
@@ -302,15 +258,11 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
 
     /**
      * Sets prefix
-     * @param string $prefix Bank Identification Number (BIN). This is the initial four to six numbers on a credit card account number.
+     * @param string $prefix Bank Identification Number (BIN). This is the initial four to six numbers on a credit card account number.  #### Google Pay transactions For PAN-based Google Pay transactions, this field is returned in the API response.
      * @return $this
      */
     public function setPrefix($prefix)
     {
-        if (!is_null($prefix) && (strlen($prefix) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $prefix when calling TssV2TransactionsGet200ResponsePaymentInformationCard., must be smaller than or equal to 6.');
-        }
-
         $this->container['prefix'] = $prefix;
 
         return $this;
@@ -327,15 +279,11 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
 
     /**
      * Sets expirationMonth
-     * @param string $expirationMonth Two-digit month in which the payment card expires.  Format: `MM`.  Valid values: `01` through `12`. Leading 0 is required.  #### Barclays and Streamline For Maestro (UK Domestic) and Maestro (International) cards on Barclays and Streamline, this must be a valid value (`01` through `12`) but is not required to be a valid expiration date. In other words, an expiration date that is in the past does not cause CyberSource to reject your request. However, an invalid expiration date might cause the issuer to reject your request.  #### Encoded Account Numbers For encoded account numbers (_type_=039), if there is no expiration date on the card, use `12`.  #### FDMS Nashville Required field.  #### GPX Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.  #### All other processors Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+     * @param string $expirationMonth Two-digit month in which the payment card expires.  Format: `MM`.  Valid values: `01` through `12`. Leading 0 is required.  #### Barclays and Streamline For Maestro (UK Domestic) and Maestro (International) cards on Barclays and Streamline, this must be a valid value (`01` through `12`) but is not required to be a valid expiration date. In other words, an expiration date that is in the past does not cause CyberSource to reject your request. However, an invalid expiration date might cause the issuer to reject your request.  #### Encoded Account Numbers For encoded account numbers (_type_=039), if there is no expiration date on the card, use `12`.  #### FDMS Nashville Required field.  #### All other processors Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.  #### Google Pay transactions For PAN-based Google Pay transactions, this field is returned in the API response.
      * @return $this
      */
     public function setExpirationMonth($expirationMonth)
     {
-        if (!is_null($expirationMonth) && (strlen($expirationMonth) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $expirationMonth when calling TssV2TransactionsGet200ResponsePaymentInformationCard., must be smaller than or equal to 2.');
-        }
-
         $this->container['expirationMonth'] = $expirationMonth;
 
         return $this;
@@ -352,15 +300,11 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
 
     /**
      * Sets expirationYear
-     * @param string $expirationYear Four-digit year in which the payment card expires.  Format: `YYYY`.  #### Barclays and Streamline For Maestro (UK Domestic) and Maestro (International) cards on Barclays and Streamline, this must be a valid value (`1900` through `3000`) but is not required to be a valid expiration date. In other words, an expiration date that is in the past does not cause CyberSource to reject your request. However, an invalid expiration date might cause the issuer to reject your request.  #### Encoded Account Numbers For encoded account numbers (**_type_**`=039`), if there is no expiration date on the card, use `2021`.  #### FDMS Nashville Required field.  #### FDC Nashville Global and FDMS South You can send in 2 digits or 4 digits. If you send in 2 digits, they must be the last 2 digits of the year.  #### GPX Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.  #### All other processors Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+     * @param string $expirationYear Four-digit year in which the payment card expires.  Format: `YYYY`.  #### Barclays and Streamline For Maestro (UK Domestic) and Maestro (International) cards on Barclays and Streamline, this must be a valid value (`1900` through `3000`) but is not required to be a valid expiration date. In other words, an expiration date that is in the past does not cause CyberSource to reject your request. However, an invalid expiration date might cause the issuer to reject your request.  #### Encoded Account Numbers For encoded account numbers (**_type_**`=039`), if there is no expiration date on the card, use `2021`.  #### FDMS Nashville Required field.  #### FDC Nashville Global and FDMS South You can send in 2 digits or 4 digits. If you send in 2 digits, they must be the last 2 digits of the year.  #### All other processors Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.  #### Google Pay transactions For PAN-based Google Pay transactions, this field is returned in the API response.
      * @return $this
      */
     public function setExpirationYear($expirationYear)
     {
-        if (!is_null($expirationYear) && (strlen($expirationYear) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $expirationYear when calling TssV2TransactionsGet200ResponsePaymentInformationCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['expirationYear'] = $expirationYear;
 
         return $this;
@@ -382,10 +326,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
      */
     public function setStartMonth($startMonth)
     {
-        if (!is_null($startMonth) && (strlen($startMonth) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $startMonth when calling TssV2TransactionsGet200ResponsePaymentInformationCard., must be smaller than or equal to 2.');
-        }
-
         $this->container['startMonth'] = $startMonth;
 
         return $this;
@@ -407,10 +347,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
      */
     public function setStartYear($startYear)
     {
-        if (!is_null($startYear) && (strlen($startYear) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $startYear when calling TssV2TransactionsGet200ResponsePaymentInformationCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['startYear'] = $startYear;
 
         return $this;
@@ -432,10 +368,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
      */
     public function setIssueNumber($issueNumber)
     {
-        if (!is_null($issueNumber) && (strlen($issueNumber) > 5)) {
-            throw new \InvalidArgumentException('invalid length for $issueNumber when calling TssV2TransactionsGet200ResponsePaymentInformationCard., must be smaller than or equal to 5.');
-        }
-
         $this->container['issueNumber'] = $issueNumber;
 
         return $this;
@@ -452,12 +384,54 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
 
     /**
      * Sets type
-     * @param string $type Three-digit value that indicates the card type.  **IMPORTANT** It is strongly recommended that you include the card type field in request messages even if it is optional for your processor and card type. Omitting the card type can cause the transaction to be processed with the wrong card type.  Possible values: - `001`: Visa. For card-present transactions on all processors except SIX, the Visa Electron card type is processed the same way that the Visa debit card is processed. Use card type value `001` for Visa Electron. - `002`: Mastercard, Eurocard[^1], which is a European regional brand of Mastercard. - `003`: American Express - `004`: Discover - `005`: Diners Club - `006`: Carte Blanche[^1] - `007`: JCB[^1] - `014`: Enroute[^1] - `021`: JAL[^1] - `024`: Maestro (UK Domestic)[^1] - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types. - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types. - `034`: Dankort[^1] - `036`: Cartes Bancaires[^1] - `037`: Carta Si[^1] - `039`: Encoded account number[^1] - `040`: UATP[^1] - `042`: Maestro (International)[^1] - `050`: Hipercard[^2,3] - `051`: Aura - `054`: Elo[^3] - `062`: China UnionPay  [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit. [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5. [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit.  #### Used by **Authorization** Required for Carte Blanche and JCB. Optional for all other card types.  #### Card Present reply This field is included in the reply message when the client software that is installed on the POS terminal uses the token management service (TMS) to retrieve tokenized payment details. You must contact customer support to have your account enabled to receive these fields in the credit reply message.  Returned by the Credit service.  This reply field is only supported by the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  #### GPX This field only supports transactions from the following card types: - Visa - Mastercard - AMEX - Discover - Diners - JCB - Union Pay International
+     * @param string $type Three-digit value that indicates the card type.  **IMPORTANT** It is strongly recommended that you include the card type field in request messages even if it is optional for your processor and card type. Omitting the card type can cause the transaction to be processed with the wrong card type.  Possible values: - `001`: Visa. For card-present transactions on all processors except SIX, the Visa Electron card type is processed the same way that the Visa debit card is processed. Use card type value `001` for Visa Electron. - `002`: Mastercard, Eurocard[^1], which is a European regional brand of Mastercard. - `003`: American Express - `004`: Discover - `005`: Diners Club - `006`: Carte Blanche[^1] - `007`: JCB[^1] - `014`: Enroute[^1] - `021`: JAL[^1] - `024`: Maestro (UK Domestic)[^1] - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types. - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types. - `034`: Dankort[^1] - `036`: Cartes Bancaires[^1,4] - `037`: Carta Si[^1] - `039`: Encoded account number[^1] - `040`: UATP[^1] - `042`: Maestro (International)[^1] - `050`: Hipercard[^2,3] - `051`: Aura - `054`: Elo[^3] - `062`: China UnionPay - '070': EFTPOS  [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit. [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5. [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. [^4]: For this card type, you must include the `paymentInformation.card.type` in your request for any payer authentication services.  #### Used by **Authorization** Required for Carte Blanche and JCB. Optional for all other card types.  #### Card Present reply This field is included in the reply message when the client software that is installed on the POS terminal uses the token management service (TMS) to retrieve tokenized payment details. You must contact customer support to have your account enabled to receive these fields in the credit reply message.  Returned by the Credit service.  This reply field is only supported by the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  #### Google Pay transactions For PAN-based Google Pay transactions, this field is returned in the API response.  #### GPX This field only supports transactions from the following card types: - Visa - Mastercard - AMEX - Discover - Diners - JCB - Union Pay International
      * @return $this
      */
     public function setType($type)
     {
         $this->container['type'] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Gets brandName
+     * @return string
+     */
+    public function getBrandName()
+    {
+        return $this->container['brandName'];
+    }
+
+    /**
+     * Sets brandName
+     * @param string $brandName This field contains the card brand name.   Some of the possible values (not an exhaustive list) are -    - VISA   - MASTERCARD   - AMERICAN EXPRESS   - DISCOVER   - DINERS CLUB   - CARTE BLANCHE   - JCB   - OPTIMA   - TWINPAY CREDIT CARD   - TWINPAY DEBIT CARD   - WALMART   - ENROUTE   - LOWES CONSUMER   - HOME DEPOT CONSUMER   - MBNA   - DICKS SPORTWEAR   - CASUAL CORNER   - SEARS   - JAL   - DISNEY CARD   - SWITCH/SOLO   - SAMS CLUB CONSUMER   - SAMS CLUB BUSINESS   - NICOS HOUSE CARD   - BEBE   - RESTORATION HARDWARE   - DELTA ONLINE   - SOLO   - VISA ELECTRON   - DANKORT   - LASER   - CARTE BANCAIRE   - CARTA SI   - ENCODED ACCOUNT   - UATP   - HOUSEHOLD   - MAESTRO   - GE CAPITAL   - KOREAN CARDS   - STYLE CARDS   - JCREW   - MEIJER   - HIPERCARD   - AURA   - REDECARD   - ORICO HOUSE CARD   - ELO   - CAPITAL ONE PRIVATE LABEL   - CARNET   - RUPAY   - CHINA UNION PAY   - FALABELLA PRIVATE LABEL   - PROMPTCARD   - KOREAN DOMESTIC   - BANRICOMPRAS
+     * @return $this
+     */
+    public function setBrandName($brandName)
+    {
+        $this->container['brandName'] = $brandName;
+
+        return $this;
+    }
+
+    /**
+     * Gets currency
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->container['currency'];
+    }
+
+    /**
+     * Sets currency
+     * @param string $currency This field indicates the 3-letter [ISO Standard Currency Codes](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf) for the card currency.
+     * @return $this
+     */
+    public function setCurrency($currency)
+    {
+        $this->container['currency'] = $currency;
 
         return $this;
     }
@@ -473,15 +447,11 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
 
     /**
      * Sets accountEncoderId
-     * @param string $accountEncoderId Identifier for the issuing bank that provided the customer’s encoded account number. Contact your processor for the bank’s ID.
+     * @param string $accountEncoderId Identifier for the issuing bank that provided the customer's encoded account number. Contact your processor for the bank's ID.
      * @return $this
      */
     public function setAccountEncoderId($accountEncoderId)
     {
-        if (!is_null($accountEncoderId) && (strlen($accountEncoderId) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $accountEncoderId when calling TssV2TransactionsGet200ResponsePaymentInformationCard., must be smaller than or equal to 3.');
-        }
-
         $this->container['accountEncoderId'] = $accountEncoderId;
 
         return $this;
@@ -498,15 +468,11 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
 
     /**
      * Sets useAs
-     * @param string $useAs Flag that specifies the type of account associated with the card. The cardholder provides this information during the payment process.  #### Cielo and Comercio Latino  Possible values:   - CREDIT: Credit card  - DEBIT: Debit card  This field is required for:  - Debit transactions on Cielo and Comercio Latino.  - Transactions with Brazilian-issued cards on CyberSource through VisaNet.  **Note** The value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP07 TCR0 - Position: 51 - Field: Combination Card Transaction Identifier  This field is supported only for Mastercard transactions in Brazil on CyberSource through VisaNet.
+     * @param string $useAs Flag that specifies the type of account associated with the card. The cardholder provides this information during the payment process.  Possible values:   - C: Credit transaction  - D: Debit transaction  This field is supported only for all card Types on Visa Platform Connect.  This field is required for:  - Debit transactions on Cielo and Comercio Latino.  - Transactions with Brazilian-issued cards on CyberSource through VisaNet.  **Note** The value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP07 TCR0 - Position: 51 - Field: Combination Card Transaction Identifier
      * @return $this
      */
     public function setUseAs($useAs)
     {
-        if (!is_null($useAs) && (strlen($useAs) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $useAs when calling TssV2TransactionsGet200ResponsePaymentInformationCard., must be smaller than or equal to 20.');
-        }
-
         $this->container['useAs'] = $useAs;
 
         return $this;
@@ -516,6 +482,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -526,6 +493,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -537,6 +505,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -551,6 +520,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationCard implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

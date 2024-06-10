@@ -217,10 +217,6 @@ class ReportingV3PurchaseRefundDetailsGet200ResponseFeeAndFundingDetails impleme
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['requestId']) && (strlen($this->container['requestId']) > 26)) {
-            $invalid_properties[] = "invalid value for 'requestId', the character length must be smaller than or equal to 26.";
-        }
-
         return $invalid_properties;
     }
 
@@ -233,9 +229,6 @@ class ReportingV3PurchaseRefundDetailsGet200ResponseFeeAndFundingDetails impleme
     public function valid()
     {
 
-        if (strlen($this->container['requestId']) > 26) {
-            return false;
-        }
         return true;
     }
 
@@ -256,10 +249,6 @@ class ReportingV3PurchaseRefundDetailsGet200ResponseFeeAndFundingDetails impleme
      */
     public function setRequestId($requestId)
     {
-        if (!is_null($requestId) && (strlen($requestId) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $requestId when calling ReportingV3PurchaseRefundDetailsGet200ResponseFeeAndFundingDetails., must be smaller than or equal to 26.');
-        }
-
         $this->container['requestId'] = $requestId;
 
         return $this;
@@ -521,6 +510,7 @@ class ReportingV3PurchaseRefundDetailsGet200ResponseFeeAndFundingDetails impleme
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -531,6 +521,7 @@ class ReportingV3PurchaseRefundDetailsGet200ResponseFeeAndFundingDetails impleme
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -542,6 +533,7 @@ class ReportingV3PurchaseRefundDetailsGet200ResponseFeeAndFundingDetails impleme
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -556,6 +548,7 @@ class ReportingV3PurchaseRefundDetailsGet200ResponseFeeAndFundingDetails impleme
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

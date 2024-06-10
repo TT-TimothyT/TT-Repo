@@ -150,14 +150,6 @@ class Ptsv2paymentsHealthCareInformationAmountDetails implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['amountType']) && (strlen($this->container['amountType']) > 35)) {
-            $invalid_properties[] = "invalid value for 'amountType', the character length must be smaller than or equal to 35.";
-        }
-
-        if (!is_null($this->container['amount']) && (strlen($this->container['amount']) > 13)) {
-            $invalid_properties[] = "invalid value for 'amount', the character length must be smaller than or equal to 13.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Ptsv2paymentsHealthCareInformationAmountDetails implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['amountType']) > 35) {
-            return false;
-        }
-        if (strlen($this->container['amount']) > 13) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +182,6 @@ class Ptsv2paymentsHealthCareInformationAmountDetails implements ArrayAccess
      */
     public function setAmountType($amountType)
     {
-        if (!is_null($amountType) && (strlen($amountType) > 35)) {
-            throw new \InvalidArgumentException('invalid length for $amountType when calling Ptsv2paymentsHealthCareInformationAmountDetails., must be smaller than or equal to 35.');
-        }
-
         $this->container['amountType'] = $amountType;
 
         return $this;
@@ -216,15 +198,11 @@ class Ptsv2paymentsHealthCareInformationAmountDetails implements ArrayAccess
 
     /**
      * Sets amount
-     * @param string $amount Total Amount that has been spent on transit healthcare. This is 13 byte field including sign. If the amount is positive, then it is a debit for the customer. If the amount is negative, then it is a credit for the customer.
+     * @param string $amount Total Amount that has been spent on the corresponding amountType. This is 13 byte field including sign. If the amount is positive, then it is a debit for the customer. If the amount is negative, then it is a credit for the customer.
      * @return $this
      */
     public function setAmount($amount)
     {
-        if (!is_null($amount) && (strlen($amount) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $amount when calling Ptsv2paymentsHealthCareInformationAmountDetails., must be smaller than or equal to 13.');
-        }
-
         $this->container['amount'] = $amount;
 
         return $this;
@@ -234,6 +212,7 @@ class Ptsv2paymentsHealthCareInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Ptsv2paymentsHealthCareInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Ptsv2paymentsHealthCareInformationAmountDetails implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Ptsv2paymentsHealthCareInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

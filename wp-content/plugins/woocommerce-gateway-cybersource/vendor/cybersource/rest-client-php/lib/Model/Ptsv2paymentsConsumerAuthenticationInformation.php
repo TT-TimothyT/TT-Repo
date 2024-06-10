@@ -55,6 +55,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'cavv' => 'string',
+        'transactionFlowIndicator' => 'string',
         'cavvAlgorithm' => 'string',
         'eciRaw' => 'string',
         'paresStatus' => 'string',
@@ -66,6 +67,8 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'directoryServerTransactionId' => 'string',
         'paSpecificationVersion' => 'string',
         'authenticationType' => 'string',
+        'responseAccessToken' => 'string',
+        'acsTransactionId' => 'string',
         'acsWindowSize' => 'string',
         'alternateAuthenticationData' => 'string',
         'alternateAuthenticationDate' => 'string',
@@ -87,6 +90,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'mcc' => 'string',
         'merchantScore' => 'int',
         'messageCategory' => 'string',
+        'networkScore' => 'string',
         'npaCode' => 'string',
         'overridePaymentMethod' => 'string',
         'overrideCountryCode' => 'string',
@@ -95,6 +99,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'priorAuthenticationReferenceId' => 'string',
         'priorAuthenticationTime' => 'string',
         'productCode' => 'string',
+        'returnUrl' => 'string',
         'requestorId' => 'string',
         'requestorInitiatedAuthenticationIndicator' => 'string',
         'requestorName' => 'string',
@@ -114,6 +119,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'cavv' => null,
+        'transactionFlowIndicator' => null,
         'cavvAlgorithm' => null,
         'eciRaw' => null,
         'paresStatus' => null,
@@ -125,6 +131,8 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'directoryServerTransactionId' => null,
         'paSpecificationVersion' => null,
         'authenticationType' => null,
+        'responseAccessToken' => null,
+        'acsTransactionId' => null,
         'acsWindowSize' => null,
         'alternateAuthenticationData' => null,
         'alternateAuthenticationDate' => null,
@@ -146,6 +154,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'mcc' => null,
         'merchantScore' => null,
         'messageCategory' => null,
+        'networkScore' => null,
         'npaCode' => null,
         'overridePaymentMethod' => null,
         'overrideCountryCode' => null,
@@ -154,6 +163,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'priorAuthenticationReferenceId' => null,
         'priorAuthenticationTime' => null,
         'productCode' => null,
+        'returnUrl' => null,
         'requestorId' => null,
         'requestorInitiatedAuthenticationIndicator' => null,
         'requestorName' => null,
@@ -183,6 +193,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     protected static $attributeMap = [
         'cavv' => 'cavv',
+        'transactionFlowIndicator' => 'transactionFlowIndicator',
         'cavvAlgorithm' => 'cavvAlgorithm',
         'eciRaw' => 'eciRaw',
         'paresStatus' => 'paresStatus',
@@ -194,6 +205,8 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'directoryServerTransactionId' => 'directoryServerTransactionId',
         'paSpecificationVersion' => 'paSpecificationVersion',
         'authenticationType' => 'authenticationType',
+        'responseAccessToken' => 'responseAccessToken',
+        'acsTransactionId' => 'acsTransactionId',
         'acsWindowSize' => 'acsWindowSize',
         'alternateAuthenticationData' => 'alternateAuthenticationData',
         'alternateAuthenticationDate' => 'alternateAuthenticationDate',
@@ -215,6 +228,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'mcc' => 'mcc',
         'merchantScore' => 'merchantScore',
         'messageCategory' => 'messageCategory',
+        'networkScore' => 'networkScore',
         'npaCode' => 'npaCode',
         'overridePaymentMethod' => 'overridePaymentMethod',
         'overrideCountryCode' => 'overrideCountryCode',
@@ -223,6 +237,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'priorAuthenticationReferenceId' => 'priorAuthenticationReferenceId',
         'priorAuthenticationTime' => 'priorAuthenticationTime',
         'productCode' => 'productCode',
+        'returnUrl' => 'returnUrl',
         'requestorId' => 'requestorId',
         'requestorInitiatedAuthenticationIndicator' => 'requestorInitiatedAuthenticationIndicator',
         'requestorName' => 'requestorName',
@@ -243,6 +258,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     protected static $setters = [
         'cavv' => 'setCavv',
+        'transactionFlowIndicator' => 'setTransactionFlowIndicator',
         'cavvAlgorithm' => 'setCavvAlgorithm',
         'eciRaw' => 'setEciRaw',
         'paresStatus' => 'setParesStatus',
@@ -254,6 +270,8 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'directoryServerTransactionId' => 'setDirectoryServerTransactionId',
         'paSpecificationVersion' => 'setPaSpecificationVersion',
         'authenticationType' => 'setAuthenticationType',
+        'responseAccessToken' => 'setResponseAccessToken',
+        'acsTransactionId' => 'setAcsTransactionId',
         'acsWindowSize' => 'setAcsWindowSize',
         'alternateAuthenticationData' => 'setAlternateAuthenticationData',
         'alternateAuthenticationDate' => 'setAlternateAuthenticationDate',
@@ -275,6 +293,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'mcc' => 'setMcc',
         'merchantScore' => 'setMerchantScore',
         'messageCategory' => 'setMessageCategory',
+        'networkScore' => 'setNetworkScore',
         'npaCode' => 'setNpaCode',
         'overridePaymentMethod' => 'setOverridePaymentMethod',
         'overrideCountryCode' => 'setOverrideCountryCode',
@@ -283,6 +302,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'priorAuthenticationReferenceId' => 'setPriorAuthenticationReferenceId',
         'priorAuthenticationTime' => 'setPriorAuthenticationTime',
         'productCode' => 'setProductCode',
+        'returnUrl' => 'setReturnUrl',
         'requestorId' => 'setRequestorId',
         'requestorInitiatedAuthenticationIndicator' => 'setRequestorInitiatedAuthenticationIndicator',
         'requestorName' => 'setRequestorName',
@@ -303,6 +323,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     protected static $getters = [
         'cavv' => 'getCavv',
+        'transactionFlowIndicator' => 'getTransactionFlowIndicator',
         'cavvAlgorithm' => 'getCavvAlgorithm',
         'eciRaw' => 'getEciRaw',
         'paresStatus' => 'getParesStatus',
@@ -314,6 +335,8 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'directoryServerTransactionId' => 'getDirectoryServerTransactionId',
         'paSpecificationVersion' => 'getPaSpecificationVersion',
         'authenticationType' => 'getAuthenticationType',
+        'responseAccessToken' => 'getResponseAccessToken',
+        'acsTransactionId' => 'getAcsTransactionId',
         'acsWindowSize' => 'getAcsWindowSize',
         'alternateAuthenticationData' => 'getAlternateAuthenticationData',
         'alternateAuthenticationDate' => 'getAlternateAuthenticationDate',
@@ -335,6 +358,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'mcc' => 'getMcc',
         'merchantScore' => 'getMerchantScore',
         'messageCategory' => 'getMessageCategory',
+        'networkScore' => 'getNetworkScore',
         'npaCode' => 'getNpaCode',
         'overridePaymentMethod' => 'getOverridePaymentMethod',
         'overrideCountryCode' => 'getOverrideCountryCode',
@@ -343,6 +367,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         'priorAuthenticationReferenceId' => 'getPriorAuthenticationReferenceId',
         'priorAuthenticationTime' => 'getPriorAuthenticationTime',
         'productCode' => 'getProductCode',
+        'returnUrl' => 'getReturnUrl',
         'requestorId' => 'getRequestorId',
         'requestorInitiatedAuthenticationIndicator' => 'getRequestorInitiatedAuthenticationIndicator',
         'requestorName' => 'getRequestorName',
@@ -388,6 +413,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['cavv'] = isset($data['cavv']) ? $data['cavv'] : null;
+        $this->container['transactionFlowIndicator'] = isset($data['transactionFlowIndicator']) ? $data['transactionFlowIndicator'] : null;
         $this->container['cavvAlgorithm'] = isset($data['cavvAlgorithm']) ? $data['cavvAlgorithm'] : null;
         $this->container['eciRaw'] = isset($data['eciRaw']) ? $data['eciRaw'] : null;
         $this->container['paresStatus'] = isset($data['paresStatus']) ? $data['paresStatus'] : null;
@@ -399,6 +425,8 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         $this->container['directoryServerTransactionId'] = isset($data['directoryServerTransactionId']) ? $data['directoryServerTransactionId'] : null;
         $this->container['paSpecificationVersion'] = isset($data['paSpecificationVersion']) ? $data['paSpecificationVersion'] : null;
         $this->container['authenticationType'] = isset($data['authenticationType']) ? $data['authenticationType'] : null;
+        $this->container['responseAccessToken'] = isset($data['responseAccessToken']) ? $data['responseAccessToken'] : null;
+        $this->container['acsTransactionId'] = isset($data['acsTransactionId']) ? $data['acsTransactionId'] : null;
         $this->container['acsWindowSize'] = isset($data['acsWindowSize']) ? $data['acsWindowSize'] : null;
         $this->container['alternateAuthenticationData'] = isset($data['alternateAuthenticationData']) ? $data['alternateAuthenticationData'] : null;
         $this->container['alternateAuthenticationDate'] = isset($data['alternateAuthenticationDate']) ? $data['alternateAuthenticationDate'] : null;
@@ -420,6 +448,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         $this->container['mcc'] = isset($data['mcc']) ? $data['mcc'] : null;
         $this->container['merchantScore'] = isset($data['merchantScore']) ? $data['merchantScore'] : null;
         $this->container['messageCategory'] = isset($data['messageCategory']) ? $data['messageCategory'] : null;
+        $this->container['networkScore'] = isset($data['networkScore']) ? $data['networkScore'] : null;
         $this->container['npaCode'] = isset($data['npaCode']) ? $data['npaCode'] : null;
         $this->container['overridePaymentMethod'] = isset($data['overridePaymentMethod']) ? $data['overridePaymentMethod'] : null;
         $this->container['overrideCountryCode'] = isset($data['overrideCountryCode']) ? $data['overrideCountryCode'] : null;
@@ -428,6 +457,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
         $this->container['priorAuthenticationReferenceId'] = isset($data['priorAuthenticationReferenceId']) ? $data['priorAuthenticationReferenceId'] : null;
         $this->container['priorAuthenticationTime'] = isset($data['priorAuthenticationTime']) ? $data['priorAuthenticationTime'] : null;
         $this->container['productCode'] = isset($data['productCode']) ? $data['productCode'] : null;
+        $this->container['returnUrl'] = isset($data['returnUrl']) ? $data['returnUrl'] : null;
         $this->container['requestorId'] = isset($data['requestorId']) ? $data['requestorId'] : null;
         $this->container['requestorInitiatedAuthenticationIndicator'] = isset($data['requestorInitiatedAuthenticationIndicator']) ? $data['requestorInitiatedAuthenticationIndicator'] : null;
         $this->container['requestorName'] = isset($data['requestorName']) ? $data['requestorName'] : null;
@@ -450,170 +480,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['cavv']) && (strlen($this->container['cavv']) > 40)) {
-            $invalid_properties[] = "invalid value for 'cavv', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['cavvAlgorithm']) && (strlen($this->container['cavvAlgorithm']) > 1)) {
-            $invalid_properties[] = "invalid value for 'cavvAlgorithm', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['eciRaw']) && (strlen($this->container['eciRaw']) > 2)) {
-            $invalid_properties[] = "invalid value for 'eciRaw', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['paresStatus']) && (strlen($this->container['paresStatus']) > 1)) {
-            $invalid_properties[] = "invalid value for 'paresStatus', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['veresEnrolled']) && (strlen($this->container['veresEnrolled']) > 1)) {
-            $invalid_properties[] = "invalid value for 'veresEnrolled', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['xid']) && (strlen($this->container['xid']) > 40)) {
-            $invalid_properties[] = "invalid value for 'xid', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['ucafCollectionIndicator']) && (strlen($this->container['ucafCollectionIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'ucafCollectionIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['ucafAuthenticationData']) && (strlen($this->container['ucafAuthenticationData']) > 32)) {
-            $invalid_properties[] = "invalid value for 'ucafAuthenticationData', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['directoryServerTransactionId']) && (strlen($this->container['directoryServerTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'directoryServerTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['paSpecificationVersion']) && (strlen($this->container['paSpecificationVersion']) > 1)) {
-            $invalid_properties[] = "invalid value for 'paSpecificationVersion', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['authenticationType']) && (strlen($this->container['authenticationType']) > 2)) {
-            $invalid_properties[] = "invalid value for 'authenticationType', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['acsWindowSize']) && (strlen($this->container['acsWindowSize']) > 2)) {
-            $invalid_properties[] = "invalid value for 'acsWindowSize', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['alternateAuthenticationData']) && (strlen($this->container['alternateAuthenticationData']) > 2048)) {
-            $invalid_properties[] = "invalid value for 'alternateAuthenticationData', the character length must be smaller than or equal to 2048.";
-        }
-
-        if (!is_null($this->container['alternateAuthenticationDate']) && (strlen($this->container['alternateAuthenticationDate']) > 14)) {
-            $invalid_properties[] = "invalid value for 'alternateAuthenticationDate', the character length must be smaller than or equal to 14.";
-        }
-
-        if (!is_null($this->container['authenticationDate']) && (strlen($this->container['authenticationDate']) > 14)) {
-            $invalid_properties[] = "invalid value for 'authenticationDate', the character length must be smaller than or equal to 14.";
-        }
-
-        if (!is_null($this->container['authenticationTransactionId']) && (strlen($this->container['authenticationTransactionId']) > 20)) {
-            $invalid_properties[] = "invalid value for 'authenticationTransactionId', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['challengeCancelCode']) && (strlen($this->container['challengeCancelCode']) > 2)) {
-            $invalid_properties[] = "invalid value for 'challengeCancelCode', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['challengeStatus']) && (strlen($this->container['challengeStatus']) > 2)) {
-            $invalid_properties[] = "invalid value for 'challengeStatus', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['customerCardAlias']) && (strlen($this->container['customerCardAlias']) > 128)) {
-            $invalid_properties[] = "invalid value for 'customerCardAlias', the character length must be smaller than or equal to 128.";
-        }
-
-        if (!is_null($this->container['decoupledAuthenticationIndicator']) && (strlen($this->container['decoupledAuthenticationIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'decoupledAuthenticationIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['decoupledAuthenticationMaxTime']) && (strlen($this->container['decoupledAuthenticationMaxTime']) > 5)) {
-            $invalid_properties[] = "invalid value for 'decoupledAuthenticationMaxTime', the character length must be smaller than or equal to 5.";
-        }
-
-        if (!is_null($this->container['deviceChannel']) && (strlen($this->container['deviceChannel']) > 10)) {
-            $invalid_properties[] = "invalid value for 'deviceChannel', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['merchantFraudRate']) && (strlen($this->container['merchantFraudRate']) > 2)) {
-            $invalid_properties[] = "invalid value for 'merchantFraudRate', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['marketingSource']) && (strlen($this->container['marketingSource']) > 40)) {
-            $invalid_properties[] = "invalid value for 'marketingSource', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['mcc']) && (strlen($this->container['mcc']) > 4)) {
-            $invalid_properties[] = "invalid value for 'mcc', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['npaCode']) && (strlen($this->container['npaCode']) > 2)) {
-            $invalid_properties[] = "invalid value for 'npaCode', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['overrideCountryCode']) && (strlen($this->container['overrideCountryCode']) > 2)) {
-            $invalid_properties[] = "invalid value for 'overrideCountryCode', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['priorAuthenticationData']) && (strlen($this->container['priorAuthenticationData']) > 2048)) {
-            $invalid_properties[] = "invalid value for 'priorAuthenticationData', the character length must be smaller than or equal to 2048.";
-        }
-
-        if (!is_null($this->container['priorAuthenticationMethod']) && (strlen($this->container['priorAuthenticationMethod']) > 2)) {
-            $invalid_properties[] = "invalid value for 'priorAuthenticationMethod', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['priorAuthenticationReferenceId']) && (strlen($this->container['priorAuthenticationReferenceId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'priorAuthenticationReferenceId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['priorAuthenticationTime']) && (strlen($this->container['priorAuthenticationTime']) > 12)) {
-            $invalid_properties[] = "invalid value for 'priorAuthenticationTime', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['productCode']) && (strlen($this->container['productCode']) > 3)) {
-            $invalid_properties[] = "invalid value for 'productCode', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['requestorId']) && (strlen($this->container['requestorId']) > 35)) {
-            $invalid_properties[] = "invalid value for 'requestorId', the character length must be smaller than or equal to 35.";
-        }
-
-        if (!is_null($this->container['requestorInitiatedAuthenticationIndicator']) && (strlen($this->container['requestorInitiatedAuthenticationIndicator']) > 2)) {
-            $invalid_properties[] = "invalid value for 'requestorInitiatedAuthenticationIndicator', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['requestorName']) && (strlen($this->container['requestorName']) > 40)) {
-            $invalid_properties[] = "invalid value for 'requestorName', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['referenceId']) && (strlen($this->container['referenceId']) > 50)) {
-            $invalid_properties[] = "invalid value for 'referenceId', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['sdkMaxTimeout']) && (strlen($this->container['sdkMaxTimeout']) > 2)) {
-            $invalid_properties[] = "invalid value for 'sdkMaxTimeout', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['secureCorporatePaymentIndicator']) && (strlen($this->container['secureCorporatePaymentIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'secureCorporatePaymentIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['whiteListStatus']) && (strlen($this->container['whiteListStatus']) > 1)) {
-            $invalid_properties[] = "invalid value for 'whiteListStatus', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['effectiveAuthenticationType']) && (strlen($this->container['effectiveAuthenticationType']) > 2)) {
-            $invalid_properties[] = "invalid value for 'effectiveAuthenticationType', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['signedParesStatusReason']) && (strlen($this->container['signedParesStatusReason']) > 2)) {
-            $invalid_properties[] = "invalid value for 'signedParesStatusReason', the character length must be smaller than or equal to 2.";
-        }
-
         return $invalid_properties;
     }
 
@@ -626,129 +492,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['cavv']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['cavvAlgorithm']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['eciRaw']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['paresStatus']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['veresEnrolled']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['xid']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['ucafCollectionIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['ucafAuthenticationData']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['directoryServerTransactionId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['paSpecificationVersion']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['authenticationType']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['acsWindowSize']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['alternateAuthenticationData']) > 2048) {
-            return false;
-        }
-        if (strlen($this->container['alternateAuthenticationDate']) > 14) {
-            return false;
-        }
-        if (strlen($this->container['authenticationDate']) > 14) {
-            return false;
-        }
-        if (strlen($this->container['authenticationTransactionId']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['challengeCancelCode']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['challengeStatus']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['customerCardAlias']) > 128) {
-            return false;
-        }
-        if (strlen($this->container['decoupledAuthenticationIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['decoupledAuthenticationMaxTime']) > 5) {
-            return false;
-        }
-        if (strlen($this->container['deviceChannel']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['merchantFraudRate']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['marketingSource']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['mcc']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['npaCode']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['overrideCountryCode']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['priorAuthenticationData']) > 2048) {
-            return false;
-        }
-        if (strlen($this->container['priorAuthenticationMethod']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['priorAuthenticationReferenceId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['priorAuthenticationTime']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['productCode']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['requestorId']) > 35) {
-            return false;
-        }
-        if (strlen($this->container['requestorInitiatedAuthenticationIndicator']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['requestorName']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['referenceId']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['sdkMaxTimeout']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['secureCorporatePaymentIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['whiteListStatus']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['effectiveAuthenticationType']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['signedParesStatusReason']) > 2) {
-            return false;
-        }
         return true;
     }
 
@@ -769,11 +512,28 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setCavv($cavv)
     {
-        if (!is_null($cavv) && (strlen($cavv) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $cavv when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 40.');
-        }
-
         $this->container['cavv'] = $cavv;
+
+        return $this;
+    }
+
+    /**
+     * Gets transactionFlowIndicator
+     * @return string
+     */
+    public function getTransactionFlowIndicator()
+    {
+        return $this->container['transactionFlowIndicator'];
+    }
+
+    /**
+     * Sets transactionFlowIndicator
+     * @param string $transactionFlowIndicator This field details out the type of transaction. Below are the possible values. 08:GC- Guest Checkout.
+     * @return $this
+     */
+    public function setTransactionFlowIndicator($transactionFlowIndicator)
+    {
+        $this->container['transactionFlowIndicator'] = $transactionFlowIndicator;
 
         return $this;
     }
@@ -794,10 +554,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setCavvAlgorithm($cavvAlgorithm)
     {
-        if (!is_null($cavvAlgorithm) && (strlen($cavvAlgorithm) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $cavvAlgorithm when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['cavvAlgorithm'] = $cavvAlgorithm;
 
         return $this;
@@ -819,10 +575,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setEciRaw($eciRaw)
     {
-        if (!is_null($eciRaw) && (strlen($eciRaw) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $eciRaw when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['eciRaw'] = $eciRaw;
 
         return $this;
@@ -844,10 +596,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setParesStatus($paresStatus)
     {
-        if (!is_null($paresStatus) && (strlen($paresStatus) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $paresStatus when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['paresStatus'] = $paresStatus;
 
         return $this;
@@ -869,10 +617,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setVeresEnrolled($veresEnrolled)
     {
-        if (!is_null($veresEnrolled) && (strlen($veresEnrolled) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $veresEnrolled when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['veresEnrolled'] = $veresEnrolled;
 
         return $this;
@@ -894,10 +638,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setXid($xid)
     {
-        if (!is_null($xid) && (strlen($xid) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $xid when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 40.');
-        }
-
         $this->container['xid'] = $xid;
 
         return $this;
@@ -919,10 +659,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setUcafCollectionIndicator($ucafCollectionIndicator)
     {
-        if (!is_null($ucafCollectionIndicator) && (strlen($ucafCollectionIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $ucafCollectionIndicator when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['ucafCollectionIndicator'] = $ucafCollectionIndicator;
 
         return $this;
@@ -944,10 +680,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setUcafAuthenticationData($ucafAuthenticationData)
     {
-        if (!is_null($ucafAuthenticationData) && (strlen($ucafAuthenticationData) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $ucafAuthenticationData when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 32.');
-        }
-
         $this->container['ucafAuthenticationData'] = $ucafAuthenticationData;
 
         return $this;
@@ -990,10 +722,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setDirectoryServerTransactionId($directoryServerTransactionId)
     {
-        if (!is_null($directoryServerTransactionId) && (strlen($directoryServerTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $directoryServerTransactionId when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['directoryServerTransactionId'] = $directoryServerTransactionId;
 
         return $this;
@@ -1015,10 +743,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setPaSpecificationVersion($paSpecificationVersion)
     {
-        if (!is_null($paSpecificationVersion) && (strlen($paSpecificationVersion) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $paSpecificationVersion when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['paSpecificationVersion'] = $paSpecificationVersion;
 
         return $this;
@@ -1035,16 +759,54 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
 
     /**
      * Sets authenticationType
-     * @param string $authenticationType Indicates the type of authentication that will be used to challenge the card holder.  Possible Values:  01 - Static  02 - Dynamic  03 - OOB (Out of Band)  04 - Decoupled **NOTE**:  EMV 3-D Secure version 2.1.0 supports values 01-03.  Version 2.2.0 supports values 01-04.  Decoupled authentication is not supported at this time.
+     * @param string $authenticationType Indicates the type of authentication that will be used to challenge the card holder.  Possible Values:  01 - Static  02 - Dynamic  03 - OOB (Out of Band)  04 - Decoupled  20 - OTP hosted at merchant end. (Rupay S2S flow) **NOTE**:  EMV 3-D Secure version 2.1.0 supports values 01-03.  Version 2.2.0 supports values 01-04.  Decoupled authentication is not supported at this time.
      * @return $this
      */
     public function setAuthenticationType($authenticationType)
     {
-        if (!is_null($authenticationType) && (strlen($authenticationType) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $authenticationType when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['authenticationType'] = $authenticationType;
+
+        return $this;
+    }
+
+    /**
+     * Gets responseAccessToken
+     * @return string
+     */
+    public function getResponseAccessToken()
+    {
+        return $this->container['responseAccessToken'];
+    }
+
+    /**
+     * Sets responseAccessToken
+     * @param string $responseAccessToken JWT returned by the 3D Secure provider when the authentication is complete. Required for Hybrid integration if you use the Cybersource-generated access token. Note: Max. length of this field is 2048 characters.
+     * @return $this
+     */
+    public function setResponseAccessToken($responseAccessToken)
+    {
+        $this->container['responseAccessToken'] = $responseAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * Gets acsTransactionId
+     * @return string
+     */
+    public function getAcsTransactionId()
+    {
+        return $this->container['acsTransactionId'];
+    }
+
+    /**
+     * Sets acsTransactionId
+     * @param string $acsTransactionId Unique transaction identifier assigned by the ACS to identify a single transaction.  This field is supported for Cartes Bancaires Fast'R transactions on Credit Mutuel-CIC.
+     * @return $this
+     */
+    public function setAcsTransactionId($acsTransactionId)
+    {
+        $this->container['acsTransactionId'] = $acsTransactionId;
 
         return $this;
     }
@@ -1065,10 +827,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setAcsWindowSize($acsWindowSize)
     {
-        if (!is_null($acsWindowSize) && (strlen($acsWindowSize) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $acsWindowSize when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['acsWindowSize'] = $acsWindowSize;
 
         return $this;
@@ -1090,10 +848,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setAlternateAuthenticationData($alternateAuthenticationData)
     {
-        if (!is_null($alternateAuthenticationData) && (strlen($alternateAuthenticationData) > 2048)) {
-            throw new \InvalidArgumentException('invalid length for $alternateAuthenticationData when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2048.');
-        }
-
         $this->container['alternateAuthenticationData'] = $alternateAuthenticationData;
 
         return $this;
@@ -1115,10 +869,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setAlternateAuthenticationDate($alternateAuthenticationDate)
     {
-        if (!is_null($alternateAuthenticationDate) && (strlen($alternateAuthenticationDate) > 14)) {
-            throw new \InvalidArgumentException('invalid length for $alternateAuthenticationDate when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 14.');
-        }
-
         $this->container['alternateAuthenticationDate'] = $alternateAuthenticationDate;
 
         return $this;
@@ -1156,15 +906,11 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
 
     /**
      * Sets authenticationDate
-     * @param string $authenticationDate The date/time of the authentication at the 3DS servers. RISK update authorization service in auth request payload with value returned in `consumerAuthenticationInformation.alternateAuthenticationData` if merchant calls via CYBS or field can be provided by merchant in authorization request if calling an external 3DS provider.
+     * @param string $authenticationDate The date/time of the authentication at the 3DS servers. RISK update authorization service in auth request payload with value returned in `consumerAuthenticationInformation.alternateAuthenticationData` if merchant calls via CYBS or field can be provided by merchant in authorization request if calling an external 3DS provider.  This field is supported for Cartes Bancaires Fast'R transactions on Credit Mutuel-CIC. Format: YYYYMMDDHHMMSS
      * @return $this
      */
     public function setAuthenticationDate($authenticationDate)
     {
-        if (!is_null($authenticationDate) && (strlen($authenticationDate) > 14)) {
-            throw new \InvalidArgumentException('invalid length for $authenticationDate when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 14.');
-        }
-
         $this->container['authenticationDate'] = $authenticationDate;
 
         return $this;
@@ -1181,15 +927,11 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
 
     /**
      * Sets authenticationTransactionId
-     * @param string $authenticationTransactionId Payer authentication transaction identifier passed to link the check enrollment and validate authentication messages. **Note**: Required for Standard integration for enroll service. Required for Hybrid integration for validate service.
+     * @param string $authenticationTransactionId Payer authentication transaction identifier passed to link the check enrollment and validate authentication messages.For Rupay,this is passed only in Re-Send OTP usecase. **Note**: Required for Standard integration, Rupay Seamless server to server integration for enroll service. Required for Hybrid integration for validate service.
      * @return $this
      */
     public function setAuthenticationTransactionId($authenticationTransactionId)
     {
-        if (!is_null($authenticationTransactionId) && (strlen($authenticationTransactionId) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $authenticationTransactionId when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['authenticationTransactionId'] = $authenticationTransactionId;
 
         return $this;
@@ -1211,10 +953,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setChallengeCancelCode($challengeCancelCode)
     {
-        if (!is_null($challengeCancelCode) && (strlen($challengeCancelCode) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $challengeCancelCode when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['challengeCancelCode'] = $challengeCancelCode;
 
         return $this;
@@ -1257,10 +995,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setChallengeStatus($challengeStatus)
     {
-        if (!is_null($challengeStatus) && (strlen($challengeStatus) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $challengeStatus when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['challengeStatus'] = $challengeStatus;
 
         return $this;
@@ -1282,10 +1016,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setCustomerCardAlias($customerCardAlias)
     {
-        if (!is_null($customerCardAlias) && (strlen($customerCardAlias) > 128)) {
-            throw new \InvalidArgumentException('invalid length for $customerCardAlias when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 128.');
-        }
-
         $this->container['customerCardAlias'] = $customerCardAlias;
 
         return $this;
@@ -1307,10 +1037,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setDecoupledAuthenticationIndicator($decoupledAuthenticationIndicator)
     {
-        if (!is_null($decoupledAuthenticationIndicator) && (strlen($decoupledAuthenticationIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $decoupledAuthenticationIndicator when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['decoupledAuthenticationIndicator'] = $decoupledAuthenticationIndicator;
 
         return $this;
@@ -1332,10 +1058,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setDecoupledAuthenticationMaxTime($decoupledAuthenticationMaxTime)
     {
-        if (!is_null($decoupledAuthenticationMaxTime) && (strlen($decoupledAuthenticationMaxTime) > 5)) {
-            throw new \InvalidArgumentException('invalid length for $decoupledAuthenticationMaxTime when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 5.');
-        }
-
         $this->container['decoupledAuthenticationMaxTime'] = $decoupledAuthenticationMaxTime;
 
         return $this;
@@ -1378,10 +1100,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setDeviceChannel($deviceChannel)
     {
-        if (!is_null($deviceChannel) && (strlen($deviceChannel) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $deviceChannel when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['deviceChannel'] = $deviceChannel;
 
         return $this;
@@ -1424,10 +1142,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setMerchantFraudRate($merchantFraudRate)
     {
-        if (!is_null($merchantFraudRate) && (strlen($merchantFraudRate) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $merchantFraudRate when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['merchantFraudRate'] = $merchantFraudRate;
 
         return $this;
@@ -1470,10 +1184,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setMarketingSource($marketingSource)
     {
-        if (!is_null($marketingSource) && (strlen($marketingSource) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $marketingSource when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 40.');
-        }
-
         $this->container['marketingSource'] = $marketingSource;
 
         return $this;
@@ -1495,10 +1205,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setMcc($mcc)
     {
-        if (!is_null($mcc) && (strlen($mcc) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $mcc when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 4.');
-        }
-
         $this->container['mcc'] = $mcc;
 
         return $this;
@@ -1547,6 +1253,27 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
     }
 
     /**
+     * Gets networkScore
+     * @return string
+     */
+    public function getNetworkScore()
+    {
+        return $this->container['networkScore'];
+    }
+
+    /**
+     * Sets networkScore
+     * @param string $networkScore The global score calculated by the CB scoring platform and returned to merchants.  Possible values:  - '00' - '99'  When you request the payer authentication and authorization services separately, get the value for this field from the pa_network_score reply field.         This field is supported only for Cartes Bancaires Fast'R transactions on Credit Mutuel-CIC.
+     * @return $this
+     */
+    public function setNetworkScore($networkScore)
+    {
+        $this->container['networkScore'] = $networkScore;
+
+        return $this;
+    }
+
+    /**
      * Gets npaCode
      * @return string
      */
@@ -1562,10 +1289,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setNpaCode($npaCode)
     {
-        if (!is_null($npaCode) && (strlen($npaCode) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $npaCode when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['npaCode'] = $npaCode;
 
         return $this;
@@ -1608,10 +1331,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setOverrideCountryCode($overrideCountryCode)
     {
-        if (!is_null($overrideCountryCode) && (strlen($overrideCountryCode) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $overrideCountryCode when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['overrideCountryCode'] = $overrideCountryCode;
 
         return $this;
@@ -1633,10 +1352,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setPriorAuthenticationData($priorAuthenticationData)
     {
-        if (!is_null($priorAuthenticationData) && (strlen($priorAuthenticationData) > 2048)) {
-            throw new \InvalidArgumentException('invalid length for $priorAuthenticationData when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2048.');
-        }
-
         $this->container['priorAuthenticationData'] = $priorAuthenticationData;
 
         return $this;
@@ -1658,10 +1373,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setPriorAuthenticationMethod($priorAuthenticationMethod)
     {
-        if (!is_null($priorAuthenticationMethod) && (strlen($priorAuthenticationMethod) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $priorAuthenticationMethod when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['priorAuthenticationMethod'] = $priorAuthenticationMethod;
 
         return $this;
@@ -1683,10 +1394,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setPriorAuthenticationReferenceId($priorAuthenticationReferenceId)
     {
-        if (!is_null($priorAuthenticationReferenceId) && (strlen($priorAuthenticationReferenceId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $priorAuthenticationReferenceId when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['priorAuthenticationReferenceId'] = $priorAuthenticationReferenceId;
 
         return $this;
@@ -1708,10 +1415,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setPriorAuthenticationTime($priorAuthenticationTime)
     {
-        if (!is_null($priorAuthenticationTime) && (strlen($priorAuthenticationTime) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $priorAuthenticationTime when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['priorAuthenticationTime'] = $priorAuthenticationTime;
 
         return $this;
@@ -1733,11 +1436,28 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setProductCode($productCode)
     {
-        if (!is_null($productCode) && (strlen($productCode) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $productCode when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 3.');
-        }
-
         $this->container['productCode'] = $productCode;
+
+        return $this;
+    }
+
+    /**
+     * Gets returnUrl
+     * @return string
+     */
+    public function getReturnUrl()
+    {
+        return $this->container['returnUrl'];
+    }
+
+    /**
+     * Sets returnUrl
+     * @param string $returnUrl The URL of the merchant's return page. CyberSource adds this return URL to the step-up JWT and returns it in the response of the Payer Authentication enrollment call. The merchant's return URL page serves as a listening URL. Once the bank session completes, the merchant receives a POST to their URL. This response contains the completed bank session's transactionId. The merchant's return page should capture the transaction ID and send it in the Payer Authentication validation call.
+     * @return $this
+     */
+    public function setReturnUrl($returnUrl)
+    {
+        $this->container['returnUrl'] = $returnUrl;
 
         return $this;
     }
@@ -1758,10 +1478,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setRequestorId($requestorId)
     {
-        if (!is_null($requestorId) && (strlen($requestorId) > 35)) {
-            throw new \InvalidArgumentException('invalid length for $requestorId when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 35.');
-        }
-
         $this->container['requestorId'] = $requestorId;
 
         return $this;
@@ -1783,10 +1499,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setRequestorInitiatedAuthenticationIndicator($requestorInitiatedAuthenticationIndicator)
     {
-        if (!is_null($requestorInitiatedAuthenticationIndicator) && (strlen($requestorInitiatedAuthenticationIndicator) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $requestorInitiatedAuthenticationIndicator when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['requestorInitiatedAuthenticationIndicator'] = $requestorInitiatedAuthenticationIndicator;
 
         return $this;
@@ -1808,10 +1520,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setRequestorName($requestorName)
     {
-        if (!is_null($requestorName) && (strlen($requestorName) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $requestorName when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 40.');
-        }
-
         $this->container['requestorName'] = $requestorName;
 
         return $this;
@@ -1833,10 +1541,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setReferenceId($referenceId)
     {
-        if (!is_null($referenceId) && (strlen($referenceId) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $referenceId when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['referenceId'] = $referenceId;
 
         return $this;
@@ -1858,10 +1562,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setSdkMaxTimeout($sdkMaxTimeout)
     {
-        if (!is_null($sdkMaxTimeout) && (strlen($sdkMaxTimeout) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $sdkMaxTimeout when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['sdkMaxTimeout'] = $sdkMaxTimeout;
 
         return $this;
@@ -1883,10 +1583,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setSecureCorporatePaymentIndicator($secureCorporatePaymentIndicator)
     {
-        if (!is_null($secureCorporatePaymentIndicator) && (strlen($secureCorporatePaymentIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $secureCorporatePaymentIndicator when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['secureCorporatePaymentIndicator'] = $secureCorporatePaymentIndicator;
 
         return $this;
@@ -1929,10 +1625,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setWhiteListStatus($whiteListStatus)
     {
-        if (!is_null($whiteListStatus) && (strlen($whiteListStatus) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $whiteListStatus when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['whiteListStatus'] = $whiteListStatus;
 
         return $this;
@@ -1954,10 +1646,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setEffectiveAuthenticationType($effectiveAuthenticationType)
     {
-        if (!is_null($effectiveAuthenticationType) && (strlen($effectiveAuthenticationType) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $effectiveAuthenticationType when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['effectiveAuthenticationType'] = $effectiveAuthenticationType;
 
         return $this;
@@ -1979,10 +1667,6 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      */
     public function setSignedParesStatusReason($signedParesStatusReason)
     {
-        if (!is_null($signedParesStatusReason) && (strlen($signedParesStatusReason) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $signedParesStatusReason when calling Ptsv2paymentsConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['signedParesStatusReason'] = $signedParesStatusReason;
 
         return $this;
@@ -2013,6 +1697,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -2023,6 +1708,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -2034,6 +1720,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -2048,6 +1735,7 @@ class Ptsv2paymentsConsumerAuthenticationInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

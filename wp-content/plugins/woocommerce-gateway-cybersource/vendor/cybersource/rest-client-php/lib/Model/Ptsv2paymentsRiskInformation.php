@@ -57,7 +57,8 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
     protected static $swaggerTypes = [
         'profile' => '\CyberSource\Model\Ptsv2paymentsRiskInformationProfile',
         'eventType' => 'string',
-        'buyerHistory' => '\CyberSource\Model\Ptsv2paymentsRiskInformationBuyerHistory'
+        'buyerHistory' => '\CyberSource\Model\Ptsv2paymentsRiskInformationBuyerHistory',
+        'auxiliaryData' => '\CyberSource\Model\Ptsv2paymentsRiskInformationAuxiliaryData[]'
     ];
 
     /**
@@ -67,7 +68,8 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
     protected static $swaggerFormats = [
         'profile' => null,
         'eventType' => null,
-        'buyerHistory' => null
+        'buyerHistory' => null,
+        'auxiliaryData' => null
     ];
 
     public static function swaggerTypes()
@@ -87,7 +89,8 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
     protected static $attributeMap = [
         'profile' => 'profile',
         'eventType' => 'eventType',
-        'buyerHistory' => 'buyerHistory'
+        'buyerHistory' => 'buyerHistory',
+        'auxiliaryData' => 'auxiliaryData'
     ];
 
 
@@ -98,7 +101,8 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
     protected static $setters = [
         'profile' => 'setProfile',
         'eventType' => 'setEventType',
-        'buyerHistory' => 'setBuyerHistory'
+        'buyerHistory' => 'setBuyerHistory',
+        'auxiliaryData' => 'setAuxiliaryData'
     ];
 
 
@@ -109,7 +113,8 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
     protected static $getters = [
         'profile' => 'getProfile',
         'eventType' => 'getEventType',
-        'buyerHistory' => 'getBuyerHistory'
+        'buyerHistory' => 'getBuyerHistory',
+        'auxiliaryData' => 'getAuxiliaryData'
     ];
 
     public static function attributeMap()
@@ -146,6 +151,7 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
         $this->container['profile'] = isset($data['profile']) ? $data['profile'] : null;
         $this->container['eventType'] = isset($data['eventType']) ? $data['eventType'] : null;
         $this->container['buyerHistory'] = isset($data['buyerHistory']) ? $data['buyerHistory'] : null;
+        $this->container['auxiliaryData'] = isset($data['auxiliaryData']) ? $data['auxiliaryData'] : null;
     }
 
     /**
@@ -156,10 +162,6 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['eventType']) && (strlen($this->container['eventType']) > 255)) {
-            $invalid_properties[] = "invalid value for 'eventType', the character length must be smaller than or equal to 255.";
-        }
 
         return $invalid_properties;
     }
@@ -173,9 +175,6 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['eventType']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -217,10 +216,6 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
      */
     public function setEventType($eventType)
     {
-        if (!is_null($eventType) && (strlen($eventType) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $eventType when calling Ptsv2paymentsRiskInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['eventType'] = $eventType;
 
         return $this;
@@ -246,11 +241,33 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets auxiliaryData
+     * @return \CyberSource\Model\Ptsv2paymentsRiskInformationAuxiliaryData[]
+     */
+    public function getAuxiliaryData()
+    {
+        return $this->container['auxiliaryData'];
+    }
+
+    /**
+     * Sets auxiliaryData
+     * @param \CyberSource\Model\Ptsv2paymentsRiskInformationAuxiliaryData[] $auxiliaryData
+     * @return $this
+     */
+    public function setAuxiliaryData($auxiliaryData)
+    {
+        $this->container['auxiliaryData'] = $auxiliaryData;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -261,6 +278,7 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -272,6 +290,7 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -286,6 +305,7 @@ class Ptsv2paymentsRiskInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

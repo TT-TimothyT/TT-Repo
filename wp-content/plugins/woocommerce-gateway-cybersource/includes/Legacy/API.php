@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -25,10 +25,14 @@ namespace SkyVerge\WooCommerce\Cybersource\Legacy;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 /**
  * API class for communicating with the CyberSource SOAP gateway
+ *
+ * @since 1.0
+ *
+ * @deprecated since 2.8.0 this class and its methods are kept only for legacy purposes and shouldn't be relied upon
  */
 class API extends \SoapClient {
 

@@ -156,18 +156,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['balanceAmount']) && (strlen($this->container['balanceAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'balanceAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['previousBalanceAmount']) && (strlen($this->container['previousBalanceAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'previousBalanceAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['currency']) && (strlen($this->container['currency']) > 5)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 5.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
     public function valid()
     {
 
-        if (strlen($this->container['balanceAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['previousBalanceAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['currency']) > 5) {
-            return false;
-        }
         return true;
     }
 
@@ -209,10 +188,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
      */
     public function setBalanceAmount($balanceAmount)
     {
-        if (!is_null($balanceAmount) && (strlen($balanceAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $balanceAmount when calling TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures., must be smaller than or equal to 12.');
-        }
-
         $this->container['balanceAmount'] = $balanceAmount;
 
         return $this;
@@ -234,10 +209,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
      */
     public function setPreviousBalanceAmount($previousBalanceAmount)
     {
-        if (!is_null($previousBalanceAmount) && (strlen($previousBalanceAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $previousBalanceAmount when calling TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures., must be smaller than or equal to 12.');
-        }
-
         $this->container['previousBalanceAmount'] = $previousBalanceAmount;
 
         return $this;
@@ -259,10 +230,6 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
      */
     public function setCurrency($currency)
     {
-        if (!is_null($currency) && (strlen($currency) > 5)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures., must be smaller than or equal to 5.');
-        }
-
         $this->container['currency'] = $currency;
 
         return $this;
@@ -272,6 +239,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class TssV2TransactionsGet200ResponsePaymentInformationAccountFeatures implement
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

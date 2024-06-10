@@ -144,10 +144,6 @@ class Ptsv2paymentsOrderInformationInvoiceDetailsTransactionAdviceAddendum imple
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['data']) && (strlen($this->container['data']) > 40)) {
-            $invalid_properties[] = "invalid value for 'data', the character length must be smaller than or equal to 40.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class Ptsv2paymentsOrderInformationInvoiceDetailsTransactionAdviceAddendum imple
     public function valid()
     {
 
-        if (strlen($this->container['data']) > 40) {
-            return false;
-        }
         return true;
     }
 
@@ -178,15 +171,11 @@ class Ptsv2paymentsOrderInformationInvoiceDetailsTransactionAdviceAddendum imple
 
     /**
      * Sets data
-     * @param string $data Four Transaction Advice Addendum (TAA) fields. These fields are used to display descriptive information about a transaction on the customer’s American Express card statement. When you send TAA fields, start with amexdata_taa1, then ...taa2, and so on. Skipping a TAA field causes subsequent TAA fields to be ignored.  To use these fields, contact CyberSource Customer Support to have your account enabled for this feature.
+     * @param string $data Four Transaction Advice Addendum (TAA) fields. These fields are used to display descriptive information about a transaction on the customer's American Express card statement. When you send TAA fields, start with amexdata_taa1, then ...taa2, and so on. Skipping a TAA field causes subsequent TAA fields to be ignored.  To use these fields, contact CyberSource Customer Support to have your account enabled for this feature.
      * @return $this
      */
     public function setData($data)
     {
-        if (!is_null($data) && (strlen($data) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $data when calling Ptsv2paymentsOrderInformationInvoiceDetailsTransactionAdviceAddendum., must be smaller than or equal to 40.');
-        }
-
         $this->container['data'] = $data;
 
         return $this;
@@ -196,6 +185,7 @@ class Ptsv2paymentsOrderInformationInvoiceDetailsTransactionAdviceAddendum imple
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class Ptsv2paymentsOrderInformationInvoiceDetailsTransactionAdviceAddendum imple
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class Ptsv2paymentsOrderInformationInvoiceDetailsTransactionAdviceAddendum imple
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class Ptsv2paymentsOrderInformationInvoiceDetailsTransactionAdviceAddendum imple
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

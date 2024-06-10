@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -29,10 +29,10 @@ use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\Frontend;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\AJAX;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 /**
- * 3D Secure handler.
+ * 3D Secure (Payer Authentication) handler.
  *
  * @since 2.3.0
  */
@@ -40,22 +40,22 @@ class ThreeD_Secure {
 
 
 	/** @var Gateway gateway instance */
-	private $gateway;
+	private Gateway $gateway;
 
 	/** @var bool whether 3D Secure is enabled */
-	private $is_enabled = false;
+	private bool $is_enabled = false;
 
 	/** @var bool whether test mode is enabled */
-	private $is_test_mode = false;
+	private bool $is_test_mode = false;
 
 	/** @var string[] enabled card types */
-	private $enabled_card_types = [];
+	private array $enabled_card_types = [];
 
 	/** @var Frontend frontend handler instance */
-	private $frontend_handler;
+	private Frontend $frontend_handler;
 
 	/** @var AJAX AJAX handler instance */
-	private $ajax_handler;
+	private AJAX $ajax_handler;
 
 
 	/**
@@ -65,7 +65,7 @@ class ThreeD_Secure {
 	 *
 	 * @return ThreeD_Secure
 	 */
-	public function init() {
+	public function init(): self {
 
 		if ( ! $this->is_enabled() ) {
 			return $this;
@@ -76,6 +76,8 @@ class ThreeD_Secure {
 		} elseif ( ! is_admin() ) {
 			$this->frontend_handler = new Frontend( $this );
 		}
+
+		add_action( 'woocommerce_api_' . $this->get_step_up_response_handler_action_name(), [ $this, 'handle_step_up_response' ] );
 
 		return $this;
 	}
@@ -88,7 +90,7 @@ class ThreeD_Secure {
 	 * @param Gateway $gateway
 	 * @return $this
 	 */
-	public function set_gateway( Gateway $gateway ) {
+	public function set_gateway( Gateway $gateway ): self {
 
 		$this->gateway = $gateway;
 
@@ -104,9 +106,9 @@ class ThreeD_Secure {
 	 * @param bool $is_enabled whether 3D Secure is enabled
 	 * @return ThreeD_Secure
 	 */
-	public function set_enabled( $is_enabled ) {
+	public function set_enabled( bool $is_enabled ): self {
 
-		$this->is_enabled = (bool) $is_enabled;
+		$this->is_enabled = $is_enabled;
 
 		return $this;
 	}
@@ -120,7 +122,7 @@ class ThreeD_Secure {
 	 * @param string[] $card_types enabled card types
 	 * @return ThreeD_Secure
 	 */
-	public function set_enabled_card_types( array $card_types ) {
+	public function set_enabled_card_types( array $card_types ): self {
 
 		$this->enabled_card_types = array_intersect( $card_types, array_keys( self::get_supported_card_types() ) );
 
@@ -136,9 +138,9 @@ class ThreeD_Secure {
 	 * @param bool $is_test_mode whether test mode is enabled
 	 * @return ThreeD_Secure
 	 */
-	public function set_test_mode( $is_test_mode ) {
+	public function set_test_mode( bool $is_test_mode ): self {
 
-		$this->is_test_mode = (bool) $is_test_mode;
+		$this->is_test_mode = $is_test_mode;
 
 		return $this;
 	}
@@ -154,7 +156,7 @@ class ThreeD_Secure {
 	 *
 	 * @return bool
 	 */
-	public function is_enabled() {
+	public function is_enabled(): bool {
 
 		/**
 		 * Filters whether 3D Secure is enabled.
@@ -174,9 +176,9 @@ class ThreeD_Secure {
 	 *
 	 * @return bool
 	 */
-	public function is_test_mode() {
+	public function is_test_mode(): bool {
 
-		return (bool) $this->is_test_mode;
+		return $this->is_test_mode;
 	}
 
 
@@ -190,7 +192,7 @@ class ThreeD_Secure {
 	 *
 	 * @return string[]
 	 */
-	public function get_enabled_card_types() {
+	public function get_enabled_card_types(): array {
 
 		/**
 		 * Filters the card types enabled for 3D Secure.
@@ -210,7 +212,7 @@ class ThreeD_Secure {
 	 *
 	 * @return array
 	 */
-	public static function get_supported_card_types() {
+	public static function get_supported_card_types(): array {
 
 		return [
 			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX       => __( 'American Express SafeKey', 'woocommerce-gateway-cybersource' ),
@@ -230,9 +232,187 @@ class ThreeD_Secure {
 	 *
 	 * @return Gateway
 	 */
-	public function get_gateway() {
+	public function get_gateway(): Gateway {
 
 		return $this->gateway;
+	}
+
+
+	/**
+	 * Gets the step-up challenge return URL action handler name.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string
+	 */
+	protected function get_step_up_response_handler_action_name(): string {
+
+		return 'wc_' . $this->get_gateway()->get_id() . '_handle_payer_authentication_step_up_response';
+	}
+
+
+	/**
+	 * Gets the step-up challenge return URL.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @internal
+	 *
+	 * @return string
+	 */
+	public function get_step_up_challenge_return_url(): string {
+
+		return add_query_arg( [
+			'wc-api' => $this->get_step_up_response_handler_action_name(),
+		], home_url( '/' ) );
+	}
+
+
+	/**
+	 * Handles the step-up challenge response.
+	 *
+	 * This method is called when the step-up iframe redirects back to the return URL. Note that at this point,
+	 * we don't know yet if the customer entered a valid code, or if they canceled the challenge.
+	 *
+	 * The authentication needs to be validated, which can happen in a separate request or when trying to authorize the
+	 * payment.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-stepup-frame-intro/pa2-ccdc-stepup-frame-receiving-stepup-results.html
+	 *
+	 * @return void
+	 */
+	public function handle_step_up_response(): void {
+
+		// notify the frontend that the challenge is complete
+		$origin = get_site_url( null, '', is_ssl() ? 'https' : 'http' );
+		?>
+
+		<script type="text/javascript">
+			window.onload = function() {
+				window.parent.postMessage( 'challenge_complete', '<?php echo esc_attr( $origin ); ?>' );
+			};
+		</script>
+		<?php
+
+		die;
+	}
+
+
+	/**
+	 * Sets the Payer Authentication setup reference ID.
+	 *
+	 * @since 2.8.0
+	 * @internal
+	 *
+	 * @param string $reference_id
+	 * @return $this
+	 */
+	public function set_reference_id( string $reference_id ): self {
+		WC()->session->set( 'cybersource_threed_secure_reference_id', $reference_id );
+
+		return $this;
+	}
+
+
+	/**
+	 * Sets the Payer Authentication check enrollment response status.
+	 *
+	 * @since 2.8.0
+	 * @internal
+	 *
+	 * @param string $status
+	 * @return $this
+	 */
+	public function set_enrollment_status(string $status ): self {
+		WC()->session->set( 'wc_cybersource_threed_secure_enrollment_status', $status );
+
+		return $this;
+	}
+
+
+	/**
+	 * Sets the consumer authentication information in session.
+	 *
+	 * @since 2.8.0
+	 * @internal
+	 *
+	 * @param object $data
+	 * @return $this
+	 */
+	public function set_consumer_authentication_information( object $data ): self {
+		WC()->session->set( 'wc_cybersource_threed_secure_consumer_authentication_information', $data );
+
+		return $this;
+	}
+
+
+	/**
+	 * Gets the Payer Authentication Request reference ID.
+	 *
+	 * @see AJAX::setup()
+	 * @see https://developer.cybersource.com/docs/cybs/en-us/apifields/reference/all/rest/api-fields/cons-auth-info/cons-auth-info-reference-id.html
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string|null
+	 */
+	public function get_reference_id(): ?string {
+
+		return WC()->session->get( 'cybersource_threed_secure_reference_id' );
+	}
+
+
+	/**
+	 * Gets the Payer Authentication check enrollment response status
+	 *
+	 * @see AJAX::check_enrollment()
+	 * @see https://developer.cybersource.com/docs/cybs/en-us/payer-authentication/developer/all/rest/payer-auth/pa2-ccdc-enroll-intro/pa2-ccdc-enroll-interpreting-response.html
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string|null
+	 */
+	public function get_enrollment_status(): ?string {
+
+		return WC()->session->get( 'wc_cybersource_threed_secure_enrollment_status' );
+	}
+
+
+	/**
+	 * Gets the consumer authentication information from session.
+	 *
+	 * This data is stored in session when checking enrollment.
+	 *
+	 * @see AJAX::check_enrollment()
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return object|null
+	 */
+	public function get_consumer_authentication_information(): ?object {
+
+		$data = WC()->session->get( 'wc_cybersource_threed_secure_consumer_authentication_information' );
+
+		return ! empty( $data ) ? (object) $data : null;
+	}
+
+
+	/**
+	 * Clears 3DS session data.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return void
+	 */
+	public function clear_session_data(): void {
+
+		unset(
+			WC()->session->wc_cybersource_threed_secure_reference_id,
+			WC()->session->wc_cybersource_threed_secure_enrollment_status,
+			WC()->session->wc_cybersource_threed_secure_consumer_authentication_information
+		);
 	}
 
 

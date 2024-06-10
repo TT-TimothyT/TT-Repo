@@ -150,14 +150,6 @@ class Riskv1authenticationsetupsProcessingInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['paymentSolution']) && (strlen($this->container['paymentSolution']) > 12)) {
-            $invalid_properties[] = "invalid value for 'paymentSolution', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['visaCheckoutId']) && (strlen($this->container['visaCheckoutId']) > 48)) {
-            $invalid_properties[] = "invalid value for 'visaCheckoutId', the character length must be smaller than or equal to 48.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Riskv1authenticationsetupsProcessingInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['paymentSolution']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['visaCheckoutId']) > 48) {
-            return false;
-        }
         return true;
     }
 
@@ -191,15 +177,11 @@ class Riskv1authenticationsetupsProcessingInformation implements ArrayAccess
 
     /**
      * Sets paymentSolution
-     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.
+     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.  - `013`: Cybersource P2PE Decryption  - `014`: Mastercard credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.  - `015`: Visa credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.  - `027`: Click to Pay.
      * @return $this
      */
     public function setPaymentSolution($paymentSolution)
     {
-        if (!is_null($paymentSolution) && (strlen($paymentSolution) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $paymentSolution when calling Riskv1authenticationsetupsProcessingInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['paymentSolution'] = $paymentSolution;
 
         return $this;
@@ -221,10 +203,6 @@ class Riskv1authenticationsetupsProcessingInformation implements ArrayAccess
      */
     public function setVisaCheckoutId($visaCheckoutId)
     {
-        if (!is_null($visaCheckoutId) && (strlen($visaCheckoutId) > 48)) {
-            throw new \InvalidArgumentException('invalid length for $visaCheckoutId when calling Riskv1authenticationsetupsProcessingInformation., must be smaller than or equal to 48.');
-        }
-
         $this->container['visaCheckoutId'] = $visaCheckoutId;
 
         return $this;
@@ -234,6 +212,7 @@ class Riskv1authenticationsetupsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Riskv1authenticationsetupsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Riskv1authenticationsetupsProcessingInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Riskv1authenticationsetupsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

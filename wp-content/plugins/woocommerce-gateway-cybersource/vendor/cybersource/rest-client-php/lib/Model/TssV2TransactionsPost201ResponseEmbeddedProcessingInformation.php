@@ -56,7 +56,8 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
     protected static $swaggerTypes = [
         'paymentSolution' => 'string',
         'businessApplicationId' => 'string',
-        'commerceIndicator' => 'string'
+        'commerceIndicator' => 'string',
+        'commerceIndicatorLabel' => 'string'
     ];
 
     /**
@@ -66,7 +67,8 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
     protected static $swaggerFormats = [
         'paymentSolution' => null,
         'businessApplicationId' => null,
-        'commerceIndicator' => null
+        'commerceIndicator' => null,
+        'commerceIndicatorLabel' => null
     ];
 
     public static function swaggerTypes()
@@ -86,7 +88,8 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
     protected static $attributeMap = [
         'paymentSolution' => 'paymentSolution',
         'businessApplicationId' => 'businessApplicationId',
-        'commerceIndicator' => 'commerceIndicator'
+        'commerceIndicator' => 'commerceIndicator',
+        'commerceIndicatorLabel' => 'commerceIndicatorLabel'
     ];
 
 
@@ -97,7 +100,8 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
     protected static $setters = [
         'paymentSolution' => 'setPaymentSolution',
         'businessApplicationId' => 'setBusinessApplicationId',
-        'commerceIndicator' => 'setCommerceIndicator'
+        'commerceIndicator' => 'setCommerceIndicator',
+        'commerceIndicatorLabel' => 'setCommerceIndicatorLabel'
     ];
 
 
@@ -108,7 +112,8 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
     protected static $getters = [
         'paymentSolution' => 'getPaymentSolution',
         'businessApplicationId' => 'getBusinessApplicationId',
-        'commerceIndicator' => 'getCommerceIndicator'
+        'commerceIndicator' => 'getCommerceIndicator',
+        'commerceIndicatorLabel' => 'getCommerceIndicatorLabel'
     ];
 
     public static function attributeMap()
@@ -145,6 +150,7 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
         $this->container['paymentSolution'] = isset($data['paymentSolution']) ? $data['paymentSolution'] : null;
         $this->container['businessApplicationId'] = isset($data['businessApplicationId']) ? $data['businessApplicationId'] : null;
         $this->container['commerceIndicator'] = isset($data['commerceIndicator']) ? $data['commerceIndicator'] : null;
+        $this->container['commerceIndicatorLabel'] = isset($data['commerceIndicatorLabel']) ? $data['commerceIndicatorLabel'] : null;
     }
 
     /**
@@ -155,14 +161,6 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['paymentSolution']) && (strlen($this->container['paymentSolution']) > 12)) {
-            $invalid_properties[] = "invalid value for 'paymentSolution', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['commerceIndicator']) && (strlen($this->container['commerceIndicator']) > 20)) {
-            $invalid_properties[] = "invalid value for 'commerceIndicator', the character length must be smaller than or equal to 20.";
-        }
 
         return $invalid_properties;
     }
@@ -176,12 +174,6 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
     public function valid()
     {
 
-        if (strlen($this->container['paymentSolution']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['commerceIndicator']) > 20) {
-            return false;
-        }
         return true;
     }
 
@@ -197,15 +189,11 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
 
     /**
      * Sets paymentSolution
-     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.
+     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.  - `013`: Cybersource P2PE Decryption  - `014`: Mastercard credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.  - `015`: Visa credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.  - `027`: Click to Pay.
      * @return $this
      */
     public function setPaymentSolution($paymentSolution)
     {
-        if (!is_null($paymentSolution) && (strlen($paymentSolution) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $paymentSolution when calling TssV2TransactionsPost201ResponseEmbeddedProcessingInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['paymentSolution'] = $paymentSolution;
 
         return $this;
@@ -243,16 +231,33 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
 
     /**
      * Sets commerceIndicator
-     * @param string $commerceIndicator Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional. Only `internet`, `moto`, `install`, `recurring`, and `recurring_internet` are valid values.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Other Types of Transactions See Appendix I, \"Commerce Indicators,\" on page 441.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction.
+     * @param string $commerceIndicator Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional.  The list of valid values in this field depends on your processor. See Appendix I, \"Commerce Indicators,\" on page 441 of the Cybersource Credit Card Guide.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction. Note that this should ONLY be used when the cardholder and card are present at the time of the transaction. For all keyed transactions originated from a POS terminal where the cardholder and card are not present, commerceIndicator should be submitted as \"moto\"
      * @return $this
      */
     public function setCommerceIndicator($commerceIndicator)
     {
-        if (!is_null($commerceIndicator) && (strlen($commerceIndicator) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $commerceIndicator when calling TssV2TransactionsPost201ResponseEmbeddedProcessingInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['commerceIndicator'] = $commerceIndicator;
+
+        return $this;
+    }
+
+    /**
+     * Gets commerceIndicatorLabel
+     * @return string
+     */
+    public function getCommerceIndicatorLabel()
+    {
+        return $this->container['commerceIndicatorLabel'];
+    }
+
+    /**
+     * Sets commerceIndicatorLabel
+     * @param string $commerceIndicatorLabel Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional.  The list of valid values in this field depends on your processor. See Appendix I, \"Commerce Indicators,\" on page 441 of the Cybersource Credit Card Guide.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction. Note that this should ONLY be used when the cardholder and card are present at the time of the transaction. For all keyed transactions originated from a POS terminal where the cardholder and card are not present, commerceIndicator should be submitted as \"moto\"
+     * @return $this
+     */
+    public function setCommerceIndicatorLabel($commerceIndicatorLabel)
+    {
+        $this->container['commerceIndicatorLabel'] = $commerceIndicatorLabel;
 
         return $this;
     }
@@ -261,6 +266,7 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -271,6 +277,7 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -282,6 +289,7 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -296,6 +304,7 @@ class TssV2TransactionsPost201ResponseEmbeddedProcessingInformation implements A
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

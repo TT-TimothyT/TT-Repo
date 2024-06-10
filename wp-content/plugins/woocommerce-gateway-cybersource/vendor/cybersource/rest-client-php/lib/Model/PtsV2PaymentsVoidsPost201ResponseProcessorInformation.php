@@ -144,10 +144,6 @@ class PtsV2PaymentsVoidsPost201ResponseProcessorInformation implements ArrayAcce
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['responseCode']) && (strlen($this->container['responseCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'responseCode', the character length must be smaller than or equal to 10.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class PtsV2PaymentsVoidsPost201ResponseProcessorInformation implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['responseCode']) > 10) {
-            return false;
-        }
         return true;
     }
 
@@ -183,10 +176,6 @@ class PtsV2PaymentsVoidsPost201ResponseProcessorInformation implements ArrayAcce
      */
     public function setResponseCode($responseCode)
     {
-        if (!is_null($responseCode) && (strlen($responseCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $responseCode when calling PtsV2PaymentsVoidsPost201ResponseProcessorInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['responseCode'] = $responseCode;
 
         return $this;
@@ -196,6 +185,7 @@ class PtsV2PaymentsVoidsPost201ResponseProcessorInformation implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class PtsV2PaymentsVoidsPost201ResponseProcessorInformation implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class PtsV2PaymentsVoidsPost201ResponseProcessorInformation implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class PtsV2PaymentsVoidsPost201ResponseProcessorInformation implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

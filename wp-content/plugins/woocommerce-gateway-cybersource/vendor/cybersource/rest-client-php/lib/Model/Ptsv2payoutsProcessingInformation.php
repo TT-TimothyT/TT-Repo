@@ -58,7 +58,10 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
         'networkRoutingOrder' => 'string',
         'commerceIndicator' => 'string',
         'reconciliationId' => 'string',
-        'payoutsOptions' => '\CyberSource\Model\Ptsv2payoutsProcessingInformationPayoutsOptions'
+        'payoutsOptions' => '\CyberSource\Model\Ptsv2payoutsProcessingInformationPayoutsOptions',
+        'transactionReason' => 'string',
+        'purposeOfPayment' => 'string',
+        'fundingOptions' => '\CyberSource\Model\Ptsv2payoutsProcessingInformationFundingOptions'
     ];
 
     /**
@@ -70,7 +73,10 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
         'networkRoutingOrder' => null,
         'commerceIndicator' => null,
         'reconciliationId' => null,
-        'payoutsOptions' => null
+        'payoutsOptions' => null,
+        'transactionReason' => null,
+        'purposeOfPayment' => null,
+        'fundingOptions' => null
     ];
 
     public static function swaggerTypes()
@@ -92,7 +98,10 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
         'networkRoutingOrder' => 'networkRoutingOrder',
         'commerceIndicator' => 'commerceIndicator',
         'reconciliationId' => 'reconciliationId',
-        'payoutsOptions' => 'payoutsOptions'
+        'payoutsOptions' => 'payoutsOptions',
+        'transactionReason' => 'transactionReason',
+        'purposeOfPayment' => 'purposeOfPayment',
+        'fundingOptions' => 'fundingOptions'
     ];
 
 
@@ -105,7 +114,10 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
         'networkRoutingOrder' => 'setNetworkRoutingOrder',
         'commerceIndicator' => 'setCommerceIndicator',
         'reconciliationId' => 'setReconciliationId',
-        'payoutsOptions' => 'setPayoutsOptions'
+        'payoutsOptions' => 'setPayoutsOptions',
+        'transactionReason' => 'setTransactionReason',
+        'purposeOfPayment' => 'setPurposeOfPayment',
+        'fundingOptions' => 'setFundingOptions'
     ];
 
 
@@ -118,7 +130,10 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
         'networkRoutingOrder' => 'getNetworkRoutingOrder',
         'commerceIndicator' => 'getCommerceIndicator',
         'reconciliationId' => 'getReconciliationId',
-        'payoutsOptions' => 'getPayoutsOptions'
+        'payoutsOptions' => 'getPayoutsOptions',
+        'transactionReason' => 'getTransactionReason',
+        'purposeOfPayment' => 'getPurposeOfPayment',
+        'fundingOptions' => 'getFundingOptions'
     ];
 
     public static function attributeMap()
@@ -157,6 +172,9 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
         $this->container['commerceIndicator'] = isset($data['commerceIndicator']) ? $data['commerceIndicator'] : null;
         $this->container['reconciliationId'] = isset($data['reconciliationId']) ? $data['reconciliationId'] : null;
         $this->container['payoutsOptions'] = isset($data['payoutsOptions']) ? $data['payoutsOptions'] : null;
+        $this->container['transactionReason'] = isset($data['transactionReason']) ? $data['transactionReason'] : null;
+        $this->container['purposeOfPayment'] = isset($data['purposeOfPayment']) ? $data['purposeOfPayment'] : null;
+        $this->container['fundingOptions'] = isset($data['fundingOptions']) ? $data['fundingOptions'] : null;
     }
 
     /**
@@ -167,22 +185,6 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['businessApplicationId']) && (strlen($this->container['businessApplicationId']) > 2)) {
-            $invalid_properties[] = "invalid value for 'businessApplicationId', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['networkRoutingOrder']) && (strlen($this->container['networkRoutingOrder']) > 30)) {
-            $invalid_properties[] = "invalid value for 'networkRoutingOrder', the character length must be smaller than or equal to 30.";
-        }
-
-        if (!is_null($this->container['commerceIndicator']) && (strlen($this->container['commerceIndicator']) > 13)) {
-            $invalid_properties[] = "invalid value for 'commerceIndicator', the character length must be smaller than or equal to 13.";
-        }
-
-        if (!is_null($this->container['reconciliationId']) && (strlen($this->container['reconciliationId']) > 60)) {
-            $invalid_properties[] = "invalid value for 'reconciliationId', the character length must be smaller than or equal to 60.";
-        }
 
         return $invalid_properties;
     }
@@ -196,18 +198,6 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['businessApplicationId']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['networkRoutingOrder']) > 30) {
-            return false;
-        }
-        if (strlen($this->container['commerceIndicator']) > 13) {
-            return false;
-        }
-        if (strlen($this->container['reconciliationId']) > 60) {
-            return false;
-        }
         return true;
     }
 
@@ -228,10 +218,6 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
      */
     public function setBusinessApplicationId($businessApplicationId)
     {
-        if (!is_null($businessApplicationId) && (strlen($businessApplicationId) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $businessApplicationId when calling Ptsv2payoutsProcessingInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['businessApplicationId'] = $businessApplicationId;
 
         return $this;
@@ -248,15 +234,11 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
 
     /**
      * Sets networkRoutingOrder
-     * @param string $networkRoutingOrder This field is optionally used by Push Payments Gateway participants (merchants and acquirers) to get the attributes for specified networks only. The networks specified in this field must be a subset of the information provided during program enrollment. Refer to Sharing Group Code/Network Routing Order. Note: Supported only in US for domestic transactions involving Push Payments Gateway Service.  VisaNet checks to determine if there are issuer routing preferences for any of the networks specified by the network routing order. If an issuer preference exists for one of the specified debit networks, VisaNet makes a routing selection based on the issuer’s preference.  If an issuer preference exists for more than one of the specified debit networks, or if no issuer preference exists, VisaNet makes a selection based on the acquirer’s routing priorities.   For details, see the `network_order` field description in [BIN Lookup Service Using the SCMP API.](http://apps.cybersource.com/library/documentation/BIN_Lookup/BIN_Lookup_SCMP_API/html/)
+     * @param string $networkRoutingOrder This field is optionally used by Push Payments Gateway participants (merchants and acquirers) to get the attributes for specified networks only. The networks specified in this field must be a subset of the information provided during program enrollment. Refer to Sharing Group Code/Network Routing Order. Note: Supported only in US for domestic transactions involving Push Payments Gateway Service.  VisaNet checks to determine if there are issuer routing preferences for any of the networks specified by the network routing order. If an issuer preference exists for one of the specified debit networks, VisaNet makes a routing selection based on the issuer's preference.  If an issuer preference exists for more than one of the specified debit networks, or if no issuer preference exists, VisaNet makes a selection based on the acquirer's routing priorities.   For details, see the `network_order` field description in [BIN Lookup Service Using the SCMP API.](http://apps.cybersource.com/library/documentation/BIN_Lookup/BIN_Lookup_SCMP_API/html/)
      * @return $this
      */
     public function setNetworkRoutingOrder($networkRoutingOrder)
     {
-        if (!is_null($networkRoutingOrder) && (strlen($networkRoutingOrder) > 30)) {
-            throw new \InvalidArgumentException('invalid length for $networkRoutingOrder when calling Ptsv2payoutsProcessingInformation., must be smaller than or equal to 30.');
-        }
-
         $this->container['networkRoutingOrder'] = $networkRoutingOrder;
 
         return $this;
@@ -278,10 +260,6 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
      */
     public function setCommerceIndicator($commerceIndicator)
     {
-        if (!is_null($commerceIndicator) && (strlen($commerceIndicator) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $commerceIndicator when calling Ptsv2payoutsProcessingInformation., must be smaller than or equal to 13.');
-        }
-
         $this->container['commerceIndicator'] = $commerceIndicator;
 
         return $this;
@@ -303,10 +281,6 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
      */
     public function setReconciliationId($reconciliationId)
     {
-        if (!is_null($reconciliationId) && (strlen($reconciliationId) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $reconciliationId when calling Ptsv2payoutsProcessingInformation., must be smaller than or equal to 60.');
-        }
-
         $this->container['reconciliationId'] = $reconciliationId;
 
         return $this;
@@ -332,11 +306,75 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets transactionReason
+     * @return string
+     */
+    public function getTransactionReason()
+    {
+        return $this->container['transactionReason'];
+    }
+
+    /**
+     * Sets transactionReason
+     * @param string $transactionReason Transaction reason code.
+     * @return $this
+     */
+    public function setTransactionReason($transactionReason)
+    {
+        $this->container['transactionReason'] = $transactionReason;
+
+        return $this;
+    }
+
+    /**
+     * Gets purposeOfPayment
+     * @return string
+     */
+    public function getPurposeOfPayment()
+    {
+        return $this->container['purposeOfPayment'];
+    }
+
+    /**
+     * Sets purposeOfPayment
+     * @param string $purposeOfPayment This will send purpose of funds code for original credit transactions (OCTs).
+     * @return $this
+     */
+    public function setPurposeOfPayment($purposeOfPayment)
+    {
+        $this->container['purposeOfPayment'] = $purposeOfPayment;
+
+        return $this;
+    }
+
+    /**
+     * Gets fundingOptions
+     * @return \CyberSource\Model\Ptsv2payoutsProcessingInformationFundingOptions
+     */
+    public function getFundingOptions()
+    {
+        return $this->container['fundingOptions'];
+    }
+
+    /**
+     * Sets fundingOptions
+     * @param \CyberSource\Model\Ptsv2payoutsProcessingInformationFundingOptions $fundingOptions
+     * @return $this
+     */
+    public function setFundingOptions($fundingOptions)
+    {
+        $this->container['fundingOptions'] = $fundingOptions;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -347,6 +385,7 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -358,6 +397,7 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -372,6 +412,7 @@ class Ptsv2payoutsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -56,7 +56,7 @@ class Riskv1authenticationresultsPaymentInformation implements ArrayAccess
     protected static $swaggerTypes = [
         'card' => '\CyberSource\Model\Riskv1authenticationresultsPaymentInformationCard',
         'tokenizedCard' => '\CyberSource\Model\Riskv1authenticationresultsPaymentInformationTokenizedCard',
-        'fluidData' => '\CyberSource\Model\Riskv1authenticationsetupsPaymentInformationFluidData',
+        'fluidData' => '\CyberSource\Model\Riskv1authenticationresultsPaymentInformationFluidData',
         'customer' => '\CyberSource\Model\Ptsv2paymentsPaymentInformationCustomer'
     ];
 
@@ -222,7 +222,7 @@ class Riskv1authenticationresultsPaymentInformation implements ArrayAccess
 
     /**
      * Gets fluidData
-     * @return \CyberSource\Model\Riskv1authenticationsetupsPaymentInformationFluidData
+     * @return \CyberSource\Model\Riskv1authenticationresultsPaymentInformationFluidData
      */
     public function getFluidData()
     {
@@ -231,7 +231,7 @@ class Riskv1authenticationresultsPaymentInformation implements ArrayAccess
 
     /**
      * Sets fluidData
-     * @param \CyberSource\Model\Riskv1authenticationsetupsPaymentInformationFluidData $fluidData
+     * @param \CyberSource\Model\Riskv1authenticationresultsPaymentInformationFluidData $fluidData
      * @return $this
      */
     public function setFluidData($fluidData)
@@ -266,6 +266,7 @@ class Riskv1authenticationresultsPaymentInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -276,6 +277,7 @@ class Riskv1authenticationresultsPaymentInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -287,6 +289,7 @@ class Riskv1authenticationresultsPaymentInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -301,6 +304,7 @@ class Riskv1authenticationresultsPaymentInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -144,10 +144,6 @@ class TssV2TransactionsGet200ResponseSenderInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['referenceNumber']) && (strlen($this->container['referenceNumber']) > 19)) {
-            $invalid_properties[] = "invalid value for 'referenceNumber', the character length must be smaller than or equal to 19.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class TssV2TransactionsGet200ResponseSenderInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['referenceNumber']) > 19) {
-            return false;
-        }
         return true;
     }
 
@@ -183,10 +176,6 @@ class TssV2TransactionsGet200ResponseSenderInformation implements ArrayAccess
      */
     public function setReferenceNumber($referenceNumber)
     {
-        if (!is_null($referenceNumber) && (strlen($referenceNumber) > 19)) {
-            throw new \InvalidArgumentException('invalid length for $referenceNumber when calling TssV2TransactionsGet200ResponseSenderInformation., must be smaller than or equal to 19.');
-        }
-
         $this->container['referenceNumber'] = $referenceNumber;
 
         return $this;
@@ -196,6 +185,7 @@ class TssV2TransactionsGet200ResponseSenderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class TssV2TransactionsGet200ResponseSenderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class TssV2TransactionsGet200ResponseSenderInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class TssV2TransactionsGet200ResponseSenderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -145,10 +145,6 @@ class Ptsv2paymentsRiskInformationProfile implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['name']) && (strlen($this->container['name']) > 30)) {
-            $invalid_properties[] = "invalid value for 'name', the character length must be smaller than or equal to 30.";
-        }
-
         return $invalid_properties;
     }
 
@@ -161,9 +157,6 @@ class Ptsv2paymentsRiskInformationProfile implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['name']) > 30) {
-            return false;
-        }
         return true;
     }
 
@@ -184,10 +177,6 @@ class Ptsv2paymentsRiskInformationProfile implements ArrayAccess
      */
     public function setName($name)
     {
-        if (!is_null($name) && (strlen($name) > 30)) {
-            throw new \InvalidArgumentException('invalid length for $name when calling Ptsv2paymentsRiskInformationProfile., must be smaller than or equal to 30.');
-        }
-
         $this->container['name'] = $name;
 
         return $this;
@@ -197,6 +186,7 @@ class Ptsv2paymentsRiskInformationProfile implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -207,6 +197,7 @@ class Ptsv2paymentsRiskInformationProfile implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -218,6 +209,7 @@ class Ptsv2paymentsRiskInformationProfile implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -232,6 +224,7 @@ class Ptsv2paymentsRiskInformationProfile implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

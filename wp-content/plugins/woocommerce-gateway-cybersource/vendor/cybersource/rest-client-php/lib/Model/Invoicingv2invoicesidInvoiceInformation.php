@@ -163,10 +163,6 @@ class Invoicingv2invoicesidInvoiceInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['description']) && (strlen($this->container['description']) > 2000)) {
-            $invalid_properties[] = "invalid value for 'description', the character length must be smaller than or equal to 2000.";
-        }
-
         return $invalid_properties;
     }
 
@@ -179,9 +175,6 @@ class Invoicingv2invoicesidInvoiceInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['description']) > 2000) {
-            return false;
-        }
         return true;
     }
 
@@ -202,10 +195,6 @@ class Invoicingv2invoicesidInvoiceInformation implements ArrayAccess
      */
     public function setDescription($description)
     {
-        if (!is_null($description) && (strlen($description) > 2000)) {
-            throw new \InvalidArgumentException('invalid length for $description when calling Invoicingv2invoicesidInvoiceInformation., must be smaller than or equal to 2000.');
-        }
-
         $this->container['description'] = $description;
 
         return $this;
@@ -278,6 +267,7 @@ class Invoicingv2invoicesidInvoiceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -288,6 +278,7 @@ class Invoicingv2invoicesidInvoiceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -299,6 +290,7 @@ class Invoicingv2invoicesidInvoiceInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -313,6 +305,7 @@ class Invoicingv2invoicesidInvoiceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

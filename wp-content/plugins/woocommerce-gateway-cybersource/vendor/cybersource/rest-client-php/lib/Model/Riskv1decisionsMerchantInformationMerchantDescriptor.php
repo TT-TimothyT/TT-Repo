@@ -150,10 +150,6 @@ class Riskv1decisionsMerchantInformationMerchantDescriptor implements ArrayAcces
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['url']) && (strlen($this->container['url']) > 255)) {
-            $invalid_properties[] = "invalid value for 'url', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -166,9 +162,6 @@ class Riskv1decisionsMerchantInformationMerchantDescriptor implements ArrayAcces
     public function valid()
     {
 
-        if (strlen($this->container['url']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -184,7 +177,7 @@ class Riskv1decisionsMerchantInformationMerchantDescriptor implements ArrayAcces
 
     /**
      * Sets name
-     * @param string $name Your merchant name.  **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.  #### PIN debit Your business name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.  #### Airline processing Your merchant name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.  **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.  **Important** This value must consist of English characters.  Required for captures and credits.
+     * @param string $name Your merchant name.  **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.  #### PIN debit Your business name. This name is displayed on the cardholder's statement. When you include more than one consecutive space, extra spaces are removed.  When you do not include this value in your PIN debit request, the merchant name from your account is used. **Important** This value must consist of English characters.  Optional field for PIN debit credit or PIN debit purchase requests.  #### Airline processing Your merchant name. This name is displayed on the cardholder's statement. When you include more than one consecutive space, extra spaces are removed.  **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.  **Important** This value must consist of English characters.  Required for captures and credits.
      * @return $this
      */
     public function setName($name)
@@ -210,10 +203,6 @@ class Riskv1decisionsMerchantInformationMerchantDescriptor implements ArrayAcces
      */
     public function setUrl($url)
     {
-        if (!is_null($url) && (strlen($url) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $url when calling Riskv1decisionsMerchantInformationMerchantDescriptor., must be smaller than or equal to 255.');
-        }
-
         $this->container['url'] = $url;
 
         return $this;
@@ -223,6 +212,7 @@ class Riskv1decisionsMerchantInformationMerchantDescriptor implements ArrayAcces
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -233,6 +223,7 @@ class Riskv1decisionsMerchantInformationMerchantDescriptor implements ArrayAcces
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -244,6 +235,7 @@ class Riskv1decisionsMerchantInformationMerchantDescriptor implements ArrayAcces
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -258,6 +250,7 @@ class Riskv1decisionsMerchantInformationMerchantDescriptor implements ArrayAcces
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -54,6 +54,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
       * @var string[]
       */
     protected static $swaggerTypes = [
+        'accessToken' => 'string',
         'acsRenderingType' => 'string',
         'acsTransactionId' => 'string',
         'acsUrl' => 'string',
@@ -73,6 +74,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
         'eciRaw' => 'string',
         'effectiveAuthenticationType' => 'string',
         'ivr' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationIvr',
+        'strongAuthentication' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationStrongAuthentication',
         'networkScore' => 'string',
         'pareq' => 'string',
         'paresStatus' => 'string',
@@ -101,6 +103,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
       * @var string[]
       */
     protected static $swaggerFormats = [
+        'accessToken' => null,
         'acsRenderingType' => null,
         'acsTransactionId' => null,
         'acsUrl' => null,
@@ -120,6 +123,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
         'eciRaw' => null,
         'effectiveAuthenticationType' => null,
         'ivr' => null,
+        'strongAuthentication' => null,
         'networkScore' => null,
         'pareq' => null,
         'paresStatus' => null,
@@ -158,6 +162,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      * @var string[]
      */
     protected static $attributeMap = [
+        'accessToken' => 'accessToken',
         'acsRenderingType' => 'acsRenderingType',
         'acsTransactionId' => 'acsTransactionId',
         'acsUrl' => 'acsUrl',
@@ -177,6 +182,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
         'eciRaw' => 'eciRaw',
         'effectiveAuthenticationType' => 'effectiveAuthenticationType',
         'ivr' => 'ivr',
+        'strongAuthentication' => 'strongAuthentication',
         'networkScore' => 'networkScore',
         'pareq' => 'pareq',
         'paresStatus' => 'paresStatus',
@@ -206,6 +212,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      * @var string[]
      */
     protected static $setters = [
+        'accessToken' => 'setAccessToken',
         'acsRenderingType' => 'setAcsRenderingType',
         'acsTransactionId' => 'setAcsTransactionId',
         'acsUrl' => 'setAcsUrl',
@@ -225,6 +232,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
         'eciRaw' => 'setEciRaw',
         'effectiveAuthenticationType' => 'setEffectiveAuthenticationType',
         'ivr' => 'setIvr',
+        'strongAuthentication' => 'setStrongAuthentication',
         'networkScore' => 'setNetworkScore',
         'pareq' => 'setPareq',
         'paresStatus' => 'setParesStatus',
@@ -254,6 +262,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      * @var string[]
      */
     protected static $getters = [
+        'accessToken' => 'getAccessToken',
         'acsRenderingType' => 'getAcsRenderingType',
         'acsTransactionId' => 'getAcsTransactionId',
         'acsUrl' => 'getAcsUrl',
@@ -273,6 +282,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
         'eciRaw' => 'getEciRaw',
         'effectiveAuthenticationType' => 'getEffectiveAuthenticationType',
         'ivr' => 'getIvr',
+        'strongAuthentication' => 'getStrongAuthentication',
         'networkScore' => 'getNetworkScore',
         'pareq' => 'getPareq',
         'paresStatus' => 'getParesStatus',
@@ -327,6 +337,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function __construct(array $data = null)
     {
+        $this->container['accessToken'] = isset($data['accessToken']) ? $data['accessToken'] : null;
         $this->container['acsRenderingType'] = isset($data['acsRenderingType']) ? $data['acsRenderingType'] : null;
         $this->container['acsTransactionId'] = isset($data['acsTransactionId']) ? $data['acsTransactionId'] : null;
         $this->container['acsUrl'] = isset($data['acsUrl']) ? $data['acsUrl'] : null;
@@ -346,6 +357,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
         $this->container['eciRaw'] = isset($data['eciRaw']) ? $data['eciRaw'] : null;
         $this->container['effectiveAuthenticationType'] = isset($data['effectiveAuthenticationType']) ? $data['effectiveAuthenticationType'] : null;
         $this->container['ivr'] = isset($data['ivr']) ? $data['ivr'] : null;
+        $this->container['strongAuthentication'] = isset($data['strongAuthentication']) ? $data['strongAuthentication'] : null;
         $this->container['networkScore'] = isset($data['networkScore']) ? $data['networkScore'] : null;
         $this->container['pareq'] = isset($data['pareq']) ? $data['pareq'] : null;
         $this->container['paresStatus'] = isset($data['paresStatus']) ? $data['paresStatus'] : null;
@@ -378,94 +390,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['acsTransactionId']) && (strlen($this->container['acsTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'acsTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['acsUrl']) && (strlen($this->container['acsUrl']) > 2048)) {
-            $invalid_properties[] = "invalid value for 'acsUrl', the character length must be smaller than or equal to 2048.";
-        }
-
-        if (!is_null($this->container['authenticationTransactionId']) && (strlen($this->container['authenticationTransactionId']) > 20)) {
-            $invalid_properties[] = "invalid value for 'authenticationTransactionId', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['cardholderMessage']) && (strlen($this->container['cardholderMessage']) > 128)) {
-            $invalid_properties[] = "invalid value for 'cardholderMessage', the character length must be smaller than or equal to 128.";
-        }
-
-        if (!is_null($this->container['cavv']) && (strlen($this->container['cavv']) > 255)) {
-            $invalid_properties[] = "invalid value for 'cavv', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['cavvAlgorithm']) && (strlen($this->container['cavvAlgorithm']) > 1)) {
-            $invalid_properties[] = "invalid value for 'cavvAlgorithm', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['challengeCancelCode']) && (strlen($this->container['challengeCancelCode']) > 2)) {
-            $invalid_properties[] = "invalid value for 'challengeCancelCode', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['challengeRequired']) && (strlen($this->container['challengeRequired']) > 1)) {
-            $invalid_properties[] = "invalid value for 'challengeRequired', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['decoupledAuthenticationIndicator']) && (strlen($this->container['decoupledAuthenticationIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'decoupledAuthenticationIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['directoryServerErrorCode']) && (strlen($this->container['directoryServerErrorCode']) > 3)) {
-            $invalid_properties[] = "invalid value for 'directoryServerErrorCode', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['directoryServerErrorDescription']) && (strlen($this->container['directoryServerErrorDescription']) > 4096)) {
-            $invalid_properties[] = "invalid value for 'directoryServerErrorDescription', the character length must be smaller than or equal to 4096.";
-        }
-
-        if (!is_null($this->container['ecommerceIndicator']) && (strlen($this->container['ecommerceIndicator']) > 255)) {
-            $invalid_properties[] = "invalid value for 'ecommerceIndicator', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['effectiveAuthenticationType']) && (strlen($this->container['effectiveAuthenticationType']) > 2)) {
-            $invalid_properties[] = "invalid value for 'effectiveAuthenticationType', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['networkScore']) && (strlen($this->container['networkScore']) > 2)) {
-            $invalid_properties[] = "invalid value for 'networkScore', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['sdkTransactionId']) && (strlen($this->container['sdkTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'sdkTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['signedParesStatusReason']) && (strlen($this->container['signedParesStatusReason']) > 2)) {
-            $invalid_properties[] = "invalid value for 'signedParesStatusReason', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['stepUpUrl']) && (strlen($this->container['stepUpUrl']) > 2048)) {
-            $invalid_properties[] = "invalid value for 'stepUpUrl', the character length must be smaller than or equal to 2048.";
-        }
-
-        if (!is_null($this->container['threeDSServerTransactionId']) && (strlen($this->container['threeDSServerTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'threeDSServerTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['whiteListStatusSource']) && (strlen($this->container['whiteListStatusSource']) > 2)) {
-            $invalid_properties[] = "invalid value for 'whiteListStatusSource', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['directoryServerTransactionId']) && (strlen($this->container['directoryServerTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'directoryServerTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['interactionCounter']) && (strlen($this->container['interactionCounter']) > 2)) {
-            $invalid_properties[] = "invalid value for 'interactionCounter', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['whiteListStatus']) && (strlen($this->container['whiteListStatus']) > 1)) {
-            $invalid_properties[] = "invalid value for 'whiteListStatus', the character length must be smaller than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -478,75 +402,30 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
     public function valid()
     {
 
-        if (strlen($this->container['acsTransactionId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['acsUrl']) > 2048) {
-            return false;
-        }
-        if (strlen($this->container['authenticationTransactionId']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['cardholderMessage']) > 128) {
-            return false;
-        }
-        if (strlen($this->container['cavv']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['cavvAlgorithm']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['challengeCancelCode']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['challengeRequired']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['decoupledAuthenticationIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['directoryServerErrorCode']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['directoryServerErrorDescription']) > 4096) {
-            return false;
-        }
-        if (strlen($this->container['ecommerceIndicator']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['effectiveAuthenticationType']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['networkScore']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['sdkTransactionId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['signedParesStatusReason']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['stepUpUrl']) > 2048) {
-            return false;
-        }
-        if (strlen($this->container['threeDSServerTransactionId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['whiteListStatusSource']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['directoryServerTransactionId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['interactionCounter']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['whiteListStatus']) > 1) {
-            return false;
-        }
         return true;
     }
 
+
+    /**
+     * Gets accessToken
+     * @return string
+     */
+    public function getAccessToken()
+    {
+        return $this->container['accessToken'];
+    }
+
+    /**
+     * Sets accessToken
+     * @param string $accessToken JSON Web Token (JWT) used to authenticate the consumer with the authentication provider, such as, CardinalCommerce or Rupay. Note - Max Length of this field is 2048 characters.
+     * @return $this
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->container['accessToken'] = $accessToken;
+
+        return $this;
+    }
 
     /**
      * Gets acsRenderingType
@@ -585,10 +464,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setAcsTransactionId($acsTransactionId)
     {
-        if (!is_null($acsTransactionId) && (strlen($acsTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $acsTransactionId when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['acsTransactionId'] = $acsTransactionId;
 
         return $this;
@@ -605,15 +480,11 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
 
     /**
      * Sets acsUrl
-     * @param string $acsUrl URL for the card-issuing bank’s authentication form that you receive when the card is enrolled. The value can be very large.
+     * @param string $acsUrl URL for the card-issuing bank's authentication form that you receive when the card is enrolled. The value can be very large.
      * @return $this
      */
     public function setAcsUrl($acsUrl)
     {
-        if (!is_null($acsUrl) && (strlen($acsUrl) > 2048)) {
-            throw new \InvalidArgumentException('invalid length for $acsUrl when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2048.');
-        }
-
         $this->container['acsUrl'] = $acsUrl;
 
         return $this;
@@ -630,7 +501,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
 
     /**
      * Sets authenticationPath
-     * @param string $authenticationPath Indicates what displays to the customer during the authentication process. This field can contain one of these values: - `ADS`: (Card not enrolled) customer prompted to activate the card during the checkout process. - `ATTEMPTS`: (Attempts processing) Processing briefly displays before the checkout process is completed. - `ENROLLED`: (Card enrolled) the card issuer’s authentication window displays. - `UNKNOWN`: Card enrollment status cannot be determined. - `NOREDIRECT`: (Card not enrolled, authentication unavailable, or error occurred) nothing displays to the customer.  The following values can be returned if you are using rules-based payer authentication. - `RIBA`: The card-issuing bank supports risk-based authentication, but whether the cardholder is likely to be challenged cannot be determined. - `RIBA_PASS`: The card-issuing bank supports risk-based authentication and it is likely that the cardholder will not be challenged to provide credentials, also known as _silent authentication_.  For details about possible values, see `pa_enroll_authentication_path` field description and \"Rules-Based Payer Authentication\" in [CyberSource Payer Authentication Using the SCMP API.] (https://apps.cybersource.com/library/documentation/dev_guides/Payer_Authentication_SCMP_API/html/)
+     * @param string $authenticationPath Indicates what displays to the customer during the authentication process. This field can contain one of these values: - `ADS`: (Card not enrolled) customer prompted to activate the card during the checkout process. - `ATTEMPTS`: (Attempts processing) Processing briefly displays before the checkout process is completed. - `ENROLLED`: (Card enrolled) the card issuer's authentication window displays. - `UNKNOWN`: Card enrollment status cannot be determined. - `NOREDIRECT`: (Card not enrolled, authentication unavailable, or error occurred) nothing displays to the customer.  The following values can be returned if you are using rules-based payer authentication. - `RIBA`: The card-issuing bank supports risk-based authentication, but whether the cardholder is likely to be challenged cannot be determined. - `RIBA_PASS`: The card-issuing bank supports risk-based authentication and it is likely that the cardholder will not be challenged to provide credentials, also known as _silent authentication_.  For details about possible values, see `pa_enroll_authentication_path` field description and \"Rules-Based Payer Authentication\" in [CyberSource Payer Authentication Using the SCMP API.] (https://apps.cybersource.com/library/documentation/dev_guides/Payer_Authentication_SCMP_API/html/)
      * @return $this
      */
     public function setAuthenticationPath($authenticationPath)
@@ -672,15 +543,11 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
 
     /**
      * Sets authenticationTransactionId
-     * @param string $authenticationTransactionId Payer authentication transaction identifier passed to link the check enrollment and validate authentication messages.
+     * @param string $authenticationTransactionId Payer authentication transaction identifier is used to link the check enrollment and validate authentication messages. For Rupay, this field should be passed as request only for Resend OTP use case.
      * @return $this
      */
     public function setAuthenticationTransactionId($authenticationTransactionId)
     {
-        if (!is_null($authenticationTransactionId) && (strlen($authenticationTransactionId) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $authenticationTransactionId when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['authenticationTransactionId'] = $authenticationTransactionId;
 
         return $this;
@@ -697,15 +564,11 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
 
     /**
      * Sets cardholderMessage
-     * @param string $cardholderMessage Text provided by the ACS/Issuer to Cardholder during a Frictionless or Decoupled transaction.The Issuer can provide information to Cardholder. For example, “Additional authentication is needed for this transaction, please contact (Issuer Name) at xxx-xxx-xxxx.”. The Issuing Bank can optionally support this value.
+     * @param string $cardholderMessage Text provided by the ACS/Issuer to Cardholder during a Frictionless or Decoupled transaction.The Issuer can provide information to Cardholder. For example, \"Additional authentication is needed for this transaction, please contact (Issuer Name) at xxx-xxx-xxxx.\". The Issuing Bank can optionally support this value.
      * @return $this
      */
     public function setCardholderMessage($cardholderMessage)
     {
-        if (!is_null($cardholderMessage) && (strlen($cardholderMessage) > 128)) {
-            throw new \InvalidArgumentException('invalid length for $cardholderMessage when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 128.');
-        }
-
         $this->container['cardholderMessage'] = $cardholderMessage;
 
         return $this;
@@ -727,10 +590,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setCavv($cavv)
     {
-        if (!is_null($cavv) && (strlen($cavv) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $cavv when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['cavv'] = $cavv;
 
         return $this;
@@ -752,10 +611,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setCavvAlgorithm($cavvAlgorithm)
     {
-        if (!is_null($cavvAlgorithm) && (strlen($cavvAlgorithm) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $cavvAlgorithm when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['cavvAlgorithm'] = $cavvAlgorithm;
 
         return $this;
@@ -777,10 +632,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setChallengeCancelCode($challengeCancelCode)
     {
-        if (!is_null($challengeCancelCode) && (strlen($challengeCancelCode) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $challengeCancelCode when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['challengeCancelCode'] = $challengeCancelCode;
 
         return $this;
@@ -802,10 +653,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setChallengeRequired($challengeRequired)
     {
-        if (!is_null($challengeRequired) && (strlen($challengeRequired) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $challengeRequired when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['challengeRequired'] = $challengeRequired;
 
         return $this;
@@ -827,10 +674,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setDecoupledAuthenticationIndicator($decoupledAuthenticationIndicator)
     {
-        if (!is_null($decoupledAuthenticationIndicator) && (strlen($decoupledAuthenticationIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $decoupledAuthenticationIndicator when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['decoupledAuthenticationIndicator'] = $decoupledAuthenticationIndicator;
 
         return $this;
@@ -847,15 +690,11 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
 
     /**
      * Sets directoryServerErrorCode
-     * @param string $directoryServerErrorCode The directory server error code indicating a problem with this transaction.
+     * @param string $directoryServerErrorCode The directory server error code indicating a problem with this transaction. Note - Max Length of this field is typically 3 characters.
      * @return $this
      */
     public function setDirectoryServerErrorCode($directoryServerErrorCode)
     {
-        if (!is_null($directoryServerErrorCode) && (strlen($directoryServerErrorCode) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $directoryServerErrorCode when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 3.');
-        }
-
         $this->container['directoryServerErrorCode'] = $directoryServerErrorCode;
 
         return $this;
@@ -877,10 +716,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setDirectoryServerErrorDescription($directoryServerErrorDescription)
     {
-        if (!is_null($directoryServerErrorDescription) && (strlen($directoryServerErrorDescription) > 4096)) {
-            throw new \InvalidArgumentException('invalid length for $directoryServerErrorDescription when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 4096.');
-        }
-
         $this->container['directoryServerErrorDescription'] = $directoryServerErrorDescription;
 
         return $this;
@@ -897,15 +732,11 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
 
     /**
      * Sets ecommerceIndicator
-     * @param string $ecommerceIndicator Commerce indicator for cards not enrolled. This field contains one of these values: - `internet`: Card not enrolled, or card type not supported by payer authentication. No liability shift. - `js_attempted`: Card not enrolled, but attempt to authenticate is recorded. Liability shift. - `js_failure`: J/Secure directory service is not available. No liability shift. - `spa`: Mastercard card not enrolled in the SecureCode program. No liability shift. - `vbv_attempted`: Card not enrolled, but attempt to authenticate is recorded. Liability shift. - `vbv_failure`: For payment processor Barclays, Streamline, AIBMS, or FDC Germany, you receive this result if Visa’s directory service is not available. No liability shift.
+     * @param string $ecommerceIndicator Commerce indicator for cards not enrolled. This field contains one of these values: - `internet`: Card not enrolled, or card type not supported by payer authentication. No liability shift. - `js_attempted`: Card not enrolled, but attempt to authenticate is recorded. Liability shift. - `js_failure`: J/Secure directory service is not available. No liability shift. - `spa`: Mastercard card not enrolled in the SecureCode program. No liability shift. - `vbv_attempted`: Card not enrolled, but attempt to authenticate is recorded. Liability shift. - `vbv_failure`: For payment processor Barclays, Streamline, AIBMS, or FDC Germany, you receive this result if Visa's directory service is not available. No liability shift.
      * @return $this
      */
     public function setEcommerceIndicator($ecommerceIndicator)
     {
-        if (!is_null($ecommerceIndicator) && (strlen($ecommerceIndicator) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $ecommerceIndicator when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['ecommerceIndicator'] = $ecommerceIndicator;
 
         return $this;
@@ -969,10 +800,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setEffectiveAuthenticationType($effectiveAuthenticationType)
     {
-        if (!is_null($effectiveAuthenticationType) && (strlen($effectiveAuthenticationType) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $effectiveAuthenticationType when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['effectiveAuthenticationType'] = $effectiveAuthenticationType;
 
         return $this;
@@ -1000,6 +827,27 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
     }
 
     /**
+     * Gets strongAuthentication
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationStrongAuthentication
+     */
+    public function getStrongAuthentication()
+    {
+        return $this->container['strongAuthentication'];
+    }
+
+    /**
+     * Sets strongAuthentication
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponseConsumerAuthenticationInformationStrongAuthentication $strongAuthentication
+     * @return $this
+     */
+    public function setStrongAuthentication($strongAuthentication)
+    {
+        $this->container['strongAuthentication'] = $strongAuthentication;
+
+        return $this;
+    }
+
+    /**
      * Gets networkScore
      * @return string
      */
@@ -1015,10 +863,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setNetworkScore($networkScore)
     {
-        if (!is_null($networkScore) && (strlen($networkScore) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $networkScore when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['networkScore'] = $networkScore;
 
         return $this;
@@ -1124,10 +968,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setSdkTransactionId($sdkTransactionId)
     {
-        if (!is_null($sdkTransactionId) && (strlen($sdkTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $sdkTransactionId when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['sdkTransactionId'] = $sdkTransactionId;
 
         return $this;
@@ -1149,10 +989,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setSignedParesStatusReason($signedParesStatusReason)
     {
-        if (!is_null($signedParesStatusReason) && (strlen($signedParesStatusReason) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $signedParesStatusReason when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['signedParesStatusReason'] = $signedParesStatusReason;
 
         return $this;
@@ -1195,10 +1031,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setStepUpUrl($stepUpUrl)
     {
-        if (!is_null($stepUpUrl) && (strlen($stepUpUrl) > 2048)) {
-            throw new \InvalidArgumentException('invalid length for $stepUpUrl when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2048.');
-        }
-
         $this->container['stepUpUrl'] = $stepUpUrl;
 
         return $this;
@@ -1220,10 +1052,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setThreeDSServerTransactionId($threeDSServerTransactionId)
     {
-        if (!is_null($threeDSServerTransactionId) && (strlen($threeDSServerTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $threeDSServerTransactionId when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['threeDSServerTransactionId'] = $threeDSServerTransactionId;
 
         return $this;
@@ -1308,10 +1136,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setWhiteListStatusSource($whiteListStatusSource)
     {
-        if (!is_null($whiteListStatusSource) && (strlen($whiteListStatusSource) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $whiteListStatusSource when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['whiteListStatusSource'] = $whiteListStatusSource;
 
         return $this;
@@ -1354,10 +1178,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setDirectoryServerTransactionId($directoryServerTransactionId)
     {
-        if (!is_null($directoryServerTransactionId) && (strlen($directoryServerTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $directoryServerTransactionId when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['directoryServerTransactionId'] = $directoryServerTransactionId;
 
         return $this;
@@ -1442,10 +1262,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setInteractionCounter($interactionCounter)
     {
-        if (!is_null($interactionCounter) && (strlen($interactionCounter) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $interactionCounter when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['interactionCounter'] = $interactionCounter;
 
         return $this;
@@ -1467,10 +1283,6 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      */
     public function setWhiteListStatus($whiteListStatus)
     {
-        if (!is_null($whiteListStatus) && (strlen($whiteListStatus) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $whiteListStatus when calling PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['whiteListStatus'] = $whiteListStatus;
 
         return $this;
@@ -1480,6 +1292,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -1490,6 +1303,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -1501,6 +1315,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1515,6 +1330,7 @@ class PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation implements A
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

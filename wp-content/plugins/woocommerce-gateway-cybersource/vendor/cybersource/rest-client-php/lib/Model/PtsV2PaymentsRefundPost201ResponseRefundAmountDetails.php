@@ -55,6 +55,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
       */
     protected static $swaggerTypes = [
         'refundAmount' => 'string',
+        'creditAmount' => 'string',
         'currency' => 'string'
     ];
 
@@ -64,6 +65,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
       */
     protected static $swaggerFormats = [
         'refundAmount' => null,
+        'creditAmount' => null,
         'currency' => null
     ];
 
@@ -83,6 +85,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      */
     protected static $attributeMap = [
         'refundAmount' => 'refundAmount',
+        'creditAmount' => 'creditAmount',
         'currency' => 'currency'
     ];
 
@@ -93,6 +96,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      */
     protected static $setters = [
         'refundAmount' => 'setRefundAmount',
+        'creditAmount' => 'setCreditAmount',
         'currency' => 'setCurrency'
     ];
 
@@ -103,6 +107,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      */
     protected static $getters = [
         'refundAmount' => 'getRefundAmount',
+        'creditAmount' => 'getCreditAmount',
         'currency' => 'getCurrency'
     ];
 
@@ -138,6 +143,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
     public function __construct(array $data = null)
     {
         $this->container['refundAmount'] = isset($data['refundAmount']) ? $data['refundAmount'] : null;
+        $this->container['creditAmount'] = isset($data['creditAmount']) ? $data['creditAmount'] : null;
         $this->container['currency'] = isset($data['currency']) ? $data['currency'] : null;
     }
 
@@ -149,14 +155,6 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['refundAmount']) && (strlen($this->container['refundAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'refundAmount', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['currency']) && (strlen($this->container['currency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 3.";
-        }
 
         return $invalid_properties;
     }
@@ -170,12 +168,6 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['refundAmount']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['currency']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -196,11 +188,28 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      */
     public function setRefundAmount($refundAmount)
     {
-        if (!is_null($refundAmount) && (strlen($refundAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $refundAmount when calling PtsV2PaymentsRefundPost201ResponseRefundAmountDetails., must be smaller than or equal to 15.');
-        }
-
         $this->container['refundAmount'] = $refundAmount;
+
+        return $this;
+    }
+
+    /**
+     * Gets creditAmount
+     * @return string
+     */
+    public function getCreditAmount()
+    {
+        return $this->container['creditAmount'];
+    }
+
+    /**
+     * Sets creditAmount
+     * @param string $creditAmount Amount that was credited to the cardholder's account.  Returned by PIN debit credit.
+     * @return $this
+     */
+    public function setCreditAmount($creditAmount)
+    {
+        $this->container['creditAmount'] = $creditAmount;
 
         return $this;
     }
@@ -221,10 +230,6 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      */
     public function setCurrency($currency)
     {
-        if (!is_null($currency) && (strlen($currency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling PtsV2PaymentsRefundPost201ResponseRefundAmountDetails., must be smaller than or equal to 3.');
-        }
-
         $this->container['currency'] = $currency;
 
         return $this;
@@ -234,6 +239,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +250,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +262,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +277,7 @@ class PtsV2PaymentsRefundPost201ResponseRefundAmountDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

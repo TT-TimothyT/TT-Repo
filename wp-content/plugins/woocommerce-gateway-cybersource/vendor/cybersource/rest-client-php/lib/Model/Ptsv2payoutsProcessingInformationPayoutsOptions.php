@@ -57,7 +57,8 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
         'acquirerMerchantId' => 'string',
         'acquirerBin' => 'string',
         'retrievalReferenceNumber' => 'string',
-        'accountFundingReferenceId' => 'string'
+        'accountFundingReferenceId' => 'string',
+        'deferredDateTime' => 'string'
     ];
 
     /**
@@ -68,7 +69,8 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
         'acquirerMerchantId' => null,
         'acquirerBin' => null,
         'retrievalReferenceNumber' => null,
-        'accountFundingReferenceId' => null
+        'accountFundingReferenceId' => null,
+        'deferredDateTime' => null
     ];
 
     public static function swaggerTypes()
@@ -89,7 +91,8 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
         'acquirerMerchantId' => 'acquirerMerchantId',
         'acquirerBin' => 'acquirerBin',
         'retrievalReferenceNumber' => 'retrievalReferenceNumber',
-        'accountFundingReferenceId' => 'accountFundingReferenceId'
+        'accountFundingReferenceId' => 'accountFundingReferenceId',
+        'deferredDateTime' => 'deferredDateTime'
     ];
 
 
@@ -101,7 +104,8 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
         'acquirerMerchantId' => 'setAcquirerMerchantId',
         'acquirerBin' => 'setAcquirerBin',
         'retrievalReferenceNumber' => 'setRetrievalReferenceNumber',
-        'accountFundingReferenceId' => 'setAccountFundingReferenceId'
+        'accountFundingReferenceId' => 'setAccountFundingReferenceId',
+        'deferredDateTime' => 'setDeferredDateTime'
     ];
 
 
@@ -113,7 +117,8 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
         'acquirerMerchantId' => 'getAcquirerMerchantId',
         'acquirerBin' => 'getAcquirerBin',
         'retrievalReferenceNumber' => 'getRetrievalReferenceNumber',
-        'accountFundingReferenceId' => 'getAccountFundingReferenceId'
+        'accountFundingReferenceId' => 'getAccountFundingReferenceId',
+        'deferredDateTime' => 'getDeferredDateTime'
     ];
 
     public static function attributeMap()
@@ -151,6 +156,7 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
         $this->container['acquirerBin'] = isset($data['acquirerBin']) ? $data['acquirerBin'] : null;
         $this->container['retrievalReferenceNumber'] = isset($data['retrievalReferenceNumber']) ? $data['retrievalReferenceNumber'] : null;
         $this->container['accountFundingReferenceId'] = isset($data['accountFundingReferenceId']) ? $data['accountFundingReferenceId'] : null;
+        $this->container['deferredDateTime'] = isset($data['deferredDateTime']) ? $data['deferredDateTime'] : null;
     }
 
     /**
@@ -161,22 +167,6 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['acquirerMerchantId']) && (strlen($this->container['acquirerMerchantId']) > 15)) {
-            $invalid_properties[] = "invalid value for 'acquirerMerchantId', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['acquirerBin']) && (strlen($this->container['acquirerBin']) > 11)) {
-            $invalid_properties[] = "invalid value for 'acquirerBin', the character length must be smaller than or equal to 11.";
-        }
-
-        if (!is_null($this->container['retrievalReferenceNumber']) && (strlen($this->container['retrievalReferenceNumber']) > 12)) {
-            $invalid_properties[] = "invalid value for 'retrievalReferenceNumber', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['accountFundingReferenceId']) && (strlen($this->container['accountFundingReferenceId']) > 15)) {
-            $invalid_properties[] = "invalid value for 'accountFundingReferenceId', the character length must be smaller than or equal to 15.";
-        }
 
         return $invalid_properties;
     }
@@ -190,18 +180,6 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['acquirerMerchantId']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['acquirerBin']) > 11) {
-            return false;
-        }
-        if (strlen($this->container['retrievalReferenceNumber']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['accountFundingReferenceId']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -222,10 +200,6 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
      */
     public function setAcquirerMerchantId($acquirerMerchantId)
     {
-        if (!is_null($acquirerMerchantId) && (strlen($acquirerMerchantId) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $acquirerMerchantId when calling Ptsv2payoutsProcessingInformationPayoutsOptions., must be smaller than or equal to 15.');
-        }
-
         $this->container['acquirerMerchantId'] = $acquirerMerchantId;
 
         return $this;
@@ -247,10 +221,6 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
      */
     public function setAcquirerBin($acquirerBin)
     {
-        if (!is_null($acquirerBin) && (strlen($acquirerBin) > 11)) {
-            throw new \InvalidArgumentException('invalid length for $acquirerBin when calling Ptsv2payoutsProcessingInformationPayoutsOptions., must be smaller than or equal to 11.');
-        }
-
         $this->container['acquirerBin'] = $acquirerBin;
 
         return $this;
@@ -272,10 +242,6 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
      */
     public function setRetrievalReferenceNumber($retrievalReferenceNumber)
     {
-        if (!is_null($retrievalReferenceNumber) && (strlen($retrievalReferenceNumber) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $retrievalReferenceNumber when calling Ptsv2payoutsProcessingInformationPayoutsOptions., must be smaller than or equal to 12.');
-        }
-
         $this->container['retrievalReferenceNumber'] = $retrievalReferenceNumber;
 
         return $this;
@@ -297,11 +263,28 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
      */
     public function setAccountFundingReferenceId($accountFundingReferenceId)
     {
-        if (!is_null($accountFundingReferenceId) && (strlen($accountFundingReferenceId) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $accountFundingReferenceId when calling Ptsv2payoutsProcessingInformationPayoutsOptions., must be smaller than or equal to 15.');
-        }
-
         $this->container['accountFundingReferenceId'] = $accountFundingReferenceId;
+
+        return $this;
+    }
+
+    /**
+     * Gets deferredDateTime
+     * @return string
+     */
+    public function getDeferredDateTime()
+    {
+        return $this->container['deferredDateTime'];
+    }
+
+    /**
+     * Sets deferredDateTime
+     * @param string $deferredDateTime #### Visa Platform Connect  Contains date and time value indicating scheduled deferred OCT.  Format is : 'yyyyMMddHHmm', where  'YYYY' = year 'MM' = month 'DD' = day 'hh' = hour 'mm' = minutes
+     * @return $this
+     */
+    public function setDeferredDateTime($deferredDateTime)
+    {
+        $this->container['deferredDateTime'] = $deferredDateTime;
 
         return $this;
     }
@@ -310,6 +293,7 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -320,6 +304,7 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -331,6 +316,7 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -345,6 +331,7 @@ class Ptsv2payoutsProcessingInformationPayoutsOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

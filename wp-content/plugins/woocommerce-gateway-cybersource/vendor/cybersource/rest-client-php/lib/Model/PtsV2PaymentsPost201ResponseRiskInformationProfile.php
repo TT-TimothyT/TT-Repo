@@ -156,18 +156,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['name']) && (strlen($this->container['name']) > 30)) {
-            $invalid_properties[] = "invalid value for 'name', the character length must be smaller than or equal to 30.";
-        }
-
-        if (!is_null($this->container['desinationQueue']) && (strlen($this->container['desinationQueue']) > 255)) {
-            $invalid_properties[] = "invalid value for 'desinationQueue', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['selectorRule']) && (strlen($this->container['selectorRule']) > 255)) {
-            $invalid_properties[] = "invalid value for 'selectorRule', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['name']) > 30) {
-            return false;
-        }
-        if (strlen($this->container['desinationQueue']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['selectorRule']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -209,10 +188,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
      */
     public function setName($name)
     {
-        if (!is_null($name) && (strlen($name) > 30)) {
-            throw new \InvalidArgumentException('invalid length for $name when calling PtsV2PaymentsPost201ResponseRiskInformationProfile., must be smaller than or equal to 30.');
-        }
-
         $this->container['name'] = $name;
 
         return $this;
@@ -234,10 +209,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
      */
     public function setDesinationQueue($desinationQueue)
     {
-        if (!is_null($desinationQueue) && (strlen($desinationQueue) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $desinationQueue when calling PtsV2PaymentsPost201ResponseRiskInformationProfile., must be smaller than or equal to 255.');
-        }
-
         $this->container['desinationQueue'] = $desinationQueue;
 
         return $this;
@@ -259,10 +230,6 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
      */
     public function setSelectorRule($selectorRule)
     {
-        if (!is_null($selectorRule) && (strlen($selectorRule) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $selectorRule when calling PtsV2PaymentsPost201ResponseRiskInformationProfile., must be smaller than or equal to 255.');
-        }
-
         $this->container['selectorRule'] = $selectorRule;
 
         return $this;
@@ -272,6 +239,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class PtsV2PaymentsPost201ResponseRiskInformationProfile implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

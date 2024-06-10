@@ -156,18 +156,6 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['accessToken']) && (strlen($this->container['accessToken']) > 2048)) {
-            $invalid_properties[] = "invalid value for 'accessToken', the character length must be smaller than or equal to 2048.";
-        }
-
-        if (!is_null($this->container['referenceId']) && (strlen($this->container['referenceId']) > 50)) {
-            $invalid_properties[] = "invalid value for 'referenceId', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['deviceDataCollectionUrl']) && (strlen($this->container['deviceDataCollectionUrl']) > 100)) {
-            $invalid_properties[] = "invalid value for 'deviceDataCollectionUrl', the character length must be smaller than or equal to 100.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
     public function valid()
     {
 
-        if (strlen($this->container['accessToken']) > 2048) {
-            return false;
-        }
-        if (strlen($this->container['referenceId']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['deviceDataCollectionUrl']) > 100) {
-            return false;
-        }
         return true;
     }
 
@@ -204,15 +183,11 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
 
     /**
      * Sets accessToken
-     * @param string $accessToken JSON Web Token (JWT) used to authenticate the consumer with the authentication provider, such as, CardinalCommerce or Rupay.
+     * @param string $accessToken JSON Web Token (JWT) used to authenticate the consumer with the authentication provider, such as, CardinalCommerce or Rupay. Note - Max Length of this field is 2048 characters.
      * @return $this
      */
     public function setAccessToken($accessToken)
     {
-        if (!is_null($accessToken) && (strlen($accessToken) > 2048)) {
-            throw new \InvalidArgumentException('invalid length for $accessToken when calling RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2048.');
-        }
-
         $this->container['accessToken'] = $accessToken;
 
         return $this;
@@ -234,10 +209,6 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
      */
     public function setReferenceId($referenceId)
     {
-        if (!is_null($referenceId) && (strlen($referenceId) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $referenceId when calling RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['referenceId'] = $referenceId;
 
         return $this;
@@ -259,10 +230,6 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
      */
     public function setDeviceDataCollectionUrl($deviceDataCollectionUrl)
     {
-        if (!is_null($deviceDataCollectionUrl) && (strlen($deviceDataCollectionUrl) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $deviceDataCollectionUrl when calling RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['deviceDataCollectionUrl'] = $deviceDataCollectionUrl;
 
         return $this;
@@ -272,6 +239,7 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class RiskV1AuthenticationSetupsPost201ResponseConsumerAuthenticationInformation
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

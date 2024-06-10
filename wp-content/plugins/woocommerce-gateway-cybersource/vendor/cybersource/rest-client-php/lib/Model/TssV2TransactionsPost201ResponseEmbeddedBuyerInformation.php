@@ -144,10 +144,6 @@ class TssV2TransactionsPost201ResponseEmbeddedBuyerInformation implements ArrayA
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['merchantCustomerId']) && (strlen($this->container['merchantCustomerId']) > 100)) {
-            $invalid_properties[] = "invalid value for 'merchantCustomerId', the character length must be smaller than or equal to 100.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class TssV2TransactionsPost201ResponseEmbeddedBuyerInformation implements ArrayA
     public function valid()
     {
 
-        if (strlen($this->container['merchantCustomerId']) > 100) {
-            return false;
-        }
         return true;
     }
 
@@ -178,15 +171,11 @@ class TssV2TransactionsPost201ResponseEmbeddedBuyerInformation implements ArrayA
 
     /**
      * Sets merchantCustomerId
-     * @param string $merchantCustomerId Your identifier for the customer.  When a subscription or customer profile is being created, the maximum length for this field for most processors is 30. Otherwise, the maximum length is 100.  #### Comercio Latino For recurring payments in Mexico, the value is the customer’s contract number. Note Before you request the authorization, you must inform the issuer of the customer contract numbers that will be used for recurring transactions.  #### Worldpay VAP For a follow-on credit with Worldpay VAP, CyberSource checks the following locations, in the order given, for a customer account ID value and uses the first value it finds: 1. `customer_account_id` value in the follow-on credit request 2. Customer account ID value that was used for the capture that is being credited 3. Customer account ID value that was used for the original authorization If a customer account ID value cannot be found in any of these locations, then no value is used.  For processor-specific information, see the `customer_account_id` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+     * @param string $merchantCustomerId Your identifier for the customer.  When a subscription or customer profile is being created, the maximum length for this field for most processors is 30. Otherwise, the maximum length is 100.  #### Comercio Latino For recurring payments in Mexico, the value is the customer's contract number. Note Before you request the authorization, you must inform the issuer of the customer contract numbers that will be used for recurring transactions.  #### Worldpay VAP For a follow-on credit with Worldpay VAP, CyberSource checks the following locations, in the order given, for a customer account ID value and uses the first value it finds: 1. `customer_account_id` value in the follow-on credit request 2. Customer account ID value that was used for the capture that is being credited 3. Customer account ID value that was used for the original authorization If a customer account ID value cannot be found in any of these locations, then no value is used.  For processor-specific information, see the `customer_account_id` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
      * @return $this
      */
     public function setMerchantCustomerId($merchantCustomerId)
     {
-        if (!is_null($merchantCustomerId) && (strlen($merchantCustomerId) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $merchantCustomerId when calling TssV2TransactionsPost201ResponseEmbeddedBuyerInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['merchantCustomerId'] = $merchantCustomerId;
 
         return $this;
@@ -196,6 +185,7 @@ class TssV2TransactionsPost201ResponseEmbeddedBuyerInformation implements ArrayA
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class TssV2TransactionsPost201ResponseEmbeddedBuyerInformation implements ArrayA
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class TssV2TransactionsPost201ResponseEmbeddedBuyerInformation implements ArrayA
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class TssV2TransactionsPost201ResponseEmbeddedBuyerInformation implements ArrayA
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

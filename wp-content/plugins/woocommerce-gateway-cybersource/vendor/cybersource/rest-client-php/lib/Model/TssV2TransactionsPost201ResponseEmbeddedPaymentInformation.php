@@ -55,8 +55,9 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
       */
     protected static $swaggerTypes = [
         'paymentType' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedPaymentInformationPaymentType',
-        'customer' => '\CyberSource\Model\Riskv1authenticationsetupsPaymentInformationCustomer',
-        'card' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedPaymentInformationCard'
+        'customer' => '\CyberSource\Model\Ptsv2refreshpaymentstatusidPaymentInformationCustomer',
+        'card' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedPaymentInformationCard',
+        'bank' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedPaymentInformationBank'
     ];
 
     /**
@@ -66,7 +67,8 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
     protected static $swaggerFormats = [
         'paymentType' => null,
         'customer' => null,
-        'card' => null
+        'card' => null,
+        'bank' => null
     ];
 
     public static function swaggerTypes()
@@ -86,7 +88,8 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
     protected static $attributeMap = [
         'paymentType' => 'paymentType',
         'customer' => 'customer',
-        'card' => 'card'
+        'card' => 'card',
+        'bank' => 'bank'
     ];
 
 
@@ -97,7 +100,8 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
     protected static $setters = [
         'paymentType' => 'setPaymentType',
         'customer' => 'setCustomer',
-        'card' => 'setCard'
+        'card' => 'setCard',
+        'bank' => 'setBank'
     ];
 
 
@@ -108,7 +112,8 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
     protected static $getters = [
         'paymentType' => 'getPaymentType',
         'customer' => 'getCustomer',
-        'card' => 'getCard'
+        'card' => 'getCard',
+        'bank' => 'getBank'
     ];
 
     public static function attributeMap()
@@ -145,6 +150,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
         $this->container['paymentType'] = isset($data['paymentType']) ? $data['paymentType'] : null;
         $this->container['customer'] = isset($data['customer']) ? $data['customer'] : null;
         $this->container['card'] = isset($data['card']) ? $data['card'] : null;
+        $this->container['bank'] = isset($data['bank']) ? $data['bank'] : null;
     }
 
     /**
@@ -195,7 +201,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
 
     /**
      * Gets customer
-     * @return \CyberSource\Model\Riskv1authenticationsetupsPaymentInformationCustomer
+     * @return \CyberSource\Model\Ptsv2refreshpaymentstatusidPaymentInformationCustomer
      */
     public function getCustomer()
     {
@@ -204,7 +210,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
 
     /**
      * Sets customer
-     * @param \CyberSource\Model\Riskv1authenticationsetupsPaymentInformationCustomer $customer
+     * @param \CyberSource\Model\Ptsv2refreshpaymentstatusidPaymentInformationCustomer $customer
      * @return $this
      */
     public function setCustomer($customer)
@@ -234,11 +240,33 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
 
         return $this;
     }
+
+    /**
+     * Gets bank
+     * @return \CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedPaymentInformationBank
+     */
+    public function getBank()
+    {
+        return $this->container['bank'];
+    }
+
+    /**
+     * Sets bank
+     * @param \CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedPaymentInformationBank $bank
+     * @return $this
+     */
+    public function setBank($bank)
+    {
+        $this->container['bank'] = $bank;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -249,6 +277,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -260,6 +289,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -274,6 +304,7 @@ class TssV2TransactionsPost201ResponseEmbeddedPaymentInformation implements Arra
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

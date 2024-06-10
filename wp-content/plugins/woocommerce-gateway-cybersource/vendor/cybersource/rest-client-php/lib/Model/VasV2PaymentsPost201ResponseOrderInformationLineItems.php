@@ -168,18 +168,6 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['exemptAmount']) && (strlen($this->container['exemptAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'exemptAmount', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['taxableAmount']) && (strlen($this->container['taxableAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'taxableAmount', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['taxAmount']) && (strlen($this->container['taxAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'taxAmount', the character length must be smaller than or equal to 15.";
-        }
-
         return $invalid_properties;
     }
 
@@ -192,15 +180,6 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['exemptAmount']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['taxableAmount']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['taxAmount']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -263,10 +242,6 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
      */
     public function setExemptAmount($exemptAmount)
     {
-        if (!is_null($exemptAmount) && (strlen($exemptAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $exemptAmount when calling VasV2PaymentsPost201ResponseOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['exemptAmount'] = $exemptAmount;
 
         return $this;
@@ -288,10 +263,6 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
      */
     public function setTaxableAmount($taxableAmount)
     {
-        if (!is_null($taxableAmount) && (strlen($taxableAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $taxableAmount when calling VasV2PaymentsPost201ResponseOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['taxableAmount'] = $taxableAmount;
 
         return $this;
@@ -313,10 +284,6 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
      */
     public function setTaxAmount($taxAmount)
     {
-        if (!is_null($taxAmount) && (strlen($taxAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $taxAmount when calling VasV2PaymentsPost201ResponseOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['taxAmount'] = $taxAmount;
 
         return $this;
@@ -326,6 +293,7 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -336,6 +304,7 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -347,6 +316,7 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -361,6 +331,7 @@ class VasV2PaymentsPost201ResponseOrderInformationLineItems implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

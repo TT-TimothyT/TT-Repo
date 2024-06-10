@@ -17,14 +17,14 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payer_Authentication;
 
 use SkyVerge\WooCommerce\Cybersource\API\Requests\Payments\Payment;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -55,21 +55,50 @@ class Check_Enrollment extends Payment {
 	 *
 	 * @param \WC_Order $order
 	 */
-	public function set_order_data( \WC_Order $order ) {
+	public function set_order_data( \WC_Order $order ): void {
 
 		$this->order = $order;
 
 		$this->data = [
+			'buyerInformation'           => $this->get_buyer_information(),
 			'clientReferenceInformation' => $this->get_client_reference_information(),
+			'deviceInformation'          => $this->get_device_information(),
 			'orderInformation'           => $this->get_order_information(),
-			'buyerInformation' => $this->get_buyer_information(),
+			'paymentInformation'         => [
+				'card' => [
+					'expirationMonth' => $order->payment->expiration_month,
+					'expirationYear'  => $order->payment->expiration_year,
+				]
+			],
 		];
 
 		if ( $order->payment->is_transient ) {
+			/**
+			 * @see https://developer.cybersource.com/api-reference-assets/index.html#payer-authentication_payer-authentication_check-payer-auth-enrollment
+			 *
+			 * transientToken: A temporary ID that represents the customer's payment data (which is securely stored in Visa Data Centers).
+			 * Flex Microform generates this ID and sets it to expire within 15 minutes from when the ID is generated or
+			 * until the first payment authorization is carried out (whichever occurs first).
+			 */
 			$this->data['tokenInformation'] = [
 				'transientToken' => $order->payment->token,
 			];
 		} else {
+			/**
+			 * @see https://developer.cybersource.com/api-reference-assets/index.html#payer-authentication_payer-authentication_check-payer-auth-enrollment
+			 *
+			 * customerId: Unique identifier for the customer's card and billing information.
+			 *
+			 * When you use Payment Tokenization or Recurring Billing and you include this value in
+			 * your request, many of the fields that are normally required for an authorization or credit
+			 * become optional.
+			 *
+			 * NOTE When you use Payment Tokenization or Recurring Billing, the value for the Customer ID is actually
+			 * the Cybersource payment token for a customer. This token stores information such as the consumer’s card
+			 * number, so it can be applied towards bill payments, recurring payments, or one-time payments.
+			 * By using this token in a payment API request, the merchant doesn't need to pass in data such as the
+			 * card number or expiration date in the request itself.
+			 */
 			$this->data['paymentInformation'] = [
 				'customer' => [
 					'customerId' => $order->payment->token,
@@ -82,6 +111,7 @@ class Check_Enrollment extends Payment {
 
 			$this->data['consumerAuthenticationInformation'] = [
 				'referenceId' => $order->payment->reference_id,
+				'returnUrl'   => $order->payment->step_up_return_url,
 			];
 		}
 	}

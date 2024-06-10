@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -25,15 +25,20 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
+/**
+ * Helper class for Flex Microform.
+ *
+ * @since 2.3.0
+ */
 class Flex_Helper {
 
 
 	/**
 	 * Decodes a Flex Microform token.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param string $form_jwt JWT value created by the Microform JS
 	 * @param string $api_jwt JWT value returned by the Flex Keys API
@@ -42,7 +47,7 @@ class Flex_Helper {
 	 */
 	public static function decode_flex_token( $form_jwt, $api_jwt ) {
 
-		$payload = JWT::decode( $form_jwt, self::get_public_key_set( $api_jwt ), [ 'RS256' ] );
+		$payload = JWT::decode( $form_jwt, self::get_public_key_set( $api_jwt ) );
 
 		return json_decode( json_encode( $payload ), true );
 	}
@@ -51,7 +56,7 @@ class Flex_Helper {
 	/**
 	 * Gets the public key set from the given Flex API JWT.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param string $jwt encoded JWT
 	 * @return array
@@ -65,11 +70,13 @@ class Flex_Helper {
 			throw new Framework\SV_WC_Plugin_Exception( 'JWK claim is missing' );
 		}
 
-		return JWK::parseKeySet( [
+		$payload = [
 			'keys' => [
-				$payload['flx']['jwk'],
+				array_merge( ['alg' => 'RS256' ], $payload['flx']['jwk'] ),
 			],
-		] );
+		];
+
+		return JWK::parseKeySet( $payload );
 	}
 
 
@@ -79,7 +86,7 @@ class Flex_Helper {
 	 * Note: this does not validate the JWT. self::decode_flex_token() or JWT::decode() should be used when validation
 	 * is required.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param string $jwt JWT value
 	 * @return array
@@ -87,7 +94,7 @@ class Flex_Helper {
 	 */
 	private static function get_jwt_payload( $jwt ) {
 
-		list( $headers, $payload, $sig ) = explode( '.', $jwt );
+		[ $headers, $payload, $sig ] = explode( '.', $jwt );
 
 		$payload = json_decode( base64_decode( $payload ), true );
 

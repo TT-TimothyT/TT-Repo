@@ -1,6 +1,6 @@
 <?php
 
-use Algolia\AlgoliaSearch\SearchClient;
+use WebDevStudios\WPSWA\Algolia\AlgoliaSearch\SearchClient;
 use TTNetSuite\NetSuiteClient;
 $cancellation_policy_page_id = get_option('tt_opt_cancellation_policy_page_id') ? get_option('tt_opt_cancellation_policy_page_id') : NULL;
 $cancellation_policy_page_link = $cancellation_policy_page_id ? get_the_permalink($cancellation_policy_page_id) : '';
@@ -569,7 +569,7 @@ function save_checkout_steps_action_cb()
 function trek_algolia_popular_search()
 {
     $popular1 = $popular2 = $popular3 = $popular4 = $results = array();
-    if (class_exists('Psr\Log\AbstractLogger')) {
+    if ( class_exists( 'Psr\Log\AbstractLogger' ) && class_exists( 'WebDevStudios\WPSWA\Algolia\AlgoliaSearch\SearchClient' ) ) {
         $upload_dir = wp_upload_dir();
         $baseDir = $upload_dir['basedir'] . '/algolia/';
         $jsonPath1 = $baseDir . 'popular1.json';
@@ -7134,3 +7134,319 @@ function tt_get_cancelled_guest_trips( $user_id = '', $order_id = '', $is_log = 
 
     return $res;
 }
+
+/**
+ * Check if the post should be indexed by Algolia.
+ *
+ * @param bool    $should_index Current state of the post.
+ * @param WP_Post $post         The post.
+ *
+ * Set the priority of 9, so it can run before checking for Private/Custom trips.
+ *
+ * @return bool Is it should index the post in Algolia.
+ */
+function tt_algolia_should_index_searchable_post( $should_index, WP_Post $post ) {
+
+    // Moved initial customizations in the plugin here...
+    $product = wc_get_product( $post->ID );
+
+    if ( $post->post_type == 'product' || $post->post_type == 'page' || $post->post_type == 'post' ) {
+        // Indexing only products, pages and posts.
+        if ( $product ) {
+            if ( $product->get_type() != 'grouped' ) {
+                // Indexing only the grouped products.
+                $should_index = false;
+            }
+        }
+    } else {
+        $should_index = false;
+    }
+
+    return $should_index;
+}
+add_filter( 'algolia_should_index_searchable_post', 'tt_algolia_should_index_searchable_post', 9, 2 );
+
+/**
+ * Get post shared attributes for Algolia.
+ *
+ * @param array   $shared_attributes Array with Algolia shared attributes.
+ * @param WP_Post $post              The post.
+ */
+function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
+    $json_data      = array();
+    $product        = wc_get_product( $post->ID );
+    $child_products = [];
+    $upload_dir     = wp_upload_dir();
+    $json_path1     = $upload_dir['basedir'].'/algolia/popular1.json';
+    $json_path2     = $upload_dir['basedir'].'/algolia/popular2.json';
+    $json_path3     = $upload_dir['basedir'].'/algolia/popular3.json';
+    $json_path4     = $upload_dir['basedir'].'/algolia/popular4.json';
+    $yotpo_app_id   = '4488jd7QVtY0HrLS8BYsAC3fel6zpMyyxIyl9wLW';
+
+    //Fetch YotPo Review Data for Product.
+    $curl = curl_init();
+
+    curl_setopt_array( $curl, [
+        CURLOPT_URL            => 'https://api-cdn.yotpo.com/v1/widget/' . $yotpo_app_id . '/products/' . $post->ID . '/reviews.json',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING       => "",
+        CURLOPT_MAXREDIRS      => 10,
+        CURLOPT_TIMEOUT        => 30,
+        CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST  => "GET",
+        CURLOPT_HTTPHEADER     => [
+            "Accept: application/json",
+            "Content-Type: application/json"
+        ],
+    ]);
+
+    try {
+        $response = curl_exec( $curl );
+        $err      = curl_error( $curl );
+        curl_close( $curl );
+
+        if ( is_string( $response ) ) {
+
+            $json_response = json_decode( $response, true );
+
+            if ( $json_response )  {
+                if ( $json_response['response'] ) {
+                    if ( $json_response['response']['bottomline'] ) {
+                        if ( $json_response['response']['bottomline']['average_score'] ) {
+
+                            if ( $json_response['response']['bottomline']['average_score'] != 0 ) {
+                                $shared_attributes['review_score'] = $json_response['response']['bottomline']['average_score'];
+                            }
+                        }
+                        if ( $json_response['response']['bottomline']['total_review'] ) {
+
+                            if ($json_response['response']['bottomline']['total_review'] != 0) {
+                                $shared_attributes['total_review'] = $json_response['response']['bottomline']['total_review'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    } catch ( Exception $e ) {
+        error_log( "Error: " , $e->getMessage() );
+    }
+    // End Fetch YotPo Review Data for Product.
+
+    if ( $product ) {
+        if ( $product->get_attribute('Popular') ) {
+            if ( $product->get_attribute('Popular') === '1' ) {
+                $json_data['Title']     = $product->get_title();
+                $json_data['Permalink'] = $product->get_permalink();
+
+                $attachment_ids         = $product->get_gallery_attachment_ids();
+
+                foreach( $attachment_ids as $index=>$attachment_id )
+                {
+                    $json_data['gallery_images'][$index] = wp_get_attachment_image_src( $attachment_id, 'shop_catalog' )[0];
+
+                }
+
+                $json_string = json_encode( $json_data, JSON_PRETTY_PRINT );
+                // Write in the file
+                $fp = fopen( $json_path1, 'w' );
+                fwrite( $fp, $json_string );
+                fclose( $fp );
+            }
+            if ( $product->get_attribute('Popular') === '2' ) {
+                $json_data['Title']     = $product->get_title();
+                $json_data['Permalink'] = $product->get_permalink();
+
+                $attachment_ids         = $product->get_gallery_attachment_ids();
+
+                foreach( $attachment_ids as $index=>$attachment_id )
+                {
+                    $json_data['gallery_images'][$index] = wp_get_attachment_image_src( $attachment_id, 'shop_catalog' )[0];
+
+                }
+
+                $json_string = json_encode( $json_data, JSON_PRETTY_PRINT );
+                // Write in the file
+                $fp = fopen( $json_path2, 'w' );
+                fwrite( $fp, $json_string );
+                fclose( $fp );
+            }
+            if ( $product->get_attribute('Popular') === '3' ) {
+                $json_data['Title']     = $product->get_title();
+                $json_data['Permalink'] = $product->get_permalink();
+
+                $attachment_ids         = $product->get_gallery_attachment_ids();
+
+                foreach( $attachment_ids as $index=>$attachment_id )
+                {
+                    $json_data['gallery_images'][$index] = wp_get_attachment_image_src( $attachment_id, 'shop_catalog' )[0];
+
+                }
+
+                $json_string = json_encode( $json_data, JSON_PRETTY_PRINT );
+                // Write in the file
+                $fp = fopen( $json_path3, 'w' );
+                fwrite( $fp, $json_string );
+                fclose( $fp );
+            }
+            if ( $product->get_attribute('Popular') === '4' ) {
+                $json_data['Title']     = $product->get_title();
+                $json_data['Permalink'] = $product->get_permalink();
+
+                $attachment_ids         = $product->get_gallery_attachment_ids();
+
+                foreach( $attachment_ids as $index=>$attachment_id )
+                {
+                    $json_data['gallery_images'][$index] = wp_get_attachment_image_src( $attachment_id, 'shop_catalog' )[0];
+
+                }
+
+                $json_string = json_encode( $json_data, JSON_PRETTY_PRINT );
+                // Write in the file
+                $fp = fopen( $json_path4, 'w' );
+                fwrite( $fp, $json_string );
+                fclose( $fp );
+            }
+        }
+
+        $children = $product->get_children();
+        if ( $children ) {
+
+            // Take all child products that are not marked as Private/Custom trips.
+            $filtered_children = array_values(
+                array_filter(
+                    $children,
+                    function( $child_product_id ) {
+                        // Check child product is marked as Private/Custom trip.
+                        $is_private_custom_trip = get_field( 'is_private_custom_trip', $child_product_id );
+
+                        return ( true != $is_private_custom_trip );
+                    }
+                )
+            );
+
+            foreach ( $filtered_children as $index => $child ) {
+                $child_products[$index] = wc_get_product( $child );
+
+                if ( $child_products[$index] ) {
+
+                    if ($child_products[$index]->get_regular_price()) {
+                        $rolling_price[$index] = $child_products[$index]->get_regular_price();
+                        if ( ! $shared_attributes['Start Price'] ) {
+                            $shared_attributes['Start Price'] = intval( $rolling_price[$index] );
+                        } else if ( $shared_attributes['Start Price'] > $rolling_price[$index] ) {
+                            $shared_attributes['Start Price'] = intval( $rolling_price[$index] );
+                        }
+                    }
+
+                    if ( $child_products[$index]->get_attribute( 'Start Date' ) ) {
+                        $shared_attributes['Start Date'][$index]      = $child_products[$index]->get_attribute( 'Start Date' );
+                        $tempdate                                     = $child_products[$index]->get_attribute( 'Start Date' );
+                        $sdate_obj                                    = explode('/', $tempdate);
+                        $sdate_info                                   = array(
+                            'd' => $sdate_obj[0],
+                            'm' => $sdate_obj[1],
+                            'y' => substr(date('Y'), 0, 2) . $sdate_obj[2]
+                        );
+                        $tempunix                                     = strtotime(implode('-', $sdate_info));
+                        //$tempunix = strtotime($tempdate);
+                        $shared_attributes['start_date_unix'][$index] = $tempunix;
+                    }
+                    if ( $child_products[$index]->get_attribute( 'End Date' ) ) {
+                        $shared_attributes['End Date'][$index]      = $child_products[$index]->get_attribute( 'End Date' );
+                        $tempdate                                   = $child_products[$index]->get_attribute( 'End Date' );
+                        $edate_obj                                  = explode('/', $tempdate);
+                        $edate_info                                 = array(
+                            'd' => $edate_obj[0],
+                            'm' => $edate_obj[1],
+                            'y' => substr(date('Y'), 0, 2) . $edate_obj[2]
+                        );
+                        //$tempunix = strtotime($tempdate);
+                        $tempunix                                   = strtotime(implode('-', $edate_info));
+                        $shared_attributes['end_date_unix'][$index] = $tempunix;
+                    }
+                }
+            }
+        }
+    }
+
+    if ( $shared_attributes['post_type_label'] == 'Products' ) {
+        $shared_attributes['post_type_label'] = 'Trips';
+    }
+
+    if ( $shared_attributes['post_type_label'] == 'Posts' ) {
+        $shared_attributes['post_type_label'] = 'Articles';
+    }
+
+    if ( wc_get_product( $post->ID ) ) {
+
+        $attachment_ids = $product->get_gallery_attachment_ids();
+
+        foreach( $attachment_ids as $index=>$attachment_id ) {
+            $shared_attributes['gallery_images'][$index] = wp_get_attachment_image_src( $attachment_id, 'shop_catalog' )[0];
+
+        }
+        if ( $product->get_attribute( 'Trip Style' ) ) {
+            $shared_attributes['Trip Style'] = $product->get_attribute( 'Trip Style' );
+        }
+        if ( $product->get_attribute( 'Hotel Level' ) ) {
+            $shared_attributes['Hotel Level'] = $product->get_attribute( 'Hotel Level' );
+        }
+        if ( $product->get_attribute( 'Rider Level' ) ) {
+            $shared_attributes['Rider Level'] = $product->get_attribute( 'Rider Level' );
+        }
+        if ( $product->get_attribute( 'Duration' ) ) {
+            $shared_attributes['Duration'] = $product->get_attribute( 'Duration' );
+        }
+        if ( $product->get_attribute( 'Badge' ) ) {
+            $shared_attributes['Badge'] = $product->get_attribute( 'Badge' );
+        }
+        if ( $product->get_attribute( 'Bike Type' ) ) {
+            $shared_attributes['Bike Type'] = $product->get_attribute( 'Bike Type' );
+        }
+        if ( $product->get_attribute( 'Region' ) ) {
+            $shared_attributes['Region'] = $product->get_attribute( 'Region' );
+        }
+    }
+
+    return $shared_attributes;
+}
+add_filter( 'algolia_searchable_post_shared_attributes', 'tt_algolia_get_post_shared_attributes', 9, 2 );
+
+/**
+ * Filters the HTML rendered for a saved payment method.
+ *
+ * @param string                              $html  saved payment method HTML.
+ * @param SV_WC_Payment_Gateway_Payment_Token $token payment token.
+ *
+ * @return string modified payment method HTML.
+ */
+function tt_get_saved_payment_method_html( $html, $token) {
+    $html = str_replace( 'type="radio"', 'type="radio" data-card-type="' . $token->get_card_type() . '"', $html );
+
+    $token_data = $token->to_datastore_format();
+
+    if ( isset( $token_data['first_six'] ) && $token_data['first_six'] ) {
+        $html = str_replace( 'type="radio"', 'type="radio" data-card-bin="' . $token_data['first_six'] . '"', $html );
+    }
+
+    if ( ! empty( $token_data['exp_year'] ) && ! empty( $token_data['exp_month'] ) ) {
+        $html = str_replace( 'type="radio"', 'type="radio" data-card-expiration-month="' . $token_data['exp_month'] . '" data-card-expiration-year="' . $token_data['exp_year'] . '"', $html );
+    }
+
+    return $html;
+}
+add_filter( 'wc_cybersource_credit_card_payment_form_payment_method_html', 'tt_get_saved_payment_method_html', 10, 2 );
+
+/**
+ * Remove the "Manage Payment Methods" button from the checkout.
+ *
+ * @param string $html Payment Gateway Payment Form Manage Payment Methods Button HTML.
+ *
+ * @return string manage payment methods button html. 
+ */
+function tt_get_manage_payment_methods_button_html( $html ) {
+    return '';
+}
+add_filter( 'wc_cybersource_credit_card_payment_form_manage_payment_methods_button_html', 'tt_get_manage_payment_methods_button_html', 10 );

@@ -58,6 +58,9 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
         'acsTransactionId' => 'string',
         'authenticationResult' => 'string',
         'authenticationStatusMsg' => 'string',
+        'authenticationTransactionId' => 'string',
+        'authenticationTransactionContextId' => 'string',
+        'transactionToken' => 'string',
         'authorizationPayload' => 'string',
         'cavv' => 'string',
         'cavvAlgorithm' => 'string',
@@ -88,6 +91,9 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
         'acsTransactionId' => null,
         'authenticationResult' => null,
         'authenticationStatusMsg' => null,
+        'authenticationTransactionId' => null,
+        'authenticationTransactionContextId' => null,
+        'transactionToken' => null,
         'authorizationPayload' => null,
         'cavv' => null,
         'cavvAlgorithm' => null,
@@ -128,6 +134,9 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
         'acsTransactionId' => 'acsTransactionId',
         'authenticationResult' => 'authenticationResult',
         'authenticationStatusMsg' => 'authenticationStatusMsg',
+        'authenticationTransactionId' => 'authenticationTransactionId',
+        'authenticationTransactionContextId' => 'authenticationTransactionContextId',
+        'transactionToken' => 'transactionToken',
         'authorizationPayload' => 'authorizationPayload',
         'cavv' => 'cavv',
         'cavvAlgorithm' => 'cavvAlgorithm',
@@ -159,6 +168,9 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
         'acsTransactionId' => 'setAcsTransactionId',
         'authenticationResult' => 'setAuthenticationResult',
         'authenticationStatusMsg' => 'setAuthenticationStatusMsg',
+        'authenticationTransactionId' => 'setAuthenticationTransactionId',
+        'authenticationTransactionContextId' => 'setAuthenticationTransactionContextId',
+        'transactionToken' => 'setTransactionToken',
         'authorizationPayload' => 'setAuthorizationPayload',
         'cavv' => 'setCavv',
         'cavvAlgorithm' => 'setCavvAlgorithm',
@@ -190,6 +202,9 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
         'acsTransactionId' => 'getAcsTransactionId',
         'authenticationResult' => 'getAuthenticationResult',
         'authenticationStatusMsg' => 'getAuthenticationStatusMsg',
+        'authenticationTransactionId' => 'getAuthenticationTransactionId',
+        'authenticationTransactionContextId' => 'getAuthenticationTransactionContextId',
+        'transactionToken' => 'getTransactionToken',
         'authorizationPayload' => 'getAuthorizationPayload',
         'cavv' => 'getCavv',
         'cavvAlgorithm' => 'getCavvAlgorithm',
@@ -246,6 +261,9 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
         $this->container['acsTransactionId'] = isset($data['acsTransactionId']) ? $data['acsTransactionId'] : null;
         $this->container['authenticationResult'] = isset($data['authenticationResult']) ? $data['authenticationResult'] : null;
         $this->container['authenticationStatusMsg'] = isset($data['authenticationStatusMsg']) ? $data['authenticationStatusMsg'] : null;
+        $this->container['authenticationTransactionId'] = isset($data['authenticationTransactionId']) ? $data['authenticationTransactionId'] : null;
+        $this->container['authenticationTransactionContextId'] = isset($data['authenticationTransactionContextId']) ? $data['authenticationTransactionContextId'] : null;
+        $this->container['transactionToken'] = isset($data['transactionToken']) ? $data['transactionToken'] : null;
         $this->container['authorizationPayload'] = isset($data['authorizationPayload']) ? $data['authorizationPayload'] : null;
         $this->container['cavv'] = isset($data['cavv']) ? $data['cavv'] : null;
         $this->container['cavvAlgorithm'] = isset($data['cavvAlgorithm']) ? $data['cavvAlgorithm'] : null;
@@ -276,50 +294,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['acsTransactionId']) && (strlen($this->container['acsTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'acsTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['cavv']) && (strlen($this->container['cavv']) > 255)) {
-            $invalid_properties[] = "invalid value for 'cavv', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['cavvAlgorithm']) && (strlen($this->container['cavvAlgorithm']) > 1)) {
-            $invalid_properties[] = "invalid value for 'cavvAlgorithm', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['directoryServerErrorCode']) && (strlen($this->container['directoryServerErrorCode']) > 3)) {
-            $invalid_properties[] = "invalid value for 'directoryServerErrorCode', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['directoryServerErrorDescription']) && (strlen($this->container['directoryServerErrorDescription']) > 4096)) {
-            $invalid_properties[] = "invalid value for 'directoryServerErrorDescription', the character length must be smaller than or equal to 4096.";
-        }
-
-        if (!is_null($this->container['interactionCounter']) && (strlen($this->container['interactionCounter']) > 2)) {
-            $invalid_properties[] = "invalid value for 'interactionCounter', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['sdkTransactionId']) && (strlen($this->container['sdkTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'sdkTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['threeDSServerTransactionId']) && (strlen($this->container['threeDSServerTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'threeDSServerTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['whiteListStatus']) && (strlen($this->container['whiteListStatus']) > 1)) {
-            $invalid_properties[] = "invalid value for 'whiteListStatus', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['whiteListStatusSource']) && (strlen($this->container['whiteListStatusSource']) > 2)) {
-            $invalid_properties[] = "invalid value for 'whiteListStatusSource', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['directoryServerTransactionId']) && (strlen($this->container['directoryServerTransactionId']) > 36)) {
-            $invalid_properties[] = "invalid value for 'directoryServerTransactionId', the character length must be smaller than or equal to 36.";
-        }
-
         return $invalid_properties;
     }
 
@@ -332,39 +306,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
     public function valid()
     {
 
-        if (strlen($this->container['acsTransactionId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['cavv']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['cavvAlgorithm']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['directoryServerErrorCode']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['directoryServerErrorDescription']) > 4096) {
-            return false;
-        }
-        if (strlen($this->container['interactionCounter']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['sdkTransactionId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['threeDSServerTransactionId']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['whiteListStatus']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['whiteListStatusSource']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['directoryServerTransactionId']) > 36) {
-            return false;
-        }
         return true;
     }
 
@@ -406,10 +347,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setAcsTransactionId($acsTransactionId)
     {
-        if (!is_null($acsTransactionId) && (strlen($acsTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $acsTransactionId when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['acsTransactionId'] = $acsTransactionId;
 
         return $this;
@@ -458,6 +395,69 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
     }
 
     /**
+     * Gets authenticationTransactionId
+     * @return string
+     */
+    public function getAuthenticationTransactionId()
+    {
+        return $this->container['authenticationTransactionId'];
+    }
+
+    /**
+     * Sets authenticationTransactionId
+     * @param string $authenticationTransactionId Payer authentication transaction identifier is used to link the check enrollment and validate authentication messages. For Rupay, this field should be passed as request only for Resend OTP use case.
+     * @return $this
+     */
+    public function setAuthenticationTransactionId($authenticationTransactionId)
+    {
+        $this->container['authenticationTransactionId'] = $authenticationTransactionId;
+
+        return $this;
+    }
+
+    /**
+     * Gets authenticationTransactionContextId
+     * @return string
+     */
+    public function getAuthenticationTransactionContextId()
+    {
+        return $this->container['authenticationTransactionContextId'];
+    }
+
+    /**
+     * Sets authenticationTransactionContextId
+     * @param string $authenticationTransactionContextId Payer authentication transaction identifier passed to link the validation and authorization calls.
+     * @return $this
+     */
+    public function setAuthenticationTransactionContextId($authenticationTransactionContextId)
+    {
+        $this->container['authenticationTransactionContextId'] = $authenticationTransactionContextId;
+
+        return $this;
+    }
+
+    /**
+     * Gets transactionToken
+     * @return string
+     */
+    public function getTransactionToken()
+    {
+        return $this->container['transactionToken'];
+    }
+
+    /**
+     * Sets transactionToken
+     * @param string $transactionToken Web based token used to authenticate consumer with Rupay authentication provider.
+     * @return $this
+     */
+    public function setTransactionToken($transactionToken)
+    {
+        $this->container['transactionToken'] = $transactionToken;
+
+        return $this;
+    }
+
+    /**
      * Gets authorizationPayload
      * @return string
      */
@@ -494,10 +494,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setCavv($cavv)
     {
-        if (!is_null($cavv) && (strlen($cavv) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $cavv when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['cavv'] = $cavv;
 
         return $this;
@@ -519,10 +515,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setCavvAlgorithm($cavvAlgorithm)
     {
-        if (!is_null($cavvAlgorithm) && (strlen($cavvAlgorithm) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $cavvAlgorithm when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['cavvAlgorithm'] = $cavvAlgorithm;
 
         return $this;
@@ -539,15 +531,11 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
 
     /**
      * Sets directoryServerErrorCode
-     * @param string $directoryServerErrorCode The directory server error code indicating a problem with this transaction.
+     * @param string $directoryServerErrorCode The directory server error code indicating a problem with this transaction. Note - Max Length of this field is typically 3 characters.
      * @return $this
      */
     public function setDirectoryServerErrorCode($directoryServerErrorCode)
     {
-        if (!is_null($directoryServerErrorCode) && (strlen($directoryServerErrorCode) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $directoryServerErrorCode when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 3.');
-        }
-
         $this->container['directoryServerErrorCode'] = $directoryServerErrorCode;
 
         return $this;
@@ -569,10 +557,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setDirectoryServerErrorDescription($directoryServerErrorDescription)
     {
-        if (!is_null($directoryServerErrorDescription) && (strlen($directoryServerErrorDescription) > 4096)) {
-            throw new \InvalidArgumentException('invalid length for $directoryServerErrorDescription when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 4096.');
-        }
-
         $this->container['directoryServerErrorDescription'] = $directoryServerErrorDescription;
 
         return $this;
@@ -615,10 +599,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setInteractionCounter($interactionCounter)
     {
-        if (!is_null($interactionCounter) && (strlen($interactionCounter) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $interactionCounter when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['interactionCounter'] = $interactionCounter;
 
         return $this;
@@ -703,10 +683,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setSdkTransactionId($sdkTransactionId)
     {
-        if (!is_null($sdkTransactionId) && (strlen($sdkTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $sdkTransactionId when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['sdkTransactionId'] = $sdkTransactionId;
 
         return $this;
@@ -749,10 +725,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setThreeDSServerTransactionId($threeDSServerTransactionId)
     {
-        if (!is_null($threeDSServerTransactionId) && (strlen($threeDSServerTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $threeDSServerTransactionId when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['threeDSServerTransactionId'] = $threeDSServerTransactionId;
 
         return $this;
@@ -816,10 +788,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setWhiteListStatus($whiteListStatus)
     {
-        if (!is_null($whiteListStatus) && (strlen($whiteListStatus) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $whiteListStatus when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['whiteListStatus'] = $whiteListStatus;
 
         return $this;
@@ -841,10 +809,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setWhiteListStatusSource($whiteListStatusSource)
     {
-        if (!is_null($whiteListStatusSource) && (strlen($whiteListStatusSource) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $whiteListStatusSource when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['whiteListStatusSource'] = $whiteListStatusSource;
 
         return $this;
@@ -887,10 +851,6 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      */
     public function setDirectoryServerTransactionId($directoryServerTransactionId)
     {
-        if (!is_null($directoryServerTransactionId) && (strlen($directoryServerTransactionId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $directoryServerTransactionId when calling RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformation., must be smaller than or equal to 36.');
-        }
-
         $this->container['directoryServerTransactionId'] = $directoryServerTransactionId;
 
         return $this;
@@ -900,6 +860,7 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -910,6 +871,7 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -921,6 +883,7 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -935,6 +898,7 @@ class RiskV1AuthenticationResultsPost201ResponseConsumerAuthenticationInformatio
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

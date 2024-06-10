@@ -150,14 +150,6 @@ class PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier impleme
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 32)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) < 12)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be bigger than or equal to 12.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier impleme
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['id']) < 12) {
-            return false;
-        }
         return true;
     }
 
@@ -196,13 +182,6 @@ class PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier impleme
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier., must be smaller than or equal to 32.');
-        }
-        if (!is_null($id) && (strlen($id) < 12)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier., must be bigger than or equal to 12.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -233,6 +212,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier impleme
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -243,6 +223,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier impleme
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -254,6 +235,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier impleme
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -268,6 +250,7 @@ class PtsV2PaymentsPost201ResponsePaymentInformationInstrumentIdentifier impleme
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

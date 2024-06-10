@@ -58,8 +58,8 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'rootId' => 'string',
         'reconciliationId' => 'string',
         'merchantId' => 'string',
-        'status' => 'string',
         'submitTimeUTC' => 'string',
+        'status' => 'string',
         'applicationInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseApplicationInformation',
         'buyerInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseBuyerInformation',
         'clientReferenceInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseClientReferenceInformation',
@@ -68,15 +68,19 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'errorInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseErrorInformation',
         'installmentInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseInstallmentInformation',
         'fraudMarkingInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseFraudMarkingInformation',
+        'healthCareInformation' => '\CyberSource\Model\Ptsv2paymentsHealthCareInformation',
         'merchantDefinedInformation' => '\CyberSource\Model\Ptsv2paymentsMerchantDefinedInformation[]',
         'merchantInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseMerchantInformation',
         'orderInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseOrderInformation',
         'paymentInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponsePaymentInformation',
+        'paymentInsightsInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInsightsInformation',
+        'payoutOptions' => '\CyberSource\Model\TssV2TransactionsGet200ResponsePayoutOptions',
         'processingInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseProcessingInformation',
         'processorInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseProcessorInformation',
         'pointOfSaleInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponsePointOfSaleInformation',
         'riskInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseRiskInformation',
         'senderInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseSenderInformation',
+        'tokenInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseTokenInformation',
         'links' => '\CyberSource\Model\TssV2TransactionsGet200ResponseLinks'
     ];
 
@@ -89,8 +93,8 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'rootId' => null,
         'reconciliationId' => null,
         'merchantId' => null,
-        'status' => null,
         'submitTimeUTC' => null,
+        'status' => null,
         'applicationInformation' => null,
         'buyerInformation' => null,
         'clientReferenceInformation' => null,
@@ -99,15 +103,19 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'errorInformation' => null,
         'installmentInformation' => null,
         'fraudMarkingInformation' => null,
+        'healthCareInformation' => null,
         'merchantDefinedInformation' => null,
         'merchantInformation' => null,
         'orderInformation' => null,
         'paymentInformation' => null,
+        'paymentInsightsInformation' => null,
+        'payoutOptions' => null,
         'processingInformation' => null,
         'processorInformation' => null,
         'pointOfSaleInformation' => null,
         'riskInformation' => null,
         'senderInformation' => null,
+        'tokenInformation' => null,
         'links' => null
     ];
 
@@ -130,8 +138,8 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'rootId' => 'rootId',
         'reconciliationId' => 'reconciliationId',
         'merchantId' => 'merchantId',
-        'status' => 'status',
         'submitTimeUTC' => 'submitTimeUTC',
+        'status' => 'status',
         'applicationInformation' => 'applicationInformation',
         'buyerInformation' => 'buyerInformation',
         'clientReferenceInformation' => 'clientReferenceInformation',
@@ -140,15 +148,19 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'errorInformation' => 'errorInformation',
         'installmentInformation' => 'installmentInformation',
         'fraudMarkingInformation' => 'fraudMarkingInformation',
+        'healthCareInformation' => 'healthCareInformation',
         'merchantDefinedInformation' => 'merchantDefinedInformation',
         'merchantInformation' => 'merchantInformation',
         'orderInformation' => 'orderInformation',
         'paymentInformation' => 'paymentInformation',
+        'paymentInsightsInformation' => 'paymentInsightsInformation',
+        'payoutOptions' => 'payoutOptions',
         'processingInformation' => 'processingInformation',
         'processorInformation' => 'processorInformation',
         'pointOfSaleInformation' => 'pointOfSaleInformation',
         'riskInformation' => 'riskInformation',
         'senderInformation' => 'senderInformation',
+        'tokenInformation' => 'tokenInformation',
         'links' => '_links'
     ];
 
@@ -162,8 +174,8 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'rootId' => 'setRootId',
         'reconciliationId' => 'setReconciliationId',
         'merchantId' => 'setMerchantId',
-        'status' => 'setStatus',
         'submitTimeUTC' => 'setSubmitTimeUTC',
+        'status' => 'setStatus',
         'applicationInformation' => 'setApplicationInformation',
         'buyerInformation' => 'setBuyerInformation',
         'clientReferenceInformation' => 'setClientReferenceInformation',
@@ -172,15 +184,19 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'errorInformation' => 'setErrorInformation',
         'installmentInformation' => 'setInstallmentInformation',
         'fraudMarkingInformation' => 'setFraudMarkingInformation',
+        'healthCareInformation' => 'setHealthCareInformation',
         'merchantDefinedInformation' => 'setMerchantDefinedInformation',
         'merchantInformation' => 'setMerchantInformation',
         'orderInformation' => 'setOrderInformation',
         'paymentInformation' => 'setPaymentInformation',
+        'paymentInsightsInformation' => 'setPaymentInsightsInformation',
+        'payoutOptions' => 'setPayoutOptions',
         'processingInformation' => 'setProcessingInformation',
         'processorInformation' => 'setProcessorInformation',
         'pointOfSaleInformation' => 'setPointOfSaleInformation',
         'riskInformation' => 'setRiskInformation',
         'senderInformation' => 'setSenderInformation',
+        'tokenInformation' => 'setTokenInformation',
         'links' => 'setLinks'
     ];
 
@@ -194,8 +210,8 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'rootId' => 'getRootId',
         'reconciliationId' => 'getReconciliationId',
         'merchantId' => 'getMerchantId',
-        'status' => 'getStatus',
         'submitTimeUTC' => 'getSubmitTimeUTC',
+        'status' => 'getStatus',
         'applicationInformation' => 'getApplicationInformation',
         'buyerInformation' => 'getBuyerInformation',
         'clientReferenceInformation' => 'getClientReferenceInformation',
@@ -204,15 +220,19 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         'errorInformation' => 'getErrorInformation',
         'installmentInformation' => 'getInstallmentInformation',
         'fraudMarkingInformation' => 'getFraudMarkingInformation',
+        'healthCareInformation' => 'getHealthCareInformation',
         'merchantDefinedInformation' => 'getMerchantDefinedInformation',
         'merchantInformation' => 'getMerchantInformation',
         'orderInformation' => 'getOrderInformation',
         'paymentInformation' => 'getPaymentInformation',
+        'paymentInsightsInformation' => 'getPaymentInsightsInformation',
+        'payoutOptions' => 'getPayoutOptions',
         'processingInformation' => 'getProcessingInformation',
         'processorInformation' => 'getProcessorInformation',
         'pointOfSaleInformation' => 'getPointOfSaleInformation',
         'riskInformation' => 'getRiskInformation',
         'senderInformation' => 'getSenderInformation',
+        'tokenInformation' => 'getTokenInformation',
         'links' => 'getLinks'
     ];
 
@@ -251,8 +271,8 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         $this->container['rootId'] = isset($data['rootId']) ? $data['rootId'] : null;
         $this->container['reconciliationId'] = isset($data['reconciliationId']) ? $data['reconciliationId'] : null;
         $this->container['merchantId'] = isset($data['merchantId']) ? $data['merchantId'] : null;
-        $this->container['status'] = isset($data['status']) ? $data['status'] : null;
         $this->container['submitTimeUTC'] = isset($data['submitTimeUTC']) ? $data['submitTimeUTC'] : null;
+        $this->container['status'] = isset($data['status']) ? $data['status'] : null;
         $this->container['applicationInformation'] = isset($data['applicationInformation']) ? $data['applicationInformation'] : null;
         $this->container['buyerInformation'] = isset($data['buyerInformation']) ? $data['buyerInformation'] : null;
         $this->container['clientReferenceInformation'] = isset($data['clientReferenceInformation']) ? $data['clientReferenceInformation'] : null;
@@ -261,15 +281,19 @@ class TssV2TransactionsGet200Response implements ArrayAccess
         $this->container['errorInformation'] = isset($data['errorInformation']) ? $data['errorInformation'] : null;
         $this->container['installmentInformation'] = isset($data['installmentInformation']) ? $data['installmentInformation'] : null;
         $this->container['fraudMarkingInformation'] = isset($data['fraudMarkingInformation']) ? $data['fraudMarkingInformation'] : null;
+        $this->container['healthCareInformation'] = isset($data['healthCareInformation']) ? $data['healthCareInformation'] : null;
         $this->container['merchantDefinedInformation'] = isset($data['merchantDefinedInformation']) ? $data['merchantDefinedInformation'] : null;
         $this->container['merchantInformation'] = isset($data['merchantInformation']) ? $data['merchantInformation'] : null;
         $this->container['orderInformation'] = isset($data['orderInformation']) ? $data['orderInformation'] : null;
         $this->container['paymentInformation'] = isset($data['paymentInformation']) ? $data['paymentInformation'] : null;
+        $this->container['paymentInsightsInformation'] = isset($data['paymentInsightsInformation']) ? $data['paymentInsightsInformation'] : null;
+        $this->container['payoutOptions'] = isset($data['payoutOptions']) ? $data['payoutOptions'] : null;
         $this->container['processingInformation'] = isset($data['processingInformation']) ? $data['processingInformation'] : null;
         $this->container['processorInformation'] = isset($data['processorInformation']) ? $data['processorInformation'] : null;
         $this->container['pointOfSaleInformation'] = isset($data['pointOfSaleInformation']) ? $data['pointOfSaleInformation'] : null;
         $this->container['riskInformation'] = isset($data['riskInformation']) ? $data['riskInformation'] : null;
         $this->container['senderInformation'] = isset($data['senderInformation']) ? $data['senderInformation'] : null;
+        $this->container['tokenInformation'] = isset($data['tokenInformation']) ? $data['tokenInformation'] : null;
         $this->container['links'] = isset($data['links']) ? $data['links'] : null;
     }
 
@@ -281,18 +305,6 @@ class TssV2TransactionsGet200Response implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 26)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 26.";
-        }
-
-        if (!is_null($this->container['rootId']) && (strlen($this->container['rootId']) > 26)) {
-            $invalid_properties[] = "invalid value for 'rootId', the character length must be smaller than or equal to 26.";
-        }
-
-        if (!is_null($this->container['reconciliationId']) && (strlen($this->container['reconciliationId']) > 60)) {
-            $invalid_properties[] = "invalid value for 'reconciliationId', the character length must be smaller than or equal to 60.";
-        }
 
         return $invalid_properties;
     }
@@ -306,15 +318,6 @@ class TssV2TransactionsGet200Response implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 26) {
-            return false;
-        }
-        if (strlen($this->container['rootId']) > 26) {
-            return false;
-        }
-        if (strlen($this->container['reconciliationId']) > 60) {
-            return false;
-        }
         return true;
     }
 
@@ -330,15 +333,11 @@ class TssV2TransactionsGet200Response implements ArrayAccess
 
     /**
      * Sets id
-     * @param string $id An unique identification number to identify the submitted request. It is also appended to the endpoint of the resource.  On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.  #### PIN debit Returned for all PIN debit services.
+     * @param string $id An unique identification number generated by Cybersource to identify the submitted request. Returned by all services. It is also appended to the endpoint of the resource. On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.
      * @return $this
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling TssV2TransactionsGet200Response., must be smaller than or equal to 26.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -360,10 +359,6 @@ class TssV2TransactionsGet200Response implements ArrayAccess
      */
     public function setRootId($rootId)
     {
-        if (!is_null($rootId) && (strlen($rootId) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $rootId when calling TssV2TransactionsGet200Response., must be smaller than or equal to 26.');
-        }
-
         $this->container['rootId'] = $rootId;
 
         return $this;
@@ -380,15 +375,11 @@ class TssV2TransactionsGet200Response implements ArrayAccess
 
     /**
      * Sets reconciliationId
-     * @param string $reconciliationId Reference number for the transaction. This value is not returned for all processors.  Returned by authorization service.  ##### PIN debit Returned by PIN debit credit, PIN debit purchase, and PIN debit reversal.  #### Atos Positive string (6)  #### All other processors String (60)
+     * @param string $reconciliationId Reference number for the transaction. Depending on how your Cybersource account is configured, this value could either be provided in the API request or generated by CyberSource. The actual value used in the request to the processor is provided back to you by Cybersource in the response.
      * @return $this
      */
     public function setReconciliationId($reconciliationId)
     {
-        if (!is_null($reconciliationId) && (strlen($reconciliationId) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $reconciliationId when calling TssV2TransactionsGet200Response., must be smaller than or equal to 60.');
-        }
-
         $this->container['reconciliationId'] = $reconciliationId;
 
         return $this;
@@ -416,6 +407,27 @@ class TssV2TransactionsGet200Response implements ArrayAccess
     }
 
     /**
+     * Gets submitTimeUTC
+     * @return string
+     */
+    public function getSubmitTimeUTC()
+    {
+        return $this->container['submitTimeUTC'];
+    }
+
+    /**
+     * Sets submitTimeUTC
+     * @param string $submitTimeUTC Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by Cybersource for all services.
+     * @return $this
+     */
+    public function setSubmitTimeUTC($submitTimeUTC)
+    {
+        $this->container['submitTimeUTC'] = $submitTimeUTC;
+
+        return $this;
+    }
+
+    /**
      * Gets status
      * @return string
      */
@@ -432,27 +444,6 @@ class TssV2TransactionsGet200Response implements ArrayAccess
     public function setStatus($status)
     {
         $this->container['status'] = $status;
-
-        return $this;
-    }
-
-    /**
-     * Gets submitTimeUTC
-     * @return string
-     */
-    public function getSubmitTimeUTC()
-    {
-        return $this->container['submitTimeUTC'];
-    }
-
-    /**
-     * Sets submitTimeUTC
-     * @param string $submitTimeUTC Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by authorization service.  #### PIN debit Time when the PIN debit credit, PIN debit purchase or PIN debit reversal was requested.  Returned by PIN debit credit, PIN debit purchase or PIN debit reversal.
-     * @return $this
-     */
-    public function setSubmitTimeUTC($submitTimeUTC)
-    {
-        $this->container['submitTimeUTC'] = $submitTimeUTC;
 
         return $this;
     }
@@ -626,6 +617,27 @@ class TssV2TransactionsGet200Response implements ArrayAccess
     }
 
     /**
+     * Gets healthCareInformation
+     * @return \CyberSource\Model\Ptsv2paymentsHealthCareInformation
+     */
+    public function getHealthCareInformation()
+    {
+        return $this->container['healthCareInformation'];
+    }
+
+    /**
+     * Sets healthCareInformation
+     * @param \CyberSource\Model\Ptsv2paymentsHealthCareInformation $healthCareInformation
+     * @return $this
+     */
+    public function setHealthCareInformation($healthCareInformation)
+    {
+        $this->container['healthCareInformation'] = $healthCareInformation;
+
+        return $this;
+    }
+
+    /**
      * Gets merchantDefinedInformation
      * @return \CyberSource\Model\Ptsv2paymentsMerchantDefinedInformation[]
      */
@@ -705,6 +717,48 @@ class TssV2TransactionsGet200Response implements ArrayAccess
     public function setPaymentInformation($paymentInformation)
     {
         $this->container['paymentInformation'] = $paymentInformation;
+
+        return $this;
+    }
+
+    /**
+     * Gets paymentInsightsInformation
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInsightsInformation
+     */
+    public function getPaymentInsightsInformation()
+    {
+        return $this->container['paymentInsightsInformation'];
+    }
+
+    /**
+     * Sets paymentInsightsInformation
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInsightsInformation $paymentInsightsInformation
+     * @return $this
+     */
+    public function setPaymentInsightsInformation($paymentInsightsInformation)
+    {
+        $this->container['paymentInsightsInformation'] = $paymentInsightsInformation;
+
+        return $this;
+    }
+
+    /**
+     * Gets payoutOptions
+     * @return \CyberSource\Model\TssV2TransactionsGet200ResponsePayoutOptions
+     */
+    public function getPayoutOptions()
+    {
+        return $this->container['payoutOptions'];
+    }
+
+    /**
+     * Sets payoutOptions
+     * @param \CyberSource\Model\TssV2TransactionsGet200ResponsePayoutOptions $payoutOptions
+     * @return $this
+     */
+    public function setPayoutOptions($payoutOptions)
+    {
+        $this->container['payoutOptions'] = $payoutOptions;
 
         return $this;
     }
@@ -815,6 +869,27 @@ class TssV2TransactionsGet200Response implements ArrayAccess
     }
 
     /**
+     * Gets tokenInformation
+     * @return \CyberSource\Model\TssV2TransactionsGet200ResponseTokenInformation
+     */
+    public function getTokenInformation()
+    {
+        return $this->container['tokenInformation'];
+    }
+
+    /**
+     * Sets tokenInformation
+     * @param \CyberSource\Model\TssV2TransactionsGet200ResponseTokenInformation $tokenInformation
+     * @return $this
+     */
+    public function setTokenInformation($tokenInformation)
+    {
+        $this->container['tokenInformation'] = $tokenInformation;
+
+        return $this;
+    }
+
+    /**
      * Gets links
      * @return \CyberSource\Model\TssV2TransactionsGet200ResponseLinks
      */
@@ -839,6 +914,7 @@ class TssV2TransactionsGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -849,6 +925,7 @@ class TssV2TransactionsGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -860,6 +937,7 @@ class TssV2TransactionsGet200Response implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -874,6 +952,7 @@ class TssV2TransactionsGet200Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

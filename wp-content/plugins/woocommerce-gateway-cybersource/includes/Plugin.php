@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 /**
  * WooCommerce CyberSource Gateway main plugin class.
@@ -36,7 +36,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 
 	/** version number */
-	const VERSION = '2.7.2';
+	const VERSION = '2.8.0';
 
 	/** @var Plugin single instance of this plugin */
 	protected static $instance;
@@ -93,7 +93,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 					'hpos'   => true,
 					'blocks' => [
 						'cart'     => true,
-						'checkout' => false,
+						'checkout' => true,
 					]
 				],
 			]
@@ -165,7 +165,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 		/**
 		 * Filters the plugin's active gateways.
 		 *
-		 * @since 2.4.1-dev.1
+		 * @since 2.4.1
 		 *
 		 * @param array $gateways the gateways, associative arrays of gateway identifiers and class names
 		 */
@@ -354,7 +354,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	/**
 	 * Handles migrating historical orders (Legacy or SOP).
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 */
 	public function migrate_legacy_orders() {
 

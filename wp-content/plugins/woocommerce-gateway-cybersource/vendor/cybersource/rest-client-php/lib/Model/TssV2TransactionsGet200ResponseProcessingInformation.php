@@ -54,8 +54,11 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
       * @var string[]
       */
     protected static $swaggerTypes = [
+        'binSource' => 'string',
+        'industryDataType' => 'string',
         'paymentSolution' => 'string',
         'commerceIndicator' => 'string',
+        'commerceIndicatorLabel' => 'string',
         'businessApplicationId' => 'string',
         'authorizationOptions' => '\CyberSource\Model\TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions',
         'bankTransferOptions' => '\CyberSource\Model\TssV2TransactionsGet200ResponseProcessingInformationBankTransferOptions',
@@ -67,8 +70,11 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
       * @var string[]
       */
     protected static $swaggerFormats = [
+        'binSource' => null,
+        'industryDataType' => null,
         'paymentSolution' => null,
         'commerceIndicator' => null,
+        'commerceIndicatorLabel' => null,
         'businessApplicationId' => null,
         'authorizationOptions' => null,
         'bankTransferOptions' => null,
@@ -90,8 +96,11 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
      * @var string[]
      */
     protected static $attributeMap = [
+        'binSource' => 'binSource',
+        'industryDataType' => 'industryDataType',
         'paymentSolution' => 'paymentSolution',
         'commerceIndicator' => 'commerceIndicator',
+        'commerceIndicatorLabel' => 'commerceIndicatorLabel',
         'businessApplicationId' => 'businessApplicationId',
         'authorizationOptions' => 'authorizationOptions',
         'bankTransferOptions' => 'bankTransferOptions',
@@ -104,8 +113,11 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
      * @var string[]
      */
     protected static $setters = [
+        'binSource' => 'setBinSource',
+        'industryDataType' => 'setIndustryDataType',
         'paymentSolution' => 'setPaymentSolution',
         'commerceIndicator' => 'setCommerceIndicator',
+        'commerceIndicatorLabel' => 'setCommerceIndicatorLabel',
         'businessApplicationId' => 'setBusinessApplicationId',
         'authorizationOptions' => 'setAuthorizationOptions',
         'bankTransferOptions' => 'setBankTransferOptions',
@@ -118,8 +130,11 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
      * @var string[]
      */
     protected static $getters = [
+        'binSource' => 'getBinSource',
+        'industryDataType' => 'getIndustryDataType',
         'paymentSolution' => 'getPaymentSolution',
         'commerceIndicator' => 'getCommerceIndicator',
+        'commerceIndicatorLabel' => 'getCommerceIndicatorLabel',
         'businessApplicationId' => 'getBusinessApplicationId',
         'authorizationOptions' => 'getAuthorizationOptions',
         'bankTransferOptions' => 'getBankTransferOptions',
@@ -157,8 +172,11 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
      */
     public function __construct(array $data = null)
     {
+        $this->container['binSource'] = isset($data['binSource']) ? $data['binSource'] : null;
+        $this->container['industryDataType'] = isset($data['industryDataType']) ? $data['industryDataType'] : null;
         $this->container['paymentSolution'] = isset($data['paymentSolution']) ? $data['paymentSolution'] : null;
         $this->container['commerceIndicator'] = isset($data['commerceIndicator']) ? $data['commerceIndicator'] : null;
+        $this->container['commerceIndicatorLabel'] = isset($data['commerceIndicatorLabel']) ? $data['commerceIndicatorLabel'] : null;
         $this->container['businessApplicationId'] = isset($data['businessApplicationId']) ? $data['businessApplicationId'] : null;
         $this->container['authorizationOptions'] = isset($data['authorizationOptions']) ? $data['authorizationOptions'] : null;
         $this->container['bankTransferOptions'] = isset($data['bankTransferOptions']) ? $data['bankTransferOptions'] : null;
@@ -174,14 +192,6 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['paymentSolution']) && (strlen($this->container['paymentSolution']) > 12)) {
-            $invalid_properties[] = "invalid value for 'paymentSolution', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['commerceIndicator']) && (strlen($this->container['commerceIndicator']) > 20)) {
-            $invalid_properties[] = "invalid value for 'commerceIndicator', the character length must be smaller than or equal to 20.";
-        }
-
         return $invalid_properties;
     }
 
@@ -194,15 +204,51 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
     public function valid()
     {
 
-        if (strlen($this->container['paymentSolution']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['commerceIndicator']) > 20) {
-            return false;
-        }
         return true;
     }
 
+
+    /**
+     * Gets binSource
+     * @return string
+     */
+    public function getBinSource()
+    {
+        return $this->container['binSource'];
+    }
+
+    /**
+     * Sets binSource
+     * @param string $binSource Bin Source File Identifier. Possible values: - itmx - rupay
+     * @return $this
+     */
+    public function setBinSource($binSource)
+    {
+        $this->container['binSource'] = $binSource;
+
+        return $this;
+    }
+
+    /**
+     * Gets industryDataType
+     * @return string
+     */
+    public function getIndustryDataType()
+    {
+        return $this->container['industryDataType'];
+    }
+
+    /**
+     * Sets industryDataType
+     * @param string $industryDataType Indicates that the transaction includes industry-specific data.  Possible Values: - `airline` - `restaurant` - `lodging` - `auto_rental` - `transit` - `healthcare_medical` - `healthcare_transit` - `transit`  #### Card Present, Airlines and Auto Rental You must set this field to `airline` in order for airline data to be sent to the processor. For example, if this field is not set to `airline` or is not included in the request, no airline data is sent to the processor.  You must set this field to `restaurant` in order for restaurant data to be sent to the processor. When this field is not set to `restaurant` or is not included in the request, no restaurant data is sent to the processor.  You must set this field to `auto_rental` in order for auto rental data to be sent to the processor. For example, if this field is not set to `auto_rental` or is not included in the request, no auto rental data is sent to the processor.  Restaurant data is supported only on CyberSource through VisaNet.
+     * @return $this
+     */
+    public function setIndustryDataType($industryDataType)
+    {
+        $this->container['industryDataType'] = $industryDataType;
+
+        return $this;
+    }
 
     /**
      * Gets paymentSolution
@@ -215,15 +261,11 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
 
     /**
      * Sets paymentSolution
-     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.
+     * @param string $paymentSolution Type of digital payment solution for the transaction.
      * @return $this
      */
     public function setPaymentSolution($paymentSolution)
     {
-        if (!is_null($paymentSolution) && (strlen($paymentSolution) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $paymentSolution when calling TssV2TransactionsGet200ResponseProcessingInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['paymentSolution'] = $paymentSolution;
 
         return $this;
@@ -240,16 +282,33 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
 
     /**
      * Sets commerceIndicator
-     * @param string $commerceIndicator Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional. Only `internet`, `moto`, `install`, `recurring`, and `recurring_internet` are valid values.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Other Types of Transactions See Appendix I, \"Commerce Indicators,\" on page 441.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction.
+     * @param string $commerceIndicator Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional.  The list of valid values in this field depends on your processor. See Appendix I, \"Commerce Indicators,\" on page 441 of the Cybersource Credit Card Guide.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction. Note that this should ONLY be used when the cardholder and card are present at the time of the transaction. For all keyed transactions originated from a POS terminal where the cardholder and card are not present, commerceIndicator should be submitted as \"moto\"
      * @return $this
      */
     public function setCommerceIndicator($commerceIndicator)
     {
-        if (!is_null($commerceIndicator) && (strlen($commerceIndicator) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $commerceIndicator when calling TssV2TransactionsGet200ResponseProcessingInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['commerceIndicator'] = $commerceIndicator;
+
+        return $this;
+    }
+
+    /**
+     * Gets commerceIndicatorLabel
+     * @return string
+     */
+    public function getCommerceIndicatorLabel()
+    {
+        return $this->container['commerceIndicatorLabel'];
+    }
+
+    /**
+     * Sets commerceIndicatorLabel
+     * @param string $commerceIndicatorLabel Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional.  The list of valid values in this field depends on your processor. See Appendix I, \"Commerce Indicators,\" on page 441 of the Cybersource Credit Card Guide.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction. Note that this should ONLY be used when the cardholder and card are present at the time of the transaction. For all keyed transactions originated from a POS terminal where the cardholder and card are not present, commerceIndicator should be submitted as \"moto\"
+     * @return $this
+     */
+    public function setCommerceIndicatorLabel($commerceIndicatorLabel)
+    {
+        $this->container['commerceIndicatorLabel'] = $commerceIndicatorLabel;
 
         return $this;
     }
@@ -342,6 +401,7 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -352,6 +412,7 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -363,6 +424,7 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -377,6 +439,7 @@ class TssV2TransactionsGet200ResponseProcessingInformation implements ArrayAcces
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

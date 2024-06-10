@@ -189,34 +189,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
         if ($this->container['unitPrice'] === null) {
             $invalid_properties[] = "'unitPrice' can't be null";
         }
-        if ((strlen($this->container['unitPrice']) > 15)) {
-            $invalid_properties[] = "invalid value for 'unitPrice', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['quantity']) && ($this->container['quantity'] > 999999999)) {
-            $invalid_properties[] = "invalid value for 'quantity', must be smaller than or equal to 999999999.";
-        }
-
-        if (!is_null($this->container['quantity']) && ($this->container['quantity'] < 1)) {
-            $invalid_properties[] = "invalid value for 'quantity', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['productSKU']) && (strlen($this->container['productSKU']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productSKU', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['productRisk']) && (strlen($this->container['productRisk']) > 6)) {
-            $invalid_properties[] = "invalid value for 'productRisk', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['productName']) && (strlen($this->container['productName']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productName', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['productCode']) && (strlen($this->container['productCode']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productCode', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -230,27 +202,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
     {
 
         if ($this->container['unitPrice'] === null) {
-            return false;
-        }
-        if (strlen($this->container['unitPrice']) > 15) {
-            return false;
-        }
-        if ($this->container['quantity'] > 999999999) {
-            return false;
-        }
-        if ($this->container['quantity'] < 1) {
-            return false;
-        }
-        if (strlen($this->container['productSKU']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['productRisk']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['productName']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['productCode']) > 255) {
             return false;
         }
         return true;
@@ -273,10 +224,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      */
     public function setUnitPrice($unitPrice)
     {
-        if ((strlen($unitPrice) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $unitPrice when calling Riskv1exportcomplianceinquiriesOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['unitPrice'] = $unitPrice;
 
         return $this;
@@ -340,14 +287,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      */
     public function setQuantity($quantity)
     {
-
-        if (!is_null($quantity) && ($quantity > 999999999)) {
-            throw new \InvalidArgumentException('invalid value for $quantity when calling Riskv1exportcomplianceinquiriesOrderInformationLineItems., must be smaller than or equal to 999999999.');
-        }
-        if (!is_null($quantity) && ($quantity < 1)) {
-            throw new \InvalidArgumentException('invalid value for $quantity when calling Riskv1exportcomplianceinquiriesOrderInformationLineItems., must be bigger than or equal to 1.');
-        }
-
         $this->container['quantity'] = $quantity;
 
         return $this;
@@ -369,10 +308,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      */
     public function setProductSKU($productSKU)
     {
-        if (!is_null($productSKU) && (strlen($productSKU) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productSKU when calling Riskv1exportcomplianceinquiriesOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productSKU'] = $productSKU;
 
         return $this;
@@ -394,10 +329,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      */
     public function setProductRisk($productRisk)
     {
-        if (!is_null($productRisk) && (strlen($productRisk) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $productRisk when calling Riskv1exportcomplianceinquiriesOrderInformationLineItems., must be smaller than or equal to 6.');
-        }
-
         $this->container['productRisk'] = $productRisk;
 
         return $this;
@@ -419,10 +350,6 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      */
     public function setProductName($productName)
     {
-        if (!is_null($productName) && (strlen($productName) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productName when calling Riskv1exportcomplianceinquiriesOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productName'] = $productName;
 
         return $this;
@@ -439,15 +366,11 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
 
     /**
      * Sets productCode
-     * @param string $productCode Type of product. The value for this field is used to identify the product category (electronic, handling, physical, service, or shipping). The default value is `default`.  If you are performing an authorization transaction (`processingOptions.capture` is set to `false`), and you set this field to a value other than `default` or one of the values related to shipping and/or handling, then `orderInformation.lineItems[].quantity`, `orderInformation.lineItems[].productName`, and `orderInformation.lineItems[].productSku` fields are required.  Optional field.  For details, see the `product_code` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes.  To use the tax calculation service, use values listed in the Tax Product Code Guide. For information about this document, contact customer support. See \"Product Codes,\" page 14, for more information.
+     * @param string $productCode Type of product. The value for this field is used to identify the product category (electronic, handling, physical, service, or shipping). The default value is `default`.  If you are performing an authorization transaction (`processingOptions.capture` is set to `false`), and you set this field to a value other than `default` or one of the values related to shipping and/or handling, then `orderInformation.lineItems[].quantity`, `orderInformation.lineItems[].productName`, and `orderInformation.lineItems[].productSku` fields are required.  Optional field.  For details, see the `product_code` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes.  The Product Codes for the tax service are located in the Cybersource Tax Codes guide. Contact Customer Support to request the guide. If you don't send a tax service Product Code in your tax request, product-based rules or exemptions will not be applied and the transaction will default to fully taxable in the locations where you've indicated you need to collect tax [by way of nexus, no nexus, or seller registration number fields].
      * @return $this
      */
     public function setProductCode($productCode)
     {
-        if (!is_null($productCode) && (strlen($productCode) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productCode when calling Riskv1exportcomplianceinquiriesOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productCode'] = $productCode;
 
         return $this;
@@ -457,6 +380,7 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -467,6 +391,7 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -478,6 +403,7 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -492,6 +418,7 @@ class Riskv1exportcomplianceinquiriesOrderInformationLineItems implements ArrayA
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

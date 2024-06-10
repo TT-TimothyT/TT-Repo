@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * NetFundingsApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class NetFundingsApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class NetFundingsApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -94,14 +101,17 @@ class NetFundingsApi
      *
      * @param \DateTime $startTime Valid report Start Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
      * @param \DateTime $endTime Valid report End Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @param string $groupName Valid CyberSource Group Name. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3NetFundingsGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
     public function getNetFundingDetails($startTime, $endTime, $organizationId = null, $groupName = null)
     {
+        self::$logger->info('CALL TO METHOD getNetFundingDetails STARTED');
         list($response, $statusCode, $httpHeader) = $this->getNetFundingDetailsWithHttpInfo($startTime, $endTime, $organizationId, $groupName);
+        self::$logger->info('CALL TO METHOD getNetFundingDetails ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -112,7 +122,7 @@ class NetFundingsApi
      *
      * @param \DateTime $startTime Valid report Start Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
      * @param \DateTime $endTime Valid report End Time in **ISO 8601 format** Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)  **Example date format:**   - yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z) (required)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @param string $groupName Valid CyberSource Group Name. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3NetFundingsGet200Response, HTTP status code, HTTP response headers (array of strings)
@@ -121,20 +131,17 @@ class NetFundingsApi
     {
         // verify the required parameter 'startTime' is set
         if ($startTime === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $startTime when calling getNetFundingDetails");
             throw new \InvalidArgumentException('Missing the required parameter $startTime when calling getNetFundingDetails');
         }
         // verify the required parameter 'endTime' is set
         if ($endTime === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $endTime when calling getNetFundingDetails");
             throw new \InvalidArgumentException('Missing the required parameter $endTime when calling getNetFundingDetails');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling NetFundingsApi.getNetFundingDetails, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling NetFundingsApi.getNetFundingDetails, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling NetFundingsApi.getNetFundingDetails, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling NetFundingsApi.getNetFundingDetails, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling NetFundingsApi.getNetFundingDetails, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -165,6 +172,9 @@ class NetFundingsApi
         if ($groupName !== null) {
             $queryParams['groupName'] = $this->apiClient->getSerializer()->toQueryValue($groupName);
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -172,6 +182,24 @@ class NetFundingsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\ReportingV3NetFundingsGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -183,6 +211,8 @@ class NetFundingsApi
                 '\CyberSource\Model\ReportingV3NetFundingsGet200Response',
                 '/reporting/v3/net-fundings'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\ReportingV3NetFundingsGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -201,6 +231,7 @@ class NetFundingsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

@@ -57,11 +57,13 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
         'id' => 'string',
         'submitTimeUtc' => 'string',
         'merchantId' => 'string',
+        'status' => 'string',
         'applicationInformation' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedApplicationInformation',
         'buyerInformation' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedBuyerInformation',
         'clientReferenceInformation' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedClientReferenceInformation',
         'consumerAuthenticationInformation' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedConsumerAuthenticationInformation',
-        'deviceInformation' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedDeviceInformation',
+        'deviceInformation' => '\CyberSource\Model\Riskv1authenticationresultsDeviceInformation',
+        'errorInformation' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedErrorInformation',
         'fraudMarkingInformation' => '\CyberSource\Model\TssV2TransactionsGet200ResponseFraudMarkingInformation',
         'merchantDefinedInformation' => '\CyberSource\Model\Ptsv2paymentsMerchantDefinedInformation[]',
         'merchantInformation' => '\CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedMerchantInformation',
@@ -82,11 +84,13 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
         'id' => null,
         'submitTimeUtc' => null,
         'merchantId' => null,
+        'status' => null,
         'applicationInformation' => null,
         'buyerInformation' => null,
         'clientReferenceInformation' => null,
         'consumerAuthenticationInformation' => null,
         'deviceInformation' => null,
+        'errorInformation' => null,
         'fraudMarkingInformation' => null,
         'merchantDefinedInformation' => null,
         'merchantInformation' => null,
@@ -117,11 +121,13 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
         'id' => 'id',
         'submitTimeUtc' => 'submitTimeUtc',
         'merchantId' => 'merchantId',
+        'status' => 'status',
         'applicationInformation' => 'applicationInformation',
         'buyerInformation' => 'buyerInformation',
         'clientReferenceInformation' => 'clientReferenceInformation',
         'consumerAuthenticationInformation' => 'consumerAuthenticationInformation',
         'deviceInformation' => 'deviceInformation',
+        'errorInformation' => 'errorInformation',
         'fraudMarkingInformation' => 'fraudMarkingInformation',
         'merchantDefinedInformation' => 'merchantDefinedInformation',
         'merchantInformation' => 'merchantInformation',
@@ -143,11 +149,13 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
         'id' => 'setId',
         'submitTimeUtc' => 'setSubmitTimeUtc',
         'merchantId' => 'setMerchantId',
+        'status' => 'setStatus',
         'applicationInformation' => 'setApplicationInformation',
         'buyerInformation' => 'setBuyerInformation',
         'clientReferenceInformation' => 'setClientReferenceInformation',
         'consumerAuthenticationInformation' => 'setConsumerAuthenticationInformation',
         'deviceInformation' => 'setDeviceInformation',
+        'errorInformation' => 'setErrorInformation',
         'fraudMarkingInformation' => 'setFraudMarkingInformation',
         'merchantDefinedInformation' => 'setMerchantDefinedInformation',
         'merchantInformation' => 'setMerchantInformation',
@@ -169,11 +177,13 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
         'id' => 'getId',
         'submitTimeUtc' => 'getSubmitTimeUtc',
         'merchantId' => 'getMerchantId',
+        'status' => 'getStatus',
         'applicationInformation' => 'getApplicationInformation',
         'buyerInformation' => 'getBuyerInformation',
         'clientReferenceInformation' => 'getClientReferenceInformation',
         'consumerAuthenticationInformation' => 'getConsumerAuthenticationInformation',
         'deviceInformation' => 'getDeviceInformation',
+        'errorInformation' => 'getErrorInformation',
         'fraudMarkingInformation' => 'getFraudMarkingInformation',
         'merchantDefinedInformation' => 'getMerchantDefinedInformation',
         'merchantInformation' => 'getMerchantInformation',
@@ -220,11 +230,13 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
         $this->container['id'] = isset($data['id']) ? $data['id'] : null;
         $this->container['submitTimeUtc'] = isset($data['submitTimeUtc']) ? $data['submitTimeUtc'] : null;
         $this->container['merchantId'] = isset($data['merchantId']) ? $data['merchantId'] : null;
+        $this->container['status'] = isset($data['status']) ? $data['status'] : null;
         $this->container['applicationInformation'] = isset($data['applicationInformation']) ? $data['applicationInformation'] : null;
         $this->container['buyerInformation'] = isset($data['buyerInformation']) ? $data['buyerInformation'] : null;
         $this->container['clientReferenceInformation'] = isset($data['clientReferenceInformation']) ? $data['clientReferenceInformation'] : null;
         $this->container['consumerAuthenticationInformation'] = isset($data['consumerAuthenticationInformation']) ? $data['consumerAuthenticationInformation'] : null;
         $this->container['deviceInformation'] = isset($data['deviceInformation']) ? $data['deviceInformation'] : null;
+        $this->container['errorInformation'] = isset($data['errorInformation']) ? $data['errorInformation'] : null;
         $this->container['fraudMarkingInformation'] = isset($data['fraudMarkingInformation']) ? $data['fraudMarkingInformation'] : null;
         $this->container['merchantDefinedInformation'] = isset($data['merchantDefinedInformation']) ? $data['merchantDefinedInformation'] : null;
         $this->container['merchantInformation'] = isset($data['merchantInformation']) ? $data['merchantInformation'] : null;
@@ -246,10 +258,6 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 26)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 26.";
-        }
-
         return $invalid_properties;
     }
 
@@ -262,9 +270,6 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 26) {
-            return false;
-        }
         return true;
     }
 
@@ -280,15 +285,11 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
 
     /**
      * Sets id
-     * @param string $id An unique identification number to identify the submitted request. It is also appended to the endpoint of the resource.  On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.  #### PIN debit Returned for all PIN debit services.
+     * @param string $id An unique identification number generated by Cybersource to identify the submitted request. Returned by all services. It is also appended to the endpoint of the resource. On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.
      * @return $this
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries., must be smaller than or equal to 26.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -305,7 +306,7 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
 
     /**
      * Sets submitTimeUtc
-     * @param string $submitTimeUtc Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by authorization service.  #### PIN debit Time when the PIN debit credit, PIN debit purchase or PIN debit reversal was requested.  Returned by PIN debit credit, PIN debit purchase or PIN debit reversal.
+     * @param string $submitTimeUtc Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by Cybersource for all services.
      * @return $this
      */
     public function setSubmitTimeUtc($submitTimeUtc)
@@ -332,6 +333,27 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
     public function setMerchantId($merchantId)
     {
         $this->container['merchantId'] = $merchantId;
+
+        return $this;
+    }
+
+    /**
+     * Gets status
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->container['status'];
+    }
+
+    /**
+     * Sets status
+     * @param string $status The status of the submitted transaction. Note: This field may not be returned for all transactions.
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->container['status'] = $status;
 
         return $this;
     }
@@ -422,7 +444,7 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
 
     /**
      * Gets deviceInformation
-     * @return \CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedDeviceInformation
+     * @return \CyberSource\Model\Riskv1authenticationresultsDeviceInformation
      */
     public function getDeviceInformation()
     {
@@ -431,12 +453,33 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
 
     /**
      * Sets deviceInformation
-     * @param \CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedDeviceInformation $deviceInformation
+     * @param \CyberSource\Model\Riskv1authenticationresultsDeviceInformation $deviceInformation
      * @return $this
      */
     public function setDeviceInformation($deviceInformation)
     {
         $this->container['deviceInformation'] = $deviceInformation;
+
+        return $this;
+    }
+
+    /**
+     * Gets errorInformation
+     * @return \CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedErrorInformation
+     */
+    public function getErrorInformation()
+    {
+        return $this->container['errorInformation'];
+    }
+
+    /**
+     * Sets errorInformation
+     * @param \CyberSource\Model\TssV2TransactionsPost201ResponseEmbeddedErrorInformation $errorInformation
+     * @return $this
+     */
+    public function setErrorInformation($errorInformation)
+    {
+        $this->container['errorInformation'] = $errorInformation;
 
         return $this;
     }
@@ -655,6 +698,7 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -665,6 +709,7 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -676,6 +721,7 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -690,6 +736,7 @@ class TssV2TransactionsPost201ResponseEmbeddedTransactionSummaries implements Ar
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

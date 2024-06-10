@@ -222,58 +222,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['productSKU']) && (strlen($this->container['productSKU']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productSKU', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['productCode']) && (strlen($this->container['productCode']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productCode', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['quantity']) && ($this->container['quantity'] > 999999999)) {
-            $invalid_properties[] = "invalid value for 'quantity', must be smaller than or equal to 999999999.";
-        }
-
-        if (!is_null($this->container['quantity']) && ($this->container['quantity'] < 1)) {
-            $invalid_properties[] = "invalid value for 'quantity', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['productName']) && (strlen($this->container['productName']) > 255)) {
-            $invalid_properties[] = "invalid value for 'productName', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['unitPrice']) && (strlen($this->container['unitPrice']) > 15)) {
-            $invalid_properties[] = "invalid value for 'unitPrice', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['taxAmount']) && (strlen($this->container['taxAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'taxAmount', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['shipFromCountry']) && (strlen($this->container['shipFromCountry']) > 2)) {
-            $invalid_properties[] = "invalid value for 'shipFromCountry', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['shipFromAdministrativeArea']) && (strlen($this->container['shipFromAdministrativeArea']) > 2)) {
-            $invalid_properties[] = "invalid value for 'shipFromAdministrativeArea', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['shipFromLocality']) && (strlen($this->container['shipFromLocality']) > 50)) {
-            $invalid_properties[] = "invalid value for 'shipFromLocality', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['shipFromPostalCode']) && (strlen($this->container['shipFromPostalCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'shipFromPostalCode', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['buyerVatRegistrationNumber']) && (strlen($this->container['buyerVatRegistrationNumber']) > 25)) {
-            $invalid_properties[] = "invalid value for 'buyerVatRegistrationNumber', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['sellerVatRegistrationNumber']) && (strlen($this->container['sellerVatRegistrationNumber']) > 25)) {
-            $invalid_properties[] = "invalid value for 'sellerVatRegistrationNumber', the character length must be smaller than or equal to 25.";
-        }
-
         return $invalid_properties;
     }
 
@@ -286,45 +234,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['productSKU']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['productCode']) > 255) {
-            return false;
-        }
-        if ($this->container['quantity'] > 999999999) {
-            return false;
-        }
-        if ($this->container['quantity'] < 1) {
-            return false;
-        }
-        if (strlen($this->container['productName']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['unitPrice']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['taxAmount']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['shipFromCountry']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['shipFromAdministrativeArea']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['shipFromLocality']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['shipFromPostalCode']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['buyerVatRegistrationNumber']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['sellerVatRegistrationNumber']) > 25) {
-            return false;
-        }
         return true;
     }
 
@@ -345,10 +254,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setProductSKU($productSKU)
     {
-        if (!is_null($productSKU) && (strlen($productSKU) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productSKU when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productSKU'] = $productSKU;
 
         return $this;
@@ -365,15 +270,11 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
 
     /**
      * Sets productCode
-     * @param string $productCode Type of product. The value for this field is used to identify the product category (electronic, handling, physical, service, or shipping). The default value is `default`.  If you are performing an authorization transaction (`processingOptions.capture` is set to `false`), and you set this field to a value other than `default` or one of the values related to shipping and/or handling, then `orderInformation.lineItems[].quantity`, `orderInformation.lineItems[].productName`, and `orderInformation.lineItems[].productSku` fields are required.  Optional field.  For details, see the `product_code` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes.  To use the tax calculation service, use values listed in the Tax Product Code Guide. For information about this document, contact customer support. See \"Product Codes,\" page 14, for more information.
+     * @param string $productCode Type of product. The value for this field is used to identify the product category (electronic, handling, physical, service, or shipping). The default value is `default`.  If you are performing an authorization transaction (`processingOptions.capture` is set to `false`), and you set this field to a value other than `default` or one of the values related to shipping and/or handling, then `orderInformation.lineItems[].quantity`, `orderInformation.lineItems[].productName`, and `orderInformation.lineItems[].productSku` fields are required.  Optional field.  For details, see the `product_code` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes.  The Product Codes for the tax service are located in the Cybersource Tax Codes guide. Contact Customer Support to request the guide. If you don't send a tax service Product Code in your tax request, product-based rules or exemptions will not be applied and the transaction will default to fully taxable in the locations where you've indicated you need to collect tax [by way of nexus, no nexus, or seller registration number fields].
      * @return $this
      */
     public function setProductCode($productCode)
     {
-        if (!is_null($productCode) && (strlen($productCode) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productCode when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productCode'] = $productCode;
 
         return $this;
@@ -395,14 +296,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setQuantity($quantity)
     {
-
-        if (!is_null($quantity) && ($quantity > 999999999)) {
-            throw new \InvalidArgumentException('invalid value for $quantity when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 999999999.');
-        }
-        if (!is_null($quantity) && ($quantity < 1)) {
-            throw new \InvalidArgumentException('invalid value for $quantity when calling Vasv2taxOrderInformationLineItems., must be bigger than or equal to 1.');
-        }
-
         $this->container['quantity'] = $quantity;
 
         return $this;
@@ -424,10 +317,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setProductName($productName)
     {
-        if (!is_null($productName) && (strlen($productName) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $productName when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 255.');
-        }
-
         $this->container['productName'] = $productName;
 
         return $this;
@@ -449,10 +338,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setUnitPrice($unitPrice)
     {
-        if (!is_null($unitPrice) && (strlen($unitPrice) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $unitPrice when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['unitPrice'] = $unitPrice;
 
         return $this;
@@ -474,10 +359,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setTaxAmount($taxAmount)
     {
-        if (!is_null($taxAmount) && (strlen($taxAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $taxAmount when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 15.');
-        }
-
         $this->container['taxAmount'] = $taxAmount;
 
         return $this;
@@ -541,10 +422,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setShipFromCountry($shipFromCountry)
     {
-        if (!is_null($shipFromCountry) && (strlen($shipFromCountry) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $shipFromCountry when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 2.');
-        }
-
         $this->container['shipFromCountry'] = $shipFromCountry;
 
         return $this;
@@ -566,10 +443,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setShipFromAdministrativeArea($shipFromAdministrativeArea)
     {
-        if (!is_null($shipFromAdministrativeArea) && (strlen($shipFromAdministrativeArea) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $shipFromAdministrativeArea when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 2.');
-        }
-
         $this->container['shipFromAdministrativeArea'] = $shipFromAdministrativeArea;
 
         return $this;
@@ -591,10 +464,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setShipFromLocality($shipFromLocality)
     {
-        if (!is_null($shipFromLocality) && (strlen($shipFromLocality) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $shipFromLocality when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 50.');
-        }
-
         $this->container['shipFromLocality'] = $shipFromLocality;
 
         return $this;
@@ -616,10 +485,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setShipFromPostalCode($shipFromPostalCode)
     {
-        if (!is_null($shipFromPostalCode) && (strlen($shipFromPostalCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $shipFromPostalCode when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 10.');
-        }
-
         $this->container['shipFromPostalCode'] = $shipFromPostalCode;
 
         return $this;
@@ -636,15 +501,11 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
 
     /**
      * Sets buyerVatRegistrationNumber
-     * @param string $buyerVatRegistrationNumber Buyer’s VAT registration number.  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for international and value added taxes only. Not applicable to U.S. and Canadian taxes.
+     * @param string $buyerVatRegistrationNumber Buyer's VAT registration number.  **NOTE** If this field appears in a `lineItems` object, then the value of this field in the `lineItems` object overrides the value of the corresponding field at the request-level or order-level object.  #### Tax Calculation Optional field for international and value added taxes only. Not applicable to U.S. and Canadian taxes.
      * @return $this
      */
     public function setBuyerVatRegistrationNumber($buyerVatRegistrationNumber)
     {
-        if (!is_null($buyerVatRegistrationNumber) && (strlen($buyerVatRegistrationNumber) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $buyerVatRegistrationNumber when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 25.');
-        }
-
         $this->container['buyerVatRegistrationNumber'] = $buyerVatRegistrationNumber;
 
         return $this;
@@ -666,10 +527,6 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      */
     public function setSellerVatRegistrationNumber($sellerVatRegistrationNumber)
     {
-        if (!is_null($sellerVatRegistrationNumber) && (strlen($sellerVatRegistrationNumber) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $sellerVatRegistrationNumber when calling Vasv2taxOrderInformationLineItems., must be smaller than or equal to 25.');
-        }
-
         $this->container['sellerVatRegistrationNumber'] = $sellerVatRegistrationNumber;
 
         return $this;
@@ -679,6 +536,7 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -689,6 +547,7 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -700,6 +559,7 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -714,6 +574,7 @@ class Vasv2taxOrderInformationLineItems implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

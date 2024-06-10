@@ -180,26 +180,6 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['purchaseOrderNumber']) && (strlen($this->container['purchaseOrderNumber']) > 25)) {
-            $invalid_properties[] = "invalid value for 'purchaseOrderNumber', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['purchaseOrderDate']) && (strlen($this->container['purchaseOrderDate']) > 10)) {
-            $invalid_properties[] = "invalid value for 'purchaseOrderDate', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['purchaseContactName']) && (strlen($this->container['purchaseContactName']) > 36)) {
-            $invalid_properties[] = "invalid value for 'purchaseContactName', the character length must be smaller than or equal to 36.";
-        }
-
-        if (!is_null($this->container['vatInvoiceReferenceNumber']) && (strlen($this->container['vatInvoiceReferenceNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'vatInvoiceReferenceNumber', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['commodityCode']) && (strlen($this->container['commodityCode']) > 4)) {
-            $invalid_properties[] = "invalid value for 'commodityCode', the character length must be smaller than or equal to 4.";
-        }
-
         return $invalid_properties;
     }
 
@@ -212,21 +192,6 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['purchaseOrderNumber']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['purchaseOrderDate']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['purchaseContactName']) > 36) {
-            return false;
-        }
-        if (strlen($this->container['vatInvoiceReferenceNumber']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['commodityCode']) > 4) {
-            return false;
-        }
         return true;
     }
 
@@ -247,10 +212,6 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
      */
     public function setPurchaseOrderNumber($purchaseOrderNumber)
     {
-        if (!is_null($purchaseOrderNumber) && (strlen($purchaseOrderNumber) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $purchaseOrderNumber when calling Ptsv2paymentsidcapturesOrderInformationInvoiceDetails., must be smaller than or equal to 25.');
-        }
-
         $this->container['purchaseOrderNumber'] = $purchaseOrderNumber;
 
         return $this;
@@ -272,10 +233,6 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
      */
     public function setPurchaseOrderDate($purchaseOrderDate)
     {
-        if (!is_null($purchaseOrderDate) && (strlen($purchaseOrderDate) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $purchaseOrderDate when calling Ptsv2paymentsidcapturesOrderInformationInvoiceDetails., must be smaller than or equal to 10.');
-        }
-
         $this->container['purchaseOrderDate'] = $purchaseOrderDate;
 
         return $this;
@@ -297,10 +254,6 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
      */
     public function setPurchaseContactName($purchaseContactName)
     {
-        if (!is_null($purchaseContactName) && (strlen($purchaseContactName) > 36)) {
-            throw new \InvalidArgumentException('invalid length for $purchaseContactName when calling Ptsv2paymentsidcapturesOrderInformationInvoiceDetails., must be smaller than or equal to 36.');
-        }
-
         $this->container['purchaseContactName'] = $purchaseContactName;
 
         return $this;
@@ -343,10 +296,6 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
      */
     public function setVatInvoiceReferenceNumber($vatInvoiceReferenceNumber)
     {
-        if (!is_null($vatInvoiceReferenceNumber) && (strlen($vatInvoiceReferenceNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $vatInvoiceReferenceNumber when calling Ptsv2paymentsidcapturesOrderInformationInvoiceDetails., must be smaller than or equal to 15.');
-        }
-
         $this->container['vatInvoiceReferenceNumber'] = $vatInvoiceReferenceNumber;
 
         return $this;
@@ -363,15 +312,11 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
 
     /**
      * Sets commodityCode
-     * @param string $commodityCode International description code of the overall order’s goods or services or the Categorizes purchases for VAT reporting. Contact your acquirer for a list of codes.  For processor-specific information, see the `summary_commodity_code` field in [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
+     * @param string $commodityCode International description code of the overall order's goods or services or the Categorizes purchases for VAT reporting. Contact your acquirer for a list of codes.  For processor-specific information, see the `summary_commodity_code` field in [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
      * @return $this
      */
     public function setCommodityCode($commodityCode)
     {
-        if (!is_null($commodityCode) && (strlen($commodityCode) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $commodityCode when calling Ptsv2paymentsidcapturesOrderInformationInvoiceDetails., must be smaller than or equal to 4.');
-        }
-
         $this->container['commodityCode'] = $commodityCode;
 
         return $this;
@@ -402,6 +347,7 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -412,6 +358,7 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -423,6 +370,7 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -437,6 +385,7 @@ class Ptsv2paymentsidcapturesOrderInformationInvoiceDetails implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

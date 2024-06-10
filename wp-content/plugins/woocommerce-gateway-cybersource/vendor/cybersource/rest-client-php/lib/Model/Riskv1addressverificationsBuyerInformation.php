@@ -144,10 +144,6 @@ class Riskv1addressverificationsBuyerInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['merchantCustomerId']) && (strlen($this->container['merchantCustomerId']) > 100)) {
-            $invalid_properties[] = "invalid value for 'merchantCustomerId', the character length must be smaller than or equal to 100.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class Riskv1addressverificationsBuyerInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['merchantCustomerId']) > 100) {
-            return false;
-        }
         return true;
     }
 
@@ -178,15 +171,11 @@ class Riskv1addressverificationsBuyerInformation implements ArrayAccess
 
     /**
      * Sets merchantCustomerId
-     * @param string $merchantCustomerId Optional customer’s account ID, tracking number, reward number, or other unique number that you assign to the customer for the purpose that you choose
+     * @param string $merchantCustomerId Optional customer's account ID, tracking number, reward number, or other unique number that you assign to the customer for the purpose that you choose
      * @return $this
      */
     public function setMerchantCustomerId($merchantCustomerId)
     {
-        if (!is_null($merchantCustomerId) && (strlen($merchantCustomerId) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $merchantCustomerId when calling Riskv1addressverificationsBuyerInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['merchantCustomerId'] = $merchantCustomerId;
 
         return $this;
@@ -196,6 +185,7 @@ class Riskv1addressverificationsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class Riskv1addressverificationsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class Riskv1addressverificationsBuyerInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class Riskv1addressverificationsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

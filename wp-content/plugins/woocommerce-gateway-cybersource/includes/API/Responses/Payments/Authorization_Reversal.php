@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) or exit;
 /**
  * CyberSource API Authorization Reversal Response Class
  *
- * @since 2.0.0-dev.4
+ * @since 2.0.0
  */
 class Authorization_Reversal extends Payment {
 
@@ -36,7 +36,7 @@ class Authorization_Reversal extends Payment {
 	/**
 	 * Checks if the reversal request was successful.
 	 *
-	 * @since 2.0.0-dev.4
+	 * @since 2.0.0
 	 *
 	 * @return bool
 	 */

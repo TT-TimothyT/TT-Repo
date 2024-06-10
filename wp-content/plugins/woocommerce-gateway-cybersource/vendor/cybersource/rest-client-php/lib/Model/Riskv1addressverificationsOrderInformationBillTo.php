@@ -189,47 +189,15 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
         if ($this->container['address1'] === null) {
             $invalid_properties[] = "'address1' can't be null";
         }
-        if ((strlen($this->container['address1']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address1', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address2']) && (strlen($this->container['address2']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address2', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address3']) && (strlen($this->container['address3']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address3', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address4']) && (strlen($this->container['address4']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address4', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['administrativeArea']) && (strlen($this->container['administrativeArea']) > 20)) {
-            $invalid_properties[] = "invalid value for 'administrativeArea', the character length must be smaller than or equal to 20.";
-        }
-
         if ($this->container['country'] === null) {
             $invalid_properties[] = "'country' can't be null";
         }
-        if ((strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
         if ($this->container['locality'] === null) {
             $invalid_properties[] = "'locality' can't be null";
         }
-        if ((strlen($this->container['locality']) > 50)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 50.";
-        }
-
         if ($this->container['postalCode'] === null) {
             $invalid_properties[] = "'postalCode' can't be null";
         }
-        if ((strlen($this->container['postalCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 10.";
-        }
-
         return $invalid_properties;
     }
 
@@ -245,37 +213,13 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
         if ($this->container['address1'] === null) {
             return false;
         }
-        if (strlen($this->container['address1']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address2']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address3']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address4']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['administrativeArea']) > 20) {
-            return false;
-        }
         if ($this->container['country'] === null) {
-            return false;
-        }
-        if (strlen($this->container['country']) > 2) {
             return false;
         }
         if ($this->container['locality'] === null) {
             return false;
         }
-        if (strlen($this->container['locality']) > 50) {
-            return false;
-        }
         if ($this->container['postalCode'] === null) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 10) {
             return false;
         }
         return true;
@@ -293,15 +237,11 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
 
     /**
      * Sets address1
-     * @param string $address1 Payment card billing street address as it appears on the credit card issuer’s records.  #### Atos This field must not contain colons (:).  #### CyberSource through VisaNet **Important** When you populate orderInformation.billTo.address1 and orderInformation.billTo.address2, CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters, CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank. Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks. Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### FDMS Nashville When the street name is numeric, it must be sent in numeric format. For example, if the address is _One First Street_, it must be sent as _1 1st Street_.  Required if keyed; not used if swiped.  String (20)  #### TSYS Acquiring Solutions Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.  #### All other processors: Optional. String (60)  #### For Payouts This field may be sent only for FDC Compass.  **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+     * @param string $address1 Payment card billing street address as it appears on the credit card issuer's records.  #### Atos This field must not contain colons (:).  #### CyberSource through VisaNet **Important** When you populate orderInformation.billTo.address1 and orderInformation.billTo.address2, CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters, CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank. Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks. Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.  #### FDMS Nashville When the street name is numeric, it must be sent in numeric format. For example, if the address is _One First Street_, it must be sent as _1 1st Street_.  Required if keyed; not used if swiped.  String (20)  #### TSYS Acquiring Solutions Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.  #### All other processors: Optional. String (60)  #### For Payouts This field may be sent only for FDC Compass.  **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
      * @return $this
      */
     public function setAddress1($address1)
     {
-        if ((strlen($address1) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address1 when calling Riskv1addressverificationsOrderInformationBillTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address1'] = $address1;
 
         return $this;
@@ -323,10 +263,6 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      */
     public function setAddress2($address2)
     {
-        if (!is_null($address2) && (strlen($address2) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address2 when calling Riskv1addressverificationsOrderInformationBillTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address2'] = $address2;
 
         return $this;
@@ -348,10 +284,6 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      */
     public function setAddress3($address3)
     {
-        if (!is_null($address3) && (strlen($address3) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address3 when calling Riskv1addressverificationsOrderInformationBillTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address3'] = $address3;
 
         return $this;
@@ -373,10 +305,6 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      */
     public function setAddress4($address4)
     {
-        if (!is_null($address4) && (strlen($address4) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address4 when calling Riskv1addressverificationsOrderInformationBillTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address4'] = $address4;
 
         return $this;
@@ -398,10 +326,6 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      */
     public function setAdministrativeArea($administrativeArea)
     {
-        if (!is_null($administrativeArea) && (strlen($administrativeArea) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $administrativeArea when calling Riskv1addressverificationsOrderInformationBillTo., must be smaller than or equal to 20.');
-        }
-
         $this->container['administrativeArea'] = $administrativeArea;
 
         return $this;
@@ -423,10 +347,6 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      */
     public function setCountry($country)
     {
-        if ((strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling Riskv1addressverificationsOrderInformationBillTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -448,10 +368,6 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      */
     public function setLocality($locality)
     {
-        if ((strlen($locality) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling Riskv1addressverificationsOrderInformationBillTo., must be smaller than or equal to 50.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -473,10 +389,6 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      */
     public function setPostalCode($postalCode)
     {
-        if ((strlen($postalCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling Riskv1addressverificationsOrderInformationBillTo., must be smaller than or equal to 10.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -486,6 +398,7 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -496,6 +409,7 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -507,6 +421,7 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -521,6 +436,7 @@ class Riskv1addressverificationsOrderInformationBillTo implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

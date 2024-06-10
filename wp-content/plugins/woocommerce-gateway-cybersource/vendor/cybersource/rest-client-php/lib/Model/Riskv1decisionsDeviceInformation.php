@@ -240,50 +240,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['ipAddress']) && (strlen($this->container['ipAddress']) > 48)) {
-            $invalid_properties[] = "invalid value for 'ipAddress', the character length must be smaller than or equal to 48.";
-        }
-
-        if (!is_null($this->container['hostName']) && (strlen($this->container['hostName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'hostName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['userAgent']) && (strlen($this->container['userAgent']) > 40)) {
-            $invalid_properties[] = "invalid value for 'userAgent', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['httpAcceptBrowserValue']) && (strlen($this->container['httpAcceptBrowserValue']) > 255)) {
-            $invalid_properties[] = "invalid value for 'httpAcceptBrowserValue', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['httpAcceptContent']) && (strlen($this->container['httpAcceptContent']) > 256)) {
-            $invalid_properties[] = "invalid value for 'httpAcceptContent', the character length must be smaller than or equal to 256.";
-        }
-
-        if (!is_null($this->container['httpBrowserLanguage']) && (strlen($this->container['httpBrowserLanguage']) > 8)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserLanguage', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['httpBrowserColorDepth']) && (strlen($this->container['httpBrowserColorDepth']) > 2)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserColorDepth', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['httpBrowserScreenHeight']) && (strlen($this->container['httpBrowserScreenHeight']) > 6)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserScreenHeight', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['httpBrowserScreenWidth']) && (strlen($this->container['httpBrowserScreenWidth']) > 6)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserScreenWidth', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['httpBrowserTimeDifference']) && (strlen($this->container['httpBrowserTimeDifference']) > 5)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserTimeDifference', the character length must be smaller than or equal to 5.";
-        }
-
-        if (!is_null($this->container['userAgentBrowserValue']) && (strlen($this->container['userAgentBrowserValue']) > 255)) {
-            $invalid_properties[] = "invalid value for 'userAgentBrowserValue', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -296,39 +252,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['ipAddress']) > 48) {
-            return false;
-        }
-        if (strlen($this->container['hostName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['userAgent']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['httpAcceptBrowserValue']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['httpAcceptContent']) > 256) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserLanguage']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserColorDepth']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserScreenHeight']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserScreenWidth']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserTimeDifference']) > 5) {
-            return false;
-        }
-        if (strlen($this->container['userAgentBrowserValue']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -344,7 +267,7 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
 
     /**
      * Sets cookiesAccepted
-     * @param string $cookiesAccepted Whether the customer’s browser accepts cookies. This field can contain one of the following values: - `yes`: The customer’s browser accepts cookies. - `no`: The customer’s browser does not accept cookies.
+     * @param string $cookiesAccepted Whether the customer's browser accepts cookies. This field can contain one of the following values: - `yes`: The customer's browser accepts cookies. - `no`: The customer's browser does not accept cookies.
      * @return $this
      */
     public function setCookiesAccepted($cookiesAccepted)
@@ -370,10 +293,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      */
     public function setIpAddress($ipAddress)
     {
-        if (!is_null($ipAddress) && (strlen($ipAddress) > 48)) {
-            throw new \InvalidArgumentException('invalid length for $ipAddress when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 48.');
-        }
-
         $this->container['ipAddress'] = $ipAddress;
 
         return $this;
@@ -395,10 +314,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      */
     public function setHostName($hostName)
     {
-        if (!is_null($hostName) && (strlen($hostName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $hostName when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 60.');
-        }
-
         $this->container['hostName'] = $hostName;
 
         return $this;
@@ -415,7 +330,7 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
 
     /**
      * Sets fingerprintSessionId
-     * @param string $fingerprintSessionId Field that contains the session ID that you send to Decision Manager to obtain the device fingerprint information. The string can contain uppercase and lowercase letters, digits, hyphen (-), and underscore (_). However, do not use the same uppercase and lowercase letters to indicate different session IDs.  The session ID must be unique for each merchant ID. You can use any string that you are already generating, such as an order number or web session ID.  The session ID must be unique for each page load, regardless of an individual’s web session ID. If a user navigates to a profiled page and is assigned a web session, navigates away from the profiled page, then navigates back to the profiled page, the generated session ID should be different and unique. You may use a web session ID, but it is preferable to use an application GUID (Globally Unique Identifier). This measure ensures that a unique ID is generated every time the page is loaded, even if it is the same user reloading the page.
+     * @param string $fingerprintSessionId Field that contains the session ID that you send to Decision Manager to obtain the device fingerprint information. The string can contain uppercase and lowercase letters, digits, hyphen (-), and underscore (_). However, do not use the same uppercase and lowercase letters to indicate different session IDs.  The session ID must be unique for each merchant ID. You can use any string that you are already generating, such as an order number or web session ID.  The session ID must be unique for each page load, regardless of an individual's web session ID. If a user navigates to a profiled page and is assigned a web session, navigates away from the profiled page, then navigates back to the profiled page, the generated session ID should be different and unique. You may use a web session ID, but it is preferable to use an application GUID (Globally Unique Identifier). This measure ensures that a unique ID is generated every time the page is loaded, even if it is the same user reloading the page.
      * @return $this
      */
     public function setFingerprintSessionId($fingerprintSessionId)
@@ -436,7 +351,7 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
 
     /**
      * Sets httpBrowserEmail
-     * @param string $httpBrowserEmail Email address set in the customer’s browser, which may differ from customer email.
+     * @param string $httpBrowserEmail Email address set in the customer's browser, which may differ from customer email.
      * @return $this
      */
     public function setHttpBrowserEmail($httpBrowserEmail)
@@ -457,15 +372,11 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
 
     /**
      * Sets userAgent
-     * @param string $userAgent Customer’s browser as identified from the HTTP header data. For example, `Mozilla` is the value that identifies the Netscape browser.
+     * @param string $userAgent Customer's browser as identified from the HTTP header data. For example, `Mozilla` is the value that identifies the Netscape browser.
      * @return $this
      */
     public function setUserAgent($userAgent)
     {
-        if (!is_null($userAgent) && (strlen($userAgent) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $userAgent when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 40.');
-        }
-
         $this->container['userAgent'] = $userAgent;
 
         return $this;
@@ -503,15 +414,11 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
 
     /**
      * Sets httpAcceptBrowserValue
-     * @param string $httpAcceptBrowserValue Value of the Accept header sent by the customer’s web browser. **Note** If the customer’s browser provides a value, you must include it in your request.
+     * @param string $httpAcceptBrowserValue Value of the Accept header sent by the customer's web browser. **Note** If the customer's browser provides a value, you must include it in your request.
      * @return $this
      */
     public function setHttpAcceptBrowserValue($httpAcceptBrowserValue)
     {
-        if (!is_null($httpAcceptBrowserValue) && (strlen($httpAcceptBrowserValue) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $httpAcceptBrowserValue when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['httpAcceptBrowserValue'] = $httpAcceptBrowserValue;
 
         return $this;
@@ -533,10 +440,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      */
     public function setHttpAcceptContent($httpAcceptContent)
     {
-        if (!is_null($httpAcceptContent) && (strlen($httpAcceptContent) > 256)) {
-            throw new \InvalidArgumentException('invalid length for $httpAcceptContent when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 256.');
-        }
-
         $this->container['httpAcceptContent'] = $httpAcceptContent;
 
         return $this;
@@ -558,10 +461,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserLanguage($httpBrowserLanguage)
     {
-        if (!is_null($httpBrowserLanguage) && (strlen($httpBrowserLanguage) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserLanguage when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['httpBrowserLanguage'] = $httpBrowserLanguage;
 
         return $this;
@@ -625,10 +524,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserColorDepth($httpBrowserColorDepth)
     {
-        if (!is_null($httpBrowserColorDepth) && (strlen($httpBrowserColorDepth) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserColorDepth when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['httpBrowserColorDepth'] = $httpBrowserColorDepth;
 
         return $this;
@@ -650,10 +545,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserScreenHeight($httpBrowserScreenHeight)
     {
-        if (!is_null($httpBrowserScreenHeight) && (strlen($httpBrowserScreenHeight) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserScreenHeight when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['httpBrowserScreenHeight'] = $httpBrowserScreenHeight;
 
         return $this;
@@ -675,10 +566,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserScreenWidth($httpBrowserScreenWidth)
     {
-        if (!is_null($httpBrowserScreenWidth) && (strlen($httpBrowserScreenWidth) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserScreenWidth when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['httpBrowserScreenWidth'] = $httpBrowserScreenWidth;
 
         return $this;
@@ -700,10 +587,6 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserTimeDifference($httpBrowserTimeDifference)
     {
-        if (!is_null($httpBrowserTimeDifference) && (strlen($httpBrowserTimeDifference) > 5)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserTimeDifference when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 5.');
-        }
-
         $this->container['httpBrowserTimeDifference'] = $httpBrowserTimeDifference;
 
         return $this;
@@ -720,15 +603,11 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
 
     /**
      * Sets userAgentBrowserValue
-     * @param string $userAgentBrowserValue Value of the User-Agent header sent by the customer’s web browser. Note If the customer’s browser provides a value, you must include it in your request.
+     * @param string $userAgentBrowserValue Value of the User-Agent header sent by the customer's web browser. Note If the customer's browser provides a value, you must include it in your request.
      * @return $this
      */
     public function setUserAgentBrowserValue($userAgentBrowserValue)
     {
-        if (!is_null($userAgentBrowserValue) && (strlen($userAgentBrowserValue) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $userAgentBrowserValue when calling Riskv1decisionsDeviceInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['userAgentBrowserValue'] = $userAgentBrowserValue;
 
         return $this;
@@ -738,6 +617,7 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -748,6 +628,7 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -759,6 +640,7 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -773,6 +655,7 @@ class Riskv1decisionsDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

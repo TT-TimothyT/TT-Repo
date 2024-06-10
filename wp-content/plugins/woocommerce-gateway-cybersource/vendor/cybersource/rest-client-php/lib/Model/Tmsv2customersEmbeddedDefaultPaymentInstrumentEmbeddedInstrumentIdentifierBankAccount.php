@@ -150,10 +150,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['number']) && (strlen($this->container['number']) > 17)) {
-            $invalid_properties[] = "invalid value for 'number', the character length must be smaller than or equal to 17.";
-        }
-
         return $invalid_properties;
     }
 
@@ -166,9 +162,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
     public function valid()
     {
 
-        if (strlen($this->container['number']) > 17) {
-            return false;
-        }
         return true;
     }
 
@@ -189,10 +182,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      */
     public function setNumber($number)
     {
-        if (!is_null($number) && (strlen($number) > 17)) {
-            throw new \InvalidArgumentException('invalid length for $number when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifierBankAccount., must be smaller than or equal to 17.');
-        }
-
         $this->container['number'] = $number;
 
         return $this;
@@ -223,6 +212,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -233,6 +223,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -244,6 +235,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -258,6 +250,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentEmbeddedInstrumentIdentifier
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

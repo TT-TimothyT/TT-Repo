@@ -157,14 +157,6 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['amount']) && (strlen($this->container['amount']) > 13)) {
-            $invalid_properties[] = "invalid value for 'amount', the character length must be smaller than or equal to 13.";
-        }
-
-        if (!is_null($this->container['rate']) && (strlen($this->container['rate']) > 6)) {
-            $invalid_properties[] = "invalid value for 'rate', the character length must be smaller than or equal to 6.";
-        }
-
         return $invalid_properties;
     }
 
@@ -177,12 +169,6 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
     public function valid()
     {
 
-        if (strlen($this->container['amount']) > 13) {
-            return false;
-        }
-        if (strlen($this->container['rate']) > 6) {
-            return false;
-        }
         return true;
     }
 
@@ -198,7 +184,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
 
     /**
      * Sets type
-     * @param string $type Indicates the type of tax data for the _taxDetails_ object.  Possible values:  - `alternate` - `local` - `national` - `vat` - `other`  For processor-specific details, see the `alternate_tax_amount`, `local_tax`, `national_tax` or `vat_tax_amount` field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
+     * @param string $type Indicates the type of tax data for the _taxDetails_ object.  Possible values:  - `alternate` - `local` - `national` - `vat` - `other` - `green`  For processor-specific details, see the `alternate_tax_amount`, `local_tax`, `national_tax` or `vat_tax_amount` field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
      * @return $this
      */
     public function setType($type)
@@ -219,15 +205,11 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
 
     /**
      * Sets amount
-     * @param string $amount Indicates the amount of tax based on the `type` field as described in the table below:  | type      | type description | | ------------- |:-------------:| | `alternate` | Total amount of alternate tax for the order. | | `local`     | Sales tax for the order. | | `national`  | National tax for the order. | | `vat`       | Total amount of value added tax (VAT) included in the order. | | `other`     | Other tax. |
+     * @param string $amount Indicates the amount of tax based on the `type` field as described in the table below:  | type      | type description | | ------------- |:-------------:| | `alternate` | Total amount of alternate tax for the order. | | `local`     | Sales tax for the order. | | `national`  | National tax for the order. | | `vat`       | Total amount of value added tax (VAT) included in the order. | | `other`     | Other tax. | | `green`     | Green tax amount for Korean Processing. |
      * @return $this
      */
     public function setAmount($amount)
     {
-        if (!is_null($amount) && (strlen($amount) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $amount when calling Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails., must be smaller than or equal to 13.');
-        }
-
         $this->container['amount'] = $amount;
 
         return $this;
@@ -249,10 +231,6 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
      */
     public function setRate($rate)
     {
-        if (!is_null($rate) && (strlen($rate) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $rate when calling Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails., must be smaller than or equal to 6.');
-        }
-
         $this->container['rate'] = $rate;
 
         return $this;
@@ -262,6 +240,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -272,6 +251,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -283,6 +263,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -297,6 +278,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsTaxDetails implements Arra
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

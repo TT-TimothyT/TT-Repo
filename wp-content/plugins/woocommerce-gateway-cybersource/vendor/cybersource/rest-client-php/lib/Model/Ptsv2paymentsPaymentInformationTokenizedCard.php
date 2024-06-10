@@ -63,7 +63,9 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
         'transactionType' => 'string',
         'assuranceLevel' => 'string',
         'storageMethod' => 'string',
-        'securityCode' => 'string'
+        'securityCode' => 'string',
+        'securityCodeIndicator' => 'string',
+        'assuranceMethod' => 'string'
     ];
 
     /**
@@ -80,7 +82,9 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
         'transactionType' => null,
         'assuranceLevel' => null,
         'storageMethod' => null,
-        'securityCode' => null
+        'securityCode' => null,
+        'securityCodeIndicator' => null,
+        'assuranceMethod' => null
     ];
 
     public static function swaggerTypes()
@@ -107,7 +111,9 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
         'transactionType' => 'transactionType',
         'assuranceLevel' => 'assuranceLevel',
         'storageMethod' => 'storageMethod',
-        'securityCode' => 'securityCode'
+        'securityCode' => 'securityCode',
+        'securityCodeIndicator' => 'securityCodeIndicator',
+        'assuranceMethod' => 'assuranceMethod'
     ];
 
 
@@ -125,7 +131,9 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
         'transactionType' => 'setTransactionType',
         'assuranceLevel' => 'setAssuranceLevel',
         'storageMethod' => 'setStorageMethod',
-        'securityCode' => 'setSecurityCode'
+        'securityCode' => 'setSecurityCode',
+        'securityCodeIndicator' => 'setSecurityCodeIndicator',
+        'assuranceMethod' => 'setAssuranceMethod'
     ];
 
 
@@ -143,7 +151,9 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
         'transactionType' => 'getTransactionType',
         'assuranceLevel' => 'getAssuranceLevel',
         'storageMethod' => 'getStorageMethod',
-        'securityCode' => 'getSecurityCode'
+        'securityCode' => 'getSecurityCode',
+        'securityCodeIndicator' => 'getSecurityCodeIndicator',
+        'assuranceMethod' => 'getAssuranceMethod'
     ];
 
     public static function attributeMap()
@@ -187,6 +197,8 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
         $this->container['assuranceLevel'] = isset($data['assuranceLevel']) ? $data['assuranceLevel'] : null;
         $this->container['storageMethod'] = isset($data['storageMethod']) ? $data['storageMethod'] : null;
         $this->container['securityCode'] = isset($data['securityCode']) ? $data['securityCode'] : null;
+        $this->container['securityCodeIndicator'] = isset($data['securityCodeIndicator']) ? $data['securityCodeIndicator'] : null;
+        $this->container['assuranceMethod'] = isset($data['assuranceMethod']) ? $data['assuranceMethod'] : null;
     }
 
     /**
@@ -197,42 +209,6 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['number']) && (strlen($this->container['number']) > 20)) {
-            $invalid_properties[] = "invalid value for 'number', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['expirationMonth']) && (strlen($this->container['expirationMonth']) > 2)) {
-            $invalid_properties[] = "invalid value for 'expirationMonth', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['expirationYear']) && (strlen($this->container['expirationYear']) > 4)) {
-            $invalid_properties[] = "invalid value for 'expirationYear', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['cryptogram']) && (strlen($this->container['cryptogram']) > 40)) {
-            $invalid_properties[] = "invalid value for 'cryptogram', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['requestorId']) && (strlen($this->container['requestorId']) > 11)) {
-            $invalid_properties[] = "invalid value for 'requestorId', the character length must be smaller than or equal to 11.";
-        }
-
-        if (!is_null($this->container['transactionType']) && (strlen($this->container['transactionType']) > 1)) {
-            $invalid_properties[] = "invalid value for 'transactionType', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['assuranceLevel']) && (strlen($this->container['assuranceLevel']) > 2)) {
-            $invalid_properties[] = "invalid value for 'assuranceLevel', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['storageMethod']) && (strlen($this->container['storageMethod']) > 3)) {
-            $invalid_properties[] = "invalid value for 'storageMethod', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['securityCode']) && (strlen($this->container['securityCode']) > 4)) {
-            $invalid_properties[] = "invalid value for 'securityCode', the character length must be smaller than or equal to 4.";
-        }
 
         return $invalid_properties;
     }
@@ -246,33 +222,6 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['number']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['expirationMonth']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['expirationYear']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['cryptogram']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['requestorId']) > 11) {
-            return false;
-        }
-        if (strlen($this->container['transactionType']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['assuranceLevel']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['storageMethod']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['securityCode']) > 4) {
-            return false;
-        }
         return true;
     }
 
@@ -288,15 +237,11 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
 
     /**
      * Sets number
-     * @param string $number Customer’s payment network token value.
+     * @param string $number Customer's payment network token value.
      * @return $this
      */
     public function setNumber($number)
     {
-        if (!is_null($number) && (strlen($number) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $number when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 20.');
-        }
-
         $this->container['number'] = $number;
 
         return $this;
@@ -318,10 +263,6 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
      */
     public function setExpirationMonth($expirationMonth)
     {
-        if (!is_null($expirationMonth) && (strlen($expirationMonth) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $expirationMonth when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 2.');
-        }
-
         $this->container['expirationMonth'] = $expirationMonth;
 
         return $this;
@@ -343,10 +284,6 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
      */
     public function setExpirationYear($expirationYear)
     {
-        if (!is_null($expirationYear) && (strlen($expirationYear) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $expirationYear when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['expirationYear'] = $expirationYear;
 
         return $this;
@@ -363,7 +300,7 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
 
     /**
      * Sets type
-     * @param string $type Three-digit value that indicates the card type.  **IMPORTANT** It is strongly recommended that you include the card type field in request messages even if it is optional for your processor and card type. Omitting the card type can cause the transaction to be processed with the wrong card type.  Possible values: - `001`: Visa. For card-present transactions on all processors except SIX, the Visa Electron card type is processed the same way that the Visa debit card is processed. Use card type value `001` for Visa Electron. - `002`: Mastercard, Eurocard[^1], which is a European regional brand of Mastercard. - `003`: American Express - `004`: Discover - `005`: Diners Club - `006`: Carte Blanche[^1] - `007`: JCB[^1] - `014`: Enroute[^1] - `021`: JAL[^1] - `024`: Maestro (UK Domestic)[^1] - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types. - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types. - `034`: Dankort[^1] - `036`: Cartes Bancaires[^1] - `037`: Carta Si[^1] - `039`: Encoded account number[^1] - `040`: UATP[^1] - `042`: Maestro (International)[^1] - `050`: Hipercard[^2,3] - `051`: Aura - `054`: Elo[^3] - `062`: China UnionPay  [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit. [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5. [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit.  #### Used by **Authorization** Required for Carte Blanche and JCB. Optional for all other card types.  #### Card Present reply This field is included in the reply message when the client software that is installed on the POS terminal uses the token management service (TMS) to retrieve tokenized payment details. You must contact customer support to have your account enabled to receive these fields in the credit reply message.  Returned by the Credit service.  This reply field is only supported by the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  #### GPX This field only supports transactions from the following card types: - Visa - Mastercard - AMEX - Discover - Diners - JCB - Union Pay International
+     * @param string $type Three-digit value that indicates the card type.  **IMPORTANT** It is strongly recommended that you include the card type field in request messages even if it is optional for your processor and card type. Omitting the card type can cause the transaction to be processed with the wrong card type.  Possible values: - `001`: Visa. For card-present transactions on all processors except SIX, the Visa Electron card type is processed the same way that the Visa debit card is processed. Use card type value `001` for Visa Electron. - `002`: Mastercard, Eurocard[^1], which is a European regional brand of Mastercard. - `003`: American Express - `004`: Discover - `005`: Diners Club - `006`: Carte Blanche[^1] - `007`: JCB[^1] - `014`: Enroute[^1] - `021`: JAL[^1] - `024`: Maestro (UK Domestic)[^1] - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types. - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types. - `034`: Dankort[^1] - `036`: Cartes Bancaires[^1,4] - `037`: Carta Si[^1] - `039`: Encoded account number[^1] - `040`: UATP[^1] - `042`: Maestro (International)[^1] - `050`: Hipercard[^2,3] - `051`: Aura - `054`: Elo[^3] - `062`: China UnionPay - '070': EFTPOS  [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit. [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5. [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. [^4]: For this card type, you must include the `paymentInformation.card.type` in your request for any payer authentication services.  #### Used by **Authorization** Required for Carte Blanche and JCB. Optional for all other card types.  #### Card Present reply This field is included in the reply message when the client software that is installed on the POS terminal uses the token management service (TMS) to retrieve tokenized payment details. You must contact customer support to have your account enabled to receive these fields in the credit reply message.  Returned by the Credit service.  This reply field is only supported by the following processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  #### Google Pay transactions For PAN-based Google Pay transactions, this field is returned in the API response.  #### GPX This field only supports transactions from the following card types: - Visa - Mastercard - AMEX - Discover - Diners - JCB - Union Pay International
      * @return $this
      */
     public function setType($type)
@@ -384,15 +321,11 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
 
     /**
      * Sets cryptogram
-     * @param string $cryptogram This field is used internally.
+     * @param string $cryptogram This field contains token information.
      * @return $this
      */
     public function setCryptogram($cryptogram)
     {
-        if (!is_null($cryptogram) && (strlen($cryptogram) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $cryptogram when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 40.');
-        }
-
         $this->container['cryptogram'] = $cryptogram;
 
         return $this;
@@ -409,15 +342,11 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
 
     /**
      * Sets requestorId
-     * @param string $requestorId Value that identifies your business and indicates that the cardholder’s account number is tokenized. This value is assigned by the token service provider and is unique within the token service provider’s database.  **Note** This field is supported only for **CyberSource through VisaNet** and **FDC Nashville Global**.  #### PIN debit Optional field for PIN debit credit or PIN debit purchase transactions that use payment network tokens; otherwise, not used.
+     * @param string $requestorId Value that identifies your business and indicates that the cardholder's account number is tokenized. This value is assigned by the token service provider and is unique within the token service provider's database.  **Note** This field is supported only for **CyberSource through VisaNet** and **FDC Nashville Global**.  #### PIN debit Optional field for PIN debit credit or PIN debit purchase transactions that use payment network tokens; otherwise, not used.
      * @return $this
      */
     public function setRequestorId($requestorId)
     {
-        if (!is_null($requestorId) && (strlen($requestorId) > 11)) {
-            throw new \InvalidArgumentException('invalid length for $requestorId when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 11.');
-        }
-
         $this->container['requestorId'] = $requestorId;
 
         return $this;
@@ -434,15 +363,11 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
 
     /**
      * Sets transactionType
-     * @param string $transactionType Type of transaction that provided the token data. This value does not specify the token service provider; it specifies the entity that provided you with information about the token.  Possible value: - `2`: Near-field communication (NFC) transaction. The customer’s mobile device provided the token data for a contactless EMV transaction. For recurring transactions, use this value if the original transaction was a contactless EMV transaction.  **NOTE** No CyberSource through VisaNet acquirers support EMV at this time.  Required field for PIN debit credit or PIN debit purchase transactions that use payment network tokens; otherwise, not used.
+     * @param string $transactionType Type of transaction that provided the token data. This value does not specify the token service provider; it specifies the entity that provided you with information about the token.  Possible value: - `2`: Near-field communication (NFC) transaction. The customer's mobile device provided the token data for a contactless EMV transaction. For recurring transactions, use this value if the original transaction was a contactless EMV transaction.  #### Visa Platform Connect - `1`: For Rupay and In App tokenization. Example: InApp apple pay. - `3`: Card/Credential On File Tokenization.  **NOTE** No CyberSource through VisaNet acquirers support EMV at this time.  Required field for PIN debit credit or PIN debit purchase transactions that use payment network tokens; otherwise, not used.  #### Rupay - `3`: Card/Credential On File Tokenization. - `4`: Tokenizined Transaction. Should be used for Guest Checkout transactions with token.
      * @return $this
      */
     public function setTransactionType($transactionType)
     {
-        if (!is_null($transactionType) && (strlen($transactionType) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $transactionType when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 1.');
-        }
-
         $this->container['transactionType'] = $transactionType;
 
         return $this;
@@ -459,15 +384,11 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
 
     /**
      * Sets assuranceLevel
-     * @param string $assuranceLevel Confidence level of the tokenization. This value is assigned by the token service provider.  **Note** This field is supported only for **CyberSource through VisaNet** and **FDC Nashville Global**.  Returned by PIN debit credit or PIN debit purchase.
+     * @param string $assuranceLevel Confidence level of the tokenization. This value is assigned by the token service provider.  **Note** This field is supported only for **CyberSource through VisaNet** and **FDC Nashville Global**.  Returned by PIN debit credit or PIN debit purchase.  **Note** Merchants supported for **CyberSource through VisaNet**_/_**Visa Platform Connect** are advised not to use this field.
      * @return $this
      */
     public function setAssuranceLevel($assuranceLevel)
     {
-        if (!is_null($assuranceLevel) && (strlen($assuranceLevel) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $assuranceLevel when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 2.');
-        }
-
         $this->container['assuranceLevel'] = $assuranceLevel;
 
         return $this;
@@ -489,10 +410,6 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
      */
     public function setStorageMethod($storageMethod)
     {
-        if (!is_null($storageMethod) && (strlen($storageMethod) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $storageMethod when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 3.');
-        }
-
         $this->container['storageMethod'] = $storageMethod;
 
         return $this;
@@ -514,11 +431,49 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
      */
     public function setSecurityCode($securityCode)
     {
-        if (!is_null($securityCode) && (strlen($securityCode) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $securityCode when calling Ptsv2paymentsPaymentInformationTokenizedCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['securityCode'] = $securityCode;
+
+        return $this;
+    }
+
+    /**
+     * Gets securityCodeIndicator
+     * @return string
+     */
+    public function getSecurityCodeIndicator()
+    {
+        return $this->container['securityCodeIndicator'];
+    }
+
+    /**
+     * Sets securityCodeIndicator
+     * @param string $securityCodeIndicator Indicates whether a CVN code was sent. Possible values:   - `0` (default): CVN service not requested. This default value is used when you do not include      `securityCode` field in the request.  - `1` (default): CVN service requested and supported. This default value is used when you include      `securityCode` field in the request.  - `2`: CVN on credit card is illegible.  - `9`: CVN was not imprinted on credit card.  #### FDMS Nashville Required for American Express cards; otherwise, optional.  #### TSYS Acquiring Solutions Optional if `pointOfSaleInformation.entryMode=keyed`; otherwise, not used.  #### All other processors Optional.
+     * @return $this
+     */
+    public function setSecurityCodeIndicator($securityCodeIndicator)
+    {
+        $this->container['securityCodeIndicator'] = $securityCodeIndicator;
+
+        return $this;
+    }
+
+    /**
+     * Gets assuranceMethod
+     * @return string
+     */
+    public function getAssuranceMethod()
+    {
+        return $this->container['assuranceMethod'];
+    }
+
+    /**
+     * Sets assuranceMethod
+     * @param string $assuranceMethod Confidence level of the tokenization. This value is assigned by the token service provider.  **Note** This field is supported only for **Visa Platform Connect**
+     * @return $this
+     */
+    public function setAssuranceMethod($assuranceMethod)
+    {
+        $this->container['assuranceMethod'] = $assuranceMethod;
 
         return $this;
     }
@@ -527,6 +482,7 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -537,6 +493,7 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -548,6 +505,7 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -562,6 +520,7 @@ class Ptsv2paymentsPaymentInformationTokenizedCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

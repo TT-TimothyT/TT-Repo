@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * InvoicesApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class InvoicesApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class InvoicesApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -98,7 +105,10 @@ class InvoicesApi
      */
     public function createInvoice($createInvoiceRequest)
     {
+        self::$logger->info('CALL TO METHOD createInvoice STARTED');
         list($response, $statusCode, $httpHeader) = $this->createInvoiceWithHttpInfo($createInvoiceRequest);
+        self::$logger->info('CALL TO METHOD createInvoice ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -115,6 +125,7 @@ class InvoicesApi
     {
         // verify the required parameter 'createInvoiceRequest' is set
         if ($createInvoiceRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $createInvoiceRequest when calling createInvoice");
             throw new \InvalidArgumentException('Missing the required parameter $createInvoiceRequest when calling createInvoice');
         }
         // parse inputs
@@ -123,7 +134,7 @@ class InvoicesApi
         $queryParams = [];
         $headerParams = [];
         $formParams = [];
-        $_header_accept = $this->apiClient->selectHeaderAccept(['application/hal+json;charset=utf-8']);
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json', 'application/hal+json', 'application/json;charset=utf-8', 'application/hal+json;charset=utf-8']);
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
@@ -134,6 +145,9 @@ class InvoicesApi
         if (isset($createInvoiceRequest)) {
             $_tempBody = $createInvoiceRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\CreateInvoiceRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -141,6 +155,20 @@ class InvoicesApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\InvoicingV2InvoicesPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -152,6 +180,8 @@ class InvoicesApi
                 '\CyberSource\Model\InvoicingV2InvoicesPost201Response',
                 '/invoicing/v2/invoices'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\InvoicingV2InvoicesPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -178,6 +208,7 @@ class InvoicesApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -195,7 +226,10 @@ class InvoicesApi
      */
     public function getAllInvoices($offset, $limit, $status = null)
     {
+        self::$logger->info('CALL TO METHOD getAllInvoices STARTED');
         list($response, $statusCode, $httpHeader) = $this->getAllInvoicesWithHttpInfo($offset, $limit, $status);
+        self::$logger->info('CALL TO METHOD getAllInvoices ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -214,10 +248,12 @@ class InvoicesApi
     {
         // verify the required parameter 'offset' is set
         if ($offset === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $offset when calling getAllInvoices");
             throw new \InvalidArgumentException('Missing the required parameter $offset when calling getAllInvoices');
         }
         // verify the required parameter 'limit' is set
         if ($limit === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $limit when calling getAllInvoices");
             throw new \InvalidArgumentException('Missing the required parameter $limit when calling getAllInvoices');
         }
         // parse inputs
@@ -226,7 +262,7 @@ class InvoicesApi
         $queryParams = [];
         $headerParams = [];
         $formParams = [];
-        $_header_accept = $this->apiClient->selectHeaderAccept(['application/hal+json;charset=utf-8']);
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json', 'application/hal+json', 'application/json;charset=utf-8', 'application/hal+json;charset=utf-8']);
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
@@ -244,6 +280,9 @@ class InvoicesApi
         if ($status !== null) {
             $queryParams['status'] = $this->apiClient->getSerializer()->toQueryValue($status);
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -251,6 +290,23 @@ class InvoicesApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\InvoicingV2InvoicesAllGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -262,6 +318,8 @@ class InvoicesApi
                 '\CyberSource\Model\InvoicingV2InvoicesAllGet200Response',
                 '/invoicing/v2/invoices'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\InvoicingV2InvoicesAllGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -284,6 +342,7 @@ class InvoicesApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -299,7 +358,10 @@ class InvoicesApi
      */
     public function getInvoice($id)
     {
+        self::$logger->info('CALL TO METHOD getInvoice STARTED');
         list($response, $statusCode, $httpHeader) = $this->getInvoiceWithHttpInfo($id);
+        self::$logger->info('CALL TO METHOD getInvoice ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -316,6 +378,7 @@ class InvoicesApi
     {
         // verify the required parameter 'id' is set
         if ($id === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $id when calling getInvoice");
             throw new \InvalidArgumentException('Missing the required parameter $id when calling getInvoice');
         }
         // parse inputs
@@ -324,7 +387,7 @@ class InvoicesApi
         $queryParams = [];
         $headerParams = [];
         $formParams = [];
-        $_header_accept = $this->apiClient->selectHeaderAccept(['application/hal+json;charset=utf-8']);
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json', 'application/hal+json', 'application/json;charset=utf-8', 'application/hal+json;charset=utf-8']);
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
@@ -338,6 +401,9 @@ class InvoicesApi
                 $resourcePath
             );
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -345,6 +411,20 @@ class InvoicesApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\InvoicingV2InvoicesGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -356,6 +436,8 @@ class InvoicesApi
                 '\CyberSource\Model\InvoicingV2InvoicesGet200Response',
                 '/invoicing/v2/invoices/{id}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\InvoicingV2InvoicesGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -378,6 +460,7 @@ class InvoicesApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -393,7 +476,10 @@ class InvoicesApi
      */
     public function performCancelAction($id)
     {
+        self::$logger->info('CALL TO METHOD performCancelAction STARTED');
         list($response, $statusCode, $httpHeader) = $this->performCancelActionWithHttpInfo($id);
+        self::$logger->info('CALL TO METHOD performCancelAction ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -410,6 +496,7 @@ class InvoicesApi
     {
         // verify the required parameter 'id' is set
         if ($id === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $id when calling performCancelAction");
             throw new \InvalidArgumentException('Missing the required parameter $id when calling performCancelAction');
         }
         // parse inputs
@@ -418,7 +505,7 @@ class InvoicesApi
         $queryParams = [];
         $headerParams = [];
         $formParams = [];
-        $_header_accept = $this->apiClient->selectHeaderAccept(['application/hal+json;charset=utf-8']);
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json', 'application/hal+json', 'application/json;charset=utf-8', 'application/hal+json;charset=utf-8']);
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
@@ -432,6 +519,9 @@ class InvoicesApi
                 $resourcePath
             );
         }
+        if ('POST' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -439,6 +529,20 @@ class InvoicesApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\InvoicingV2InvoicesPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -450,6 +554,8 @@ class InvoicesApi
                 '\CyberSource\Model\InvoicingV2InvoicesPost201Response',
                 '/invoicing/v2/invoices/{id}/cancelation'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\InvoicingV2InvoicesPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -472,6 +578,7 @@ class InvoicesApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -487,7 +594,10 @@ class InvoicesApi
      */
     public function performSendAction($id)
     {
+        self::$logger->info('CALL TO METHOD performSendAction STARTED');
         list($response, $statusCode, $httpHeader) = $this->performSendActionWithHttpInfo($id);
+        self::$logger->info('CALL TO METHOD performSendAction ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -504,6 +614,7 @@ class InvoicesApi
     {
         // verify the required parameter 'id' is set
         if ($id === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $id when calling performSendAction");
             throw new \InvalidArgumentException('Missing the required parameter $id when calling performSendAction');
         }
         // parse inputs
@@ -512,7 +623,7 @@ class InvoicesApi
         $queryParams = [];
         $headerParams = [];
         $formParams = [];
-        $_header_accept = $this->apiClient->selectHeaderAccept(['application/hal+json;charset=utf-8']);
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json', 'application/hal+json', 'application/json;charset=utf-8', 'application/hal+json;charset=utf-8']);
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
@@ -526,6 +637,9 @@ class InvoicesApi
                 $resourcePath
             );
         }
+        if ('POST' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -533,6 +647,20 @@ class InvoicesApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\InvoicingV2InvoicesPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -544,6 +672,8 @@ class InvoicesApi
                 '\CyberSource\Model\InvoicingV2InvoicesPost201Response',
                 '/invoicing/v2/invoices/{id}/delivery'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\InvoicingV2InvoicesPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -566,6 +696,7 @@ class InvoicesApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -582,7 +713,10 @@ class InvoicesApi
      */
     public function updateInvoice($id, $updateInvoiceRequest)
     {
+        self::$logger->info('CALL TO METHOD updateInvoice STARTED');
         list($response, $statusCode, $httpHeader) = $this->updateInvoiceWithHttpInfo($id, $updateInvoiceRequest);
+        self::$logger->info('CALL TO METHOD updateInvoice ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -600,10 +734,12 @@ class InvoicesApi
     {
         // verify the required parameter 'id' is set
         if ($id === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $id when calling updateInvoice");
             throw new \InvalidArgumentException('Missing the required parameter $id when calling updateInvoice');
         }
         // verify the required parameter 'updateInvoiceRequest' is set
         if ($updateInvoiceRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $updateInvoiceRequest when calling updateInvoice");
             throw new \InvalidArgumentException('Missing the required parameter $updateInvoiceRequest when calling updateInvoice');
         }
         // parse inputs
@@ -612,7 +748,7 @@ class InvoicesApi
         $queryParams = [];
         $headerParams = [];
         $formParams = [];
-        $_header_accept = $this->apiClient->selectHeaderAccept(['application/hal+json;charset=utf-8']);
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json', 'application/hal+json', 'application/json;charset=utf-8', 'application/hal+json;charset=utf-8']);
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
@@ -631,6 +767,9 @@ class InvoicesApi
         if (isset($updateInvoiceRequest)) {
             $_tempBody = $updateInvoiceRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\UpdateInvoiceRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -638,6 +777,20 @@ class InvoicesApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : PUT $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\InvoicingV2InvoicesPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -649,6 +802,8 @@ class InvoicesApi
                 '\CyberSource\Model\InvoicingV2InvoicesPost201Response',
                 '/invoicing/v2/invoices/{id}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\InvoicingV2InvoicesPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -671,6 +826,7 @@ class InvoicesApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

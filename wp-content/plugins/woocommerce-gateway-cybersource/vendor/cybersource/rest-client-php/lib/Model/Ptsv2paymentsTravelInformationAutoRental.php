@@ -390,154 +390,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['customerName']) && (strlen($this->container['customerName']) > 40)) {
-            $invalid_properties[] = "invalid value for 'customerName', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['vehicleClass']) && (strlen($this->container['vehicleClass']) > 4)) {
-            $invalid_properties[] = "invalid value for 'vehicleClass', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['distanceTravelled']) && (strlen($this->container['distanceTravelled']) > 5)) {
-            $invalid_properties[] = "invalid value for 'distanceTravelled', the character length must be smaller than or equal to 5.";
-        }
-
-        if (!is_null($this->container['distanceUnit']) && (strlen($this->container['distanceUnit']) > 1)) {
-            $invalid_properties[] = "invalid value for 'distanceUnit', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['returnDateTime']) && (strlen($this->container['returnDateTime']) > 21)) {
-            $invalid_properties[] = "invalid value for 'returnDateTime', the character length must be smaller than or equal to 21.";
-        }
-
-        if (!is_null($this->container['rentalDateTime']) && (strlen($this->container['rentalDateTime']) > 21)) {
-            $invalid_properties[] = "invalid value for 'rentalDateTime', the character length must be smaller than or equal to 21.";
-        }
-
-        if (!is_null($this->container['maxFreeDistance']) && (strlen($this->container['maxFreeDistance']) > 4)) {
-            $invalid_properties[] = "invalid value for 'maxFreeDistance', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['programCode']) && (strlen($this->container['programCode']) > 2)) {
-            $invalid_properties[] = "invalid value for 'programCode', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['agreementNumber']) && (strlen($this->container['agreementNumber']) > 25)) {
-            $invalid_properties[] = "invalid value for 'agreementNumber', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['odometerReading']) && (strlen($this->container['odometerReading']) > 8)) {
-            $invalid_properties[] = "invalid value for 'odometerReading', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['vehicleIdentificationNumber']) && (strlen($this->container['vehicleIdentificationNumber']) > 20)) {
-            $invalid_properties[] = "invalid value for 'vehicleIdentificationNumber', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['companyId']) && (strlen($this->container['companyId']) > 12)) {
-            $invalid_properties[] = "invalid value for 'companyId', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['numberOfAdditionalDrivers']) && (strlen($this->container['numberOfAdditionalDrivers']) > 1)) {
-            $invalid_properties[] = "invalid value for 'numberOfAdditionalDrivers', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['driverAge']) && (strlen($this->container['driverAge']) > 3)) {
-            $invalid_properties[] = "invalid value for 'driverAge', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['specialProgramCode']) && (strlen($this->container['specialProgramCode']) > 2)) {
-            $invalid_properties[] = "invalid value for 'specialProgramCode', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['vehicleMake']) && (strlen($this->container['vehicleMake']) > 10)) {
-            $invalid_properties[] = "invalid value for 'vehicleMake', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['vehicleModel']) && (strlen($this->container['vehicleModel']) > 10)) {
-            $invalid_properties[] = "invalid value for 'vehicleModel', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['timePeriod']) && (strlen($this->container['timePeriod']) > 7)) {
-            $invalid_properties[] = "invalid value for 'timePeriod', the character length must be smaller than or equal to 7.";
-        }
-
-        if (!is_null($this->container['commodityCode']) && (strlen($this->container['commodityCode']) > 15)) {
-            $invalid_properties[] = "invalid value for 'commodityCode', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['customerServicePhoneNumber']) && (strlen($this->container['customerServicePhoneNumber']) > 17)) {
-            $invalid_properties[] = "invalid value for 'customerServicePhoneNumber', the character length must be smaller than or equal to 17.";
-        }
-
-        if (!is_null($this->container['insuranceAmount']) && (strlen($this->container['insuranceAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'insuranceAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['oneWayDropOffAmount']) && (strlen($this->container['oneWayDropOffAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'oneWayDropOffAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['adjustedAmountIndicator']) && (strlen($this->container['adjustedAmountIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'adjustedAmountIndicator', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['adjustedAmount']) && (strlen($this->container['adjustedAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'adjustedAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['fuelCharges']) && (strlen($this->container['fuelCharges']) > 12)) {
-            $invalid_properties[] = "invalid value for 'fuelCharges', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['weeklyRentalRate']) && (strlen($this->container['weeklyRentalRate']) > 12)) {
-            $invalid_properties[] = "invalid value for 'weeklyRentalRate', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['dailyRentalRate']) && (strlen($this->container['dailyRentalRate']) > 12)) {
-            $invalid_properties[] = "invalid value for 'dailyRentalRate', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['ratePerMile']) && (strlen($this->container['ratePerMile']) > 12)) {
-            $invalid_properties[] = "invalid value for 'ratePerMile', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['mileageCharge']) && (strlen($this->container['mileageCharge']) > 12)) {
-            $invalid_properties[] = "invalid value for 'mileageCharge', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['extraMileageCharge']) && (strlen($this->container['extraMileageCharge']) > 12)) {
-            $invalid_properties[] = "invalid value for 'extraMileageCharge', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['lateFeeAmount']) && (strlen($this->container['lateFeeAmount']) > 12)) {
-            $invalid_properties[] = "invalid value for 'lateFeeAmount', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['towingCharge']) && (strlen($this->container['towingCharge']) > 4)) {
-            $invalid_properties[] = "invalid value for 'towingCharge', the character length must be smaller than or equal to 4.";
-        }
-
-        if (!is_null($this->container['extraCharge']) && (strlen($this->container['extraCharge']) > 12)) {
-            $invalid_properties[] = "invalid value for 'extraCharge', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['gpsCharge']) && (strlen($this->container['gpsCharge']) > 12)) {
-            $invalid_properties[] = "invalid value for 'gpsCharge', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['phoneCharge']) && (strlen($this->container['phoneCharge']) > 12)) {
-            $invalid_properties[] = "invalid value for 'phoneCharge', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['parkingViolationCharge']) && (strlen($this->container['parkingViolationCharge']) > 12)) {
-            $invalid_properties[] = "invalid value for 'parkingViolationCharge', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['otherCharges']) && (strlen($this->container['otherCharges']) > 12)) {
-            $invalid_properties[] = "invalid value for 'otherCharges', the character length must be smaller than or equal to 12.";
-        }
-
         return $invalid_properties;
     }
 
@@ -550,117 +402,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['customerName']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['vehicleClass']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['distanceTravelled']) > 5) {
-            return false;
-        }
-        if (strlen($this->container['distanceUnit']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['returnDateTime']) > 21) {
-            return false;
-        }
-        if (strlen($this->container['rentalDateTime']) > 21) {
-            return false;
-        }
-        if (strlen($this->container['maxFreeDistance']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['programCode']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['agreementNumber']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['odometerReading']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['vehicleIdentificationNumber']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['companyId']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['numberOfAdditionalDrivers']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['driverAge']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['specialProgramCode']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['vehicleMake']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['vehicleModel']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['timePeriod']) > 7) {
-            return false;
-        }
-        if (strlen($this->container['commodityCode']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['customerServicePhoneNumber']) > 17) {
-            return false;
-        }
-        if (strlen($this->container['insuranceAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['oneWayDropOffAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['adjustedAmountIndicator']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['adjustedAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['fuelCharges']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['weeklyRentalRate']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['dailyRentalRate']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['ratePerMile']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['mileageCharge']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['extraMileageCharge']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['lateFeeAmount']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['towingCharge']) > 4) {
-            return false;
-        }
-        if (strlen($this->container['extraCharge']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['gpsCharge']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['phoneCharge']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['parkingViolationCharge']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['otherCharges']) > 12) {
-            return false;
-        }
         return true;
     }
 
@@ -702,10 +443,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setCustomerName($customerName)
     {
-        if (!is_null($customerName) && (strlen($customerName) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $customerName when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 40.');
-        }
-
         $this->container['customerName'] = $customerName;
 
         return $this;
@@ -727,10 +464,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setVehicleClass($vehicleClass)
     {
-        if (!is_null($vehicleClass) && (strlen($vehicleClass) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $vehicleClass when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 4.');
-        }
-
         $this->container['vehicleClass'] = $vehicleClass;
 
         return $this;
@@ -752,10 +485,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setDistanceTravelled($distanceTravelled)
     {
-        if (!is_null($distanceTravelled) && (strlen($distanceTravelled) > 5)) {
-            throw new \InvalidArgumentException('invalid length for $distanceTravelled when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 5.');
-        }
-
         $this->container['distanceTravelled'] = $distanceTravelled;
 
         return $this;
@@ -772,15 +501,11 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
 
     /**
      * Sets distanceUnit
-     * @param string $distanceUnit Miles/Kilometers Indicator shows whether the “miles” fields are expressed in miles or kilometers.  Allowed values: - `K` - Kilometers - `M` - Miles
+     * @param string $distanceUnit Miles/Kilometers Indicator shows whether the \"miles\" fields are expressed in miles or kilometers.  Allowed values: - `K` - Kilometers - `M` - Miles
      * @return $this
      */
     public function setDistanceUnit($distanceUnit)
     {
-        if (!is_null($distanceUnit) && (strlen($distanceUnit) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $distanceUnit when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 1.');
-        }
-
         $this->container['distanceUnit'] = $distanceUnit;
 
         return $this;
@@ -802,10 +527,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setReturnDateTime($returnDateTime)
     {
-        if (!is_null($returnDateTime) && (strlen($returnDateTime) > 21)) {
-            throw new \InvalidArgumentException('invalid length for $returnDateTime when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 21.');
-        }
-
         $this->container['returnDateTime'] = $returnDateTime;
 
         return $this;
@@ -827,10 +548,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setRentalDateTime($rentalDateTime)
     {
-        if (!is_null($rentalDateTime) && (strlen($rentalDateTime) > 21)) {
-            throw new \InvalidArgumentException('invalid length for $rentalDateTime when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 21.');
-        }
-
         $this->container['rentalDateTime'] = $rentalDateTime;
 
         return $this;
@@ -852,10 +569,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setMaxFreeDistance($maxFreeDistance)
     {
-        if (!is_null($maxFreeDistance) && (strlen($maxFreeDistance) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $maxFreeDistance when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 4.');
-        }
-
         $this->container['maxFreeDistance'] = $maxFreeDistance;
 
         return $this;
@@ -893,15 +606,11 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
 
     /**
      * Sets programCode
-     * @param string $programCode Used to identify special circumstances applicable to the Card Transaction or Cardholder, such as \"renter” or ”show”.  This code is `2 digit` value agreed by Merchant and processor.
+     * @param string $programCode Used to identify special circumstances applicable to the Card Transaction or Cardholder, such as \"renter\" or \"show\".  This code is `2 digit` value agreed by Merchant and processor.
      * @return $this
      */
     public function setProgramCode($programCode)
     {
-        if (!is_null($programCode) && (strlen($programCode) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $programCode when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 2.');
-        }
-
         $this->container['programCode'] = $programCode;
 
         return $this;
@@ -960,15 +669,11 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
 
     /**
      * Sets agreementNumber
-     * @param string $agreementNumber Auto rental agency’s agreement (invoice) number provided to the customer. It is used to trace any inquiries about transactions. This field is supported for Visa, MasterCard, and American Express. This Merchant-defined value, which may be composed of any combination of characters and/or numerals, may become part of the descriptive bill on the Cardmember's statement.
+     * @param string $agreementNumber Auto rental agency's agreement (invoice) number provided to the customer. It is used to trace any inquiries about transactions. This field is supported for Visa, MasterCard, and American Express. This Merchant-defined value, which may be composed of any combination of characters and/or numerals, may become part of the descriptive bill on the Cardmember's statement.
      * @return $this
      */
     public function setAgreementNumber($agreementNumber)
     {
-        if (!is_null($agreementNumber) && (strlen($agreementNumber) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $agreementNumber when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 25.');
-        }
-
         $this->container['agreementNumber'] = $agreementNumber;
 
         return $this;
@@ -990,10 +695,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setOdometerReading($odometerReading)
     {
-        if (!is_null($odometerReading) && (strlen($odometerReading) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $odometerReading when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 8.');
-        }
-
         $this->container['odometerReading'] = $odometerReading;
 
         return $this;
@@ -1015,10 +716,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setVehicleIdentificationNumber($vehicleIdentificationNumber)
     {
-        if (!is_null($vehicleIdentificationNumber) && (strlen($vehicleIdentificationNumber) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $vehicleIdentificationNumber when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 20.');
-        }
-
         $this->container['vehicleIdentificationNumber'] = $vehicleIdentificationNumber;
 
         return $this;
@@ -1040,10 +737,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setCompanyId($companyId)
     {
-        if (!is_null($companyId) && (strlen($companyId) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $companyId when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['companyId'] = $companyId;
 
         return $this;
@@ -1065,10 +758,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setNumberOfAdditionalDrivers($numberOfAdditionalDrivers)
     {
-        if (!is_null($numberOfAdditionalDrivers) && (strlen($numberOfAdditionalDrivers) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $numberOfAdditionalDrivers when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 1.');
-        }
-
         $this->container['numberOfAdditionalDrivers'] = $numberOfAdditionalDrivers;
 
         return $this;
@@ -1090,10 +779,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setDriverAge($driverAge)
     {
-        if (!is_null($driverAge) && (strlen($driverAge) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $driverAge when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 3.');
-        }
-
         $this->container['driverAge'] = $driverAge;
 
         return $this;
@@ -1110,15 +795,11 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
 
     /**
      * Sets specialProgramCode
-     * @param string $specialProgramCode Program code used to identify special circumstances, such as “frequent renter” or “no show” status for the renter. Possible values: - `0`: not applicable (default) - `1`: frequent renter - `2`: no show  For authorizations, this field is supported only for Visa.  For captures, this field is supported for Visa, MasterCard, and American Express.  Code for special programs applicable to the Card Transaction or the Cardholder.
+     * @param string $specialProgramCode Program code used to identify special circumstances, such as \"frequent renter\" or \"no show\" status for the renter. Possible values: - `0`: not applicable (default) - `1`: frequent renter - `2`: no show  For authorizations, this field is supported only for Visa.  For captures, this field is supported for Visa, MasterCard, and American Express.  Code for special programs applicable to the Card Transaction or the Cardholder.
      * @return $this
      */
     public function setSpecialProgramCode($specialProgramCode)
     {
-        if (!is_null($specialProgramCode) && (strlen($specialProgramCode) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $specialProgramCode when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 2.');
-        }
-
         $this->container['specialProgramCode'] = $specialProgramCode;
 
         return $this;
@@ -1140,10 +821,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setVehicleMake($vehicleMake)
     {
-        if (!is_null($vehicleMake) && (strlen($vehicleMake) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $vehicleMake when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 10.');
-        }
-
         $this->container['vehicleMake'] = $vehicleMake;
 
         return $this;
@@ -1165,10 +842,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setVehicleModel($vehicleModel)
     {
-        if (!is_null($vehicleModel) && (strlen($vehicleModel) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $vehicleModel when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 10.');
-        }
-
         $this->container['vehicleModel'] = $vehicleModel;
 
         return $this;
@@ -1190,10 +863,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setTimePeriod($timePeriod)
     {
-        if (!is_null($timePeriod) && (strlen($timePeriod) > 7)) {
-            throw new \InvalidArgumentException('invalid length for $timePeriod when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 7.');
-        }
-
         $this->container['timePeriod'] = $timePeriod;
 
         return $this;
@@ -1215,10 +884,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setCommodityCode($commodityCode)
     {
-        if (!is_null($commodityCode) && (strlen($commodityCode) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $commodityCode when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 15.');
-        }
-
         $this->container['commodityCode'] = $commodityCode;
 
         return $this;
@@ -1240,10 +905,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setCustomerServicePhoneNumber($customerServicePhoneNumber)
     {
-        if (!is_null($customerServicePhoneNumber) && (strlen($customerServicePhoneNumber) > 17)) {
-            throw new \InvalidArgumentException('invalid length for $customerServicePhoneNumber when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 17.');
-        }
-
         $this->container['customerServicePhoneNumber'] = $customerServicePhoneNumber;
 
         return $this;
@@ -1286,10 +947,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setInsuranceAmount($insuranceAmount)
     {
-        if (!is_null($insuranceAmount) && (strlen($insuranceAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $insuranceAmount when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['insuranceAmount'] = $insuranceAmount;
 
         return $this;
@@ -1311,10 +968,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setOneWayDropOffAmount($oneWayDropOffAmount)
     {
-        if (!is_null($oneWayDropOffAmount) && (strlen($oneWayDropOffAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $oneWayDropOffAmount when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['oneWayDropOffAmount'] = $oneWayDropOffAmount;
 
         return $this;
@@ -1336,10 +989,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setAdjustedAmountIndicator($adjustedAmountIndicator)
     {
-        if (!is_null($adjustedAmountIndicator) && (strlen($adjustedAmountIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $adjustedAmountIndicator when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 1.');
-        }
-
         $this->container['adjustedAmountIndicator'] = $adjustedAmountIndicator;
 
         return $this;
@@ -1361,10 +1010,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setAdjustedAmount($adjustedAmount)
     {
-        if (!is_null($adjustedAmount) && (strlen($adjustedAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $adjustedAmount when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['adjustedAmount'] = $adjustedAmount;
 
         return $this;
@@ -1386,10 +1031,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setFuelCharges($fuelCharges)
     {
-        if (!is_null($fuelCharges) && (strlen($fuelCharges) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $fuelCharges when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['fuelCharges'] = $fuelCharges;
 
         return $this;
@@ -1411,10 +1052,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setWeeklyRentalRate($weeklyRentalRate)
     {
-        if (!is_null($weeklyRentalRate) && (strlen($weeklyRentalRate) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $weeklyRentalRate when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['weeklyRentalRate'] = $weeklyRentalRate;
 
         return $this;
@@ -1436,10 +1073,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setDailyRentalRate($dailyRentalRate)
     {
-        if (!is_null($dailyRentalRate) && (strlen($dailyRentalRate) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $dailyRentalRate when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['dailyRentalRate'] = $dailyRentalRate;
 
         return $this;
@@ -1461,10 +1094,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setRatePerMile($ratePerMile)
     {
-        if (!is_null($ratePerMile) && (strlen($ratePerMile) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $ratePerMile when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['ratePerMile'] = $ratePerMile;
 
         return $this;
@@ -1486,10 +1115,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setMileageCharge($mileageCharge)
     {
-        if (!is_null($mileageCharge) && (strlen($mileageCharge) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $mileageCharge when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['mileageCharge'] = $mileageCharge;
 
         return $this;
@@ -1511,10 +1136,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setExtraMileageCharge($extraMileageCharge)
     {
-        if (!is_null($extraMileageCharge) && (strlen($extraMileageCharge) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $extraMileageCharge when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['extraMileageCharge'] = $extraMileageCharge;
 
         return $this;
@@ -1536,10 +1157,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setLateFeeAmount($lateFeeAmount)
     {
-        if (!is_null($lateFeeAmount) && (strlen($lateFeeAmount) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $lateFeeAmount when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['lateFeeAmount'] = $lateFeeAmount;
 
         return $this;
@@ -1561,10 +1178,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setTowingCharge($towingCharge)
     {
-        if (!is_null($towingCharge) && (strlen($towingCharge) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $towingCharge when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 4.');
-        }
-
         $this->container['towingCharge'] = $towingCharge;
 
         return $this;
@@ -1586,10 +1199,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setExtraCharge($extraCharge)
     {
-        if (!is_null($extraCharge) && (strlen($extraCharge) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $extraCharge when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['extraCharge'] = $extraCharge;
 
         return $this;
@@ -1611,10 +1220,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setGpsCharge($gpsCharge)
     {
-        if (!is_null($gpsCharge) && (strlen($gpsCharge) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $gpsCharge when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['gpsCharge'] = $gpsCharge;
 
         return $this;
@@ -1636,10 +1241,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setPhoneCharge($phoneCharge)
     {
-        if (!is_null($phoneCharge) && (strlen($phoneCharge) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $phoneCharge when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['phoneCharge'] = $phoneCharge;
 
         return $this;
@@ -1661,10 +1262,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setParkingViolationCharge($parkingViolationCharge)
     {
-        if (!is_null($parkingViolationCharge) && (strlen($parkingViolationCharge) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $parkingViolationCharge when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['parkingViolationCharge'] = $parkingViolationCharge;
 
         return $this;
@@ -1686,10 +1283,6 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      */
     public function setOtherCharges($otherCharges)
     {
-        if (!is_null($otherCharges) && (strlen($otherCharges) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $otherCharges when calling Ptsv2paymentsTravelInformationAutoRental., must be smaller than or equal to 12.');
-        }
-
         $this->container['otherCharges'] = $otherCharges;
 
         return $this;
@@ -1699,6 +1292,7 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -1709,6 +1303,7 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -1720,6 +1315,7 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1734,6 +1330,7 @@ class Ptsv2paymentsTravelInformationAutoRental implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

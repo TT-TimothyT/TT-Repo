@@ -156,10 +156,6 @@ class PtsV2PaymentsVoidsPost201ResponseVoidAmountDetails implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['currency']) && (strlen($this->container['currency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 3.";
-        }
-
         return $invalid_properties;
     }
 
@@ -172,9 +168,6 @@ class PtsV2PaymentsVoidsPost201ResponseVoidAmountDetails implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['currency']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -237,10 +230,6 @@ class PtsV2PaymentsVoidsPost201ResponseVoidAmountDetails implements ArrayAccess
      */
     public function setCurrency($currency)
     {
-        if (!is_null($currency) && (strlen($currency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling PtsV2PaymentsVoidsPost201ResponseVoidAmountDetails., must be smaller than or equal to 3.');
-        }
-
         $this->container['currency'] = $currency;
 
         return $this;
@@ -250,6 +239,7 @@ class PtsV2PaymentsVoidsPost201ResponseVoidAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -260,6 +250,7 @@ class PtsV2PaymentsVoidsPost201ResponseVoidAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -271,6 +262,7 @@ class PtsV2PaymentsVoidsPost201ResponseVoidAmountDetails implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -285,6 +277,7 @@ class PtsV2PaymentsVoidsPost201ResponseVoidAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

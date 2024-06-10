@@ -17,15 +17,17 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
 
+use SkyVerge\WooCommerce\Cybersource\API\Helper;
+use SkyVerge\WooCommerce\Cybersource\Gateway\Credit_Card;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -36,12 +38,8 @@ defined( 'ABSPATH' ) or exit;
  */
 class Frontend {
 
-
-	/** @var string the staging JS URL */
-	const URL_STAGING = 'https://songbirdstag.cardinalcommerce.com/edge/v1/songbird.js';
-
-	/** @var string the production JS URL */
-	const URL_PRODUCTION = 'https://songbird.cardinalcommerce.com/edge/v1/songbird.js';
+	/** @var string 3D Secure script handle */
+	public const THREED_SECURE_SCRIPT_HANDLE = 'wc-cybersource-threed-secure';
 
 
 	/** @var ThreeD_Secure 3D Secure handler */
@@ -69,18 +67,20 @@ class Frontend {
 	 *
 	 * @since 2.3.0
 	 */
-	private function add_hooks() {
+	private function add_hooks(): void {
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 
-		add_action( 'wc_' . Plugin::CREDIT_CARD_GATEWAY_ID . '_payment_form_end',   array( $this, 'render_js' ), 5 );
+		add_action( 'wc_' . Plugin::CREDIT_CARD_GATEWAY_ID . '_payment_form_end', [ $this, 'render_js' ], 5 );
 
-		add_action( 'wc_' . Plugin::CREDIT_CARD_GATEWAY_ID . '_payment_form_payment_method_html', array( $this, 'add_token_data' ), 10, 2 );
+		add_action( 'wc_' . Plugin::CREDIT_CARD_GATEWAY_ID . '_payment_form_payment_method_html', [ $this, 'add_token_data' ], 10, 2 );
+
+		add_action( 'wc_' . Plugin::CREDIT_CARD_GATEWAY_ID . '_checkout_block_payment_method_data', [ $this, 'add_block_payment_method_data' ], 10, 2 );
 	}
 
 
 	/**
-	 * Adds the card type and card bin for saved payment methods.
+	 * Adds the card type and card bin for saved payment methods on Payment Forms.
 	 *
 	 * @internal
 	 *
@@ -88,12 +88,16 @@ class Frontend {
 	 */
 	public function add_token_data(string $html, Framework\SV_WC_Payment_Gateway_Payment_Token $token) : string {
 
-		$html = str_replace('type="radio"', 'type="radio" data-card-type="' . $token->get_card_type() . '"', $html );
+		$html = str_replace( 'type="radio"', 'type="radio" data-card-type="' . $token->get_card_type() . '"', $html );
 
 		$token_data = $token->to_datastore_format();
 
-		if ( isset($token_data['first_six']) && $token_data['first_six'] ) {
-			$html = str_replace('type="radio"', 'type="radio" data-card-bin="' . $token_data['first_six'] . '"', $html );
+		if ( isset( $token_data['first_six'] ) && $token_data['first_six'] ) {
+			$html = str_replace( 'type="radio"', 'type="radio" data-card-bin="' . $token_data['first_six'] . '"', $html );
+		}
+
+		if ( ! empty( $token_data['exp_year'] ) && ! empty( $token_data['exp_month'] ) ) {
+			$html = str_replace( 'type="radio"', 'type="radio" data-card-expiration-month="' . $token_data['exp_month'] . '" data-card-expiration-year="' . $token_data['exp_year'] . '"', $html );
 		}
 
 		return $html;
@@ -101,47 +105,81 @@ class Frontend {
 
 
 	/**
-	 * Enqueues the 3D Secure assets.
+	 * Adds the 3DS data to the payment method data for the checkout block.
+	 *
+	 * @internal
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param array<string, mixed> $data
+	 * @param Credit_Card $gateway
+	 * @return array<string, mixed>
+	 */
+	public function add_block_payment_method_data( array $data, Credit_Card $gateway ) : array {
+
+		// add general 3DS data
+		$data['threed_secure'] = [
+			'is_enabled'              => $this->handler->is_enabled(),
+			'ajax_url'                => admin_url( 'admin-ajax.php' ),
+			'setup_action'            => AJAX::ACTION_SETUP,
+			'setup_nonce'             => wp_create_nonce( AJAX::ACTION_SETUP ),
+			'check_enrollment_action' => AJAX::ACTION_CHECK_ENROLLMENT,
+			'check_enrollment_nonce'  => wp_create_nonce( AJAX::ACTION_CHECK_ENROLLMENT ),
+			'enabled_card_types'      => array_map( [Helper::class, 'convert_card_type_to_code'], $this->handler->get_enabled_card_types() ),
+			'enabled_card_type_names' => $this->handler->get_enabled_card_types(),
+		];
+
+		// adds the card type and card bin for saved payment methods in Checkout Block
+		if ( ( $user_id = get_current_user_id() ) && ! empty( $tokens = $gateway->get_payment_tokens_handler()->get_tokens( $user_id ) ) ) {
+			foreach ( $tokens as $token ) {
+
+				if ( $core_token = $token->get_woocommerce_payment_token() ) {
+					// we use the core token ID, because that's what Woo exposes on the frontend
+					$data['payment_tokens'][ $core_token->get_id() ] = [
+						'id'        => $token->get_id(),
+						'type'      => Helper::convert_card_type_to_code( $token->get_card_type() ),
+						'type_name' => $token->get_card_type(),
+						'bin'       => $token->to_datastore_format()['first_six'],
+					];
+				}
+			}
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * Enqueues the 3D Secure assets on the Order Pay or My Payment Method pages.
 	 *
 	 * @internal
 	 *
 	 * @since 2.3.0
 	 */
-	public function enqueue_assets() {
+	public function enqueue_assets(): void {
 
 		// only render on the pay page or Add Payment Method pages
 		if ( ! is_checkout_pay_page() ) {
 			return;
 		}
 
-		wp_enqueue_script( 'wc-cybersource-threed-secure-songbird', $this->handler->is_test_mode() ? self::URL_STAGING : self::URL_PRODUCTION, [ 'jquery' ], Plugin::VERSION );
-
-		wp_enqueue_script( 'wc-cybersource-threed-secure', wc_cybersource()->get_plugin_url() . '/assets/js/frontend/wc-cybersource-threed-secure.min.js', [ 'jquery', 'wc-cybersource-threed-secure-songbird' ], Plugin::VERSION );
+		wp_enqueue_script( self::THREED_SECURE_SCRIPT_HANDLE );
 	}
 
 
 	/**
-	 * Renders the JS.
+	 * Renders the JS for the Payment Form 3DS handling.
+	 *
+	 * @internal
 	 *
 	 * @since 2.3.0
 	 */
-	public function render_js() {
+	public function render_js(): void {
 
-		?>
-		<input id="wc_cybersource_threed_secure_transaction_id" name="wc_cybersource_threed_secure_transaction_id" type="hidden" />
-		<input id="wc_cybersource_threed_secure_reference_id" name="wc_cybersource_threed_secure_reference_id" type="hidden" />
-		<input id="wc_cybersource_threed_secure_jwt" name="wc_cybersource_threed_secure_jwt" type="hidden" />
-		<input id="wc_cybersource_threed_secure_ecommerce_indicator" name="wc_cybersource_threed_secure_ecommerce_indicator" type="hidden" />
-		<input id="wc_cybersource_threed_secure_ucaf_collection_indicator" name="wc_cybersource_threed_secure_ucaf_collection_indicator" type="hidden" />
-		<input id="wc_cybersource_threed_secure_cavv" name="wc_cybersource_threed_secure_cavv" type="hidden" />
-		<input id="wc_cybersource_threed_secure_ucaf_authentication_data" name="wc_cybersource_threed_secure_ucaf_authentication_data" type="hidden" />
-		<input id="wc_cybersource_threed_secure_xid" name="wc_cybersource_threed_secure_xid" type="hidden" />
-		<input id="wc_cybersource_threed_secure_veres_enrolled" name="wc_cybersource_threed_secure_veres_enrolled" type="hidden" />
-		<input id="wc_cybersource_threed_secure_specification_version" name="wc_cybersource_threed_secure_specification_version" type="hidden" />
-		<input id="wc_cybersource_threed_secure_directory_server_transaction_id" name="wc_cybersource_threed_secure_directory_server_transaction_id" type="hidden" />
-		<input id="wc_cybersource_threed_secure_card_type" name="wc_cybersource_threed_secure_card_type" type="hidden" />
-		<input id="wc_cybersource_threed_secure_eci_flag" name="wc_cybersource_threed_secure_eci_flag" type="hidden" />
-		<?php
+		// only render on the pay page or Add Payment Method pages
+		if ( ! is_checkout_pay_page() ) {
+			return;
+		}
 
 		wc_enqueue_js( sprintf( 'window.wc_cybersource_threed_secure = new WC_Cybersource_ThreeD_Secure_Handler( %s );', json_encode( [
 			'order_id'                => $this->handler->get_gateway()->get_checkout_pay_page_order_id(),

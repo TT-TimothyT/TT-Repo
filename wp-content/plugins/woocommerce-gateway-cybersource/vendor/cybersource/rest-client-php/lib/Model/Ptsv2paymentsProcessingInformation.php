@@ -55,15 +55,19 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'actionList' => 'string[]',
+        'enableEscrowOption' => 'bool',
         'actionTokenTypes' => 'string[]',
+        'binSource' => 'string',
         'capture' => 'bool',
         'processorId' => 'string',
         'businessApplicationId' => 'string',
         'commerceIndicator' => 'string',
+        'commerceIndicatorLabel' => 'string',
         'paymentSolution' => 'string',
         'reconciliationId' => 'string',
         'linkId' => 'string',
         'purchaseLevel' => 'string',
+        'paymentId' => 'string',
         'reportGroup' => 'string',
         'visaCheckoutId' => 'string',
         'industryDataType' => 'string',
@@ -79,7 +83,10 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
         'japanPaymentOptions' => '\CyberSource\Model\Ptsv2paymentsProcessingInformationJapanPaymentOptions',
         'mobileRemotePaymentType' => 'string',
         'extendedCreditTotalCount' => 'string',
-        'networkRoutingOrder' => 'string'
+        'networkRoutingOrder' => 'string',
+        'payByPointsIndicator' => 'bool',
+        'isReturnAuthRecordEnabled' => 'bool',
+        'networkPartnerId' => 'string'
     ];
 
     /**
@@ -88,15 +95,19 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'actionList' => null,
+        'enableEscrowOption' => null,
         'actionTokenTypes' => null,
+        'binSource' => null,
         'capture' => null,
         'processorId' => null,
         'businessApplicationId' => null,
         'commerceIndicator' => null,
+        'commerceIndicatorLabel' => null,
         'paymentSolution' => null,
         'reconciliationId' => null,
         'linkId' => null,
         'purchaseLevel' => null,
+        'paymentId' => null,
         'reportGroup' => null,
         'visaCheckoutId' => null,
         'industryDataType' => null,
@@ -112,7 +123,10 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
         'japanPaymentOptions' => null,
         'mobileRemotePaymentType' => null,
         'extendedCreditTotalCount' => null,
-        'networkRoutingOrder' => null
+        'networkRoutingOrder' => null,
+        'payByPointsIndicator' => null,
+        'isReturnAuthRecordEnabled' => null,
+        'networkPartnerId' => null
     ];
 
     public static function swaggerTypes()
@@ -131,15 +145,19 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     protected static $attributeMap = [
         'actionList' => 'actionList',
+        'enableEscrowOption' => 'enableEscrowOption',
         'actionTokenTypes' => 'actionTokenTypes',
+        'binSource' => 'binSource',
         'capture' => 'capture',
         'processorId' => 'processorId',
         'businessApplicationId' => 'businessApplicationId',
         'commerceIndicator' => 'commerceIndicator',
+        'commerceIndicatorLabel' => 'commerceIndicatorLabel',
         'paymentSolution' => 'paymentSolution',
         'reconciliationId' => 'reconciliationId',
         'linkId' => 'linkId',
         'purchaseLevel' => 'purchaseLevel',
+        'paymentId' => 'paymentId',
         'reportGroup' => 'reportGroup',
         'visaCheckoutId' => 'visaCheckoutId',
         'industryDataType' => 'industryDataType',
@@ -155,7 +173,10 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
         'japanPaymentOptions' => 'japanPaymentOptions',
         'mobileRemotePaymentType' => 'mobileRemotePaymentType',
         'extendedCreditTotalCount' => 'extendedCreditTotalCount',
-        'networkRoutingOrder' => 'networkRoutingOrder'
+        'networkRoutingOrder' => 'networkRoutingOrder',
+        'payByPointsIndicator' => 'payByPointsIndicator',
+        'isReturnAuthRecordEnabled' => 'isReturnAuthRecordEnabled',
+        'networkPartnerId' => 'networkPartnerId'
     ];
 
 
@@ -165,15 +186,19 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     protected static $setters = [
         'actionList' => 'setActionList',
+        'enableEscrowOption' => 'setEnableEscrowOption',
         'actionTokenTypes' => 'setActionTokenTypes',
+        'binSource' => 'setBinSource',
         'capture' => 'setCapture',
         'processorId' => 'setProcessorId',
         'businessApplicationId' => 'setBusinessApplicationId',
         'commerceIndicator' => 'setCommerceIndicator',
+        'commerceIndicatorLabel' => 'setCommerceIndicatorLabel',
         'paymentSolution' => 'setPaymentSolution',
         'reconciliationId' => 'setReconciliationId',
         'linkId' => 'setLinkId',
         'purchaseLevel' => 'setPurchaseLevel',
+        'paymentId' => 'setPaymentId',
         'reportGroup' => 'setReportGroup',
         'visaCheckoutId' => 'setVisaCheckoutId',
         'industryDataType' => 'setIndustryDataType',
@@ -189,7 +214,10 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
         'japanPaymentOptions' => 'setJapanPaymentOptions',
         'mobileRemotePaymentType' => 'setMobileRemotePaymentType',
         'extendedCreditTotalCount' => 'setExtendedCreditTotalCount',
-        'networkRoutingOrder' => 'setNetworkRoutingOrder'
+        'networkRoutingOrder' => 'setNetworkRoutingOrder',
+        'payByPointsIndicator' => 'setPayByPointsIndicator',
+        'isReturnAuthRecordEnabled' => 'setIsReturnAuthRecordEnabled',
+        'networkPartnerId' => 'setNetworkPartnerId'
     ];
 
 
@@ -199,15 +227,19 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     protected static $getters = [
         'actionList' => 'getActionList',
+        'enableEscrowOption' => 'getEnableEscrowOption',
         'actionTokenTypes' => 'getActionTokenTypes',
+        'binSource' => 'getBinSource',
         'capture' => 'getCapture',
         'processorId' => 'getProcessorId',
         'businessApplicationId' => 'getBusinessApplicationId',
         'commerceIndicator' => 'getCommerceIndicator',
+        'commerceIndicatorLabel' => 'getCommerceIndicatorLabel',
         'paymentSolution' => 'getPaymentSolution',
         'reconciliationId' => 'getReconciliationId',
         'linkId' => 'getLinkId',
         'purchaseLevel' => 'getPurchaseLevel',
+        'paymentId' => 'getPaymentId',
         'reportGroup' => 'getReportGroup',
         'visaCheckoutId' => 'getVisaCheckoutId',
         'industryDataType' => 'getIndustryDataType',
@@ -223,7 +255,10 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
         'japanPaymentOptions' => 'getJapanPaymentOptions',
         'mobileRemotePaymentType' => 'getMobileRemotePaymentType',
         'extendedCreditTotalCount' => 'getExtendedCreditTotalCount',
-        'networkRoutingOrder' => 'getNetworkRoutingOrder'
+        'networkRoutingOrder' => 'getNetworkRoutingOrder',
+        'payByPointsIndicator' => 'getPayByPointsIndicator',
+        'isReturnAuthRecordEnabled' => 'getIsReturnAuthRecordEnabled',
+        'networkPartnerId' => 'getNetworkPartnerId'
     ];
 
     public static function attributeMap()
@@ -258,15 +293,19 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['actionList'] = isset($data['actionList']) ? $data['actionList'] : null;
+        $this->container['enableEscrowOption'] = isset($data['enableEscrowOption']) ? $data['enableEscrowOption'] : null;
         $this->container['actionTokenTypes'] = isset($data['actionTokenTypes']) ? $data['actionTokenTypes'] : null;
+        $this->container['binSource'] = isset($data['binSource']) ? $data['binSource'] : null;
         $this->container['capture'] = isset($data['capture']) ? $data['capture'] : false;
         $this->container['processorId'] = isset($data['processorId']) ? $data['processorId'] : null;
         $this->container['businessApplicationId'] = isset($data['businessApplicationId']) ? $data['businessApplicationId'] : null;
         $this->container['commerceIndicator'] = isset($data['commerceIndicator']) ? $data['commerceIndicator'] : null;
+        $this->container['commerceIndicatorLabel'] = isset($data['commerceIndicatorLabel']) ? $data['commerceIndicatorLabel'] : null;
         $this->container['paymentSolution'] = isset($data['paymentSolution']) ? $data['paymentSolution'] : null;
         $this->container['reconciliationId'] = isset($data['reconciliationId']) ? $data['reconciliationId'] : null;
         $this->container['linkId'] = isset($data['linkId']) ? $data['linkId'] : null;
         $this->container['purchaseLevel'] = isset($data['purchaseLevel']) ? $data['purchaseLevel'] : null;
+        $this->container['paymentId'] = isset($data['paymentId']) ? $data['paymentId'] : null;
         $this->container['reportGroup'] = isset($data['reportGroup']) ? $data['reportGroup'] : null;
         $this->container['visaCheckoutId'] = isset($data['visaCheckoutId']) ? $data['visaCheckoutId'] : null;
         $this->container['industryDataType'] = isset($data['industryDataType']) ? $data['industryDataType'] : null;
@@ -283,6 +322,9 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
         $this->container['mobileRemotePaymentType'] = isset($data['mobileRemotePaymentType']) ? $data['mobileRemotePaymentType'] : null;
         $this->container['extendedCreditTotalCount'] = isset($data['extendedCreditTotalCount']) ? $data['extendedCreditTotalCount'] : null;
         $this->container['networkRoutingOrder'] = isset($data['networkRoutingOrder']) ? $data['networkRoutingOrder'] : null;
+        $this->container['payByPointsIndicator'] = isset($data['payByPointsIndicator']) ? $data['payByPointsIndicator'] : null;
+        $this->container['isReturnAuthRecordEnabled'] = isset($data['isReturnAuthRecordEnabled']) ? $data['isReturnAuthRecordEnabled'] : null;
+        $this->container['networkPartnerId'] = isset($data['networkPartnerId']) ? $data['networkPartnerId'] : null;
     }
 
     /**
@@ -293,62 +335,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['processorId']) && (strlen($this->container['processorId']) > 3)) {
-            $invalid_properties[] = "invalid value for 'processorId', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['commerceIndicator']) && (strlen($this->container['commerceIndicator']) > 20)) {
-            $invalid_properties[] = "invalid value for 'commerceIndicator', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['paymentSolution']) && (strlen($this->container['paymentSolution']) > 12)) {
-            $invalid_properties[] = "invalid value for 'paymentSolution', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['reconciliationId']) && (strlen($this->container['reconciliationId']) > 60)) {
-            $invalid_properties[] = "invalid value for 'reconciliationId', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['linkId']) && (strlen($this->container['linkId']) > 26)) {
-            $invalid_properties[] = "invalid value for 'linkId', the character length must be smaller than or equal to 26.";
-        }
-
-        if (!is_null($this->container['purchaseLevel']) && (strlen($this->container['purchaseLevel']) > 1)) {
-            $invalid_properties[] = "invalid value for 'purchaseLevel', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['reportGroup']) && (strlen($this->container['reportGroup']) > 25)) {
-            $invalid_properties[] = "invalid value for 'reportGroup', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['visaCheckoutId']) && (strlen($this->container['visaCheckoutId']) > 48)) {
-            $invalid_properties[] = "invalid value for 'visaCheckoutId', the character length must be smaller than or equal to 48.";
-        }
-
-        if (!is_null($this->container['industryDataType']) && (strlen($this->container['industryDataType']) > 20)) {
-            $invalid_properties[] = "invalid value for 'industryDataType', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['walletType']) && (strlen($this->container['walletType']) > 5)) {
-            $invalid_properties[] = "invalid value for 'walletType', the character length must be smaller than or equal to 5.";
-        }
-
-        if (!is_null($this->container['nationalNetDomesticData']) && (strlen($this->container['nationalNetDomesticData']) > 123)) {
-            $invalid_properties[] = "invalid value for 'nationalNetDomesticData', the character length must be smaller than or equal to 123.";
-        }
-
-        if (!is_null($this->container['mobileRemotePaymentType']) && (strlen($this->container['mobileRemotePaymentType']) > 1)) {
-            $invalid_properties[] = "invalid value for 'mobileRemotePaymentType', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['extendedCreditTotalCount']) && (strlen($this->container['extendedCreditTotalCount']) > 1)) {
-            $invalid_properties[] = "invalid value for 'extendedCreditTotalCount', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['networkRoutingOrder']) && (strlen($this->container['networkRoutingOrder']) > 30)) {
-            $invalid_properties[] = "invalid value for 'networkRoutingOrder', the character length must be smaller than or equal to 30.";
-        }
 
         return $invalid_properties;
     }
@@ -362,48 +348,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['processorId']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['commerceIndicator']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['paymentSolution']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['reconciliationId']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['linkId']) > 26) {
-            return false;
-        }
-        if (strlen($this->container['purchaseLevel']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['reportGroup']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['visaCheckoutId']) > 48) {
-            return false;
-        }
-        if (strlen($this->container['industryDataType']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['walletType']) > 5) {
-            return false;
-        }
-        if (strlen($this->container['nationalNetDomesticData']) > 123) {
-            return false;
-        }
-        if (strlen($this->container['mobileRemotePaymentType']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['extendedCreditTotalCount']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['networkRoutingOrder']) > 30) {
-            return false;
-        }
         return true;
     }
 
@@ -419,12 +363,33 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
 
     /**
      * Sets actionList
-     * @param string[] $actionList Array of actions (one or more) to be included in the payment to invoke bundled serviecs along with payment.  Possible values are one or more of follows:   - `DECISION_SKIP`: Use this when you want to skip Decision Manager service(s).   - `TOKEN_CREATE`: Use this when you want to create a token from the card/bank data in your payment request.   - `CONSUMER_AUTHENTICATION`: Use this when you want to check if a card is enrolled in Payer Authentioncation along with your payment request.   - `VALIDATE_CONSUMER_AUTHENTICATION`: Use this after you acquire a Payer Authentioncation result that needs to be included for your payment request.
+     * @param string[] $actionList Array of actions (one or more) to be included in the payment to invoke bundled services along with payment.  Possible values are one or more of follows:   - `DECISION_SKIP`: Use this when you want to skip Decision Manager service(s).   - `TOKEN_CREATE`: Use this when you want to create a token from the card/bank data in your payment request.   - `CONSUMER_AUTHENTICATION`: Use this when you want to check if a card is enrolled in Payer Authentication along with your payment request.   - `VALIDATE_CONSUMER_AUTHENTICATION`: Use this after you acquire a Payer Authentication result that needs to be included for your payment request.    - `AP_INITIATE`: Use this when Alternative Payment Initiate service is requested.   - `WATCHLIST_SCREENING` : Use this when you want to call Watchlist Screening service.
      * @return $this
      */
     public function setActionList($actionList)
     {
         $this->container['actionList'] = $actionList;
+
+        return $this;
+    }
+
+    /**
+     * Gets enableEscrowOption
+     * @return bool
+     */
+    public function getEnableEscrowOption()
+    {
+        return $this->container['enableEscrowOption'];
+    }
+
+    /**
+     * Sets enableEscrowOption
+     * @param bool $enableEscrowOption Indicates whether to use the customer's escrow agreement. Possible values: - `true`: yes, use the customer's escrow agreement. - `false`: no, do not use the customer's escrow agreement.
+     * @return $this
+     */
+    public function setEnableEscrowOption($enableEscrowOption)
+    {
+        $this->container['enableEscrowOption'] = $enableEscrowOption;
 
         return $this;
     }
@@ -446,6 +411,27 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
     public function setActionTokenTypes($actionTokenTypes)
     {
         $this->container['actionTokenTypes'] = $actionTokenTypes;
+
+        return $this;
+    }
+
+    /**
+     * Gets binSource
+     * @return string
+     */
+    public function getBinSource()
+    {
+        return $this->container['binSource'];
+    }
+
+    /**
+     * Sets binSource
+     * @param string $binSource Bin Source File Identifier. Possible values: - itmx - rupay
+     * @return $this
+     */
+    public function setBinSource($binSource)
+    {
+        $this->container['binSource'] = $binSource;
 
         return $this;
     }
@@ -487,10 +473,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setProcessorId($processorId)
     {
-        if (!is_null($processorId) && (strlen($processorId) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $processorId when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 3.');
-        }
-
         $this->container['processorId'] = $processorId;
 
         return $this;
@@ -528,16 +510,33 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
 
     /**
      * Sets commerceIndicator
-     * @param string $commerceIndicator Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional. Only `internet`, `moto`, `install`, `recurring`, and `recurring_internet` are valid values.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Other Types of Transactions See Appendix I, \"Commerce Indicators,\" on page 441.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction.
+     * @param string $commerceIndicator Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional.  The list of valid values in this field depends on your processor. See Appendix I, \"Commerce Indicators,\" on page 441 of the Cybersource Credit Card Guide.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction. Note that this should ONLY be used when the cardholder and card are present at the time of the transaction. For all keyed transactions originated from a POS terminal where the cardholder and card are not present, commerceIndicator should be submitted as \"moto\"
      * @return $this
      */
     public function setCommerceIndicator($commerceIndicator)
     {
-        if (!is_null($commerceIndicator) && (strlen($commerceIndicator) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $commerceIndicator when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['commerceIndicator'] = $commerceIndicator;
+
+        return $this;
+    }
+
+    /**
+     * Gets commerceIndicatorLabel
+     * @return string
+     */
+    public function getCommerceIndicatorLabel()
+    {
+        return $this->container['commerceIndicatorLabel'];
+    }
+
+    /**
+     * Sets commerceIndicatorLabel
+     * @param string $commerceIndicatorLabel Type of transaction. Some payment card companies use this information when determining discount rates.  #### Used by **Authorization** Required payer authentication transactions; otherwise, optional. **Credit** Required for standalone credits on Chase Paymentech solutions; otherwise, optional.  The list of valid values in this field depends on your processor. See Appendix I, \"Commerce Indicators,\" on page 441 of the Cybersource Credit Card Guide.  #### Ingenico ePayments When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value (listed in Appendix I, \"Commerce Indicators,\" on page 441.)  #### Payer Authentication Transactions For the possible values and requirements, see \"Payer Authentication,\" page 195.  #### Card Present You must set this field to `retail`. This field is required for a card-present transaction. Note that this should ONLY be used when the cardholder and card are present at the time of the transaction. For all keyed transactions originated from a POS terminal where the cardholder and card are not present, commerceIndicator should be submitted as \"moto\"
+     * @return $this
+     */
+    public function setCommerceIndicatorLabel($commerceIndicatorLabel)
+    {
+        $this->container['commerceIndicatorLabel'] = $commerceIndicatorLabel;
 
         return $this;
     }
@@ -553,15 +552,11 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
 
     /**
      * Sets paymentSolution
-     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.
+     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.  - `013`: Cybersource P2PE Decryption  - `014`: Mastercard credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.  - `015`: Visa credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.  - `027`: Click to Pay.
      * @return $this
      */
     public function setPaymentSolution($paymentSolution)
     {
-        if (!is_null($paymentSolution) && (strlen($paymentSolution) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $paymentSolution when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['paymentSolution'] = $paymentSolution;
 
         return $this;
@@ -583,10 +578,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setReconciliationId($reconciliationId)
     {
-        if (!is_null($reconciliationId) && (strlen($reconciliationId) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $reconciliationId when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 60.');
-        }
-
         $this->container['reconciliationId'] = $reconciliationId;
 
         return $this;
@@ -608,10 +599,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setLinkId($linkId)
     {
-        if (!is_null($linkId) && (strlen($linkId) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $linkId when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 26.');
-        }
-
         $this->container['linkId'] = $linkId;
 
         return $this;
@@ -633,11 +620,28 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setPurchaseLevel($purchaseLevel)
     {
-        if (!is_null($purchaseLevel) && (strlen($purchaseLevel) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $purchaseLevel when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['purchaseLevel'] = $purchaseLevel;
+
+        return $this;
+    }
+
+    /**
+     * Gets paymentId
+     * @return string
+     */
+    public function getPaymentId()
+    {
+        return $this->container['paymentId'];
+    }
+
+    /**
+     * Sets paymentId
+     * @param string $paymentId This field is to accept the id of credit/capture in the body of L1 requests so the type of void can be identified and processed correctly downstream.
+     * @return $this
+     */
+    public function setPaymentId($paymentId)
+    {
+        $this->container['paymentId'] = $paymentId;
 
         return $this;
     }
@@ -658,10 +662,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setReportGroup($reportGroup)
     {
-        if (!is_null($reportGroup) && (strlen($reportGroup) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $reportGroup when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 25.');
-        }
-
         $this->container['reportGroup'] = $reportGroup;
 
         return $this;
@@ -683,10 +683,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setVisaCheckoutId($visaCheckoutId)
     {
-        if (!is_null($visaCheckoutId) && (strlen($visaCheckoutId) > 48)) {
-            throw new \InvalidArgumentException('invalid length for $visaCheckoutId when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 48.');
-        }
-
         $this->container['visaCheckoutId'] = $visaCheckoutId;
 
         return $this;
@@ -708,10 +704,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setIndustryDataType($industryDataType)
     {
-        if (!is_null($industryDataType) && (strlen($industryDataType) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $industryDataType when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['industryDataType'] = $industryDataType;
 
         return $this;
@@ -875,15 +867,11 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
 
     /**
      * Sets walletType
-     * @param string $walletType This field carries the wallet type in authorization requests and credit requests. Possible value are: - `101`: Masterpass remote payment. The customer created the wallet by manually interacting with a customer-controlled device such as a computer, tablet, or phone. This value is supported only for Masterpass transactions on Chase Paymentech Solutions and CyberSource through VisaNet. - `102`: Masterpass remote near field communication (NFC) payment. The customer created the wallet by tapping a PayPass card or customer-controlled device at a contactless card reader. This value is supported only for card-present Masterpass transactions on CyberSource through VisaNet. - `103`: Masterpass Apple Pay payment. The payment was made with a combination of Masterpass and Apple Pay. This value is supported only for Masterpass Apple Pay transactions on CyberSource through VisaNet. - `216`: Masterpass Google Pay payment. The payment was made with a combination of Masterpass and Google Pay. This value is supported only for Masterpass Google Pay transactions on CyberSource through VisaNet. - `217`: Masterpass Samsung Pay payment. The payment was made with a combination of Masterpass and Samsung Pay. This value is supported only for Masterpass Samsung Pay transactions on CyberSource through VisaNet. - `SDW`: Staged digital wallet. An issuer or operator created the wallet. This value is supported only for Masterpass transactions on Chase Paymentech Solutions. - `VCIND`: Visa Checkout payment. This value is supported only on CyberSource through VisaNet, FDC Compass, FDC Nashville Global, FDI Australia, and TSYS Acquiring Solutions. See Getting Started with Visa Checkout. For Visa Checkout transactions, the way CyberSource processes the value for this field depends on the processor. See the Visa Checkout section below. For all other values, this field is a passthrough; therefore, CyberSource does not verify the value or modify it in any way before sending it to the processor. Masterpass (101, 102, 103, 216, and 217): The Masterpass platform generates the wallet type value and passes it to you along with the customer’s checkout information.  Visa Checkout: This field is optional for Visa Checkout authorizations on FDI Australia. For all other processors, this field is required for Visa Checkout authorizations. For Visa Checkout transactions on the following processors, CyberSource sends the value that the processor expects for this field:FDC Compass,FDC Nashville Global,FDI Australia,TSYS Acquiring Solutions For all other processors, this field is a passthrough; therefore, CyberSource does not verify the value or modify it in any way before sending it to the processor. For incremental authorizations, this field is supported only for Mastercard and the supported values are 101 and 102. Payment card companies can introduce new values without notice. Your order management system should be able to process new values without problems.  CyberSource through VisaNet When the value for this field is 101, 102, 103, 216, or 217, it corresponds to the following data in the TC 33 capture file5: Record: CP01 TCR6, Position: 88-90,  Field: Mastercard Wallet Identifier. When the value for this field is VCIND, it corresponds to the following data in the TC 33 capture file5: Record: CP01 TCR8, Position: 72-76, Field: Agent Unique ID.
+     * @param string $walletType This field carries the wallet type in authorization requests and credit requests. Possible value are: - `101`: Masterpass remote payment. The customer created the wallet by manually interacting with a customer-controlled device such as a computer, tablet, or phone. This value is supported only for Masterpass transactions on Chase Paymentech Solutions and CyberSource through VisaNet. - `102`: Masterpass remote near field communication (NFC) payment. The customer created the wallet by tapping a PayPass card or customer-controlled device at a contactless card reader. This value is supported only for card-present Masterpass transactions on CyberSource through VisaNet. - `103`: Masterpass Apple Pay payment. The payment was made with a combination of Masterpass and Apple Pay. This value is supported only for Masterpass Apple Pay transactions on CyberSource through VisaNet. - `216`: Masterpass Google Pay payment. The payment was made with a combination of Masterpass and Google Pay. This value is supported only for Masterpass Google Pay transactions on CyberSource through VisaNet. - `217`: Masterpass Samsung Pay payment. The payment was made with a combination of Masterpass and Samsung Pay. This value is supported only for Masterpass Samsung Pay transactions on CyberSource through VisaNet. - `SDW`: Staged digital wallet. An issuer or operator created the wallet. This value is supported only for Masterpass transactions on Chase Paymentech Solutions. - `VCIND`: Visa Checkout payment. This value is supported only on CyberSource through VisaNet, FDC Compass, FDC Nashville Global, FDI Australia, and TSYS Acquiring Solutions. See Getting Started with Visa Checkout. For Visa Checkout transactions, the way CyberSource processes the value for this field depends on the processor. See the Visa Checkout section below. For all other values, this field is a passthrough; therefore, CyberSource does not verify the value or modify it in any way before sending it to the processor. Masterpass (101, 102, 103, 216, and 217): The Masterpass platform generates the wallet type value and passes it to you along with the customer's checkout information.  Visa Checkout: This field is optional for Visa Checkout authorizations on FDI Australia. For all other processors, this field is required for Visa Checkout authorizations. For Visa Checkout transactions on the following processors, CyberSource sends the value that the processor expects for this field:FDC Compass,FDC Nashville Global,FDI Australia,TSYS Acquiring Solutions For all other processors, this field is a passthrough; therefore, CyberSource does not verify the value or modify it in any way before sending it to the processor. For incremental authorizations, this field is supported only for Mastercard and the supported values are 101 and 102. Payment card companies can introduce new values without notice. Your order management system should be able to process new values without problems.  CyberSource through VisaNet When the value for this field is 101, 102, 103, 216, or 217, it corresponds to the following data in the TC 33 capture file5: Record: CP01 TCR6, Position: 88-90,  Field: Mastercard Wallet Identifier. When the value for this field is VCIND, it corresponds to the following data in the TC 33 capture file5: Record: CP01 TCR8, Position: 72-76, Field: Agent Unique ID.
      * @return $this
      */
     public function setWalletType($walletType)
     {
-        if (!is_null($walletType) && (strlen($walletType) > 5)) {
-            throw new \InvalidArgumentException('invalid length for $walletType when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 5.');
-        }
-
         $this->container['walletType'] = $walletType;
 
         return $this;
@@ -905,10 +893,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setNationalNetDomesticData($nationalNetDomesticData)
     {
-        if (!is_null($nationalNetDomesticData) && (strlen($nationalNetDomesticData) > 123)) {
-            throw new \InvalidArgumentException('invalid length for $nationalNetDomesticData when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 123.');
-        }
-
         $this->container['nationalNetDomesticData'] = $nationalNetDomesticData;
 
         return $this;
@@ -946,15 +930,11 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
 
     /**
      * Sets mobileRemotePaymentType
-     * @param string $mobileRemotePaymentType Type of payment initiated from a cardholder's mobile device. Possible values: - `1` :  Consumer-initiated remote purchase, face-to-face - `2` :  Consumer-initiated remote purchase, e-commerce - `3` :  Consumer-initiated remote purchase, mail order / telephone order - `4` :  Consumer-initiated bill pay - `5` :  Consumer-initiated top up - `6` :  Consumer-initiated cash out - `7` :  ATM triggered or agent-initiated cash out - `8` :  Merchant-initiated remote purchase, face-to-face - `9` :  Merchant-initiated remote purchase, e-commerce  This field is supported only for Mastercard transactions on CyberSource through VisaNet.  Optional field.  **Note** On CyberSource through VisaNet, the value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCR6 - Position: 94 - Field: Mastercard Mobile Remote Payment Program Indicator  The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment networks.
+     * @param string $mobileRemotePaymentType Type of payment initiated from a cardholder's mobile device. Possible values: - `1` :  Consumer-initiated remote purchase, face-to-face - `2` :  Consumer-initiated remote purchase, e-commerce - `3` :  Consumer-initiated remote purchase, mail order / telephone order - `4` :  Consumer-initiated bill pay - `5` :  Consumer-initiated top up - `6` :  Consumer-initiated cash out - `7` :  ATM triggered or agent-initiated cash out - `8` :  Merchant-initiated remote purchase, face-to-face - `9` :  Merchant-initiated remote purchase, e-commerce  This field is supported only for Mastercard transactions on CyberSource through VisaNet.  Optional field.  **Note** On CyberSource through VisaNet, the value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCR6 - Position: 94 - Field: Mastercard Mobile Remote Payment Program Indicator  The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant's acquirer, who uses this information to facilitate end-of-day clearing processing with payment networks.
      * @return $this
      */
     public function setMobileRemotePaymentType($mobileRemotePaymentType)
     {
-        if (!is_null($mobileRemotePaymentType) && (strlen($mobileRemotePaymentType) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $mobileRemotePaymentType when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['mobileRemotePaymentType'] = $mobileRemotePaymentType;
 
         return $this;
@@ -976,10 +956,6 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      */
     public function setExtendedCreditTotalCount($extendedCreditTotalCount)
     {
-        if (!is_null($extendedCreditTotalCount) && (strlen($extendedCreditTotalCount) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $extendedCreditTotalCount when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['extendedCreditTotalCount'] = $extendedCreditTotalCount;
 
         return $this;
@@ -996,16 +972,75 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
 
     /**
      * Sets networkRoutingOrder
-     * @param string $networkRoutingOrder On PIN Debit Gateways: This U.S.-only field is optionally used by  participants (merchants and acquirers) to specify the network access priority. VisaNet checks to determine if there are issuer routing preferences for any of the networks specified by the sharing group code. If an issuer preference exists for one of the specified debit networks, VisaNet makes a routing selection based on the issuer’s preference. If an issuer preference exists for more than one of the specified debit networks, or if no issuer preference exists, VisaNet makes a selection based on the acquirer’s routing priorities.  #### PIN debit Priority order of the networks through which he transaction will be routed. Set this value to a series of one-character network codes in your preferred order. This is a list of the network codes:  | Network | Code | | --- | --- | | Accel | E | | AFFN | U | | Alaska Option | 3 | | CU24 | C | | Interlink | G | | Maestro | 8 | | NETS | P | | NYCE | F | | Pulse | H | | Shazam | 7 | | Star | M | | Visa | V |  For example, if the Star network is your first preference and Pulse is your second preference, set this field to a value of `MH`.  When you do not include this value in your PIN debit request, the list of network codes from your account is used. **Note** This field is supported only for businesses located in the U.S.  Optional field for PIN debit credit or PIN debit purchase.
+     * @param string $networkRoutingOrder On PIN Debit Gateways: This U.S.-only field is optionally used by  participants (merchants and acquirers) to specify the network access priority. VisaNet checks to determine if there are issuer routing preferences for any of the networks specified by the sharing group code. If an issuer preference exists for one of the specified debit networks, VisaNet makes a routing selection based on the issuer's preference. If an issuer preference exists for more than one of the specified debit networks, or if no issuer preference exists, VisaNet makes a selection based on the acquirer's routing priorities.  #### PIN debit Priority order of the networks through which he transaction will be routed. Set this value to a series of one-character network codes in your preferred order. This is a list of the network codes:  | Network | Code | | --- | --- | | Accel | E | | AFFN | U | | Alaska Option | 3 | | CU24 | C | | Interlink | G | | Maestro | 8 | | NETS | P | | NYCE | F | | Pulse | H | | Shazam | 7 | | Star | M | | Visa | V |  For example, if the Star network is your first preference and Pulse is your second preference, set this field to a value of `MH`.  When you do not include this value in your PIN debit request, the list of network codes from your account is used. **Note** This field is supported only for businesses located in the U.S.  Optional field for PIN debit credit or PIN debit purchase.
      * @return $this
      */
     public function setNetworkRoutingOrder($networkRoutingOrder)
     {
-        if (!is_null($networkRoutingOrder) && (strlen($networkRoutingOrder) > 30)) {
-            throw new \InvalidArgumentException('invalid length for $networkRoutingOrder when calling Ptsv2paymentsProcessingInformation., must be smaller than or equal to 30.');
-        }
-
         $this->container['networkRoutingOrder'] = $networkRoutingOrder;
+
+        return $this;
+    }
+
+    /**
+     * Gets payByPointsIndicator
+     * @return bool
+     */
+    public function getPayByPointsIndicator()
+    {
+        return $this->container['payByPointsIndicator'];
+    }
+
+    /**
+     * Sets payByPointsIndicator
+     * @param bool $payByPointsIndicator Flag that indicates if the transaction is pay by points transaction true: Transaction uses loyalty points false: Transaction does not use loyalty points Default: false
+     * @return $this
+     */
+    public function setPayByPointsIndicator($payByPointsIndicator)
+    {
+        $this->container['payByPointsIndicator'] = $payByPointsIndicator;
+
+        return $this;
+    }
+
+    /**
+     * Gets isReturnAuthRecordEnabled
+     * @return bool
+     */
+    public function getIsReturnAuthRecordEnabled()
+    {
+        return $this->container['isReturnAuthRecordEnabled'];
+    }
+
+    /**
+     * Sets isReturnAuthRecordEnabled
+     * @param bool $isReturnAuthRecordEnabled Flag that indicates the functionality we are having for merchants for which auth is done through Cybersource but settlement is done by themselves. true: functionality is supported. Processor should send raw processor auth response to Merchant. false: functionality is not supported. Default: false
+     * @return $this
+     */
+    public function setIsReturnAuthRecordEnabled($isReturnAuthRecordEnabled)
+    {
+        $this->container['isReturnAuthRecordEnabled'] = $isReturnAuthRecordEnabled;
+
+        return $this;
+    }
+
+    /**
+     * Gets networkPartnerId
+     * @return string
+     */
+    public function getNetworkPartnerId()
+    {
+        return $this->container['networkPartnerId'];
+    }
+
+    /**
+     * Sets networkPartnerId
+     * @param string $networkPartnerId Merchant payment gateway ID that is assigned by Mastercard and is provided by the acquirer when a registered merchant payment gateway service provider is involved in the transaction.  This field is supported for Visa Platform Connect.
+     * @return $this
+     */
+    public function setNetworkPartnerId($networkPartnerId)
+    {
+        $this->container['networkPartnerId'] = $networkPartnerId;
 
         return $this;
     }
@@ -1014,6 +1049,7 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -1024,6 +1060,7 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -1035,6 +1072,7 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1049,6 +1087,7 @@ class Ptsv2paymentsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

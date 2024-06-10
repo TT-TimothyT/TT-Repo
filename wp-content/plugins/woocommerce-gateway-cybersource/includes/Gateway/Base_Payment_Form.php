@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\Device_Data;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 /**
  * The base payment form handler.
@@ -76,8 +76,8 @@ class Base_Payment_Form extends Framework\SV_WC_Payment_Gateway_Payment_Form {
 		<?php endif;
 
 		// render the session ID input if DM is enabled and there is a session ID
-		if ( $this->get_gateway()->is_decision_manager_enabled() && $session_id = Device_Data::get_session_id( $this->get_gateway()->get_id() ) ) {
-			Device_Data::render_session_id_input( $this->get_gateway()->get_id(), $session_id );
+		if ( ( $session_id = Device_Data::get_session_id() ) && $this->get_gateway()->is_decision_manager_enabled()) {
+			Device_Data::render_session_id_input( null, $session_id );
 		}
 	}
 

@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * VoidApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class VoidApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class VoidApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -98,7 +105,10 @@ class VoidApi
      */
     public function mitVoid($mitVoidRequest)
     {
+        self::$logger->info('CALL TO METHOD mitVoid STARTED');
         list($response, $statusCode, $httpHeader) = $this->mitVoidWithHttpInfo($mitVoidRequest);
+        self::$logger->info('CALL TO METHOD mitVoid ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -115,10 +125,11 @@ class VoidApi
     {
         // verify the required parameter 'mitVoidRequest' is set
         if ($mitVoidRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $mitVoidRequest when calling mitVoid");
             throw new \InvalidArgumentException('Missing the required parameter $mitVoidRequest when calling mitVoid');
         }
         // parse inputs
-        $resourcePath = "/pts/v2/voids/";
+        $resourcePath = "/pts/v2/voids";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -134,6 +145,9 @@ class VoidApi
         if (isset($mitVoidRequest)) {
             $_tempBody = $mitVoidRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\MitVoidRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -141,6 +155,20 @@ class VoidApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\PtsV2PaymentsVoidsPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -150,8 +178,10 @@ class VoidApi
                 $httpBody,
                 $headerParams,
                 '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response',
-                '/pts/v2/voids/'
+                '/pts/v2/voids'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -170,6 +200,7 @@ class VoidApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -186,7 +217,10 @@ class VoidApi
      */
     public function voidCapture($voidCaptureRequest, $id)
     {
+        self::$logger->info('CALL TO METHOD voidCapture STARTED');
         list($response, $statusCode, $httpHeader) = $this->voidCaptureWithHttpInfo($voidCaptureRequest, $id);
+        self::$logger->info('CALL TO METHOD voidCapture ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -204,10 +238,12 @@ class VoidApi
     {
         // verify the required parameter 'voidCaptureRequest' is set
         if ($voidCaptureRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $voidCaptureRequest when calling voidCapture");
             throw new \InvalidArgumentException('Missing the required parameter $voidCaptureRequest when calling voidCapture');
         }
         // verify the required parameter 'id' is set
         if ($id === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $id when calling voidCapture");
             throw new \InvalidArgumentException('Missing the required parameter $id when calling voidCapture');
         }
         // parse inputs
@@ -235,6 +271,9 @@ class VoidApi
         if (isset($voidCaptureRequest)) {
             $_tempBody = $voidCaptureRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\VoidCaptureRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -242,6 +281,20 @@ class VoidApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\PtsV2PaymentsVoidsPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -253,6 +306,8 @@ class VoidApi
                 '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response',
                 '/pts/v2/captures/{id}/voids'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -271,6 +326,7 @@ class VoidApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -287,7 +343,10 @@ class VoidApi
      */
     public function voidCredit($voidCreditRequest, $id)
     {
+        self::$logger->info('CALL TO METHOD voidCredit STARTED');
         list($response, $statusCode, $httpHeader) = $this->voidCreditWithHttpInfo($voidCreditRequest, $id);
+        self::$logger->info('CALL TO METHOD voidCredit ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -305,10 +364,12 @@ class VoidApi
     {
         // verify the required parameter 'voidCreditRequest' is set
         if ($voidCreditRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $voidCreditRequest when calling voidCredit");
             throw new \InvalidArgumentException('Missing the required parameter $voidCreditRequest when calling voidCredit');
         }
         // verify the required parameter 'id' is set
         if ($id === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $id when calling voidCredit");
             throw new \InvalidArgumentException('Missing the required parameter $id when calling voidCredit');
         }
         // parse inputs
@@ -336,6 +397,9 @@ class VoidApi
         if (isset($voidCreditRequest)) {
             $_tempBody = $voidCreditRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\VoidCreditRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -343,6 +407,20 @@ class VoidApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\PtsV2PaymentsVoidsPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -354,6 +432,8 @@ class VoidApi
                 '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response',
                 '/pts/v2/credits/{id}/voids'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -372,6 +452,7 @@ class VoidApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -388,7 +469,10 @@ class VoidApi
      */
     public function voidPayment($voidPaymentRequest, $id)
     {
+        self::$logger->info('CALL TO METHOD voidPayment STARTED');
         list($response, $statusCode, $httpHeader) = $this->voidPaymentWithHttpInfo($voidPaymentRequest, $id);
+        self::$logger->info('CALL TO METHOD voidPayment ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -406,10 +490,12 @@ class VoidApi
     {
         // verify the required parameter 'voidPaymentRequest' is set
         if ($voidPaymentRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $voidPaymentRequest when calling voidPayment");
             throw new \InvalidArgumentException('Missing the required parameter $voidPaymentRequest when calling voidPayment');
         }
         // verify the required parameter 'id' is set
         if ($id === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $id when calling voidPayment");
             throw new \InvalidArgumentException('Missing the required parameter $id when calling voidPayment');
         }
         // parse inputs
@@ -437,6 +523,9 @@ class VoidApi
         if (isset($voidPaymentRequest)) {
             $_tempBody = $voidPaymentRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\VoidPaymentRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -444,6 +533,20 @@ class VoidApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\PtsV2PaymentsVoidsPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -455,6 +558,8 @@ class VoidApi
                 '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response',
                 '/pts/v2/payments/{id}/voids'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -473,6 +578,7 @@ class VoidApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -489,7 +595,10 @@ class VoidApi
      */
     public function voidRefund($voidRefundRequest, $id)
     {
+        self::$logger->info('CALL TO METHOD voidRefund STARTED');
         list($response, $statusCode, $httpHeader) = $this->voidRefundWithHttpInfo($voidRefundRequest, $id);
+        self::$logger->info('CALL TO METHOD voidRefund ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -507,10 +616,12 @@ class VoidApi
     {
         // verify the required parameter 'voidRefundRequest' is set
         if ($voidRefundRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $voidRefundRequest when calling voidRefund");
             throw new \InvalidArgumentException('Missing the required parameter $voidRefundRequest when calling voidRefund');
         }
         // verify the required parameter 'id' is set
         if ($id === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $id when calling voidRefund");
             throw new \InvalidArgumentException('Missing the required parameter $id when calling voidRefund');
         }
         // parse inputs
@@ -538,6 +649,9 @@ class VoidApi
         if (isset($voidRefundRequest)) {
             $_tempBody = $voidRefundRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\VoidRefundRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -545,6 +659,20 @@ class VoidApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\PtsV2PaymentsVoidsPost201Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -556,6 +684,8 @@ class VoidApi
                 '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response',
                 '/pts/v2/refunds/{id}/voids'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\PtsV2PaymentsVoidsPost201Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -574,6 +704,7 @@ class VoidApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

@@ -150,14 +150,6 @@ class Ptsv2paymentsidcapturesPaymentInformationCard implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['sourceAccountType']) && (strlen($this->container['sourceAccountType']) > 20)) {
-            $invalid_properties[] = "invalid value for 'sourceAccountType', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['sourceAccountTypeDetails']) && (strlen($this->container['sourceAccountTypeDetails']) > 4)) {
-            $invalid_properties[] = "invalid value for 'sourceAccountTypeDetails', the character length must be smaller than or equal to 4.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Ptsv2paymentsidcapturesPaymentInformationCard implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['sourceAccountType']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['sourceAccountTypeDetails']) > 4) {
-            return false;
-        }
         return true;
     }
 
@@ -191,15 +177,11 @@ class Ptsv2paymentsidcapturesPaymentInformationCard implements ArrayAccess
 
     /**
      * Sets sourceAccountType
-     * @param string $sourceAccountType Flag that specifies the type of account associated with the card. The cardholder provides this information during the payment process.  This field is required in the following cases:   - Debit transactions on Cielo and Comercio Latino.   - Transactions with Brazilian-issued cards on CyberSource through VisaNet.   - Applicable only for CyberSource through VisaNet (CtV).      **Note** Combo cards in Brazil contain credit and debit functionality in a single card. Visa systems use a credit bank identification number (BIN) for this type of card. Using the BIN to determine whether a card is debit or credit can cause transactions with these cards to be processed incorrectly. CyberSource strongly recommends that you include this field for combo card transactions.  Possible values include the following.   - `CHECKING`: Checking account  - `CREDIT`: Credit card account  - `SAVING`: Saving account  - `LINE_OF_CREDIT`: Line of credit or credit portion of combo card  - `PREPAID`: Prepaid card account or prepaid portion of combo card  - `UNIVERSAL`: Universal account
+     * @param string $sourceAccountType Flag that specifies the type of account associated with the card. The cardholder provides this information during the payment process.  This field is required in the following cases:   - Debit transactions on Cielo and Comercio Latino.   - Transactions with Brazilian-issued cards on CyberSource through VisaNet.   - Applicable only for CyberSource through VisaNet (CtV).  **Note** Combo cards in Brazil contain credit and debit functionality in a single card. Visa systems use a credit bank identification number (BIN) for this type of card. Using the BIN to determine whether a card is debit or credit can cause transactions with these cards to be processed incorrectly. CyberSource strongly recommends that you include this field for combo card transactions.  Possible values include the following.   - `CHECKING`: Checking account  - `CREDIT`: Credit card account  - `SAVING`: Saving account  - `LINE_OF_CREDIT`: Line of credit or credit portion of combo card  - `PREPAID`: Prepaid card account or prepaid portion of combo card  - `UNIVERSAL`: Universal account
      * @return $this
      */
     public function setSourceAccountType($sourceAccountType)
     {
-        if (!is_null($sourceAccountType) && (strlen($sourceAccountType) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $sourceAccountType when calling Ptsv2paymentsidcapturesPaymentInformationCard., must be smaller than or equal to 20.');
-        }
-
         $this->container['sourceAccountType'] = $sourceAccountType;
 
         return $this;
@@ -221,10 +203,6 @@ class Ptsv2paymentsidcapturesPaymentInformationCard implements ArrayAccess
      */
     public function setSourceAccountTypeDetails($sourceAccountTypeDetails)
     {
-        if (!is_null($sourceAccountTypeDetails) && (strlen($sourceAccountTypeDetails) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $sourceAccountTypeDetails when calling Ptsv2paymentsidcapturesPaymentInformationCard., must be smaller than or equal to 4.');
-        }
-
         $this->container['sourceAccountTypeDetails'] = $sourceAccountTypeDetails;
 
         return $this;
@@ -234,6 +212,7 @@ class Ptsv2paymentsidcapturesPaymentInformationCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Ptsv2paymentsidcapturesPaymentInformationCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Ptsv2paymentsidcapturesPaymentInformationCard implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Ptsv2paymentsidcapturesPaymentInformationCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

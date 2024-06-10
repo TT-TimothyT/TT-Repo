@@ -54,7 +54,8 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'transactionId' => 'string'
+        'transactionId' => 'string',
+        'networkTransactionId' => 'string'
     ];
 
     /**
@@ -62,7 +63,8 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'transactionId' => null
+        'transactionId' => null,
+        'networkTransactionId' => null
     ];
 
     public static function swaggerTypes()
@@ -80,7 +82,8 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
      * @var string[]
      */
     protected static $attributeMap = [
-        'transactionId' => 'transactionId'
+        'transactionId' => 'transactionId',
+        'networkTransactionId' => 'networkTransactionId'
     ];
 
 
@@ -89,7 +92,8 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
      * @var string[]
      */
     protected static $setters = [
-        'transactionId' => 'setTransactionId'
+        'transactionId' => 'setTransactionId',
+        'networkTransactionId' => 'setNetworkTransactionId'
     ];
 
 
@@ -98,7 +102,8 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
      * @var string[]
      */
     protected static $getters = [
-        'transactionId' => 'getTransactionId'
+        'transactionId' => 'getTransactionId',
+        'networkTransactionId' => 'getNetworkTransactionId'
     ];
 
     public static function attributeMap()
@@ -133,6 +138,7 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
     public function __construct(array $data = null)
     {
         $this->container['transactionId'] = isset($data['transactionId']) ? $data['transactionId'] : null;
+        $this->container['networkTransactionId'] = isset($data['networkTransactionId']) ? $data['networkTransactionId'] : null;
     }
 
     /**
@@ -143,10 +149,6 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['transactionId']) && (strlen($this->container['transactionId']) > 18)) {
-            $invalid_properties[] = "invalid value for 'transactionId', the character length must be smaller than or equal to 18.";
-        }
 
         return $invalid_properties;
     }
@@ -160,9 +162,6 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
     public function valid()
     {
 
-        if (strlen($this->container['transactionId']) > 18) {
-            return false;
-        }
         return true;
     }
 
@@ -183,11 +182,28 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
      */
     public function setTransactionId($transactionId)
     {
-        if (!is_null($transactionId) && (strlen($transactionId) > 18)) {
-            throw new \InvalidArgumentException('invalid length for $transactionId when calling PtsV2PaymentsCapturesPost201ResponseProcessorInformation., must be smaller than or equal to 18.');
-        }
-
         $this->container['transactionId'] = $transactionId;
+
+        return $this;
+    }
+
+    /**
+     * Gets networkTransactionId
+     * @return string
+     */
+    public function getNetworkTransactionId()
+    {
+        return $this->container['networkTransactionId'];
+    }
+
+    /**
+     * Sets networkTransactionId
+     * @param string $networkTransactionId Network Transaction Identifier Applicable for online capture transactions only.
+     * @return $this
+     */
+    public function setNetworkTransactionId($networkTransactionId)
+    {
+        $this->container['networkTransactionId'] = $networkTransactionId;
 
         return $this;
     }
@@ -196,6 +212,7 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +223,7 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +235,7 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +250,7 @@ class PtsV2PaymentsCapturesPost201ResponseProcessorInformation implements ArrayA
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

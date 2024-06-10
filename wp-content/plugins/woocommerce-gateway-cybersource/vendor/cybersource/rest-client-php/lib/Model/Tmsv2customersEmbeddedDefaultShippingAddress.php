@@ -56,6 +56,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
     protected static $swaggerTypes = [
         'links' => '\CyberSource\Model\Tmsv2customersEmbeddedDefaultShippingAddressLinks',
         'id' => 'string',
+        'default' => 'bool',
         'shipTo' => '\CyberSource\Model\Tmsv2customersEmbeddedDefaultShippingAddressShipTo',
         'metadata' => '\CyberSource\Model\Tmsv2customersEmbeddedDefaultShippingAddressMetadata'
     ];
@@ -67,6 +68,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
     protected static $swaggerFormats = [
         'links' => null,
         'id' => null,
+        'default' => null,
         'shipTo' => null,
         'metadata' => null
     ];
@@ -88,6 +90,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
     protected static $attributeMap = [
         'links' => '_links',
         'id' => 'id',
+        'default' => 'default',
         'shipTo' => 'shipTo',
         'metadata' => 'metadata'
     ];
@@ -100,6 +103,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
     protected static $setters = [
         'links' => 'setLinks',
         'id' => 'setId',
+        'default' => 'setDefault',
         'shipTo' => 'setShipTo',
         'metadata' => 'setMetadata'
     ];
@@ -112,6 +116,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
     protected static $getters = [
         'links' => 'getLinks',
         'id' => 'getId',
+        'default' => 'getDefault',
         'shipTo' => 'getShipTo',
         'metadata' => 'getMetadata'
     ];
@@ -149,6 +154,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
     {
         $this->container['links'] = isset($data['links']) ? $data['links'] : null;
         $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['default'] = isset($data['default']) ? $data['default'] : null;
         $this->container['shipTo'] = isset($data['shipTo']) ? $data['shipTo'] : null;
         $this->container['metadata'] = isset($data['metadata']) ? $data['metadata'] : null;
     }
@@ -162,14 +168,6 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 32)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) < 1)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be bigger than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -182,12 +180,6 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['id']) < 1) {
-            return false;
-        }
         return true;
     }
 
@@ -224,19 +216,33 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
 
     /**
      * Sets id
-     * @param string $id The id of the Shipping Address Token.
+     * @param string $id The Id of the Shipping Address Token.
      * @return $this
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Tmsv2customersEmbeddedDefaultShippingAddress., must be smaller than or equal to 32.');
-        }
-        if (!is_null($id) && (strlen($id) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Tmsv2customersEmbeddedDefaultShippingAddress., must be bigger than or equal to 1.');
-        }
-
         $this->container['id'] = $id;
+
+        return $this;
+    }
+
+    /**
+     * Gets default
+     * @return bool
+     */
+    public function getDefault()
+    {
+        return $this->container['default'];
+    }
+
+    /**
+     * Sets default
+     * @param bool $default Flag that indicates whether customer shipping address is the dafault. Possible Values:  - `true`: Shipping Address is customer's default.  - `false`: Shipping Address is not customer's default.
+     * @return $this
+     */
+    public function setDefault($default)
+    {
+        $this->container['default'] = $default;
 
         return $this;
     }
@@ -287,6 +293,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -297,6 +304,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -308,6 +316,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -322,6 +331,7 @@ class Tmsv2customersEmbeddedDefaultShippingAddress implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -150,14 +150,6 @@ class Ptsv2paymentsTravelInformationAgency implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 8)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['name']) && (strlen($this->container['name']) > 25)) {
-            $invalid_properties[] = "invalid value for 'name', the character length must be smaller than or equal to 25.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Ptsv2paymentsTravelInformationAgency implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['code']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['name']) > 25) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +182,6 @@ class Ptsv2paymentsTravelInformationAgency implements ArrayAccess
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling Ptsv2paymentsTravelInformationAgency., must be smaller than or equal to 8.');
-        }
-
         $this->container['code'] = $code;
 
         return $this;
@@ -221,10 +203,6 @@ class Ptsv2paymentsTravelInformationAgency implements ArrayAccess
      */
     public function setName($name)
     {
-        if (!is_null($name) && (strlen($name) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $name when calling Ptsv2paymentsTravelInformationAgency., must be smaller than or equal to 25.');
-        }
-
         $this->container['name'] = $name;
 
         return $this;
@@ -234,6 +212,7 @@ class Ptsv2paymentsTravelInformationAgency implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Ptsv2paymentsTravelInformationAgency implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Ptsv2paymentsTravelInformationAgency implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Ptsv2paymentsTravelInformationAgency implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

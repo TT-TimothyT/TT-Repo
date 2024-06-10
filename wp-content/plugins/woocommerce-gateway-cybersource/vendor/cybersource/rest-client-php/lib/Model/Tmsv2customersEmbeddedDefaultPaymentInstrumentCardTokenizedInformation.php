@@ -150,14 +150,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation imp
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['requestorID']) && (strlen($this->container['requestorID']) > 11)) {
-            $invalid_properties[] = "invalid value for 'requestorID', the character length must be smaller than or equal to 11.";
-        }
-
-        if (!is_null($this->container['transactionType']) && (strlen($this->container['transactionType']) > 1)) {
-            $invalid_properties[] = "invalid value for 'transactionType', the character length must be smaller than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation imp
     public function valid()
     {
 
-        if (strlen($this->container['requestorID']) > 11) {
-            return false;
-        }
-        if (strlen($this->container['transactionType']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -191,15 +177,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation imp
 
     /**
      * Sets requestorID
-     * @param string $requestorID Value that identifies your business and indicates that the cardholder’s account number is tokenized. This value is assigned by the token service provider and is unique within the token service provider’s database.  **Note** This field is supported only for **CyberSource through VisaNet** and **FDC Nashville Global**.
+     * @param string $requestorID Value that identifies your business and indicates that the cardholder's account number is tokenized. This value is assigned by the token service provider and is unique within the token service provider's database.  **Note** This field is supported only through **VisaNet** and **FDC Nashville Global**.
      * @return $this
      */
     public function setRequestorID($requestorID)
     {
-        if (!is_null($requestorID) && (strlen($requestorID) > 11)) {
-            throw new \InvalidArgumentException('invalid length for $requestorID when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation., must be smaller than or equal to 11.');
-        }
-
         $this->container['requestorID'] = $requestorID;
 
         return $this;
@@ -216,15 +198,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation imp
 
     /**
      * Sets transactionType
-     * @param string $transactionType Type of transaction that provided the token data. This value does not specify the token service provider; it specifies the entity that provided you with information about the token.  Set the value for this field to 1. An application on the customer’s mobile device provided the token data.
+     * @param string $transactionType Type of transaction that provided the token data. This value does not specify the token service provider; it specifies the entity that provided you with information about the token.  Set the value for this field to 1. An application on the customer's mobile device provided the token data.
      * @return $this
      */
     public function setTransactionType($transactionType)
     {
-        if (!is_null($transactionType) && (strlen($transactionType) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $transactionType when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['transactionType'] = $transactionType;
 
         return $this;
@@ -234,6 +212,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation imp
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation imp
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation imp
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentCardTokenizedInformation imp
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -58,6 +58,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
         'applicationVersion' => 'string',
         'applicationName' => 'string',
         'applicationUser' => 'string',
+        'partner' => '\CyberSource\Model\TssV2TransactionsGet200ResponseClientReferenceInformationPartner',
         'comments' => 'string'
     ];
 
@@ -70,6 +71,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
         'applicationVersion' => null,
         'applicationName' => null,
         'applicationUser' => null,
+        'partner' => null,
         'comments' => null
     ];
 
@@ -92,6 +94,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
         'applicationVersion' => 'applicationVersion',
         'applicationName' => 'applicationName',
         'applicationUser' => 'applicationUser',
+        'partner' => 'partner',
         'comments' => 'comments'
     ];
 
@@ -105,6 +108,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
         'applicationVersion' => 'setApplicationVersion',
         'applicationName' => 'setApplicationName',
         'applicationUser' => 'setApplicationUser',
+        'partner' => 'setPartner',
         'comments' => 'setComments'
     ];
 
@@ -118,6 +122,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
         'applicationVersion' => 'getApplicationVersion',
         'applicationName' => 'getApplicationName',
         'applicationUser' => 'getApplicationUser',
+        'partner' => 'getPartner',
         'comments' => 'getComments'
     ];
 
@@ -156,6 +161,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
         $this->container['applicationVersion'] = isset($data['applicationVersion']) ? $data['applicationVersion'] : null;
         $this->container['applicationName'] = isset($data['applicationName']) ? $data['applicationName'] : null;
         $this->container['applicationUser'] = isset($data['applicationUser']) ? $data['applicationUser'] : null;
+        $this->container['partner'] = isset($data['partner']) ? $data['partner'] : null;
         $this->container['comments'] = isset($data['comments']) ? $data['comments'] : null;
     }
 
@@ -167,14 +173,6 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 50)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['comments']) && (strlen($this->container['comments']) > 255)) {
-            $invalid_properties[] = "invalid value for 'comments', the character length must be smaller than or equal to 255.";
-        }
 
         return $invalid_properties;
     }
@@ -188,12 +186,6 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
     public function valid()
     {
 
-        if (strlen($this->container['code']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['comments']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -214,10 +206,6 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling TssV2TransactionsGet200ResponseClientReferenceInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['code'] = $code;
 
         return $this;
@@ -287,6 +275,27 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
     }
 
     /**
+     * Gets partner
+     * @return \CyberSource\Model\TssV2TransactionsGet200ResponseClientReferenceInformationPartner
+     */
+    public function getPartner()
+    {
+        return $this->container['partner'];
+    }
+
+    /**
+     * Sets partner
+     * @param \CyberSource\Model\TssV2TransactionsGet200ResponseClientReferenceInformationPartner $partner
+     * @return $this
+     */
+    public function setPartner($partner)
+    {
+        $this->container['partner'] = $partner;
+
+        return $this;
+    }
+
+    /**
      * Gets comments
      * @return string
      */
@@ -302,10 +311,6 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
      */
     public function setComments($comments)
     {
-        if (!is_null($comments) && (strlen($comments) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $comments when calling TssV2TransactionsGet200ResponseClientReferenceInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['comments'] = $comments;
 
         return $this;
@@ -315,6 +320,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -325,6 +331,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -336,6 +343,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -350,6 +358,7 @@ class TssV2TransactionsGet200ResponseClientReferenceInformation implements Array
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

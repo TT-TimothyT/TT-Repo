@@ -56,7 +56,8 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
       */
     protected static $swaggerTypes = [
         'amount' => 'string',
-        'taxable' => 'bool'
+        'taxable' => 'bool',
+        'taxRate' => 'string'
     ];
 
     /**
@@ -65,7 +66,8 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
       */
     protected static $swaggerFormats = [
         'amount' => null,
-        'taxable' => null
+        'taxable' => null,
+        'taxRate' => null
     ];
 
     public static function swaggerTypes()
@@ -84,7 +86,8 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
      */
     protected static $attributeMap = [
         'amount' => 'amount',
-        'taxable' => 'taxable'
+        'taxable' => 'taxable',
+        'taxRate' => 'taxRate'
     ];
 
 
@@ -94,7 +97,8 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
      */
     protected static $setters = [
         'amount' => 'setAmount',
-        'taxable' => 'setTaxable'
+        'taxable' => 'setTaxable',
+        'taxRate' => 'setTaxRate'
     ];
 
 
@@ -104,7 +108,8 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
      */
     protected static $getters = [
         'amount' => 'getAmount',
-        'taxable' => 'getTaxable'
+        'taxable' => 'getTaxable',
+        'taxRate' => 'getTaxRate'
     ];
 
     public static function attributeMap()
@@ -140,6 +145,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
     {
         $this->container['amount'] = isset($data['amount']) ? $data['amount'] : null;
         $this->container['taxable'] = isset($data['taxable']) ? $data['taxable'] : null;
+        $this->container['taxRate'] = isset($data['taxRate']) ? $data['taxRate'] : null;
     }
 
     /**
@@ -150,10 +156,6 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['amount']) && (strlen($this->container['amount']) > 13)) {
-            $invalid_properties[] = "invalid value for 'amount', the character length must be smaller than or equal to 13.";
-        }
 
         return $invalid_properties;
     }
@@ -167,9 +169,6 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
     public function valid()
     {
 
-        if (strlen($this->container['amount']) > 13) {
-            return false;
-        }
         return true;
     }
 
@@ -190,10 +189,6 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
      */
     public function setAmount($amount)
     {
-        if (!is_null($amount) && (strlen($amount) > 13)) {
-            throw new \InvalidArgumentException('invalid length for $amount when calling Invoicingv2invoicesOrderInformationAmountDetailsFreight., must be smaller than or equal to 13.');
-        }
-
         $this->container['amount'] = $amount;
 
         return $this;
@@ -219,11 +214,33 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
 
         return $this;
     }
+
+    /**
+     * Gets taxRate
+     * @return string
+     */
+    public function getTaxRate()
+    {
+        return $this->container['taxRate'];
+    }
+
+    /**
+     * Sets taxRate
+     * @param string $taxRate Shipping Tax rate applied to the freight amount.  **Visa**: Valid range is 0.01 to 0.99 (1% to 99%, with only whole percentage values accepted; values with additional decimal places will be truncated).  **Mastercard**: Valid range is 0.00001 to 0.99999 (0.001% to 99.999%).
+     * @return $this
+     */
+    public function setTaxRate($taxRate)
+    {
+        $this->container['taxRate'] = $taxRate;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -234,6 +251,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -245,6 +263,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -259,6 +278,7 @@ class Invoicingv2invoicesOrderInformationAmountDetailsFreight implements ArrayAc
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

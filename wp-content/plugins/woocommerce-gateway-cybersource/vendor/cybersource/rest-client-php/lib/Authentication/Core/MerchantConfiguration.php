@@ -3,9 +3,11 @@
 *Purpose: Merchant Config contains credentials and8 keys for Authentication and API Information
 */
 namespace CyberSource\Authentication\Core;
-use CyberSource\Authentication\Log\Logger as Logger;
+
 use CyberSource\Authentication\Core\AuthException as AuthException;
 use CyberSource\Authentication\Util\GlobalParameter as GlobalParameter;
+use CyberSource\Logging\LogFactory as LogFactory;
+use CyberSource\Logging\LogConfiguration as LogConfiguration;
 
 class MerchantConfiguration
 {
@@ -76,6 +78,76 @@ class MerchantConfiguration
     protected $secretKey = '';
 
     /**
+     * flag for MetaKey authentication
+     *
+     * @var bool
+     */
+    protected $useMetaKey = false;
+
+    /**
+     * portfolioID for MetaKey authentication
+     *
+     * @var string
+     */
+    protected $portfolioID = '';
+
+    /**
+     * flag for Enabling Client Cert
+     *
+     * @var bool
+     */
+    protected $enableClientCert = false;
+
+    /**
+     * Directory of Client Cert
+     *
+     * @var string
+     */
+    protected $clientCertDirectory = '';
+
+    /**
+     * Name of Client Cert
+     *
+     * @var string
+     */
+    protected $clientCertFile = '';
+
+    /**
+     * Password for Client Cert file
+     *
+     * @var string
+     */
+    protected $clientCertPassword = '';
+
+    /**
+     * Client Id for OAuth
+     *
+     * @var string
+     */
+    protected $clientId = '';
+
+    /**
+     * Client Secret for OAuth
+     *
+     * @var string
+     */
+    protected $clientSecret = '';
+
+    /**
+     * OAuth Access Token
+     *
+     * @var string
+     */
+    protected $accessToken = '';
+
+    /**
+     * OAuth Refresh Token
+     *
+     * @var string
+     */
+    protected $refreshToken = '';
+
+    /**
      * The host
      *
      * @var string
@@ -89,34 +161,6 @@ class MerchantConfiguration
      */
     protected $method = '';
 
-
-    /**
-     * Debug switch (default set to false)
-     *
-     * @var bool
-     */
-    protected $debug = true;
-
-    /**
-     * Debug switch (default set to false)
-     *
-     * @var bool
-     */
-    protected $logSize = 0;
-
-    /**
-     * Debug file location (log to STDOUT by default)
-     *
-     * @var string
-     */
-    protected $debugFile = '';
-
-    /**
-     * Debug file location (log to STDOUT by default)
-     *
-     * @var string
-     */
-    protected $tempFolderPath;
     /**
      * Indicates if SSL verification should be enabled or disabled.
      *
@@ -148,6 +192,13 @@ class MerchantConfiguration
     protected $runEnvironment="";
 
     /**
+     * Curl RUN Environment
+     *
+     * @var string
+     */
+    protected $IntermediateHost="";
+
+    /**
      * Solution ID
      *
      * @var string
@@ -155,30 +206,43 @@ class MerchantConfiguration
     protected $solutionId="";
 
     /**
+     * Logging configuration
+     *
+     * @var LogConfiguration
+     */
+    protected $logConfig;
+
+
+    /**
+     * NetworkToken Cert file directory
+     *
+     * @var string
+     */
+    protected $jwePEMFileDirectory;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->tempFolderPath = sys_get_temp_dir();
+        $this->logConfig = new LogConfiguration();
 
-        if(self::$logger === null){
-            self::$logger = new Logger(MerchantConfiguration::class);
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $this->logConfig);
         }
     }
-
-    
 
     /**
      * Sets the access token for OAuth
      *
      * @param string $authenticationType Token for OAuth
      *
-     * @return $this
+     * @return void
      */
     public function setAuthenticationType($authenticationType)
     {
         $this->authenticationType = $authenticationType;
-        return $this;
     }
 
     /**
@@ -196,40 +260,18 @@ class MerchantConfiguration
      *
      * @param string $runEnvironment Token for OAuth
      *
-     * @return $this
+     * @return void
      */
     public function setRunEnvironment($runEnvironment)
     {
         $this->runEnvironment = $runEnvironment;
-        if(strtoupper($this->runEnvironment) == strtoupper(GlobalParameter::RUNENVIRONMENT))
+
+        if (in_array($this->runEnvironment, GlobalParameter::OLD_RUN_ENVIRONMENT_CONSTANTS))
         {
-            $this->host = GlobalParameter::SANDBOXURL;
-            
-        } 
-        else if(strtoupper($this->runEnvironment) == strtoupper(GlobalParameter::RUNPRODENVIRONMENT)) 
-        {
-           $this->host = GlobalParameter::PRODUCTIONURL;
+            throw new \Exception(GlobalParameter::DEPRECATED_RUN_ENVIRONMENT);
         }
-        else if(strtoupper($this->runEnvironment) == strtoupper(GlobalParameter::BOARUNENVIRONMENT)) 
-        {
-           $this->host = GlobalParameter::BOASANDBOXURL;
-        }
-        else if(strtoupper($this->runEnvironment) == strtoupper(GlobalParameter::BOARUNPRODENVIRONMENT)) 
-        {
-           $this->host = GlobalParameter::BOAPRODUCTIONURL;
-        }
-        else if(strtoupper($this->runEnvironment) == strtoupper(GlobalParameter::IDCRUNENVIRONMENT)) 
-        {
-           $this->host = GlobalParameter::IDCSANDBOXURL;
-        }
-        else if(strtoupper($this->runEnvironment) == strtoupper(GlobalParameter::IDCRUNPRODENVIRONMENT)) 
-        {
-           $this->host = GlobalParameter::IDCPRODUCTIONURL;
-        }
-        else
-        {
-            $this->host =$this->runEnvironment;
-        }
+
+        $this->host =$this->runEnvironment;
         return $this;
     }
 
@@ -239,21 +281,47 @@ class MerchantConfiguration
      */
     public function getRunEnvironment()
     {
-        return $this->runEnvironment;
+        if (in_array(strtoupper($this->runEnvironment), GlobalParameter::OLD_RUN_ENVIRONMENT_CONSTANTS))
+        {
+            throw new \Exception(GlobalParameter::DEPRECATED_RUN_ENVIRONMENT);
+        } else {
+            return $this->runEnvironment;
+        }
     }
+
+    /**
+     * Sets the IntermediateHost for axa intermediate feature
+     *
+     * @param string $IntermediateHost url for intermediate host
+     *
+     * @return void
+     */
+    public function setIntermediateHost($IntermediateHost)
+    {
+        $this->IntermediateHost = $IntermediateHost;
+        return $this;
+    }
+
+    /**
+     * Gets the IntermediateHost for intermediate url
+     * @return string $IntermediateHost
+     */
+    public function getIntermediateHost()
+    {
+        return $this->IntermediateHost;
+    }
+
 
     /**
      * Sets the Solution ID
      *
      * @param string $solutionId
      *
-     * @return $this
+     * @return void
      */
     public function setSolutionId($solutionId)
     {
         $this->solutionId = $solutionId;
-        
-        return $this;
     }
 
     /**
@@ -270,12 +338,11 @@ class MerchantConfiguration
      *
      * @param string $merchantID merchantID for HTTP basic authentication
      *
-     * @return $this
+     * @return void
      */
     public function setMerchantID($merchantID)
     {
         $this->merchantID = $merchantID;
-        return $this;
     }
 
     /**
@@ -293,12 +360,11 @@ class MerchantConfiguration
      *
      * @param string $keyAlias merchantID for HTTP basic authentication
      *
-     * @return $this
+     * @return void
      */
     public function setKeyAlias($keyAlias)
     {
         $this->keyAlias = $keyAlias;
-        return $this;
     }
 
     /**
@@ -316,12 +382,11 @@ class MerchantConfiguration
      *
      * @param string $keyFilename merchantID for HTTP basic authentication
      *
-     * @return $this
+     * @return void
      */
     public function setKeyFileName($keyFilename)
     {
         $this->keyFilename = $keyFilename;
-        return $this;
     }
 
     /**
@@ -339,12 +404,11 @@ class MerchantConfiguration
      *
      * @param string $logFilename merchantID for HTTP basic authentication
      *
-     * @return $this
+     * @return void
      */
     public function setLogFileName($logFilename)
     {
         $this->logFilename = $logFilename;
-        return $this;
     }
 
     /**
@@ -362,12 +426,11 @@ class MerchantConfiguration
      *
      * @param string $keysDirectory merchantID for HTTP basic authentication
      *
-     * @return $this
+     * @return void
      */
     public function setKeysDirectory($keysDirectory)
     {
         $this->keysDirectory = $keysDirectory;
-        return $this;
     }
 
     /**
@@ -385,12 +448,11 @@ class MerchantConfiguration
      *
      * @param string $password Password for HTTP basic authentication
      *
-     * @return $this
+     * @return void
      */
     public function setKeyPassword($password)
     {
         $this->password = $password;
-        return $this;
     }
 
     /**
@@ -408,12 +470,11 @@ class MerchantConfiguration
      *
      * @param string $apiKeyID Password for HTTP basic authentication
      *
-     * @return $this
+     * @return void
      */
     public function setApiKeyID($apiKeyID)
     {
         $this->apiKeyID = $apiKeyID;
-        return $this;
     }
 
     /**
@@ -431,12 +492,11 @@ class MerchantConfiguration
      *
      * @param string secretKey for HTTP basic authentication
      *
-     * @return $this
+     * @return void
      */
     public function setSecretKey($secretKey)
     {
         $this->secretKey = $secretKey;
-        return $this;
     }
 
     /**
@@ -449,18 +509,250 @@ class MerchantConfiguration
         return $this->secretKey;
     }
 
+    /**
+     * Sets the flag for metakey authentication
+     *
+     * @param bool flag for metakey authentication
+     *
+     * @return void
+     */
+    public function setUseMetaKey($useMetaKey)
+    {
+        if(!is_null($useMetaKey) && is_bool($useMetaKey))
+        {
+            $this->useMetaKey = $useMetaKey;
+        }
+        else
+        {
+            $this->useMetaKey = false;
+        }
+    }
 
+    /**
+     * Gets the flag for metakey authentication
+     *
+     * @return bool flag for metakey authentication
+     */
+    public function getUseMetaKey()
+    {
+        return $this->useMetaKey;
+    }
+
+    /**
+     * Sets the portfolioID for metakey authentication
+     *
+     * @param string portfolioID for metakey authentication
+     *
+     * @return void
+     */
+    public function setPortfolioID($portfolioID)
+    {
+        $this->portfolioID = $portfolioID;
+    }
+
+    /**
+     * Gets the portfolioID for metakey authentication
+     *
+     * @return string portfolioID for metakey authentication
+     */
+    public function getPortfolioID()
+    {
+        return $this->portfolioID;
+    }
+	
+    /**
+     * Sets the flag for Client Cert
+     *
+     * @param bool flag for Client Cert
+     *
+     * @return $this
+     */
+    public function setEnableClientCert($enableClientCert)
+    {
+        if(!is_null($enableClientCert) && is_bool($enableClientCert))
+        {
+            $this->enableClientCert = $enableClientCert;
+        }
+        else
+        {
+            $this->enableClientCert = false;
+        }
+    }
+
+    /**
+     * Gets the flag for Client Cert
+     *
+     * @return bool flag for Client Cert
+     */
+    public function isEnableClientCert()
+    {
+        return $this->enableClientCert;
+    }
+
+    /**
+     * Sets the Directory for Client Cert
+     *
+     * @param string Directory for Client Cert
+     *
+     * @return void
+     */
+    public function setClientCertDirectory($clientCertDirectory)
+    {
+        $this->clientCertDirectory = $clientCertDirectory;
+    }
+
+    /**
+     * Gets the Directory for Client Cert
+     *
+     * @return string Directory for Client Cert
+     */
+    public function getClientCertDirectory()
+    {
+        return $this->clientCertDirectory;
+    }
+
+    /**
+     * Sets the name of Client Cert file
+     *
+     * @param string Name of Client Cert file
+     *
+     * @return void
+     */
+    public function setClientCertFile($clientCertFile)
+    {
+        $this->clientCertFile = $clientCertFile;
+    }
+
+    /**
+     * Gets the name of Client Cert file
+     *
+     * @return string Name of Client Cert file
+     */
+    public function getClientCertFile()
+    {
+        return $this->clientCertFile;
+    }
+
+    /**
+     * Sets the Password for Client Cert file
+     *
+     * @param string Password for Client Cert file
+     *
+     * @return void
+     */
+    public function setClientCertPassword($clientCertPassword)
+    {
+        $this->clientCertPassword = $clientCertPassword;
+    }
+
+    /**
+     * Gets the Password for Client Cert file
+     *
+     * @return string Password for Client Cert file
+     */
+    public function getClientCertPassword()
+    {
+        return $this->clientCertPassword;
+    }
+
+    /**
+     * Sets the ClientID for OAuth
+     *
+     * @param string ClientID for OAuth
+     *
+     * @return void
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+    }
+
+    /**
+     * Gets the ClientID for OAuth
+     *
+     * @return string ClientID for OAuth
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * Sets the Client Secret for OAuth
+     *
+     * @param string Client Secret for OAuth
+     *
+     * @return void
+     */
+    public function setClientSecret($clientSecret)
+    {
+        $this->clientSecret = $clientSecret;
+    }
+
+    /**
+     * Gets the Client Secret for OAuth
+     *
+     * @return string Client Secret for OAuth
+     */
+    public function getClientSecret()
+    {
+        return $this->clientSecret;
+    }
+
+    /**
+     * Sets the Access Token
+     *
+     * @param string OAuth Access Token
+     *
+     * @return void
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+    }
+
+    /**
+     * Gets the OAuth Access Token
+     *
+     * @return string OAuth Access Token
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * Sets the OAuth Refresh Token
+     *
+     * @param string OAuth Refresh Token
+     *
+     * @return void
+     */
+    public function setRefreshToken($refreshToken)
+    {
+        $this->refreshToken = $refreshToken;
+    }
+
+    /**
+     * Gets the OAuth Refresh Token
+     *
+     * @return string OAuth Refresh Token
+     */
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
+    }
+	
     /**
      * Sets the Method for HTTP basic connection
      *
      * @param string $Method Password for HTTP basic connection
      *
-     * @return $this
+     * @return void
      */
     public function setMethod($method)
     {
         $this->method = $method;
-        return $this;
     }
 
     /**
@@ -473,19 +765,16 @@ class MerchantConfiguration
         return $this->method;
     }
 
-
-
     /**
      * Sets the host
      *
      * @param string $host Host
      *
-     * @return $this
+     * @return void
      */
     public function setHost($host)
     {
         $this->host = $host;
-        return $this;
     }
 
     /**
@@ -498,19 +787,16 @@ class MerchantConfiguration
         return $this->host;
     }
 
-    
-
     /**
      * Sets the HTTP Proxy Host
      *
      * @param string $proxyHost HTTP Proxy URL
      *
-     * @return $this
+     * @return void
      */
     public function setCurlProxyHost($proxyHost)
     {
-        $this->proxyHost = "$proxyHost";
-        return $this;
+        $this->proxyHost = $proxyHost;
     }
 
     /**
@@ -528,12 +814,11 @@ class MerchantConfiguration
      *
      * @param integer $proxyPort HTTP Proxy Port
      *
-     * @return $this
+     * @return void
      */
     public function setCurlProxyPort($proxyPort)
     {
         $this->proxyPort = $proxyPort;
-        return $this;
     }
 
     /**
@@ -546,77 +831,28 @@ class MerchantConfiguration
         return $this->proxyPort;
     }
 
-    
     /**
-     * Sets debug flag
+     * Sets the logging configuration
      *
-     * @param bool $debug Debug flag
+     * @param LogConfiguration $logConfig Logging Configuration
      *
-     * @return $this
+     * @return void
      */
-    public function setDebug($debug)
+    public function setLogConfiguration($logConfig)
     {
-        $this->debug = $debug;
-        return $this;
+        $this->logConfig = $logConfig;
     }
 
     /**
-     * Gets the debug flag
+     * Gets the logging configuration
      *
-     * @return bool
+     * @return LogConfiguration
      */
-    public function getDebug()
+    public function getLogConfiguration()
     {
-        return $this->debug;
+        return $this->logConfig;
     }
 
-    /**
-     * Sets logSize
-     *
-     * @param string $logSize 
-     *
-     * @return $this
-     */
-    public function setLogSize($logSize)
-    {
-        $this->logSize = $logSize;
-        return $this;
-    }
-
-    /**
-     * Gets the logSize 
-     *
-     * @return string
-     */
-    public function getLogSize()
-    {
-        return $this->logSize;
-    }
-
-    /**
-     * Sets the debug file
-     *
-     * @param string $debugFile Debug file
-     *
-     * @return $this
-     */
-    public function setDebugFile($debugFile)
-    {
-        $this->debugFile = $debugFile;
-        return $this;
-    }
-
-    /**
-     * Gets the debug file
-     *
-     * @return string
-     */
-    public function getDebugFile()
-    {
-        return $this->debugFile;
-    }
-
-    
     /**
      * Gets the default MerchantConfiguration instance
      *
@@ -644,6 +880,22 @@ class MerchantConfiguration
     }
 
     /**
+     * @return string
+     */
+    public function getJwePEMFileDirectory()
+    {
+        return $this->jwePEMFileDirectory;
+    }
+
+    /**
+     * @param string $jwePEMFileDirectory
+     */
+    public function setJwePEMFileDirectory(string $jwePEMFileDirectory)
+    {
+        $this->jwePEMFileDirectory = $jwePEMFileDirectory;
+    }
+
+    /**
      * Gets the essential information for debugging
      *
      * @return string The report for debugging
@@ -654,7 +906,6 @@ class MerchantConfiguration
         $report .= '    OS: ' . php_uname() . PHP_EOL;
         $report .= '    PHP Version: ' . PHP_VERSION . PHP_EOL;
         $report .= '    OpenAPI Spec Version: 2.0.0' . PHP_EOL;
-       
 
         return $report;
     }
@@ -668,37 +919,9 @@ class MerchantConfiguration
     {
         $warning_message =""; $error_message ="";
         $config = new MerchantConfiguration();
-        //var_dump($connectionDet);die;
-        if(is_bool($connectionDet->enableLog)){
-            $config = $config->setDebug($connectionDet->enableLog);
-            
-        }
-        else if(empty($connectionDet->enableLog)){
-            $config = $config->setDebug(true);
-            $warning_message .= GlobalParameter::ENBLOGFIELD;
-        }
-        else{
-            $config = $config->setDebug(false);
-            $warning_message .= GlobalParameter::ENBLOGFIELD;
-        }
-
-        if(isset($connectionDet->logSize))
-            $config = $config->setLogSize($connectionDet->logSize);
-        else
-            $warning_message .= GlobalParameter::LOGSIZE;
-
-        if(isset($connectionDet->logDirectory))
-            $config = $config->setDebugFile($connectionDet->logDirectory);
-        else
-            $warning_message .= GlobalParameter::LOGDIR;
-
-        if(isset($connectionDet->logFilename))
-            $config = $config->setLogFileName($connectionDet->logFilename);
-        else
-            $warning_message .= GlobalParameter::LOGFILENAME;
 
         if(isset($connectionDet->authenticationType))
-            $config = $config->setAuthenticationType(strtoupper(trim($connectionDet->authenticationType)));
+            $config = $config->setAuthenticationType(strtoupper(trim($connectionDet->authenticationType ?? '')));
         else
             $error_message .= GlobalParameter::AUTHTYPE;
 
@@ -732,6 +955,36 @@ class MerchantConfiguration
         else
             $warning_message .= GlobalParameter::KEYPWDFIELD;
 
+        if(isset($connectionDet->useMetaKey))
+            $config = $config->setUseMetaKey($connectionDet->useMetaKey);
+        else
+            $warning_message .= GlobalParameter::USE_METAKEY_EMPTY;
+
+        if(isset($connectionDet->portfolioID))
+            $config = $config->setPortfolioID($connectionDet->portfolioID);
+        else
+            $warning_message .= GlobalParameter::PORTFOLIO_ID_EMPTY;
+
+        if(isset($connectionDet->enableClientCert))
+            $config = $config->setEnableClientCert($connectionDet->enableClientCert);
+        else
+            $warning_message .= GlobalParameter::ENABLE_CLIENT_CERT_EMPTY;
+
+        if(isset($connectionDet->clientCertDirectory))
+            $config = $config->setClientCertDirectory($connectionDet->clientCertDirectory);
+
+        if(isset($connectionDet->clientCertFile))
+            $config = $config->setClientCertFile($connectionDet->clientCertFile);
+
+        if(isset($connectionDet->clientCertPassword))
+            $config = $config->setClientCertPassword($connectionDet->clientCertPassword);
+
+        if(isset($connectionDet->clientId))
+            $config = $config->setClientId($connectionDet->clientId);
+
+        if(isset($connectionDet->clientSecret))
+            $config = $config->setClientSecret($connectionDet->clientSecret);
+
         if(isset($connectionDet->keysDirectory))
             $config = $config->setKeysDirectory($connectionDet->keysDirectory);
         else
@@ -744,8 +997,12 @@ class MerchantConfiguration
 
         if(isset($connectionDet->solutionId))
             $config = $config->setSolutionId($connectionDet->solutionId);
+
+        if (isset($connectionDet->jwePEMFileDirectory)) {
+            $config = $config->setJwePEMFileDirectory($connectionDet->jwePEMFileDirectory);
+        }
        
-        $config->validateMerchantData($config);
+        $config->validateMerchantData();
         if($error_message != null){
             $error_message = GlobalParameter::NOT_ENTERED. $error_message;
             $exception = new AuthException($error_message, 0);
@@ -758,104 +1015,156 @@ class MerchantConfiguration
         return $config;
     }
 
-    public function validateMerchantData($config)
+    public function validateMerchantData()
     {
-       
         $error_message = "";
         $warning_message = "";
-        if(empty($config->getMerchantID())){
 
-            $error_message .= GlobalParameter::MERCHANTID_REQ;
+        if(empty($this->getAuthenticationType())){
+            $error_message .= GlobalParameter::AUTHENTICATION_REQ . PHP_EOL;
         }
 
-        if(empty($config->getAuthenticationType())){
-            $error_message .= GlobalParameter::AUTHENTICATION_REQ;
+        if(empty($this->getRunEnvironment())){
+            $error_message .= GlobalParameter::RUNENV_REQ . PHP_EOL;
         }
 
-        if(empty($config->getRunEnvironment())){
-            $error_message .= GlobalParameter::RUNENV_REQ;
-        }
-
-        if(!is_bool($config->getDebug())){
-            $warning_message .= GlobalParameter::REFER_LOG;
-            
-        }
-
-        if($config->getDebug() == true && empty($config->getDebugFile()))
-        {
-            if(empty($config->getDebugFile())){
-                $warning_message .= GlobalParameter::KEY_LOG_DIR_NULL.GlobalParameter::DEFAULT_LOG_DIR;
-                $config = $config->setDebugFile(GlobalParameter::DEFAULT_LOG_DIR);
-            }
-
-            
-        }else if($config->getDebug() == true && !empty($config->getDebugFile())){
-            if(empty($config->getLogFileName())){
-                $warning_message .= GlobalParameter::KEY_LOG_FILE_NULL.GlobalParameter::DEFAULT_LOG_FILE;
-                $config = $config->setLogFileName(GlobalParameter::DEFAULT_LOG_FILE);
-            }
-            $path = $config->getDebugFile(). DIRECTORY_SEPARATOR .$config->getLogFileName();
-             if(!file_exists($path)){
-                $warning_message .= GlobalParameter::KEY_LOG_DIR_INVALID.GlobalParameter::DEFAULT_LOG_DIR;
-                $config = $config->setDebugFile(GlobalParameter::DEFAULT_LOG_DIR);
-             }
+        $logConfig = $this->getLogConfiguration();
+        if(!is_bool($logConfig->getEnableLogging())){
+            $warning_message .= GlobalParameter::REFER_LOG . PHP_EOL;
         }
         
-        if($config->getDebug() == true && empty($config->getLogSize()))
-        {
+        if ($logConfig->isLoggingEnabled()) {
+            if (empty($logConfig->getDebugLogFile())) {
+                $warning_message .= GlobalParameter::DEBUG_LOG_FILE_NULL . GlobalParameter::DEFAULT_DEBUG_LOG_FILE . PHP_EOL;
+                $logConfig->setDebugLogFile(GlobalParameter::DEFAULT_DEBUG_LOG_FILE);
+            }
+            
+            if (empty($logConfig->getErrorLogFile())) {
+                $warning_message .= GlobalParameter::ERROR_LOG_FILE_NULL . GlobalParameter::DEFAULT_ERROR_LOG_FILE . PHP_EOL;
+                $logConfig->setErrorLogFile(GlobalParameter::DEFAULT_ERROR_LOG_FILE);
+            }
+            
+            if (empty($logConfig->getLogDateFormat())) {
+                $logConfig->setLogDateFormat(GlobalParameter::DEFAULT_LOG_DATE_FORMAT);
+            }
+            
+            if (empty($logConfig->getLogFormat())) {
+                $logConfig->setLogFormat(GlobalParameter::DEFAULT_LOG_FORMAT);
+            }
+            
+            if ($logConfig->getLogMaxFiles() == 0) {
+                $logConfig->setLogMaxFiles(GlobalParameter::DEFAULT_LOG_MAX_FILES);
+            }
+            
+            if (empty($logConfig->getLogLevel())) {
+                $logConfig->setLogLevel(GlobalParameter::DEFAULT_LOG_LEVEL);
+            }
 
-            if(empty($config->getLogSize())){
-                $warning_message .= GlobalParameter::KEY_LOG_FILE_SIZE.GlobalParameter::DEFAULT_LOG_FILE_SIZE;
-                $config = $config->setLogFileName(GlobalParameter::DEFAULT_LOG_FILE_SIZE);
+            $this->setLogConfiguration($logConfig);
+        }
+
+        if(empty($this->getMerchantID()) && $this->getAuthenticationType() == GlobalParameter::JWT){
+            $error_message .= GlobalParameter::MERCHANTID_REQ . PHP_EOL;
+        }
+
+        if(empty($this->getKeyAlias()) && $this->getAuthenticationType() == GlobalParameter::JWT){
+            $warning_message .= GlobalParameter::KEY_ALIAS_NULL_EMPTY . PHP_EOL;
+        }
+
+        if(empty($this->getKeyFileName()) && $this->getAuthenticationType() == GlobalParameter::JWT){
+            $warning_message .= GlobalParameter::KEY_FILE_NULL_EMPTY . PHP_EOL;
+        }
+
+        if(empty($this->getKeyPassword()) && $this->getAuthenticationType() == GlobalParameter::JWT){
+            $warning_message .= GlobalParameter::KEY_PASSWORD_EMPTY . PHP_EOL;
+        }
+        
+        if(empty($this->getKeysDirectory()) && $this->getAuthenticationType() == GlobalParameter::JWT){
+            $warning_message .= GlobalParameter::KEY_DIRECTORY_EMPTY . PHP_EOL;
+        }
+
+        if(empty($this->getMerchantID()) && $this->getAuthenticationType() == GlobalParameter::HTTP_SIGNATURE){
+            $error_message .= GlobalParameter::MERCHANTID_REQ . PHP_EOL;
+        }
+
+        if(empty($this->getApiKeyID()) && $this->getAuthenticationType() == GlobalParameter::HTTP_SIGNATURE ){
+            $error_message .= GlobalParameter::MERCHANT_KEY_ID_REQ . PHP_EOL;
+        }
+
+        if(empty($this->getSecretKey()) && $this->getAuthenticationType() == GlobalParameter::HTTP_SIGNATURE ){
+            $error_message .= GlobalParameter::MERCHANT_SECRET_KEY_REQ . PHP_EOL;
+        }
+
+        if(is_bool($this->getUseMetaKey()) && $this->getUseMetaKey() && empty($this->getPortfolioID())){
+            $error_message .= GlobalParameter::PORTFOLIO_ID_REQ . PHP_EOL;
+        }
+		
+        if(is_bool($this->isEnableClientCert()) && $this->isEnableClientCert())
+        { 
+            if(empty($this->getClientCertDirectory()))
+            {
+                $error_message .= GlobalParameter::CLIENT_CERT_DIR_REQ . PHP_EOL;
+            }
+            if(empty($this->getClientCertFile()))
+            {
+                $error_message .= GlobalParameter::CLIENT_CERT_FILE_REQ . PHP_EOL;
+            }
+            if(empty($this->getClientCertPassword()))
+            {
+                $error_message .= GlobalParameter::CLIENT_CERT_PASSWORD_REQ . PHP_EOL;
             }
         }
 
-
-        if(empty($config->getKeyAlias()) && $config->getAuthenticationType() == GlobalParameter::JWT){
-
-            $warning_message .= GlobalParameter::KEY_ALIAS_NULL_EMPTY;
+        if($this->getAuthenticationType() == GlobalParameter::MUTUAL_AUTH)
+        {
+            if(empty($this->getClientId()))
+            {
+                $error_message .= GlobalParameter::CLIENT_ID_REQ . PHP_EOL;
+            }
+            if(empty($this->getClientSecret()))
+            {
+                $error_message .= GlobalParameter::CLIENT_SECRET_REQ . PHP_EOL;
+            }
         }
 
-        if(empty($config->getKeyFileName()) && $config->getAuthenticationType() == GlobalParameter::JWT){
-
-            $warning_message .= GlobalParameter::KEY_FILE_NULL_EMPTY;
+        if($this->getAuthenticationType() == GlobalParameter::OAUTH)
+        {
+            if(empty($this->getAccessToken()))
+            {
+                $error_message .= GlobalParameter::ACCESS_TOKEN_REQ . PHP_EOL;
+            }
+            if(empty($this->getRefreshToken()))
+            {
+                $error_message .= GlobalParameter::REFRESH_TOKEN_REQ . PHP_EOL;
+            }
         }
+		
+        self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $this->getLogConfiguration());
+        self::$logger->info(GlobalParameter::LOG_START_MSG);
+        $logConfig = $this->getLogConfiguration();
+        $configurationData = array(
+                                    GlobalParameter::AUTHTYPE => $this->getAuthenticationType(),
+                                    GlobalParameter::ENBLOGFIELD => $logConfig->getEnableLogging(),
+                                    GlobalParameter::DEBUGLOGFILEPATH => $logConfig->getDebugLogFile(),
+                                    GlobalParameter::ERRORLOGFILEPATH => $logConfig->getErrorLogFile(),
+                                    GlobalParameter::RUNENVFIELD => $this->getRunEnvironment()
+                                );
 
-        if(empty($config->getKeyPassword()) && $config->getAuthenticationType() == GlobalParameter::JWT){
+        $output = \CyberSource\Utilities\Helpers\ListHelper::toString($configurationData);
 
-            $warning_message .= GlobalParameter::KEY_PASSWORD_EMPTY;
-        }
-        if(empty($config->getKeysDirectory()) && $config->getAuthenticationType() == GlobalParameter::JWT){
-            $warning_message .= GlobalParameter::KEY_DIRECTORY_EMPTY;
-        }
-
-        if(empty($config->getApiKeyID()) && $config->getAuthenticationType() == GlobalParameter::HTTP_SIGNATURE ){
-            $error_message .= GlobalParameter::MERCHANT_KEY_ID_REQ;
-        }
-
-        if(empty($config->getSecretKey()) && $config->getAuthenticationType() == GlobalParameter::HTTP_SIGNATURE ){
-            $error_message .= GlobalParameter::MERCHANT_SECRET_KEY_REQ;
-        }
-
-        self::$logger->log($config, GlobalParameter::LOG_START_MSG);
-        $printData = array(GlobalParameter::AUTHTYPE=>$config->getAuthenticationType(),GlobalParameter::ENBLOGFIELD=>$config->getDebug(), GlobalParameter::LOGDIR => $config->getDebugFile(), GlobalParameter::RUNENVFIELD=>$config->getRunEnvironment(), GlobalParameter::LOGSIZE=>$config->getLogSize(), GlobalParameter::PROXYPORTFIELD=>$config->getCurlProxyPort(), GlobalParameter::KEYFILEFIELDDIR=>$config->getKeysDirectory(), GlobalParameter::KEYFILEFIELD=>$config->getKeyFileName(), GlobalParameter::LOGFILENAME=>$config->getLogFileName());
-        self::$logger->log($config, $printData);
-        $messageAuthType = GlobalParameter::AUTHTYPE ."=>".$config->getAuthenticationType();
-        self::$logger->log($config, $messageAuthType);
+        self::$logger->info("CONFIGURATION INFORMATION :\n" . $output);
+		
         if(!empty($error_message)){
             $exception = new AuthException($error_message, 0);
-            self::$logger->log($config, $error_message);
+            self::$logger->error($error_message);
             throw $exception;
         }
-        if($warning_message != ""){
-            trigger_error($warning_message, E_USER_WARNING);
-            self::$logger->log($config, $warning_message); 
+
+        if(!empty($warning_message)){
+            self::$logger->warning($warning_message); 
         }
-        return $config;
-        
+
+        self::$logger->close();
     }
-
-
 }
-
 ?>

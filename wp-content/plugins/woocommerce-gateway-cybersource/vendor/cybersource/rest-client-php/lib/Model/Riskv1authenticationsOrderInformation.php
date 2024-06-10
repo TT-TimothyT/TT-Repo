@@ -186,14 +186,6 @@ class Riskv1authenticationsOrderInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['preOrderDate']) && (strlen($this->container['preOrderDate']) > 10)) {
-            $invalid_properties[] = "invalid value for 'preOrderDate', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['totalOffersCount']) && (strlen($this->container['totalOffersCount']) > 2)) {
-            $invalid_properties[] = "invalid value for 'totalOffersCount', the character length must be smaller than or equal to 2.";
-        }
-
         return $invalid_properties;
     }
 
@@ -206,12 +198,6 @@ class Riskv1authenticationsOrderInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['preOrderDate']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['totalOffersCount']) > 2) {
-            return false;
-        }
         return true;
     }
 
@@ -274,10 +260,6 @@ class Riskv1authenticationsOrderInformation implements ArrayAccess
      */
     public function setPreOrderDate($preOrderDate)
     {
-        if (!is_null($preOrderDate) && (strlen($preOrderDate) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $preOrderDate when calling Riskv1authenticationsOrderInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['preOrderDate'] = $preOrderDate;
 
         return $this;
@@ -383,10 +365,6 @@ class Riskv1authenticationsOrderInformation implements ArrayAccess
      */
     public function setTotalOffersCount($totalOffersCount)
     {
-        if (!is_null($totalOffersCount) && (strlen($totalOffersCount) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $totalOffersCount when calling Riskv1authenticationsOrderInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['totalOffersCount'] = $totalOffersCount;
 
         return $this;
@@ -396,6 +374,7 @@ class Riskv1authenticationsOrderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -406,6 +385,7 @@ class Riskv1authenticationsOrderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -417,6 +397,7 @@ class Riskv1authenticationsOrderInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -431,6 +412,7 @@ class Riskv1authenticationsOrderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

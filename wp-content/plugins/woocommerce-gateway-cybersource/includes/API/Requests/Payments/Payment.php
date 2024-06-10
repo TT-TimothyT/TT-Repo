@@ -17,14 +17,16 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
 
+use Exception;
+use SkyVerge\WooCommerce\Cybersource\API\Helper;
 use SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -41,10 +43,13 @@ abstract class Payment extends Payments {
 	 *
 	 * @since 2.0.0
 	 *
+	 * Some data may be overwritten or merged with 3D Secure data later:
+	 * @see \SkyVerge\WooCommerce\Cybersource\API\Requests\Payments\Credit_Card_Payment::create_payment()
+	 *
 	 * @param \WC_Order $order order object
 	 * @param bool $settlement_type
 	 */
-	public function create_payment( \WC_Order $order, $settlement_type = true ) {
+	public function create_payment( \WC_Order $order, bool $settlement_type = true ) : void {
 
 		$this->method = self::REQUEST_METHOD_POST;
 		$this->order  = $order;
@@ -68,7 +73,7 @@ abstract class Payment extends Payments {
 	 *
 	 * @return array
 	 */
-	protected function get_order_information() {
+	protected function get_order_information(): array {
 
 		$data = [
 			'amountDetails' => $this->get_amount_details( $this->get_order()->payment_total ),
@@ -290,6 +295,18 @@ abstract class Payment extends Payments {
 		// if this is a direct payment (no Flex), add regular CC data
 		if ( empty( $payment->jwt ) ) {
 			$data = array_merge( $data, $this->get_payment_data() );
+		} else {
+
+			// extract the card code/type from JWT instead of from the payment directly,
+			// as multiple codes map to same card types (024 and 042 are both `maestro` for example)
+			$card_code = $this->get_detected_card_code_from_jwt( $payment->jwt );
+
+			// REST API does not seem to extract card type properly from tokenInformation.transientTokenJwt, if
+			// generated using Microform v2 (it does seem to work with v0.11 tokens) and triggers an `INVALID_ACCOUNT`
+			// error. We'll provide the card type manually to work around this issue.
+			$data['card'] = [
+				'type' => $card_code,
+			];
 		}
 
 		return $data;
@@ -299,7 +316,7 @@ abstract class Payment extends Payments {
 	/**
 	 * Gets the data for a tokenized payment.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param \WC_Order $order WooCommerce order object
 	 * @return mixed
@@ -336,79 +353,21 @@ abstract class Payment extends Payments {
 
 
 	/**
-	 * Gets the 3DSecure commerce indicator, if any
-	 *
-	 * @since 2.7.1
-	 * @return string|null
-	 */
-	private function get_threed_secure_commerce_indicator(): ?string {
-
-		// ecommerce indicator was passed from the enrollment check (frictionless)
-		if ( ! empty( $this->get_order()->threed_secure->ecommerce_indicator ) ) {
-			return $this->get_order()->threed_secure->ecommerce_indicator;
-		}
-
-		if ( ! empty( $this->get_order()->threed_secure->card_type ) && ! empty( $this->get_order()->threed_secure->eci_flag ) ) {
-			$card_type = $this->get_order()->threed_secure->card_type;
-			$eci_flag = $this->get_order()->threed_secure->eci_flag;
-
-			$eci_mapping = [
-				'JCB' => [
-					'05' => 'js',
-					'06' => 'js_attempted',
-				],
-				'AMERICAN EXPRESS' => [
-					'05' => 'aesk',
-					'06' => 'aesk_attempted',
-				],
-				'VISA' => [
-					'05' => 'vbv',
-					'06' => 'vbv_attempted',
-					'07' => 'vbv_failure',
-				],
-				// not sure which card type name diners uses, as we've been unable to test this card type
-				'DINERS' => [
-					'05' => 'pb',
-					'06' => 'pb_attempted',
-				],
-				'DINERS CLUB' => [
-					'05' => 'pb',
-					'06' => 'pb_attempted',
-				],
-				// it's strange, but both of these seem to indicate success for mastercard
-				'MASTERCARD' => [
-					'01' => 'spa',
-					'02' => 'spa',
-				],
-				'DISCOVER' => [
-					'05' => 'dipb',
-					'06' => 'dipb_attempted',
-				],
-			];
-
-			if ( isset( $eci_mapping[ $card_type ][ $eci_flag ] ) ) {
-				return $eci_mapping[ $card_type ][ $eci_flag ];
-			}
-		}
-
-		// default of 'internet' will be used
-		return null;
-
-	}
-
-	/**
 	 * Gets processing information.
 	 *
 	 * Sets special CIT or MIT transaction data if this is a recurring order.
 	 *
 	 * @see https://developer.cybersource.com/api/developer-guides/dita-payments/MITs/MIT_usecases/MIT_recurringpayment.html
 	 *
+	 * Some of the information may later be overwritten by 3D Secure data:
+	 * @see \SkyVerge\WooCommerce\Cybersource\API\Requests\Payments\Credit_Card_Payment::create_payment()
+	 *
 	 * @since 2.0.0
 	 *
 	 * @param bool $settlement_type true = auth/capture, false = auth-only
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	protected function get_processing_information( $settlement_type = false ) {
+	protected function get_processing_information( bool $settlement_type = false ): array {
 
 		if ( $settlement_type ) {
 
@@ -422,10 +381,6 @@ abstract class Payment extends Payments {
 			$processing_information = [
 				'commerceIndicator' => 'internet',
 			];
-		}
-
-		if ( $commerce_indicator = $this->get_threed_secure_commerce_indicator() ) {
-			$processing_information['commerceIndicator'] = $commerce_indicator;
 		}
 
 		$payment = $this->get_order()->payment;
@@ -521,16 +476,18 @@ abstract class Payment extends Payments {
 	/**
 	 * Gets device information.
 	 *
-	 * @since 2.0.0-dev.6
+	 * @since 2.0.0
 	 *
 	 * @return array
 	 */
-	protected function get_device_information() {
+	protected function get_device_information(): array {
 
-		$data = [
-			'ipAddress' => $this->get_order()->get_customer_ip_address(),
-			'userAgent' => $this->get_order()->get_customer_user_agent(),
-		];
+		$data = array_merge( [
+			'ipAddress'              => $this->get_order()->get_customer_ip_address(),
+			'userAgentBrowserValue'  => $this->get_order()->get_customer_user_agent(),
+			'httpAcceptBrowserValue' => $_SERVER['HTTP_ACCEPT'],
+			'httpAcceptContent'      => $_SERVER['HTTP_ACCEPT'],
+		], $this->get_order()->payment->device_data ?? [] );
 
 		if ( ! empty( $this->get_order()->decision_manager_session_id ) ) {
 			$data['fingerprintSessionId'] = $this->get_order()->decision_manager_session_id;
@@ -543,12 +500,12 @@ abstract class Payment extends Payments {
 	/**
 	 * Gets the token information.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param \WC_Order $order the order object
 	 * @return array
 	 */
-	protected function get_token_information( \WC_Order $order ) {
+	protected function get_token_information( \WC_Order $order ): array {
 
 		$token_information = [];
 
@@ -558,6 +515,59 @@ abstract class Payment extends Payments {
 		}
 
 		return $token_information;
+	}
+
+
+	/**
+	 * Decodes the JWT.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param string $jwt
+	 * @return array
+	 */
+	protected function decode_jwt( string $jwt ): array {
+		$jwt_parts = explode( '.', $jwt );
+
+		$header    = json_decode( base64_decode( $jwt_parts[0] ), true );
+		$payload   = json_decode( base64_decode( $jwt_parts[1] ), true );
+		$signature = $jwt_parts[2];
+
+		return [ $header, $payload, $signature ];
+	}
+
+
+	/**
+	 * Gets the card object from JWT.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param string $jwt
+	 * @return array|null
+	 */
+	protected function get_card_from_jwt( string $jwt ) :?array {
+
+		[ , $payload ] = $this->decode_jwt( $jwt );
+
+		return ! empty( $payload['content']['paymentInformation']['card'] ) ? $payload['content']['paymentInformation']['card'] : null;
+	}
+
+
+	/**
+	 * Gets the detected card code (type) from JWT token.
+	 *
+	 * @see Helper::$card_type_map
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param string $jwt
+	 * @return string|null
+	 */
+	protected function get_detected_card_code_from_jwt( string $jwt ) :?string {
+
+		$card = $this->get_card_from_jwt( $jwt );
+
+		return ! empty( $card['number']['detectedCardTypes'] ) ? $card['number']['detectedCardTypes'][0] : null;
 	}
 
 

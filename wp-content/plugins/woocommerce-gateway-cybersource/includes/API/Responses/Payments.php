@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -77,7 +77,7 @@ abstract class Payments extends Transaction {
 	/**
 	 * Gets the processor transaction ID.
 	 *
-	 * @since 2.0.0-dev.5
+	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
@@ -115,6 +115,10 @@ abstract class Payments extends Transaction {
 		if ( $error_info && ! empty( $error_info->message ) ) {
 
 			$message = $error_info->message;
+
+			if ( ! empty( $cardholder_message = $this->get_cardholder_message() ) ) {
+				$message .= ' (' . $cardholder_message . ')';
+			}
 
 		} elseif ( ! empty( $this->response_data->message ) ) {
 
@@ -169,6 +173,19 @@ abstract class Payments extends Transaction {
 	 * @since 2.0.0
 	 */
 	public function get_payment_type() { }
+
+
+	/**
+	 * Gets the message for the cardholder.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string
+	 */
+	public function get_cardholder_message(): string {
+
+		return ! empty( $this->response_data->consumerAuthenticationInformation->cardholderMessage ) ? $this->response_data->consumerAuthenticationInformation->cardholderMessage : '';
+	}
 
 
 }

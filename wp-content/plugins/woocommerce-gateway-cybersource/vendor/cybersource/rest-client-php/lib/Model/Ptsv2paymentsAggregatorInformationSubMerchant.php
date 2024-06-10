@@ -204,50 +204,6 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['cardAcceptorId']) && (strlen($this->container['cardAcceptorId']) > 15)) {
-            $invalid_properties[] = "invalid value for 'cardAcceptorId', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 20)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['name']) && (strlen($this->container['name']) > 37)) {
-            $invalid_properties[] = "invalid value for 'name', the character length must be smaller than or equal to 37.";
-        }
-
-        if (!is_null($this->container['address1']) && (strlen($this->container['address1']) > 38)) {
-            $invalid_properties[] = "invalid value for 'address1', the character length must be smaller than or equal to 38.";
-        }
-
-        if (!is_null($this->container['locality']) && (strlen($this->container['locality']) > 21)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 21.";
-        }
-
-        if (!is_null($this->container['administrativeArea']) && (strlen($this->container['administrativeArea']) > 3)) {
-            $invalid_properties[] = "invalid value for 'administrativeArea', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['region']) && (strlen($this->container['region']) > 3)) {
-            $invalid_properties[] = "invalid value for 'region', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['postalCode']) && (strlen($this->container['postalCode']) > 15)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 3)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 3.";
-        }
-
-        if (!is_null($this->container['email']) && (strlen($this->container['email']) > 40)) {
-            $invalid_properties[] = "invalid value for 'email', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['phoneNumber']) && (strlen($this->container['phoneNumber']) > 20)) {
-            $invalid_properties[] = "invalid value for 'phoneNumber', the character length must be smaller than or equal to 20.";
-        }
-
         return $invalid_properties;
     }
 
@@ -260,39 +216,6 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['cardAcceptorId']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['id']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['name']) > 37) {
-            return false;
-        }
-        if (strlen($this->container['address1']) > 38) {
-            return false;
-        }
-        if (strlen($this->container['locality']) > 21) {
-            return false;
-        }
-        if (strlen($this->container['administrativeArea']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['region']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['country']) > 3) {
-            return false;
-        }
-        if (strlen($this->container['email']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['phoneNumber']) > 20) {
-            return false;
-        }
         return true;
     }
 
@@ -313,10 +236,6 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
      */
     public function setCardAcceptorId($cardAcceptorId)
     {
-        if (!is_null($cardAcceptorId) && (strlen($cardAcceptorId) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $cardAcceptorId when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 15.');
-        }
-
         $this->container['cardAcceptorId'] = $cardAcceptorId;
 
         return $this;
@@ -338,10 +257,6 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 20.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -358,15 +273,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets name
-     * @param string $name Sub-merchant’s business name.  #### American Express Direct The maximum length of the sub-merchant name depends on the length of the aggregator name. The combined length for both values must not exceed 36 characters.  #### CyberSource through VisaNet With American Express, the maximum length of the sub-merchant name depends on the length of the aggregator name. The combined length for both values must not exceed 36 characters. The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.  #### FDC Nashville Global With Mastercard, the maximum length of the sub-merchant name depends on the length of the aggregator name: - If aggregator name length is 1 through 3, maximum sub-merchant name length is 21. - If aggregator name length is 4 through 7, maximum sub-merchant name length is 17. - If aggregator name length is 8 through 12, maximum sub-merchant name length is 12.
+     * @param string $name Sub-merchant's business name.  #### American Express Direct The maximum length of the sub-merchant name depends on the length of the aggregator name. The combined length for both values must not exceed 36 characters.  #### CyberSource through VisaNet With American Express, the maximum length of the sub-merchant name depends on the length of the aggregator name. The combined length for both values must not exceed 36 characters. The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.  #### FDC Nashville Global With Mastercard, the maximum length of the sub-merchant name depends on the length of the aggregator name: - If aggregator name length is 1 through 3, maximum sub-merchant name length is 21. - If aggregator name length is 4 through 7, maximum sub-merchant name length is 17. - If aggregator name length is 8 through 12, maximum sub-merchant name length is 12.
      * @return $this
      */
     public function setName($name)
     {
-        if (!is_null($name) && (strlen($name) > 37)) {
-            throw new \InvalidArgumentException('invalid length for $name when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 37.');
-        }
-
         $this->container['name'] = $name;
 
         return $this;
@@ -383,15 +294,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets address1
-     * @param string $address1 First line of the sub-merchant’s street address.  For processor-specific details, see `submerchant_street` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.
+     * @param string $address1 First line of the sub-merchant's street address.  For processor-specific details, see `submerchant_street` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.
      * @return $this
      */
     public function setAddress1($address1)
     {
-        if (!is_null($address1) && (strlen($address1) > 38)) {
-            throw new \InvalidArgumentException('invalid length for $address1 when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 38.');
-        }
-
         $this->container['address1'] = $address1;
 
         return $this;
@@ -408,15 +315,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets locality
-     * @param string $locality Sub-merchant’s city.  For processor-specific details, see `submerchant_city` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.
+     * @param string $locality Sub-merchant's city.  For processor-specific details, see `submerchant_city` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.
      * @return $this
      */
     public function setLocality($locality)
     {
-        if (!is_null($locality) && (strlen($locality) > 21)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 21.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -433,15 +336,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets administrativeArea
-     * @param string $administrativeArea Sub-merchant’s state or province.  For possible values and also aggregator support, see `submerchant_state` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.
+     * @param string $administrativeArea Sub-merchant's state or province.  For possible values and also aggregator support, see `submerchant_state` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.
      * @return $this
      */
     public function setAdministrativeArea($administrativeArea)
     {
-        if (!is_null($administrativeArea) && (strlen($administrativeArea) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $administrativeArea when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 3.');
-        }
-
         $this->container['administrativeArea'] = $administrativeArea;
 
         return $this;
@@ -458,15 +357,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets region
-     * @param string $region Sub-merchant’s region.  **Example**\\ `NE` indicates that the sub-merchant is in the northeast region.  For processor-specific details, see `submerchant_region` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $region Sub-merchant's region.  **Example**\\ `NE` indicates that the sub-merchant is in the northeast region.  For processor-specific details, see `submerchant_region` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setRegion($region)
     {
-        if (!is_null($region) && (strlen($region) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $region when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 3.');
-        }
-
         $this->container['region'] = $region;
 
         return $this;
@@ -483,15 +378,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets postalCode
-     * @param string $postalCode Partial postal code for the sub-merchant’s address.  For processor-specific details, see `submerchant_postal_code` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.
+     * @param string $postalCode Partial postal code for the sub-merchant's address.  For processor-specific details, see `submerchant_postal_code` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file5.  #### FDC Compass This value must consist of uppercase characters.
      * @return $this
      */
     public function setPostalCode($postalCode)
     {
-        if (!is_null($postalCode) && (strlen($postalCode) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 15.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -508,15 +399,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets country
-     * @param string $country Sub-merchant’s country. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file.  #### FDC Compass This value must consist of uppercase characters.  For details, see the `submerchant_country` request-level field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $country Sub-merchant's country. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).  #### CyberSource through VisaNet The value for this field does not map to the TC 33 capture file.  #### FDC Compass This value must consist of uppercase characters.  For details, see the `submerchant_country` request-level field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 3.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -533,15 +420,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets email
-     * @param string $email Sub-merchant’s email address.  **Maximum length for processors**   - American Express Direct: 40  - CyberSource through VisaNet: 40  - FDC Compass: 40  - FDC Nashville Global: 19  #### CyberSource through VisaNet With American Express, the value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCRB - Position: 25-64 - Field: American Express Seller E-mail Address  **Note** The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
+     * @param string $email Sub-merchant's email address.  **Maximum length for processors**   - American Express Direct: 40  - CyberSource through VisaNet: 40  - FDC Compass: 40  - FDC Nashville Global: 19  #### CyberSource through VisaNet With American Express, the value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCRB - Position: 25-64 - Field: American Express Seller E-mail Address  **Note** The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant's acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
      * @return $this
      */
     public function setEmail($email)
     {
-        if (!is_null($email) && (strlen($email) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $email when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 40.');
-        }
-
         $this->container['email'] = $email;
 
         return $this;
@@ -558,15 +441,11 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
 
     /**
      * Sets phoneNumber
-     * @param string $phoneNumber Sub-merchant’s telephone number.  **Maximum length for procesors**   - American Express Direct: 20  - CyberSource through VisaNet: 20  - FDC Compass: 13  - FDC Nashville Global: 10  #### CyberSource through VisaNet With American Express, the value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP01 TCRB - Position: 5-24 - Field: American Express Seller Telephone Number  **FDC Compass**\\ This value must consist of uppercase characters. Use one of these recommended formats:\\ `NNN-NNN-NNNN`\\ `NNN-AAAAAAA`
+     * @param string $phoneNumber Sub-merchant's telephone number.  **Maximum length for procesors**   - American Express Direct: 20  - CyberSource through VisaNet: 20  - FDC Compass: 13  - FDC Nashville Global: 10  #### CyberSource through VisaNet With American Express, the value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP01 TCRB - Position: 5-24 - Field: American Express Seller Telephone Number  **FDC Compass**\\ This value must consist of uppercase characters. Use one of these recommended formats:\\ `NNN-NNN-NNNN`\\ `NNN-AAAAAAA`
      * @return $this
      */
     public function setPhoneNumber($phoneNumber)
     {
-        if (!is_null($phoneNumber) && (strlen($phoneNumber) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $phoneNumber when calling Ptsv2paymentsAggregatorInformationSubMerchant., must be smaller than or equal to 20.');
-        }
-
         $this->container['phoneNumber'] = $phoneNumber;
 
         return $this;
@@ -576,6 +455,7 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -586,6 +466,7 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -597,6 +478,7 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -611,6 +493,7 @@ class Ptsv2paymentsAggregatorInformationSubMerchant implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

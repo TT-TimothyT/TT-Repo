@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -44,25 +44,9 @@ class Key_Generation extends Response {
 	 *
 	 * @return string
 	 */
-	public function get_key_id() {
+	public function get_key_id(): string {
 
-		return ! empty( $this->response_data->keyId ) ? $this->response_data->keyId : '';
-	}
-
-
-	/**
-	 * Gets the response JWK array.
-	 *
-	 * @since 2.0.0
- 	 * @deprecated 2.3.0-dev.1
-	 *
-	 * @return array
-	 */
-	public function get_jwk_array() {
-
-		wc_deprecated_function( __METHOD__, '2.3.0-dev.1' );
-
-		return [];
+		return is_string( $this->response_data ) ? $this->response_data : '';
 	}
 
 

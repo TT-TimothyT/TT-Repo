@@ -198,46 +198,6 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['firstName']) && (strlen($this->container['firstName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'firstName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['lastName']) && (strlen($this->container['lastName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'lastName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address1']) && (strlen($this->container['address1']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address1', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['address2']) && (strlen($this->container['address2']) > 60)) {
-            $invalid_properties[] = "invalid value for 'address2', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['locality']) && (strlen($this->container['locality']) > 50)) {
-            $invalid_properties[] = "invalid value for 'locality', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['administrativeArea']) && (strlen($this->container['administrativeArea']) > 20)) {
-            $invalid_properties[] = "invalid value for 'administrativeArea', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['postalCode']) && (strlen($this->container['postalCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'postalCode', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['company']) && (strlen($this->container['company']) > 60)) {
-            $invalid_properties[] = "invalid value for 'company', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['country']) && (strlen($this->container['country']) > 2)) {
-            $invalid_properties[] = "invalid value for 'country', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['phoneNumber']) && (strlen($this->container['phoneNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'phoneNumber', the character length must be smaller than or equal to 15.";
-        }
-
         return $invalid_properties;
     }
 
@@ -250,36 +210,6 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
     public function valid()
     {
 
-        if (strlen($this->container['firstName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['lastName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address1']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['address2']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['locality']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['administrativeArea']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['postalCode']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['company']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['country']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['phoneNumber']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -300,10 +230,6 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
      */
     public function setFirstName($firstName)
     {
-        if (!is_null($firstName) && (strlen($firstName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $firstName when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['firstName'] = $firstName;
 
         return $this;
@@ -325,10 +251,6 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
      */
     public function setLastName($lastName)
     {
-        if (!is_null($lastName) && (strlen($lastName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $lastName when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['lastName'] = $lastName;
 
         return $this;
@@ -345,15 +267,11 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
 
     /**
      * Sets address1
-     * @param string $address1 First line of the shipping address.  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $address1 First line of the shipping address.  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAddress1($address1)
     {
-        if (!is_null($address1) && (strlen($address1) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address1 when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address1'] = $address1;
 
         return $this;
@@ -370,15 +288,11 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
 
     /**
      * Sets address2
-     * @param string $address2 Second line of the shipping address.  Optional field.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $address2 Second line of the shipping address.  Optional field.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setAddress2($address2)
     {
-        if (!is_null($address2) && (strlen($address2) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $address2 when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['address2'] = $address2;
 
         return $this;
@@ -395,15 +309,11 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
 
     /**
      * Sets locality
-     * @param string $locality City of the shipping address.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $locality City of the shipping address.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setLocality($locality)
     {
-        if (!is_null($locality) && (strlen($locality) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $locality when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 50.');
-        }
-
         $this->container['locality'] = $locality;
 
         return $this;
@@ -425,10 +335,6 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
      */
     public function setAdministrativeArea($administrativeArea)
     {
-        if (!is_null($administrativeArea) && (strlen($administrativeArea) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $administrativeArea when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 20.');
-        }
-
         $this->container['administrativeArea'] = $administrativeArea;
 
         return $this;
@@ -445,15 +351,11 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
 
     /**
      * Sets postalCode
-     * @param string $postalCode Postal code for the shipping address. The postal code must consist of 5 to 9 digits.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  When the billing country is the U.S., the 9-digit postal code must follow this format: [5 digits][dash][4 digits]  Example 12345-6789  When the billing country is Canada, the 6-digit postal code must follow this format: [alpha][numeric][alpha][space][numeric][alpha][numeric]  Example A1B 2C3  #### American Express Direct Before sending the postal code to the processor, all nonalphanumeric characters are removed and, if the remaining value is longer than nine characters, the value is truncated starting from the right side. #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $postalCode Postal code for the shipping address. The postal code must consist of 5 to 9 digits.  Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or Canada; otherwise, optional.  When the billing country is the U.S., the 9-digit postal code must follow this format: [5 digits][dash][4 digits]  Example 12345-6789  When the billing country is Canada, the 6-digit postal code must follow this format: [alpha][numeric][alpha][space][numeric][alpha][numeric]  Example A1B 2C3  #### American Express Direct Before sending the postal code to the processor, all nonalphanumeric characters are removed and, if the remaining value is longer than nine characters, the value is truncated starting from the right side. #### Tax Calculation Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setPostalCode($postalCode)
     {
-        if (!is_null($postalCode) && (strlen($postalCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $postalCode when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 10.');
-        }
-
         $this->container['postalCode'] = $postalCode;
 
         return $this;
@@ -470,15 +372,11 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
 
     /**
      * Sets company
-     * @param string $company Name of the customer’s company.  For processor-specific information, see the company_name field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+     * @param string $company Name of the customer's company.  For processor-specific information, see the company_name field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
      * @return $this
      */
     public function setCompany($company)
     {
-        if (!is_null($company) && (strlen($company) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $company when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 60.');
-        }
-
         $this->container['company'] = $company;
 
         return $this;
@@ -495,15 +393,11 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
 
     /**
      * Sets country
-     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+     * @param string $country Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)  Required field for authorization if any shipping address information is included in the request; otherwise, optional.  #### Tax Calculation Optional field for U.S., Canadian, international tax, and value added taxes. Billing address objects will be used to determine the cardholder's location when shipTo objects are not present.
      * @return $this
      */
     public function setCountry($country)
     {
-        if (!is_null($country) && (strlen($country) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $country when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 2.');
-        }
-
         $this->container['country'] = $country;
 
         return $this;
@@ -525,10 +419,6 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
      */
     public function setPhoneNumber($phoneNumber)
     {
-        if (!is_null($phoneNumber) && (strlen($phoneNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $phoneNumber when calling TssV2TransactionsGet200ResponseOrderInformationShipTo., must be smaller than or equal to 15.');
-        }
-
         $this->container['phoneNumber'] = $phoneNumber;
 
         return $this;
@@ -538,6 +428,7 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -548,6 +439,7 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -559,6 +451,7 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -573,6 +466,7 @@ class TssV2TransactionsGet200ResponseOrderInformationShipTo implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

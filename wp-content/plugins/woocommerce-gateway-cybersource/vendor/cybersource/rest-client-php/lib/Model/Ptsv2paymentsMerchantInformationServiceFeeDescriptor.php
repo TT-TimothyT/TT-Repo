@@ -156,18 +156,6 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['name']) && (strlen($this->container['name']) > 22)) {
-            $invalid_properties[] = "invalid value for 'name', the character length must be smaller than or equal to 22.";
-        }
-
-        if (!is_null($this->container['contact']) && (strlen($this->container['contact']) > 11)) {
-            $invalid_properties[] = "invalid value for 'contact', the character length must be smaller than or equal to 11.";
-        }
-
-        if (!is_null($this->container['state']) && (strlen($this->container['state']) > 20)) {
-            $invalid_properties[] = "invalid value for 'state', the character length must be smaller than or equal to 20.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
     public function valid()
     {
 
-        if (strlen($this->container['name']) > 22) {
-            return false;
-        }
-        if (strlen($this->container['contact']) > 11) {
-            return false;
-        }
-        if (strlen($this->container['state']) > 20) {
-            return false;
-        }
         return true;
     }
 
@@ -204,15 +183,11 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
 
     /**
      * Sets name
-     * @param string $name Name of the service provider that is collecting the service fee. The service provider name must consist of 3, 7, or 12 characters followed by an asterisk (*). This value must also include the words “Service Fee.”  When you include more than one consecutive space, extra spaces are removed. Use one of the following formats for this value: - <3-character name>*Service Fee - <7-character name>*Service Fee - <12-character name>*Service Fee  When payments are made in installments, this value must also include installment information such as “1 of 5” or “3 of 7.” For installment payments, use one of the following formats for this value: - <3-character name>*Service Fee*<N> of <M> - <7-character name>*Service Fee*<N> of <M> - <12-character name>*Service Fee*<N> of <M>  where <N> is the payment number and <M> is the total number of payments.  When you do not include this value in your request, CyberSource uses the value that is in your CyberSource account.  This value might be displayed on the cardholder’s statement.
+     * @param string $name Name of the service provider that is collecting the service fee. The service provider name must consist of 3, 7, or 12 characters followed by an asterisk (*). This value must also include the words \"Service Fee.\"  When you include more than one consecutive space, extra spaces are removed. Use one of the following formats for this value: - <3-character name>*Service Fee - <7-character name>*Service Fee - <12-character name>*Service Fee  When payments are made in installments, this value must also include installment information such as \"1 of 5\" or \"3 of 7.\" For installment payments, use one of the following formats for this value: - <3-character name>*Service Fee*<N> of <M> - <7-character name>*Service Fee*<N> of <M> - <12-character name>*Service Fee*<N> of <M>  where <N> is the payment number and <M> is the total number of payments.  When you do not include this value in your request, CyberSource uses the value that is in your CyberSource account.  This value might be displayed on the cardholder's statement.
      * @return $this
      */
     public function setName($name)
     {
-        if (!is_null($name) && (strlen($name) > 22)) {
-            throw new \InvalidArgumentException('invalid length for $name when calling Ptsv2paymentsMerchantInformationServiceFeeDescriptor., must be smaller than or equal to 22.');
-        }
-
         $this->container['name'] = $name;
 
         return $this;
@@ -229,15 +204,11 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
 
     /**
      * Sets contact
-     * @param string $contact Contact information for the service provider that is collecting the service fee. when you include more than one consecutive space, extra spaces are removed.  When you do not include this value in your request, CyberSource uses the value that is in your CyberSource account.  This value might be displayed on the cardholder’s statement.
+     * @param string $contact Contact information for the service provider that is collecting the service fee. when you include more than one consecutive space, extra spaces are removed.  When you do not include this value in your request, CyberSource uses the value that is in your CyberSource account.  This value might be displayed on the cardholder's statement.
      * @return $this
      */
     public function setContact($contact)
     {
-        if (!is_null($contact) && (strlen($contact) > 11)) {
-            throw new \InvalidArgumentException('invalid length for $contact when calling Ptsv2paymentsMerchantInformationServiceFeeDescriptor., must be smaller than or equal to 11.');
-        }
-
         $this->container['contact'] = $contact;
 
         return $this;
@@ -254,15 +225,11 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
 
     /**
      * Sets state
-     * @param string $state State or territory in which the service provider is located.  When you do not include this value in your request, CyberSource uses the value that is in your CyberSource account.  This value might be displayed on the cardholder’s statement.
+     * @param string $state State or territory in which the service provider is located.  When you do not include this value in your request, CyberSource uses the value that is in your CyberSource account.  This value might be displayed on the cardholder's statement.
      * @return $this
      */
     public function setState($state)
     {
-        if (!is_null($state) && (strlen($state) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $state when calling Ptsv2paymentsMerchantInformationServiceFeeDescriptor., must be smaller than or equal to 20.');
-        }
-
         $this->container['state'] = $state;
 
         return $this;
@@ -272,6 +239,7 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class Ptsv2paymentsMerchantInformationServiceFeeDescriptor implements ArrayAcces
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

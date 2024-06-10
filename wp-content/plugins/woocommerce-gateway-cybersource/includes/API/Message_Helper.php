@@ -17,13 +17,13 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -65,8 +65,8 @@ class Message_Helper extends Framework\SV_WC_Payment_Gateway_API_Response_Messag
 	const REASON_DECISION_PROFILE_REJECT = 'DECISION_PROFILE_REJECT';
 	const REASON_SCORE_EXCEEDS_THRESHOLD = 'SCORE_EXCEEDS_THRESHOLD';
 	const REASON_PENDING_AUTHENTICATION  = 'PENDING_AUTHENTICATION';
-
 	const REASON_INVALID_MERCHANT_CONFIGURATION = 'INVALID_MERCHANT_CONFIGURATION';
+	const REASON_INVALID_DATA = 'INVALID_DATA';
 
 	/** @var Responses\Payments\Payment response */
 	protected $response;
@@ -113,6 +113,11 @@ class Message_Helper extends Framework\SV_WC_Payment_Gateway_API_Response_Messag
 		// rejected
 		Responses\Payments\Payment::STATUS_AUTHORIZED_RISK_DECLINED => [
 			self::REASON_DECISION_PROFILE_REJECT => 'declined_by_decision_manager',
+		],
+
+		// invalid data
+		Responses\Payments\Payment::STATUS_INVALID_REQUEST => [
+			self::REASON_INVALID_DATA => 'invalid_billing_data',
 		],
 	];
 
@@ -179,8 +184,16 @@ class Message_Helper extends Framework\SV_WC_Payment_Gateway_API_Response_Messag
 
 		$message = parent::get_user_message( $message_id );
 
-		if ( null === $message && 'declined_by_decision_manager' === $message_id ) {
-			$message = __( 'We\'re sorry, this order could not be processed due to fraud risks.', 'woocommerce-gateway-cybersource' );
+		if ( null == $message ) {
+
+			switch ( $message_id ) {
+				case 'declined_by_decision_manager' :
+					$message = __( "We're sorry, this order could not be processed due to fraud risks.", 'woocommerce-gateway-cybersource' );
+				break;
+				case 'invalid_billing_data' :
+					$message = __( 'Please verify your billing information and try again.', 'woocommerce-gateway-cybersource' );
+				break;
+			}
 		}
 
 		return $message;

@@ -17,13 +17,13 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -44,7 +44,7 @@ abstract class Response extends Framework\SV_WC_API_JSON_Response {
 	/**
 	 * Sets the order object for this response.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @param \WC_Order $order order object
 	 */
@@ -57,7 +57,7 @@ abstract class Response extends Framework\SV_WC_API_JSON_Response {
 	/**
 	 * Gets the order associated with the response.
 	 *
-	 * @since 2.3.0-dev.1
+	 * @since 2.3.0
 	 *
 	 * @return \WC_Order|null
 	 */

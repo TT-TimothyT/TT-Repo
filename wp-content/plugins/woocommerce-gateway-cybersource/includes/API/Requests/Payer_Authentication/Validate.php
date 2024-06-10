@@ -17,19 +17,21 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payer_Authentication;
 
 use SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
 /**
  * CyberSource API validate request.
+ *
+ * TODO: this class is not used at the moment, consider removing in the next release {@itambek 2024-02-15}
  *
  * @since 2.0.0
  */
@@ -66,15 +68,42 @@ class Validate extends Payments {
 			'orderInformation' => [
 				'amountDetails' => $this->get_amount_details( $order->get_total() ),
 			],
-			'paymentInformation' => [
-				'customer' => [
-					'customerId' => ! empty( $order->payment->token ) ? $order->payment->token : $order->payment->js_token,
-				],
-			],
 			'consumerAuthenticationInformation' => [
-				'authenticationTransactionId' => $order->threed_secure->transaction_id,
+				'authenticationTransactionId' => $order->payment->authentication_transaction_id,
 			],
 		];
+
+		if ( $order->payment->is_transient ) {
+			/**
+			 * @see https://developer.cybersource.com/api-reference-assets/index.html#payer-authentication_payer-authentication_validate-authentication-results
+			 *
+			 * jti: TMS Transient Token, 64 hexadecimal id value representing captured payment credentials (including Sensitive Authentication Data, e.g. CVV).
+			 */
+			$this->data['tokenInformation'] = [
+				'jti' => $order->payment->token,
+			];
+		} else {
+			/**
+			 * @see https://developer.cybersource.com/api-reference-assets/index.html#payer-authentication_payer-authentication_validate-authentication-results
+			 *
+			 * customerId: Unique identifier for the customer's card and billing information.
+			 *
+			 * When you use Payment Tokenization or Recurring Billing and you include this value in
+			 * your request, many of the fields that are normally required for an authorization or credit
+			 * become optional.
+			 *
+			 * NOTE When you use Payment Tokenization or Recurring Billing, the value for the Customer ID is actually
+			 * the Cybersource payment token for a customer. This token stores information such as the consumer’s card
+			 * number, so it can be applied towards bill payments, recurring payments, or one-time payments.
+			 * By using this token in a payment API request, the merchant doesn't need to pass in data such as the
+			 * card number or expiration date in the request itself.
+			 */
+			$this->data['paymentInformation'] = [
+				'customer' => [
+					'customerId' => $order->payment->token,
+				],
+			];
+		}
 	}
 
 

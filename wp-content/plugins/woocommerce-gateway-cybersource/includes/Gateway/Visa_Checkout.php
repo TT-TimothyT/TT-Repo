@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\API\Visa_Checkout\Responses\Payment_Authorization;
 use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -35,6 +35,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 2.3.0
  */
+#[\AllowDynamicProperties]
 class Visa_Checkout extends Gateway {
 
 
@@ -42,7 +43,7 @@ class Visa_Checkout extends Gateway {
 	const PAYMENT_TYPE_VISA_CHECKOUT = 'visa_checkout';
 
 	/** @var string URL for the Sandbox version of the Visa Checkout JS SDK */
-	const JS_SDK_URL_SANDOBX = 'https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js';
+	const JS_SDK_URL_SANDBOX = 'https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js';
 
 	/** @var string URL for the Production version of the Visa Checkout JS SDK */
 	const JS_SDK_URL_PRODUCTION = 'https://assets.secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js';
@@ -58,7 +59,7 @@ class Visa_Checkout extends Gateway {
 		/**
 		 * Filters the CyberSource Visa Checkout gateway method title.
 		 *
-		 * @since 2.4.1-dev.1
+		 * @since 2.4.1
 		 *
 		 * @param string $method_title method title
 		 */
@@ -67,7 +68,7 @@ class Visa_Checkout extends Gateway {
 		/**
 		 * Filters the CyberSource Visa Checkout gateway method description.
 		 *
-		 * @since 2.4.1-dev.1
+		 * @since 2.4.1
 		 *
 		 * @param string $method_description method description
 		 */
@@ -325,10 +326,10 @@ class Visa_Checkout extends Gateway {
 	 *
 	 * @return string
 	 */
-	protected function get_js_sdk_url() {
+	protected function get_js_sdk_url() : string {
 
 		if ( $this->is_test_environment() ) {
-			return self::JS_SDK_URL_SANDOBX;
+			return self::JS_SDK_URL_SANDBOX;
 		}
 
 		return self::JS_SDK_URL_PRODUCTION;

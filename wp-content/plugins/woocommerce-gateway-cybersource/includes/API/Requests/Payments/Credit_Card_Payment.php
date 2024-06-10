@@ -17,13 +17,14 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
 
 use SkyVerge\WooCommerce\Cybersource\API\Visa_Checkout\Traits\Can_Add_Visa_Checkout_Request_Data;
+use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\AJAX;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -74,14 +75,12 @@ class Credit_Card_Payment extends Payment {
 	 * @param \WC_Order $order WooCommerce order
 	 * @param bool $settlement_type settlement type
 	 */
-	public function create_payment( \WC_Order $order, $settlement_type = true ) {
+	public function create_payment( \WC_Order $order, bool $settlement_type = true ): void {
 
 		parent::create_payment( $order, $settlement_type );
 
-		$threed_secure_data = $this->get_consumer_authentication_information( $order );
-
-		if ( ! empty( $threed_secure_data ) ) {
-			$this->data['consumerAuthenticationInformation'] = $threed_secure_data;
+		if ( ! empty( $consumer_auth_information = $this->get_consumer_authentication_information( $order ) ) ) {
+			$this->data['consumerAuthenticationInformation'] = $consumer_auth_information;
 		}
 	}
 
@@ -94,50 +93,31 @@ class Credit_Card_Payment extends Payment {
 	 * @param \WC_Order $order WooCommerce order object
 	 * @return array
 	 */
-	private function get_consumer_authentication_information( \WC_Order $order ) {
+	private function get_consumer_authentication_information( \WC_Order $order ): array {
 
-		$data = [];
-
-		// TODO: consider whether all of these empty() checks are needed since array_filter() strips out nulls {IT: 2023-10-06}
-		if ( ! empty( $order->threed_secure->transaction_id ) ) {
-			$data['authenticationTransactionId'] = $order->threed_secure->transaction_id;
+		if ( empty( $reference_id = $order->threed_secure->reference_id ) ) {
+			return [];
 		}
 
-		// add the reference ID if available
-		if ( ! empty( $order->threed_secure->reference_id ) ) {
-			$data['referenceId'] = $order->threed_secure->reference_id;
-		}
+		$data = $order->threed_secure->consumer_authentication_information ?? (object) [];
 
-		// add the remaining check enrollment response fields as avaialble
-		if ( ! empty( $order->threed_secure->ucaf_collection_indicator ) ) {
-			$data['ucafCollectionIndicator'] = $order->threed_secure->ucaf_collection_indicator;
-		}
-
-		if ( ! empty( $order->threed_secure->cavv ) ) {
-			$data['cavv'] = $order->threed_secure->cavv;
-		}
-
-		if ( ! empty( $order->threed_secure->ucaf_authentication_data ) ) {
-			$data['ucafAuthenticationData'] = $order->threed_secure->ucaf_authentication_data;
-		}
-
-		if ( ! empty( $order->threed_secure->xid ) ) {
-			$data['xid'] = $order->threed_secure->xid;
-		}
-
-		if ( ! empty( $order->threed_secure->veres_enrolled ) ) {
-			$data['veresEnrolled'] = $order->threed_secure->veres_enrolled;
-		}
-
-		if ( ! empty( $order->threed_secure->specification_version ) ) {
-			$data['paSpecificationVersion'] = $order->threed_secure->specification_version;
-		}
-
-		if ( ! empty( $order->threed_secure->directory_server_transaction_id ) ) {
-			$data['directoryServerTransactionId'] = $order->threed_secure->directory_server_transaction_id;
-		}
-
-		return array_filter( $data );
+		return array_filter( [
+			'referenceId'                  => $reference_id,
+			// The following fields are required to validate consumer authentication for 3DSecure transactions - these will only
+			// be available on the order object if a step-up challenge was required in the check enrollment response.
+			// Note that most fields have a 1:1 mapping, except for `specificationVersion`
+			'authenticationTransactionId'  => $data->authenticationTransactionId ?? null,
+			'ucafCollectionIndicator'      => $data->ucafCollectionIndicator ?? null,
+			'ucafAuthenticationData'       => $data->ucafAuthenticationData ?? null,
+			'cavv'                         => $data->cavv ?? null,
+			'xid'                          => $data->xid ?? null,
+			'veresEnrolled'                => $data->veresEnrolled ?? null,
+			'directoryServerTransactionId' => $data->directoryServerTransactionId ?? null,
+			'paSpecificationVersion'       => $data->specificationVersion ?? null,
+			// These fields are not required for payment authentication validation, but we'll include them if available for good measure
+			'eciRaw'                       => $data->eciRaw ?? null,
+			'paresStatus'                  => $data->paresStatus ?? null,
+		] );
 	}
 
 
@@ -218,9 +198,9 @@ class Credit_Card_Payment extends Payment {
 	 * @since 2.0.0
 	 *
 	 * @param bool $settlement_type settlement type
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	protected function get_processing_information( $settlement_type = false ) {
+	protected function get_processing_information( bool $settlement_type = false ): array {
 
 		$data = parent::get_processing_information( $settlement_type );
 
@@ -233,9 +213,28 @@ class Credit_Card_Payment extends Payment {
 			$data['paymentSolution'] = self::PAYMENT_SOLUTION_GOOGLE_PAY;
 		}
 
-		// validate consumer authentication for 3DSecure transactions
-		if ( ! empty( $this->get_order()->threed_secure->transaction_id ) && $this->get_order()->threed_secure->jwt ) {
-			$data['actionList'][] = 'VALIDATE_CONSUMER_AUTHENTICATION';
+		/** @see AJAX::check_enrollment() */
+		if ( ! empty( $threed_secure_data = $this->get_order()->threed_secure ) ) {
+
+			// set the commerce indicator from check enrollment response, if available
+			if ( ! empty( $threed_secure_data->consumer_authentication_information->ecommerceIndicator ) ) {
+				$data['commerceIndicator'] = $threed_secure_data->consumer_authentication_information->ecommerceIndicator;
+			}
+
+			// Unfortunately, it appears that Decision Manager cannot access the enrollment check results when performed
+			// separately from payment authorization, leaving the merchant possibly vulnerable to fraudulent transactions with
+			// no liability shift in cases where frictionless authentication was not available (Test Case 2.4, for example).
+			// As a workaround,  we will re-check enrollment if enrollment check did not require a step-up challenge - this
+			// ensures that the enrollment check results are available in the Decision Manager, allowing the merchant to
+			// use the results for fraud screening.
+			if ( $threed_secure_data->enrollment_status === 'AUTHENTICATION_SUCCESSFUL' ) {
+				$data['actionList'][] = 'CONSUMER_AUTHENTICATION';
+			}
+
+			// validate consumer authentication for 3DSecure transactions, if a challenge was required when checking enrollment
+			if ( $threed_secure_data->enrollment_status === 'PENDING_AUTHENTICATION' ) {
+				$data['actionList'][] = 'VALIDATE_CONSUMER_AUTHENTICATION';
+			}
 		}
 
 		if ( $info = $this->get_visa_checkout_processing_information( $this->get_order(), 'payment' ) ) {
@@ -281,10 +280,6 @@ class Credit_Card_Payment extends Payment {
 
 		if ( isset( $data['paymentInformation']['fluidData']['key'] ) ) {
 			$string = $this->replace_fluid_data( $data['paymentInformation']['fluidData']['key'], str_repeat( '*', 10 ), $string );
-		}
-
-		if ( isset( $data['consumerAuthenticationInformation']['authenticationTransactionId'] ) ) {
-			$string = str_replace( $data['consumerAuthenticationInformation']['authenticationTransactionId'], str_repeat( '*', 10 ), $string );
 		}
 
 		return $string;

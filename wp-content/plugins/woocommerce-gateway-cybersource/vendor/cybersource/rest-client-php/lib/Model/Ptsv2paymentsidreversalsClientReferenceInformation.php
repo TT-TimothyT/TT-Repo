@@ -55,6 +55,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'code' => 'string',
+        'pausedRequestId' => 'string',
         'comments' => 'string',
         'partner' => '\CyberSource\Model\Ptsv2paymentsidreversalsClientReferenceInformationPartner',
         'applicationName' => 'string',
@@ -68,6 +69,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'code' => null,
+        'pausedRequestId' => null,
         'comments' => null,
         'partner' => null,
         'applicationName' => null,
@@ -91,6 +93,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
      */
     protected static $attributeMap = [
         'code' => 'code',
+        'pausedRequestId' => 'pausedRequestId',
         'comments' => 'comments',
         'partner' => 'partner',
         'applicationName' => 'applicationName',
@@ -105,6 +108,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
      */
     protected static $setters = [
         'code' => 'setCode',
+        'pausedRequestId' => 'setPausedRequestId',
         'comments' => 'setComments',
         'partner' => 'setPartner',
         'applicationName' => 'setApplicationName',
@@ -119,6 +123,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
      */
     protected static $getters = [
         'code' => 'getCode',
+        'pausedRequestId' => 'getPausedRequestId',
         'comments' => 'getComments',
         'partner' => 'getPartner',
         'applicationName' => 'getApplicationName',
@@ -158,6 +163,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['code'] = isset($data['code']) ? $data['code'] : null;
+        $this->container['pausedRequestId'] = isset($data['pausedRequestId']) ? $data['pausedRequestId'] : null;
         $this->container['comments'] = isset($data['comments']) ? $data['comments'] : null;
         $this->container['partner'] = isset($data['partner']) ? $data['partner'] : null;
         $this->container['applicationName'] = isset($data['applicationName']) ? $data['applicationName'] : null;
@@ -174,10 +180,6 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 50)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 50.";
-        }
-
         return $invalid_properties;
     }
 
@@ -190,9 +192,6 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['code']) > 50) {
-            return false;
-        }
         return true;
     }
 
@@ -213,11 +212,28 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling Ptsv2paymentsidreversalsClientReferenceInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['code'] = $code;
+
+        return $this;
+    }
+
+    /**
+     * Gets pausedRequestId
+     * @return string
+     */
+    public function getPausedRequestId()
+    {
+        return $this->container['pausedRequestId'];
+    }
+
+    /**
+     * Sets pausedRequestId
+     * @param string $pausedRequestId Used to resume a transaction that was paused for an order modification rule to allow for payer authentication to complete. To resume and continue with the authorization/decision service flow, call the services and include the request id from the prior decision call.
+     * @return $this
+     */
+    public function setPausedRequestId($pausedRequestId)
+    {
+        $this->container['pausedRequestId'] = $pausedRequestId;
 
         return $this;
     }
@@ -331,6 +347,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -341,6 +358,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -352,6 +370,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -366,6 +385,7 @@ class Ptsv2paymentsidreversalsClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

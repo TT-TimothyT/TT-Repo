@@ -151,14 +151,6 @@ class Riskv1decisionsMerchantDefinedInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['key']) && (strlen($this->container['key']) > 255)) {
-            $invalid_properties[] = "invalid value for 'key', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['value']) && (strlen($this->container['value']) > 255)) {
-            $invalid_properties[] = "invalid value for 'value', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -171,12 +163,6 @@ class Riskv1decisionsMerchantDefinedInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['key']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['value']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -197,10 +183,6 @@ class Riskv1decisionsMerchantDefinedInformation implements ArrayAccess
      */
     public function setKey($key)
     {
-        if (!is_null($key) && (strlen($key) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $key when calling Riskv1decisionsMerchantDefinedInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['key'] = $key;
 
         return $this;
@@ -222,10 +204,6 @@ class Riskv1decisionsMerchantDefinedInformation implements ArrayAccess
      */
     public function setValue($value)
     {
-        if (!is_null($value) && (strlen($value) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $value when calling Riskv1decisionsMerchantDefinedInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['value'] = $value;
 
         return $this;
@@ -235,6 +213,7 @@ class Riskv1decisionsMerchantDefinedInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -245,6 +224,7 @@ class Riskv1decisionsMerchantDefinedInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -256,6 +236,7 @@ class Riskv1decisionsMerchantDefinedInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -270,6 +251,7 @@ class Riskv1decisionsMerchantDefinedInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -67,14 +67,18 @@ class CreatePaymentRequest implements ArrayAccess
         'consumerAuthenticationInformation' => '\CyberSource\Model\Ptsv2paymentsConsumerAuthenticationInformation',
         'pointOfSaleInformation' => '\CyberSource\Model\Ptsv2paymentsPointOfSaleInformation',
         'merchantDefinedInformation' => '\CyberSource\Model\Ptsv2paymentsMerchantDefinedInformation[]',
+        'merchantDefinedSecureInformation' => '\CyberSource\Model\Ptsv2paymentsMerchantDefinedSecureInformation',
         'installmentInformation' => '\CyberSource\Model\Ptsv2paymentsInstallmentInformation',
         'travelInformation' => '\CyberSource\Model\Ptsv2paymentsTravelInformation',
         'healthCareInformation' => '\CyberSource\Model\Ptsv2paymentsHealthCareInformation',
         'promotionInformation' => '\CyberSource\Model\Ptsv2paymentsPromotionInformation',
         'tokenInformation' => '\CyberSource\Model\Ptsv2paymentsTokenInformation',
+        'invoiceDetails' => '\CyberSource\Model\Ptsv2paymentsInvoiceDetails',
+        'processorInformation' => '\CyberSource\Model\Ptsv2paymentsProcessorInformation',
         'riskInformation' => '\CyberSource\Model\Ptsv2paymentsRiskInformation',
         'acquirerInformation' => '\CyberSource\Model\Ptsv2paymentsAcquirerInformation',
-        'recurringPaymentInformation' => '\CyberSource\Model\Ptsv2paymentsRecurringPaymentInformation'
+        'recurringPaymentInformation' => '\CyberSource\Model\Ptsv2paymentsRecurringPaymentInformation',
+        'watchlistScreeningInformation' => '\CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformation'
     ];
 
     /**
@@ -95,14 +99,18 @@ class CreatePaymentRequest implements ArrayAccess
         'consumerAuthenticationInformation' => null,
         'pointOfSaleInformation' => null,
         'merchantDefinedInformation' => null,
+        'merchantDefinedSecureInformation' => null,
         'installmentInformation' => null,
         'travelInformation' => null,
         'healthCareInformation' => null,
         'promotionInformation' => null,
         'tokenInformation' => null,
+        'invoiceDetails' => null,
+        'processorInformation' => null,
         'riskInformation' => null,
         'acquirerInformation' => null,
-        'recurringPaymentInformation' => null
+        'recurringPaymentInformation' => null,
+        'watchlistScreeningInformation' => null
     ];
 
     public static function swaggerTypes()
@@ -133,14 +141,18 @@ class CreatePaymentRequest implements ArrayAccess
         'consumerAuthenticationInformation' => 'consumerAuthenticationInformation',
         'pointOfSaleInformation' => 'pointOfSaleInformation',
         'merchantDefinedInformation' => 'merchantDefinedInformation',
+        'merchantDefinedSecureInformation' => 'merchantDefinedSecureInformation',
         'installmentInformation' => 'installmentInformation',
         'travelInformation' => 'travelInformation',
         'healthCareInformation' => 'healthCareInformation',
         'promotionInformation' => 'promotionInformation',
         'tokenInformation' => 'tokenInformation',
+        'invoiceDetails' => 'invoiceDetails',
+        'processorInformation' => 'processorInformation',
         'riskInformation' => 'riskInformation',
         'acquirerInformation' => 'acquirerInformation',
-        'recurringPaymentInformation' => 'recurringPaymentInformation'
+        'recurringPaymentInformation' => 'recurringPaymentInformation',
+        'watchlistScreeningInformation' => 'watchlistScreeningInformation'
     ];
 
 
@@ -162,14 +174,18 @@ class CreatePaymentRequest implements ArrayAccess
         'consumerAuthenticationInformation' => 'setConsumerAuthenticationInformation',
         'pointOfSaleInformation' => 'setPointOfSaleInformation',
         'merchantDefinedInformation' => 'setMerchantDefinedInformation',
+        'merchantDefinedSecureInformation' => 'setMerchantDefinedSecureInformation',
         'installmentInformation' => 'setInstallmentInformation',
         'travelInformation' => 'setTravelInformation',
         'healthCareInformation' => 'setHealthCareInformation',
         'promotionInformation' => 'setPromotionInformation',
         'tokenInformation' => 'setTokenInformation',
+        'invoiceDetails' => 'setInvoiceDetails',
+        'processorInformation' => 'setProcessorInformation',
         'riskInformation' => 'setRiskInformation',
         'acquirerInformation' => 'setAcquirerInformation',
-        'recurringPaymentInformation' => 'setRecurringPaymentInformation'
+        'recurringPaymentInformation' => 'setRecurringPaymentInformation',
+        'watchlistScreeningInformation' => 'setWatchlistScreeningInformation'
     ];
 
 
@@ -191,14 +207,18 @@ class CreatePaymentRequest implements ArrayAccess
         'consumerAuthenticationInformation' => 'getConsumerAuthenticationInformation',
         'pointOfSaleInformation' => 'getPointOfSaleInformation',
         'merchantDefinedInformation' => 'getMerchantDefinedInformation',
+        'merchantDefinedSecureInformation' => 'getMerchantDefinedSecureInformation',
         'installmentInformation' => 'getInstallmentInformation',
         'travelInformation' => 'getTravelInformation',
         'healthCareInformation' => 'getHealthCareInformation',
         'promotionInformation' => 'getPromotionInformation',
         'tokenInformation' => 'getTokenInformation',
+        'invoiceDetails' => 'getInvoiceDetails',
+        'processorInformation' => 'getProcessorInformation',
         'riskInformation' => 'getRiskInformation',
         'acquirerInformation' => 'getAcquirerInformation',
-        'recurringPaymentInformation' => 'getRecurringPaymentInformation'
+        'recurringPaymentInformation' => 'getRecurringPaymentInformation',
+        'watchlistScreeningInformation' => 'getWatchlistScreeningInformation'
     ];
 
     public static function attributeMap()
@@ -245,14 +265,18 @@ class CreatePaymentRequest implements ArrayAccess
         $this->container['consumerAuthenticationInformation'] = isset($data['consumerAuthenticationInformation']) ? $data['consumerAuthenticationInformation'] : null;
         $this->container['pointOfSaleInformation'] = isset($data['pointOfSaleInformation']) ? $data['pointOfSaleInformation'] : null;
         $this->container['merchantDefinedInformation'] = isset($data['merchantDefinedInformation']) ? $data['merchantDefinedInformation'] : null;
+        $this->container['merchantDefinedSecureInformation'] = isset($data['merchantDefinedSecureInformation']) ? $data['merchantDefinedSecureInformation'] : null;
         $this->container['installmentInformation'] = isset($data['installmentInformation']) ? $data['installmentInformation'] : null;
         $this->container['travelInformation'] = isset($data['travelInformation']) ? $data['travelInformation'] : null;
         $this->container['healthCareInformation'] = isset($data['healthCareInformation']) ? $data['healthCareInformation'] : null;
         $this->container['promotionInformation'] = isset($data['promotionInformation']) ? $data['promotionInformation'] : null;
         $this->container['tokenInformation'] = isset($data['tokenInformation']) ? $data['tokenInformation'] : null;
+        $this->container['invoiceDetails'] = isset($data['invoiceDetails']) ? $data['invoiceDetails'] : null;
+        $this->container['processorInformation'] = isset($data['processorInformation']) ? $data['processorInformation'] : null;
         $this->container['riskInformation'] = isset($data['riskInformation']) ? $data['riskInformation'] : null;
         $this->container['acquirerInformation'] = isset($data['acquirerInformation']) ? $data['acquirerInformation'] : null;
         $this->container['recurringPaymentInformation'] = isset($data['recurringPaymentInformation']) ? $data['recurringPaymentInformation'] : null;
+        $this->container['watchlistScreeningInformation'] = isset($data['watchlistScreeningInformation']) ? $data['watchlistScreeningInformation'] : null;
     }
 
     /**
@@ -554,6 +578,27 @@ class CreatePaymentRequest implements ArrayAccess
     }
 
     /**
+     * Gets merchantDefinedSecureInformation
+     * @return \CyberSource\Model\Ptsv2paymentsMerchantDefinedSecureInformation
+     */
+    public function getMerchantDefinedSecureInformation()
+    {
+        return $this->container['merchantDefinedSecureInformation'];
+    }
+
+    /**
+     * Sets merchantDefinedSecureInformation
+     * @param \CyberSource\Model\Ptsv2paymentsMerchantDefinedSecureInformation $merchantDefinedSecureInformation
+     * @return $this
+     */
+    public function setMerchantDefinedSecureInformation($merchantDefinedSecureInformation)
+    {
+        $this->container['merchantDefinedSecureInformation'] = $merchantDefinedSecureInformation;
+
+        return $this;
+    }
+
+    /**
      * Gets installmentInformation
      * @return \CyberSource\Model\Ptsv2paymentsInstallmentInformation
      */
@@ -659,6 +704,48 @@ class CreatePaymentRequest implements ArrayAccess
     }
 
     /**
+     * Gets invoiceDetails
+     * @return \CyberSource\Model\Ptsv2paymentsInvoiceDetails
+     */
+    public function getInvoiceDetails()
+    {
+        return $this->container['invoiceDetails'];
+    }
+
+    /**
+     * Sets invoiceDetails
+     * @param \CyberSource\Model\Ptsv2paymentsInvoiceDetails $invoiceDetails
+     * @return $this
+     */
+    public function setInvoiceDetails($invoiceDetails)
+    {
+        $this->container['invoiceDetails'] = $invoiceDetails;
+
+        return $this;
+    }
+
+    /**
+     * Gets processorInformation
+     * @return \CyberSource\Model\Ptsv2paymentsProcessorInformation
+     */
+    public function getProcessorInformation()
+    {
+        return $this->container['processorInformation'];
+    }
+
+    /**
+     * Sets processorInformation
+     * @param \CyberSource\Model\Ptsv2paymentsProcessorInformation $processorInformation
+     * @return $this
+     */
+    public function setProcessorInformation($processorInformation)
+    {
+        $this->container['processorInformation'] = $processorInformation;
+
+        return $this;
+    }
+
+    /**
      * Gets riskInformation
      * @return \CyberSource\Model\Ptsv2paymentsRiskInformation
      */
@@ -720,11 +807,33 @@ class CreatePaymentRequest implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets watchlistScreeningInformation
+     * @return \CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformation
+     */
+    public function getWatchlistScreeningInformation()
+    {
+        return $this->container['watchlistScreeningInformation'];
+    }
+
+    /**
+     * Sets watchlistScreeningInformation
+     * @param \CyberSource\Model\Ptsv2paymentsWatchlistScreeningInformation $watchlistScreeningInformation
+     * @return $this
+     */
+    public function setWatchlistScreeningInformation($watchlistScreeningInformation)
+    {
+        $this->container['watchlistScreeningInformation'] = $watchlistScreeningInformation;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -735,6 +844,7 @@ class CreatePaymentRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -746,6 +856,7 @@ class CreatePaymentRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -760,6 +871,7 @@ class CreatePaymentRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

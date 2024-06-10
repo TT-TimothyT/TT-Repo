@@ -54,7 +54,8 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'authType' => 'string'
+        'authType' => 'string',
+        'initiator' => '\CyberSource\Model\TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptionsInitiator'
     ];
 
     /**
@@ -62,7 +63,8 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'authType' => null
+        'authType' => null,
+        'initiator' => null
     ];
 
     public static function swaggerTypes()
@@ -80,7 +82,8 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
      * @var string[]
      */
     protected static $attributeMap = [
-        'authType' => 'authType'
+        'authType' => 'authType',
+        'initiator' => 'initiator'
     ];
 
 
@@ -89,7 +92,8 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
      * @var string[]
      */
     protected static $setters = [
-        'authType' => 'setAuthType'
+        'authType' => 'setAuthType',
+        'initiator' => 'setInitiator'
     ];
 
 
@@ -98,7 +102,8 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
      * @var string[]
      */
     protected static $getters = [
-        'authType' => 'getAuthType'
+        'authType' => 'getAuthType',
+        'initiator' => 'getInitiator'
     ];
 
     public static function attributeMap()
@@ -133,6 +138,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
     public function __construct(array $data = null)
     {
         $this->container['authType'] = isset($data['authType']) ? $data['authType'] : null;
+        $this->container['initiator'] = isset($data['initiator']) ? $data['initiator'] : null;
     }
 
     /**
@@ -143,10 +149,6 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['authType']) && (strlen($this->container['authType']) > 15)) {
-            $invalid_properties[] = "invalid value for 'authType', the character length must be smaller than or equal to 15.";
-        }
 
         return $invalid_properties;
     }
@@ -160,9 +162,6 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
     public function valid()
     {
 
-        if (strlen($this->container['authType']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -183,11 +182,28 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
      */
     public function setAuthType($authType)
     {
-        if (!is_null($authType) && (strlen($authType) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $authType when calling TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions., must be smaller than or equal to 15.');
-        }
-
         $this->container['authType'] = $authType;
+
+        return $this;
+    }
+
+    /**
+     * Gets initiator
+     * @return \CyberSource\Model\TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptionsInitiator
+     */
+    public function getInitiator()
+    {
+        return $this->container['initiator'];
+    }
+
+    /**
+     * Sets initiator
+     * @param \CyberSource\Model\TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptionsInitiator $initiator
+     * @return $this
+     */
+    public function setInitiator($initiator)
+    {
+        $this->container['initiator'] = $initiator;
 
         return $this;
     }
@@ -196,6 +212,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +223,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +235,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +250,7 @@ class TssV2TransactionsGet200ResponseProcessingInformationAuthorizationOptions i
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

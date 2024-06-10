@@ -17,7 +17,7 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -58,7 +58,7 @@ class Electronic_Check_Payment extends Payment {
 	 * @param bool $settlement_type
 	 * @return array
 	 */
-	protected function get_processing_information( $settlement_type = false ) {
+	protected function get_processing_information( $settlement_type = false ): array {
 
 		$data = parent::get_processing_information( $settlement_type );
 

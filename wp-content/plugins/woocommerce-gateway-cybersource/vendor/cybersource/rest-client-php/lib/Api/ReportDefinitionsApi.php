@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * ReportDefinitionsApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class ReportDefinitionsApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class ReportDefinitionsApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -95,13 +102,16 @@ class ReportDefinitionsApi
      * @param string $reportDefinitionName Name of the Report definition to retrieve (required)
      * @param string $subscriptionType The subscription type for which report definition is required. By default the type will be CUSTOM. Valid Values: - CLASSIC - CUSTOM - STANDARD (optional)
      * @param string $reportMimeType The format for which the report definition is required. By default the value will be CSV. Valid Values: - application/xml - text/csv (optional)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportDefinitionsNameGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
     public function getResourceInfoByReportDefinition($reportDefinitionName, $subscriptionType = null, $reportMimeType = null, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD getResourceInfoByReportDefinition STARTED');
         list($response, $statusCode, $httpHeader) = $this->getResourceInfoByReportDefinitionWithHttpInfo($reportDefinitionName, $subscriptionType, $reportMimeType, $organizationId);
+        self::$logger->info('CALL TO METHOD getResourceInfoByReportDefinition ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -113,7 +123,7 @@ class ReportDefinitionsApi
      * @param string $reportDefinitionName Name of the Report definition to retrieve (required)
      * @param string $subscriptionType The subscription type for which report definition is required. By default the type will be CUSTOM. Valid Values: - CLASSIC - CUSTOM - STANDARD (optional)
      * @param string $reportMimeType The format for which the report definition is required. By default the value will be CSV. Valid Values: - application/xml - text/csv (optional)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportDefinitionsNameGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
@@ -121,16 +131,12 @@ class ReportDefinitionsApi
     {
         // verify the required parameter 'reportDefinitionName' is set
         if ($reportDefinitionName === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $reportDefinitionName when calling getResourceInfoByReportDefinition");
             throw new \InvalidArgumentException('Missing the required parameter $reportDefinitionName when calling getResourceInfoByReportDefinition');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportDefinitionsApi.getResourceInfoByReportDefinition, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportDefinitionsApi.getResourceInfoByReportDefinition, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportDefinitionsApi.getResourceInfoByReportDefinition, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportDefinitionsApi.getResourceInfoByReportDefinition, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportDefinitionsApi.getResourceInfoByReportDefinition, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -165,6 +171,9 @@ class ReportDefinitionsApi
                 $resourcePath
             );
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -172,6 +181,23 @@ class ReportDefinitionsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\ReportingV3ReportDefinitionsNameGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -183,6 +209,8 @@ class ReportDefinitionsApi
                 '\CyberSource\Model\ReportingV3ReportDefinitionsNameGet200Response',
                 '/reporting/v3/report-definitions/{reportDefinitionName}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\ReportingV3ReportDefinitionsNameGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -197,6 +225,7 @@ class ReportDefinitionsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -207,13 +236,16 @@ class ReportDefinitionsApi
      * Get Reporting Resource Information
      *
      * @param string $subscriptionType Valid Values: - CLASSIC - CUSTOM - STANDARD (optional)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportDefinitionsGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
     public function getResourceV2Info($subscriptionType = null, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD getResourceV2Info STARTED');
         list($response, $statusCode, $httpHeader) = $this->getResourceV2InfoWithHttpInfo($subscriptionType, $organizationId);
+        self::$logger->info('CALL TO METHOD getResourceV2Info ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -223,20 +255,15 @@ class ReportDefinitionsApi
      * Get Reporting Resource Information
      *
      * @param string $subscriptionType Valid Values: - CLASSIC - CUSTOM - STANDARD (optional)
-     * @param string $organizationId Valid Cybersource Organization Id (optional)
+     * @param string $organizationId Valid Organization Id (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\ReportingV3ReportDefinitionsGet200Response, HTTP status code, HTTP response headers (array of strings)
      */
     public function getResourceV2InfoWithHttpInfo($subscriptionType = null, $organizationId = null)
     {
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportDefinitionsApi.getResourceV2Info, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling ReportDefinitionsApi.getResourceV2Info, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling ReportDefinitionsApi.getResourceV2Info, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling ReportDefinitionsApi.getResourceV2Info, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling ReportDefinitionsApi.getResourceV2Info, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -259,6 +286,9 @@ class ReportDefinitionsApi
         if ($organizationId !== null) {
             $queryParams['organizationId'] = $this->apiClient->getSerializer()->toQueryValue($organizationId);
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -266,6 +296,22 @@ class ReportDefinitionsApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\ReportingV3ReportDefinitionsGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -277,6 +323,8 @@ class ReportDefinitionsApi
                 '\CyberSource\Model\ReportingV3ReportDefinitionsGet200Response',
                 '/reporting/v3/report-definitions'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\ReportingV3ReportDefinitionsGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -291,6 +339,7 @@ class ReportDefinitionsApi
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

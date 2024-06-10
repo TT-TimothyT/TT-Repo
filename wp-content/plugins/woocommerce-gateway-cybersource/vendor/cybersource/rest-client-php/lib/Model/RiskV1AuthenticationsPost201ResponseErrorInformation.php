@@ -183,7 +183,7 @@ class RiskV1AuthenticationsPost201ResponseErrorInformation implements ArrayAcces
 
     /**
      * Sets reason
-     * @param string $reason The reason of the status. Possible values are: - `INVALID_MERCHANT_CONFIGURATION` - `PENDING_AUTHENTICATION` - `AUTHENTICATION_FAILED`
+     * @param string $reason The reason of the status. Possible values are: - `INVALID_MERCHANT_CONFIGURATION` - `CONSUMER_AUTHENTICATION_REQUIRED` - `CONSUMER_AUTHENTICATION_FAILED` - `AUTHENTICATION_FAILED`
      * @return $this
      */
     public function setReason($reason)
@@ -239,6 +239,7 @@ class RiskV1AuthenticationsPost201ResponseErrorInformation implements ArrayAcces
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -249,6 +250,7 @@ class RiskV1AuthenticationsPost201ResponseErrorInformation implements ArrayAcces
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -260,6 +262,7 @@ class RiskV1AuthenticationsPost201ResponseErrorInformation implements ArrayAcces
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -274,6 +277,7 @@ class RiskV1AuthenticationsPost201ResponseErrorInformation implements ArrayAcces
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

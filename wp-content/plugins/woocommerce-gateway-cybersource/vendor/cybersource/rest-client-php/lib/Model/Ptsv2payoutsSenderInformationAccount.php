@@ -150,18 +150,6 @@ class Ptsv2payoutsSenderInformationAccount implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['fundsSource']) && (strlen($this->container['fundsSource']) > 2)) {
-            $invalid_properties[] = "invalid value for 'fundsSource', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['fundsSource']) && (strlen($this->container['fundsSource']) < 2)) {
-            $invalid_properties[] = "invalid value for 'fundsSource', the character length must be bigger than or equal to 2.";
-        }
-
-        if (!is_null($this->container['number']) && (strlen($this->container['number']) > 34)) {
-            $invalid_properties[] = "invalid value for 'number', the character length must be smaller than or equal to 34.";
-        }
-
         return $invalid_properties;
     }
 
@@ -174,15 +162,6 @@ class Ptsv2payoutsSenderInformationAccount implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['fundsSource']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['fundsSource']) < 2) {
-            return false;
-        }
-        if (strlen($this->container['number']) > 34) {
-            return false;
-        }
         return true;
     }
 
@@ -203,13 +182,6 @@ class Ptsv2payoutsSenderInformationAccount implements ArrayAccess
      */
     public function setFundsSource($fundsSource)
     {
-        if (!is_null($fundsSource) && (strlen($fundsSource) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $fundsSource when calling Ptsv2payoutsSenderInformationAccount., must be smaller than or equal to 2.');
-        }
-        if (!is_null($fundsSource) && (strlen($fundsSource) < 2)) {
-            throw new \InvalidArgumentException('invalid length for $fundsSource when calling Ptsv2payoutsSenderInformationAccount., must be bigger than or equal to 2.');
-        }
-
         $this->container['fundsSource'] = $fundsSource;
 
         return $this;
@@ -226,15 +198,11 @@ class Ptsv2payoutsSenderInformationAccount implements ArrayAccess
 
     /**
      * Sets number
-     * @param string $number The account number of the entity funding the transaction. It is the sender’s account number. It can be a debit/credit card account number or bank account number.  **Funds disbursements**  This field is optional.  **All other transactions**  This field is required when the sender funds the transaction with a financial instrument, for example debit card. Length: * FDCCompass (<= 19) * Paymentech (<= 16)
+     * @param string $number The account number of the entity funding the transaction. It is the sender's account number. It can be a debit/credit card account number or bank account number.  **Funds disbursements**  This field is optional.  **All other transactions**  This field is required when the sender funds the transaction with a financial instrument, for example debit card. Length: * FDCCompass (<= 19) * Paymentech (<= 16)
      * @return $this
      */
     public function setNumber($number)
     {
-        if (!is_null($number) && (strlen($number) > 34)) {
-            throw new \InvalidArgumentException('invalid length for $number when calling Ptsv2payoutsSenderInformationAccount., must be smaller than or equal to 34.');
-        }
-
         $this->container['number'] = $number;
 
         return $this;
@@ -244,6 +212,7 @@ class Ptsv2payoutsSenderInformationAccount implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -254,6 +223,7 @@ class Ptsv2payoutsSenderInformationAccount implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -265,6 +235,7 @@ class Ptsv2payoutsSenderInformationAccount implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -279,6 +250,7 @@ class Ptsv2payoutsSenderInformationAccount implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

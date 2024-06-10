@@ -150,10 +150,6 @@ class Ptsv2paymentsProcessingInformationPurchaseOptions implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['type']) && (strlen($this->container['type']) > 6)) {
-            $invalid_properties[] = "invalid value for 'type', the character length must be smaller than or equal to 6.";
-        }
-
         return $invalid_properties;
     }
 
@@ -166,9 +162,6 @@ class Ptsv2paymentsProcessingInformationPurchaseOptions implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['type']) > 6) {
-            return false;
-        }
         return true;
     }
 
@@ -205,15 +198,11 @@ class Ptsv2paymentsProcessingInformationPurchaseOptions implements ArrayAccess
 
     /**
      * Sets type
-     * @param string $type Flag that indicates an EBT voucher transaction. Possible value: - `EBT_VOUCHER`: Indicates the PIN debit transaction is an EBT voucher.  #### PIN debit Required field for EBT voucher transactions that use PIN debit purchase; otherwise, not used.
+     * @param string $type Flag that indicates an EBT voucher transaction. Possible value: - `EBT_VOUCHER`: Indicates the PIN debit transaction is an EBT voucher. - `BUY` - `RENT` - `BOOK` - `SUBSCRIBE` - `DOWNLOAD` - `ORDER` - `CONTINUE`  #### PIN debit Required field for EBT voucher transactions that use PIN debit purchase; otherwise, not used.
      * @return $this
      */
     public function setType($type)
     {
-        if (!is_null($type) && (strlen($type) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $type when calling Ptsv2paymentsProcessingInformationPurchaseOptions., must be smaller than or equal to 6.');
-        }
-
         $this->container['type'] = $type;
 
         return $this;
@@ -223,6 +212,7 @@ class Ptsv2paymentsProcessingInformationPurchaseOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -233,6 +223,7 @@ class Ptsv2paymentsProcessingInformationPurchaseOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -244,6 +235,7 @@ class Ptsv2paymentsProcessingInformationPurchaseOptions implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -258,6 +250,7 @@ class Ptsv2paymentsProcessingInformationPurchaseOptions implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

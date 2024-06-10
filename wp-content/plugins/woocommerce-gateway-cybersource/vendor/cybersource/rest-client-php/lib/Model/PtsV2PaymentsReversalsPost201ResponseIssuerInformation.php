@@ -144,10 +144,6 @@ class PtsV2PaymentsReversalsPost201ResponseIssuerInformation implements ArrayAcc
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['responseCode']) && (strlen($this->container['responseCode']) > 6)) {
-            $invalid_properties[] = "invalid value for 'responseCode', the character length must be smaller than or equal to 6.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class PtsV2PaymentsReversalsPost201ResponseIssuerInformation implements ArrayAcc
     public function valid()
     {
 
-        if (strlen($this->container['responseCode']) > 6) {
-            return false;
-        }
         return true;
     }
 
@@ -183,10 +176,6 @@ class PtsV2PaymentsReversalsPost201ResponseIssuerInformation implements ArrayAcc
      */
     public function setResponseCode($responseCode)
     {
-        if (!is_null($responseCode) && (strlen($responseCode) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $responseCode when calling PtsV2PaymentsReversalsPost201ResponseIssuerInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['responseCode'] = $responseCode;
 
         return $this;
@@ -196,6 +185,7 @@ class PtsV2PaymentsReversalsPost201ResponseIssuerInformation implements ArrayAcc
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class PtsV2PaymentsReversalsPost201ResponseIssuerInformation implements ArrayAcc
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class PtsV2PaymentsReversalsPost201ResponseIssuerInformation implements ArrayAcc
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class PtsV2PaymentsReversalsPost201ResponseIssuerInformation implements ArrayAcc
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

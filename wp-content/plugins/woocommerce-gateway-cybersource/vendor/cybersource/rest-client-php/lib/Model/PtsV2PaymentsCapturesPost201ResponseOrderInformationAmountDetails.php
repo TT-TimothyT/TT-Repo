@@ -55,7 +55,8 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
       */
     protected static $swaggerTypes = [
         'totalAmount' => 'string',
-        'currency' => 'string'
+        'currency' => 'string',
+        'processorTransactionFee' => 'string'
     ];
 
     /**
@@ -64,7 +65,8 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
       */
     protected static $swaggerFormats = [
         'totalAmount' => null,
-        'currency' => null
+        'currency' => null,
+        'processorTransactionFee' => null
     ];
 
     public static function swaggerTypes()
@@ -83,7 +85,8 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      */
     protected static $attributeMap = [
         'totalAmount' => 'totalAmount',
-        'currency' => 'currency'
+        'currency' => 'currency',
+        'processorTransactionFee' => 'processorTransactionFee'
     ];
 
 
@@ -93,7 +96,8 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      */
     protected static $setters = [
         'totalAmount' => 'setTotalAmount',
-        'currency' => 'setCurrency'
+        'currency' => 'setCurrency',
+        'processorTransactionFee' => 'setProcessorTransactionFee'
     ];
 
 
@@ -103,7 +107,8 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      */
     protected static $getters = [
         'totalAmount' => 'getTotalAmount',
-        'currency' => 'getCurrency'
+        'currency' => 'getCurrency',
+        'processorTransactionFee' => 'getProcessorTransactionFee'
     ];
 
     public static function attributeMap()
@@ -139,6 +144,7 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
     {
         $this->container['totalAmount'] = isset($data['totalAmount']) ? $data['totalAmount'] : null;
         $this->container['currency'] = isset($data['currency']) ? $data['currency'] : null;
+        $this->container['processorTransactionFee'] = isset($data['processorTransactionFee']) ? $data['processorTransactionFee'] : null;
     }
 
     /**
@@ -149,14 +155,6 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['totalAmount']) && (strlen($this->container['totalAmount']) > 15)) {
-            $invalid_properties[] = "invalid value for 'totalAmount', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['currency']) && (strlen($this->container['currency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 3.";
-        }
 
         return $invalid_properties;
     }
@@ -170,12 +168,6 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
     public function valid()
     {
 
-        if (strlen($this->container['totalAmount']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['currency']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +188,6 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      */
     public function setTotalAmount($totalAmount)
     {
-        if (!is_null($totalAmount) && (strlen($totalAmount) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $totalAmount when calling PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails., must be smaller than or equal to 15.');
-        }
-
         $this->container['totalAmount'] = $totalAmount;
 
         return $this;
@@ -221,11 +209,28 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      */
     public function setCurrency($currency)
     {
-        if (!is_null($currency) && (strlen($currency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails., must be smaller than or equal to 3.');
-        }
-
         $this->container['currency'] = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Gets processorTransactionFee
+     * @return string
+     */
+    public function getProcessorTransactionFee()
+    {
+        return $this->container['processorTransactionFee'];
+    }
+
+    /**
+     * Sets processorTransactionFee
+     * @param string $processorTransactionFee The fee decided by the PSP/Processor per transaction.
+     * @return $this
+     */
+    public function setProcessorTransactionFee($processorTransactionFee)
+    {
+        $this->container['processorTransactionFee'] = $processorTransactionFee;
 
         return $this;
     }
@@ -234,6 +239,7 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +250,7 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +262,7 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +277,7 @@ class PtsV2PaymentsCapturesPost201ResponseOrderInformationAmountDetails implemen
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

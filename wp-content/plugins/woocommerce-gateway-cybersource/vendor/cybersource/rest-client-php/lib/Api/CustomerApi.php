@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * CustomerApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class CustomerApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class CustomerApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -92,14 +99,17 @@ class CustomerApi
      *
      * Delete a Customer
      *
-     * @param string $customerTokenId The TokenId of a customer. (required)
-     * @param string $profileId The id of a profile containing user specific TMS configuration. (optional)
+     * @param string $customerId The Id of a Customer. (required)
+     * @param string $profileId The Id of a profile containing user specific TMS configuration. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of void, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteCustomer($customerTokenId, $profileId = null)
+    public function deleteCustomer($customerId, $profileId = null)
     {
-        list($response, $statusCode, $httpHeader) = $this->deleteCustomerWithHttpInfo($customerTokenId, $profileId);
+        self::$logger->info('CALL TO METHOD deleteCustomer STARTED');
+        list($response, $statusCode, $httpHeader) = $this->deleteCustomerWithHttpInfo($customerId, $profileId);
+        self::$logger->info('CALL TO METHOD deleteCustomer ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -108,33 +118,22 @@ class CustomerApi
      *
      * Delete a Customer
      *
-     * @param string $customerTokenId The TokenId of a customer. (required)
-     * @param string $profileId The id of a profile containing user specific TMS configuration. (optional)
+     * @param string $customerId The Id of a Customer. (required)
+     * @param string $profileId The Id of a profile containing user specific TMS configuration. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteCustomerWithHttpInfo($customerTokenId, $profileId = null)
+    public function deleteCustomerWithHttpInfo($customerId, $profileId = null)
     {
-        // verify the required parameter 'customerTokenId' is set
-        if ($customerTokenId === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $customerTokenId when calling deleteCustomer');
-        }
-        if ((strlen($customerTokenId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$customerTokenId" when calling CustomerApi.deleteCustomer, must be smaller than or equal to 32.');
-        }
-        if ((strlen($customerTokenId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$customerTokenId" when calling CustomerApi.deleteCustomer, must be bigger than or equal to 1.');
+        // verify the required parameter 'customerId' is set
+        if ($customerId === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $customerId when calling deleteCustomer");
+            throw new \InvalidArgumentException('Missing the required parameter $customerId when calling deleteCustomer');
         }
 
-        if (!is_null($profileId) && (strlen($profileId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for "$profileId" when calling CustomerApi.deleteCustomer, must be smaller than or equal to 36.');
-        }
-        if (!is_null($profileId) && (strlen($profileId) < 36)) {
-            throw new \InvalidArgumentException('invalid length for "$profileId" when calling CustomerApi.deleteCustomer, must be bigger than or equal to 36.');
-        }
 
         // parse inputs
-        $resourcePath = "/tms/v2/customers/{customerTokenId}";
+        $resourcePath = "/tms/v2/customers/{customerId}";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -150,12 +149,15 @@ class CustomerApi
             $headerParams['profile-id'] = $this->apiClient->getSerializer()->toHeaderValue($profileId);
         }
         // path params
-        if ($customerTokenId !== null) {
+        if ($customerId !== null) {
             $resourcePath = str_replace(
-                "{" . "customerTokenId" . "}",
-                $this->apiClient->getSerializer()->toPathValue($customerTokenId),
+                "{" . "customerId" . "}",
+                $this->apiClient->getSerializer()->toPathValue($customerId),
                 $resourcePath
             );
+        }
+        if ('DELETE' == 'POST') {
+            $_tempBody = '{}';
         }
 
         // for model (json/xml)
@@ -164,6 +166,20 @@ class CustomerApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : DELETE $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : null");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -173,8 +189,10 @@ class CustomerApi
                 $httpBody,
                 $headerParams,
                 null,
-                '/tms/v2/customers/{customerTokenId}'
+                '/tms/v2/customers/{customerId}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$response, $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -184,27 +202,28 @@ class CustomerApi
                     $e->setResponseObject($data);
                     break;
                 case 403:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse403', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 404:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse424', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 410:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse410', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 424:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse424', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -214,14 +233,17 @@ class CustomerApi
      *
      * Retrieve a Customer
      *
-     * @param string $customerTokenId The TokenId of a customer. (required)
-     * @param string $profileId The id of a profile containing user specific TMS configuration. (optional)
+     * @param string $customerId The Id of a Customer. (required)
+     * @param string $profileId The Id of a profile containing user specific TMS configuration. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\TmsV2CustomersResponse, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getCustomer($customerTokenId, $profileId = null)
+    public function getCustomer($customerId, $profileId = null)
     {
-        list($response, $statusCode, $httpHeader) = $this->getCustomerWithHttpInfo($customerTokenId, $profileId);
+        self::$logger->info('CALL TO METHOD getCustomer STARTED');
+        list($response, $statusCode, $httpHeader) = $this->getCustomerWithHttpInfo($customerId, $profileId);
+        self::$logger->info('CALL TO METHOD getCustomer ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -230,33 +252,22 @@ class CustomerApi
      *
      * Retrieve a Customer
      *
-     * @param string $customerTokenId The TokenId of a customer. (required)
-     * @param string $profileId The id of a profile containing user specific TMS configuration. (optional)
+     * @param string $customerId The Id of a Customer. (required)
+     * @param string $profileId The Id of a profile containing user specific TMS configuration. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\TmsV2CustomersResponse, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getCustomerWithHttpInfo($customerTokenId, $profileId = null)
+    public function getCustomerWithHttpInfo($customerId, $profileId = null)
     {
-        // verify the required parameter 'customerTokenId' is set
-        if ($customerTokenId === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $customerTokenId when calling getCustomer');
-        }
-        if ((strlen($customerTokenId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$customerTokenId" when calling CustomerApi.getCustomer, must be smaller than or equal to 32.');
-        }
-        if ((strlen($customerTokenId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$customerTokenId" when calling CustomerApi.getCustomer, must be bigger than or equal to 1.');
+        // verify the required parameter 'customerId' is set
+        if ($customerId === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $customerId when calling getCustomer");
+            throw new \InvalidArgumentException('Missing the required parameter $customerId when calling getCustomer');
         }
 
-        if (!is_null($profileId) && (strlen($profileId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for "$profileId" when calling CustomerApi.getCustomer, must be smaller than or equal to 36.');
-        }
-        if (!is_null($profileId) && (strlen($profileId) < 36)) {
-            throw new \InvalidArgumentException('invalid length for "$profileId" when calling CustomerApi.getCustomer, must be bigger than or equal to 36.');
-        }
 
         // parse inputs
-        $resourcePath = "/tms/v2/customers/{customerTokenId}";
+        $resourcePath = "/tms/v2/customers/{customerId}";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -272,12 +283,15 @@ class CustomerApi
             $headerParams['profile-id'] = $this->apiClient->getSerializer()->toHeaderValue($profileId);
         }
         // path params
-        if ($customerTokenId !== null) {
+        if ($customerId !== null) {
             $resourcePath = str_replace(
-                "{" . "customerTokenId" . "}",
-                $this->apiClient->getSerializer()->toPathValue($customerTokenId),
+                "{" . "customerId" . "}",
+                $this->apiClient->getSerializer()->toPathValue($customerId),
                 $resourcePath
             );
+        }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
         }
 
         // for model (json/xml)
@@ -286,6 +300,20 @@ class CustomerApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\TmsV2CustomersResponse");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -295,8 +323,10 @@ class CustomerApi
                 $httpBody,
                 $headerParams,
                 '\CyberSource\Model\TmsV2CustomersResponse',
-                '/tms/v2/customers/{customerTokenId}'
+                '/tms/v2/customers/{customerId}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\TmsV2CustomersResponse', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -310,27 +340,28 @@ class CustomerApi
                     $e->setResponseObject($data);
                     break;
                 case 403:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse403', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 404:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse424', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 410:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse410', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 424:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse424', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -340,16 +371,19 @@ class CustomerApi
      *
      * Update a Customer
      *
-     * @param string $customerTokenId The TokenId of a customer. (required)
+     * @param string $customerId The Id of a Customer. (required)
      * @param \CyberSource\Model\PatchCustomerRequest $patchCustomerRequest  (required)
-     * @param string $profileId The id of a profile containing user specific TMS configuration. (optional)
+     * @param string $profileId The Id of a profile containing user specific TMS configuration. (optional)
      * @param string $ifMatch Contains an ETag value from a GET request to make the request conditional. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\TmsV2CustomersResponse, HTTP status code, HTTP response headers (array of strings)
      */
-    public function patchCustomer($customerTokenId, $patchCustomerRequest, $profileId = null, $ifMatch = null)
+    public function patchCustomer($customerId, $patchCustomerRequest, $profileId = null, $ifMatch = null)
     {
-        list($response, $statusCode, $httpHeader) = $this->patchCustomerWithHttpInfo($customerTokenId, $patchCustomerRequest, $profileId, $ifMatch);
+        self::$logger->info('CALL TO METHOD patchCustomer STARTED');
+        list($response, $statusCode, $httpHeader) = $this->patchCustomerWithHttpInfo($customerId, $patchCustomerRequest, $profileId, $ifMatch);
+        self::$logger->info('CALL TO METHOD patchCustomer ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -358,46 +392,30 @@ class CustomerApi
      *
      * Update a Customer
      *
-     * @param string $customerTokenId The TokenId of a customer. (required)
+     * @param string $customerId The Id of a Customer. (required)
      * @param \CyberSource\Model\PatchCustomerRequest $patchCustomerRequest  (required)
-     * @param string $profileId The id of a profile containing user specific TMS configuration. (optional)
+     * @param string $profileId The Id of a profile containing user specific TMS configuration. (optional)
      * @param string $ifMatch Contains an ETag value from a GET request to make the request conditional. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\TmsV2CustomersResponse, HTTP status code, HTTP response headers (array of strings)
      */
-    public function patchCustomerWithHttpInfo($customerTokenId, $patchCustomerRequest, $profileId = null, $ifMatch = null)
+    public function patchCustomerWithHttpInfo($customerId, $patchCustomerRequest, $profileId = null, $ifMatch = null)
     {
-        // verify the required parameter 'customerTokenId' is set
-        if ($customerTokenId === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $customerTokenId when calling patchCustomer');
-        }
-        if ((strlen($customerTokenId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$customerTokenId" when calling CustomerApi.patchCustomer, must be smaller than or equal to 32.');
-        }
-        if ((strlen($customerTokenId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$customerTokenId" when calling CustomerApi.patchCustomer, must be bigger than or equal to 1.');
+        // verify the required parameter 'customerId' is set
+        if ($customerId === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $customerId when calling patchCustomer");
+            throw new \InvalidArgumentException('Missing the required parameter $customerId when calling patchCustomer');
         }
 
         // verify the required parameter 'patchCustomerRequest' is set
         if ($patchCustomerRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $patchCustomerRequest when calling patchCustomer");
             throw new \InvalidArgumentException('Missing the required parameter $patchCustomerRequest when calling patchCustomer');
         }
-        if (!is_null($profileId) && (strlen($profileId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for "$profileId" when calling CustomerApi.patchCustomer, must be smaller than or equal to 36.');
-        }
-        if (!is_null($profileId) && (strlen($profileId) < 36)) {
-            throw new \InvalidArgumentException('invalid length for "$profileId" when calling CustomerApi.patchCustomer, must be bigger than or equal to 36.');
-        }
 
-        if (!is_null($ifMatch) && (strlen($ifMatch) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$ifMatch" when calling CustomerApi.patchCustomer, must be smaller than or equal to 32.');
-        }
-        if (!is_null($ifMatch) && (strlen($ifMatch) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$ifMatch" when calling CustomerApi.patchCustomer, must be bigger than or equal to 1.');
-        }
 
         // parse inputs
-        $resourcePath = "/tms/v2/customers/{customerTokenId}";
+        $resourcePath = "/tms/v2/customers/{customerId}";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -417,10 +435,10 @@ class CustomerApi
             $headerParams['if-match'] = $this->apiClient->getSerializer()->toHeaderValue($ifMatch);
         }
         // path params
-        if ($customerTokenId !== null) {
+        if ($customerId !== null) {
             $resourcePath = str_replace(
-                "{" . "customerTokenId" . "}",
-                $this->apiClient->getSerializer()->toPathValue($customerTokenId),
+                "{" . "customerId" . "}",
+                $this->apiClient->getSerializer()->toPathValue($customerId),
                 $resourcePath
             );
         }
@@ -429,6 +447,9 @@ class CustomerApi
         if (isset($patchCustomerRequest)) {
             $_tempBody = $patchCustomerRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\PatchCustomerRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -436,6 +457,20 @@ class CustomerApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : PATCH $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\TmsV2CustomersResponse");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -445,8 +480,10 @@ class CustomerApi
                 $httpBody,
                 $headerParams,
                 '\CyberSource\Model\TmsV2CustomersResponse',
-                '/tms/v2/customers/{customerTokenId}'
+                '/tms/v2/customers/{customerId}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\TmsV2CustomersResponse', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -460,27 +497,32 @@ class CustomerApi
                     $e->setResponseObject($data);
                     break;
                 case 403:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse403', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 404:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse424', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 410:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse410', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
+                case 412:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse412', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 424:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse424', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -491,13 +533,16 @@ class CustomerApi
      * Create a Customer
      *
      * @param \CyberSource\Model\PostCustomerRequest $postCustomerRequest  (required)
-     * @param string $profileId The id of a profile containing user specific TMS configuration. (optional)
+     * @param string $profileId The Id of a profile containing user specific TMS configuration. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\TmsV2CustomersResponse, HTTP status code, HTTP response headers (array of strings)
      */
     public function postCustomer($postCustomerRequest, $profileId = null)
     {
+        self::$logger->info('CALL TO METHOD postCustomer STARTED');
         list($response, $statusCode, $httpHeader) = $this->postCustomerWithHttpInfo($postCustomerRequest, $profileId);
+        self::$logger->info('CALL TO METHOD postCustomer ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -507,7 +552,7 @@ class CustomerApi
      * Create a Customer
      *
      * @param \CyberSource\Model\PostCustomerRequest $postCustomerRequest  (required)
-     * @param string $profileId The id of a profile containing user specific TMS configuration. (optional)
+     * @param string $profileId The Id of a profile containing user specific TMS configuration. (optional)
      * @throws \CyberSource\ApiException on non-2xx response
      * @return array of \CyberSource\Model\TmsV2CustomersResponse, HTTP status code, HTTP response headers (array of strings)
      */
@@ -515,13 +560,8 @@ class CustomerApi
     {
         // verify the required parameter 'postCustomerRequest' is set
         if ($postCustomerRequest === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $postCustomerRequest when calling postCustomer");
             throw new \InvalidArgumentException('Missing the required parameter $postCustomerRequest when calling postCustomer');
-        }
-        if (!is_null($profileId) && (strlen($profileId) > 36)) {
-            throw new \InvalidArgumentException('invalid length for "$profileId" when calling CustomerApi.postCustomer, must be smaller than or equal to 36.');
-        }
-        if (!is_null($profileId) && (strlen($profileId) < 36)) {
-            throw new \InvalidArgumentException('invalid length for "$profileId" when calling CustomerApi.postCustomer, must be bigger than or equal to 36.');
         }
 
         // parse inputs
@@ -545,6 +585,9 @@ class CustomerApi
         if (isset($postCustomerRequest)) {
             $_tempBody = $postCustomerRequest;
         }
+        
+        $sdkTracker = new \CyberSource\Utilities\Tracking\SdkTracker();
+        $_tempBody = $sdkTracker->insertDeveloperIdTracker($_tempBody, end(explode('\\', '\CyberSource\Model\PostCustomerRequest')), $this->apiClient->merchantConfig->getRunEnvironment());
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -552,6 +595,20 @@ class CustomerApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : POST $resourcePath");
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\TmsV2CustomersResponse");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -563,6 +620,8 @@ class CustomerApi
                 '\CyberSource\Model\TmsV2CustomersResponse',
                 '/tms/v2/customers'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\TmsV2CustomersResponse', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -576,19 +635,24 @@ class CustomerApi
                     $e->setResponseObject($data);
                     break;
                 case 403:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse403', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
+                case 409:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse409', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 424:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse424', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse400', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

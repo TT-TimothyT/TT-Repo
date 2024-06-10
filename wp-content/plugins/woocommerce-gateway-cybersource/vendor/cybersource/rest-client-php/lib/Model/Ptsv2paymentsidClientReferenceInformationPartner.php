@@ -156,18 +156,6 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['originalTransactionId']) && (strlen($this->container['originalTransactionId']) > 32)) {
-            $invalid_properties[] = "invalid value for 'originalTransactionId', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['developerId']) && (strlen($this->container['developerId']) > 8)) {
-            $invalid_properties[] = "invalid value for 'developerId', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['solutionId']) && (strlen($this->container['solutionId']) > 8)) {
-            $invalid_properties[] = "invalid value for 'solutionId', the character length must be smaller than or equal to 8.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,15 +168,6 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['originalTransactionId']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['developerId']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['solutionId']) > 8) {
-            return false;
-        }
         return true;
     }
 
@@ -204,15 +183,11 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
 
     /**
      * Sets originalTransactionId
-     * @param string $originalTransactionId Value that links the previous transaction to the current follow-on request. This value is assigned by the client software that is installed on the POS terminal, which makes it available to the terminal’s software and to CyberSource. Therefore, you can use this value to reconcile transactions between CyberSource and the terminal’s software.  CyberSource does not forward this value to the processor. Instead, the value is forwarded to the CyberSource reporting functionality.  This field is supported only on these processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  Optional field.
+     * @param string $originalTransactionId Value that links the previous transaction to the current follow-on request. This value is assigned by the client software that is installed on the POS terminal, which makes it available to the terminal's software and to CyberSource. Therefore, you can use this value to reconcile transactions between CyberSource and the terminal's software.  CyberSource does not forward this value to the processor. Instead, the value is forwarded to the CyberSource reporting functionality.  This field is supported only on these processors: - American Express Direct - Credit Mutuel-CIC - FDC Nashville Global - OmniPay Direct - SIX  Optional field.
      * @return $this
      */
     public function setOriginalTransactionId($originalTransactionId)
     {
-        if (!is_null($originalTransactionId) && (strlen($originalTransactionId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $originalTransactionId when calling Ptsv2paymentsidClientReferenceInformationPartner., must be smaller than or equal to 32.');
-        }
-
         $this->container['originalTransactionId'] = $originalTransactionId;
 
         return $this;
@@ -234,10 +209,6 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
      */
     public function setDeveloperId($developerId)
     {
-        if (!is_null($developerId) && (strlen($developerId) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $developerId when calling Ptsv2paymentsidClientReferenceInformationPartner., must be smaller than or equal to 8.');
-        }
-
         $this->container['developerId'] = $developerId;
 
         return $this;
@@ -259,10 +230,6 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
      */
     public function setSolutionId($solutionId)
     {
-        if (!is_null($solutionId) && (strlen($solutionId) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $solutionId when calling Ptsv2paymentsidClientReferenceInformationPartner., must be smaller than or equal to 8.');
-        }
-
         $this->container['solutionId'] = $solutionId;
 
         return $this;
@@ -272,6 +239,7 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -282,6 +250,7 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -293,6 +262,7 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -307,6 +277,7 @@ class Ptsv2paymentsidClientReferenceInformationPartner implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

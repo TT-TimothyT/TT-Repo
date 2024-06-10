@@ -168,10 +168,6 @@ class Ptsv2paymentsidClientReferenceInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['code']) && (strlen($this->container['code']) > 50)) {
-            $invalid_properties[] = "invalid value for 'code', the character length must be smaller than or equal to 50.";
-        }
-
         return $invalid_properties;
     }
 
@@ -184,9 +180,6 @@ class Ptsv2paymentsidClientReferenceInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['code']) > 50) {
-            return false;
-        }
         return true;
     }
 
@@ -207,10 +200,6 @@ class Ptsv2paymentsidClientReferenceInformation implements ArrayAccess
      */
     public function setCode($code)
     {
-        if (!is_null($code) && (strlen($code) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $code when calling Ptsv2paymentsidClientReferenceInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['code'] = $code;
 
         return $this;
@@ -304,6 +293,7 @@ class Ptsv2paymentsidClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -314,6 +304,7 @@ class Ptsv2paymentsidClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -325,6 +316,7 @@ class Ptsv2paymentsidClientReferenceInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -339,6 +331,7 @@ class Ptsv2paymentsidClientReferenceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

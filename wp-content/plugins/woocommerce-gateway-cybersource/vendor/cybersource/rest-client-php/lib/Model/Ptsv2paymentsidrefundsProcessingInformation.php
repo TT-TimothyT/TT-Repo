@@ -54,6 +54,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
+        'actionList' => 'string[]',
         'paymentSolution' => 'string',
         'reconciliationId' => 'string',
         'linkId' => 'string',
@@ -61,7 +62,9 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
         'visaCheckoutId' => 'string',
         'purchaseLevel' => 'string',
         'recurringOptions' => '\CyberSource\Model\Ptsv2paymentsidrefundsProcessingInformationRecurringOptions',
-        'industryDataType' => 'string'
+        'industryDataType' => 'string',
+        'paymentType' => 'string',
+        'refundOptions' => '\CyberSource\Model\Ptsv2paymentsidrefundsProcessingInformationRefundOptions'
     ];
 
     /**
@@ -69,6 +72,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
+        'actionList' => null,
         'paymentSolution' => null,
         'reconciliationId' => null,
         'linkId' => null,
@@ -76,7 +80,9 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
         'visaCheckoutId' => null,
         'purchaseLevel' => null,
         'recurringOptions' => null,
-        'industryDataType' => null
+        'industryDataType' => null,
+        'paymentType' => null,
+        'refundOptions' => null
     ];
 
     public static function swaggerTypes()
@@ -94,6 +100,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
+        'actionList' => 'actionList',
         'paymentSolution' => 'paymentSolution',
         'reconciliationId' => 'reconciliationId',
         'linkId' => 'linkId',
@@ -101,7 +108,9 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
         'visaCheckoutId' => 'visaCheckoutId',
         'purchaseLevel' => 'purchaseLevel',
         'recurringOptions' => 'recurringOptions',
-        'industryDataType' => 'industryDataType'
+        'industryDataType' => 'industryDataType',
+        'paymentType' => 'paymentType',
+        'refundOptions' => 'refundOptions'
     ];
 
 
@@ -110,6 +119,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
+        'actionList' => 'setActionList',
         'paymentSolution' => 'setPaymentSolution',
         'reconciliationId' => 'setReconciliationId',
         'linkId' => 'setLinkId',
@@ -117,7 +127,9 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
         'visaCheckoutId' => 'setVisaCheckoutId',
         'purchaseLevel' => 'setPurchaseLevel',
         'recurringOptions' => 'setRecurringOptions',
-        'industryDataType' => 'setIndustryDataType'
+        'industryDataType' => 'setIndustryDataType',
+        'paymentType' => 'setPaymentType',
+        'refundOptions' => 'setRefundOptions'
     ];
 
 
@@ -126,6 +138,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
+        'actionList' => 'getActionList',
         'paymentSolution' => 'getPaymentSolution',
         'reconciliationId' => 'getReconciliationId',
         'linkId' => 'getLinkId',
@@ -133,7 +146,9 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
         'visaCheckoutId' => 'getVisaCheckoutId',
         'purchaseLevel' => 'getPurchaseLevel',
         'recurringOptions' => 'getRecurringOptions',
-        'industryDataType' => 'getIndustryDataType'
+        'industryDataType' => 'getIndustryDataType',
+        'paymentType' => 'getPaymentType',
+        'refundOptions' => 'getRefundOptions'
     ];
 
     public static function attributeMap()
@@ -167,6 +182,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
+        $this->container['actionList'] = isset($data['actionList']) ? $data['actionList'] : null;
         $this->container['paymentSolution'] = isset($data['paymentSolution']) ? $data['paymentSolution'] : null;
         $this->container['reconciliationId'] = isset($data['reconciliationId']) ? $data['reconciliationId'] : null;
         $this->container['linkId'] = isset($data['linkId']) ? $data['linkId'] : null;
@@ -175,6 +191,8 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
         $this->container['purchaseLevel'] = isset($data['purchaseLevel']) ? $data['purchaseLevel'] : null;
         $this->container['recurringOptions'] = isset($data['recurringOptions']) ? $data['recurringOptions'] : null;
         $this->container['industryDataType'] = isset($data['industryDataType']) ? $data['industryDataType'] : null;
+        $this->container['paymentType'] = isset($data['paymentType']) ? $data['paymentType'] : null;
+        $this->container['refundOptions'] = isset($data['refundOptions']) ? $data['refundOptions'] : null;
     }
 
     /**
@@ -185,34 +203,6 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['paymentSolution']) && (strlen($this->container['paymentSolution']) > 12)) {
-            $invalid_properties[] = "invalid value for 'paymentSolution', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['reconciliationId']) && (strlen($this->container['reconciliationId']) > 60)) {
-            $invalid_properties[] = "invalid value for 'reconciliationId', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['linkId']) && (strlen($this->container['linkId']) > 26)) {
-            $invalid_properties[] = "invalid value for 'linkId', the character length must be smaller than or equal to 26.";
-        }
-
-        if (!is_null($this->container['reportGroup']) && (strlen($this->container['reportGroup']) > 25)) {
-            $invalid_properties[] = "invalid value for 'reportGroup', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['visaCheckoutId']) && (strlen($this->container['visaCheckoutId']) > 48)) {
-            $invalid_properties[] = "invalid value for 'visaCheckoutId', the character length must be smaller than or equal to 48.";
-        }
-
-        if (!is_null($this->container['purchaseLevel']) && (strlen($this->container['purchaseLevel']) > 1)) {
-            $invalid_properties[] = "invalid value for 'purchaseLevel', the character length must be smaller than or equal to 1.";
-        }
-
-        if (!is_null($this->container['industryDataType']) && (strlen($this->container['industryDataType']) > 20)) {
-            $invalid_properties[] = "invalid value for 'industryDataType', the character length must be smaller than or equal to 20.";
-        }
 
         return $invalid_properties;
     }
@@ -226,30 +216,30 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['paymentSolution']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['reconciliationId']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['linkId']) > 26) {
-            return false;
-        }
-        if (strlen($this->container['reportGroup']) > 25) {
-            return false;
-        }
-        if (strlen($this->container['visaCheckoutId']) > 48) {
-            return false;
-        }
-        if (strlen($this->container['purchaseLevel']) > 1) {
-            return false;
-        }
-        if (strlen($this->container['industryDataType']) > 20) {
-            return false;
-        }
         return true;
     }
 
+
+    /**
+     * Gets actionList
+     * @return string[]
+     */
+    public function getActionList()
+    {
+        return $this->container['actionList'];
+    }
+
+    /**
+     * Sets actionList
+     * @param string[] $actionList Array of actions (one or more) to be included in the payment to invoke bundled services along with payment status.  Possible values are one or more of follows:   - `AP_REFUND`: Use this when Alternative Payment Refund service is requested.
+     * @return $this
+     */
+    public function setActionList($actionList)
+    {
+        $this->container['actionList'] = $actionList;
+
+        return $this;
+    }
 
     /**
      * Gets paymentSolution
@@ -262,15 +252,11 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
 
     /**
      * Sets paymentSolution
-     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.
+     * @param string $paymentSolution Type of digital payment solution for the transaction. Possible Values:   - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)  - `001`: Apple Pay.  - `004`: Cybersource In-App Solution.  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see \"Masterpass\" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)  - `006`: Android Pay.  - `007`: Chase Pay.  - `008`: Samsung Pay.  - `012`: Google Pay.  - `013`: Cybersource P2PE Decryption  - `014`: Mastercard credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.  - `015`: Visa credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.  - `027`: Click to Pay.
      * @return $this
      */
     public function setPaymentSolution($paymentSolution)
     {
-        if (!is_null($paymentSolution) && (strlen($paymentSolution) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $paymentSolution when calling Ptsv2paymentsidrefundsProcessingInformation., must be smaller than or equal to 12.');
-        }
-
         $this->container['paymentSolution'] = $paymentSolution;
 
         return $this;
@@ -292,10 +278,6 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      */
     public function setReconciliationId($reconciliationId)
     {
-        if (!is_null($reconciliationId) && (strlen($reconciliationId) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $reconciliationId when calling Ptsv2paymentsidrefundsProcessingInformation., must be smaller than or equal to 60.');
-        }
-
         $this->container['reconciliationId'] = $reconciliationId;
 
         return $this;
@@ -317,10 +299,6 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      */
     public function setLinkId($linkId)
     {
-        if (!is_null($linkId) && (strlen($linkId) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $linkId when calling Ptsv2paymentsidrefundsProcessingInformation., must be smaller than or equal to 26.');
-        }
-
         $this->container['linkId'] = $linkId;
 
         return $this;
@@ -342,10 +320,6 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      */
     public function setReportGroup($reportGroup)
     {
-        if (!is_null($reportGroup) && (strlen($reportGroup) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $reportGroup when calling Ptsv2paymentsidrefundsProcessingInformation., must be smaller than or equal to 25.');
-        }
-
         $this->container['reportGroup'] = $reportGroup;
 
         return $this;
@@ -367,10 +341,6 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      */
     public function setVisaCheckoutId($visaCheckoutId)
     {
-        if (!is_null($visaCheckoutId) && (strlen($visaCheckoutId) > 48)) {
-            throw new \InvalidArgumentException('invalid length for $visaCheckoutId when calling Ptsv2paymentsidrefundsProcessingInformation., must be smaller than or equal to 48.');
-        }
-
         $this->container['visaCheckoutId'] = $visaCheckoutId;
 
         return $this;
@@ -392,10 +362,6 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      */
     public function setPurchaseLevel($purchaseLevel)
     {
-        if (!is_null($purchaseLevel) && (strlen($purchaseLevel) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $purchaseLevel when calling Ptsv2paymentsidrefundsProcessingInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['purchaseLevel'] = $purchaseLevel;
 
         return $this;
@@ -438,11 +404,49 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      */
     public function setIndustryDataType($industryDataType)
     {
-        if (!is_null($industryDataType) && (strlen($industryDataType) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $industryDataType when calling Ptsv2paymentsidrefundsProcessingInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['industryDataType'] = $industryDataType;
+
+        return $this;
+    }
+
+    /**
+     * Gets paymentType
+     * @return string
+     */
+    public function getPaymentType()
+    {
+        return $this->container['paymentType'];
+    }
+
+    /**
+     * Sets paymentType
+     * @param string $paymentType Identifier for the payment type
+     * @return $this
+     */
+    public function setPaymentType($paymentType)
+    {
+        $this->container['paymentType'] = $paymentType;
+
+        return $this;
+    }
+
+    /**
+     * Gets refundOptions
+     * @return \CyberSource\Model\Ptsv2paymentsidrefundsProcessingInformationRefundOptions
+     */
+    public function getRefundOptions()
+    {
+        return $this->container['refundOptions'];
+    }
+
+    /**
+     * Sets refundOptions
+     * @param \CyberSource\Model\Ptsv2paymentsidrefundsProcessingInformationRefundOptions $refundOptions
+     * @return $this
+     */
+    public function setRefundOptions($refundOptions)
+    {
+        $this->container['refundOptions'] = $refundOptions;
 
         return $this;
     }
@@ -451,6 +455,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -461,6 +466,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -472,6 +478,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -486,6 +493,7 @@ class Ptsv2paymentsidrefundsProcessingInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

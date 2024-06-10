@@ -55,6 +55,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
       */
     protected static $swaggerTypes = [
         'authType' => 'string',
+        'panReturnIndicator' => 'string',
         'verbalAuthCode' => 'string',
         'verbalAuthTransactionId' => 'string',
         'authIndicator' => 'string',
@@ -67,10 +68,13 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
         'billPayment' => 'bool',
         'billPaymentType' => 'string',
         'redemptionInquiry' => 'bool',
-        'transitTransactionType' => 'string',
+        'transportationMode' => 'string',
         'aggregatedAuthIndicator' => 'string',
         'debtRecoveryIndicator' => 'string',
-        'deferredAuthIndicator' => 'bool'
+        'deferredAuthIndicator' => 'bool',
+        'cashAdvanceIndicator' => 'bool',
+        'splitPaymentTransaction' => 'bool',
+        'cardVerificationIndicator' => 'bool'
     ];
 
     /**
@@ -79,6 +83,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
       */
     protected static $swaggerFormats = [
         'authType' => null,
+        'panReturnIndicator' => null,
         'verbalAuthCode' => null,
         'verbalAuthTransactionId' => null,
         'authIndicator' => null,
@@ -91,10 +96,13 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
         'billPayment' => null,
         'billPaymentType' => null,
         'redemptionInquiry' => null,
-        'transitTransactionType' => null,
+        'transportationMode' => null,
         'aggregatedAuthIndicator' => null,
         'debtRecoveryIndicator' => null,
-        'deferredAuthIndicator' => null
+        'deferredAuthIndicator' => null,
+        'cashAdvanceIndicator' => null,
+        'splitPaymentTransaction' => null,
+        'cardVerificationIndicator' => null
     ];
 
     public static function swaggerTypes()
@@ -113,6 +121,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      */
     protected static $attributeMap = [
         'authType' => 'authType',
+        'panReturnIndicator' => 'panReturnIndicator',
         'verbalAuthCode' => 'verbalAuthCode',
         'verbalAuthTransactionId' => 'verbalAuthTransactionId',
         'authIndicator' => 'authIndicator',
@@ -125,10 +134,13 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
         'billPayment' => 'billPayment',
         'billPaymentType' => 'billPaymentType',
         'redemptionInquiry' => 'redemptionInquiry',
-        'transitTransactionType' => 'transitTransactionType',
+        'transportationMode' => 'transportationMode',
         'aggregatedAuthIndicator' => 'aggregatedAuthIndicator',
         'debtRecoveryIndicator' => 'debtRecoveryIndicator',
-        'deferredAuthIndicator' => 'deferredAuthIndicator'
+        'deferredAuthIndicator' => 'deferredAuthIndicator',
+        'cashAdvanceIndicator' => 'cashAdvanceIndicator',
+        'splitPaymentTransaction' => 'splitPaymentTransaction',
+        'cardVerificationIndicator' => 'cardVerificationIndicator'
     ];
 
 
@@ -138,6 +150,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      */
     protected static $setters = [
         'authType' => 'setAuthType',
+        'panReturnIndicator' => 'setPanReturnIndicator',
         'verbalAuthCode' => 'setVerbalAuthCode',
         'verbalAuthTransactionId' => 'setVerbalAuthTransactionId',
         'authIndicator' => 'setAuthIndicator',
@@ -150,10 +163,13 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
         'billPayment' => 'setBillPayment',
         'billPaymentType' => 'setBillPaymentType',
         'redemptionInquiry' => 'setRedemptionInquiry',
-        'transitTransactionType' => 'setTransitTransactionType',
+        'transportationMode' => 'setTransportationMode',
         'aggregatedAuthIndicator' => 'setAggregatedAuthIndicator',
         'debtRecoveryIndicator' => 'setDebtRecoveryIndicator',
-        'deferredAuthIndicator' => 'setDeferredAuthIndicator'
+        'deferredAuthIndicator' => 'setDeferredAuthIndicator',
+        'cashAdvanceIndicator' => 'setCashAdvanceIndicator',
+        'splitPaymentTransaction' => 'setSplitPaymentTransaction',
+        'cardVerificationIndicator' => 'setCardVerificationIndicator'
     ];
 
 
@@ -163,6 +179,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      */
     protected static $getters = [
         'authType' => 'getAuthType',
+        'panReturnIndicator' => 'getPanReturnIndicator',
         'verbalAuthCode' => 'getVerbalAuthCode',
         'verbalAuthTransactionId' => 'getVerbalAuthTransactionId',
         'authIndicator' => 'getAuthIndicator',
@@ -175,10 +192,13 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
         'billPayment' => 'getBillPayment',
         'billPaymentType' => 'getBillPaymentType',
         'redemptionInquiry' => 'getRedemptionInquiry',
-        'transitTransactionType' => 'getTransitTransactionType',
+        'transportationMode' => 'getTransportationMode',
         'aggregatedAuthIndicator' => 'getAggregatedAuthIndicator',
         'debtRecoveryIndicator' => 'getDebtRecoveryIndicator',
-        'deferredAuthIndicator' => 'getDeferredAuthIndicator'
+        'deferredAuthIndicator' => 'getDeferredAuthIndicator',
+        'cashAdvanceIndicator' => 'getCashAdvanceIndicator',
+        'splitPaymentTransaction' => 'getSplitPaymentTransaction',
+        'cardVerificationIndicator' => 'getCardVerificationIndicator'
     ];
 
     public static function attributeMap()
@@ -213,6 +233,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
     public function __construct(array $data = null)
     {
         $this->container['authType'] = isset($data['authType']) ? $data['authType'] : null;
+        $this->container['panReturnIndicator'] = isset($data['panReturnIndicator']) ? $data['panReturnIndicator'] : null;
         $this->container['verbalAuthCode'] = isset($data['verbalAuthCode']) ? $data['verbalAuthCode'] : null;
         $this->container['verbalAuthTransactionId'] = isset($data['verbalAuthTransactionId']) ? $data['verbalAuthTransactionId'] : null;
         $this->container['authIndicator'] = isset($data['authIndicator']) ? $data['authIndicator'] : null;
@@ -225,10 +246,13 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
         $this->container['billPayment'] = isset($data['billPayment']) ? $data['billPayment'] : null;
         $this->container['billPaymentType'] = isset($data['billPaymentType']) ? $data['billPaymentType'] : null;
         $this->container['redemptionInquiry'] = isset($data['redemptionInquiry']) ? $data['redemptionInquiry'] : null;
-        $this->container['transitTransactionType'] = isset($data['transitTransactionType']) ? $data['transitTransactionType'] : null;
+        $this->container['transportationMode'] = isset($data['transportationMode']) ? $data['transportationMode'] : null;
         $this->container['aggregatedAuthIndicator'] = isset($data['aggregatedAuthIndicator']) ? $data['aggregatedAuthIndicator'] : null;
         $this->container['debtRecoveryIndicator'] = isset($data['debtRecoveryIndicator']) ? $data['debtRecoveryIndicator'] : null;
         $this->container['deferredAuthIndicator'] = isset($data['deferredAuthIndicator']) ? $data['deferredAuthIndicator'] : null;
+        $this->container['cashAdvanceIndicator'] = isset($data['cashAdvanceIndicator']) ? $data['cashAdvanceIndicator'] : null;
+        $this->container['splitPaymentTransaction'] = isset($data['splitPaymentTransaction']) ? $data['splitPaymentTransaction'] : null;
+        $this->container['cardVerificationIndicator'] = isset($data['cardVerificationIndicator']) ? $data['cardVerificationIndicator'] : null;
     }
 
     /**
@@ -239,22 +263,6 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['authType']) && (strlen($this->container['authType']) > 15)) {
-            $invalid_properties[] = "invalid value for 'authType', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['verbalAuthCode']) && (strlen($this->container['verbalAuthCode']) > 7)) {
-            $invalid_properties[] = "invalid value for 'verbalAuthCode', the character length must be smaller than or equal to 7.";
-        }
-
-        if (!is_null($this->container['verbalAuthTransactionId']) && (strlen($this->container['verbalAuthTransactionId']) > 15)) {
-            $invalid_properties[] = "invalid value for 'verbalAuthTransactionId', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['authIndicator']) && (strlen($this->container['authIndicator']) > 1)) {
-            $invalid_properties[] = "invalid value for 'authIndicator', the character length must be smaller than or equal to 1.";
-        }
 
         return $invalid_properties;
     }
@@ -268,18 +276,6 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
     public function valid()
     {
 
-        if (strlen($this->container['authType']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['verbalAuthCode']) > 7) {
-            return false;
-        }
-        if (strlen($this->container['verbalAuthTransactionId']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['authIndicator']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -300,11 +296,28 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      */
     public function setAuthType($authType)
     {
-        if (!is_null($authType) && (strlen($authType) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $authType when calling Ptsv2paymentsProcessingInformationAuthorizationOptions., must be smaller than or equal to 15.');
-        }
-
         $this->container['authType'] = $authType;
+
+        return $this;
+    }
+
+    /**
+     * Gets panReturnIndicator
+     * @return string
+     */
+    public function getPanReturnIndicator()
+    {
+        return $this->container['panReturnIndicator'];
+    }
+
+    /**
+     * Sets panReturnIndicator
+     * @param string $panReturnIndicator #### Visa Platform Connect The field contains the PAN translation indicator for American Express Contactless Transaction. Valid value is   1- Expresspay Translation, PAN request 2- Expresspay Translation, PAN and Expiry date request
+     * @return $this
+     */
+    public function setPanReturnIndicator($panReturnIndicator)
+    {
+        $this->container['panReturnIndicator'] = $panReturnIndicator;
 
         return $this;
     }
@@ -325,10 +338,6 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      */
     public function setVerbalAuthCode($verbalAuthCode)
     {
-        if (!is_null($verbalAuthCode) && (strlen($verbalAuthCode) > 7)) {
-            throw new \InvalidArgumentException('invalid length for $verbalAuthCode when calling Ptsv2paymentsProcessingInformationAuthorizationOptions., must be smaller than or equal to 7.');
-        }
-
         $this->container['verbalAuthCode'] = $verbalAuthCode;
 
         return $this;
@@ -350,10 +359,6 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      */
     public function setVerbalAuthTransactionId($verbalAuthTransactionId)
     {
-        if (!is_null($verbalAuthTransactionId) && (strlen($verbalAuthTransactionId) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $verbalAuthTransactionId when calling Ptsv2paymentsProcessingInformationAuthorizationOptions., must be smaller than or equal to 15.');
-        }
-
         $this->container['verbalAuthTransactionId'] = $verbalAuthTransactionId;
 
         return $this;
@@ -375,10 +380,6 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      */
     public function setAuthIndicator($authIndicator)
     {
-        if (!is_null($authIndicator) && (strlen($authIndicator) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $authIndicator when calling Ptsv2paymentsProcessingInformationAuthorizationOptions., must be smaller than or equal to 1.');
-        }
-
         $this->container['authIndicator'] = $authIndicator;
 
         return $this;
@@ -458,7 +459,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
 
     /**
      * Sets declineAvsFlags
-     * @param string[] $declineAvsFlags Comma-separated list of AVS flags that cause the reply flag `DAVSNO` to be returned.  **Important** To receive declines for the AVS code `N`, you must include the value `N` in the comma-separated list.    ### AVS Codes for Cielo 3.0 and CyberSource Latin American Processing    **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports.   In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America.   The information in this section is for the specific processing connection called CyberSource Latin American Processing.   It is not for any other Latin American processors that CyberSource supports.  |AVS Code|Description| |--- |--- | |D|Partial match: postal code and address match.| |E|Not supported: AVS is not supported for this card type. _or_ Invalid: the acquirer returned an unrecognized value for the AVS response.| |F|Partial match: postal code matches, but CPF and address do not match.*| |G|Not supported: AVS not supported or not verified.| |I|No match: AVS information is not available.| |K|Partial match: CPF matches, but postal code and address do not match.*| |L|Partial match: postal code and CPF match, but address does not match.*| |N|No match: postal code, CPF, and address do not match.*| |O|Partial match: CPF and address match, but postal code does not match.*| |R|Not supported: your implementation does not support AVS _or_ System unavailable.| |T|Partial match: address matches, but postal code and CPF do not match.*| |V|Match: postal code, CPF, and address match.*| |* CPF (Cadastro de Pessoas Fisicas) is required only for Redecard in Brazil.||  ### AVS Codes for All Other Processors  **Note** The list of AVS codes for all other processors follows these descriptions of the processor-specific information for these codes.  #### American Express Cards For American Express cards only, you can receive Visa and CyberSource AVS codes in addition to the American Express AVS codes.  **Note** For CyberSource through VisaNet, the American Express AVS codes are converted to Visa AVS codes before they are returned to you. As a result, you will not receive American Express AVS codes for the American Express card type.<br/><br/>  _American Express Card codes_: `F`, `H`, `K`, `L`, `O`, `T`, `V`  #### Domestic and International Visa Cards The international and domestic alphabetic AVS codes are the Visa standard AVS codes. CyberSource maps the standard AVS return codes for other types of payment cards, including American Express cards, to the Visa standard AVS codes.  AVS is considered either domestic or international, depending on the location of the bank that issued the customer's payment card: - When the bank is in the U.S., the AVS is domestic. - When the bank is outside the U.S., the AVS is international.  You should be prepared to handle both domestic and international AVS result codes: - For international cards, you can receive domestic AVS codes in addition to the international AVS codes. - For domestic cards, you can receive international AVS codes in addition to the domestic AVS codes.  _International Visa Codes_: `B`, `C`, `D`, `G`, `I`, `M`, `P`  _Domestic Visa Codes_: `A`, `E`,`N`, `R`, `S`, `U`, `W`, `X`, `Y`, `Z`  #### CyberSource Codes The numeric AVS codes are created by CyberSource and are not standard Visa codes. These AVS codes can be returned for any card type.  _CyberSource Codes_: `1`, `2`, `3`, `4`  ### Table of AVS Codes for All Other Processors  |AVS Code|Description| |--- |--- | |A|Partial match: street address matches, but 5-digit and 9-digit postal codes do not match.| |B|Partial match: street address matches, but postal code is not verified. Returned only for Visa cards not issued in the U.S.| |C|No match: street address and postal code do not match. Returned only for Visa cards not issued in the U.S.| |D & M|Match: street address and postal code match. Returned only for Visa cards not issued in the U.S.| |E|Invalid: AVS data is invalid or AVS is not allowed for this card type.| |F|Partial match: card member’s name does not match, but billing postal code matches.| |G|Not supported: issuing bank outside the U.S. does not support AVS.| |H|Partial match: card member’s name does not match, but street address and postal code match. Returned only for the American Express card type.| |I|No match: address not verified. Returned only for Visa cards not issued in the U.S.| |K|Partial match: card member’s name matches, but billing address and billing postal code do not match. Returned only for the American Express card type.| |L|Partial match: card member’s name and billing postal code match, but billing address does not match. Returned only for the American Express card type.| |M|See the entry for D & M.| |N|No match: one of the following: street address and postal code do not match _or_ (American Express card type only) card member’s name, street address, and postal code do not match.| |O|Partial match: card member’s name and billing address match, but billing postal code does not match. Returned only for the American Express card type.| |P|Partial match: postal code matches, but street address not verified. Returned only for Visa cards not issued in the U.S.| |R|System unavailable.| |S|Not supported: issuing bank in the U.S. does not support AVS.| |T|Partial match: card member’s name does not match, but street address matches. Returned only for the American Express card type.| |U|System unavailable: address information unavailable for one of these reasons: The U.S. bank does not support AVS outside the U.S. _or_ The AVS in a U.S. bank is not functioning properly.| |V|Match: card member’s name, billing address, and billing postal code match. Returned only for the American Express card type.| |W|Partial match: street address does not match, but 9-digit postal code matches.| |X|Match: street address and 9-digit postal code match.| |Y|Match: street address and 5-digit postal code match.| |Z|Partial match: street address does not match, but 5-digit postal code matches.| |1|Not supported: one of the following: AVS is not supported for this processor or card type _or_ AVS is disabled for your CyberSource account. To enable AVS, contact CyberSource Customer Support.| |2|Unrecognized: the processor returned an unrecognized value for the AVS response.| |3|Match: address is confirmed. Returned only for PayPal Express Checkout.| |4|No match: address is not confirmed. Returned only for PayPal Express Checkout.| |5|No match: no AVS code was returned by the processor.|
+     * @param string[] $declineAvsFlags Comma-separated list of AVS flags that cause the reply flag `DAVSNO` to be returned.  **Important** To receive declines for the AVS code `N`, you must include the value `N` in the comma-separated list.    ### AVS Codes for Cielo 3.0 and CyberSource Latin American Processing    **Note** CyberSource Latin American Processing is the name of a specific processing connection that CyberSource supports.   In the CyberSource API documentation, CyberSource Latin American Processing does not refer to the general topic of processing in Latin America.   The information in this section is for the specific processing connection called CyberSource Latin American Processing.   It is not for any other Latin American processors that CyberSource supports.  |AVS Code|Description| |--- |--- | |D|Partial match: postal code and address match.| |E|Not supported: AVS is not supported for this card type. _or_ Invalid: the acquirer returned an unrecognized value for the AVS response.| |F|Partial match: postal code matches, but CPF and address do not match.*| |G|Not supported: AVS not supported or not verified.| |I|No match: AVS information is not available.| |K|Partial match: CPF matches, but postal code and address do not match.*| |L|Partial match: postal code and CPF match, but address does not match.*| |N|No match: postal code, CPF, and address do not match.*| |O|Partial match: CPF and address match, but postal code does not match.*| |R|Not supported: your implementation does not support AVS _or_ System unavailable.| |T|Partial match: address matches, but postal code and CPF do not match.*| |V|Match: postal code, CPF, and address match.*| |* CPF (Cadastro de Pessoas Fisicas) is required only for Redecard in Brazil.||  ### AVS Codes for All Other Processors  **Note** The list of AVS codes for all other processors follows these descriptions of the processor-specific information for these codes.  #### American Express Cards For American Express cards only, you can receive Visa and CyberSource AVS codes in addition to the American Express AVS codes.  **Note** For CyberSource through VisaNet, the American Express AVS codes are converted to Visa AVS codes before they are returned to you. As a result, you will not receive American Express AVS codes for the American Express card type.<br/><br/>  _American Express Card codes_: `F`, `H`, `K`, `L`, `O`, `T`, `V`  #### Domestic and International Visa Cards The international and domestic alphabetic AVS codes are the Visa standard AVS codes. CyberSource maps the standard AVS return codes for other types of payment cards, including American Express cards, to the Visa standard AVS codes.  AVS is considered either domestic or international, depending on the location of the bank that issued the customer's payment card: - When the bank is in the U.S., the AVS is domestic. - When the bank is outside the U.S., the AVS is international.  You should be prepared to handle both domestic and international AVS result codes: - For international cards, you can receive domestic AVS codes in addition to the international AVS codes. - For domestic cards, you can receive international AVS codes in addition to the domestic AVS codes.  _International Visa Codes_: `B`, `C`, `D`, `G`, `I`, `M`, `P`  _Domestic Visa Codes_: `A`, `E`,`N`, `R`, `S`, `U`, `W`, `X`, `Y`, `Z`  #### CyberSource Codes The numeric AVS codes are created by CyberSource and are not standard Visa codes. These AVS codes can be returned for any card type.  _CyberSource Codes_: `1`, `2`, `3`, `4`  ### Table of AVS Codes for All Other Processors  |AVS Code|Description| |--- |--- | |A|Partial match: street address matches, but 5-digit and 9-digit postal codes do not match.| |B|Partial match: street address matches, but postal code is not verified. Returned only for Visa cards not issued in the U.S.| |C|No match: street address and postal code do not match. Returned only for Visa cards not issued in the U.S.| |D & M|Match: street address and postal code match. Returned only for Visa cards not issued in the U.S.| |E|Invalid: AVS data is invalid or AVS is not allowed for this card type.| |F|Partial match: card member's name does not match, but billing postal code matches.| |G|Not supported: issuing bank outside the U.S. does not support AVS.| |H|Partial match: card member's name does not match, but street address and postal code match. Returned only for the American Express card type.| |I|No match: address not verified. Returned only for Visa cards not issued in the U.S.| |K|Partial match: card member's name matches, but billing address and billing postal code do not match. Returned only for the American Express card type.| |L|Partial match: card member's name and billing postal code match, but billing address does not match. Returned only for the American Express card type.| |M|See the entry for D & M.| |N|No match: one of the following: street address and postal code do not match _or_ (American Express card type only) card member's name, street address, and postal code do not match.| |O|Partial match: card member's name and billing address match, but billing postal code does not match. Returned only for the American Express card type.| |P|Partial match: postal code matches, but street address not verified. Returned only for Visa cards not issued in the U.S.| |R|System unavailable.| |S|Not supported: issuing bank in the U.S. does not support AVS.| |T|Partial match: card member's name does not match, but street address matches. Returned only for the American Express card type.| |U|System unavailable: address information unavailable for one of these reasons: The U.S. bank does not support AVS outside the U.S. _or_ The AVS in a U.S. bank is not functioning properly.| |V|Match: card member's name, billing address, and billing postal code match. Returned only for the American Express card type.| |W|Partial match: street address does not match, but 9-digit postal code matches.| |X|Match: street address and 9-digit postal code match.| |Y|Match: street address and 5-digit postal code match.| |Z|Partial match: street address does not match, but 5-digit postal code matches.| |1|Not supported: one of the following: AVS is not supported for this processor or card type _or_ AVS is disabled for your CyberSource account. To enable AVS, contact CyberSource Customer Support.| |2|Unrecognized: the processor returned an unrecognized value for the AVS response.| |3|Match: address is confirmed. Returned only for PayPal Express Checkout.| |4|No match: address is not confirmed. Returned only for PayPal Express Checkout.| |5|No match: no AVS code was returned by the processor.|
      * @return $this
      */
     public function setDeclineAvsFlags($declineAvsFlags)
@@ -542,7 +543,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
 
     /**
      * Sets billPaymentType
-     * @param string $billPaymentType Reason for the payment.  Possible values: - 001: Utility payment - 002: Government services - 003: Mobile phone top-up - 004: Coupon payment  The value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP07 TCR0 - Position: 48-50 - Field: Bill Payment Transaction Type Identifier  This field is supported only for bill payments in Brazil with Mastercard on CyberSource through VisaNet.
+     * @param string $billPaymentType Reason for the payment.  Possible values: - 001: Utility payment - 002: Government services - 003: Mobile phone top-up - 004: Coupon payment - 005: Installment based repayment  The value for this field corresponds to the following data in the TC 33A capture file (applicable to Brazil): - Record: CP07 TCR0 - Position: 48-50 - Field: Bill Payment Transaction Type Identifier  The value for this field corresponds to the following data in the TC 33A capture file (applicable to Installment) based Repayment): - Record: CP01 TCR6 - Position: 154-156 - Field: Bill Payment Transaction Type Identifier   This field is supported for 1. Bill payments in Brazil with Mastercard on CyberSource through VisaNet. 2. Installment based repayment transactions on Cybersource through VisaNet.
      * @return $this
      */
     public function setBillPaymentType($billPaymentType)
@@ -574,22 +575,22 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
     }
 
     /**
-     * Gets transitTransactionType
+     * Gets transportationMode
      * @return string
      */
-    public function getTransitTransactionType()
+    public function getTransportationMode()
     {
-        return $this->container['transitTransactionType'];
+        return $this->container['transportationMode'];
     }
 
     /**
-     * Sets transitTransactionType
-     * @param string $transitTransactionType Type of transportation mode :  Possible Values: - 00 = Unknown - 01 = Urban bus - 02 = Interurban bus - 03=Lighttrainmasstransit(Underground Metro LTR) - 04 = Train - 05 = Commuter train - 06 = Water-borne vehicle - 07 = Toll - 08 = Parking - 09 = Taxi - 10 = High-speed train - 11 = Rural bus - 12 = Express commuter train - 13 = Para transit - 14 = Self drive vehicle - 15 = Coach - 16 = Locomotive - 17 = Powered motor coach - 18 = Trailer - 19 = Regional train - 20 = Inter-city - 21 = Funicular train - 22 = Cable car
+     * Sets transportationMode
+     * @param string $transportationMode Type of transportation mode :  Possible Values: - 00 = Unknown - 01 = Urban bus - 02 = Interurban bus - 03=Lighttrainmasstransit(Underground Metro LTR) - 04 = Train - 05 = Commuter train - 06 = Water-borne vehicle - 07 = Toll - 08 = Parking - 09 = Taxi - 10 = High-speed train - 11 = Rural bus - 12 = Express commuter train - 13 = Para transit - 14 = Self drive vehicle - 15 = Coach - 16 = Locomotive - 17 = Powered motor coach - 18 = Trailer - 19 = Regional train - 20 = Inter-city - 21 = Funicular train - 22 = Cable car
      * @return $this
      */
-    public function setTransitTransactionType($transitTransactionType)
+    public function setTransportationMode($transportationMode)
     {
-        $this->container['transitTransactionType'] = $transitTransactionType;
+        $this->container['transportationMode'] = $transportationMode;
 
         return $this;
     }
@@ -656,11 +657,75 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
 
         return $this;
     }
+
+    /**
+     * Gets cashAdvanceIndicator
+     * @return bool
+     */
+    public function getCashAdvanceIndicator()
+    {
+        return $this->container['cashAdvanceIndicator'];
+    }
+
+    /**
+     * Sets cashAdvanceIndicator
+     * @param bool $cashAdvanceIndicator This API field enables the merchant to indicate that a given transaction is Cash Advance.  Cash advance or Cash disbursement functionality allows a merchant to dispense cash at a point of sale. It provides the ability of a POS system to act like an ATM. These terminals are typically seen in bank branches where customers can use their card and withdraw cash or at merchant locations where ATMs are sparse.  Possible values:   - `true` (Cash advance is supported)   - `false` (default: cash advance is not supported)
+     * @return $this
+     */
+    public function setCashAdvanceIndicator($cashAdvanceIndicator)
+    {
+        $this->container['cashAdvanceIndicator'] = $cashAdvanceIndicator;
+
+        return $this;
+    }
+
+    /**
+     * Gets splitPaymentTransaction
+     * @return bool
+     */
+    public function getSplitPaymentTransaction()
+    {
+        return $this->container['splitPaymentTransaction'];
+    }
+
+    /**
+     * Sets splitPaymentTransaction
+     * @param bool $splitPaymentTransaction #### Visa Platform Connect Indicates split payment transaction. A split payment allows the use of two payment methods for a single transaction.  Possible values:   - `true` (split payment transaction is supported)   - `false` (default: split payment transaction is not supported)
+     * @return $this
+     */
+    public function setSplitPaymentTransaction($splitPaymentTransaction)
+    {
+        $this->container['splitPaymentTransaction'] = $splitPaymentTransaction;
+
+        return $this;
+    }
+
+    /**
+     * Gets cardVerificationIndicator
+     * @return bool
+     */
+    public function getCardVerificationIndicator()
+    {
+        return $this->container['cardVerificationIndicator'];
+    }
+
+    /**
+     * Sets cardVerificationIndicator
+     * @param bool $cardVerificationIndicator This API field will indicate whether a card verification check is being performed during the transaction  Possible values:   - `true`   - `false` (default value)
+     * @return $this
+     */
+    public function setCardVerificationIndicator($cardVerificationIndicator)
+    {
+        $this->container['cardVerificationIndicator'] = $cardVerificationIndicator;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -671,6 +736,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -682,6 +748,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -696,6 +763,7 @@ class Ptsv2paymentsProcessingInformationAuthorizationOptions implements ArrayAcc
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -144,10 +144,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount implements Array
     {
         $invalid_properties = [];
 
-        // if (!is_null($this->container['type']) && (strlen($this->container['type']) > 1)) {
-        //     $invalid_properties[] = "invalid value for 'type', the character length must be smaller than or equal to 1.";
-        // }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount implements Array
     public function valid()
     {
 
-        // if (strlen($this->container['type']) > 1) {
-        //     return false;
-        // }
         return true;
     }
 
@@ -178,15 +171,11 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount implements Array
 
     /**
      * Sets type
-     * @param string $type Account type.  Valid values:  - checking : C  - general ledger : G This value is supported only on Wells Fargo ACH  - savings : S (U.S. dollars only)  - corporate checking : X (U.S. dollars only)
+     * @param string $type Account type.  Possible Values:  - checking : C  - general ledger : G This value is supported only on Wells Fargo ACH  - savings : S (U.S. dollars only)  - corporate checking : X (U.S. dollars only)
      * @return $this
      */
     public function setType($type)
     {
-        // if (!is_null($type) && (strlen($type) > 1)) {
-        //     throw new \InvalidArgumentException('invalid length for $type when calling Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount., must be smaller than or equal to 1.');
-        // }
-
         $this->container['type'] = $type;
 
         return $this;
@@ -196,6 +185,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount implements Array
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount implements Array
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount implements Array
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class Tmsv2customersEmbeddedDefaultPaymentInstrumentBankAccount implements Array
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

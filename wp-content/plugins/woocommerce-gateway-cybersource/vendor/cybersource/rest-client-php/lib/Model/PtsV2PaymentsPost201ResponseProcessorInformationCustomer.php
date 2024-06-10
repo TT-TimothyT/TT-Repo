@@ -144,10 +144,6 @@ class PtsV2PaymentsPost201ResponseProcessorInformationCustomer implements ArrayA
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['personalIdResult']) && (strlen($this->container['personalIdResult']) > 1)) {
-            $invalid_properties[] = "invalid value for 'personalIdResult', the character length must be smaller than or equal to 1.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class PtsV2PaymentsPost201ResponseProcessorInformationCustomer implements ArrayA
     public function valid()
     {
 
-        if (strlen($this->container['personalIdResult']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -183,10 +176,6 @@ class PtsV2PaymentsPost201ResponseProcessorInformationCustomer implements ArrayA
      */
     public function setPersonalIdResult($personalIdResult)
     {
-        if (!is_null($personalIdResult) && (strlen($personalIdResult) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $personalIdResult when calling PtsV2PaymentsPost201ResponseProcessorInformationCustomer., must be smaller than or equal to 1.');
-        }
-
         $this->container['personalIdResult'] = $personalIdResult;
 
         return $this;
@@ -196,6 +185,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationCustomer implements ArrayA
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationCustomer implements ArrayA
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationCustomer implements ArrayA
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class PtsV2PaymentsPost201ResponseProcessorInformationCustomer implements ArrayA
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

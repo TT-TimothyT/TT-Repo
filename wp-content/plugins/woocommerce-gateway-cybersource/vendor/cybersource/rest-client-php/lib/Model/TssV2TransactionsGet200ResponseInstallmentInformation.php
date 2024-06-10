@@ -54,7 +54,8 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'numberOfInstallments' => 'string'
+        'numberOfInstallments' => 'string',
+        'identifier' => 'string'
     ];
 
     /**
@@ -62,7 +63,8 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'numberOfInstallments' => null
+        'numberOfInstallments' => null,
+        'identifier' => null
     ];
 
     public static function swaggerTypes()
@@ -80,7 +82,8 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
      * @var string[]
      */
     protected static $attributeMap = [
-        'numberOfInstallments' => 'numberOfInstallments'
+        'numberOfInstallments' => 'numberOfInstallments',
+        'identifier' => 'identifier'
     ];
 
 
@@ -89,7 +92,8 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
      * @var string[]
      */
     protected static $setters = [
-        'numberOfInstallments' => 'setNumberOfInstallments'
+        'numberOfInstallments' => 'setNumberOfInstallments',
+        'identifier' => 'setIdentifier'
     ];
 
 
@@ -98,7 +102,8 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
      * @var string[]
      */
     protected static $getters = [
-        'numberOfInstallments' => 'getNumberOfInstallments'
+        'numberOfInstallments' => 'getNumberOfInstallments',
+        'identifier' => 'getIdentifier'
     ];
 
     public static function attributeMap()
@@ -133,6 +138,7 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
     public function __construct(array $data = null)
     {
         $this->container['numberOfInstallments'] = isset($data['numberOfInstallments']) ? $data['numberOfInstallments'] : null;
+        $this->container['identifier'] = isset($data['identifier']) ? $data['identifier'] : null;
     }
 
     /**
@@ -180,11 +186,33 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
 
         return $this;
     }
+
+    /**
+     * Gets identifier
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->container['identifier'];
+    }
+
+    /**
+     * Sets identifier
+     * @param string $identifier Standing Instruction/Installment identifier.
+     * @return $this
+     */
+    public function setIdentifier($identifier)
+    {
+        $this->container['identifier'] = $identifier;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -195,6 +223,7 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -206,6 +235,7 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -220,6 +250,7 @@ class TssV2TransactionsGet200ResponseInstallmentInformation implements ArrayAcce
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -32,6 +32,7 @@ use \CyberSource\ApiClient;
 use \CyberSource\ApiException;
 use \CyberSource\Configuration;
 use \CyberSource\ObjectSerializer;
+use \CyberSource\Logging\LogFactory as LogFactory;
 
 /**
  * SecureFileShareApi Class Doc Comment
@@ -43,6 +44,8 @@ use \CyberSource\ObjectSerializer;
  */
 class SecureFileShareApi
 {
+    private static $logger = null;
+    
     /**
      * API Client
      *
@@ -62,6 +65,10 @@ class SecureFileShareApi
         }
 
         $this->apiClient = $apiClient;
+
+        if (self::$logger === null) {
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $apiClient->merchantConfig->getLogConfiguration());
+        }
     }
 
     /**
@@ -99,7 +106,10 @@ class SecureFileShareApi
      */
     public function getFile($fileId, $organizationId = null)
     {
+        self::$logger->info('CALL TO METHOD getFile STARTED');
         list($response, $statusCode, $httpHeader) = $this->getFileWithHttpInfo($fileId, $organizationId);
+        self::$logger->info('CALL TO METHOD getFile ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -117,16 +127,12 @@ class SecureFileShareApi
     {
         // verify the required parameter 'fileId' is set
         if ($fileId === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $fileId when calling getFile");
             throw new \InvalidArgumentException('Missing the required parameter $fileId when calling getFile');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling SecureFileShareApi.getFile, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling SecureFileShareApi.getFile, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling SecureFileShareApi.getFile, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling SecureFileShareApi.getFile, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling SecureFileShareApi.getFile, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         // parse inputs
@@ -139,7 +145,7 @@ class SecureFileShareApi
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
-        $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['*/*']);
+        $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['*/*;charset=utf-8']);
 
         // query params
         if ($organizationId !== null) {
@@ -153,6 +159,9 @@ class SecureFileShareApi
                 $resourcePath
             );
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -160,6 +169,21 @@ class SecureFileShareApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : null");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -171,16 +195,19 @@ class SecureFileShareApi
                 null,
                 '/sfs/v1/files/{fileId}'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$response, $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 400:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4001', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4004', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }
@@ -199,7 +226,10 @@ class SecureFileShareApi
      */
     public function getFileDetail($startDate, $endDate, $organizationId = null, $name = null)
     {
+        self::$logger->info('CALL TO METHOD getFileDetail STARTED');
         list($response, $statusCode, $httpHeader) = $this->getFileDetailWithHttpInfo($startDate, $endDate, $organizationId, $name);
+        self::$logger->info('CALL TO METHOD getFileDetail ENDED');
+        self::$logger->close();
         return [$response, $statusCode, $httpHeader];
     }
 
@@ -219,24 +249,22 @@ class SecureFileShareApi
     {
         // verify the required parameter 'startDate' is set
         if ($startDate === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $startDate when calling getFileDetail");
             throw new \InvalidArgumentException('Missing the required parameter $startDate when calling getFileDetail');
         }
         // verify the required parameter 'endDate' is set
         if ($endDate === null) {
+            self::$logger->error("InvalidArgumentException : Missing the required parameter $endDate when calling getFileDetail");
             throw new \InvalidArgumentException('Missing the required parameter $endDate when calling getFileDetail');
         }
-        if (!is_null($organizationId) && (strlen($organizationId) > 32)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling SecureFileShareApi.getFileDetail, must be smaller than or equal to 32.');
-        }
-        if (!is_null($organizationId) && (strlen($organizationId) < 1)) {
-            throw new \InvalidArgumentException('invalid length for "$organizationId" when calling SecureFileShareApi.getFileDetail, must be bigger than or equal to 1.');
-        }
         if (!is_null($organizationId) && !preg_match("/[a-zA-Z0-9-_]+/", $organizationId)) {
-            throw new \InvalidArgumentException("invalid value for \"organizationId\" when calling SecureFileShareApi.getFileDetail, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"organizationId\" when calling SecureFileShareApi.getFileDetail, must conform to the pattern /[a-zA-Z0-9-_]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"organizationId\" when calling SecureFileShareApi.getFileDetail, must conform to the pattern /[a-zA-Z0-9-_]+/.');
         }
 
         if (!is_null($name) && !preg_match("/[a-zA-Z0-9-_\\.]+/", $name)) {
-            throw new \InvalidArgumentException("invalid value for \"name\" when calling SecureFileShareApi.getFileDetail, must conform to the pattern /[a-zA-Z0-9-_\\.]+/.");
+            self::$logger->error("InvalidArgumentException : Invalid value for \"name\" when calling SecureFileShareApi.getFileDetail, must conform to the pattern /[a-zA-Z0-9-_\\.]+/.");
+            throw new \InvalidArgumentException('Invalid value for \"name\" when calling SecureFileShareApi.getFileDetail, must conform to the pattern /[a-zA-Z0-9-_\\.]+/.');
         }
 
         // parse inputs
@@ -249,7 +277,7 @@ class SecureFileShareApi
         if (!is_null($_header_accept)) {
             $headerParams['Accept'] = $_header_accept;
         }
-        $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['*/*']);
+        $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['*/*;charset=utf-8']);
 
         // query params
         if ($startDate !== null) {
@@ -267,6 +295,9 @@ class SecureFileShareApi
         if ($name !== null) {
             $queryParams['name'] = $this->apiClient->getSerializer()->toQueryValue($name);
         }
+        if ('GET' == 'POST') {
+            $_tempBody = '{}';
+        }
 
         // for model (json/xml)
         if (isset($_tempBody)) {
@@ -274,6 +305,24 @@ class SecureFileShareApi
         } elseif (count($formParams) > 0) {
             $httpBody = $formParams; // for HTTP post (form)
         }
+        
+        // Logging
+        self::$logger->debug("Resource : GET $resourcePath");
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        self::$logger->debug("Query Parameters :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($queryParams));
+        if (isset($httpBody)) {
+            if ($this->apiClient->merchantConfig->getLogConfiguration()->isMaskingEnabled()) {
+                $printHttpBody = \CyberSource\Utilities\Helpers\DataMasker::maskData($httpBody);
+            } else {
+                $printHttpBody = $httpBody;
+            }
+            
+            self::$logger->debug("Body Parameter :\n" . $printHttpBody); 
+        }
+
+        self::$logger->debug("Return Type : \CyberSource\Model\V1FileDetailsGet200Response");
         // make the API Call
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -285,6 +334,8 @@ class SecureFileShareApi
                 '\CyberSource\Model\V1FileDetailsGet200Response',
                 '/sfs/v1/file-details'
             );
+            
+            self::$logger->debug("Response Headers :\n" . \CyberSource\Utilities\Helpers\ListHelper::toString($httpHeader));
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\CyberSource\Model\V1FileDetailsGet200Response', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
@@ -294,23 +345,24 @@ class SecureFileShareApi
                     $e->setResponseObject($data);
                     break;
                 case 400:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4001', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4004', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 401:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4001', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4004', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 404:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4001', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4004', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4001', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\CyberSource\Model\InlineResponse4004', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
 
+            self::$logger->error("ApiException : $e");
             throw $e;
         }
     }

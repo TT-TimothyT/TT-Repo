@@ -168,22 +168,6 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['ticketNumber']) && (strlen($this->container['ticketNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'ticketNumber', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['passengerName']) && (strlen($this->container['passengerName']) > 20)) {
-            $invalid_properties[] = "invalid value for 'passengerName', the character length must be smaller than or equal to 20.";
-        }
-
-        if (!is_null($this->container['connectedTicketNumber']) && (strlen($this->container['connectedTicketNumber']) > 15)) {
-            $invalid_properties[] = "invalid value for 'connectedTicketNumber', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['creditReasonIndicator']) && (strlen($this->container['creditReasonIndicator']) > 15)) {
-            $invalid_properties[] = "invalid value for 'creditReasonIndicator', the character length must be smaller than or equal to 15.";
-        }
-
         return $invalid_properties;
     }
 
@@ -196,18 +180,6 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
     public function valid()
     {
 
-        if (strlen($this->container['ticketNumber']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['passengerName']) > 20) {
-            return false;
-        }
-        if (strlen($this->container['connectedTicketNumber']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['creditReasonIndicator']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -228,10 +200,6 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
      */
     public function setTicketNumber($ticketNumber)
     {
-        if (!is_null($ticketNumber) && (strlen($ticketNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $ticketNumber when calling Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation., must be smaller than or equal to 15.');
-        }
-
         $this->container['ticketNumber'] = $ticketNumber;
 
         return $this;
@@ -248,15 +216,11 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
 
     /**
      * Sets passengerName
-     * @param string $passengerName Name of the passenger. If the passenger’s name is not available, this value is the cardholder’s name. If neither the passenger’s name nor the cardholder’s name is available, this value is a description of the ancillary purchase. **Important** This field is required in the U.S. in order for you to qualify for either the custom payment service (CPS) or the electronic interchange reimbursement fee (EIRF) program. Format: English characters only. Optional field for ancillary service.
+     * @param string $passengerName Name of the passenger. If the passenger's name is not available, this value is the cardholder's name. If neither the passenger's name nor the cardholder's name is available, this value is a description of the ancillary purchase. **Important** This field is required in the U.S. in order for you to qualify for either the custom payment service (CPS) or the electronic interchange reimbursement fee (EIRF) program. Format: English characters only. Optional field for ancillary service.
      * @return $this
      */
     public function setPassengerName($passengerName)
     {
-        if (!is_null($passengerName) && (strlen($passengerName) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $passengerName when calling Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation., must be smaller than or equal to 20.');
-        }
-
         $this->container['passengerName'] = $passengerName;
 
         return $this;
@@ -278,10 +242,6 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
      */
     public function setConnectedTicketNumber($connectedTicketNumber)
     {
-        if (!is_null($connectedTicketNumber) && (strlen($connectedTicketNumber) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $connectedTicketNumber when calling Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation., must be smaller than or equal to 15.');
-        }
-
         $this->container['connectedTicketNumber'] = $connectedTicketNumber;
 
         return $this;
@@ -303,10 +263,6 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
      */
     public function setCreditReasonIndicator($creditReasonIndicator)
     {
-        if (!is_null($creditReasonIndicator) && (strlen($creditReasonIndicator) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $creditReasonIndicator when calling Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation., must be smaller than or equal to 15.');
-        }
-
         $this->container['creditReasonIndicator'] = $creditReasonIndicator;
 
         return $this;
@@ -337,6 +293,7 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -347,6 +304,7 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -358,6 +316,7 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -372,6 +331,7 @@ class Ptsv2paymentsTravelInformationTransitAirlineAncillaryInformation implement
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

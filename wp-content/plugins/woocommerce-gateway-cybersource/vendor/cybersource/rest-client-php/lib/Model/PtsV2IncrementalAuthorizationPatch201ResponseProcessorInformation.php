@@ -174,22 +174,6 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['transactionId']) && (strlen($this->container['transactionId']) > 50)) {
-            $invalid_properties[] = "invalid value for 'transactionId', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['responseCode']) && (strlen($this->container['responseCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'responseCode', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['systemTraceAuditNumber']) && (strlen($this->container['systemTraceAuditNumber']) > 6)) {
-            $invalid_properties[] = "invalid value for 'systemTraceAuditNumber', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['responseDetails']) && (strlen($this->container['responseDetails']) > 255)) {
-            $invalid_properties[] = "invalid value for 'responseDetails', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -202,18 +186,6 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
     public function valid()
     {
 
-        if (strlen($this->container['transactionId']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['responseCode']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['systemTraceAuditNumber']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['responseDetails']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -255,10 +227,6 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
      */
     public function setTransactionId($transactionId)
     {
-        if (!is_null($transactionId) && (strlen($transactionId) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $transactionId when calling PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['transactionId'] = $transactionId;
 
         return $this;
@@ -280,10 +248,6 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
      */
     public function setResponseCode($responseCode)
     {
-        if (!is_null($responseCode) && (strlen($responseCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $responseCode when calling PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['responseCode'] = $responseCode;
 
         return $this;
@@ -300,15 +264,11 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
 
     /**
      * Sets systemTraceAuditNumber
-     * @param string $systemTraceAuditNumber This field is returned only for **American Express Direct** and **CyberSource through VisaNet**. Returned by authorization and incremental authorization services.  #### American Express Direct  System trace audit number (STAN). This value identifies the transaction and is useful when investigating a chargeback dispute.  #### CyberSource through VisaNet  System trace number that must be printed on the customer’s receipt.
+     * @param string $systemTraceAuditNumber This field is returned only for **American Express Direct** and **CyberSource through VisaNet**. Returned by authorization and incremental authorization services.  #### American Express Direct  System trace audit number (STAN). This value identifies the transaction and is useful when investigating a chargeback dispute.  #### CyberSource through VisaNet  System trace number that must be printed on the customer's receipt.
      * @return $this
      */
     public function setSystemTraceAuditNumber($systemTraceAuditNumber)
     {
-        if (!is_null($systemTraceAuditNumber) && (strlen($systemTraceAuditNumber) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $systemTraceAuditNumber when calling PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['systemTraceAuditNumber'] = $systemTraceAuditNumber;
 
         return $this;
@@ -330,10 +290,6 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
      */
     public function setResponseDetails($responseDetails)
     {
-        if (!is_null($responseDetails) && (strlen($responseDetails) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $responseDetails when calling PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['responseDetails'] = $responseDetails;
 
         return $this;
@@ -364,6 +320,7 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -374,6 +331,7 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -385,6 +343,7 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -399,6 +358,7 @@ class PtsV2IncrementalAuthorizationPatch201ResponseProcessorInformation implemen
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -150,14 +150,6 @@ class Tmsv2customersBuyerInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['merchantCustomerID']) && (strlen($this->container['merchantCustomerID']) > 100)) {
-            $invalid_properties[] = "invalid value for 'merchantCustomerID', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['email']) && (strlen($this->container['email']) > 255)) {
-            $invalid_properties[] = "invalid value for 'email', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class Tmsv2customersBuyerInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['merchantCustomerID']) > 100) {
-            return false;
-        }
-        if (strlen($this->container['email']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -196,10 +182,6 @@ class Tmsv2customersBuyerInformation implements ArrayAccess
      */
     public function setMerchantCustomerID($merchantCustomerID)
     {
-        if (!is_null($merchantCustomerID) && (strlen($merchantCustomerID) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $merchantCustomerID when calling Tmsv2customersBuyerInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['merchantCustomerID'] = $merchantCustomerID;
 
         return $this;
@@ -221,10 +203,6 @@ class Tmsv2customersBuyerInformation implements ArrayAccess
      */
     public function setEmail($email)
     {
-        if (!is_null($email) && (strlen($email) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $email when calling Tmsv2customersBuyerInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['email'] = $email;
 
         return $this;
@@ -234,6 +212,7 @@ class Tmsv2customersBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class Tmsv2customersBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class Tmsv2customersBuyerInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class Tmsv2customersBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -54,8 +54,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'amountDetails' => '\CyberSource\Model\Riskv1authenticationsOrderInformationAmountDetails',
-        'lineItems' => '\CyberSource\Model\Riskv1authenticationresultsOrderInformationLineItems[]'
+        'amountDetails' => '\CyberSource\Model\Riskv1authenticationresultsOrderInformationAmountDetails'
     ];
 
     /**
@@ -63,8 +62,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'amountDetails' => null,
-        'lineItems' => null
+        'amountDetails' => null
     ];
 
     public static function swaggerTypes()
@@ -82,8 +80,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'amountDetails' => 'amountDetails',
-        'lineItems' => 'lineItems'
+        'amountDetails' => 'amountDetails'
     ];
 
 
@@ -92,8 +89,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'amountDetails' => 'setAmountDetails',
-        'lineItems' => 'setLineItems'
+        'amountDetails' => 'setAmountDetails'
     ];
 
 
@@ -102,8 +98,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'amountDetails' => 'getAmountDetails',
-        'lineItems' => 'getLineItems'
+        'amountDetails' => 'getAmountDetails'
     ];
 
     public static function attributeMap()
@@ -138,7 +133,6 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['amountDetails'] = isset($data['amountDetails']) ? $data['amountDetails'] : null;
-        $this->container['lineItems'] = isset($data['lineItems']) ? $data['lineItems'] : null;
     }
 
     /**
@@ -168,7 +162,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
 
     /**
      * Gets amountDetails
-     * @return \CyberSource\Model\Riskv1authenticationsOrderInformationAmountDetails
+     * @return \CyberSource\Model\Riskv1authenticationresultsOrderInformationAmountDetails
      */
     public function getAmountDetails()
     {
@@ -177,7 +171,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
 
     /**
      * Sets amountDetails
-     * @param \CyberSource\Model\Riskv1authenticationsOrderInformationAmountDetails $amountDetails
+     * @param \CyberSource\Model\Riskv1authenticationresultsOrderInformationAmountDetails $amountDetails
      * @return $this
      */
     public function setAmountDetails($amountDetails)
@@ -186,32 +180,12 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
 
         return $this;
     }
-
-    /**
-     * Gets lineItems
-     * @return \CyberSource\Model\Riskv1authenticationresultsOrderInformationLineItems[]
-     */
-    public function getLineItems()
-    {
-        return $this->container['lineItems'];
-    }
-
-    /**
-     * Sets lineItems
-     * @param \CyberSource\Model\Riskv1authenticationresultsOrderInformationLineItems[] $lineItems
-     * @return $this
-     */
-    public function setLineItems($lineItems)
-    {
-        $this->container['lineItems'] = $lineItems;
-
-        return $this;
-    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -222,6 +196,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -233,6 +208,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -247,6 +223,7 @@ class Riskv1authenticationresultsOrderInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

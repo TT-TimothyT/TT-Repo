@@ -210,42 +210,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['ipAddress']) && (strlen($this->container['ipAddress']) > 48)) {
-            $invalid_properties[] = "invalid value for 'ipAddress', the character length must be smaller than or equal to 48.";
-        }
-
-        if (!is_null($this->container['httpAcceptBrowserValue']) && (strlen($this->container['httpAcceptBrowserValue']) > 255)) {
-            $invalid_properties[] = "invalid value for 'httpAcceptBrowserValue', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['httpAcceptContent']) && (strlen($this->container['httpAcceptContent']) > 256)) {
-            $invalid_properties[] = "invalid value for 'httpAcceptContent', the character length must be smaller than or equal to 256.";
-        }
-
-        if (!is_null($this->container['httpBrowserLanguage']) && (strlen($this->container['httpBrowserLanguage']) > 8)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserLanguage', the character length must be smaller than or equal to 8.";
-        }
-
-        if (!is_null($this->container['httpBrowserColorDepth']) && (strlen($this->container['httpBrowserColorDepth']) > 2)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserColorDepth', the character length must be smaller than or equal to 2.";
-        }
-
-        if (!is_null($this->container['httpBrowserScreenHeight']) && (strlen($this->container['httpBrowserScreenHeight']) > 6)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserScreenHeight', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['httpBrowserScreenWidth']) && (strlen($this->container['httpBrowserScreenWidth']) > 6)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserScreenWidth', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['httpBrowserTimeDifference']) && (strlen($this->container['httpBrowserTimeDifference']) > 5)) {
-            $invalid_properties[] = "invalid value for 'httpBrowserTimeDifference', the character length must be smaller than or equal to 5.";
-        }
-
-        if (!is_null($this->container['userAgentBrowserValue']) && (strlen($this->container['userAgentBrowserValue']) > 255)) {
-            $invalid_properties[] = "invalid value for 'userAgentBrowserValue', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -258,33 +222,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['ipAddress']) > 48) {
-            return false;
-        }
-        if (strlen($this->container['httpAcceptBrowserValue']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['httpAcceptContent']) > 256) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserLanguage']) > 8) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserColorDepth']) > 2) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserScreenHeight']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserScreenWidth']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['httpBrowserTimeDifference']) > 5) {
-            return false;
-        }
-        if (strlen($this->container['userAgentBrowserValue']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -305,10 +242,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      */
     public function setIpAddress($ipAddress)
     {
-        if (!is_null($ipAddress) && (strlen($ipAddress) > 48)) {
-            throw new \InvalidArgumentException('invalid length for $ipAddress when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 48.');
-        }
-
         $this->container['ipAddress'] = $ipAddress;
 
         return $this;
@@ -346,15 +279,11 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
 
     /**
      * Sets httpAcceptBrowserValue
-     * @param string $httpAcceptBrowserValue Value of the Accept header sent by the customer’s web browser. **Note** If the customer’s browser provides a value, you must include it in your request.
+     * @param string $httpAcceptBrowserValue Value of the Accept header sent by the customer's web browser. **Note** If the customer's browser provides a value, you must include it in your request.
      * @return $this
      */
     public function setHttpAcceptBrowserValue($httpAcceptBrowserValue)
     {
-        if (!is_null($httpAcceptBrowserValue) && (strlen($httpAcceptBrowserValue) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $httpAcceptBrowserValue when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['httpAcceptBrowserValue'] = $httpAcceptBrowserValue;
 
         return $this;
@@ -376,10 +305,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      */
     public function setHttpAcceptContent($httpAcceptContent)
     {
-        if (!is_null($httpAcceptContent) && (strlen($httpAcceptContent) > 256)) {
-            throw new \InvalidArgumentException('invalid length for $httpAcceptContent when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 256.');
-        }
-
         $this->container['httpAcceptContent'] = $httpAcceptContent;
 
         return $this;
@@ -401,10 +326,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserLanguage($httpBrowserLanguage)
     {
-        if (!is_null($httpBrowserLanguage) && (strlen($httpBrowserLanguage) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserLanguage when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['httpBrowserLanguage'] = $httpBrowserLanguage;
 
         return $this;
@@ -468,10 +389,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserColorDepth($httpBrowserColorDepth)
     {
-        if (!is_null($httpBrowserColorDepth) && (strlen($httpBrowserColorDepth) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserColorDepth when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 2.');
-        }
-
         $this->container['httpBrowserColorDepth'] = $httpBrowserColorDepth;
 
         return $this;
@@ -493,10 +410,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserScreenHeight($httpBrowserScreenHeight)
     {
-        if (!is_null($httpBrowserScreenHeight) && (strlen($httpBrowserScreenHeight) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserScreenHeight when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['httpBrowserScreenHeight'] = $httpBrowserScreenHeight;
 
         return $this;
@@ -518,10 +431,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserScreenWidth($httpBrowserScreenWidth)
     {
-        if (!is_null($httpBrowserScreenWidth) && (strlen($httpBrowserScreenWidth) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserScreenWidth when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['httpBrowserScreenWidth'] = $httpBrowserScreenWidth;
 
         return $this;
@@ -543,10 +452,6 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      */
     public function setHttpBrowserTimeDifference($httpBrowserTimeDifference)
     {
-        if (!is_null($httpBrowserTimeDifference) && (strlen($httpBrowserTimeDifference) > 5)) {
-            throw new \InvalidArgumentException('invalid length for $httpBrowserTimeDifference when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 5.');
-        }
-
         $this->container['httpBrowserTimeDifference'] = $httpBrowserTimeDifference;
 
         return $this;
@@ -563,15 +468,11 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
 
     /**
      * Sets userAgentBrowserValue
-     * @param string $userAgentBrowserValue Value of the User-Agent header sent by the customer’s web browser. Note If the customer’s browser provides a value, you must include it in your request.
+     * @param string $userAgentBrowserValue Value of the User-Agent header sent by the customer's web browser. Note If the customer's browser provides a value, you must include it in your request.
      * @return $this
      */
     public function setUserAgentBrowserValue($userAgentBrowserValue)
     {
-        if (!is_null($userAgentBrowserValue) && (strlen($userAgentBrowserValue) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $userAgentBrowserValue when calling Riskv1authenticationsDeviceInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['userAgentBrowserValue'] = $userAgentBrowserValue;
 
         return $this;
@@ -581,6 +482,7 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -591,6 +493,7 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -602,6 +505,7 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -616,6 +520,7 @@ class Riskv1authenticationsDeviceInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

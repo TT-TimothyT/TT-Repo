@@ -54,7 +54,7 @@ class InvoiceSettingsRequest implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'invoiceSettingsInformation' => '\CyberSource\Model\InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation'
+        'invoiceSettingsInformation' => '\CyberSource\Model\Invoicingv2invoiceSettingsInvoiceSettingsInformation'
     ];
 
     /**
@@ -162,7 +162,7 @@ class InvoiceSettingsRequest implements ArrayAccess
 
     /**
      * Gets invoiceSettingsInformation
-     * @return \CyberSource\Model\InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation
+     * @return \CyberSource\Model\Invoicingv2invoiceSettingsInvoiceSettingsInformation
      */
     public function getInvoiceSettingsInformation()
     {
@@ -171,7 +171,7 @@ class InvoiceSettingsRequest implements ArrayAccess
 
     /**
      * Sets invoiceSettingsInformation
-     * @param \CyberSource\Model\InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation $invoiceSettingsInformation
+     * @param \CyberSource\Model\Invoicingv2invoiceSettingsInvoiceSettingsInformation $invoiceSettingsInformation
      * @return $this
      */
     public function setInvoiceSettingsInformation($invoiceSettingsInformation)
@@ -185,6 +185,7 @@ class InvoiceSettingsRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -195,6 +196,7 @@ class InvoiceSettingsRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -206,6 +208,7 @@ class InvoiceSettingsRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -220,6 +223,7 @@ class InvoiceSettingsRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

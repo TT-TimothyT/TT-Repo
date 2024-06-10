@@ -144,10 +144,6 @@ class PtsV2IncrementalAuthorizationPatch201ResponsePaymentInformationAccountFeat
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['category']) && (strlen($this->container['category']) > 7)) {
-            $invalid_properties[] = "invalid value for 'category', the character length must be smaller than or equal to 7.";
-        }
-
         return $invalid_properties;
     }
 
@@ -160,9 +156,6 @@ class PtsV2IncrementalAuthorizationPatch201ResponsePaymentInformationAccountFeat
     public function valid()
     {
 
-        if (strlen($this->container['category']) > 7) {
-            return false;
-        }
         return true;
     }
 
@@ -183,10 +176,6 @@ class PtsV2IncrementalAuthorizationPatch201ResponsePaymentInformationAccountFeat
      */
     public function setCategory($category)
     {
-        if (!is_null($category) && (strlen($category) > 7)) {
-            throw new \InvalidArgumentException('invalid length for $category when calling PtsV2IncrementalAuthorizationPatch201ResponsePaymentInformationAccountFeatures., must be smaller than or equal to 7.');
-        }
-
         $this->container['category'] = $category;
 
         return $this;
@@ -196,6 +185,7 @@ class PtsV2IncrementalAuthorizationPatch201ResponsePaymentInformationAccountFeat
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -206,6 +196,7 @@ class PtsV2IncrementalAuthorizationPatch201ResponsePaymentInformationAccountFeat
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -217,6 +208,7 @@ class PtsV2IncrementalAuthorizationPatch201ResponsePaymentInformationAccountFeat
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -231,6 +223,7 @@ class PtsV2IncrementalAuthorizationPatch201ResponsePaymentInformationAccountFeat
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

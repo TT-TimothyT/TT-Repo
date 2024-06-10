@@ -154,17 +154,9 @@ class Riskv1authenticationsOrderInformationAmountDetails implements ArrayAccess
         if ($this->container['currency'] === null) {
             $invalid_properties[] = "'currency' can't be null";
         }
-        if ((strlen($this->container['currency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 3.";
-        }
-
         if ($this->container['totalAmount'] === null) {
             $invalid_properties[] = "'totalAmount' can't be null";
         }
-        if ((strlen($this->container['totalAmount']) > 19)) {
-            $invalid_properties[] = "invalid value for 'totalAmount', the character length must be smaller than or equal to 19.";
-        }
-
         return $invalid_properties;
     }
 
@@ -180,13 +172,7 @@ class Riskv1authenticationsOrderInformationAmountDetails implements ArrayAccess
         if ($this->container['currency'] === null) {
             return false;
         }
-        if (strlen($this->container['currency']) > 3) {
-            return false;
-        }
         if ($this->container['totalAmount'] === null) {
-            return false;
-        }
-        if (strlen($this->container['totalAmount']) > 19) {
             return false;
         }
         return true;
@@ -209,10 +195,6 @@ class Riskv1authenticationsOrderInformationAmountDetails implements ArrayAccess
      */
     public function setCurrency($currency)
     {
-        if ((strlen($currency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling Riskv1authenticationsOrderInformationAmountDetails., must be smaller than or equal to 3.');
-        }
-
         $this->container['currency'] = $currency;
 
         return $this;
@@ -234,10 +216,6 @@ class Riskv1authenticationsOrderInformationAmountDetails implements ArrayAccess
      */
     public function setTotalAmount($totalAmount)
     {
-        if ((strlen($totalAmount) > 19)) {
-            throw new \InvalidArgumentException('invalid length for $totalAmount when calling Riskv1authenticationsOrderInformationAmountDetails., must be smaller than or equal to 19.');
-        }
-
         $this->container['totalAmount'] = $totalAmount;
 
         return $this;
@@ -247,6 +225,7 @@ class Riskv1authenticationsOrderInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -257,6 +236,7 @@ class Riskv1authenticationsOrderInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -268,6 +248,7 @@ class Riskv1authenticationsOrderInformationAmountDetails implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -282,6 +263,7 @@ class Riskv1authenticationsOrderInformationAmountDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -186,26 +186,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['addressType']) && (strlen($this->container['addressType']) > 255)) {
-            $invalid_properties[] = "invalid value for 'addressType', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['applicableRegion']) && (strlen($this->container['applicableRegion']) > 255)) {
-            $invalid_properties[] = "invalid value for 'applicableRegion', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['errorCode']) && (strlen($this->container['errorCode']) > 255)) {
-            $invalid_properties[] = "invalid value for 'errorCode', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['statusCode']) && (strlen($this->container['statusCode']) > 255)) {
-            $invalid_properties[] = "invalid value for 'statusCode', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['careOf']) && (strlen($this->container['careOf']) > 255)) {
-            $invalid_properties[] = "invalid value for 'careOf', the character length must be smaller than or equal to 255.";
-        }
-
         return $invalid_properties;
     }
 
@@ -218,21 +198,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
     public function valid()
     {
 
-        if (strlen($this->container['addressType']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['applicableRegion']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['errorCode']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['statusCode']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['careOf']) > 255) {
-            return false;
-        }
         return true;
     }
 
@@ -253,10 +218,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      */
     public function setAddressType($addressType)
     {
-        if (!is_null($addressType) && (strlen($addressType) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $addressType when calling RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['addressType'] = $addressType;
 
         return $this;
@@ -299,10 +260,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      */
     public function setApplicableRegion($applicableRegion)
     {
-        if (!is_null($applicableRegion) && (strlen($applicableRegion) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $applicableRegion when calling RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['applicableRegion'] = $applicableRegion;
 
         return $this;
@@ -324,10 +281,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      */
     public function setErrorCode($errorCode)
     {
-        if (!is_null($errorCode) && (strlen($errorCode) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $errorCode when calling RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['errorCode'] = $errorCode;
 
         return $this;
@@ -349,10 +302,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      */
     public function setStatusCode($statusCode)
     {
-        if (!is_null($statusCode) && (strlen($statusCode) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $statusCode when calling RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['statusCode'] = $statusCode;
 
         return $this;
@@ -374,10 +323,6 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      */
     public function setCareOf($careOf)
     {
-        if (!is_null($careOf) && (strlen($careOf) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $careOf when calling RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['careOf'] = $careOf;
 
         return $this;
@@ -429,6 +374,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -439,6 +385,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -450,6 +397,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -464,6 +412,7 @@ class RiskV1AddressVerificationsPost201ResponseAddressVerificationInformation im
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

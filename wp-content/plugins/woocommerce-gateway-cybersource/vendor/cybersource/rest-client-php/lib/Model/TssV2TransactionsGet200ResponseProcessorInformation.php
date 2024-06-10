@@ -55,10 +55,11 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'processor' => '\CyberSource\Model\TssV2TransactionsGet200ResponseProcessorInformationProcessor',
+        'multiProcessorRouting' => '\CyberSource\Model\TssV2TransactionsGet200ResponseProcessorInformationMultiProcessorRouting[]',
         'transactionId' => 'string',
         'networkTransactionId' => 'string',
+        'retrievalReferenceNumber' => 'string',
         'responseId' => 'string',
-        'providerTransactionId' => 'string',
         'approvalCode' => 'string',
         'responseCode' => 'string',
         'avs' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseProcessorInformationAvs',
@@ -66,7 +67,8 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
         'achVerification' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseProcessorInformationAchVerification',
         'electronicVerificationResults' => '\CyberSource\Model\TssV2TransactionsGet200ResponseProcessorInformationElectronicVerificationResults',
         'systemTraceAuditNumber' => 'string',
-        'responseCodeSource' => 'string'
+        'responseCodeSource' => 'string',
+        'paymentAccountReferenceNumber' => 'string'
     ];
 
     /**
@@ -75,10 +77,11 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'processor' => null,
+        'multiProcessorRouting' => null,
         'transactionId' => null,
         'networkTransactionId' => null,
+        'retrievalReferenceNumber' => null,
         'responseId' => null,
-        'providerTransactionId' => null,
         'approvalCode' => null,
         'responseCode' => null,
         'avs' => null,
@@ -86,7 +89,8 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
         'achVerification' => null,
         'electronicVerificationResults' => null,
         'systemTraceAuditNumber' => null,
-        'responseCodeSource' => null
+        'responseCodeSource' => null,
+        'paymentAccountReferenceNumber' => null
     ];
 
     public static function swaggerTypes()
@@ -105,10 +109,11 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      */
     protected static $attributeMap = [
         'processor' => 'processor',
+        'multiProcessorRouting' => 'multiProcessorRouting',
         'transactionId' => 'transactionId',
         'networkTransactionId' => 'networkTransactionId',
+        'retrievalReferenceNumber' => 'retrievalReferenceNumber',
         'responseId' => 'responseId',
-        'providerTransactionId' => 'providerTransactionId',
         'approvalCode' => 'approvalCode',
         'responseCode' => 'responseCode',
         'avs' => 'avs',
@@ -116,7 +121,8 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
         'achVerification' => 'achVerification',
         'electronicVerificationResults' => 'electronicVerificationResults',
         'systemTraceAuditNumber' => 'systemTraceAuditNumber',
-        'responseCodeSource' => 'responseCodeSource'
+        'responseCodeSource' => 'responseCodeSource',
+        'paymentAccountReferenceNumber' => 'paymentAccountReferenceNumber'
     ];
 
 
@@ -126,10 +132,11 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      */
     protected static $setters = [
         'processor' => 'setProcessor',
+        'multiProcessorRouting' => 'setMultiProcessorRouting',
         'transactionId' => 'setTransactionId',
         'networkTransactionId' => 'setNetworkTransactionId',
+        'retrievalReferenceNumber' => 'setRetrievalReferenceNumber',
         'responseId' => 'setResponseId',
-        'providerTransactionId' => 'setProviderTransactionId',
         'approvalCode' => 'setApprovalCode',
         'responseCode' => 'setResponseCode',
         'avs' => 'setAvs',
@@ -137,7 +144,8 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
         'achVerification' => 'setAchVerification',
         'electronicVerificationResults' => 'setElectronicVerificationResults',
         'systemTraceAuditNumber' => 'setSystemTraceAuditNumber',
-        'responseCodeSource' => 'setResponseCodeSource'
+        'responseCodeSource' => 'setResponseCodeSource',
+        'paymentAccountReferenceNumber' => 'setPaymentAccountReferenceNumber'
     ];
 
 
@@ -147,10 +155,11 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      */
     protected static $getters = [
         'processor' => 'getProcessor',
+        'multiProcessorRouting' => 'getMultiProcessorRouting',
         'transactionId' => 'getTransactionId',
         'networkTransactionId' => 'getNetworkTransactionId',
+        'retrievalReferenceNumber' => 'getRetrievalReferenceNumber',
         'responseId' => 'getResponseId',
-        'providerTransactionId' => 'getProviderTransactionId',
         'approvalCode' => 'getApprovalCode',
         'responseCode' => 'getResponseCode',
         'avs' => 'getAvs',
@@ -158,7 +167,8 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
         'achVerification' => 'getAchVerification',
         'electronicVerificationResults' => 'getElectronicVerificationResults',
         'systemTraceAuditNumber' => 'getSystemTraceAuditNumber',
-        'responseCodeSource' => 'getResponseCodeSource'
+        'responseCodeSource' => 'getResponseCodeSource',
+        'paymentAccountReferenceNumber' => 'getPaymentAccountReferenceNumber'
     ];
 
     public static function attributeMap()
@@ -193,10 +203,11 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['processor'] = isset($data['processor']) ? $data['processor'] : null;
+        $this->container['multiProcessorRouting'] = isset($data['multiProcessorRouting']) ? $data['multiProcessorRouting'] : null;
         $this->container['transactionId'] = isset($data['transactionId']) ? $data['transactionId'] : null;
         $this->container['networkTransactionId'] = isset($data['networkTransactionId']) ? $data['networkTransactionId'] : null;
+        $this->container['retrievalReferenceNumber'] = isset($data['retrievalReferenceNumber']) ? $data['retrievalReferenceNumber'] : null;
         $this->container['responseId'] = isset($data['responseId']) ? $data['responseId'] : null;
-        $this->container['providerTransactionId'] = isset($data['providerTransactionId']) ? $data['providerTransactionId'] : null;
         $this->container['approvalCode'] = isset($data['approvalCode']) ? $data['approvalCode'] : null;
         $this->container['responseCode'] = isset($data['responseCode']) ? $data['responseCode'] : null;
         $this->container['avs'] = isset($data['avs']) ? $data['avs'] : null;
@@ -205,6 +216,7 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
         $this->container['electronicVerificationResults'] = isset($data['electronicVerificationResults']) ? $data['electronicVerificationResults'] : null;
         $this->container['systemTraceAuditNumber'] = isset($data['systemTraceAuditNumber']) ? $data['systemTraceAuditNumber'] : null;
         $this->container['responseCodeSource'] = isset($data['responseCodeSource']) ? $data['responseCodeSource'] : null;
+        $this->container['paymentAccountReferenceNumber'] = isset($data['paymentAccountReferenceNumber']) ? $data['paymentAccountReferenceNumber'] : null;
     }
 
     /**
@@ -215,22 +227,6 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['transactionId']) && (strlen($this->container['transactionId']) > 50)) {
-            $invalid_properties[] = "invalid value for 'transactionId', the character length must be smaller than or equal to 50.";
-        }
-
-        if (!is_null($this->container['responseCode']) && (strlen($this->container['responseCode']) > 10)) {
-            $invalid_properties[] = "invalid value for 'responseCode', the character length must be smaller than or equal to 10.";
-        }
-
-        if (!is_null($this->container['systemTraceAuditNumber']) && (strlen($this->container['systemTraceAuditNumber']) > 6)) {
-            $invalid_properties[] = "invalid value for 'systemTraceAuditNumber', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['responseCodeSource']) && (strlen($this->container['responseCodeSource']) > 1)) {
-            $invalid_properties[] = "invalid value for 'responseCodeSource', the character length must be smaller than or equal to 1.";
-        }
 
         return $invalid_properties;
     }
@@ -244,18 +240,6 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['transactionId']) > 50) {
-            return false;
-        }
-        if (strlen($this->container['responseCode']) > 10) {
-            return false;
-        }
-        if (strlen($this->container['systemTraceAuditNumber']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['responseCodeSource']) > 1) {
-            return false;
-        }
         return true;
     }
 
@@ -282,6 +266,27 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
     }
 
     /**
+     * Gets multiProcessorRouting
+     * @return \CyberSource\Model\TssV2TransactionsGet200ResponseProcessorInformationMultiProcessorRouting[]
+     */
+    public function getMultiProcessorRouting()
+    {
+        return $this->container['multiProcessorRouting'];
+    }
+
+    /**
+     * Sets multiProcessorRouting
+     * @param \CyberSource\Model\TssV2TransactionsGet200ResponseProcessorInformationMultiProcessorRouting[] $multiProcessorRouting An array of object that contains the list of acquirer response codes & reasons if a transaction is routed to multiple acquirers.
+     * @return $this
+     */
+    public function setMultiProcessorRouting($multiProcessorRouting)
+    {
+        $this->container['multiProcessorRouting'] = $multiProcessorRouting;
+
+        return $this;
+    }
+
+    /**
      * Gets transactionId
      * @return string
      */
@@ -297,10 +302,6 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      */
     public function setTransactionId($transactionId)
     {
-        if (!is_null($transactionId) && (strlen($transactionId) > 50)) {
-            throw new \InvalidArgumentException('invalid length for $transactionId when calling TssV2TransactionsGet200ResponseProcessorInformation., must be smaller than or equal to 50.');
-        }
-
         $this->container['transactionId'] = $transactionId;
 
         return $this;
@@ -317,12 +318,33 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
 
     /**
      * Sets networkTransactionId
-     * @param string $networkTransactionId The description for this field is not available.
+     * @param string $networkTransactionId Same value as `processorInformation.transactionId`
      * @return $this
      */
     public function setNetworkTransactionId($networkTransactionId)
     {
         $this->container['networkTransactionId'] = $networkTransactionId;
+
+        return $this;
+    }
+
+    /**
+     * Gets retrievalReferenceNumber
+     * @return string
+     */
+    public function getRetrievalReferenceNumber()
+    {
+        return $this->container['retrievalReferenceNumber'];
+    }
+
+    /**
+     * Sets retrievalReferenceNumber
+     * @param string $retrievalReferenceNumber #### Ingenico ePayments Unique number that CyberSource generates to identify the transaction. You can use this value to identify transactions in the Ingenico ePayments Collections Report, which provides settlement information. Contact customer support for information about the report.  ### CyberSource through VisaNet Retrieval request number.
+     * @return $this
+     */
+    public function setRetrievalReferenceNumber($retrievalReferenceNumber)
+    {
+        $this->container['retrievalReferenceNumber'] = $retrievalReferenceNumber;
 
         return $this;
     }
@@ -344,27 +366,6 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
     public function setResponseId($responseId)
     {
         $this->container['responseId'] = $responseId;
-
-        return $this;
-    }
-
-    /**
-     * Gets providerTransactionId
-     * @return string
-     */
-    public function getProviderTransactionId()
-    {
-        return $this->container['providerTransactionId'];
-    }
-
-    /**
-     * Sets providerTransactionId
-     * @param string $providerTransactionId The description for this field is not available.
-     * @return $this
-     */
-    public function setProviderTransactionId($providerTransactionId)
-    {
-        $this->container['providerTransactionId'] = $providerTransactionId;
 
         return $this;
     }
@@ -406,10 +407,6 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      */
     public function setResponseCode($responseCode)
     {
-        if (!is_null($responseCode) && (strlen($responseCode) > 10)) {
-            throw new \InvalidArgumentException('invalid length for $responseCode when calling TssV2TransactionsGet200ResponseProcessorInformation., must be smaller than or equal to 10.');
-        }
-
         $this->container['responseCode'] = $responseCode;
 
         return $this;
@@ -510,15 +507,11 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
 
     /**
      * Sets systemTraceAuditNumber
-     * @param string $systemTraceAuditNumber This field is returned only for **American Express Direct** and **CyberSource through VisaNet**. Returned by authorization and incremental authorization services.  #### American Express Direct  System trace audit number (STAN). This value identifies the transaction and is useful when investigating a chargeback dispute.  #### CyberSource through VisaNet  System trace number that must be printed on the customer’s receipt.
+     * @param string $systemTraceAuditNumber This field is returned only for **American Express Direct** and **CyberSource through VisaNet**. Returned by authorization and incremental authorization services.  #### American Express Direct  System trace audit number (STAN). This value identifies the transaction and is useful when investigating a chargeback dispute.  #### CyberSource through VisaNet  System trace number that must be printed on the customer's receipt.
      * @return $this
      */
     public function setSystemTraceAuditNumber($systemTraceAuditNumber)
     {
-        if (!is_null($systemTraceAuditNumber) && (strlen($systemTraceAuditNumber) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $systemTraceAuditNumber when calling TssV2TransactionsGet200ResponseProcessorInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['systemTraceAuditNumber'] = $systemTraceAuditNumber;
 
         return $this;
@@ -540,11 +533,28 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      */
     public function setResponseCodeSource($responseCodeSource)
     {
-        if (!is_null($responseCodeSource) && (strlen($responseCodeSource) > 1)) {
-            throw new \InvalidArgumentException('invalid length for $responseCodeSource when calling TssV2TransactionsGet200ResponseProcessorInformation., must be smaller than or equal to 1.');
-        }
-
         $this->container['responseCodeSource'] = $responseCodeSource;
+
+        return $this;
+    }
+
+    /**
+     * Gets paymentAccountReferenceNumber
+     * @return string
+     */
+    public function getPaymentAccountReferenceNumber()
+    {
+        return $this->container['paymentAccountReferenceNumber'];
+    }
+
+    /**
+     * Sets paymentAccountReferenceNumber
+     * @param string $paymentAccountReferenceNumber Visa-generated reference number that identifies a card-present transaction for which you provided one of the following:   - Visa primary account number (PAN)  - Visa-generated token for a PAN  This reference number serves as a link to the cardholder account and to all transactions for that account. This reply field is returned only for CyberSource through VisaNet.  **Note** On CyberSource through VisaNet, the value for this field corresponds to the following data in the TC 33 capture file: - Record: CP01 TCR8 - Position: 79-110 - Field: Payment Account Reference  The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant's acquirer, who uses this information to facilitate end-of-day clearing processing with payment networks.
+     * @return $this
+     */
+    public function setPaymentAccountReferenceNumber($paymentAccountReferenceNumber)
+    {
+        $this->container['paymentAccountReferenceNumber'] = $paymentAccountReferenceNumber;
 
         return $this;
     }
@@ -553,6 +563,7 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -563,6 +574,7 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -574,6 +586,7 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -588,6 +601,7 @@ class TssV2TransactionsGet200ResponseProcessorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

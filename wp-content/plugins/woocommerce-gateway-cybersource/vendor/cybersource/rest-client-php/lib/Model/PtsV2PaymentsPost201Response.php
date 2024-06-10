@@ -64,13 +64,18 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
         'processingInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseProcessingInformation',
         'processorInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseProcessorInformation',
         'issuerInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseIssuerInformation',
+        'paymentAccountInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentAccountInformation',
         'paymentInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformation',
+        'paymentInsightsInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInsightsInformation',
         'orderInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseOrderInformation',
         'pointOfSaleInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponsePointOfSaleInformation',
         'installmentInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseInstallmentInformation',
         'tokenInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseTokenInformation',
+        'buyerInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseBuyerInformation',
         'riskInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseRiskInformation',
-        'consumerAuthenticationInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseConsumerAuthenticationInformation',
+        'embeddedActions' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseEmbeddedActions',
+        'watchlistScreeningInformation' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseWatchlistScreeningInformation'
     ];
 
     /**
@@ -88,13 +93,18 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
         'processingInformation' => null,
         'processorInformation' => null,
         'issuerInformation' => null,
+        'paymentAccountInformation' => null,
         'paymentInformation' => null,
+        'paymentInsightsInformation' => null,
         'orderInformation' => null,
         'pointOfSaleInformation' => null,
         'installmentInformation' => null,
         'tokenInformation' => null,
+        'buyerInformation' => null,
         'riskInformation' => null,
-        'consumerAuthenticationInformation' => null
+        'consumerAuthenticationInformation' => null,
+        'embeddedActions' => null,
+        'watchlistScreeningInformation' => null
     ];
 
     public static function swaggerTypes()
@@ -122,13 +132,18 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
         'processingInformation' => 'processingInformation',
         'processorInformation' => 'processorInformation',
         'issuerInformation' => 'issuerInformation',
+        'paymentAccountInformation' => 'paymentAccountInformation',
         'paymentInformation' => 'paymentInformation',
+        'paymentInsightsInformation' => 'paymentInsightsInformation',
         'orderInformation' => 'orderInformation',
         'pointOfSaleInformation' => 'pointOfSaleInformation',
         'installmentInformation' => 'installmentInformation',
         'tokenInformation' => 'tokenInformation',
+        'buyerInformation' => 'buyerInformation',
         'riskInformation' => 'riskInformation',
-        'consumerAuthenticationInformation' => 'consumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'consumerAuthenticationInformation',
+        'embeddedActions' => 'embeddedActions',
+        'watchlistScreeningInformation' => 'watchlistScreeningInformation'
     ];
 
 
@@ -147,13 +162,18 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
         'processingInformation' => 'setProcessingInformation',
         'processorInformation' => 'setProcessorInformation',
         'issuerInformation' => 'setIssuerInformation',
+        'paymentAccountInformation' => 'setPaymentAccountInformation',
         'paymentInformation' => 'setPaymentInformation',
+        'paymentInsightsInformation' => 'setPaymentInsightsInformation',
         'orderInformation' => 'setOrderInformation',
         'pointOfSaleInformation' => 'setPointOfSaleInformation',
         'installmentInformation' => 'setInstallmentInformation',
         'tokenInformation' => 'setTokenInformation',
+        'buyerInformation' => 'setBuyerInformation',
         'riskInformation' => 'setRiskInformation',
-        'consumerAuthenticationInformation' => 'setConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'setConsumerAuthenticationInformation',
+        'embeddedActions' => 'setEmbeddedActions',
+        'watchlistScreeningInformation' => 'setWatchlistScreeningInformation'
     ];
 
 
@@ -172,13 +192,18 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
         'processingInformation' => 'getProcessingInformation',
         'processorInformation' => 'getProcessorInformation',
         'issuerInformation' => 'getIssuerInformation',
+        'paymentAccountInformation' => 'getPaymentAccountInformation',
         'paymentInformation' => 'getPaymentInformation',
+        'paymentInsightsInformation' => 'getPaymentInsightsInformation',
         'orderInformation' => 'getOrderInformation',
         'pointOfSaleInformation' => 'getPointOfSaleInformation',
         'installmentInformation' => 'getInstallmentInformation',
         'tokenInformation' => 'getTokenInformation',
+        'buyerInformation' => 'getBuyerInformation',
         'riskInformation' => 'getRiskInformation',
-        'consumerAuthenticationInformation' => 'getConsumerAuthenticationInformation'
+        'consumerAuthenticationInformation' => 'getConsumerAuthenticationInformation',
+        'embeddedActions' => 'getEmbeddedActions',
+        'watchlistScreeningInformation' => 'getWatchlistScreeningInformation'
     ];
 
     public static function attributeMap()
@@ -222,13 +247,18 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
         $this->container['processingInformation'] = isset($data['processingInformation']) ? $data['processingInformation'] : null;
         $this->container['processorInformation'] = isset($data['processorInformation']) ? $data['processorInformation'] : null;
         $this->container['issuerInformation'] = isset($data['issuerInformation']) ? $data['issuerInformation'] : null;
+        $this->container['paymentAccountInformation'] = isset($data['paymentAccountInformation']) ? $data['paymentAccountInformation'] : null;
         $this->container['paymentInformation'] = isset($data['paymentInformation']) ? $data['paymentInformation'] : null;
+        $this->container['paymentInsightsInformation'] = isset($data['paymentInsightsInformation']) ? $data['paymentInsightsInformation'] : null;
         $this->container['orderInformation'] = isset($data['orderInformation']) ? $data['orderInformation'] : null;
         $this->container['pointOfSaleInformation'] = isset($data['pointOfSaleInformation']) ? $data['pointOfSaleInformation'] : null;
         $this->container['installmentInformation'] = isset($data['installmentInformation']) ? $data['installmentInformation'] : null;
         $this->container['tokenInformation'] = isset($data['tokenInformation']) ? $data['tokenInformation'] : null;
+        $this->container['buyerInformation'] = isset($data['buyerInformation']) ? $data['buyerInformation'] : null;
         $this->container['riskInformation'] = isset($data['riskInformation']) ? $data['riskInformation'] : null;
         $this->container['consumerAuthenticationInformation'] = isset($data['consumerAuthenticationInformation']) ? $data['consumerAuthenticationInformation'] : null;
+        $this->container['embeddedActions'] = isset($data['embeddedActions']) ? $data['embeddedActions'] : null;
+        $this->container['watchlistScreeningInformation'] = isset($data['watchlistScreeningInformation']) ? $data['watchlistScreeningInformation'] : null;
     }
 
     /**
@@ -239,14 +269,6 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 26)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 26.";
-        }
-
-        if (!is_null($this->container['reconciliationId']) && (strlen($this->container['reconciliationId']) > 60)) {
-            $invalid_properties[] = "invalid value for 'reconciliationId', the character length must be smaller than or equal to 60.";
-        }
 
         return $invalid_properties;
     }
@@ -260,12 +282,6 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['id']) > 26) {
-            return false;
-        }
-        if (strlen($this->container['reconciliationId']) > 60) {
-            return false;
-        }
         return true;
     }
 
@@ -302,15 +318,11 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
 
     /**
      * Sets id
-     * @param string $id An unique identification number to identify the submitted request. It is also appended to the endpoint of the resource.  On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.  #### PIN debit Returned for all PIN debit services.
+     * @param string $id An unique identification number generated by Cybersource to identify the submitted request. Returned by all services. It is also appended to the endpoint of the resource. On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.
      * @return $this
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 26)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling PtsV2PaymentsPost201Response., must be smaller than or equal to 26.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -327,7 +339,7 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
 
     /**
      * Sets submitTimeUtc
-     * @param string $submitTimeUtc Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by authorization service.  #### PIN debit Time when the PIN debit credit, PIN debit purchase or PIN debit reversal was requested.  Returned by PIN debit credit, PIN debit purchase or PIN debit reversal.
+     * @param string $submitTimeUtc Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by Cybersource for all services.
      * @return $this
      */
     public function setSubmitTimeUtc($submitTimeUtc)
@@ -369,15 +381,11 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
 
     /**
      * Sets reconciliationId
-     * @param string $reconciliationId Reference number for the transaction. This value is not returned for all processors.  Returned by authorization service.  ##### PIN debit Returned by PIN debit credit, PIN debit purchase, and PIN debit reversal.  #### Atos Positive string (6)  #### All other processors String (60)
+     * @param string $reconciliationId Reference number for the transaction. Depending on how your Cybersource account is configured, this value could either be provided in the API request or generated by CyberSource. The actual value used in the request to the processor is provided back to you by Cybersource in the response.
      * @return $this
      */
     public function setReconciliationId($reconciliationId)
     {
-        if (!is_null($reconciliationId) && (strlen($reconciliationId) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $reconciliationId when calling PtsV2PaymentsPost201Response., must be smaller than or equal to 60.');
-        }
-
         $this->container['reconciliationId'] = $reconciliationId;
 
         return $this;
@@ -489,6 +497,27 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
     }
 
     /**
+     * Gets paymentAccountInformation
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentAccountInformation
+     */
+    public function getPaymentAccountInformation()
+    {
+        return $this->container['paymentAccountInformation'];
+    }
+
+    /**
+     * Sets paymentAccountInformation
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentAccountInformation $paymentAccountInformation
+     * @return $this
+     */
+    public function setPaymentAccountInformation($paymentAccountInformation)
+    {
+        $this->container['paymentAccountInformation'] = $paymentAccountInformation;
+
+        return $this;
+    }
+
+    /**
      * Gets paymentInformation
      * @return \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInformation
      */
@@ -505,6 +534,27 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
     public function setPaymentInformation($paymentInformation)
     {
         $this->container['paymentInformation'] = $paymentInformation;
+
+        return $this;
+    }
+
+    /**
+     * Gets paymentInsightsInformation
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInsightsInformation
+     */
+    public function getPaymentInsightsInformation()
+    {
+        return $this->container['paymentInsightsInformation'];
+    }
+
+    /**
+     * Sets paymentInsightsInformation
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponsePaymentInsightsInformation $paymentInsightsInformation
+     * @return $this
+     */
+    public function setPaymentInsightsInformation($paymentInsightsInformation)
+    {
+        $this->container['paymentInsightsInformation'] = $paymentInsightsInformation;
 
         return $this;
     }
@@ -594,6 +644,27 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
     }
 
     /**
+     * Gets buyerInformation
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponseBuyerInformation
+     */
+    public function getBuyerInformation()
+    {
+        return $this->container['buyerInformation'];
+    }
+
+    /**
+     * Sets buyerInformation
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponseBuyerInformation $buyerInformation
+     * @return $this
+     */
+    public function setBuyerInformation($buyerInformation)
+    {
+        $this->container['buyerInformation'] = $buyerInformation;
+
+        return $this;
+    }
+
+    /**
      * Gets riskInformation
      * @return \CyberSource\Model\PtsV2PaymentsPost201ResponseRiskInformation
      */
@@ -634,11 +705,54 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets embeddedActions
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponseEmbeddedActions
+     */
+    public function getEmbeddedActions()
+    {
+        return $this->container['embeddedActions'];
+    }
+
+    /**
+     * Sets embeddedActions
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponseEmbeddedActions $embeddedActions
+     * @return $this
+     */
+    public function setEmbeddedActions($embeddedActions)
+    {
+        $this->container['embeddedActions'] = $embeddedActions;
+
+        return $this;
+    }
+
+    /**
+     * Gets watchlistScreeningInformation
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponseWatchlistScreeningInformation
+     */
+    public function getWatchlistScreeningInformation()
+    {
+        return $this->container['watchlistScreeningInformation'];
+    }
+
+    /**
+     * Sets watchlistScreeningInformation
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponseWatchlistScreeningInformation $watchlistScreeningInformation
+     * @return $this
+     */
+    public function setWatchlistScreeningInformation($watchlistScreeningInformation)
+    {
+        $this->container['watchlistScreeningInformation'] = $watchlistScreeningInformation;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -649,6 +763,7 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -660,6 +775,7 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -674,6 +790,7 @@ class PtsV2PaymentsPost201Response implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

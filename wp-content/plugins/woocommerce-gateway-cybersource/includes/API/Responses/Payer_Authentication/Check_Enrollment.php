@@ -17,14 +17,15 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Responses\Payer_Authentication;
 
 use SkyVerge\WooCommerce\Cybersource\API\Response;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use stdClass;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -37,39 +38,78 @@ class Check_Enrollment extends Response {
 
 
 	/**
-	 * Gets the JSON Web Token.
+	 * Gets the response status.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @return string
+	 * @return string 'AUTHENTICATION_SUCCESSFUL' or 'AUTHENTICATION_FAILED' or 'PENDING_AUTHENTICATION' or 'INVALID_REQUEST' or ''
 	 */
-	public function get_status() {
+	public function get_status() : string {
 
-		return ! empty( $this->response_data->status ) ? $this->response_data->status : '';
+		return $this->response_data->status ?? '';
 	}
 
 
 	/**
-	 * Gets the JSON Web Token.
+	 * Gets the consumer authentication information.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return stdClass|null
+	 */
+	public function get_consumer_authentication_information() : ?stdClass {
+
+		return $this->response_data->consumerAuthenticationInformation ?? null;
+	}
+
+
+	/**
+	 * Gets URL of Access Control Server, if present.
 	 *
 	 * @since 2.3.0
 	 *
 	 * @return string
 	 */
-	public function get_acs_url() {
+	public function get_acs_url(): string {
 
 		return ! empty( $this->response_data->consumerAuthenticationInformation->acsUrl ) ? $this->response_data->consumerAuthenticationInformation->acsUrl : '';
 	}
 
 
 	/**
+	 * Gets the step-up URL, if present.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string
+	 */
+	public function get_step_up_url(): string {
+
+		return ! empty( $this->response_data->consumerAuthenticationInformation->stepUpUrl ) ? $this->response_data->consumerAuthenticationInformation->stepUpUrl : '';
+	}
+
+
+	/**
+	 * Gets the consumer authentication access token.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string
+	 */
+	public function get_access_token(): string {
+
+		return ! empty( $this->response_data->consumerAuthenticationInformation->accessToken ) ? $this->response_data->consumerAuthenticationInformation->accessToken : '';
+	}
+
+
+	/**
 	 * Gets the JSON Web Token.
 	 *
 	 * @since 2.3.0
 	 *
 	 * @return string
 	 */
-	public function get_payload() {
+	public function get_payload(): string {
 
 		return ! empty( $this->response_data->consumerAuthenticationInformation->pareq ) ? $this->response_data->consumerAuthenticationInformation->pareq : '';
 	}
@@ -82,7 +122,7 @@ class Check_Enrollment extends Response {
 	 *
 	 * @return string
 	 */
-	public function get_transaction_id() {
+	public function get_transaction_id(): string {
 
 		return ! empty( $this->response_data->consumerAuthenticationInformation->authenticationTransactionId ) ? $this->response_data->consumerAuthenticationInformation->authenticationTransactionId : '';
 	}
@@ -247,7 +287,7 @@ class Check_Enrollment extends Response {
 
 
 	/**
-	 * Get the card type
+	 * Gets the card type
 	 *
 	 * @since 2.7.1
 	 *
@@ -260,25 +300,28 @@ class Check_Enrollment extends Response {
 
 
 	/**
-	 * Gets the string representation of this response with all sensitive information masked.
+	 * Gets the error information message.
 	 *
-	 * @since 2.3.0
+	 * @since 2.8.0
 	 *
 	 * @return string
 	 */
-	public function to_string_safe() {
+	public function get_error_message(): string {
 
-		$string = $this->to_string();
+		return ! empty( $this->response_data->errorInformation->message ) ? $this->response_data->errorInformation->message : '';
+	}
 
-		if ( $value = $this->get_payload() ) {
-			$string = str_replace( $value, str_repeat( '*', strlen( $value ) ), $string );
-		}
 
-		if ( $value = $this->get_transaction_id() ) {
-			$string = str_replace( $value, str_repeat( '*', strlen( $value ) ), $string );
-		}
+	/**
+	 * Gets the message for the cardholder.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @return string
+	 */
+	public function get_cardholder_message(): string {
 
-		return $string;
+		return ! empty( $this->response_data->consumerAuthenticationInformation->cardholderMessage ) ? $this->response_data->consumerAuthenticationInformation->cardholderMessage : '';
 	}
 
 

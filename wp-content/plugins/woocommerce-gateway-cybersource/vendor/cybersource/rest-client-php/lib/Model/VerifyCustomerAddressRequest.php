@@ -54,7 +54,7 @@ class VerifyCustomerAddressRequest implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'clientReferenceInformation' => '\CyberSource\Model\Riskv1addressverificationsClientReferenceInformation',
+        'clientReferenceInformation' => '\CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation',
         'orderInformation' => '\CyberSource\Model\Riskv1addressverificationsOrderInformation',
         'buyerInformation' => '\CyberSource\Model\Riskv1addressverificationsBuyerInformation'
     ];
@@ -174,7 +174,7 @@ class VerifyCustomerAddressRequest implements ArrayAccess
 
     /**
      * Gets clientReferenceInformation
-     * @return \CyberSource\Model\Riskv1addressverificationsClientReferenceInformation
+     * @return \CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation
      */
     public function getClientReferenceInformation()
     {
@@ -183,7 +183,7 @@ class VerifyCustomerAddressRequest implements ArrayAccess
 
     /**
      * Sets clientReferenceInformation
-     * @param \CyberSource\Model\Riskv1addressverificationsClientReferenceInformation $clientReferenceInformation
+     * @param \CyberSource\Model\Riskv1liststypeentriesClientReferenceInformation $clientReferenceInformation
      * @return $this
      */
     public function setClientReferenceInformation($clientReferenceInformation)
@@ -239,6 +239,7 @@ class VerifyCustomerAddressRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -249,6 +250,7 @@ class VerifyCustomerAddressRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -260,6 +262,7 @@ class VerifyCustomerAddressRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -274,6 +277,7 @@ class VerifyCustomerAddressRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

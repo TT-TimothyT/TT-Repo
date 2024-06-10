@@ -55,7 +55,8 @@ class VoidCreditRequest implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'clientReferenceInformation' => '\CyberSource\Model\Ptsv2paymentsidreversalsClientReferenceInformation',
-        'paymentInformation' => '\CyberSource\Model\Ptsv2paymentsidvoidsPaymentInformation'
+        'paymentInformation' => '\CyberSource\Model\Ptsv2paymentsidvoidsPaymentInformation',
+        'orderInformation' => '\CyberSource\Model\Ptsv2paymentsidvoidsOrderInformation'
     ];
 
     /**
@@ -64,7 +65,8 @@ class VoidCreditRequest implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'clientReferenceInformation' => null,
-        'paymentInformation' => null
+        'paymentInformation' => null,
+        'orderInformation' => null
     ];
 
     public static function swaggerTypes()
@@ -83,7 +85,8 @@ class VoidCreditRequest implements ArrayAccess
      */
     protected static $attributeMap = [
         'clientReferenceInformation' => 'clientReferenceInformation',
-        'paymentInformation' => 'paymentInformation'
+        'paymentInformation' => 'paymentInformation',
+        'orderInformation' => 'orderInformation'
     ];
 
 
@@ -93,7 +96,8 @@ class VoidCreditRequest implements ArrayAccess
      */
     protected static $setters = [
         'clientReferenceInformation' => 'setClientReferenceInformation',
-        'paymentInformation' => 'setPaymentInformation'
+        'paymentInformation' => 'setPaymentInformation',
+        'orderInformation' => 'setOrderInformation'
     ];
 
 
@@ -103,7 +107,8 @@ class VoidCreditRequest implements ArrayAccess
      */
     protected static $getters = [
         'clientReferenceInformation' => 'getClientReferenceInformation',
-        'paymentInformation' => 'getPaymentInformation'
+        'paymentInformation' => 'getPaymentInformation',
+        'orderInformation' => 'getOrderInformation'
     ];
 
     public static function attributeMap()
@@ -139,6 +144,7 @@ class VoidCreditRequest implements ArrayAccess
     {
         $this->container['clientReferenceInformation'] = isset($data['clientReferenceInformation']) ? $data['clientReferenceInformation'] : null;
         $this->container['paymentInformation'] = isset($data['paymentInformation']) ? $data['paymentInformation'] : null;
+        $this->container['orderInformation'] = isset($data['orderInformation']) ? $data['orderInformation'] : null;
     }
 
     /**
@@ -207,11 +213,33 @@ class VoidCreditRequest implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets orderInformation
+     * @return \CyberSource\Model\Ptsv2paymentsidvoidsOrderInformation
+     */
+    public function getOrderInformation()
+    {
+        return $this->container['orderInformation'];
+    }
+
+    /**
+     * Sets orderInformation
+     * @param \CyberSource\Model\Ptsv2paymentsidvoidsOrderInformation $orderInformation
+     * @return $this
+     */
+    public function setOrderInformation($orderInformation)
+    {
+        $this->container['orderInformation'] = $orderInformation;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -222,6 +250,7 @@ class VoidCreditRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -233,6 +262,7 @@ class VoidCreditRequest implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -247,6 +277,7 @@ class VoidCreditRequest implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -174,22 +174,6 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['cardAcceptorReferenceNumber']) && (strlen($this->container['cardAcceptorReferenceNumber']) > 25)) {
-            $invalid_properties[] = "invalid value for 'cardAcceptorReferenceNumber', the character length must be smaller than or equal to 25.";
-        }
-
-        if (!is_null($this->container['categoryCode']) && ($this->container['categoryCode'] > 9999)) {
-            $invalid_properties[] = "invalid value for 'categoryCode', must be smaller than or equal to 9999.";
-        }
-
-        if (!is_null($this->container['vatRegistrationNumber']) && (strlen($this->container['vatRegistrationNumber']) > 21)) {
-            $invalid_properties[] = "invalid value for 'vatRegistrationNumber', the character length must be smaller than or equal to 21.";
-        }
-
-        if (!is_null($this->container['taxId']) && (strlen($this->container['taxId']) > 15)) {
-            $invalid_properties[] = "invalid value for 'taxId', the character length must be smaller than or equal to 15.";
-        }
-
         return $invalid_properties;
     }
 
@@ -202,18 +186,6 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['cardAcceptorReferenceNumber']) > 25) {
-            return false;
-        }
-        if ($this->container['categoryCode'] > 9999) {
-            return false;
-        }
-        if (strlen($this->container['vatRegistrationNumber']) > 21) {
-            return false;
-        }
-        if (strlen($this->container['taxId']) > 15) {
-            return false;
-        }
         return true;
     }
 
@@ -255,10 +227,6 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
      */
     public function setCardAcceptorReferenceNumber($cardAcceptorReferenceNumber)
     {
-        if (!is_null($cardAcceptorReferenceNumber) && (strlen($cardAcceptorReferenceNumber) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $cardAcceptorReferenceNumber when calling Ptsv2paymentsidcapturesMerchantInformation., must be smaller than or equal to 25.');
-        }
-
         $this->container['cardAcceptorReferenceNumber'] = $cardAcceptorReferenceNumber;
 
         return $this;
@@ -275,16 +243,11 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
 
     /**
      * Sets categoryCode
-     * @param int $categoryCode The value for this field is a four-digit number that the payment card industry uses to classify merchants into market segments. A payment card company assigned one or more of these values to your business when you started accepting the payment card company’s cards. When you do not include this field in your request, CyberSource uses the value in your CyberSource account.  For processor-specific information, see the `merchant_category_code` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)  #### CyberSource through VisaNet The value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP01 TCR4 - Position: 150-153 - Field: Merchant Category Code
+     * @param int $categoryCode The value for this field is a four-digit number that the payment card industry uses to classify merchants into market segments. A payment card company assigned one or more of these values to your business when you started accepting the payment card company's cards. When you do not include this field in your request, CyberSource uses the value in your CyberSource account.  For processor-specific information, see the `merchant_category_code` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)  #### CyberSource through VisaNet The value for this field corresponds to the following data in the TC 33 capture file5: - Record: CP01 TCR4 - Position: 150-153 - Field: Merchant Category Code
      * @return $this
      */
     public function setCategoryCode($categoryCode)
     {
-
-        if (!is_null($categoryCode) && ($categoryCode > 9999)) {
-            throw new \InvalidArgumentException('invalid value for $categoryCode when calling Ptsv2paymentsidcapturesMerchantInformation., must be smaller than or equal to 9999.');
-        }
-
         $this->container['categoryCode'] = $categoryCode;
 
         return $this;
@@ -306,10 +269,6 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
      */
     public function setVatRegistrationNumber($vatRegistrationNumber)
     {
-        if (!is_null($vatRegistrationNumber) && (strlen($vatRegistrationNumber) > 21)) {
-            throw new \InvalidArgumentException('invalid length for $vatRegistrationNumber when calling Ptsv2paymentsidcapturesMerchantInformation., must be smaller than or equal to 21.');
-        }
-
         $this->container['vatRegistrationNumber'] = $vatRegistrationNumber;
 
         return $this;
@@ -352,10 +311,6 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
      */
     public function setTaxId($taxId)
     {
-        if (!is_null($taxId) && (strlen($taxId) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $taxId when calling Ptsv2paymentsidcapturesMerchantInformation., must be smaller than or equal to 15.');
-        }
-
         $this->container['taxId'] = $taxId;
 
         return $this;
@@ -365,6 +320,7 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -375,6 +331,7 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -386,6 +343,7 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -400,6 +358,7 @@ class Ptsv2paymentsidcapturesMerchantInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

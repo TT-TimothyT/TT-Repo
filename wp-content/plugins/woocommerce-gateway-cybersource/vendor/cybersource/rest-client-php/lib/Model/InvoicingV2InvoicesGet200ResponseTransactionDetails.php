@@ -151,10 +151,6 @@ class InvoicingV2InvoicesGet200ResponseTransactionDetails implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['amount']) && (strlen($this->container['amount']) > 19)) {
-            $invalid_properties[] = "invalid value for 'amount', the character length must be smaller than or equal to 19.";
-        }
-
         return $invalid_properties;
     }
 
@@ -167,9 +163,6 @@ class InvoicingV2InvoicesGet200ResponseTransactionDetails implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['amount']) > 19) {
-            return false;
-        }
         return true;
     }
 
@@ -211,10 +204,6 @@ class InvoicingV2InvoicesGet200ResponseTransactionDetails implements ArrayAccess
      */
     public function setAmount($amount)
     {
-        if (!is_null($amount) && (strlen($amount) > 19)) {
-            throw new \InvalidArgumentException('invalid length for $amount when calling InvoicingV2InvoicesGet200ResponseTransactionDetails., must be smaller than or equal to 19.');
-        }
-
         $this->container['amount'] = $amount;
 
         return $this;
@@ -224,6 +213,7 @@ class InvoicingV2InvoicesGet200ResponseTransactionDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -234,6 +224,7 @@ class InvoicingV2InvoicesGet200ResponseTransactionDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -245,6 +236,7 @@ class InvoicingV2InvoicesGet200ResponseTransactionDetails implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -259,6 +251,7 @@ class InvoicingV2InvoicesGet200ResponseTransactionDetails implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

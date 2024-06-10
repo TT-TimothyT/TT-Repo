@@ -57,7 +57,8 @@ class InlineResponse4002 implements ArrayAccess
         'submitTimeUtc' => 'string',
         'status' => 'string',
         'reason' => 'string',
-        'message' => 'string'
+        'message' => 'string',
+        'details' => '\CyberSource\Model\PtsV2PaymentsPost201ResponseErrorInformationDetails[]'
     ];
 
     /**
@@ -68,7 +69,8 @@ class InlineResponse4002 implements ArrayAccess
         'submitTimeUtc' => null,
         'status' => null,
         'reason' => null,
-        'message' => null
+        'message' => null,
+        'details' => null
     ];
 
     public static function swaggerTypes()
@@ -89,7 +91,8 @@ class InlineResponse4002 implements ArrayAccess
         'submitTimeUtc' => 'submitTimeUtc',
         'status' => 'status',
         'reason' => 'reason',
-        'message' => 'message'
+        'message' => 'message',
+        'details' => 'details'
     ];
 
 
@@ -101,7 +104,8 @@ class InlineResponse4002 implements ArrayAccess
         'submitTimeUtc' => 'setSubmitTimeUtc',
         'status' => 'setStatus',
         'reason' => 'setReason',
-        'message' => 'setMessage'
+        'message' => 'setMessage',
+        'details' => 'setDetails'
     ];
 
 
@@ -113,7 +117,8 @@ class InlineResponse4002 implements ArrayAccess
         'submitTimeUtc' => 'getSubmitTimeUtc',
         'status' => 'getStatus',
         'reason' => 'getReason',
-        'message' => 'getMessage'
+        'message' => 'getMessage',
+        'details' => 'getDetails'
     ];
 
     public static function attributeMap()
@@ -151,6 +156,7 @@ class InlineResponse4002 implements ArrayAccess
         $this->container['status'] = isset($data['status']) ? $data['status'] : null;
         $this->container['reason'] = isset($data['reason']) ? $data['reason'] : null;
         $this->container['message'] = isset($data['message']) ? $data['message'] : null;
+        $this->container['details'] = isset($data['details']) ? $data['details'] : null;
     }
 
     /**
@@ -189,7 +195,7 @@ class InlineResponse4002 implements ArrayAccess
 
     /**
      * Sets submitTimeUtc
-     * @param string $submitTimeUtc Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by authorization service.  #### PIN debit Time when the PIN debit credit, PIN debit purchase or PIN debit reversal was requested.  Returned by PIN debit credit, PIN debit purchase or PIN debit reversal.
+     * @param string $submitTimeUtc Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ` **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the time. The `Z` indicates UTC.  Returned by Cybersource for all services.
      * @return $this
      */
     public function setSubmitTimeUtc($submitTimeUtc)
@@ -231,7 +237,7 @@ class InlineResponse4002 implements ArrayAccess
 
     /**
      * Sets reason
-     * @param string $reason The reason of the status.  Possible values:  - MISSING_FIELD  - INVALID_DATA
+     * @param string $reason The reason of the status.  Possible values:  - MISSING_FIELD  - INVALID_DATA  - DUPLICATE_REQUEST  - INVALID_MERCHANT_CONFIGURATION
      * @return $this
      */
     public function setReason($reason)
@@ -261,11 +267,33 @@ class InlineResponse4002 implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets details
+     * @return \CyberSource\Model\PtsV2PaymentsPost201ResponseErrorInformationDetails[]
+     */
+    public function getDetails()
+    {
+        return $this->container['details'];
+    }
+
+    /**
+     * Sets details
+     * @param \CyberSource\Model\PtsV2PaymentsPost201ResponseErrorInformationDetails[] $details
+     * @return $this
+     */
+    public function setDetails($details)
+    {
+        $this->container['details'] = $details;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -276,6 +304,7 @@ class InlineResponse4002 implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -287,6 +316,7 @@ class InlineResponse4002 implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -301,6 +331,7 @@ class InlineResponse4002 implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

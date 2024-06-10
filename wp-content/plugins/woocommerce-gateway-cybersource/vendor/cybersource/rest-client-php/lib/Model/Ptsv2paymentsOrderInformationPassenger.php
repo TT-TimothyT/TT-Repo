@@ -187,38 +187,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['type']) && (strlen($this->container['type']) > 32)) {
-            $invalid_properties[] = "invalid value for 'type', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['status']) && (strlen($this->container['status']) > 32)) {
-            $invalid_properties[] = "invalid value for 'status', the character length must be smaller than or equal to 32.";
-        }
-
-        if (!is_null($this->container['phone']) && (strlen($this->container['phone']) > 15)) {
-            $invalid_properties[] = "invalid value for 'phone', the character length must be smaller than or equal to 15.";
-        }
-
-        if (!is_null($this->container['firstName']) && (strlen($this->container['firstName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'firstName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['lastName']) && (strlen($this->container['lastName']) > 60)) {
-            $invalid_properties[] = "invalid value for 'lastName', the character length must be smaller than or equal to 60.";
-        }
-
-        if (!is_null($this->container['id']) && (strlen($this->container['id']) > 40)) {
-            $invalid_properties[] = "invalid value for 'id', the character length must be smaller than or equal to 40.";
-        }
-
-        if (!is_null($this->container['email']) && (strlen($this->container['email']) > 255)) {
-            $invalid_properties[] = "invalid value for 'email', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['nationality']) && (strlen($this->container['nationality']) > 2)) {
-            $invalid_properties[] = "invalid value for 'nationality', the character length must be smaller than or equal to 2.";
-        }
-
         return $invalid_properties;
     }
 
@@ -231,30 +199,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['type']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['status']) > 32) {
-            return false;
-        }
-        if (strlen($this->container['phone']) > 15) {
-            return false;
-        }
-        if (strlen($this->container['firstName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['lastName']) > 60) {
-            return false;
-        }
-        if (strlen($this->container['id']) > 40) {
-            return false;
-        }
-        if (strlen($this->container['email']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['nationality']) > 2) {
-            return false;
-        }
         return true;
     }
 
@@ -275,10 +219,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      */
     public function setType($type)
     {
-        if (!is_null($type) && (strlen($type) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $type when calling Ptsv2paymentsOrderInformationPassenger., must be smaller than or equal to 32.');
-        }
-
         $this->container['type'] = $type;
 
         return $this;
@@ -300,10 +240,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      */
     public function setStatus($status)
     {
-        if (!is_null($status) && (strlen($status) > 32)) {
-            throw new \InvalidArgumentException('invalid length for $status when calling Ptsv2paymentsOrderInformationPassenger., must be smaller than or equal to 32.');
-        }
-
         $this->container['status'] = $status;
 
         return $this;
@@ -325,10 +261,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      */
     public function setPhone($phone)
     {
-        if (!is_null($phone) && (strlen($phone) > 15)) {
-            throw new \InvalidArgumentException('invalid length for $phone when calling Ptsv2paymentsOrderInformationPassenger., must be smaller than or equal to 15.');
-        }
-
         $this->container['phone'] = $phone;
 
         return $this;
@@ -350,10 +282,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      */
     public function setFirstName($firstName)
     {
-        if (!is_null($firstName) && (strlen($firstName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $firstName when calling Ptsv2paymentsOrderInformationPassenger., must be smaller than or equal to 60.');
-        }
-
         $this->container['firstName'] = $firstName;
 
         return $this;
@@ -375,10 +303,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      */
     public function setLastName($lastName)
     {
-        if (!is_null($lastName) && (strlen($lastName) > 60)) {
-            throw new \InvalidArgumentException('invalid length for $lastName when calling Ptsv2paymentsOrderInformationPassenger., must be smaller than or equal to 60.');
-        }
-
         $this->container['lastName'] = $lastName;
 
         return $this;
@@ -400,10 +324,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      */
     public function setId($id)
     {
-        if (!is_null($id) && (strlen($id) > 40)) {
-            throw new \InvalidArgumentException('invalid length for $id when calling Ptsv2paymentsOrderInformationPassenger., must be smaller than or equal to 40.');
-        }
-
         $this->container['id'] = $id;
 
         return $this;
@@ -425,10 +345,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      */
     public function setEmail($email)
     {
-        if (!is_null($email) && (strlen($email) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $email when calling Ptsv2paymentsOrderInformationPassenger., must be smaller than or equal to 255.');
-        }
-
         $this->container['email'] = $email;
 
         return $this;
@@ -450,10 +366,6 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      */
     public function setNationality($nationality)
     {
-        if (!is_null($nationality) && (strlen($nationality) > 2)) {
-            throw new \InvalidArgumentException('invalid length for $nationality when calling Ptsv2paymentsOrderInformationPassenger., must be smaller than or equal to 2.');
-        }
-
         $this->container['nationality'] = $nationality;
 
         return $this;
@@ -463,6 +375,7 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -473,6 +386,7 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -484,6 +398,7 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -498,6 +413,7 @@ class Ptsv2paymentsOrderInformationPassenger implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

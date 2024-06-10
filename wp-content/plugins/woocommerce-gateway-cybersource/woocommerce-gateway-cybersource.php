@@ -6,11 +6,11 @@
  * Description: Accept credit cards in WooCommerce with the CyberSource (SOAP) payment gateway
  * Author: SkyVerge
  * Author URI: http://www.woocommerce.com/
- * Version: 2.7.2
+ * Version: 2.8.0
  * Text Domain: woocommerce-gateway-cybersource
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * Copyright: (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,12 +18,12 @@
  * @package   WC-CyberSource
  * @author    SkyVerge
  * @category  Payment-Gateways
- * @copyright Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
  * Woo: 18690:3083c0ed00f4a1a2acc5f9044442a7a8
  * WC requires at least: 3.9.4
- * WC tested up to: 8.2.2
+ * WC tested up to: 8.7.0
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -37,7 +37,7 @@ class WC_Cybersource_Loader {
 
 
 	/** minimum PHP version required by this plugin */
-	const MINIMUM_PHP_VERSION = '7.4';
+	const MINIMUM_PHP_VERSION = '8.0';
 
 	/** minimum WordPress version required by this plugin */
 	const MINIMUM_WP_VERSION = '5.6';
@@ -46,7 +46,7 @@ class WC_Cybersource_Loader {
 	const MINIMUM_WC_VERSION = '3.9.4';
 
 	/** SkyVerge plugin framework version used by this plugin */
-	const FRAMEWORK_VERSION = '5.11.12';
+	const FRAMEWORK_VERSION = '5.12.2';
 
 	/** the plugin name, for displaying notices */
 	const PLUGIN_NAME = 'WooCommerce Cybersource';

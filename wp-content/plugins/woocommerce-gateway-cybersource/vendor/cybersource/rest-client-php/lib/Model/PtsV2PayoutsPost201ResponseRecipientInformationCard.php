@@ -150,14 +150,6 @@ class PtsV2PayoutsPost201ResponseRecipientInformationCard implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['balance']) && (strlen($this->container['balance']) > 12)) {
-            $invalid_properties[] = "invalid value for 'balance', the character length must be smaller than or equal to 12.";
-        }
-
-        if (!is_null($this->container['currency']) && (strlen($this->container['currency']) > 3)) {
-            $invalid_properties[] = "invalid value for 'currency', the character length must be smaller than or equal to 3.";
-        }
-
         return $invalid_properties;
     }
 
@@ -170,12 +162,6 @@ class PtsV2PayoutsPost201ResponseRecipientInformationCard implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['balance']) > 12) {
-            return false;
-        }
-        if (strlen($this->container['currency']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -191,15 +177,11 @@ class PtsV2PayoutsPost201ResponseRecipientInformationCard implements ArrayAccess
 
     /**
      * Sets balance
-     * @param string $balance This field shows the available balance in the prepaid account.  Acquirers always receive the available balance in the transaction currency.
+     * @param string $balance This field shows the available balance in the prepaid account. Acquirers always receive the available balance in the transaction currency.
      * @return $this
      */
     public function setBalance($balance)
     {
-        if (!is_null($balance) && (strlen($balance) > 12)) {
-            throw new \InvalidArgumentException('invalid length for $balance when calling PtsV2PayoutsPost201ResponseRecipientInformationCard., must be smaller than or equal to 12.');
-        }
-
         $this->container['balance'] = $balance;
 
         return $this;
@@ -216,15 +198,11 @@ class PtsV2PayoutsPost201ResponseRecipientInformationCard implements ArrayAccess
 
     /**
      * Sets currency
-     * @param string $currency This is a multicurrency-only field. It contains a 3-digit numeric code that identifies the currency used by the issuer.
+     * @param string $currency This field indicates the 3-letter [ISO Standard Currency Codes](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf) for the card currency.
      * @return $this
      */
     public function setCurrency($currency)
     {
-        if (!is_null($currency) && (strlen($currency) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $currency when calling PtsV2PayoutsPost201ResponseRecipientInformationCard., must be smaller than or equal to 3.');
-        }
-
         $this->container['currency'] = $currency;
 
         return $this;
@@ -234,6 +212,7 @@ class PtsV2PayoutsPost201ResponseRecipientInformationCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -244,6 +223,7 @@ class PtsV2PayoutsPost201ResponseRecipientInformationCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -255,6 +235,7 @@ class PtsV2PayoutsPost201ResponseRecipientInformationCard implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -269,6 +250,7 @@ class PtsV2PayoutsPost201ResponseRecipientInformationCard implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

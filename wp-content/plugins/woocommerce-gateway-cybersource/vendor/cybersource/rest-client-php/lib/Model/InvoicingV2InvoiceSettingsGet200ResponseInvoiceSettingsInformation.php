@@ -60,7 +60,10 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
         'enableReminders' => 'bool',
         'headerStyle' => '\CyberSource\Model\InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformationHeaderStyle',
         'deliveryLanguage' => 'string',
-        'defaultCurrencyCode' => 'string'
+        'defaultCurrencyCode' => 'string',
+        'payerAuthentication3DSVersion' => 'bool',
+        'showVatNumber' => 'bool',
+        'vatRegistrationNumber' => 'string'
     ];
 
     /**
@@ -74,7 +77,10 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
         'enableReminders' => null,
         'headerStyle' => null,
         'deliveryLanguage' => null,
-        'defaultCurrencyCode' => null
+        'defaultCurrencyCode' => null,
+        'payerAuthentication3DSVersion' => null,
+        'showVatNumber' => null,
+        'vatRegistrationNumber' => null
     ];
 
     public static function swaggerTypes()
@@ -98,7 +104,10 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
         'enableReminders' => 'enableReminders',
         'headerStyle' => 'headerStyle',
         'deliveryLanguage' => 'deliveryLanguage',
-        'defaultCurrencyCode' => 'defaultCurrencyCode'
+        'defaultCurrencyCode' => 'defaultCurrencyCode',
+        'payerAuthentication3DSVersion' => 'payerAuthentication3DSVersion',
+        'showVatNumber' => 'showVatNumber',
+        'vatRegistrationNumber' => 'vatRegistrationNumber'
     ];
 
 
@@ -113,7 +122,10 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
         'enableReminders' => 'setEnableReminders',
         'headerStyle' => 'setHeaderStyle',
         'deliveryLanguage' => 'setDeliveryLanguage',
-        'defaultCurrencyCode' => 'setDefaultCurrencyCode'
+        'defaultCurrencyCode' => 'setDefaultCurrencyCode',
+        'payerAuthentication3DSVersion' => 'setPayerAuthentication3DSVersion',
+        'showVatNumber' => 'setShowVatNumber',
+        'vatRegistrationNumber' => 'setVatRegistrationNumber'
     ];
 
 
@@ -128,7 +140,10 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
         'enableReminders' => 'getEnableReminders',
         'headerStyle' => 'getHeaderStyle',
         'deliveryLanguage' => 'getDeliveryLanguage',
-        'defaultCurrencyCode' => 'getDefaultCurrencyCode'
+        'defaultCurrencyCode' => 'getDefaultCurrencyCode',
+        'payerAuthentication3DSVersion' => 'getPayerAuthentication3DSVersion',
+        'showVatNumber' => 'getShowVatNumber',
+        'vatRegistrationNumber' => 'getVatRegistrationNumber'
     ];
 
     public static function attributeMap()
@@ -169,6 +184,9 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
         $this->container['headerStyle'] = isset($data['headerStyle']) ? $data['headerStyle'] : null;
         $this->container['deliveryLanguage'] = isset($data['deliveryLanguage']) ? $data['deliveryLanguage'] : null;
         $this->container['defaultCurrencyCode'] = isset($data['defaultCurrencyCode']) ? $data['defaultCurrencyCode'] : null;
+        $this->container['payerAuthentication3DSVersion'] = isset($data['payerAuthentication3DSVersion']) ? $data['payerAuthentication3DSVersion'] : false;
+        $this->container['showVatNumber'] = isset($data['showVatNumber']) ? $data['showVatNumber'] : false;
+        $this->container['vatRegistrationNumber'] = isset($data['vatRegistrationNumber']) ? $data['vatRegistrationNumber'] : null;
     }
 
     /**
@@ -179,26 +197,6 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
     public function listInvalidProperties()
     {
         $invalid_properties = [];
-
-        if (!is_null($this->container['merchantLogo']) && (strlen($this->container['merchantLogo']) > 10000000)) {
-            $invalid_properties[] = "invalid value for 'merchantLogo', the character length must be smaller than or equal to 10000000.";
-        }
-
-        if (!is_null($this->container['merchantDisplayName']) && (strlen($this->container['merchantDisplayName']) > 100)) {
-            $invalid_properties[] = "invalid value for 'merchantDisplayName', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['customEmailMessage']) && (strlen($this->container['customEmailMessage']) > 2000)) {
-            $invalid_properties[] = "invalid value for 'customEmailMessage', the character length must be smaller than or equal to 2000.";
-        }
-
-        if (!is_null($this->container['deliveryLanguage']) && (strlen($this->container['deliveryLanguage']) > 6)) {
-            $invalid_properties[] = "invalid value for 'deliveryLanguage', the character length must be smaller than or equal to 6.";
-        }
-
-        if (!is_null($this->container['defaultCurrencyCode']) && (strlen($this->container['defaultCurrencyCode']) > 3)) {
-            $invalid_properties[] = "invalid value for 'defaultCurrencyCode', the character length must be smaller than or equal to 3.";
-        }
 
         return $invalid_properties;
     }
@@ -212,21 +210,6 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
     public function valid()
     {
 
-        if (strlen($this->container['merchantLogo']) > 10000000) {
-            return false;
-        }
-        if (strlen($this->container['merchantDisplayName']) > 100) {
-            return false;
-        }
-        if (strlen($this->container['customEmailMessage']) > 2000) {
-            return false;
-        }
-        if (strlen($this->container['deliveryLanguage']) > 6) {
-            return false;
-        }
-        if (strlen($this->container['defaultCurrencyCode']) > 3) {
-            return false;
-        }
         return true;
     }
 
@@ -247,10 +230,6 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      */
     public function setMerchantLogo($merchantLogo)
     {
-        if (!is_null($merchantLogo) && (strlen($merchantLogo) > 10000000)) {
-            throw new \InvalidArgumentException('invalid length for $merchantLogo when calling InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation., must be smaller than or equal to 10000000.');
-        }
-
         $this->container['merchantLogo'] = $merchantLogo;
 
         return $this;
@@ -272,10 +251,6 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      */
     public function setMerchantDisplayName($merchantDisplayName)
     {
-        if (!is_null($merchantDisplayName) && (strlen($merchantDisplayName) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $merchantDisplayName when calling InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['merchantDisplayName'] = $merchantDisplayName;
 
         return $this;
@@ -297,10 +272,6 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      */
     public function setCustomEmailMessage($customEmailMessage)
     {
-        if (!is_null($customEmailMessage) && (strlen($customEmailMessage) > 2000)) {
-            throw new \InvalidArgumentException('invalid length for $customEmailMessage when calling InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation., must be smaller than or equal to 2000.');
-        }
-
         $this->container['customEmailMessage'] = $customEmailMessage;
 
         return $this;
@@ -364,10 +335,6 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      */
     public function setDeliveryLanguage($deliveryLanguage)
     {
-        if (!is_null($deliveryLanguage) && (strlen($deliveryLanguage) > 6)) {
-            throw new \InvalidArgumentException('invalid length for $deliveryLanguage when calling InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation., must be smaller than or equal to 6.');
-        }
-
         $this->container['deliveryLanguage'] = $deliveryLanguage;
 
         return $this;
@@ -389,11 +356,70 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      */
     public function setDefaultCurrencyCode($defaultCurrencyCode)
     {
-        if (!is_null($defaultCurrencyCode) && (strlen($defaultCurrencyCode) > 3)) {
-            throw new \InvalidArgumentException('invalid length for $defaultCurrencyCode when calling InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation., must be smaller than or equal to 3.');
-        }
-
         $this->container['defaultCurrencyCode'] = $defaultCurrencyCode;
+
+        return $this;
+    }
+
+    /**
+     * Gets payerAuthentication3DSVersion
+     * @return bool
+     */
+    public function getPayerAuthentication3DSVersion()
+    {
+        return $this->container['payerAuthentication3DSVersion'];
+    }
+
+    /**
+     * Sets payerAuthentication3DSVersion
+     * @param bool $payerAuthentication3DSVersion The 3D Secure payer authentication status for a merchant's invoice payments.
+     * @return $this
+     */
+    public function setPayerAuthentication3DSVersion($payerAuthentication3DSVersion)
+    {
+        $this->container['payerAuthentication3DSVersion'] = $payerAuthentication3DSVersion;
+
+        return $this;
+    }
+
+    /**
+     * Gets showVatNumber
+     * @return bool
+     */
+    public function getShowVatNumber()
+    {
+        return $this->container['showVatNumber'];
+    }
+
+    /**
+     * Sets showVatNumber
+     * @param bool $showVatNumber Display VAT number on Invoice.
+     * @return $this
+     */
+    public function setShowVatNumber($showVatNumber)
+    {
+        $this->container['showVatNumber'] = $showVatNumber;
+
+        return $this;
+    }
+
+    /**
+     * Gets vatRegistrationNumber
+     * @return string
+     */
+    public function getVatRegistrationNumber()
+    {
+        return $this->container['vatRegistrationNumber'];
+    }
+
+    /**
+     * Sets vatRegistrationNumber
+     * @param string $vatRegistrationNumber Your government-assigned tax identification number.  #### Tax Calculation Required field for value added tax only. Not applicable to U.S. and Canadian taxes.
+     * @return $this
+     */
+    public function setVatRegistrationNumber($vatRegistrationNumber)
+    {
+        $this->container['vatRegistrationNumber'] = $vatRegistrationNumber;
 
         return $this;
     }
@@ -402,6 +428,7 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -412,6 +439,7 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -423,6 +451,7 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -437,6 +466,7 @@ class InvoicingV2InvoiceSettingsGet200ResponseInvoiceSettingsInformation impleme
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

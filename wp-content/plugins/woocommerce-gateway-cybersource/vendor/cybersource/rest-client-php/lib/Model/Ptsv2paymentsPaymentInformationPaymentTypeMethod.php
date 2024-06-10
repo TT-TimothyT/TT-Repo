@@ -54,7 +54,8 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'name' => 'string'
+        'name' => 'string',
+        'type' => 'string'
     ];
 
     /**
@@ -62,7 +63,8 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'name' => null
+        'name' => null,
+        'type' => null
     ];
 
     public static function swaggerTypes()
@@ -80,7 +82,8 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'name' => 'name'
+        'name' => 'name',
+        'type' => 'type'
     ];
 
 
@@ -89,7 +92,8 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'name' => 'setName'
+        'name' => 'setName',
+        'type' => 'setType'
     ];
 
 
@@ -98,7 +102,8 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'name' => 'getName'
+        'name' => 'getName',
+        'type' => 'getType'
     ];
 
     public static function attributeMap()
@@ -133,6 +138,7 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['name'] = isset($data['name']) ? $data['name'] : null;
+        $this->container['type'] = isset($data['type']) ? $data['type'] : null;
     }
 
     /**
@@ -171,7 +177,7 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
 
     /**
      * Sets name
-     * @param string $name A Payment Type is enabled through a Method. Examples: Visa, Master Card, ApplePay, iDeal
+     * @param string $name A Payment Type is enabled through a Method. Examples: Visa, Master Card, ApplePay, iDeal, 7Eleven, alfamart, etc  For Japan Payment Processing Valid Values: - 1 Banking Data - 2 Authorization Data  #### Via KCP - `KCP` : Local Card, Bank Transfer and Carrier Billing. - `PAYCO` - `KAKAOPAY` - `NAVERPAY`
      * @return $this
      */
     public function setName($name)
@@ -180,11 +186,33 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets type
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->container['type'];
+    }
+
+    /**
+     * Sets type
+     * @param string $type The payment channel that facilitates the transactions. This parameter can be used if the payment channels are listed on the merchant's site, and the payment channel is known.  Possible Values:  #### Via PPRO - `alfaVa` - `kredivo` - `consumerBarCode` - `merchantQrCode` - `dokuWallet`
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->container['type'] = $type;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -195,6 +223,7 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -206,6 +235,7 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -220,6 +250,7 @@ class Ptsv2paymentsPaymentInformationPaymentTypeMethod implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

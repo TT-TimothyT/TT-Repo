@@ -183,7 +183,7 @@ class RiskV1DecisionsPost201ResponseErrorInformation implements ArrayAccess
 
     /**
      * Sets reason
-     * @param string $reason The reason of the status.  Possible values:  - `EXPIRED_CARD`  - `SCORE_EXCEEDS_THRESHOLD`  - `DECISION_PROFILE_REVIEW`  - `DECISION_PROFILE_REJECT`  - `PENDING_AUTHENTICATION`  - `INVALID_MERCHANT_CONFIGURATION`  - `AUTHENTICATION_FAILED`  - `DECISION_PROFILE_CHALLENGE`
+     * @param string $reason The reason of the status.  Possible values:  - `EXPIRED_CARD`  - `SCORE_EXCEEDS_THRESHOLD`  - `DECISION_PROFILE_REVIEW`  - `DECISION_PROFILE_REJECT`  - `CONSUMER_AUTHENTICATION_REQUIRED`  - `INVALID_MERCHANT_CONFIGURATION`  - `CONSUMER_AUTHENTICATION_FAILED`  - `DECISION_PROFILE_CHALLENGE`  - `CUSTOMER_WATCHLIST_MATCH`  - `ADDRESS_COUNTRY_WATCHLIST_MATCH`  - `EMAIL_COUNTRY_WATCHLIST_MATCH`  - `IP_COUNTRY_WATCHLIST_MATCH`
      * @return $this
      */
     public function setReason($reason)
@@ -239,6 +239,7 @@ class RiskV1DecisionsPost201ResponseErrorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -249,6 +250,7 @@ class RiskV1DecisionsPost201ResponseErrorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -260,6 +262,7 @@ class RiskV1DecisionsPost201ResponseErrorInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -274,6 +277,7 @@ class RiskV1DecisionsPost201ResponseErrorInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

@@ -17,14 +17,14 @@
  * needs please refer to http://docs.woocommerce.com/document/cybersource-payment-gateway/
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 
 use SkyVerge\WooCommerce\Cybersource\Gateway;
-use SkyVerge\WooCommerce\PluginFramework\v5_11_12 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -90,7 +90,7 @@ class Payment_Form extends Base_Payment_Form {
 
 		// render a test card number in test mode when the flex form is used, since we cannot pre-fill it
 		if ( $this->get_gateway()->is_test_environment() && $this->get_gateway()->is_flex_form_enabled() ) : ?>
-			<p><?php printf( esc_html__( 'Test card number: %s', 'woocommerce-gateway-cybersource' ), '<code>4111111111111111</code>' ); ?></p>
+			<p><?php printf( esc_html__( 'Test card number: %s', 'woocommerce-gateway-cybersource' ), '<code>4111 1111 1111 1111</code>' ); ?></p>
 		<?php endif;
 	}
 
@@ -304,11 +304,7 @@ class Payment_Form extends Base_Payment_Form {
 
 		if ( ! empty( $this->get_flex_microform_key() ) && in_array( $this->get_gateway()->get_id(), $this->payment_form_js_rendered, true ) ) {
 
-			$url = $this->get_gateway()->is_production_environment()
-					? 'https://flex.cybersource.com/cybersource/assets/microform/0.11/flex-microform.min.js'
-					: 'https://testflex.cybersource.com/cybersource/assets/microform/0.11/flex-microform.min.js';
-
-			wp_enqueue_script( 'wc-cybersource-flex-microform', $url, [], null );
+			wp_enqueue_script( 'wc-cybersource-flex-microform' );
 		}
 	}
 

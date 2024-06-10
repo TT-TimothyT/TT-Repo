@@ -169,22 +169,6 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if (!is_null($this->container['merchantCustomerId']) && (strlen($this->container['merchantCustomerId']) > 100)) {
-            $invalid_properties[] = "invalid value for 'merchantCustomerId', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['username']) && (strlen($this->container['username']) > 255)) {
-            $invalid_properties[] = "invalid value for 'username', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['hashedPassword']) && (strlen($this->container['hashedPassword']) > 100)) {
-            $invalid_properties[] = "invalid value for 'hashedPassword', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['dateOfBirth']) && (strlen($this->container['dateOfBirth']) > 8)) {
-            $invalid_properties[] = "invalid value for 'dateOfBirth', the character length must be smaller than or equal to 8.";
-        }
-
         return $invalid_properties;
     }
 
@@ -197,18 +181,6 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
     public function valid()
     {
 
-        if (strlen($this->container['merchantCustomerId']) > 100) {
-            return false;
-        }
-        if (strlen($this->container['username']) > 255) {
-            return false;
-        }
-        if (strlen($this->container['hashedPassword']) > 100) {
-            return false;
-        }
-        if (strlen($this->container['dateOfBirth']) > 8) {
-            return false;
-        }
         return true;
     }
 
@@ -224,15 +196,11 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
 
     /**
      * Sets merchantCustomerId
-     * @param string $merchantCustomerId Your identifier for the customer.  When a subscription or customer profile is being created, the maximum length for this field for most processors is 30. Otherwise, the maximum length is 100.  #### Comercio Latino For recurring payments in Mexico, the value is the customer’s contract number. Note Before you request the authorization, you must inform the issuer of the customer contract numbers that will be used for recurring transactions.  #### Worldpay VAP For a follow-on credit with Worldpay VAP, CyberSource checks the following locations, in the order given, for a customer account ID value and uses the first value it finds: 1. `customer_account_id` value in the follow-on credit request 2. Customer account ID value that was used for the capture that is being credited 3. Customer account ID value that was used for the original authorization If a customer account ID value cannot be found in any of these locations, then no value is used.  For processor-specific information, see the `customer_account_id` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+     * @param string $merchantCustomerId Your identifier for the customer.  When a subscription or customer profile is being created, the maximum length for this field for most processors is 30. Otherwise, the maximum length is 100.  #### Comercio Latino For recurring payments in Mexico, the value is the customer's contract number. Note Before you request the authorization, you must inform the issuer of the customer contract numbers that will be used for recurring transactions.  #### Worldpay VAP For a follow-on credit with Worldpay VAP, CyberSource checks the following locations, in the order given, for a customer account ID value and uses the first value it finds: 1. `customer_account_id` value in the follow-on credit request 2. Customer account ID value that was used for the capture that is being credited 3. Customer account ID value that was used for the original authorization If a customer account ID value cannot be found in any of these locations, then no value is used.  For processor-specific information, see the `customer_account_id` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
      * @return $this
      */
     public function setMerchantCustomerId($merchantCustomerId)
     {
-        if (!is_null($merchantCustomerId) && (strlen($merchantCustomerId) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $merchantCustomerId when calling Riskv1decisionsBuyerInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['merchantCustomerId'] = $merchantCustomerId;
 
         return $this;
@@ -254,10 +222,6 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
      */
     public function setUsername($username)
     {
-        if (!is_null($username) && (strlen($username) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $username when calling Riskv1decisionsBuyerInformation., must be smaller than or equal to 255.');
-        }
-
         $this->container['username'] = $username;
 
         return $this;
@@ -279,10 +243,6 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
      */
     public function setHashedPassword($hashedPassword)
     {
-        if (!is_null($hashedPassword) && (strlen($hashedPassword) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $hashedPassword when calling Riskv1decisionsBuyerInformation., must be smaller than or equal to 100.');
-        }
-
         $this->container['hashedPassword'] = $hashedPassword;
 
         return $this;
@@ -299,15 +259,11 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
 
     /**
      * Sets dateOfBirth
-     * @param string $dateOfBirth Recipient’s date of birth. **Format**: `YYYYMMDD`.  This field is a `pass-through`, which means that CyberSource ensures that the value is eight numeric characters but otherwise does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For more details, see `recipient_date_of_birth` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+     * @param string $dateOfBirth Recipient's date of birth. **Format**: `YYYYMMDD`.  This field is a `pass-through`, which means that CyberSource ensures that the value is eight numeric characters but otherwise does not verify the value or modify it in any way before sending it to the processor. If the field is not required for the transaction, CyberSource does not forward it to the processor.  For more details, see `recipient_date_of_birth` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
      * @return $this
      */
     public function setDateOfBirth($dateOfBirth)
     {
-        if (!is_null($dateOfBirth) && (strlen($dateOfBirth) > 8)) {
-            throw new \InvalidArgumentException('invalid length for $dateOfBirth when calling Riskv1decisionsBuyerInformation., must be smaller than or equal to 8.');
-        }
-
         $this->container['dateOfBirth'] = $dateOfBirth;
 
         return $this;
@@ -338,6 +294,7 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -348,6 +305,7 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -359,6 +317,7 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
      * @param  mixed   $value  Value to be set
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -373,6 +332,7 @@ class Riskv1decisionsBuyerInformation implements ArrayAccess
      * @param  integer $offset Offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
