@@ -133,7 +133,7 @@ $userInfo = wp_get_current_user();
             $field_input = str_ireplace('</p>', '', $field_input);
             $field_html .= $field_input;
             if ($key == 'custentity_birthdate') {
-                $field_html .= '<div class="invalid-feedback invalid-age dob-error"><img class="invalid-icon" /> Age must be 16 years old or above, Please enter correct date of birth.</div>';
+                $field_html .= '<div class="invalid-feedback invalid-age dob-error"><img class="invalid-icon" /> Age must be 18 years old or above, Please enter correct date of birth.</div>';
                 $field_html .= '<div class="invalid-feedback invalid-min-year dob-error"><img class="invalid-icon" /> The year must be greater than 1900, Please enter correct date of birth.</div>';
                 $field_html .= '<div class="invalid-feedback invalid-max-year dob-error"><img class="invalid-icon" /> The year cannot be in the future, Please enter the correct date of birth.</div>';
             }

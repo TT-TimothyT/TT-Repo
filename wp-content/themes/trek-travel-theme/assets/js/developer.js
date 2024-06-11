@@ -133,7 +133,7 @@ function tt_validate_age( dob = null ) {
     var year        = ageDt.getUTCFullYear();
     var age         = Math.abs( year - 1970 );
     
-    if( age < 16 ) {
+    if( age < 18 ) {
       isValid      = false;
       dobTypeError = 'invalid-age';
     } else if( dobYear < 1900 ) {
