@@ -6988,71 +6988,6 @@ function tt_modify_algolia_searchable_post_content( $post_content, WP_Post $post
 
 add_filter( 'algolia_searchable_post_content', 'tt_modify_algolia_searchable_post_content', 10, 2 );
 
-/**
- * Check the parent categories for the coupon to prevent applying the coupon.
- *
- * @param bool $passed Is the coupon passed.
- * @param WC_Coupon $coupon The coupon object.
- * @param WC_Cart $cart The cart object.
- *
- * @return bool Is the coupon passed.
- */
-function check_parent_product_categories_for_coupon( $passed, $coupon, $cart ) {
-    // Get the categories excluded by the coupon
-    $excluded_categories = $coupon->get_excluded_product_categories();
-    
-    if ( empty( $excluded_categories ) ) {
-        // No excluded categories, return early
-        return $passed;
-    }
-
-    // Check if WC()->cart is not null
-    if ( ! WC()->cart ) {
-        // Check if WC()->session is not null before adding notice
-        if ( WC()->session ) {
-            wc_add_notice( __('Error: Cart is not available.', 'trek-travel-theme'), 'error' );
-        } else {
-            // Log an error message if WC()->session is null
-            error_log('Error: WC()->cart and WC()->session are null in ' . __FILE__ . ' on line ' . __LINE__);
-        }
-        return $passed; // Or handle as needed
-    }
-
-    // Get cart items
-    if ( WC()->cart ) {
-        $cart = WC()->cart->get_cart();
-    } else {
-        return true;
-    }
-
-    // Loop through cart items
-    foreach ( $cart as $cart_item_key => $cart_item ) {
-        $product_id = $cart_item['product_id'];
-
-        $product = wc_get_product( $product_id );
-        $product_sku = $product->get_sku();
-
-        $is_ride_camp = tt_get_local_trips_detail( 'isRideCamp',  '', $product_sku, true );
-
-        //Find the product ID by the parent SKU
-        $parent_product_id = tt_get_parent_trip_id_by_child_sku( $product_sku, $is_ride_camp );
-
-        $parent_categories = get_the_terms( $parent_product_id, 'product_cat' );
-
-        if ( ! empty( $parent_categories ) ) {
-            foreach ( $parent_categories as $parent_category ) {
-                if ( in_array( $parent_category->term_id, $excluded_categories ) ) {
-                    $passed = false;
-                    break 2;
-                }
-            }
-        }
-    }
-
-    return $passed;
-}
-add_filter( 'woocommerce_coupon_is_valid', 'check_parent_product_categories_for_coupon', 10, 3 );
-
 /** Take the status for Record Locking and Bike Locking from user's meta.
  *
  * @param string|int $wc_user_id   Current User ID.
@@ -7450,3 +7385,108 @@ function tt_get_manage_payment_methods_button_html( $html ) {
     return '';
 }
 add_filter( 'wc_cybersource_credit_card_payment_form_manage_payment_methods_button_html', 'tt_get_manage_payment_methods_button_html', 10 );
+
+/**
+ * Add the missing categories to the child products for coupon validations,
+ * taken from the parent product.
+ *
+ * NOTE: The Child product will be modified dynamically during the coupon validations,
+ * so this can break some logic that uses the child product categories in the feature.
+ *
+ * @param object[]     $items     The cart item objects.
+ * @param WC_Discounts $discounts Discounts class.
+ *
+ * @return object[] Only the child products items without line items or original passed as parameter items.
+ */
+function tt_woocommerce_coupon_get_items_to_validate( $items, $discounts ) {
+    $accepted_p_ids = tt_get_line_items_product_ids();
+    $parent_product = '';
+    // This array will contain only the real trip products without line items like Insurance Fees, Single Supplеment Fees, etc because we need to validate the trips only.
+    $items_to_apply = array();
+
+    foreach ( $items as $item_id => $item ) {
+        if( isset( $item->product ) ) {
+            $product_id = $item->product->get_id();
+            if ( ! in_array( $product_id, $accepted_p_ids ) ) {
+                $product_sku = $item->product->get_sku();
+    
+                $is_ride_camp = tt_get_local_trips_detail( 'isRideCamp',  '', $product_sku, true );
+    
+                // Find the product ID by the parent SKU.
+                $parent_product_id = tt_get_parent_trip_id_by_child_sku( $product_sku, $is_ride_camp );
+
+                if( ! empty( $parent_product_id ) ) {
+                    $parent_product    = wc_get_product( $parent_product_id );
+                    $parent_categories = get_the_terms( $parent_product_id, 'product_cat' );
+                    $item_to_apply     = clone $item; // Clone the item so changes to this item do not affect the originals.
+                    $categories_to_add = array();
+
+                    if ( ! empty( $parent_categories ) ) {
+                        $categories_to_add = array_column( $parent_categories, 'term_id' );
+                    }
+
+                    if( ! empty( $categories_to_add ) ) {
+                        // The parent product has categories, that we need to add to the child product, so to can the coupon validation works properly.
+                        // !!! Keep in mind that will break some logic using the child categories in the feature.
+                        $item_to_apply->product->set_category_ids( [] );
+                        $item_to_apply->product->set_category_ids( $categories_to_add );
+                        $item_to_apply->product->save();
+
+                        $items_to_apply[] = $item_to_apply;
+                    }
+
+                }
+            }
+        }
+    }
+
+    return ! empty( $items_to_apply ) ? $items_to_apply : $items;
+    
+    
+}
+add_filter( 'woocommerce_coupon_get_items_to_validate', 'tt_woocommerce_coupon_get_items_to_validate', 10, 2 );
+
+/**
+ * Function to check coupon minimum amount restriction,
+ * based on the single trip base price,
+ * without any additions like Travel Protection, Single Supplement, etc.
+ *
+ * @param bool      $is_valid      Whether the coupon minimum amount restriction is bigger from the cart subtotal [ $coupon->get_minimum_amount() > $subtotal ].
+ * @param WC_Coupon $coupon        Coupon data.
+ * @param float     $cart_subtotal The cart subtotal amount.
+ */
+function tt_woocommerce_coupon_validate_minimum_amount( $is_valid, $coupon, $cart_subtotal ) {
+    // Take an array with ids of the line item products.
+    $accepted_p_ids = tt_get_line_items_product_ids();
+
+    // Check if WC()->cart is not null.
+    if ( ! WC()->cart ) {
+        return $is_valid;
+    }
+
+    // Take the cart contents.
+    $cart = WC()->cart->get_cart();
+
+    if( $cart ) {
+        foreach( $cart as $cart_item_id => $cart_item ) {
+            $product_id = $cart_item['product_id'];
+
+            // Check for trip product in the cart.
+            if( $product_id && ! in_array( $product_id, $accepted_p_ids ) ) {
+                $product = wc_get_product( $product_id );
+
+                if( $product ) {
+                    $trip_base_price   = floatval( $product->get_price() );
+                    $coupon_min_amount = floatval( $coupon->get_minimum_amount() );
+
+                    // Compare coupon minimum amount restriction with the trip base price.
+                    $is_valid          = $coupon_min_amount > $trip_base_price;
+                    break;
+                }
+            }
+        }
+    }
+    
+    return $is_valid;
+}
+add_filter( 'woocommerce_coupon_validate_minimum_amount', 'tt_woocommerce_coupon_validate_minimum_amount', 10, 3 );
