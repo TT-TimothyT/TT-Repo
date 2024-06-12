@@ -160,7 +160,7 @@ $wp_user_email = $userInfo->user_email;
 									if( $sdate_info['m'] != $edate_info['m'] ){
 										$date_range = $date_range_2;
 									}
-								$product_image_url = 'https://via.placeholder.com/150?text=Trek Travel';
+								$product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
 								$trip_sku = $product ? $product->get_sku() : '';
 								$parentTrip = tt_get_parent_trip($trip_sku);
 								$trip_link = 'javascript:';
@@ -252,7 +252,7 @@ $wp_user_email = $userInfo->user_email;
 									if( $sdate_info['m'] != $edate_info['m'] ) {
 										$date_range = $date_range_2;
 									}
-									$product_image_url = 'https://via.placeholder.com/150?text=Trek Travel';
+									$product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
 									$trip_sku          = $product ? $product->get_sku() : '';
 									$parentTrip        = tt_get_parent_trip($trip_sku);
 									$trip_link         = 'javascript:';

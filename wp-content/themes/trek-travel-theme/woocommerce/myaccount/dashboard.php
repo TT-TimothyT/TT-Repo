@@ -221,7 +221,7 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 									if( $sdate_info['m'] != $edate_info['m'] ){
 										$date_range = $date_range_2;
 									}
-									$product_image_url = 'https://via.placeholder.com/150?text=Trek Travel';
+									$product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
 									if( has_post_thumbnail($product) ){
 										$product_image_url = wp_get_attachment_url($product->get_image_id());
 									}

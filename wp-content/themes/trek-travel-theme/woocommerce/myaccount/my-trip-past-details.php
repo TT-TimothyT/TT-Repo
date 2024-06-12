@@ -58,7 +58,7 @@ if ($order_items) {
 				if ($sdate_info['m'] != $edate_info['m']) {
 					$date_range = $date_range_2;
 				}
-				$product_image_url = 'https://via.placeholder.com/150?text=Trek Travel';
+				$product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
 				if (has_post_thumbnail($product_id) && $product_id) {
 					$product_image_url = get_the_post_thumbnail_url($product_id);
 				}

@@ -3272,7 +3272,7 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
     $rider_level_text = isset($keys[0]) && isset($options[$keys[0]]['optionValue']) ? $options[$keys[0]]['optionValue'] : '';
     $parent_product_id = '';
     $parent_trip_link = 'javascript:';
-    $product_image_url = 'https://via.placeholder.com/150?text=Trek Travel';
+    $product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
     $parent_product_id = tt_get_parent_trip_id_by_child_sku($sku);
     if ($parent_product_id) {
         if( has_post_thumbnail($parent_product_id) ){
@@ -4804,24 +4804,40 @@ function tt_guest_details($tt_posted = [])
         'guest_emails' => $guest_emails
     ];
 }
-function tt_get_parent_trip($sku="")
-{
-    //Trip Parent ID
+function tt_get_parent_trip($sku = "") {
+    // Trip Parent ID
     $parent_product_id = tt_get_parent_trip_id_by_child_sku($sku);
-    $product_image_url = 'https://via.placeholder.com/150?text=Trek Travel';
+    $product_image_url = '';
     $parent_trip_link = 'javascript:';
-    if ( $parent_product_id ) {
-        if( has_post_thumbnail($parent_product_id) ){
+
+    // Check for product image by SKU first
+    if ($sku) {
+        $product_id = wc_get_product_id_by_sku($sku);
+        if ($product_id && has_post_thumbnail($product_id)) {
+            $product_image_url = get_the_post_thumbnail_url($product_id);
+        }
+    }
+
+    // If no image found for SKU, use the parent product's image
+    if (!$product_image_url && $parent_product_id) {
+        if (has_post_thumbnail($parent_product_id)) {
             $product_image_url = get_the_post_thumbnail_url($parent_product_id);
         }
         $parent_trip_link = get_the_permalink($parent_product_id);
     }
+
+    // Use default image if no image found
+    if (!$product_image_url) {
+        $product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
+    }
+
     return [
         'id' => $parent_product_id,
         'image' => $product_image_url,
         'link' => $parent_trip_link
     ];
 }
+
 function tt_get_hotel_bike_list( $sku ) {
     $bike_list   = $hotel_list = '';
 
