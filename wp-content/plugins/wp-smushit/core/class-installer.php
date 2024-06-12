@@ -69,7 +69,7 @@ class Installer {
 			require_once __DIR__ . '/class-settings.php';
 		}
 
-		Settings::get_instance()->init();
+		Settings::get_instance()->initial_default_site_settings();
 		$settings = Settings::get_instance()->get();
 
 		// If the version is not saved or if the version is not same as the current version,.

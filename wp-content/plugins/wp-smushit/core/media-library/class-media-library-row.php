@@ -318,13 +318,10 @@ class Media_Library_Row {
 	}
 
 	private function get_regenerate_doc_link() {
-		$doc = 'https://wpmudev.com/docs/wpmu-dev-plugins/smush/';
-		if ( ! WP_Smush::is_pro() ) {
-			$doc = 'https://wpmudev.com/docs/wpmu-dev-plugins/smush/?utm_source=smush&utm_medium=plugin&utm_campaign=smush_pluginlist_docs';
-		}
-		$doc .= '#restoring-images';
-
-		return $doc;
+		return Helper::get_utm_link(
+			array( 'utm_campaign' => 'smush_pluginlist_docs' ),
+			'https://wpmudev.com/docs/wpmu-dev-plugins/smush/#restoring-images'
+		);
 	}
 
 	private function get_html_markup_for_failed_item_with_suggestion_link( $error_message, $suggestion_link = '' ) {

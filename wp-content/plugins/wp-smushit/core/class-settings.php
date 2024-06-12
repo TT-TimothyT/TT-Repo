@@ -731,7 +731,17 @@ class Settings {
 		$this->reset_cache_site_settings();
 		// The action wp_smush_settings_updated only triggers after option is updated, does not trigger on add_(site_)option.
 		// So to support this, we need to add the default option first.
+		$this->add_default_site_settings();
+	}
+
+	private function add_default_site_settings() {
 		$this->update_site_settings( $this->defaults );
+	}
+
+	public function initial_default_site_settings() {
+		if ( false === $this->get_setting( self::SETTINGS_KEY, false ) ) {
+			$this->add_default_site_settings();
+		}
 	}
 
 	/**

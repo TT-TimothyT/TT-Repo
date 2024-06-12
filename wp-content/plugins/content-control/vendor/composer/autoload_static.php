@@ -136,6 +136,7 @@ class ComposerStaticInite49cb9dbab9b634416f58f51de31371d
         'ContentControl\\Controllers\\Assets' => __DIR__ . '/../..' . '/classes/Controllers/Assets.php',
         'ContentControl\\Controllers\\BlockEditor' => __DIR__ . '/../..' . '/classes/Controllers/BlockEditor.php',
         'ContentControl\\Controllers\\Compatibility' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility.php',
+        'ContentControl\\Controllers\\Compatibility\\BetterDocs' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility/BetterDocs.php',
         'ContentControl\\Controllers\\Compatibility\\Divi' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility/Divi.php',
         'ContentControl\\Controllers\\Compatibility\\Elementor' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility/Elementor.php',
         'ContentControl\\Controllers\\Compatibility\\QueryMonitor' => __DIR__ . '/../..' . '/classes/Controllers/Compatibility/QueryMonitor.php',

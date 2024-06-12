@@ -1,4 +1,5 @@
 import '../scss/common.scss';
+import tracker from './utils/tracker';
 
 /* global ajaxurl */
 
@@ -103,4 +104,12 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 
 	handleHeaderNotice();
+
+	// Global tracking.
+	const upsellSubmenuLink = document.querySelector( '#toplevel_page_smush a[href*="utm_campaign=smush_submenu_upsell' );
+	if ( upsellSubmenuLink ) {
+		upsellSubmenuLink.addEventListener( 'click', (e) => {
+			tracker.track( 'submenu_upsell' );
+		} );
+	}
 });

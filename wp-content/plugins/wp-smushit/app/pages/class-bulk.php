@@ -14,6 +14,7 @@ use Smush\Core\Array_Utils;
 use Smush\Core\Core;
 use Smush\Core\Settings;
 use Smush\Core\Stats\Global_Stats;
+use Smush\Core\Media_Library\Background_Media_Library_Scanner;
 use WP_Smush;
 use Smush\Core\Backups\Backups;
 
@@ -84,6 +85,27 @@ class Bulk extends Abstract_Summary_Page implements Interface_Page {
 					'box_content_class' => false,
 				)
 			);
+
+			$bg_optimization               = WP_Smush::get_instance()->core()->mod->bg_optimization;
+			$scan_background_process       = Background_Media_Library_Scanner::get_instance()->get_background_process();
+			$is_scan_process_dead          = $scan_background_process->get_status()->is_dead();
+			$show_bulk_smush_inline_notice = $bg_optimization->is_background_enabled() && $bg_optimization->is_dead();
+			// Do not show failed bulk smush inline notice when required re-check images.
+			$show_bulk_smush_inline_notice = $show_bulk_smush_inline_notice && ! $is_scan_process_dead;
+			if ( $show_bulk_smush_inline_notice ) {
+				$this->add_meta_box(
+					'inline-retry-bulk-smush-notice',
+					null,
+					array( $this, 'inline_retry_bulk_smush_notice_box' ),
+					null,
+					null,
+					'main',
+					array(
+						'box_class'         => 'sui-box wp-smush-inline-retry-bulk-smush-notice-box',
+						'box_content_class' => false,
+					)
+				);
+			}
 		}
 		parent::register_meta_boxes();
 
@@ -654,5 +676,10 @@ class Bulk extends Abstract_Summary_Page implements Interface_Page {
 			array(),
 			'common'
 		);
+	}
+
+
+	public function inline_retry_bulk_smush_notice_box() {
+		$this->view( 'bulk/inline-retry-bulk-smush-notice' );
 	}
 }

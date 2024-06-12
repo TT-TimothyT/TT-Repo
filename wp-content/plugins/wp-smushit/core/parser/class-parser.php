@@ -44,7 +44,7 @@ class Parser {
 	 * @return Image_URL[]
 	 */
 	public function get_image_urls( $markup, $base_url ) {
-		$pattern = '@(?<src>(?:(?:https?:\/)?\/(?:\.{1,2}\/)+)?[^\'",\s\(\)]+\.(?<ext>jpe?g|png|gif|webp|svg))\b@is';
+		$pattern = '@(?<src>(?:https?:/|\.+)?/[^\'",\s\(\)]+\.(?<ext>jpe?g|png|gif|webp|svg))\b@is';
 		$pattern = apply_filters( 'wp_smush_image_urls_regex', $pattern );
 		if ( ! preg_match_all( $pattern, $markup, $matches, PREG_SET_ORDER ) ) {
 			return array();

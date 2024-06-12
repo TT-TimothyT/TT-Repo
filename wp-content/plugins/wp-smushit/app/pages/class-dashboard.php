@@ -14,6 +14,7 @@ use Smush\Core\Array_Utils;
 use Smush\Core\CDN\CDN_Helper;
 use Smush\Core\Settings;
 use Smush\Core\Webp\Webp_Configuration;
+use Smush\Core\Media_Library\Background_Media_Library_Scanner;
 use WP_Smush;
 
 if ( ! defined( 'WPINC' ) ) {
@@ -217,6 +218,7 @@ class Dashboard extends Abstract_Summary_Page implements Interface_Page {
 		$bg_optimization               = WP_Smush::get_instance()->core()->mod->bg_optimization;
 		$background_processing_enabled = $bg_optimization->should_use_background();
 		$background_in_processing      = $background_processing_enabled && $bg_optimization->is_in_processing();
+		$background_scan_status        = Background_Media_Library_Scanner::get_instance()->get_background_process()->get_status();
 
 		$args = array(
 			'total_count'                     => (int) $array_utils->get_array_value( $global_stats, 'count_total' ),
@@ -225,6 +227,8 @@ class Dashboard extends Abstract_Summary_Page implements Interface_Page {
 			'background_processing_enabled'   => $background_processing_enabled,
 			'background_in_processing'        => $background_in_processing,
 			'background_in_processing_notice' => $bg_optimization->get_in_process_notice(),
+			'bulk_background_process_dead'    => $background_processing_enabled && $bg_optimization->is_dead(),
+			'scan_background_process_dead'    => $background_scan_status->is_dead(),
 		);
 
 		$this->view( 'dashboard/bulk/meta-box', $args );

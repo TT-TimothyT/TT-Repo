@@ -6,6 +6,7 @@ if (!defined('ABSPATH')) exit;
 
 
 use MailPoet\EmailEditor\Engine\Patterns\Patterns;
+use MailPoet\EmailEditor\Engine\Templates\TemplatePreview;
 use MailPoet\EmailEditor\Engine\Templates\Templates;
 use MailPoet\Entities\NewsletterEntity;
 use WP_Post;
@@ -20,16 +21,22 @@ class EmailEditor {
 
   private EmailApiController $emailApiController;
   private Templates $templates;
+  private TemplatePreview $templatePreview;
   private Patterns $patterns;
+  private SettingsController $settingsController;
 
   public function __construct(
     EmailApiController $emailApiController,
     Templates $templates,
-    Patterns $patterns
+    TemplatePreview $templatePreview,
+    Patterns $patterns,
+    SettingsController $settingsController
   ) {
     $this->emailApiController = $emailApiController;
     $this->templates = $templates;
+    $this->templatePreview = $templatePreview;
     $this->patterns = $patterns;
+    $this->settingsController = $settingsController;
   }
 
   public function initialize(): void {
@@ -39,11 +46,19 @@ class EmailEditor {
     $this->registerBlockPatterns();
     $this->registerEmailPostTypes();
     $this->registerEmailPostSendStatus();
-    $this->extendEmailPostApi();
+    $isEditorPage = apply_filters('mailpoet_is_email_editor_page', false);
+    if ($isEditorPage) {
+      $this->extendEmailPostApi();
+      $this->settingsController->init();
+    }
   }
 
   private function registerBlockTemplates(): void {
-    $this->templates->initialize();
+    // Since we cannot currently disable blocks in the editor for specific templates, disable templates when viewing site editor. @see https://github.com/WordPress/gutenberg/issues/41062
+    if (strstr(wp_unslash($_SERVER['REQUEST_URI'] ?? ''), 'site-editor.php') === false) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+      $this->templates->initialize();
+      $this->templatePreview->initialize();
+    }
   }
 
   private function registerBlockPatterns(): void {

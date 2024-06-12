@@ -51,7 +51,7 @@ class Server_Utils {
 			$memory_limit = '128M';
 		}
 
-		if ( ! $memory_limit || - 1 === $memory_limit ) {
+		if ( ! $memory_limit || - 1 === (int) $memory_limit ) {
 			// Unlimited, set to 32GB.
 			$memory_limit = '32000M';
 		}

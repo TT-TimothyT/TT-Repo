@@ -12,7 +12,7 @@ if ( class_exists( 'WPMUDEV_Analytics' ) ) {
  * @method registerAll( array $properties )
  */
 class WPMUDEV_Analytics {
-	const DATA_TRANSIENT = 'wpmudev_analytics_%s_data';
+	const DATA_OPTION_ID = 'wpmudev_analytics_%s_data';
 	const EXCEEDED_EVENT_NAME = 'exceeded_daily_limit';
 
 	private $plugin_slug;
@@ -27,11 +27,16 @@ class WPMUDEV_Analytics {
 	 * @var int
 	 */
 	private $time_window;
+	/**
+	 * @var array
+	 */
+	private $options;
 
-	public function __construct( $plugin_slug, $plugin_name, $event_limit, $project_token ) {
+	public function __construct( $plugin_slug, $plugin_name, $event_limit, $project_token, $options = array() ) {
 		$this->plugin_slug   = $plugin_slug;
 		$this->plugin_name   = $plugin_name;
 		$this->project_token = $project_token;
+		$this->options       = empty( $options ) ? array() : $options;
 
 		$this->time_window = $this->get_constant_value( 'WPMUDEV_ANALYTICS_TIME_WINDOW_SECONDS', HOUR_IN_SECONDS * 24 );
 		$this->event_limit = $this->get_constant_value( 'WPMUDEV_ANALYTICS_EVENT_LIMIT', $event_limit );
@@ -55,9 +60,12 @@ class WPMUDEV_Analytics {
 	}
 
 	private function prepare_mixpanel_instance() {
-		return Mixpanel::getInstance( $this->project_token, array(
-			'error_callback' => array( $this, 'handle_error' ),
-		) );
+		$options = array_merge(
+			$this->options,
+			array( 'error_callback' => array( $this, 'handle_error' ) )
+		);
+
+		return Mixpanel::getInstance( $this->project_token, $options );
 	}
 
 	public function handle_error( $code, $data ) {
@@ -128,19 +136,19 @@ class WPMUDEV_Analytics {
 	/**
 	 * @return string
 	 */
-	private function get_transient_key(): string {
-		return sprintf( self::DATA_TRANSIENT, $this->plugin_slug );
+	private function get_option_key(): string {
+		return sprintf( self::DATA_OPTION_ID, $this->plugin_slug );
 	}
 
 	private function get_data() {
-		return get_transient( $this->get_transient_key() );
+		return get_option( $this->get_option_key() );
 	}
 
 	private function set_data( $data ) {
 		if ( empty( $data ) ) {
-			delete_transient( $this->get_transient_key() );
+			delete_option( $this->get_option_key() );
 		} else {
-			set_transient( $this->get_transient_key(), $data );
+			update_option( $this->get_option_key(), $data );
 		}
 	}
 }

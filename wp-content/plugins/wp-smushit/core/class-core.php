@@ -367,20 +367,6 @@ class Core extends Stats {
 
 		wp_localize_script( $handle, 'wp_smush_msgs', $wp_smush_msgs );
 
-		$product_analytics = WP_Smush::get_instance()->core()->mod->product_analytics;
-		wp_localize_script(
-			$handle,
-			'wp_smush_mixpanel',
-			array(
-				'opt_in'           => Settings::get_instance()->get( 'usage' ),
-				'token'            => $product_analytics->get_token(),
-				'unique_id'        => $product_analytics->get_unique_id(),
-				'super_properties' => $product_analytics->get_super_properties(),
-				'debug'            => defined( 'WP_SMUSH_MIXPANEL_DEBUG' ) && WP_SMUSH_MIXPANEL_DEBUG
-										&& defined( 'WP_SMUSH_VERSION' ) && strpos( WP_SMUSH_VERSION, 'beta' ),
-			)
-		);
-
 		if ( 'toplevel_page_smush' === $current_screen->id ) {
 			$slug = 'dashboard';
 		} else {

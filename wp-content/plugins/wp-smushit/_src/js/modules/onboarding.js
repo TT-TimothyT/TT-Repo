@@ -1,6 +1,6 @@
 /* global WP_Smush */
 /* global ajaxurl */
-import MixPanel from "../mixpanel";
+import tracker from "../utils/tracker";
 
 /**
  * Modals JavaScript code.
@@ -339,7 +339,9 @@ import MixPanel from "../mixpanel";
 				button.classList.remove( 'wp-smush-link-in-progress' );
 
 				const actionName = redirectUrl ? 'cta_clicked' : 'closed';
-				MixPanel.getInstance().trackUpgradeModalDisplayed( actionName );
+				tracker.track( 'update_modal_displayed', {
+					Action: actionName,
+				} );
 
 				if ( 200 === xhr.status ) {
 					if ( redirectUrl ) {

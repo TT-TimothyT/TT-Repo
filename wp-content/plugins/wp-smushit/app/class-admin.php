@@ -153,6 +153,14 @@ class Admin {
 			'nonce' => wp_create_nonce( 'wp-smush-ajax' ),
 		) );
 
+		wp_localize_script(
+			'smush-global',
+			'wp_smush_mixpanel',
+			array(
+				'opt_in' => Settings::get_instance()->get( 'usage' ),
+			)
+		);
+
 		$current_page   = '';
 		$current_screen = '';
 
@@ -229,10 +237,10 @@ class Admin {
 		}
 
 		// Documentation link.
-		$docs_link = 'https://wpmudev.com/docs/wpmu-dev-plugins/smush/';
-		if ( ! WP_Smush::is_pro() ) {
-			$docs_link .= '?utm_source=smush&utm_medium=plugin&utm_campaign=smush_pluginlist_docs';
-		}
+		$docs_link           = Helper::get_utm_link(
+			array( 'utm_campaign' => 'smush_pluginlist_docs' ),
+			'https://wpmudev.com/docs/wpmu-dev-plugins/smush/'
+		);
 		$links['smush_docs'] = '<a href="' . esc_url( $docs_link ) . '" aria-label="' . esc_attr( __( 'View Smush Documentation', 'wp-smushit' ) ) . '" target="_blank">' . esc_html__( 'Docs', 'wp-smushit' ) . '</a>';
 
 		// Dashboard link.
@@ -277,11 +285,13 @@ class Admin {
 			$links[] = '<a href="https://wpmudev.com/get-support/" target="_blank" title="' . esc_attr__( 'Premium Support', 'wp-smushit' ) . '">' . esc_html__( 'Premium Support', 'wp-smushit' ) . '</a>';
 		}
 
-		$roadmap_link = 'https://wpmudev.com/roadmap/';
-		if ( ! WP_Smush::is_pro() ) {
-			$roadmap_link .= '?utm_source=smush&utm_medium=plugin&utm_campaign=smush_pluginlist_roadmap';
-		}
-		$links[] = '<a href="' . esc_url( $roadmap_link ) . '" target="_blank" title="' . esc_attr__( 'Roadmap', 'wp-smushit' ) . '">' . esc_html__( 'Roadmap', 'wp-smushit' ) . '</a>';
+		$roadmap_link = Helper::get_utm_link(
+			array(
+				'utm_campaign' => 'smush_pluginlist_roadmap',
+			),
+			'https://wpmudev.com/roadmap/'
+		);
+		$links[]      = '<a href="' . esc_url( $roadmap_link ) . '" target="_blank" title="' . esc_attr__( 'Roadmap', 'wp-smushit' ) . '">' . esc_html__( 'Roadmap', 'wp-smushit' ) . '</a>';
 
 		return $links;
 	}
@@ -329,7 +339,7 @@ class Admin {
 			}
 
 			if ( ! WP_Smush::is_pro() ) {
-				$this->pages['smush-upgrade'] = new Pages\Upgrade( 'smush-upgrade', __( 'Smush Pro', 'wp-smushit' ), 'smush' );
+				new Pages\Upgrade( 'smush_submenu_upsell', __( 'Upgrade for 80% Off!', 'wp-smushit' ), 'smush', true );
 			}
 		}
 
