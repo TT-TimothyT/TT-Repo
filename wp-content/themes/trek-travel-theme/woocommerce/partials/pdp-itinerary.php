@@ -33,7 +33,7 @@ if ( $pdp_itineraries ) :
                             $navKey = strtolower($navKey);
                             ?>
 
-                            <button class="nav-link <?php if ($yi == 1) echo 'active';?>" id="nav-<?php echo $navKey;?>-tab" data-bs-toggle="tab" data-bs-target="#nav-<?php echo $navKey;?>" type="button" role="tab" aria-controls="nav-<?php echo $navKey;?>" aria-selected="true"><?php the_field( 'year', $itinerary->ID ); ?></button>
+                            <button class="nav-link <?php if ($yi == 1) echo 'active';?>" id="nav-<?php echo $navKey;?>-tab" data-bs-toggle="tab" data-bs-target="#nav-<?php echo $navKey;?>" type="button" role="tab" aria-controls="nav-<?php echo $navKey;?>" aria-selected="true"><?php echo esc_attr( get_field( 'year', $itinerary->ID ) ); ?></button>
                         <?php 
                         endforeach;
                         wp_reset_postdata(); ?>
@@ -68,7 +68,7 @@ if ( $pdp_itineraries ) :
                                 echo do_shortcode($map_shortcode);
                             ?>
                                 <div class="d-md-flex justify-content-between align-items-center">
-                                    <h5 class="fw-semibold pdp-section__title pdp-itinerary__title"><?php the_field( 'year' ); ?> Day-to-Day</h5>
+                                    <h5 class="fw-semibold pdp-section__title pdp-itinerary__title"><?php echo esc_attr( get_field( 'year' ) ); ?> Day-to-Day</h5>
                                     <a href="<?php the_permalink( $itinerary->ID ); ?>" target="_blank" class="btn btn-md btn-outline-dark align-self-start pdp-itinerary__button">View full itinerary</a>
                                 </div>
                                 <div class="accordion" id="accordionFlushExample">

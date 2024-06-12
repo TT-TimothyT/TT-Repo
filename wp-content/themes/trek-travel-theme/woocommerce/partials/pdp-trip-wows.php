@@ -29,9 +29,9 @@
 				<img class="wow-image" src="<?php echo esc_url($image['url']); ?>" alt="<?php echo esc_attr($image['alt']); ?>" />
 			<?php endif; ?>
 
-            <p class="fw-medium fs-sm lh-sm text-muted"><?php the_field('wow_image_description'); ?></p>
-            <p class="fw-bold fs-lg lh-lg"><?php the_field('wow_title'); ?></p>
-            <p class="fw-normal fs-sm lh-sm mb-0"><?php the_field('wow_summary'); ?></p>
+            <p class="fw-medium fs-sm lh-sm text-muted"><?php echo wp_kses_post( get_field( 'wow_image_description' ) ); ?></p>
+            <p class="fw-bold fs-lg lh-lg"><?php echo wp_kses_post( get_field( 'wow_title' ) ); ?></p>
+            <p class="fw-normal fs-sm lh-sm mb-0"><?php echo wp_kses_post( get_field( 'wow_summary' ) ); ?></p>
         </div>
     </div>
 

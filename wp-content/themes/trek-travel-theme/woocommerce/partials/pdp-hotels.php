@@ -35,10 +35,10 @@ if ( $pdp_hotels ) :
 			</div>
 
 			<div class="pdp-hotels__info col-12 col-lg-6">
-				<span class="pdp-hotels__region d-block"><?php the_field( 'city' ); ?>, <?php the_field( 'region' ); ?></span>
+				<span class="pdp-hotels__region d-block"><?php echo wp_kses_post( get_field( 'city' ) ); ?>, <?php the_field( 'region' ); ?></span>
 				<h5 class="pdp-hotels__name"><?php the_title(); ?></h5>
 				<span class="pdp-hotels__level d-block"><?php the_field( 'hotel_level' ); ?> <i class="bi bi-info-circle pdp-hotel-levels"></i></span>
-				<span class="pdp-hotels__available d-block"><?php the_field( 'hotel_note' ); ?></span>
+				<span class="pdp-hotels__available d-block"><?php echo wp_kses_post( get_field( 'hotel_note' ) ); ?></span>
 				<p class="pdp-hotels__text"><?php substr(the_content(), 0, 10); ?>...</p>
 				<?php if ($hotel_url) : ?>
 					<a href="<?php echo $hotel_url; ?>" class="pdp-hotels__link" target="_blank">Learn more</a>

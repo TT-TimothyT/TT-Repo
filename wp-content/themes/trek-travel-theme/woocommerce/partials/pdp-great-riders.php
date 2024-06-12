@@ -15,9 +15,9 @@ if(get_field('gr_image')):
                 </div>
 
                 <div class="col-lg-6 great-rider align-middle">
-                    <p><?php the_field('gr_title'); ?></p>
-                    <h5><?php the_field('gr_subtitle'); ?></h5>
-                    <p class="great-p"><?php the_field('gr_text'); ?></p>
+                    <p><?php echo wp_kses_post( get_field( 'gr_title' ) ); ?></p>
+                    <h5><?php echo wp_kses_post( get_field( 'gr_subtitle' ) ); ?></h5>
+                    <p class="great-p"><?php echo wp_kses_post( get_field( 'gr_text' ) ); ?></p>
                     <?php
                     $link = get_field('gr_url');
                     if (!empty($link)):

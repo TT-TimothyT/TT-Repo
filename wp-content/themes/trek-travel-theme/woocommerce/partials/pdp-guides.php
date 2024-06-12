@@ -17,7 +17,7 @@ if(get_field('guide_image')):
                 <div class="col-lg-6 great-rider align-middle">
                     <p><?php the_field('guide_title'); ?></p>
                     <h5><?php the_field('guide_subtitle'); ?></h5>
-                    <p class="great-p"><?php the_field('guide_text'); ?></p>
+                    <p class="great-p"><?php echo wp_kses_post( get_field('guide_text') ); ?></p>
                     <?php
                     $link = get_field('guide_url');
                     if (!empty($link)):

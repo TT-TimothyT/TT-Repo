@@ -56,7 +56,7 @@ if ( $pdp_itineraries ) :
                             // To get ACF
                             setup_postdata($post); ?>
 
-                            <button class="nav-link <?php if ($yi == 1) echo 'active';?>" id="nav-<?php the_field( 'year' ); ?>-tab" data-bs-toggle="tab" data-bs-target="#nav-<?php the_field( 'year' ); ?>" type="button" role="tab" aria-controls="nav-<?php the_field( 'year' ); ?>" aria-selected="true"><?php the_field( 'year' ); ?> Tours</button>
+                            <button class="nav-link <?php if ($yi == 1) echo 'active';?>" id="nav-<?php echo esc_attr( get_field( 'year' ) ); ?>-tab" data-bs-toggle="tab" data-bs-target="#nav-<?php echo esc_attr( get_field( 'year' ) ); ?>" type="button" role="tab" aria-controls="nav-<?php echo esc_attr( get_field( 'year' ) ); ?>" aria-selected="true"><?php echo esc_attr( get_field( 'year' ) ); ?> Tours</button>
                         <?php 
                         endforeach;
                         wp_reset_postdata(); ?>
@@ -72,11 +72,11 @@ if ( $pdp_itineraries ) :
                         setup_postdata($post);?>
 
                         <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade <?php if($yj == 1) echo 'show active';?>" id="nav-<?php the_field( 'year' ); ?>" role="tabpanel" aria-labelledby="nav-<?php the_field( 'year' ); ?>-tab">
+                            <div class="tab-pane fade <?php if($yj == 1) echo 'show active';?>" id="nav-<?php echo esc_attr( get_field( 'year' ) ); ?>" role="tabpanel" aria-labelledby="nav-<?php echo esc_attr( get_field( 'year' ) ); ?>-tab">
                                 <?php echo do_shortcode( get_field( 'map_shortcode' ) ); ?>  
                                 
                                 <div class="d-md-flex justify-content-between align-items-center">
-                                    <h5 class="fw-semibold pdp-section__title pdp-itinerary__title"><?php the_field( 'year' ); ?> Day-to-Day</h5>
+                                    <h5 class="fw-semibold pdp-section__title pdp-itinerary__title"><?php echo esc_attr( get_field( 'year' ) ); ?> Day-to-Day</h5>
                                     <div class="accordion-actions d-flex gap-4 my-4">
                                         <a href="javascript:void(0)" class="fw-normal fs-md lh-md expand-all">Expand All</a> |
                                         <a href="javascript:void(0)" class="fw-normal fs-md lh-md collapse-all">Collapse All</a>
