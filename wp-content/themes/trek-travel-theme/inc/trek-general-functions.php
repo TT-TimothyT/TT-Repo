@@ -7506,3 +7506,42 @@ function tt_woocommerce_coupon_validate_minimum_amount( $is_valid, $coupon, $car
     return $is_valid;
 }
 add_filter( 'woocommerce_coupon_validate_minimum_amount', 'tt_woocommerce_coupon_validate_minimum_amount', 10, 3 );
+
+/**
+ * Catch algolia post updated and log info in to a file using WC Logger.
+ *
+ * @param WP_Post $post    Updated post for indexing.
+ * @param array   $records Algolia records associated with this post.
+ *
+ * @uses WC Logger
+ *
+ * @return void
+ */
+function tt_algolia_searchable_posts_index_post_updated( $post, $records ) {
+    
+    try {
+
+        $post_short_info = array(
+            'ID'                     => $post->ID,
+            'post_title'             => $post->post_title,
+            'post_type'              => $post->post_type,
+            'post_status'            => $post->post_status,
+            'is_private_custom_trip' => get_field( 'is_private_custom_trip', $post->id ) // Check whether the product is marked as a Private/Custom trip.
+        );
+
+        $current_user    = wp_get_current_user();
+
+        $user_short_info = array(
+            'ID'           => $current_user->ID,
+            'display_name' => $current_user->display_name,
+            'roles'        => json_encode( $current_user->roles )
+        );
+
+        wc_get_logger()->debug( 'Algolia post updated >>> Post Short Info::' . json_encode( $post_short_info ) . '; User Short Info::' . json_encode( $user_short_info ), array( 'source' => 'ALGOLIA DEBUG LOGS', 'backtrace' => true, 'arguments' => array( 'post' => $post, 'records' => $records ) ) );
+
+    } catch ( Error $err ) {
+        // Log the error.
+        error_log( $err->getMessage() ); // phpcs:ignore -- Legacy.
+    }
+}
+add_action( 'algolia_searchable_posts_index_post_updated', 'tt_algolia_searchable_posts_index_post_updated', 10, 2 );
