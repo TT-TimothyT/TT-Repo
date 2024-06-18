@@ -11,7 +11,7 @@ if(!empty($testimonial_details)):
             <div class="col-12">
                 <h5 class="fw-semibold pdp-section__title">What Guests are Saying</h5>
 
-                <div class="pdp_slider">
+                <div class="pdp_testimonial-slider">
                         <?php foreach($testimonial_details as $item): ?>
                         <div class="card">
                             <img src="<?php echo $item['testimonial_image']['url']?>" class="card-img-top" alt="<?php echo $item['testimonial_image']['alt']?>">

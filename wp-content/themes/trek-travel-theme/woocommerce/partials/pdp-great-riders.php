@@ -7,7 +7,7 @@ if(get_field('gr_image')):
         <div class="col-md-12">
             <div class="row great-riders">
 
-                <div class="col-lg-6 great-rider-img">
+                <div class="col-12 col-lg-9 great-rider-img">
                     <?php
                         $gr_image = get_field('gr_image');
                     ?>

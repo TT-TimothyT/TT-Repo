@@ -522,7 +522,7 @@ jQuery(document).ready(function () {
     tripCapacityValidation(false);
   });
 
-  jQuery('.pdp_slider').slick({
+  jQuery('.pdp_testimonial-slider').slick({
     dots: false,
     infinite: true,
     speed: 300,
@@ -531,7 +531,16 @@ jQuery(document).ready(function () {
     autoplay: false,
     responsive: [
       {
-        breakpoint: 992,
+        breakpoint: 1600,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          dots: true,
+          arrows: false,
+        }
+      },
+      {
+        breakpoint: 1300,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
@@ -540,7 +549,7 @@ jQuery(document).ready(function () {
         }
       },
       {
-        breakpoint: 480,
+        breakpoint: 550,
         settings: {
           dots: true,
           arrows: false,

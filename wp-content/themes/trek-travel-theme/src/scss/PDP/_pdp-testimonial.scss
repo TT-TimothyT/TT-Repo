@@ -64,11 +64,11 @@
             }
         }
         .card-img-top {
-            height: 266px;
+            height: 300px;
             object-fit: cover;
             object-position: top center;
-            @include media-breakpoint-down(lg) {
-                height: 200px;
+            @include media-breakpoint-down(sm) {
+                height: 350px;
             }
         }
     }

@@ -10,9 +10,10 @@
     .great-riders {
         position: relative;
         .great-rider-img{
+            // width: 100%;
             @include media-breakpoint-up(md) {
-                width: 630px;
-                height: 473px;
+            //     width: 630px;
+                min-height: 500px;
             }
             @include media-breakpoint-down(lg) {
                 padding-left: unset;
@@ -50,18 +51,33 @@
                 width: 48%;
                 padding: 20px;
             }
-            @include media-breakpoint-up(md) {
+            @include media-breakpoint-up(lg) {
                 z-index: 100;
                 top: 50%;
                 transform: translateY(-50%);
                 position: absolute;
-                left: 50%;
+                right: 0;
             }
-            @include media-breakpoint-down(md) {
-                margin: -53px 20px;
+            @include media-breakpoint-down(lg) {
+                margin: auto;
                 width: 90%;
                 height: auto;
                 padding: 32px 24px;
+                margin-top: -35%;
+            }
+            @include media-breakpoint-down(md) {
+                margin: auto;
+                width: 90%;
+                height: auto;
+                padding: 32px 24px;
+                margin-top: -20%;
+            }
+            @include media-breakpoint-down(sm) {
+                margin: auto;
+                width: 90%;
+                height: auto;
+                padding: 32px 24px;
+                margin-top: -15%;
             }
             p{
                 font-family: 'Roboto';
