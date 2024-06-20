@@ -907,3 +907,59 @@ function get_password_changed_email_content($user) {
     return ob_get_clean();
 }
 
+
+// GF Country Values at Country Code
+
+add_filter( 'gform_countries', function () {
+    $countries = GF_Fields::get( 'address' )->get_default_countries();
+    asort( $countries );
+ 
+    return $countries;
+} );
+
+// Add Linked Parent Product Column to Products
+
+// Add custom column to product list
+add_filter('manage_edit-product_columns', 'add_parent_product_column', 15);
+function add_parent_product_column($columns) {
+    $columns['parent_product'] = __('Parent Product', 'woocommerce');
+    return $columns;
+}
+
+// Populate the custom column
+add_action('manage_product_posts_custom_column', 'add_parent_product_column_content', 10, 2);
+function add_parent_product_column_content($column, $post_id) {
+    if ($column == 'parent_product') {
+        $parent_ids = get_parent_products($post_id);
+        if (!empty($parent_ids)) {
+            foreach ($parent_ids as $parent_id) {
+                $parent_title = get_the_title($parent_id);
+                echo '<a href="' . get_edit_post_link($parent_id) . '">' . $parent_title . '</a><br>';
+            }
+        } else {
+            echo __('None', 'woocommerce');
+        }
+    }
+}
+
+// Retrieve parent products for a simple product
+function get_parent_products($product_id) {
+    global $wpdb;
+    $parent_ids = [];
+
+    // Query to find grouped products that include the current product
+    $results = $wpdb->get_results($wpdb->prepare("
+        SELECT p.ID 
+        FROM $wpdb->posts p
+        INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id
+        WHERE p.post_type = 'product'
+        AND pm.meta_key = '_children'
+        AND pm.meta_value LIKE %s
+    ", '%' . $wpdb->esc_like($product_id) . '%'));
+
+    foreach ($results as $result) {
+        $parent_ids[] = $result->ID;
+    }
+
+    return $parent_ids;
+}
