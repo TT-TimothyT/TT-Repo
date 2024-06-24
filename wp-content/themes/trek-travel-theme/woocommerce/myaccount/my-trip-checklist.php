@@ -368,7 +368,28 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 	<div class="row mx-0">
 		<div class="col-lg-10">
 			<h4 class="fw-semibold">Additional Trip Information</h4>
-			<p class="fw-normal fs-lg lh-lg">Please confirm the following items below 14 days before your trip start date.</p>
+			<?php if( $lockedUserRecord ) : ?>
+				<p class="fw-normal fs-lg lh-lg">
+					<?php
+						printf(
+							wp_kses(
+								/* translators: %1$s: Phone number; */
+								__( 'Your trip is starting soon! We&apos;ve locked your checklist and are sending your guides the details. Call us to make any changes ahead of your trip <a href="%1$s">tel:8664648735</a>', 'trek-travel-theme' ),
+								array(
+									'a' => array(
+										'class'  => array(),
+										'href'   => array(),
+										'target' => array()
+									)
+								)
+							),
+							esc_url( 'tel:8664648735' ),
+						);
+						?>
+				</p>
+			<?php else: ?>
+				<p class="fw-normal fs-lg lh-lg">Please confirm the following items below 14 days before your trip start date.</p>
+			<?php endif; ?>
 		</div>
 	</div><!-- row ends -->
 

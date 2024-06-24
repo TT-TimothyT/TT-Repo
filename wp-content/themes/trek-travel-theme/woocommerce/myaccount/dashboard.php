@@ -240,8 +240,9 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 
 								$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-2">'.$date_range.'</p>';
 
+								$lockedUserRecord = tt_is_registration_locked( $userInfo->ID, $order_details[0]['guestRegistrationId'], 'record' );
 								// Check if $order_details is not empty before adding the error message
-								if ( ! empty( $order_details ) && ! $is_checklist_completed ) { 
+								if ( ! empty( $order_details ) && ! $is_checklist_completed && 1 != $lockedUserRecord ) { 
 									$trips_html .= '<p class="dashboard__error"><img src="'.TREK_DIR.'/assets/images/error.png"> You have pending items</p>';
 								}
 
