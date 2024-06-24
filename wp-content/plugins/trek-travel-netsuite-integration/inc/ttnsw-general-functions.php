@@ -796,14 +796,10 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
     // Here we have two options. Some of the secondary guest is registered first or the primary guest is registered first.
     if( $ns_guest_info->isPrimary ) {
         // Primary guest registers first.
-        $guest_index_id = 0;
-        $order_guest_index = $guest_index_id;
+        $guest_index_id              = 0;
+        $order_guest_index           = $guest_index_id;
 
         $order_bike_gears['primary'] = $guest_bike_gears;
-
-        $address_full                = explode( ' ', tt_validate( $ns_guest_booking_result->addressInfo->address ), 2 );
-        $address_line_1              = $address_full[0];
-        $address_line_2              = ! empty( $address_full[1] ) ? $address_full[1] : '';
 
         $order_rf_id                 = '';
 
@@ -813,17 +809,40 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
             }
         }
 
+        // Compatibility solution for the old version of the NS Script 1305.
+        if( ! isset( $ns_guest_booking_result->addressInfo->shipping ) || ! isset( $ns_guest_booking_result->addressInfo->billing ) ) {
+            $address_full   = explode( ' ', tt_validate( $ns_guest_booking_result->addressInfo->address ), 2 );
+            $address_line_1 = $address_full[0];
+            $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
+        }
+
         $order_meta_primary = array(
             'first_name'  => tt_validate( $ns_guest_booking_result->firstname ),
             'last_name'   => tt_validate( $ns_guest_booking_result->lastname ),
             'email'       => tt_validate( $ns_guest_booking_result->email ),
             'phone'       => tt_validate( $ns_guest_booking_result->phone ),
-            'address_1'   => $address_line_1,
-            'address_2'   => $address_line_2, 
-            'city'        => tt_validate( $ns_guest_booking_result->addressInfo->city ),
-            'state'       => tt_validate( $ns_guest_booking_result->addressInfo->state ),
-            'postcode'    => tt_validate( $ns_guest_booking_result->addressInfo->zip ),
-            'country'     => tt_validate( $ns_guest_booking_result->addressInfo->country ),
+            'address_info' => array(
+                'shipping' => array(
+                    'first_name' => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->firstname ) : tt_validate( $ns_guest_booking_result->firstname ),
+                    'last_name'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->lastname ) : tt_validate( $ns_guest_booking_result->lastname ),
+                    'address_1'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->address_1 ) : $address_line_1,
+                    'address_2'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->address_2 ) : $address_line_2,
+                    'city'       => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->city ) : tt_validate( $ns_guest_booking_result->addressInfo->city ),
+                    'state'      => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->state ) : tt_validate( $ns_guest_booking_result->addressInfo->state ),
+                    'postcode'   => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->zip ) : tt_validate( $ns_guest_booking_result->addressInfo->zip ),
+                    'country'    => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                ),
+                'billing' => array(
+                    'first_name' => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->firstname ) : tt_validate( $ns_guest_booking_result->firstname ),
+                    'last_name'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->lastname ) : tt_validate( $ns_guest_booking_result->lastname ),
+                    'address_1'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->address_1 ) : $address_line_1,
+                    'address_2'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->address_2 ) : $address_line_2,
+                    'city'       => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->city ) : tt_validate( $ns_guest_booking_result->addressInfo->city ),
+                    'state'      => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->state ) : tt_validate( $ns_guest_booking_result->addressInfo->state ),
+                    'postcode'   => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->zip ) :  tt_validate( $ns_guest_booking_result->addressInfo->zip ),
+                    'country'    => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                )
+            ),
             'dob'         => ! empty( tt_validate( $ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ) : '',
             'gender'      => tt_validate( $ns_guest_booking_result->gender->id ),
             'order_rf_id' => $order_rf_id,
@@ -902,16 +921,12 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
 
         if( $guest->isPrimary ) {
             // Primary guest.
-            $guest_index_id = 0;
-            $order_guest_index = $guest_index_id;
+            $guest_index_id              = 0;
+            $order_guest_index           = $guest_index_id;
 
             $order_bike_gears['primary'] = $_guest_bike_gears;
 
-            $address_full   = explode( ' ', tt_validate( $_ns_guest_booking_result->addressInfo->address ), 2 );
-            $address_line_1 = $address_full[0];
-            $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
-
-            $order_rf_id = '';
+            $order_rf_id                 = '';
 
             foreach( $ns_booking_data->releaseForms as $guest_release_form ) {
                 if( $_ns_guest_id == $guest_release_form->guestId ) {
@@ -919,17 +934,40 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
                 }
             }
 
+            // Compatibility solution for the old version of the NS Script 1305.
+            if( ! isset( $ns_guest_booking_result->addressInfo->shipping ) || ! isset( $ns_guest_booking_result->addressInfo->billing ) ) {
+                $address_full   = explode( ' ', tt_validate( $ns_guest_booking_result->addressInfo->address ), 2 );
+                $address_line_1 = $address_full[0];
+                $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
+            }
+
             $order_meta_primary = array(
                 'first_name'  => tt_validate( $_ns_guest_booking_result->firstname ),
                 'last_name'   => tt_validate( $_ns_guest_booking_result->lastname ),
                 'email'       => tt_validate( $_ns_guest_booking_result->email ),
                 'phone'       => tt_validate( $_ns_guest_booking_result->phone ),
-                'address_1'   => $address_line_1,
-                'address_2'   => $address_line_2, 
-                'city'        => tt_validate( $_ns_guest_booking_result->addressInfo->city ),
-                'state'       => tt_validate( $_ns_guest_booking_result->addressInfo->state ),
-                'postcode'    => tt_validate( $_ns_guest_booking_result->addressInfo->zip ),
-                'country'     => tt_validate( $_ns_guest_booking_result->addressInfo->country ),
+                'address_info' => array(
+                    'shipping' => array(
+                        'first_name' => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->firstname ) : tt_validate( $ns_guest_booking_result->firstname ),
+                        'last_name'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->lastname ) : tt_validate( $ns_guest_booking_result->lastname ),
+                        'address_1'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->address_1 ) : tt_validate( $address_line_1 ),
+                        'address_2'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->address_2 ) : tt_validate( $address_line_2 ),
+                        'city'       => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->city ) : tt_validate( $ns_guest_booking_result->addressInfo->city ),
+                        'state'      => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->state ) : tt_validate( $ns_guest_booking_result->addressInfo->state ),
+                        'postcode'   => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->zip ) : tt_validate( $ns_guest_booking_result->addressInfo->zip ),
+                        'country'    => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                    ),
+                    'billing' => array(
+                        'first_name' => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->firstname ) : tt_validate( $ns_guest_booking_result->firstname ),
+                        'last_name'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->lastname ) : tt_validate( $ns_guest_booking_result->lastname ),
+                        'address_1'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->address_1 ) : tt_validate( $address_line_1 ),
+                        'address_2'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->address_2 ) : tt_validate( $address_line_2 ),
+                        'city'       => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->city ) : tt_validate( $ns_guest_booking_result->addressInfo->city ),
+                        'state'      => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->state ) : tt_validate( $ns_guest_booking_result->addressInfo->state ),
+                        'postcode'   => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->zip ) :  tt_validate( $ns_guest_booking_result->addressInfo->zip ),
+                        'country'    => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                    )
+                ),
                 'dob'         => ! empty( tt_validate( $_ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $_ns_guest_booking_result->birthdate ) ) : '',
                 'gender'      => tt_validate( $_ns_guest_booking_result->gender->id ),
                 'order_rf_id' => $order_rf_id,
@@ -998,17 +1036,17 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
 
     $trek_user_checkout_data = array(
         'no_of_guests'          => count( $ns_booking_data->guests ),
-        'shipping_first_name'   => $order_meta_primary['first_name'],
-        'shipping_last_name'    => $order_meta_primary['last_name'],
+        'shipping_first_name'   => $order_meta_primary['address_info']['shipping']['first_name'],
+        'shipping_last_name'    => $order_meta_primary['address_info']['shipping']['last_name'],
         'shipping_phone'        => $order_meta_primary['phone'],
         'custentity_birthdate'  => $order_meta_primary['dob'],
         'custentity_gender'     => $order_meta_primary['gender'],
-        'shipping_address_1'    => $order_meta_primary['address_1'],
-        'shipping_address_2'    => $order_meta_primary['address_2'],
-        'shipping_country'      => $order_meta_primary['country'],
-        'shipping_state'        => $order_meta_primary['state'],
-        'shipping_city'         => $order_meta_primary['city'],
-        'shipping_postcode'     => $order_meta_primary['postcode'],
+        'shipping_address_1'    => $order_meta_primary['address_info']['shipping']['address_1'],
+        'shipping_address_2'    => $order_meta_primary['address_info']['shipping']['address_2'],
+        'shipping_country'      => $order_meta_primary['address_info']['shipping']['country'],
+        'shipping_state'        => $order_meta_primary['address_info']['shipping']['state'],
+        'shipping_city'         => $order_meta_primary['address_info']['shipping']['city'],
+        'shipping_postcode'     => $order_meta_primary['address_info']['shipping']['postcode'],
         'email'                 => $order_meta_primary['email'],
         'guests'                => $order_guests,
         'bike_gears'            => $order_bike_gears,
@@ -1040,21 +1078,35 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
     }
 
     // Add billing and shipping addresses.
-    $address = array(
-        'first_name' => $order_meta_primary['first_name'],
-        'last_name'  => $order_meta_primary['last_name'],
+    $billing_address = array(
+        'first_name' => $order_meta_primary['address_info']['billing']['first_name'],
+        'last_name'  => $order_meta_primary['address_info']['billing']['last_name'],
         'email'      => $order_meta_primary['email'],
         'phone'      => $order_meta_primary['phone'],
-        'address_1'  => $order_meta_primary['address_1'],
-        'address_2'  => $order_meta_primary['address_2'],
-        'city'       => $order_meta_primary['city'],
-        'state'      => $order_meta_primary['state'],
-        'postcode'   => $order_meta_primary['postcode'],
-        'country'    => $order_meta_primary['country'],
+        'address_1'  => $order_meta_primary['address_info']['billing']['address_1'],
+        'address_2'  => $order_meta_primary['address_info']['billing']['address_2'],
+        'city'       => $order_meta_primary['address_info']['billing']['city'],
+        'state'      => $order_meta_primary['address_info']['billing']['state'],
+        'postcode'   => $order_meta_primary['address_info']['billing']['postcode'],
+        'country'    => $order_meta_primary['address_info']['billing']['country'],
     );
 
-    $order->set_address( $address, 'billing' );
-    $order->set_address( $address, 'shipping' );
+    $order->set_address( $billing_address, 'billing' );
+
+    $shipping_address = array(
+        'first_name' => $order_meta_primary['address_info']['shipping']['first_name'],
+        'last_name'  => $order_meta_primary['address_info']['shipping']['last_name'],
+        'email'      => $order_meta_primary['email'],
+        'phone'      => $order_meta_primary['phone'],
+        'address_1'  => $order_meta_primary['address_info']['shipping']['address_1'],
+        'address_2'  => $order_meta_primary['address_info']['shipping']['address_2'],
+        'city'       => $order_meta_primary['address_info']['shipping']['city'],
+        'state'      => $order_meta_primary['address_info']['shipping']['state'],
+        'postcode'   => $order_meta_primary['address_info']['shipping']['postcode'],
+        'country'    => $order_meta_primary['address_info']['shipping']['country'],
+    );
+
+    $order->set_address( $shipping_address, 'shipping' );
 
     // Take primary guest WP ID.
     $wp_user    = get_user_by( 'email', $order_meta_primary['email'] );
@@ -1138,10 +1190,6 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
     if( 'insert' === $operation_type ) {
         // Additional data that is needed to insert a row into the table.
 
-        $address_full                                   = explode( ' ', tt_validate( $ns_guest_booking_result->addressInfo->address ), 2 );
-        $address_line_1                                 = $address_full[0];
-        $address_line_2                                 = ! empty( $address_full[1] ) ? $address_full[1] : '';
-
         // Collect the insertion booking data.
         $booking_table_data['order_id']                 = $order_info['order_id'];
         $booking_table_data['wantsInsurance']           = tt_validate( $guest->tripInsurancePurchased );
@@ -1152,12 +1200,26 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
         $booking_table_data['guest_date_of_birth']      = ! empty( tt_validate( $ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ) : '';
 
         // Shipping Address.
-        $booking_table_data['shipping_address_1']       = $address_line_1;
-        $booking_table_data['shipping_address_2']       = $address_line_2;
-        $booking_table_data['shipping_address_city']    = tt_validate( $ns_guest_booking_result->addressInfo->city );
-        $booking_table_data['shipping_address_state']   = tt_validate( $ns_guest_booking_result->addressInfo->state );
-        $booking_table_data['shipping_address_country'] = tt_validate( $ns_guest_booking_result->addressInfo->country );
-        $booking_table_data['shipping_address_zipcode'] = tt_validate( $ns_guest_booking_result->addressInfo->zip );
+        if( isset( $ns_guest_booking_result->addressInfo->shipping ) ) {
+            $booking_table_data['shipping_address_1']       = tt_validate( $ns_guest_booking_result->addressInfo->shipping->address_1 );
+            $booking_table_data['shipping_address_2']       = tt_validate( $ns_guest_booking_result->addressInfo->shipping->address_2 );
+            $booking_table_data['shipping_address_city']    = tt_validate( $ns_guest_booking_result->addressInfo->shipping->city );
+            $booking_table_data['shipping_address_state']   = tt_validate( $ns_guest_booking_result->addressInfo->shipping->state );
+            $booking_table_data['shipping_address_country'] = tt_validate( $ns_guest_booking_result->addressInfo->shipping->country );
+            $booking_table_data['shipping_address_zipcode'] = tt_validate( $ns_guest_booking_result->addressInfo->shipping->zip );
+        } else {
+            // Compatibility solution for the old version of the NS Script 1305.
+            $address_full                                   = explode( ' ', tt_validate( $ns_guest_booking_result->addressInfo->address ), 2 );
+            $address_line_1                                 = $address_full[0];
+            $address_line_2                                 = ! empty( $address_full[1] ) ? $address_full[1] : '';
+
+            $booking_table_data['shipping_address_1']       = $address_line_1;
+            $booking_table_data['shipping_address_2']       = $address_line_2;
+            $booking_table_data['shipping_address_city']    = tt_validate( $ns_guest_booking_result->addressInfo->city );
+            $booking_table_data['shipping_address_state']   = tt_validate( $ns_guest_booking_result->addressInfo->state );
+            $booking_table_data['shipping_address_country'] = tt_validate( $ns_guest_booking_result->addressInfo->country );
+            $booking_table_data['shipping_address_zipcode'] = tt_validate( $ns_guest_booking_result->addressInfo->zip );
+        }
 
         // Set rider level from Guest. TODO: add check based on bike ID, because Guest data may change for any booking if there more than one.
         $booking_table_data['rider_level']              = tt_validate( $ns_guest_booking_result->riderType->id );
@@ -1274,11 +1336,6 @@ function tt_sync_guest_preferences( $user_id = 0, $guest_data = [] ) {
         return;
     }
 
-    // Not the best solution :-(
-    $address_full   = explode( ' ', tt_validate( $guest_data->addressInfo->address ), 2 );
-    $address_line_1 = $address_full[0];
-    $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
-
     // Take NS Guest Preferences.
     $ns_guest_preferences = array(
         // Collect Personal Information.
@@ -1326,38 +1383,68 @@ function tt_sync_guest_preferences( $user_id = 0, $guest_data = [] ) {
         'gear_preferences_bar_height'             => tt_validate( $guest_data->barReachFromSaddle ),
         'gear_preferences_bar_reach'              => tt_validate( $guest_data->barHeightFromWheel ),
 
-        // Collect Billing Address Preferences.
-        'billing_first_name'                      => tt_validate( $guest_data->firstname ),
-        'billing_last_name'                       => tt_validate( $guest_data->lastname ),
-        // About address from NS billing_address_1 ['World Way'] and billing_address_2 ['1'] comming as one field $guest_data->addressInfo->address ['World Way 1'].
-        'billing_address_1'                       => $address_line_1,
-        'billing_address_2'                       => $address_line_2,
-        'billing_city'                            => tt_validate( $guest_data->addressInfo->city ),
-        'billing_state'                           => tt_validate( $guest_data->addressInfo->state ),
-        'billing_postcode'                        => tt_validate( $guest_data->addressInfo->zip ),
-        'billing_country'                         => tt_validate( $guest_data->addressInfo->country ),
-
-        // Collect Shipping Address Preferences.
-        'shipping_first_name'                     => tt_validate( $guest_data->firstname ),
-        'shipping_last_name'                      => tt_validate( $guest_data->lastname ),
-        // About address from NS shipping_address_1 ['World Way'] and shipping_address_2 ['1'] comming as one field $guest_data->addressInfo->address ['World Way 1'].
-        'shipping_address_1'                      => $address_line_1,
-        'shipping_address_2'                      => $address_line_2,
-        'shipping_city'                           => tt_validate( $guest_data->addressInfo->city ),
-        'shipping_state'                          => tt_validate( $guest_data->addressInfo->state ),
-        'shipping_postcode'                       => tt_validate( $guest_data->addressInfo->zip ),
-        'shipping_country'                        => tt_validate( $guest_data->addressInfo->country ),
-
         // Collect Passport Preferences.
         'custentity_passport_number'              => tt_validate( $guest_data->passportNumber ),
         'custentity_passport_exp_date'            => ! empty( tt_validate( $guest_data->passportExpirationDate ) ) ? date( 'm/d/Y', strtotime( $guest_data->passportExpirationDate ) ) : '', // Convert date from format Y-m-d ( NS Format ) to format m/d/Y ( Meta Value Format ).
     );
 
+    // Collect Billing Address Preferences.
+    if( isset( $guest_data->addressInfo->billing ) ) {
+        $ns_guest_preferences['billing_first_name'] = tt_validate( $guest_data->addressInfo->billing->firstname );
+        $ns_guest_preferences['billing_last_name']  = tt_validate( $guest_data->addressInfo->billing->lastname );
+        $ns_guest_preferences['billing_address_1']  = tt_validate( $guest_data->addressInfo->billing->address_1 );
+        $ns_guest_preferences['billing_address_2']  = tt_validate( $guest_data->addressInfo->billing->address_2 );
+        $ns_guest_preferences['billing_city']       = tt_validate( $guest_data->addressInfo->billing->city );
+        $ns_guest_preferences['billing_state']      = tt_validate( $guest_data->addressInfo->billing->state );
+        $ns_guest_preferences['billing_postcode']   = tt_validate( $guest_data->addressInfo->billing->zip );
+        $ns_guest_preferences['billing_country']    = tt_validate( $guest_data->addressInfo->billing->country );
+    } else {
+        // Compatibility solution for the old version of the NS Script 1305.
+        $address_full   = explode( ' ', tt_validate( $guest_data->addressInfo->address ), 2 );
+        $address_line_1 = $address_full[0];
+        $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
+
+        // About address from NS billing_address_1 ['World Way'] and billing_address_2 ['1'] comming as one field $guest_data->addressInfo->address ['World Way 1'].
+        $ns_guest_preferences['billing_first_name'] = tt_validate( $guest_data->firstname );
+        $ns_guest_preferences['billing_last_name']  = tt_validate( $guest_data->lastname );
+        $ns_guest_preferences['billing_address_1']  = $address_line_1;
+        $ns_guest_preferences['billing_address_2']  = $address_line_2;
+        $ns_guest_preferences['billing_city']       = tt_validate( $guest_data->addressInfo->city );
+        $ns_guest_preferences['billing_state']      = tt_validate( $guest_data->addressInfo->state );
+        $ns_guest_preferences['billing_postcode']   = tt_validate( $guest_data->addressInfo->zip );
+        $ns_guest_preferences['billing_country']    = tt_validate( $guest_data->addressInfo->country );
+    }
+
+    // Collect Shipping Address Preferences.
+    if( isset( $guest_data->addressInfo->shipping ) ) {
+        $ns_guest_preferences['shipping_first_name'] = tt_validate( $guest_data->addressInfo->shipping->firstname );
+        $ns_guest_preferences['shipping_last_name']  = tt_validate( $guest_data->addressInfo->shipping->lastname );
+        $ns_guest_preferences['shipping_address_1']  = tt_validate( $guest_data->addressInfo->shipping->address_1 );
+        $ns_guest_preferences['shipping_address_2']  = tt_validate( $guest_data->addressInfo->shipping->address_2 );
+        $ns_guest_preferences['shipping_city']       = tt_validate( $guest_data->addressInfo->shipping->city );
+        $ns_guest_preferences['shipping_state']      = tt_validate( $guest_data->addressInfo->shipping->state );
+        $ns_guest_preferences['shipping_postcode']   = tt_validate( $guest_data->addressInfo->shipping->zip );
+        $ns_guest_preferences['shipping_country']    = tt_validate( $guest_data->addressInfo->shipping->country );
+    } else {
+        // Compatibility solution for the old version of the NS Script 1305.
+        $address_full   = explode( ' ', tt_validate( $guest_data->addressInfo->address ), 2 );
+        $address_line_1 = $address_full[0];
+        $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
+
+        // About address from NS shipping_address_1 ['World Way'] and shipping_address_2 ['1'] comming as one field $guest_data->addressInfo->address ['World Way 1'].
+        $ns_guest_preferences['shipping_first_name'] = tt_validate( $guest_data->firstname );
+        $ns_guest_preferences['shipping_last_name']  = tt_validate( $guest_data->lastname );
+        $ns_guest_preferences['shipping_address_1']  = $address_line_1;
+        $ns_guest_preferences['shipping_address_2']  = $address_line_2;
+        $ns_guest_preferences['shipping_city']       = tt_validate( $guest_data->addressInfo->city );
+        $ns_guest_preferences['shipping_state']      = tt_validate( $guest_data->addressInfo->state );
+        $ns_guest_preferences['shipping_postcode']   = tt_validate( $guest_data->addressInfo->zip );
+        $ns_guest_preferences['shipping_country']    = tt_validate( $guest_data->addressInfo->country );
+    }
+
     foreach( $ns_guest_preferences as $key => $value ) {
-        if( ! empty( $value ) ) {
-            // Update user meta for this key.
-            update_user_meta( $user_id, $key, $value );
-        }
+        // Update user meta for this key.
+        update_user_meta( $user_id, $key, $value );
     }
 
     tt_add_error_log( 'NS<>WC - Sync guest preferences', array( 'customer_id' => $user_id, 'ns_guest_preferences' => $ns_guest_preferences ), array( 'status' => true, 'message' => 'Update the user metadata with info for the guest preferences from NS.' ) );
