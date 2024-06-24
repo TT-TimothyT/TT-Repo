@@ -211,7 +211,7 @@ $parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_tri
 							<div class="modal-body__footer d-lg-flex align-items-center">
 								<button type="submit" class="btn btn-primary submit_protection" data-bs-dismiss="modal">Submit</button>
 								<div>
-									<span type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Cancel</span>
+									<span type="button" class="btn-close cancel-submit-protection" data-tp-dismiss="true" data-bs-dismiss="modal" aria-label="Close">Cancel</span>
 								</div>
 							</div>
 							<!-- </form> -->

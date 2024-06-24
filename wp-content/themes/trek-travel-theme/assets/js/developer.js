@@ -684,11 +684,6 @@ jQuery('.billing_checkbox').on('change', function (e) {
     jQuery('.billing_row').removeClass('d-none');
   }
 });
-jQuery('.submit_protection').on('click', function () {
-  jQuery('.checkout-payment__add-travel').addClass('d-none');
-  jQuery('.checkout-payment__added-travel').removeClass('d-none');
-  
-});
 jQuery('.checkout-payment__newcard').on('click', function (e) {
   if (jQuery('.checkout-payment__card-details').hasClass('active')) {
     jQuery('.checkout-payment__card-details').removeClass('active');
@@ -1540,7 +1535,58 @@ jQuery('select[id="shipping_country"]').change(function () {
   jQuery('body').trigger('update_checkout');
 });
 
-jQuery('body').on('click', '.submit_protection', function () {
+/**
+ * This is a helper for Travel protection modal,
+ * that store initial information about the state
+ * and provide "undo changes" functionality.
+ */
+let travelProtectionModalHelper = {
+  infoCtr: document.querySelector('#protection_modal'),
+  initialState: {},
+  stored: false,
+  storeInfo: function() {
+    // Section not found.
+    if( null === this.infoCtr ){
+      return;
+    }
+
+    // Do not overwrite the saved Initial information.
+    if( this.stored ) {
+      return
+    }
+
+    // Catch fields.
+    let isTravelProtectionInputs = this.infoCtr.querySelectorAll('input[name*=is_travel_protection]');
+
+    isTravelProtectionInputs.forEach(radio => {
+      if( radio.checked ) {
+        // Keep checked radio buttons.
+        this.initialState[radio.name] = radio.value;
+      }
+    });
+    
+    // Initial info stored successfully.
+    this.stored = true;
+  },
+  undoChanges: function() {
+    // Restore the radio buttons state.
+    for ( const key in this.initialState ) {
+      this.infoCtr.querySelector(`[name="${key}"][value="${this.initialState[key]}"]`).click();
+    }
+  },
+  confirmChanges: function() {
+    this.stored = false;
+    // Store new confirmed state.
+    this.storeInfo();
+  }
+}
+
+/**
+ * Get quote travel protection action.
+ *
+ * @returns void
+ */
+function get_quote_travel_protection() {
   var formData = jQuery('form.checkout.woocommerce-checkout').serialize();
   var action = 'get_quote_travel_protection_action';
   jQuery.ajax({
@@ -1583,13 +1629,40 @@ jQuery('body').on('click', '.submit_protection', function () {
       if (jQuery('.checkout-payment__options').length > 0 && response.payment_option) {
         jQuery('.checkout-payment__options').html(response.payment_option);
       }
+      // Prevent script-stop execution issues.
+      try {
+        // Store new state of Travel protection modal choices.
+        travelProtectionModalHelper.confirmChanges();
+      } catch (error) {
+        console.log(error);
+      }
     },
     complete: function(){
       jQuery("#currency_switcher").trigger("change");
     }
   });
   return false;
-})
+}
+// Submit the travel protection, regardless of using the submit or close button, and also when the modal closes with outside clicking.
+jQuery('body').on('click', '.submit_protection, #protection_modal .btn-close:not(.cancel-submit-protection)', get_quote_travel_protection);
+let isTPCancelBtnClicked = false;
+jQuery('body').on('hidden.bs.modal', '#protection_modal', function(ev) {
+  if( ! isTPCancelBtnClicked ) {
+    // If not clicked the cancel button apply the changes.
+    get_quote_travel_protection();
+  }
+  isTPCancelBtnClicked = false;
+});
+// Store the initial opening travel protection pop-up sate.
+jQuery('body').on('shown.bs.modal', '#protection_modal', function (ev) {
+  travelProtectionModalHelper.storeInfo();
+});
+// Restore the travel protection popup state.
+jQuery('body').on('click', '#protection_modal .btn-close.cancel-submit-protection', function(ev) {
+  // Cancel button is clicked.
+  isTPCancelBtnClicked = true;
+  travelProtectionModalHelper.undoChanges();
+});
 
 // Data Layer functions
 
