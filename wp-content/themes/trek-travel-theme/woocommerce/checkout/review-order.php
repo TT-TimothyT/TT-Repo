@@ -22,9 +22,14 @@ $future_payment          = "null";
 $promo                   = null;
 $trek_user_checkout_data = get_trek_user_checkout_data();
 $tt_posted               = $trek_user_checkout_data['posted'];
-$tt_coupan_code          = ( isset( $tt_posted['coupon_code'] ) && $tt_posted['coupon_code'] ? $tt_posted['coupon_code'] : '' );
+$tt_coupon_code          = ( isset( $tt_posted['coupon_code'] ) && $tt_posted['coupon_code'] ? $tt_posted['coupon_code'] : '' );
+// Check if the cart contains an already applied coupon and fix the missing coupon code.
+if( WC()->cart->applied_coupons && isset( $tt_coupon_code ) && empty( $tt_coupon_code ) ) {
+    $applied_coupons = WC()->cart->applied_coupons;
+    $tt_coupon_code = $applied_coupons[0];
+}
 $applied_coupon          = false;
-if ( ! empty( $tt_coupan_code ) && tt_is_coupon_applied( $tt_coupan_code ) ) {
+if ( ! empty( $tt_coupon_code ) && tt_is_coupon_applied( $tt_coupon_code ) ) {
     $applied_coupon = true;
 }
 $product_id     = isset( $tt_posted['product_id'] ) ? $tt_posted['product_id'] : '';
@@ -114,9 +119,9 @@ $tt_terms                = isset( $tt_posted['tt_terms'] ) ? $tt_posted['tt_term
             <span class="promo">Promo Code</span>
             <div class="mt-5 d-flex justify-content-between align-items-start promo-form checkout-summary__promo <?php echo ( $applied_coupon ? 'd-none' : 'd-flex' ); ?>">
                 <div class="form-group form-floating mb-0 w-75">
-                    <input type="text" class="input-text form-control rounded-1 promo-input coupon-code-input" name="coupon_code" placeholder="Enter promo code" value="<?php echo $tt_coupan_code; ?>" required>
+                    <input type="text" class="input-text form-control rounded-1 promo-input coupon-code-input" name="coupon_code" placeholder="Enter promo code" value="<?php echo $tt_coupon_code; ?>" required>
                     <label>Enter promo code</label>
-                    <div class="invalid-feedback invalid-code" <?php echo ( true !== $applied_coupon && ! empty( $tt_coupan_code ) ? 'style="display: block"' : 'style="display: none"' ) ?>>
+                    <div class="invalid-feedback invalid-code" <?php echo ( true !== $applied_coupon && ! empty( $tt_coupon_code ) ? 'style="display: block"' : 'style="display: none"' ) ?>>
                         <img class="invalid-icon" />
                         This code is no longer valid.
                     </div>
@@ -124,7 +129,7 @@ $tt_terms                = isset( $tt_posted['tt_terms'] ) ? $tt_posted['tt_term
                 <button type="button" id="promo-checkout" class="btn btn-primary rounded-1 checkout-summary__submit tt_apply_coupan promo-code-submit" data-action="add" name="Submit" value="Submit">Submit</button>
             </div>
             <div class="checkout-summary__applied d-flex mt-4 <?php echo ( $applied_coupon ? 'd-flex' : 'd-none' ); ?>">
-                <p class="fs-md lh-md mb-0">Promo <span class="fw-bold" id="tt-applied-code"><?php echo $tt_coupan_code; ?></span> Applied</p>
+                <p class="fs-md lh-md mb-0">Promo <span class="fw-bold" id="tt-applied-code"><?php echo $tt_coupon_code; ?></span> Applied</p>
                 <a href="javascript:" class="tt_remove_coupan" data-action="remove">Remove</a>
             </div>
         </div>

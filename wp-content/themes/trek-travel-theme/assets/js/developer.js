@@ -1688,7 +1688,7 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
       url: trek_JS_obj.ajaxURL,
       data: dataString,
       dataType: 'json',
-      success: function (response) {
+      beforeSend: function () {
         jQuery.blockUI({
           css: {
             border: 'none',
@@ -1700,6 +1700,8 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
             color: '#fff'
           }
         });
+      },
+      success: function (response) {
         var step = jQuery(".tab-pane.active.show").attr('data-step');
         if (dataString.type == 'add' && response.is_applied == true && response.status == true) {
           jQuery('div.promo-form').addClass('d-none');

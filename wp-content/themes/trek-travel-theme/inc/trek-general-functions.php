@@ -416,6 +416,11 @@ function save_checkout_steps_action_cb()
                     $_REQUEST['occupants'] = [];
                 }
             }
+            // Check if the cart contains an already applied coupon and fix the missing coupon code.
+            if( WC()->cart->applied_coupons && isset( $_REQUEST['coupon_code'] ) && empty( $_REQUEST['coupon_code'] ) ) {
+                $applied_coupons = WC()->cart->applied_coupons;
+                $_REQUEST['coupon_code'] = $applied_coupons[0];
+            }
             $cart_item['trek_user_checkout_data'] = $_REQUEST;
             //Trip Parent ID
             $parent_product_id = tt_get_parent_trip_id_by_child_sku($_product->get_sku());
@@ -5025,6 +5030,11 @@ function tt_generate_save_insurance_quote_cb()
     //Preparing insurance HTML
     $tt_checkoutData = get_trek_user_checkout_data();
     $tt_posted       = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
+    // Check if the cart contains an already applied coupon and fix the missing coupon code.
+    if( WC()->cart->applied_coupons && isset( $tt_posted['coupon_code'] ) && empty( $tt_posted['coupon_code'] ) ) {
+        $applied_coupons = WC()->cart->applied_coupons;
+        $tt_posted['coupon_code'] = $applied_coupons[0];
+    }
     $coupon_code     = strtolower( $tt_posted['coupon_code'] );
     $coupon          = new WC_Coupon( $coupon_code );
     $product_id      = null;
@@ -5973,6 +5983,11 @@ function update_cart_subtotal( $cart_total, $cart ) {
     $trek_user_checkout_data = get_trek_user_checkout_data();
     $tt_posted               = $trek_user_checkout_data['posted'];
     $tt_coupon_code          = ( isset( $tt_posted['coupon_code'] ) && $tt_posted['coupon_code'] ? $tt_posted['coupon_code'] : '' );
+    // Check if the cart contains an already applied coupon and fix the missing coupon code.
+    if( WC()->cart->applied_coupons && isset( $tt_coupon_code ) && empty( $tt_coupon_code ) ) {
+        $applied_coupons = WC()->cart->applied_coupons;
+        $tt_coupon_code = $applied_coupons[0];
+    }
     $no_of_guests            = isset( $tt_posted['no_of_guests'] ) ? $tt_posted['no_of_guests'] : 1;
     if ( ! $cart->is_empty() ) {
         // Get the cart items

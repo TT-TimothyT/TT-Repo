@@ -162,6 +162,12 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
         $shipping_postcode = $checkout_data['shipping_postcode'];
         $occupants = $checkout_data['occupants'];
         $promoCode = $checkout_data['coupon_code'];
+        // Check if the order contains an already applied coupon and fix the missing coupon code.
+        if( count( $order->get_coupon_codes() ) > 0  && empty( $promoCode ) ) {
+            // There are coupons.
+            $applied_coupons = $order->get_coupon_codes();
+            $promoCode       = $applied_coupons[0];
+        }
         $wantPrivate = isset($occupants['private']) && $occupants['private'] > 0 ? true : false;
         $bikeUpgradePrice = isset( $checkout_data['bikeUpgradePrice'] ) ? $checkout_data['bikeUpgradePrice'] : '';
         $singleSupplementPrice = isset( $checkout_data['singleSupplementPrice'] ) ? $checkout_data['singleSupplementPrice'] : '';
