@@ -119,97 +119,34 @@ function tt_validate_phone(phone = '') {
   }
   return isValid;
 }
+function tt_validate_age( dob = null ) {
+  let isValid      = true;
+  let dobTypeError = '';
 
-// AGE VALIDATION
-document.addEventListener('DOMContentLoaded', function () {
-  function tt_validate_age(dob = null, startDate = null) {
-      let isValid = true;
-      let dobTypeError = '';
-
-      if (dob && startDate) {
-          let dobDate = new Date(dob);
-          let startDateObj = new Date(startDate);
-
-          // Calculate age by comparing year, month, and day
-          let age = startDateObj.getFullYear() - dobDate.getFullYear();
-          let monthDifference = startDateObj.getMonth() - dobDate.getMonth();
-          let dayDifference = startDateObj.getDate() - dobDate.getDate();
-
-          // Adjust age if startDate is before dob's birthday in the year
-          if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-              age--;
-          }
-
-          if (age < 18) {
-              isValid = false;
-              dobTypeError = 'invalid-age';
-          } else if (dobDate.getFullYear() < 1900) {
-              isValid = false;
-              dobTypeError = 'invalid-min-year';
-          } else if (dobDate >= startDateObj) {
-              isValid = false;
-              dobTypeError = 'invalid-max-year';
-          }
-      }
-
-      return { isValid, dobTypeError };
+  if ( dob ) {
+    var dob         = new Date(dob);
+    var dobYear     = dob.getUTCFullYear();
+    var today       = new Date();
+    var currentYear = today.getUTCFullYear();
+    var monthDiff   = Date.now() - dob.getTime();
+    var ageDt       = new Date( monthDiff );
+    var year        = ageDt.getUTCFullYear();
+    var age         = Math.abs( year - 1970 );
+    
+    if( age < 18 ) {
+      isValid      = false;
+      dobTypeError = 'invalid-age';
+    } else if( dobYear < 1900 ) {
+      isValid      = false;
+      dobTypeError = 'invalid-min-year';
+    } else if( dobYear >= currentYear ) {
+      isValid      = false;
+      dobTypeError = 'invalid-max-year';
+    }
   }
 
   return {isValid, dobTypeError};
 }
-// document.addEventListener('DOMContentLoaded', function () {
-//   function tt_validate_age(dob = null, startDate = null) {
-//       let isValid = true;
-//       let dobTypeError = '';
-
-//       if (dob && startDate) {
-//           let dobDate = new Date(dob);
-//           let startDateObj = new Date(startDate);
-
-//           // Calculate age by comparing year, month, and day
-//           let age = startDateObj.getFullYear() - dobDate.getFullYear();
-//           let monthDifference = startDateObj.getMonth() - dobDate.getMonth();
-//           let dayDifference = startDateObj.getDate() - dobDate.getDate();
-
-//           // Adjust age if startDate is before dob's birthday in the year
-//           if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-//               age--;
-//           }
-
-//           if (age < 18) {
-//               isValid = false;
-//               dobTypeError = 'invalid-age';
-//           } else if (dobDate.getFullYear() < 1900) {
-//               isValid = false;
-//               dobTypeError = 'invalid-min-year';
-//           } else if (dobDate >= startDateObj) {
-//               isValid = false;
-//               dobTypeError = 'invalid-max-year';
-//           }
-//       }
-
-//       return { isValid, dobTypeError };
-//   }
-
-//   let startDates = trekData.startDates; // Get localized start dates
-//   let dobField = document.querySelector('input[name="custentity_birthdate"]');
-
-//   dobField.addEventListener('change', function () {
-//       let dob = dobField.value;
-//       let errors = document.querySelectorAll('.dob-error');
-//       errors.forEach(error => error.style.display = 'none');
-
-//       startDates.forEach(startDate => {
-//           let validation = tt_validate_age(dob, startDate);
-//           if (!validation.isValid) {
-//               document.querySelector(`.invalid-feedback.${validation.dobTypeError}`).style.display = 'block';
-//           }
-//       });
-//   });
-// });
-
-
-
 function tt_validate_duplicate_email() {
   var emailValidate = false;
   var guestEmailsArr = [];
