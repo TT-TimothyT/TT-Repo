@@ -155,9 +155,8 @@ document.addEventListener('DOMContentLoaded', function () {
       return { isValid, dobTypeError };
   }
 
-<<<<<<< HEAD
   return {isValid, dobTypeError};
-// }
+}
 // document.addEventListener('DOMContentLoaded', function () {
 //   function tt_validate_age(dob = null, startDate = null) {
 //       let isValid = true;
@@ -208,24 +207,6 @@ document.addEventListener('DOMContentLoaded', function () {
 //       });
 //   });
 // });
-=======
-  let startDates = trekData.startDates; // Get localized start dates
-  let dobField = document.querySelector('input[name="custentity_birthdate"]');
-
-  dobField.addEventListener('change', function () {
-      let dob = dobField.value;
-      let errors = document.querySelectorAll('.dob-error');
-      errors.forEach(error => error.style.display = 'none');
-
-      startDates.forEach(startDate => {
-          let validation = tt_validate_age(dob, startDate);
-          if (!validation.isValid) {
-              document.querySelector(`.invalid-feedback.${validation.dobTypeError}`).style.display = 'block';
-          }
-      });
-  });
-});
->>>>>>> 28e9fde80992b41dfefb15e8e83b21311e947f32
 
 
 
