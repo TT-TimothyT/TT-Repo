@@ -374,7 +374,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 						printf(
 							wp_kses(
 								/* translators: %1$s: Phone number; */
-								__( 'Your trip is starting soon! We&apos;ve locked your checklist and are sending your guides the details. Call us to make any changes ahead of your trip <a href="%1$s">tel:8664648735</a>', 'trek-travel-theme' ),
+								__( 'Your trip is starting soon! We&apos;ve locked your checklist and are sending your guides the details. Call us to make any changes ahead of your trip <a href="%1$s">866-464-8735</a>', 'trek-travel-theme' ), 
 								array(
 									'a' => array(
 										'class'  => array(),
