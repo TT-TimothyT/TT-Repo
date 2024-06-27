@@ -3,6 +3,7 @@ global $woocommerce;
 $trek_user_checkout_data =  get_trek_user_checkout_data();
 $trek_user_checkout_posted = $trek_user_checkout_data['posted'];
 $userInfo = wp_get_current_user();
+
 ?>
 <div class="guest-checkout">
     <div class="d-flex align-items-center guest-checkout__guest-number flex-wrap">

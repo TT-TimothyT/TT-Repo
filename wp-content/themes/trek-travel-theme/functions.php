@@ -963,3 +963,38 @@ function get_parent_products($product_id) {
 
     return $parent_ids;
 }
+
+// LOCALIZE START DATE
+add_action('wp_enqueue_scripts', 'startdate_localize_trek_script');
+
+function startdate_localize_trek_script() {
+    // Ensure WooCommerce is active
+    if ( class_exists( 'WooCommerce' ) ) {
+        $start_dates = [];
+
+        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+            $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
+
+            if ($_product && $_product->exists()) {
+                $s_date = $_product->get_attribute('start-date');
+
+                // Check if the start-date is not empty
+                if (!empty($s_date)) {
+                    // Convert the date from 'DD/MM/YY' to 'YYYY-MM-DD'
+                    $date_parts = explode('/', $s_date);
+                    if (count($date_parts) == 3) {
+                        // Assume the year part is in the 2000s for 'YY' format
+                        $year = intval($date_parts[2]) + 2000;
+                        $formatted_date = $year . '-' . $date_parts[1] . '-' . $date_parts[0];
+                        $start_dates[] = $formatted_date;
+                    }
+                }
+            }
+        }
+
+        // Register and localize the script
+        wp_register_script('trek-developer', get_template_directory_uri() . '/assets/js/developer.js', array('jquery'), time(), true);
+        wp_localize_script('trek-developer', 'trekData', array('startDates' => $start_dates));
+        wp_enqueue_script('trek-developer');
+    }
+}
