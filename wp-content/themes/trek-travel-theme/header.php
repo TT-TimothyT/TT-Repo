@@ -256,8 +256,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 	?>
 		<div class="container-fluid saved-cart d-flex justify-content-md-center align-items-center p-lg-0 p-3">
 			<p class="fw-normal fs-md lh-md mb-0">
-				Hey, you have a booking already started for a trip. Pick up where you left off and <br>
-				<a href="<?php echo trek_checkout_step_link(1); ?>" class="fw-semibold">Complete your booking</a>
+			Almost there! <a href="<?php echo trek_checkout_step_link(1); ?>" class="fw-semibold">Complete your booking</a> and get ready for your vacation of a lifetime <br>
 			</p>
 		</div>
 	<?php } ?>
