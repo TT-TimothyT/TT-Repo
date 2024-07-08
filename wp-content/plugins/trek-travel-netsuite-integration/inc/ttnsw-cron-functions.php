@@ -757,7 +757,7 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     tt_add_error_log( '3) NS - Guest includeBookingInfo', $args_3, $ns_guest_info_arr );
 
                     // Guest Registration not found.
-                    if( ! $ns_guest_info_arr ) {
+                    if( ! $ns_guest_info_arr || ! is_array( $ns_guest_info_arr ) ) {
                         continue;
                     }
 
