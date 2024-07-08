@@ -3,7 +3,7 @@
     <label>
         <input type="radio" name="scheduling_enable"
                value="2"/>
-        <h4 style="margin-top: 0;display: inline-block;"><?php esc_html_e('Manual Scheduling', PMXE_Plugin::LANGUAGE_DOMAIN); ?></h4>
+        <h4 style="margin-top: 0;display: inline-block;"><?php esc_html_e('Manual Scheduling', 'wp_all_export_plugin'); ?></h4>
     </label>
     <div style="margin-left: 26px; margin-bottom: 10px; font-size: 13px;"><?php esc_html_e('Run this export using cron jobs.'); ?></div>
     <div style="display: none;" class="manual-scheduling">

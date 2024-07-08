@@ -1,13 +1,13 @@
 === Smush Image Optimization – Optimize Images | Compress & Lazy Load Images | Convert WebP | Image CDN ===
 Plugin Name: Smush Image Optimization – Optimize Images | Compress & Lazy Load Images | Convert WebP | Image CDN
-Version: 3.16.4
+Version: 3.16.5
 Author: WPMU DEV
 Author URI: https://wpmudev.com/
 Contributors: WPMUDEV, alexdunae
 Tags: optimize images, convert webp, webp, image optimization, compress images, lazy load, resize images, image optimizer, image compressor, performance, reduce image size
 Requires at least: 5.3
 Tested up to: 6.5
-Stable tag: 3.16.4
+Stable tag: 3.16.5
 Requires PHP: 7.4
 License: GPL v2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -240,6 +240,10 @@ We take plugin security incredibly seriously; if you have a bug or vulnerability
 4. Automatically resize images on upload.
 
 == Changelog ==
+
+= 3.16.5 ( 2024-06-20 ) =
+- Improvement: Security improvements
+- Fix: Compatibility issue with Divi
 
 = 3.16.4 ( 2024-05-23 ) =
 - Fix: Loopback error shown unnecessarily for some sites

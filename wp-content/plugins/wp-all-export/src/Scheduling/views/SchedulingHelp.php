@@ -21,7 +21,7 @@ if(!defined('ABSPATH')) {
         <?php esc_html_e('Your data is very important to us. We have a very resilient, scalable cluster of servers powering Automatic Scheduling. Our highly qualified team is on call 24hrs a day, 7 days a week to make sure your exports run when you need them to run.');?>
     </div>
 
-    <h3 id="wpae_help_repeating_fields_tab"><span>+</span>&nbsp;<?php esc_html_e('What do I get for $9 a month?', 'wp_all_export_plugin'); ?></h3>
+    <h3 id="wpae_help_repeating_fields_tab"><span>+</span>&nbsp;<?php esc_html_e('What do I get for $19 a month?', 'wp_all_export_plugin'); ?></h3>
 
     <div rel="wpae_help_repeating_fields_tab" class="wp_all_export_help_tab" style="padding-left:8px;">
         <?php esc_html_e('You\'ll receive a license key for Automatic Scheduling that you can use in WP All Export and WP All Import. You can set up as many imports and exports on as many sites as you like. We do ask, however, that you not share your license with anyone else.'); ?>

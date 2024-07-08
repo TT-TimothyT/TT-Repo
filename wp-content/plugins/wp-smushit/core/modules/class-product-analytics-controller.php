@@ -318,7 +318,7 @@ class Product_Analytics_Controller {
 		 * https://stackoverflow.com/questions/62323230/how-can-i-detect-with-php-that-the-user-uses-an-ipad-when-my-user-agent-doesnt-c
 		 */
 		$tablet_pattern = '/(tablet|ipad|playbook|kindle|silk)/i';
-		return preg_match( $tablet_pattern, $_SERVER['HTTP_USER_AGENT'] );
+		return preg_match( $tablet_pattern, wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
 	}
 
 	private function is_mobile() {
@@ -327,7 +327,7 @@ class Product_Analytics_Controller {
 		}
 		// Do not use wp_is_mobile() since it doesn't detect ipad/tablet.
 		$mobile_patten = '/Mobile|iP(hone|od|ad)|Android|BlackBerry|tablet|IEMobile|Kindle|NetFront|Silk|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune|playbook/i';
-		return preg_match( $mobile_patten, $_SERVER['HTTP_USER_AGENT'] );
+		return preg_match( $mobile_patten, wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
 	}
 
 	private function normalize_url( $url ) {
@@ -939,11 +939,11 @@ class Product_Analytics_Controller {
 	}
 
 	private function get_event_name() {
-		return isset( $_POST['event'] ) ? sanitize_text_field( $_POST['event'] ) : '';
+		return isset( $_POST['event'] ) ? sanitize_text_field( wp_unslash( $_POST['event'] ) ) : '';
 	}
 
 	private function get_event_properties( $event_name ) {
-		$properties = isset( $_POST['properties'] ) ? $_POST['properties'] : array();
+		$properties = isset( $_POST['properties'] ) ? wp_unslash( $_POST['properties'] ) : array();
 		$properties = array_map( 'sanitize_text_field', $properties );
 
 		$filter_callback = $this->get_filter_properties_callback( $event_name );

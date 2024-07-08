@@ -59,9 +59,6 @@ if(!defined('ABSPATH')) {
 				if ($addons->isUserAddonActive() && XmlExportUser::$is_active):
 					$selected_post_type = empty($post['cpt'][0]) ? 'users' : $post['cpt'][0];
 				endif;
-				if (XmlExportComment::$is_active):
-					$selected_post_type = 'comments';
-				endif;
 				if (empty($selected_post_type) and ! empty($post['cpt'][0]))
 				{
 					$selected_post_type = $post['cpt'][0];
@@ -115,7 +112,7 @@ if(!defined('ABSPATH')) {
 												elseif ($this->isWizard)
 												{
 													$new_export = true;
-													if ( empty($post['cpt']) and $addons->isWooCommerceAddonActive() and ! XmlExportWooCommerceOrder::$is_active and ($addons->isUserAddonActive() and ! XmlExportUser::$is_active) and ! XmlExportComment::$is_active ){
+													if ( empty($post['cpt']) and $addons->isWooCommerceAddonActive() and ! XmlExportWooCommerceOrder::$is_active and ($addons->isUserAddonActive() and ! XmlExportUser::$is_active) ){
 														$init_fields[] = 
 															array(
 																'label' => 'post_type',
@@ -167,7 +164,7 @@ if(!defined('ABSPATH')) {
 								</div>
 
 								<!-- Warning Messages -->
-                                <?php if ( (($addons->isWooCommerceAddonActive() || $addons->isWooCommerceOrderAddonActive()) && ! XmlExportWooCommerceOrder::$is_active) && ! XmlExportComment::$is_active && ! XmlExportTaxonomy::$is_active ) : ?>
+                                <?php if ( (($addons->isWooCommerceAddonActive() || $addons->isWooCommerceOrderAddonActive()) && ! XmlExportWooCommerceOrder::$is_active) && ! XmlExportTaxonomy::$is_active ) : ?>
 								<div class="wp-all-export-warning" <?php if ( empty($post['ids']) or count($post['ids']) > 1 ) echo 'style="display:none;"'; ?>>
 									<p></p>
 									<input type="hidden" id="warning_template" value="<?php esc_html_e("Warning: without %s you won't be able to re-import this data back to this site using WP All Import.", "wp_all_export_plugin"); ?>"/>
@@ -179,7 +176,7 @@ if(!defined('ABSPATH')) {
 								<input type="hidden" id="is_product_export" value="1"/>
 								<?php endif; ?>
 
-								<?php if ( empty($post['cpt']) and ! ($addons->isWooCommerceAddonActive() && XmlExportWooCommerceOrder::$is_active) and ! ($addons->isUserAddonActive() && XmlExportUser::$is_active) and ! XmlExportComment::$is_active and ! XmlExportTaxonomy::$is_active ) : ?>
+								<?php if ( empty($post['cpt']) and ! ($addons->isWooCommerceAddonActive() && XmlExportWooCommerceOrder::$is_active) and ! ($addons->isUserAddonActive() && XmlExportUser::$is_active) and ! XmlExportTaxonomy::$is_active ) : ?>
 								<input type="hidden" id="is_wp_query" value="1"/>								
 								<?php endif; ?>
 																									
@@ -431,7 +428,7 @@ if(!defined('ABSPATH')) {
                                     <!-- Preview a Row Button -->
                                     <div class="input" style="float: right;">
                                         <input type="button" value="<?php esc_html_e('Preview', 'wp_all_export_plugin'); ?>"
-                                               class="preview_a_custom_xml_row">
+                                               class="preview_a_custom_xml_row wp_all_export_disabled_button" disabled>
                                     </div>
                                 </div>
                             </div>

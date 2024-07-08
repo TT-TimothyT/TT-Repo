@@ -1,9 +1,8 @@
 <?php
-// Cachebusters generated on 2024-05-10 09:13:21
+// Cachebusters generated on 2024-06-20 10:59:16
 return [
 	'antd' => '3.8.4',
 	'classnames' => '2.3.2',
-	'enzyme' => '3.11.0',
 	'i18n-react' => '0.7.0',
 	'jquery' => '3.6.4',
 	'lil-uri' => '0.3.1',

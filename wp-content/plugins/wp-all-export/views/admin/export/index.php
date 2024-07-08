@@ -99,7 +99,7 @@ do_action('pmxe_addons_html');
 
                                         $reviewElement = new stdClass();
                                         $reviewElement->labels = new stdClass();
-                                        $reviewElement->labels->name = __('WooCommerce Reviews', PMXE_Plugin::LANGUAGE_DOMAIN);
+                                        $reviewElement->labels->name = __('WooCommerce Reviews', 'wp_all_export_plugin');
 
                                         $sorted_cpt = $this->insertAfter($sorted_cpt, 'product', 'shop_review', $reviewElement);
                                     }

@@ -11,6 +11,7 @@ class Wt_Import_Export_For_Woo_Basic_Order_Export {
     public $parent_module = null;
     public $table_name;
     public static $is_hpos_enabled;
+    public $hpos_sync ;
     private $line_items_max_count = 0;
     private $export_to_separate_columns = false;
     private $export_to_separate_rows = false;     
@@ -30,6 +31,7 @@ class Wt_Import_Export_For_Woo_Basic_Order_Export {
         $this->parent_module = $parent_object;     
         $hpos_data = Wt_Import_Export_For_Woo_Basic_Common_Helper::is_hpos_enabled();
         $this->table_name = $hpos_data['table_name'];
+        $this->hpos_sync = $hpos_data['sync'];
         if( strpos($hpos_data['table_name'],'wc_orders') !== false ){
             self::$is_hpos_enabled = true;
         }           
@@ -172,7 +174,8 @@ class Wt_Import_Export_For_Woo_Basic_Order_Export {
      */
     public function prepare_data_to_export($form_data, $batch_offset) {
 
-        
+        global $wpdb;
+
         $export_order_statuses = !empty($form_data['filter_form_data']['wt_iew_order_status']) ? $form_data['filter_form_data']['wt_iew_order_status'] : 'any';
         $products = !empty($form_data['filter_form_data']['wt_iew_products']) ? $form_data['filter_form_data']['wt_iew_products'] : '';
         $email = !empty($form_data['filter_form_data']['wt_iew_email']) ? $form_data['filter_form_data']['wt_iew_email'] : array(); // user email fields return user ids
@@ -233,7 +236,6 @@ class Wt_Import_Export_For_Woo_Basic_Order_Export {
                 $total_records=0;
                 
                 if ($exclude_already_exported) {
-                    global $wpdb;
                     if(strpos($this->table_name, 'wc_order') !== false ){
                         $exclude_query = "SELECT ot.id FROM {$wpdb->prefix}wc_orders as ot LEFT JOIN {$wpdb->prefix}wc_orders_meta as omt ON ot.id = omt.order_id AND omt.meta_key = 'wf_order_exported_status' WHERE omt.order_id IS NULL";
                     }else{
@@ -324,12 +326,19 @@ class Wt_Import_Export_For_Woo_Basic_Order_Export {
             $total_records = count($order_ids);
             $order_ids = array_slice($order_ids, $batch_offset, $limit);
             foreach ($order_ids as $order_id) {
-                $data_array[] = $this->generate_row_data($order_id);
-                // updating records with expoted status 
-                $order = wc_get_order($order_id);
-                $order->update_meta_data('wf_order_exported_status', TRUE);
-                update_post_meta($order_id,'wf_order_exported_status',TRUE);
-                $order->save();  
+                if(wc_get_order($order_id)){
+                    $data_array[] = $this->generate_row_data($order_id);
+                    // updating records with expoted status 
+                    if(self::$is_hpos_enabled){
+						if($this->hpos_sync){
+							update_post_meta($order_id, 'wf_order_exported_status', TRUE);
+						}
+						$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wc_orders_meta WHERE meta_key = 'wf_order_exported_status' AND order_id = %d;", $order_id ) );
+						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->prefix}wc_orders_meta (order_id, meta_key, meta_value) VALUES (%d, %s, %s)", $order_id, 'wf_order_exported_status', TRUE ) ) ;
+					}else{
+						update_post_meta($order_id, 'wf_order_exported_status', TRUE);
+					} 
+                }
             }
             if($this->export_to_separate_rows){
                 $data_array = $this->wt_ier_alter_order_data_before_export_for_separate_row($data_array);

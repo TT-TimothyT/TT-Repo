@@ -89,7 +89,7 @@ class AddonService
 			if (
 			(
 				(
-					(in_array('product', $item['options']['cpt']) && \class_exists('WooCommerce')) ||
+					(in_array('product', $item['options']['cpt']) && \class_exists('WooCommerce') && !$this->isWooCommerceProductAddonActive()) ||
 					in_array('product_variation', $item['options']['cpt']) ||
 					in_array('shop_order', $item['options']['cpt']) ||
 					in_array('shop_review', $item['options']['cpt']) ||

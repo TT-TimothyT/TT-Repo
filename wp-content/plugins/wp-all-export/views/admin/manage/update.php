@@ -71,9 +71,6 @@ $l10n = array(
 					if ($addons->isUserAddonActive() && XmlExportUser::$is_active):
 						$selected_post_type = empty($post['cpt'][0]) ? 'users' : $post['cpt'][0];
 					endif;
-					if (XmlExportComment::$is_active):
-						$selected_post_type = 'comments';
-					endif;
 					if (empty($selected_post_type) and ! empty($post['cpt'][0]))
 					{
 						$selected_post_type = $post['cpt'][0];

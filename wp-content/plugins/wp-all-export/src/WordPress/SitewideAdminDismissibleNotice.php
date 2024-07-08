@@ -15,6 +15,9 @@ class SitewideAdminDismissibleNotice extends AdminNotice
 
     public function showNotice()
     {
+
+	    $wp_all_export_ajax_nonce = wp_create_nonce("wp_all_export_secure");
+
         ?>
         <script type="text/javascript">
             jQuery(document).ready(function(){
@@ -22,6 +25,7 @@ class SitewideAdminDismissibleNotice extends AdminNotice
 
                     var $parent = jQuery(this).parent();
                     var noticeId = jQuery(this).attr('data-noticeId');
+                    var wp_all_export_security = wp_all_export_security || '<?php echo esc_js($wp_all_export_ajax_nonce); ?>';
 
                     var request = {
                         action: 'dismiss_warnings',

@@ -80,6 +80,7 @@ function pmxe_wp_ajax_wpae_filtering_count()
     $cpt = array($post['cpt']);
 
     $is_products_export = ($post['cpt'] == 'product' and class_exists('WooCommerce'));
+	$is_orders_export = ($post['cpt'] == 'shop_order' and class_exists('WooCommerce'));
 
     if ($post['export_type'] == 'advanced') {
         if (XmlExportEngine::$is_user_export) {
@@ -290,6 +291,33 @@ function pmxe_wp_ajax_wpae_filtering_count()
                     }
 
                     remove_filter('posts_where', 'wp_all_export_numbering_where');
+
+                } else if ($is_orders_export && PMXE_Plugin::hposEnabled()) {
+
+
+	                add_filter('posts_where', 'wp_all_export_numbering_where', 15, 1);
+
+
+	                if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
+		                $ordersQuery = new \Wpae\WordPress\OrderQuery();
+
+		                $foundRecords = count($ordersQuery->getOrders());
+
+		                PMXE_Plugin::$session->set('exportQuery', $ordersQuery);
+		                PMXE_Plugin::$session->save_data();
+
+	                } else if (XmlExportEngine::get_addons_service()->isWooCommerceProductAddonActive()) {
+		                $productsQuery = new WP_Query(array('post_type' => array('product'), 'post_status' => 'any', 'orderby' => 'ID', 'order' => 'ASC', 'posts_per_page' => 10));
+		                $foundProducts = $productsQuery->found_posts;
+
+
+		                $foundRecords = $foundProducts;
+		                $hasVariations = false;
+	                }
+
+	                remove_filter('posts_where', 'wp_all_export_numbering_where');
+
+
 
                 } else {
                     $exportQuery = new WP_Query(array('post_type' => $cpt, 'post_status' => 'any', 'orderby' => 'ID', 'order' => 'ASC', 'posts_per_page' => 10));

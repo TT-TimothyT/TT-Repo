@@ -672,7 +672,7 @@ function pmxe_wp_ajax_scheduling_dialog_content()
                 <label>
                     <input type="radio" name="scheduling_enable"
                            value="1" <?php if ($schedulingExportOptions['scheduling_enable'] == 1) { ?> checked="checked" <?php } ?>/>
-                    <h4 style="margin: 0; display: inline-flex; align-items: center;"><?php esc_html_e('Automatic Scheduling', PMXE_Plugin::LANGUAGE_DOMAIN); ?>
+                    <h4 style="margin: 0; display: inline-flex; align-items: center;"><?php esc_html_e('Automatic Scheduling', 'wp_all_export_plugin'); ?>
                         <span class="connection-icon" style="margin-left: 8px; height: 16px;">
                                                         <?php include __DIR__ . '/../src/Scheduling/views/ConnectionIcon.php'; ?>
                                                     </span>
@@ -698,7 +698,7 @@ function pmxe_wp_ajax_scheduling_dialog_content()
                                 <input
                                         type="radio" <?php if (isset($schedulingExportOptions['scheduling_run_on']) && $schedulingExportOptions['scheduling_run_on'] != 'monthly') { ?> checked="checked" <?php } ?>
                                         name="scheduling_run_on" value="weekly"
-                                        checked="checked"/> <?php esc_html_e('Every week on...', PMXE_Plugin::LANGUAGE_DOMAIN); ?>
+                                        checked="checked"/> <?php esc_html_e('Every week on...', 'wp_all_export_plugin'); ?>
                             </label>
                         </div>
                         <input type="hidden" style="width: 500px;" name="scheduling_weekly_days"
@@ -743,7 +743,7 @@ function pmxe_wp_ajax_scheduling_dialog_content()
                                 <input
                                         type="radio" <?php if (isset($schedulingExportOptions['scheduling_run_on']) && $schedulingExportOptions['scheduling_run_on'] == 'monthly') { ?> checked="checked" <?php } ?>
                                         name="scheduling_run_on"
-                                        value="monthly"/> <?php esc_html_e('Every month on the first...', PMXE_Plugin::LANGUAGE_DOMAIN); ?>
+                                        value="monthly"/> <?php esc_html_e('Every month on the first...', 'wp_all_export_plugin'); ?>
                             </label>
                         </div>
                         <input type="hidden" name="scheduling_monthly_days"
@@ -853,7 +853,7 @@ function pmxe_wp_ajax_scheduling_dialog_content()
                                 </a>
                             </div>
                             <div class="text-container" style="position: absolute; left: 150px; top: 2px;">
-                                <p><?php esc_html_e('Get automatic scheduling for unlimited sites, just $9/mo.'); ?></p>
+                                <p><?php esc_html_e('Get automatic scheduling for unlimited sites, just $19/mo.'); ?></p>
                                 <p><?php esc_html_e('Have a license?'); ?>
                                     <a href="#"
                                        id="add-subscription"><?php esc_html_e('Register this site.'); ?></a> <?php esc_html_e('Questions?'); ?>
@@ -861,7 +861,7 @@ function pmxe_wp_ajax_scheduling_dialog_content()
                                 </p>
                                 <input type="password" id="add-subscription-field"
                                        style="position: absolute; z-index: 2; top: -4px; font-size:14px;"
-                                       placeholder="<?php esc_html_e('Enter your license', PMXE_Plugin::LANGUAGE_DOMAIN); ?>"/>
+                                       placeholder="<?php esc_html_e('Enter your license', 'wp_all_export_plugin'); ?>"/>
                                 <div style="position: absolute;" id="find-subscription-link"><a
                                             href="http://www.wpallimport.com/portal/automatic-scheduling/"
                                             target="_blank"><?php esc_html_e('Find your license.'); ?></a></div>

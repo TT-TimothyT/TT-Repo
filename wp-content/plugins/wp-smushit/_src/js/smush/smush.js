@@ -518,18 +518,7 @@ class Smush {
 			jQuery( '.wp-smush-bulk-progress-bar-wrapper' ).addClass( 'sui-hidden' );
 
 			// Reset the progress when we finish so the next smushing starts from zero.
-			this._updateProgress(0, 0);
-		} else {
-			// TODO: REMOVE "re-smush-notice" since no longer used. And maybe for "wp-smush-remaining" too.
-			const notice = jQuery(
-				'.bulk-smush-wrapper .wp-smush-resmush-notice'
-			);
-
-			if ( notice.length > 0 ) {
-				notice.show();
-			} else {
-				jQuery( '.bulk-smush-wrapper .wp-smush-remaining' ).removeClass( 'sui-hidden' );
-			}
+			this._updateProgress( 0, 0 );
 		}
 
 		// Enable re-Smush and scan button.

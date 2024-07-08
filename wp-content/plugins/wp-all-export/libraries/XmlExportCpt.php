@@ -12,26 +12,36 @@ final class XmlExportCpt
     {
         $variationOptionsFactory = new  VariationOptionsFactory();
         $variationOptions = $variationOptionsFactory->createVariationOptions(PMXE_EDITION);
-        $entry = $variationOptions->preprocessPost($entry);
+	    if($entry instanceof \WP_Post) {
+		    $entry = $variationOptions->preprocessPost($entry);
+	    }
 
         $article = array();
 
         // associate exported post with import
         if (!$is_item_data and wp_all_export_is_compatible() && isset($exportOptions['is_generate_import']) && isset($exportOptions['import_id'])) {
 
-            $postRecord = new PMXI_Post_Record();
+	        if(!isset($entry->ID)) {
+		        $entryId = $entry->id;
+		        $entry->ID = $entry->id;
+	        } else {
+		        $entryId = $entry->ID;
+	        }
+
+
+	        $postRecord = new PMXI_Post_Record();
             $postRecord->clear();
             $postRecord->getBy(array(
-                'post_id' => $entry->ID,
+                'post_id' => $entryId,
                 'import_id' => $exportOptions['import_id'],
             ));
 
             if ($postRecord->isEmpty()) {
                 $postRecord->set(array(
-                    'post_id' => $entry->ID,
+                    'post_id' => $entryId,
                     'import_id' => $exportOptions['import_id'],
-                    'unique_key' => $entry->ID,
-                    'product_key' => $entry->ID
+                    'unique_key' => $entryId,
+                    'product_key' => $entryId
                 ))->save();
             }
             unset($postRecord);
@@ -45,7 +55,11 @@ final class XmlExportCpt
 
         if (isset($exportOptions['ids']) && is_array($exportOptions['ids'])) {
             foreach ($exportOptions['ids'] as $ID => $value) {
-                $pType = $entry->post_type;
+	            if(is_array($exportOptions['cpt'] ?? '') && in_array('shop_order', $exportOptions['cpt'])) {
+		            $pType = 'shop_order';
+	            } else {
+		            $pType = $entry->post_type;
+	            }
 
                 if ($is_item_data and $subID != $ID) continue;
 

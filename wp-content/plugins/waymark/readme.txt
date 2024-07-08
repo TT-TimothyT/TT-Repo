@@ -4,7 +4,7 @@ Tags: GIS, Map maker, GPX, Track, Elevation
 Requires at least: 4.6
 Tested up to: 6.5
 Requires PHP: 5.2
-Stable tag: 1.1.8
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,10 +73,11 @@ For developers:
   - Collections use the `waymark_collection` Taxonomy.
   - Embed Maps using the `[Waymark]` [Shortcode](https://www.waymark.dev/docs/shortcodes/) anywhere they are supported, or dynamically using the `do_shortcode(["Waymark"])` [function](https://developer.wordpress.org/reference/functions/do_shortcode/).
 - Geographical data is stored in [GeoJSON](https://geojson.org/) format. [Types](https://www.waymark.dev/docs/types/) are specified using the `type` Property, i.e. `{feature: { geometry: { type: 'Point', coordinates: [0, 0] } }, properties: { type: 'Alert', title: 'Bridge Removed!' }`.
+- Specify which GeoJSON feature properties to store when importing (Settings > Overlays > Properties). These can be automatically appended to the Overlay Description, or accessed programatically via the `layer.feature.properties` Object.
 - Maps are displayed using the [Leaflet](https://leafletjs.com/) JavaScript library, which is bundled with Waymark and can be extended using the callback function.
 - Use the [JavaScript callback functions](https://www.waymark.dev/docs/callback-function/) to extend Waymark functionality client-side, provided either globally (for integration with *all* Waymark Maps) or provided as a [Shortcode parameter](https://www.waymark.dev/docs/shortcodes/#callback-function).
 
-Be sure to check out [Map First](https://github.com/opengis/map-first), a minimal WordPress theme with an *obsession* for Maps (it's open-source too and contains lots of comments about customisations). As seen in the [demo](https://www.ogis.app/yosemite/).
+Be sure to check out [Map First](https://github.com/opengis/map-first), a minimal WordPress theme with an *obsession* for Maps (it's open-source too and contains lots of comments about customisations).
 
 **Waymark is free, open-source ([GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)) and a labour of Love**. I try to keep the plugin well supported, so please feel free to <a href="https://forms.gle/mthqAgSsMoTPM8SR9">reach out</a> with any issues, questions or feedback.
 
@@ -88,8 +89,8 @@ Be sure to check out [Map First](https://github.com/opengis/map-first), a minima
 [Grunt](https://gruntjs.com/) is used to run the build script, which compiles the JavaScript and CSS and performs some other tasks.
 
 `
-# Clone the repository
-git clone https://github.com/opengis/waymark.git
+# Clone the repository (and the Waymark JS submodule)
+git clone --recurse-submodules https://github.com/opengis/waymark.git
 
 # Navigate to the Waymark directory
 cd waymark
@@ -170,6 +171,18 @@ Built on the shoulders of giants, [thank you](https://www.waymark.dev/docs/thank
 
 == Changelog ==
 
+= 1.3.2 = 
+
+Collection background loading bug fix. Thanks to [zerider](https://wordpress.org/support/users/zerider/) for [reporting this](https://wordpress.org/support/topic/collection-map/).
+
+= 1.3.0 = 
+
+- **Overlay Properties** - Read GeoJSON feature properties when importing (Settings > Overlays > Properties). If Waymark finds data for the specified property keys they will stored upon import. These can be automatically appended to the Overlay Description, or accessed programatically via the `layer.feature.properties` Object. Thanks to [dariospace](https://github.com/dariospace) for the [requesting](https://github.com/OpenGIS/Waymark/issues/45) the return of this feature.
+
+= 1.2.0 = 
+
+Enable or disable various WordPress features of the Map Custom Post Type, including the new ability to enable comments and excerpt integration. This Setting is Available in Settings > Advanced > Post Type. Thanks to [YosoraLife](https://github.com/YosoraLife) for requesting this ([here](https://github.com/OpenGIS/Waymark/pull/42) and [here](https://github.com/OpenGIS/Waymark/issues/44)).
+
 = 1.1.8 = 
 
 Show/Hide Overlay Types bug fix. Thanks to [YosoraLife](https://github.com/YosoraLife) for raising this [issue](https://github.com/OpenGIS/Waymark/issues/41).
@@ -233,7 +246,7 @@ Fixed a bug with Map Exporting. Thanks to <a href="https://wordpress.org/support
 
 Thanks for helping Waymark get to Version 1! ❤️
 
-* [Map First](https://github.com/opengis/map-first) - A minimal WordPress theme with an *obsession* for Maps. It's open-source too and contains lots of comments about customisations. As seen in the [demo](https://www.ogis.app/yosemite/).
+* [Map First](https://github.com/opengis/map-first) - A minimal WordPress theme with an *obsession* for Maps. It's open-source too and contains lots of comments about customisations.
 * Added Total Ascent and Descent to Elevation Profile. Thanks to <a href="https://github.com/MaximeChallon">MaximeChallon</a> for the <a href="https://github.com/OpenGIS/Waymark/pull/29">Pull Request</a> :)
 * Improved rendering of multiple Maps through the Collection Shortcode, where the initial view would sometimes not be set correctly to view all Map data.
 * Updated documentation.

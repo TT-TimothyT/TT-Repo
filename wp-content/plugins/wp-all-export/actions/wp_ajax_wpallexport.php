@@ -40,7 +40,9 @@ function pmxe_wp_ajax_wpallexport()
     XmlExportEngine::$exportID = $export_id;
     XmlExportEngine::$exportRecord = $export;
 
-    if (class_exists('SitePress') && !empty(XmlExportEngine::$exportOptions['wpml_lang'])) {
+	$is_orders_export = (in_array('shop_order', XmlExportEngine::$exportOptions['cpt']) and class_exists('WooCommerce'));
+
+	if (class_exists('SitePress') && !empty(XmlExportEngine::$exportOptions['wpml_lang'])) {
         do_action('wpml_switch_language', XmlExportEngine::$exportOptions['wpml_lang']);
     }
 
@@ -109,7 +111,25 @@ function pmxe_wp_ajax_wpallexport()
 
                 $exportQuery = $addon->add_on->get_query($export->exported, $posts_per_page, $filter_args );
 
-            } else {
+            }  else if ($is_orders_export && PMXE_Plugin::hposEnabled()) {
+
+
+	            add_filter('posts_where', 'wp_all_export_numbering_where', 15, 1);
+
+
+	            if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
+		            $exportQuery = new \Wpae\WordPress\OrderQuery();
+
+		            $foundPosts = count($exportQuery->getOrders());
+		            $postCount = count($exportQuery->getOrders());
+
+
+	            }
+	            remove_filter('posts_where', 'wp_all_export_numbering_where');
+
+
+
+            }else {
 
                 remove_all_actions('parse_query');
                 remove_all_actions('pre_get_posts');
@@ -150,6 +170,22 @@ function pmxe_wp_ajax_wpallexport()
         $result = new WP_Term_Query(array('taxonomy' => $exportOptions['taxonomy_to_export'], 'orderby' => 'term_id', 'order' => 'ASC', 'hide_empty' => false));
         $foundPosts = count($result->get_terms());
         remove_filter('terms_clauses', 'wp_all_export_terms_clauses');
+    } else if (in_array('shop_order', $exportOptions['cpt']) && PMXE_Plugin::hposEnabled()) {
+	    add_filter('posts_where', 'wp_all_export_numbering_where', 15, 1);
+
+	    if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
+		    $exportQuery = new \Wpae\WordPress\OrderQuery();
+
+		    $totalOrders = $exportQuery->getOrders();
+		    $foundOrders = $exportQuery->getOrders($export->exported, $exportOptions['records_per_iteration']);
+
+		    $foundPosts = count($totalOrders);
+		    $postCount = count($foundOrders);
+
+
+	    }
+	    remove_filter('posts_where', 'wp_all_export_numbering_where');
+
     } else {
 
         if(strpos($exportOptions['cpt'][0], 'custom_') === 0) {

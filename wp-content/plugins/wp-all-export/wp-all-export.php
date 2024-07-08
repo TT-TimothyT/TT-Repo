@@ -3,7 +3,7 @@
 Plugin Name: WP All Export
 Plugin URI: http://www.wpallimport.com/upgrade-to-wp-all-export-pro/?utm_source=export-plugin-free&utm_medium=wp-plugins-page&utm_campaign=upgrade-to-pro
 Description: Export any post type to a CSV or XML file. Edit the exported data, and then re-import it later using WP All Import.
-Version: 1.4.4
+Version: 1.4.7
 Author: Soflyy
 */
 
@@ -59,7 +59,7 @@ else {
 	 */
 	define('PMXE_PREFIX', 'pmxe_');
 
-	define('PMXE_VERSION', '1.4.4');
+	define('PMXE_VERSION', '1.4.7');
 
     define('PMXE_ASSETS_VERSION', '-1.0.2');
 
@@ -153,7 +153,7 @@ else {
 
         public static $session = null;
 
-		public static $capabilities = 'install_plugins';
+		public static $capabilities = 'setup_network';
 
         private static $hasActiveSchedulingLicense = null;
 
@@ -169,7 +169,7 @@ else {
          */
         protected function __construct() {
 
-            if(!is_multisite() || defined('WPAI_WPAE_ALLOW_INSECURE_MULTISITE') && 1 === WPAI_WPAE_ALLOW_INSECURE_MULTISITE){
+            if(defined('WPAI_WPAE_ALLOW_INSECURE_MULTISITE') && 1 === WPAI_WPAE_ALLOW_INSECURE_MULTISITE){
                 self::$capabilities = 'manage_options';
             }
 
@@ -383,13 +383,6 @@ else {
 
             if(!wp_doing_ajax()) {
 
-	            $addons_not_included = get_option('wp_all_export_free_addons_not_included', false);
-
-                if (!$addons_not_included && current_user_can('manage_options') && (!XmlExportEngine::get_addons_service()->isAcfAddonActive() || !XmlExportEngine::get_addons_service()->isWooCommerceAddonActive())) {
-
-                    $this->showDismissibleNotice('<h1 style="padding-top:0">Important Notice Regarding WP All Export</h1><br><strong>WP All Export now requires paid add-ons to export ACF and WooCommerce data.<br/>We are providing these Pro add-ons to everyone who was using WP All Export before the change, free of charge. Please contact support for further assistance: <a href="https://www.wpallimport.com/support/" target="_blank">https://www.wpallimport.com/support/</a>', 'wpae_free_export_addons_notice');
-                }
-
                 // create history folder
                 $uploads = wp_upload_dir();
 
@@ -413,18 +406,18 @@ else {
                     $this->showNoticeAndDisablePlugin(sprintf(esc_html__('Uploads folder %s must be writable', 'wp_all_export_plugin'), $uploads['basedir'] . DIRECTORY_SEPARATOR . self::UPLOADS_DIRECTORY));
                 }
 
-                if (!$addons_not_included && $this->addons->userExportsExistAndAddonNotInstalled() && current_user_can('manage_options')) {
-                    $this->showDismissibleNotice(__('<strong style="font-size:16px">A Configured Export Requires the User Export Add-On</strong><p>Your User exports will not be able to run until you install the User Export Add-On. That add-on is available from <a href="https://wordpress.org/plugins/export-wp-users-xml-csv/" target="_blank">wordpress.org</a>.</p>', PMXE_Plugin::LANGUAGE_DOMAIN), 'wpae_user_addon_not_installed_notice');
+                if ($this->addons->userExportsExistAndAddonNotInstalled() && current_user_can(self::$capabilities)) {
+                    $this->showDismissibleNotice(__('<strong style="font-size:16px">A Configured Export Requires the User Export Add-On</strong><p>Your User exports will not be able to run until you install the User Export Add-On. That add-on is available from <a href="https://wordpress.org/plugins/export-wp-users-xml-csv/" target="_blank">wordpress.org</a>.</p>', 'wp_all_export_plugin'), 'wpae_user_addon_not_installed_notice');
                 }
 
-                if (!$addons_not_included && $this->addons->wooCommerceExportsExistAndAddonNotInstalled() && current_user_can('manage_options') && \class_exists('WooCommerce')) {
-                    $this->showDismissibleNotice(__('<strong style="font-size:16px">A Configured Export Requires the WooCommerce Export Add-On Pro</strong><p>Your Products, Orders, and Coupons exports will not be able to run until you install the WooCommerce Export Add-On Pro. That add-on is available to those who were using WP All Export Free before this requirement.</p>', PMXE_Plugin::LANGUAGE_DOMAIN)
-                        . '<p><a class="button button-primary" href="https://wpallimport.com/portal/downloads" target="_blank">' . __('Download Add-On', PMXE_Plugin::LANGUAGE_DOMAIN) . '</a></p>', 'wpae_woocommerce_addon_not_installed_notice');
+                if ($this->addons->wooCommerceExportsExistAndAddonNotInstalled() && current_user_can(self::$capabilities) && \class_exists('WooCommerce')) {
+                    $this->showDismissibleNotice(__('<strong style="font-size:16px">A Configured Export Requires the WooCommerce Export Add-On Pro</strong><p>Your Products, Orders, and Coupons exports will not be able to run until you install the WooCommerce Export Add-On Pro.</p>', 'wp_all_export_plugin')
+                        . '<p><a class="button button-primary" href="https://wpallimport.com/portal/downloads" target="_blank">' . __('Download Add-On', 'wp_all_export_plugin') . '</a></p>', 'wpae_woocommerce_addon_not_installed_notice');
                 }
 
-                if (!$addons_not_included && $this->addons->acfExportsExistAndNotInstalled() && current_user_can('manage_options')) {
-                    $this->showDismissibleNotice(__('<strong style="font-size:16px">A Configured Export Requires the ACF Export Add-On Pro</strong><p>Exports that contain ACF fields will not be able to run until you install the ACF Export Add-On Pro. That add-on is available to those who were using WP All Export Free before this requirement.</p>', PMXE_Plugin::LANGUAGE_DOMAIN)
-                        . '<p><a class="button button-primary" href="https://wpallimport.com/portal/downloads" target="_blank">' . __('Download Add-On', PMXE_Plugin::LANGUAGE_DOMAIN) . '</a></p>', 'wpae_acf_addon_not_installed_notice');
+                if ($this->addons->acfExportsExistAndNotInstalled() && current_user_can(self::$capabilities)) {
+                    $this->showDismissibleNotice(__('<strong style="font-size:16px">A Configured Export Requires the ACF Export Add-On Pro</strong><p>Exports that contain ACF fields will not be able to run until you install the ACF Export Add-On Pro.</p>', 'wp_all_export_plugin')
+                        . '<p><a class="button button-primary" href="https://wpallimport.com/portal/downloads" target="_blank">' . __('Download Add-On', 'wp_all_export_plugin') . '</a></p>', 'wpae_acf_addon_not_installed_notice');
                 }
             }
 
@@ -487,13 +480,13 @@ else {
                                 if(isset($export->options['export_type']) && $export->options['export_type'] === 'advanced') {
 
                                     if(!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() && strpos($export->options['wp_query'], 'product') !== false && \class_exists('WooCommerce')) {
-                                        die(\__('The WooCommerce Export Add-On Pro is required to run this export. If you already own it, you can download the add-on here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', \PMXE_Plugin::LANGUAGE_DOMAIN));
+                                        die(\__('The WooCommerce Export Add-On Pro is required to run this export. If you already own it, you can download the add-on here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', 'wp_all_export_plugin'));
                                     }
                                     else if( (!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() || !XmlExportEngine::get_addons_service()->isWooCommerceOrderAddonActive() ) && strpos($export->options['wp_query'], 'shop_order') !== false) {
-                                        die(\__('The WooCommerce Export Add-On Pro is required to run this export. If you already own it, you can download the add-on here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', \PMXE_Plugin::LANGUAGE_DOMAIN));
+                                        die(\__('The WooCommerce Export Add-On Pro is required to run this export. If you already own it, you can download the add-on here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', 'wp_all_export_plugin'));
                                     }
                                     else if(!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() && strpos($export->options['wp_query'], 'shop_coupon') !== false) {
-                                        die(\__('The WooCommerce Export Add-On Pro is required to run this export. If you already own it, you can download the add-on here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', \PMXE_Plugin::LANGUAGE_DOMAIN));
+                                        die(\__('The WooCommerce Export Add-On Pro is required to run this export. If you already own it, you can download the add-on here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', 'wp_all_export_plugin'));
                                     }
                                 }
 
@@ -501,7 +494,7 @@ else {
                                     ((in_array('users', $cpt) || in_array('shop_customer', $cpt)) && !$addons->isUserAddonActive()) ||
                                     ($export->options['export_type'] == 'advanced' && $export->options['wp_query_selector'] == 'wp_user_query' && !$addons->isUserAddonActive())
                                 ) {
-                                    die(\__('The User Export Add-On Pro is required to run this export. You can download the add-on here: <a href="http://www.wpallimport.com/portal/" target="_blank">http://www.wpallimport.com/portal/</a>', \PMXE_Plugin::LANGUAGE_DOMAIN));
+                                    die(\__('The User Export Add-On Pro is required to run this export. You can download the add-on here: <a href="http://www.wpallimport.com/portal/" target="_blank">http://www.wpallimport.com/portal/</a>', 'wp_all_export_plugin'));
                                 }
 
                                 if (
@@ -515,11 +508,15 @@ else {
                                     ) ||
 		                            ( $export->options['export_type'] == 'advanced' && $export->options['wp_query_selector'] == 'wp_user_query' && ! $addons->isUserAddonActive() )
 	                            ) {
-		                            die( \__( 'The WooCommerce Export Add-On Pro is required to run this export. You can download the add-on here: <a href="http://www.wpallimport.com/portal/" target="_blank">http://www.wpallimport.com/portal/</a>', \PMXE_Plugin::LANGUAGE_DOMAIN ) );
+		                            die( \__( 'The WooCommerce Export Add-On Pro is required to run this export. You can download the add-on here: <a href="http://www.wpallimport.com/portal/" target="_blank">http://www.wpallimport.com/portal/</a>', 'wp_all_export_plugin' ) );
+	                            }
+
+	                            if ( in_array('comments', $cpt) || in_array('shop_review', $cpt) ) {  // exporting comments
+		                            die(\__('WP All Export Pro is required to run this export. If you already own it, you can download it here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', 'wp_all_export_plugin'));
 	                            }
 
                                 if(in_array('acf', $export->options['cc_type']) && !$addons->isAcfAddonActive()) {
-                                    die(\__('The ACF Export Add-On Pro is required to run this export. You can download the add-on here: <a href="http://www.wpallimport.com/portal/" target="_blank">http://www.wpallimport.com/portal/</a>', \PMXE_Plugin::LANGUAGE_DOMAIN));
+                                    die(\__('The ACF Export Add-On Pro is required to run this export. You can download the add-on here: <a href="http://www.wpallimport.com/portal/" target="_blank">http://www.wpallimport.com/portal/</a>', 'wp_all_export_plugin'));
                                 }
                             }
 
@@ -1027,6 +1024,11 @@ else {
             }
             return $subject;
         }
+
+		public static function hposEnabled()
+		{
+			return class_exists('Automattic\WooCommerce\Utilities\OrderUtil') && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+		}
     }
 
 	PMXE_Plugin::getInstance();

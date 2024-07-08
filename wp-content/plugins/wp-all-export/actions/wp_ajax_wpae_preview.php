@@ -161,9 +161,10 @@ function pmxe_wp_ajax_wpae_preview(){
 				$exportQuery = get_comments( array( 'orderby' => 'comment_ID', 'order' => 'ASC', 'number' => 10 ));
 			}
 			remove_action('comments_clauses', 'wp_all_export_comments_clauses');
-		}
-		else
-		{
+		} else if(in_array('shop_order', $exportOptions['cpt']) && PMXE_Plugin::hposEnabled()) {
+			$exportQuery = new \Wpae\WordPress\OrderQuery();
+
+		} else {
 
             if(strpos($exportOptions['cpt'][0], 'custom_') === 0) {
                 $addon = GF_Export_Add_On::get_instance();

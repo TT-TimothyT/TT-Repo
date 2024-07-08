@@ -146,7 +146,7 @@ abstract class Background_Process extends Async_Request {
 		$this->mutex( function () {
 			$instance_id = empty( $_GET['instance_id'] )
 				? false
-				: $_GET['instance_id'];
+				: wp_unslash( $_GET['instance_id'] );
 
 			if ( $this->is_queue_empty() ) {
 				$this->logger()->warning( "Handler called with instance ID $instance_id but the queue is empty. Killing this instance." );

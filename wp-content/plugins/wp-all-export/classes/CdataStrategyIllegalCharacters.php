@@ -8,6 +8,10 @@ class CdataStrategyIllegalCharacters implements CdataStrategy
 
     public function should_cdata_be_applied($field, $hasSnippets = false)
     {
+		if(empty($field)){
+			return false;
+		}
+
         if($hasSnippets) {
             $this->illegalCharacters = array('<','>','&', '**LT**', '**GT**');
         }

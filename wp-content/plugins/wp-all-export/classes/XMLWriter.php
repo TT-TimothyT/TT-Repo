@@ -124,7 +124,7 @@ class PMXE_XMLWriter extends XMLWriter
         $wrap_value_into_cdata = apply_filters('wp_all_export_is_wrap_value_into_cdata', $is_wrap_into_cdata, $value, $element_name);
 
         if ($wrap_value_into_cdata === false) {
-            $this->writeRaw($value);
+            $value && $this->writeRaw($value);
         } else {
             if (XmlExportEngine::$is_preview && XmlExportEngine::$exportOptions['show_cdata_in_preview']) {
                 $this->text('CDATABEGIN' . $value . 'CDATACLOSE');

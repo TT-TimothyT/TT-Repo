@@ -43,6 +43,7 @@ class Waymark_Settings {
 			'waymark-settings-tab-markers' => '-- ' . esc_html__('Markers', 'waymark'),
 			'waymark-settings-tab-lines' => '-- ' . esc_html__('Lines', 'waymark'),
 			'waymark-settings-tab-shapes' => '-- ' . esc_html__('Shapes', 'waymark'),
+			'waymark-settings-tab-properties' => '-- ' . esc_html__('Properties', 'waymark'),
 			'label_sources' => esc_html__('Sources'),
 			'waymark-settings-tab-submission' => '-- ' . esc_html__('Submissions', 'waymark'),
 			'waymark-settings-tab-misc' => esc_html__('Advanced', 'waymark'),
@@ -570,6 +571,87 @@ class Waymark_Settings {
 			),
 		);
 
+		/**
+		 * ===========================================
+		 * =============== PROPERTIES ================
+		 * ===========================================
+		 */
+
+		$this->tabs['properties'] = array(
+			'name' => esc_html__('Properties', 'waymark'),
+			'description' => '',
+			'sections' => array(
+				'props' => array(
+					'repeatable' => true,
+					'title' => esc_html__('Properties', 'waymark'),
+					'description' => '<span class="waymark-lead">' . __('Read <b><a href="https://geojson.org/">GeoJSON</a></b> feature properties when importing.', 'waymark') . '</span><br /><br />' . __('If Waymark finds data for the property keys below it will stored when it is imported. These can be automatically appended to the Overlay Description, or accessed programatically the <code>layer.feature.properties</code> Object.', 'waymark'),
+					'footer' => '<small>' . __(sprintf('For example, the properties below can be accessed through the %s, %s, %s Property Keys:', '<code>created_date</code>', '<code>updated_date</code>', '<code>expires_date</code>'), 'waymark') . '</small>
+					<pre><code>{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "geometry": { ... },
+      "type": "Feature",
+      "properties": {
+        "created_date": "2021-07-15T00:42:41Z",
+        "updated_date": "2021-07-16T00:42:41Z",
+        "expires_date": "2021-07-17T00:42:41Z"
+      }
+    }
+  ]
+}
+</code></pre>',
+
+// 					'help' => array(
+// 						'url' => esc_attr(Waymark_Helper::site_url('docs/meta')),
+// 						'text' => esc_attr__('Meta Docs &raquo;', 'waymark')
+// 					),
+					'fields' => array(
+						'property_key' => array(
+							'name' => 'property_key',
+							'id' => 'property_key',
+							'type' => 'text',
+							'class' => '',
+							'title' => '<u>' . esc_html__('Property', 'waymark') . '</u> ' . esc_html__('Key', 'waymark'),
+							'default' => Waymark_Config::get_setting('property', 'props', 'property_key'),
+							'tip' => esc_attr__('This is the key associated with the data you are trying to access, i.e. "properties": {"property_key": "Some content here"}', 'waymark'),
+// 							'class' => Waymark_Config::get_item('meta', 'inputs') ? 'waymark-uneditable' : '',
+							'input_processing' => array(
+								'preg_replace("/[^0-9a-zA-Z -_.]/", "", $param_value);',
+							),
+						),
+						'property_title' => array(
+							'name' => 'property_title',
+							'id' => 'property_title',
+							'type' => 'text',
+							'class' => '',
+							'title' => '<u><span class="waymark-invisible">' . esc_html__('Property', 'waymark') . '</span></u> ' . esc_html__('Title', 'waymark'),
+							'default' => Waymark_Config::get_setting('property', 'props', 'property_title'),
+							'tip' => esc_attr__('The value for this property will be added to the Overlay Description under this title.', 'waymark'),
+// 							'class' => Waymark_Config::get_item('meta', 'inputs') ? 'waymark-uneditable' : ''
+						),
+					),
+				),
+
+				'options' => array(
+					'title' => esc_html__('Options', 'waymark'),
+					'description' => 'Append listed Properties to the Overlay Description.',
+					'footer' => sprintf(__('<small><b>Pro Tip!</b> Properties are added to the Overlay Description with class names that can be used to target them, e.g. %s.</small>', 'waymark'), '<code class="waymark-code" style="display:inline">&lt;p class="waymark-property waymark-property-property_key"&gt;&lt;b&gt;property_title&lt;/b&gt;&lt;br&gt;proprty_value&lt;/p&gt;</code>'),
+					'fields' => array(
+						'description_append' => array(
+							'name' => 'description_append',
+							'id' => 'description_append',
+							'type' => 'boolean',
+							'title' => esc_html__('Append', 'waymark'),
+							'default' => Waymark_Config::get_setting('property', 'options', 'description_append'),
+							'tip' => esc_attr__('Append the property value to the Overlay Description.', 'waymark'),
+
+						),
+					),
+				),
+			),
+		);
+
 		//Prepare Basemap values for editor option
 		$tile_layers = Waymark_Config::get_item('tiles', 'layers', true);
 
@@ -995,32 +1077,6 @@ class Waymark_Settings {
 					),
 				),
 
-				//Collections
-
-				'collection_options' => array(
-					'title' => esc_html__('Collection Options', 'waymark'),
-					'description' => esc_html__('How Collections are displayed.', 'waymark'),
-					'help' => array(
-						'url' => esc_attr(Waymark_Helper::site_url('docs/collections')),
-						'text' => esc_attr__('Collection Docs &raquo;', 'waymark'),
-					),
-					'fields' => array(
-						'load_method' => array(
-							'name' => 'load_method',
-							'id' => 'load_method',
-							'type' => 'select',
-							'options' => [
-								'fetch' => esc_html__('Background', 'waymark'),
-								'embed' => esc_html__('Embed', 'waymark'),
-							],
-							'class' => 'waymark-short-input',
-							'title' => esc_html__('Shortcode Method', 'waymark'),
-							'default' => Waymark_Config::get_setting('misc', 'collection_options', 'load_method'),
-							'tip' => esc_attr__('Whether to load multiple Maps in the Background (uses AJAX to improve page load) when embedding with the Shortcode, or to Embed them within the page. Embedding may be a bad idea for LARGE COLLECTIONS, but can resolve some issues where Collections are not displaying correctly.', 'waymark'),
-						),
-					),
-				),
-
 				//Shortcode
 
 				'shortcode_options' => array(
@@ -1116,6 +1172,38 @@ class Waymark_Settings {
 					),
 				),
 
+				/**
+				 * ===========================================
+				 * ================= ADVANCED ================
+				 * ===========================================
+				 */
+
+				//Collections
+
+				'collection_options' => array(
+					'title' => esc_html__('Collection Options', 'waymark'),
+					'description' => esc_html__('How Collections are displayed.', 'waymark'),
+					'help' => array(
+						'url' => esc_attr(Waymark_Helper::site_url('docs/collections')),
+						'text' => esc_attr__('Collection Docs &raquo;', 'waymark'),
+					),
+					'fields' => array(
+						'load_method' => array(
+							'name' => 'load_method',
+							'id' => 'load_method',
+							'type' => 'select',
+							'options' => [
+								'fetch' => esc_html__('Background', 'waymark'),
+								'embed' => esc_html__('Embed', 'waymark'),
+							],
+							'class' => 'waymark-short-input',
+							'title' => esc_html__('Shortcode Method', 'waymark'),
+							'default' => Waymark_Config::get_setting('misc', 'collection_options', 'load_method'),
+							'tip' => esc_attr__('Whether to load multiple Maps in the Background (uses AJAX to improve page load) when embedding with the Shortcode, or to Embed them within the page. Embedding may be a bad idea for LARGE COLLECTIONS, but can resolve some issues where Collections are not displaying correctly.', 'waymark'),
+						),
+					),
+				),
+
 				//Editor
 
 				'editor_options' => array(
@@ -1142,7 +1230,8 @@ class Waymark_Settings {
 					),
 				),
 
-				//Advanced
+				//Permalinks
+
 				'permalinks' => array(
 					'title' => esc_html__('Permalinks', 'waymark'),
 					'description' => 'Customise your Map and Collection URLs.',
@@ -1179,7 +1268,34 @@ class Waymark_Settings {
 					),
 				),
 
-				//Advanced
+				// Custom Post Type Supports
+
+				'post' => [
+					'title' => esc_html__('Post Type', 'waymark'),
+					'description' => 'Enable Custom Post Type features.',
+					'fields' => [
+						'supports' => [
+							'name' => 'supports',
+							'id' => 'supports',
+							'type' => 'select_multi',
+							'title' => esc_html__('Supports', 'waymark'),
+							'default' => Waymark_Config::get_setting('misc', 'post', 'supports'),
+							'tip' => esc_attr__('Enable or disable various WordPress features of the Map Custom Post Type.', 'waymark'),
+							'tip_link' => 'https://developer.wordpress.org/reference/functions/add_post_type_support/',
+							'options' => [
+								'title' => esc_html__('Title', 'waymark'),
+								'author' => esc_html__('Author', 'waymark'),
+								'revisions' => esc_html__('Revisions', 'waymark'),
+								'thumbnail' => esc_html__('Thumbnail', 'waymark'),
+								'comments' => esc_html__('Comments', 'waymark'),
+								'excerpt' => esc_html__('Excerpt', 'waymark'),
+							],
+						],
+					],
+				],
+
+				//Debug
+
 				'advanced' => array(
 					'title' => esc_html__('Debug', 'waymark'),
 					'description' => '',

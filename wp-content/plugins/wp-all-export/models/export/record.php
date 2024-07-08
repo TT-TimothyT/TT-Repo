@@ -136,6 +136,24 @@ class PMXE_Export_Record extends PMXE_Model_Record {
                 $postCount  = count($exportQuery->get_terms());
                 remove_filter('terms_clauses', 'wp_all_export_terms_clauses');
             }
+			else if (in_array('shop_order', $this->options['cpt']) && $this->hposEnabled()) {
+				add_filter('posts_where', 'wp_all_export_numbering_where', 15, 1);
+
+				if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
+					$exportQuery = new \Wpae\WordPress\OrderQuery();
+
+					$totalOrders = $exportQuery->getOrders();
+					$foundOrders = $exportQuery->getOrders($this->exported, $this->options['records_per_iteration'], $post_id);
+
+					$foundPosts = count($totalOrders);
+					$postCount = count($foundOrders);
+
+
+
+					remove_filter('posts_where', 'wp_all_export_numbering_where');
+
+				}
+			}
 			else
 			{				
 				remove_all_actions('parse_query');
@@ -266,6 +284,22 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 				$foundPosts = $result->get_comments();
 				remove_action('comments_clauses', 'wp_all_export_comments_clauses');	
 			}
+			else if (in_array('shop_order', $this->options['cpt']) && $this->hposEnabled()) {
+				add_filter('posts_where', 'wp_all_export_numbering_where', 15, 1);
+
+				if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
+					$exportQuery = new \Wpae\WordPress\OrderQuery();
+
+					$totalOrders = $exportQuery->getOrders();
+					$foundOrders = $exportQuery->getOrders($this->exported, $this->options['records_per_iteration'], $post_id);
+
+					$foundPosts = count($totalOrders);
+					$postCount = count($foundOrders);
+
+					remove_filter('posts_where', 'wp_all_export_numbering_where');
+
+				}
+			}
 			else
 			{
 				$postCount  = count($exportQuery);
@@ -343,9 +377,8 @@ class PMXE_Export_Record extends PMXE_Model_Record {
                     switch( XmlExportEngine::$exportOptions['xml_template_type'] ){
                         case 'XmlGoogleMerchants':
                         case 'custom':
-                            require_once PMXE_ROOT_DIR . '/classes/XMLWriter.php';
-                            file_put_contents($file_path, PMXE_XMLWriter::preprocess_xml("\n".XmlExportEngine::$exportOptions['custom_xml_template_footer']), FILE_APPEND);
-                        break;
+
+							break;
                     }
 
 				    if ( ! in_array(XmlExportEngine::$exportOptions['xml_template_type'], array('custom', 'XmlGoogleMerchants')) )

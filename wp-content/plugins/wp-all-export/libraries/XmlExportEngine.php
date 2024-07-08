@@ -2,7 +2,6 @@
 
 if ( ! class_exists('XmlExportEngine') ){
 
-	require_once dirname(__FILE__) . '/XmlExportComment.php';
 	require_once dirname(__FILE__) . '/XmlExportTaxonomy.php';
 
 	final class XmlExportEngine
@@ -38,9 +37,10 @@ if ( ! class_exists('XmlExportEngine') ){
 		public static $woo_refund_export;
 		public static $woo_review_export;
 		public static $user_export = false;
-		public static $comment_export;
 		public static $taxonomy_export;
         public static $custom_record_export;
+
+		public static $is_woo_order_export = false;
 
         public static $is_preview = false;
 
@@ -451,9 +451,9 @@ if ( ! class_exists('XmlExportEngine') ){
 
             if ( !empty(self::$exportOptions['xml_template_type']) && in_array(self::$exportOptions['xml_template_type'], array('custom', 'XmlGoogleMerchants')) ) self::$implode = '#delimiter#';
 
-			self::$comment_export    = new XmlExportComment();
 			self::$taxonomy_export   = new XmlExportTaxonomy();
             self::$custom_record_export = new XmlExportCustomRecord();
+			self::$is_woo_order_export = in_array('shop_order', self::$post_types);
 
             do_action('pmxe_init_addons');
         }
@@ -588,9 +588,6 @@ if ( ! class_exists('XmlExportEngine') ){
                 // Prepare existing Users data
                 self::$user_export->init($this->_existing_meta_keys);
             }
-
-			// Prepare existing Comments data
-			self::$comment_export->init($this->_existing_meta_keys);
 
 			// Prepare existing Taxonomy data
 			self::$taxonomy_export->init($this->_existing_meta_keys);
@@ -1320,6 +1317,10 @@ if ( ! class_exists('XmlExportEngine') ){
 			}
 
 			return $fieldName;
+		}
+
+		public static function get_addons() {
+			return apply_filters('pmxe_addons', []);
 		}
 
 		public static function get_addons_service()

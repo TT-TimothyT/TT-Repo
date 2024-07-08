@@ -2,9 +2,9 @@
 Contributors: webtoffee
 Tags: order export, woocommerce, order, export, csv, order import, woocommerce export orders,  woocommerce  import orders, import, coupon export, coupon import, importer
 Requires at least: 3.0
-Tested up to: 6.5.3
+Tested up to: 6.5.4
 Requires PHP: 5.6
-Stable tag: 2.5.2
+Stable tag: 2.5.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -28,8 +28,8 @@ The following are functionalities offered by the basic version of the order impo
  &#128312; Bulk update WooCommerce orders and coupons.
  &#128312; Compatible with YITH WooCommerce Order Tracking plugin.
  &#128312; Supports various export filters (order status, product, coupon, customer, date range) for order export to CSV.
- &#128312; Tested OK with WooCommerce 8.8.3
- &#128312; Tested OK with WordPress 6.5.3
+ &#128312; Tested OK with WooCommerce 8.9.3
+ &#128312; Tested OK with WordPress 6.5.4
  &#128312; Tested OK with PHP 8.3
 
 Additional features of the order import and order export plugin that will help you in the CSV export and import process:
@@ -114,7 +114,7 @@ Highlights: Simply Export Orders, Customer Order CSV Export, Export Orders to Ex
 &#128312; <a rel="nofollow" href="https://wordpress.org/plugins/users-customers-import-export-for-wp-woocommerce/">Import Export WordPress Users</a>: Import and export the users in your WordPress store using a CSV file with the help of this plugin.
 &#128312; <a rel="nofollow" href="https://wordpress.org/plugins/wp-migration-duplicator/">WordPress Backup & Migration</a>: Quickly migrate and backup entire WordPress site or selected files from one location to another. Backup to FTP, Google Drive, Amazon S3, or local storage and easily restore them back.
 &#128312; <a href="https://wordpress.org/plugins/webtoffee-product-feed/">WebToffee WooCommerce Product Feed & Sync Manager</a>: Generate WooCommerce product feed for Google, Facebook and Instagram Shops and sync WooCommerce products with Facebook catalog.
-
+&#128312; <a href="https://wordpress.org/plugins/wt-gift-cards-woocommerce/">WebToffee Gift Cards for WooCommerce</a>: Create and sell gift card in your WooCommerce store. Allow your customers to buy, redeem, and share gift card.
 
 = About WebToffee.com =
 
@@ -207,6 +207,12 @@ Yes.
 
 == Changelog ==
 
+= 2.5.4 2024-06-18 =
+* [Fix] - Issue with exporting while HPOS is enabled.
+= 2.5.3 2024-06-12 =
+* [Fix] -  Improvement in Encoding Characters.
+* [Compatibility] - Tested OK with WooCommerce 8.9.4
+* [Compatibility] - Tested OK with WordPress 6.5.4
 = 2.5.2 2024-05-08 =
 * [Compatibility] - Tested OK with WooCommerce 8.8.3
 * [Compatibility] - Tested OK with WordPress 6.5.3
@@ -578,6 +584,5 @@ Yes.
 
 == Upgrade Notice ==
 
-= 2.5.2 =
-* [Compatibility] - Tested OK with WooCommerce 8.8.3
-* [Compatibility] - Tested OK with WordPress 6.5.3
+= 2.5.4 =
+* [Fix] - Issue with exporting while HPOS is enabled.

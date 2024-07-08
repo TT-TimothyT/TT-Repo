@@ -3,6 +3,330 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 4.22.17 (2024-06-20)
+
+
+### Bug Fixes
+
+* compatibility with latest ACF version and the media field (CU-8694uj14k)
+* cover image cannot be set with latest WordPress version as modal dialog does not get in background (CU-8694re5up)
+
+
+### Build System
+
+* remove babel-loader and babel toolchain and introduce SWC (CU-8694pt2j7)
+
+
+### Continuous Integration
+
+* introduce Renovate bot for dependency update automation (CU-8694qg0t9)
+
+
+### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update composer dependencies (non-major)
+* **deps :** update dependency mpratt/embera to v2.0.40
+* **deps :** update npm (non-major)
+* **deps :** update npm all dependencies (non-major)
+* **deps :** update npm all dependencies inclusive some major updates (CU-8694qg0t9)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)
+
+
+<details><summary>Dependency updates @devowl-wp/freemium 1.3.84</summary>
+
+
+**_Purpose of dependency:_** _Make your plugin to a freemium plugin with predefined Envato support_
+##### Build System
+
+* remove babel-loader and babel toolchain and introduce SWC (CU-8694pt2j7)
+
+
+##### Continuous Integration
+
+* introduce Renovate bot for dependency update automation (CU-8694qg0t9)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update composer dependencies (non-major)
+* **deps :** update dependency mpratt/embera to v2.0.40
+* **deps :** update npm (non-major)
+* **deps :** update npm all dependencies (non-major)
+* **deps :** update npm all dependencies inclusive some major updates (CU-8694qg0t9)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Dependency updates @devowl-wp/real-product-manager-wp-client 1.19.21</summary>
+
+
+**_Purpose of dependency:_** _A WordPress client for Real Product Manager_
+##### Bug Fixes
+
+* do not deactivate the license when the hostname differs in letter case (CU-8694uw4y2)
+
+
+##### Build System
+
+* remove babel-loader and babel toolchain and introduce SWC (CU-8694pt2j7)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update composer dependencies (non-major)
+* **deps :** update dependency mpratt/embera to v2.0.40
+* **deps :** update npm (non-major)
+* **deps :** update npm all dependencies (non-major)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Dependency updates @devowl-wp/real-utils 1.13.5</summary>
+
+
+**_Purpose of dependency:_** _Create cross-selling ads, about page, rating and newsletter input for WP Real plugins._
+##### Build System
+
+* remove babel-loader and babel toolchain and introduce SWC (CU-8694pt2j7)
+
+
+##### Continuous Integration
+
+* introduce Renovate bot for dependency update automation (CU-8694qg0t9)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update composer dependencies (non-major)
+* **deps :** update dependency mpratt/embera to v2.0.40
+* **deps :** update npm (non-major)
+* **deps :** update npm all dependencies (non-major)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Dependency updates @devowl-wp/utils 1.19.5</summary>
+
+
+**_Purpose of dependency:_** _Utility functionality for all your WordPress plugins._
+##### Bug Fixes
+
+* remove notice about too many requests to devowl.io servers (CU-8694uj43d)
+
+
+##### Build System
+
+* remove babel-loader and babel toolchain and introduce SWC (CU-8694pt2j7)
+
+
+##### Continuous Integration
+
+* introduce Renovate bot for dependency update automation (CU-8694qg0t9)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update composer dependencies (non-major)
+* **deps :** update dependency mpratt/embera to v2.0.40
+* **deps :** update npm (non-major)
+* **deps :** update npm all dependencies (non-major)
+* **deps :** update npm all dependencies inclusive some major updates (CU-8694qg0t9)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/api 0.5.23</summary>
+
+
+**_Purpose of dependency:_** _Shared typings for all Node.js backends and frontends._
+##### Build System
+
+* remove babel-loader and babel toolchain and introduce SWC (CU-8694pt2j7)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** update npm all dependencies (non-major)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/composer-licenses 0.1.16</summary>
+
+
+**_Purpose of dependency:_** _Helper functionalities for your composer project to validate licenses and generate a disclaimer._
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** update composer dependencies (non-major)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/continuous-integration 0.6.4</summary>
+
+
+**_Purpose of dependency:_** _DevOps macros, job templates and jobs for Gitlab CI and @devowl-wp/node-gitlab-ci._
+##### Continuous Integration
+
+* introduce Renovate bot for dependency update automation (CU-8694qg0t9)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** update npm all dependencies (non-major)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/continuous-localization 0.8.7</summary>
+
+
+**_Purpose of dependency:_** _Provide a CLI to push and pull localization files from different translation management systems._
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update npm all dependencies (non-major)
+* **deps :** update npm all dependencies inclusive some major updates (CU-8694qg0t9)
+* update commander and adm-zip (CU-8694qg0t9)
+* update some major dependencies (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/eslint-config 0.2.8</summary>
+
+
+**_Purpose of dependency:_** _Provide eslint configuration for our complete monorepo._
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** update npm (non-major)
+* **deps :** update npm all dependencies (non-major)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/monorepo-utils 0.2.4</summary>
+
+
+**_Purpose of dependency:_** _Predefined monorepo utilities and tasks._
+##### Continuous Integration
+
+* remove npm-update-checker CLI command as we use Renovate now (CU-8694qg0t9)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update npm all dependencies (non-major)
+* update commander and adm-zip (CU-8694qg0t9)
+* update some major dependencies (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/node-gitlab-ci 0.7.14</summary>
+
+
+**_Purpose of dependency:_** _Create dynamic GitLab CI pipelines in JavaScript or TypeScript for each project. Reuse and inherit instructions and avoid duplicate code!_
+##### Continuous Integration
+
+* introduce Renovate bot for dependency update automation (CU-8694qg0t9)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update npm all dependencies (non-major)
+* update commander and adm-zip (CU-8694qg0t9)
+* update some major dependencies (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/phpcs-config 0.1.15</summary>
+
+
+**_Purpose of dependency:_** _Predefined functionalities for PHPCS._
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** update composer dependencies (non-major)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/phpunit-config 0.1.14</summary>
+
+
+**_Purpose of dependency:_** _Predefined functionalities for PHPUnit._
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** update composer dependencies (non-major)
+* update renovate.json (CU-8694qg0t9)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/react-utils 0.1.4</summary>
+
+
+**_Purpose of dependency:_** _Provide various React utils, side effect free and tree shakeable._
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** update npm all dependencies (non-major)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/regexp-translation-extractor 0.2.29</summary>
+
+
+**_Purpose of dependency:_** _Provide a performant translation extractor based on regular expression._
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** update npm (non-major)
+* **deps :** update npm all dependencies (non-major)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+<details><summary>Development dependency update @devowl-wp/webpack-config 0.2.31</summary>
+
+
+**_Purpose of dependency:_** _Webpack config builder for multiple ecosystems like standalone React frontends, Antd, Preact and WordPress._
+##### Build System
+
+* remove babel-loader and babel toolchain and introduce SWC (CU-8694pt2j7)
+
+
+##### Maintenance
+
+* **deps :** pin dependencies
+* **deps :** pin dependencies
+* **deps :** update npm (non-major)
+* **deps :** update npm (non-major)
+* **deps :** update npm all dependencies (non-major)
+* upgrade prettier v3 together with eslint flat config and run on all files (fix, format, CU-8694qg0t9)</details>
+
+
+
+
+
+## 4.22.16 (2024-05-29) (not released)
+
+**Note:** This version of the package has not (yet) been released publicly. This happens if changes have been made in dependencies that do not affect this package (e.g. changes for the development of the package). The changes will be rolled out with the next official update.
+
+**Note:** This package (@devowl-wp/real-media-library) has been updated because a dependency, which is also shipped with this package, has changed.
+
+
+
+
+
+
+
 ## 4.22.15 (2024-05-10)
 
 **Note:** This package (@devowl-wp/real-media-library) has been updated because a dependency, which is also shipped with this package, has changed.
