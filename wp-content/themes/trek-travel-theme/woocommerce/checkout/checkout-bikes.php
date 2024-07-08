@@ -32,7 +32,7 @@ $singleSupplementPrice = $bikeUpgradePrice = 0;
 $bikePriceCurr = $singleSupplementPrice = '';
 if ( $tt_posted['product_id'] ) {
     $bikeUpgradePrice = get_post_meta( $tt_posted['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
-    $bikePriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $bikeUpgradePrice . '</span>';
+    $bikePriceCurr = '<span class="amount fs-sm lh-sm"><span class="woocommerce-Price-currencySymbol"></span>' . get_woocommerce_currency_symbol() . $bikeUpgradePrice . '</span>';
     $singleSupplementPrice = get_post_meta( $tt_posted['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
     $singleSupplementPriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $singleSupplementPrice . '</span>';
 }
@@ -136,8 +136,8 @@ if ($p_own_bike == 'yes') {
                                 $bikeUpgradeHtml = '';
                                 if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
                                     $bikeUpgradeHtml .= '<div class="checkout-bikes__price-upgrade d-flex ms-4">
-                                        <p class="fw-normal fs-sm lh-sm">Upgrade now </p>
-                                        <p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
+                                        <p class="fw-normal fs-sm lh-sm">Upgrade now +</p>
+                                        <span class="amount fs-sm lh-sm"><span class="woocommerce-Price-currencySymbol"></span>' . get_woocommerce_currency_symbol() . $bikeUpgradePrice . '</span>
                                     </div>';
                                 }
                                 $primary_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . '" data-selector="tt_bike_selection_primary" data-id="' . $bikeModelId . '" data-guest-id="0" data-type-id="' . $bikeTypeId . '">
@@ -316,8 +316,8 @@ if ($p_own_bike == 'yes') {
                                         $bikeUpgradeHtml = '';
                                         if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
                                             $bikeUpgradeHtml .= '<div class="checkout-bikes__price-upgrade d-flex ms-4">
-                                                <p class="fw-normal fs-sm lh-sm">Upgrade now </p>
-                                                <p class="fw-bold fs-sm lh-sm"> +' . $bikeUpgradePrice . '</p>
+                                                <p class="fw-normal fs-sm lh-sm">Upgrade now +</p>
+                                                <span class="amount fs-sm lh-sm"><span class="woocommerce-Price-currencySymbol"></span>' . get_woocommerce_currency_symbol() . $bikeUpgradePrice . '</span>
                                             </div>';
                                         }
                                         $guest_available_bike_html .= '<div class="checkout-bikes__bike bike_selectionElement ' . $checkedClass . ' tt_bike_selection_guest_' . $guest_num . '" data-selector="tt_bike_selection_guest_' . $guest_num . '" data-id="' . $bikeModelId . '" data-guest-id="' . $guest_num . '">
