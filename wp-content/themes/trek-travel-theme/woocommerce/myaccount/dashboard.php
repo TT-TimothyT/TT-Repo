@@ -34,6 +34,13 @@ $dob = "";
 $ns_user_id = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
 $is_log = isset($_REQUEST['log']) && $_REQUEST['log'] == 1 ? true : false;
 $trips = trek_get_guest_trips(get_current_user_id(), 1,'', $is_log);
+$TripsCounter = 0;
+foreach($trips['data'] as $trip ){
+    $order = wc_get_order( $trip['order_id'] );
+    if ( $order && !in_array($order->get_status(), ['cancelled', 'trash']) ) {
+        $TripsCounter++;
+    }
+}
 $shipping_address = "";
 $billing_address = "";
 $fullname = $userInfo->first_name;
@@ -164,7 +171,7 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 				<div class="card-body pb-0">
 					<div class="d-flex justify-content-between align-items-baseline mb-3">
 						<h5 class="card-title fw-bold mb-2">My Trips</h5>
-						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/my-trips'); ?>">View all trips (<?php echo $trips['count']; ?>)</a>
+						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/my-trips'); ?>">View All Trips (<?php echo $TripsCounter; ?>)</a>
 					</div>
 					<h6 class="card-subtitle fs-sm lh-sm fw-medium mb-2">Upcoming</h6>
 					<?php if(empty($trips) || (isset($trips['count']) && $trips['count'] <=0 )) { ?>
