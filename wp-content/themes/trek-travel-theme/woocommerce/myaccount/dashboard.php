@@ -176,10 +176,10 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 							$trips_html = '';
 							$showTwoTripsCounter = 0;
 							foreach($trips['data'] as $trip ){
-								if ($showTwoTripsCounter == 2) {
-									break;
-								}
-								$showTwoTripsCounter++;
+								// if ($showTwoTripsCounter == 2) {
+								// 	break;
+								// }
+								// $showTwoTripsCounter++;
 								$product_id = $trip['product_id'];
 								$order_id   = $trip['order_id'];
 								$order      = wc_get_order( $order_id );
@@ -192,6 +192,10 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 								if( 'cancelled' === $wc_order_status || 'trash' === $wc_order_status ) {
 									// Skip the trip if the order trashed or with canceled status.
 									continue;
+								}
+								$showTwoTripsCounter++;
+								if ($showTwoTripsCounter == 2) {
+									break;
 								}
                                 $order_details = trek_get_user_order_info($userInfo->ID, $order_id);
 								$guest_is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
