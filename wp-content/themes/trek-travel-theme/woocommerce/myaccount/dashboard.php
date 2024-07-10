@@ -181,7 +181,18 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 								}
 								$showTwoTripsCounter++;
 								$product_id = $trip['product_id'];
-								$order_id = $trip['order_id'];
+								$order_id   = $trip['order_id'];
+								$order      = wc_get_order( $order_id );
+								if ( ! $order ) {
+									// Skip the trip if does not exist the order on the website.
+									continue;
+								}
+								// Get Order Status.
+								$wc_order_status = $order->get_status();
+								if( 'cancelled' === $wc_order_status || 'trash' === $wc_order_status ) {
+									// Skip the trip if the order trashed or with canceled status.
+									continue;
+								}
                                 $order_details = trek_get_user_order_info($userInfo->ID, $order_id);
 								$guest_is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
 								$waiver_signed = isset( $order_details[0]['waiver_signed'] ) ? $order_details[0]['waiver_signed'] : false;

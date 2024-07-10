@@ -383,10 +383,11 @@ function trek_my_trips_shortcode_cb(){
    }
 }
 add_shortcode('trek-my-trip', 'trek_my_trip_shortcode_cb');
-function trek_my_trip_shortcode_cb(){
+function trek_my_trip_shortcode_cb() {
    $ns_user_id         = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
    $order_id           = $_REQUEST['order_id'];
-   $trip_status        = trek_get_guest_trip_status(get_current_user_id(), $order_id);
+   $order              = wc_get_order( $order_id );
+   $trip_status        = trek_get_guest_trip_status( get_current_user_id(), $order_id );
    $my_trip            = TREK_PATH . '/woocommerce/myaccount/my-trip-past-details.php';
    $current_user_email = wp_get_current_user()->data->user_email;
    $guest_emails       = trek_get_guest_emails( $order_id );
@@ -397,14 +398,21 @@ function trek_my_trip_shortcode_cb(){
    }
 
    if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 0 || $trip_status['days_2'] >= 0 ) ) {
-      $my_trip = TREK_PATH . '/woocommerce/myaccount/my-trip-checklist.php';  
+      $my_trip = TREK_PATH . '/woocommerce/myaccount/my-trip-checklist.php';
    }
 
    if( is_readable( $my_trip ) ) {
       // See order details, only if you are logged in.
       if( is_user_logged_in() ) {
          // See is user belongs to the order.
-         if( !empty( $current_user_email ) &&  in_array( $current_user_email, $guest_emails_arr ) ) {
+         if( $order && ! empty( $current_user_email ) && in_array( $current_user_email, $guest_emails_arr ) ) {
+            // Get Order Status.
+            $wc_order_status = $order->get_status();
+            if( 'cancelled' === $wc_order_status || 'trash' === $wc_order_status ) {
+               // Redirect to My trips page, if order is trashed or cancelled wia the WP admin panel.
+               wp_redirect( 'my-account/my-trips' );
+               exit();
+            }
             // Show the checklist template or Past Details template.
             if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 0 || $trip_status['days_2'] >= 0 ) ) {
                wc_get_template('woocommerce/myaccount/my-trip-checklist.php');

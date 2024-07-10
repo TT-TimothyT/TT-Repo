@@ -29,10 +29,21 @@ $wp_user_email = $userInfo->user_email;
 				$trips_html = '';
 				$trips = trek_get_guest_trips(get_current_user_id(), 1, '', $is_log);
 				if (!empty($trips) && isset($trips['count']) && $trips['count'] != 0 && is_user_logged_in()) {
-					if ($trips && isset($trips['data'])) {
-						foreach ($trips['data'] as $trip) {
+					if ( $trips && isset( $trips['data'] ) ) {
+						foreach ( $trips['data'] as $trip ) {
 							$product_id = $trip['product_id'];
-							$order_id = $trip['order_id'];
+							$order_id   = $trip['order_id'];
+							$order      = wc_get_order( $order_id );
+							if ( ! $order ) {
+								// Skip the trip if does not exist the order on the website.
+								continue;
+							}
+							// Get Order Status.
+							$wc_order_status = $order->get_status();
+							if( 'cancelled' === $wc_order_status || 'trash' === $wc_order_status ) {
+								// Skip the trip if the order trashed or with canceled status.
+								continue;
+							}
 							$order_details = trek_get_user_order_info($userInfo->ID, $order_id);
 							$is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
 							$waiver_signed = isset( $order_details[0]['waiver_signed'] ) ? $order_details[0]['waiver_signed'] : false;
@@ -135,6 +146,17 @@ $wp_user_email = $userInfo->user_email;
 							$trip_name = $past_trip['trip_name'];
 							if ($trip_name) {
 								$order_id = $past_trip['order_id'];
+								$order    = wc_get_order( $order_id );
+								if ( ! $order ) {
+									// Skip the trip if does not exist the order on the website.
+									continue;
+								}
+								// Get Order Status.
+								$wc_order_status = $order->get_status();
+								if( 'cancelled' === $wc_order_status || 'trash' === $wc_order_status ) {
+									// Skip the trip if the order trashed or with canceled status.
+									continue;
+								}
 								$order_details = trek_get_user_order_info($userInfo->ID, $order_id);
 								$is_primary = isset($order_details[0]['guest_is_primary']) ? $order_details[0]['guest_is_primary'] : 0; 
 								$product = wc_get_product($product_id);
