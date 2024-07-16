@@ -799,10 +799,10 @@ function trek_update_trip_checklist_action_cb()
     if ( !isset( $_POST[ $form_nonce_name ] ) || !wp_verify_nonce( $_POST[ $form_nonce_name ], $form_nonce_action ) ) {
         $res['message'] = "Sorry, your nonce did not verify.";
     } else {
-        $lockBike   = get_user_meta( $user->ID, 'gear_preferences_lock_bike', true );
-        $lockRecord = get_user_meta( $user->ID, 'gear_preferences_lock_record', true );
+        $lock_bike   = tt_is_registration_locked( $current_user_id, $user_order_info[0]['guestRegistrationId'], 'bike' );
+        $lock_record = tt_is_registration_locked( $current_user_id, $user_order_info[0]['guestRegistrationId'], 'record' );
 
-        if( $lockRecord == true ) {
+        if( $lock_record == true ) {
             $res['message'] = "Sorry, your can't update the information.";
             $res['status']  = false;
             echo json_encode($res);
@@ -965,10 +965,6 @@ function trek_update_trip_checklist_action_cb()
             $ns_user_booking_data['saddleHeight']                = isset( $_REQUEST['saddle_height'] ) ? $_REQUEST['saddle_height'] : '';
             $ns_user_booking_data['barReachFromSaddle']          = isset( $_REQUEST['bar_reach'] ) ? $_REQUEST['bar_reach'] : '';
             $ns_user_booking_data['barHeightFromWheelCenter']    = isset( $_REQUEST['bar_height'] ) ? $_REQUEST['bar_height'] : '';
-        } else {
-            $ns_user_booking_data['saddleHeight']                = $user_order_info[0]['saddle_height'];
-            $ns_user_booking_data['barReachFromSaddle']          = $user_order_info[0]['saddle_bar_reach_from_saddle'];
-            $ns_user_booking_data['barHeightFromWheelCenter']    = $user_order_info[0]['saddle_bar_height_from_wheel_center'];
         }
 
         if ( empty( $guest_email_address ) ) {
@@ -1044,8 +1040,7 @@ function trek_update_trip_checklist_action_cb()
             $update_to_ns = true;
         }
 
-        $is_passport_update = true;
-        if ( $is_passport_update == true ) {
+        if ( isset( $_REQUEST['tt_save_passport_info'] ) && $_REQUEST['tt_save_passport_info'] == 'yes' ) {
             update_user_meta( $user->ID, 'custentity_passport_number', isset( $_REQUEST['passport_number'] ) ? $_REQUEST['passport_number'] : '' );
             update_user_meta( $user->ID, 'custentity_passport_exp_date', isset( $_REQUEST['passport_expiration_date'] ) ? ( new DateTime( $_REQUEST['passport_expiration_date'] ) )->format( 'm/d/Y' ) : '' );
             update_user_meta( $user->ID, 'custentity_passport_issue_place', isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '' );
@@ -1053,7 +1048,7 @@ function trek_update_trip_checklist_action_cb()
             $update_to_ns = true;
         }
 
-        if ( isset( $_REQUEST['tt_save_bike_info'] ) && $_REQUEST['tt_save_bike_info'] == 'yes'  && $is_section_confirmed['bike_section'] ) {
+        if ( isset( $_REQUEST['tt_save_bike_info'] ) && $_REQUEST['tt_save_bike_info'] == 'yes' && $is_section_confirmed['bike_section'] ) {
             update_user_meta( $user->ID, 'gear_preferences_bike_type', $_REQUEST['bike_type_id_preferences'] );
             update_user_meta( $user->ID, 'gear_preferences_bike_size', $_REQUEST['tt-bike-size'] );
             update_user_meta( $user->ID, 'gear_preferences_bike', $_REQUEST['bikeId'] );
@@ -6668,14 +6663,15 @@ function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_
 	}
 
 	/**
-	 * Rider Level -> 5 = Non Rider.
+	 * Rider Level -> 5 = Non Rider. We can't rely on this anymore, because the value comes from the guest preferences.
 	 * Bike ID -> 5270  = Bring own bike.
+	 * Bike ID -> 5257  = Non Rider.
 	 */
-	if( 5 != $rider_level ) {
+	if( 5257 != $bike_id ) {
 		array_push( $available_pb_checklist_sections, 'gear_section' );
 	}
 
-	if ( 5 != $rider_level && 5270 != $bike_id ) {
+	if ( 5257 != $bike_id && 5270 != $bike_id ) {
 		array_push( $available_pb_checklist_sections, 'bike_section' );
 	}
 

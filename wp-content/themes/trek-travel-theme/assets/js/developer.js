@@ -5154,53 +5154,58 @@ document.addEventListener("DOMContentLoaded", function() {
     var saddleHeight = document.getElementById("saddle_height");
     var barReach = document.getElementById("bar_reach");
     var barHeight = document.getElementById("bar_height");
-  //Loop for each input
+    //Loop for each input
 
+    if( null !== saddleHeight ) {
+      // Add input event listener
+      saddleHeight.addEventListener("input", function() {
+          // Call the validateInput function
+          validateInput(this);
+      });
 
-    // Add input event listener
-    saddleHeight.addEventListener("input", function() {
-        // Call the validateInput function
-        validateInput(this);
-    });
+      saddleHeight.addEventListener("keyup", function() {
+          // Call the roundInput function
+          //Wait for 0.5 seconds before calling the roundInput function
+          setTimeout(function() {
+              roundInput(saddleHeight);
+          }
+          , 300);
+      });
+    }
 
-    saddleHeight.addEventListener("keyup", function() {
-        // Call the roundInput function
-        //Wait for 0.5 seconds before calling the roundInput function
-        setTimeout(function() {
-            roundInput(saddleHeight);
-        }
-        , 300);
-    });
+    if( null !== barReach ) {
+      // Add input event listener
+      barReach.addEventListener("input", function() {
+          // Call the validateInput function
+          validateInput(this);
+      });
 
-    // Add input event listener
-    barReach.addEventListener("input", function() {
-        // Call the validateInput function
-        validateInput(this);
-    });
+      barReach.addEventListener("keyup", function() {
+          // Call the roundInput function
+          //Wait for 0.5 seconds before calling the roundInput function
+          setTimeout(function() {
+              roundInput(barReach);
+          }
+          , 300);
+      });
+    }
 
-    barReach.addEventListener("keyup", function() {
-        // Call the roundInput function
-        //Wait for 0.5 seconds before calling the roundInput function
-        setTimeout(function() {
-            roundInput(barReach);
-        }
-        , 300);
-    });
-
-    // Add input event listener
-    barHeight.addEventListener("input", function() {
-        // Call the validateInput function
-        validateInput(this);
-    });
-
-    barHeight.addEventListener("keyup", function() {
-        // Call the roundInput function
-        //Wait for 0.5 seconds before calling the roundInput function
-        setTimeout(function() {
-            roundInput(barHeight);
-        }
-        , 300);
-    });
+    if( null !== barHeight ) {
+      // Add input event listener
+      barHeight.addEventListener("input", function() {
+          // Call the validateInput function
+          validateInput(this);
+      });
+  
+      barHeight.addEventListener("keyup", function() {
+          // Call the roundInput function
+          //Wait for 0.5 seconds before calling the roundInput function
+          setTimeout(function() {
+              roundInput(barHeight);
+          }
+          , 300);
+      });
+    }
 });
 
 function validateInput(input) {

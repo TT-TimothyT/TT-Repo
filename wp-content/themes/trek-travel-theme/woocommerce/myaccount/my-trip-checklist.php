@@ -244,6 +244,8 @@ $pay_amount             = isset( $trek_checkoutData['pay_amount'] ) ? $trek_chec
 $cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) ? $trek_checkoutData['cart_total_full_amount'] : '';
 $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total( $order_item );
 
+$disable_gear_optional_section = true;
+
 ?>
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
@@ -1098,6 +1100,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 						</form>
 					</div>
 					<!-- accordion-item ends -->
+					<?php if ( true !== $disable_gear_optional_section ) : ?>
 					<?php $fit_review_string = 'Tell us your bike fit information'; ?>
 					<?php $gray_out = ''; ?>
 						<?php if( $lockedUserRecord ) { ?>
@@ -1171,6 +1174,7 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 							<?php wp_nonce_field('edit_trip_checklist_gear_optional_section_action', 'edit_trip_checklist_gear_optional_section_nonce'); ?>
 						</form>
 					</div> <!-- accordion-item ends -->
+					<?php endif; ?>
 				<?php } ?>
 			</div>
 		</div>
