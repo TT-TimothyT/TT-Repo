@@ -203,7 +203,13 @@ $userInfo = wp_get_current_user();
                             </div>
                         </div>
                         <div class="col-md px-0 form-row">
-                            <div class="form-floating"><input type="date" class="form-control tt_guest_inputs" data-validation="date" data-type="date" name="guests[<?php echo $guest_num; ?>][guest_dob]" class="form-control" id="floatingInputGrid" placeholder="Date of Birth" value="<?php echo $guest['guest_dob']; ?>" required="required"><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback"><img class="invalid-icon" /> Age must be 12 years old or above, Please enter correct date of birth.</div></div>
+                        <div class="form-floating">
+                <input type="date" class="form-control tt_guest_inputs" data-validation="date" data-type="date" name="guests[<?php echo $guest_num; ?>][guest_dob]" id="guest_dob_<?php echo $guest_num; ?>" placeholder="Date of Birth" value="<?php echo $guest['guest_dob']; ?>" required="required">
+                <label for="guest_dob_<?php echo $guest_num; ?>">Date of Birth</label>
+                <div class="invalid-feedback invalid-age dob-error"><img class="invalid-icon" /> Age must be 18 years old or above, Please enter correct date of birth.</div>
+                <div class="invalid-feedback invalid-min-year dob-error"><img class="invalid-icon" /> The year must be greater than 1900, Please enter correct date of birth.</div>
+                <div class="invalid-feedback invalid-max-year dob-error"><img class="invalid-icon" /> The year cannot be in the future, Please enter the correct date of birth.</div>
+            </div>
                         </div>
                     </div>
                     <div class="row mx-0 guest-checkout__primary-form-row pt-1">
