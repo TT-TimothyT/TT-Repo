@@ -12,7 +12,7 @@ $activity_type = $activity_tax->name;
 
 if ( $pdp_itineraries ) :
 ?>
-    <a class="pdp-anchor" id="itinerary"></a>
+    <!-- <a class="pdp-anchor" id="itinerary"></a> -->
     <div class="container pdp-section itinerary-container <?php if (!empty($activity_type) && $activity_type != 'Biking'):?>hw<?php endif;?>" id="itinerary">
         <div class="row">
             <div class="col-12">

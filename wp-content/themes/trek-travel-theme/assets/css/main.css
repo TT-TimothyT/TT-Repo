@@ -14980,6 +14980,10 @@ a.refineLink {
   width: fit-content;
   margin-left: auto;
   margin-right: 30px;
+  max-height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+  position: sticky;
+  top: var(--header-height);
 }
 
 .overview-sidebar-desktop {
@@ -14991,11 +14995,24 @@ a.refineLink {
   }
 }
 .overview-sidebar-desktop nav {
-  margin-top: 5rem;
-  margin-bottom: 2.5rem;
+  margin-top: clamp(2rem, 2vh, 3rem);
+  margin-bottom: clamp(2rem, 2vh, 3rem);
+  gap: clamp(0.5rem, 2.5vh, 1.25rem);
 }
 .overview-sidebar-desktop nav .nav-link {
-  padding-left: 0;
+  padding: 0;
+}
+.overview-sidebar-desktop nav .nav-link.active {
+  text-shadow: 0.75px 0 0 black;
+}
+.overview-sidebar-desktop .overview-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 2vh, 1rem);
+  padding-bottom: 1.5rem;
+}
+.overview-sidebar-desktop .overview-info * {
+  margin: 0;
 }
 .overview-sidebar-desktop .overview-info p, .overview-sidebar-desktop .overview-info .book-trip-cta, .overview-sidebar-desktop .overview-info .overview-icons {
   display: flex;
@@ -15004,8 +15021,6 @@ a.refineLink {
   color: #000000;
   background: #ffffff;
   border-radius: 2rem;
-  padding: 0.2rem 0.5rem;
-  margin: 1rem 1rem 1rem 0;
 }
 .overview-sidebar-desktop .overview-info .overview-icons .share-link:focus, .overview-sidebar-desktop .overview-info .overview-icons .add-wishlist:focus {
   box-shadow: none;
@@ -15022,6 +15037,49 @@ a.refineLink {
 .overview-sidebar-desktop .nav-link:hover, .overview-sidebar-desktop .nav-link:focus {
   color: #000000;
   text-shadow: 0px 0px 1px black;
+}
+
+.navigation-sticky {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: 30px;
+  max-height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+  position: sticky;
+  top: var(--header-height);
+  direction: rtl;
+  padding-left: 10px;
+  box-sizing: border-box;
+}
+
+.navigation-sticky > * {
+  direction: ltr;
+}
+
+.navigation-sticky::-webkit-scrollbar {
+  width: 6px;
+  height: 100%;
+}
+
+.navigation-sticky::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navigation-sticky::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+}
+
+.navigation-sticky::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.navigation-sticky {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
+  margin-bottom: 30px;
 }
 
 .overview-menu-mobile {
@@ -15053,32 +15111,34 @@ a.refineLink {
 }
 
 @media (max-width: 991.98px) {
-  #bikes-guide {
+  #best-guide, #great-ride {
     margin-bottom: unset;
     margin-top: 40px;
   }
 }
-#bikes-guide .great-riders {
+#best-guide .great-rides, #best-guide .best-guides, #great-ride .great-rides, #great-ride .best-guides {
   position: relative;
 }
 @media (min-width: 768px) {
-  #bikes-guide .great-riders .great-rider-img {
+  #best-guide .great-rides .overlap-img, #best-guide .best-guides .overlap-img, #great-ride .great-rides .overlap-img, #great-ride .best-guides .overlap-img {
     min-height: 500px;
+    max-height: 550px;
   }
 }
 @media (max-width: 991.98px) {
-  #bikes-guide .great-riders .great-rider-img {
+  #best-guide .great-rides .overlap-img, #best-guide .best-guides .overlap-img, #great-ride .great-rides .overlap-img, #great-ride .best-guides .overlap-img {
     padding-left: unset;
     padding-right: unset;
   }
 }
-#bikes-guide .great-riders .great-rider-img img {
+#best-guide .great-rides .overlap-img img, #best-guide .best-guides .overlap-img img, #great-ride .great-rides .overlap-img img, #great-ride .best-guides .overlap-img img {
   width: 100%;
   height: 100%;
+  min-height: 500px;
   object-fit: cover;
 }
 @media (max-width: 991.98px) {
-  #bikes-guide .great-riders .great-rider-img img {
+  #best-guide .great-rides .overlap-img img, #best-guide .best-guides .overlap-img img, #great-ride .great-rides .overlap-img img, #great-ride .best-guides .overlap-img img {
     position: unset;
     width: 100%;
     height: auto;
@@ -15086,7 +15146,7 @@ a.refineLink {
     padding-right: unset;
   }
 }
-#bikes-guide .great-riders .great-rider {
+#best-guide .great-rides .overlap-text, #best-guide .best-guides .overlap-text, #great-ride .great-rides .overlap-text, #great-ride .best-guides .overlap-text {
   width: 433px;
   background: #000;
   border-bottom: 4px solid #000;
@@ -15095,18 +15155,18 @@ a.refineLink {
   padding: 51px 48px 51px 40px;
 }
 @media (max-width: 991px) and (min-width: 769px) {
-  #bikes-guide .great-riders .great-rider {
+  #best-guide .great-rides .overlap-text, #best-guide .best-guides .overlap-text, #great-ride .great-rides .overlap-text, #great-ride .best-guides .overlap-text {
     width: 64%;
   }
 }
 @media (max-width: 1180px) and (min-width: 992px) {
-  #bikes-guide .great-riders .great-rider {
+  #best-guide .great-rides .overlap-text, #best-guide .best-guides .overlap-text, #great-ride .great-rides .overlap-text, #great-ride .best-guides .overlap-text {
     width: 48%;
     padding: 20px;
   }
 }
 @media (min-width: 992px) {
-  #bikes-guide .great-riders .great-rider {
+  #best-guide .great-rides .overlap-text, #best-guide .best-guides .overlap-text, #great-ride .great-rides .overlap-text, #great-ride .best-guides .overlap-text {
     z-index: 100;
     top: 50%;
     transform: translateY(-50%);
@@ -15115,25 +15175,25 @@ a.refineLink {
   }
 }
 @media (max-width: 991.98px) {
-  #bikes-guide .great-riders .great-rider {
+  #best-guide .great-rides .overlap-text, #best-guide .best-guides .overlap-text, #great-ride .great-rides .overlap-text, #great-ride .best-guides .overlap-text {
     margin: auto;
     width: 90%;
     height: auto;
     padding: 32px 24px;
-    margin-top: -35%;
+    margin-top: -25%;
   }
 }
 @media (max-width: 767.98px) {
-  #bikes-guide .great-riders .great-rider {
+  #best-guide .great-rides .overlap-text, #best-guide .best-guides .overlap-text, #great-ride .great-rides .overlap-text, #great-ride .best-guides .overlap-text {
     margin: auto;
     width: 90%;
     height: auto;
     padding: 32px 24px;
-    margin-top: -20%;
+    margin-top: -18%;
   }
 }
 @media (max-width: 575.98px) {
-  #bikes-guide .great-riders .great-rider {
+  #best-guide .great-rides .overlap-text, #best-guide .best-guides .overlap-text, #great-ride .great-rides .overlap-text, #great-ride .best-guides .overlap-text {
     margin: auto;
     width: 90%;
     height: auto;
@@ -15141,7 +15201,7 @@ a.refineLink {
     margin-top: -15%;
   }
 }
-#bikes-guide .great-riders .great-rider p {
+#best-guide .great-rides .overlap-text p, #best-guide .best-guides .overlap-text p, #great-ride .great-rides .overlap-text p, #great-ride .best-guides .overlap-text p {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
@@ -15150,40 +15210,40 @@ a.refineLink {
   margin-bottom: 12px;
 }
 @media (max-width: 991.98px) {
-  #bikes-guide .great-riders .great-rider p {
+  #best-guide .great-rides .overlap-text p, #best-guide .best-guides .overlap-text p, #great-ride .great-rides .overlap-text p, #great-ride .best-guides .overlap-text p {
     font-size: 1rem;
     line-height: 24px;
   }
 }
-#bikes-guide .great-riders .great-rider h5, #bikes-guide .great-riders .great-rider .h5 {
+#best-guide .great-rides .overlap-text h5, #best-guide .great-rides .overlap-text .h5, #best-guide .best-guides .overlap-text h5, #best-guide .best-guides .overlap-text .h5, #great-ride .great-rides .overlap-text h5, #great-ride .great-rides .overlap-text .h5, #great-ride .best-guides .overlap-text h5, #great-ride .best-guides .overlap-text .h5 {
   font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
   margin-bottom: 16px;
 }
 @media (max-width: 991.98px) {
-  #bikes-guide .great-riders .great-rider h5, #bikes-guide .great-riders .great-rider .h5 {
+  #best-guide .great-rides .overlap-text h5, #best-guide .great-rides .overlap-text .h5, #best-guide .best-guides .overlap-text h5, #best-guide .best-guides .overlap-text .h5, #great-ride .great-rides .overlap-text h5, #great-ride .great-rides .overlap-text .h5, #great-ride .best-guides .overlap-text h5, #great-ride .best-guides .overlap-text .h5 {
     font-weight: 600;
     font-size: 24px;
     line-height: 36px;
   }
 }
-#bikes-guide .great-riders .great-rider .great-p {
+#best-guide .great-rides .overlap-text .overlap-p, #best-guide .best-guides .overlap-text .overlap-p, #great-ride .great-rides .overlap-text .overlap-p, #great-ride .best-guides .overlap-text .overlap-p {
   font-size: 1rem;
   line-height: 1.5rem;
   margin-bottom: 24px;
 }
-#bikes-guide .great-riders .great-rider a {
+#best-guide .great-rides .overlap-text a, #best-guide .best-guides .overlap-text a, #great-ride .great-rides .overlap-text a, #great-ride .best-guides .overlap-text a {
   border-color: #fff !important;
   color: #fff !important;
 }
 @media (min-width: 768px) {
-  #bikes-guide .pdp-section__divider {
+  #best-guide .pdp-section__divider, #great-ride .pdp-section__divider {
     margin-top: 100px;
   }
 }
 @media (max-width: 767.98px) {
-  #bikes-guide .pdp-section__divider {
+  #best-guide .pdp-section__divider, #great-ride .pdp-section__divider {
     margin-top: 100px;
   }
 }

@@ -7,7 +7,7 @@ if(count($attachment_ids) > 4){
 	$attachment_ids = array_slice($attachment_ids, 4);
 }
 ?>
-<a class="pdp-anchor" id="overview"></a>
+<!-- <a class="pdp-anchor" id="overview"></a> -->
 <div class="mobile-share-wishlist desktop-hideme">
     <div class="overview-icons d-flex">
         <button type="button" class="btn btn-outline-dark share-link">

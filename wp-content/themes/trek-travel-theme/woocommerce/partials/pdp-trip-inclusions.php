@@ -5,7 +5,7 @@ $activity_tax = get_field('Activity');
 $activity = $activity_tax->name;
 
 ?>
-<a class="pdp-anchor" id="inclusions"></a>
+<!-- <a class="pdp-anchor" id="inclusions"></a> -->
 <div class="container pdp-section <?php if (!empty($activity) && $activity != 'Biking'):?>hw<?php endif;?>" id="inclusions">
     <div class="row">
         <div class="col-12">

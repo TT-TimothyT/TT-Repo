@@ -6,54 +6,111 @@
     width: fit-content;
     margin-left: auto;
     margin-right: 30px;
+    max-height: calc(100vh - var(--header-height)); // Adjust height considering header
+    overflow-y: auto; // Make it scrollable when contents overflow
+    position: sticky; // Ensure it stays in view when scrolling
+    top: var(--header-height); // Position it below the header
 }
-.overview-sidebar-desktop{
+
+.overview-sidebar-desktop {
     @media (max-width: 767px) {
         display: none;
     }
     background-color: #D3D3D3;
-    nav{
-        // align-content: center;
-        margin-top: 5rem;
-        margin-bottom: 2.5rem;
+    nav {
+        margin-top: clamp(2rem, 2vh, 3rem);
+        margin-bottom: clamp(2rem, 2vh, 3rem);
+        gap: clamp(0.5rem, 2.5vh, 1.25rem);
 
         .nav-link {
-            padding-left: 0;
+            padding: 0;
+            &.active {
+                text-shadow: 0.75px 0 0 black;
+            }
         }
     }
     .overview-info {
-        p, .book-trip-cta, .overview-icons{
-            display: flex;
-            // justify-content: center;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.5rem, 2vh, 1rem);
+        padding-bottom: 1.5rem;
+
+        * {
+            margin: 0;
         }
-        .overview-icons{
-            .share-link, .add-wishlist{
+        p, .book-trip-cta, .overview-icons {
+            display: flex;
+        }
+        .overview-icons {
+            .share-link, .add-wishlist {
                 color: #000000;
                 background: #ffffff;
                 border-radius: 2rem;
-                padding: .2rem .5rem;
-                margin: 1rem 1rem 1rem 0;
-                &:focus{
+                &:focus {
                     box-shadow: none;
                 }
             }
         }
-        .add-wishlist{
-            .bi-heart-fill{
+        .add-wishlist {
+            .bi-heart-fill {
                 display: none;
             }
-            &:hover{
-                .bi-heart{
+            &:hover {
+                .bi-heart {
                     display: none;
                 }
-                .bi-heart-fill{
+                .bi-heart-fill {
                     display: block;
-                }                
+                }
             }
         }
     }
-    .nav-link:hover, .nav-link:focus{
+    .nav-link:hover, .nav-link:focus {
         color: #000000;
-        text-shadow:0px 0px 1px black;
+        text-shadow: 0px 0px 1px black;
     }
+}
+.navigation-sticky {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: 30px;
+    max-height: calc(100vh - var(--header-height)); // Adjust height considering header
+    overflow-y: auto; // Show scrollbar only when content overflows
+    position: sticky; // Ensure it stays in view when scrolling
+    top: var(--header-height); // Position it below the header
+    direction: rtl; // Change text direction to right-to-left to move scrollbar to left
+    padding-left: 10px; // Add padding to account for the scrollbar width on the left
+    box-sizing: border-box; // Ensure padding does not affect overall width
+}
+
+.navigation-sticky > * {
+    direction: ltr; // Set children back to left-to-right direction
+}
+
+// Customize scrollbar appearance (works in webkit browsers like Chrome, Safari)
+.navigation-sticky::-webkit-scrollbar {
+    width: 6px; // Width of the scrollbar
+    height: 100%; // Ensure scrollbar height is 100% of the container height
+}
+
+.navigation-sticky::-webkit-scrollbar-track {
+    background: transparent; // Background color of the scrollbar track
+}
+
+.navigation-sticky::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.5); // Color of the scrollbar thumb
+    border-radius: 3px; // Round the corners of the scrollbar thumb
+}
+
+.navigation-sticky::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.7); // Color of the scrollbar thumb on hover
+}
+
+// Additional styles for non-webkit browsers (like Firefox)
+.navigation-sticky {
+    scrollbar-width: thin; // Firefox
+    scrollbar-color: rgba(0, 0, 0, 0.5) transparent; // Firefox
+    margin-bottom: 30px;
 }

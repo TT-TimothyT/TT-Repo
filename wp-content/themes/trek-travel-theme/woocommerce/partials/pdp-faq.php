@@ -2,7 +2,7 @@
 <?php
     if( have_rows('faqs') ):
 ?>
-    <a class="pdp-anchor" id="faqs"></a>
+    <!-- <a class="pdp-anchor" id="faqs"></a> -->
     <div class="container pdp-section faq-container" id="faqs">
         <div class="row">
             <div class="col-12">

@@ -605,9 +605,9 @@ if( $available_child_products ) {
   
 }
 ?>
-<a class="pdp-anchor" id="dates-pricing"></a>
-<div class="container dates-pricing-container" id="dates-pricing">
-<div class="container pdp-section dates-pricing-container">
+<!-- <a class="pdp-anchor" id="dates-pricing"></a> -->
+<div class="container pdp-section dates-pricing-container" id="dates-pricing">
+<!-- <div class="container pdp-section dates-pricing-container"> -->
     <h3 class="fw-semibold">Dates & Pricing</h3>
     <p class="fw-normal fs-xl lh-xl">Book early for the best price</p>
     <div class="trip-status">

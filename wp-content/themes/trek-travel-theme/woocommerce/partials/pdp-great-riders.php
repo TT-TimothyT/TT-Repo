@@ -1,23 +1,23 @@
 <?php 
-// PDP - Great Riders
+// PDP - Great rides
 if(get_field('gr_image')):
 ?>
-<div class="container pdp-section" id="bikes-guide">
+<div class="container pdp-section" id="great-ride">
     <div class="row">
         <div class="col-md-12">
-            <div class="row great-riders">
+            <div class="row great-rides">
 
-                <div class="col-12 col-lg-9 great-rider-img">
+                <div class="col-12 col-lg-9 overlap-img">
                     <?php
                         $gr_image = get_field('gr_image');
                     ?>
                     <img src="<?php echo esc_url( $gr_image['url'] ); ?>" alt="<?php echo esc_attr( $gr_image['alt'] ); ?>">
                 </div>
 
-                <div class="col-lg-6 great-rider align-middle">
+                <div class="col-lg-6 overlap-text align-middle">
                     <p><?php echo wp_kses_post( get_field( 'gr_title' ) ); ?></p>
                     <h5><?php echo wp_kses_post( get_field( 'gr_subtitle' ) ); ?></h5>
-                    <p class="great-p"><?php echo wp_kses_post( get_field( 'gr_text' ) ); ?></p>
+                    <p class="overlap-p"><?php echo wp_kses_post( get_field( 'gr_text' ) ); ?></p>
                     <?php
                     $link = get_field('gr_url');
                     if (!empty($link)):
