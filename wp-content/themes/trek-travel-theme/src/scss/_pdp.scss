@@ -93,6 +93,16 @@
    
 }
 
+.visually-hidden-focusable {
+    position: absolute;
+    left: 0; /* Ensure the element is within the viewport */
+}
+
+.elementor-screen-only {
+    position: absolute;
+    left: 0; /* Ensure the element is within the viewport */
+}
+
 
 // Import PDP section and components
 @import "PDP/pdp-hero-carousel";

@@ -1,5 +1,10 @@
 // PDP navigation menu sticky sidebar Desktop
-
+// *, *::before, *::after {
+//     box-sizing: border-box;
+// }
+// .pdp-container * {
+//     outline: 1px solid red;
+// }
 .navigation-sticky {
     display: flex;
     flex-direction: column;

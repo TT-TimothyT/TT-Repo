@@ -206,3 +206,37 @@ get_footer( 'shop' );
 		jQuery('body').removeClass('elementor-kit-14');
 	})
 </script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+    const elements = document.querySelectorAll('*');
+    elements.forEach(element => {
+        const bounding = element.getBoundingClientRect();
+        if (bounding.right > window.innerWidth || bounding.left < 0) {
+            console.log('Overflowing element:', element, 'Bounding:', bounding);
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const threshold = 10; // Set the overflow threshold
+
+    const checkOverflow = () => {
+        const docWidth = document.documentElement.offsetWidth;
+        const winWidth = window.innerWidth;
+
+        if ((docWidth - winWidth) > threshold) {
+            document.body.style.overflowX = 'scroll';
+        } else {
+            document.body.style.overflowX = 'hidden';
+        }
+    };
+
+    // Initial check
+    checkOverflow();
+
+    // Re-check on window resize
+    window.addEventListener('resize', checkOverflow);
+});
+
+</script>

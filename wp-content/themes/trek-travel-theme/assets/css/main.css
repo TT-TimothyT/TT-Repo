@@ -14707,6 +14707,16 @@ a.refineLink {
   }
 }
 
+.visually-hidden-focusable {
+  position: absolute;
+  left: 0; /* Ensure the element is within the viewport */
+}
+
+.elementor-screen-only {
+  position: absolute;
+  left: 0; /* Ensure the element is within the viewport */
+}
+
 .product-slider {
   position: relative;
 }
