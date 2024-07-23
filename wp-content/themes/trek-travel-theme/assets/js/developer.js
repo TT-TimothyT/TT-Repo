@@ -128,24 +128,28 @@ function tt_validate_age(dob = null, startDate = null) {
   if (dob && startDate) {
     var dob = new Date(dob);
     var start = new Date(startDate);
-    var age = start.getUTCFullYear() - dob.getUTCFullYear();
-    var monthDiff = start.getUTCMonth() - dob.getUTCMonth();
-    var dayDiff = start.getUTCDate() - dob.getUTCDate();
 
-    // Adjust age if the birth date hasn't occurred yet this year
-    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-      age--;
-    }
-    
-    if (age < 18) {
-      isValid = false;
-      dobTypeError = 'invalid-age';
-    } else if (dob.getUTCFullYear() < 1900) {
-      isValid = false;
-      dobTypeError = 'invalid-min-year';
-    } else if (dob > start) {
+    // Check if DOB is in the future
+    if (dob > start) {
       isValid = false;
       dobTypeError = 'invalid-max-year';
+    } else {
+      var age = start.getUTCFullYear() - dob.getUTCFullYear();
+      var monthDiff = start.getUTCMonth() - dob.getUTCMonth();
+      var dayDiff = start.getUTCDate() - dob.getUTCDate();
+
+      // Adjust age if the birth date hasn't occurred yet this year
+      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+      }
+
+      if (age < 18) {
+        isValid = false;
+        dobTypeError = 'invalid-age';
+      } else if (dob.getUTCFullYear() < 1900) {
+        isValid = false;
+        dobTypeError = 'invalid-min-year';
+      }
     }
   }
 
