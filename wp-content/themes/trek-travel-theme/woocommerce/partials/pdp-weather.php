@@ -34,58 +34,49 @@ if (!empty($tripWeather)):
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">High (°F)</th>
+                            <th scope="row">High</th>
                             <?php 
                             foreach ($tripWeather["f"] as $t => $tValue):
                                 if (str_contains($t, 'max')):
-                            ?><td><?php echo $tValue;?>°</td>
+                            ?>
+                            <td>
+                                <?php echo $tValue; ?>°F / 
+                                <span style="font-size: smaller;"><?php echo $tripWeather["c"][$t]; ?>°C</span>
+                            </td>
                             <?php 
                                 endif;
                             endforeach;
                             ?>
                         </tr>
                         <tr>
-                            <th scope="row">High (°C)</th>
-                            <?php 
-                            foreach ($tripWeather["c"] as $t => $tValue):
-                                if (str_contains($t, 'max')):
-                            ?><td><?php echo $tValue;?>°</td>
-                            <?php 
-                                endif;
-                            endforeach;
-                            ?>
-                        </tr>
-                        <tr>
-                            <th scope="row">Low (°F)</th>
+                            <th scope="row">Low</th>
                             <?php 
                             foreach ($tripWeather["f"] as $t => $tValue):
                                 if (str_contains($t, 'min')):
-                            ?><td><?php echo $tValue;?>°</td>
+                            ?>
+                            <td>
+                                <?php echo $tValue; ?>°F / 
+                                <span style="font-size: smaller;"><?php echo $tripWeather["c"][$t]; ?>°C</span>
+                            </td>
                             <?php 
                                 endif;
                             endforeach;
                             ?>
                         </tr>
                         <tr>
-                            <th scope="row">Low (°C)</th>
-                            <?php 
-                            foreach ($tripWeather["c"] as $t => $tValue):
-                                if (str_contains($t, 'min')):
-                            ?><td><?php echo $tValue;?>°</td>
-                            <?php 
-                                endif;
-                            endforeach;
-                            ?>
-                        </tr>
-                        <tr>
-                            <th scope="row">Rain (in/cm)</th>
+                            <th scope="row">Rain</th>
                             <?php 
                             foreach ($tripWeather["pre"] as $p => $pValue):
                                 $cmValue = $pValue * 2.54; // Convert inches to centimeters
-                            ?><td><?php echo $pValue;?> in / <?php echo number_format($cmValue, 2); ?> cm</td>
+                            ?>
+                            <td>
+                                <?php echo $pValue; ?>" / 
+                                <span style="font-size: smaller;"><?php echo number_format($cmValue, 2); ?> cm</span>
+                            </td>
                             <?php 
                             endforeach;
                             ?>
+                        </tr>
                         </tr>
                     </tbody>
                 </table>
