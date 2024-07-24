@@ -16789,19 +16789,21 @@ nav .nav-tabs .nav-link.active {
   }
 }
 
-@media (max-width: 767.98px) {
-  .pdp-weather__weather-table {
-    overflow-x: scroll;
-    padding: 0;
-  }
-  .pdp-weather__weather-table table tr th:first-child {
-    position: sticky;
-    left: -1px;
-    white-space: nowrap;
-  }
-  .pdp-weather__weather-table table thead tr th:first-child {
-    background-color: #000;
-  }
+.pdp-weather__weather-table {
+  overflow-x: auto;
+  padding: 0;
+}
+.pdp-weather__weather-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.pdp-weather__weather-table table tr th:first-child {
+  position: sticky;
+  left: -1px;
+  white-space: nowrap;
+}
+.pdp-weather__weather-table table thead tr th:first-child {
+  background-color: #000;
 }
 .pdp-weather__weather-table thead th, .pdp-weather__weather-table tbody th {
   font-size: 16px;
