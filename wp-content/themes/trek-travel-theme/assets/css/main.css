@@ -16813,6 +16813,27 @@ nav .nav-tabs .nav-link.active {
   font-size: 14px;
   line-height: 20px;
 }
+.pdp-weather__weather-table .small-text {
+  font-size: smaller;
+  color: #666;
+}
+.pdp-weather__weather-table .separator {
+  margin: 0 5px;
+}
+.pdp-weather__weather-table .unit-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  white-space: nowrap;
+}
+.pdp-weather__weather-table .unit-group > span {
+  display: inline-block;
+}
+@media (max-width: 575.98px) {
+  .pdp-weather__weather-table .unit-group > .separator, .pdp-weather__weather-table .unit-group > .small-text {
+    display: block;
+    margin-left: 0;
+  }
+}
 
 #similar-trips {
   padding: 3rem 0px 3.5rem 82px;

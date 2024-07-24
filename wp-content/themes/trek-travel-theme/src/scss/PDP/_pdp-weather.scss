@@ -1,9 +1,9 @@
-.pdp-weather{
-    &__weather-table{
+.pdp-weather {
+    &__weather-table {
         @include media-breakpoint-down(md) {
             overflow-x: scroll;
             padding: 0;
-            table{
+            table {
                 tr th:first-child {
                     position: sticky;
                     left: -1px;
@@ -12,7 +12,7 @@
                 thead tr th:first-child {
                     background-color: $black;
                 }
-            } 
+            }
         }
         thead th, tbody th {
             font-size: 16px;
@@ -23,6 +23,29 @@
             background-color: $white;
             font-size: 14px;
             line-height: 20px;
+        }
+
+        // New styles for responsive unit-group
+        .small-text {
+            font-size: smaller;
+            color: #666;
+        }
+        .separator {
+            margin: 0 5px;
+        }
+        .unit-group {
+            display: inline-flex;
+            flex-wrap: wrap;
+            white-space: nowrap;
+        }
+        .unit-group > span {
+            display: inline-block;
+        }
+        @include media-breakpoint-down(sm) {
+            .unit-group > .separator, .unit-group > .small-text {
+                display: block;
+                margin-left: 0;
+            }
         }
     }
 }
