@@ -78,15 +78,15 @@ if (!empty($tripWeather)):
                             ?>
                         </tr>
                         <tr>
-                            <th scope="row">Rain (in)</th>
+                            <th scope="row">Rain (in/cm)</th>
                             <?php 
                             foreach ($tripWeather["pre"] as $p => $pValue):
-                            ?><td><?php echo $pValue;?>°</td>
+                                $cmValue = $pValue * 2.54; // Convert inches to centimeters
+                            ?><td><?php echo $pValue;?> in / <?php echo number_format($cmValue, 2); ?> cm</td>
                             <?php 
                             endforeach;
                             ?>
-                            
-                        </tr>                        
+                        </tr>
                     </tbody>
                 </table>
             </div>
