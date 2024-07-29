@@ -157,24 +157,25 @@ $isPassportRequired = get_post_meta($booked_trip_id, TT_WC_META_PREFIX . 'isPass
 $ns_booking_id = get_post_meta($order_id, TT_WC_META_PREFIX.'guest_booking_id', true);
 
 $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat' );
-$hideJerseyForTrips = [ 710, 744, 712, 713 ];
-$hideme = "";
 
 $bike_pointer_none = '';
 $gear_pointer_none = '';
 
-if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
-	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
-	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
-		if ( in_array( 712, $product_cat_matches ) || in_array( 744, $product_cat_matches ) ) {
-			$hideme = "d-none";
-		} elseif ( in_array( 710, $product_cat_matches ) && in_array( 713, $product_cat_matches ) ) {
-			$hideme = "d-none";
-		} else {
-			$hideme = "none";
-		}
-	}
+$hideJerseyForTrips = [744, 712, 713];
+$hideme = "";
+
+if (!empty($tripProductLine) && is_array($tripProductLine)) {
+    $product_cat_matches = array_intersect($tripProductLine, $hideJerseyForTrips);
+    
+    if (!empty($product_cat_matches)) {
+        if (array_intersect([712, 744, 713], $product_cat_matches)) {
+            $hideme = "d-none";
+        } else {
+            $hideme = "none";
+        }
+    }
 }
+
 
 // Take user preferences from user postmeta.
 $current_user_preferences = dx_get_user_pb_preferences( $user_id );

@@ -11,22 +11,21 @@ $tripInfo           = tt_get_trip_pid_sku_from_cart();
 $parent_product_sku = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX.'itineraryCode', true );
 $parent_product_id  = wc_get_parent_grouped_id($tripInfo['product_id']);
 $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat' );
-$hideJerseyForTrips = [ 710, 744, 712, 713 ];
+$hideJerseyForTrips = [744, 712, 713];
 $hideme = "";
 
-
-if ( ! empty( $tripProductLine) && is_array( $tripProductLine ) && ! empty( $hideJerseyForTrips ) && is_array( $hideJerseyForTrips ) ) {
-	$product_cat_matches = array_intersect( $tripProductLine, $hideJerseyForTrips );
-	if ( 0 < count( $product_cat_matches ) && is_array( $product_cat_matches ) ) {
-		if ( in_array( 712, $product_cat_matches ) || in_array( 744, $product_cat_matches ) ) {
-			$hideme = "d-none";
-		} elseif ( in_array( 710, $product_cat_matches ) && in_array( 713, $product_cat_matches ) ) {
-			$hideme = "d-none";
-		} else {
-			$hideme = "none";
-		}
-	}
+if (!empty($tripProductLine) && is_array($tripProductLine)) {
+    $product_cat_matches = array_intersect($tripProductLine, $hideJerseyForTrips);
+    
+    if (!empty($product_cat_matches)) {
+        if (array_intersect([712, 744, 713], $product_cat_matches)) {
+            $hideme = "d-none";
+        } else {
+            $hideme = "none";
+        }
+    }
 }
+
 
 $singleSupplementPrice = $bikeUpgradePrice = 0;
 $bikePriceCurr = $singleSupplementPrice = '';
