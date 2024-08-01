@@ -114,8 +114,10 @@ $wp_user_email = $userInfo->user_email;
                                     <p class="fw-medium fs-sm lh-sm">' . $date_range . '</p>';
 
 								$lockedUserRecord = tt_is_registration_locked( $userInfo->ID, $order_details[0]['guestRegistrationId'], 'record' );
-								if( ! empty( $order_details ) && ! $is_checklist_completed && 1 != $lockedUserRecord ) {
-									$trips_html .= '<i class="bi bi-info-circle me-3 text-danger"></i><p class="fw-normal fs-sm lh-sm d-inline text-danger">You have items pending confirmation</p>';
+								if ( get_current_user_id() != 5636 ) {
+									if( ! empty( $order_details ) && ! $is_checklist_completed && 1 != $lockedUserRecord ) {
+										$trips_html .= '<i class="bi bi-info-circle me-3 text-danger"></i><p class="fw-normal fs-sm lh-sm d-inline text-danger">You have items pending confirmation</p>';
+									}
 								}
 
 								$trips_html .= '</div>' . $link_html . '</div><hr>';
