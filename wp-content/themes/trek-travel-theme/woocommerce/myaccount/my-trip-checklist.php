@@ -944,11 +944,15 @@ $disable_gear_optional_section = true;
 					<div class="accordion-item" >
 						<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-bikeInfo">
 							<button class="accordion-button px-0 collapsed bike_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo">
-								<?php if( $is_section_confirmed['bike_section'] ) : ?>
+							<?php if ( get_current_user_id() == 5636 ) : ?>
+								<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
+							<?php else : ?>
+								<?php if ( $is_section_confirmed['bike_section'] ) : ?>
 									<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
 								<?php else : ?>
 									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
 								<?php endif; ?>
+							<?php endif; ?>
 								<?php echo $bike_review_string; ?>
 							</button>
 						</p>
