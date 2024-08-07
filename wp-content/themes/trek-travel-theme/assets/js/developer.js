@@ -250,49 +250,51 @@ function tt_validate_age(dob = null, startDate = null) {
 
 // jQuery code to validate date of birth fields
 jQuery(document).ready(function($) {
-  // Ensure start dates are available globally
-  let startDates = trekData.startDates;
+  if ($('body').hasClass('trek-checkout')) {
+    // Ensure start dates are available globally
+    let startDates = trekData.startDates;
 
-  // Function to validate DOB fields
-  function validateDobField(dobField, startDates) {
-      let dob = $(dobField).val();
-      let errors = $(dobField).closest('div.form-row').find('.dob-error');
-      errors.css("display", "none");
+    // Function to validate DOB fields
+    function validateDobField(dobField, startDates) {
+        let dob = $(dobField).val();
+        let errors = $(dobField).closest('div.form-row').find('.dob-error');
+        errors.css("display", "none");
 
-      startDates.forEach(startDate => {
-          let validation = tt_validate_age(dob, startDate);
-          if (!validation.isValid) {
-              switch (validation.dobTypeError) {
-                  case 'invalid-min-year':
-                      $(dobField).closest('div.form-row').find(".invalid-feedback.invalid-min-year").css("display", "block");  
-                      break;
-                  case 'invalid-max-year':
-                      $(dobField).closest('div.form-row').find(".invalid-feedback.invalid-max-year").css("display", "block");
-                      break;
-                  case 'invalid-age':
-                  default:
-                      $(dobField).closest('div.form-row').find(".invalid-feedback.invalid-age").css("display", "block");
-                      break;
-              }
-              $(dobField).closest('div.form-row').addClass('woocommerce-invalid');
-              $(dobField).closest('div.form-row').removeClass('woocommerce-validated');
-          } else {
-              $(dobField).closest('div.form-row').removeClass('woocommerce-invalid');
-              $(dobField).closest('div.form-row').addClass('woocommerce-validated');
-          }
-      });
+        startDates.forEach(startDate => {
+            let validation = tt_validate_age(dob, startDate);
+            if (!validation.isValid) {
+                switch (validation.dobTypeError) {
+                    case 'invalid-min-year':
+                        $(dobField).closest('div.form-row').find(".invalid-feedback.invalid-min-year").css("display", "block");  
+                        break;
+                    case 'invalid-max-year':
+                        $(dobField).closest('div.form-row').find(".invalid-feedback.invalid-max-year").css("display", "block");
+                        break;
+                    case 'invalid-age':
+                    default:
+                        $(dobField).closest('div.form-row').find(".invalid-feedback.invalid-age").css("display", "block");
+                        break;
+                }
+                $(dobField).closest('div.form-row').addClass('woocommerce-invalid');
+                $(dobField).closest('div.form-row').removeClass('woocommerce-validated');
+            } else {
+                $(dobField).closest('div.form-row').removeClass('woocommerce-invalid');
+                $(dobField).closest('div.form-row').addClass('woocommerce-validated');
+            }
+        });
+    }
+
+    // Validate primary guest DOB field
+    $('input[name="custentity_birthdate"]').on('change blur', function () {
+        validateDobField(this, startDates);
+    });
+
+    // Validate additional guests' DOB fields
+    $(document).on('change blur', 'input[name*="[guest_dob]"]', function () {
+        $(this).attr('required', 'required'); // Add the required attribute to the current input
+        validateDobField(this, startDates);
+    });
   }
-
-  // Validate primary guest DOB field
-  $('input[name="custentity_birthdate"]').on('change blur', function () {
-      validateDobField(this, startDates);
-  });
-
-  // Validate additional guests' DOB fields
-  $(document).on('change blur', 'input[name*="[guest_dob]"]', function () {
-      $(this).attr('required', 'required'); // Add the required attribute to the current input
-      validateDobField(this, startDates);
-  });
 });
 
 
@@ -2540,12 +2542,14 @@ jQuery('body').on('keyup', 'textarea[name="special_needs"]', function () {
 
 //Do the same on step 2 load
 jQuery(document).ready(function () {
-  if (jQuery('textarea[name="special_needs"]').val().length > 250) {
-    jQuery('#room-request-notice').show();
-    jQuery('.tt_continue_bike_click_btn').prop('disabled', true);
-  } else {
-    jQuery('.tt_continue_bike_click_btn').prop('disabled', false);
-    jQuery('#room-request-notice').hide();
+  if (jQuery('body').hasClass('trek-checkout')) {
+    if (jQuery('textarea[name="special_needs"]').val().length > 250) {
+      jQuery('#room-request-notice').show();
+      jQuery('.tt_continue_bike_click_btn').prop('disabled', true);
+    } else {
+      jQuery('.tt_continue_bike_click_btn').prop('disabled', false);
+      jQuery('#room-request-notice').hide();
+    }
   }
 });
 
