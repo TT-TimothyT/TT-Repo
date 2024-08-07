@@ -1,385 +1,176 @@
 <?php
-global $woocommerce;
-//demo content for looping till dynamic content is not loaded
-$cards                        = ['Visa ending in 2559', 'Visa ending in 2456'];
-$guest                        = ['Jason Bauer', 'Tim Lasso', 'Steve Bauer', 'Keith Lasso'];
-$trek_user_checkout_data      = get_trek_user_checkout_data();
-$tt_posted                    = $trek_user_checkout_data['posted'];
-$trek_user_checkout_formatted = $trek_user_checkout_data['formatted'];
-$primary_address_1            = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
-$primary_address_2            = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
-$primary_country              = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
-$guest_insurance              = isset($tt_posted['trek_guest_insurance']) ? $tt_posted['trek_guest_insurance'] : array();
-$shipping_fname               = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name']  :'';
-$shipping_lname               = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name']  :'';
-$shipping_name                = $shipping_fname.' '.$shipping_lname; 
-$shipping_postcode            = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode']  :'';
-$shipping_state               = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state']  :'';
-$shipping_city                = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city']  :'';
-$iter                         = 0;
-$cols                         = 2;
-$guest_insurance_html         = '';
-$checkout_waiver_heading      = get_field( 'checkout_waiver_heading', 'option' );
-$checkout_waiver_copy         = get_field( 'checkout_waiver_copy', 'option' );
+/**
+ * Template file for the payments, step 4.
+ *
+ * Travel protection section, Payment Options, Payment Methods, Billing Address and Waiver agreement.
+ *
+ * @param array $args['tt_posted'] The posted guest data.
+ */
 
-if (isset($guest_insurance) && !empty($guest_insurance)) {
-    $fields_size = sizeof(isset($tt_posted['trek_guest_insurance']['guests']) ? $tt_posted['trek_guest_insurance']['guests'] : array()) + 1;
-    foreach ($guest_insurance as $guest_insurance_k => $guest_insurance_val) {
-        if ($guest_insurance_k == 'primary') {
-            if ($iter % $cols == 0) {
-                $guest_insurance_html .= '<div class="row mx-0">';
-            }
-            $guest_insurance_html .= '<div class="col-lg-6 px-0 travel-col ' . $guest_insurance_k . ' ' . $iter . '">';
-            $guest_insurance_html .= '<p class="fw-medium mb-2">Primary Guest: '.$shipping_name.'</p>
-                <p class="fs-sm lh-sm mb-0">' . (isset($guest_insurance_val['is_travel_protection']) && $guest_insurance_val['is_travel_protection'] == 1 ? 'Added Travel Protection' : 'Declined Travel Protection') . '</p>';
-            $guest_insurance_html .= '</div>';
-            if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-                $guest_insurance_html .= '</div>';
-            }
-            $iter++;
-        } else {
-            foreach ($guest_insurance_val as $guest_key => $guest_insurance_Data) {
-                if ($iter % $cols == 0) {
-                    $guest_insurance_html .= '<div class="row mx-0">';
-                }
-                $guestInfo = $tt_posted['guests'][$guest_key];
-                $fullname = $guestInfo['guest_fname'] . ' ' . $guestInfo['guest_lname'];
-                $guest_insurance_html .= '<div class="col-lg-6 px-0 travel-col ' . $guest_insurance_k . ' ' . $iter . '">';
-                $guest_insurance_html .= '<p class="fw-medium mb-2">Guest ' . $guest_key + 1 . ': ' . $fullname . '</p>
-                    <p class="fs-sm lh-sm mb-0">' . ( isset($guest_insurance_Data['is_travel_protection']) && $guest_insurance_Data['is_travel_protection'] == 1 ? 'Added Travel Protection' : 'Declined Travel Protection') . '</p>';
-                $guest_insurance_html .= '</div>';
-                if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-                    $guest_insurance_html .= '</div>';
-                }
-                $iter++;
-            }
-        }
-    }
-}
-$insurance_amount        = tt_get_full_insurance_amount( $guest_insurance );
-$tripInfo                = tt_get_trip_pid_sku_from_cart();
-$no_of_guests            = isset( $tt_posted['no_of_guests'] ) ? $tt_posted['no_of_guests'] : 1;
-$deposit_info            = tt_get_deposit_info( $tripInfo['sku'], $no_of_guests, $insurance_amount );
-$deposit_amount          = $deposit_info['deposit_amount'];
-$deposit_allowed         = $deposit_info['deposit_allowed'];
-$pay_amount_default_mode = $deposit_allowed ? 'deposite' : 'full';
-$pay_amount              = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_amount'] : $pay_amount_default_mode;
+$trek_user_checkout_data    = get_trek_user_checkout_data();
+$tt_posted                  = $trek_user_checkout_data['posted'];
+$no_of_guests               = tt_validate( $tt_posted['no_of_guests'], 1 );
+$guest_insurance_html       = tt_guest_insurance_output( $tt_posted, '<div id="travel-protection-div">', '</div>');
+$checkout_waiver_heading    = get_field( 'checkout_waiver_heading', 'option' );
+$checkout_waiver_copy       = get_field( 'checkout_waiver_copy', 'option' );
+$trip_booking_limit         = get_trip_capacity_info();
+$is_protection_modal_showed = (bool) tt_validate( $tt_posted['is_protection_modal_showed'], false );
 ?>
 <div class="checkout-payment" id="checkout-payment">
-    <div class="checkout-payment__add-travel <?php if (!empty($guest_insurance_html)) echo 'd-none'; ?>">
-        <h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-payment__title mb-3">Interested in Travel Protection? <i class="bi bi-info-circle checkout-travel-protection-tooltip"></i></h5>
-        <p class="fs-sm checkout-payment__sublabel mb-0">In order to help protect you, your traveling party, and your trip investment, we recommend that you add travel protection to your reservation. For your convenience, Trek Travel offers this protection with a wide range of benefits through Arch RoamRight comprehensive line of insurance programs.</p>
-        <div class="checkout-payment__checkbox d-flex align-items-lg-center">
-            <input id="protection_modal_checkbox" type="checkbox" class="protection_modal protection_modal_ev">
-            <label for="protection_modal_checkbox">I am interested in Trek Travel's Travel Protection Plan</label>
-        </div>
-    </div>
-    <div class="checkout-payment__added-travel <?php if (empty($guest_insurance_html)) echo 'd-none'; ?>">
-        <div class="d-flex travel">
-            <h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-payment__title mb-3">Travel Protection Information</h5>
-            <button type="button" class="btn btn-md btn-outline-primary d-lg-block d-none edit-info" data-bs-toggle="modal" data-bs-target="#protection_modal">
-                Edit Info
-            </button>
-        </div>
-        <div id="travel-protection-div">
-            <?php echo $guest_insurance_html; ?>
-        </div>
-        <button type="button" class="btn btn-md btn-outline-primary d-lg-none d-block" data-bs-toggle="modal" data-bs-target="#protection_modal">
-            Edit Info
-        </button>
-    </div>
-    <hr>
-    <div class="checkout-payment__options">
-        <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-1">Payment Option</h5>
-        <p class="fs-sm checkout-payment__sublabel">Minimum amount required is trip deposit. <a href="<?php echo home_url( '/cancellation-policy/' ); ?>" target="_blank">Learn more about our cancellation policy.</a></p>
-        <div class="checkout-payment__pay">
-            <?php
-            $cart_total_full_amount = isset( $tt_posted['cart_total_full_amount'] ) ? $tt_posted['cart_total_full_amount'] : '';
-            $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : WC()->cart->total;
-            $remaining_amount       = $cart_total - ( $deposit_amount ? $deposit_amount : 0 );
-            $remaining_amountCurr   = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$remaining_amount.'</span>';
-            $cart_totalCurr         = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$cart_total.'</span>';
-            if( $pay_amount == 'full' ){
-                $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>0</span>';
-            }
-            if( $deposit_allowed ) { ?>
-            <div class="mb-4">
-                <input type="radio" name="pay_amount" required="required"  value="deposite" <?php echo ( $pay_amount == 'deposite' ? 'checked' : '' ); ?>>
-                <div class="checkout-payment__paydep rounded-1 d-flex justify-content-between align-items-center">
-                    <p class="fs-lg lh-lg fw-medium mb-0">Pay Deposit: <span><?php echo wc_price( $deposit_amount ); ?></span></p>
-                    <i class="checkout-payment__pay-icon"></i>
-                </div>
-            </div>
-            <?php } ?>
-            <div>
-                <input type="radio" name="pay_amount" required="required" value="full" <?php echo ( $pay_amount == 'full' ? 'checked' : '' ); ?>>
-                <div class="checkout-payment__paydep rounded-1 d-flex justify-content-between align-items-center">
-                    <p class="fs-lg lh-lg fw-medium mb-0">Pay Full Amount: <span><?php echo $cart_totalCurr; ?></span></p>
-                    <i class="checkout-payment__pay-icon"></i>
-                </div>
-            </div>
-        </div>
-        <p class="mb-2">Remaining Amount Owed: <span class="fw-medium"><?php echo $remaining_amountCurr; ?></span></p>
+	<div class="checkout-payment__add-travel <?php if( $is_protection_modal_showed ) echo 'd-none'; ?>">
+		<h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-payment__title mb-3 title-poppins"><?php esc_html_e( 'Interested in Travel Protection?', 'trek-travel-theme' ); ?> <i class="bi bi-info-circle checkout-travel-protection-tooltip"></i></h5>
+		<p class="fs-sm checkout-payment__sublabel mb-0"><?php esc_html_e( 'In order to help protect you, your traveling party, and your trip investment, we recommend that you add travel protection to your reservation. For your convenience, Trek Travel offers this protection with a wide range of benefits through Arch RoamRight comprehensive line of insurance programs.', 'trek-travel-theme' ); ?></p>
+		<div class="checkout-payment__checkbox d-flex align-items-lg-center">
+			<input id="protection_modal_checkbox" type="checkbox" class="protection_modal protection_modal_ev">
+			<label for="protection_modal_checkbox"><?php esc_html_e( "I am interested in Trek Travel's Travel Protection Plan", 'trek-travel-theme' ); ?></label>
+		</div>
+	</div>
+	<div class="checkout-payment__added-travel <?php if( ! $is_protection_modal_showed ) echo 'd-none'; ?>">
+		<div class="d-flex travel">
+			<h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-payment__title mb-3"><?php esc_html_e( 'Travel Protection Information', 'trek-travel-theme' ); ?></h5>
+			<button type="button" class="btn btn-md btn-outline-primary d-lg-block d-none edit-info" data-bs-toggle="modal" data-bs-target="#protection_modal">
+				<?php esc_html_e( 'Edit Info', 'trek-travel-theme' ); ?>
+			</button>
+		</div>
+		<?php echo $guest_insurance_html; ?>
+		<button type="button" class="btn btn-md btn-outline-primary d-lg-none d-block" data-bs-toggle="modal" data-bs-target="#protection_modal">
+			<?php esc_html_e( 'Edit Info', 'trek-travel-theme' ); ?>
+		</button>
+	</div>
+	<hr>
+	<div class="checkout-payment__options">
+		<?php
+			$checkout_payment_options_template = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
 
-        <?php if ( $pay_amount !== 'full') { ?>
-            <p class="fs-sm lh-sm checkout-payment__gray">Our team will reach out to collect final payment prior to your trip start date.</p>
-        <?php } ?>
-    </div>
-    <hr>
-    <?php
-    // Check for plugin Woo Gift Cards is active.
-    if ( is_plugin_active( 'woocommerce-gift-cards/woocommerce-gift-cards.php' ) ) : 
-    ?>
-    <div class="checkout-payment__reward">
-        <div class="woocommerce-form-coupon-toggle fw-medium checkout-payment__reward-title">
-            <?php wc_print_notice(apply_filters('woocommerce_checkout_coupon_message', ' <a href="#" class="showcoupon">' . esc_html__('Redeem a Gift Card', 'woocommerce') . '</a>'), 'notice'); ?>
-        </div>
+			if( is_readable( $checkout_payment_options_template ) ) {
+				wc_get_template( 'woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php', $template_args );
+			} else {
+				?>
+					<h3><?php esc_html_e( 'Step 4', 'trek-travel-theme' ); ?></h3>
+					<p><?php esc_html_e( 'Checkout Payment Options form code is missing!', 'trek-travel-theme' ); ?></p>
+				<?php
+			}
+			?>
+	</div>
+	<hr>
+	<?php
+	// Check for plugin Woo Gift Cards is active.
+	if ( is_plugin_active( 'woocommerce-gift-cards/woocommerce-gift-cards.php' ) ) : 
+		?>
+		<div class="checkout-payment__reward">
+			<div class="woocommerce-form-coupon-toggle fw-medium checkout-payment__reward-title">
+				<?php wc_print_notice(apply_filters('woocommerce_checkout_coupon_message', ' <a href="#" class="showcoupon">' . esc_html__('Redeem a Gift Card', 'woocommerce') . '</a>'), 'notice'); ?>
+			</div>
 
-        <div class="checkout_coupon woocommerce-form-coupon" method="post" style="display:none">
-            <div class="row mx-0 guest-checkout__primary-form-row mt-3">
-                <div class="col-md-7 px-0">
-                    <div class="form-floating">
-                        <input type="text" name="gift_card_code" class="input-text form-control" placeholder="<?php esc_attr_e('Gift Card Number', 'woocommerce'); ?>" id="gift_card_code floatingInputGrid" value="" required />
-                        <label for="floatingInputGrid"><?php esc_html_e('Gift Card Number', 'woocommerce'); ?></label>
-                        <div class="invalid-feedback">
-                            <img class="invalid-icon" />
-                            This field is required.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 px-0">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="floatingInputGrid" name="pin" placeholder="Pin" value="">
-                        <label for="floatingInputGrid">Pin</label>
-                    </div>
-                </div>
-                <div class="col-md-2 px-0">
-                    <button type="submit" class="btn btn-lg btn-primary coupon_button w-100" name="apply_coupon" value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>"><?php esc_html_e('Submit', 'woocommerce'); ?></button>
-                </div>
-            </div>
-            <div class="clear"></div>
-        </div>
-    </div>
-    <hr>
-    <?php endif; ?>
-    <div class="checkout-payment__method">
-        <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4">Payment Method</h5>
-        <div class="checkout-payment__paymethod">
-            <?php
-            $available_gateways  = WC()->payment_gateways->get_available_payment_gateways();
-            if (WC()->cart->needs_payment()) : ?>
-                <ul class="wc_payment_methods payment_methods methods">
-                    <?php
-                    if (!empty($available_gateways)) {
-                        foreach ($available_gateways as $gateway) {
-                            wc_get_template('checkout/payment-method.php', array('gateway' => $gateway));
-                        }
-                    } else {
-                        echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters('woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__('Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce') : esc_html__('Please fill in your details above to see available payment methods.', 'woocommerce')) . '</li>'; // @codingStandardsIgnoreLine
-                    }
-                    ?>
-                </ul>
-            <?php endif; ?>
-        </div>
-        <input name="wc-cybersource-credit-card-tokenize-payment-method" type="hidden" value="true">
-    </div>
-    <hr>
-    <div class="checkout-payment__billing">
-        <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4">Billing Address</h5>
-        <div class="d-flex align-items-lg-center checkout-payment__billing-checkbox">
-            <input id="is_same_billing_as_mailing_checkbox" type="checkbox" class="billing_checkbox" name="is_same_billing_as_mailing" value="1" <?php if (isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1) echo 'checked'; ?>>
-            <label for="is_same_billing_as_mailing_checkbox">Same as my mailing address</label>
-        </div>
-        <?php
-        $fields = $woocommerce->checkout->get_checkout_fields('billing');
-        $iter = 0;
-        $field_html = '';
-        $fields_size = sizeof($fields);
-        $cols = 2;
-        $field_includes = array('billing_first_name','billing_last_name','billing_address_1', 'billing_address_2', 'billing_country', 'billing_state', 'billing_city', 'billing_postcode');
-        if( $fields ){
-            foreach ($fields as $key => $field) {
-                if (in_array($key, $field_includes)) {
-                    if ($iter % $cols == 0) {
-                        $field_html .= '<div class="row mx-0 guest-checkout__primary-form-row billing_row ' . ( isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1 ? 'd-none' : '') . '">';
-                    }
-                    $field_html .= '<div class="col-md px-0 form-row"><div class="form-floating">';
-                    $field['placeholder'] = $field['label'];
-                    $field['required'] = true;
-                    $field['label'] = '';
-                    $field['input_class'] = array('form-control');
-                    $field['return'] = true;
-                    if( $key != 'billing_address_2' ){
-                        $field['custom_attributes']['required'] = "required";
-                    }
-                    if( $key == 'billing_state' ){
-                        $field['custom_attributes']['required'] = "required";
-                    }
-                    if( $key == 'billing_country' ){
-                        $field['custom_attributes']['required'] = "required";
-                    }
-                    $woo_field_value = $woocommerce->checkout->get_value($key);
-                    if (empty($woo_field_value) && isset($tt_posted[$key]) && $tt_posted[$key]) {
-                        $woo_field_value = $tt_posted[$key];
-                    }
-                    if( $key === 'billing_state' ) {
-                        $country_val = get_user_meta( get_current_user_id(), 'billing_country', true );
-                        $state_val   = get_user_meta( get_current_user_id(), 'billing_state', true );
+			<div class="checkout_coupon woocommerce-form-coupon" method="post" style="display:none">
+				<div class="row mx-0 guest-checkout__primary-form-row mt-3">
+					<div class="col-md-7 px-0">
+						<div class="form-floating">
+							<input type="text" name="gift_card_code" class="input-text form-control" placeholder="<?php esc_attr_e('Gift Card Number', 'woocommerce'); ?>" id="gift_card_code floatingInputGrid" value="" required />
+							<label for="floatingInputGrid"><?php esc_html_e('Gift Card Number', 'woocommerce'); ?></label>
+							<div class="invalid-feedback">
+								<img class="invalid-icon" />
+								<?php esc_html_e( 'This field is required.', 'trek-travel-theme' ); ?>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2 px-0">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="floatingInputGrid" name="pin" placeholder="<?php esc_html_e( 'Pin', 'trek-travel-theme' ); ?>" value="">
+							<label for="floatingInputGrid"><?php esc_html_e( 'Pin', 'trek-travel-theme' ); ?></label>
+						</div>
+					</div>
+					<div class="col-md-2 px-0">
+						<button type="submit" class="btn btn-lg btn-primary coupon_button w-100" name="apply_coupon" value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>"><?php esc_html_e('Submit', 'woocommerce'); ?></button>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<hr>
+	<?php endif; ?>
+	<div class="checkout-payment__method">
+		<h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4"><?php esc_html_e( 'Payment Method', 'trek-travel-theme' ); ?></h5>
+		<div class="checkout-payment__paymethod">
+			<?php
+			$available_gateways  = WC()->payment_gateways->get_available_payment_gateways();
+			if( WC()->cart->needs_payment() ) : ?>
+				<ul class="wc_payment_methods payment_methods methods">
+					<?php
+					if( ! empty( $available_gateways ) ) {
+						foreach( $available_gateways as $gateway ) {
+							wc_get_template( 'checkout/payment-method.php', array('gateway' => $gateway ) );
+						}
+					} else {
+						echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters('woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__('Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce') : esc_html__('Please fill in your details above to see available payment methods.', 'woocommerce')) . '</li>'; // @codingStandardsIgnoreLine
+					}
+					?>
+				</ul>
+			<?php endif; ?>
+		</div>
+		<input name="wc-cybersource-credit-card-tokenize-payment-method" type="hidden" value="true">
+	</div>
+	<hr>
+	<div class="checkout-payment__billing">
+		<?php
+			$checkout_billing_address_template = TREK_PATH . '/woocommerce/checkout/checkout-billing-address.php';
 
-                        if ( ! empty( tt_validate( $tt_posted['billing_country'] ) ) ) {
-                            $country_val = $tt_posted['billing_country'];
-                        }
-        
-                        if ( ! empty( tt_validate( $tt_posted['billing_state'] ) ) ) {
-                            $state_val = $tt_posted['billing_state'];
-                        }
-
-                        $field['country'] = ! empty( $country_val ) ? $country_val : '';
-                        $woo_field_value  = $state_val;
-                    }
-                    if ( $key === 'billing_country' ) {
-                        $country_val = get_user_meta( get_current_user_id(), 'billing_country', true );
-
-                        if ( ! empty( tt_validate( $tt_posted['billing_country'] ) ) ) {
-                            $country_val = $tt_posted['billing_country'];
-                        }
-
-                        $field['country'] = ! empty( $country_val ) ? $country_val : '';
-                        $woo_field_value  = $country_val;
-                    }
-                    if( isset( $tt_posted['is_same_billing_as_mailing'] ) && $tt_posted['is_same_billing_as_mailing'] == 1 ) {
-                        // Use the same address as shipping.
-                        if( 'billing_first_name' === $key ) {
-                            $woo_field_value = $tt_posted['shipping_first_name'];
-                        }
-
-                        if( 'billing_last_name' === $key ) {
-                            $woo_field_value = $tt_posted['shipping_last_name'];
-                        }
-
-                        if( 'billing_address_1' === $key ) {
-                            $woo_field_value = $tt_posted['shipping_address_1'];
-                        }
-
-                        if( 'billing_address_2' === $key ) {
-                            $woo_field_value = $tt_posted['shipping_address_2'];
-                        }
-                        
-                        if( 'billing_state' === $key ) {
-                            $country_val = get_user_meta( get_current_user_id(), 'shipping_country', true );
-                            $state_val   = get_user_meta( get_current_user_id(), 'shipping_state', true );
-                            
-                            if ( ! empty( tt_validate( $tt_posted['shipping_country'] ) ) ) {
-                                $country_val = $tt_posted['shipping_country'];
-                            }
-                            
-                            if ( ! empty( tt_validate( $tt_posted['shipping_state'] ) ) ) {
-                                $state_val = $tt_posted['shipping_state'];
-                            }
-                            
-                            $field['country'] = ! empty( $country_val ) ? $country_val : '';
-                            $woo_field_value  = $state_val;
-                        }
-                        
-                        if( 'billing_country' === $key ) {
-                            $country_val = get_user_meta( get_current_user_id(), 'shipping_country', true );
-                            
-                            if ( ! empty( tt_validate( $tt_posted['shipping_country'] ) ) ) {
-                                $country_val = $tt_posted['shipping_country'];
-                            }
-                            
-                            $field['country'] = ! empty( $country_val ) ? $country_val : '';
-                            $woo_field_value  = $country_val;
-                        }
-                        
-                        if( 'billing_city' === $key ) {
-                            $woo_field_value = $tt_posted['shipping_city'];
-                        }
-
-                        if( 'billing_postcode' === $key ) {
-                            $woo_field_value = $tt_posted['shipping_postcode'];
-                        }
-                    }
-                    $field_input = woocommerce_form_field($key, $field, $woo_field_value);
-                    $field_input = str_ireplace('<span class="woocommerce-input-wrapper">', '', $field_input);
-                    $field_input = str_ireplace('</span>', '', $field_input);
-                    $sort            = $field['priority'] ? $field['priority'] : '';
-                    if ( isset($field['required']) ) {
-                        $field['class'][] = 'validate-required';
-                    }
-                    if (isset($field['validate'])) {
-                        foreach ($field['validate'] as $validate_name) {
-                            $field['class'][] = 'validate-' . $validate_name . '';
-                        }
-                    }
-                    $container_class = isset($field['class']) ? esc_attr(implode(' ', $field['class'])) : '';
-                    $container_id    = esc_attr($key) . '_field';
-                    $pfield_container = '<p class="form-row ' . $container_class . '" id="' . $container_id . '" data-priority="' . esc_attr($sort) . '">';
-                    $field_input = str_ireplace($pfield_container, '', $field_input);
-                    $field_input = str_ireplace('<p class="form-row form-row-wide address-field" id="billing_address_2_field" data-priority="26">', '', $field_input);
-                    $field_input = str_ireplace('<p class="form-row form-row-wide address-field validate-postcode" id="billing_postcode_field" data-priority="90">', '', $field_input);
-                    $field_input = str_ireplace('</p>', '', $field_input);
-                    $field_html .= $field_input;
-                    $field_html .= '<label for="billing_' . $key . '">' . $field['placeholder'] . '</label>';
-                    if ($key == 'billing_state' || $key == 'billing_country') {
-                        $field_html .= '<div class="invalid-feedback"><img class="invalid-icon" /> This field is required.</div>';
-                    }
-                    $field_html .= '</div></div>';
-                    if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-                        $field_html .= '</div>';
-                    }
-                    $iter++;
-                }
-            }
-        }
-        $field_html .= '<input type="hidden" id="tt_pay_fname" name="first_name" value="'.$woocommerce->checkout->get_value('billing_first_name').'"/>';
-        $field_html .= '<input type="hidden" id="tt_pay_lname" name="last_name" value="'.$woocommerce->checkout->get_value('billing_last_name').'"/>';
-        echo $field_html;
-
-        $guest_details_states  = WC()->countries->get_states( $primary_country );
-        $shipping_state_name   = isset( $guest_details_states[$shipping_state] ) ? $guest_details_states[$shipping_state] : $shipping_state;
-        $shipping_country_name = WC()->countries->countries[$primary_country];
-        ?>
-        <div class="checkout-payment__pre-address <?php echo ( isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1 ? '' : 'd-none'); ?>" style="height:120px;">
-            <p class="mb-0"><?php echo $shipping_name; ?></p>
-            <p class="mb-0"><?php echo $primary_address_1; ?></p>
-            <p class="mb-0"><?php echo $primary_address_2; ?></p>
-            <p class="mb-0"><?php echo $shipping_city; ?>, <?php echo $shipping_state_name; ?>, <?php echo $shipping_postcode; ?></p>
-            <p class="mb-0"><?php echo $shipping_country_name; ?></p>
-            <p class="mb-0"></p>
-        </div>
-        <div class="d-flex checkout-payment__billing-checkboxtwo">
-            <input id="is_saved_billing_checkbox" type="checkbox" name="is_saved_billing" value="1" <?php if ( isset($tt_posted['is_saved_billing']) &&  $tt_posted['is_saved_billing'] == 1) echo 'checked'; ?>>
-            <label for="is_saved_billing_checkbox" class="w-75">Save this billing address for future use. This will override your existing billing address saved on your profile.</label>
-        </div>
-    </div>
-    <hr>
-    <div class="checkout-payment__release">
-        <h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4">Release of Liability and Assumption of All Risks</h5>
-        <p class="mb-0 fs-sm lh-sm checkout-payment__gray">Please scroll through release form below and check "I Agree" once finished.</p>
-        <?php if ( ! empty( $checkout_waiver_copy ) || ! empty( $checkout_waiver_heading ) ) : ?>
-            <div class="checkout-payment__iframe rounded-1">
-                <?php if ( ! empty( $checkout_waiver_heading ) ) : ?>
-                    <h5 class="fs-lg lh-lg fw-medium mb-2"><?php echo wp_kses_post( $checkout_waiver_heading ); ?></h5>
-                <?php endif; ?>
-                <?php if ( ! empty( $checkout_waiver_copy ) ) : ?>
-                    <?php $checkout_waiver_copy = str_replace( array( '<p>', '</p>' ), '', $checkout_waiver_copy ); ?>
-                    <p class="fs-sm lh-sm"><?php echo wp_kses_post( $checkout_waiver_copy ); ?></p>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
-        <div class="d-flex checkout-payment__billing-checkboxtwo">
-            <input id="tt_waiver_checkbox" class="tt_waiver_check" type="checkbox" name="tt_waiver" value="1" <?php if (isset($tt_posted['tt_waiver']) && $tt_posted['tt_waiver'] == 1) echo 'checked'; ?> required="required">
-            <label for="tt_waiver_checkbox">By checking “I Agree” I acknowledge that I have read, understand and agree to this Release Form and Cancellation Policy.</label>
-        </div>
-        <div class="invalid-feedback tt_waiver_required">
-            <img class="invalid-icon" />
-            This field is required.
-        </div>
-    </div>
-    <hr>
-    <div class="checkout-payment__button mb-5">
-        <button type="button" class="btn btn-md btn-outline-primary btn-previous tt_change_checkout_step" data-step="2">Go back</button>
-        <button type="button" class="btn btn-md btn-primary float-end btn-next">Next: Review & Pay</button>
-    </div>
+			if( is_readable( $checkout_billing_address_template ) ) {
+				wc_get_template( 'woocommerce/checkout/checkout-billing-address.php', array( 'tt_posted' => $tt_posted ) );
+			} else {
+				?>
+					<h3><?php esc_html_e( 'Step 4', 'trek-travel-theme' ); ?></h3>
+					<p><?php esc_html_e( 'Checkout Billing Adress form code is missing!', 'trek-travel-theme' ); ?></p>
+				<?php
+			}
+			?>
+	</div>
+	<hr>
+	<div class="checkout-payment__release">
+		<h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4"><?php esc_html_e( 'Release of Liability and Assumption of All Risks', 'trek-travel-theme' ); ?></h5>
+		<p class="mb-0 fs-md lh-sm checkout-payment__gray"><?php esc_html_e( 'Please scroll through release form below and check "I Agree" once finished.', 'trek-travel-theme' ); ?></p>
+		<?php if( ! empty( $checkout_waiver_copy ) || ! empty( $checkout_waiver_heading ) ) : ?>
+			<div class="checkout-payment__iframe rounded-1">
+				<?php if ( ! empty( $checkout_waiver_heading ) ) : ?>
+					<h5 class="fs-xl lh-lg fw-medium mb-2"><?php echo wp_kses_post( $checkout_waiver_heading ); ?></h5>
+				<?php endif; ?>
+				<?php if ( ! empty( $checkout_waiver_copy ) ) : ?>
+					<?php $checkout_waiver_copy = str_replace( array( '<p>', '</p>' ), '', $checkout_waiver_copy ); ?>
+					<p class="fs-sm lh-sm"><?php echo wp_kses_post( $checkout_waiver_copy ); ?></p>
+				<?php endif; ?>
+			</div>
+		<?php endif; ?>
+		<div class="d-flex checkout-payment__billing-checkboxtwo">
+			<input id="tt_waiver_checkbox" class="tt_waiver_check" type="checkbox" name="tt_waiver" value="1" <?php if (isset($tt_posted['tt_waiver']) && $tt_posted['tt_waiver'] == 1) echo 'checked'; ?> required="required">
+			<label for="tt_waiver_checkbox"><?php esc_html_e( 'By checking “I Agree” I acknowledge that I have read, understand and agree to this Release Form and Cancellation Policy.', 'trek-travel-theme' ); ?></label>
+		</div>
+		<div class="invalid-feedback tt_waiver_required">
+			<img class="invalid-icon" />
+			<?php esc_html_e( 'This field is required.', 'trek-travel-theme' ); ?>
+		</div>
+	</div>
+	<hr>
+	<div class="checkout-payment__release">
+		<h5 class="fs-xl lh-xl fw-medium checkout-payment__title-option mb-4"><?php esc_html_e( 'Cancellation Policy & Pay ', 'trek-travel-theme' ); ?></h5>
+	</div>
+	<div class="d-flex checkout-timeline__info rounded-1 mb-20">
+		<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/checkout/checkout-info.svg' ); ?>">
+		<p class="mb-0 fs-sm lh-sm"><?php echo esc_html( 'All payment amounts are processed in $USD. Please check your exchange rates if booking outside of the U.S.' ); ?></p>
+	</div>
+	<hr>
+	<div class="checkout-payment__button mb-5">
+		<div class="checkout-summary__total">
+			<div class="col-md px-0 d-flex align-items-center guest-checkout__checkbox-gap mb-5 d-none">
+				<input id="tt-terms-checkbox" type="checkbox" class="guest-checkout__checkbox" value="1" required="required" name="tt_terms"<?php echo esc_attr( 1 == $tt_terms ? ' ' . 'checked' : '' ); ?>>
+				<label for="tt-terms-checkbox" class="w-75">
+					<?php 
+					echo 'I have read and agree to Trek Travel’s <a href="' . esc_url( home_url( '/privacy-policy' ) ) . '" target="_blank">Terms and Conditions</a> and <a href="' . esc_url( TT_CAN_POLICY_PAGE ) . '" target="_blank">Cancellation Policy</a>';
+					?>
+				</label>
+			</div>
+			<?php if ( $trip_booking_limit['remaining']  >= $no_of_guests ) : ?>
+				<button class="btn btn-lg btn-primary rounded-1 w-100 mt-1 mb-3 checkout-summary__button d-none"<?php echo esc_attr( 1 != $tt_terms ? ' ' . 'disabled': '' ); ?>><?php esc_html_e( 'Pay now', 'trek-travel-theme' ); ?></button>
+			<?php endif; ?>
+		</div>
+	</div>
 </div>

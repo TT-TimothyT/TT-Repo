@@ -4,10 +4,14 @@ $p_id = $product->get_id();
 $linked_products = $product->get_children();
 $get_child_products = get_child_products($linked_products);
 $nav_year_tab = $nav_year_tab_content = '';
-$trip_style = $product->get_attribute( 'pa_trip-style' );
+$trip_style = tt_get_custom_product_tax_value( $p_id, 'trip-style', true );
 
-$activity_tax = get_field('Activity');
-$activity = $activity_tax->name;
+$activity_terms = get_the_terms( $p_id, 'activity' );
+
+foreach ( $activity_terms as $activity_term) {
+	$activity = $activity_term->name;   
+}
+
 $is_pc_trip = get_field( 'is_private_custom_trip');
 
 // Product Cats
@@ -226,7 +230,7 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                     </div>';
 
-                                    if (!empty($activity) && $activity == 'Biking') {
+                                    if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                         $month_content_output .= 
                                     '<div class="accordion-bikes">
                                         <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -256,7 +260,7 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                     </div>';
 
-                                    if (!empty($activity) && $activity == 'Biking') {
+                                    if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                         $all_month_content_output .= 
                                     '<div class="accordion-bikes">
                                         <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -289,7 +293,7 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                     </div>';
 
-                                    if (!empty($activity) && $activity == 'Biking') {
+                                    if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                         $month_content_output .= 
                                     '<div class="accordion-bikes">
                                         <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -319,7 +323,7 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                     </div>';
 
-                                    if (!empty($activity) && $activity == 'Biking') {
+                                    if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                         $all_month_content_output .= 
                                     '<div class="accordion-bikes">
                                         <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -352,7 +356,7 @@ if( $available_child_products ) {
                                         <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                         </div>';
 
-                                        if (!empty($activity) && $activity == 'Biking') {
+                                        if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                             $month_content_output .= 
                                         '<div class="accordion-bikes">
                                             <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -383,7 +387,7 @@ if( $available_child_products ) {
                                         <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                         </div>';
 
-                                        if (!empty($activity) && $activity == 'Biking') {
+                                        if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                             $all_month_content_output .= 
                                         '<div class="accordion-bikes">
                                             <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -412,7 +416,7 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                     </div>';
 
-                                    if (!empty($activity) && $activity == 'Biking') {
+                                    if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                         $month_content_output .= 
                                     '<div class="accordion-bikes">
                                         <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -439,7 +443,7 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                     </div>';
 
-                                    if (!empty($activity) && $activity == 'Biking') {
+                                    if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                         $all_month_content_output .= 
                                     '<div class="accordion-bikes">
                                         <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -470,7 +474,7 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                     </div>';
 
-                                    if (!empty($activity) && $activity == 'Biking') {
+                                    if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                         $month_content_output .= 
                                     '<div class="accordion-bikes">
                                         <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -500,7 +504,7 @@ if( $available_child_products ) {
                                     <a class="fs-sm view-details" href="#hotels">View hotels</a>
                                     </div>';
 
-                                    if (!empty($activity) && $activity == 'Biking') {
+                                    if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING) {
                                         $all_month_content_output .= 
                                     '<div class="accordion-bikes">
                                         <p class="fw-medium fs-sm lh-sm">Available bikes:</p>
@@ -513,16 +517,20 @@ if( $available_child_products ) {
                         }
                                 $formUrl = '';
                                 if( in_array($trip_status, $res_status) || $removeFromStella == true ){
-                                    $formUrl = "reserve-a-trip";
+                                    switch ( $activity ) {
+                                        case TT_ACTIVITY_DASHBOARD_NAME_HW:
+                                            $formUrl = "reserve-a-trip-hw";
+                                            break;
+                                        case TT_ACTIVITY_DASHBOARD_NAME_BIKING:
+                                        default:
+                                            // By default the URL will be this.
+                                            $formUrl = "reserve-a-trip";
+                                            break;
+                                    }
                                 }
                                 if( in_array($trip_status, $wait_status) ){
                                     $formUrl = "waitlist";
-                                }
-
-                                if (!empty($activity) && $activity != 'Biking') {
-                                    $formUrl = "reserve-a-trip-hw";
-                                }
-                              
+                                }                              
                                 
                                 $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
                                 $cart = WC()->session->get( 'cart', null );

@@ -2,29 +2,7 @@
 
 use WebDevStudios\WPSWA\Algolia\AlgoliaSearch\SearchClient;
 use TTNetSuite\NetSuiteClient;
-$cancellation_policy_page_id = get_option('tt_opt_cancellation_policy_page_id') ? get_option('tt_opt_cancellation_policy_page_id') : NULL;
-$cancellation_policy_page_link = $cancellation_policy_page_id ? get_the_permalink($cancellation_policy_page_id) : '';
-define('TREK_DIR', get_template_directory_uri());
-define('TREK_PATH', get_template_directory());
-define('TREK_MY_ACCOUNT_PID', get_option('woocommerce_myaccount_page_id'));
-define('DEFAULT_IMG', 'https://via.placeholder.com/90?text=Trek%20Travel');
-define('G_CAPTCHA_SITEKEY', '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV');
 
-if( ! defined( 'DX_DEV' ) ) {
-    define('TREK_INSURANCE_UNAME', 'APIWebUSERTREKTRAV@archroamright.com');
-    define('TREK_INSURANCE_PASS', '9w04U5jI]8#0');
-    define('TREK_INRURANCE_API_URL', 'https://services.archinsurancesolutions.com/PartnerService/api');
-    define('TT_WAIVER_URL', 'https://661527.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527&h=1d9367cf147b5322893e&whence=');
-} else {
-    define('TREK_INSURANCE_UNAME', 'APIUSERTREKTRAV@test.roamright.com');
-    define('TREK_INSURANCE_PASS', 'Hosing+Chips+raps1');
-    define('TREK_INRURANCE_API_URL', 'https://testservices.archinsurancesolutions.com/PartnerService/api');
-    define('TT_WAIVER_URL', 'https://661527-sb2.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527_SB2&h=629b0eb96224bcaa55bd&whence=');
-}
-define('TT_WC_META_PREFIX', 'tt_meta_');
-define('TT_OPTION_PREFIX', 'tt_option_');
-define('TT_CAN_POLICY_PAGE', $cancellation_policy_page_link);
-define('TT_LINE_ITEMS_PRODUCTS', ['TTWP23FEES' => ['name' => 'Insurance Fees', 'price' => 999], 'TTWP23SUPP' => ['name' => 'Single Supplement Fees', 'price' => 1200], 'TTWP23UPGRADES' => ['name' => 'Bike Upgrades', 'price' => 399]]);
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -158,6 +136,12 @@ function trek_wp_enqueue_scripts_cb()
     $order_id  = isset($wp->query_vars['order-received']) ? absint( $wp->query_vars['order-received'] ) : '';
     $trip_booking_limit = get_trip_capacity_info();
     $cart_product_info = tt_get_trip_pid_sku_from_cart();
+    $checkout_loader = TREK_PATH . '/woocommerce/checkout/trek-travel-loader.php';
+    if ( is_readable( $checkout_loader ) ) {
+        $checkout_loader_html = wc_get_template_html('woocommerce/checkout/trek-travel-loader.php');
+    } else {
+        $checkout_loader_html =  '<p>Checkout Loader is missing!</p>';
+    }
     wp_register_script('trek-moment', TREK_DIR . '/assets/js/moment.min.js', array(), time(), true);
     
     wp_register_script('trek-dp', TREK_DIR . '/assets/js/daterangepicker.js', array(), time(), true);
@@ -194,17 +178,19 @@ function trek_wp_enqueue_scripts_cb()
          * Most likely we won't need this, as this function is looping all products for no obvious reason
          */
         // 'product_images' => tt_get_product_image(),
-        'blank_image' => DEFAULT_IMG,
-        'temp_dir' => get_template_directory_uri(),
-        'trip_booking_limit' => $trip_booking_limit,
-        'is_checkout' => is_checkout(),
-        'rider_level' => $cart_product_info['parent_rider_level'],
-        'rider_level_text' => $cart_product_info['rider_level_text'],
-        'checkoutParentId' => $cart_product_info['parent_product_id'],
-        'checkoutSku' => $cart_product_info['sku'],
+        'blank_image'               => DEFAULT_IMG,
+        'temp_dir'                  => get_template_directory_uri(),
+        'trip_booking_limit'        => $trip_booking_limit,
+        'is_checkout'               => is_checkout(),
+        'rider_level'               => $cart_product_info['parent_rider_level'],
+        'rider_level_text'          => $cart_product_info['rider_level_text'],
+        'checkoutParentId'          => $cart_product_info['parent_product_id'],
+        'checkoutSku'               => $cart_product_info['sku'],
+        'checkout_product_line_obj' => json_decode( tt_get_local_trips_detail( 'product_line', '', $cart_product_info['sku'], true ) ),
         // 'review_order' => tt_get_review_order_html(), // I'm commenting this out for the moment, as I don't see a place where it can be used, and it's called on every page load, which is redundant.
-        'is_order_received' => is_wc_endpoint_url( 'order-received' ),
-        'order_id' => $order_id
+        'is_order_received'         => is_wc_endpoint_url( 'order-received' ),
+        'order_id'                  => $order_id,
+        'tt_loader_img'             => $checkout_loader_html
     ));
 }
 /**
@@ -222,7 +208,8 @@ function get_child_products($linked_products = array())
             if ($p_obj && $p_obj->get_status() == 'publish' && $p_obj->get_stock_status() == 'instock' ) {
                 $start_date = $p_obj->get_attribute('start-date');
                 $end_date = $p_obj->get_attribute('end-date');
-                $trip_status = $p_obj->get_attribute('trip-status');
+                $p_id = $p_obj->get_id();
+                $trip_status = tt_get_custom_product_tax_value( $p_id, 'trip-status', true );
                 if ($start_date && $end_date && !in_array($trip_status, $status_not_in)) {
                     $sdate_obj = explode('/', $start_date);
                     $sku = $p_obj->get_sku();
@@ -400,6 +387,7 @@ function save_checkout_steps_action_cb()
     WC()->session->set('trek-checkout-data', $_REQUEST);
     $cart = WC()->cart->cart_contents;
     $bikes_cart_item_data = $guests_bikes_data = array();
+    $is_hiking_checkout = false;
     foreach ($cart as $cart_item_id => $cart_item) {
         $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_id);
         $_product_name = $_product->get_name();
@@ -407,8 +395,8 @@ function save_checkout_steps_action_cb()
         if (!in_array($product_id, $accepted_p_ids)) {
             //Reset Occupant data if any changes for guests in step 1
             if ($step == 2 && isset($_REQUEST['step']) && $_REQUEST['step'] == 1) {
-                $total_guests_req += isset($_REQUEST['single']) ? $_REQUEST['single'] : 0;
-                $total_guests_req += isset($_REQUEST['double']) ? $_REQUEST['double'] : 0;
+                $total_guests_req += isset($_REQUEST['single']) ? $_REQUEST['single'] * 2 : 0;
+                $total_guests_req += isset($_REQUEST['double']) ? $_REQUEST['double'] * 2 : 0;
                 $total_guests_req += isset($_REQUEST['roommate']) ? $_REQUEST['roommate'] : 0;
                 $total_guests_req += isset($_REQUEST['private']) ? $_REQUEST['private'] : 0;
                 if (isset($_REQUEST['no_of_guests']) && $_REQUEST['no_of_guests'] != $total_guests_req) {
@@ -421,7 +409,7 @@ function save_checkout_steps_action_cb()
                 $applied_coupons = WC()->cart->applied_coupons;
                 $_REQUEST['coupon_code'] = $applied_coupons[0];
             }
-            $cart_item['trek_user_checkout_data'] = $_REQUEST;
+            $cart_item['trek_user_checkout_data'] = wp_unslash( $_REQUEST );
             //Trip Parent ID
             $parent_product_id = tt_get_parent_trip_id_by_child_sku($_product->get_sku());
             $cart_item['trek_user_checkout_data']['parent_product_id'] = $parent_product_id;
@@ -467,13 +455,15 @@ function save_checkout_steps_action_cb()
             if ($step == 2 || $step == 1) {
                 WC()->cart->cart_contents[$cart_item_id]['quantity'] = isset($_REQUEST['no_of_guests']) ? $_REQUEST['no_of_guests'] : 1;
             }
+            // Set the Check for hiking checkout.
+            $is_hiking_checkout = tt_is_product_line( 'Hiking', $_product->get_sku() );
         }
     }
     WC()->cart->set_session();
     WC()->cart->calculate_totals();
     WC()->cart->maybe_set_cart_cookies();
     $gearData = $_REQUEST['bike_gears']['primary'];
-    if (isset($gearData['save_preferences']) && $gearData['save_preferences'] == 'yes' && isset($step) && $step == 3) {
+    if (isset($gearData['save_preferences']) && $gearData['save_preferences'] == 'yes' && isset($step) && $step == 4) {
         $p_bike = isset($gearData['bike_type_id_preferences']) ? $gearData['bike_type_id_preferences'] : '';
         $p_rider_height = isset($gearData['rider_height']) ? $gearData['rider_height'] : '';
         $p_bike_pedal = isset($gearData['bike_pedal']) ? $gearData['bike_pedal'] : '';
@@ -499,22 +489,25 @@ function save_checkout_steps_action_cb()
             update_user_meta($user_id, 'gear_preferences_jersey_size', $p_jersey_size);
         }
     }
-    $stepHTML = '';
+    $stepHTML            = '';
+    $checkout_bikes_html = '';
     if (isset($step) && $step == 2) {
         $checkout_hotel = TREK_PATH . '/woocommerce/checkout/checkout-hotel.php';
         if (is_readable($checkout_hotel)) {
+            $stepHTML .= '<div id="tt-hotel-occupant-inner-html">';
             $stepHTML .= wc_get_template_html('woocommerce/checkout/checkout-hotel.php');
+            $stepHTML .= '</div>';
         } else {
             $stepHTML .=  'Checkout Hotel form code is missing!';
         }
         $checkout_bikes = TREK_PATH . '/woocommerce/checkout/checkout-bikes.php';
         if (is_readable($checkout_bikes)) {
-            $stepHTML .= wc_get_template_html('woocommerce/checkout/checkout-bikes.php');
+            $checkout_bikes_html .= wc_get_template_html('woocommerce/checkout/checkout-bikes.php');
         } else {
-            $stepHTML .=  '<h3>Step 2</h3><p>Checkout Bike form code is missing!</p>';
+            $checkout_bikes_html .=  '<h3>Step 2</h3><p>Checkout Bike form code is missing!</p>';
         }
     }
-    if (isset($step) && $step == 4) {
+    if (isset($step) && ( $step == 4  || ( $step == 3 && $is_hiking_checkout ) ) ) {
         $checkout_review = TREK_PATH . '/woocommerce/checkout/checkout-reviews.php';
         if (is_readable($checkout_review)) {
             $stepHTML .= wc_get_template_html('woocommerce/checkout/checkout-reviews.php');
@@ -531,12 +524,12 @@ function save_checkout_steps_action_cb()
             $insuredHTMLPopup .= '<h3>Step 4</h3><p>checkout-insured-guests-popup.php form code is missing!</p>';
         }
     }
-    $insuredHTML = '';
-    $checkout_insured_users = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests.php';
-    if (is_readable($checkout_insured_users)) {
-        $insuredHTML .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests.php');
+    $guest_insurance_html          = '';
+    $guest_insurance_html_template = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php';
+    if ( is_readable( $guest_insurance_html_template ) ) {
+        $guest_insurance_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php');
     } else {
-        $insuredHTML .= '<h3>Step 4</h3><p>checkout-insured-guests.php form code is missing!</p>';
+        $guest_insurance_html .= '<h3>Step 4</h3><p>checkout-insured-summary.php form code is missing!</p>';
     }
     $review_order_html = '';
     $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
@@ -554,14 +547,15 @@ function save_checkout_steps_action_cb()
     }
     echo json_encode(
         array(
-            'status' => true,
-            'stepHTML' => $stepHTML,
-            'redirectURL' => $redirect_url,
-            'insuredHTML' => $insuredHTML,
-            'insuredHTMLPopup' => $insuredHTMLPopup,
-            'review_order' => $review_order_html,
-            'payment_option' => $payment_option_html,
-            'message' => 'Trek checkout steps data saved!'
+            'status'               => true,
+            'stepHTML'             => $stepHTML,
+            'redirectURL'          => $redirect_url,
+            'checkout_bikes'       => $checkout_bikes_html,
+            'guest_insurance_html' => $guest_insurance_html,
+            'insuredHTMLPopup'     => $insuredHTMLPopup,
+            'review_order'         => $review_order_html,
+            'payment_option'       => $payment_option_html,
+            'message'              => 'Trek checkout steps data saved!'
         )
     );
     exit;
@@ -789,6 +783,9 @@ function trek_update_trip_checklist_action_cb()
     $guest_is_primary    = isset( $user_order_info[0]['guest_is_primary'] ) ? $user_order_info[0]['guest_is_primary'] : '';
     $guest_email_address = isset( $user_order_info[0]['guest_email_address'] ) ? $user_order_info[0]['guest_email_address'] : '';
     $waiver_signed       = isset( $user_order_info[0]['waiver_signed'] ) ? $user_order_info[0]['waiver_signed'] : false;
+    $trip_info           = tt_get_trip_pid_sku_from_cart( $_REQUEST['order_id'] );
+    $is_hiking_checkout  = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+
 
     // One of those medical_section, emergency_section, gear_section, passport_section, bike_section, gear_optional_section.
     $confirmed_section   = isset( $_REQUEST['confirmed_section'] ) ? $_REQUEST['confirmed_section'] : '';
@@ -799,8 +796,8 @@ function trek_update_trip_checklist_action_cb()
     if ( !isset( $_POST[ $form_nonce_name ] ) || !wp_verify_nonce( $_POST[ $form_nonce_name ], $form_nonce_action ) ) {
         $res['message'] = "Sorry, your nonce did not verify.";
     } else {
-        $lock_bike   = tt_is_registration_locked( $current_user_id, $user_order_info[0]['guestRegistrationId'], 'bike' );
-        $lock_record = tt_is_registration_locked( $current_user_id, $user_order_info[0]['guestRegistrationId'], 'record' );
+        $lock_bike   = tt_is_registration_locked( $user->ID, $user_order_info[0]['guestRegistrationId'], 'bike' );
+        $lock_record = tt_is_registration_locked( $user->ID, $user_order_info[0]['guestRegistrationId'], 'record' );
 
         if( $lock_record == true ) {
             $res['message'] = "Sorry, your can't update the information.";
@@ -916,21 +913,33 @@ function trek_update_trip_checklist_action_cb()
 
         // If the confirmed section is 'gear_section', add gear data.
         if( $is_section_confirmed['gear_section'] ) {
-            $booking_data['rider_height']              = $_REQUEST['tt-rider-height'];
-            $booking_data['pedal_selection']           = $_REQUEST['tt-pedal-selection'];
-            $booking_data['helmet_selection']          = $_REQUEST['tt-helmet-size'];
-            $booking_data['jersey_style']              = $_REQUEST['tt-jerrsey-style'];
-            $booking_data['tt_jersey_size']            = $_REQUEST['tt-jerrsey-size'];
+            $booking_data['rider_height']     = $_REQUEST['tt-rider-height'];
+            $booking_data['pedal_selection']  = $_REQUEST['tt-pedal-selection'];
+            $booking_data['helmet_selection'] = $_REQUEST['tt-helmet-size'];
+            $booking_data['jersey_style']     = $_REQUEST['tt-jerrsey-style'];
+            if ( $is_hiking_checkout ) {
+                $booking_data['tshirt_size'] = $_REQUEST['tt-jerrsey-size'];
+            } else {
+                $booking_data['tt_jersey_size'] = $_REQUEST['tt-jerrsey-size'];
+            }
 
-            $ns_user_booking_data['heightId']          = isset( $_REQUEST['tt-rider-height'] ) ? $_REQUEST['tt-rider-height'] : '';
-            $ns_user_booking_data['helmetId']          = isset( $_REQUEST['tt-helmet-size'] ) ? $_REQUEST['tt-helmet-size'] : '';
-            $ns_user_booking_data['pedalsId']          = isset( $_REQUEST['tt-pedal-selection'] ) ? $_REQUEST['tt-pedal-selection'] : '';
-            $ns_user_booking_data['jerseyId']          = isset( $_REQUEST['tt-jerrsey-size'] ) ? $_REQUEST['tt-jerrsey-size'] : '';
+            $ns_user_booking_data['heightId'] = isset( $_REQUEST['tt-rider-height'] ) ? $_REQUEST['tt-rider-height'] : '';
+            $ns_user_booking_data['helmetId'] = isset( $_REQUEST['tt-helmet-size'] ) ? $_REQUEST['tt-helmet-size'] : '';
+            $ns_user_booking_data['pedalsId'] = isset( $_REQUEST['tt-pedal-selection'] ) ? $_REQUEST['tt-pedal-selection'] : '';
+            if ( $is_hiking_checkout ) {
+                $ns_user_booking_data['tshirtSizeId'] = isset( $_REQUEST['tt-jerrsey-size'] ) ? $_REQUEST['tt-jerrsey-size'] : '';
+            } else {
+                $ns_user_booking_data['jerseyId'] = isset( $_REQUEST['tt-jerrsey-size'] ) ? $_REQUEST['tt-jerrsey-size'] : '';
+            }
         } else {
-            $ns_user_booking_data['heightId']          = $user_order_info[0]['rider_height'];
-            $ns_user_booking_data['helmetId']          = $user_order_info[0]['helmet_selection'];
-            $ns_user_booking_data['pedalsId']          = $user_order_info[0]['pedal_selection'];
-            $ns_user_booking_data['jerseyId']          = $user_order_info[0]['tt_jersey_size'];
+            $ns_user_booking_data['heightId'] = $user_order_info[0]['rider_height'];
+            $ns_user_booking_data['helmetId'] = $user_order_info[0]['helmet_selection'];
+            $ns_user_booking_data['pedalsId'] = $user_order_info[0]['pedal_selection'];
+            if ( $is_hiking_checkout ) {
+                $ns_user_booking_data['tshirtSizeId'] = $user_order_info[0]['tt_jersey_size'];
+            } else {
+                $ns_user_booking_data['jerseyId'] = $user_order_info[0]['tt_jersey_size'];
+            }
         }
 
         // If the confirmed section is 'passport_section', add passport data.
@@ -1522,6 +1531,7 @@ function trek_get_quote_travel_protection_action_cb()
             $cart_item['trek_user_checkout_data']['trek_guest_insurance'] = $guest_insurance;
             $cart_item['trek_user_checkout_data']['insuredPerson'] = $is_travel_protection_count;
             $cart_item['trek_user_checkout_data']['tt_insurance_total_charges'] = $arcBasePremium;
+            $cart_item['trek_user_checkout_data']['is_protection_modal_showed'] = true;
             WC()->cart->cart_contents[$cart_item_id] = $cart_item;
         }
     }
@@ -1550,16 +1560,16 @@ function trek_get_quote_travel_protection_action_cb()
     } else {
         $insuredHTMLPopup .= '<h3>Step 4</h3><p>checkout-insured-guests-popup.php form code is missing!</p>';
     }
-    $insuredHTML = '';
-    $checkout_insured_users = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests.php';
-    if (is_readable($checkout_insured_users)) {
-        $insuredHTML .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests.php');
+    $guest_insurance_html          = '';
+    $guest_insurance_html_template = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php';
+    if ( is_readable( $guest_insurance_html_template ) ) {
+        $guest_insurance_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php');
     } else {
-        $insuredHTML .= '<h3>Step 4</h3><p>checkout-insured-guests.php form code is missing!</p>';
+        $guest_insurance_html .= '<h3>Step 4</h3><p>checkout-insured-summary.php form code is missing!</p>';
     }
     $res['status'] = true;
     $res['fees_product_id'] = $fees_product_id;
-    $res['guest_insurance_html'] = $insuredHTML;
+    $res['guest_insurance_html'] = $guest_insurance_html;
     $res['insuredHTMLPopup'] = $insuredHTMLPopup;
     $res['review_order'] = $review_order_html;
     $res['payment_option'] = $payment_option_html;
@@ -1608,18 +1618,24 @@ function trek_update_bike_gear_info_action_cb()
     exit;
 }
 
-function trek_occupants($key)
-{
-    $trek_user_checkout_data = get_trek_user_checkout_data();
-    $trek_user_checkout_posted = $trek_user_checkout_data['posted'];
-    $occupants_opt = '';
-    $primary_name = $trek_user_checkout_posted['shipping_first_name'] . ' ' . $trek_user_checkout_posted['shipping_last_name'];
-    $occupants_opt .= '<option value="none" ' . ($key == 'none' ? 'selected' : '') . '>Please select</option>';
-    $occupants_opt .= '<option value="0" ' . ($key == '0' ? 'selected' : '') . '>' . $primary_name . '</option>';
-    if (isset($trek_user_checkout_posted['guests']) && !empty($trek_user_checkout_posted['guests'])) {
-        foreach ($trek_user_checkout_posted['guests'] as $guest_id => $guest) {
-            $selectedAtt = $guest_id == $key ? 'selected' : '';
-            $occupants_opt .= '<option value="' . $guest_id . '" ' . $selectedAtt . '>' . $guest['guest_fname'] . ' ' . $guest['guest_lname'] . '</option>';
+/**
+ * Generate the options HTML for the Select/Options in the occupancy popup.
+ *
+ * @param int|string $key The selected option value.
+ *
+ * @return string The options HTML.
+ */
+function trek_occupants_options( $key ) {
+    $trek_user_checkout_data    = get_trek_user_checkout_data();
+    $trek_user_checkout_posted  = $trek_user_checkout_data['posted'];
+    $occupants_opt              = '';
+    $primary_name               = $trek_user_checkout_posted['shipping_first_name'] . ' ' . $trek_user_checkout_posted['shipping_last_name'];
+    $occupants_opt             .= '<option value="none" ' . ( $key == 'none' ? 'selected' : '') . '>Please select</option>';
+    $occupants_opt             .= '<option value="0" ' . ( $key == '0' ? 'selected' : '' ) . '>' . esc_html( $primary_name ) . '</option>';
+    if( isset( $trek_user_checkout_posted['guests'] ) && ! empty( $trek_user_checkout_posted['guests'] ) ) {
+        foreach( $trek_user_checkout_posted['guests'] as $guest_id => $guest ) {
+            $selected_attr  = $guest_id == $key ? 'selected' : '';
+            $occupants_opt .= '<option value="' . $guest_id . '" ' . $selected_attr . '>' . esc_html( $guest['guest_fname'] ) . ' ' . esc_html( $guest['guest_lname'] ) . '</option>';
         }
     }
     return $occupants_opt;
@@ -2074,6 +2090,30 @@ function tt_items_select_options($item_name = "", $optionId="")
         $itemData = tt_get_custom_item_name($item_name);
         $listName = isset($itemData['listName']) ? $itemData['listName'] : '';
         $options = isset($itemData['options']) ? $itemData['options'] : array();
+
+        // Build a custom array with options for the Transportation Options dropdown, when selecting bring own bike.
+        if( 'syncTransportationOptions' === $item_name ) {
+            $listName = 'Transportation Option';
+            $options  = array(
+                array(
+                    'optionId' => 'hard case',
+                    'optionValue' => 'Hard Case'
+                ),
+                array(
+                    'optionId' => 'soft case',
+                    'optionValue' => 'Soft Case'
+                ),
+                array(
+                    'optionId' => 'shipping',
+                    'optionValue' => 'Shipping'
+                ),
+                array(
+                    'optionId' => 'i am driving',
+                    'optionValue' => "I'm driving"
+                ),
+            );
+        }
+
         if ($options) {
             $opts .= '<option value="" data-value="' . $optionId . '">Select ' . $listName . '</option>';
 
@@ -2186,9 +2226,29 @@ function tt_items_select_options($item_name = "", $optionId="")
                 usort($options, $sortFunc);
             }
 
-            foreach ($options as $option) {
-                $selected = ($optionId == $option['optionId'] ? 'selected' : '');
-                $opts .= '<option value="' . $option['optionId'] . '" ' . $selected . '>' . $option['optionValue'] . '</option>';
+            if ( 'syncJerseySizes' === $item_name ) {
+                foreach ( $options as $option ) {
+                    if ( 20 == $option['optionId'] || 47 == $option['optionId'] || 48 == $option['optionId' ] ) {
+                        continue;
+                    } else {
+                        $selected = ( $optionId == $option['optionId'] ? 'selected' : '' );
+                        $opts .= '<option value="' . $option['optionId'] . '" ' . $selected . '>' . $option['optionValue'] . '</option>';
+                    }
+                }
+            } elseif ( 'syncHelmets' === $item_name ) {
+                foreach ( $options as $option ) {
+                    if ( 5 == $option['optionId'] ) {
+                        continue;
+                    } else {
+                        $selected = ( $optionId == $option['optionId'] ? 'selected' : '' );
+                        $opts .= '<option value="' . $option['optionId'] . '" ' . $selected . '>' . $option['optionValue'] . '</option>';
+                    }
+                }
+            } else {
+                foreach ( $options as $option ) {
+                    $selected = ( $optionId == $option['optionId'] ? 'selected' : '' );
+                    $opts .= '<option value="' . $option['optionId'] . '" ' . $selected . '>' . $option['optionValue'] . '</option>';
+                }
             }
         }
     }
@@ -2789,6 +2849,87 @@ if (!function_exists('tt_set_wc_attribute_value')) {
         }
     }
 }
+
+if ( ! function_exists( 'tt_set_custom_product_tax_value' ) ) {
+    /**
+     * Set custom taxonomy value for product.
+     *
+     * @param int|string $product_id The product ID.
+     * @param string     $tax_name   The type of taxonomy.
+     * @param string     $tax_value  The tax value.
+     *
+     * @return array|bool Term taxonomy IDs of the affected terms or false if there is no product or has error.
+     **/
+    function tt_set_custom_product_tax_value( $product_id = 0, $tax_name = '', $tax_value = '' ) {
+        if( empty( $product_id ) || empty( $tax_name ) || empty( $tax_value ) ) {
+            // Missing some essentials arguments.
+            return false;
+        }
+
+        $product = wc_get_product( $product_id );
+
+        // If is product.
+        if ( $product ) {
+            // Keep only one value of custom taxonomy.
+            $result = wp_set_object_terms( $product_id, $tax_value, $tax_name, false );
+
+            if( is_wp_error( $result ) ) {
+                // (WP_Error) The WordPress Error object on invalid taxonomy (‘invalid_taxonomy’).
+                error_log( wp_json_encode( $result ) );
+                return false;
+            }
+            return $result;
+        }
+
+        return false;
+    }
+}
+
+if ( ! function_exists( 'tt_get_custom_product_tax_value' ) ) {
+    /**
+     * Get custom product taxonomy value.
+     *
+     * @param int|string $product_id  The product ID.
+     * @param string     $tax_name    The type of taxonomy.
+     * @param bool       $as_string   Whether to return terms as single string splitted by comma.
+     * @param bool       $single_term Whether to return a single term or all product terms.
+     *
+     * @return WP_Term|bool The term object or false if there is no product.
+     */
+    function tt_get_custom_product_tax_value( $product_id = 0, $tax_name = '', $as_string = false , $single_term = false ) {
+        if( empty( $product_id ) || empty( $tax_name ) ) {
+            // Missing some essentials arguments.
+            return false;
+        }
+
+        $product = wc_get_product( $product_id );
+
+        // If is product.
+        if ( $product ) {
+
+            $terms = wp_get_object_terms( $product_id, $tax_name );
+            if ( ! empty( $terms )  && ! is_wp_error( $terms ) ) {
+                if( $single_term ) {
+                    if( $as_string ) {
+                        return $terms[0]->name;
+                    }
+                    return $terms[0];
+                }
+                if( $as_string ) {
+                    $terms_names = [];
+                    foreach( $terms as $term ) {
+                        $terms_names[] = $term->name;
+                    }
+
+                    return implode( ', ', $terms_names );
+                }
+                return $terms;
+            }
+        }
+
+        return false;
+    }
+}
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -3054,7 +3195,8 @@ function trek_tt_save_occupants_ajax_action_cb()
     } else {
         $review_order_html .= '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
     }
-    $stepHTML = '';
+    $stepHTML            = '';
+    $checkout_bikes_html = '';
     if (isset($_REQUEST['step']) && $_REQUEST['step'] == 2) {
         $checkout_hotel = TREK_PATH . '/woocommerce/checkout/checkout-hotel.php';
         $stepHTML .= '<div id="tt-hotel-occupant-inner-html">';
@@ -3066,9 +3208,9 @@ function trek_tt_save_occupants_ajax_action_cb()
         $stepHTML .= '</div>';
         $checkout_bikes = TREK_PATH . '/woocommerce/checkout/checkout-bikes.php';
         if (is_readable($checkout_bikes)) {
-            $stepHTML .= wc_get_template_html('woocommerce/checkout/checkout-bikes.php');
+            $checkout_bikes_html .= wc_get_template_html('woocommerce/checkout/checkout-bikes.php');
         } else {
-            $stepHTML .=  '<h3>Step 2</h3><p>Checkout Bike form code is missing!</p>';
+            $checkout_bikes_html .=  '<h3>Step 2</h3><p>Checkout Bike form code is missing!</p>';
         }
     }
     $payment_option_html = '';
@@ -3081,12 +3223,13 @@ function trek_tt_save_occupants_ajax_action_cb()
 
     echo json_encode(
         array(
-            'status' => true,
-            'review_order' => $review_order_html,
+            'status'         => true,
+            'review_order'   => $review_order_html,
+            'checkout_bikes' => $checkout_bikes_html,
             'payment_option' => $payment_option_html,
-            'stepHTML' => $stepHTML,
-            'step' => $_REQUEST['step'],
-            'message' => 'Trek checkout occupants data saved!'
+            'stepHTML'       => $stepHTML,
+            'step'           => $_REQUEST['step'],
+            'message'        => 'Trek checkout occupants data saved!'
         )
     );
     exit;
@@ -3282,16 +3425,17 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
     }
 
     return [
-        'sku' => $sku,  
+        'sku'                => $sku,  
         'parent_rider_level' => isset($parent_rider_level->level) ? $parent_rider_level->level : '',
-        'rider_level_text' => $rider_level_text,
-        'product_id' => $product_id,
-        'ns_trip_Id' => $ns_trip_Id,
-        'parent_product_id' => $parent_product_id,
-        'parent_trip_link' => $parent_trip_link,
-        'parent_trip_image' => $product_image_url,
-        'tt_posted' => $tt_posted,
-        'tt_formatted_data' => $tt_formatted_data
+        'rider_level_text'   => $rider_level_text,
+        'product_id'         => $product_id,
+        'ns_trip_Id'         => $ns_trip_Id,
+        'parent_product_id'  => $parent_product_id,
+        'parent_trip_link'   => $parent_trip_link,
+        'parent_trip_image'  => $product_image_url,
+        'tt_posted'          => $tt_posted,
+        'tt_formatted_data'  => $tt_formatted_data,
+        'product_line_obj'   => json_decode( tt_get_local_trips_detail( 'product_line', '', $cart_product_info['sku'], true ) ),
     ];
 }
 function tt_get_trip_pid_sku_by_orderId($order_id)
@@ -3330,8 +3474,12 @@ function tt_get_trip_pid_sku_by_orderId($order_id)
         'guest_emails' => $guest_emails
     ];
 }
-function tt_get_bikes_by_trip_info($tripId = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '',$bikeID='')
-{
+/**
+ * Build an array with bike size and bike type options.
+ *
+ * @return array Bike size and bike type options html.
+ */
+function tt_get_bikes_by_trip_info( $tripId = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '', $bikeID='', $selected_bikes_arr = array() ) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
 
@@ -3365,7 +3513,20 @@ function tt_get_bikes_by_trip_info($tripId = '', $tripCode = '', $bikeTypeId = '
                 $bike_type_name = $bikeTypeObj['name'];
                 $loop_bikeId = $bike_info['bikeId'];
                 if ( 0 < $bike_available ) {
-                    $option_disabled = '';
+
+                    $this_bike_selected_count = 0;
+
+                    foreach( $selected_bikes_arr as $guest => $selected_bike ) {
+                        if( (int) $selected_bike['bike_type_id'] === (int) $bike_type_id && (int) $selected_bike['bike_size_id'] === (int) $bike_size_id ) {
+                            $this_bike_selected_count++;
+                        }
+                    }
+
+                    if( $this_bike_selected_count >= (int) $bike_available && (int) $s_bike_size_id !== (int) $bike_size_id ) {
+                        $option_disabled = 'disabled';
+                    } else {
+                        $option_disabled = '';
+                    }
                 } else {
                     $option_disabled = 'disabled';
                 }
@@ -3602,106 +3763,6 @@ function tt_get_user_checkout_data_by_order_id($order_id)
         'formatted' => $formatted_checkout_data
     );
 }
-/**
- * @author  : Dharmesh Panchal
- * @version : 1.0.0
- * @return  : Occupancy selection popup
- **/
-if (!function_exists('tt_occupant_selection_popup')) {
-    function tt_occupant_selection_popup($request)
-    {
-        $occupant_popup_html = '';
-        $has_occupants = false;
-        $single = isset($request['single']) ? $request['single'] : 0;
-        $double = isset($request['double']) ? $request['double'] : 0;
-        $private = isset($request['private']) ? $request['private'] : 0;
-        $roommate = isset($request['roommate']) ? $request['roommate'] : 0;
-        if ($single) {
-            $iter = 0;
-            $cols = 2;
-            $fields_size = $single - 1;
-            for ($i = 0; $i < ($single * 2); $i++) {
-                if ($iter % $cols == 0) {
-                    $occupant_popup_html .= '<div class="checkout-hotel-modal__occupants-selection">';
-                    $occupant_popup_html .= '<p class="fw-medium fs-xl lh-lg checkout-step-two-hotel__room-type">Room with 1 Beds <span class="bed-icon"></span></p>
-                            <p class="fw-medium fs-md lh-md">Who will be in this room?</p>';
-                }
-                $single_selected = isset($request['occupants']['single'][$i]) ? $request['occupants']['single'][$i] : "none";
-                $occupant_popup_html .= '<div class="form-floating">
-                        <select required="required" name="occupants[single][' . $i . ']" class="form-select" id="floatingSelectSingle" aria-label="Floating label select example">
-                            ' . trek_occupants($single_selected) . '
-                        </select>
-                        <label for="floatingSelectSingle">Select Occupant</label>
-                    </div>';
-                if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-                    $occupant_popup_html .= '</div>';
-                }
-                $iter++;
-            }
-            $has_occupants = true;
-        }
-        if ($double) {
-            $iter = 0;
-            $cols = 2;
-            $fields_size = $double - 1;
-            for ($i = 0; $i < ($double * 2); $i++) {
-                if ($iter % $cols == 0) {
-                    $occupant_popup_html .= '<div class="checkout-hotel-modal__occupants-selection">';
-                    $occupant_popup_html .= '<p class="fw-medium fs-xl lh-lg checkout-step-two-hotel__room-type">Room with 2 Beds <span class="bed-icon"></span><span class="bed-icon ms-1"></span></p>
-                            <p class="fw-medium fs-md lh-md">Who will be in this room?</p>';
-                }
-                $double_selected = isset($request['occupants']['double'][$i]) ? $request['occupants']['double'][$i] : "none";
-                $occupant_popup_html .= '<div class="form-floating">
-                        <select required="required" name="occupants[double][' . $i . ']" class="form-select" id="floatingSelectdouble" aria-label="Floating label select example">
-                            ' . trek_occupants($double_selected) . '
-                        </select>
-                        <label for="floatingSelectdouble">Select Occupant</label>
-                    </div>';
-                if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-                    $occupant_popup_html .= '</div>';
-                }
-                $iter++;
-            }
-            $has_occupants = true;
-        }
-        if ($private) {
-            for ($i = 0; $i < $private; $i++) {
-                $private_selected = isset($request['occupants']['private'][$i]) ? $request['occupants']['private'][$i] : "none";
-                $occupant_popup_html .= '<div class="checkout-hotel-modal__occupants-selection">';
-                $occupant_popup_html .= '<p class="fw-medium fs-xl lh-lg checkout-step-two-hotel__room-type">Private <span class="bed-icon"></span></p>
-                    <p class="fw-medium fs-md lh-md">Who will be in this room?</p>';
-                $occupant_popup_html .= '<div class="form-floating">
-                        <select required="required" name="occupants[private][' . $i . ']" class="form-select" id="floatingSelectprivate" aria-label="Floating label select example">
-                            ' . trek_occupants($private_selected) . '
-                        </select>
-                        <label for="floatingSelectprivate">Select Occupant</label>
-                    </div>';
-                $occupant_popup_html .= '</div>';
-            }
-            $has_occupants = true;
-        }
-        if ($roommate) {
-            for ($i = 0; $i < $roommate; $i++) {
-                $roommate_selected = isset($request['occupants']['roommate'][$i]) ? $request['occupants']['roommate'][$i] : "none";
-                $occupant_popup_html .= '<div class="checkout-hotel-modal__occupants-selection">';
-                $occupant_popup_html .= '<p class="fw-medium fs-xl lh-lg checkout-step-two-hotel__room-type">Open to Roommate <span class="bed-icon"></span><span class="bed-icon ms-1"></span></p>
-                    <p class="fw-medium fs-md lh-md">Who will be in this room?</p>';
-                $occupant_popup_html .= '<div class="form-floating">
-                        <select required="required" name="occupants[roommate][' . $i . ']" class="form-select" id="floatingSelectroommate" aria-label="Floating label select example">
-                            ' . trek_occupants($roommate_selected) . '
-                        </select>
-                        <label for="floatingSelectroommate">Select Occupant</label>
-                    </div>';
-                $occupant_popup_html .= '</div>';
-            }
-            $has_occupants = true;
-        }
-        if ($has_occupants == false) {
-            $occupant_popup_html .= '<h3>Please add room first for occupant selection!</h3>';
-        }
-        return $occupant_popup_html;
-    }
-}
 add_action( 'woocommerce_created_customer', 'tt_sync_user_metadata_from_ns_cb', 999, 1 );
 function tt_sync_user_metadata_from_ns_cb( $user_id )
 {
@@ -3808,11 +3869,13 @@ function trek_tt_bike_selection_ajax_action_cb()
             $isBikeUpgrade = true;
         }
     }
-    $tripInfo = tt_get_trip_pid_sku_from_cart();
-    $opts = tt_get_bikes_by_trip_info($tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId);
-    $accepted_p_ids = tt_get_line_items_product_ids();
-    $product_id = tt_create_line_item_product('TTWP23UPGRADES');
-    $bikeUpgradePrice = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
+    $tripInfo           = tt_get_trip_pid_sku_from_cart();
+    $selected_bikes_arr = tt_validate( $_REQUEST['selected_bikes_arr'] );
+    $selected_bike_size = tt_validate( $_REQUEST['selected_bike_size'] );
+    $opts               = tt_get_bikes_by_trip_info($tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId, $selected_bike_size, '', '', $selected_bikes_arr);
+    $accepted_p_ids     = tt_get_line_items_product_ids();
+    $product_id         = tt_create_line_item_product('TTWP23UPGRADES');
+    $bikeUpgradePrice   = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
     if ($bikeUpgradePrice && $bikeUpgradePrice > 0) {
         WC()->cart->add_to_cart($product_id, $bike_upgrade_qty, 0, array(), array('tt_cart_custom_fees_price' => $bikeUpgradePrice));
     }
@@ -3866,30 +3929,29 @@ add_action('wp_ajax_tt_update_occupant_popup_html_ajax_action', 'trek_tt_update_
 add_action('wp_ajax_nopriv_tt_update_occupant_popup_html_ajax_action', 'trek_tt_update_occupant_popup_html_ajax_action_cb');
 function trek_tt_update_occupant_popup_html_ajax_action_cb()
 {
-    ob_start();
     $accepted_p_ids = tt_get_line_items_product_ids();
-    $trip_capacity = get_trip_capacity_info();
-    $cart = WC()->cart->cart_contents;
-    $single = isset($_REQUEST['single']) ? $_REQUEST['single'] : 0;
-    $double = isset($_REQUEST['double']) ? $_REQUEST['double'] : 0;
-    $private = isset($_REQUEST['private']) ? $_REQUEST['private'] : 0;
-    $roommate = isset($_REQUEST['roommate']) ? $_REQUEST['roommate'] : 0;
+    $trip_capacity  = get_trip_capacity_info();
+    $cart           = WC()->cart->cart_contents;
+    $single         = intval( tt_validate( $_REQUEST['single'], 0 ) );
+    $double         = intval( tt_validate( $_REQUEST['double'], 0 ) );
+    $private        = intval( tt_validate( $_REQUEST['private'], 0 ) );
+    $roommate       = intval( tt_validate( $_REQUEST['roommate'], 0 ) );
     foreach ($cart as $cart_item_id => $cart_item) {
-        if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
-            $cart_item['trek_user_checkout_data']['single'] = $single;
-            $cart_item['trek_user_checkout_data']['double'] = $double;
-            $cart_item['trek_user_checkout_data']['private'] = $private;
+        if ( isset( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
+            $cart_item['trek_user_checkout_data']['single']   = $single;
+            $cart_item['trek_user_checkout_data']['double']   = $double;
+            $cart_item['trek_user_checkout_data']['private']  = $private;
             $cart_item['trek_user_checkout_data']['roommate'] = $roommate;
-            if( $single == 0 ){
+            if( 0 === $single ) {
                 $cart_item['trek_user_checkout_data']['occupants']['single'] = [];
             }
-            if( $double == 0 ){
+            if( 0 === $double ) {
                 $cart_item['trek_user_checkout_data']['occupants']['double'] = [];
             }
-            if( $private == 0 ){
+            if( 0 === $private ) {
                 $cart_item['trek_user_checkout_data']['occupants']['private'] = [];
             }
-            if( $roommate == 0 ){
+            if( 0 === $roommate ) {
                 $cart_item['trek_user_checkout_data']['occupants']['roommate'] = [];
             }
             WC()->cart->cart_contents[$cart_item_id] = $cart_item;
@@ -3898,19 +3960,25 @@ function trek_tt_update_occupant_popup_html_ajax_action_cb()
     WC()->cart->set_session();
     WC()->cart->calculate_totals();
     WC()->cart->maybe_set_cart_cookies();
-    $trek_user_checkout_data =  get_trek_user_checkout_data();
-    $trek_user_checkout_posted = $trek_user_checkout_data['posted'];
-    $occupant_popup_html = tt_occupant_selection_popup($trek_user_checkout_posted);
+    $trek_user_checkout_data       =  get_trek_user_checkout_data();
+    $trek_user_checkout_posted     = $trek_user_checkout_data['posted'];
+    $occupant_popup_html           = '';
+    $checkout_hotel_occupant_popup = TREK_PATH . '/woocommerce/checkout/checkout-hotel-occupant-popup.php';
+    if( is_readable( $checkout_hotel_occupant_popup ) ) {
+        $occupant_popup_html = wc_get_template_html('woocommerce/checkout/checkout-hotel-occupant-popup.php', $trek_user_checkout_posted );
+    } else {
+        $occupant_popup_html = '<p>The checkout-hotel-occupant-popup.php template is missing!</p>';
+    }
     $checkout_hotel = TREK_PATH . '/woocommerce/checkout/checkout-hotel.php';
-    $hotelHtml = '';
-    if (is_readable($checkout_hotel)) {
-        $hotelHtml .= wc_get_template_html('woocommerce/checkout/checkout-hotel.php');
+    $hotel_html     = '';
+    if( is_readable( $checkout_hotel ) ) {
+        $hotel_html = wc_get_template_html('woocommerce/checkout/checkout-hotel.php');
     } 
     echo json_encode(
         array(
-            'status' => true,
-            'html' => $occupant_popup_html,
-            'hotel_html' => $hotelHtml
+            'status'     => true,
+            'html'       => $occupant_popup_html,
+            'hotel_html' => $hotel_html
         )
     );
     exit;
@@ -4587,67 +4655,41 @@ function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
         return $final_output;
     }
 }
-function tt_guest_insurance_output($tt_posted = [])
-{
-    //Trek Insurance
-    $iter = 0;
-    $cols = 2;
-    $shipping_name = '';
-    $guests = array();
-    if ($tt_posted) {
-        $shipping_name  = $tt_posted['shipping_first_name'] . ' ' . $tt_posted['shipping_last_name'];
-        $guests = isset($tt_posted['guests']) ? $tt_posted['guests'] : array();
+
+/**
+ * Take the guest insurance output HTML.
+ *
+ * @param array  $tt_posted   Posted order guest data, that are stored into trek_user_checkout_data.
+ * @param string $before_html The opening wrapper html. By default: <div id="travel-protection-summary">
+ * @param string $after_html  The closing wrapper html. By default: </div>
+ *
+ * @uses checkout-insured-summary.php template file.
+ *
+ * @return string Guest insurance HTML.
+ */
+function tt_guest_insurance_output( $tt_posted = array(), $before_html = '<div id="travel-protection-summary">', $after_html = '</div>' ) {
+    $template_args = array(
+        'before_html' => $before_html,
+        'tt_posted'   => $tt_posted,
+        'after_html'  => $after_html
+    );
+
+    $guest_insurance_html              = ''; 
+    $checkout_insured_summary_template = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php';
+
+    if( is_readable( $checkout_insured_summary_template ) ) {
+        $guest_insurance_html = wc_get_template_html( 'woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php', $template_args );
+    } else {
+        $guest_insurance_html = '<h3>Step 4</h3><p>checkout-insured-summary.php form code is missing!</p>';
     }
-    $guest_insurance_html = '';
-    if (isset($tt_posted['trek_guest_insurance']) && !empty($tt_posted['trek_guest_insurance'])) {
-        $guest_insurance = $tt_posted['trek_guest_insurance'];
-        $fields_size = 1;
-        $fields_size += isset($guest_insurance['guests']) && $guest_insurance['guests'] ? sizeof($guest_insurance['guests']) : 0;
-        $guest_insurance_html .= '<div id="travel-protection-summary">';
-        foreach ($guest_insurance as $guest_insurance_k => $guest_insurance_val) {
-            if ($guest_insurance_k == 'primary') {
-                $p_insurance_amount = isset($guest_insurance_val['basePremium']) ? $guest_insurance_val['basePremium'] : 0;
-                $p_insurance_amount_curr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$p_insurance_amount.'</span>';
-                if ($iter % $cols == 0) {
-                    $guest_insurance_html .= '<div class="d-flex order-details__flex order-details__flexmulti">';
-                }
-                $guest_insurance_html .= '<div>';
-                $guest_insurance_html .= '<p class="fw-medium mb-2">Primary Guest: ' . $shipping_name . '</p>
-                <p class="fs-sm lh-sm mb-0">' . ($guest_insurance_val['is_travel_protection'] == 1 ? 'Added Travel Protection ('.$p_insurance_amount_curr.')' : 'Declined Travel Protection') . '</p>';
-                $guest_insurance_html .= '</div>';
-                if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-                    $guest_insurance_html .= '</div>';
-                }
-                $iter++;
-            } else {
-                foreach ($guest_insurance_val as $guest_key => $guest_insurance_Data) {
-                    $g_insurance_amount = isset($guest_insurance_Data['basePremium']) ? $guest_insurance_Data['basePremium'] : 0;
-                    $g_insurance_amount_curr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$g_insurance_amount.'</span>';
-                    if ($iter % $cols == 0) {
-                        $guest_insurance_html .= '<div class="d-flex order-details__flex order-details__flexmulti">';
-                    }
-                    $guestInfo = $guests[$guest_key];
-                    $fullname = $guestInfo['guest_fname'] . ' ' . $guestInfo['guest_lname'];
-                    $guest_insurance_html .= '<div>';
-                    $guest_insurance_html .= '<p class="fw-medium mb-2">Guest ' . $guest_key + 1 . ': ' . $fullname . '</p>
-                    <p class="fs-sm lh-sm mb-0">' . ($guest_insurance_Data['is_travel_protection'] == 1 ? 'Added Travel Protection ('.$g_insurance_amount_curr.')' : 'Declined Travel Protection') . '</p>';
-                    $guest_insurance_html .= '</div>';
-                    if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-                        $guest_insurance_html .= '</div>';
-                    }
-                    $iter++;
-                }
-            }
-        }
-        $guest_insurance_html .= '</div>';
-    }
+
     return $guest_insurance_html;
 }
 function tt_guest_details($tt_posted = [])
 {
     $userInfo = wp_get_current_user();
     $guest_emails = [];
-    $guest_html = $bike_gear_html = '';
+    $guest_html = $bike_gear_html = $hiking_gear_html = '';
     if ($tt_posted) {
         $iter = 0;
         $cols = 2;
@@ -4674,8 +4716,10 @@ function tt_guest_details($tt_posted = [])
             if ($iter % $cols == 0) {
                 $guest_html .= '<div class="d-flex order-details__flex order-details__flexmulti">';
                 $bike_gear_html .= '<div class="d-flex order-details__flex order-details__flexmulti">';
+                $hiking_gear_html .= '<div class="d-flex order-details__flex order-details__flexmulti">';
             }
-            $rider_levelVal = tt_validate($bike_gears['primary']['rider_level']);
+            $rider_levelVal    = tt_validate( $bike_gears['primary']['rider_level'] );
+            $activity_levelVal = tt_validate( $bike_gears['primary']['activity_level'] );
             // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
             $default_p_bike_id = '';
             if( 0 == $bike_gears['primary']['bikeId'] ){
@@ -4685,10 +4729,12 @@ function tt_guest_details($tt_posted = [])
             $bike_size = tt_validate($bike_gears['primary']['bike_size']);
             $bike = tt_validate($bike_gears['primary']['bike']);
             $rider_height = tt_validate($bike_gears['primary']['rider_height']);
+            $user_height = tt_validate($bike_gears['primary']['rider_height']);
             $bike_pedal = tt_validate($bike_gears['primary']['bike_pedal']);
             $helmet_size = tt_validate($bike_gears['primary']['helmet_size']);
             $jersey_style = tt_validate($bike_gears['primary']['jersey_style']);
             $jersey_size = tt_validate($bike_gears['primary']['jersey_size']);
+            $tshirt_size = tt_validate($bike_gears['primary']['tshirt_size']);
             $bikeTypeId = tt_validate($bike_gears['primary']['bikeTypeId']);
             $own_bike = tt_validate($bike_gears['primary']['own_bike']);
             if ($iter != 0 && isset($tt_posted['guests']) && $tt_posted['guests'] && $tt_posted['guests'][$iter]) {
@@ -4700,7 +4746,8 @@ function tt_guest_details($tt_posted = [])
                 $phone = isset($guest_info['guest_phone']) ? $guest_info['guest_phone'] : '';
                 $dob = isset($guest_info['guest_dob']) ? $guest_info['guest_dob'] : '';
                 $gender = isset($guest_info['guest_gender']) && $guest_info['guest_gender'] == 1 ? 'Male' : 'Female';
-                $rider_levelVal = tt_validate($bike_gears['guests'][$iter]['rider_level']);
+                $rider_levelVal    = tt_validate( $bike_gears['guests'][$iter]['rider_level'] );
+                $activity_levelVal = tt_validate( $bike_gears['guests'][$iter]['activity_level'] );
                 // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
                 $default_bike_id = '';
                 if( 0 == $bike_gears['guests'][$iter]['bikeId'] ){
@@ -4710,10 +4757,12 @@ function tt_guest_details($tt_posted = [])
                 $bike_size = tt_validate($bike_gears['guests'][$iter]['bike_size']);
                 $bike = tt_validate($bike_gears['guests'][$iter]['bike']);
                 $rider_height = tt_validate($bike_gears['guests'][$iter]['rider_height']);
+                $user_height = tt_validate($bike_gears['guests'][$iter]['rider_height']);
                 $bike_pedal = tt_validate($bike_gears['guests'][$iter]['bike_pedal']);
                 $helmet_size = tt_validate($bike_gears['guests'][$iter]['helmet_size']);
                 $jersey_style = tt_validate($bike_gears['guests'][$iter]['jersey_style']);
                 $jersey_size = tt_validate($bike_gears['guests'][$iter]['jersey_size']);
+                $tshirt_size = tt_validate($bike_gears['guests'][$iter]['tshirt_size']);
                 $bikeTypeId = tt_validate($bike_gears['guests'][$iter]['bikeTypeId']);
                 $own_bike = tt_validate($bike_gears['guests'][$iter]['own_bike']);
             }
@@ -4796,12 +4845,30 @@ function tt_guest_details($tt_posted = [])
                 $guest_html .= '</div>';
                 $bike_gear_html .= '</div>';
             }
+
+            $hiking_gear_html .= '<div>';
+            $activity_level = tt_get_custom_item_name( 'syncRiderLevels', $activity_levelVal );
+            $user_height    = tt_get_custom_item_name( 'syncHeights', $user_height );
+            $tshirt_size    = tt_get_custom_item_name( 'syncJerseySizes', $tshirt_size );
+
+            $hiking_gear_html .= '<p class="mb-2 fs-md lh-md fw-medium">' . $guest_label . '</p>';
+            $hiking_gear_html .= '<p class="mb-2 fs-md lh-md fw-medium">' . $fname . ' ' . $lname . '</p>';
+            $hiking_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Activity Level: ' . $activity_level . '</p>';
+            $hiking_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Guest Height: ' . $user_height . '</p>';
+            $hiking_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">T-Shirt Size: ' . $tshirt_size . '</p>';
+            $hiking_gear_html .= '</div>';
+            if (($iter % $cols == $cols - 1) || ($iter == $guest_count - 1)) {
+                $guest_html .= '</div>';
+                $hiking_gear_html .= '</div>';
+            }
+
         }
     }
     return [
         'guests' => $guest_html,
         'bike_gears' => $bike_gear_html,
-        'guest_emails' => $guest_emails
+        'guest_emails' => $guest_emails,
+        'hiking_gears' => $hiking_gear_html,
     ];
 }
 function tt_get_parent_trip($sku = "") {
@@ -5264,23 +5331,15 @@ function tt_generate_save_insurance_quote_cb()
     } else {
         $insuredHTMLPopup .= '<h3>Step 4</h3><p>checkout-insured-guests-popup.php form code is missing!</p>';
     }
-    $insuredHTML = '';
-    $checkout_insured_users = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests.php';
-    if (is_readable($checkout_insured_users)) {
-        $insuredHTML .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests.php');
+    $guest_insurance_html          = '';
+    $guest_insurance_html_template = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php';
+    if ( is_readable( $guest_insurance_html_template ) ) {
+        $guest_insurance_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php');
     } else {
-        $insuredHTML .= '<h3>Step 4</h3><p>checkout-insured-guests.php form code is missing!</p>';
-    }
-    $insured_summary_html = '';
-    $checkout_insured_users   = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php';
-    if ( is_readable( $checkout_insured_users ) ) {
-        $insured_summary_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-summary.php');
-    } else {
-        $insured_summary_html .= '<h3>Step 4</h3><p>checkout-insured-summary.php form code is missing!</p>';
+        $guest_insurance_html .= '<h3>Step 4</h3><p>checkout-insured-summary.php form code is missing!</p>';
     }
     $res['status']               = true;
-    $res['guest_insurance_html'] = $insuredHTML;
-    $res['insured_summary_html'] = $insured_summary_html;
+    $res['guest_insurance_html'] = $guest_insurance_html;
     $res['insuredHTMLPopup']     = $insuredHTMLPopup;
     $res['review_order']         = $review_order_html;
     $res['payment_option']       = $payment_option_html;
@@ -5359,7 +5418,7 @@ function tt_product_custom_column_value( $column_name, $post_id ) {
 }
 function tt_get_jersey_sizes($gender="", $jersey_size=""){
     $opts = "";
-    $opts .= '<option value="">Select Clothing Size</option>';
+    $opts .= '<option value="">Select Jersey Size</option>';
     $itemData = tt_get_custom_item_name('syncJerseySizes');
     if( $itemData && isset($itemData['options']) && $itemData['options'] ){
         foreach($itemData['options'] as $jerseyOptions){
@@ -6129,7 +6188,7 @@ function display_total_tax() {
     $cart      = WC()->cart;
     $total_tax = calculate_cart_total_tax( $cart );
 
-    echo '<p class="mb-0 fw-medium">' . wc_price( $total_tax ) . '</p>';
+    echo '<p class="mb-0 fw-bold fs-lg">' . wc_price( $total_tax ) . '</p>';
 }
 
 
@@ -6336,7 +6395,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
         $sku = $product->get_sku();
 
         // Trip Status: Limited Availability, Sold Out, Group Hold, Sales Hold or Hold
-        $trip_status = $product->get_attribute( 'pa_trip-status' );
+        $trip_status = tt_get_custom_product_tax_value( $product_id, 'trip-status', true );
 
         // Remove from stela status.
         $remove_from_stella = tt_get_local_trips_detail( 'removeFromStella', '', $sku, true );
@@ -6633,6 +6692,9 @@ function tt_get_itinerary_link_from_trip_itineraries($trip_sku, $parent_product_
  */
 function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary, $waiver_signed ) {
 	$is_checklist_completed = true;
+    $trip_info              = tt_get_trip_pid_sku_from_cart( $order_id );
+    $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+
 
 	// Get info for completed PB checklist sections from the user meta.
 	$confirmed_info_user         = get_user_meta( $user_id, 'pb_checklist_cofirmations', true );
@@ -6671,7 +6733,7 @@ function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_
 		array_push( $available_pb_checklist_sections, 'gear_section' );
 	}
 
-	if ( 5257 != $bike_id && 5270 != $bike_id ) {
+	if ( 5257 != $bike_id && 5270 != $bike_id && ! $is_hiking_checkout ) {
 		array_push( $available_pb_checklist_sections, 'bike_section' );
 	}
 
@@ -7349,26 +7411,35 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
             $shared_attributes['gallery_images'][$index] = wp_get_attachment_image_src( $attachment_id, 'shop_catalog' )[0];
 
         }
-        if ( $product->get_attribute( 'Trip Style' ) ) {
-            $shared_attributes['Trip Style'] = $product->get_attribute( 'Trip Style' );
+        
+        $activity_level = tt_get_custom_product_tax_value( $post->ID, 'activity-level', true );
+
+        if( $activity_level ) {
+            $shared_attributes['Activity Level'] = $activity_level;
         }
-        if ( $product->get_attribute( 'Hotel Level' ) ) {
-            $shared_attributes['Hotel Level'] = $product->get_attribute( 'Hotel Level' );
+
+        $trip_style = tt_get_custom_product_tax_value( $post->ID, 'trip-style', true );
+
+        if( $trip_style ) {
+            $shared_attributes['Trip Style'] = $trip_style;
         }
-        if ( $product->get_attribute( 'Rider Level' ) ) {
-            $shared_attributes['Rider Level'] = $product->get_attribute( 'Rider Level' );
+
+        $hotel_level = tt_get_custom_product_tax_value( $post->ID, 'hotel-level', true );
+
+        if( $hotel_level ) {
+            $shared_attributes['Hotel Level'] = $hotel_level;
         }
-        if ( $product->get_attribute( 'Duration' ) ) {
-            $shared_attributes['Duration'] = $product->get_attribute( 'Duration' );
+
+        $trip_duration = tt_get_custom_product_tax_value( $post->ID, 'trip-duration', true );
+
+        if( $trip_duration ) {
+            $shared_attributes['Duration'] = $trip_duration;
         }
-        if ( $product->get_attribute( 'Badge' ) ) {
-            $shared_attributes['Badge'] = $product->get_attribute( 'Badge' );
-        }
-        if ( $product->get_attribute( 'Bike Type' ) ) {
-            $shared_attributes['Bike Type'] = $product->get_attribute( 'Bike Type' );
-        }
-        if ( $product->get_attribute( 'Region' ) ) {
-            $shared_attributes['Region'] = $product->get_attribute( 'Region' );
+
+        $badge = tt_get_custom_product_tax_value( $post->ID, 'product_tag', true );
+
+        if( $badge ) {
+            $shared_attributes['Badge'] = $badge;
         }
     }
 
@@ -7556,3 +7627,191 @@ function tt_algolia_searchable_posts_index_post_updated( $post, $records ) {
     }
 }
 add_action( 'algolia_searchable_posts_index_post_updated', 'tt_algolia_searchable_posts_index_post_updated', 10, 2 );
+
+/**
+ * AJAX Function to take guest template
+ * for adding guests on the checkout page, step 1.
+ *
+ * @uses checkout-guest-single.php - Template for every Secondary Guest.
+ */
+function get_add_guest_template_cb() {
+    $status                     = true;
+    $trip_booking_limit         = get_trip_capacity_info();
+    $guest_count                = isset( $_POST['guest_count'] ) && is_numeric( $_POST['guest_count'] ) ? (int) $_POST['guest_count'] : 0;
+    $guest_length               = isset( $_POST['guest_length'] ) && is_numeric( $_POST['guest_length'] ) ? (int) $_POST['guest_length'] : 0;
+    $checkout_guest_single      = TREK_PATH . '/woocommerce/checkout/checkout-guest-single.php';
+    $checkout_guest_single_html = '';
+
+    if( is_readable( $checkout_guest_single ) ) {
+        if( $guest_count > $trip_booking_limit['remaining'] ) {
+            $guest_count = $trip_booking_limit['remaining'];
+        }
+        if( $guest_count > $guest_length ) {
+            // Guest to add number is bigger from the guest fields in the form, so need to add more guest fields.
+            $guest_to_add = $guest_count - $guest_length;
+            for ( $i = 1; $i < $guest_to_add; $i++ ) { 
+                $checkout_guest_single_html .= wc_get_template_html( 'woocommerce/checkout/checkout-guest-single.php', array( 'guest_num' => $i + $guest_length , 'show_mailing_checkbox' => false ) );
+            }
+        }
+    } else {
+        $checkout_guest_single_html = '<h3>Step 1</h3><p>Checkout add single guest template is missing!</p>';
+        $status                     = false;
+    }
+
+    echo json_encode(
+        array(
+            'status'                     => $status,
+            'checkout_guest_single_html' => $checkout_guest_single_html,
+        )
+    );
+    exit;
+}
+add_action('wp_ajax_get_add_guest_template_action', 'get_add_guest_template_cb');
+add_action('wp_ajax_nopriv_get_add_guest_template_action', 'get_add_guest_template_cb');
+
+/**
+ * Check if the trip is from the given product line.
+ *
+ * @param string $product_line_name The name of the check product line.
+ * @param string $sku               The product SKU.
+ *
+ * @uses tt_get_local_trips_detail() helper function.
+ * @uses tt_validate() helper function.
+  *
+ * @return bool|null Whether the trip is from the given product line or null if the product line is not found in the trip_details table.
+ */
+function tt_is_product_line( $product_line_name = '', $sku = '' ) {
+    $product_line = tt_get_local_trips_detail( 'product_line', '', $sku, true ); // The value or empty string.
+
+    // Product line not found for given SKU.
+    if( empty( $product_line ) ) {
+        return null;
+    }
+
+    $product_line_obj   = json_decode( $product_line ); // The object has 'id' and 'level'.
+    $product_line_level = is_object( $product_line_obj ) ? tt_validate( $product_line_obj->name ) : ''; // The name of the product line.
+
+    if( $product_line_name === $product_line_level ) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Add a checkout style class to the body on the checkout page.
+ *
+ * @param string[] $classes An array of body class names.
+ *
+ * @uses tt_is_product_line()
+ * @uses tt_get_line_items_product_ids()
+ *
+ * @see https://developer.wordpress.org/reference/hooks/body_class/
+ *
+ * @return string[] $classes An probably modified array of body class names.
+ */
+function tt_add_checkout_style_body_class( $classes ) {
+    // Only on checkout page
+    if( is_checkout() && ! is_wc_endpoint_url() ) {
+        $accepted_p_ids = tt_get_line_items_product_ids();
+
+        // Check if WC()->cart is not null.
+        if ( ! WC()->cart ) {
+            return $classes;
+        }
+
+        // Take the cart contents.
+        $cart = WC()->cart->get_cart();
+
+        if( ! $cart ) {
+            return $classes;
+        }
+
+        foreach( $cart as $cart_item_id => $cart_item ) {
+            $product_id = $cart_item['product_id'];
+            // Check for trip product in the cart.
+            if( $product_id && ! in_array( $product_id, $accepted_p_ids ) ) {
+                $product     = wc_get_product( $product_id );
+                $product_sku = $product->get_sku();
+
+                if( tt_is_product_line( 'Hiking', $product_sku ) ) {
+                    $classes[] = 'checkout-style-hiking';
+                } else {
+                    $classes[] = 'checkout-style-cycling';
+                }
+
+            }
+        }
+    }
+
+    // Only on Thank You Page
+    if ( is_checkout() && is_wc_endpoint_url('order-received') ) {
+        global $wp;
+        $order_id = absint( $wp->query_vars['order-received'] );
+        if( $order_id ) {
+            $order = wc_get_order( $order_id );
+            if( $order ) {
+                $trip_info          = tt_get_trip_pid_sku_from_cart( $order_id );
+                $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+                if( $is_hiking_checkout ) {
+                    $classes[] = 'checkout-style-hiking';
+                } else {
+                    $classes[] = 'checkout-style-cycling';
+                }
+            }
+        }
+    }
+
+    return $classes;
+}
+add_filter( 'body_class', 'tt_add_checkout_style_body_class' );
+
+/**
+ * Function that returns the room type for a given guest index.
+ *
+ * @param int $index Index of the guest
+ * @param array $occupants Array with information about rooms and guests
+ * @return string|null Room type or null if the guest is not found
+ */
+function tt_get_room_type_by_guest_index( $index, $occupants ) {
+    $room_types = array(
+        'roommate' => __( 'Open to a Roommate', 'trek-trevel-theme' ),
+        'private'  => __( 'Enjoy a room all to yourself', 'trek-trevel-theme' ),
+        'single'   => __( 'Room with 1 Bed', 'trek-trevel-theme' ),
+        'double'   => __( 'Room with 2 Beds', 'trek-trevel-theme' )
+    );
+    // Iterate through each room type in the occupants array.
+    foreach ( $occupants as $room_type => $guests ) {
+        // Check if the given index is in the current room type array.
+        if ( in_array( (string) $index, $guests ) ) {
+            // Return the room type if the guest index is found.
+            return $room_types[$room_type];
+        }
+    }
+    // Return null if the guest index is not found in any room type.
+    return null;
+}
+
+/**
+ * Rebuild the bike size options,
+ * to can disable bike sizes that are going to be under availability,
+ * during the bike selection per guest.
+ *
+ * @param string|int $bike_type_id The bike type for which want to take the bike size options.
+ * @param string|int $selected_bike_size The selected bike size for the field that is under rebuilding.
+ * @param array $selected_bikes_arr The bike size and bike type for all selected current bikes.
+ * @return array With the bike size and bike type options html.
+ */
+function tt_rebuild_bike_size_options_cb() {
+    $bike_type_id       = tt_validate( $_REQUEST['bike_type_id'] );
+    $selected_bike_size = tt_validate( $_REQUEST['selected_bike_size'] );
+    $selected_bikes_arr = tt_validate( $_REQUEST['selected_bikes_arr'] );
+    $trip_info          = tt_get_trip_pid_sku_from_cart();
+
+    $bike_size_options_html = tt_get_bikes_by_trip_info( $trip_info['ns_trip_Id'], $trip_info['sku'], $bike_type_id, $selected_bike_size, '', '', $selected_bikes_arr );
+
+    echo json_encode( $bike_size_options_html );
+    exit;
+}
+add_action('wp_ajax_tt_rebuild_bike_size_options_ajax_action', 'tt_rebuild_bike_size_options_cb');
+add_action('wp_ajax_nopriv_tt_rebuild_bike_size_options_ajax_action', 'tt_rebuild_bike_size_options_cb');

@@ -1,17 +1,77 @@
 .order-details {
     margin-top: 48px;
     &__number {
-        margin-bottom: 28px;
+        margin-bottom: 35px;
+        overflow: hidden;
+        border: none !important;
+        padding: 2px;
+        background: var(--summary-card-background);
+        border-radius: 4px;
+
+        & > div {
+            background-color: white;
+
+            .trip-product-line {
+                background-color: #000000;
+                color: white;
+                padding: 8px 12px;
+                font-size: 18px;
+                line-height: 22px;
+                margin-bottom: 24px;
+            }
+
+            .order-details__heading {
+                font-size: 24px;
+                font-weight: 700;
+                line-height: 28px;
+                margin-bottom: 6px;
+            }
+
+            .trip-duration {
+                font-size: 18px;
+                line-height: 22px;
+                font-weight: 700;
+            }
+
+            hr {
+                margin: 32px 24px;
+                background-color: #C6C6C6;
+                opacity: 1;
+
+                &.light-line {
+                    margin: 12px 24px;
+                    background-color: #F4F4F4;
+                    opacity: 0.25;
+                }
+            }
+        }
+
     }
     &__print {
         font-weight: $font-weight-medium;
         font-size: $font-size-md;
-        line-height: $line-height-md;
+        line-height: 20px !important;
         margin-bottom: 40px;
+        padding: 12px 20px !important;
     }
     &__quite {
-        background-color: #D4EEF9;
-        padding: 32px 24px;
+        background-color: #F4F4F4;
+        border: 1px solid #28AAE1;
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+        margin-bottom: 0;
+
+        .info-img {
+            flex: 0 0 auto;
+            margin-top: 3px;
+        }
+
+        p {
+            a {
+                font-weight: 700;
+            }
+        }
     }
     &__title {
         font-family: 'Poppins';
@@ -23,21 +83,33 @@
         line-height: 36px;
     }
     &__quite {
-        margin-bottom: 40px;
+        // margin-bottom: 40px;
     }
     &__text {
-        font-size: $font-size-sm;
+        &:not(.fs-xl) {
+            font-size: $font-size-sm;
+        }
         line-height: $line-height-sm;
     }
     &__textbold {
-        font-size: $font-size-md;
+        &:not(.fs-md) {
+            font-size: $font-size-md;
+        }
         line-height: $line-height-md;
     }
     &__content {
-        padding: 16px 0px;
+        padding: 32px 0px 16px;
+
+        .order-details__text {
+            margin-bottom: 2px !important;
+        }
+
+        .checkout-review__guest {
+            margin-bottom: 0;
+        }
     }
     &__flex {
-        flex-direction: column;
+        // flex-direction: column;
         gap: 24px;
         div {
             width: 100%;
@@ -92,11 +164,61 @@
             font-weight: $font-weight-semibold;
             font-size: 36px;
             line-height: 48px;
+            z-index: 999;
+
+            @media (max-width: 992px) {
+                font-size: 40px;
+                margin-bottom: 12px !important;
+            }
         }
         &-text {
-            font-size: 16px;
+            z-index: 999;
             line-height: 24px;
+            @media (max-width: 992px) {
+                font-size: 16px;
+                line-height: 20px;
+                max-width: 80%;
+                margin-inline: auto;
+            }
+
+            @media (max-width: 520px) {
+                max-width: 100%;
+            }
+            &:not(.fs-xl) {
+                font-size: 16px;
+            }
         }
+
+        position: relative;
+
+        &::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: #00000035;
+        }
+    }
+    .checkout-bikes__selected-rooms {
+        text-align: left;
+    }
+    .form-group {
+        width: 100%;
+    }
+    .gform_fields {
+        row-gap: 12px !important;
+
+        select {
+            padding: 0px 20px !important;
+        }
+    }
+    .order-details__submit {
+        font-size: 16px !important;
+        line-height: 20px !important;
+        padding: 12px 20px !important;
+        background-color: black !important;
     }
     @include media-breakpoint-up(lg) {
         padding: 0px 297px;
@@ -104,28 +226,32 @@
         max-width: 100%;
         &__print,
         &__quite {
-            margin-bottom: 48px;
+            // margin-bottom: 48px;
         }
         &__quite {
-            padding: 32px;
+            // padding: 32px;
         }
         &__heading {
-            font-size: 30px;
-            line-height: 40px;
+            font-size: 24px;
+            line-height: 28px;
         }
         &__text {
-            font-size: $font-size-md;
+            &:not(.fs-xl) {
+                font-size: $font-size-md;
+            }
             line-height: $line-height-md;
         }
         &__textbold {
-            font-size: $font-size-lg;
+            &:not(.fs-md) {
+                font-size: $font-size-lg;
+            }
             line-height: $line-height-lg;
         }
         &__duesp {
             width: 50%;
         }
         &__content {
-            padding: 24px 0px;
+            padding: 32px 0px 24px;
         }
         &__flex {
             flex-direction: row;
@@ -141,22 +267,44 @@
             margin-top: 56px;
             margin-bottom: 112px;
         }
-        .form-group {
-            width: 50%;
-        }
         &__banner {
-            height: 400px;
+            height: 506px;
             padding: 56px 80px;
+            padding-top: 100px;
             background-image: linear-gradient(0deg, #000000 -7.63%, rgba(0, 0, 0, 0) 55.25%),url('../../assets/images/Thankyou.jpg');
             &-heading {
-                font-size: 56px;
-                line-height: 72px;
+                font-size: 68px;
+                line-height: 82px;
+                font-weight: 700;
             }
             &-text {
-                font-size: 18px;
-                line-height: 28px;
+                font-size: 20px;
+                line-height: 24px;
+                font-weight: 500;
+                max-width: 994px;
+                margin: 12px auto 1rem;
             }
         }
+    }
+
+    .order-details-container {
+        width: 580px;
+        margin: 0 auto;
+
+        @media (max-width: 992px) {
+            width: 94%;
+        }
+    }
+}
+
+body:not(.trek-my-account) #order-details-page {
+    transform: translateY(-150px);
+    z-index: 999;
+    position: relative;
+    margin-top: 0;
+
+    @media (max-width: 520px) {
+        transform: translateY(-80px);
     }
 }
 .woocommerce-order{

@@ -34,7 +34,8 @@ foreach ($order_items as $item_id => $item) {
 		$trek_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_checkout_data', true);
 		$trek_formatted_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_formatted_checkout_data', true);
 		if ($product) {
-			$trip_status = $product->get_attribute('pa_trip-status');
+			$p_id = $product->get_id();
+			$trip_status = tt_get_custom_product_tax_value( $p_id, 'trip-status', true );
 			$trip_sdate = $product->get_attribute('pa_start-date');
 			$trip_edate = $product->get_attribute('pa_end-date');
 			$trip_name = $product->get_name();
@@ -108,8 +109,6 @@ $shorts_bib_size = isset($User_order_info[0]['shorts_bib_size']) ? $User_order_i
 $trip_room_selection = isset($User_order_info[0]['trip_room_selection']) ? $User_order_info[0]['trip_room_selection'] : '';
 $guest_is_primary = isset($User_order_info[0]['guest_is_primary']) ? $User_order_info[0]['guest_is_primary'] : '';
 $own_bike = isset($User_order_info[0]['own_bike']) ? $User_order_info[0]['own_bike'] : 'no';
-//Trek Insurance
-$guest_insurance_html = tt_guest_insurance_output($trek_checkoutData);
 $public_view_order_url = '';
 if ($guest_is_primary == 1) {
 	$public_view_order_url = esc_url($order->get_view_order_url());
@@ -161,8 +160,28 @@ $tripProductLine    = wc_get_product_term_ids( $parent_product_id, 'product_cat'
 $bike_pointer_none = '';
 $gear_pointer_none = '';
 
-$hideJerseyForTrips = [744, 712, 713];
+//Reusing the already built logic here
+$jersey_hideme = "";
+
+//Get the trip style object, if it matches one of the items from the array, then we hide the jersey options.
+$trip_style                = json_decode( tt_get_local_trips_detail( 'subStyle', '', $trip_sku, true ) );
+
+$trip_style_name           = $trip_style ? $trip_style->name : '';
+
+// The trip sub-style includes either "Training", "Discover", or "Self-Guided" = hide jersey options.
+$hide_jersey_for_arr       = array( 'Training', 'Discover', 'Self-Guided' );
+
+
+//Again reusing the logic with the hideme that we have on other parts of the template
+if( in_array( $trip_style_name, $hide_jersey_for_arr ) ) {
+	$jersey_hideme = 'd-none';
+} else {
+	$jersey_hideme = 'none';
+}
+
 $hideme = "";
+
+$hideJerseyForTrips = [744, 712, 713];
 
 if (!empty($tripProductLine) && is_array($tripProductLine)) {
     $product_cat_matches = array_intersect($tripProductLine, $hideJerseyForTrips);
@@ -247,7 +266,9 @@ $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_ful
 
 $disable_gear_optional_section = true;
 
+$is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 ?>
+
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
 		<div class="col-lg-6 my-trips__back order-1 order-lg-0">
@@ -718,7 +739,7 @@ $disable_gear_optional_section = true;
 				<?php $gray_out = ''; ?>
 					<?php if ( 5257 != $bike_id ) { ?>
 						<?php $title_string = 'Confirm your gear information'; ?>
-					<?php if( $lockedUserRecord == 1 ) { ?>
+					<?php if( $lockedUserRecord == 1 || 5270 == $bike_id) { ?>
 						<?php $title_string = 'Review your gear information'; ?>
 						<?php $gray_out = 'disabled style="color: #666666;"'; ?>
 					<?php } ?>
@@ -736,7 +757,7 @@ $disable_gear_optional_section = true;
 					<form name="tt-checklist-form-gear-section" method="post" novalidate>
 						<div id="flush-collapse-gearInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-gearInfo">
 							<div class="accordion-body px-0">
-								<?php if( $lockedUserRecord ) { ?>
+								<?php if( $lockedUserRecord || 5270 == $bike_id ) { ?>
 									<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
 										<div class="checkout-bikes__notice-icon">
 											<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
@@ -759,67 +780,92 @@ $disable_gear_optional_section = true;
 											</div>
 										</div>
 									</div>
-									<div class="col-md px-0">
-										<div class="form-floating">
-											<select <?php echo $gray_out; ?> name="tt-pedal-selection" id="tt-pedal-selection" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Select Pedals" tabindex="-1" aria-hidden="true" required>
-												<?php echo tt_items_select_options('syncPedals', $pedal_selection); ?>
-											</select>
-											<label for="emergency_contact_address_2">Select Pedals</label>
-											<div class="invalid-feedback">
-												<img class="invalid-icon" />
-												This field is required.
+									<?php if ( ! $is_hiking_checkout ) : ?>
+										<div class="col-md px-0">
+											<div class="form-floating">
+												<select <?php echo $gray_out; ?> name="tt-pedal-selection" id="tt-pedal-selection" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Select Pedals" tabindex="-1" aria-hidden="true" required>
+													<?php echo tt_items_select_options('syncPedals', $pedal_selection); ?>
+												</select>
+												<label for="emergency_contact_address_2">Select Pedals</label>
+												<div class="invalid-feedback">
+													<img class="invalid-icon" />
+													This field is required.
+												</div>
 											</div>
 										</div>
-									</div>
+									<?php endif; ?>
 								</div>
-								<div class="row mx-0 guest-checkout__primary-form-row">
-									<div class="col-md px-0">
-										<div class="form-floating">
-											<select <?php echo $gray_out; ?> name="tt-helmet-size" id="tt-helmet-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Helmet Size" tabindex="-1" aria-hidden="true" required>
-												<?php echo tt_items_select_options('syncHelmets', $helmet_selection); ?>
-											</select>
-											<label for="emergency_contact_address_2">Helmet Size</label>
-											<div class="invalid-feedback">
-												<img class="invalid-icon" />
-												This field is required.
+								<?php if ( ! $is_hiking_checkout ) : ?>
+									<div class="row mx-0 guest-checkout__primary-form-row">
+										<div class="col-md px-0">
+											<div class="form-floating">
+												<select <?php echo $gray_out; ?> name="tt-helmet-size" id="tt-helmet-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Helmet Size" tabindex="-1" aria-hidden="true" required>
+													<?php echo tt_items_select_options('syncHelmets', $helmet_selection); ?>
+												</select>
+												<label for="emergency_contact_address_2">Helmet Size</label>
+												<div class="invalid-feedback">
+													<img class="invalid-icon" />
+													This field is required.
+												</div>
+											</div>
+										</div>
+										<div class="col-md px-0 <?php echo $jersey_hideme; ?>">
+											<div class="form-floating">
+												<select <?php echo $gray_out; ?> name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00" data-is-required="<?php echo( 'd-none' === $jersey_hideme ? 'false' : 'true' ); ?>">
+													<option value="">Select Jersey Style</option>
+													<?php if ( 'd-none' === $jersey_hideme ) : ?>
+														<option selected value="">None</option>
+													<?php endif; ?>
+													<option value="men" <?php echo ($jersey_style == 'men' ? 'selected' : ''); ?>>Men's</option>
+													<option value="women" <?php echo ($jersey_style == 'women' ? 'selected' : ''); ?>>Women's</option>
+												</select>
+												<label for="emergency_contact_address_2">Jersey Style</label>
+												<div class="invalid-feedback">
+													<img class="invalid-icon" />
+													This field is required.
+												</div>
 											</div>
 										</div>
 									</div>
-									<div class="col-md px-0 <?php echo $hideme; ?>">
-										<div class="form-floating">
-											<select <?php echo $gray_out; ?> name="tt-jerrsey-style" id="tt-jerrsey-style" class="form-select gear_validation_inputs tt_jersey_style_change" autocomplete="address-level1" data-input-classes="" data-label="Jersey Style" tabindex="-1" aria-hidden="true" data-guest-index="00" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
-												<option value="">Select Clothing Style</option>
-												<?php if ( 'd-none' === $hideme ) : ?>
-													<option selected value="">None</option>
-												<?php endif; ?>
-												<option value="men" <?php echo ($jersey_style == 'men' ? 'selected' : ''); ?>>Men's</option>
-												<option value="women" <?php echo ($jersey_style == 'women' ? 'selected' : ''); ?>>Women's</option>
-											</select>
-											<label for="emergency_contact_address_2">Jersey Style</label>
-											<div class="invalid-feedback">
-												<img class="invalid-icon" />
-												This field is required.
+								<?php endif; ?>
+								<?php if ( ! $is_hiking_checkout ) : ?>
+									<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row <?php echo $jersey_hideme; ?>">
+										<div class="col-md px-0">
+											<div class="form-floating">
+												<select <?php echo $gray_out; ?> name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true" data-is-required="<?php echo( 'd-none' === $jersey_hideme ? 'false' : 'true' ); ?>">
+													<?php if ( 'd-none' === $jersey_hideme ) : ?>
+														<option selected value="">None</option>
+													<?php endif; ?>
+													<?php echo tt_get_jersey_sizes($jersey_style, $tt_jersey_size); ?>
+												</select>
+												<label for="emergency_contact_address_2">Jersey Size</label>
+												<div class="invalid-feedback">
+													<img class="invalid-icon" />
+													This field is required.
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row <?php echo $hideme; ?>">
-									<div class="col-md px-0">
-										<div class="form-floating">
-											<select <?php echo $gray_out; ?> name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="Jersey Size" tabindex="-1" aria-hidden="true" data-is-required="<?php echo( 'd-none' === $hideme ? 'false' : 'true' ); ?>">
-												<?php if ( 'd-none' === $hideme ) : ?>
-													<option selected value="">None</option>
-												<?php endif; ?>
-												<?php echo tt_get_jersey_sizes($jersey_style, $tt_jersey_size); ?>
-											</select>
-											<label for="emergency_contact_address_2">Jersey Size</label>
-											<div class="invalid-feedback">
-												<img class="invalid-icon" />
-												This field is required.
+								<?php endif; ?>
+								<?php if ( $is_hiking_checkout ) : ?>
+									<?php
+									$tshirt_size = $User_order_info[0]['tshirt_size'];
+									?>
+									<div class="row mx-0 guest-checkout__primary-form-row gear-info-last-row">
+										<div class="col-md px-0">
+											<div class="form-floating">
+												<select <?php echo $gray_out; ?> name="tt-jerrsey-size" id="tt-jerrsey-size" class="form-select gear_validation_inputs" autocomplete="address-level1" data-input-classes="" data-label="T-Shirt Size" tabindex="-1" aria-hidden="true" data-is-required="<?php echo( 'd-none' === $jersey_hideme ? 'false' : 'true' ); ?>">
+													<?php echo tt_items_select_options( 'syncJerseySizes', tt_validate( $tshirt_size ) ); ?>
+												</select>
+												<label for="emergency_contact_address_2">T-Shirt Size</label>
+												<div class="invalid-feedback">
+													<img class="invalid-icon" />
+													This field is required.
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
+								<?php endif; ?>
 								<?php if ( $lockedUserRecord != 1 ) { ?>
 									<div class="form-check form-check-inline mb-0">
 										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck3" value="yes">
@@ -933,7 +979,7 @@ $disable_gear_optional_section = true;
 						</form>
 					</div> <!-- accordion-item ends -->
 				<?php } ?>
-					<?php if ( 5270 != $bike_id && 5257 != $bike_id ) { ?>
+					<?php if ( 5270 != $bike_id && 5257 != $bike_id && ! $is_hiking_checkout ) { ?>
 						<?php $gray_out = ''; ?>
 						<?php $bike_review_string = 'Confirm your bike selection'; ?>
 						<?php if( $lockedUserBike ) { ?>

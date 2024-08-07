@@ -9,30 +9,84 @@
  * @package WebDevStudios\WPSWA
  */
 get_header();
-$cate = get_queried_object();
-$cateID = $cate->term_id;
+
+// Take the Date/Time filter params from the URL.
+$urlStartTime  = $_GET['start_time'];
+$urlEndTime    = $_GET['end_time'];
+$urlDateFilter = '';
+$urlFlag       = 0;
+if ( isset( $urlStartTime ) && ! empty( $urlStartTime ) && isset( $urlEndTime ) && ! empty( $urlEndTime ) ) {
+    $urlDateFilter = "AND start_date_unix:".$urlStartTime." TO ".$urlEndTime;
+    $urlFlag       = 1;
+}
+
+// Collect PLP attributes like description, Travel Info, Thumbnail, etc.
+$cate                 = get_queried_object();
+$cateID               = $cate->term_id;
 $plp_algolia_category = get_term($cateID);
 
-$urlStartTime = $_GET['start_time'];
-$urlEndTime = $_GET['end_time'];
-$urlDateFilter = '';
-$urlFlag = 0;
-if (isset($urlStartTime) && !empty($urlStartTime) && isset($urlEndTime) && !empty($urlEndTime)) {
-    $urlDateFilter = "AND start_date_unix:".$urlStartTime." TO ".$urlEndTime;
-    $urlFlag = 1;
+// Set up the Algolia filter key.
+$filter_name          = 'taxonomies.product_cat';
+
+if( isset( $cate->taxonomy ) && ! empty( $cate->taxonomy ) ) {
+    switch ($cate->taxonomy) {
+        case 'activity':
+            $filter_name = 'taxonomies.activity';
+            break;
+
+        case 'destination':
+            $filter_name = 'taxonomies.destination';
+            break;
+
+        case 'activity-level':
+            $filter_name = 'taxonomies.activity-level';
+            break;
+
+        case 'trip-style':
+            $filter_name = 'taxonomies.trip-style';
+            break;
+
+        case 'hotel-level':
+            $filter_name = 'taxonomies.hotel-level';
+            break;
+
+        case 'trip-duration':
+            $filter_name = 'taxonomies.trip-duration';
+            break;
+
+        case 'trip-status':
+            $filter_name = 'taxonomies.trip-status';
+            break;
+
+        case 'trip-class':
+            $filter_name = 'taxonomies.trip-class';
+            break;
+
+        default:
+            $filter_name = 'taxonomies.product_cat';
+            break;
+    }
 }
 
+// Get the thumbnail ID from product_cat_thumbnail.
 $thumbnail_id = get_term_meta( $cateID, 'thumbnail_id', true );
-$image = wp_get_attachment_url( $thumbnail_id );
-if ( $image ) {
-    $imgTag = '<img src="' . $image . '" alt="' . $cate->name . '" />';
+// If the thumbnail ID is empty, most probably this is a taxonomy and need to check for a thumbnail from the ACF field.
+if( empty( $thumbnail_id ) ) {
+    // Get the thumbnail ID from the ACF field.
+    $thumbnail_id = get_field( 'plp_thumbnail', $cate );
 }
-else{
+
+// Get the thumbnail URL.
+$image_src = wp_get_attachment_url( $thumbnail_id );
+if ( $image_src ) {
+    $imgTag = '<img src="' . $image_src . '" alt="' . $cate->name . '" />';
+} else {
     $imgTag = '';
 }
-$plp_travel_info = get_field('plp_travel_info', $cate);
+
+$plp_travel_info      = get_field('plp_travel_info', $cate);
 $plp_travel_info_link = get_field('plp_travel_info_link', $cate);
-$emptyBlockContent = '<div class="container no-results"><h2 class="fw-semibold">Sorry, we did not find anything. </h2><p class="fw-normal fs-lg lh-lg">Do you want to try <a href="#">[Suggested Query]</a>?</p></div><hr><div class="container discover-more"><div class="row"><h3 class="fw-semibold">Discover More Ways to Travel</h3>';
+$emptyBlockContent    = '<div class="container no-results"><h2 class="fw-semibold">Sorry, we did not find anything. </h2><p class="fw-normal fs-lg lh-lg">Do you want to try <a href="#">[Suggested Query]</a>?</p></div><hr><div class="container discover-more"><div class="row"><h3 class="fw-semibold">Discover More Ways to Travel</h3>';
 
 // No-Result Suggestions
 $noresultSuggestions = get_field('search_noresult_suggestions', 'option'); 
@@ -132,13 +186,13 @@ $emptyBlockContent .= '</div></div>';
                                 <h5>Destinations</h5>
                                 <div id="hierarchical-menu"></div>
                                 <hr>
-                                <!-- <h5>Duration</h5>
+                                <h5>Duration</h5>
                                 <div id="duration-facet"></div>
-                                <hr> -->
+                                <hr>
                                 <h5>Trip Style</h5>
                                 <div id="trip-style-facet"></div>
                                 <hr>
-                                <h5>Rider Level</h5>
+                                <h5>Activity Level</h5>
                                 <div id="rider-level-facet"></div>
                                 <hr>
                                 <h5>Hotel Level</h5>
@@ -189,6 +243,10 @@ $emptyBlockContent .= '</div></div>';
     </script>
 
     <script type="text/html" id="tmpl-instantsearch-hit">
+        <#
+            const TT_ACTIVITY_DASHBOARD_NAME_BIKING = '<?php echo esc_attr( TT_ACTIVITY_DASHBOARD_NAME_BIKING ); ?>';
+            const TT_ACTIVITY_DASHBOARD_NAME_HW     = '<?php echo esc_attr( TT_ACTIVITY_DASHBOARD_NAME_HW ); ?>';
+        #>
 
         <article itemtype="http://schema.org/Article" id="algoliaSearchResults">
 
@@ -251,10 +309,10 @@ $emptyBlockContent .= '</div></div>';
                     </div>
                     <div class="col-md-6 desktop-hideme">
                        <div class="product-head-info my-3">
-                            <# if (data.taxonomies.pa_badge) { 
-                                <!-- data.taxonomies.pa_badge = data.taxonomies.pa_badge.sort(); -->
+                            <# if (data.taxonomies.product_tag) { 
+                                <!-- data.taxonomies.product_tag = data.taxonomies.product_tag.sort(); -->
                                 #>
-                                <# data.taxonomies.pa_badge.forEach(function (badge, index) { #>
+                                <# data.taxonomies.product_tag.forEach(function (badge, index) { #>
                                     <span class="badge <# if (badge == 'Hiking + Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>
                                 <# }) #>
                             <# } #>
@@ -265,10 +323,10 @@ $emptyBlockContent .= '</div></div>';
                                     <span class="badge bg-dark">{{ data['Badge'] }}</span>
                                 <# } #>
                             <# } #> -->
-                           <# if ( data.taxonomies.pa_city ) { #>
+                           <# if ( data.taxonomies.city ) { #>
                            <p class="mb-0">
                             <span class="trip-category d-none">{{ data.taxonomies.product_cat }}</span>
-                               <small class="text-muted">{{ data.taxonomies.pa_city }}<# if ( data['Region'] ) { #> , {{data['Region']}}<# } #></small>
+                               <small class="text-muted">{{ data.taxonomies.city }}<# if ( data['Region'] ) { #> , {{data['Region']}}<# } #></small>
                            </p>
                            <# } #>
                             <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--title-link text-decoration-none" itemprop="url" onclick="selectItemAnalytics({{ data.post_id }})">
@@ -305,15 +363,15 @@ $emptyBlockContent .= '</div></div>';
                                     </ul>
                                     <# } #>
 
-                                    <# if ( data['Rider Level'] ) { #>
+                                    <# if ( data['Activity Level'] ) { #>
                                     <ul class="list-inline mb-1">
-                                        <# if (data.taxonomies.activity == 'Biking') { #>
+                                        <# if ( data.taxonomies.activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING ) { #>
                                             <li class="list-inline-item"><i class="fa-solid fa-person-biking"></i></li>
                                         <# } #>
-                                        <# if (data.taxonomies.activity != 'Biking') { #>
+                                        <# if (data.taxonomies.activity != TT_ACTIVITY_DASHBOARD_NAME_BIKING ) { #>
                                             <li class="list-inline-item hw"><i class="fa-solid fa-person-hiking"></i></li>
                                         <# } #>
-                                        <li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level'].replace(/&amp;/g, ' & ')}}</li>
+                                        <li class="list-inline-item fs-sm dl-riderlevel">{{data['Activity Level'].replace(/&amp;/g, ' & ')}}</li>
                                         <li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>
                                     </ul>
                                     <# } #>
@@ -362,18 +420,18 @@ $emptyBlockContent .= '</div></div>';
                     <div class="col-lg-6 col-md-5 mobile-hideme">
                         <div class="card-body ms-md-4 pt-0">
 
-                            <# if (data.taxonomies.pa_badge) { 
-                                <!-- data.taxonomies.pa_badge = data.taxonomies.pa_badge.sort(); -->
+                            <# if (data.taxonomies.product_tag) { 
+                                <!-- data.taxonomies.product_tag = data.taxonomies.product_tag.sort(); -->
                                 #>
-                                <# data.taxonomies.pa_badge.forEach(function (badge, index) { #>
+                                <# data.taxonomies.product_tag.forEach(function (badge, index) { #>
                                     <span class="badge <# if (badge == 'Hiking + Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>
                                 <# }) #>
                             <# } #>
 
-                            <# if ( data.taxonomies.pa_city ) { #>
+                            <# if ( data.taxonomies.city ) { #>
                             <p class="mb-0">
                             <span class="trip-category d-none">{{ data.taxonomies.product_cat }}</span>
-                                <small class="text-muted">{{ data.taxonomies.pa_city }}<# if ( data['Region'] ) { #> , {{data['Region']}}<# } #></small>
+                                <small class="text-muted">{{ data.taxonomies.city }}<# if ( data['Region'] ) { #> , {{data['Region']}}<# } #></small>
                             </p>
                             <# } #>
 
@@ -409,16 +467,17 @@ $emptyBlockContent .= '</div></div>';
                             </ul>
                             <# } #>
 
-                            <# if ( data['Rider Level'] ) { #>
-				<ul class="list-inline mb-0">
-					<# if ( data.taxonomies.activity == 'Hiking' || data.taxonomies.activity == 'Walking' ){ #>
-                                		<li class="list-inline-item"><i class="fa-solid fa-person-hiking"></i></li>
-					<# } else  { #>
-		                                <li class="list-inline-item"><i class="fa-solid fa-person-biking"></i></li>
-					<# } #>
-                                	<li class="list-inline-item fs-sm dl-riderlevel">{{data['Rider Level'].replace(/&amp;/g, ' & ')}}</li>
-                                	<li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>
-                            	</ul>
+                            <# if ( data['Activity Level'] ) { #>
+				            <ul class="list-inline mb-0">
+                                <# if (data.taxonomies.activity != TT_ACTIVITY_DASHBOARD_NAME_BIKING ) { #>
+                                	<li class="list-inline-item"><i class="fa-solid fa-person-hiking"></i></li>
+                                <# } #>
+                                <# if (data.taxonomies.activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING ) { #>
+		                            <li class="list-inline-item"><i class="fa-solid fa-person-biking"></i></li>
+					            <# } #>
+                                <li class="list-inline-item fs-sm dl-riderlevel">{{data['Activity Level'].replace(/&amp;/g, ' & ')}}</li>
+                                <li class="list-inline-item"><i class="bi bi-info-circle pdp-rider-level"></i></li>
+                            </ul>
                             <# } #>
 
                             <# if ( data['Hotel Level'] ) { #>
@@ -752,15 +811,15 @@ $emptyBlockContent .= '</div></div>';
                             ],
                         }
                     }),
-                    // instantsearch.widgets.menu({
-                    //     container: '#duration-facet',
-                    //     attribute: 'Duration',
-                    //     sortBy: ['name:desc'],
-                    //     limit: 10,
-                    //     templates: {
-                    //         item: wp.template('instantsearch-menu-template')
-                    //     }
-                    // }),
+                    instantsearch.widgets.menu({
+                        container: '#duration-facet',
+                        attribute: 'Duration',
+                        sortBy: ['name:desc'],
+                        limit: 10,
+                        templates: {
+                            item: wp.template('instantsearch-menu-template')
+                        }
+                    }),
                     instantsearch.widgets.menu({
                         container: '#trip-style-facet',
                         attribute: 'Trip Style',
@@ -772,7 +831,7 @@ $emptyBlockContent .= '</div></div>';
                     }),
                     instantsearch.widgets.menu({
                         container: '#rider-level-facet',
-                        attribute: 'Rider Level',
+                        attribute: 'Activity Level',
                         sortBy: ['name:desc'],
                         limit: 10,
                         templates: {
@@ -797,18 +856,17 @@ $emptyBlockContent .= '</div></div>';
                         container: document.querySelector('#hierarchical-menu'),
                         separator: ' > ',
                         attributes: [
-                            'taxonomies_hierarchical.product_cat.lvl0',
-                            'taxonomies_hierarchical.product_cat.lvl1',
-                            'taxonomies_hierarchical.product_cat.lvl2',
+                            'taxonomies_hierarchical.destination.lvl0',
+                            'taxonomies_hierarchical.destination.lvl1',
+                            'taxonomies_hierarchical.destination.lvl2',
                         ],
                         // limit: 5,
                         // showMoreLimit: 10,
                         transformItems( items ) {
-                            // Return only Destinations from all product_cat items.
-                            items = items.filter( item => 'Destinations' === item.value );
                             // Remove 'Bike Tours' from the labels.
                             return items.map(item => ({
                                 ...item,
+                                label: item.label.replace('Bike Tours', '').trim(),
                                 data: item.data && item.data.map(subitem => ({
                                     ...subitem,
                                     label: subitem.label.replace('Bike Tours', '').trim(),
@@ -821,7 +879,7 @@ $emptyBlockContent .= '</div></div>';
                         },
                     }),
                     instantsearch.widgets.configure({
-                        filters: "taxonomies.product_cat: ' <?php
+                        filters: "<?php echo $filter_name; ?>: ' <?php
 							echo $plp_algolia_category->name;
 							?> '<?php echo $urlDateFilter; ?>",
                         hitsPerPage: 24,
@@ -917,7 +975,7 @@ $emptyBlockContent .= '</div></div>';
                     search.addWidgets([
 
                         instantsearch.widgets.configure({
-                        filters: `taxonomies.product_cat: ' <?php
+                        filters: `<?php echo $filter_name; ?>: ' <?php
 							echo $plp_algolia_category->name;
 							?> '${urlDateFilter}`,
                         hitsPerPage: 24,

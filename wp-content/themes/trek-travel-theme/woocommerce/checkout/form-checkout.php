@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Checkout Form
  *
@@ -11,17 +10,19 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see https://docs.woocommerce.com/document/template-structure/
+ * @see https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
  * @version 3.5.0
  */
 
-if (!defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-if (!isset($_GET['step']) && is_checkout() && !is_admin()) {
-	wp_redirect(trek_checkout_step_link(1));
+
+if ( ! isset( $_GET['step'] ) && is_checkout() && ! is_admin() ) {
+	wp_redirect( trek_checkout_step_link(1) );
 }
+
 /**
  * Make check for unavailable trips in the cart and remove them.
  * For unavailable trips will be considered a trips with status "Remove from Stella" and
@@ -30,109 +31,118 @@ if (!isset($_GET['step']) && is_checkout() && !is_admin()) {
  * This function is located in /trek-travel-theme/inc/trek-general-function.php
  */
 tt_check_and_remove_old_trips_in_persistent_cart();
-?>
-<?php
+
 // If checkout registration is disabled and not logged in, the user cannot checkout.
-if (!$checkout->is_registration_enabled() && $checkout->is_registration_required() && !is_user_logged_in()) {
-	echo esc_html(apply_filters('woocommerce_checkout_must_be_logged_in_message', __('You must be logged in to checkout.', 'woocommerce')));
+if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) {
+	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
 	return;
 }
-$tt_checkout_data =  get_trek_user_checkout_data();
-$tt_posted = isset($tt_checkout_data['posted']) ? $tt_checkout_data['posted'] : array();
-$primary_address_1 = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
-$primary_address_2 = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
-$primary_country = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
-$tripInfo = tt_get_trip_pid_sku_from_cart();
-$parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_trip_link'] : 'javascript:';
+
+$trip_info          = tt_get_trip_pid_sku_from_cart();
+$parent_trip_link   = tt_validate( $trip_info['parent_trip_link'], 'javascript:' );
+$is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+$current_step       = tt_validate( $_REQUEST['step'], '1' );
 ?>
 <div class="card-wizard">
-	<form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url(wc_get_checkout_url()); ?>" enctype="multipart/form-data">
-
+	<form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" enctype="multipart/form-data">
 		<div class="container px-0">
-			<div class="row mx-0">
-				<div class="col-12">
-					<div class="checkout-timeline__back">
-						<a href="<?php echo $parent_trip_link; ?>" class="d-flex align-items-center">
-							<img src="<?php echo get_template_directory_uri(); ?>/assets/images/checkout/checkout-arrow.png">
-							<p class="fw-medium mb-0">Back to Trip Details</p>
-						</a>
-					</div>
-				</div>
-			</div>
-			<div class="row mx-0 checkout-trek">
-				<div class="col-lg-7">
+			<div class="mx-0 checkout-trek pt-5">
+				<div class="checkout-trek-main">
 					<?php wc_get_template('woocommerce/checkout/checkout-timeline.php'); ?>
 					<div class="card-body">
 						<div class="tab-content">
-							<div class="tab-pane <?php if (isset($_GET['step']) && $_GET['step'] == 1) echo 'active show'; ?>" id="guest" data-step="1">
+							<div class="tab-pane <?php echo esc_attr( isset( $_GET['step'] ) && $_GET['step'] == 1 ? 'active show' : '' ); ?>" id="guest" data-step="1">
 								<?php
-								//if (isset($_REQUEST['step']) && $_REQUEST['step'] == 1) {
-								$checkout_guest = __DIR__ . '/checkout-guest.php';
-								if (is_readable($checkout_guest)) {
-									wc_get_template('woocommerce/checkout/checkout-guest.php');
-								} else {
-									echo '<h3>Step 1</h3><p>Checkout guest form code is missing!</p>';
-								}
-								//}
-								?>
+									$checkout_guests = __DIR__ . '/checkout-guests.php';
+
+									if ( is_readable( $checkout_guests ) ) {
+										wc_get_template('woocommerce/checkout/checkout-guests.php');
+									} else {
+										?>
+											<h3><?php esc_html_e( 'Step 1', 'trek-travel-theme' ); ?></h3>
+											<p><?php esc_html_e( 'Checkout guest form code is missing!', 'trek-travel-theme' ); ?></p>
+										<?php
+									}
+									?>
 							</div>
-							<div class="tab-pane <?php if (isset($_GET['step']) && $_GET['step'] == 2) echo 'active show'; ?>" id="rooms" data-step="2">
-								<?php
-								//if (isset($_REQUEST['step']) && $_REQUEST['step'] == 2) {
-								$checkout_hotel = __DIR__ . '/checkout-hotel.php';
-								echo '<div id="tt-hotel-occupant-inner-html">';
-								if (is_readable($checkout_hotel)) {
-									wc_get_template('woocommerce/checkout/checkout-hotel.php');
-								} else {
-									echo 'Checkout Hotel form code is missing!';
-								}
-								echo '</div>';
-								$checkout_bikes = __DIR__ . '/checkout-bikes.php';
-								if (is_readable($checkout_bikes)) {
-									wc_get_template('woocommerce/checkout/checkout-bikes.php');
-								} else {
-									echo '<h3>Step 2</h3><p>Checkout Bike form code is missing!</p>';
-								}
-								//}
-								?>
+
+							<div class="tab-pane <?php echo esc_attr( isset( $_GET['step'] ) && $_GET['step'] == 2 ? 'active show' : '' ); ?>" id="rooms" data-step="2">
+								<div id="tt-hotel-occupant-inner-html">
+									<?php
+										$checkout_hotel = __DIR__ . '/checkout-hotel.php';
+
+										if( is_readable( $checkout_hotel ) ) {
+											wc_get_template('woocommerce/checkout/checkout-hotel.php');
+										} else {
+											?>
+												<h3><?php esc_html_e( 'Step 2', 'trek-travel-theme' ); ?></h3>
+												<p><?php esc_html_e( 'Checkout Hotel form code is missing!', 'trek-travel-theme' ); ?></p>
+											<?php
+										}
+										?>
+								</div>
 							</div>
-							<div class="tab-pane <?php if (isset($_GET['step']) && $_GET['step'] == 3) echo 'active show'; ?>" id="trip-payment" data-step="3">
-								<?php
-								//if (isset($_REQUEST['step']) && $_REQUEST['step'] == 3) {
-								$checkout_payment = __DIR__ . '/checkout-payment.php';
-								if (is_readable($checkout_payment)) {
-									wc_get_template('woocommerce/checkout/checkout-payment.php');
-								} else {
-									echo '<h3>Step 3</h3><p>Checkout Payment form code is missing!</p>';
-								}
-								//}
-								?>
-							</div>
-							<div class="tab-pane <?php if (isset($_GET['step']) && $_GET['step'] == 4) echo 'active show'; ?>" id="review" data-step="4">
+							<?php if( ! $is_hiking_checkout ) : ?>
+								<div class="tab-pane <?php echo esc_attr( isset( $_GET['step'] ) && $_GET['step'] == 3 ? 'active show' : '' ); ?>" id="trip-payment" data-step="3">
+									<div id="tt-bikes-selection-inner-html">
+										<?php
+											$checkout_bikes = __DIR__ . '/checkout-bikes.php';
+
+											if( is_readable( $checkout_bikes ) ) {
+												wc_get_template('woocommerce/checkout/checkout-bikes.php');
+											} else {
+												?>
+													<h3><?php esc_html_e( 'Step 2', 'trek-travel-theme' ); ?></h3>
+													<p><?php esc_html_e( 'Checkout Bike form code is missing!', 'trek-travel-theme' ); ?></p>
+												<?php
+											}
+											?>
+									</div>
+								</div>
+							<?php endif; ?>
+							<div class="tab-pane <?php echo esc_attr( isset( $_GET['step'] ) && ( ( $_GET['step'] == 4 && ! $is_hiking_checkout ) || ( $_GET['step'] == 3 && $is_hiking_checkout ) ) ? 'active show' : '' ); ?>" id="review" data-step="<?php echo esc_attr( $is_hiking_checkout ? 3 : 4 ) ?>">
+								<div id="tt-checkout-reviews-inner-html">
+									<?php
+										$checkout_review = __DIR__ . '/checkout-reviews.php';
+										if( is_readable( $checkout_review ) ) {
+											wc_get_template('woocommerce/checkout/checkout-reviews.php');
+										} else {
+											?>
+												<h3><?php esc_html_e( 'Step 4', 'trek-travel-theme' ); ?></h3>
+												<p><?php esc_html_e( 'Checkout review form code is missing!', 'trek-travel-theme' ); ?></p>
+											<?php
+										}
+										?>
+								</div>
 								<?php
 
-								//if (isset($_REQUEST['step']) && $_REQUEST['step'] == 4) {
-								$checkout_review = __DIR__ . '/checkout-reviews.php';
-								if (is_readable($checkout_review)) {
-									wc_get_template('woocommerce/checkout/checkout-reviews.php');
-								} else {
-									echo '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
-								}
-								//}
-								?>
+									$checkout_payment = __DIR__ . '/checkout-payment.php';
+
+									if( is_readable( $checkout_payment ) ) {
+										wc_get_template('woocommerce/checkout/checkout-payment.php');
+									} else {
+										?>
+											<h3><?php esc_html_e( 'Step 4', 'trek-travel-theme' ); ?></h3>
+											<p><?php esc_html_e( 'Checkout Payment form code is missing!', 'trek-travel-theme' ); ?></p>
+										<?php
+									}
+									?>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-4">
+
+				<div class="checkout-trek-summary">
 					<div id="tt-review-order">
 						<?php do_action('woocommerce_checkout_order_review');?>
 					</div>
 				</div>
+
 			</div>
+
 			<?php wp_nonce_field('woocommerce-process_checkout', 'woocommerce-process-checkout-nonce'); ?>
+
 			<!-- Begin: Travel Protection modal form  -->
-			<!-- Modal -->
 			<div class="modal fade modal-search-filter" id="protection_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -144,84 +154,72 @@ $parent_trip_link = isset($tripInfo['parent_trip_link']) ? $tripInfo['parent_tri
 						</div>
 
 						<div class="modal-body">
-							<h4 class="fw-semibold modal-body__title">Travel Protection</h4>
-							<p class="fs-lg lh-lg fw-bold mb-4">Please tell us who will be covered in this booking</p>
-							<p class="modal-body__sub">We can also insure additional trip costs, such as flights and non-refundable hotels. You can learn more on our travel protection page <a href="<?php echo home_url( '/travel-protection/' ); ?>"  target="_blank">here</a> or call us at <a href="tel:866-464-8735">866-464-8735</a>.</p>
-							<p class="modal-body__sub">To review full plan details online, please visit: <a href="<?php echo home_url( '/travel-protection/' ); ?>" target="_blank">here</a></p>
+							<h4 class="fw-semibold modal-body__title"><?php esc_html_e( 'Travel Protection', 'trek-travel-theme' ); ?></h4>
+							<p class="fs-lg lh-lg fw-bold mb-4"><?php esc_html_e( 'Please tell us who will be covered in this booking', 'trek-travel-theme' ); ?></p>
+							<p class="modal-body__sub">
+								<?php
+									printf(
+										wp_kses(
+											/* translators: %1$s: Travel Protection page URL; %2$s: phone number */
+											__( 'We can also insure additional trip costs, such as flights and non-refundable hotels. You can learn more on our travel protection page <a href="%1$s" target="_blank">here</a> or call us at <a href="%2$s">866-464-8735</a>.', 'trek-travel-theme' ),
+											array(
+												'a' => array(
+													'class'  => array(),
+													'href'   => array(),
+													'target' => array()
+												)
+											)
+										),
+										esc_url( home_url( '/travel-protection/' ) ),
+										esc_attr( 'tel:866-464-8735' )
+									);
+									?>
+							</p>
+							<p class="modal-body__sub">
+								<?php
+									printf(
+										wp_kses(
+											/* translators: %1$s: Travel Protection page URL; */
+											__( 'To review full plan details online, please visit: <a href="%1$s" target="_blank">here</a>', 'trek-travel-theme' ),
+											array(
+												'a' => array(
+													'class'  => array(),
+													'href'   => array(),
+													'target' => array()
+												)
+											)
+										),
+										esc_url( home_url( '/travel-protection/' ) ),
+									);
+									?>
+							</p>
 							<hr>
-							<!-- <form method="post" name="travel-protection" id="travel-protection"> -->
-							<?php
-							$guest_insurance_html = '';
-							$guests = isset($tt_posted['guests']) ? $tt_posted['guests'] : array();
-							$guest_insurance = isset($tt_posted['trek_guest_insurance']) ? $tt_posted['trek_guest_insurance'] : array();
-							$primary_name  = '';
-							if (isset($tt_posted['shipping_first_name']) && $tt_posted['shipping_first_name']) {
-								$primary_name .= $tt_posted['shipping_first_name'];
-							}
-							if (isset($tt_posted['shipping_last_name']) && $tt_posted['shipping_last_name']) {
-								$primary_name .= ' ' . $tt_posted['shipping_last_name'];
-							}
-							$basePremium = (isset($guest_insurance['primary']['basePremium']) ? $guest_insurance['primary']['basePremium'] : 0);
-							$basePremium = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$basePremium.'</span>';
-							$guest_insurance_html .= '<div class="modal-body__guest">
-										<p class="mb-4 fw-medium">Primary Guest: ' . $primary_name . '</p>
-										<div class="d-flex align-items-center mb-4">
-											<input id="trek_guest_insurance_pr_add" type="radio" class="guest_radio" name="trek_guest_insurance[primary][is_travel_protection]" value="1" ' . (isset($guest_insurance['primary']['is_travel_protection']) && $guest_insurance['primary']['is_travel_protection'] != 0 ? 'checked' : '') . '>
-											<input type="hidden"  name="trek_guest_insurance[primary][basePremium]" value="' . (isset($guest_insurance['primary']['basePremium']) ? $guest_insurance['primary']['basePremium'] : 0) . '">
-											<label for="trek_guest_insurance_pr_add">Add Travel Protection <span class="fw-bold">(' . $basePremium . ')</span></label>
-										</div>
-										<div class="d-flex align-items-center">
-											<input id="trek_guest_insurance_pr_decline" type="radio" class="guest_radio" name="trek_guest_insurance[primary][is_travel_protection]" value="0" ' . (isset($guest_insurance['primary']['is_travel_protection']) && $guest_insurance['primary']['is_travel_protection'] == 0 ? 'checked' : '') . '>
-											<label for="trek_guest_insurance_pr_decline">Decline Travel Protection</label>
-										</div>
-									</div>';
-							if( empty( $guest_insurance['primary']['basePremium'] ) ) {
-								$guest_insurance_html .= '<div class="invalid-feedback travel-protection-feedback" style="display:block;">
-									<img class="invalid-icon">
-									Something went wrong during the calculation of the Travel Protection amount. Please double-check date of birth and address from step one to ensure they are entered correctly, and try again.
-								</div>';
-							}
-							if ($guests && !empty($guests)) {
-								foreach ($guests as $guest_k => $guest) {
-									$basePremium = (isset($guest_insurance["guests"][$guest_k]['basePremium']) ? $guest_insurance["guests"][$guest_k]['basePremium'] : 0);
-									$basePremium = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$basePremium.'</span>';
-									$guest_insurance_html .= '<hr><div class="modal-body__guest">
-												<p class="mb-4 fw-medium">Guest: ' . $guest['guest_fname'] . ' ' . $guest['guest_lname'] . '</p>
-												<div class="d-flex align-items-center mb-4">
-													<input id="trek_guest_insurance_radio_add_' . $guest_k . '" type="radio" class="guest_radio" name="trek_guest_insurance[guests][' . $guest_k . '][is_travel_protection]" value="1" ' . (isset($guest_insurance["guests"][$guest_k]["is_travel_protection"]) && $guest_insurance["guests"][$guest_k]["is_travel_protection"] != 0 ? 'checked' : '') . '>
-													<input type="hidden" name="trek_guest_insurance[guests][' . $guest_k . '][basePremium]" value="' . (isset($guest_insurance["guests"][$guest_k]["basePremium"]) ? $guest_insurance["guests"][$guest_k]["basePremium"] : 0) . '">
-													<label for="trek_guest_insurance_radio_add_' . $guest_k . '">Add Travel Protection <span class="fw-bold">(' . $basePremium . ')</span></label>
-												</div>
-												<div class="d-flex align-items-center">
-													<input id="trek_guest_insurance_radio_decline_' . $guest_k . '" type="radio" class="guest_radio" name="trek_guest_insurance[guests][' . $guest_k . '][is_travel_protection]" value="0" ' . (isset($guest_insurance["guests"][$guest_k]["is_travel_protection"]) && $guest_insurance["guests"][$guest_k]["is_travel_protection"]  == 0 ? 'checked' : '') . '>
-													<label for="trek_guest_insurance_radio_decline_' . $guest_k . '">Decline Travel Protection</label>
-												</div>
-											</div>';
-									if( empty( $guest_insurance["guests"][$guest_k]['basePremium'] ) ) {
-										$insuredHTML .= '<div class="invalid-feedback travel-protection-feedback" style="display:block;">
-											<img class="invalid-icon">
-											Something went wrong during the calculation of the Travel Protection amount. Please double-check date of birth and address from step one to ensure they are entered correctly, and try again.
-										</div>';
+							<div id="tt-popup-insured-form">
+								<?php
+									$checkout_insured_users_template = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests-popup.php';
+									if( is_readable( $checkout_insured_users_template ) ) {
+										wc_get_template( 'woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests-popup.php' );
+									} else {
+										?>
+											<h3><?php esc_html_e( 'Step 4', 'trek-travel-theme' ); ?></h3>
+											<p><?php esc_html_e( 'checkout-insured-guests-popup.php template is missing!', 'trek-travel-theme' ); ?></p>
+										<?php
 									}
-								}
-							}
-							//echo $guest_insurance_html;
-							echo '<div id="tt-popup-insured-form">' . $guest_insurance_html . '</div>';
-							?>
-							<div class="modal-body__footer d-lg-flex align-items-center">
-								<button type="submit" class="btn btn-primary submit_protection" data-bs-dismiss="modal">Submit</button>
-								<div>
-									<span type="button" class="btn-close cancel-submit-protection" data-tp-dismiss="true" data-bs-dismiss="modal" aria-label="Close">Cancel</span>
-								</div>
+									?>
 							</div>
-							<!-- </form> -->
+							<div class="modal-body__footer d-lg-flex align-items-center">
+								<button type="submit" class="btn btn-primary submit_protection" data-bs-dismiss="modal"><?php esc_html_e( 'Submit', 'trek-travel-theme' ); ?></button>
+								<div><span type="button" class="btn-close cancel-submit-protection" data-tp-dismiss="true" data-bs-dismiss="modal" aria-label="Close"><?php esc_html_e( 'Cancel', 'trek-travel-theme' ); ?></span></div>
+							</div>
 						</div>
 					</div><!-- / .modal-content -->
 				</div><!-- / .modal-dialog -->
 			</div><!-- / .modal -->
 			<!-- End: Travel Protection modal form -->
-			<input type="hidden" name="step" value="<?php echo (isset($_REQUEST['step']) ? $_REQUEST['step'] : '1'); ?>">
+
+			<input type="hidden" name="step" value="<?php echo esc_attr( $current_step ); ?>">
+			<input type="hidden" name="is_hiking_checkout" value="<?php echo esc_attr( $is_hiking_checkout ); ?>">
 		</div>
 	</form>
 </div>
-<?php do_action('woocommerce_after_checkout_form', $checkout); ?>
+<?php do_action( 'woocommerce_after_checkout_form', $checkout ); ?>

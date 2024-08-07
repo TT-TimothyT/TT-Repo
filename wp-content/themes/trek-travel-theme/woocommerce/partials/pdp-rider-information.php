@@ -4,14 +4,15 @@
 global $post;
 $product_id = $post->ID;
 
-$activity_tax = get_field('Activity');
-$activity = $activity_tax->name;
+$activity_terms = get_the_terms( $product_id, 'activity' );
 
-$product = wc_get_product($product_id);
-$r_level = $product->get_attribute('rider-level');
+foreach ( $activity_terms as $activity_term) {
+	$activity = $activity_term->name;   
+}
 
+$activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level', true );
 ?>
-<div class="container pdp-section <?php if (!empty($activity) && $activity != 'Biking'):?>hw<?php endif;?>" id="rider-information">
+<div class="container pdp-section <?php if (!empty($activity) && $activity != TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>hw<?php endif;?>" id="rider-information">
     <div class="row">
         <div class="col-12">
 
@@ -19,13 +20,10 @@ $r_level = $product->get_attribute('rider-level');
                 <?php
                 
                     switch ($activity) {
-                        case "Biking":
+                        case TT_ACTIVITY_DASHBOARD_NAME_BIKING:
                           echo "Rider";
                           break;
-                        case "Hiking":
-                          echo "Activity";
-                          break;
-                        case "Walking":
+                        default:
                           echo "Activity";
                           break;
                       }
@@ -37,30 +35,24 @@ $r_level = $product->get_attribute('rider-level');
                     <button class="nav-link active" id="nav-rider-tab" data-bs-toggle="tab" data-bs-target="#nav-rider" type="button" role="tab" aria-controls="nav-rider" aria-selected="true">
                     <?php
                     switch ($activity) {
-                        case "Biking":
-                          echo "Riders";
-                          break;
-                        case "Hiking":
-                          echo "Hiking + Walking";
-                          break;
-                        case "Walking":
-                          echo "Hiking + Walking";
-                          break;
+                        case TT_ACTIVITY_DASHBOARD_NAME_BIKING:
+                            echo "Riders";
+                            break;
+                        default:
+                            echo "Hiking + Walking";
+                            break;
                       }
                 ?>
                     </button>
                     <button class="nav-link" id="nav-non-rider-tab" data-bs-toggle="tab" data-bs-target="#nav-non-rider" type="button" role="tab" aria-controls="nav-non-rider" aria-selected="false">
                     <?php
                         switch ($activity) {
-                            case "Biking":
-                            echo "Non-Riders";
-                            break;
-                            case "Hiking":
-                            echo "Companions";
-                            break;
-                            case "Walking":
-                            echo "Companions";
-                            break;
+                            case TT_ACTIVITY_DASHBOARD_NAME_BIKING:
+                                echo "Non-Riders";
+                                break;
+                            default:
+                                echo "Other Activities";
+                                break;
                         }
                     ?>
                     </button>
@@ -74,18 +66,15 @@ $r_level = $product->get_attribute('rider-level');
                     <p class="rider-main-heading fw-bold">
                     <?php
                         switch ($activity) {
-                            case "Biking":
-                            echo "Rider";
-                            break;
-                            case "Hiking":
-                            echo "Hiking + Walking";
-                            break;
-                            case "Walking":
-                            echo "Hiking + Walking";
-                            break;
+                            case TT_ACTIVITY_DASHBOARD_NAME_BIKING:
+                                echo "Rider";
+                                break;
+                            default:
+                                echo "Hiking + Walking";
+                                break;
                         }
                     ?>    
-                    Level: <?php echo $r_level; ?> <i class="bi bi-info-circle pdp-rider-level"></i></p>
+                    Level: <?php echo $activity_level ? esc_html( $activity_level ) : ''; ?> <i class="bi bi-info-circle pdp-rider-level"></i></p>
                     <p class="rider-sub-heading fw-medium">Terrain: <?php echo isset($rider['terrain_title']) ? $rider['terrain_title'] : ''; ?></p>
                     <p class="rider-description fw-normal"><?php echo isset($rider['terrain_description']) ? $rider['terrain_description'] : ''; ?></p>
                     <div class="row-miles d-flex">

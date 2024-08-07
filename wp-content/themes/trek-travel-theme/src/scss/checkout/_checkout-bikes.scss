@@ -1,6 +1,21 @@
 .checkout-bikes{
     &__hotel-details{
         margin-bottom: 1.5rem;
+
+        & > p {
+            font-size: 24px;
+        }
+
+        @include media-breakpoint-down(lg) {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        @media ( max-width: 575px ) {
+            flex-direction: column;
+            gap: 0;
+        }
     }
     &__bed-icon{
         background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_1731_1673)'%3E%3Crect width='24' height='24' fill='white'/%3E%3Crect y='14' width='24' height='3' fill='%2328AAE1'/%3E%3Crect y='6' width='24' height='1' fill='%2328AAE1'/%3E%3Crect y='7' width='0.923077' height='5' fill='%2328AAE1'/%3E%3Crect x='23.0781' y='7' width='0.923077' height='5' fill='%2328AAE1'/%3E%3Crect y='12' width='24' height='1' fill='%2328AAE1'/%3E%3Cpath d='M6.5 10C4.875 10 1.48958 11 0 12H13C12.0521 11 8.125 10 6.5 10Z' fill='%2328AAE1'/%3E%3Cpath d='M17.5 10C15.875 10 12.4896 11 11 12H24C23.0521 11 19.125 10 17.5 10Z' fill='%2328AAE1'/%3E%3Crect x='21.2305' y='15' width='2.76923' height='3' fill='%2328AAE1'/%3E%3Crect y='15' width='2.76923' height='3' fill='%2328AAE1'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_1731_1673'%3E%3Crect width='24' height='24' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
@@ -33,22 +48,33 @@
         }
     }
     &__bike {
-        width: 100%;
+        width: 49%;
         border: 1px solid #B2B3B6;
         border-radius: 4px;
-        margin: 1rem auto;
+        margin: 1rem 0;
         position: relative;
         &:active, &:hover{
-            border: 2px solid #000000;
+            outline: 2px solid #000000;
+            border-color: transparent;
         }
+
+        label {
+            width: 100%;
+            padding: 0 12px;
+        }
+    }
+
+    &__bike-grid {
+        flex-wrap: wrap !important;
+        flex-direction: row !important;
+        gap: 2%;
     }
 
     &__image {
         position: relative;
-        padding: 28px 32px;
-        
+        padding: 22px 32px;
+        padding-top: 69px;
         border-radius: 4px;
-        margin-bottom: 16px;
 
         img {
             width: 100%;
@@ -58,29 +84,29 @@
 
     &__badge {
         position: absolute;
-        top: 16px;
-        right: 20px;
+        top: 22px;
+        right: 12px;
         font-size: 12px;
         line-height: 16px;
         font-weight: 500;
         border-radius: 4px;
-        padding: 0 6px;
+        padding: 4px 12px;
         
         // add all badges here as modifiers
         &--ebike {
-            background-color: $blue;
+            background-color: var(--progress-bar-active);
             color: $black;
         }
     }
 
     &__select-bike-icon{
-        background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 27.6667C9.5567 27.6667 4.33335 22.4434 4.33335 16.0001C4.33335 9.55676 9.5567 4.33341 16 4.33341C22.4433 4.33341 27.6667 9.55676 27.6667 16.0001C27.6667 22.4434 22.4433 27.6667 16 27.6667ZM16 29.3334C23.3638 29.3334 29.3334 23.3639 29.3334 16.0001C29.3334 8.63628 23.3638 2.66675 16 2.66675C8.63622 2.66675 2.66669 8.63628 2.66669 16.0001C2.66669 23.3639 8.63622 29.3334 16 29.3334Z' fill='%23666666'/%3E%3Cpath d='M16 9.33341C16.4603 9.33341 16.8334 9.70651 16.8334 10.1667V15.1667H21.8334C22.2936 15.1667 22.6667 15.5398 22.6667 16.0001C22.6667 16.4603 22.2936 16.8334 21.8334 16.8334H16.8334V21.8334C16.8334 22.2937 16.4603 22.6667 16 22.6667C15.5398 22.6667 15.1667 22.2937 15.1667 21.8334V16.8334H10.1667C9.70645 16.8334 9.33335 16.4603 9.33335 16.0001C9.33335 15.5398 9.70645 15.1667 10.1667 15.1667H15.1667V10.1667C15.1667 9.70651 15.5398 9.33341 16 9.33341Z' fill='%23666666'/%3E%3C/svg%3E");
+        background-image: url('data:image/svg+xml,<svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="1.25" width="28" height="28" rx="14" stroke="%23C6C6C6"/><path d="M20.1875 15.5C20.1875 15.9922 19.7773 16.4023 19.3125 16.4023H15.375V20.3398C15.375 20.8047 14.9648 21.1875 14.5 21.1875C14.0078 21.1875 13.625 20.8047 13.625 20.3398V16.4023H9.6875C9.19531 16.4023 8.8125 15.9922 8.8125 15.5C8.8125 15.0352 9.19531 14.6523 9.6875 14.6523H13.625V10.7148C13.625 10.2227 14.0078 9.8125 14.5 9.8125C14.9648 9.8125 15.375 10.2227 15.375 10.7148V14.6523H19.3125C19.7773 14.625 20.1875 15.0352 20.1875 15.5Z" fill="%23C6C6C6"/></svg>');
         background-repeat: no-repeat;
         padding: 0 15px;
     }
     &__selected-bike-icon{
         // display: none;
-        background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 25.6667C7.5567 25.6667 2.33335 20.4434 2.33335 14.0001C2.33335 7.55676 7.5567 2.33341 14 2.33341C20.4433 2.33341 25.6667 7.55676 25.6667 14.0001C25.6667 20.4434 20.4433 25.6667 14 25.6667ZM14 27.3334C21.3638 27.3334 27.3334 21.3639 27.3334 14.0001C27.3334 6.63629 21.3638 0.666748 14 0.666748C6.63622 0.666748 0.666687 6.63629 0.666687 14.0001C0.666687 21.3639 6.63622 27.3334 14 27.3334Z' fill='%23167332'/%3E%3Cpath d='M18.9495 8.94953C18.9377 8.96132 18.9266 8.97381 18.9163 8.98692L13.129 16.3613L9.63981 12.8721C9.15166 12.384 8.3602 12.384 7.87205 12.8721C7.38389 13.3603 7.38389 14.1517 7.87205 14.6399L12.2828 19.0506C12.7709 19.5388 13.5624 19.5388 14.0506 19.0506C14.0614 19.0398 14.0717 19.0283 14.0813 19.0163L20.735 10.6992C21.2053 10.2098 21.1994 9.4317 20.7172 8.94953C20.2291 8.46138 19.4376 8.46138 18.9495 8.94953Z' fill='%23167332'/%3E%3C/svg%3E");
+        background-image: url('data:image/svg+xml,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1.25" width="28" height="28" rx="14" stroke="%236B9214"/><path d="M20.8516 11.3984C21.207 11.7266 21.207 12.3008 20.8516 12.6289L13.8516 19.6289C13.5234 19.9844 12.9492 19.9844 12.6211 19.6289L9.12109 16.1289C8.76562 15.8008 8.76562 15.2266 9.12109 14.8984C9.44922 14.543 10.0234 14.543 10.3516 14.8984L13.2227 17.7695L19.6211 11.3984C19.9492 11.043 20.5234 11.043 20.8516 11.3984Z" fill="%236B9214"/></svg>');
         background-repeat: no-repeat;
         padding: 0 15px;
     }
@@ -92,6 +118,78 @@
     .form-check-input:checked {
         background-color: black;
         border-color: black;
+    }
+
+    &__additional-bike-info{
+        .form-floating{
+
+            label {
+                opacity: 1;
+                background-color: white;
+                transform: scale(0.85) translateY(2px) translateX(0.15rem);
+                padding: 12px 20px;
+                display: block;
+            }
+
+            & > select:not(:placeholder-shown) ~ label {
+                display: none;
+            }
+    
+            &.woocommerce-validated {
+                label {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &__additional-bike-info{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        p{
+            width: 100%;
+        }
+        .form-floating{
+            width: 49% !important;
+            margin-bottom: 1rem !important;
+
+            label {
+                opacity: 1;
+                background-color: white;
+                transform: scale(0.85) translateY(2px) translateX(0.15rem);
+                padding: 12px 20px;
+                display: block;
+            }
+
+            & > select:not(:placeholder-shown) ~ label {
+                display: none;
+            }
+    
+            &.woocommerce-validated {
+                label {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &__title {
+        & > p {
+            @media ( max-width: 991px ) {
+                margin-top: 8px;
+            }
+        }
+    }
+
+    &__selected-rooms{
+        @include media-breakpoint-down(lg) {
+            text-align: right;
+        }
+
+        @media ( max-width: 575px ) {
+            text-align: left;
+        }
     }
 
     @include media-breakpoint-up(lg) {
@@ -108,6 +206,7 @@
         &__selected-rooms{
             &:not(:last-child) {
                 width: 100%;
+                margin-bottom: 12px;
              }
         }
         &__edit-room-info{
@@ -115,10 +214,16 @@
             order: -1;
         }
         &__bike {
-            width: 46%;
-            margin: 1rem .5rem;
+            width: 49%;
+            margin: 0;
+            margin-bottom: 1rem;
             &:hover{
                 cursor: pointer;
+            }
+
+            label {
+                width: 100%;
+                padding-bottom: 8px;
             }
         }
         &__additional-bike-info{
@@ -129,7 +234,26 @@
                 width: 100%;
             }
             .form-floating{
-                width: 48% !important;
+                width: 49% !important;
+                margin-bottom: 1rem !important;
+
+                label {
+                    opacity: 1;
+                    background-color: white;
+                    transform: scale(0.85) translateY(2px) translateX(0.15rem);
+                    padding: 12px 20px;
+                    display: block;
+                }
+
+                & > select:not(:placeholder-shown) ~ label {
+                    display: none;
+                }
+        
+                &.woocommerce-validated {
+                    label {
+                        display: none;
+                    }
+                }
             }
         }
         .form-floating{
@@ -140,11 +264,81 @@
         }
         &__title{
             margin: 0 1rem;
+            p {
+                padding: 0.5rem 0;
+            }
+        }
+    }
+
+    @include media-breakpoint-down(md) {
+        &__bike {
+            width: 100%;
+            border: 1px solid #B2B3B6;
+            border-radius: 4px;
+            margin: 1rem auto;
+            position: relative;
+            &:active, &:hover{
+                outline: 2px solid #000000;
+                border-color: transparent;
+            }
+        }
+
+        &__additional-bike-info{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            p{
+                width: 100%;
+            }
+            .form-floating{
+                width: 100% !important;
+                margin-bottom: 1rem !important;
+
+                label {
+                    opacity: 1;
+                    background-color: white;
+                    transform: scale(0.85) translateY(2px) translateX(0.15rem);
+                    padding: 12px 20px;
+                    display: block;
+                }
+                
+                & > select:not(:placeholder-shown) ~ label {
+                    display: none;
+                }
+        
+                &.woocommerce-validated {
+                    label {
+                        display: none;
+                    }
+                }
+            }
         }
     }
 }
 
+input#typeOfBikePrimary::placeholder,
+input#typeOfBikeGuest1::placeholder,
+input#typeOfBikeGuest2::placeholder,
+input#typeOfBikeGuest3::placeholder {
+    color: #C6C6C6;
+}
+
 .checkout-bikes-section{
+    .bike-selection-checkbox {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        p {
+            margin-bottom: 0;
+        }
+
+        @media ( max-width: 540px ) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+    }
     input[type=radio] {
         display: block;
         position: absolute;

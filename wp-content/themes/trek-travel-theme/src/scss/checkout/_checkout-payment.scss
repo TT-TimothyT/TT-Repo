@@ -1,4 +1,27 @@
+body {
+    &.checkout-style-hiking {
+        .checkout-payment {
+            @mixin input_checked {
+                input[type=radio] {
+                    &:checked ~ .checkout-payment__paydep,
+                    &:checked ~ .checkout-payment__card {
+                        i::after {
+                            filter: brightness(0) saturate(100%) invert(47%) sepia(98%) saturate(397%) hue-rotate(37deg) brightness(89%) contrast(87%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 .checkout-payment {
+    .checkout-timeline__info {
+        & > img {
+            height: fit-content;
+            width: 18px;
+            margin-top: 4px;
+        }
+    }
     @mixin input_checked {
         input[type=radio] {
             display: block;
@@ -9,30 +32,43 @@
             right: 0px;
             z-index: 1;
             opacity: 0;
+            transition: all ease 0.3s;
             &:checked ~ .checkout-payment__paydep,
             &:checked ~ .checkout-payment__card {
-                border: 2px solid $black;
+                -webkit-box-shadow: 0px 4px 0px 0px var(--progress-bar-active);
+                -moz-box-shadow: 0px 4px 0px 0px var(--progress-bar-active);
+                box-shadow: 0px 4px 0px 0px var(--progress-bar-active);
+                background-color: #F4F4F485;
+                border-radius: 4px;
                 i::after {
-                    content: url(../../../trek-travel-theme/assets/images/checkout/payment-success.png);
+                    content: url(../../../trek-travel-theme/assets/images/checkout/payment-success.svg);
+                    position: absolute;
+                    top: -11px;
+                    right: 25%;
                 }
             }
             &:not(:checked) ~ .checkout-payment__paydep,
             &:not(:checked) ~ .checkout-payment__card {
-                border: 1px solid $gray-500;
+                border: none;
+                background-color: #F4F4F485;
                 i::before {
                     content: url(../../../trek-travel-theme/assets/images/checkout/payment-plus.png);
                 }
             }
             &:hover ~ .checkout-payment__paydep,
             &:hover ~ .checkout-payment__card {
-                border: 2px solid $black;
+                background-color: #f4f4f4bc;
             }
         }
     }
     input[type=checkbox] {
-        width: 20px;
-        height: 20px;
+        width: 14px;
+        height: 14px;
         margin-right:10px;
+
+        @media (max-width: 991px) {
+            margin-top: 5px;
+        }
     }
     font-family: 'Roboto' !important;
     .checkout-timeline__progress-bar-line {
@@ -60,6 +96,7 @@
     }
     &__title {
         gap: 10px;
+        font-size: 24px;
     }
     &__add-travel {
         margin-top: 28px;
@@ -69,6 +106,22 @@
         label {
             font-size: 14px;
             line-height: 20px;
+        }
+    }
+
+    &__billing {
+        .billing-address-checkbox {
+            @media (max-width: 425px) {
+                flex-direction: column;
+
+                & > h5 {
+                    margin-bottom: 6px !important;
+                }
+
+            }
+            input {
+                margin-top: 0;
+            }
         }
     }
     &__options,
@@ -84,19 +137,21 @@
         }
     }
     &__iframe {
-        height: 276px;
+        max-height: 276px;
         overflow-y: scroll;
-        border: 1px solid $black;
-        padding: 24px 20px 0px 20px;
+        border: 1px solid #C6C6C6;
+        padding: 12px 20px 0 20px;
         margin-top: 24px;
+        text-align: center;
     }
     &__pay {
         position: relative;
         margin-bottom: 24px;
         &dep {
-            padding: 22px 22px 22px 20px;
+            padding: 25px 22px 25px 22px;
             i {
-                margin-top: 3px;
+                margin-top: 0px;
+                position: relative;
             }
         }
         @include input_checked;
@@ -133,7 +188,7 @@
         }
     }
     &__billing-checkbox {
-        margin-bottom: 24px;
+        margin-bottom: 22px;
     }
     &__billing-checkboxtwo {
         margin-top: 24px;
@@ -318,12 +373,33 @@
         &__release {
             margin:40px 0px;
         }
+        &__options,
+        &__method,
+        &__billing {
+            & > h5, & > div > h5 {
+                font-size: 24px;
+            }
+        }
+        &__release {
+            & > h5 {
+                font-size: 24px;
+            }
+            .checkout-summary__p {
+                display: list-item;
+                margin-left: 30px;
+            }
+        }
         &__billing-checkboxtwo {
             input {
                 margin-top: 5px;
             }
             label {
-                width: 50%;
+                width: 90%;
+            }
+        }
+        &__billing {
+            .billing_row {
+                margin-bottom: 0;
             }
         }
         &__iframe {
@@ -360,7 +436,8 @@
         }
         &__added-travel {
             padding-bottom: 24px; 
-            margin-top: 28px;
+            margin-top: 42px;
+            border-top: 1px solid #C6C6C6;
             .edit-info {
                 margin-left: auto;
             }
@@ -441,4 +518,8 @@
             margin-right: 1rem;
         }
     }
+}
+.trek-checkout .woocommerce .blockUI.blockOverlay::before {
+    content: unset;
+    display: none;
 }

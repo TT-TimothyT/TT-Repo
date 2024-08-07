@@ -6,14 +6,20 @@ global $product;
 // look for itineraries realation field on the product
 $pdp_itineraries = get_field('itineraries');
 
-$activity_tax = get_field('Activity');
-$activity_type = $activity_tax->name;
+$product = wc_get_product( get_the_ID() );
+$product_id = $product->get_id();
+
+$activity_terms = get_the_terms( $product_id, 'activity' );
+
+foreach ( $activity_terms as $activity_term) {
+	$activity_type = $activity_term->name;   
+}
 
 
 if ( $pdp_itineraries ) :
 ?>
-    <!-- <a class="pdp-anchor" id="itinerary"></a> -->
-    <div class="container pdp-section itinerary-container <?php if (!empty($activity_type) && $activity_type != 'Biking'):?>hw<?php endif;?>" id="itinerary">
+    <a class="pdp-anchor" id="itinerary"></a>
+    <div class="container pdp-section itinerary-container <?php if (!empty($activity_type) && $activity_type != TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>hw<?php endif;?>" id="itinerary">
         <div class="row">
             <div class="col-12">
                 <h5 class="fw-semibold pdp-section__title">Itinerary</h5>
@@ -226,7 +232,7 @@ if ( $pdp_itineraries ) :
                                                             <hr class="w-100">
                                                             <p class="fw-medium pdp-itinerary-heading">
                                                             <?php
-                                                            if (!empty($activity_type) && $activity_type == 'Biking'):?>
+                                                            if (!empty($activity_type) && $activity_type == TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>
                                                                 Ride Options
                                                                 <?php else: ?>
                                                                     Hiking Options
@@ -239,14 +245,14 @@ if ( $pdp_itineraries ) :
                                                                 $ii++ ?>
                                                                 <div class="ride-column">
 
-                                                                <?php if (!empty($activity_type) && $activity_type == 'Biking'):?>
+                                                                <?php if (!empty($activity_type) && $activity_type == TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>
                                                                     <i class="mb-3 fa-solid fa-person-biking"></i>
                                                                     
                                                                     <?php else: ?>
                                                                         <i class="fa-solid fa-person-hiking"></i>
                                                                     <?php endif;?>
                                                                 
-                                                                    <p class="fs-sm lh-sm fw-medium pdp-itinerary-rides__title mb-1"><?php if (!empty($activity_type) && $activity_type == 'Biking'):?>
+                                                                    <p class="fs-sm lh-sm fw-medium pdp-itinerary-rides__title mb-1"><?php if (!empty($activity_type) && $activity_type == TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>
                                                                 Ride Option
                                                                 <?php else: ?>
                                                                     Hike Option

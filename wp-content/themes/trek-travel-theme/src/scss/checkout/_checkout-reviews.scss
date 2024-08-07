@@ -15,7 +15,34 @@
         margin-bottom: 32px;
     }
     &__col {
-        margin-bottom: 24px;
+        // margin-bottom: 24px;
+    }
+
+    .accordion-item {
+        padding: 22px !important;
+        border: 1px solid #333333 !important;
+        .accordion-button {
+            background-color: transparent;
+            color: var(--bs-accordion-btn-color);
+            font-size: 24px;
+            line-height: 28px;
+            padding: 0;
+            font-weight: 500;
+        }
+
+        .checkout-review__guest {
+            padding-top: 6px;
+            @media (max-width: 576px) {
+                margin-bottom: 0;
+            }
+            .btn {
+                width: fit-content;
+
+                @media (max-width: 576px) {
+                    margin-top: 24px;
+                }
+            }
+        }
     }
     @include media-breakpoint-up(lg) {
         &__title-bar {

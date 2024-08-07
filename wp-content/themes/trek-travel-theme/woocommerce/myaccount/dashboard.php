@@ -176,7 +176,7 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 					<h6 class="card-subtitle fs-sm lh-sm fw-medium mb-2">Upcoming</h6>
 					<?php if(empty($trips) || (isset($trips['count']) && $trips['count'] <=0 )) { ?>
 					<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>
-					<a href="<?php echo site_url('bike-tours/all/') ?>" class="btn btn-lg btn-primary dashboard__button rounded-1 mb-4">Book a trip</a>
+					<a href="<?php echo site_url('tours/all/') ?>" class="btn btn-lg btn-primary dashboard__button rounded-1 mb-4">Book a trip</a>
 					<?php }else{
 						$trips_html = '<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>';
 						if($trips && isset($trips['data'])){
@@ -215,7 +215,7 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 								$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
 								$is_checklist_completed = tt_is_checklist_completed( $userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $guest_is_primary, $waiver_signed );
 								if( $product ){
-									$trip_status = $product->get_attribute( 'pa_trip-status' );
+									$trip_status = tt_get_custom_product_tax_value( $product_id, 'trip-status', true );
 									$trip_sdate = $product->get_attribute( 'pa_start-date' ); 
 									$trip_edate = $product->get_attribute( 'pa_end-date' );
 									$trip_name = $product->get_name();

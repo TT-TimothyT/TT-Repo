@@ -1,14 +1,19 @@
 <?php 
 // PDP - Additional Details
 $details = get_field('aditional_details');
+$product = wc_get_product( get_the_ID() );
+$product_id = $product->get_id();
 
-$activity_tax = get_field('Activity');
-$activity = $activity_tax->name;
+$activity_terms = get_the_terms( $product_id, 'activity' );
+
+foreach ( $activity_terms as $activity_term) {
+	$activity = $activity_term->name;   
+}
 
 if(!empty($details)):
 ?>
-<!-- <a class="pdp-anchor" id="additional-details"></a> -->
-<div class="container pdp-section <?php if (!empty($activity) && $activity != 'Biking'):?>hw<?php endif;?>" id="additional-details">
+<a class="pdp-anchor" id="additional-details"></a>
+<div class="container pdp-section <?php if (!empty($activity) && $activity != TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>hw<?php endif;?>" id="additional-details">
     <div class="row">
         <div class="col-md-12">
 

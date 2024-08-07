@@ -6,8 +6,15 @@ global $product;
 
 $product_overview = get_field('product_overview');
 $pdp_bikes = get_field('bikes');
-$activity_tax = get_field('Activity');
-$activity = $activity_tax->name;
+
+$product = wc_get_product( get_the_ID() );
+$product_id = $product->get_id();
+
+$activity_terms = get_the_terms( $product_id, 'activity' );
+
+foreach ( $activity_terms as $activity_term) {
+	$activity = $activity_term->name;   
+}
 
 // $product->is_type( $type ) checks the product type, string/array $type ( 'simple', 'grouped', 'variable', 'external' ), returns boolean
 $is_simple_product = $product->is_type( 'simple' );
@@ -15,6 +22,10 @@ $is_simple_product = $product->is_type( 'simple' );
 // Check child product is marked as Private/Custom trip.
 $is_private_custom_trip = get_field( 'is_private_custom_trip', $product->id );
 
+$activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level', true );
+$trip_style     = tt_get_custom_product_tax_value( $product_id, 'trip-style', true );
+$hotel_level    = tt_get_custom_product_tax_value( $product_id, 'hotel-level', true );
+$trip_duration  = tt_get_custom_product_tax_value( $product_id, 'trip-duration', true );
 ?>
 
 
@@ -43,21 +54,21 @@ if ($product_overview) :
             <div class="overview-details col-lg-5">
                 <div class="tour-duration">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Tour Duration</p>
-                    <p class="fw-medium fs-md lh-md"><?php echo str_replace([' Days', ' Nights', '&amp;'], [' D', ' N', '/'], $product->get_attribute('pa_duration'))  ?></p>
+                    <p class="fw-medium fs-md lh-md"><?php echo $trip_duration ? str_replace( [' Days', ' Nights', '&amp;'], [' D', ' N', '/'], $trip_duration ) : '';  ?></p>
                 </div>
                 <div class="trip-style">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Trip Style <i class="bi bi-info-circle pdp-trip-styles"></i></p>
-                    <p class="fw-medium fs-md lh-md mb-0"><?php echo $product->get_attribute('pa_trip-style') ?></p>
+                    <p class="fw-medium fs-md lh-md mb-0"><?php echo $trip_style ? esc_html( $trip_style ) : ''; ?></p>
                 </div>
                 <div class="rider-level">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Activity Level <i class="bi bi-info-circle pdp-rider-level"></i></p>
-                    <p class="fw-medium fs-md lh-md"><?php echo $product->get_attribute('pa_rider-level') ?></p>
+                    <p class="fw-medium fs-md lh-md"><?php echo $activity_level ? esc_html( $activity_level ) : ''; ?></p>
                 </div>
                 <div class="hotel-level">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Hotel Level <i class="bi bi-info-circle pdp-hotel-levels"></i></p>
-                    <p class="fw-medium fs-md lh-md mb-0"><?php echo $product->get_attribute('pa_hotel-level') ?></p>
+                    <p class="fw-medium fs-md lh-md mb-0"><?php echo $hotel_level ? esc_html( $hotel_level ) : ''; ?></p>
                 </div>
-                <?php if (!empty($activity) && $activity == 'Biking'): ?>
+                <?php if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING): ?>
                 <div class="bikes">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Bikes</p>
                     <p class="fw-medium fs-sm lh-sm mb-0">

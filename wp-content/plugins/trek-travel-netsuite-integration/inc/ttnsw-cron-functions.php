@@ -7,20 +7,19 @@ use TTNetSuite\NetSuiteClient;
  * @version : 1.0.0
  * @return  : Get Trips last modified After
  **/
-if (!function_exists('tt_get_last_modified_trip_ids')) {
-    function tt_get_last_modified_trip_ids( $time_range = DEFAULT_TIME_RANGE ){
-        $trips_ids = [];
-       
-        // $current_year = $time_range;
-        $netSuiteClient = new NetSuiteClient();
+if ( ! function_exists( 'tt_get_last_modified_trip_ids' ) ) {
+    function tt_get_last_modified_trip_ids( $time_range = DEFAULT_TIME_RANGE ) {
+        $trips_ids = array();
+
+        $net_suite_client = new NetSuiteClient();
         $trek_script_args = array(
-           'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime($time_range))
+           'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime( $time_range ) )
         );
-        $trek_trips = $netSuiteClient->get(TRIPS_SCRIPT_ID, $trek_script_args);
-        if ($trek_trips && !empty($trek_trips)) {
-            foreach ($trek_trips as $trek_trip) {
-                $tripId = $trek_trip->tripId;
-                $trips_ids[] = $tripId;
+        $trek_trips = $net_suite_client->get( TRIPS_SCRIPT_ID, $trek_script_args );
+        if ( $trek_trips && ! empty( $trek_trips ) ) {
+            foreach ( $trek_trips as $trek_trip ) {
+                $trip_id     = $trek_trip->tripId;
+                $trips_ids[] = $trip_id;
             }
         }
         return $trips_ids;
@@ -32,46 +31,40 @@ if (!function_exists('tt_get_last_modified_trip_ids')) {
  * @return  : NS Trips sync function
  **/
 
-if (!function_exists('tt_sync_ns_trips')) {
-    function tt_sync_ns_trips( $time_range = DEFAULT_TIME_RANGE )
-    {
+if ( ! function_exists( 'tt_sync_ns_trips' ) ) {
+    function tt_sync_ns_trips( $time_range = DEFAULT_TIME_RANGE ) {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'netsuite_trips';
-        $netSuiteClient = new NetSuiteClient();
-        //$trek_script_args = array('tripYear' => intval($current_year)); //modified_at
+        $table_name       = $wpdb->prefix . 'netsuite_trips';
+        $net_suite_client = new NetSuiteClient();
         $trek_script_args = array(
-           'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime($time_range))
+           'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime( $time_range ) )
         );
-        $trek_trips = $netSuiteClient->get(TRIPS_SCRIPT_ID, $trek_script_args);
+        $trek_trips = $net_suite_client->get( TRIPS_SCRIPT_ID, $trek_script_args );
 
-        //$trek_trips = $netSuiteClient->get(TRIPS_SCRIPT_ID, array('itineraryCode' => 'AC' ));
-        if ($trek_trips && !empty($trek_trips)) {
-            foreach ($trek_trips as $trek_trip) {
-                $tripId = $trek_trip->tripId;
-                $tripCode = $trek_trip->tripCode;
-                $tripsData = array(
-                    'tripName' => $trek_trip->tripName,
-                    'itineraryId' => $trek_trip->itineraryId,
-                    'itineraryCode' => $trek_trip->itineraryCode,
+        if ( $trek_trips && ! empty( $trek_trips ) ) {
+            foreach ( $trek_trips as $trek_trip ) {
+                $trips_data = array(
+                    'tripName'         => $trek_trip->tripName,
+                    'itineraryId'      => $trek_trip->itineraryId,
+                    'itineraryCode'    => $trek_trip->itineraryCode,
                     'lastModifiedDate' => $trek_trip->lastModifiedDate
                 );
-                $check_trip = tt_get_trip_by_idCode($table_name, $tripId, $tripCode);
-                if ($check_trip >= 1) {
-                    $where = array('tripId' => $tripId, 'tripCode' => $tripCode);
-                    $wpdb->update($table_name, $tripsData, $where);
+                $check_trip = tt_get_trip_by_idCode( $table_name, $trek_trip->tripId, $trek_trip->tripCode );
+                if ( $check_trip >= 1 ) {
+                    $where = array( 'tripId' => $trek_trip->tripId, 'tripCode' => $trek_trip->tripCode );
+                    $wpdb->update( $table_name, $trips_data, $where );
                 } else {
-                    $tripsData['tripId'] = $tripId;
-                    $tripsData['tripCode'] = $tripCode;
-                    $inserted_id = $wpdb->insert($table_name, $tripsData);
+                    $trips_data['tripId']   = $trek_trip->tripId;
+                    $trips_data['tripCode'] = $trek_trip->tripCode;
+                    $inserted_id = $wpdb->insert( $table_name, $trips_data );
                 }
-                //echo 'executed 1'; exit;
             }
         }
-        if( $trek_trips ){
-            tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, ['status'=>'true']);
-        }else{
-            tt_add_error_log('NS_SCRIPT_ID: '.TRIPS_SCRIPT_ID, $trek_script_args, $trek_trips);
+        if ( $trek_trips ) {
+            tt_add_error_log( 'NS_SCRIPT_ID: ' . TRIPS_SCRIPT_ID, $trek_script_args, array( 'status' => 'true', 'trips_count' => is_array( $trek_trips ) ? count( $trek_trips ) : 'Can\'t count the trips! The $trek_trips is not an array.' ) );
+        } else {
+            tt_add_error_log( 'NS_SCRIPT_ID: ' . TRIPS_SCRIPT_ID, $trek_script_args, $trek_trips );
         }
     }
 }
@@ -80,73 +73,72 @@ if (!function_exists('tt_sync_ns_trips')) {
  * @version : 1.0.0
  * @return  : NS Trip Details sync function
  **/
-if (!function_exists('tt_sync_ns_trip_details')) {
-    function tt_sync_ns_trip_details( $time_range = DEFAULT_TIME_RANGE )
-    {
+if ( ! function_exists( 'tt_sync_ns_trip_details' ) ) {
+    function tt_sync_ns_trip_details( $time_range = DEFAULT_TIME_RANGE ) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'netsuite_trip_detail';
-        $netSuiteClient = new NetSuiteClient();
-        //$trek_trips = tt_get_local_trips();
+        $table_name             = $wpdb->prefix . 'netsuite_trip_detail';
+        $net_suite_client       = new NetSuiteClient();
         $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
-        $trip_Ids = tt_get_local_trip_ids($last_modified_trip_ids);
-        if ($trip_Ids && !empty($trip_Ids)) {
-            foreach ($trip_Ids as $trip_Ids_arr) {
-                $trek_script_args = array('tripIds' => implode(',', $trip_Ids_arr) );
-                $trek_trip_details = $netSuiteClient->get(TRIP_DETAIL_SCRIPT_ID, $trek_script_args);
+        $trip_ids               = tt_get_local_trip_ids( $last_modified_trip_ids );
+        if ( $trip_ids && ! empty( $trip_ids ) ) {
+            foreach ( $trip_ids as $trip_ids_arr ) {
+                $trek_script_args  = array( 'tripIds' => implode(',', $trip_ids_arr ) );
+                $trek_trip_details = $net_suite_client->get( TRIP_DETAIL_SCRIPT_ID, $trek_script_args );
                 if( $trek_trip_details ){
-                    tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, ['status' => 'true']);
-                }else{
-                    tt_add_error_log('NS_SCRIPT_ID: '.TRIP_DETAIL_SCRIPT_ID, $trek_script_args, $trek_trip_details);
+                    tt_add_error_log( 'NS_SCRIPT_ID: ' . TRIP_DETAIL_SCRIPT_ID, $trek_script_args, array( 'status' => 'true' ) );
+                } else {
+                    tt_add_error_log( 'NS_SCRIPT_ID: ' . TRIP_DETAIL_SCRIPT_ID, $trek_script_args, $trek_trip_details );
                 }
-                if (!empty($trek_trip_details) && isset($trek_trip_details->trips)) {
-                    foreach ($trek_trip_details->trips as $trek_trip_detail) {
-                        $tripCode = $trek_trip_detail->tripCode;
-                        $tripsData = array(
-                            'isRideCamp' => $trek_trip_detail->isRideCamp ? $trek_trip_detail->isRideCamp : $trek_trip_detail->supportsNestedDates,
-                            'isLateDepositAllowed' => $trek_trip_detail->isLateDepositAllowed,
-                            'depositBeforeDate' => $trek_trip_detail->depositBeforeDate,
-                            'removeFromStella' => $trek_trip_detail->removeFromStella,
-                            'capacity' => $trek_trip_detail->capacity,
-                            'booked' => $trek_trip_detail->booked,
-                            'remaining' => $trek_trip_detail->remaining,
-                            'status' => json_encode($trek_trip_detail->status),
-                            'startDate' => $trek_trip_detail->startDate,
-                            'endDate' => $trek_trip_detail->endDate,
-                            'daysToTrip' => $trek_trip_detail->daysToTrip,
-                            'tripYear' => $trek_trip_detail->tripYear,
-                            'tripSeason' => $trek_trip_detail->tripSeason,
-                            'tripMonth' => $trek_trip_detail->tripMonth,
-                            'tripContinent' => $trek_trip_detail->tripContinent,
-                            'tripCountry' => $trek_trip_detail->tripCountry,
-                            'tripRegion' => $trek_trip_detail->tripRegion,
-                            'itineraryId' => $trek_trip_detail->itineraryId,
-                            'itineraryCode' => $trek_trip_detail->itineraryCode,
-                            'lastModifiedDate' => $trek_trip_detail->lastModifiedDate,
-                            'riderType' => json_encode($trek_trip_detail->riderType),
-                            'basePrice' => $trek_trip_detail->basePrice,
-                            'singleSupplementPrice' => $trek_trip_detail->singleSupplementPrice,
-                            'depositAmount' => $trek_trip_detail->depositAmount,
-                            'bikeUpgradePrice' => $trek_trip_detail->bikeUpgradePrice,
-                            'insurancePercentage' => $trek_trip_detail->insurancePercentage,
-                            'taxRate' => $trek_trip_detail->taxRate,
-                            'ssSoldOut' => $trek_trip_detail->ssSoldOut,
+                if ( ! empty( $trek_trip_details ) && isset( $trek_trip_details->trips ) ) {
+                    foreach ( $trek_trip_details->trips as $trek_trip_detail ) {
+                        $trips_data = array(
+                            'isRideCamp'               => $trek_trip_detail->isRideCamp ? $trek_trip_detail->isRideCamp : $trek_trip_detail->supportsNestedDates,
+                            'isLateDepositAllowed'     => $trek_trip_detail->isLateDepositAllowed,
+                            'depositBeforeDate'        => $trek_trip_detail->depositBeforeDate,
+                            'removeFromStella'         => $trek_trip_detail->removeFromStella,
+                            'capacity'                 => $trek_trip_detail->capacity,
+                            'booked'                   => $trek_trip_detail->booked,
+                            'remaining'                => $trek_trip_detail->remaining,
+                            'status'                   => json_encode( $trek_trip_detail->status ),
+                            'startDate'                => $trek_trip_detail->startDate,
+                            'endDate'                  => $trek_trip_detail->endDate,
+                            'daysToTrip'               => $trek_trip_detail->daysToTrip,
+                            'tripYear'                 => $trek_trip_detail->tripYear,
+                            'tripSeason'               => $trek_trip_detail->tripSeason,
+                            'tripMonth'                => $trek_trip_detail->tripMonth,
+                            'tripContinent'            => $trek_trip_detail->tripContinent,
+                            'tripCountry'              => $trek_trip_detail->tripCountry,
+                            'tripRegion'               => $trek_trip_detail->tripRegion,
+                            'itineraryId'              => $trek_trip_detail->itineraryId,
+                            'itineraryCode'            => $trek_trip_detail->itineraryCode,
+                            'lastModifiedDate'         => $trek_trip_detail->lastModifiedDate,
+                            'riderType'                => json_encode( $trek_trip_detail->riderType ),
+                            'product_line'             => json_encode( tt_validate( $trek_trip_detail->productLine, NULL ) ),
+                            'subStyle'                 => json_encode( tt_validate( $trek_trip_detail->subStyle, NULL ) ),
+                            'basePrice'                => $trek_trip_detail->basePrice,
+                            'singleSupplementPrice'    => $trek_trip_detail->singleSupplementPrice,
+                            'depositAmount'            => $trek_trip_detail->depositAmount,
+                            'bikeUpgradePrice'         => $trek_trip_detail->bikeUpgradePrice,
+                            'insurancePercentage'      => $trek_trip_detail->insurancePercentage,
+                            'taxRate'                  => $trek_trip_detail->taxRate,
+                            'ssSoldOut'                => $trek_trip_detail->ssSoldOut,
                             'isOpenToRoommateDisabled' => $trek_trip_detail->isOpenToRoommateDisabled,
-                            'bookablePeriods' => json_encode($trek_trip_detail->bookablePeriods),
-                            'hotels' => json_encode($trek_trip_detail->hotels),
-                            'bikes' => json_encode($trek_trip_detail->bikes),
-                            'addOns' => json_encode($trek_trip_detail->addOns),
-                            'tripSpecificMessage' => $trek_trip_detail->tripSpecificMessage,
-                            'SmugMugLink'  => $trek_trip_detail->smugMugLink,
-                            'SmugMugPassword' => $trek_trip_detail->smugMugPasscode
+                            'bookablePeriods'          => json_encode( $trek_trip_detail->bookablePeriods ),
+                            'hotels'                   => json_encode( $trek_trip_detail->hotels ),
+                            'bikes'                    => json_encode( $trek_trip_detail->bikes ),
+                            'addOns'                   => json_encode( $trek_trip_detail->addOns ),
+                            'tripSpecificMessage'      => $trek_trip_detail->tripSpecificMessage,
+                            'SmugMugLink'              => $trek_trip_detail->smugMugLink,
+                            'SmugMugPassword'          => $trek_trip_detail->smugMugPasscode
                         );
-                        $check_trip = tt_get_trip_by_idCode($table_name, $trek_trip_detail->tripId, $trek_trip_detail->tripCode);
-                        if ($check_trip >= 1) {
-                            $where = array('tripId' => $trek_trip_detail->tripId, 'tripCode' => $tripCode);
-                            $wpdb->update($table_name, $tripsData, $where);
+                        $check_trip = tt_get_trip_by_idCode( $table_name, $trek_trip_detail->tripId, $trek_trip_detail->tripCode );
+                        if ( $check_trip >= 1 ) {
+                            $where = array('tripId' => $trek_trip_detail->tripId, 'tripCode' => $trek_trip_detail->tripCode );
+                            $wpdb->update( $table_name, $trips_data, $where );
                         } else {
-                            $tripsData['tripId'] = $trek_trip_detail->tripId;
-                            $tripsData['tripCode'] = $tripCode;
-                            $inserted_id = $wpdb->insert($table_name, $tripsData);
+                            $trips_data['tripId']   = $trek_trip_detail->tripId;
+                            $trips_data['tripCode'] = $trek_trip_detail->tripCode;
+                            $inserted_id            = $wpdb->insert( $table_name, $trips_data );
                         }
                     }
                 }
@@ -434,14 +426,22 @@ function tt_sync_wc_product_from_ns( $trek_trip ) {
         if( is_object($riderType) ){
             $riderLevelVal = tt_get_custom_item_name('syncRiderLevels',$riderType->id);
         }
+
+        $custom_taxonomies = array(
+            // 'activity-level' => $riderLevelVal, // In my opinion this is not really in use, because we use the parent products rider level which are set manually.
+            // 'country'        => $tripCountry, // In my opinion this is not really in use, because we use the parent products country which are set manually.
+            'trip-status'    => is_object( $status ) ? $status->name : '',
+        );
+
+        foreach( $custom_taxonomies as $custom_tax_name => $custom_tax_value ) {
+            if( $custom_tax_value ) {
+                tt_set_custom_product_tax_value( $product_id, $custom_tax_name, $custom_tax_value );
+            }
+        }
+
         $custom_attributes = [
-            'pa_trip-status' => is_object($status) ? $status->name : '',
-            'pa_rider-level' => $riderLevelVal,
-            'pa_duration' => $daysToTrip,
-            'pa_region' => $tripRegion,
-            'pa_continent' => $tripContinent,
+            'pa_duration' => $daysToTrip, // This will keep as is it, based on a discussion on call with the client.
             'pa_season' => $tripSeason,
-            'pa_country' => $tripCountry,
             'pa_start-date' => date('d/m/y', $attr_startDate),
             'pa_end-date' => date('d/m/y', $attr_endDate)
         ];
@@ -606,31 +606,32 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
  * @version : 1.0.0
  * @return  : Sync All Custom Attributs from NS
  **/
-if (!function_exists('tt_sync_custom_items')) {
-    function tt_sync_custom_items()
-    {
-        $scriptIDs = [
-            'customlist_genericbiketype' => 'syncBikeTypes',
-            'customlist_genericbikesizes' => 'syncBikeSizes',
-            'customlist_height' => 'syncHeights',
-            'customlist_helmetselection' => 'syncHelmets',
-            'customlist_pedals' => 'syncPedals',
-            'customlist_saddlechoice' => 'syncSaddles',
-            'customlist_riderlevel' => 'syncRiderLevels',
-            'customlist_itemstatus' => 'syncDateStatuses',
-            'customlist_contactmethod' => 'syncPreferredContactMethod',
-            'customlist_leadsourcepersonal' => 'syncHeardAboutUs',
-            'customlist_clothingsize' => 'syncJerseySizes',
-            'customlist_itinerarycodes' => 'syncTripsList',
-        ];
-        $netSuiteClient = new NetSuiteClient();
-        if( $scriptIDs ){
-            foreach( $scriptIDs as $listId=> $scriptMethod ){
-                $response = $netSuiteClient->get(LISTS_SCRIPT_ID, ['listId' => $listId ]);
-                if( $response ){
-                    update_option(TT_OPTION_PREFIX.$scriptMethod, json_encode($response));
+if ( ! function_exists( 'tt_sync_custom_items' ) ) {
+    function tt_sync_custom_items() {
+        $script_ids = array(
+            'customlist_genericbiketype'      => 'syncBikeTypes',
+            'customlist_genericbikesizes'     => 'syncBikeSizes',
+            'customlist_height'               => 'syncHeights',
+            'customlist_helmetselection'      => 'syncHelmets',
+            'customlist_pedals'               => 'syncPedals',
+            'customlist_saddlechoice'         => 'syncSaddles',
+            'customlist_riderlevel'           => 'syncRiderLevels',
+            'customlist_itemstatus'           => 'syncDateStatuses',
+            'customlist_contactmethod'        => 'syncPreferredContactMethod',
+            'customlist_leadsourcepersonal'   => 'syncHeardAboutUs',
+            'customlist_clothingsize'         => 'syncJerseySizes',
+            'customlist_itinerarycodes'       => 'syncTripsList',
+            'customlist_productline'          => 'syncPoductLine',
+            'customlist_tt_it_activity_level' => 'syncActivityLevel',
+        );
+        $net_suite_client = new NetSuiteClient();
+        if ( $script_ids ) {
+            foreach( $script_ids as $list_id => $script_method ){
+                $response = $net_suite_client->get( LISTS_SCRIPT_ID, array( 'listId' => $list_id ) );
+                if ( $response ) {
+                    update_option( TT_OPTION_PREFIX . $script_method, json_encode( $response ) );
                 }
-                tt_add_error_log('LISTS_SCRIPT_ID: '.LISTS_SCRIPT_ID, ['listId' => $listId ], $response);
+                tt_add_error_log( 'LISTS_SCRIPT_ID: ' . LISTS_SCRIPT_ID, array( 'listId' => $list_id ), $response );
             }
         }
     }

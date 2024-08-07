@@ -3,10 +3,16 @@
 $testimonial_details = get_field('testimonials');
 if(!empty($testimonial_details)):
 
-    $activity_tax = get_field('Activity');
-    $activity = $activity_tax->name;
+    $product = wc_get_product( get_the_ID() );
+    $product_id = $product->get_id();
+    
+    $activity_terms = get_the_terms( $product_id, 'activity' );
+    
+    foreach ( $activity_terms as $activity_term) {
+        $activity = $activity_term->name;   
+    }
 ?>
-    <div class="container pdp-section <?php if (!empty($activity) && $activity != 'Biking'):?>hw<?php endif;?>" id="testimonials">
+    <div class="container pdp-section <?php if (!empty($activity) && $activity != TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>hw<?php endif;?>" id="testimonials">
         <div class="row">
             <div class="col-12">
                 <h5 class="fw-semibold pdp-section__title">What Guests are Saying</h5>

@@ -1,11 +1,13 @@
 <?php 
 global $product;
 
-$weatherData = trek_weather_data();
-$tripCity = strtolower($product->get_attribute('city'));
-$tripCountry = strtolower($product->get_attribute('country'));
-$tripWeather = $weatherData[$tripCountry][$tripCity];
-if (!empty($tripWeather)):
+$product_id   = $product->get_id();
+
+$weather_data = trek_weather_data();
+$trip_city    = strtolower( $product->get_attribute('city') );
+$trip_country = strtolower( $product->get_attribute('country') );
+$tripWeather = $weather_data[ $trip_country ][ $trip_city ];
+if ( ! empty( $tripWeather ) ) :
 ?>
 
 <div class="container pdp-section pdp-weather" id="weather">

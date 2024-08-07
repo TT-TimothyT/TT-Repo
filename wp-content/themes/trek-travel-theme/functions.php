@@ -1,6 +1,14 @@
 <?php
 
 /**
+ * Include Theme Constants.
+ */
+$theme_constants = __DIR__ . '/inc/trek-constants.php';
+if ( is_readable( $theme_constants ) ) {
+	require_once $theme_constants;
+}
+
+/**
  * Include Theme Customizer.
  *
  * @since v1.0
@@ -583,6 +591,79 @@ function bikes_post_type() {
 }
 add_action('init', 'bikes_post_type');
 
+/**
+ * Registers the `bike_type` taxonomy,
+ * for use with 'bikes'.
+ */
+function tt_bike_type_init() {
+	register_taxonomy( 'bike-type', [ 'bikes' ], [
+			'hierarchical'          => false,
+			'public'                => true,
+			'show_in_nav_menus'     => true,
+			'show_ui'               => true,
+			'show_admin_column'     => false,
+			'query_var'             => true,
+			'rewrite'               => true,
+			'capabilities'          => [
+					'manage_terms' => 'edit_posts',
+					'edit_terms'   => 'edit_posts',
+					'delete_terms' => 'edit_posts',
+					'assign_terms' => 'edit_posts',
+			],
+			'labels'                => [
+					'name'                       => __( 'Bike types', 'YOUR-TEXTDOMAIN' ),
+					'singular_name'              => _x( 'Bike type', 'taxonomy general name', 'YOUR-TEXTDOMAIN' ),
+					'search_items'               => __( 'Search Bike types', 'YOUR-TEXTDOMAIN' ),
+					'popular_items'              => __( 'Popular Bike types', 'YOUR-TEXTDOMAIN' ),
+					'all_items'                  => __( 'All Bike types', 'YOUR-TEXTDOMAIN' ),
+					'parent_item'                => __( 'Parent Bike type', 'YOUR-TEXTDOMAIN' ),
+					'parent_item_colon'          => __( 'Parent Bike type:', 'YOUR-TEXTDOMAIN' ),
+					'edit_item'                  => __( 'Edit Bike type', 'YOUR-TEXTDOMAIN' ),
+					'update_item'                => __( 'Update Bike type', 'YOUR-TEXTDOMAIN' ),
+					'view_item'                  => __( 'View Bike type', 'YOUR-TEXTDOMAIN' ),
+					'add_new_item'               => __( 'Add New Bike type', 'YOUR-TEXTDOMAIN' ),
+					'new_item_name'              => __( 'New Bike type', 'YOUR-TEXTDOMAIN' ),
+					'separate_items_with_commas' => __( 'Separate bike types with commas', 'YOUR-TEXTDOMAIN' ),
+					'add_or_remove_items'        => __( 'Add or remove bike types', 'YOUR-TEXTDOMAIN' ),
+					'choose_from_most_used'      => __( 'Choose from the most used bike types', 'YOUR-TEXTDOMAIN' ),
+					'not_found'                  => __( 'No bike types found.', 'YOUR-TEXTDOMAIN' ),
+					'no_terms'                   => __( 'No bike types', 'YOUR-TEXTDOMAIN' ),
+					'menu_name'                  => __( 'Bike types', 'YOUR-TEXTDOMAIN' ),
+					'items_list_navigation'      => __( 'Bike types list navigation', 'YOUR-TEXTDOMAIN' ),
+					'items_list'                 => __( 'Bike types list', 'YOUR-TEXTDOMAIN' ),
+					'most_used'                  => _x( 'Most Used', 'bike-type', 'YOUR-TEXTDOMAIN' ),
+					'back_to_items'              => __( '&larr; Back to Bike types', 'YOUR-TEXTDOMAIN' ),
+			],
+			'show_in_rest'          => true,
+			'rest_base'             => 'bike-type',
+			'rest_controller_class' => 'WP_REST_Terms_Controller',
+	] );
+
+}
+add_action( 'init', 'tt_bike_type_init' );
+
+/**
+* Sets the post updated messages for the `bike_type` taxonomy.
+*
+* @param  array $messages Post updated messages.
+* @return array Messages for the `bike_type` taxonomy.
+*/
+function tt_bike_type_updated_messages( $messages ) {
+
+	$messages['bike-type'] = [
+			0 => '', // Unused. Messages start at index 1.
+			1 => __( 'Bike type added.', 'YOUR-TEXTDOMAIN' ),
+			2 => __( 'Bike type deleted.', 'YOUR-TEXTDOMAIN' ),
+			3 => __( 'Bike type updated.', 'YOUR-TEXTDOMAIN' ),
+			4 => __( 'Bike type not added.', 'YOUR-TEXTDOMAIN' ),
+			5 => __( 'Bike type not updated.', 'YOUR-TEXTDOMAIN' ),
+			6 => __( 'Bike types deleted.', 'YOUR-TEXTDOMAIN' ),
+	];
+
+	return $messages;
+}
+add_filter( 'term_updated_messages', 'tt_bike_type_updated_messages' );
+
 // Itineraries Post Type
 function itineraries_post_type() {
 	register_post_type('itinerary', array(
@@ -814,6 +895,331 @@ register_taxonomy( 'activity', 'product', $args );
 }
 
 /**
+ * Register a Product taxonomies.
+ */
+function tt_product_taxonomies()  {
+	// Add new taxonomy, make it hierarchical (like categories).
+	$destinations_tax_labels = array(
+		'name'                       => _x( 'Destinations', 'taxonomy general name', 'trek-travel-theme' ), 
+		'singular_name'              => _x( 'Destination', 'taxonomy singular name', 'trek-travel-theme' ),
+		'menu_name'                  => __( 'Destinations', 'trek-travel-theme' ),
+		'all_items'                  => __( 'All Destinations', 'trek-travel-theme' ),
+		'parent_item'                => __( 'Parent Destination', 'trek-travel-theme' ),
+		'parent_item_colon'          => __( 'Parent Destination:', 'trek-travel-theme' ),
+		'new_item_name'              => __( 'New Destination Name', 'trek-travel-theme' ),
+		'add_new_item'               => __( 'Add New Destination', 'trek-travel-theme' ),
+		'edit_item'                  => __( 'Edit Destination', 'trek-travel-theme' ),
+		'update_item'                => __( 'Update Destination', 'trek-travel-theme' ),
+		'separate_items_with_commas' => __( 'Separate Destinations with commas', 'trek-travel-theme' ),
+		'search_items'               => __( 'Search Destinations', 'trek-travel-theme' ),
+		'add_or_remove_items'        => __( 'Add or remove Destinations', 'trek-travel-theme' ),
+		'choose_from_most_used'      => __( 'Choose from the most used Destinations', 'trek-travel-theme' ),
+		'not_found'                  => __( 'No Destinations found.', 'textdomain' ),
+	);
+
+	$destinations_tax_args = array(
+		'labels'            => $destinations_tax_labels,
+		'hierarchical'      => true,
+		'public'            => true,
+		'show_ui'           => true,
+		'show_admin_column' => false,
+		'show_in_nav_menus' => true,
+		'show_tagcloud'     => true,
+		'query_var'         => true,
+		'has_archive'       => true,
+		'rewrite'           => array( 'hierarchical' => true, 'slug' => 'tours/destinations' ),
+	);
+
+	register_taxonomy( 'destination', array( 'product' ), $destinations_tax_args );
+
+	/**
+	 * Registers the `activity-level` taxonomy,
+	 * for use with 'product'.
+	 *
+	 * Change "Rider Levels" to "Activity Levels".
+	 */
+	register_taxonomy( 'activity-level', [ 'product' ], [
+		'hierarchical'          => true,
+		'public'                => true,
+		'show_in_nav_menus'     => true,
+		'show_ui'               => true,
+		'show_admin_column'     => false,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'tours/activity-level' ),
+		'capabilities'          => [
+				'manage_terms' => 'edit_posts',
+				'edit_terms'   => 'edit_posts',
+				'delete_terms' => 'edit_posts',
+				'assign_terms' => 'edit_posts',
+		],
+		'labels'                => [
+				'name'                       => __( 'Activity levels', 'trek-travel-theme' ),
+				'singular_name'              => _x( 'Activity level', 'taxonomy general name', 'trek-travel-theme' ),
+				'search_items'               => __( 'Search Activity levels', 'trek-travel-theme' ),
+				'popular_items'              => __( 'Popular Activity levels', 'trek-travel-theme' ),
+				'all_items'                  => __( 'All Activity levels', 'trek-travel-theme' ),
+				'parent_item'                => __( 'Parent Activity level', 'trek-travel-theme' ),
+				'parent_item_colon'          => __( 'Parent Activity level:', 'trek-travel-theme' ),
+				'edit_item'                  => __( 'Edit Activity level', 'trek-travel-theme' ),
+				'update_item'                => __( 'Update Activity level', 'trek-travel-theme' ),
+				'view_item'                  => __( 'View Activity level', 'trek-travel-theme' ),
+				'add_new_item'               => __( 'Add New Activity level', 'trek-travel-theme' ),
+				'new_item_name'              => __( 'New Activity level', 'trek-travel-theme' ),
+				'separate_items_with_commas' => __( 'Separate activity levels with commas', 'trek-travel-theme' ),
+				'add_or_remove_items'        => __( 'Add or remove activity levels', 'trek-travel-theme' ),
+				'choose_from_most_used'      => __( 'Choose from the most used activity levels', 'trek-travel-theme' ),
+				'not_found'                  => __( 'No activity levels found.', 'trek-travel-theme' ),
+				'no_terms'                   => __( 'No activity levels', 'trek-travel-theme' ),
+				'menu_name'                  => __( 'Activity levels', 'trek-travel-theme' ),
+				'items_list_navigation'      => __( 'Activity levels list navigation', 'trek-travel-theme' ),
+				'items_list'                 => __( 'Activity levels list', 'trek-travel-theme' ),
+				'most_used'                  => _x( 'Most Used', 'activity-level', 'trek-travel-theme' ),
+				'back_to_items'              => __( '&larr; Back to Activity levels', 'trek-travel-theme' ),
+		],
+		'show_in_rest'          => true,
+		'rest_base'             => 'activity-level',
+		'rest_controller_class' => 'WP_REST_Terms_Controller',
+	] );
+
+	/**
+	 * Registers the `hotel-level` taxonomy,
+	 * for use with 'product'.
+	 */
+	register_taxonomy( 'hotel-level', [ 'product' ], [
+		'hierarchical'          => true,
+		'public'                => true,
+		'show_in_nav_menus'     => true,
+		'show_ui'               => true,
+		'show_admin_column'     => false,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'tours/hotel-level' ),
+		'capabilities'          => [
+				'manage_terms' => 'edit_posts',
+				'edit_terms'   => 'edit_posts',
+				'delete_terms' => 'edit_posts',
+				'assign_terms' => 'edit_posts',
+		],
+		'labels'                => [
+				'name'                       => __( 'Hotel levels', 'trek-travel-theme' ),
+				'singular_name'              => _x( 'Hotel level', 'taxonomy general name', 'trek-travel-theme' ),
+				'search_items'               => __( 'Search Hotel levels', 'trek-travel-theme' ),
+				'popular_items'              => __( 'Popular Hotel levels', 'trek-travel-theme' ),
+				'all_items'                  => __( 'All Hotel levels', 'trek-travel-theme' ),
+				'parent_item'                => __( 'Parent Hotel level', 'trek-travel-theme' ),
+				'parent_item_colon'          => __( 'Parent Hotel level:', 'trek-travel-theme' ),
+				'edit_item'                  => __( 'Edit Hotel level', 'trek-travel-theme' ),
+				'update_item'                => __( 'Update Hotel level', 'trek-travel-theme' ),
+				'view_item'                  => __( 'View Hotel level', 'trek-travel-theme' ),
+				'add_new_item'               => __( 'Add New Hotel level', 'trek-travel-theme' ),
+				'new_item_name'              => __( 'New Hotel level', 'trek-travel-theme' ),
+				'separate_items_with_commas' => __( 'Separate hotel levels with commas', 'trek-travel-theme' ),
+				'add_or_remove_items'        => __( 'Add or remove hotel levels', 'trek-travel-theme' ),
+				'choose_from_most_used'      => __( 'Choose from the most used hotel levels', 'trek-travel-theme' ),
+				'not_found'                  => __( 'No hotel levels found.', 'trek-travel-theme' ),
+				'no_terms'                   => __( 'No hotel levels', 'trek-travel-theme' ),
+				'menu_name'                  => __( 'Hotel levels', 'trek-travel-theme' ),
+				'items_list_navigation'      => __( 'Hotel levels list navigation', 'trek-travel-theme' ),
+				'items_list'                 => __( 'Hotel levels list', 'trek-travel-theme' ),
+				'most_used'                  => _x( 'Most Used', 'hotel-level', 'trek-travel-theme' ),
+				'back_to_items'              => __( '&larr; Back to Hotel levels', 'trek-travel-theme' ),
+		],
+		'show_in_rest'          => true,
+		'rest_base'             => 'hotel-level',
+		'rest_controller_class' => 'WP_REST_Terms_Controller',
+	] );
+
+	/**
+	 * Registers the `trip-class` taxonomy,
+	 * for use with 'product'.
+	 */
+	register_taxonomy( 'trip-class', [ 'product' ], [
+		'hierarchical'          => true,
+		'public'                => true,
+		'show_in_nav_menus'     => true,
+		'show_ui'               => true,
+		'show_admin_column'     => false,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'tours/trip-class' ),
+		'capabilities'          => [
+				'manage_terms' => 'edit_posts',
+				'edit_terms'   => 'edit_posts',
+				'delete_terms' => 'edit_posts',
+				'assign_terms' => 'edit_posts',
+		],
+		'labels'                => [
+				'name'                       => __( 'Trip classes', 'trek-travel-theme' ),
+				'singular_name'              => _x( 'Trip class', 'taxonomy general name', 'trek-travel-theme' ),
+				'search_items'               => __( 'Search Trip classes', 'trek-travel-theme' ),
+				'popular_items'              => __( 'Popular Trip classes', 'trek-travel-theme' ),
+				'all_items'                  => __( 'All Trip classes', 'trek-travel-theme' ),
+				'parent_item'                => __( 'Parent Trip class', 'trek-travel-theme' ),
+				'parent_item_colon'          => __( 'Parent Trip class:', 'trek-travel-theme' ),
+				'edit_item'                  => __( 'Edit Trip class', 'trek-travel-theme' ),
+				'update_item'                => __( 'Update Trip class', 'trek-travel-theme' ),
+				'view_item'                  => __( 'View Trip class', 'trek-travel-theme' ),
+				'add_new_item'               => __( 'Add New Trip class', 'trek-travel-theme' ),
+				'new_item_name'              => __( 'New Trip class', 'trek-travel-theme' ),
+				'separate_items_with_commas' => __( 'Separate trip classes with commas', 'trek-travel-theme' ),
+				'add_or_remove_items'        => __( 'Add or remove trip classes', 'trek-travel-theme' ),
+				'choose_from_most_used'      => __( 'Choose from the most used trip classes', 'trek-travel-theme' ),
+				'not_found'                  => __( 'No trip classes found.', 'trek-travel-theme' ),
+				'no_terms'                   => __( 'No trip classes', 'trek-travel-theme' ),
+				'menu_name'                  => __( 'Trip classes', 'trek-travel-theme' ),
+				'items_list_navigation'      => __( 'Trip classes list navigation', 'trek-travel-theme' ),
+				'items_list'                 => __( 'Trip classes list', 'trek-travel-theme' ),
+				'most_used'                  => _x( 'Most Used', 'trip-class', 'trek-travel-theme' ),
+				'back_to_items'              => __( '&larr; Back to Trip classes', 'trek-travel-theme' ),
+		],
+		'show_in_rest'          => true,
+		'rest_base'             => 'trip-class',
+		'rest_controller_class' => 'WP_REST_Terms_Controller',
+	] );
+
+	/**
+	 * Registers the `trip-duration` taxonomy,
+	 * for use with 'product'.
+	 */
+	register_taxonomy( 'trip-duration', [ 'product' ], [
+		'hierarchical'          => true,
+		'public'                => true,
+		'show_in_nav_menus'     => true,
+		'show_ui'               => true,
+		'show_admin_column'     => false,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'tours/trip-duration' ),
+		'capabilities'          => [
+				'manage_terms' => 'edit_posts',
+				'edit_terms'   => 'edit_posts',
+				'delete_terms' => 'edit_posts',
+				'assign_terms' => 'edit_posts',
+		],
+		'labels'                => [
+				'name'                       => __( 'Trip durations', 'trek-travel-theme' ),
+				'singular_name'              => _x( 'Trip duration', 'taxonomy general name', 'trek-travel-theme' ),
+				'search_items'               => __( 'Search Trip durations', 'trek-travel-theme' ),
+				'popular_items'              => __( 'Popular Trip durations', 'trek-travel-theme' ),
+				'all_items'                  => __( 'All Trip durations', 'trek-travel-theme' ),
+				'parent_item'                => __( 'Parent Trip duration', 'trek-travel-theme' ),
+				'parent_item_colon'          => __( 'Parent Trip duration:', 'trek-travel-theme' ),
+				'edit_item'                  => __( 'Edit Trip duration', 'trek-travel-theme' ),
+				'update_item'                => __( 'Update Trip duration', 'trek-travel-theme' ),
+				'view_item'                  => __( 'View Trip duration', 'trek-travel-theme' ),
+				'add_new_item'               => __( 'Add New Trip duration', 'trek-travel-theme' ),
+				'new_item_name'              => __( 'New Trip duration', 'trek-travel-theme' ),
+				'separate_items_with_commas' => __( 'Separate trip durations with commas', 'trek-travel-theme' ),
+				'add_or_remove_items'        => __( 'Add or remove trip durations', 'trek-travel-theme' ),
+				'choose_from_most_used'      => __( 'Choose from the most used trip durations', 'trek-travel-theme' ),
+				'not_found'                  => __( 'No trip durations found.', 'trek-travel-theme' ),
+				'no_terms'                   => __( 'No trip durations', 'trek-travel-theme' ),
+				'menu_name'                  => __( 'Trip durations', 'trek-travel-theme' ),
+				'items_list_navigation'      => __( 'Trip durations list navigation', 'trek-travel-theme' ),
+				'items_list'                 => __( 'Trip durations list', 'trek-travel-theme' ),
+				'most_used'                  => _x( 'Most Used', 'trip-duration', 'trek-travel-theme' ),
+				'back_to_items'              => __( '&larr; Back to Trip durations', 'trek-travel-theme' ),
+		],
+		'show_in_rest'          => true,
+		'rest_base'             => 'trip-duration',
+		'rest_controller_class' => 'WP_REST_Terms_Controller',
+	] );
+
+	/**
+	 * Registers the `trip-status` taxonomy,
+	 * for use with 'product'.
+	 */
+	register_taxonomy( 'trip-status', [ 'product' ], [
+		'hierarchical'          => true,
+		'public'                => true,
+		'show_in_nav_menus'     => true,
+		'show_ui'               => true,
+		'show_admin_column'     => false,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'tours/trip-status' ),
+		'capabilities'          => [
+				'manage_terms' => 'edit_posts',
+				'edit_terms'   => 'edit_posts',
+				'delete_terms' => 'edit_posts',
+				'assign_terms' => 'edit_posts',
+		],
+		'labels'                => [
+				'name'                       => __( 'Trip statuses', 'trek-travel-theme' ),
+				'singular_name'              => _x( 'Trip status', 'taxonomy general name', 'trek-travel-theme' ),
+				'search_items'               => __( 'Search Trip statuses', 'trek-travel-theme' ),
+				'popular_items'              => __( 'Popular Trip statuses', 'trek-travel-theme' ),
+				'all_items'                  => __( 'All Trip statuses', 'trek-travel-theme' ),
+				'parent_item'                => __( 'Parent Trip status', 'trek-travel-theme' ),
+				'parent_item_colon'          => __( 'Parent Trip status:', 'trek-travel-theme' ),
+				'edit_item'                  => __( 'Edit Trip status', 'trek-travel-theme' ),
+				'update_item'                => __( 'Update Trip status', 'trek-travel-theme' ),
+				'view_item'                  => __( 'View Trip status', 'trek-travel-theme' ),
+				'add_new_item'               => __( 'Add New Trip status', 'trek-travel-theme' ),
+				'new_item_name'              => __( 'New Trip status', 'trek-travel-theme' ),
+				'separate_items_with_commas' => __( 'Separate trip statuses with commas', 'trek-travel-theme' ),
+				'add_or_remove_items'        => __( 'Add or remove trip statuses', 'trek-travel-theme' ),
+				'choose_from_most_used'      => __( 'Choose from the most used trip statuses', 'trek-travel-theme' ),
+				'not_found'                  => __( 'No trip statuses found.', 'trek-travel-theme' ),
+				'no_terms'                   => __( 'No trip statuses', 'trek-travel-theme' ),
+				'menu_name'                  => __( 'Trip statuses', 'trek-travel-theme' ),
+				'items_list_navigation'      => __( 'Trip statuses list navigation', 'trek-travel-theme' ),
+				'items_list'                 => __( 'Trip statuses list', 'trek-travel-theme' ),
+				'most_used'                  => _x( 'Most Used', 'trip-status', 'trek-travel-theme' ),
+				'back_to_items'              => __( '&larr; Back to Trip statuses', 'trek-travel-theme' ),
+		],
+		'show_in_rest'          => true,
+		'rest_base'             => 'trip-status',
+		'rest_controller_class' => 'WP_REST_Terms_Controller',
+	] );
+
+	/**
+	 * Registers the `trip-style` taxonomy,
+	 * for use with 'product'.
+	 */
+	register_taxonomy( 'trip-style', [ 'product' ], [
+		'hierarchical'          => true,
+		'public'                => true,
+		'show_in_nav_menus'     => true,
+		'show_ui'               => true,
+		'show_admin_column'     => false,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'tours/trip-style' ),
+		'capabilities'          => [
+				'manage_terms' => 'edit_posts',
+				'edit_terms'   => 'edit_posts',
+				'delete_terms' => 'edit_posts',
+				'assign_terms' => 'edit_posts',
+		],
+		'labels'                => [
+				'name'                       => __( 'Trip styles', 'trek-travel-theme' ),
+				'singular_name'              => _x( 'Trip style', 'taxonomy general name', 'trek-travel-theme' ),
+				'search_items'               => __( 'Search Trip styles', 'trek-travel-theme' ),
+				'popular_items'              => __( 'Popular Trip styles', 'trek-travel-theme' ),
+				'all_items'                  => __( 'All Trip styles', 'trek-travel-theme' ),
+				'parent_item'                => __( 'Parent Trip style', 'trek-travel-theme' ),
+				'parent_item_colon'          => __( 'Parent Trip style:', 'trek-travel-theme' ),
+				'edit_item'                  => __( 'Edit Trip style', 'trek-travel-theme' ),
+				'update_item'                => __( 'Update Trip style', 'trek-travel-theme' ),
+				'view_item'                  => __( 'View Trip style', 'trek-travel-theme' ),
+				'add_new_item'               => __( 'Add New Trip style', 'trek-travel-theme' ),
+				'new_item_name'              => __( 'New Trip style', 'trek-travel-theme' ),
+				'separate_items_with_commas' => __( 'Separate trip styles with commas', 'trek-travel-theme' ),
+				'add_or_remove_items'        => __( 'Add or remove trip styles', 'trek-travel-theme' ),
+				'choose_from_most_used'      => __( 'Choose from the most used trip styles', 'trek-travel-theme' ),
+				'not_found'                  => __( 'No trip styles found.', 'trek-travel-theme' ),
+				'no_terms'                   => __( 'No trip styles', 'trek-travel-theme' ),
+				'menu_name'                  => __( 'Trip styles', 'trek-travel-theme' ),
+				'items_list_navigation'      => __( 'Trip styles list navigation', 'trek-travel-theme' ),
+				'items_list'                 => __( 'Trip styles list', 'trek-travel-theme' ),
+				'most_used'                  => _x( 'Most Used', 'trip-style', 'trek-travel-theme' ),
+				'back_to_items'              => __( '&larr; Back to Trip styles', 'trek-travel-theme' ),
+		],
+		'show_in_rest'          => true,
+		'rest_base'             => 'trip-style',
+		'rest_controller_class' => 'WP_REST_Terms_Controller',
+	] );
+
+}
+add_action( 'init', 'tt_product_taxonomies' );
+
+/**
  * DX Keyword in the head
  */
 function dx_keyword_in_head() {
@@ -845,6 +1251,406 @@ function custom_breadcrumbs() {
     echo '</ol>';
     echo '</nav>';
 }
+
+/**
+ * Set permalinks for Tours by including the name of the activity type in the URL.
+ *
+ * @param string  $post_link The post's permalink.
+ * @param WP_Post $post      The post in question.
+ *
+ * @link https://developer.wordpress.org/reference/hooks/post_type_link/
+ */
+function tt_activity_product_permalink( $post_link, $post ) {
+    if( is_object( $post ) && 'product' === $post->post_type && ! empty( $post_link ) && ! in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ), true ) ) { 
+        $terms = wp_get_object_terms( $post->ID, 'activity' );
+        if( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+            return str_replace( '%activity%', $terms[0]->slug, $post_link );
+        } else {
+			return str_replace( '%activity%', 'none', $post_link );
+		}
+    }
+    return $post_link;
+}
+add_filter( 'post_type_link', 'tt_activity_product_permalink', 10, 2 );
+
+/**
+ * Add rewrite rules for each available activity terms dynamically.
+ */
+function tt_dynamic_rewrite_rules() {
+
+	// Activity Terms.
+    $activity_terms = get_terms(
+		array(
+			'taxonomy'   => 'activity',
+			'hide_empty' => false,
+    	)
+	);
+
+    if( ! empty( $activity_terms ) ) {
+        foreach( $activity_terms as $term ) {
+            add_rewrite_rule(
+				'^tours/(' . $term->slug . ')/?$',
+				'index.php?activity=$matches[1]',
+				'top'
+            );
+        }
+    }
+
+	// Hotel Level Terms.
+	$hotel_level_terms = get_terms(
+		array(
+			'taxonomy'   => 'hotel-level',
+			'hide_empty' => false,
+		)
+	);
+
+	if( ! empty( $hotel_level_terms ) ) {
+		foreach( $hotel_level_terms as $term ) {
+			add_rewrite_rule(
+				'^tours/hotel-level/(' . $term->slug . ')/?$',
+				'index.php?hotel-level=$matches[1]',
+				'top'
+			);
+		}
+	}
+
+	// Activity Level Terms.
+	$activity_level_terms = get_terms(
+		array(
+			'taxonomy'   => 'activity-level',
+			'hide_empty' => false,
+		)
+	);
+
+	if( ! empty( $activity_level_terms ) ) {
+		foreach( $activity_level_terms as $term ) {
+			add_rewrite_rule(
+				'^tours/activity-level/(' . $term->slug . ')/?$',
+				'index.php?activity-level=$matches[1]',
+				'top'
+			);
+		}
+	}
+
+	// Trip Class Terms.
+	$trip_class_terms = get_terms(
+		array(
+			'taxonomy'   => 'trip-class',
+			'hide_empty' => false,
+		)
+	);
+
+	if( ! empty( $trip_class_terms ) ) {
+		foreach( $trip_class_terms as $term ) {
+			add_rewrite_rule(
+				'^tours/trip-class/(' . $term->slug . ')/?$',
+				'index.php?trip-class=$matches[1]',
+				'top'
+			);
+		}
+	}
+
+	// Trip Duration Terms.
+	$trip_duration_terms = get_terms(
+		array(
+			'taxonomy'   => 'trip-duration',
+			'hide_empty' => false,
+		)
+	);
+
+	if( ! empty( $trip_duration_terms ) ) {
+		foreach( $trip_duration_terms as $term ) {
+			add_rewrite_rule(
+				'^tours/trip-duration/(' . $term->slug . ')/?$',
+				'index.php?trip-duration=$matches[1]',
+				'top'
+			);
+		}
+	}
+
+	// Trip status Terms.
+	$trip_status_terms = get_terms(
+		array(
+			'taxonomy'   => 'trip-status',
+			'hide_empty' => false,
+		)
+	);
+
+	if( ! empty( $trip_status_terms ) ) {
+		foreach( $trip_status_terms as $term ) {
+			add_rewrite_rule(
+				'^tours/trip-status/(' . $term->slug . ')/?$',
+				'index.php?trip-status=$matches[1]',
+				'top'
+			);
+		}
+	}
+
+	// Trip style Terms.
+	$trip_style_terms = get_terms(
+		array(
+			'taxonomy'   => 'trip-style',
+			'hide_empty' => false,
+		)
+	);
+
+	if( ! empty( $trip_style_terms ) ) {
+		foreach( $trip_style_terms as $term ) {
+			add_rewrite_rule(
+				'^tours/trip-style/(' . $term->slug . ')/?$',
+				'index.php?trip-style=$matches[1]',
+				'top'
+			);
+		}
+	}
+	
+	// Destination Terms.
+	add_rewrite_rule(
+		'^tours/destinations/(.+?)/?$',
+		'index.php?destination=$matches[1]',
+		'top'
+	);
+	
+}
+add_action( 'init', 'tt_dynamic_rewrite_rules' );
+
+/**
+ * Hooking into create and edit term and if the taxonomy is activity
+ * then we're firing flush_rewrite_rules() to refresh permalinks.
+ * 
+ * @param int    $term_id  Term ID.
+ * @param int    $tt_id    Term taxonomy ID.
+ * @param string $taxonomy Taxonomy slug.
+ *
+ * @link https://developer.wordpress.org/reference/hooks/edit_term/
+ * @link https://developer.wordpress.org/reference/hooks/create_term/
+ */
+function tt_flush_rewrite_rules( $term_id, $tt_id, $taxonomy ) {
+    if( 'activity' === $taxonomy ) {
+        $term = get_term_by( 'term_taxonomy_id', $tt_id );
+        add_rewrite_rule(
+            '^tours/(' . $term->slug . ')/?$',
+            'index.php?activity=$matches[1]',
+            'top'
+        );
+        if( ! function_exists( 'flush_rewrite_rules' ) ) {
+            require_once WPINC . '/rewrite.php';
+        }
+        flush_rewrite_rules();
+    }
+
+	if( 'hotel-level' === $taxonomy ) {
+		$term = get_term_by( 'term_taxonomy_id', $tt_id );
+		add_rewrite_rule(
+			'^tours/hotel-level/(' . $term->slug . ')/?$',
+			'index.php?hotel-level=$matches[1]',
+			'top'
+		);
+		if( ! function_exists( 'flush_rewrite_rules' ) ) {
+			require_once WPINC . '/rewrite.php';
+		}
+		flush_rewrite_rules();
+	}
+
+	if( 'activity-level' === $taxonomy ) {
+		$term = get_term_by( 'term_taxonomy_id', $tt_id );
+		add_rewrite_rule(
+			'^tours/activity-level/(' . $term->slug . ')/?$',
+			'index.php?activity-level=$matches[1]',
+			'top'
+		);
+		if( ! function_exists( 'flush_rewrite_rules' ) ) {
+			require_once WPINC . '/rewrite.php';
+		}
+		flush_rewrite_rules();
+	}
+
+	if( 'trip-class' === $taxonomy ) {
+		$term = get_term_by( 'term_taxonomy_id', $tt_id );
+		add_rewrite_rule(
+			'^tours/trip-class/(' . $term->slug . ')/?$',
+			'index.php?trip-class=$matches[1]',
+			'top'
+		);
+		if( ! function_exists( 'flush_rewrite_rules' ) ) {
+			require_once WPINC . '/rewrite.php';
+		}
+		flush_rewrite_rules();
+	}
+
+	if( 'trip-duration' === $taxonomy ) {
+		$term = get_term_by( 'term_taxonomy_id', $tt_id );
+		add_rewrite_rule(
+			'^tours/trip-duration/(' . $term->slug . ')/?$',
+			'index.php?trip-duration=$matches[1]',
+			'top'
+		);
+		if( ! function_exists( 'flush_rewrite_rules' ) ) {
+			require_once WPINC . '/rewrite.php';
+		}
+		flush_rewrite_rules();
+	}
+
+	if( 'trip-status' === $taxonomy ) {
+		$term = get_term_by( 'term_taxonomy_id', $tt_id );
+		add_rewrite_rule(
+			'^tours/trip-status/(' . $term->slug . ')/?$',
+			'index.php?trip-status=$matches[1]',
+			'top'
+		);
+		if( ! function_exists( 'flush_rewrite_rules' ) ) {
+			require_once WPINC . '/rewrite.php';
+		}
+		flush_rewrite_rules();
+	}
+
+	if( 'trip-style' === $taxonomy ) {
+		$term = get_term_by( 'term_taxonomy_id', $tt_id );
+		add_rewrite_rule(
+			'^tours/trip-style/(' . $term->slug . ')/?$',
+			'index.php?trip-style=$matches[1]',
+			'top'
+		);
+		if( ! function_exists( 'flush_rewrite_rules' ) ) {
+			require_once WPINC . '/rewrite.php';
+		}
+		flush_rewrite_rules();
+	}
+}
+add_action( 'edit_term', 'tt_flush_rewrite_rules', 10, 3 );
+add_action( 'create_term', 'tt_flush_rewrite_rules', 10, 3 );
+
+/**
+ * Sets the post updated messages for the `activity_level` taxonomy.
+ *
+ * @param  array $messages Post updated messages.
+ * @return array Messages for the `activity_level` taxonomy.
+ */
+function tt_activity_level_updated_messages( $messages ) {
+
+	$messages['activity-level'] = [
+			0 => '', // Unused. Messages start at index 1.
+			1 => __( 'Activity level added.', 'trek-travel-theme' ),
+			2 => __( 'Activity level deleted.', 'trek-travel-theme' ),
+			3 => __( 'Activity level updated.', 'trek-travel-theme' ),
+			4 => __( 'Activity level not added.', 'trek-travel-theme' ),
+			5 => __( 'Activity level not updated.', 'trek-travel-theme' ),
+			6 => __( 'Activity levels deleted.', 'trek-travel-theme' ),
+	];
+
+	return $messages;
+}
+add_filter( 'term_updated_messages', 'tt_activity_level_updated_messages' );
+
+/**
+ * Sets the post updated messages for the `trip_style` taxonomy.
+ *
+ * @param  array $messages Post updated messages.
+ * @return array Messages for the `trip_style` taxonomy.
+ */
+function tt_trip_style_updated_messages( $messages ) {
+
+	$messages['trip-style'] = [
+			0 => '', // Unused. Messages start at index 1.
+			1 => __( 'Trip style added.', 'trek-travel-theme' ),
+			2 => __( 'Trip style deleted.', 'trek-travel-theme' ),
+			3 => __( 'Trip style updated.', 'trek-travel-theme' ),
+			4 => __( 'Trip style not added.', 'trek-travel-theme' ),
+			5 => __( 'Trip style not updated.', 'trek-travel-theme' ),
+			6 => __( 'Trip styles deleted.', 'trek-travel-theme' ),
+	];
+
+	return $messages;
+}
+add_filter( 'term_updated_messages', 'tt_trip_style_updated_messages' );
+
+/**
+ * Sets the post updated messages for the `hotel_level` taxonomy.
+ *
+ * @param  array $messages Post updated messages.
+ * @return array Messages for the `hotel_level` taxonomy.
+ */
+function tt_hotel_level_updated_messages( $messages ) {
+
+	$messages['hotel-level'] = [
+			0 => '', // Unused. Messages start at index 1.
+			1 => __( 'Hotel level added.', 'trek-travel-theme' ),
+			2 => __( 'Hotel level deleted.', 'trek-travel-theme' ),
+			3 => __( 'Hotel level updated.', 'trek-travel-theme' ),
+			4 => __( 'Hotel level not added.', 'trek-travel-theme' ),
+			5 => __( 'Hotel level not updated.', 'trek-travel-theme' ),
+			6 => __( 'Hotel levels deleted.', 'trek-travel-theme' ),
+	];
+
+	return $messages;
+}
+add_filter( 'term_updated_messages', 'tt_hotel_level_updated_messages' );
+
+/**
+ * Sets the post updated messages for the `trip_duration` taxonomy.
+ *
+ * @param  array $messages Post updated messages.
+ * @return array Messages for the `trip_duration` taxonomy.
+ */
+function tt_trip_duration_updated_messages( $messages ) {
+
+	$messages['trip-duration'] = [
+			0 => '', // Unused. Messages start at index 1.
+			1 => __( 'Trip duration added.', 'trek-travel-theme' ),
+			2 => __( 'Trip duration deleted.', 'trek-travel-theme' ),
+			3 => __( 'Trip duration updated.', 'trek-travel-theme' ),
+			4 => __( 'Trip duration not added.', 'trek-travel-theme' ),
+			5 => __( 'Trip duration not updated.', 'trek-travel-theme' ),
+			6 => __( 'Trip durations deleted.', 'trek-travel-theme' ),
+	];
+
+	return $messages;
+}
+add_filter( 'term_updated_messages', 'tt_trip_duration_updated_messages' );
+
+/**
+ * Sets the post updated messages for the `trip_status` taxonomy.
+ *
+ * @param  array $messages Post updated messages.
+ * @return array Messages for the `trip_status` taxonomy.
+ */
+function tt_trip_status_updated_messages( $messages ) {
+
+	$messages['trip-status'] = [
+			0 => '', // Unused. Messages start at index 1.
+			1 => __( 'Trip status added.', 'trek-travel-theme' ),
+			2 => __( 'Trip status deleted.', 'trek-travel-theme' ),
+			3 => __( 'Trip status updated.', 'trek-travel-theme' ),
+			4 => __( 'Trip status not added.', 'trek-travel-theme' ),
+			5 => __( 'Trip status not updated.', 'trek-travel-theme' ),
+			6 => __( 'Trip statuses deleted.', 'trek-travel-theme' ),
+	];
+
+	return $messages;
+}
+add_filter( 'term_updated_messages', 'tt_trip_status_updated_messages' );
+
+/**
+ * Sets the post updated messages for the `trip_class` taxonomy.
+ *
+ * @param  array $messages Post updated messages.
+ * @return array Messages for the `trip_class` taxonomy.
+ */
+function tt_trip_class_updated_messages( $messages ) {
+
+	$messages['trip-class'] = [
+			0 => '', // Unused. Messages start at index 1.
+			1 => __( 'Trip class added.', 'trek-travel-theme' ),
+			2 => __( 'Trip class deleted.', 'trek-travel-theme' ),
+			3 => __( 'Trip class updated.', 'trek-travel-theme' ),
+			4 => __( 'Trip class not added.', 'trek-travel-theme' ),
+			5 => __( 'Trip class not updated.', 'trek-travel-theme' ),
+			6 => __( 'Trip classes deleted.', 'trek-travel-theme' ),
+	];
+
+	return $messages;
+}
+add_filter( 'term_updated_messages', 'tt_trip_class_updated_messages' );
 
 
 // Woocommerce Simple Products NOINDEX

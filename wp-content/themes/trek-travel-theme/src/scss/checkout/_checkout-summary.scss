@@ -1,14 +1,84 @@
 .checkout-summary {
-    font-family: 'Roboto';
-    &__card {
-        padding: 40px 20px 48px 20px;
+    font-family: 'Roboto';    
+	
+	&__card {
+		border-radius: 0 0 4px 4px;
+		overflow: hidden;
+		border: unset;
+        padding: 2px;
+		background: var(--summary-card-background);
+
+		@include media-breakpoint-up(lg) {
+			border-radius: 4px;
+		}
     }
+
+	&__card-header {
+		border-radius: 4px 4px 0 0 ;
+		margin-bottom: 2px;
+
+		.trip-product-line {
+			display: none;
+			color: #fff;
+			background-color: #000;
+			//styleName: Body Bold;
+			font-family: Roboto;
+			font-size: 18px;
+			font-weight: 700;
+			line-height: 21.6px;
+			text-align: left;
+			padding:6px 8px;
+			margin-bottom: 2px;
+
+			@include media-breakpoint-up(lg) {
+				display: block;
+			}
+		}
+
+		.image-frame {
+			position: relative;
+			width: 100%;
+			height: 0;
+			padding-bottom: calc(100% * 164/476);
+			overflow: hidden;
+
+			img {
+				// top:0;
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+		}
+	}
+
+	&__card-body {
+		padding: 24px;
+		background-color: #fff;
+		display: grid;
+		gap: 2rem;
+		border-radius: 0 0 4px 4px;
+
+		hr {
+			margin: 0;
+		}
+	}
+	
     &__title {
         font-family: 'Poppins';
+		//styleName: H5;
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1.2;
     }
+
     &__date {
-        gap: 16px;
+		font-family: Roboto;
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.3;
     }
+
     &__guest {
         margin-left: 8px;
         color: $gray-500;
@@ -24,26 +94,64 @@
     &__font {
         font-family: 'Poppins';
     }
-    &__dues {
-        margin-top: -12px;
+	&__dues-today.d-flex {
+       border: none;
+	   margin-top: 30px;
+	   padding: 8px 0;
+
+	   .h5 {
+		font-size: 32px;
+		line-height: 1.2;
+	   }
     }
-    &__button {
-        font-weight: $font-weight-medium;
-        font-size: $font-size-md;
-        line-height: $line-height-md;
-    }
+    // &__dues {
+    //     margin-top: -12px;
+    // }
+    // &__button {
+    //     font-weight: $font-weight-medium;
+    //     font-size: $font-size-md;
+    //     line-height: $line-height-md;
+    // }
+
+	&__price-title {
+		margin-bottom: 22px;
+	}
+
+	&__table-row {
+		gap: 12px;
+		// border-top: 1px solid #F4F4F4;
+		border-bottom: 1px solid #F4F4F4;
+		padding: 12px 0px;
+
+
+		.text-start {
+			flex-shrink: 1;
+		}
+
+		.text-end {
+			flex: 0 0 auto;
+		}
+
+		p {
+			line-height: 1.35;
+			margin-top: 0;
+			margin-bottom: auto;
+		}
+	}
+
     &__mobile {
-        height: 88px;
         cursor: pointer;
-        box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
+		border-radius: 4px 4px  0px  0px;
+		background-color: #000;
+		color: #fff;
+		padding: 12px;
+
+        // box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
         .open {
             display: none;
         }
-        &-open {
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            height: 88px;
-            z-index: 100;
+
+        &.is-opened {
             .open {
                 display: block;
             }
@@ -52,20 +160,52 @@
             }
         }
     }
-    &__toggle {
-        .card {
-            border: unset;
-        }
-    }
-    &__submit {
-        font-weight: $font-weight-medium;
-        font-size: $font-size-md;
-        line-height: $line-height-md;
-        padding: 16px 24px;
-    }
+    // &__toggle {
+    //     .card {
+    //         border: unset;
+    //     }
+    // }
+    // &__submit {
+    //     font-weight: $font-weight-medium;
+    //     font-size: $font-size-md;
+    //     line-height: $line-height-md;
+    //     padding: 16px 24px;
+    // }
     &__promo {
         gap: 12px;
         margin-bottom: 2px;
+
+		.promo {
+			//styleName: Body 1;
+			font-family: "Roboto";
+			font-size: 20px;
+			font-weight: 500;
+			line-height: 24px;
+		}
+
+		.form-floating {
+            margin-bottom: unset !important;
+			
+			.form-control {
+				box-shadow: none;
+			}
+
+            label {
+                font-family: 'Roboto';
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 1.2 !important;
+                color: $gray-300;
+				padding: 12px 20px
+            }
+            .form-control:not(:placeholder-shown)~label,
+            .form-control:focus~label,
+            .form-select ~ label {
+				display: none;
+                font-size: 12px !important;
+                line-height: 16px !important;
+            }
+        }
     }
     &__applied {
         gap: 16px;

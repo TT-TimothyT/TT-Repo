@@ -23,6 +23,10 @@
     &__progress-bar {
         padding-bottom: 32px;
         position: relative;
+
+        @media (max-width: 991px) {
+            padding-bottom: 46px;
+        }
         ul {
             list-style: none;
             padding: 0;
@@ -33,15 +37,94 @@
                 border: 2px solid $gray-300;
                 z-index: 1;
                 background-color: $white;
+                position: relative;
+
+                a {
+                    height: inherit;
+                    display: block;
+                }
+                &::after {
+                    content: '';
+                    background-color: $gray-300;
+                    display: block;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 100%;
+                    position: absolute;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    left: 50%;
+                    z-index: -17;
+                    border: 2px solid white;
+                    outline: 2px solid $gray-300;
+                    opacity: 0;
+                    transition: all ease-in-out 0.2s;
+                }
+                &:hover {
+                    &::after {
+                        opacity: 1;
+                    }
+                }
                 &.active {
                     border: 2px solid $blue;
                     background-color: $blue;
-                    &::after {
+                    span {
                         color: $black;
                         font-weight: $font-weight-bold;
                     }
+
+                    &::after {
+                        content: '';
+                        background-color: var(--progress-bar-active);
+                        display: block;
+                        width: 12px;
+                        height: 12px;
+                        border-radius: 100%;
+                        position: absolute;
+                        top: 50%;
+                        transform: translate(-50%, -50%);
+                        left: 50%;
+                        z-index: -17;
+                        border: 2px solid white;
+                        outline: 2px solid var(--progress-bar-active);
+                        opacity: 0;
+                        transition: all ease-in-out 0.2s;
+                    }
+                    &:hover {
+                        &::after {
+                            opacity: 1;
+                        }
+                    }
+
                 }
-                &::after {
+                &:has(~ .active) {
+                    border: 2px solid var(--progress-bar-active);
+                    background-color: var(--progress-bar-active);
+
+                    &::after {
+                        content: '';
+                        background-color: var(--progress-bar-active);
+                        display: block;
+                        width: 12px;
+                        height: 12px;
+                        border-radius: 100%;
+                        position: absolute;
+                        top: 50%;
+                        transform: translate(-50%, -50%);
+                        left: 50%;
+                        z-index: -17;
+                        border: 2px solid white;
+                        outline: 2px solid var(--progress-bar-active);
+                        opacity: 0;
+                        transition: all ease-in-out 0.2s;
+                    }
+                    &:hover {
+                        &::after {
+                            opacity: 1;
+                        }
+                    }
+                }
+                & span {
                     position: absolute;
                     top: 12px;
                     color: $gray-500;
@@ -53,36 +136,47 @@
                     .nav-link {
                         background-color: unset;
                     }
-                    &::after {
-                        content: 'Guest Info';
-                    }
+                   span {
+                        font-size: 16px;
+                        line-height: 20px;
+                        width: max-content;
+                   }
                 }
                 &.rooms-gear {
                     .nav-link {
                         background-color: unset;
                     }
-                    &::after {
-                        content: 'Rooms & Gear';
-                        left: 29%;
-                        text-align: center;
+                    span {
+                        font-size: 16px;
+                        line-height: 20px;
+                        width: max-content;
+                        left: 50%;
+                        transform: translateX(-50%);
                     }
                 }
                 &.payment {
                     .nav-link {
                         background-color: unset;
                     }
-                    &::after {
-                        content: 'Payment';
-                        left: 63%;
+                    span {
+                        font-size: 16px;
+                        line-height: 20px;
+                        width: max-content;
+                        left: 50%;
+                        transform: translateX(-50%);
                     }
                 }
                 &.review {
                     .nav-link {
                         background-color: unset;
                     }
-                    &::after {
-                        content: 'Review';
-                        left: 86%;
+                    span {
+                        right: 0;
+                        left: auto;
+                        transform: translateX(0);
+                        font-size: 16px;
+                        line-height: 20px;
+                        width: max-content;
                     }
                 }
             }
@@ -90,13 +184,13 @@
     }
     &__info {
         @include alert;
-        background-color: #D4EEF9;
-        border: 1px solid #1C769D;
+        background-color: #F4F4F4;
+        border: 1px solid var(--alert-border-color);
     }
     
     &__warning {
-        @include alert;
-        background-color: #FFEEC3;
+        @include alert;	
+        background-color: #F4F4F4;
         border: 1px solid #7C5E12;
         margin-bottom:40px;
     }
@@ -115,7 +209,7 @@
             text-align: center;
             height: 2px;
             white-space: nowrap;
-            background-color: $blue;
+            background-color: var(--progress-bar-active);
         }
     }
     
@@ -134,19 +228,33 @@
             padding-bottom: 48px;
             ul {
                 li {
-                    &::after { 
+                    a {
+                        height: inherit;
+                        display: block;
+                    }
+                    span { 
                         font-size: 16px;
                         line-height: 24px;
-                        width: 110px;
+                        width: max-content;
+                        left: 50%;
+                        transform: translateX(-50%);
                     }
                     &.rooms-gear {
-                        &::after {
+                        span {
                             text-align: unset;
                         }
                     }
+                    &.guest-info {
+                        span {
+                            left: 0;
+                            transform: translateX(0);
+                        }
+                    }
                     &.review {
-                        &::after {
-                            left: 94%;
+                        span {
+                            right: 0;
+                            left: auto;
+                            transform: translateX(0);
                         }
                     }
                 }

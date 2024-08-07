@@ -85,6 +85,8 @@ function register_activation_trek_ns_integration(){
         `itineraryCode` varchar(100) NULL,
         `lastModifiedDate` varchar(100) NULL,
         `riderType` text NULL,
+        `product_line` text NULL,
+        `subStyle` text NULL,
         `basePrice` varchar(100) NULL,
         `singleSupplementPrice` varchar(100) NULL,
         `depositAmount` varchar(100) NULL,

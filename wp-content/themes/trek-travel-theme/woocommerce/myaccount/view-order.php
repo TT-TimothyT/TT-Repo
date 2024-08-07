@@ -73,7 +73,8 @@ foreach ($order_items as $item_id => $item) {
         $trek_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_checkout_data', true);
         $trek_formatted_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_formatted_checkout_data', true);
         if ($product) {
-            $trip_status = $product->get_attribute('pa_trip-status');
+			$p_id = $product->get_id();
+			$trip_status = tt_get_custom_product_tax_value( $p_id, 'trip-status', true );
             $trip_sdate = $product->get_attribute('pa_start-date');
             $trip_edate = $product->get_attribute('pa_end-date');
             $trip_name = $product->get_name();
@@ -191,7 +192,7 @@ $cc_expiry_date = get_post_meta($order_id, '_wc_cybersource_credit_card_expiry_d
 $cc_card_type = get_post_meta($order_id, '_wc_cybersource_credit_card_type', true);
 $cc_card_type = isset($trek_checkoutData['wc-cybersource-credit-card-card-type']) ? $trek_checkoutData['wc-cybersource-credit-card-card-type'] : '';
 $cc_expiry_date = isset($trek_checkoutData['wc-cybersource-credit-card-expiry']) ? $trek_checkoutData['wc-cybersource-credit-card-expiry'] : '';
-$guest_insurance_html = tt_guest_insurance_output($trek_checkoutData);
+$guest_insurance_html = tt_guest_insurance_output($trek_checkoutData, '', '');
 $rooms_html = tt_rooms_output($trek_checkoutData, true);
 $guests_gears_data = tt_guest_details($trek_checkoutData);
 $trip_information = tt_get_trip_pid_sku_from_cart($order_id);
@@ -292,6 +293,8 @@ if( $parent_product_id ){
         $pa_city = $p_product->get_attribute('pa_city');
     }
 }
+
+$is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 ?>
 <div class="container my-trip-order-summary my-4">
     <div class="row mx-0 flex-column flex-lg-row">
@@ -536,11 +539,19 @@ if( $parent_product_id ){
                                     </div>
                                 </div>
                                 <?php endif; ?>
-                                <hr>
-                                <div class="order-details__content">
-                                    <p class="fs-xl lh-xl fw-semibold order-details__subheading">Bikes &amp; Gear Details</p>
-                                    <?php echo $guests_gears_data['bike_gears']; ?>
-                                </div>
+                                <?php if ( ! $is_hiking_checkout ) : ?>
+                                    <hr>
+                                    <div class="order-details__content">
+                                        <p class="fs-xl lh-xl fw-semibold order-details__subheading">Bikes &amp; Gear Details</p>
+                                        <?php echo $guests_gears_data['bike_gears']; ?>
+                                    </div>
+                                <?php else : ?>
+                                    <hr>
+                                    <div class="order-details__content">
+                                        <p class="fs-xl lh-xl fw-semibold order-details__subheading">Gear Details</p>
+                                        <?php echo $guests_gears_data['hiking_gears']; ?>
+                                    </div>
+                                <?php endif; ?>
                                 <?php if( ! $is_order_auto_generated ) : ?>
                                 <hr>
                                 <div class="order-details__content">

@@ -1,7 +1,6 @@
 <?php
-
 /**
- * Order details
+ * Order details - TT Thank You Page template.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/order/order-details.php.
  *
@@ -11,21 +10,23 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see     https://docs.woocommerce.com/document/template-structure/
+ * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 4.6.0
+ * @version 8.5.0
+ *
+ * @var bool $show_downloads Controls whether the downloads table should be rendered.
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
-$order = wc_get_order($order_id); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+$order = wc_get_order( $order_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-if (!$order) {
+if ( ! $order ) {
 	return;
 }
-$userInfo              = wp_get_current_user();
-$order_items           = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
-$show_purchase_note    = $order->has_status(apply_filters('woocommerce_purchase_note_order_statuses', array('completed', 'processing')));
+
+$order_items           = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
+$show_purchase_note    = $order->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
 $show_customer_details = is_user_logged_in() && $order->get_user_id() === get_current_user_id();
 $downloads             = $order->get_downloadable_items();
 $show_downloads        = $order->has_downloadable_item() && $order->is_download_permitted();
@@ -67,7 +68,128 @@ if ( $first_item ) {
 	}
 }
 
-if ($show_downloads) {
+$accepted_p_ids               = tt_get_line_items_product_ids();
+$trek_checkout_data           = array();
+$trek_checkout_data_formatted = array();
+$trip_name                    = '';
+$trip_sdate                   = '';
+$trip_edate                   = '';
+$trip_sku                     = '';
+$order_item                   = '';
+$cc_account_four              = get_post_meta( $order_id, '_wc_cybersource_credit_card_account_four', true );
+$cc_expiry_date               = get_post_meta( $order_id, '_wc_cybersource_credit_card_card_expiry_date', true );
+$cc_expiry_date_arr           = explode( '-', $cc_expiry_date );
+$cc_expiry_date_arr           = array_reverse( $cc_expiry_date_arr );
+$cc_expiry_date               = implode( '/',$cc_expiry_date_arr );
+$cc_card_type                 = get_post_meta( $order_id, '_wc_cybersource_credit_card_card_type', true );
+$product_image_url            = get_template_directory_uri() . '/assets/images/Thankyou.jpg';
+$trip_info                    = tt_get_trip_pid_sku_from_cart($order_id);
+$product_image_url            = $trip_info['parent_trip_image'];
+$trip_product_line_name       = tt_is_product_line( 'Hiking', $trip_info['sku'] ) ? 'Hiking' : 'Cycling';
+$trip_start_date              = tt_get_local_trips_detail( 'startDate', '', $trip_info['sku'], true ); // The value or empty string.
+$trip_end_date                = tt_get_local_trips_detail( 'endDate', '', $trip_info['sku'], true ); // The value or empty string.
+$is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+
+foreach ( $order_items as $item_id => $item ) {
+	$product_id = $item['product_id'];
+    if ( ! in_array( $product_id, $accepted_p_ids ) ) {
+		$order_item = $item;
+		$product = $item->get_product();
+		$trek_checkout_data = wc_get_order_item_meta( $item_id, 'trek_user_checkout_data', true );
+		$trek_checkout_data_formatted = wc_get_order_item_meta( $item_id, 'trek_user_formatted_checkout_data', true );
+		if ( $product ) {
+			$p_id = $product->get_id();
+			$trip_status = tt_get_custom_product_tax_value( $p_id, 'trip-status', true );
+			$trip_sdate  = $product->get_attribute('pa_start-date');
+			$trip_edate  = $product->get_attribute('pa_end-date');
+			$trip_name   = $product->get_name();
+			$trip_sku    = $product->get_sku();
+			$sdate_obj   = explode('/', $trip_sdate);
+			$sdate_info  = array(
+				'd' => $sdate_obj[0],
+				'm' => $sdate_obj[1],
+				'y' => substr(date('Y'),0,2).$sdate_obj[2]
+			);
+			$edate_obj  = explode('/', $trip_edate);
+			$edate_info = array(
+				'd' => $edate_obj[0],
+				'm' => $edate_obj[1],
+				'y' => substr(date('Y'),0,2).$edate_obj[2]
+			);
+			$start_date_text = date('F jS, Y', strtotime(implode('-', $sdate_info)));
+			$end_date_text_1 = date('F jS, Y', strtotime(implode('-', $edate_info)));
+			$end_date_text_2 = date('jS, Y', strtotime(implode('-', $edate_info)));
+			$date_range_1    = $start_date_text. ' - '.$end_date_text_2;
+			$date_range_2    = $start_date_text. ' - '.$end_date_text_1;
+			$date_range      = $date_range_1;
+			if( $sdate_info['m'] != $edate_info['m'] ){
+				$date_range = $date_range_2;
+			}
+		}
+	}
+}
+
+$guests                   = tt_validate( $trek_checkout_data['guests'], [] );
+$review_bikes_arr         = tt_validate( $trek_checkout_data_formatted[1]['cart_item_data'], [] );
+$review_bikes_arr_primary = $review_bikes_arr[0];
+$billing_add_1            = $trek_checkout_data['billing_address_1'];
+$billing_add_2            = $trek_checkout_data['billing_address_2'];
+$billing_country          = $trek_checkout_data['billing_country'];
+$billing_state            = $trek_checkout_data['billing_state'];
+$billing_city             = $trek_checkout_data['billing_city'];
+$billing_postcode         = $trek_checkout_data['billing_postcode'];
+$billing_name             = ($trek_checkout_data['billing_first_name'] ? $trek_checkout_data['billing_first_name'] . ' ' . $trek_checkout_data['billing_last_name'] : '');
+$shipping_name            = ($trek_checkout_data['shipping_first_name'] ? $trek_checkout_data['shipping_first_name'] . ' ' . $trek_checkout_data['shipping_last_name'] : '');
+$biller_name              = (!empty($billing_name) ? $billing_name : $shipping_name);
+$single_supplement_qty    = 0;
+$occupants                = isset($trek_checkout_data['occupants']) && $trek_checkout_data['occupants'] ? $trek_checkout_data['occupants'] : [];
+$single_supplement_qty   += isset($occupants['private']) && $occupants['private'] ? count($occupants['private']) : 0;
+$single_supplement_qty   += isset($occupants['roommate']) && $occupants['roommate'] ? count($occupants['roommate']) : 0;
+$singleSupplementPrice    = isset($trek_checkout_data['singleSupplementPrice']) ? $trek_checkout_data['singleSupplementPrice'] : 0;
+
+// Calculate the price depends on guest number.
+$supplement_fees          = str_ireplace(',','',$singleSupplementPrice); // Strip the , from the price if there's such.
+$calc_supplement_fees     = floatval( $supplement_fees ) * $single_supplement_qty; // Calculate the full price.
+$calc_supplement_fees     = strval( $calc_supplement_fees ); // Get the , back to the string.
+$supplement_fees          = number_format( $calc_supplement_fees, 2 );
+// Deposite due vars.
+$deposit_amount           = tt_get_local_trips_detail( 'depositAmount', '', $trip_sku, true );
+$deposit_amount           = $deposit_amount ? str_ireplace( ',','',$deposit_amount ) : 0;
+$deposit_amount           = floatval( $deposit_amount ) * intval( tt_validate( $trek_checkout_data['no_of_guests'], 1 ) );
+$pay_amount               = isset( $trek_checkout_data['pay_amount'] ) ? $trek_checkout_data['pay_amount'] : 'full';
+$cart_total_full_amount   = isset( $trek_checkout_data['cart_total_full_amount'] ) ? $trek_checkout_data['cart_total_full_amount'] : '';
+$cart_total               = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total();
+
+$insurance_array          = tt_validate( $trek_checkout_data['trek_guest_insurance'], 0 );
+$insured_person           = 0;
+$tt_insurance_total_charges = 0;
+
+if ( $insurance_array ) {
+	foreach ( $insurance_array as $insurance_k=>$insurance_v ) {
+		if ( $insurance_k == 'primary' ) {
+			if ( $insurance_v['is_travel_protection'] == 1 ) {
+				$insured_person++;
+				$tt_insurance_total_charges += isset($insurance_v['basePremium']) ? $insurance_v['basePremium'] : 0;
+			}
+		} else {
+			foreach ( $insurance_v as $guest_key => $guest_insurance_data ) {
+				if ( $guest_insurance_data['is_travel_protection'] == 1 ) {
+					$insured_person++;
+					$tt_insurance_total_charges += isset($guest_insurance_data['basePremium']) ? $guest_insurance_data['basePremium'] : 0;
+				}
+			}
+		}
+	}
+}
+
+$guest_emails         = trek_get_guest_emails($order_id);
+$tt_get_upgrade_qty   = tt_get_upgrade_qty($trek_checkout_data);
+$dues                 = isset($trek_checkout_data['pay_amount']) && $trek_checkout_data['pay_amount'] == 'full' ? false : true;
+$discount_order       = floatval( $discount_total ) * $trek_checkout_data['no_of_guests'];
+$deposit_amount      += $tt_insurance_total_charges;
+$remaining_amount     = $cart_total - ( $deposit_amount ? $deposit_amount : 0 );
+
+if ( $show_downloads ) {
 	wc_get_template(
 		'order/order-downloads.php',
 		array(
@@ -77,281 +199,69 @@ if ($show_downloads) {
 	);
 }
 ?>
-
-
-<?php
-/**
- * Action hook fired after the order details.
- *
- * @since 4.4.0
- * @param WC_Order $order Order data.
- */
-do_action('woocommerce_after_order_details', $order);
-
-
-
-//to be removed just for design implementation
-$dues = "true";
-?>
-<?php
-$accepted_p_ids = tt_get_line_items_product_ids();
-$trek_formatted_checkoutData = $trek_checkoutData = array();
-$trip_name = $trip_order_date = '';
-$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
-$order_item;
-$pr = get_post_meta($order_id);
-$cc_account_four = get_post_meta($order_id, '_wc_cybersource_credit_card_account_four', true);
-$cc_expiry_date = get_post_meta($order_id, '_wc_cybersource_credit_card_card_expiry_date', true);
-$cc_expiry_date_arr = explode('-',$cc_expiry_date);
-$cc_expiry_date_arr = array_reverse($cc_expiry_date_arr);
-$cc_expiry_date = implode('/',$cc_expiry_date_arr);
-$cc_card_type = get_post_meta($order_id, '_wc_cybersource_credit_card_card_type', true);
-foreach ($order_items as $item_id => $item) {
-	$product_id = $item['product_id'];
-    if ( !in_array($product_id, $accepted_p_ids) ) {
-		$order_item = $item;
-		$product = $item->get_product();
-		$trek_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_checkout_data', true);
-		$trek_formatted_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_formatted_checkout_data', true);
-		if ($product) {
-			$trip_status = $product->get_attribute('pa_trip-status');
-			$trip_sdate = $product->get_attribute('pa_start-date');
-			$trip_edate = $product->get_attribute('pa_end-date');
-			$trip_name = $product->get_name();
-			$trip_sku = $product->get_sku();
-			$sdate_obj = explode('/', $trip_sdate);
-			$sdate_info = array(
-				'd' => $sdate_obj[0],
-				'm' => $sdate_obj[1],
-				'y' => substr(date('Y'),0,2).$sdate_obj[2]
-			);
-			$edate_obj = explode('/', $trip_edate);
-			$edate_info = array(
-				'd' => $edate_obj[0],
-				'm' => $edate_obj[1],
-				'y' => substr(date('Y'),0,2).$edate_obj[2]
-			);
-			$start_date_text = date('F jS, Y', strtotime(implode('-', $sdate_info)));
-			$end_date_text_1 = date('F jS, Y', strtotime(implode('-', $edate_info)));
-			$end_date_text_2 = date('jS, Y', strtotime(implode('-', $edate_info)));
-			$date_range_1 = $start_date_text. ' - '.$end_date_text_2;
-			$date_range_2 = $start_date_text. ' - '.$end_date_text_1;
-			$date_range = $date_range_1;
-			if( $sdate_info['m'] != $edate_info['m'] ){
-				$date_range = $date_range_2;
-			}
-			$product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
-			if (has_post_thumbnail($product)) {
-				$product_image_url = wp_get_attachment_url($product->get_image_id());
-			}
-		}
-	}
-}
-$primary_address_1 = $trek_checkoutData['shipping_address_1'];
-$primary_address_2 = $trek_checkoutData['shipping_address_2'];
-$primary_country = $trek_checkoutData['shipping_country'];
-$billing_add_1 = $trek_checkoutData['billing_address_1'];
-$billing_add_2 = $trek_checkoutData['billing_address_2'];
-$billing_country = $trek_checkoutData['billing_country'];
-$billing_state = $trek_checkoutData['billing_state'];
-$billing_city = $trek_checkoutData['billing_city'];
-$billing_postcode = $trek_checkoutData['billing_postcode'];
-$billing_name = ($trek_checkoutData['billing_first_name'] ? $trek_checkoutData['billing_first_name'] . ' ' . $trek_checkoutData['billing_last_name'] : '');
-$shipping_name = ($trek_checkoutData['shipping_first_name'] ? $trek_checkoutData['shipping_first_name'] . ' ' . $trek_checkoutData['shipping_last_name'] : '');
-$biller_name = (!empty($billing_name) ? $billing_name : $shipping_name);
-$guest_insurance_html = tt_guest_insurance_output($trek_checkoutData);
-$singleSupplementQty = $bikeUpgradeQty = 0;
-$occupants = isset($trek_checkoutData['occupants']) && $trek_checkoutData['occupants'] ? $trek_checkoutData['occupants'] : [];
-$singleSupplementQty += isset($occupants['private']) && $occupants['private'] ? count($occupants['private']) : 0;
-$singleSupplementQty += isset($occupants['roommate']) && $occupants['roommate'] ? count($occupants['roommate']) : 0;
-$singleSupplementPrice = isset($trek_checkoutData['singleSupplementPrice']) ? $trek_checkoutData['singleSupplementPrice'] : 0;
-
-// Calculate the price depends on guest number.
-$supplementFees = str_ireplace(',','',$singleSupplementPrice); // Strip the , from the price if there's such.
-
-$calcSupplementFees = floatval( $supplementFees ) * $singleSupplementQty; // Calculate the full price.
-
-$calcSupplementFees = strval( $calcSupplementFees ); // Get the , back to the string.
-
-$supplementFees = number_format( $calcSupplementFees, 2 );
-
-$rooms_html = tt_rooms_output($trek_checkoutData, true);
-$guests_gears_data = tt_guest_details($trek_checkoutData);
-//deposite due vars
-$depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
-$depositAmount = $depositAmount ? str_ireplace(',','',$depositAmount) : 0;
-$depositAmount = floatval($depositAmount) * intval(isset($trek_checkoutData['no_of_guests']) ? $trek_checkoutData['no_of_guests'] : 1);
-// $cart_total = $order->get_total();
-$pay_amount             = isset( $trek_checkoutData['pay_amount'] ) ? $trek_checkoutData['pay_amount'] : 'full';
-$cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) ? $trek_checkoutData['cart_total_full_amount'] : '';
-$cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total();
-$remaining_amount = $cart_total - ($depositAmount ? $depositAmount : 0);
-$remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $remaining_amount .'</span>';
-$cart_totalCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $cart_total .'</span>';
-$depositAmountCurr  = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $depositAmount .'</span>';
-$insuredPerson = isset($trek_checkoutData['insuredPerson']) ? $trek_checkoutData['insuredPerson'] : 0;
-$tt_insurance_total_charges = isset($trek_checkoutData['tt_insurance_total_charges']) ? $trek_checkoutData['tt_insurance_total_charges'] : 0;
-$insurance_array = isset($trek_checkoutData['trek_guest_insurance']) ? $trek_checkoutData['trek_guest_insurance'] : 0;
-$insuredPerson = 0;
-$tt_insurance_total_charges = 0;
-if( $insurance_array ){
-	foreach($insurance_array as $insurance_k=>$insurance_v){
-		if( $insurance_k == 'primary' ){
-			if( $insurance_v['is_travel_protection'] == 1 ){
-				$insuredPerson++;
-				$tt_insurance_total_charges += isset($insurance_v['basePremium']) ? $insurance_v['basePremium'] : 0;
-			}
-		}else{
-			foreach ($insurance_v as $guest_key => $guest_insurance_Data) {
-				if( $guest_insurance_Data['is_travel_protection'] == 1 ){
-					$insuredPerson++;
-					$tt_insurance_total_charges += isset($guest_insurance_Data['basePremium']) ? $guest_insurance_Data['basePremium'] : 0;
-				}
-			}
-		}
-	}
-}
-$guest_emails       = trek_get_guest_emails($order_id);
-$tt_get_upgrade_qty = tt_get_upgrade_qty($trek_checkoutData);
-$dues               = isset($trek_checkoutData['pay_amount']) && $trek_checkoutData['pay_amount'] == 'full' ? false : true;
-$discount_order     = floatval( $discount_total ) * $trek_checkoutData['no_of_guests'];
-$depositAmount       += $tt_insurance_total_charges;
-$depositAmountCurr    = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $depositAmount .'</span>';
-$remaining_amount     = $cart_total - ( $depositAmount ? $depositAmount : 0 );
-$remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $remaining_amount .'</span>';
-?>
-<div class="container-fluid order-details__banner d-flex justify-content-end flex-column">
-	<h1 class="mb-0 mb-lg-1 order-details__banner-heading">Thank You!</h1>
-	<p class="order-details__banner-text">Your booking was successfully completed.</p>
+<div class="container-fluid order-details__banner d-flex flex-column" style="background-repeat: no-repeat;background-size: cover;background-image:linear-gradient(0deg, #000000 -7.63%, rgba(0, 0, 0, 0) 55.25%),url('<?php echo esc_url( $product_image_url ) ?>');">
+	<h1 class="mb-0 mb-lg-1 order-details__banner-heading text-center"><?php esc_html_e( 'Thanks! You’re booked.', 'trek-travel-theme' ); ?></h1>
+	<p class="order-details__banner-text text-center fs-xl"><?php esc_html_e( 'Your booking was successfully completed.', 'trek-travel-theme' ); ?></p>
 </div>
 <div class="container order-details" id="order-details-page">
 	<div class="row">
-		<div class="col-12">
-			<div class="order-details__number">
-				<p class="fs-xl lh-xl">Your confirmation number is <span class="fw-bold"><?php echo $order_id; ?></span></p>
-				<p class="fs-xl lh-xl">We will send a confirmation email to <span class="fw-medium" id="wc-order-emails"><?php echo $guest_emails && !is_array($guest_emails) ? $guest_emails : ''; ?></span></p>
+		<div class="col-12 col-xl-6 mx-xl-auto order-details-container">
+			<div class="order-details__number border text-center">
+				<div>
+					<p class="trip-product-line"><?php echo esc_html( $trip_product_line_name ); ?></p>
+					<h4 class="order-details__heading px-5"><?php echo esc_html( $trip_name ); ?></h4>
+					<p class="trip-duration mb-0 px-5"><?php printf( '%1$s - %2$s', esc_attr( $trip_start_date ), esc_attr( $trip_end_date ) ) ?></p>
+					<hr>
+					<p class="fs-lg lh-sm px-5"><?php esc_html_e( 'Your confirmation number is', 'trek-travel-theme' ); ?> <span class="fw-bold"><?php echo $order_id; ?></span></p>
+					<hr class="light-line">
+					<p class="fs-lg lh-sm px-5"><?php esc_html_e( 'We will send a confirmation email to', 'trek-travel-theme' ); ?> <span class="fw-medium" id="wc-order-emails"><?php echo $guest_emails && !is_array($guest_emails) ? $guest_emails : ''; ?></span></p>
+					<button class="btn btn-lg btn-primary rounded-1 order-details__print mt-20" onclick="printThis('order-details-page');"><?php esc_html_e( 'Print summary', 'trek-travel-theme' ); ?></button>
+				</div>
 			</div>
-			<button class="btn btn-lg btn-primary rounded-1 order-details__print" onclick="printThis('order-details-page');">Print summary</button>
 			<div class="order-details__quite rounded-1">
-				<h5 class="fw-semibold order-details__title mb-3">You’re not quite done yet...</h5>
-				<p class="fs-xl lh-xl">Please note that we will need to collect additional information for all guests before the trip starts. <a href="/my-account">View your account</a> now to add your information.</p>
-				<p class="fs-xl lh-xl mb-0"><a href="/contact-us">Contact us</a> if you have any questions or concerns.</p>
-			</div>
-			<div class="order-details__summary">
-				<h4 class="order-details__heading"><?php echo $trip_name ?></h4>
-				<p class="fs-xl lh-xl fw-medium pb-2"><?php echo $date_range; ?></p>
-				<hr>
-				<div class="order-details__content">
-					<p class="fs-xl lh-xl fw-medium">Purchase Summary</p>
-					<div class="d-flex">
-						<div class="w-50">
-							<p class="mb-0 fw-normal order-details__text">Purchase Date</p>
-							<p class="mb-0 fw-normal order-details__text">Confirmation #</p>
-							<p class="mb-0 fw-normal order-details__text">Guests <small>x<?php echo $trek_checkoutData['no_of_guests']; ?></small></p>
-							<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkoutData['bikeUpgradePrice'] ) { ?>
-							<p class="mb-0 fw-normal order-details__text">Upgrade <small>x<?php echo $tt_get_upgrade_qty; ?></small></p>
-							<?php } ?>
-							<?php if($singleSupplementQty > 0) { ?>
-							<p class="mb-0 fw-normal order-details__text">Single Supplement <small>x<?php echo $singleSupplementQty; ?></small></p>
-							<?php } ?>
-							<?php if($insuredPerson > 0 && $tt_insurance_total_charges > 0 ) { ?>
-							<p class="mb-0 fw-normal order-details__text">Travel Protection <small>x<?php echo $insuredPerson; ?></small></p>
-							<?php } ?>
-							<p class="mb-0 fw-normal order-details__text">Subtotal</p>
-							<p class="mb-0 fw-normal order-details__text">Local Taxes</p>
-							<?php if ( 0 < $discount_order ) : ?>
-								<p class="mb-0 fw-normal order-details__text">Discount</p>
-							<?php endif; ?>
-							<?php if (!empty($dues)) : ?>
-								<p class="mb-0 fw-normal order-details__text">Trip Total</p>
-								<p class="mb-0 mt-1 mt-lg-2 fw-medium order-details__textbold">Amount Paid</p>
-								<p class="mt-2 mb-2 mt-lg-4 fw-medium order-details__textbold">Remaining Due</p>
-							<?php else : ?>
-								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold">Trip Total</p>
-							<?php endif; ?>
-						</div>
-						<div class="w-50">
-							<p class="mb-0 fw-normal order-details__text"><?php echo date('M d, Y', strtotime($order->get_date_created())) ?></p>
-							<p class="mb-0 fw-normal order-details__text"><?php echo $order_id; ?></p>
-							<p class="mb-0 fw-normal order-details__text"><?php echo $order->get_formatted_line_subtotal($order_item) ?></p>
-							<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkoutData['bikeUpgradePrice'] ) { ?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_get_upgrade_qty * $trek_checkoutData['bikeUpgradePrice']; ?></span></p>
-							<?php } ?>
-							<?php if($singleSupplementQty > 0) { ?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplementFees; ?></span></p>
-							<?php } ?>
-							<?php if($insuredPerson > 0 && $tt_insurance_total_charges > 0 ) { ?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_insurance_total_charges; ?></span></p>
-							<?php } ?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_subtotal(); ?></span></p>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $total_tax ); ?></span></p>
-							<?php if ( 0 < $discount_order ) : ?>
-								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $discount_order ); ?></span></p>
-							<?php endif; ?>
-							<?php if (!empty($dues)) : ?>
-								<p class="mb-0 fw-normal order-details__text"><?php echo $cart_totalCurr; ?></p>
-								<p class="mb-0 mt-1 mt-lg-2 fw-medium order-details__textbold"><?php echo $depositAmountCurr; ?></p>
-								<p class="mt-2 mb-2 mt-lg-4 fw-medium order-details__textbold"><?php echo $remaining_amountCurr; ?></p>
-							<?php else : ?>
-								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><?php echo $cart_totalCurr; ?></p>
-							<?php endif; ?>
-						</div>
-					</div>
-					<?php if (!empty($dues)) : ?>
-						<p class="mb-0 fs-sm lh-sm fw-normal w-lg-50 order-details__duesp">You will be responsible for paying the remaining amount on your trip before the trip start date. Our team will reach out to collect final payment.</p>
-					<?php endif; ?>
-				</div>
-				<hr>
-				<div class="order-details__content">
-					<p class="fs-xl lh-xl fw-medium order-details__subheading">Payment Details</p>
-					<div class="d-flex order-details__flex">
-						<div>
-							<p class="mb-2 fs-md lh-md fw-medium">Billing Method</p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $biller_name; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo ( $cc_card_type ? ucfirst($cc_card_type)  : '' ) ?> <?php echo ( $cc_account_four ? '****'.$cc_account_four  : '' ) ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo ( $cc_expiry_date ? 'Exp: '.$cc_expiry_date  : '' ) ?></p>
-						</div>
-						<div>
-							<p class="mb-2 fs-md lh-md fw-medium">Billing Address</p>
-							<?php
-							$billing_states       = WC()->countries->get_states( $billing_country );
-							$billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
-							$billing_country_name = WC()->countries->countries[$billing_country];
-							?>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_add_1; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_add_2; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_city; ?>, <?php echo $billing_state_name; ?>, <?php echo $billing_postcode; ?></p>
-							<p class="mb-0 fs-sm lh-sm fw-normal"><?php echo $billing_country_name; ?></p>
-						</div>
-					</div>
-				</div>
-				<hr>
-				<div class="order-details__content">
-					<p class="fs-xl lh-xl fw-medium order-details__subheading">Guest Details</p>
+			<svg class="info-img" width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M16.8125 12.5312C17.3125 13.4062 16.6875 14.5 15.6562 14.5H2.3125C1.28125 14.5 0.65625 13.4062 1.15625 12.5312L7.8125 1.15625C8.34375 0.28125 9.625 0.28125 10.125 1.15625L16.8125 12.5312ZM8.25 4.75V8.75C8.25 9.1875 8.5625 9.5 9 9.5C9.40625 9.5 9.75 9.1875 9.75 8.75V4.75C9.75 4.34375 9.40625 4 9 4C8.5625 4 8.25 4.34375 8.25 4.75ZM9 12.5C9.53125 12.5 9.96875 12.0625 9.96875 11.5312C9.96875 11 9.53125 10.5625 9 10.5625C8.4375 10.5625 8 11 8 11.5312C8 12.0625 8.4375 12.5 9 12.5Z" fill="#28AAE1"/>
+			</svg>
+			<div>
+				<p class="fs-sm lh-sm">
 					<?php
-					echo $guests_gears_data['guests'];
-					?>
-				</div>
-				<hr>
-				<div class="order-details__content">
-					<p class="fs-xl lh-xl fw-medium order-details__subheading">Room Details</p>
-					<div class="d-flex order-details__flex">
-						<?php
-							echo $rooms_html;
+						printf(
+							wp_kses(
+								/* translators: %1$s: My Account page URL; */
+								__( 'Please note that we will need to collect additional information for all guests before the trip starts. <a href="%1$s">View your account</a> now to add your information.', 'trek-travel-theme' ),
+								array(
+									'a' => array(
+										'class'  => array(),
+										'href'   => array(),
+										'target' => array()
+									)
+								)
+							),
+							esc_url( home_url( '/my-account/' ) ),
+						);
 						?>
-					</div>
-				</div>
-				<hr>
-				<div class="order-details__content">
-					<p class="fs-xl lh-xl fw-medium order-details__subheading">Bikes & Gear Details</p>
-					<?php echo $guests_gears_data['bike_gears']; ?>
-				</div>
-				<hr>
-				<div class="order-details__content">
-					<p class="fs-xl lh-xl fw-medium order-details__subheading">Travel Protection Information</p>
-					<?php echo $guest_insurance_html; ?>
-				</div>
-				<hr>
+				</p>
+				<p class="fs-sm lh-sm mb-0">
+					<?php
+						printf(
+							wp_kses(
+								/* translators: %1$s: Contact Us page URL; */
+								__( '<a href="%1$s">Contact us</a> if you have any questions or concerns.', 'trek-travel-theme' ),
+								array(
+									'a' => array(
+										'class'  => array(),
+										'href'   => array(),
+										'target' => array()
+									)
+								)
+							),
+							esc_url( home_url( '/contact-us/' ) ),
+						);
+						?>	
+				</p>
+			</div>
+			</div>
+			<div class="order-details__form">
 				<?php 
 					// If we have GF shortcode proceed.
 					if ( shortcode_exists( 'gravityform' ) ) {
@@ -362,7 +272,7 @@ $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-cur
 						if( ! empty( $form_id ) ) {
 							?>
 							<div class="order-details__content">
-								<h5 class="fw-semibold order-details__title order-details__formtitle">How did you hear about us?</h5>
+								<h5 class="fw-medium lh-sm order-details__title order-details__formtitle"><?php esc_html_e( 'How did you hear about us?', 'trek-travel-theme' ); ?></h5>
 								<?php
 								// Add additional classes to the fields.
 								add_filter( 'gform_field_content_' . $form_id, function ( $field_content, $field ) {
@@ -397,8 +307,329 @@ $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-cur
 						}
 					}
 				?>
-				<div class="order-details__accountdiv text-center">
-					<a href="/my-account" class="btn btn-outline-primary rounded-1 py-4 px-5 order-details__account">Go to My Account</a>
+			</div>
+			<div class="order-details__summary">
+				<h4 class="order-details__heading text-center"><?php esc_html_e( 'Order Summary', 'trek-travel-theme' ); ?></h4>
+				<hr>
+				<!-- Purchase Summary -->
+				<div class="order-details__content">
+					<p class="fs-lg lh-sm fw-bold fw-medium mb-5"><?php esc_html_e( 'Purchase Summary', 'trek-travel-theme' ); ?></p>
+					<div class="d-flex">
+						<div class="w-50">
+							<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Purchase Date', 'trek-travel-theme' ); ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Confirmation #', 'trek-travel-theme' ); ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Guests', 'trek-travel-theme' ); ?> <small>x<?php echo esc_html( $trek_checkout_data['no_of_guests'] ); ?></small></p>
+							<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkout_data['bikeUpgradePrice'] ) { ?>
+							<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Upgrade', 'trek-travel-theme' ); ?> <small>x<?php echo esc_html( $tt_get_upgrade_qty ); ?></small></p>
+							<?php } ?>
+							<?php if( $single_supplement_qty > 0) { ?>
+								<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Single Supplement', 'trek-travel-theme' ); ?> <small>x<?php echo esc_html( $single_supplement_qty ); ?></small></p>
+							<?php } ?>
+							<?php if( $insured_person > 0 && $tt_insurance_total_charges > 0 ) { ?>
+								<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Travel Protection', 'trek-travel-theme' ); ?> <small>x<?php echo esc_html( $insured_person ); ?></small></p>
+							<?php } ?>
+							<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Subtotal', 'trek-travel-theme' ); ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Local Taxes', 'trek-travel-theme' ); ?></p>
+							<?php if ( 0 < $discount_order ) : ?>
+								<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Discount', 'trek-travel-theme' ); ?></p>
+							<?php endif; ?>
+							<?php if ( ! empty( $dues ) ) : ?>
+								<p class="mb-0 pt-4 fw-medium fs-xl lh-lg order-details__text"><?php esc_html_e( 'Trip Total', 'trek-travel-theme' ); ?></p>
+								<p class="mb-0 mt-1 fs-md mt-lg-2 fw-medium order-details__textbold"><?php esc_html_e( 'Amount Paid', 'trek-travel-theme' ); ?></p>
+								<p class="mb-2 fw-medium fs-md order-details__textbold"><?php esc_html_e( 'Remaining Due', 'trek-travel-theme' ); ?></p>
+							<?php else : ?>
+								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><?php esc_html_e( 'Trip Total', 'trek-travel-theme' ); ?></p>
+							<?php endif; ?>
+						</div>
+						<div class="w-50 text-end">
+							<p class="mb-0 fw-normal order-details__text"><?php echo date('M d, Y', strtotime( $order->get_date_created() ) ) ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo esc_html( $order_id ); ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo $order->get_formatted_line_subtotal( $order_item ) ?></p>
+							<?php if ( $tt_get_upgrade_qty > 0 &&  $trek_checkout_data['bikeUpgradePrice'] ) { ?>
+								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_get_upgrade_qty * $trek_checkout_data['bikeUpgradePrice']; ?></span></p>
+							<?php } ?>
+							<?php if($single_supplement_qty > 0) { ?>
+								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplement_fees; ?></span></p>
+							<?php } ?>
+							<?php if($insured_person > 0 && $tt_insurance_total_charges > 0 ) { ?>
+								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_insurance_total_charges; ?></span></p>
+							<?php } ?>
+							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_subtotal(); ?></span></p>
+							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $total_tax ); ?></span></p>
+							<?php if ( 0 < $discount_order ) : ?>
+								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $discount_order ); ?></span></p>
+							<?php endif; ?>
+							<?php if ( ! empty( $dues ) ) : ?>
+								<p class="mb-0 pt-4 fw-medium fs-xl lh-lg order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $cart_total; ?></span></p>
+								<p class="mb-0 mt-1 mt-lg-2 fs-md fw-medium order-details__textbold"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $deposit_amount; ?></span></p>
+								<p class="mt-2 mb-2 fs-md fw-medium order-details__textbold"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $remaining_amount; ?></span></p>
+							<?php else : ?>
+								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $cart_total; ?></span></p>
+							<?php endif; ?>
+						</div>
+					</div>
+					<?php if ( ! empty( $dues ) ) : ?>
+						<p class="mb-0 fs-xs lh-xs fw-normal w-75 w-lg-50 order-details__duesp"><?php esc_html_e( 'You will be responsible for paying the remaining amount on your trip before the trip start date. Our team will reach out to collect final payment.', 'trek-travel-theme' ); ?></p>
+					<?php endif; ?>
+				</div>
+				<hr>
+				<!-- Payment Details -->
+				<div class="order-details__content">
+					<p class="fs-lg lh-sm fw-bold fw-medium mb-5 order-details__subheading"><?php esc_html_e( 'Payment Details', 'trek-travel-theme' ); ?></p>
+					<div class="d-flex order-details__flex">
+						<div>
+							<p class="mb-2 fs-md lh-sm fw-bold"><?php esc_html_e( 'Billing Method', 'trek-travel-theme' ); ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo $biller_name; ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo ( $cc_card_type ? ucfirst( $cc_card_type )  : '' ) ?> <?php echo ( $cc_account_four ? '****'.$cc_account_four  : '' ) ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo ( $cc_expiry_date ? 'Exp: '.$cc_expiry_date  : '' ) ?></p>
+						</div>
+						<div class="text-end">
+							<p class="mb-2 fs-md lh-sm fw-bold"><?php esc_html_e( 'Billing Address', 'trek-travel-theme' ); ?></p>
+							<?php
+							$billing_states       = WC()->countries->get_states( $billing_country );
+							$billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
+							$billing_country_name = WC()->countries->countries[$billing_country];
+							?>
+							<p class="mb-0 fw-normal order-details__text"><?php echo $billing_add_1; ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo $billing_add_2; ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo $billing_city; ?>, <?php echo $billing_state_name; ?>, <?php echo $billing_postcode; ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo $billing_country_name; ?></p>
+						</div>
+					</div>
+				</div>
+				<hr>
+				<!-- Guest Details -->
+				<div class="order-details__content">
+					<p class="fs-lg lh-sm fw-bold fw-medium mb-5 order-details__subheading"><?php esc_html_e( 'Guest Details', 'trek-travel-theme' ); ?></p>
+					<?php
+					
+					$checkout_review_guest = __DIR__ . '/order-details-guest.php';
+
+					if( is_readable( $checkout_review_guest ) ) {
+						?>
+							<div class="checkout-review__guest">
+								<?php
+									$raw_city_state_code = array(
+										tt_validate( $trek_checkout_data['shipping_city'] ),
+										tt_validate( WC()->countries->get_states( tt_validate( $trek_checkout_data['shipping_country'] ) )[tt_validate( $trek_checkout_data['shipping_state'] )], tt_validate( $trek_checkout_data['shipping_state'] ) ),
+										tt_validate( $trek_checkout_data['shipping_postcode'] ),
+									);
+									$city_state_code = '';
+									foreach( $raw_city_state_code as $index => $value ) {
+										if( ! empty( $value ) ) {
+											if( 0 < $index && ! empty( $city_state_code ) ) {
+												$city_state_code .= ', ';
+											}
+											$city_state_code .= $value;
+										}
+									}
+
+									$checkout_review_guest_primary_args = array(
+										'is_primary'   => true,
+										'fullname'     => tt_validate( $review_bikes_arr_primary['guest_fname'] ) . ' ' . tt_validate( $review_bikes_arr_primary['guest_lname'] ),
+										'guest_info'   => array(
+											'email'           => tt_validate( $trek_checkout_data['email'] ),
+											'phone'           => tt_validate( $trek_checkout_data['shipping_phone'] ),
+											'addr_1'          => tt_validate( $trek_checkout_data['shipping_address_1'] ),
+											'addr_2'          => tt_validate( $trek_checkout_data['shipping_address_2'] ),
+											'city_state_code' => $city_state_code,
+											'country'         => WC()->countries->countries[tt_validate( $trek_checkout_data['shipping_country'] )],
+											'dob'             => tt_validate( $trek_checkout_data['custentity_birthdate'] ),
+											'gender'          => 2 === (int) tt_validate( $trek_checkout_data['custentity_gender'] ) ? 'Female' : ( 1 === (int) tt_validate( $trek_checkout_data['custentity_gender'] ) ? 'Male' : '' ),
+										),
+										'hiking_info'  => $is_hiking_checkout ? array(
+											'Activity Level:' => tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_primary['activity_level'] ) ), // H&W.
+											'Guest Height:'   => tt_get_custom_item_name( 'syncHeights', tt_validate( $review_bikes_arr_primary['rider_height'] ) ),
+											'T-Shirt Size:'   => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_primary['tshirt_size'] ) ), // H&W.
+										) : array()
+									);
+
+									wc_get_template( 'woocommerce/order/order-details-guest.php', $checkout_review_guest_primary_args );
+
+									if( $guests ) {
+										foreach ( $guests as $guest_num => $guest ) {
+											$review_bikes_arr_guest = $review_bikes_arr[$guest_num];
+											$checkout_review_guest_args = array(
+												'is_primary'   => false,
+												'guest_num'    => $guest_num,
+												'fullname'     => tt_validate( $review_bikes_arr_guest['guest_fname'] ) . ' ' . tt_validate( $review_bikes_arr_guest['guest_lname'] ),
+												'guest_info'   => array(
+													'email'           => tt_validate( $review_bikes_arr_guest['guest_email'] ),
+													'phone'           => tt_validate( $review_bikes_arr_guest['guest_phone'] ),
+													'dob'             => tt_validate( $review_bikes_arr_guest['guest_dob'] ),
+													'gender'          => 2 === (int) tt_validate( $review_bikes_arr_guest['guest_gender'] ) ? 'Female' : ( 1 === (int) tt_validate( $review_bikes_arr_guest['guest_gender'] ) ? 'Male' : '' ),
+												),
+												'hiking_info'  => $is_hiking_checkout ? array(
+													'Activity Level:' => tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_guest['activity_level'] ) ), // H&W.
+													'Guest Height:'   => tt_get_custom_item_name( 'syncHeights', tt_validate( $review_bikes_arr_guest['rider_height'] ) ),
+													'T-Shirt Size:'   => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_guest['tshirt_size'] ) ), // H&W.
+												) : array()
+											);
+					
+											wc_get_template( 'woocommerce/order/order-details-guest.php', $checkout_review_guest_args );
+										}
+									}
+									?>
+							</div><!-- .checkout-review__guest -->
+						<?php
+					} else {
+						?>
+							<h3><?php esc_html_e( 'Thank you page', 'trek-travel-theme' ); ?></h3>
+							<p><?php esc_html_e( 'Checkout reviews single guest template is missing!', 'trek-travel-theme' ); ?></p>
+						<?php
+					}
+					?>
+				</div>
+				<hr>
+				<!-- Room Details -->
+				<div class="order-details__content">
+					<p class="fs-lg lh-sm fw-bold fw-medium mb-5 order-details__subheading"><?php esc_html_e( 'Room Details', 'trek-travel-theme' ); ?></p>
+					<div>
+						<?php
+						$checkout_review_rooms = __DIR__ . '/order-details-rooms.php';
+						if( is_readable( $checkout_review_rooms ) ) {
+							?>
+								<div class="checkout-review__guest">
+									<?php
+										$checkout_review_rooms_args = array(
+											'primary_guest_name' => trim( tt_validate( $trek_checkout_data['shipping_first_name'] ) . ' ' . tt_validate( $trek_checkout_data['shipping_last_name'] ) ),
+											'guests'             => $guests,
+											'occupants'          => tt_validate( $trek_checkout_data['occupants'], [] ),
+											'single'             => tt_validate( $trek_checkout_data['single'], 0 ),
+											'double'             => tt_validate( $trek_checkout_data['double'], 0 ),
+											'private'            => tt_validate( $trek_checkout_data['private'], 0 ),
+											'roommate'           => tt_validate( $trek_checkout_data['roommate'], 0 ),
+										);
+
+										wc_get_template( 'woocommerce/order/order-details-rooms.php', $checkout_review_rooms_args );
+										?>
+								</div><!-- .checkout-review__guest -->
+							<?php
+						} else {
+							?>
+								<h3><?php esc_html_e( 'Thank you page', 'trek-travel-theme' ); ?></h3>
+								<p><?php esc_html_e( 'Checkout reviews rooms template is missing!', 'trek-travel-theme' ); ?></p>
+							<?php
+						}
+						?>
+					</div>
+				</div>
+				<?php if( ! $is_hiking_checkout ) : ?>
+					<hr>
+					<!-- Bikes & Gear Details -->
+					<div class="order-details__content">
+						<p class="fs-lg lh-sm fw-bold fw-medium mb-5 order-details__subheading"><?php esc_html_e( 'Bikes & Gear Details', 'trek-travel-theme' ); ?></p>
+						<?php
+							$checkout_review_bike = __DIR__ . '/order-details-bike.php';
+
+							if( is_readable( $checkout_review_bike ) ) {
+								$own_bike_id       = 5270;
+								$non_rider_bike_id = 5257;
+
+								?>
+									<div class="checkout-review__guest">
+										<?php
+
+											$transportation_options  = array(
+												''             => '',
+												'hard case'    => 'Hard Case',
+												'soft case'    => 'Soft Case',
+												'shipping'     => 'Shipping',
+												'i am driving' => "I'm driving"
+											);
+		
+											$checkout_review_bike_primary_args = array(
+												'is_non_rider' => $non_rider_bike_id === (int) tt_validate( $review_bikes_arr_primary['bikeId'] ),
+												'is_primary'   => true,
+												'fullname'     => tt_validate( $review_bikes_arr_primary['guest_fname'] ) . ' ' . tt_validate( $review_bikes_arr_primary['guest_lname'] ),
+												'bike_info'    => array(
+													'Activity Level:'         => ! $is_hiking_checkout ? str_replace( 'Non-Hiker', 'Non-Rider', tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_primary['rider_level'] ) ) ) : tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_primary['activity_level'] ) ),
+													'Bike:'                   => ! in_array( (int) tt_validate( $review_bikes_arr_primary['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? tt_validate( tt_get_custom_item_name('ns_bikeType_info' )[ tt_validate( array_search( tt_validate( $review_bikes_arr_primary['bikeTypeId'] ), array_column( tt_get_custom_item_name( 'ns_bikeType_info' ), 'id' ) ) ) ]['name'] ) : ( $own_bike_id === (int) tt_validate( $review_bikes_arr_primary['bikeId'] ) ? 'Bringing own' : '' ),
+													'Bike Size:'              => tt_get_custom_item_name( 'syncBikeSizes', tt_validate( $review_bikes_arr_primary['bike_size'] ) ),
+													'Transportation Options:' => $transportation_options[ tt_validate( $review_bikes_arr_primary['transportation_options'] ) ], // If selected Own Bike.
+													'Type of bike:'           => tt_validate( $review_bikes_arr_primary['type_of_bike'] ), // If selected Own Bike.
+													'Rider Height:'           => tt_get_custom_item_name( 'syncHeights', tt_validate( $review_bikes_arr_primary['rider_height'] ) ),
+													'Pedals:'                 => tt_get_custom_item_name( 'syncPedals', tt_validate( $review_bikes_arr_primary['bike_pedal'] ) ),
+													'Helmet Size:'            => tt_get_custom_item_name( 'syncHelmets', tt_validate( $review_bikes_arr_primary['helmet_size'] ) ),
+													'Jersey:'                 => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_primary['jersey_size'] ) ),
+													'Wheel Upgrade:'          => ! $is_hiking_checkout ? 1 === (int) tt_validate( tt_ns_get_bike_type_info( tt_validate( $review_bikes_arr_primary['bikeTypeId'] ) )['isBikeUpgrade'], 0 ) && ! in_array( (int) tt_validate( $review_bikes_arr_primary['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? 'Yes' : 'No' : '', // Bike upgrade is not applicable for Non-rider and Bring own bike!
+													'T-Shirt Size:'           => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_primary['tshirt_size'] ) ), // H&W.
+												)
+											);
+		
+											wc_get_template( 'woocommerce/order/order-details-bike.php', $checkout_review_bike_primary_args );
+		
+											if( $guests ) {
+												foreach ( $guests as $guest_num => $guest ) {
+													$review_bikes_arr_guest = $review_bikes_arr[$guest_num];
+													$checkout_review_bike_guest_args = array(
+														'is_non_rider' => $non_rider_bike_id === (int) tt_validate( $review_bikes_arr_guest['bikeId'] ),
+														'is_primary'   => false,
+														'guest_num'    => $guest_num,
+														'fullname'     => tt_validate( $review_bikes_arr_guest['guest_fname'] ) . ' ' . tt_validate( $review_bikes_arr_guest['guest_lname'] ),
+														'guest_info'   => array(
+															'email'           => tt_validate( $review_bikes_arr_guest['guest_email'] ),
+															'phone'           => tt_validate( $review_bikes_arr_guest['guest_phone'] ),
+															'dob'             => tt_validate( $review_bikes_arr_guest['guest_dob'] ),
+															'gender'          => 2 === (int) tt_validate( $review_bikes_arr_guest['guest_gender'] ) ? 'Female' : ( 1 === (int) tt_validate( $review_bikes_arr_guest['guest_gender'] ) ? 'Male' : '' )
+														),
+														'bike_info'    => array(
+															'Activity Level:'         => ! $is_hiking_checkout ? str_replace( 'Non-Hiker', 'Non-Rider', tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_guest['rider_level'] ) ) ) : tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_guest['activity_level'] ) ),
+															'Bike:'                   => ! in_array( (int) tt_validate( $review_bikes_arr_guest['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? tt_validate( tt_get_custom_item_name('ns_bikeType_info' )[ tt_validate( array_search( tt_validate( $review_bikes_arr_guest['bikeTypeId'] ), array_column( tt_get_custom_item_name( 'ns_bikeType_info' ), 'id' ) ) ) ]['name'] ) : ( $own_bike_id === (int) tt_validate( $review_bikes_arr_guest['bikeId'] ) ? 'Bringing own' : '' ),
+															'Bike Size:'              => tt_get_custom_item_name( 'syncBikeSizes', tt_validate( $review_bikes_arr_guest['bike_size'] ) ),
+															'Transportation Options:' => $transportation_options[ tt_validate( $review_bikes_arr_guest['transportation_options'] ) ], // If selected Own Bike.
+															'Type of bike:'           => tt_validate( $review_bikes_arr_guest['type_of_bike'] ), // If selected Own Bike.
+															'Rider Height:'           => tt_get_custom_item_name( 'syncHeights', tt_validate( $review_bikes_arr_guest['rider_height'] ) ),
+															'Pedals:'                 => tt_get_custom_item_name( 'syncPedals', tt_validate( $review_bikes_arr_guest['bike_pedal'] ) ),
+															'Helmet Size:'            => tt_get_custom_item_name( 'syncHelmets', tt_validate( $review_bikes_arr_guest['helmet_size'] ) ),
+															'Jersey:'                 => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_guest['jersey_size'] ) ),
+															'Wheel Upgrade:'          => ! $is_hiking_checkout ? 1 === (int) tt_validate( tt_ns_get_bike_type_info( tt_validate( $review_bikes_arr_guest['bikeTypeId'] ) )['isBikeUpgrade'], 0 ) && ! in_array( (int) tt_validate( $review_bikes_arr_guest['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? 'Yes' : 'No' : '', // Bike upgrade is not applicable for Non-rider and Bring own bike!
+															'T-Shirt Size:'           => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_guest['tshirt_size'] ) ), // H&W.
+														)
+													);
+							
+													wc_get_template( 'woocommerce/order/order-details-bike.php', $checkout_review_bike_guest_args );
+												}
+											}
+											?>
+									</div><!-- .checkout-review__guest -->
+								<?php
+							} else {
+								?>
+									<h3><?php esc_html_e( 'Thank you page', 'trek-travel-theme' ); ?></h3>
+									<p><?php esc_html_e( 'Checkout reviews single bike guest template is missing!', 'trek-travel-theme' ); ?></p>
+								<?php
+							}
+						?>
+					</div>
+				<?php endif; ?>
+				<hr>
+				<!-- Travel Protection Information -->
+				<div class="order-details__content">
+					<p class="fs-lg lh-sm fw-bold fw-medium mb-5 order-details__subheading"><?php esc_html_e( 'Travel Protection Information', 'trek-travel-theme' ); ?></p>
+					<?php
+						$checkout_review_travel_protection = __DIR__ . '/order-details-travel-protection.php';
+						if( is_readable( $checkout_review_travel_protection ) ) {
+							?>
+								<div class="checkout-review__guest">
+									<?php
+										$checkout_review_travel_protection_args = array(
+											'primary_guest_name' => trim( tt_validate( $trek_checkout_data['shipping_first_name'] ) . ' ' . tt_validate( $trek_checkout_data['shipping_last_name'] ) ),
+											'guest_insurance'    => tt_validate( $trek_checkout_data['trek_guest_insurance'], [] ),
+											'guests'             => $guests
+										);
+
+										wc_get_template( 'woocommerce/order/order-details-travel-protection.php', $checkout_review_travel_protection_args );
+										?>
+								</div><!-- .checkout-review__guest -->
+							<?php
+						} else {
+							?>
+								<h3><?php esc_html_e( 'Thank you page', 'trek-travel-theme' ); ?></h3>
+								<p><?php esc_html_e( 'Checkout reviews travel protection template is missing!', 'trek-travel-theme' ); ?></p>
+							<?php
+						}
+					?>
 				</div>
 			</div>
 		</div>
@@ -419,11 +650,11 @@ $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-cur
 						'quantity': '1' //the number of products added to the cart
 					}];
 
-					<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkoutData['bikeUpgradePrice'] ) { ?>
+					<?php if( $tt_get_upgrade_qty > 0 &&  $trek_checkout_data['bikeUpgradePrice'] ) { ?>
 						productsArr.push({
 							'name': "upgrade", // Please remove special characters
 						'id': '<?php echo $item['product_id'] ?>', // Parent ID
-						'price': '<?php echo $trek_checkoutData['bikeUpgradePrice'] ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+						'price': '<?php echo $trek_checkout_data['bikeUpgradePrice'] ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
 						'brand': '', //
 						'category': '<?php echo strip_tags(wc_get_product_category_list( get_the_id())); ?>', // populate with the 'country,continent' separating with a comma
 						'variant': '<?php echo $trip_sku ?>', //this is the SKU of the product
@@ -432,12 +663,12 @@ $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-cur
 
 						<?php 
 					}
-					if($singleSupplementQty > 0) { 
+					if( $single_supplement_qty > 0 ) { 
 					 ?>
 					 productsArr.push({
 							'name': "single supplement fee", // Please remove special characters
 						'id': '<?php echo $item['product_id'] ?>', // Parent ID
-						'price': '<?php echo $supplementFees ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+						'price': '<?php echo $supplement_fees ?>', // per unit price displayed to the user - no format is ####.## (no '$' or ',')
 						'brand': '', //
 						'category': '<?php echo strip_tags(wc_get_product_category_list( get_the_id())); ?>', // populate with the 'country,continent' separating with a comma
 						'variant': '<?php echo $trip_sku ?>', //this is the SKU of the product
@@ -460,7 +691,8 @@ $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-cur
 						'shipping': '', // amount of shipping paid
 						'coupon': '<?php echo $item['coupon_code'] ?>', // order level coupon. Pipe delimit stacked codes.
 						'payment_type': 'credit card', // pipe delimit multiple values:ApplePay,GooglePay,Paypal, AfterPay, GiftCard, CreditCard 
-						'order_discount': '' // order level discount amount
+						'order_discount': '', // order level discount amount
+						'trip_type' : '<?php echo $is_hiking_checkout ? "Hiking & Walking" : "Cycling" ?>',
 					},
 					'products': productsArr
 				}
@@ -469,3 +701,12 @@ $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-cur
 		jQuery("#currency_switcher").trigger("change")
 	})
 </script>
+
+<?php
+/**
+ * Action hook fired after the order details.
+ *
+ * @since 4.4.0
+ * @param WC_Order $order Order data.
+ */
+do_action( 'woocommerce_after_order_details', $order );

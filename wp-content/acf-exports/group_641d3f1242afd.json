@@ -38,6 +38,31 @@
             },
             "default_value": "",
             "placeholder": ""
+        },
+        {
+            "key": "field_6613b683dba8b",
+            "label": "PLP Thumbnail",
+            "name": "thumbnail_id",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "This field will be used for thumbnail images of Product Taxonomies.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "id",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "preview_size": "medium"
         }
     ],
     "location": [
@@ -46,6 +71,48 @@
                 "param": "taxonomy",
                 "operator": "==",
                 "value": "product_cat"
+            }
+        ],
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "activity"
+            }
+        ],
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "destination"
+            }
+        ],
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "hotel-type"
+            }
+        ],
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "trip-class"
+            }
+        ],
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "hotel-level"
+            }
+        ],
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "trip-style"
             }
         ]
     ],
@@ -58,5 +125,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1706815058
+    "modified": 1715676811
 }

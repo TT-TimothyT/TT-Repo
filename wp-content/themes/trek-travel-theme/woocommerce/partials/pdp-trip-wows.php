@@ -1,8 +1,14 @@
 <!-- PDP trip wows start TREK-261 -->
 <?php
     if( have_rows('trip_wows_list') ):
-        $activity_tax = get_field('Activity');
-        $activity = $activity_tax->name;
+        $product = wc_get_product( get_the_ID() );
+        $product_id = $product->get_id();
+        
+        $activity_terms = get_the_terms( $product_id, 'activity' );
+        
+        foreach ( $activity_terms as $activity_term) {
+            $activity = $activity_term->name;   
+        }
 ?>
 <div class="container pdp-section trip-wows-container">
     <div class="row">
@@ -16,7 +22,7 @@
                     // Load sub field value.
                     $wow_point = get_sub_field('wow_point');                    
             ?>
-                <li class="<?php if (!empty($activity) && $activity == 'Biking'):?>tt-blue<?php endif;?>"><p class="fw-normal"><?php echo $wow_point; ?></p></li>
+                <li class="<?php if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>tt-blue<?php endif;?>"><p class="fw-normal"><?php echo $wow_point; ?></p></li>
             <?php endwhile; ?>		
             </ul>
         </div>

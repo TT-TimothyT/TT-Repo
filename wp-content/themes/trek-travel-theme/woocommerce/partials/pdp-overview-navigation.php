@@ -3,25 +3,28 @@
 global $product, $post;
 $product_id = $post->ID;
 
-$activity_tax = get_field('Activity');
-$activity = $activity_tax->name;
+$activity_terms = get_the_terms( $product_id, 'activity' );
+
+foreach ( $activity_terms as $activity_term) {
+	$activity = $activity_term->name;   
+}
 ?>
 
 <!-- PDP - Overview Navigation -->
 <div class="navigation-sticky position-sticky">
-    <nav class="nav flex-column">
-        <a class="nav-link" href="#overview">Overview</a>
-        <a class="nav-link" href="#dates-pricing">Dates & Pricing</a>
-        <a class="nav-link" href="#itinerary">Itinerary</a>
-        <a class="nav-link" href="#hotels">Hotels</a>
-        <?php if (!empty($activity) && $activity == 'Biking'): ?>
-            <a class="nav-link" href="#bikes-guides">Bikes & Gear</a>
-        <?php endif; ?>
-        <a class="nav-link" href="#inclusions">Inclusions</a>
-        <a class="nav-link" href="#additional-details">Know Before You Go</a>
-        <a class="nav-link" href="#faqs">FAQs</a>
-        <a class="nav-link" href="#reviews">Reviews</a>
-    </nav>
+	<nav class="nav flex-column">
+		<a class="nav-link active" aria-current="page" href="#overview">Overview</a>
+		<a class="nav-link" href="#dates-pricing">Dates & Pricing</a>
+		<a class="nav-link" href="#itinerary">Itinerary</a>
+		<a class="nav-link" href="#hotels">Hotels</a>
+		<?php if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING): ?>
+			<a class="nav-link" href="#bikes-guides">Bikes & Gear</a>
+		<?php endif; ?>
+		<a class="nav-link" href="#inclusions">Inclusions</a>
+		<a class="nav-link" href="#additional-details">Know Before You Go</a>
+		<a class="nav-link" href="#faqs">FAQs</a>
+		<a class="nav-link" href="#reviews">Reviews</a>
+	</nav>
 
     <div class="overview-info">
         <div class="book-trip-cta">

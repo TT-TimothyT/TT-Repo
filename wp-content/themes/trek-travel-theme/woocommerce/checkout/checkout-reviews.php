@@ -1,292 +1,144 @@
 <?php
-global $woocommerce;
-$trek_user_checkout_data =  get_trek_user_checkout_data();
-$tt_posted = $trek_user_checkout_data['posted'];
-$primary_name = $primary_email = $primary_phone = $primary_address_1 = $primary_address_2 = $primary_country = $billing_add1 = $billing_add2 = $billing_country = $primary_dob = $primary_gender = $primary_city = $primary_state = $billing_city = $billing_state = $billing_postcode = $primary_postcode = '';
-if ($tt_posted) {
-	$shipping_fname = isset($tt_posted['shipping_first_name']) ? $tt_posted['shipping_first_name'] : '';
-	$shipping_lname = isset($tt_posted['shipping_last_name']) ? $tt_posted['shipping_last_name'] : '';
-	$primary_name  = $shipping_fname . ' ' .$shipping_lname;
-	$primary_email = isset($tt_posted['email']) ? $tt_posted['email'] : '';
-	$primary_phone = isset($tt_posted['shipping_phone']) ? $tt_posted['shipping_phone'] : '';
-	$primary_address_1 = isset($tt_posted['shipping_address_1']) ? $tt_posted['shipping_address_1'] : '';
-	$primary_address_2 = isset($tt_posted['shipping_address_2']) ? $tt_posted['shipping_address_2'] : '';
-	$primary_country = isset($tt_posted['shipping_country']) ? $tt_posted['shipping_country'] : '';
-	$primary_state = isset($tt_posted['shipping_state']) ? $tt_posted['shipping_state'] : '';
-	$primary_city = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city'] : '';
-	$primary_postcode = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode'] : '';
-	$primary_dob = isset($tt_posted['custentity_birthdate']) ? $tt_posted['custentity_birthdate'] : '';
-	$primary_gender = isset($tt_posted['custentity_gender']) ? $tt_posted['custentity_gender'] : '';
-	$primary_gender = ($primary_gender == 2 ? 'Female' : 'Male');
-	$guests = isset($tt_posted['guests']) ? $tt_posted['guests'] : '';
-	$billing_add1 = isset($tt_posted['billing_address_1']) ? $tt_posted['billing_address_1'] : '';
-	$billing_add2 = isset($tt_posted['billing_address_2']) ? $tt_posted['billing_address_2'] : '';
-	$billing_country = isset($tt_posted['billing_country']) ? $tt_posted['billing_country'] : '';
-	$billing_state = isset($tt_posted['billing_state']) ? $tt_posted['billing_state'] : '';
-	$billing_city = isset($tt_posted['billing_city']) ? $tt_posted['billing_city'] : '';
-	$billing_postcode = isset($tt_posted['billing_postcode']) ? $tt_posted['billing_postcode'] : '';
-}
-$guests = $guests ? $guests : array();
-$guest_insurance_html = tt_guest_insurance_output($tt_posted);
-$cc_exp_date = isset($tt_posted['wc-cybersource-credit-card-expiry']) ? $tt_posted['wc-cybersource-credit-card-expiry'] : '';
-$cc_masked = isset($tt_posted['wc-cybersource-credit-card-masked-pan']) ? $tt_posted['wc-cybersource-credit-card-masked-pan'] : '';
-$cc_type = isset($tt_posted['wc-cybersource-credit-card-card-type']) ? $tt_posted['wc-cybersource-credit-card-card-type'] : '';
-$tt_rooms_output = tt_rooms_output($tt_posted);
+/**
+ * Template file for guests review on the checkout page, step 4.
+ */
 
-// Take bike names.
-$tripInfo                   = tt_get_trip_pid_sku_from_cart();
-$local_bike_details         = tt_get_local_bike_detail( $tripInfo['sku'] );
-$local_bike_models_info     = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
-$guest_details_states       = WC()->countries->get_states( $primary_country );
-$primary_guest_state_name   = isset( $guest_details_states[$primary_state] ) ? $guest_details_states[$primary_state] : $primary_state;
-$primary_guest_country_name = WC()->countries->countries[$primary_country];
+global $woocommerce;
 ?>
 <div class="checkout-review" id="checkout-review">
-	<div class="checkout-review__guest">
-		<div class="d-flex checkout-review__title-bar">
-			<h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-review__title">Review Guest Information</h5>
-			<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-block d-none checkout-review__edit tt_change_checkout_step" data-step="1">Edit Guest Info</a>
-		</div>
-		<div class="row mx-0">
-			<div class="col-lg-6 px-0 checkout-review__col">
-				<p class="fw-medium mb-2">Primary Guest: <?php echo $primary_name; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_email; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_phone; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_address_1; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_address_2; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_guest_state_name; ?>, <?php echo $primary_postcode; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_guest_country_name; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_dob; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_gender; ?></p>
-			</div>
-			<?php if ($guests && !empty($guests)) { ?>
-				<div class="col-lg-6 px-0 checkout-review__col">
-					<p class="fw-medium mb-2">Guest 2: <?php echo $guests[1]['guest_fname'] . ' ' . $guests[1]['guest_lname']; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo $guests[1]['guest_email']; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo $guests[1]['guest_phone']; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo ($guests[1]['guest_gender'] == 2 ? 'Female' : 'Male'); ?></p>
-				</div>
-			<?php }  ?>
-		</div>
-		<?php
-		$guest_html = '';
-		if ($guests && sizeof($guests) > 1) {
-			$iter = 0;
-			$cols = 2;
-			$fields_size = sizeof($guests) - 1;
-			foreach ($guests as $guest_num => $guest) {
-				if ($guest_num != 1) {
-					if ($iter % $cols == 0) {
-						$guest_html .= '<div class="row mx-0">';
-					}
-					$guest_html .= '<div class="col-lg-6 px-0 checkout-review__col" data-num="'.$guest_num.'" data-size="'.$fields_size.'">';
-					$guest_html .= '<p class="fw-medium mb-2">Guest ' . $guest_num + 1 . ': ' . $guest['guest_fname'] . ' ' . $guest['guest_lname'] . '</p>
-							<p class="fs-sm lh-sm mb-0">' . $guest['guest_email'] . '</p>
-							<p class="fs-sm lh-sm mb-0">' . $guest['guest_phone'] . '</p>
-							<p class="fs-sm lh-sm mb-0">' . ($guest['guest_gender'] == 2 ? 'Female' : 'Male') . '</p>';
-					$guest_html .= '</div>';
-					if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-						$guest_html .= '</div>';
-					}
-					$iter++;
-				}
-			}
-		}
-		echo $guest_html;
-		?>
-		<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-none d-block tt_change_checkout_step" data-step="1">Edit Guest Info</a>
-	</div>
-	<hr>
-	<div class="checkout-review__room">
-		<div class="d-flex checkout-review__title-bar">
-			<h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-review__title">Review Room Information</h5>
-			<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-block d-none checkout-review__edit tt_change_checkout_step" data-step="22">Edit Room Info</a>
-		</div>
-		<?php if ( ! empty( $tt_rooms_output['single'] ) || ! empty( $tt_rooms_output['double'] ) ) : ?>
-			<div class="row mx-0">
-				<?php if ( ! empty( $tt_rooms_output['single'] ) ) : ?>
-					<div class="col-lg-6 px-0 checkout-review__col">
-						<?php echo $tt_rooms_output['single']; ?>
-					</div>
-				<?php endif; ?>
-				<?php if ( ! empty( $tt_rooms_output['double'] ) ) : ?>
-					<div class="col-lg-6 px-0 checkout-review__col">
-						<?php echo $tt_rooms_output['double']; ?>
-					</div>
-				<?php endif; ?>
-			</div>
-		<?php endif; ?>
-		<?php if ( ! empty( $tt_rooms_output['roommate'] ) || ! empty( $tt_rooms_output['private'] ) ) : ?>
-			<div class="row mx-0">
-				<?php if ( ! empty( $tt_rooms_output['roommate'] ) ) : ?>
-					<div class="col-lg-6 px-0 checkout-review__col">
-						<?php echo $tt_rooms_output['roommate']; ?>
-					</div>
-				<?php endif; ?>
-				<?php if ( ! empty( $tt_rooms_output['private'] ) ) : ?>
-					<div class="col-lg-6 px-0 checkout-review__col">
-						<?php echo $tt_rooms_output['private']; ?>
-					</div>
-				<?php endif; ?>
-			</div>
-		<?php endif; ?>
-		<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-none d-block tt_change_checkout_step" data-step="22">Edit Room Info</a>
-	</div>
-	<hr>
-	<div class="checkout-review__bikes">
-		<div class="d-flex checkout-review__title-bar">
-			<h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-review__title">Review Bikes & Gear Information</h5>
-			<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-block d-none checkout-review__edit tt_change_checkout_step" data-step="2">Edit Bikes & Gear</a>
-		</div>
-		<?php
-		$tt_formatted = $trek_user_checkout_data['formatted'];
-		//Preparing insurance HTML
-		$review_bikes_arr = isset($tt_formatted[1]) && isset($tt_formatted[1]['cart_item_data']) ? $tt_formatted[1]['cart_item_data'] : [];
-		$iter = 0;
-		$cols = 2;
-		$review_bikes_html = '';
-		$fields_size = sizeof($review_bikes_arr);
-		if (isset($review_bikes_arr) && !empty($review_bikes_arr)) {
-			foreach ($review_bikes_arr as $review_bikes_arr_k => $review_bikes_arr_val) {
-				$wheel_upgrade = 'No';
-				$bikeTypeInfo = tt_ns_get_bike_type_info( $review_bikes_arr_val['bikeTypeId'] );
-				if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
-					$wheel_upgrade = 'Yes';
-				}
-				if ($iter % $cols == 0) {
-					$review_bikes_html .= '<div class="row mx-0">';
-				}
-				$ownBike = '';
-				$syncRiderLevels = $syncBikeSizes = $syncHeights = $syncHelmets = $syncBikeTypes = $syncPedals = $syncJerseySizes = '';
-				if( isset($review_bikes_arr_val['rider_level']) && $review_bikes_arr_val['rider_level'] ){
-					$syncRiderLevels =    tt_get_custom_item_name('syncRiderLevels',$review_bikes_arr_val['rider_level']);
-				}
-				if( isset($review_bikes_arr_val['bike_size']) && $review_bikes_arr_val['bike_size'] ){
-					$syncBikeSizes =    tt_get_custom_item_name('syncBikeSizes',$review_bikes_arr_val['bike_size']);
-				}
-				if( isset($review_bikes_arr_val['rider_height']) && $review_bikes_arr_val['rider_height'] ){
-					$syncHeights =    tt_get_custom_item_name('syncHeights',$review_bikes_arr_val['rider_height']);
-				}
-				if( isset($review_bikes_arr_val['helmet_size']) && $review_bikes_arr_val['helmet_size'] ){
-					$syncHelmets =    tt_get_custom_item_name('syncHelmets',$review_bikes_arr_val['helmet_size']);
-				}
-				if( isset($review_bikes_arr_val['bikeTypeId']) && $review_bikes_arr_val['bikeTypeId'] ){
-					$syncBikeTypes =    tt_get_custom_item_name('ns_bikeType_info',$review_bikes_arr_val['bikeTypeId']);
-					// Iterate through the array to find the bike with the desired ID
-					foreach ($syncBikeTypes as $bike) {
-						$desired_bike = intval( $review_bikes_arr_val['bikeTypeId'] );
-						if ($bike['id'] === $desired_bike) {
-							$desiredBike = $bike['name'];
-							break; // Stop iterating once the bike with the desired ID is found
-						}
-					}
-					$syncBikeTypes = $desiredBike;
-				}
-				if( isset($review_bikes_arr_val['bike_pedal']) && $review_bikes_arr_val['bike_pedal'] ){
-					$syncPedals =    tt_get_custom_item_name('syncPedals',$review_bikes_arr_val['bike_pedal']);
-				}
-				if( isset($review_bikes_arr_val['jersey_size']) && $review_bikes_arr_val['jersey_size'] ){
-					$syncJerseySizes =    tt_get_custom_item_name('syncJerseySizes',$review_bikes_arr_val['jersey_size']);
-				}
-				$bike_id   = (int) $review_bikes_arr_val['bikeId'];
-				$bike_name = '';
-				if( ( isset($bike_id) && $bike_id ) || 0 == $bike_id ){
-					switch ( $bike_id ) {
-						case 5270: // I am bringing my own bike.
-							$bike_name = 'Bringing own';
-							break;
-						case 0: // If set to 0, it means "I don't know" was picked for bike size and the bikeTypeName property will be used.
-							$bike_name = $syncBikeTypes;
-							break;
-						default: // Take the name of the bike.
-							$bike_name = json_decode( $local_bike_models_info[ $bike_id ], true)[ 'name' ];
-							break;
-					}
-				}
-				if( isset($review_bikes_arr_val['own_bike']) && $review_bikes_arr_val['own_bike'] ){
-					$ownBike = $review_bikes_arr_val['own_bike'];
-				}
-				$guestLabel = ($review_bikes_arr_k == 0 ? 'Primary Guest' : 'Guest ' . ($review_bikes_arr_k + 1));
-				$fullname = $review_bikes_arr_val['guest_fname'] . ' ' . $review_bikes_arr_val['guest_lname'];
-				$review_bikes_html .= '<div class="col-lg-6 px-0 checkout-review__col">';
-				$review_bikes_html .= '<p class="fw-medium mb-2">' . $guestLabel . ': ' . $fullname . '</p>
-				<p class="fs-sm lh-sm mb-0">Rider Level: ' . $syncRiderLevels . '</p>';
-				if ( $review_bikes_arr_val['rider_level'] != 5 ) {
-					if( !empty( $bike_name ) ){
+	<div class="accordion accordion-flush" id="accordionFlushReviewInfo">
+		<div class="accordion-item border rounded p-3">
+			<h2 class="accordion-header lh-md" id="flush-heading-reviewInfo">
+				<button class="accordion-button px-0 collapsed shadow-none title-poppins" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-reviewInfo" aria-expanded="false" aria-controls="flush-collapse-reviewInfo">
+					<?php esc_html_e( 'Review Information', 'trek-travel-theme' ) ?>
+				</button>
+			</h2>
+			<div id="flush-collapse-reviewInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-reviewInfo">
+				<div class="accordion-body px-0 pb-sm-0">
+					<?php
+					
+						$checkout_review_guest = __DIR__ . '/checkout-reviews-guest-single.php';
 
-						$review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike: ' . $bike_name . '</p>';
-					}
-					if( 'yes' !== $ownBike || 0 == $bike_id ){
-						$review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Bike Size: ' . $syncBikeSizes . '</p>
-							<p class="fs-sm lh-sm mb-0">Rider Height: ' . $syncHeights . '</p>';
-					}
-					$review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Pedals: ' . $syncPedals . '</p>
-					<p class="fs-sm lh-sm mb-0">Helmet Size: ' . $syncHelmets . '</p>';
-					if( !empty( $syncJerseySizes ) && ! is_array( $syncJerseySizes )  && '-' != $syncJerseySizes ) {
-						$review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Jersey: ' . $syncJerseySizes . '</p>';
-					}
-					// $review_bikes_html .= '<p class="fs-sm lh-sm mb-0">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
-				}
-				$review_bikes_html .= '</div>';
-				if (($iter % $cols == $cols - 1) || ($iter == $fields_size - 1)) {
-					$review_bikes_html .= '</div>';
-				}
-				$iter++;
-			}
-		}
-		echo $review_bikes_html;
-		?>
-		<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-none d-block tt_change_checkout_step" data-step="2">Edit Bikes & Gear</a>
-	</div>
-	<hr>
-	<div class="checkout-review__travel">
-		<div class="d-flex checkout-review__title-bar">
-			<h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-review__title">Travel Protection Information</h5>
-			<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-block d-none checkout-review__edit tt_change_checkout_step" data-step="3">Edit Info</a>
-		</div>
-		<?php echo $guest_insurance_html; ?>
-		<button type="button" class="btn btn-md btn-outline-primary d-lg-none d-block">Edit Info</button>
-	</div>
-	<hr>
-	<div class="checkout-review__payment">
-		<div class="d-flex checkout-review__title-bar">
-			<h5 class="fs-xl lh-xl fw-medium d-flex align-items-center checkout-review__title">Review Payment Method</h5>
-			<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-block d-none checkout-review__edit tt_change_checkout_step" data-step="3">Edit Payment</a>
-		</div>
-		<div class="row mx-0">
-			<div class="col-lg-6 px-0 checkout-review__col">
-				<p class="fw-medium mb-2">Billing Method</p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $primary_name; ?></p>
-				<p class="fs-sm lh-sm mb-0"><?php echo $cc_type; ?> <?php echo ( $cc_masked ? '****' . $cc_masked : '' ); ?></p>
-				<?php if ( ! empty( $cc_exp_date ) ) : ?>
-					<p class="fs-sm lh-sm mb-0">Exp <?php echo $cc_exp_date; ?></p>
-				<?php endif; ?>
+						if( is_readable( $checkout_review_guest ) ) {
+							$trek_user_checkout_data =  get_trek_user_checkout_data();
+							$tt_posted               = $trek_user_checkout_data['posted'];
+							$tt_formatted            = $trek_user_checkout_data['formatted'];
+							$own_bike_id             = 5270;
+							$non_rider_bike_id       = 5257;
+							$trip_info               = tt_get_trip_pid_sku_from_cart();
+							$is_hiking_checkout      = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+							?>
+								<div class="checkout-review__guest mb-sm-0">
+									<?php
+										$raw_city_state_code = array(
+											tt_validate( $tt_posted['shipping_city'] ),
+											tt_validate( WC()->countries->get_states( tt_validate( $tt_posted['shipping_country'] ) )[tt_validate( $tt_posted['shipping_state'] )], tt_validate( $tt_posted['shipping_state'] ) ),
+											tt_validate( $tt_posted['shipping_postcode'] ),
+										);
+										$city_state_code = '';
+										foreach( $raw_city_state_code as $index => $value ) {
+											if( ! empty( $value ) ) {
+												if( 0 < $index && ! empty( $city_state_code ) ) {
+													$city_state_code .= ', ';
+												}
+												$city_state_code .= $value;
+											}
+										}
+
+										$transportation_options  = array(
+											''             => '',
+											'hard case'    => 'Hard Case',
+											'soft case'    => 'Soft Case',
+											'shipping'     => 'Shipping',
+											'i am driving' => "I'm driving"
+										);
+										
+										$review_bikes_arr = tt_validate( $tt_formatted[1]['cart_item_data'], [] );
+
+										$review_bikes_arr_primary = $review_bikes_arr[0];
+
+										$checkout_review_guest_primary_args = array(
+											'is_non_rider' => $non_rider_bike_id === (int) tt_validate( $review_bikes_arr_primary['bikeId'] ),
+											'is_primary'   => true,
+											'fullname'     => tt_validate( $review_bikes_arr_primary['guest_fname'] ) . ' ' . tt_validate( $review_bikes_arr_primary['guest_lname'] ),
+											'room_type'    => tt_get_room_type_by_guest_index( 0, $tt_posted['occupants'] ),
+											'guest_info'   => array(
+												'email'           => tt_validate( $tt_posted['email'] ),
+												'phone'           => tt_validate( $tt_posted['shipping_phone'] ),
+												'addr_1'          => tt_validate( $tt_posted['shipping_address_1'] ),
+												'addr_2'          => tt_validate( $tt_posted['shipping_address_2'] ),
+												'city_state_code' => $city_state_code,
+												'country'         => WC()->countries->countries[tt_validate( $tt_posted['shipping_country'] )],
+												'dob'             => tt_validate( $tt_posted['custentity_birthdate'] ),
+												'gender'          => 2 === (int) tt_validate( $tt_posted['custentity_gender'] ) ? 'Female' : ( 1 === (int) tt_validate( $tt_posted['custentity_gender'] ) ? 'Male' : '' )
+
+											),
+											'bike_info'    => array(
+												'Rider Level:'            => tt_get_custom_item_name( 'syncRiderLevels', tt_validate( $review_bikes_arr_primary['rider_level'] ) ),
+												'Activity Level:'         => tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_primary['activity_level'] ) ), // H&W.
+												'Bike:'                   => ! in_array( (int) tt_validate( $review_bikes_arr_primary['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? tt_validate( tt_get_custom_item_name('ns_bikeType_info' )[ tt_validate( array_search( tt_validate( $review_bikes_arr_primary['bikeTypeId'] ), array_column( tt_get_custom_item_name( 'ns_bikeType_info' ), 'id' ) ) ) ]['name'] ) : ( $own_bike_id === (int) tt_validate( $review_bikes_arr_primary['bikeId'] ) ? 'Bringing own' : '' ),
+												'Bike Size:'              => tt_get_custom_item_name( 'syncBikeSizes', tt_validate( $review_bikes_arr_primary['bike_size'] ) ),
+												'Transportation Options:' => $transportation_options[ tt_validate( $review_bikes_arr_primary['transportation_options'] ) ], // If selected Own Bike.
+												'Type of bike:'           => tt_validate( $review_bikes_arr_primary['type_of_bike'] ), // If selected Own Bike.
+												'Rider Height:'           => tt_get_custom_item_name( 'syncHeights', tt_validate( $review_bikes_arr_primary['rider_height'] ) ),
+												'Pedals:'                 => tt_get_custom_item_name( 'syncPedals', tt_validate( $review_bikes_arr_primary['bike_pedal'] ) ),
+												'Helmet Size:'            => tt_get_custom_item_name( 'syncHelmets', tt_validate( $review_bikes_arr_primary['helmet_size'] ) ),
+												'Jersey:'                 => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_primary['jersey_size'] ) ),
+												'Wheel Upgrade:'          => ! $is_hiking_checkout ? 1 === (int) tt_validate( tt_ns_get_bike_type_info( tt_validate( $review_bikes_arr_primary['bikeTypeId'] ) )['isBikeUpgrade'], 0 ) && ! in_array( (int) tt_validate( $review_bikes_arr_primary['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? 'Yes' : 'No' : '', // Bike upgrade is not applicable for Non-rider and Bring own bike!
+												'T-Shirt Size:'           => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_primary['tshirt_size'] ) ), // H&W.
+											)
+										);
+
+										wc_get_template( 'woocommerce/checkout/checkout-reviews-guest-single.php', $checkout_review_guest_primary_args );
+
+										$guests = tt_validate( $tt_posted['guests'], [] );
+
+										if( $guests ) {
+											foreach ( $guests as $guest_num => $guest ) {
+												$review_bikes_arr_guest = $review_bikes_arr[$guest_num];
+												$checkout_review_guest_args = array(
+													'is_non_rider' => $non_rider_bike_id === (int) tt_validate( $review_bikes_arr_guest['bikeId'] ),
+													'is_primary'   => false,
+													'guest_num'    => $guest_num,
+													'fullname'     => tt_validate( $review_bikes_arr_guest['guest_fname'] ) . ' ' . tt_validate( $review_bikes_arr_guest['guest_lname'] ),
+													'room_type'    => tt_get_room_type_by_guest_index( $guest_num, $tt_posted['occupants'] ),
+													'guest_info'   => array(
+														'email'           => tt_validate( $review_bikes_arr_guest['guest_email'] ),
+														'phone'           => tt_validate( $review_bikes_arr_guest['guest_phone'] ),
+														'dob'             => tt_validate( $review_bikes_arr_guest['guest_dob'] ),
+														'gender'          => 2 === (int) tt_validate( $review_bikes_arr_guest['guest_gender'] ) ? 'Female' : ( 1 === (int) tt_validate( $review_bikes_arr_guest['guest_gender'] ) ? 'Male' : '' )
+													),
+													'bike_info'    => array(
+														'Rider Level:'            => tt_get_custom_item_name( 'syncRiderLevels', tt_validate( $review_bikes_arr_guest['rider_level'] ) ),
+														'Activity Level:'         => tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_guest['activity_level'] ) ), // H&W.
+														'Bike:'                   => ! in_array( (int) tt_validate( $review_bikes_arr_guest['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? tt_validate( tt_get_custom_item_name('ns_bikeType_info' )[ tt_validate( array_search( tt_validate( $review_bikes_arr_guest['bikeTypeId'] ), array_column( tt_get_custom_item_name( 'ns_bikeType_info' ), 'id' ) ) ) ]['name'] ) : ( $own_bike_id === (int) tt_validate( $review_bikes_arr_guest['bikeId'] ) ? 'Bringing own' : '' ),
+														'Bike Size:'              => tt_get_custom_item_name( 'syncBikeSizes', tt_validate( $review_bikes_arr_guest['bike_size'] ) ),
+														'Transportation Options:' => $transportation_options[ tt_validate( $review_bikes_arr_guest['transportation_options'] ) ], // If selected Own Bike.
+														'Type of bike:'           => tt_validate( $review_bikes_arr_guest['type_of_bike'] ), // If selected Own Bike.
+														'Rider Height:'           => tt_get_custom_item_name( 'syncHeights', tt_validate( $review_bikes_arr_guest['rider_height'] ) ),
+														'Pedals:'                 => tt_get_custom_item_name( 'syncPedals', tt_validate( $review_bikes_arr_guest['bike_pedal'] ) ),
+														'Helmet Size:'            => tt_get_custom_item_name( 'syncHelmets', tt_validate( $review_bikes_arr_guest['helmet_size'] ) ),
+														'Jersey:'                 => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_guest['jersey_size'] ) ),
+														'Wheel Upgrade:'          => ! $is_hiking_checkout ? 1 === (int) tt_validate( tt_ns_get_bike_type_info( tt_validate( $review_bikes_arr_guest['bikeTypeId'] ) )['isBikeUpgrade'], 0 ) && ! in_array( (int) tt_validate( $review_bikes_arr_guest['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? 'Yes' : 'No' : '', // Bike upgrade is not applicable for Non-rider and Bring own bike!
+														'T-Shirt Size:'           => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_guest['tshirt_size'] ) ), // H&W.
+													)
+												);
+						
+												wc_get_template( 'woocommerce/checkout/checkout-reviews-guest-single.php', $checkout_review_guest_args );
+											}
+										}
+										?>
+								</div><!-- .checkout-review__guest -->
+							<?php
+						} else {
+							?>
+								<h3><?php esc_html_e( 'Step 4', 'trek-travel-theme' ); ?></h3>
+								<p><?php esc_html_e( 'Checkout reviews single guest template is missing!', 'trek-travel-theme' ); ?></p>
+							<?php
+						}
+						?>
+				</div>
 			</div>
-			<div class="col-lg-6 px-0 checkout-review__col">
-				<p class="fw-medium mb-2">Billing Address</p>
-				<?php if (isset($tt_posted['is_same_billing_as_mailing']) && $tt_posted['is_same_billing_as_mailing'] == 1) { ?>
-					<?php
-					$primary_states       = WC()->countries->get_states( $primary_country );
-					$primary_state_name   = isset( $primary_states[$primary_state] ) ? $primary_states[$primary_state] : $primary_state;
-					$primary_country_name = WC()->countries->countries[$primary_country];
-					?>
-					<p class="fs-sm lh-sm mb-0"><?php echo $primary_address_1; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo $primary_address_2; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo $primary_city; ?>, <?php echo $primary_state_name; ?>, <?php echo $primary_postcode; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo $primary_country_name; ?></p>
-				<?php } else { ?>
-					<?php
-					$billing_states       = WC()->countries->get_states( $billing_country );
-					$billing_state_name   = isset( $billing_states[$billing_state] ) ? $billing_states[$billing_state] : $billing_state;
-					$billing_country_name = WC()->countries->countries[$billing_country];
-					?>
-					<p class="fs-sm lh-sm mb-0"><?php echo $billing_add1; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo $billing_add2; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo $billing_city; ?>, <?php echo $billing_state_name; ?>, <?php echo $billing_postcode; ?></p>
-					<p class="fs-sm lh-sm mb-0"><?php echo $billing_country_name; ?></p>
-				<?php } ?>
-			</div>
 		</div>
-		<a href="javascript:" class="btn btn-md btn-outline-primary d-lg-none d-block tt_change_checkout_step" data-step="3">Edit Payment</a>
 	</div>
 </div>

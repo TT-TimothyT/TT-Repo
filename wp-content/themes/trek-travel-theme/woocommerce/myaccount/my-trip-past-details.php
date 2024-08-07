@@ -32,7 +32,8 @@ if ($order_items) {
 			$trek_formatted_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_formatted_checkout_data', true);
 			if ($product) {
 				$is_passport_required = get_post_meta( $product_id, TT_WC_META_PREFIX . 'isPassportRequired', true );
-				$trip_status = $product->get_attribute('pa_trip-status');
+				$p_id = $product->get_id();
+				$trip_status = tt_get_custom_product_tax_value( $p_id, 'trip-status', true );
 				$trip_sdate = $product->get_attribute('pa_start-date');
 				$trip_edate = $product->get_attribute('pa_end-date');
 				$trip_name = $product->get_name();
@@ -84,8 +85,6 @@ $medicalconditions = get_user_meta($user_id, 'custentity_medicalconditions', tru
 $medications = get_user_meta($user_id, 'custentity_medications', true);
 $allergies = get_user_meta($user_id, 'custentity_allergies', true);
 $dietaryrestrictions = get_user_meta($user_id, 'custentity_dietaryrestrictions', true);
-//Trek Insurance
-$guest_insurance_html = tt_guest_insurance_output($trek_checkoutData);
 $trip_information = tt_get_trip_pid_sku_from_cart($order_id);
 $product_image_url = $trip_information['parent_trip_image'];
 $rooms_html = tt_rooms_output($trek_checkoutData, true);

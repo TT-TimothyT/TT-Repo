@@ -1,5 +1,96 @@
-// Define a custom event "occupant_popup_html_ready" that will indicate whether the html of addOccupantsModal is generated and ready for use.
-const occupantPopUpHtmlReadyEvent = new Event("occupant.popup.html.ready");
+const TT_CHECKOUT_LOADER_ATTRIBUTES = {
+  css: {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    maxWidth: '200px',
+    background: 'transparent',
+    border: 'none'
+  },
+  message: trek_JS_obj.tt_loader_img
+};
+
+const TT_BLOCK_UI_LOADER_ATTRIBUTES = {
+  css: {
+    border: 'none',
+    padding: '15px',
+    backgroundColor: '#000',
+    '-webkit-border-radius': '10px',
+    '-moz-border-radius': '10px',
+    opacity: .5,
+    color: '#fff'
+  }
+};
+
+jQuery(document).ready(function($) {
+  if ( trek_JS_obj && trek_JS_obj.is_checkout == true ) {
+    /**
+     * blockUI plugin - clear out plugin default styling on the checkout page.
+     *
+     * @link https://malsup.com/jquery/block/overlay.html
+     */
+    $.blockUI.defaults.overlayCSS = {
+      zIndex: '1000',
+      border: 'none',
+      margin: '0px',
+      padding: '0px',
+      width: '100%',
+      height: '100%',
+      top: '0px',
+      left: '0px',
+      backgroundColor: 'rgb(255, 255, 255)',
+      opacity: '0.7',
+      cursor: 'default'
+    }
+  }
+});
+
+const ttLoader = {
+  /**
+   * Show the loader.
+   *
+   * @param {string} targetElement The HTML element selector for which to add the loader.
+   */
+  show: function( targetElement = '' ) {
+    if ( trek_JS_obj && trek_JS_obj.is_checkout == true ) {
+      // The checkout loader style.
+      if( 'string' === typeof targetElement && 0 < targetElement.length ) {
+        // Make the loader align inside, depending on the container.
+        TT_CHECKOUT_LOADER_ATTRIBUTES.css.position = 'absolute';
+        jQuery(targetElement).block(TT_CHECKOUT_LOADER_ATTRIBUTES);
+        // Restore alignment to the default state.
+        TT_CHECKOUT_LOADER_ATTRIBUTES.css.position = 'fixed';
+      } else {
+        jQuery.blockUI(TT_CHECKOUT_LOADER_ATTRIBUTES);
+      }
+    } else {
+      // Across the website default blockUI loader style.
+      if( 'string' === typeof targetElement && 0 < targetElement.length ) {
+        jQuery(targetElement).block(TT_BLOCK_UI_LOADER_ATTRIBUTES);
+      } else {
+        jQuery.blockUI(TT_BLOCK_UI_LOADER_ATTRIBUTES);
+      }
+    }
+  },
+  /**
+   * Hide the loader.
+   *
+   * @param {int|string} delay A numeric value in ms for the unblock UI delay.
+   * @param {string} targetElement The HTML element selector from which to remove the loader.
+   */
+  hide: function( delay = 0, targetElement = '' ) {
+    if( ! isNaN( parseInt( delay ) ) && 0 < parseInt( delay ) ) {
+      setTimeout( jQuery.unblockUI, parseInt( delay ) );
+    } else {
+      if( 'string' === typeof targetElement && 0 < targetElement.length ) {
+        jQuery(targetElement).unblock()
+      } else {
+        jQuery.unblockUI();
+      }
+    }
+  }
+}
 
 function tt_fetch_display_order_emails() {
   if (trek_JS_obj && trek_JS_obj.order_id && trek_JS_obj.is_order_received == true) {
@@ -521,13 +612,33 @@ jQuery(document).ready(function () {
     ]
   });
   let counter = jQuery('.guestnumber').val();
+  let addingGuestsInProgress = false;
   jQuery('#minus').addClass('qtydisable');
-  function addfields(countnum) {
-    var add = countnum;
-    var modifiedCountnum = add + 1;
-    jQuery('#qytguest').append('<div class="guest-checkout__guests guests"><p class="guest-checkout-info fs-xl lh-xl fw-medium mb-4">Guest ' + modifiedCountnum + '</p><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_fname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="First Name" value=""><label for="floatingInputGrid">First Name</label></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" name="guests[' + add + '][guest_lname]" class="form-control tt_guest_inputs" required="required" data-validation="text" data-type="input" id="floatingInputGrid" placeholder="Last Name" value=""><label for="floatingInputGrid">Last Name</label></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class="form-floating"><input type="email" name="guests[' + add + '][guest_email]" class="form-control tt_guest_inputs" required="required" data-validation="email" data-type="input" id="floatingInputGrid" placeholder="Email" value=""><label for="floatingInputGrid">Email</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid email address.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="text" class="form-control tt_guest_inputs" required="required" data-validation="phone" data-type="input" id="floatingInputGrid" name="guests[' + add + '][guest_phone]" placeholder="Phone" value=""><label for="floatingInputGrid">Phone</label><div class="invalid-feedback"><img class="invalid-icon" /> Please enter valid phone number.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row"><div class="col-md px-0 form-row"><div class=""><select required="required" class="form-select py-4 tt_guest_inputs" required="required" data-validation="text" data-type="input" name="guests[' + add + '][guest_gender]" id="floatingSelectGrid" aria-label="Floating label select example"><option value="" selected>Select Gender</option><option value="1">Male</option><option value="2">Female</option></select><div class="invalid-feedback"><img class="invalid-icon" /> Please select gender.</div></div></div><div class="col-md px-0 form-row"><div class="form-floating"><input type="date" name="guests[' + add + '][guest_dob]" class="form-control tt_guest_inputs" required="required" data-validation="date" data-type="date" id="floatingInputGrid" placeholder="Date of Birth" value=""><label for="floatingInputGrid">Date of Birth</label><div class="invalid-feedback invalid-age dob-error"><img class="invalid-icon" /> Age must be 18 years old or above, Please enter correct date of birth.</div><div class="invalid-feedback invalid-min-year dob-error"><img class="invalid-icon" /> The year must be greater than 1900, Please enter correct date of birth.</div><div class="invalid-feedback invalid-max-year dob-error"><img class="invalid-icon" /> The year cannot be in the future, Please enter the correct date of birth.</div></div></div></div><div class="row mx-0 guest-checkout__primary-form-row pt-1"><hr></div>');
+  function addfields(gcount, glen) {
+    if( ! addingGuestsInProgress ) {
+      addingGuestsInProgress = true;
+      let action = 'get_add_guest_template_action';
+
+      jQuery.ajax({
+        type: 'POST',
+        url: trek_JS_obj.ajaxURL,
+        data: "action=" + action + "&guest_count=" + gcount + "&guest_length=" + glen,
+        dataType: 'json',
+        beforeSend : function(){
+          // Set loader.
+          ttLoader.show();
+        },
+        success: function ( response ) {
+          if( true == response.status && response.checkout_guest_single_html ) {
+            jQuery( '#qytguest' ).append( response.checkout_guest_single_html );
+          }
+          // Remove loader.
+          ttLoader.hide();
+          addingGuestsInProgress = false;
+        },
+      });
+    }
   }
-  //jQuery('.guestnumber').keyup(function () {
   jQuery('.guestnumber').on('keyup', function () {
     counter = jQuery(this).val();
     var tripLimit = parseInt(trek_JS_obj.trip_booking_limit.remaining)
@@ -547,28 +658,21 @@ jQuery(document).ready(function () {
       }
     } else if (counter > 1) {
       jQuery('#minus').removeClass('qtydisable');
-      var guest = counter - jQuery('#qytguest .guests').length;
       jQuery('.guest-infoo , .guest-subinfo , #qytguest').removeClass('d-none');
-      for (var i = 1; i < guest; i++) {
-        var count = 1 + jQuery('#qytguest .guests').length;
-        addfields(count);
-      }
+      addfields(counter, glen);
     }
+    tripCapacityValidation(false);
   });
   jQuery('#plus').on('click', function () {
     counter = jQuery('.guestnumber').val();
-    //jQuery('#plus').click(function () {
     jQuery('.guestnumber').val(++counter);
     if (counter > 1) {
       jQuery('#minus').removeClass('qtydisable');
     }
-    var guest = counter - jQuery('#qytguest .guests').length;
+    var glen = jQuery('#qytguest .guests').length;
     jQuery('.guest-infoo , .guest-subinfo , #qytguest').removeClass('d-none');
+    addfields(counter, glen);
     tripCapacityValidation(false);
-    for (var i = 1; i < guest; i++) {
-      var count = i + jQuery('#qytguest .guests').length;
-      addfields(count);
-    }
   });
   jQuery('#minus').on('click', function () {
     counter = jQuery('.guestnumber').val();
@@ -718,23 +822,13 @@ jQuery('.billing_checkbox').on('change', function (e) {
     dataType: 'json',
     beforeSend : function(){
       jQuery('.checkout-payment__pre-address').html('');
-      jQuery('.checkout-payment__pre-address').block({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       jQuery('.checkout-payment__pre-address').html(response.address);
     },
     complete: function(){
-      jQuery('.checkout-payment__pre-address').unblock();
+      ttLoader.hide();
     }
   });
   if (e.target.checked) {
@@ -932,147 +1026,177 @@ jQuery(document).ready(function () {
   if(parseInt(currentStep) == 4){
     checkoutPaymentAnalytics()
   }
-  jQuery('body').on('click', 'form.checkout.woocommerce-checkout .btn-next', function () {
-    tripCapacityValidation(false);
-    var currentStep = jQuery('input[name="step"]').val();
-    var targetStep = parseInt(currentStep) + parseInt(1);
-    var targetStepId = jQuery('li.nav-item[data-step="' + targetStep + '"]').attr('data-step-id');
-    var duplicatedGuestEmail = tt_validate_duplicate_email();
-    var validationStatus = checkout_steps_validations(currentStep);
-    if (duplicatedGuestEmail == true) {
-      validationStatus = true;
-    }
-    if (validationStatus == true) {
-      var firstInvalidField = jQuery('.woocommerce-invalid').eq(0);
-      jQuery('html, body').animate({
-        scrollTop: firstInvalidField.offset().top - 120
-      }, 500);
-      
 
-      return false;
-    }
-    jQuery.blockUI({
-      css: {
-        border: 'none',
-        padding: '15px',
-        backgroundColor: '#000',
-        '-webkit-border-radius': '10px',
-        '-moz-border-radius': '10px',
-        opacity: .5,
-        color: '#fff'
+  var validationStatus;
+  function StepValidation() {
+      tripCapacityValidation(false);
+      var currentStep = jQuery('input[name="step"]').val();
+      var isHikingCheckout = jQuery('input[name="is_hiking_checkout"]').val();
+      var targetStep = parseInt(currentStep) + parseInt(1);
+      var targetStepId = jQuery('li.nav-item[data-step="' + targetStep + '"]').attr('data-step-id');
+      var duplicatedGuestEmail = tt_validate_duplicate_email();
+      var validationStatus = checkout_steps_validations(currentStep);
+      if (duplicatedGuestEmail == true) {
+        validationStatus = true;
       }
-    });
-    var formData = jQuery('form.checkout.woocommerce-checkout').serialize();
-    var action = 'save_checkout_steps_action';
-    jQuery.ajax({
-      type: 'POST',
-      url: trek_JS_obj.ajaxURL,
-      data: formData + "&targetStep=" + targetStep + "&action=" + action,
-      dataType: 'json',
-      success: function (response) {
-        jQuery(`div.tab-pane`).removeClass('active show');
-        jQuery(`.checkout-timeline__progress-bar li.nav-item`).removeClass('active');
-        jQuery(`.checkout-timeline__progress-bar li.nav-item[data-step="${targetStep}"]`).addClass('active');
-        jQuery(`div.tab-pane[data-step="${targetStep}"]`).addClass('active show');
-        jQuery('input[name="step"]').val(targetStep);
-        if ((targetStep == 2 || targetStep == 4) && response.stepHTML) {
-          jQuery(`div.tab-pane[data-step="${targetStep}"]`).html(response.stepHTML);
+      if (validationStatus == true) {
+        var firstInvalidField = jQuery('.woocommerce-invalid').eq(0);
+        if(firstInvalidField) {
+          jQuery('html, body').animate({
+            scrollTop: firstInvalidField.offset().top - 120
+          }, 500);
+        } else {
+          jQuery('html, body').animate({
+            scrollTop: jQuery(window).offset().top - 120
+          }, 500);
         }
-        if (response.insuredHTMLPopup) {
-          jQuery(`#tt-popup-insured-form`).html(response.insuredHTMLPopup);
-        }
-        if (response.insuredHTML) {
-          jQuery(`#travel-protection-div`).html(response.insuredHTML);
-        }
-        if (response.review_order) {
-          jQuery('#tt-review-order').html(response.review_order);
-        }
-        if( jQuery('.checkout-payment__options').length > 0 && response.payment_option ) {
-          jQuery('.checkout-payment__options').html(response.payment_option);
-        }
-        setTimeout(jQuery.unblockUI, 2000);
-        window.history.replaceState(null, null, response.redirectURL);
-        //window.location.href = response.redirectURL
-        handleProgressBar(targetStep)
-
-        jQuery('body').on('click', '.open-roommate-popup', function() {
-          jQuery('.open-to-roommate-popup-container').css('display', 'flex');
-          jQuery('header').css('z-index','0');
-          jQuery('body').css('overflow','hidden');
-          jQuery('html').addClass('no-scroll');
-        })
-        
-        jQuery('.open-to-roommate-popup-container .close-btn').on('click', function() {
-          jQuery('.open-to-roommate-popup-container').fadeOut();
-          jQuery('header').css('z-index','1020');
-          jQuery('body').css('overflow','');
-          jQuery('html').removeClass('no-scroll');
-        })
-        
-        jQuery('.open-to-roommate-popup-container').on('click', function(e) {
-          if(jQuery(e.target).hasClass('open-to-roommate-popup-container')) {
+      
+        return false;
+      }
+      ttLoader.show();
+      var formData = jQuery('form.checkout.woocommerce-checkout').serialize();
+      var action = 'save_checkout_steps_action';
+      jQuery.ajax({
+        type: 'POST',
+        url: trek_JS_obj.ajaxURL,
+        data: formData + "&targetStep=" + targetStep + "&action=" + action,
+        dataType: 'json',
+        success: function (response) {
+          jQuery(`div.tab-pane`).removeClass('active show');
+          jQuery(`.checkout-timeline__progress-bar li.nav-item`).removeClass('active');
+          jQuery(`.checkout-timeline__progress-bar li.nav-item[data-step="${targetStep}"]`).addClass('active');
+          jQuery(`div.tab-pane[data-step="${targetStep}"]`).addClass('active show');
+          jQuery('input[name="step"]').val(targetStep);
+          if ((targetStep == 2 || targetStep == 4 || ( isHikingCheckout && targetStep == 3 ) ) && response.stepHTML) {
+            if( 4 == targetStep || ( isHikingCheckout && targetStep == 3 ) ) {
+              jQuery(`#tt-checkout-reviews-inner-html`).html(response.stepHTML);
+            } else {
+              jQuery(`div.tab-pane[data-step="${targetStep}"]`).html(response.stepHTML);
+              if( response.checkout_bikes && ! isHikingCheckout ) {
+                jQuery('#tt-bikes-selection-inner-html').html(response.checkout_bikes);
+              }
+            }
+            if( 2 == targetStep ) {
+              // Set disabled attribute on the plus and minus buttons.
+              validateGuestSelectionAdds();
+            }
+          }
+          if (response.insuredHTMLPopup) {
+            jQuery(`#tt-popup-insured-form`).html(response.insuredHTMLPopup);
+          }
+          if (response.guest_insurance_html) {
+            jQuery(`#travel-protection-div`).html(response.guest_insurance_html);
+          }
+          if (response.review_order) {
+            jQuery('#tt-review-order').html(response.review_order);
+          }
+          if( jQuery('.checkout-payment__options').length > 0 && response.payment_option ) {
+            jQuery('.checkout-payment__options').html(response.payment_option);
+          }
+          ttLoader.hide(2000);
+          window.history.replaceState(null, null, response.redirectURL);
+          //window.location.href = response.redirectURL
+          handleProgressBar(targetStep)
+  
+          jQuery('body').on('click', '.open-roommate-popup', function() {
+            jQuery('.open-to-roommate-popup-container').css('display', 'flex');
+            jQuery('header').css('z-index','0');
+            jQuery('body').css('overflow','hidden');
+            jQuery('html').addClass('no-scroll');
+          })
+          
+          jQuery('.open-to-roommate-popup-container .close-btn').on('click', function() {
             jQuery('.open-to-roommate-popup-container').fadeOut();
             jQuery('header').css('z-index','1020');
             jQuery('body').css('overflow','');
             jQuery('html').removeClass('no-scroll');
-          }
-        })
-
-        jQuery('body').on('click', '.checkout-private-popup', function() {
-          jQuery('.private-popup-container').css('display', 'flex');
-          jQuery('header').css('z-index','0');
-          jQuery('body').css('overflow','hidden');
-          jQuery('html').addClass('no-scroll');
-        })
-        
-        jQuery('.private-popup-container .close-btn').on('click', function() {
-          jQuery('.private-popup-container').fadeOut();
-          jQuery('header').css('z-index','1020');
-          jQuery('body').css('overflow','');
-          jQuery('html').removeClass('no-scroll');
-        })
-        
-        jQuery('.private-popup-container').on('click', function(e) {
-          if(jQuery(e.target).hasClass('private-popup-container')) {
+          })
+          
+          jQuery('.open-to-roommate-popup-container').on('click', function(e) {
+            if(jQuery(e.target).hasClass('open-to-roommate-popup-container')) {
+              jQuery('.open-to-roommate-popup-container').fadeOut();
+              jQuery('header').css('z-index','1020');
+              jQuery('body').css('overflow','');
+              jQuery('html').removeClass('no-scroll');
+            }
+          })
+  
+          jQuery('body').on('click', '.checkout-private-popup', function() {
+            jQuery('.private-popup-container').css('display', 'flex');
+            jQuery('header').css('z-index','0');
+            jQuery('body').css('overflow','hidden');
+            jQuery('html').addClass('no-scroll');
+          })
+          
+          jQuery('.private-popup-container .close-btn').on('click', function() {
             jQuery('.private-popup-container').fadeOut();
             jQuery('header').css('z-index','1020');
             jQuery('body').css('overflow','');
             jQuery('html').removeClass('no-scroll');
-          }
-        })
-
-        jQuery('body').on('click', '.checkout-double-occupancy', function() {
-          jQuery('.private-popup-container').css('display', 'flex');
-          jQuery('header').css('z-index','0');
-          jQuery('body').css('overflow','hidden');
-          jQuery('html').addClass('no-scroll');
-        })
-
-        jQuery('body').on('click', '.checkout-travel-protection-tooltip', function() {
-          jQuery('.travel-protection-tooltip-container').css('display', 'flex');
-          jQuery('header').css('z-index','0');
-          jQuery('body').css('overflow','hidden');
-          jQuery('html').addClass('no-scroll');
-        })
-        
-        jQuery('.travel-protection-tooltip-container .close-btn').on('click', function() {
-          jQuery('.travel-protection-tooltip-container').fadeOut();
-          jQuery('header').css('z-index','1020');
-          jQuery('body').css('overflow','');
-          jQuery('html').removeClass('no-scroll');
-        })
-        
-        jQuery('.travel-protection-tooltip-container').on('click', function(e) {
-          if(jQuery(e.target).hasClass('travel-protection-tooltip-container')) {
+          })
+          
+          jQuery('.private-popup-container').on('click', function(e) {
+            if(jQuery(e.target).hasClass('private-popup-container')) {
+              jQuery('.private-popup-container').fadeOut();
+              jQuery('header').css('z-index','1020');
+              jQuery('body').css('overflow','');
+              jQuery('html').removeClass('no-scroll');
+            }
+          })
+  
+          jQuery('body').on('click', '.checkout-double-occupancy', function() {
+            jQuery('.private-popup-container').css('display', 'flex');
+            jQuery('header').css('z-index','0');
+            jQuery('body').css('overflow','hidden');
+            jQuery('html').addClass('no-scroll');
+          })
+  
+          jQuery('body').on('click', '.checkout-travel-protection-tooltip', function() {
+            jQuery('.travel-protection-tooltip-container').css('display', 'flex');
+            jQuery('header').css('z-index','0');
+            jQuery('body').css('overflow','hidden');
+            jQuery('html').addClass('no-scroll');
+          })
+          
+          jQuery('.travel-protection-tooltip-container .close-btn').on('click', function() {
             jQuery('.travel-protection-tooltip-container').fadeOut();
             jQuery('header').css('z-index','1020');
             jQuery('body').css('overflow','');
             jQuery('html').removeClass('no-scroll');
-          }
-        })
-      }
-    });
+          })
+          
+          jQuery('.travel-protection-tooltip-container').on('click', function(e) {
+            if(jQuery(e.target).hasClass('travel-protection-tooltip-container')) {
+              jQuery('.travel-protection-tooltip-container').fadeOut();
+              jQuery('header').css('z-index','1020');
+              jQuery('body').css('overflow','');
+              jQuery('html').removeClass('no-scroll');
+            }
+          })
+        }
+      });
+  }
+
+  jQuery('body').on('click', 'form.checkout.woocommerce-checkout .btn-next', function () {
+    StepValidation();
   });
+
+  jQuery('body').on('click', '.checkout-timeline .nav-link', function (e) {
+    var $clickedLink = jQuery(this);
+    var $clickedItem = jQuery(this).parent();
+    var $activeLink = jQuery('.checkout-timeline .nav-item.active');
+   
+    //Check if the clicked link is not the active link and not before the active link
+    if (!$clickedItem.hasClass('active') && $clickedItem.index() >= $activeLink.index()) {
+      e.preventDefault();
+      var navLink = $clickedLink.attr('href');
+      StepValidation();
+      if (validationStatus == true) {
+        window.location.href = navLink;
+      }
+    }
+  });
+
 });
 jQuery(document).ready(function () {
 
@@ -1120,17 +1244,7 @@ jQuery(document).ready(function () {
           console.log(2);
           jQuery('#trek-login-responses').html('');
           jQuery('form.woocommerce-form-login').removeClass('was-validated')
-          jQuery.blockUI({
-            css: {
-              border: 'none',
-              padding: '15px',
-              backgroundColor: '#000',
-              '-webkit-border-radius': '10px',
-              '-moz-border-radius': '10px',
-              opacity: .5,
-              color: '#fff'
-            }
-          });
+          ttLoader.show();
         },
         success: function (response) {
           console.log(3);
@@ -1138,14 +1252,13 @@ jQuery(document).ready(function () {
           if (response.status == true) {
             jQuery('form.woocommerce-form-login')[0].reset();
             resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`;
-            // jQuery('#trek-login-responses').html(resMessage);
-            setTimeout(jQuery.unblockUI, 1000);
+            ttLoader.hide(1000);
             window.location.href = response.redirect;
           } else {
             resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`;
             jQuery('#trek-login-responses').html(resMessage);
           }
-          setTimeout(jQuery.unblockUI, 500);
+          ttLoader.hide(500);
           return false;
         }
       });
@@ -1164,17 +1277,7 @@ jQuery(document).ready(function () {
         dataType: 'json',
         beforeSend: function () {
           jQuery('#change-password-responses').html('');
-          jQuery.blockUI({
-            css: {
-              border: 'none',
-              padding: '15px',
-              backgroundColor: '#000',
-              '-webkit-border-radius': '10px',
-              '-moz-border-radius': '10px',
-              opacity: .5,
-              color: '#fff'
-            }
-          });
+          ttLoader.show();
         },
         success: function (response) {
           var resMessage = '';
@@ -1190,7 +1293,7 @@ jQuery(document).ready(function () {
             resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
           }
           jQuery('#change-password-responses').html(resMessage);
-          setTimeout(jQuery.unblockUI, 500);
+          ttLoader.hide(500);
           return false;
         }
       });
@@ -1232,17 +1335,7 @@ jQuery(document).ready(function () {
       dataType: 'json',
       beforeSend: function () {
         jQuery('#my-trips-responses').html('');
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         var resMessage = '';
@@ -1327,7 +1420,7 @@ jQuery(document).ready(function () {
         if (response.status == false) {
           alert(response.message);
         }
-        setTimeout(jQuery.unblockUI, 500);
+        ttLoader.hide(500);
         return false;
       }
     });
@@ -1343,23 +1436,13 @@ jQuery(document).ready(function () {
       dataType: 'json',
       beforeSend: function () {
         jQuery('#medical-information-responses').html('');
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {        
         jQuery('.medical-info-toast .toast-body').html(response.message);
         const toastMessage = document.querySelector('.medical-info-toast');
         toastMessage.classList.toggle('show');
-        setTimeout(jQuery.unblockUI, 500);
+        ttLoader.hide(500);
         return false;
       }
     });
@@ -1375,17 +1458,7 @@ jQuery(document).ready(function () {
       dataType: 'json',
       beforeSend: function () {
         jQuery('#contact-information-responses').html('');
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         var resMessage = '';
@@ -1395,7 +1468,7 @@ jQuery(document).ready(function () {
           resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
         }
         jQuery('#contact-information-responses').html(resMessage);
-        setTimeout(jQuery.unblockUI, 500);
+        ttLoader.hide(500);
         return false;
       }
     });
@@ -1416,12 +1489,12 @@ jQuery(document).ready(function () {
   jQuery('body').on('click', '#checkout-summary-mobile', function () {
     jQuery('.checkout-summary').toggleClass('d-none');
     if (jQuery('.checkout-summary').hasClass('d-none')) {
-      jQuery(this).removeClass('checkout-summary__mobile-open');
-      jQuery(this).addClass('checkout-summary__mobile');
+      jQuery(this).removeClass('is-opened');
+    //   jQuery(this).addClass('checkout-summary__mobile');
       jQuery('.checkout-summary').removeClass('checkout-summary__toggle');
     } else {
-      jQuery(this).addClass('checkout-summary__mobile-open');
-      jQuery(this).removeClass('checkout-summary__mobile');
+      jQuery(this).addClass('is-opened');
+    //   jQuery(this).removeClass('checkout-summary__mobile');
       jQuery('.checkout-summary').addClass('checkout-summary__toggle');
     }
   });
@@ -1431,6 +1504,31 @@ jQuery(document).ready(function () {
       'event': 'book_this_trip'
     });
   });
+
+  jQuery('body').on('click', '.checkout-bikes__bike-selection', function () {
+    dataLayer.push({
+      'event': 'gear_selected'
+    });
+    //Check if there's no input with the name bike-clicked
+    if (jQuery('input[name="bike-clicked"]').length === 0) {
+      jQuery('<input>').attr({
+          type: 'hidden',
+          name: 'bike-clicked',
+          value: 'true'
+      }).appendTo('.checkout-bikes__bike-selection');
+    }
+  });
+
+  jQuery('body').on('click', '.checkout-bikes__footer-step-btn .btn-next', function (e) {
+      //Get the value of bike-clicked, if exists and defined
+      var bikeClicked = jQuery('input[name="bike-clicked"]').val();
+      if( bikeClicked === 'true' ) {
+        dataLayer.push({
+          'event': 'gear_selected'
+        });
+      }
+  });
+
 });
 jQuery(window).load(function () {
 
@@ -1495,17 +1593,7 @@ jQuery('body').on('submit', 'form[name="trek-bike-gear-preferences"]', function 
     dataType: 'json',
     beforeSend: function () {
       jQuery('#bike-gear-preferences-responses').html('');
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       var resMessage = '';
@@ -1515,7 +1603,7 @@ jQuery('body').on('submit', 'form[name="trek-bike-gear-preferences"]', function 
         resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
       }
       jQuery('#bike-gear-preferences-responses').html(resMessage);
-      setTimeout(jQuery.unblockUI, 500);
+      ttLoader.hide(500);
       return false;
     }
   });
@@ -1531,17 +1619,7 @@ jQuery('body').on('submit', 'form[name="trek-communication-preferences"]', funct
     dataType: 'json',
     beforeSend: function () {
       jQuery('#communication-preferences-responses').html('');
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       var resMessage = '';
@@ -1551,7 +1629,7 @@ jQuery('body').on('submit', 'form[name="trek-communication-preferences"]', funct
         resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`
       }
       jQuery('#communication-preferences-responses').html(resMessage);
-      setTimeout(jQuery.unblockUI, 500);
+      ttLoader.hide(500);
       return false;
     }
   });
@@ -1656,17 +1734,7 @@ function get_quote_travel_protection() {
     data: formData + "&action=" + action,
     dataType: 'json',
     beforeSend: function () {
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       var resMessage = '';
@@ -1678,7 +1746,7 @@ function get_quote_travel_protection() {
       if (response.review_order) {
         jQuery('#tt-review-order').html(response.review_order);
       }
-      setTimeout(jQuery.unblockUI, 500);
+      ttLoader.hide(500);
       jQuery('.checkout-payment__add-travel').addClass('d-none');
       jQuery('.checkout-payment__added-travel').removeClass('d-none');
       if (response.guest_insurance_html) {
@@ -1750,17 +1818,7 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
       data: dataString,
       dataType: 'json',
       beforeSend: function () {
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         var step = jQuery(".tab-pane.active.show").attr('data-step');
@@ -1777,16 +1835,17 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
         if (jQuery('#tt-review-order').length > 0 && response.html) {
           jQuery('#tt-review-order').html(response.html);
         }
-        jQuery("#currency_switcher").trigger("change")
-        if (parseInt(step) != 4) {
+        jQuery("#currency_switcher").trigger("change");
+        var isHikingCheckout = jQuery('input[name="is_hiking_checkout"]').val();
+        if (parseInt(step) != 4 || ( isHikingCheckout && parseInt( step ) != 3 )) { 
           jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').addClass("d-none")
         }
         // Show tearms and conditiones checkbox and pay now button on step 4.
-        if( parseInt( step ) === 4 ) {
+        if( parseInt( step ) === 4 || ( isHikingCheckout && parseInt( step ) === 3 ) ) {
           jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').removeClass("d-none");
         }
         if (response.status == false && dataString.type == 'add' ) {
-          jQuery.unblockUI();
+          ttLoader.hide();
           
          if ( coupon_code !== '') {
             // jQuery(".promo-input").val(coupon_code)
@@ -1811,14 +1870,12 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
                 jQuery('#tt-review-order').html(response.review_order);
               }
               setTimeout( function(){
-                jQuery('#protection_modal .modal-content').unblock()
+                ttLoader.hide( 0, '#protection_modal .modal-content' );
                 jQuery("#currency_switcher").trigger("change")
               }, 500);
               if (response.guest_insurance_html) {
                 jQuery('#travel-protection-div').html(response.guest_insurance_html);
-              }
-              if (response.insured_summary_html) {
-                jQuery('#travel-protection-summary').html(response.insured_summary_html);
+                jQuery('#travel-protection-summary').html(response.guest_insurance_html);
               }
               if (response.insuredHTMLPopup) {
                 jQuery(`#tt-popup-insured-form`).html(response.insuredHTMLPopup);
@@ -1829,7 +1886,7 @@ if (jQuery('.tt_apply_coupan').length > 0 || jQuery('.tt_remove_coupan').length 
               if( parseInt( step ) === 4 ) {
                 jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').removeClass("d-none");
               }
-              jQuery.unblockUI();
+              ttLoader.hide();
             }
           });
         }
@@ -1859,64 +1916,20 @@ if (jQuery('#load-more').length > 0) {
       },
       dataType: 'json',
       beforeSend: function () {
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         if (currentPage >= response.max) {
           jQuery('#load-more').hide();
         }
         jQuery('.blog-list-appendTo').append(response.html);
-        setTimeout(jQuery.unblockUI, 500);
+        ttLoader.hide(500);
       }
     });
     return false;
   });
 }
-// if (jQuery('button[data-field="private"]').length > 0) {
-//   jQuery('body').on('click', 'button[data-field="private"]', function () {
-//     var actionName = 'tt_single_suppliment_fees_action';
-//     var private = jQuery('input[name="private"]').val();
-//     jQuery.ajax({
-//       type: 'POST',
-//       url: trek_JS_obj.ajaxURL,
-//       data: {
-//         action: actionName,
-//         private: private
-//       },
-//       dataType: 'json',
-//       beforeSend: function () {
-//         jQuery.blockUI({
-//           css: {
-//             border: 'none',
-//             padding: '15px',
-//             backgroundColor: '#000',
-//             '-webkit-border-radius': '10px',
-//             '-moz-border-radius': '10px',
-//             opacity: .5,
-//             color: '#fff'
-//           }
-//         });
-//       },
-//       success: function (response) {
-//         if( response.review_order ){
-//           jQuery('#tt-review-order').html(response.review_order);
-//         }
-//         setTimeout(jQuery.unblockUI, 500);
-//       }
-//     });
-//     return false;
-//   });
-// }
+
 if (jQuery('#tt-occupants-btn').length > 0) {
   jQuery('body').on('click', '#tt-occupants-btn', function () {
     // Take the number of all Select/Options fields in the Modal.
@@ -1952,17 +1965,7 @@ if (jQuery('#tt-occupants-btn').length > 0) {
       data: formData + "&action=" + actionName,
       dataType: 'json',
       beforeSend: function () {
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         jQuery('#tt-occupants-btn-close').trigger('click');
@@ -1971,9 +1974,13 @@ if (jQuery('#tt-occupants-btn').length > 0) {
         }
         if (response.step == 2 && response.stepHTML) {
           jQuery(`div.tab-pane[data-step="${response.step}"]`).html(response.stepHTML);
+          var isHikingCheckout = jQuery('input[name="is_hiking_checkout"]').val();
+          if( response.checkout_bikes && ! isHikingCheckout ) {
+            jQuery('#tt-bikes-selection-inner-html').html(response.checkout_bikes);
+          }
         }
         validateGuestSelectionAdds();
-        jQuery.unblockUI();
+        ttLoader.hide();
         jQuery("#currency_switcher").trigger("change")
         jQuery('div[data-room="p-assign"]').hide();
         jQuery('div[data-room="s-assign"]').hide();
@@ -2035,7 +2042,7 @@ jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu a.mega-menu-link', fun
 function handleProgressBar(currentStep) {
   if (currentStep) {
     document.body.scrollTop = document.documentElement.scrollTop = 0
-    jQuery('#progress-bar li.active').prevAll().css({ "background-color": "#28AAE1", "border": "2px solid #28AAE1" })
+    // jQuery('#progress-bar li.active').prevAll().css({ "background-color": "#28AAE1", "border": "2px solid #28AAE1" })
     jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').addClass("d-none")
     jQuery('body').removeClass('elementor-kit-14');
     jQuery("#currency_switcher").trigger("change")
@@ -2043,9 +2050,13 @@ function handleProgressBar(currentStep) {
     jQuery("#guest #shipping_state").attr("required", "required")
     switch (parseInt(currentStep)) {
       case 2:
-        jQuery('#progress-bar .checkout-timeline__progress-bar-line').css("width", "33%")
+        if(jQuery('body').hasClass('checkout-style-hiking')) {
+          jQuery('#progress-bar .checkout-timeline__progress-bar-line').css("width", "50%")
+        } else {
+          jQuery('#progress-bar .checkout-timeline__progress-bar-line').css("width", "33%")
+        }
         jQuery('.checkout-summary').addClass('d-none');
-        jQuery('#checkout-summary-mobile').removeClass('checkout-summary__mobile-open');
+        // jQuery('#checkout-summary-mobile').removeClass('checkout-summary__mobile-open');
         jQuery('#checkout-summary-mobile').addClass('checkout-summary__mobile');
         jQuery('.checkout-summary').removeClass('checkout-summary__toggle');
         assignEditOccupantsCtaShowHide()
@@ -2056,11 +2067,21 @@ function handleProgressBar(currentStep) {
         break;
 
       case 3:
-        jQuery('#progress-bar .checkout-timeline__progress-bar-line').css("width", "66%")
-        jQuery('.checkout-summary').addClass('d-none');
-        jQuery('#checkout-summary-mobile').removeClass('checkout-summary__mobile-open');
-        jQuery('#checkout-summary-mobile').addClass('checkout-summary__mobile');
-        jQuery('.checkout-summary').removeClass('checkout-summary__toggle');
+        if(jQuery('body').hasClass('checkout-style-hiking')) {
+          jQuery('#progress-bar .checkout-timeline__progress-bar-line').css("width", "99%");
+          jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').removeClass("d-none")
+          // jQuery('#checkout-summary-mobile').trigger("click")
+          jQuery('.checkout-summary').removeClass('d-none');
+          jQuery('#checkout-summary-mobile').removeClass('checkout-summary__mobile-open');
+          jQuery('#checkout-summary-mobile').addClass('checkout-summary__mobile');
+          jQuery('.checkout-summary').addClass('checkout-summary__toggle');
+        } else {
+          jQuery('#progress-bar .checkout-timeline__progress-bar-line').css("width", "66%")
+          jQuery('.checkout-summary').addClass('d-none');
+          jQuery('#checkout-summary-mobile').removeClass('checkout-summary__mobile-open');
+          jQuery('#checkout-summary-mobile').addClass('checkout-summary__mobile');
+          jQuery('.checkout-summary').removeClass('checkout-summary__toggle');
+        }
         break;
 
       case 4:
@@ -2068,8 +2089,8 @@ function handleProgressBar(currentStep) {
         jQuery('.guest-checkout__checkbox-gap, .checkout-summary__button').removeClass("d-none")
         // jQuery('#checkout-summary-mobile').trigger("click")
         jQuery('.checkout-summary').removeClass('d-none');
-        jQuery('#checkout-summary-mobile').addClass('checkout-summary__mobile-open');
-        jQuery('#checkout-summary-mobile').removeClass('checkout-summary__mobile');
+        jQuery('#checkout-summary-mobile').removeClass('checkout-summary__mobile-open');
+        jQuery('#checkout-summary-mobile').addClass('checkout-summary__mobile');
         jQuery('.checkout-summary').addClass('checkout-summary__toggle');
 
         break;
@@ -2127,7 +2148,7 @@ jQuery(document).on('click keyup keydown change', '.tt_rider_level_select', func
     console.log('rider_level_id', rider_level_id);
     jQuery(divID).show();
     if (guest_id != 'primary') {
-      if(jQuery('select[name="bike_gears[' + guest_id + '][bike_size]"] option:selected').index() <= 0) {
+      if(jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_size]"] option:selected').index() <= 0) {
         jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val('');
       }
     }else{
@@ -2178,6 +2199,7 @@ jQuery(document).on('click keyup keydown change', '.tt_rider_level_select', func
 });
 jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
   var divID = `div[data-id="${jQuery(this).attr('data-type')}"]`;
+  var bikeCommentsDivID = `div[data-id-bc="${jQuery(this).attr('data-type-bc')}"]`;
   var dataType = jQuery(this).attr('data-type');
   if (dataType.includes("tt_my_own_bike_guest_") == true) {
     var guest_idArr = dataType.split('tt_my_own_bike_guest_');
@@ -2186,49 +2208,86 @@ jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
     var guest_id = 'primary';
   }
   if (jQuery(this).is(':checked')) {
+    // Show a warning modal with a checkbox.
+    jQuery('#checkoutOwnBikeModal').modal('toggle');
+
     jQuery(divID).find('input').prop('required', false);
     jQuery(divID).find('select').prop('required', false);
+    jQuery(bikeCommentsDivID).find('input').prop('required', true);
+    jQuery(bikeCommentsDivID).find('select').prop('required', true);
     //empty/reset all Fields without bike type id fields.
     jQuery(divID).find('input:not([name$="[bikeTypeId]"])').val('');
     jQuery(divID).find('select').prop('selectedIndex',0);
     if (guest_id != 'primary') {
       jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val(5270);
+      // Set bike pedals to bring own.
+      jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_pedal]"]').val(1);
+      // Set helmet size to bring own.
+      jQuery('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"]').val(1);
     }else{
       jQuery('input[name="bike_gears[primary][bikeId]"]').val(5270)
+      // Set bike pedals to bring own
+      jQuery('select[name="bike_gears[primary][bike_pedal]"]').val(1);
+      // Set helmet size to bring own.
+      jQuery('select[name="bike_gears[primary][helmet_size]"]').val(1);
     }
     jQuery(divID).hide();
+    jQuery(bikeCommentsDivID).show();
     if (guest_id != 'primary') {
       jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_size]"]').prop('required', false);
       jQuery('select[name="bike_gears[guests][' + guest_id + '][rider_height]"]').prop('required', false);
       jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeTypeId]"]').prop('required', false);
       jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').prop('required', false);
+      jQuery('input[name="bike_gears[guests][' + guest_id + '][type_of_bike]"]').prop('required', true);
+      jQuery('select[name="bike_gears[guests][' + guest_id + '][transportation_options]"]').prop('required', true);
     } else {
       jQuery('select[name="bike_gears[primary][bike_size]"]').prop('required', false);
       jQuery('select[name="bike_gears[primary][rider_height]"]').prop('required', false);
       jQuery('input[name="bike_gears[primary][bikeTypeId]"]').prop('required', false);
       jQuery('input[name="bike_gears[primary][bikeId]"]').prop('required', false);
+      jQuery('input[name="bike_gears[primary][type_of_bike]"]').prop('required', true);
+      jQuery('select[name="bike_gears[primary][transportation_options]"]').prop('required', true);
     }
+    let thisBikeSizeFieldName = jQuery(this).closest('.checkout-bikes__bike-selection').find('[name*="[bike_size]"]').attr('name');
+    // This is async function so think how to prevent unbloking UI before finished.
+    reBuildBikeSizeOptions(thisBikeSizeFieldName);
   } else {
+    //empty/reset all bike comments fields.
+    jQuery(bikeCommentsDivID).find('input').val('');
+    jQuery(bikeCommentsDivID).find('select').prop('selectedIndex',0);
     if (guest_id != 'primary') {
-      if(jQuery('select[name="bike_gears[' + guest_id + '][bike_size]"] option:selected').index() <= 0) {
+      if(jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_size]"] option:selected').index() <= 0) {
         jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val('');
       }
+      // Unset bike pedals value.
+      jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_pedal]"]').val('');
+      // Unset helemt size value.
+      jQuery('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"]').val('');
     }else{
       if(jQuery('select[name="bike_gears[primary][bike_size]"] option:selected').index() <= 0) {
         jQuery('input[name="bike_gears[primary][bikeId]"]').val('')
       }
+      // Unset bike pedals value.
+      jQuery('select[name="bike_gears[primary][bike_pedal]"]').val('');
+      // Unset helemt size value.
+      jQuery('select[name="bike_gears[primary][helmet_size]"]').val('');
     }
     jQuery(divID).show();
+    jQuery(bikeCommentsDivID).hide();
     if (guest_id != 'primary') {
       jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_size]"]').prop('required', true);
       jQuery('select[name="bike_gears[guests][' + guest_id + '][rider_height]"]').prop('required', true);
       jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeTypeId]"]').prop('required', true);
       jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').prop('required', true);
+      jQuery('input[name="bike_gears[guests][' + guest_id + '][type_of_bike]"]').prop('required', false);
+      jQuery('select[name="bike_gears[guests][' + guest_id + '][transportation_options]"]').prop('required', false);
     } else {
       jQuery('select[name="bike_gears[primary][bike_size]"]').prop('required', true);
       jQuery('select[name="bike_gears[primary][rider_height]"]').prop('required', true);
       jQuery('input[name="bike_gears[primary][bikeTypeId]"]').prop('required', true);
       jQuery('input[name="bike_gears[primary][bikeId]"]').prop('required', true);
+      jQuery('input[name="bike_gears[primary][type_of_bike]"]').prop('required', false);
+      jQuery('select[name="bike_gears[primary][transportation_options]"]').prop('required', false);
     }
   }
 });
@@ -2237,13 +2296,89 @@ jQuery(document).on('click', '.tt_change_checkout_step', function () {
   tt_change_checkout_step(step);
 });
 
-// jQuery('body').on('change', '.checkout-bikes-section input[type="radio"]', function () {
-//   jQuery('span.radio-selection').removeClass("checkout-bikes__selected-bike-icon");
-//   jQuery('.checkout-bikes__bike').removeClass("bike-selected")
-//   jQuery(this).closest('.checkout-bikes__bike').find('span.radio-selection').toggleClass("checkout-bikes__selected-bike-icon");
-//   jQuery(this).closest('.checkout-bikes__bike').toggleClass("bike-selected")
-// });
+// Bring own bike confirmation.
+jQuery(document).on('click', '[name="bring_own_bike_confirmation"]', function() {
+  if( jQuery(this).is(":checked") ) {
+    // Allow the Proceed button.
+    jQuery(this).closest('.modal-content').find('.proceed-btn').attr('disabled', false);
+  } else {
+    // Disable the Proceed button.
+    jQuery(this).closest('.modal-content').find('.proceed-btn').attr('disabled', true);
+  }
+});
+
+jQuery(document).on( 'hidden.bs.modal', '#checkoutOwnBikeModal', function () {
+  console.log(this, 'modal closinggggg');
+  // when the modal has finished being hidden from the user reset the checkbox and button states.
+  jQuery('[name="bring_own_bike_confirmation"]').prop('checked', false);
+  jQuery('#checkoutOwnBikeModal .proceed-btn').attr('disabled', true);
+})
+
+/**
+ * Get all selected until now bikes.
+ *
+ * @returns {array} The current selected bikes.
+ */
+function catchSelectedBikes() {
+    // Catch all bike size fields
+    let bikeSizeFields = jQuery('.tt_bike_size_change');
+    let selectedBikesArr = [];
+    // Populate the array with the selected bikes.
+    bikeSizeFields.each( function() {
+      let bikeSizeFieldName  = jQuery(this).attr('name');
+      let bikeSizeFieldValue = jQuery(this).find(":selected").val();
+      let bikeTypeFieldValue = jQuery(this).closest('.checkout-bikes__bike-selection').find('[name*="[bikeTypeId]"]:checked').val(); // undefined initially.
+  
+      if( bikeTypeFieldValue && '' !== bikeSizeFieldValue.trim() ) {
+        selectedBikesArr.push( {bike_type_id: bikeTypeFieldValue, bike_size_id: bikeSizeFieldValue} )
+      }
+    })
+    return selectedBikesArr;
+}
+
+/**
+ * Rebuild all bike size options fields on the 
+ * tt_bike_selection_ajax_action and tt_bike_size_change_ajax_action events.
+ *
+ * TODO: Loader animation breaks up, because of the async type of implementation.
+ *
+ * @param {string} currentBikeChangeName The name of the bike size field that triggers the rebuild process for the other bike size options.
+ */
+function reBuildBikeSizeOptions(currentBikeChangeName = '') {
+  // Catch all bike size fields
+  let bikeSizeFields = jQuery('.tt_bike_size_change');
+  let selectedBikesArr = catchSelectedBikes();
+
+  bikeSizeFields.each( function() {
+    let bikeSizeFieldName  = jQuery(this).attr('name');
+    let bikeSizeFieldValue = jQuery(this).find(":selected").val();
+    let bikeTypeFieldValue = jQuery(this).closest('.checkout-bikes__bike-selection').find('[name*="[bikeTypeId]"]:checked').val(); // undefined initially.
+    if( bikeSizeFieldName !== currentBikeChangeName && bikeTypeFieldValue ) {
+      // Should Rebuild bike size options.
+      let actionName = 'tt_rebuild_bike_size_options_ajax_action';
+      jQuery.ajax({
+        type: 'POST',
+        url: trek_JS_obj.ajaxURL,
+        data: { 'action': actionName, 'bike_type_id': bikeTypeFieldValue, 'selected_bike_size': bikeSizeFieldValue, 'selected_bikes_arr': selectedBikesArr },
+        dataType: 'json',
+        beforeSend: function () {
+          ttLoader.show();
+        },
+        success: function (response) {
+          if (response.size_opts) {
+            jQuery(`select[name="${bikeSizeFieldName}"]`).html(response.size_opts);
+          }
+          ttLoader.hide();
+        }
+      });
+    }
+  })
+}
+
 jQuery('body').on('click', '.bike_selectionElement', function () {
+  let thisBikeSizeFieldName  = jQuery(this).closest('.checkout-bikes__bike-selection').find('[name*="[bike_size]"]').attr('name');
+  let thisBikeSizeFieldValue = jQuery(thisBikeSizeFieldName).find(":selected").val();
+  let selectedBikesArr       = catchSelectedBikes();
   var guest_num;
   var bikeTypeId = jQuery(this).attr('data-id');
   var targetElement = `${jQuery(this).attr('data-selector')}`;
@@ -2272,49 +2407,37 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
   jQuery.ajax({
     type: 'POST',
     url: trek_JS_obj.ajaxURL,
-    data: { 'action': actionName, 'bikeTypeId': bikeTypeId, guest_number: guest_number, bikeUpgradeQty: bikeUpgradeQty },
+    data: { 'action': actionName, 'bikeTypeId': bikeTypeId, guest_number: guest_number, bikeUpgradeQty: bikeUpgradeQty, 'selected_bikes_arr': selectedBikesArr, 'selected_bike_size': thisBikeSizeFieldValue },
     dataType: 'json',
     beforeSend: function () {
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
+      // Primary guest bike sizes.
       if (targetElement == 'tt_bike_selection_primary' && response) {
-        // jQuery("div[data-selector='tt_bike_selection_primary']").removeClass("bike-selected");
-        // jQuery("div[data-selector='tt_bike_selection_primary'] span.radio-selection").removeClass("checkout-bikes__selected-bike-icon");
         jQuery('input[name="bike_gears[primary][bikeId]"]').val('')
         if (response.size_opts) {
           jQuery('select[name="bike_gears[primary][bike_size]"]').html(response.size_opts);
         }
-        // jQuery(this).addClass("bike-selected");
-        // jQuery(this).find('span.radio-selection').addClass("checkout-bikes__selected-bike-icon");
+        // This is async function so think how to prevent unbloking UI before finished.
+        reBuildBikeSizeOptions(`bike_gears[primary][bike_size]`);
       }
+      // Secondary guests bike sizes.
       if (targetElement != 'tt_bike_selection_primary' && response) {
         guest_num = targetElement.split('tt_bike_selection_guest_');
         if (guest_num[1] && guest_num[1] != 0) {
-          // jQuery("div[class^='tt_bike_selection_guest_']").removeClass("bike-selected");
-          // jQuery("div[class^='tt_bike_selection_guest_'] span.radio-selection").removeClass("checkout-bikes__selected-bike-icon");
           jQuery('input[name="bike_gears[guests][' + guest_num[1] + '][bikeId]"]').val('');
           if (response.size_opts) {
             jQuery(`select[name="bike_gears[guests][${guest_num[1]}][bike_size]"]`).html(response.size_opts);
           }
-          // jQuery(this).addClass("bike-selected");
-          // jQuery(this).find('span.radio-selection').addClass("checkout-bikes__selected-bike-icon");
+          // This is async function so think how to prevent unbloking UI before finished.
+          reBuildBikeSizeOptions(`bike_gears[guests][${guest_num[1]}][bike_size]`);
         }
       }
       if (response.review_order) {
         jQuery('#tt-review-order').html(response.review_order);
       }
-      jQuery.unblockUI();
+      ttLoader.hide();
       jQuery("#currency_switcher").trigger("change")
     }
   });
@@ -2334,20 +2457,10 @@ jQuery('body').on('click', '.proceed-booking-btn', function () {
     data: { action: actionName },
     dataType: 'json',
     beforeSend: function () {
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
-      jQuery.unblockUI();
+      ttLoader.hide();
     }
   });
   var myBookId = jQuery("#bookId").val();
@@ -2473,15 +2586,11 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
       input.val(0);
     }
     var actionName = 'tt_update_occupant_popup_html_ajax_action';
-    var single = jQuery('input[name="single"]').val();
-    var double = jQuery('input[name="double"]').val();
-    var private = jQuery('input[name="private"]').val();
-    var roommate = jQuery('input[name="roommate"]').val();
-    var allroomsTotal = (parseInt(single) * 2) + (parseInt(double) * 2) + parseInt(private) + parseInt(roommate);
-    // if( allroomsTotal == no_of_guests ){
-    //   return false;
-    // }
-    var formData = {
+    var single     = jQuery('input[name="single"]').val();
+    var double     = jQuery('input[name="double"]').val();
+    var private    = jQuery('input[name="private"]').val();
+    var roommate   = jQuery('input[name="roommate"]').val();
+    var formData   = {
       action: actionName,
       single: single,
       double: double,
@@ -2494,17 +2603,7 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
       data: formData,
       dataType: 'json',
       beforeSend: function () {
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         if (response.status == true && response.html) {
@@ -2574,13 +2673,14 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
             jQuery('div[data-room="d-assign"]').hide();
           }
         }
-        jQuery.unblockUI();
+        ttLoader.hide();
         jQuery("#currency_switcher").trigger("change")
       },
       complete: function() {
-        // Trigger an event that shows that the "#addOccupantsModal" modal html is ready.
-        let occupantsModal = document.querySelector('#addOccupantsModal');
-        occupantsModal && occupantsModal.dispatchEvent(occupantPopUpHtmlReadyEvent);
+        // Trigger auto assign for one guest, when chosen room is private or roommate, or for two guests, when the chosen room is single or double.
+        if( ( 0 < no_of_guests && 2 == no_of_guests && ( 1 == single || 1 == double ) ) || ( 0 < no_of_guests && 1 == no_of_guests && ( 1 == private || 1 == roommate ) ) ) {
+          jQuery('#tt-occupants-btn').click();
+        }
       }
     });
   });
@@ -2607,17 +2707,7 @@ if (jQuery('.tt_reset_rooms').length > 0) {
       data: formData,
       dataType: 'json',
       beforeSend: function () {
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         if (response.status == true ) {
@@ -2682,7 +2772,7 @@ if (jQuery('.tt_reset_rooms').length > 0) {
             jQuery('div[data-room="d-assign"]').hide();
           }
         }
-        jQuery.unblockUI();
+        ttLoader.hide();
         validateGuestSelectionAdds();
         jQuery("#currency_switcher").trigger("change")
       },
@@ -2696,17 +2786,7 @@ if (jQuery('.tt_reset_rooms').length > 0) {
           data: formData + "&action=" + actionName,
           dataType: 'json',
           beforeSend: function () {
-            jQuery.blockUI({
-              css: {
-                border: 'none',
-                padding: '15px',
-                backgroundColor: '#000',
-                '-webkit-border-radius': '10px',
-                '-moz-border-radius': '10px',
-                opacity: .5,
-                color: '#fff'
-              }
-            });
+            ttLoader.show();
           },
           success: function (response) {
             if (response.review_order) {
@@ -2716,12 +2796,9 @@ if (jQuery('.tt_reset_rooms').length > 0) {
             if( jQuery('.checkout-payment__options').length > 0 && response.payment_option ) {
               jQuery('.checkout-payment__options').html(response.payment_option);
             }
-            jQuery.unblockUI();
+            ttLoader.hide();
           }
         });
-        // Trigger an event that shows that the "#addOccupantsModal" modal html is ready.
-        let occupantsModal = document.querySelector('#addOccupantsModal');
-        occupantsModal && occupantsModal.dispatchEvent(occupantPopUpHtmlReadyEvent);
       }
     });
     //return false;
@@ -2734,6 +2811,7 @@ if (jQuery('.tt_reset_rooms').length > 0) {
   }
 }
 jQuery('body').on('change', '.tt_bike_size_change', function () {
+  let thisBikeSizeFieldName = jQuery(this).attr('name');
   var guest_index = jQuery(this).attr('data-guest-index');
   var bikeidInput = (guest_index == 0 ? 'input[name="bike_gears[primary][bikeId]"]' : `input[name="bike_gears[guests][${guest_index}][bikeId]"]`);
   var bikeTypeId;
@@ -2751,23 +2829,16 @@ jQuery('body').on('change', '.tt_bike_size_change', function () {
     data: { 'action': actionName, 'bike_size': bike_size, 'bikeTypeId': bikeTypeId },
     dataType: 'json',
     beforeSend: function () {
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       if (response.status == true) {
         jQuery(targetInput).val(response.bike_id);
       }
-      jQuery.unblockUI();
+      // Rebuild the other bike size options.
+      // This is async function so think how to prevent unbloking UI before finished.
+      reBuildBikeSizeOptions(thisBikeSizeFieldName);
+      ttLoader.hide();
       jQuery("#currency_switcher").trigger("change")
     }
   });
@@ -2788,23 +2859,13 @@ if (jQuery('.tt_bike_upgrade_click_ev').length > 0) {
       data: { 'action': actionName, 'guest_index': guest_index, 'upgrade_count': upgrade_count },
       dataType: 'json',
       beforeSend: function () {
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         if (response.status == true && response.review_order) {
           jQuery('#tt-review-order').html(response.review_order);
         }
-        jQuery.unblockUI();
+        ttLoader.hide();
       }
     });
   });
@@ -2845,23 +2906,13 @@ if (jQuery('.tt_continue_bike_click_btn').length > 0) {
       },
       dataType: 'json',
       beforeSend: function () {
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         if (response.status == true && response.html) {
           jQuery('#tt-room-bikes-selection').html(response.html);
         }
-        jQuery.unblockUI();
+        ttLoader.hide();
         jQuery('html, body').animate({
           scrollTop: jQuery('.checkout-bikes__rider-level').offset().top - 150
         }, 'fast');
@@ -2965,17 +3016,7 @@ if (jQuery('input[name="pay_amount"]').length > 0) {
       data: { 'action': actionName, 'paymentType': paymentType },
       dataType: 'json',
       beforeSend: function () {
-        jQuery.blockUI({
-          css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff'
-          }
-        });
+        ttLoader.show();
       },
       success: function (response) {
         if (response.status == true && response.review_order) {
@@ -2984,12 +3025,15 @@ if (jQuery('input[name="pay_amount"]').length > 0) {
         if (jQuery('.checkout-payment__options').length > 0 && response.payment_option) {
           jQuery('.checkout-payment__options').html(response.payment_option);
         }
-        jQuery.unblockUI();
+        ttLoader.hide();
         jQuery("#currency_switcher").trigger("change")
       }
     });
   });
 }
+
+jQuery('label[for="wc-cybersource-credit-card-use-new-payment-method"]').addClass('btn btn-primary');
+
 jQuery('body').on('click', function (e) {
   var selector = jQuery('nav.mobile-nav div#navbar button.mega-toggle-animated')
   var isExpanded = jQuery(selector).attr("aria-expanded")
@@ -3132,24 +3176,14 @@ jQuery('body').on('click', '.bike_selectionElementchk', function () {
     data: { 'action': actionName, 'bikeTypeId': bikeTypeId, order_id: order_id },
     dataType: 'json',
     beforeSend: function () {
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       if (response.size_opts) {
         jQuery('select[name="tt-bike-size"]').html(response.size_opts);
       }
       jQuery('input[name="bikeTypeId"]').val(bikeTypeId);
-      jQuery.unblockUI();
+      ttLoader.hide();
       jQuery("#currency_switcher").trigger("change")
     }
   });
@@ -3165,24 +3199,13 @@ jQuery('body').on('change', '.tt_chk_bike_size_change', function () {
     data: { 'action': actionName, 'bike_size': bike_size, 'bikeTypeId': bikeTypeId, order_id: order_id },
     dataType: 'json',
     beforeSend: function () {
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       if (response.status == true) {
         jQuery('input[name="bikeId"]').val(response.bike_id);
-        ///jQuery('input[name="bikeId"]').val(bikeTypeId);
       }
-      jQuery.unblockUI();
+      ttLoader.hide();
     }
   });
 });
@@ -3274,8 +3297,21 @@ window.addEventListener("afterprint", (event) => {
   location.reload();
 })
 
+jQuery('body').on('change', '.tt_activity_level_select', function () {
+  var selectedActivityLevel = parseInt(jQuery(this).val(), 10);
+  console.log(selectedActivityLevel);
+  if (selectedActivityLevel && selectedActivityLevel > 0) {
+    jQuery(this).closest('div.form-floating').find(".activity-select").css("display", "none");
+    jQuery(this).closest('div.form-floating').removeClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-floating').addClass('woocommerce-validated');
+  } else {
+    jQuery(this).closest('div.form-floating').find(".activity-select").css("display", "block");
+    jQuery(this).closest('div.form-floating').addClass('woocommerce-invalid');
+    jQuery(this).closest('div.form-floating').removeClass('woocommerce-validated');
+  }
+})
 
-jQuery('body').on('change', '.tt_rider_level_select', function () {
+jQuery('body').on('change', '.tt_rider_level_select, .tt_activity_level_select', function () {
   var selectedRiderLevel = parseInt(jQuery(this).val(), 10);
   if (selectedRiderLevel && selectedRiderLevel > 0) {
     var tripRiderLevel = trek_JS_obj.rider_level; // This can be a string like "2&3" or "3&4"
@@ -3389,17 +3425,7 @@ jQuery('button[data-bs-target="#protection_modal"], input.protection_modal_ev').
       jQuery('.travel-protection-feedback').each(function() {
         jQuery(this).css('display', '');
       })
-      jQuery('#protection_modal .modal-content').block({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show('#protection_modal .modal-content');
     },
     success: function (response) {
       var resMessage = '';
@@ -3412,7 +3438,7 @@ jQuery('button[data-bs-target="#protection_modal"], input.protection_modal_ev').
         jQuery('#tt-review-order').html(response.review_order);
       }
       setTimeout( function(){
-        jQuery('#protection_modal .modal-content').unblock()
+        ttLoader.hide( 0, '#protection_modal .modal-content' );
         jQuery("#currency_switcher").trigger("change")
       }, 500);
       if (response.guest_insurance_html) {
@@ -3516,23 +3542,13 @@ jQuery('body').on('change', '.tt_jersey_style_change', function () {
     data: { 'action': actionName, 'jersey_style': jersey_style },
     dataType: 'json',
     beforeSend: function () {
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       if (response.status == true) {
         jQuery(jerseySizeElement).html(response.opts);
       }
-      jQuery.unblockUI();
+      ttLoader.hide();
     }
   });
 });
@@ -3981,6 +3997,7 @@ jQuery(document).on('change blur', 'input[name="shipping_phone"]', function () {
 
 jQuery(document).on('change blur', 'input[name="custentity_birthdate"]', function () {
   jQuery('input[name="custentity_birthdate"]').attr('required', 'required');
+  let startDate = trekData.startDates;
   let dobValidation = tt_validate_age( jQuery( 'input[name="custentity_birthdate"]' ).val(), startDate );
   if ( dobValidation.isValid == false || jQuery('input[name="custentity_birthdate"]').val().length == 0) {
     jQuery(`input[name="custentity_birthdate"]`).closest('div.form-row').addClass('woocommerce-invalid');
@@ -4007,6 +4024,7 @@ jQuery(document).on('change blur', 'input[name="custentity_birthdate"]', functio
 
 jQuery(document).on('change blur', 'input[name="account_dob"]', function () {
   jQuery('input[name="account_dob"]').attr('required', 'required');
+  let startDate = trekData.startDates;
   let dobValidation = tt_validate_age( jQuery( 'input[name="account_dob"]' ).val(), startDate );
   if ( dobValidation.isValid == false || jQuery('input[name="account_dob"]').val().length == 0) {
     this.setCustomValidity('Please enter the correct date of birth.');
@@ -4186,6 +4204,7 @@ jQuery(document).on('change blur', 'select[name*="[guest_gender]"]', function ()
 
 jQuery(document).on('change blur', 'input[name*="[guest_dob]"]', function () {
   jQuery(this).attr('required', 'required'); // Add the required attribute to the current input
+  let startDate = trekData.startDates;
   let dobValidation = tt_validate_age( jQuery( this ).val(), startDate );
   if ( dobValidation.isValid == false || jQuery(this).val() == "" ) {
     jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
@@ -4464,122 +4483,6 @@ window.addEventListener("popstate", function () {
   }
 });
 
-jQuery('body').on('click', 'button.btn.btn-number.btn-plus-private', function () {
-  jQuery('.container.checkout-hotel-modal').addClass('d-none');
-  // Trigger a click event on the target button
-  jQuery('button.d-none.plus-button-private.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
-
-  let occupantsModal = document.querySelector('#addOccupantsModal');
-
-  // Listen for the custom "occupant.popup.html.ready" event on the modal. This event Wait for the modal content to load.
-  occupantsModal.addEventListener('occupant.popup.html.ready', function(){
-    // Find the first option with a value other than "none" in the select menu
-    let $select = jQuery('select[name="occupants[private][0]"]');
-    let $options = $select.find('option[value!="none"]').first();
-    
-    if ($options.length > 0) {
-      // Select the first non-"none" option
-      $select.val($options.val());
-    }
-    
-    // Click on the "Done" button
-    jQuery('#tt-occupants-btn').click();
-  });
-
-  setTimeout(function () {
-    jQuery('#private').removeClass('d-none');
-  } , 2000);
-
-});
-
-jQuery('body').on('click', 'button.btn.btn-number.btn-plus-roommate', function () {
-  jQuery('.container.checkout-hotel-modal').addClass('d-none');
-  // Trigger a click event on the target button
-  jQuery('button.d-none.plus-button-roommate.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
-
-  let occupantsModal = document.querySelector('#addOccupantsModal');
-
-  // Listen for the custom "occupant.popup.html.ready" event on the modal. This event Wait for the modal content to load.
-  occupantsModal.addEventListener('occupant.popup.html.ready', function(){
-    // Find the first option with a value other than "none" in the select menu
-    let $select = jQuery('select[name="occupants[roommate][0]"]');
-    let $options = $select.find('option[value!="none"]').first();
-    
-    if ($options.length > 0) {
-        // Select the first non-"none" option
-        $select.val($options.val());
-    }
-
-    // Click on the "Done" button
-    jQuery('#tt-occupants-btn').click();
-  });
-  setTimeout(function () {
-    jQuery('#roommate').removeClass('d-none');
-  } , 2000);
-});
-
-jQuery('body').on('click', 'button.btn.btn-number.btn-plus-single', function () {
-  jQuery('.container.checkout-hotel-modal').addClass('d-none');
-  // Trigger a click event on the target button
-  jQuery('button.d-none.plus-button-single.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
-
-  let occupantsModal = document.querySelector('#addOccupantsModal');
-
-  // Listen for the custom "occupant.popup.html.ready" event on the modal. This event Wait for the modal content to load.
-  occupantsModal.addEventListener('occupant.popup.html.ready', function(){
-    // Find the first option with a value other than "none" in the select menu
-    let $select1 = jQuery('select[name="occupants[single][0]"]');
-    let $options1 = $select1.find('option[value!="none"]').first();
-
-    let $select2 = jQuery('select[name="occupants[single][1]"]');
-    let $options2 = $select2.find('option[value!="none"]').eq(1); // Select the second non-"none" option
-        
-    if ($options1.length > 0) {
-        // Select the first non-"none" option
-        $select1.val($options1.val());
-    }
-
-    if ($options2.length > 0) {
-      // Select the second non-"none" option
-      $select2.val($options2.val());
-    }
-
-    // Click on the "Done" button
-    jQuery('#tt-occupants-btn').click();
-  });
-});
-
-jQuery('body').on('click', 'button.btn.btn-number.btn-plus-double', function () {
-  jQuery('.container.checkout-hotel-modal').addClass('d-none');
-  // Trigger a click event on the target button
-  jQuery('button.d-none.plus-button-double.btn.btn-md.rounded-1.checkout-step-two-hotel__add-occupants-btn').click();
-
-  let occupantsModal = document.querySelector('#addOccupantsModal');
-
-  // Listen for the custom "occupant.popup.html.ready" event on the modal. This event Wait for the modal content to load.
-  occupantsModal.addEventListener('occupant.popup.html.ready', function(){
-    // Find the first option with a value other than "none" in the select menu
-    let $select1 = jQuery('select[name="occupants[double][0]"]');
-    let $options1 = $select1.find('option[value!="none"]').first();
-
-    let $select2 = jQuery('select[name="occupants[double][1]"]');
-    let $options2 = $select2.find('option[value!="none"]').eq(1); // Select the second non-"none" option
-        
-    if ($options1.length > 0) {
-        // Select the first non-"none" option
-        $select1.val($options1.val());
-    }
-
-    if ($options2.length > 0) {
-      // Select the second non-"none" option
-      $select2.val($options2.val());
-    }
-
-    // Click on the "Done" button
-    jQuery('#tt-occupants-btn').click();
-  });
-});
-
 jQuery('body').on('click', '.open-roommate-popup', function() {
   jQuery('.open-to-roommate-popup-container').css('display', 'flex');
   jQuery('header').css('z-index','0');
@@ -4645,17 +4548,7 @@ jQuery( '#waiver_modal' ).on( 'hidden.bs.modal', function () {
     dataType: 'json',
     beforeSend: function () {
       // Set loader.
-      jQuery.blockUI({
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'
-        }
-      });
+      ttLoader.show();
     },
     success: function (response) {
       // If waiver is signed successfully, show success feedback in the trip waiver status section.
@@ -4663,7 +4556,7 @@ jQuery( '#waiver_modal' ).on( 'hidden.bs.modal', function () {
         jQuery('.waiver-not-signed-ctr').html(response.waiver_signed_html)
       }
       // Remove loader.
-      jQuery.unblockUI();
+      ttLoader.hide();
     }
   });
 })

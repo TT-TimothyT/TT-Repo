@@ -178,7 +178,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 			<div class="account-in-header">
 				<a class="d-flex align-items-center" href="<?php echo is_user_logged_in() ? site_url('my-account') : site_url('login'); ?>"><i class="bi bi-person"></i></a>
 			</div>
-			<a href="<?php echo site_url('bike-tours/all/') ?>" class="btn btn-primary find-a-trip">Find a trip</a>
+			<a href="<?php echo site_url('tours/all/') ?>" class="btn btn-primary find-a-trip">Find a trip</a>
 		</div>
 
 	</div><!-- /.container -->
@@ -304,7 +304,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
     </div>
   </div>
 </div>
-<form action="/bike-tours/all" method="get" class="trek-trip-finder-form header-calendar-form mobile-calendar-form" id="trek-trip-finder-form">
+<form action="<?php echo site_url('tours/all/') ?>" method="get" class="trek-trip-finder-form header-calendar-form mobile-calendar-form" id="trek-trip-finder-form">
 	<input type="hidden" id="start_time" name="start_time">
 	<input type="hidden" id="end_time" name="end_time">
 </form>

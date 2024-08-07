@@ -1,5 +1,8 @@
 .header-main {
   //
+  &.sticky-top {
+	top: var(--admin-bar-h);
+  }
   &__contact-nav {
     border-bottom: 1px solid $gray-200;
     display: none;

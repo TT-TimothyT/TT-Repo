@@ -72,35 +72,34 @@ function tt_wc_ns_sync_one_hour_event_cb() {
 }
 
 add_action('tt_trigger_cron_ns_booking', 'tt_trigger_cron_ns_booking_cb', 10, 2);
-function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=false)
-{
+function tt_trigger_cron_ns_booking_cb( $order_id, $user_id = 'null', $is_behalf=false ) {
     if( $is_behalf == false ){
         $is_behalf = get_post_meta($order_id, 'tt_wc_order_ns_is_behalf', true);
         $is_behalf = $is_behalf == true ? true : false; 
     }
-    $admin_user_id = get_option( 'admin111' );
-    $super_admin = get_user_by('ID', $admin_user_id);
-    $super_admin_name = $super_admin->display_name;
-    $admin_ns_user_id = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
-    $netSuiteClient = new NetSuiteClient();
+    $admin_user_id          = get_option( 'admin111' );
+    $super_admin            = get_user_by('ID', $admin_user_id);
+    $super_admin_name       = $super_admin->display_name;
+    $admin_ns_user_id       = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
+    $netSuiteClient         = new NetSuiteClient();
     $ns_booking_payload = $ns_booking_result = [];
     $guests_email_addresses = [];
-    $user_exist = get_userdata($user_id);
-    $is_booking_status = $user_exist ? false : true;
-    $wc_booking_result = tt_get_booking_details($order_id, $is_booking_status);
-    $guests_count      = count( $wc_booking_result );
-    $occupants = tt_get_booking_field('order_id', $order_id, 'trip_room_selection', true);
-    $tt_users_indexes = tt_get_booking_guests_indexes($order_id);
+    $user_exist             = get_userdata($user_id);
+    $is_booking_status      = $user_exist ? false : true;
+    $wc_booking_result      = tt_get_booking_details($order_id, $is_booking_status);
+    $guests_count           = count( $wc_booking_result );
+    $occupants              = tt_get_booking_field('order_id', $order_id, 'trip_room_selection', true);
+    $tt_users_indexes       = tt_get_booking_guests_indexes($order_id);
     //$dummy_rooms = ["single","single"];
     //Begin: Billing info
-    $accepted_p_ids = tt_get_line_items_product_ids();
-    $trek_checkoutData = array();
-    $order = wc_get_order($order_id);
-    $order_items           = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
-    foreach ($order_items as $item_id => $item) {
+    $accepted_p_ids         = tt_get_line_items_product_ids();
+    $trek_checkoutData      = array();
+    $order                  = wc_get_order($order_id);
+    $order_items            = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
+    foreach ( $order_items as $item_id => $item ) {
         $product_id = $item['product_id'];
-        if (!in_array($product_id, $accepted_p_ids)) {
-            $trek_checkoutData = wc_get_order_item_meta($item_id, 'trek_user_checkout_data', true);
+        if ( ! in_array( $product_id, $accepted_p_ids ) ) {
+            $trek_checkoutData = wc_get_order_item_meta( $item_id, 'trek_user_checkout_data', true );
         }
     }
 
@@ -135,49 +134,49 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
         $identifier = '';
     }
 
-    $user_rooms_arr = tt_create_booking_rooms_arr($tt_users_indexes, $trek_checkoutData['occupants']);
-    $billing_add_1 = tt_validate($trek_checkoutData['billing_address_1']);
-    $billing_add_2 = tt_validate($trek_checkoutData['billing_address_2']);
-    $billing_country = tt_validate($trek_checkoutData['billing_country']);
-    $billing_fname = tt_validate($trek_checkoutData['billing_first_name']);
-    $billing_lname = tt_validate($trek_checkoutData['billing_last_name']);
-    $billing_country = tt_validate($trek_checkoutData['billing_country']);
-    $billing_state = tt_validate($trek_checkoutData['billing_state']);
-    $billing_city = tt_validate($trek_checkoutData['billing_city']);
+    $user_rooms_arr   = tt_create_booking_rooms_arr($tt_users_indexes, $trek_checkoutData['occupants']);
+    $billing_add_1    = tt_validate($trek_checkoutData['billing_address_1']);
+    $billing_add_2    = tt_validate($trek_checkoutData['billing_address_2']);
+    $billing_country  = tt_validate($trek_checkoutData['billing_country']);
+    $billing_fname    = tt_validate($trek_checkoutData['billing_first_name']);
+    $billing_lname    = tt_validate($trek_checkoutData['billing_last_name']);
+    $billing_country  = tt_validate($trek_checkoutData['billing_country']);
+    $billing_state    = tt_validate($trek_checkoutData['billing_state']);
+    $billing_city     = tt_validate($trek_checkoutData['billing_city']);
     $billing_postcode = tt_validate($trek_checkoutData['billing_postcode']);
-    if (isset($trek_checkoutData['is_same_billing_as_mailing']) && $trek_checkoutData['is_same_billing_as_mailing'] == 1) {
-        $billing_add_1 = tt_validate($trek_checkoutData['shipping_address_1']);
-        $billing_add_2 = tt_validate($trek_checkoutData['shipping_address_2']);
-        $billing_country = tt_validate($trek_checkoutData['shipping_country']);
-        $billing_fname = tt_validate($trek_checkoutData['shipping_first_name']);
-        $billing_lname = tt_validate($trek_checkoutData['shipping_last_name']);
-        $billing_country = tt_validate($trek_checkoutData['shipping_country']);
-        $billing_state = tt_validate($trek_checkoutData['shipping_state']);
-        $billing_city = tt_validate($trek_checkoutData['shipping_city']);
+    if ( isset( $trek_checkoutData['is_same_billing_as_mailing'] ) && $trek_checkoutData['is_same_billing_as_mailing'] == 1 ) {
+        $billing_add_1    = tt_validate($trek_checkoutData['shipping_address_1']);
+        $billing_add_2    = tt_validate($trek_checkoutData['shipping_address_2']);
+        $billing_country  = tt_validate($trek_checkoutData['shipping_country']);
+        $billing_fname    = tt_validate($trek_checkoutData['shipping_first_name']);
+        $billing_lname    = tt_validate($trek_checkoutData['shipping_last_name']);
+        $billing_country  = tt_validate($trek_checkoutData['shipping_country']);
+        $billing_state    = tt_validate($trek_checkoutData['shipping_state']);
+        $billing_city     = tt_validate($trek_checkoutData['shipping_city']);
         $billing_postcode = tt_validate($trek_checkoutData['shipping_postcode']);
     }
     //End: Billing info
     //Begin: orders extra meta data(Financial Data)
-    $order_currency = get_post_meta($order_id, '_order_currency', true);
-    $cart_discount = get_post_meta($order_id, '_cart_discount', true);
-    $cart_discount = intval( $guests_count ) * floatval( $cart_discount );
-    $cart_discount_tax = get_post_meta($order_id, '_cart_discount_tax', true);
-    $order_tax = get_post_meta($order_id, '_order_tax', true);
-    $order_total = get_post_meta($order_id, '_order_total', true);
-    $transaction_id = get_post_meta($order_id, '_wc_cybersource_credit_card_trans_id', true);
-    $transaction_date = get_post_meta($order_id, '_wc_cybersource_credit_card_trans_date', true);
+    $order_currency       = get_post_meta($order_id, '_order_currency', true);
+    $cart_discount        = get_post_meta($order_id, '_cart_discount', true);
+    $cart_discount        = intval( $guests_count ) * floatval( $cart_discount );
+    $cart_discount_tax    = get_post_meta($order_id, '_cart_discount_tax', true);
+    $order_tax            = get_post_meta($order_id, '_order_tax', true);
+    $order_total          = get_post_meta($order_id, '_order_total', true);
+    $transaction_id       = get_post_meta($order_id, '_wc_cybersource_credit_card_trans_id', true);
+    $transaction_date     = get_post_meta($order_id, '_wc_cybersource_credit_card_trans_date', true);
     $authorization_amount = get_post_meta($order_id, '_wc_cybersource_credit_card_authorization_amount', true);
-    $transaction_deposit = get_post_meta($order_id, '_is_order_transaction_deposit', true);
+    $transaction_deposit  = get_post_meta($order_id, '_is_order_transaction_deposit', true);
     /*$posted_payment_token = tt_validate($trek_checkoutData['wc-cybersource-credit-card-payment-token'], '');
     if( $posted_payment_token ){
         $transaction_payment_token = get_post_meta($order_id, '_wc_cybersource_credit_card_payment_token', true);
     }else{
         $transaction_payment_token = get_post_meta($order_id, '_wc_cybersource_credit_card_customer_id', true);
     } */
-    $transaction_payment_token = $identifier;
-    $cc_account_four = get_post_meta($order_id, '_wc_cybersource_credit_card_account_four', true);
-    $cc_expiry_date = get_post_meta($order_id, '_wc_cybersource_credit_card_card_expiry_date', true);
-    $cc_card_type = get_post_meta($order_id, '_wc_cybersource_credit_card_card_type', true);
+    $transaction_payment_token   = $identifier;
+    $cc_account_four             = get_post_meta($order_id, '_wc_cybersource_credit_card_account_four', true);
+    $cc_expiry_date              = get_post_meta($order_id, '_wc_cybersource_credit_card_card_expiry_date', true);
+    $cc_card_type                = get_post_meta($order_id, '_wc_cybersource_credit_card_card_type', true);
     $cc_processor_transaction_id = get_post_meta($order_id, '_wc_cybersource_credit_card_processor_transaction_id', true);
     //End: orders extra meta data(Financial Data)
     $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trek_checkoutData['sku'], true);
@@ -191,170 +190,182 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
     $booking_index = 0;
     if ($wc_booking_result) {
         $total_insuarance_ammount = 0;
+        $trip_info                = tt_get_trip_pid_sku_from_cart($order_id);
+        $is_hiking_checkout       = tt_is_product_line( 'Hiking', $trip_info['sku'] );
         foreach ($wc_booking_result as $wc_booking_key => $wc_booking) {
             $ns_trip_ID = NULL;
             if ($wc_booking->product_id) {
                 $ns_trip_ID = get_post_meta($wc_booking->product_id, TT_WC_META_PREFIX . 'tripId', true);
             }
-            $start_date = date('Y-m-d', $wc_booking->trip_start_date);
-            $end_date = date('Y-m-d', $wc_booking->trip_end_date);
-            $guest_index_id = $wc_booking->guest_index_id;
-            $guest_wp_id = $_SESSION['current_user_ids'];
-            $user_rooms_data = $user_rooms_arr['users_in_rooms'];
-            $trip_rooms = $user_rooms_arr['rooms'];
-            $user_room_index = tt_get_user_room_index_by_user_key($user_rooms_data, $guest_index_id);
+            $start_date          = date('Y-m-d', $wc_booking->trip_start_date);
+            $end_date            = date('Y-m-d', $wc_booking->trip_end_date);
+            $guest_index_id      = $wc_booking->guest_index_id;
+            $guest_wp_id         = $_SESSION['current_user_ids'];
+            $user_rooms_data     = $user_rooms_arr['users_in_rooms'];
+            $trip_rooms          = $user_rooms_arr['rooms'];
+            $user_room_index     = tt_get_user_room_index_by_user_key($user_rooms_data, $guest_index_id);
             //$ns_trip_ID = 26604;
-            $wantPrivate = tt_validate($wc_booking->wantPrivate, 0);
-            $referralSourceType = tt_validate($wc_booking->referralSourceType);
-            $referralSourceName = tt_validate($wc_booking->referralSourceName);
+            $wantPrivate         = tt_validate($wc_booking->wantPrivate, 0);
+            $referralSourceType  = tt_validate($wc_booking->referralSourceType);
+            $referralSourceName  = tt_validate($wc_booking->referralSourceName);
             //$bikeUpgradePriceDisplayed = tt_validate($wc_booking->bikeUpgradePriceDisplayed, 0);
             //$rooms = tt_validate($wc_booking->trip_room_selection, [] );
             $specialRoomRequests = tt_validate($wc_booking->specialRoomRequests);
-            $promoCode = tt_validate($wc_booking->promoCode);
-            $wantsInsurance = tt_validate($wc_booking->wantsInsurance, false);
-            $insuranceAmount = tt_validate($wc_booking->insuranceAmount, 0);
+            $promoCode           = tt_validate($wc_booking->promoCode);
+            $wantsInsurance      = tt_validate($wc_booking->wantsInsurance, false);
+            $insuranceAmount     = tt_validate($wc_booking->insuranceAmount, 0);
             if( $wantsInsurance ) {
                 $total_insuarance_ammount += floatval( $insuranceAmount );
             }
             $wc_coupon_amount = 0;
-            if ($promoCode) {
-                $wc_coupon = new WC_Coupon($promoCode);
+            if ( $promoCode ) {
+                $wc_coupon = new WC_Coupon( $promoCode );
                 $wc_coupon_amount = $wc_coupon->amount;
             }
-            if ($ns_trip_ID) {
-                $fname = tt_validate($wc_booking->guest_first_name);
-                $lname = tt_validate($wc_booking->guest_last_name);
-                $email = tt_validate($wc_booking->guest_email_address);
-                $phone = tt_validate($wc_booking->guest_phone_number);
-                $dob = tt_validate($wc_booking->guest_date_of_birth);
-                $gender = tt_validate($wc_booking->guest_gender);
-                $country = tt_validate($wc_booking->shipping_address_country);
-                $address = tt_validate($wc_booking->shipping_address_1) . ' ' . tt_validate($wc_booking->shipping_address_2);
-                $city = tt_validate($wc_booking->shipping_address_city);
-                $state = tt_validate($wc_booking->shipping_address_state);
-                $zipcode = tt_validate($wc_booking->shipping_address_zipcode);
-                $rider_height = tt_validate($wc_booking->rider_height);
-                $rider_level = tt_validate($wc_booking->rider_level);
+            if ( $ns_trip_ID ) {
+                $fname          = tt_validate( $wc_booking->guest_first_name );
+                $lname          = tt_validate( $wc_booking->guest_last_name );
+                $email          = tt_validate( $wc_booking->guest_email_address );
+                $phone          = tt_validate( $wc_booking->guest_phone_number );
+                $dob            = tt_validate( $wc_booking->guest_date_of_birth );
+                $gender         = tt_validate( $wc_booking->guest_gender );
+                $country        = tt_validate( $wc_booking->shipping_address_country );
+                $address        = tt_validate( $wc_booking->shipping_address_1 ) . ' ' . tt_validate( $wc_booking->shipping_address_2 );
+                $city           = tt_validate( $wc_booking->shipping_address_city );
+                $state          = tt_validate( $wc_booking->shipping_address_state );
+                $zipcode        = tt_validate( $wc_booking->shipping_address_zipcode );
+                $rider_height   = tt_validate( $wc_booking->rider_height );
+                $rider_level    = tt_validate( $wc_booking->rider_level );
+                $activity_level = tt_validate( $wc_booking->activity_level );
                 // If $bike_id is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $bike_size.
                 $default_bike_id = '';
                 if( 0 == $wc_booking->bike_id ){
-                    $default_bike_id = 0;
+                    if ( ! $is_hiking_checkout ) {
+                        $default_bike_id = 0;
+                    } else {
+                        $default_bike_id = 5257;
+                    }
                 }
-                $bike_id = tt_validate($wc_booking->bike_id, $default_bike_id);
-                $bike_size = tt_validate($wc_booking->bike_size);
-                $bike_selection = tt_validate($wc_booking->bike_selection);
-                $bike_type_name = tt_validate($wc_booking->bikeTypeName);
-                $isBikeUpgrade = tt_validate($wc_booking->isBikeUpgrade, '');
-                $saddle_height = tt_validate($wc_booking->saddle_height);
-                $pedal_selection = tt_validate($wc_booking->pedal_selection);
-                $helmet_selection = tt_validate($wc_booking->helmet_selection);
-                $jersey_style = tt_validate($wc_booking->tt_jersey_size);
-                $passport_number = tt_validate($wc_booking->passport_number);
-                $passport_issue_date = tt_validate($wc_booking->passport_issue_date);
-                $passport_expiration_date = tt_validate($wc_booking->passport_expiration_date);
-                $passport_place_of_issue = tt_validate($wc_booking->passport_place_of_issue);
-                $medications = tt_validate($wc_booking->medications);
-                $allergies = tt_validate($wc_booking->allergies);
-                $medical_conditions = tt_validate($wc_booking->medical_conditions);
-                $allergies = tt_validate($wc_booking->allergies);
-                $dietary_restrictions = tt_validate($wc_booking->dietary_restrictions);
-                $e_fname = tt_validate($wc_booking->emergency_contact_first_name);
-                $e_lname = tt_validate($wc_booking->emergency_contact_last_name);
-                $e_phone = tt_validate($wc_booking->emergency_contact_phone);
-                $e_relationship = tt_validate($wc_booking->emergency_contact_relationship);
-                $ns_user_id = tt_validate($wc_booking->netsuite_guest_registration_id);
-                $admin_ns_user_id = 1687333;
-                $sales_rep_id = get_user_meta( $guest_wp_id, 'salesrepid', true );
+                $bike_id                  = tt_validate( $wc_booking->bike_id, $default_bike_id );
+                $bike_size                = tt_validate( $wc_booking->bike_size );
+                $bike_selection           = tt_validate( $wc_booking->bike_selection );
+                $bike_type_name           = tt_validate( $wc_booking->bikeTypeName );
+                $bike_comments            = tt_validate( $wc_booking->bike_comments );
+                $isBikeUpgrade            = tt_validate( $wc_booking->isBikeUpgrade, '' );
+                $saddle_height            = tt_validate( $wc_booking->saddle_height );
+                $pedal_selection          = tt_validate( $wc_booking->pedal_selection );
+                $helmet_selection         = tt_validate( $wc_booking->helmet_selection );
+                $jersey_style             = tt_validate( $wc_booking->tt_jersey_size );
+                $tshirt_size              = tt_validate( $wc_booking->tshirt_size );
+                $passport_number          = tt_validate( $wc_booking->passport_number );
+                $passport_issue_date      = tt_validate( $wc_booking->passport_issue_date );
+                $passport_expiration_date = tt_validate( $wc_booking->passport_expiration_date );
+                $passport_place_of_issue  = tt_validate( $wc_booking->passport_place_of_issue );
+                $medications              = tt_validate( $wc_booking->medications );
+                $allergies                = tt_validate( $wc_booking->allergies );
+                $medical_conditions       = tt_validate( $wc_booking->medical_conditions );
+                $allergies                = tt_validate( $wc_booking->allergies );
+                $dietary_restrictions     = tt_validate( $wc_booking->dietary_restrictions );
+                $e_fname                  = tt_validate( $wc_booking->emergency_contact_first_name );
+                $e_lname                  = tt_validate( $wc_booking->emergency_contact_last_name );
+                $e_phone                  = tt_validate( $wc_booking->emergency_contact_phone );
+                $e_relationship           = tt_validate( $wc_booking->emergency_contact_relationship );
+                $ns_user_id               = tt_validate( $wc_booking->netsuite_guest_registration_id );
+                $admin_ns_user_id         = 1687333;
+                $sales_rep_id             = get_user_meta( $guest_wp_id, 'salesrepid', true );
                 if ( empty( $sales_rep_id ) ) {
                     $sales_rep_id = '';
                 }
                 if ( $booking_index == 0 ) {
                     $ns_booking_payload = [
-                        "tripDateId" => $ns_trip_ID,
-                        "startDate" => $start_date,
-                        "endDate" => $end_date,
-                        "wantPrivate" => $wantPrivate,
-                        //"referralSourceType" => $is_behalf == true ? 19 : '',
-                        'salesRepId' => $is_behalf == true ? $sales_rep_id : '',
-                        //"referralSourceName" => $is_behalf == true ? $super_admin_name : '',
+                        "tripDateId"                => $ns_trip_ID,
+                        "startDate"                 => $start_date,
+                        "endDate"                   => $end_date,
+                        "wantPrivate"               => $wantPrivate,
+                        // "referralSourceType"        => $is_behalf == true ? 19 : '',
+                        'salesRepId'                => $is_behalf == true ? $sales_rep_id : '',
+                        // "referralSourceName"        => $is_behalf == true ? $super_admin_name : '',
                         "bikeUpgradePriceDisplayed" => $bikeUpgradePrice,
-                        "rooms" => $trip_rooms,
-                        "specialRoomRequests" => $specialRoomRequests,
-                        "promoCode" => $promoCode,
+                        "rooms"                     => $trip_rooms,
+                        "specialRoomRequests"       => $specialRoomRequests,
+                        "promoCode"                 => $promoCode,
                         // Financial
-                        "paymentInfo" =>
+                        "paymentInfo"               =>
                         [
-                            "order_currency" => $order_currency,
-                            "cart_discount" => $cart_discount,
-                            "cart_discount_tax" => $cart_discount_tax,
-                            "order_tax" => $order_tax,
-                            "order_total" => $order_total,
-                            "transaction_id" => $transaction_id,
-                            "transaction_date" => $transaction_date,
-                            "transaction_authorization_amount" => $trip_transaction_amount,
-                            "transaction_deposit" => ($transaction_deposit ? 1 : 0),
-                            "transaction_payment_token" => $transaction_payment_token,
-                            "transaction_credit_card_account_four" => $cc_account_four,
-                            "transaction_card_card_expiry_date" => $cc_expiry_date,
-                            "transaction_credit_card_card_type" => $cc_card_type,
+                            "order_currency"                                   => $order_currency,
+                            "cart_discount"                                    => $cart_discount,
+                            "cart_discount_tax"                                => $cart_discount_tax,
+                            "order_tax"                                        => $order_tax,
+                            "order_total"                                      => $order_total,
+                            "transaction_id"                                   => $transaction_id,
+                            "transaction_date"                                 => $transaction_date,
+                            "transaction_authorization_amount"                 => $trip_transaction_amount,
+                            "transaction_deposit"                              => ($transaction_deposit ? 1 : 0),
+                            "transaction_payment_token"                        => $transaction_payment_token,
+                            "transaction_credit_card_account_four"             => $cc_account_four,
+                            "transaction_card_card_expiry_date"                => $cc_expiry_date,
+                            "transaction_credit_card_card_type"                => $cc_card_type,
                             "transaction_credit_card_processor_transaction_id" => $cc_processor_transaction_id
                         ],
-                        "billingAddress" => [
+                        "billingAddress"            => [
                             "firstName" => $billing_fname,
-                            "lastName" => $billing_lname,
-                            "country" => $billing_country,
-                            "address" => $billing_add_1,
-                            "address2" => $billing_add_2,
-                            "city" => $billing_city,
-                            "state" => $billing_state,
-                            "zip" => $billing_postcode
+                            "lastName"  => $billing_lname,
+                            "country"   => $billing_country,
+                            "address"   => $billing_add_1,
+                            "address2"  => $billing_add_2,
+                            "city"      => $billing_city,
+                            "state"     => $billing_state,
+                            "zip"       => $billing_postcode
                         ]
                     ];
                 }
                 $ns_booking_payload['guestsData'][$wc_booking_key] = [
-                    "guestId" => $ns_user_id,
-                    "firstName" => $fname,
-                    "lastName" => $lname,
-                    "email" => $email,
-                    "phone" => $phone,
-                    "birthDate" => $dob,
-                    "genderId" => $gender,
-                    "country" => $country,
-                    "address" => $address,
-                    "city" => $city,
-                    "state" => $state,
-                    "zip" => $zipcode,
-                    "roomIndex" =>  $user_room_index,
-                    "riderLevelId" => $rider_level,
-                    "bikeId" => $bike_id,
-                    'bike_size' => tt_validate($bike_size),
-                    "bikeTypeName" => $bike_type_name,
-                    "isBikeUpgrade" => $isBikeUpgrade,
-                    "heightId" => $rider_height,
-                    "pedalsId" => $pedal_selection,
-                    "addOnIds" => [],
-                    "helmetId" => $helmet_selection,
-                    "jerseyId" => $jersey_style,
-                    "passportNumber" => $passport_number,
-                    "passportPlaceOfIssue" => $passport_place_of_issue,
+                    "guestId"                => $ns_user_id,
+                    "firstName"              => $fname,
+                    "lastName"               => $lname,
+                    "email"                  => $email,
+                    "phone"                  => $phone,
+                    "birthDate"              => $dob,
+                    "genderId"               => $gender,
+                    "country"                => $country,
+                    "address"                => $address,
+                    "city"                   => $city,
+                    "state"                  => $state,
+                    "zip"                    => $zipcode,
+                    "roomIndex"              => $user_room_index,
+                    "activityLevelId"        => $activity_level,
+                    "riderLevelId"           => $rider_level,
+                    "bikeId"                 => $bike_id,
+                    'bike_size'              => tt_validate($bike_size),
+                    "bikeTypeName"           => $bike_type_name,
+                    "bikeComments"           => $bike_comments,
+                    "isBikeUpgrade"          => $isBikeUpgrade,
+                    "heightId"               => $rider_height,
+                    "pedalsId"               => $pedal_selection,
+                    "addOnIds"               => [],
+                    "helmetId"               => $helmet_selection,
+                    "jerseyId"               => $jersey_style,
+                    "tshirtSizeId"           => $tshirt_size,
+                    "passportNumber"         => $passport_number,
+                    "passportPlaceOfIssue"   => $passport_place_of_issue,
                     "passportCountryOfIssue" => "",
-                    "passportExpDate" => $passport_expiration_date,
-                    "passportIssueDate" => $passport_issue_date,
-                    "placeOfBirth" => $passport_place_of_issue,
-                    "medications" => $medications,
-                    "allergies" => $allergies,
-                    "medicalConditions" => $medical_conditions,
-                    "dietaryRestrictions" => $dietary_restrictions,
-                    "ecFirstName" => $e_fname,
-                    "ecLastName" => $e_lname,
-                    "ecPhone" => $e_phone,
-                    "ecRelationship" => $e_relationship,
-                    "wantsInsurance" => $wantsInsurance,
-                    "insuranceAmount" => $insuranceAmount,
-                    'tripDiscountAmount' => $wc_coupon_amount
+                    "passportExpDate"        => $passport_expiration_date,
+                    "passportIssueDate"      => $passport_issue_date,
+                    "placeOfBirth"           => $passport_place_of_issue,
+                    "medications"            => $medications,
+                    "allergies"              => $allergies,
+                    "medicalConditions"      => $medical_conditions,
+                    "dietaryRestrictions"    => $dietary_restrictions,
+                    "ecFirstName"            => $e_fname,
+                    "ecLastName"             => $e_lname,
+                    "ecPhone"                => $e_phone,
+                    "ecRelationship"         => $e_relationship,
+                    "wantsInsurance"         => $wantsInsurance,
+                    "insuranceAmount"        => $insuranceAmount,
+                    'tripDiscountAmount'     => $wc_coupon_amount
                 ];
                 // Store all guest emails, so can use it in the tt_update_user_booking_info() function, to check if there existing users with these emails in WP and those users don't have ns_customer_internal_id (ns_user_id) can repair this on order creating.
-                $guests_email_addresses[$wc_booking_key] = $email;
+                $guests_email_addresses[ $wc_booking_key ] = $email;
             }
             $booking_index++;
         }
@@ -373,15 +384,15 @@ function tt_trigger_cron_ns_booking_cb($order_id, $user_id = 'null', $is_behalf=
         }
         // NS Expects The Order Total without Travel Protections!
         $ns_booking_payload["paymentInfo"]["order_total"] = round( $ns_booking_payload["paymentInfo"]["order_total"] - $total_insuarance_ammount, 2 );
-        if ($ns_booking_payload) {
-            $ns_booking_result = $netSuiteClient->post(BOOKING_SCRIPT_ID, json_encode($ns_booking_payload));
+        if ( $ns_booking_payload ) {
+            $ns_booking_result = $netSuiteClient->post( BOOKING_SCRIPT_ID, json_encode( $ns_booking_payload ) );
             tt_update_user_booking_info( $order_id, $ns_booking_result, $guests_email_addresses );
-            tt_add_error_log('BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, $ns_booking_payload, $ns_booking_result);
-        }else{
-            tt_add_error_log('BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, [], ['message' => 'no Payload found']);
+            tt_add_error_log( 'BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, $ns_booking_payload, $ns_booking_result );
+        } else {
+            tt_add_error_log( 'BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, [], ['message' => 'no Payload found'] );
         }
-    }else{
-        tt_add_error_log('BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, ['order_id' => $order_id ], ['message' => 'no booking found for Order ID']);
+    } else {
+        tt_add_error_log( 'BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, ['order_id' => $order_id ], ['message' => 'no booking found for Order ID'] );
     }
 }
 function tt_get_common_logs($limit=10)
@@ -774,6 +785,7 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
 
     $guest_bike_gears   = array(
         'rider_level'              => tt_validate( $ns_guest_booking_result->riderType->id ),
+        'activity_level'           => tt_validate( $ns_guest_booking_result->activityLevel->id ),
         'bikeTypeId'               => tt_validate( json_decode( $guest_bike_info['bikeModel'], true )['id'] ),
         'bikeId'                   => tt_validate( $ns_guest_info->bikeId ),
         'bike_type_id_preferences' => '',
@@ -908,6 +920,7 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
 
         $_guest_bike_gears        = array(
             'rider_level'              => tt_validate( $_ns_guest_booking_result->riderType->id ),
+            'activity_level'           => tt_validate( $_ns_guest_booking_result->activityLevel->id ),
             'bikeTypeId'               => tt_validate( json_decode( $_guest_bike_info['bikeModel'], true )['id'] ),
             'bikeId'                   => tt_validate( $_ns_guest_info->bikeId ),
             'bike_type_id_preferences' => '',
@@ -1223,6 +1236,8 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
 
         // Set rider level from Guest. TODO: add check based on bike ID, because Guest data may change for any booking if there more than one.
         $booking_table_data['rider_level']              = tt_validate( $ns_guest_booking_result->riderType->id );
+        // Set activity level from Guest.
+        $booking_table_data['activity_level']           = tt_validate( $ns_guest_booking_result->activityLevel->id );
     }
 
     // Bike info from bike ID.

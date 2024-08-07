@@ -27,6 +27,7 @@ if ($wpdb->get_var($wpdb->prepare('show tables like %s', $table_name)) != $table
         `referralSourceName` varchar(100) NULL,
         `bikeUpgradePriceDisplayed` int(11) DEFAULT NULL,
         `specialRoomRequests` varchar(100) NULL,
+        `bike_comments` varchar(100) NULL,
         `promoCode` varchar(100) NULL,
         `trip_code` varchar(100) NULL,
         `trip_name` varchar(100) NULL,
@@ -48,6 +49,7 @@ if ($wpdb->get_var($wpdb->prepare('show tables like %s', $table_name)) != $table
         `helmet_selection` varchar(100) NULL,
         `rider_height` varchar(100) NULL,
         `rider_level` varchar(100) NULL,
+        `activity_level` varchar(100) NULL,
         `bike_id` varchar(100) NULL,
         `bike_size` varchar(100) NULL,
         `pedal_selection` varchar(100) NULL,
@@ -205,7 +207,7 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
             update_user_meta( $user_id, 'shipping_phone', $checkout_data['shipping_phone'] );
         }
         if( $product ){
-            $trip_status = $product->get_attribute( 'pa_trip-status' );
+            $trip_status = tt_get_custom_product_tax_value( $product_id, 'trip-status', true );
             $trip_sdate = $product->get_attribute( 'pa_start-date' ); 
             $trip_edate = $product->get_attribute( 'pa_end-date' );
             $trip_name = $product->get_name();
@@ -226,57 +228,66 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
         tt_add_error_log('Before: BOOKING_TABLE', ['1' => $checkout_data, '2' => $formatted_checkout_data ], $checkout_data);
         if( $formatted_checkout_data && isset($formatted_checkout_data[1]) ){
             foreach( $formatted_checkout_data[1]['cart_item_data'] as $iter_key=>$formatted_Data){
-                $is_primary = ( $iter_key === 0 ? true : false );
-                $insured_emails = ( $formatted_checkout_data[2]['cart_item_data']['guest_email'] ? $formatted_checkout_data[2]['cart_item_data']['guest_email'] : array() );
-                $wantsInsurance = false;
-                // if( $insured_emails ){
-                //     $wantsInsurance = ( in_array( $formatted_Data['guest_email'], $insured_emails  ) ? true : false );
-                // }
-                $bikeId         = '';
-                $bike_type_name = '';
-                $isBikeUpgrade  = false;
-                if( $iter_key == 0 ){
-                    $bike_type_id = $checkout_data['bike_gears']['primary']['bikeTypeId'];
-                    if ($bike_type_id) {
-                        $bikeTypeInfo = tt_ns_get_bike_type_info($bike_type_id);
-                        if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
-                            $isBikeUpgrade = true;
+                $is_primary        = ( $iter_key === 0 ? true : false );
+                $insured_emails    = ( $formatted_checkout_data[2]['cart_item_data']['guest_email'] ? $formatted_checkout_data[2]['cart_item_data']['guest_email'] : array() );
+                $wantsInsurance    = false;
+                $bikeId            = '';
+                $bike_type_name    = '';
+                $isBikeUpgrade     = false;
+                $own_bike_id       = 5270;
+                $non_rider_bike_id = 5257;
+                if ( $iter_key == 0 ) {
+                    $bike_type_id    = $checkout_data['bike_gears']['primary']['bikeTypeId'];
+                    $bikeId          = $checkout_data['bike_gears']['primary']['bikeId'];
+                    if ( $bike_type_id ) {
+                        $bikeTypeInfo = tt_ns_get_bike_type_info( $bike_type_id );
+                        if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
+                            if ( ! in_array( (int) $bikeId, array( $own_bike_id, $non_rider_bike_id ) ) ) {
+                                // Bike upgrade is not applicable for non-rider and bring own bike.
+                                $isBikeUpgrade = true;
+                            }
                         }
                         $bike_type_name = tt_ns_get_bike_type_name( $bike_type_id );
                     }
-                    //$isBikeUpgrade = $checkout_data['bike_gears']['primary']['upgrade'];
-                    $bikeId = $checkout_data['bike_gears']['primary']['bikeId'];
-                    $bike_selection = $checkout_data['bike_gears']['primary']['bike'];
-                    $bike_size = $checkout_data['bike_gears']['primary']['bike_size'];
-                    $rider_height = $checkout_data['bike_gears']['primary']['rider_height'];
-                    $bike_pedal = $checkout_data['bike_gears']['primary']['bike_pedal'];
-                    $rider_level = $checkout_data['bike_gears']['primary']['rider_level'];
-                    $jersey_style = $checkout_data['bike_gears']['primary']['jersey_style'];
-                    $jersey_size = $checkout_data['bike_gears']['primary']['jersey_size'];
-                    $helmet_size = $checkout_data['bike_gears']['primary']['helmet_size'];
+                    $bike_selection  = $checkout_data['bike_gears']['primary']['bike'];
+                    $bike_size       = $checkout_data['bike_gears']['primary']['bike_size'];
+                    $rider_height    = $checkout_data['bike_gears']['primary']['rider_height'];
+                    $bike_pedal      = $checkout_data['bike_gears']['primary']['bike_pedal'];
+                    $rider_level     = $checkout_data['bike_gears']['primary']['rider_level'];
+                    $activity_level  = tt_validate( $checkout_data['bike_gears']['primary']['activity_level'] );
+                    $jersey_style    = $checkout_data['bike_gears']['primary']['jersey_style'];
+                    $jersey_size     = $checkout_data['bike_gears']['primary']['jersey_size'];
+                    $tshirt_size     = tt_validate( $checkout_data['bike_gears']['primary']['tshirt_size'] );
+                    $helmet_size     = $checkout_data['bike_gears']['primary']['helmet_size'];
                     $insuranceAmount = isset($trek_guest_insurance['primary']['basePremium']) ? $trek_guest_insurance['primary']['basePremium'] : 0;
-                    $wantsInsurance = isset($trek_guest_insurance['primary']['is_travel_protection']) && $trek_guest_insurance['primary']['is_travel_protection'] == true ? true : false;
-                }else{
+                    $wantsInsurance  = isset($trek_guest_insurance['primary']['is_travel_protection']) && $trek_guest_insurance['primary']['is_travel_protection'] == true ? true : false;
+                    $bike_comments   = ! empty( tt_validate( $checkout_data['bike_gears']['primary']['transportation_options'] ) ) || ! empty( tt_validate( $checkout_data['bike_gears']['primary']['type_of_bike'] ) ) ?  tt_validate( $checkout_data['bike_gears']['primary']['transportation_options'] ) . '; ' . tt_validate( $checkout_data['bike_gears']['primary']['type_of_bike'] ) : '';
+                } else {
                     $bike_type_id = $checkout_data['bike_gears']['guests'][$iter_key]['bikeTypeId'];
-                    if ($bike_type_id) {
+                    $bikeId       = $checkout_data['bike_gears']['guests'][$iter_key]['bikeId'];
+                    if ( $bike_type_id ) {
                         $bikeTypeInfo = tt_ns_get_bike_type_info($bike_type_id);
-                        if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
-                            $isBikeUpgrade = true;
+                        if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
+                            if ( ! in_array( (int) $bikeId, array( $own_bike_id, $non_rider_bike_id ) ) ) {
+                                // Bike upgrade is not applicable for non-rider and bring own bike.
+                                $isBikeUpgrade = true;
+                            }
                         }
                         $bike_type_name = tt_ns_get_bike_type_name( $bike_type_id );
                     }
-                    //$isBikeUpgrade = $checkout_data['bike_gears']['guests'][$iter_key]['upgrade'];
-                    $bikeId = $checkout_data['bike_gears']['guests'][$iter_key]['bikeId'];
-                    $bike_selection = $checkout_data['bike_gears']['guests'][$iter_key]['bike'];
-                    $bike_size = $checkout_data['bike_gears']['guests'][$iter_key]['bike_size'];
-                    $rider_height = $checkout_data['bike_gears']['guests'][$iter_key]['rider_height'];
-                    $bike_pedal = $checkout_data['bike_gears']['guests'][$iter_key]['bike_pedal'];
-                    $rider_level = $checkout_data['bike_gears']['guests'][$iter_key]['rider_level'];
-                    $jersey_style = $checkout_data['bike_gears']['guests'][$iter_key]['jersey_style'];
-                    $jersey_size = $checkout_data['bike_gears']['guests'][$iter_key]['jersey_size'];
-                    $helmet_size = $checkout_data['bike_gears']['guests'][$iter_key]['helmet_size'];
+                    $bike_selection  = $checkout_data['bike_gears']['guests'][$iter_key]['bike'];
+                    $bike_size       = $checkout_data['bike_gears']['guests'][$iter_key]['bike_size'];
+                    $rider_height    = $checkout_data['bike_gears']['guests'][$iter_key]['rider_height'];
+                    $bike_pedal      = $checkout_data['bike_gears']['guests'][$iter_key]['bike_pedal'];
+                    $rider_level     = $checkout_data['bike_gears']['guests'][$iter_key]['rider_level'];
+                    $activity_level  = tt_validate( $checkout_data['bike_gears']['guests'][$iter_key]['activity_level'] );
+                    $jersey_style    = $checkout_data['bike_gears']['guests'][$iter_key]['jersey_style'];
+                    $jersey_size     = $checkout_data['bike_gears']['guests'][$iter_key]['jersey_size'];
+                    $tshirt_size     = tt_validate( $checkout_data['bike_gears']['guests'][$iter_key]['tshirt_size'] );
+                    $helmet_size     = $checkout_data['bike_gears']['guests'][$iter_key]['helmet_size'];
                     $insuranceAmount = isset($trek_guest_insurance['guests'][$iter_key]['basePremium']) ? $trek_guest_insurance['guests'][$iter_key]['basePremium'] : 0;
-                    $wantsInsurance = isset($trek_guest_insurance['guests'][$iter_key]['is_travel_protection']) && $trek_guest_insurance['guests'][$iter_key]['is_travel_protection'] == true ? true : false;
+                    $wantsInsurance  = isset($trek_guest_insurance['guests'][$iter_key]['is_travel_protection']) && $trek_guest_insurance['guests'][$iter_key]['is_travel_protection'] == true ? true : false;
+                    $bike_comments   = ! empty( tt_validate( $checkout_data['bike_gears']['guests'][$iter_key]['transportation_options'] ) ) || ! empty( tt_validate( $checkout_data['bike_gears']['guests'][$iter_key]['type_of_bike'] ) ) ?  tt_validate( $checkout_data['bike_gears']['guests'][$iter_key]['transportation_options'] ) . '; ' . tt_validate( $checkout_data['bike_gears']['guests'][$iter_key]['type_of_bike'] ) : '';
                 }
                 $tt_trip_user_emails[] = isset($formatted_Data['guest_email']) ? $formatted_Data['guest_email'] : '';
                 $bookingData = array(
@@ -294,6 +305,7 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
                     'guest_date_of_birth'            => $formatted_Data['guest_dob'],
                     'rider_height'                   => $rider_height,
                     'rider_level'                    => $rider_level,
+                    'activity_level'                 => $activity_level,
                     'bike_type_id'                   => $bike_type_id,
                     'bikeTypeName'                   => $bike_type_name,
                     'bike_size'                      => $bike_size,
@@ -301,6 +313,7 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
                     'bike_selection'                 => $bike_selection,
                     'pedal_selection'                => $bike_pedal,
                     'tt_jersey_size'                 => $jersey_size,
+                    'tshirt_size'                    => $tshirt_size,
                     'jersey_style'                   => $jersey_style,
                     'helmet_selection'               => $helmet_size,
                     'emergency_contact_first_name'   => ( $iter_key === 0 ? $emergence_cfname : '' ),
@@ -328,6 +341,7 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
                     'wantPrivate'                    => $wantPrivate,
                     'bikeUpgradePriceDisplayed'      => $bikeUpgradePrice,
                     'specialRoomRequests'            => $special_needs,
+                    'bike_comments'                  => $bike_comments,
                     'trip_room_selection'            => json_encode($occupants),
                     'isBikeUpgrade'                  => $isBikeUpgrade,
                     'waiver_signed'                  => ( $iter_key === 0 ? 1 : 0 ),
