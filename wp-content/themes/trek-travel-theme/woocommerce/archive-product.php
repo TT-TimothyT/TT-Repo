@@ -186,9 +186,9 @@ $emptyBlockContent .= '</div></div>';
                                 <h5>Destinations</h5>
                                 <div id="hierarchical-menu"></div>
                                 <hr>
-                                <h5>Duration</h5>
+                                <h5 class="dx-algolia-duration">Duration</h5>
                                 <div id="duration-facet"></div>
-                                <hr>
+                                <hr class="dx-algolia-duration">
                                 <h5>Trip Style</h5>
                                 <div id="trip-style-facet"></div>
                                 <hr>
