@@ -224,7 +224,7 @@ function trek_forgot_password_form()
 add_shortcode('trek-tripfinder-form', 'trek_herobaner_tripfinder_shortcode_cb',);
 function trek_herobaner_tripfinder_shortcode_cb()
 {
-   $taxo_name = 'product_cat';
+   $taxo_name = 'destination';
    $destination_obj = get_term_by('slug', 'destinations', $taxo_name); //uncategorized, destinations
    $destination_id = $destination_obj->term_id;
    $categories = get_terms(
