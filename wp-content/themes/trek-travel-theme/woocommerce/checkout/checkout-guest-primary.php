@@ -33,7 +33,7 @@ if( $is_hiking_checkout ) :
 ?>
 <!-- Activity Level Select -->
 <div class="checkout-bikes__rider-level">
-	<p class="fw-medium fs-sm lh-sm"><?php esc_html_e( 'Activity Level', 'trek-travel-theme' ); ?>&nbsp;<i class="bi bi-info-circle pdp-rider-level"></i></p>
+	<p class="fw-medium fs-sm lh-sm"><?php esc_html_e( 'Tell us about your activity level', 'trek-travel-theme' ); ?>&nbsp;<i class="bi bi-info-circle pdp-rider-level"></i></p>
     <div class="row mx-0 guest-checkout__primary-form-row">
         <div class="col-md px-0 py-0 my-0 form-row">
             <div class="form-floating mb-3 col-md-6 pe-2">
@@ -52,7 +52,7 @@ if( $is_hiking_checkout ) :
                         );
                         ?>
                 </select>
-                <label for="<?php echo esc_attr( $bike_gears_fields['activity_level']['id'] ); ?>"><?php esc_html_e( 'Activity Level', 'trek-travel-theme' ); ?></label>
+                <label for="<?php echo esc_attr( $bike_gears_fields['activity_level']['id'] ); ?>"><?php esc_html_e( 'Tell us about your activity level', 'trek-travel-theme' ); ?></label>
                 <div class="invalid-feedback activity-select">
                     <img class="invalid-icon" />
                     <?php esc_html_e( 'Please select valid Activity Level.', 'trek-travel-theme' ); ?>
@@ -77,7 +77,7 @@ $bike_gears_fields = array(
 ?>
 <!-- Activity Level Select -->
 <div class="checkout-bikes__rider-level">
-	<p class="fw-medium fs-sm lh-xs"><?php esc_html_e( 'Activity Level', 'trek-travel-theme' ); ?>&nbsp;<i class="bi bi-info-circle pdp-rider-level"></i></p>
+	<p class="fw-medium fs-sm lh-xs"><?php esc_html_e( 'Tell us about your activity level', 'trek-travel-theme' ); ?>&nbsp;<i class="bi bi-info-circle pdp-rider-level"></i></p>
     <div class="row mx-0 guest-checkout__primary-form-row">
         <div class="col-md px-0 py-0 my-0 form-row">
             <div class="form-floating mb-4 col-md-6 pe-2">
@@ -100,7 +100,7 @@ $bike_gears_fields = array(
                         );
                         ?>
                 </select>
-                <label for="<?php echo esc_attr( $bike_gears_fields['rider_level']['id'] ); ?>"><?php esc_html_e( 'Activity Level', 'trek-travel-theme' ); ?></label>
+                <label for="<?php echo esc_attr( $bike_gears_fields['rider_level']['id'] ); ?>"><?php esc_html_e( 'Tell us about your activity level', 'trek-travel-theme' ); ?></label>
                 <div class="invalid-feedback rider-select">
                     <img class="invalid-icon" />
                     <?php esc_html_e( 'Please select valid Activity Level.', 'trek-travel-theme' ); ?>
