@@ -35,9 +35,9 @@ body {
             transition: all ease 0.3s;
             &:checked ~ .checkout-payment__paydep,
             &:checked ~ .checkout-payment__card {
-                -webkit-box-shadow: 0px 4px 0px 0px var(--progress-bar-active);
+                -webkit-box-shadow: 0px 4px 0px 0px #28AAE1;
                 -moz-box-shadow: 0px 4px 0px 0px var(--progress-bar-active);
-                box-shadow: 0px 4px 0px 0px var(--progress-bar-active);
+                box-shadow: 0px 4px 0px 0px #28AAE1;
                 background-color: #F4F4F485;
                 border-radius: 4px;
                 i::after {
