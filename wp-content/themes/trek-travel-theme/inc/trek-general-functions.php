@@ -4838,7 +4838,6 @@ function tt_guest_details($tt_posted = [])
                 if( !empty( $jersey_size ) && ! is_array( $jersey_size )  && '-' != $jersey_size ) {
                     $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Jersey: ' . $jersey_size . '</p>';
                 }
-                // $bike_gear_html .= '<p class="mb-0 fs-sm lh-sm fw-normal">Wheel Upgrade: ' . $wheel_upgrade . '</p>';
             }
             $bike_gear_html .= '</div>';
             if (($iter % $cols == $cols - 1) || ($iter == $guest_count - 1)) {

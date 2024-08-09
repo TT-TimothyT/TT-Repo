@@ -84,7 +84,6 @@ global $woocommerce;
 												'Pedals:'                 => tt_get_custom_item_name( 'syncPedals', tt_validate( $review_bikes_arr_primary['bike_pedal'] ) ),
 												'Helmet Size:'            => tt_get_custom_item_name( 'syncHelmets', tt_validate( $review_bikes_arr_primary['helmet_size'] ) ),
 												'Jersey:'                 => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_primary['jersey_size'] ) ),
-												'Wheel Upgrade:'          => ! $is_hiking_checkout ? 1 === (int) tt_validate( tt_ns_get_bike_type_info( tt_validate( $review_bikes_arr_primary['bikeTypeId'] ) )['isBikeUpgrade'], 0 ) && ! in_array( (int) tt_validate( $review_bikes_arr_primary['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? 'Yes' : 'No' : '', // Bike upgrade is not applicable for Non-rider and Bring own bike!
 												'T-Shirt Size:'           => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_primary['tshirt_size'] ) ), // H&W.
 											)
 										);
@@ -119,7 +118,6 @@ global $woocommerce;
 														'Pedals:'                 => tt_get_custom_item_name( 'syncPedals', tt_validate( $review_bikes_arr_guest['bike_pedal'] ) ),
 														'Helmet Size:'            => tt_get_custom_item_name( 'syncHelmets', tt_validate( $review_bikes_arr_guest['helmet_size'] ) ),
 														'Jersey:'                 => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_guest['jersey_size'] ) ),
-														'Wheel Upgrade:'          => ! $is_hiking_checkout ? 1 === (int) tt_validate( tt_ns_get_bike_type_info( tt_validate( $review_bikes_arr_guest['bikeTypeId'] ) )['isBikeUpgrade'], 0 ) && ! in_array( (int) tt_validate( $review_bikes_arr_guest['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? 'Yes' : 'No' : '', // Bike upgrade is not applicable for Non-rider and Bring own bike!
 														'T-Shirt Size:'           => tt_get_custom_item_name( 'syncJerseySizes', tt_validate( $review_bikes_arr_guest['tshirt_size'] ) ), // H&W.
 													)
 												);
