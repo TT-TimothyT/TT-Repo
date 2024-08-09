@@ -4568,6 +4568,7 @@ jQuery( '#waiver_modal' ).on( 'hidden.bs.modal', function () {
 jQuery('body').on('click', '.checkout-travel-protection-tooltip', function() {
   jQuery('.travel-protection-tooltip-container').css('display', 'flex');
   jQuery('header').css('z-index','0');
+  jQuery('.header-main.sticky-top').css('top','unset');
   jQuery('body').css('overflow','hidden');
   jQuery('html').addClass('no-scroll');
 })
@@ -4575,6 +4576,7 @@ jQuery('body').on('click', '.checkout-travel-protection-tooltip', function() {
 jQuery('.travel-protection-tooltip-container .close-btn').on('click', function() {
   jQuery('.travel-protection-tooltip-container').fadeOut();
   jQuery('header').css('z-index','1020');
+  jQuery('.header-main.sticky-top').css('top','var(--admin-bar-h)');
   jQuery('body').css('overflow','');
   jQuery('html').removeClass('no-scroll');
 })
@@ -4583,6 +4585,7 @@ jQuery('.travel-protection-tooltip-container').on('click', function(e) {
   if(jQuery(e.target).hasClass('travel-protection-tooltip-container')) {
     jQuery('.travel-protection-tooltip-container').fadeOut();
     jQuery('header').css('z-index','1020');
+    jQuery('.header-main.sticky-top').css('top','var(--admin-bar-h)');
     jQuery('body').css('overflow','');
     jQuery('html').removeClass('no-scroll');
   }
