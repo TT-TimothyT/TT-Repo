@@ -693,7 +693,13 @@ if( $available_child_products ) {
                 <?php if (get_field('private_tour_note_title')): ?>
                     <p class="fw-bold fs-xl lh-xl"><?php the_field('private_tour_note_title')?></p>
                     <p class="fw-normal fs-md lh-md"><?php the_field('private_tour_note_subtitle')?></p>
-                    <p class="fw-normal fs-xs lh-xs w-75"><?php the_field('private_tour_note_content')?></p>
+                    <p class="fw-normal fs-xs lh-xs w-75">
+                        <?php 
+                        $content = get_field('private_tour_note_content');
+                        echo !empty($content) ? esc_html($content) : 'Not all scheduled dates are convertible to private groups – a small number of trips and peak season dates may be excluded or may require “buy outs” equivalent to a larger group size. Pricing, availability, and guest minimums are all subject to change at any time.';
+                        ?>
+                    </p>
+
                 <?php endif;?>
             </div>
             <!-- custom tour tab content -->
