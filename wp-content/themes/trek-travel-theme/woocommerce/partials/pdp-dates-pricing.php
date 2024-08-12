@@ -691,16 +691,20 @@ if( $available_child_products ) {
 
                 <a href="/ways-to-travel/private?trip=<?php echo $product->name; ?>" target="_blank" class="btn btn-primary btn-md rounded-1 my-4">Book a Private Tour</a>
                 <?php if (get_field('private_tour_note_title')): ?>
-                    <p class="fw-bold fs-xl lh-xl"><?php the_field('private_tour_note_title')?></p>
-                    <p class="fw-normal fs-md lh-md"><?php the_field('private_tour_note_subtitle')?></p>
-                    <p class="fw-normal fs-xs lh-xs w-75">
-                        <?php 
-                        $content = get_field('private_tour_note_content');
-                        echo !empty($content) ? esc_html($content) : 'Not all scheduled dates are convertible to private groups – a small number of trips and peak season dates may be excluded or may require “buy outs” equivalent to a larger group size. Pricing, availability, and guest minimums are all subject to change at any time.';
-                        ?>
-                    </p>
+                    <p class="fw-bold fs-xl lh-xl"><?php echo esc_html(get_field('private_tour_note_title')); ?></p>
+                <?php endif; ?>
 
-                <?php endif;?>
+                <?php if (get_field('private_tour_note_subtitle')): ?>
+                    <p class="fw-normal fs-md lh-md"><?php echo esc_html(get_field('private_tour_note_subtitle')); ?></p>
+                <?php endif; ?>
+
+                <p class="fw-normal fs-xs lh-xs w-75">
+                    <?php 
+                    $content = get_field('private_tour_note_content');
+                    echo !empty($content) ? esc_html($content) : 'Not all scheduled dates are convertible to private groups – a small number of trips and peak season dates may be excluded or may require “buy outs” equivalent to a larger group size. Pricing, availability, and guest minimums are all subject to change at any time.';
+                    ?>
+                </p>
+
             </div>
             <!-- custom tour tab content -->
             <div class="tab-pane fade" id="nav-custom" role="tabpanel" aria-labelledby="nav-custom-tab" tabindex="0">
