@@ -310,7 +310,7 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 				</div>
 			</div>
 			<hr>
-			<p class="mb-1"><?php esc_html_e( 'Trip pricing is subject to change. Book your trip now to lock in your price!', 'trek-travel-theme' ); ?></p>
+			<p class="mb-1"><?php esc_html_e( 'Secure your adventure today! Trip pricing can change, so don’t miss out—book now and lock in your dream getaway!', 'trek-travel-theme' ); ?></p>
 		</div>
     </div>
 </div>
