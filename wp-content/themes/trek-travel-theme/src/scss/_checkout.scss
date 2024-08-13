@@ -36,13 +36,11 @@
 		}
 	}
 
-	.form-floating input[type="date"]:not(:valid),
-	.form-floating input[type="date"]:placeholder-shown  {
-			color: transparent;
+	.form-floating input[type="date"]:not(:focus):not(:valid) {
+		color: transparent;
 	}
 
 	input[type="date"] {
-		background-image: url('../../assets/images/checkout/calendar-icon.svg');
 		background-repeat: no-repeat;
 		background-position: 93% center;
 		background-size: 13px;
@@ -52,16 +50,6 @@
 		width: 100%;
 		position: relative;
 
-		/* Hide the default icon by setting its opacity to 0 */
-		&::-webkit-inner-spin-button,
-		&::-webkit-calendar-picker-indicator {
-			opacity: 0;
-			position: absolute;
-			right: 0;
-			width: 100%;
-			height: 100%;
-			cursor: pointer; 
-		}
 
 			&::-webkit-date-and-time-value {
 				text-align: left;
@@ -78,9 +66,9 @@
 	input[type="date"]::before {
 		color: #CCC; 
 		font-size: 14px;
-		content: attr(placeholder);
+		content: "Date of Birth";
 		display: block;
-		width: 100%;
+		width: calc(100% - 70px);
 		position: absolute;
 	}
 

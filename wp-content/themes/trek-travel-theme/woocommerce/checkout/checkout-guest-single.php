@@ -187,7 +187,7 @@ if( $is_hiking_checkout ) {
         </div>
         <div class="col-md  px-0 py-0 my-0 form-row">
             <div class="form-floating">
-                <input type="date" class="form-control tt_guest_inputs" data-validation="date" data-type="date" name="guests[<?php echo esc_attr( $guest_num ); ?>][guest_dob]" class="form-control" id="floatingInputGrid" placeholder="<?php esc_html_e( 'Date of Birth', 'trek-travel-theme' ); ?>" value="<?php echo esc_attr( tt_validate( $guest['guest_dob'] ) ); ?>" required="required">
+                <input type="date" class="form-control tt_guest_inputs" data-validation="date" data-type="date" name="guests[<?php echo esc_attr( $guest_num ); ?>][guest_dob]" class="form-control" id="floatingInputGrid" value="<?php echo esc_attr( tt_validate( $guest['guest_dob'] ) ); ?>" required="required">
                 <label for="floatingInputGrid"><?php esc_html_e( 'Date of Birth', 'trek-travel-theme' ); ?></label>
                 <div class="invalid-feedback invalid-age dob-error">
                     <img class="invalid-icon" />

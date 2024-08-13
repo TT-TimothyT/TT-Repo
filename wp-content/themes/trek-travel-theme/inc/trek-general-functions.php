@@ -307,7 +307,6 @@ function custom_woocommerce_shipping_fields($fields)
     );
     $fields['shipping']['custentity_birthdate'] = array(
         'label' => __('Date of Birth', 'woocommerce'),
-        'placeholder' => __('Date of Birth', 'woocommerce'),
         'required' => true,
         'clear' => false,
         'type' => 'date',
