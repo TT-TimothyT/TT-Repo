@@ -46,12 +46,13 @@ function tt_wc_ns_fire_one_hour_cron() {
         wp_schedule_event(time(), 'every_one_hour', 'tt_wc_ns_sync_one_hour_event');
     }
 }
-if( ! defined( 'DX_DEV' ) ) {
-    // Run the CRON JOBS only on production website.
-    add_action( 'wp', 'tt_wc_ns_fire_one_hour_cron' );
+// Comment lines below to prevent registration of the Cron events, because the sync process will run through server-side related jobs via crontab.
+// if( ! defined( 'DX_DEV' ) ) {
+//     // Run the CRON JOBS only on production website.
+//     add_action( 'wp', 'tt_wc_ns_fire_one_hour_cron' );
 
-    add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
-}
+//     add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
+// }
 function tt_wc_ns_sync_hourly_event_cb()
 {
     tt_sync_ns_trips();
@@ -637,9 +638,9 @@ function tt_get_ns_guest_registrations_info( $user_reg_ids, $is_single = false )
  * 
  * @return array Last modified Guest registrations data in array with objects from id, email and tripId.
  */
-function tt_get_ns_guest_modified_registrations( $time_range = '-2 hours' ) {
+function tt_get_ns_guest_modified_registrations( $time_range = DEFAULT_TIME_RANGE_LOCKING_STATUS ) {
 
-    // Fire the NS script to fetch all the registration ids for the past 2 hours.
+    // Fire the NS script to fetch all the registration ids for the past 4 hours.
     $modified_after = date( 'Y-m-d H:i:s', strtotime( $time_range ) );
 
     // Format should be YYYY-MM-DDTHH:mm:SS.

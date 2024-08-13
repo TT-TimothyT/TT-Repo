@@ -7,16 +7,17 @@ use TTNetSuite\NetSuiteClient;
  * @version : 1.0.0
  * @return  : Get Trips last modified After
  **/
-if ( ! function_exists( 'tt_get_last_modified_trip_ids' ) ) {
-    function tt_get_last_modified_trip_ids( $time_range = DEFAULT_TIME_RANGE ) {
-        $trips_ids = array();
-
+if (!function_exists('tt_get_last_modified_trip_ids')) {
+    function tt_get_last_modified_trip_ids( $time_range = DEFAULT_TIME_RANGE ){
+        $trips_ids        = array();
         $net_suite_client = new NetSuiteClient();
         $trek_script_args = array(
            'modifiedAfter' => date('Y-m-d\TH:i:s', strtotime( $time_range ) )
         );
-        $trek_trips = $net_suite_client->get( TRIPS_SCRIPT_ID, $trek_script_args );
-        if ( $trek_trips && ! empty( $trek_trips ) ) {
+        $trek_trips       = $net_suite_client->get( TRIPS_SCRIPT_ID, $trek_script_args );
+
+        // If trek_trips isn't an array, it most probably has an error returned from the NS API.
+        if ( $trek_trips && is_array( $trek_trips ) && ! empty( $trek_trips ) ) {
             foreach ( $trek_trips as $trek_trip ) {
                 $trip_id     = $trek_trip->tripId;
                 $trips_ids[] = $trip_id;
@@ -79,11 +80,17 @@ if ( ! function_exists( 'tt_sync_ns_trip_details' ) ) {
         $table_name             = $wpdb->prefix . 'netsuite_trip_detail';
         $net_suite_client       = new NetSuiteClient();
         $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
-        $trip_ids               = tt_get_local_trip_ids( $last_modified_trip_ids );
-        if ( $trip_ids && ! empty( $trip_ids ) ) {
-            foreach ( $trip_ids as $trip_ids_arr ) {
-                $trek_script_args  = array( 'tripIds' => implode(',', $trip_ids_arr ) );
-                $trek_trip_details = $net_suite_client->get( TRIP_DETAIL_SCRIPT_ID, $trek_script_args );
+        tt_add_error_log('[Trip Details Sync]: '.TRIPS_SCRIPT_ID, 'START Ttrip Details Sync for ' . $time_range, '$last_modified_trip_ids-> ' . count($last_modified_trip_ids));
+        // Early exit if there are no last modified trip ids for the given time range.
+        if ( empty( $last_modified_trip_ids ) ) {
+            tt_add_error_log('[Trip Details Sync]: '.TRIPS_SCRIPT_ID, 'END Ttrip Details Sync for ' . $time_range, array( 'last_modified_trip_ids: ' => count( $last_modified_trip_ids ), 'message' => 'There are no new Trip IDs to sync edited in the period ' . $time_range ) );
+            return;
+        }
+        $trip_Ids = tt_get_local_trip_ids( $last_modified_trip_ids ); // This is return all ids if there are empty array as argument.
+        if ( $trip_Ids && ! empty( $trip_Ids ) ) {
+            foreach ($trip_Ids as $trip_Ids_arr) {
+                $trek_script_args = array( 'tripIds' => implode(',', $trip_Ids_arr) );
+                $trek_trip_details = $net_suite_client->get(TRIP_DETAIL_SCRIPT_ID, $trek_script_args);
                 if( $trek_trip_details ){
                     tt_add_error_log( 'NS_SCRIPT_ID: ' . TRIP_DETAIL_SCRIPT_ID, $trek_script_args, array( 'status' => 'true' ) );
                 } else {
@@ -144,6 +151,7 @@ if ( ! function_exists( 'tt_sync_ns_trip_details' ) ) {
                 }
             }
         }
+        tt_add_error_log( '[Trip Details Sync]: '.TRIPS_SCRIPT_ID, 'END Ttrip Details Sync', '$last_modified_trip_ids-> ' . count( $last_modified_trip_ids ) );
     }
 }
 /**
@@ -157,8 +165,13 @@ if (!function_exists('tt_sync_ns_trip_hotels')) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_hotels';
         $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
-        $trek_trips = tt_get_local_trips( $last_modified_trip_ids );
         tt_add_error_log('[Hotels Sync]: '.TRIPS_SCRIPT_ID, 'START Hotels Sync for ' . $time_range, '$last_modified_trip_ids-> ' . count($last_modified_trip_ids));
+        // Early exit if there are no last modified trip ids for the given time range.
+        if( empty( $last_modified_trip_ids ) ) {
+            tt_add_error_log('[Hotels Sync]: '.TRIPS_SCRIPT_ID, 'END Hotels Sync', array( 'last_modified_trip_ids: ' => count( $last_modified_trip_ids ), 'message' => 'There are no new Trip IDs to sync edited in the period ' . $time_range ) );
+            return;
+        }
+        $trek_trips = tt_get_local_trips( $last_modified_trip_ids );
         if ($trek_trips && !empty($trek_trips)) {
             foreach ($trek_trips as $trek_trip) {
                 $tripId = $trek_trip->tripId;
@@ -201,8 +214,13 @@ if (!function_exists('tt_sync_ns_trip_bikes')) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
         $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
-        $trek_trips_bulk = tt_get_local_trips( $last_modified_trip_ids, true );
         tt_add_error_log('[Bikes Sync]: '.TRIPS_SCRIPT_ID, 'START Bikes Sync for ' . $time_range, '$last_modified_trip_ids-> ' . count($last_modified_trip_ids));
+        // Early exit if there are no last modified trip ids for the given time range.
+        if( empty( $last_modified_trip_ids ) ) {
+            tt_add_error_log('[Bikes Sync]: '.TRIPS_SCRIPT_ID, 'END Bikes Sync', array( 'last_modified_trip_ids: ' => count( $last_modified_trip_ids ), 'message' => 'There are no new Trip IDs to sync edited in the period ' . $time_range ) );
+            return;
+        }
+        $trek_trips_bulk = tt_get_local_trips( $last_modified_trip_ids, true );
         if( $trek_trips_bulk && !empty( $trek_trips_bulk ) ) {
             foreach ( $trek_trips_bulk as $trek_trips ) {
                 if ($trek_trips && !empty($trek_trips)) {
@@ -254,8 +272,13 @@ if (!function_exists('tt_sync_ns_trip_addons')) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'netsuite_trip_addons';
         $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
-        $trek_trips = tt_get_local_trips( $last_modified_trip_ids );
         tt_add_error_log('[Addons Sync]: '.TRIPS_SCRIPT_ID, 'START Addons Sync for ' . $time_range, '$last_modified_trip_ids->' . count($last_modified_trip_ids));
+        // Early exit if there are no last modified trip ids for the given time range.
+        if( empty( $last_modified_trip_ids ) ) {
+            tt_add_error_log('[Addons Sync]: '.TRIPS_SCRIPT_ID, 'END Addons Sync', array( 'last_modified_trip_ids: ' => count( $last_modified_trip_ids ), 'message' => 'There are no new Trip IDs to sync edited in the period ' . $time_range ) );
+            return;
+        }
+        $trek_trips = tt_get_local_trips( $last_modified_trip_ids );
         if ($trek_trips && !empty($trek_trips)) {
             foreach ($trek_trips as $trek_trip) {
                 $tripId = $trek_trip->tripId;
@@ -470,14 +493,14 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
     function tt_sync_wc_products_from_ns( $is_all = false, $sync_trip_ids = array(), $time_range = DEFAULT_TIME_RANGE )
     {
         $net_suite_client   = new NetSuiteClient();
-        $trip_sync_type_msg = '[Trip Sync]: ' . TRIP_DETAIL_SCRIPT_ID;
+        $trip_sync_type_msg = '[Trip/Product Sync]: ' . TRIP_DETAIL_SCRIPT_ID;
 
         // Check if we are syncing a single trip or a bunch of such.
         if( $sync_trip_ids && is_array( $sync_trip_ids ) && ! empty( $sync_trip_ids ) ) {
 
             $trip_ids           = $sync_trip_ids;
             $trip_ids           = array_chunk( $trip_ids, 10 );
-            $trip_sync_type_msg = '[Single Trip Sync]: ' . TRIP_DETAIL_SCRIPT_ID;
+            $trip_sync_type_msg = '[Single Trip/Product Sync]: ' . TRIP_DETAIL_SCRIPT_ID;
         } else {
 
             $last_modified_trip_ids = tt_get_last_modified_trip_ids( $time_range );
@@ -493,13 +516,13 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
                 } else {
 
                     $trip_ids = array();
-                    tt_add_error_log( $trip_sync_type_msg, array( 'trip_ids' => $trip_ids ), array( 'status' => true, 'message' => 'There are no new Trip IDs to sync edited in the period ' . $time_range ) );
                 }
             }
         }
-
+        tt_add_error_log( $trip_sync_type_msg, 'START Trip/Product Sync for ' . $time_range, array( 'is_all: ' => $is_all, '$last_modified_trip_ids->' => isset( $last_modified_trip_ids ) && is_countable( $last_modified_trip_ids ) ? count( $last_modified_trip_ids ) : $trip_ids ) );
         // Early exit if there are no trip ids.
         if( empty( $trip_ids ) ) {
+            tt_add_error_log( $trip_sync_type_msg, 'END Trip/Product Sync', array( 'status' => true, 'message' => 'There are no new Trip IDs to sync edited in the period ' . $time_range ) );
             return;
         }
         
@@ -599,6 +622,7 @@ if (!function_exists('tt_sync_wc_products_from_ns')) {
                 }
             }
         }
+        tt_add_error_log( $trip_sync_type_msg, 'END Trip/Product Sync', array( '$last_modified_trip_ids->' => isset( $last_modified_trip_ids ) && is_countable( $last_modified_trip_ids ) ? count( $last_modified_trip_ids ) : $trip_ids ) );
     }
 }
 /**
@@ -858,8 +882,8 @@ if (!function_exists('tt_ns_fetch_bike_type_info')) {
 
 
 if( ! function_exists( 'tt_ns_fetch_registration_ids' ) ) {
-    function tt_ns_fetch_registration_ids( $time_range = '-2 hours' ) {
-        // Fire the NS script to fetch all the registration ids for the past 2 hours.
+    function tt_ns_fetch_registration_ids( $time_range = DEFAULT_TIME_RANGE_LOCKING_STATUS ) {
+        // Fire the NS script to fetch all the registration ids for the past 4 hours.
         $modified_reg_data = tt_get_ns_guest_modified_registrations( $time_range );
 
         if( ! $modified_reg_data ) {
