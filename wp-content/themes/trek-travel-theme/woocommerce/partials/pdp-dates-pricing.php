@@ -643,7 +643,7 @@ if( $available_child_products ) {
             <?php
             if (in_array( 'Pro Race Bike Tours', $pcats)) {
             ?>
-                <span class="h5 text-center">Place a deposit to hold your spot for next year's <?php echo get_the_title(); ?></span>
+                <span class="h5 text-center">Place a deposit to hold your spot for next year's Pro Race bike tour</span>
                 <a href="/pro-race-difference/pro-race-reservations/" class="btn btn-primary" target="_blank">Place Deposit</a>
             <?php } else { ?>
                 <span class="h5 text-center">Dates are coming soon for <?php echo get_the_title(); ?>. Please submit your trip inquiry below.</span>
@@ -673,8 +673,8 @@ if( $available_child_products ) {
             <?php if ( $is_tabs_visible && !empty($available_child_products)) { ?>
             <!-- private tour tab content -->
             <div class="tab-pane fade <?php echo $contentFlag ? '' : 'active show'; ?>" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabindex="0">
-                <h5 class="fw-semibold">Looking for a Private Tour with us?</h5>
-                <p class="fw-normal fs-md lh-md">Private tours can range in cost based on your group size. See below for specific pricing based on your group size.</p>
+                <h5 class="fw-semibold">Looking to plan a private trip just for your group?</h5>
+                <p class="fw-normal fs-md lh-md">We’ve got you covered. Choose an available trip date, gather your group, and we’ll handle the rest. Here’s the private pricing for this trip:</p>
                 
                 <?php 
                 // Get Private Tour Pricing from the ACF Repeater
@@ -698,12 +698,12 @@ if( $available_child_products ) {
                     <p class="fw-normal fs-md lh-md"><?php echo esc_html(get_field('private_tour_note_subtitle')); ?></p>
                 <?php endif; ?>
 
-                <p class="fw-normal fs-xs lh-xs w-75">
+                <div class="fw-normal fs-xs lh-xs col-12 col-xl-9">
                     <?php 
                     $content = get_field('private_tour_note_content');
-                    echo !empty($content) ? esc_html($content) : 'Not all scheduled dates are convertible to private groups – a small number of trips and peak season dates may be excluded or may require “buy outs” equivalent to a larger group size. Pricing, availability, and guest minimums are all subject to change at any time.';
+                    echo !empty($content) ? esc_html($content) : '*Not all scheduled dates are convertible to private groups – a small number of trips and peak season dates may be excluded or may require “buy outs” equivalent to a larger group size. Pricing, availability, and guest minimums are all subject to change at any time.';
                     ?>
-                </p>
+                </div>
 
             </div>
             <!-- custom tour tab content -->

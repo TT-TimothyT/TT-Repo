@@ -16,19 +16,7 @@ $activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level'
     <div class="row">
         <div class="col-12">
 
-            <h5 class="fw-semibold pdp-section__title">
-                <?php
-                
-                    switch ($activity) {
-                        case TT_ACTIVITY_DASHBOARD_NAME_BIKING:
-                          echo "Rider";
-                          break;
-                        default:
-                          echo "Activity";
-                          break;
-                      }
-                ?>
-                 Information</h5>
+            <h5 class="fw-semibold pdp-section__title">Activity Information</h5>
                  
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -63,18 +51,7 @@ $activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level'
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-rider" role="tabpanel" aria-labelledby="nav-rider-tab">
                     <?php $rider = get_field('rider'); ?>
-                    <p class="rider-main-heading fw-bold">
-                    <?php
-                        switch ($activity) {
-                            case TT_ACTIVITY_DASHBOARD_NAME_BIKING:
-                                echo "Rider";
-                                break;
-                            default:
-                                echo "Hiking + Walking";
-                                break;
-                        }
-                    ?>    
-                    Level: <?php echo $activity_level ? esc_html( $activity_level ) : ''; ?> <i class="bi bi-info-circle pdp-rider-level"></i></p>
+                    <p class="rider-main-heading fw-bold">Activity Level: <?php echo $activity_level ? esc_html( $activity_level ) : ''; ?> <i class="bi bi-info-circle pdp-rider-level"></i></p>
                     <p class="rider-sub-heading fw-medium">Terrain: <?php echo isset($rider['terrain_title']) ? $rider['terrain_title'] : ''; ?></p>
                     <p class="rider-description fw-normal"><?php echo isset($rider['terrain_description']) ? $rider['terrain_description'] : ''; ?></p>
                     <div class="row-miles d-flex">
