@@ -3264,20 +3264,29 @@ jQuery(document).on('click', '#itinerary-print-button', function (e) {
   // Check if a button with classes "olark-launch-button" and "olark-size-md" exists
   var checkOlarkButton = function () {
     var olarkButton = jQuery('.olark-launch-button.olark-size-md');
-    if (olarkButton.length > 0) {
 
-      if (jQuery(window).width() < 480 && !jQuery('#orlak-container').hasClass('olark-hidden')) {
-        return;
-      } else if (!olarkButton.hasClass('olark-text-button') && !olarkButton.parent().parent().parent().hasClass('olark-hidden') ) {
-        // Trigger a click event on the button if it doesn't have the class
-        olarkButton.click();
-      }
+    if (olarkButton.length > 0) {
+        // Original functionality: Automatically trigger the Olark chat button under certain conditions
+        if (jQuery(window).width() < 480 && !jQuery('#orlak-container').hasClass('olark-hidden')) {
+            return;
+        } else if (!olarkButton.hasClass('olark-text-button') && !olarkButton.parent().parent().parent().hasClass('olark-hidden')) {
+            olarkButton.click();
+        }
+
+        // New functionality: Trigger Olark chat when the custom "Chat Now" button is clicked
+        jQuery('#chat-now-button').on('click', function () {
+            olark('api.box.expand');
+        });
+
     } else {
-      // If olarkButton is not found, check again after a delay
-      setTimeout(checkOlarkButton, 1000); // You can adjust the delay as needed
+        // Retry if the Olark button is not found
+        setTimeout(checkOlarkButton, 1000); // Adjust the delay as needed
     }
-  };
-  checkOlarkButton(); // Start checking for the olarkButton
+};
+
+// Start the checking process
+checkOlarkButton();
+
 
 
   
