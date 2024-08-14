@@ -3273,15 +3273,8 @@ jQuery(document).on('click', '#itinerary-print-button', function (e) {
             olarkButton.click();
         }
 
-<<<<<<< HEAD
      
       
-=======
-        // New functionality: Trigger Olark chat when the custom "Chat Now" button is clicked
-        jQuery('#chat-now-button').on('click', function () {
-            olark('api.box.expand');
-        });
->>>>>>> 6e620a023ea906c96b6be4fa13d5d0abc5a8ebb2
 
     } else {
         // Retry if the Olark button is not found
@@ -3293,43 +3286,43 @@ jQuery(document).on('click', '#itinerary-print-button', function (e) {
 checkOlarkButton();
 
 
-jQuery(document).ready(function($) {
-  // Check if the "Chat Now" button exists on the page
-  if ($('#chat-now-button').length > 0) {
-      console.log('Chat Now button is present on the page.');
+// jQuery(document).ready(function($) {
+//   // Check if the "Chat Now" button exists on the page
+//   if ($('#chat-now-button').length > 0) {
+//       console.log('Chat Now button is present on the page.');
 
-      // Attach click event to the "Chat Now" button
-      $('#chat-now-button').on('click', function() {
-          console.log('Chat Now button clicked.');
+//       // Attach click event to the "Chat Now" button
+//       $('#chat-now-button').on('click', function() {
+//           console.log('Chat Now button clicked.');
 
-          // Open Olark chat
-          olark('api.box.expand');
-          console.log('Attempted to open Olark chat window.');
+//           // Open Olark chat
+//           olark('api.box.expand');
+//           console.log('Attempted to open Olark chat window.');
 
-          // Check if Olark chat window opened after a short delay
-          setTimeout(function() {
-              olark('api.box.onShow', function() {
-                  console.log('Olark chat window is now visible.');
-              });
+//           // Check if Olark chat window opened after a short delay
+//           setTimeout(function() {
+//               olark('api.box.onShow', function() {
+//                   console.log('Olark chat window is now visible.');
+//               });
 
-              // Check if the chat box is still not visible
-              olark('api.box.onHide', function() {
-                  console.log('Failed to open Olark chat window.');
-              });
-          }, 500); // 500ms delay to allow the chat box to attempt to open
+//               // Check if the chat box is still not visible
+//               olark('api.box.onHide', function() {
+//                   console.log('Failed to open Olark chat window.');
+//               });
+//           }, 500); // 500ms delay to allow the chat box to attempt to open
 
-          // Close the popup
-          if ($('.sidebar-iframe-close').length > 0) {
-              $('.sidebar-iframe-close').click();
-              console.log('Popup closed.');
-          } else {
-              console.log('Close button not found.');
-          }
-      });
-  } else {
-      console.log('Chat Now button is NOT present on the page.');
-  }
-});
+//           // Close the popup
+//           if ($('.sidebar-iframe-close').length > 0) {
+//               $('.sidebar-iframe-close').click();
+//               console.log('Popup closed.');
+//           } else {
+//               console.log('Close button not found.');
+//           }
+//       });
+//   } else {
+//       console.log('Chat Now button is NOT present on the page.');
+//   }
+// });
 
 
 
