@@ -376,7 +376,7 @@ function woocommerce_billing_fields_add_cb($address_fields)
  **/
 add_action('wp_ajax_save_checkout_steps_action', 'save_checkout_steps_action_cb');
 add_action('wp_ajax_nopriv_save_checkout_steps_action', 'save_checkout_steps_action_cb');
-function save_checkout_steps_action_cb()
+function save_checkout_steps_action_cb( $return_response = false )
 {
     $total_guests_req = 0;
     $user_id = get_current_user_id();
@@ -544,20 +544,37 @@ function save_checkout_steps_action_cb()
     } else {
         $payment_option_html .= '<h3>Step 4</h3><p>Checkout payment option file is missing!</p>';
     }
-    echo json_encode(
-        array(
-            'status'               => true,
-            'stepHTML'             => $stepHTML,
-            'redirectURL'          => $redirect_url,
-            'checkout_bikes'       => $checkout_bikes_html,
-            'guest_insurance_html' => $guest_insurance_html,
-            'insuredHTMLPopup'     => $insuredHTMLPopup,
-            'review_order'         => $review_order_html,
-            'payment_option'       => $payment_option_html,
-            'message'              => 'Trek checkout steps data saved!'
-        )
+
+    $save_checkout_steps_response =  array(
+        'status'               => true,
+        'stepHTML'             => $stepHTML,
+        'redirectURL'          => $redirect_url,
+        'checkout_bikes'       => $checkout_bikes_html,
+        'guest_insurance_html' => $guest_insurance_html,
+        'insuredHTMLPopup'     => $insuredHTMLPopup,
+        'review_order'         => $review_order_html,
+        'payment_option'       => $payment_option_html,
+        'message'              => 'Trek checkout steps data saved!'
     );
-    exit;
+
+    if( $return_response ) {
+        return $save_checkout_steps_response;
+    } else {
+        echo json_encode(
+            array(
+                'status'               => true,
+                'stepHTML'             => $stepHTML,
+                'redirectURL'          => $redirect_url,
+                'checkout_bikes'       => $checkout_bikes_html,
+                'guest_insurance_html' => $guest_insurance_html,
+                'insuredHTMLPopup'     => $insuredHTMLPopup,
+                'review_order'         => $review_order_html,
+                'payment_option'       => $payment_option_html,
+                'message'              => 'Trek checkout steps data saved!'
+            )
+        );
+        exit;
+    }
 }
 /**
  * @author  : Dharmesh Panchal
@@ -7666,6 +7683,20 @@ function get_add_guest_template_cb() {
 }
 add_action('wp_ajax_get_add_guest_template_action', 'get_add_guest_template_cb');
 add_action('wp_ajax_nopriv_get_add_guest_template_action', 'get_add_guest_template_cb');
+
+/**
+ * Function to update dynamically
+ * the review order sidebar on the checkout.
+ *
+ * @uses save_checkout_steps_action_cb() function.
+ */
+function after_add_remove_guest_template_cb() {
+    $save_checkout_steps_response =  save_checkout_steps_action_cb( true ); // Array.
+    echo json_encode( $save_checkout_steps_response );
+    exit;
+}
+add_action( 'wp_ajax_after_add_remove_guest_template_action', 'after_add_remove_guest_template_cb' );
+add_action( 'wp_ajax_nopriv_after_add_remove_guest_template_action', 'after_add_remove_guest_template_cb' );
 
 /**
  * Check if the trip is from the given product line.

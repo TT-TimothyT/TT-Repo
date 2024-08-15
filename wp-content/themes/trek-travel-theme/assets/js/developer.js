@@ -631,12 +631,37 @@ jQuery(document).ready(function () {
           ttLoader.show();
         },
         success: function ( response ) {
-          if( true == response.status && response.checkout_guest_single_html ) {
-            jQuery( '#qytguest' ).append( response.checkout_guest_single_html );
+          if( true == response.status ) {
+            // First update the guests template.
+            if( response.checkout_guest_single_html ) {
+              jQuery( '#qytguest' ).append( response.checkout_guest_single_html );
+            }
+
+            // Collect the data.
+            let formData = jQuery('form.checkout.woocommerce-checkout').serialize();
+            let after_add_remove_guest_template_action = 'after_add_remove_guest_template_action';
+            // Refresh review order request.
+            jQuery.ajax({
+              type: 'POST',
+              url: trek_JS_obj.ajaxURL,
+              data: formData +  "&action=" + after_add_remove_guest_template_action,
+              dataType: 'json',
+              success: function ( response ) {
+                // Update the review order sidebar.
+                if (response.review_order) {
+                  jQuery('#tt-review-order').html(response.review_order);
+                }
+
+                // Remove the loader on success.
+                ttLoader.hide();
+                addingGuestsInProgress = false;
+              },
+            });
+          } else {
+            // Remove the loader on false response status.
+            ttLoader.hide();
+            addingGuestsInProgress = false;
           }
-          // Remove loader.
-          ttLoader.hide();
-          addingGuestsInProgress = false;
         },
       });
     }
@@ -661,8 +686,9 @@ jQuery(document).ready(function () {
     } else if (counter > 1) {
       jQuery('#minus').removeClass('qtydisable');
       jQuery('.guest-infoo , .guest-subinfo , #qytguest').removeClass('d-none');
-      addfields(counter, glen);
     }
+
+    addfields(counter, glen);
     tripCapacityValidation(false);
   });
   jQuery('#plus').on('click', function () {
@@ -678,7 +704,6 @@ jQuery(document).ready(function () {
   });
   jQuery('#minus').on('click', function () {
     counter = jQuery('.guestnumber').val();
-    //jQuery('#minus').click(function () {
     jQuery('.guestnumber').val((counter - 1 < 1) ? counter : --counter);
     if (counter == 1) {
       jQuery('#minus').addClass('qtydisable');
@@ -686,6 +711,8 @@ jQuery(document).ready(function () {
       jQuery('#qytguest').empty();
     }
     jQuery("#qytguest").find(".guests:last").remove();
+    var glen = jQuery('#qytguest .guests').length;
+    addfields(counter, glen);
     tripCapacityValidation(false);
   });
 
