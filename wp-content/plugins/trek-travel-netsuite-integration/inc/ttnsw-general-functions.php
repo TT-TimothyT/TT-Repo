@@ -244,7 +244,7 @@ function tt_trigger_cron_ns_booking_cb( $order_id, $user_id = 'null', $is_behalf
                     if ( ! $is_hiking_checkout ) {
                         $default_bike_id = 0;
                     } else {
-                        $default_bike_id = 50919;
+                        $default_bike_id = HIKER_BIKE_ID;
                     }
                 }
                 $bike_id                  = tt_validate( $wc_booking->bike_id, $default_bike_id );

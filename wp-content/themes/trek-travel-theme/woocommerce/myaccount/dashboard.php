@@ -118,12 +118,6 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 					<p class="fs-sm lh-sm fw-normal pb-2">********</p>
 					<hr>
 					<div class="d-flex justify-content-between align-items-baseline mb-2 pt-2">
-						<h6 class="card-subtitle fs-sm lh-sm fw-medium">Medical Information</h6>
-						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/medical-information'); ?>">Edit</a>
-					</div>
-					<p class="fs-sm lh-sm fw-normal pb-2"> Manage your medical and emergency contact info</p>
-					<hr>
-					<div class="d-flex justify-content-between align-items-baseline mb-2 pt-2">
 						<h6 class="card-subtitle fs-sm lh-sm fw-medium">Communication Preferences</h6>
 						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/communication-preferences'); ?>">Edit</a>
 					</div>

@@ -851,20 +851,10 @@ function trek_update_trip_checklist_action_cb()
         update_user_meta( $user->ID, 'pb_checklist_cofirmations', $confirmed_info_serialized );
 
         // Collect only confirmed data.
+        // Array with the Data for DB.
         $booking_data         = array();
+        // Array with the Data for NS.
         $ns_user_booking_data = array();
-
-        // Data for NS.
-        $ns_user_booking_data['waiverAccepted'] = true;
-
-        // We keep waiver signed status into guest_bookings table only.
-        if( 1 != $guest_is_primary ) {
-            // If guest is not primary, need to check waiver signed status.
-            if( 1 != $waiver_signed ) {
-                // Waiver not signed. Need to send false to NS.
-                $ns_user_booking_data['waiverAccepted'] = false;
-            }
-        }
 
         // If the confirmed section is 'medical_section', add medical data.
         if( $is_section_confirmed['medical_section'] ) {
@@ -901,70 +891,52 @@ function trek_update_trip_checklist_action_cb()
             $ns_user_booking_data['medications']         = $medications_value;
             $ns_user_booking_data['allergies']           = $allergies_value;
             $ns_user_booking_data['dietaryRestrictions'] = $dietary_restrictions_value;
-        } else {
-            // If this section not confirmed take data for NS from DB.
-            $ns_user_booking_data['medicalConditions']   = $user_order_info[0]['medical_conditions'];
-            $ns_user_booking_data['medications']         = $user_order_info[0]['medications'];
-            $ns_user_booking_data['allergies']           = $user_order_info[0]['allergies'];
-            $ns_user_booking_data['dietaryRestrictions'] = $user_order_info[0]['dietary_restrictions'];
         }
 
         // If the confirmed section is 'emergency_section', add emergency contact data.
         if( $is_section_confirmed['emergency_section'] ) {
-            $booking_data['emergency_contact_first_name']   = $_REQUEST['emergency_contact_first_name'];
-            $booking_data['emergency_contact_last_name']    = $_REQUEST['emergency_contact_last_name'];
-            $booking_data['emergency_contact_phone']        = $_REQUEST['emergency_contact_phone'];
-            $booking_data['emergency_contact_relationship'] = $_REQUEST['emergency_contact_relationship'];
+            $booking_data['emergency_contact_first_name']   = tt_validate( $_REQUEST['emergency_contact_first_name'] );
+            $booking_data['emergency_contact_last_name']    = tt_validate( $_REQUEST['emergency_contact_last_name'] );
+            $booking_data['emergency_contact_phone']        = tt_validate( $_REQUEST['emergency_contact_phone'] );
+            $booking_data['emergency_contact_relationship'] = tt_validate( $_REQUEST['emergency_contact_relationship'] );
 
-            $ns_user_booking_data['ecFirstName']            = isset( $_REQUEST['emergency_contact_first_name'] ) ? $_REQUEST['emergency_contact_first_name'] : '';
-            $ns_user_booking_data['ecLastName']             = isset( $_REQUEST['emergency_contact_last_name'] ) ? $_REQUEST['emergency_contact_last_name'] : '';
-            $ns_user_booking_data['ecPhone']                = isset( $_REQUEST['emergency_contact_phone'] ) ? $_REQUEST['emergency_contact_phone'] : '';
-            $ns_user_booking_data['ecRelationship']         = isset( $_REQUEST['emergency_contact_relationship'] ) ? $_REQUEST['emergency_contact_relationship'] : '';
-        } else {
-            $ns_user_booking_data['ecFirstName']            = $user_order_info[0]['emergency_contact_first_name'];
-            $ns_user_booking_data['ecLastName']             = $user_order_info[0]['emergency_contact_last_name'];
-            $ns_user_booking_data['ecPhone']                = $user_order_info[0]['emergency_contact_phone'];
-            $ns_user_booking_data['ecRelationship']         = $user_order_info[0]['emergency_contact_relationship'];
+            $ns_user_booking_data['ecFirstName']            = tt_validate( $_REQUEST['emergency_contact_first_name'] );
+            $ns_user_booking_data['ecLastName']             = tt_validate( $_REQUEST['emergency_contact_last_name'] );
+            $ns_user_booking_data['ecPhone']                = tt_validate( $_REQUEST['emergency_contact_phone'] );
+            $ns_user_booking_data['ecRelationship']         = tt_validate( $_REQUEST['emergency_contact_relationship'] );
         }
 
         // If the confirmed section is 'gear_section', add gear data.
         if( $is_section_confirmed['gear_section'] ) {
-            $booking_data['rider_height']     = $_REQUEST['tt-rider-height'];
-            $booking_data['pedal_selection']  = $_REQUEST['tt-pedal-selection'];
-            $booking_data['helmet_selection'] = $_REQUEST['tt-helmet-size'];
-            $booking_data['jersey_style']     = $_REQUEST['tt-jerrsey-style'];
-            if ( $is_hiking_checkout ) {
-                $booking_data['tshirt_size'] = $_REQUEST['tt-jerrsey-size'];
-            } else {
-                $booking_data['tt_jersey_size'] = $_REQUEST['tt-jerrsey-size'];
-            }
+            $booking_data['rider_height']              = tt_validate( $_REQUEST['tt-rider-height'] );
+            $booking_data['pedal_selection']           = tt_validate( $_REQUEST['tt-pedal-selection'] );
+            $booking_data['helmet_selection']          = tt_validate( $_REQUEST['tt-helmet-size'] );
+            $booking_data['jersey_style']              = tt_validate( $_REQUEST['tt-jerrsey-style'] );
 
-            $ns_user_booking_data['heightId'] = isset( $_REQUEST['tt-rider-height'] ) ? $_REQUEST['tt-rider-height'] : '';
-            $ns_user_booking_data['helmetId'] = isset( $_REQUEST['tt-helmet-size'] ) ? $_REQUEST['tt-helmet-size'] : '';
-            $ns_user_booking_data['pedalsId'] = isset( $_REQUEST['tt-pedal-selection'] ) ? $_REQUEST['tt-pedal-selection'] : '';
             if ( $is_hiking_checkout ) {
-                $ns_user_booking_data['tshirtSizeId'] = isset( $_REQUEST['tt-jerrsey-size'] ) ? $_REQUEST['tt-jerrsey-size'] : '';
+                $booking_data['tshirt_size'] = tt_validate( $_REQUEST['tt-jerrsey-size'] );
             } else {
-                $ns_user_booking_data['jerseyId'] = isset( $_REQUEST['tt-jerrsey-size'] ) ? $_REQUEST['tt-jerrsey-size'] : '';
+                $booking_data['tt_jersey_size'] = tt_validate( $_REQUEST['tt-jerrsey-size'] );
             }
-        } else {
-            $ns_user_booking_data['heightId'] = $user_order_info[0]['rider_height'];
-            $ns_user_booking_data['helmetId'] = $user_order_info[0]['helmet_selection'];
-            $ns_user_booking_data['pedalsId'] = $user_order_info[0]['pedal_selection'];
+            
+            $ns_user_booking_data['heightId']          = tt_validate( $_REQUEST['tt-rider-height'] );
+            $ns_user_booking_data['helmetId']          = tt_validate( $_REQUEST['tt-helmet-size'] );
+            $ns_user_booking_data['pedalsId']          = tt_validate( $_REQUEST['tt-pedal-selection'] );
+
             if ( $is_hiking_checkout ) {
-                $ns_user_booking_data['tshirtSizeId'] = $user_order_info[0]['tt_jersey_size'];
+                $ns_user_booking_data['tshirtSizeId'] = tt_validate( $_REQUEST['tt-jerrsey-size'] );
             } else {
-                $ns_user_booking_data['jerseyId'] = $user_order_info[0]['tt_jersey_size'];
+                $ns_user_booking_data['jerseyId'] = tt_validate( $_REQUEST['tt-jerrsey-size'] );
             }
         }
 
         // If the confirmed section is 'passport_section', add passport data.
         if( $is_section_confirmed['passport_section'] ) {
-            $booking_data['passport_number']          = isset( $_REQUEST['passport_number'] ) ? $_REQUEST['passport_number'] : '';
-            $booking_data['passport_issue_date']      = isset( $_REQUEST['passport_issue_date'] ) ? $_REQUEST['passport_issue_date'] : '';
-            $booking_data['passport_expiration_date'] = isset( $_REQUEST['passport_expiration_date'] ) ? $_REQUEST['passport_expiration_date'] : '';
-            $booking_data['passport_place_of_issue']  = isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '';
-            $booking_data['full_name_on_passport']    = isset( $_REQUEST['full_name_on_passport'] ) ? $_REQUEST['full_name_on_passport'] : '';
+            $booking_data['passport_number']          = tt_validate( $_REQUEST['passport_number'] );
+            $booking_data['passport_issue_date']      = tt_validate( $_REQUEST['passport_issue_date'] );
+            $booking_data['passport_expiration_date'] = tt_validate( $_REQUEST['passport_expiration_date'] );
+            $booking_data['passport_place_of_issue']  = tt_validate( $_REQUEST['passport_place_of_issue'] );
+            $booking_data['full_name_on_passport']    = tt_validate( $_REQUEST['full_name_on_passport'] );
         }
 
         // If the confirmed section is 'bike_section', add bike data.
@@ -974,22 +946,19 @@ function trek_update_trip_checklist_action_cb()
             $booking_data['bike_id']        = $_REQUEST['bikeId'];
             $booking_data['bike_size']      = $_REQUEST['tt-bike-size'];
 
-            $ns_user_booking_data['bikeId']       = isset( $_REQUEST['bikeId'] ) ? $_REQUEST['bikeId'] : '';
+            $ns_user_booking_data['bikeId']       = tt_validate( $_REQUEST['bikeId'] );
             $ns_user_booking_data['bikeTypeName'] = tt_ns_get_bike_type_name( tt_validate( $_REQUEST['bikeTypeId'] ) );
-        } else {
-            $ns_user_booking_data['bikeId']       = $user_order_info[0]['bike_id'];
-            $ns_user_booking_data['bikeTypeName'] = tt_ns_get_bike_type_name( $user_order_info[0]['bike_type_id'] );
         }
 
         // If the confirmed section is 'gear_optional_section', add gear optional data.
         if( $is_section_confirmed['gear_optional_section'] ) {
-            $booking_data['saddle_height']                       = $_REQUEST['saddle_height'];
-            $booking_data['saddle_bar_reach_from_saddle']        = $_REQUEST['bar_reach'];
-            $booking_data['saddle_bar_height_from_wheel_center'] = $_REQUEST['bar_height'];
+            $booking_data['saddle_height']                       = tt_validate( $_REQUEST['saddle_height'] );
+            $booking_data['saddle_bar_reach_from_saddle']        = tt_validate( $_REQUEST['bar_reach'] );
+            $booking_data['saddle_bar_height_from_wheel_center'] = tt_validate( $_REQUEST['bar_height'] );
 
-            $ns_user_booking_data['saddleHeight']                = isset( $_REQUEST['saddle_height'] ) ? $_REQUEST['saddle_height'] : '';
-            $ns_user_booking_data['barReachFromSaddle']          = isset( $_REQUEST['bar_reach'] ) ? $_REQUEST['bar_reach'] : '';
-            $ns_user_booking_data['barHeightFromWheelCenter']    = isset( $_REQUEST['bar_height'] ) ? $_REQUEST['bar_height'] : '';
+            $ns_user_booking_data['saddleHeight']                = tt_validate( $_REQUEST['saddle_height'] );
+            $ns_user_booking_data['barReachFromSaddle']          = tt_validate( $_REQUEST['bar_reach'] );
+            $ns_user_booking_data['barHeightFromWheelCenter']    = tt_validate( $_REQUEST['bar_height'] );
         }
 
         if ( empty( $guest_email_address ) ) {
@@ -1013,19 +982,17 @@ function trek_update_trip_checklist_action_cb()
         }
 
         // Update user meta data for preferences.
-        $update_to_ns = false;
+        $save_prefs_for_future_use = true; // Duplicate the logic from the NS Script 1292 to keep consistency on the website like in NetSuite. If you set it to false, it will continue to execute the old logic where you need the checkbox to be checked by the user to keep the information.
 
-        if ( isset( $_REQUEST['tt_save_medical_info'] ) && $_REQUEST['tt_save_medical_info'] == 'yes' && $is_section_confirmed['medical_section'] ) {
+        if ( $save_prefs_for_future_use || ( isset( $_REQUEST['tt_save_medical_info'] ) && $_REQUEST['tt_save_medical_info'] == 'yes' && $is_section_confirmed['medical_section'] ) ) {
             $input_posted = array( 'custentity_medications', 'custentity_medicalconditions', 'custentity_allergies', 'custentity_dietaryrestrictions' );
             if ( $input_posted && $_REQUEST ) {
                 foreach ( $input_posted as $input_post ) {
                     $medical_input = $_REQUEST[$input_post];
                     if ( isset( $medical_input ) && $medical_input['boolean'] == 'yes' && !empty( $medical_input['value'] ) ) {
                         update_user_meta( $user->ID, $input_post, $medical_input['value'] );
-                        $update_to_ns = true;
                     } else if ( isset( $medical_input ) && $medical_input['boolean'] == 'no' ) {
                         update_user_meta( $user->ID, $input_post, 'None' );
-                        $update_to_ns = true;
                     } else {
                         update_user_meta( $user->ID, $input_post, '' );
                     }
@@ -1033,7 +1000,7 @@ function trek_update_trip_checklist_action_cb()
             }
         }
 
-        if ( isset( $_REQUEST['tt_save_shipping_info'] ) && $_REQUEST['tt_save_shipping_info'] == 'yes' ) {
+        if ( $save_prefs_for_future_use || ( isset( $_REQUEST['tt_save_shipping_info'] ) && $_REQUEST['tt_save_shipping_info'] == 'yes' ) ) {
             update_user_meta( $user->ID, "shipping_address_1", $shipping_add1 );
             update_user_meta( $user->ID, "shipping_address_2", $shipping_add2 );
             update_user_meta( $user->ID, "shipping_city", $shipping_city );
@@ -1042,15 +1009,14 @@ function trek_update_trip_checklist_action_cb()
             update_user_meta( $user->ID, "shipping_country", $shipping_country );
         }
 
-        if ( isset( $_REQUEST['tt_save_emergency_info'] ) && $_REQUEST['tt_save_emergency_info'] == 'yes' && $is_section_confirmed['emergency_section']) {
+        if ( $save_prefs_for_future_use || ( isset( $_REQUEST['tt_save_emergency_info'] ) && $_REQUEST['tt_save_emergency_info'] == 'yes' && $is_section_confirmed['emergency_section'] ) ) {
             update_user_meta( $user->ID, 'custentity_emergencycontactfirstname', $_REQUEST['emergency_contact_first_name']);
             update_user_meta( $user->ID, 'custentityemergencycontactlastname', $_REQUEST['emergency_contact_last_name']);
             update_user_meta( $user->ID, 'custentity_emergencycontactphonenumber', $_REQUEST['emergency_contact_phone']);
             update_user_meta( $user->ID, 'custentity_emergencycontactrelationship', $_REQUEST['emergency_contact_relationship']);
-            $update_to_ns = true;
         }
 
-        if ( isset( $_REQUEST['tt_save_gear_info'] ) && $_REQUEST['tt_save_gear_info'] == 'yes'  && $is_section_confirmed['gear_section'] ) {
+        if ( $save_prefs_for_future_use || ( isset( $_REQUEST['tt_save_gear_info'] ) && $_REQUEST['tt_save_gear_info'] == 'yes'  && $is_section_confirmed['gear_section'] ) ) {
             update_user_meta( $user->ID, 'gear_preferences_rider_height', $_REQUEST['tt-rider-height'] );
             update_user_meta( $user->ID, 'gear_preferences_select_pedals', $_REQUEST['tt-pedal-selection'] );
             update_user_meta( $user->ID, 'gear_preferences_helmet_size', $_REQUEST['tt-helmet-size'] );
@@ -1062,41 +1028,32 @@ function trek_update_trip_checklist_action_cb()
                 
                 update_user_meta( $user->ID, 'gear_preferences_jersey_size', $_REQUEST['tt-jerrsey-size'] );
             }
-            $update_to_ns = true;
         }
 
-        if ( isset( $_REQUEST['tt_save_passport_info'] ) && $_REQUEST['tt_save_passport_info'] == 'yes' ) {
+        if ( $save_prefs_for_future_use || ( isset( $_REQUEST['tt_save_passport_info'] ) && $_REQUEST['tt_save_passport_info'] == 'yes' ) ) {
             update_user_meta( $user->ID, 'custentity_passport_number', isset( $_REQUEST['passport_number'] ) ? $_REQUEST['passport_number'] : '' );
             update_user_meta( $user->ID, 'custentity_passport_exp_date', isset( $_REQUEST['passport_expiration_date'] ) ? ( new DateTime( $_REQUEST['passport_expiration_date'] ) )->format( 'm/d/Y' ) : '' );
             update_user_meta( $user->ID, 'custentity_passport_issue_place', isset( $_REQUEST['passport_place_of_issue'] ) ? $_REQUEST['passport_place_of_issue'] : '' );
             update_user_meta( $user->ID, 'custentity_full_name_on_passport', isset( $_REQUEST['full_name_on_passport'] ) ? $_REQUEST['full_name_on_passport'] : '' );
-            $update_to_ns = true;
         }
 
-        if ( isset( $_REQUEST['tt_save_bike_info'] ) && $_REQUEST['tt_save_bike_info'] == 'yes' && $is_section_confirmed['bike_section'] ) {
+        if ( $save_prefs_for_future_use || ( isset( $_REQUEST['tt_save_bike_info'] ) && $_REQUEST['tt_save_bike_info'] == 'yes' && $is_section_confirmed['bike_section'] ) ) {
             update_user_meta( $user->ID, 'gear_preferences_bike_type', $_REQUEST['bike_type_id_preferences'] );
             update_user_meta( $user->ID, 'gear_preferences_bike_size', $_REQUEST['tt-bike-size'] );
             update_user_meta( $user->ID, 'gear_preferences_bike', $_REQUEST['bikeId'] );
-            $update_to_ns = true;
         }
 
-        if ( isset( $_REQUEST['tt_save_gear_info_optional'] ) && $_REQUEST['tt_save_gear_info_optional'] == 'yes' ) {
+        if ( $save_prefs_for_future_use || ( isset( $_REQUEST['tt_save_gear_info_optional'] ) && $_REQUEST['tt_save_gear_info_optional'] == 'yes' ) ) {
             update_user_meta( $user->ID, 'gear_preferences_saddle_height', $_REQUEST['saddle_height'] );
             update_user_meta( $user->ID, 'gear_preferences_bar_reach', $_REQUEST['bar_reach'] );
             update_user_meta( $user->ID, 'gear_preferences_bar_height', $_REQUEST['bar_height'] );
-            $update_to_ns = true;
-        }
-
-        // Update user data to the NS.
-        if ( $update_to_ns == true ) {
-            as_schedule_single_action( time(), 'tt_cron_syn_usermeta_ns', array( $user->ID, '[WP] - Update user from post booking' ) );
         }
 
         $ns_user_id = get_user_meta( $user->ID, 'ns_customer_internal_id', true );
 
         if ( $ns_user_id ) {
-            // Update guest booking information in NetSuite with delay. Need to use time() + 1, to prevent a collision, because this function already has as_schedule_single_action with time().
-            as_schedule_single_action( time() + 1 , 'tt_update_trip_checklist_ns', array( $order_id, $ns_user_id, $user, $ns_user_booking_data ) );
+            // Update guest booking information in NetSuite.
+            as_schedule_single_action( time(), 'tt_update_trip_checklist_ns', array( $order_id, $ns_user_id, $user, $ns_user_booking_data ) );
 
         } else {
             tt_add_error_log( '[NetSuite] - User not found', array( 'user_id' => $user->ID, 'First name' => $user->first_name ), array() );
@@ -1111,6 +1068,9 @@ function trek_update_trip_checklist_action_cb()
             }
         }
         $is_updated          = $wpdb->update( $table_name, $booking_data, $where );
+        if ( $wpdb->last_error ) {
+            tt_add_error_log( '[Faild] Update Booking From Post-Booking', array( 'order_id' => $order_id, 'ns_user_id' => $ns_user_id ), array( 'last_error' => $wpdb->last_error ) );
+        }
         $res['status']       = true;
         $res['error']        = $wpdb->last_query;
         $res['booking_data'] = $booking_data;

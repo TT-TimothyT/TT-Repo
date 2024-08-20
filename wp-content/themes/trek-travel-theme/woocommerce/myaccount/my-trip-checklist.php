@@ -264,8 +264,6 @@ $pay_amount             = isset( $trek_checkoutData['pay_amount'] ) ? $trek_chec
 $cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) ? $trek_checkoutData['cart_total_full_amount'] : '';
 $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total( $order_item );
 
-$disable_gear_optional_section = true;
-
 $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 ?>
 
@@ -526,10 +524,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 									?>
 								</div>
 								<?php if ($lockRecord != 1) { ?>
-									<div class="form-check form-check-inline mb-0">
-										<input class="form-check-input" type="checkbox" name="tt_save_shipping_info" id="inlineCheck" value="yes">
-										<label class="form-check-label" for="inlineCheck">Save this information for future use. This will override any existing information you have saved on your account. </label>
-									</div>
 									<div class="form-buttons d-flex medical-information__buttons">
 										<div class="form-group align-self-center">
 											<button type="submit" class="btn btn-lg btn-primary w-100 medical-information__save rounded-1" name="medical-information"><?php esc_html_e('Confirm', 'trek-travel-theme'); ?></button>
@@ -616,12 +610,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 											echo $medical_field_html;
 										}
 										?>
-										<?php if ( $lockedUserRecord != 1 ) { ?>
-											<div class="form-check form-check-inline mb-0">
-												<input class="form-check-input" type="checkbox" name="tt_save_medical_info" id="inlineCheck1" value="yes">
-												<label class="form-check-label" for="inlineCheck1">Save this information for future use. This will override any existing information you have saved on your account. </label>
-											</div>
-										<?php } ?>
 									</fieldset>
 								</div>
 								<?php if ( $lockedUserRecord != 1 ) { ?>
@@ -717,10 +705,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 									</div>
 								</div>
 								<?php if ( $lockedUserRecord != 1 ) { ?>
-									<div class="form-check form-check-inline mb-0">
-										<input class="form-check-input" type="checkbox" name="tt_save_emergency_info" id="inlineCheck2" value="yes">
-										<label class="form-check-label" for="inlineCheck2">Save this information for future use. This will override any existing information you have saved on your account. </label>
-									</div>
 									<div class="emergency-contact__button d-flex align-items-lg-center">
 										<div class="d-flex align-items-center emergency-contact__flex">
 											<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save" data-confirm="emergency_section">Confirm</button>
@@ -867,10 +851,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 									</div>
 								<?php endif; ?>
 								<?php if ( $lockedUserRecord != 1 ) { ?>
-									<div class="form-check form-check-inline mb-0">
-										<input class="form-check-input" type="checkbox" name="tt_save_gear_info" id="inlineCheck3" value="yes">
-										<label class="form-check-label" for="inlineCheck3">Save this information for future use. This will override any existing information you have saved on your account. </label>
-									</div>
 									<div class="emergency-contact__button d-flex align-items-lg-center">
 										<div class="d-flex align-items-center emergency-contact__flex">
 											<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save" data-confirm="gear_section">Confirm</button>
@@ -1129,12 +1109,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 										</div>
 									<?php endif; ?>
 									<?php if ( $lockedUserBike != 1 ) { ?>
-										<?php if ($available_bikes) : ?>
-											<div class="form-check form-check-inline mb-0">
-												<input class="form-check-input" type="checkbox" name="tt_save_bike_info" id="inlineCheck4" value="yes">
-												<label class="form-check-label" for="inlineCheck4">Save this information for future use. This will override any existing information you have saved on your account. </label>
-											</div>
-										<?php endif; ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save" data-confirm="bike_section">Confirm</button>
@@ -1151,7 +1125,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 						</form>
 					</div>
 					<!-- accordion-item ends -->
-					<?php if ( true !== $disable_gear_optional_section ) : ?>
 					<?php $fit_review_string = 'Tell us your bike fit information'; ?>
 					<?php $gray_out = ''; ?>
 						<?php if( $lockedUserRecord ) { ?>
@@ -1206,10 +1179,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 										</div>
 									</div>
 									<?php if ( $lockedUserRecord != 1 ) { ?>
-										<div class="form-check form-check-inline mb-0">
-											<input <?php echo $gray_out; ?> class="form-check-input" type="checkbox" name="tt_save_gear_info_optional" id="inlineCheck5" value="yes">
-											<label class="form-check-label" for="inlineCheck5">Save this information for future use. This will override any existing information you have saved on your account. </label>
-										</div>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save" data-confirm="gear_optional_section">Confirm</button>
@@ -1225,7 +1194,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 							<?php wp_nonce_field('edit_trip_checklist_gear_optional_section_action', 'edit_trip_checklist_gear_optional_section_nonce'); ?>
 						</form>
 					</div> <!-- accordion-item ends -->
-					<?php endif; ?>
 				<?php } ?>
 			</div>
 		</div>
