@@ -156,3 +156,48 @@
         
     }
 }
+
+.payment_box > .form-row {
+    & > label:not(.btn) {
+        background-color: rgba(244, 244, 244, 0.5215686275);
+        border-radius: var(--bs-border-radius-sm) !important;
+        padding: 12px 22px;
+        position: relative;
+        cursor: pointer;
+        max-width: 400px;
+
+        @media screen and (max-width: 768px) {
+            max-width: unset;
+            width: 100%;
+        }
+
+        img {
+            margin-right: 20px;
+            width: 39px !important;
+            height: 26px !important;
+        }
+
+        &::after {
+            content: url(../../../trek-travel-theme/assets/images/checkout/empty-circle.svg);
+            position: absolute;
+            // top: 50%;
+            top: 62%;
+            right: 25px;
+            transform: translateY(-50%);
+            width: 25px;
+        }
+
+        &.active {
+            box-shadow: 0px 4px 0px 0px #28AAE1;
+
+            &::after {
+                content: url(../../../trek-travel-theme/assets/images/checkout/payment-success.svg);
+                // position: absolute;
+                // top: 50%;
+                // right: 22px;
+                // transform: translateY(-50%);
+                // height: 25px;
+            }
+        }
+    }
+}

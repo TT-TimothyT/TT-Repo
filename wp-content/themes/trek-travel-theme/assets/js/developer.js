@@ -3037,6 +3037,27 @@ if (jQuery('.tt_continue_bike_click_btn').length > 0) {
     });
   });
 }
+
+function updateActiveLabel() {
+  var checkedRadio = jQuery('.payment_box input[type="radio"]:checked');
+  
+  if (checkedRadio.length > 0) {
+    var label = jQuery('label[for="' + checkedRadio.attr('id') + '"]');
+    label.siblings('label').removeClass('active');
+    label.addClass('active');
+  }
+}
+
+jQuery(document).ready(function() {
+  updateActiveLabel();
+});
+
+jQuery('.payment_box input[type="radio"]').on('change', function() {
+  updateActiveLabel();
+});
+
+
+
 if (jQuery('input[name="pay_amount"]').length > 0) {
   jQuery('body').on('click', 'input[name="pay_amount"]', function () {
     var actionName = 'tt_pay_amount_change_ajax_action';
