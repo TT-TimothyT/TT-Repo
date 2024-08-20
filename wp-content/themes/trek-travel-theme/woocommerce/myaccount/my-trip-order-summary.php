@@ -127,7 +127,7 @@ foreach( $products as $product ) {
         $supplementFees = $supplementFees * $product_quantity;
     }
 
-    if( $product_name == 'Insurance Fees' ) {
+    if( $product_name == 'Travel Protection' ) {
         // Get product quantity
         $product_quantity = $product->get_quantity();
         $insuranceFees = $product->get_total();
@@ -226,7 +226,7 @@ $tt_insurance_total_charges = isset($tt_posted['tt_insurance_total_charges']) ? 
 												<p class="mb-0 fw-normal order-details__text">[Single Supplement]x <?php echo $singleSupplementQty; ?></p>
 											<?php } ?>
 											<?php if($insuredPerson > 0 && $tt_insurance_total_charges > 0 ) { ?>
-												<p class="mb-0 fw-normal order-details__text">[Insurance Fees]x <?php echo $tt_insurance_total_charges; ?></p>
+												<p class="mb-0 fw-normal order-details__text">[Travel Protection]x <?php echo $tt_insurance_total_charges; ?></p>
 											<?php } ?>
 											<p class="mb-0 fw-normal order-details__text">Subtotal</p>
 											<p class="mb-0 fw-normal order-details__text">Local Taxes</p>

@@ -250,7 +250,7 @@ foreach( $products as $product ) {
         $supplementFees = $supplementFees * $product_quantity;
     }
 
-    if( $product_name == 'Insurance Fees' ) {
+    if( $product_name == 'Travel Protection' ) {
         // Get product quantity
         $product_quantity = $product->get_quantity();
         $insuranceFees = $product->get_total();

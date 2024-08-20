@@ -13,7 +13,7 @@ define( 'G_CAPTCHA_SITEKEY', '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV' );
 define( 'TT_WC_META_PREFIX', 'tt_meta_' );
 define( 'TT_OPTION_PREFIX', 'tt_option_' );
 define( 'TT_CAN_POLICY_PAGE', $cancellation_policy_page_link );
-define( 'TT_LINE_ITEMS_PRODUCTS', ['TTWP23FEES' => ['name' => 'Insurance Fees', 'price' => 999], 'TTWP23SUPP' => ['name' => 'Single Supplement Fees', 'price' => 1200], 'TTWP23UPGRADES' => ['name' => 'Bike Upgrades', 'price' => 399]] );
+define( 'TT_LINE_ITEMS_PRODUCTS', ['TTWP23FEES' => ['name' => 'Travel Protection', 'price' => 999], 'TTWP23SUPP' => ['name' => 'Single Supplement Fees', 'price' => 1200], 'TTWP23UPGRADES' => ['name' => 'Bike Upgrades', 'price' => 399]] );
 define( 'TT_ACTIVITY_DASHBOARD_NAME_BIKING', 'Cycling' );
 define( 'TT_ACTIVITY_DASHBOARD_NAME_HW', 'Hiking and Walking' );
 

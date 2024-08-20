@@ -1080,7 +1080,7 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
     wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_data', $trek_user_checkout_data );
     wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_product_id', $product_id );
 
-    // TODO: Travel protection, Insurance Fees, Bike Upgrade
+    // TODO: Travel protection, Bike Upgrade
     // *** Single Supplement Fees ***
     if( ! empty( $trip_s_qty ) ) {
         $s_product_id = tt_create_line_item_product( 'TTWP23SUPP' );

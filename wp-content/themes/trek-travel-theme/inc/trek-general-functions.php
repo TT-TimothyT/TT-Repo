@@ -7514,7 +7514,7 @@ add_filter( 'wc_cybersource_credit_card_payment_form_manage_payment_methods_butt
 function tt_woocommerce_coupon_get_items_to_validate( $items, $discounts ) {
     $accepted_p_ids = tt_get_line_items_product_ids();
     $parent_product = '';
-    // This array will contain only the real trip products without line items like Insurance Fees, Single Supplеment Fees, etc because we need to validate the trips only.
+    // This array will contain only the real trip products without line items like Travel Protection, Single Supplеment Fees, etc because we need to validate the trips only.
     $items_to_apply = array();
 
     foreach ( $items as $item_id => $item ) {
