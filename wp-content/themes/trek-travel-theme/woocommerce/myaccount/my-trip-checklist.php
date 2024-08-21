@@ -547,10 +547,14 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 				<div class="accordion-item">
 					<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-medicalInfo">
 						<button class="accordion-button px-0 collapsed medical_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-medicalInfo" aria-expanded="false" aria-controls="flush-collapse-medicalInfo">
-							<?php if( $is_section_confirmed['medical_section'] ) : ?>
-								<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
-							<?php else : ?>
-								<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+							<?php if ( $lockedUserRecord ) : ?>
+								<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
+							<?php else: ?>
+								<?php if( $is_section_confirmed['medical_section'] ) : ?>
+									<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
+								<?php else : ?>
+									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+								<?php endif; ?>
 							<?php endif; ?>
 							<?php echo $medical_title_string ?>
 						</button>
@@ -638,10 +642,14 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 				<div class="accordion-item">
 					<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-emergencyInfo">
 						<button class="accordion-button px-0 collapsed emergency_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-emergencyInfo" aria-expanded="false" aria-controls="flush-collapse-emergencyInfo">
-							<?php if( $is_section_confirmed['emergency_section'] ) : ?>
-								<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
-							<?php else : ?>
-								<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+							<?php if ( $lockedUserRecord ) : ?>
+								<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
+							<?php else: ?>
+								<?php if( $is_section_confirmed['emergency_section'] ) : ?>
+									<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
+								<?php else : ?>
+									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+								<?php endif; ?>
 							<?php endif; ?>
 							<?php echo $emergency_title_string ?>
 						</button>
@@ -730,10 +738,14 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 				<div class="accordion-item" >
 					<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-gearInfo">
 						<button class="accordion-button px-0 collapsed gear_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-gearInfo" aria-expanded="false" aria-controls="flush-collapse-gearInfo">
-							<?php if( $is_section_confirmed['gear_section'] ) : ?>
-								<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
-							<?php else : ?>
-								<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+							<?php if ( $lockedUserRecord ) : ?>
+								<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
+							<?php else: ?>
+								<?php if( $is_section_confirmed['gear_section'] ) : ?>
+									<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
+								<?php else : ?>
+									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+								<?php endif; ?>
 							<?php endif; ?>
 							<?php echo $title_string; ?>
 						</button>
@@ -876,10 +888,14 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 					<div class="accordion-item">
 						<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-passportInfo">
 							<button class="accordion-button px-0 collapsed passport_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-passportInfo" aria-expanded="false" aria-controls="flush-collapse-passportInfo">
-								<?php if( $is_section_confirmed['passport_section'] ) : ?>
-									<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
-								<?php else : ?>
-									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+								<?php if ( $lockedUserRecord ) : ?>
+									<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
+								<?php else: ?>
+									<?php if( $is_section_confirmed['passport_section'] ) : ?>
+										<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
+									<?php else : ?>
+										<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+									<?php endif; ?>
 								<?php endif; ?>
 								<?php echo $passport_title_string ?>
 							</button>
@@ -962,7 +978,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 					<?php if ( 5270 != $bike_id && 5257 != $bike_id && ! $is_hiking_checkout ) { ?>
 						<?php $gray_out = ''; ?>
 						<?php $bike_review_string = 'Confirm your bike selection'; ?>
-						<?php if( $lockedUserBike ) { ?>
+						<?php if( $lockedUserRecord || $lockedUserBike ) { ?>
 							<?php $bike_pointer_none = 'style="pointer-events: none;"' ?>
 							<?php $bike_review_string = 'Review your bike selection'; ?>
 							<?php $gray_out = 'disabled style="color: #666666;"'; ?>
@@ -973,10 +989,14 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 							<?php if ( get_current_user_id() == 5636 ) : ?>
 								<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
 							<?php else : ?>
-								<?php if ( $is_section_confirmed['bike_section'] ) : ?>
-									<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
-								<?php else : ?>
-									<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+								<?php if ( $lockedUserRecord || $lockedUserBike ) : ?>
+									<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
+								<?php else: ?>
+									<?php if ( $is_section_confirmed['bike_section'] ) : ?>
+										<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
+									<?php else : ?>
+										<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
+									<?php endif; ?>
 								<?php endif; ?>
 							<?php endif; ?>
 								<?php echo $bike_review_string; ?>
@@ -985,7 +1005,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 						<form name="tt-checklist-form-bike-section" method="post" novalidate>
 							<div  disabled <?php echo $gray_out; ?> id="flush-collapse-bikeInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-bikeInfo">
 								<div  <?php echo $bike_pointer_none; ?> class="accordion-body px-0 checkout-bikes-section">
-									<?php if( $lockedUserBike ) { ?>
+									<?php if( $lockedUserRecord || $lockedUserBike ) { ?>
 										<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
 											<div class="checkout-bikes__notice-icon">
 												<img src="/wp-content/themes/trek-travel-theme/assets/images/checkout/checkout-warning.png">
@@ -1108,7 +1128,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 											</div>
 										</div>
 									<?php endif; ?>
-									<?php if ( $lockedUserBike != 1 ) { ?>
+									<?php if ( $lockedUserRecord !=1 || $lockedUserBike != 1 ) { ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save" data-confirm="bike_section">Confirm</button>

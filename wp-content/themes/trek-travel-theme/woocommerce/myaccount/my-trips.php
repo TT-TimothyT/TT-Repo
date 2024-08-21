@@ -114,9 +114,15 @@ $wp_user_email = $userInfo->user_email;
                                     <p class="fw-medium fs-sm lh-sm">' . $date_range . '</p>';
 
 								$lockedUserRecord = tt_is_registration_locked( $userInfo->ID, $order_details[0]['guestRegistrationId'], 'record' );
+								$lockedUserBike   = tt_is_registration_locked( $userInfo->ID, $order_details[0]['guestRegistrationId'], 'bike' );
 								if ( get_current_user_id() != 5636 ) {
-									if( ! empty( $order_details ) && ! $is_checklist_completed && 1 != $lockedUserRecord ) {
+									if( ! empty( $order_details ) && ! $is_checklist_completed && 1 != $lockedUserRecord && 1 != $lockedUserBike ) {
 										$trips_html .= '<i class="bi bi-info-circle me-3 text-danger"></i><p class="fw-normal fs-sm lh-sm d-inline text-danger">You have items pending confirmation</p>';
+									} else {
+										// Show this message on locked record or locked bike.
+										if ( $lockedUserRecord || $lockedUserBike ) {
+											$trips_html .= '<p class="fw-normal fs-sm lh-sm d-inline text-danger"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> Your Checklist or a checklist item is locked. <a href="tel:8664648735">Call us</a> if you have any questions or concerns.</p>';
+										}
 									}
 								}
 
