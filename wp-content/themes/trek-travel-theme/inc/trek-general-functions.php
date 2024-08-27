@@ -5952,6 +5952,7 @@ function calculate_cart_total_tax( $cart ) {
         $first_product_price     = get_post_meta( $product_id, '_price', true );
         $first_product_price     = str_replace( ',', '', $first_product_price );
         $single_supplement_price = floatval( get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true ) );
+        $bike_upgrade_price      = floatval( get_post_meta( $product_id, 'tt_meta_bikeUpgradePrice', true ) );
         $discount_total          = $cart->get_cart_discount_total();
         if ( isset( $discount_total ) && ! empty( $discount_total ) && 0 < $discount_total ) {
             $first_product_price = floatval( $first_product_price ) - floatval( $discount_total );
@@ -5965,9 +5966,11 @@ function calculate_cart_total_tax( $cart ) {
                 $product_tax_status = get_post_meta( $item_id, '_tax_status', true );
                 if ( 'taxable' === $product_tax_status ) {
                     $product_price = $cart_item['data']->get_price();
-                    $product_price    = $cart_item['data']->get_price();
                     if ( 73798 === $item_id ) {
                         $product_price = $single_supplement_price;
+                    }
+                    if ( 78972 === $item_id ) {
+                        $product_price = $bike_upgrade_price;
                     }
                     if ( $product_id === $item_id & $first_product === false ) {
                         $first_product = true;
@@ -5985,6 +5988,19 @@ function calculate_cart_total_tax( $cart ) {
     $cart->set_cart_contents_taxes(array('total' => $total_tax));
 
     return $total_tax;
+}
+
+// Save the calculated tax as custom meta in the order
+add_action( 'woocommerce_checkout_create_order', 'save_custom_order_meta_tt_order_tax', 10, 2 );
+function save_custom_order_meta_tt_order_tax( $order, $data ) {
+    $cart      = WC()->cart;
+    $total_tax = calculate_cart_total_tax( $cart );
+
+    // Round the total tax to two decimal places
+    $total_tax = round( $total_tax, 2 );
+
+    // Save the calculated tax in custom meta field 'tt_order_tax'
+    $order->update_meta_data( 'tt_order_tax', $total_tax );
 }
 
 // Recalculate the tax when cart totals are calculated
