@@ -246,6 +246,10 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 
 	</div><!-- /.container -->
 
+
+
+</nav><!-- /#header -->
+
 	<!-- saved cart bar -->
 	<?php
 	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true);
@@ -253,7 +257,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 	$persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
 	if ( !is_null($cart) && $persistent_cart_count > 0 ) {
 	?>
-		<div class="container-fluid saved-cart d-flex justify-content-md-center align-items-center p-lg-0 p-3">
+		<div class="container-fluid saved-cart mobile d-md-none d-flex justify-content-center text-center p-1">
 			<p class="fw-normal fs-md lh-md mb-0">
 			Almost there! <a href="<?php echo trek_checkout_step_link(1); ?>" class="fw-semibold">Complete your booking</a> and get ready for your vacation of a lifetime
 			</p>
@@ -261,7 +265,6 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 	<?php } ?>
 	<!-- saved cart bar end -->
 
-</nav><!-- /#header -->
 <div id="autocomplete"></div>
 </header>
 

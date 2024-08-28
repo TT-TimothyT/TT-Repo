@@ -3322,20 +3322,20 @@ function openOlarkChat(obj) {
 
 
 
-window.addEventListener("beforeprint", (event) => {
-  jQuery("header").css("display", "none")
-  jQuery("footer").css("display", "none")
-  jQuery("div.tour-actions").css("display", "none")
-  jQuery(".elementor-popup-modal").css("display", "none")
-  jQuery(".copyright").css("display", "none")
-  jQuery(".promo-banner").css("display", "none")
-  jQuery(".accordion-actions a.expand-all").trigger("click")
-  jQuery(".accordion-actions").css("display", "none")
-});
+// window.addEventListener("beforeprint", (event) => {
+//   jQuery("header").css("display", "none")
+//   jQuery("footer").css("display", "none")
+//   // jQuery("div.tour-actions").css("display", "none")
+//   jQuery(".elementor-popup-modal").css("display", "none")
+//   jQuery(".copyright").css("display", "none")
+//   jQuery(".promo-banner").css("display", "none")
+//   jQuery(".accordion-actions a.expand-all").trigger("click")
+//   jQuery(".accordion-actions").css("display", "none")
+// });
 
-window.addEventListener("afterprint", (event) => {
-  location.reload();
-})
+// window.addEventListener("afterprint", (event) => {
+//   location.reload();
+// })
 
 jQuery('body').on('change', '.tt_activity_level_select', function () {
   var selectedActivityLevel = parseInt(jQuery(this).val(), 10);
@@ -5249,3 +5249,65 @@ function roundInput(input) {
       }
   }
 }
+
+// LOAD LAZY IMAGES PRINT
+window.addEventListener('beforeprint', function() {
+  const lazyImages = document.querySelectorAll('img[loading="lazy"], img.lazyload, img.lazy');
+
+  lazyImages.forEach(function(img) {
+      if (img.hasAttribute('data-src')) {
+          img.setAttribute('src', img.getAttribute('data-src'));
+          img.removeAttribute('loading'); // Remove lazy loading attribute
+      }
+
+      if (img.classList.contains('lazyload')) {
+          img.classList.remove('lazyload');
+          img.classList.add('lazyloaded'); // Ensure the image is loaded
+      }
+  });
+
+  // Select all "Read More" links
+  const readMoreLinks = document.querySelectorAll('a.read-more-action');
+
+  // Trigger a click event on each link to expand the content
+  readMoreLinks.forEach(function(link) {
+      link.click();
+  });
+
+  // If there are any other "Read More" variations, repeat for those
+  const readMoreLinksRight = document.querySelectorAll('a.read-more-action-right');
+  readMoreLinksRight.forEach(function(link) {
+      link.click();
+  });
+
+});
+
+
+
+function centerMapCallback(Waymark) {
+  console.log("centerMapCallback triggered.");
+
+  window.addEventListener('beforeprint', function() {
+      console.log("Preparing map for print...");
+
+      // Log current map size
+      console.log("Map container size before print:", {
+          width: Waymark.map.getSize().x,
+          height: Waymark.map.getSize().y
+      });
+
+      // Ensure the map is correctly sized
+      Waymark.map.invalidateSize();
+      console.log("Map size invalidated.");
+
+      // Pan the map to the right
+      var offsetX = Waymark.map.getSize().x * 0.22; // Adjust this value for desired pan distance
+      Waymark.map.panBy([offsetX, 0]);
+
+      // Log the new center after panning
+      console.log("Map center after panning to the right:", Waymark.map.getCenter());
+
+      console.log("Map is ready for print.");
+  });
+}
+

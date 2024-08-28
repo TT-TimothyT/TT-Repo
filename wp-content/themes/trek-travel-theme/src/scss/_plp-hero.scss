@@ -1,6 +1,8 @@
 .plp-hero-banner{
     background-color: #F4F4F4;
     .banner-section{
+        display: flex;
+        justify-content: center;
         position: relative;
         text-shadow: 2px 2px 0px rgba(0,0,0,0.6);
 
@@ -22,23 +24,26 @@
             max-height: 800px;
             height: 80vw;
         }
-        p, h1{
+
+
+
+        .container {
             position: absolute;
-            color: #fff;
-            left: 5%;
-        }
-        p{
             bottom: 0;
-        }
-        h1{
-            bottom: 15%;
+            margin: auto;
+
+            h1 {
+                color: #fff;
+                margin-bottom: clamp(30px, 8vw, 100px);
+            }
         }
     }
     .description-section{
         display: flex;
-        flex-wrap: wrap;
-        padding: 3rem 2rem;
-        gap: 30px;
+
+        >.row {
+        padding: 1rem 0;
+        }
     }
     
     @include media-breakpoint-up(lg) {
@@ -54,18 +59,21 @@
             }
         }
         .description-section{
-            display: flex;
-            gap: 7%;
-            flex-flow: wrap;
-            justify-content: center;
-            padding: 3rem 0;
+            // display: flex;
+            // gap: 7%;
+            // flex-flow: wrap;
+            // justify-content: center;
+            >.row {
+            // padding: 3rem 0;
+
+            }
             h4{
-                width: 30%;
+                // width: 30%;
                 font-family: 'Poppins';
                 color: #000;
             }
             p{
-                width: 50%;
+                // width: 50%;
                 color: #333;
             }
             .view-category-info-link{

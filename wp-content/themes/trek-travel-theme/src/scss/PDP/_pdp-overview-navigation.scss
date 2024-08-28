@@ -18,9 +18,13 @@
 }
 
 .overview-sidebar-desktop {
+    @media print {
+        display: none;
+    }
     @media (max-width: 767px) {
         display: none;
     }
+    
     background-color: #D3D3D3;
     nav {
         margin-top: clamp(2rem, 2vh, 3rem);

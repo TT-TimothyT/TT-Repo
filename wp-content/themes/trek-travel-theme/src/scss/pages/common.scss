@@ -104,3 +104,42 @@
       }
     }
   }
+
+
+  // PRINT GLOBAL STYLES
+
+  @media print {
+
+    @page {
+      size: A4;
+      margin: 25.4mm; /* Adjust as needed */
+    }
+
+    .container {
+      // padding: 0 !important;
+      max-width: none;
+      // width: calc(100% + 50.8mm); /* Full width including left and right margins */
+      // margin-left: -25.4mm; /* Negative margin to offset the default margin */
+      // margin-right: -25.4mm;
+  }
+
+    header {
+      display: none !important;
+    }
+
+    footer {
+        display: none !important;
+    }
+
+    .elementor-popup-modal {
+        display: none !important;
+    }
+
+    .copyright {
+        display: none !important;
+    }
+
+    .promo-banner {
+        display: none !important;
+    }
+  }

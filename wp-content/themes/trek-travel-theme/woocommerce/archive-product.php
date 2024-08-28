@@ -98,20 +98,30 @@ if(!empty($noresultSuggestions)){
 $emptyBlockContent .= '</div></div>';
 ?>
 
-<div class="container-fluid plp-container p-0">
+<div class="plp-container">
     <div class="plp-hero-banner mb-4">
         <div class="banner-section">
-            <?php echo $imgTag; ?>
-            <h1 class="fw-semibold"><?php echo $plp_algolia_category->name; ?></h1>
+        <?php echo $imgTag; ?>
+            <div class="container">
+                
+                <h1 class="fw-semibold"><?php echo $plp_algolia_category->name; ?></h1>
+            </div>
+            
         </div>
         <div class="container description-section">
-            <h4><?php echo $plp_algolia_category->description; ?></h4>
-            <p class="fw-normal fs-md lh-md"><?php echo $plp_travel_info;?>
-            <?php if (!empty($plp_travel_info_link)): ?>
-                <br><br><a href="<?php echo $plp_travel_info_link;?>" class="view-category-info-link">View <?php echo $plp_algolia_category->name; ?> Travel Info</a>
-                <?php endif; ?>
-            </p>
+            <div class="row justify-content-between">
+                <div class="col-12 col-lg-6 col-xl-7 my-5">
+                    <h4><?php echo $plp_algolia_category->description; ?></h4>
+                </div>
+                <div class="col-12 col-lg-4 col-xl-4 my-5">
+                    <p class="fw-normal fs-md lh-md"><?php echo $plp_travel_info;?>
+                        <?php if (!empty($plp_travel_info_link)): ?>
+                        <br><br><a href="<?php echo $plp_travel_info_link;?>" class="view-category-info-link">View <?php echo $plp_algolia_category->name; ?> Travel Info</a>
+                        <?php endif; ?>
+                    </p>
+                </div>
             </div>
+        </div>
     </div>
 </div>
 <div class="container plp-list-container">
@@ -266,10 +276,10 @@ $emptyBlockContent .= '</div></div>';
             jQuery(".ais-InfiniteHits-list").removeClass(" ais-Hits-list-articles-pages") #>
 
             <div class="card mb-3 border-0 trip-card-body">
-                <div class="row g-0 mx-0">
+                <div class="c-card row g-0 mx-0">
                     <div class="col-md-4 gallery-carousel">
 
-                        <div id="carouselExampleIndicators{{ data.post_id }}" class="carousel slide h-100" data-bs-ride="carousel">
+                        <div id="carouselExampleIndicators{{ data.post_id }}" class="carousel slide h-100">
                             <div class="carousel-indicators">
                                 <# if ( data.gallery_images ) { #>
                                     <# data.gallery_images.forEach(function (item, index) { #>
@@ -288,7 +298,7 @@ $emptyBlockContent .= '</div></div>';
                                         <div class="carousel-item h-100 <# if (index == 0) { #> active <# } #>">
                                             <a href="{{ data.permalink }}" title="{{ data.post_title }}" class="ais-hits--thumbnail-link"
                                             onclick="selectItemAnalytics({{ data.post_id }})">
-                                                <img src="{{ imageUrl }}" alt="{{ data.post_title }}" title="{{ data.post_title }}" class="d-block w-100"
+                                                <img src="{{ imageUrl }}" alt="{{ data.post_title }}" title="{{ data.post_title }}" class="d-block w-100 h-100"
                                                     onerror="this.onerror=null;this.src='{{ imageUrlOriginalSize }}';"
                                                     id="imgElement{{ index }}" /> <!-- Use a unique ID for each image element -->
                                             </a>
@@ -573,7 +583,7 @@ $emptyBlockContent .= '</div></div>';
 
 
                 <# } #>
-
+            </div>
 
 
 
@@ -584,6 +594,10 @@ $emptyBlockContent .= '</div></div>';
 
 
     <script type="text/javascript">
+
+
+
+
 
         let endTime;
         let startTime;

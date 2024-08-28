@@ -3,14 +3,14 @@
 ?>
 
 <!-- PDP - Overview Navigation - Mobile  -->
-<div class="overview-menu-mobile position-sticky">
+<div class="overview-menu-mobile position-sticky h-100">
 	<div class="accordion accordion-flush" id="accordionFlushExample">
 		<div class="accordion-item">
-			<h2 class="accordion-header" id="flush-headingOne">
+			<span class="accordion-header" id="flush-headingOne">
 				<button class="accordion-button collapsed fs-lg fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
 					Overview
 				</button>
-			</h2>
+			</span>
 			<div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
 				<div class="accordion-body">
 					<nav class="nav flex-column">

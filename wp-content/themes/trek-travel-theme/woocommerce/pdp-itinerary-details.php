@@ -2,7 +2,7 @@
 defined('ABSPATH') || exit;
 global $post;
 $pdp_itineraries = [$post->ID];
-$book_no_link = get_trip_link_by_itinerary_id($post->ID);
+$book_now_link = get_trip_link_by_itinerary_id($post->ID);
 
 $products = get_posts(array(
     'post_type' => 'product',
@@ -41,8 +41,12 @@ if ( $pdp_itineraries ) :
                         <p class="fw-normal fs-lg lh-lg"><?php echo $post->post_content; ?></p>
                     <?php endif; ?>
                     <div class="tour-actions">
-                        <button id="itinerary-print-button" class="btn btn-primary btn-md rounded-1 me-4">Print Itinerary</button>
-                        <a href="<?php echo $book_no_link; ?>">Book now</a>
+                        <a href="#" id="itinerary-print-button" class="btn btn-white btn-md rounded-1 me-4">Print Itinerary</a>
+
+                        <a href="<?php echo $book_now_link; ?>" class="btn btn-primary btn-md rounded-1">Book now</a>
+                        <div class="mt-5">
+                            <p><em>Print Tip: For wider content, set Margins to 'None' in the print window settings.</em></p>
+                        </div>
                     </div>
                 </div>
                 <div class="pdp-itinerary">
@@ -73,9 +77,14 @@ if ( $pdp_itineraries ) :
 
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade <?php if($yj == 1) echo 'show active';?>" id="nav-<?php echo esc_attr( get_field( 'year' ) ); ?>" role="tabpanel" aria-labelledby="nav-<?php echo esc_attr( get_field( 'year' ) ); ?>-tab">
-                                <?php echo do_shortcode( get_field( 'map_shortcode' ) ); ?>  
+                            <?php 
+                                $map_shortcode = get_field('map_shortcode'); 
+                                $map_shortcode_with_callback = str_replace(']', ' loaded_callback="centerMapCallback"]', $map_shortcode);
+                                echo do_shortcode($map_shortcode_with_callback); 
+                            ?>
                                 
-                                <div class="d-md-flex justify-content-between align-items-center">
+                                                                
+                                <div class="collapse-header d-md-flex justify-content-between align-items-center">
                                     <h5 class="fw-semibold pdp-section__title pdp-itinerary__title"><?php echo esc_attr( get_field( 'year' ) ); ?> Day-to-Day</h5>
                                     <div class="accordion-actions d-flex gap-4 my-4">
                                         <a href="javascript:void(0)" class="fw-normal fs-md lh-md expand-all">Expand All</a> |
@@ -98,7 +107,7 @@ if ( $pdp_itineraries ) :
                                         <div id="flush-collapsearrival" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                             <hr>
                                             <div class="accordion-body">
-                                                <div class="d-flex justify-content-between align-items-center accordion-item__collapsearrival">
+                                                <div class="d-flex justify-content-between accordion-item__collapsearrival">
                                                     <div class="accordion-item-ad__main">
                                                         <p class="fw-medium">Where to Arrive</p>
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
@@ -174,15 +183,15 @@ if ( $pdp_itineraries ) :
                                                 <h6 class="accordion-header" id="flush-headingOne">
                                                     <button class="accordion-button mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<?php echo $i;?>" aria-expanded="true" aria-controls="flush-collapse<?php echo $i;?>">
                                                         <span class="fw-medium fs-lg lh-lg accordion-item__day">Day <?php echo $i;?></span>
-                                                        <span class="fw-medium d-none d-lg-block"><?php echo $day['day_title']; ?></span>
+                                                        <span class="fw-medium d-none d-lg-block accordion-item__day_text"><?php echo $day['day_title']; ?></span>
                                                     </button>
                                                 </h6>
                                                 <div id="flush-collapse<?php echo $i;?>" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                                     <hr>
                                                     <div class="accordion-body">
-                                                        <p class="d-block d-lg-none fw-medium fs-xl lh-xl mt-2"><?php echo $day['day_title']; ?></p>
-                                                        <div class="pdp-itinerary-day__accordion d-flex">
-                                                            <div class="pdp-itinerary-day__accordion-left">
+                                                        <p class="accordion-item__day_text d-block d-lg-none fw-medium fs-xl lh-xl mt-2"><?php echo $day['day_title']; ?></p>
+                                                        <div class="pdp-itinerary-day__accordion row">
+                                                            <div class="pdp-itinerary-day__accordion-left col-12 col-lg-7">
                                                                 <p class="fw-medium pdp-itinerary-day__accordion-overview">Overview</p>
                                                                 <p class="pdp-itinerary-day__accordion-clamp_main color-gray-6">
                                                                     <?php if (strlen($day['day_overview']) > 470) { ?>                                                                    
@@ -208,7 +217,7 @@ if ( $pdp_itineraries ) :
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="pdp-itinerary-day__accordion-right">
+                                                            <div class="pdp-itinerary-day__accordion-right col-12 col-lg-4">
                                                                 <?php if (!empty($day['day_highlight_image']['url'])) {
                                                                 ?>
                                                                     <img class="pdp-itinerary-day__accordion-image" src="<?php echo $day['day_highlight_image']['url']; ?>" alt="<?php echo $day['day_highlight_title']; ?>">

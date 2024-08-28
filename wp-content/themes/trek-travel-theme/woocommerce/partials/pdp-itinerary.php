@@ -79,15 +79,17 @@ if ( $pdp_itineraries ) :
                                 </div>
                                 <div class="accordion" id="accordionFlushExample">
                                     <div class="accordion-item">
-                                        <h6 class="accordion-header" id="flush-headingOne">
+                                        
                                             <button class="accordion-button collapsed mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapsearrival" aria-expanded="false" aria-controls="flush-collapsearrival">
-                                                <span class="fw-medium fs-lg lh-lg">Arrival / Departure</span>
+                                                <h6 class="accordion-header" id="flush-headingOne">
+                                                    <span class="fw-medium fs-lg lh-lg">Arrival / Departure</span>
+                                                </h6>
                                             </button>
-                                        </h6>
+                                        
                                         <div id="flush-collapsearrival" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                             <hr>
                                             <div class="accordion-body">
-                                                <div class="d-flex justify-content-between align-items-center accordion-item__collapsearrival">
+                                                <div class="d-flex justify-content-between accordion-item__collapsearrival">
                                                     <div class="accordion-item-ad__main align-self-md-start">
                                                         <p class="fw-medium">Where to Arrive</p>
                                                         <div class="d-flex mb-4 accordion-item-ad__submain">
