@@ -512,8 +512,12 @@
             // display: none !important;
         }
 
-        .activity-column, .ride-column, .pdp-itinerary-day__accordion-left, .accordion-item-ad__sub {
+        .activity-column, .ride-column, .pdp-itinerary-day__accordion-left .pdp-itinerary-day__accordion-clamp_main, .accordion-item-ad__sub {
             break-inside: avoid;
+        }
+
+        .pdp-itinerary-day__accordion-overview {
+        break-after: avoid;
         }
 
         .pdp-itinerary-day__accordion .pdp-itinerary-day__accordion-right {

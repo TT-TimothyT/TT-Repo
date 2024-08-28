@@ -16774,8 +16774,11 @@ nav .nav-tabs .nav-link.active {
   .itinerary-details .accordion-item-ad__main {
     padding: 0mm !important;
   }
-  .itinerary-details .activity-column, .itinerary-details .ride-column, .itinerary-details .pdp-itinerary-day__accordion-left, .itinerary-details .accordion-item-ad__sub {
+  .itinerary-details .activity-column, .itinerary-details .ride-column, .itinerary-details .pdp-itinerary-day__accordion-left .pdp-itinerary-day__accordion-clamp_main, .itinerary-details .accordion-item-ad__sub {
     break-inside: avoid;
+  }
+  .itinerary-details .pdp-itinerary-day__accordion-overview {
+    break-after: avoid;
   }
   .itinerary-details .pdp-itinerary-day__accordion .pdp-itinerary-day__accordion-right {
     margin-bottom: 15px;

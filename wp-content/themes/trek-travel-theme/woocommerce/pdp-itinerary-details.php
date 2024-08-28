@@ -45,7 +45,7 @@ if ( $pdp_itineraries ) :
 
                         <a href="<?php echo $book_now_link; ?>" class="btn btn-primary btn-md rounded-1">Book now</a>
                         <div class="mt-5">
-                            <p><em>Print Tip: For wider content, set Margins to 'None' in the print window settings.</em></p>
+                            <p><em>Print Tip: For wider content, set Margins to 'Minimum' in the print window settings.</em></p>
                         </div>
                     </div>
                 </div>
