@@ -1,4 +1,4 @@
-.my-trips-checklist{
+.my-trips-checklist{ 
     .card{
         padding: 16px;
     }
@@ -171,5 +171,20 @@
     }
     .line-item-title{
         color: #000000;
+    }
+    // Fix form labels.
+    .guest-checkout {
+        &__primary-form-row {
+            .form-floating {
+                label {
+                    padding-left: 0.75rem;
+                }
+                .form-control:not(:placeholder-shown)~label,
+                .form-control:focus~label,
+                .form-select ~ label {
+                    display: block;
+                }
+            }
+        }
     }
 }

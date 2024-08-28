@@ -1175,13 +1175,13 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input <?php echo $gray_out; ?> name="saddle_height" id="saddle_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_height ?>">
+												<input <?php echo $gray_out; ?> name="saddle_height" id="saddle_height" placeholder="Saddle Height (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_height ?>">
 												<label for="saddle_height">Saddle Height (cm)</label>
 											</div>
 										</div>
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input <?php echo $gray_out; ?> type="text" name="bar_reach" id="bar_reach" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
+												<input <?php echo $gray_out; ?> type="text" name="bar_reach" id="bar_reach" placeholder="Bar reach (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
 												<label for="bar_reach">Bar reach (cm)</label>
 											</div>
 										</div>
@@ -1189,7 +1189,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input <?php echo $gray_out; ?> type="text" name="bar_height" id="bar_height" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>">
+												<input <?php echo $gray_out; ?> type="text" name="bar_height" id="bar_height" placeholder="Bar Height (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>">
 												<label for="bar_height">Bar Height (cm)</label>
 											</div>
 										</div>
