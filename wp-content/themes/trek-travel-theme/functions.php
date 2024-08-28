@@ -491,6 +491,12 @@ if ( is_readable( $trek_general_func ) ) {
 	require_once $trek_general_func;
 }
 
+// Hierarchical taxonomy checkbox checklist with radio buttons.
+$trek_taxonomy_radio_buttons = __DIR__ . '/inc/trek-taxonomy-radio-buttons.php';
+if ( is_readable( $trek_taxonomy_radio_buttons ) ) {
+	require_once $trek_taxonomy_radio_buttons;
+}
+
 // Trek custom Shortcode.
 $trek_shortcodes = __DIR__ . '/inc/trek-shortcodes.php';
 if ( is_readable( $trek_shortcodes ) ) {
@@ -1167,6 +1173,7 @@ function tt_product_taxonomies()  {
 		'show_in_rest'          => true,
 		'rest_base'             => 'trip-status',
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
+		'meta_box_cb'           => 'tt_product_taxonomy_meta_box'
 	] );
 
 	/**

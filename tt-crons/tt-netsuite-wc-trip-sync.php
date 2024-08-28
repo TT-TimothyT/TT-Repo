@@ -35,7 +35,10 @@ function tt_ns_wc_sync_cron() {
 	tt_sync_ns_trip_bikes();
 	tt_sync_ns_trip_addons();
 	tt_sync_wc_products_from_ns();
-	tt_add_error_log( '[Server Side Cron][END - Trips/Products Sync]', array( 'default_time_range' => DEFAULT_TIME_RANGE ), array( 'date_time' => date('Y-m-d H:i:s') ) );
+
+	// Flush the cache.
+	$cache_flushed = wp_cache_flush();
+	tt_add_error_log( '[Server Side Cron][END - Trips/Products Sync]', array( 'default_time_range' => DEFAULT_TIME_RANGE ), array( 'cache_flushed' => $cache_flushed, 'date_time' => date('Y-m-d H:i:s') ) );
 }
 
 try {
