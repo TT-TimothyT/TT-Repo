@@ -290,3 +290,18 @@ table.table-old.tt-booking-table .expandable-cell.expanded .expand-cell:before {
     opacity: 1;
     cursor: pointer;
 }
+.dx-hidden-section {
+    border: none !important;
+    box-shadow: none !important;
+}
+.tt-sync-page {
+    padding-right: 20px;
+}
+.tt-sync-page .tt-wc-ns-admin-wrap > div {
+    /* background-color: #fff; */
+    border: 1px solid #c3c4c7;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 1rem 1.5rem 1.5rem;
+    margin: 1rem 0;
+    border-radius: 6px;
+}

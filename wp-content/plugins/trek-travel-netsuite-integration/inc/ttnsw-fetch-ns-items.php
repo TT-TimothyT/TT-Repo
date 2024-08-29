@@ -5,15 +5,6 @@ use TTNetSuite\NetSuiteClient;
 add_action('admin_menu', 'trek_ns_intergration_create_menu');
 function trek_ns_intergration_create_menu()
 {
-    //create new top-level menu
-    // add_menu_page(
-    //     'NetSuite<>WC',
-    //     'NetSuite<>WC',
-    //     'administrator',
-    //     'trek-travel-ns-wc-settings-page',
-    //     'trek_travel_ns_wc_settings_page',
-    //     'dashicons-location'
-    // );
     $tt_menu_slug = 'trek-travel-ns-wc';
     add_menu_page(
         'NetSuite<>WC',
@@ -51,73 +42,151 @@ function trek_ns_intergration_create_menu()
 }
 function tt_admin_menu_page_cb()
 {
-    require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
-    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tt_wp_manual_sync_action' && isset($_REQUEST['type'])) {
-        if ($_REQUEST['type'] == 'trip' && function_exists('tt_sync_ns_trips')) {
-            if( $_REQUEST['time_range'] ) {
-                tt_sync_ns_trips($_REQUEST['time_range']);
-            } else {
-                tt_sync_ns_trips();
+    if ( isset( $_REQUEST['action']) && $_REQUEST['action'] == 'tt_wp_manual_sync_action' && isset( $_REQUEST['type'] ) ) {
+        $filter_type  = '';
+        $filter_value = '';
+        if ( isset( $_REQUEST['filter_type'] ) ) {
+            switch ( $_REQUEST['filter_type'] ) {
+                case 'modifiedAfter':
+                    if ( isset( $_REQUEST['time_range'] ) && ! empty( $_REQUEST['time_range'] ) ) {
+                        $filter_type  = 'modifiedAfter';
+                        $filter_value = $_REQUEST['time_range'];
+                    }
+                    break;
+                case 'tripYear':
+                    if ( isset( $_REQUEST['trip_year'] ) && ! empty( $_REQUEST['trip_year'] ) ) {
+                        $filter_type  = 'tripYear';
+                        $filter_value = $_REQUEST['trip_year'];
+                    }
+                    break;
+                case 'itineraryCode':
+                    if ( isset( $_REQUEST['itinerary_code'] ) && ! empty( $_REQUEST['itinerary_code'] ) ) {
+                        $filter_type  = 'itineraryCode';
+                        $filter_value = $_REQUEST['itinerary_code'];
+                    }
+                    break;
+                case 'itineraryId':
+                    if ( isset( $_REQUEST['itinerary_id'] ) && ! empty( $_REQUEST['itinerary_id'] ) ) {
+                        $filter_type  = 'itineraryId';
+                        $filter_value = $_REQUEST['itinerary_id'];
+                    }
+                    break;
+                default:
+                    // Keep the default values empty, to can work the cehck below $with_filter!
+                    $filter_type  = '';
+                    $filter_value = '';
+                    break;
             }
         }
-        if ($_REQUEST['type'] == 'trip-details' && function_exists('tt_sync_ns_trip_details')) {
-            if( $_REQUEST['time_range'] ) {
-                tt_sync_ns_trip_details( $_REQUEST['time_range'] );
-            } else {
-                tt_sync_ns_trip_details();
-            }
-        }
-        if ($_REQUEST['type'] == 'hotels' && function_exists('tt_sync_ns_trip_hotels')) {
-            if( $_REQUEST['time_range'] ) {
-                tt_sync_ns_trip_hotels( $_REQUEST['time_range'] );
-            } else {
-                tt_sync_ns_trip_hotels();
-            }
-        }
-        if ($_REQUEST['type'] == 'bikes' && function_exists('tt_sync_ns_trip_bikes')) {
-            if( $_REQUEST['time_range'] ) {
-                tt_sync_ns_trip_bikes( $_REQUEST['time_range'] );
-            } else {
-                tt_sync_ns_trip_bikes();
-            }
-        }
-        if ($_REQUEST['type'] == 'addons' && function_exists('tt_sync_ns_trip_addons')) {
-            if( $_REQUEST['time_range'] ) {
-                tt_sync_ns_trip_addons( $_REQUEST['time_range'] );
-            } else {
-                tt_sync_ns_trip_addons();
-            }
-        }
-        if ($_REQUEST['type'] == 'product-sync' && function_exists('tt_sync_wc_products_from_ns')) {
-            if( $_REQUEST['time_range'] ) {
-                tt_sync_wc_products_from_ns( false, [], $_REQUEST['time_range'] );
-            } else {
-                tt_sync_wc_products_from_ns();
-            }
-        }
-        if ($_REQUEST['type'] == 'product-sync-all' && function_exists('tt_sync_wc_products_from_ns')) {
-            tt_add_error_log('[Start]', ['type'=> 'Sync All Trips'], ['dateTime' => date('Y-m-d H:i:s')]);
-            as_schedule_single_action(time(), 'ns_trips_sync_to_wc_product', array( true ) );
-        }
-        if ($_REQUEST['type'] == 'custom-items' && function_exists('tt_sync_custom_items')) {
-            tt_sync_custom_items();
-            tt_ns_fetch_bike_type_info();
-        }
-        // Manual Sync of guests information from NS to WC.
-        if ( $_REQUEST['type'] == 'ns-wc-booking' && function_exists( 'tt_ns_guest_booking_details' ) ) {
-            // Last modified guests time range.
-            if( $_REQUEST['time_range'] ) {
-                tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of guests information from NS to WC for last modified guests.', 'time_range' => $_REQUEST['time_range'] ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
-                tt_ns_guest_booking_details( false, '', '', $_REQUEST['time_range'], true );
-            } else {
-                // Time range defined in DEFAULT_TIME_RANGE.
-                tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of guests information from NS to WC for last modified guests.', 'time_range' => DEFAULT_TIME_RANGE ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
-                tt_ns_guest_booking_details( false, '', '', DEFAULT_TIME_RANGE, true );
-            }
+
+        $with_filter = ! empty( $filter_type ) && ! empty( $filter_value );
+        $start_time  = date('Y-m-d H:i:s'); // For admin notices.
+
+        switch ( $_REQUEST['type'] ) {
+            case 'trip':
+                if ( function_exists('tt_sync_ns_trips') ) {
+                    if ( $with_filter ) {
+                        tt_sync_ns_trips( $filter_value, $filter_type );
+                    } else {
+                        // Will execute with the default time range.
+                        tt_sync_ns_trips();
+                    }
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trips' ), 'The sync of basic trip info from NetSuite to the website, started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+                }
+                break;
+            case 'trip-details':
+                if ( function_exists('tt_sync_ns_trip_details') ) {
+                    if ( $with_filter ) {
+                        tt_sync_ns_trip_details( $filter_value, $filter_type );
+                    } else {
+                        // Will execute with the default time range.
+                        tt_sync_ns_trip_details();
+                    }
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trip_details' ), 'The sync of the trip details from NetSuite to the website, started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+                }
+                break;
+            case 'hotels':
+                if ( function_exists('tt_sync_ns_trip_hotels') ) {
+                    if ( $with_filter ) {
+                        tt_sync_ns_trip_hotels( $filter_value, $filter_type );
+                    } else {
+                        // Will execute with the default time range.
+                        tt_sync_ns_trip_hotels();
+                    }
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trip_hotels' ), 'The sync of hotels started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+                }
+                break;
+            case 'bikes':
+                if ( function_exists('tt_sync_ns_trip_bikes') ) {
+                    if ( $with_filter ) {
+                        tt_sync_ns_trip_bikes( $filter_value, $filter_type );
+                    } else {
+                        // Will execute with the default time range.
+                        tt_sync_ns_trip_bikes();
+                    }
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trip_bikes' ), 'The sync of bikes started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+                }
+                break;
+            case 'addons':
+                if ( function_exists('tt_sync_ns_trip_addons') ) {
+                    if ( $with_filter ) {
+                        tt_sync_ns_trip_addons( $filter_value, $filter_type );
+                    } else {
+                        // Will execute with the default time range.
+                        tt_sync_ns_trip_addons();
+                    }
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trip_addons' ), 'The sync of addons started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+                }
+                break;
+            case 'product-sync':
+                if ( function_exists('tt_sync_wc_products_from_ns') ) {
+                    if ( $with_filter ) {
+                        tt_sync_wc_products_from_ns( false, [], $filter_value, $filter_type );
+                    } else {
+                        // Will execute with the default time range.
+                        tt_sync_wc_products_from_ns();
+                    }
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_wc_products_from_ns' ), 'The sync of products started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+                }
+                break;
+            case 'product-sync-all':
+                if ( function_exists('tt_sync_wc_products_from_ns') ) {
+                    tt_add_error_log('[Start]', ['type'=> 'Sync All Trips (Products)'], ['dateTime' => date('Y-m-d H:i:s')] );
+                    as_schedule_single_action( time(), 'ns_trips_sync_to_wc_product', array( true ) );
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_wc_products_from_ns' ), 'The sync of all products is scheduled at: ' . date('Y-m-d H:i:s') . ' and will start soon', 'info' );
+                }
+                break;
+            case 'custom-items':
+                if ( function_exists('tt_sync_custom_items') ) {
+                    tt_sync_custom_items();
+                    tt_ns_fetch_bike_type_info();
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_custom_items' ), 'The sync of custom items/lists started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+                }
+                break;
+            case 'ns-wc-booking':
+                // Manual Sync of guests information from NS to WC.
+                if ( function_exists('tt_ns_guest_booking_details') ) {
+                    // Last modified guests time range.
+                    if( $_REQUEST['time_range'] ) {
+                        tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of guests information from NS to WC for last modified guests.', 'time_range' => $_REQUEST['time_range'] ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
+                        tt_ns_guest_booking_details( false, '', '', $_REQUEST['time_range'], true );
+                    } else {
+                        // Time range defined in DEFAULT_TIME_RANGE.
+                        tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of guests information from NS to WC for last modified guests.', 'time_range' => DEFAULT_TIME_RANGE ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
+                        tt_ns_guest_booking_details( false, '', '', DEFAULT_TIME_RANGE, true );
+                    }
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_ns_guest_booking_details' ), 'The sync of guest/bookings started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+                }
+                break;
+            
+            default:
+                add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_wp_manual_sync_action' ), 'The Manual Sync Action is not recognized!', 'error' );
+            
+                break;
         }
     }
-    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tt_wp_manual_order_sync_action' && isset($_REQUEST['order_id'])) {
-        do_action('tt_trigger_cron_ns_booking', $_REQUEST['order_id'], null);
+    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt_wp_manual_order_sync_action' && isset( $_REQUEST['order_id'] ) ) {
+        do_action('tt_trigger_cron_ns_booking', $_REQUEST['order_id'], null );
     }
     if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt_wp_manual_guest_bookings_sync_action' && isset( $_REQUEST['ns_user_id'] ) ) {
         tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of guests information from NS to WC for single guest.', 'ns_user_id' => $_REQUEST['ns_user_id'] ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
@@ -130,16 +199,23 @@ function tt_admin_menu_page_cb()
             $ns_tripId = get_post_meta($product_id, TT_WC_META_PREFIX.'tripId', true);
             if($ns_tripId){
                 //tt_sync_wc_products_from_ns(false, [$ns_tripId]);
-                tt_add_error_log('[Start]', ['type'=> 'Single Trip Sync'], ['dateTime' => date('Y-m-d H:i:s')]);
+                tt_add_error_log('[Start]', ['type'=> 'Single Trip (Product) Sync'], ['dateTime' => date('Y-m-d H:i:s')]);
                 as_schedule_single_action(time(), 'ns_trips_sync_to_wc_product', array( false, [$ns_tripId] ));
             }else{
-                tt_add_error_log('[Sync] - NS Trip to WC', ['trip_code' => $req_trip_code, 'message' => 'No NS Trip ID found' ], ['dateTime' => date('Y-m-d H:i:s')]);
+                tt_add_error_log('[Sync] - NS Trip to WC (Product)', ['trip_code' => $req_trip_code, 'message' => 'No NS Trip ID found' ], ['dateTime' => date('Y-m-d H:i:s')]);
             }
         }else{
-            tt_add_error_log('[Sync] - NS Trip to WC', ['trip_code' => $req_trip_code, 'message' => 'No Product found' ], ['dateTime' => date('Y-m-d H:i:s')]);
+            tt_add_error_log('[Sync] - NS Trip to WC (Product)', ['trip_code' => $req_trip_code, 'message' => 'No Product found' ], ['dateTime' => date('Y-m-d H:i:s')]);
         }
     }
-
+    if ( isset( $_REQUEST['action'] ) && 'tt_wp_manual_trip_details_sync_action' === $_REQUEST['action'] && isset( $_REQUEST['trip_id'] ) ) {
+        if( empty( $_REQUEST['trip_id'] ) ) {
+            add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_single_trip_details' ), 'Trip ID can\'t be empty!', 'error' );
+        } else {
+            // Proceed with the single trip details sync.
+            tt_sync_ns_single_trip_details( (int) $_REQUEST['trip_id'] );
+        }
+    }
     if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt_wp_manual_checklist_sync_action' ) {
         tt_add_error_log('[Start]', ['type'=> 'User Checklist Sync'], ['dateTime' => date('Y-m-d H:i:s')]);
 
@@ -249,8 +325,19 @@ function tt_admin_menu_page_cb()
             $wpdb->query($sql);
         }
     }
+    // Keep this here, to can display some admin notifications!
+    require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
+
+    // Prepare Itinerary Filters.
+    $is_itinerary_filter_available = false;
+    if ( function_exists('tt_get_custom_item_name') ) {
+        $itinerary_codes = tt_get_custom_item_name('syncTripsList');
+        if( isset( $itinerary_codes['options'] ) && is_array( $itinerary_codes['options'] ) && ! empty( $itinerary_codes['options'] ) ) {
+            $is_itinerary_filter_available = true;
+        }
+    }
 ?>
-    <div class="tt-admin-page-div tt-pl-40 tt-mt-30">
+    <div class="tt-admin-page-div tt-pl-40 tt-mt-30 tt-sync-page">
         <div class="tt-wc-ns-admin-wrap">
             <div id="tt-ns-sync-class">
                 <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">Clear Caches After Manual Trip Sync!</span>
@@ -258,17 +345,27 @@ function tt_admin_menu_page_cb()
                 <form class="tt-wp-manual-sync" action="" method="post">
                     <select name="type" required>
                         <option value="">Select Sync Type</option>
-                        <option value="trip">Step 1: Get All Trips By Last Modified Date</option>
-                        <option value="trip-details">Step 2: Get Trip Details By Last Modified Date</option>
+                        <option value="trip">Step 1: Get All Trips</option>
+                        <option value="trip-details">Step 2: Get Trip Details</option>
                         <option value="bikes">Step 3: Get Bikes</option>
                         <option value="hotels">Step 4: Get Hotels</option>
                         <option value="addons">Step 5: Get Addons</option>
-                        <option value="product-sync-all">Step 6: Create WC Trip Products - [All]</option>
-                        <option value="product-sync">Misc: Create WC Trip Products - [By Year]</option>
-                        <option value="custom-items">Misc: Custom Items</option>
+                        <option value="product-sync">Step 6: Create WC Trip Products</option>
+                        <option value="product-sync-all">Misc: Create WC Trip Products - [All]</option>
+                        <option value="custom-items">Misc: Custom Items/Lists</option>
                         <option value="ns-wc-booking">Misc: NS<>WC Booking Sync</option>
                     </select>
-                    <select name="time_range" required>
+                    <select name="filter_type" style="display: none;" required>
+                        <option value="">Filter Type</option>
+                        <option value="modifiedAfter">By Last Modified Date</option>
+                        <option value="tripYear">By Trip Year</option>
+                        <?php if ( $is_itinerary_filter_available ) : ?>
+                            <option value="itineraryCode">By Itinerary Code</option>
+                            <!-- This option below is very similar to By Itinerary Code. I'm hiding it visually so we have it as a reference and option if we need to use it in the future -->
+                            <!-- <option value="itineraryId">By Itinerary ID</option> -->
+                        <?php endif; ?>
+                    </select>
+                    <select name="time_range" style="display: none;" required>
                         <option value="">Time Range</option>
                         <option value="-12 hours">Last 12 Hours</option>
                         <option value="-24 hours">Last 24 Hours</option>
@@ -276,6 +373,38 @@ function tt_admin_menu_page_cb()
                         <option value="-1 month">Last Month</option>
                         <option value="-1 year">Last Year</option>
                     </select>
+                    <select name="trip_year" style="display: none;" required>
+                        <option value="">Trip Year</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                    <?php if ( $is_itinerary_filter_available ) : ?>
+                        <select name="itinerary_code" style="display: none;" required>
+                            <option value="">Itinerary Code</option>
+                            <?php
+                                foreach( $itinerary_codes['options'] as $itinerary_code ) {
+                                    if( is_array( $itinerary_code ) && ! empty( $itinerary_code ) ) {
+                                        ?>
+                                            <option value="<?php echo esc_attr( $itinerary_code['optionValue'] ) ?>"><?php echo esc_attr( $itinerary_code['optionValue'] ) ?></option>
+                                        <?php
+                                    }
+                                }
+                            ?>
+                        </select>
+                        <select name="itinerary_id" style="display: none;" required>
+                            <option value="">Itinerary ID</option>
+                            <?php
+                                foreach( $itinerary_codes['options'] as $itinerary_code ) {
+                                    if( is_array( $itinerary_code ) && ! empty( $itinerary_code ) ) {
+                                        ?>
+                                            <option value="<?php echo esc_attr( $itinerary_code['optionId'] ) ?>"><?php echo esc_attr( $itinerary_code['optionId'] ) ?> ( <?php echo esc_attr( $itinerary_code['optionValue'] ); ?> ) </option>
+                                        <?php
+                                    }
+                                }
+                            ?>
+                        </select>
+                    <?php endif; ?>
                     <input type="hidden" name="action" value="tt_wp_manual_sync_action">
                     <input type="submit" name="submit" value="Sync" class="button-primary">
                 </form>
@@ -288,12 +417,22 @@ function tt_admin_menu_page_cb()
                     <input type="submit" name="submit" value="Sync Order" class="button-primary">
                 </form>
             </div>
+            <div id="tt-trip-details-sync-admin">
+                <h3>Manual Trip Details Sync from NS to WC</h3>
+                <p>This action will <strong>sync the trip details</strong> for a single trip</p>
+                <form action="" class="tt-trip-details-sync" method="post">
+                    <input type="text" name="trip_id" placeholder="Enter Trip ID (xxxxx)" required>
+                    <input type="hidden" name="action" value="tt_wp_manual_trip_details_sync_action">
+                    <input type="submit" name="submit" value="Sync Trip Details" class="button-primary">
+                </form>
+            </div>
             <div id="tt-order-sync-admin">
                 <h3>Manual Trip Sync from NS to WC</h3>
+                <p>This action will <strong>sync only product</strong>, not the trip details table in the DB</p>
                 <form action="" class="tt-order-sync" method="post">
                     <input type="text" name="trip_code" placeholder="Enter TRIP Code/SKU" required>
                     <input type="hidden" name="action" value="tt_wp_manual_trip_sync_action">
-                    <input type="submit" name="submit" value="Sync Trip" class="button-primary">
+                    <input type="submit" name="submit" value="Sync Trip (Product)" class="button-primary">
                 </form>
             </div>
             <div id="tt-bookings-sync-admin">
@@ -307,7 +446,7 @@ function tt_admin_menu_page_cb()
             <div id="tt-checklist-sync">
                 <h3>Sync all user meta and checklist locking</h3>
                 <form action="" class="tt-checklist-sync" method="post">
-                    Click to sync the user checklist locking for the past 2 hours
+                    Click to sync the user checklist locking for the past <?php echo DEFAULT_TIME_RANGE_LOCKING_STATUS; ?>
                     <input type="hidden" name="action" value="tt_wp_manual_checklist_sync_action">
                     <input type="submit" name="submit" value="Sync" class="button-primary">
                 </form>

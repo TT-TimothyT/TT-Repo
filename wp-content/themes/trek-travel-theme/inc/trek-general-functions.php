@@ -5346,9 +5346,9 @@ function tt_cron_syn_usermeta_ns_cb( $user_id, $type ) {
 }
 add_action('ns_trips_sync_to_wc_product', 'ns_trips_sync_to_wc_product_cb', 10, 2);
 function ns_trips_sync_to_wc_product_cb($is_all = true, $trips_IDs=[]){
-    $type = "Sync All Trips";
+    $type = "Sync All Trips (Products)";
     if( $trips_IDs && is_array($trips_IDs) && !empty($trips_IDs) ){
-        $type = "Single Trip Sync";
+        $type = "Single Trip (Product) Sync";
     }
     tt_sync_wc_products_from_ns($is_all, $trips_IDs);
     tt_add_error_log('[End]', ['type'=> $type], ['dateTime' => date('Y-m-d H:i:s')]);

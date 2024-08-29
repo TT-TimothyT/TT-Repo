@@ -1800,3 +1800,12 @@ function tt_set_bike_record_lock_status( $guest_email = '', $guest_reg_id = 0, $
 
     return true;
 }
+
+// Restore the mising pr() function
+if ( ! function_exists( 'pr' ) ) {
+	function pr( $data ) {
+		echo '<pre>';
+		print_r( $data );
+		echo '</pre>';
+	}
+}

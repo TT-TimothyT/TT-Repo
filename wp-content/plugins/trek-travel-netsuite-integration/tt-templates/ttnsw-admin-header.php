@@ -15,6 +15,7 @@ if ($currentScreen->base == 'netsuitewc_page_tt-common-logs') {
                 <h1 class="tt-block-tag">TT WC<>NS &rtrif; <?php echo $tabName; ?></h1>
             </div>
         </div>
+        <?php settings_errors( 'ttnsw-admin-notice' ); ?>
         <div class="tt-contents">
             <div class="tt-tabs">
                 <nav class="nav-tab-wrapper woo-nav-tab-wrapper">
