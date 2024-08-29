@@ -16604,12 +16604,6 @@ nav .nav-tabs .nav-link.active {
   .pdp-itinerary-day__accordion-right {
     margin-bottom: 0px;
   }
-  .pdp-itinerary-day__accordion-right img {
-    width: 304px;
-    height: 202px;
-    object-fit: cover;
-    border-radius: 4px;
-  }
   .pdp-itinerary-day__accordion-hotels {
     gap: 20px;
     margin-bottom: 50px;
@@ -16665,9 +16659,23 @@ nav .nav-tabs .nav-link.active {
 }
 .itinerary-details .pdp-itinerary-day__accordion-right img {
   width: 100%;
-  height: 197px;
+  height: 200px;
   object-fit: cover;
   border-radius: 4px;
+}
+@media (max-width: 991.98px) {
+  .itinerary-details .pdp-itinerary-day__accordion-right {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+  }
+  .itinerary-details .pdp-itinerary-day__accordion-right .it-col {
+    width: 100%;
+  }
+  .itinerary-details .pdp-itinerary-day__accordion-right img {
+    width: 300px;
+    margin-bottom: 0;
+  }
 }
 @media (min-width: 992px) {
   .itinerary-details {

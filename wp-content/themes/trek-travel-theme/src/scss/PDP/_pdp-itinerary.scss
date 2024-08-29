@@ -67,6 +67,9 @@
                 // border-radius: 0 0 4px 4px;
             }
         }
+
+        
+
         hr {
             width: 95%;
             margin: 0 auto;
@@ -204,12 +207,7 @@
             &-right {
                 // width: 31%;
                 margin-bottom: 0px;
-                img{
-                    width: 304px;
-                    height: 202px;
-                    object-fit: cover;
-                    border-radius: 4px;
-                }
+                
             }
             // &-clamp_main {
             //     span {
@@ -247,6 +245,10 @@
         }
     }
 }
+
+
+
+// ITINERARY PAGE
 
 .itinerary-details{
     margin-top: 48px;
@@ -287,12 +289,29 @@
     }
 
     .pdp-itinerary-day__accordion-right{
+
         img{
             width: 100%;
-            height: 197px;
+            height: 200px;
             object-fit: cover;
             border-radius: 4px;
         }
+
+        @include media-breakpoint-down(lg) {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+
+            .it-col {
+                width: 100%;
+            }
+
+            img {
+                width: 300px;
+                margin-bottom: 0;
+            }
+        }
+        
     }
     @include media-breakpoint-up(lg) {
         margin-top: 56px;

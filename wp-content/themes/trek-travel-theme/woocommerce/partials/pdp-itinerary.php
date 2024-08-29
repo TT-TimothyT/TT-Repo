@@ -180,8 +180,8 @@ if ( $pdp_itineraries ) :
                                                     <hr>
                                                     <div class="accordion-body">
                                                         <p class="d-block d-lg-none fw-medium fs-xl lh-xl mt-2"><?php echo $day['day_title']; ?></p>
-                                                        <div class="pdp-itinerary-day__accordion d-flex">
-                                                            <div class="pdp-itinerary-day__accordion-left">
+                                                        <div class="pdp-itinerary-day__accordion row">
+                                                            <div class="pdp-itinerary-day__accordion-left  col-12 col-xl-8 col-xxl-9">
                                                                 <p class="fw-medium pdp-itinerary-day__accordion-overview">Overview</p>
                                                                 <p class="pdp-itinerary-day__accordion-clamp_main color-gray-6">
                                                                     <?php if (strlen($day['day_overview']) > 470) { ?>                                                                    
@@ -209,7 +209,7 @@ if ( $pdp_itineraries ) :
                                                             </div>
                                                             <?php if (!empty($day['day_highlight_title']) && !empty($day['day_highlight_body'])) {
                                                             ?>
-                                                            <div class="pdp-itinerary-day__accordion-right">
+                                                            <div class="pdp-itinerary-day__accordion-right col-12 col-xl-4 col-xxl-3">
                                                                 <?php if (!empty($day['day_highlight_image']) ) { ?>
                                                                 <img class="pdp-itinerary-day__accordion-image" src="<?php echo $day['day_highlight_image']['url']; ?>" alt="<?php echo $day['day_highlight_title']; ?>">
                                                                 <?php } ?>
@@ -231,7 +231,7 @@ if ( $pdp_itineraries ) :
                                                             <?php } ?>
                                                         </div>
                                                         <?php if (isset($day['ride_option_#']) && !empty($day['ride_option_#'])) { ?>
-                                                            <hr class="w-100">
+                                                            <hr class="w-100 mt-5">
                                                             <p class="fw-medium pdp-itinerary-heading">
                                                             <?php
                                                             if (!empty($activity_type) && $activity_type == TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>

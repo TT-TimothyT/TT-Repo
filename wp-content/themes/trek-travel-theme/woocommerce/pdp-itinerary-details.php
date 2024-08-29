@@ -218,27 +218,31 @@ if ( $pdp_itineraries ) :
                                                                 </div>
                                                             </div>
                                                             <div class="pdp-itinerary-day__accordion-right col-12 col-lg-4">
-                                                                <?php if (!empty($day['day_highlight_image']['url'])) {
-                                                                ?>
-                                                                    <img class="pdp-itinerary-day__accordion-image" src="<?php echo $day['day_highlight_image']['url']; ?>" alt="<?php echo $day['day_highlight_title']; ?>">
-                                                                <?php } ?>
+                                                                <div class="it-col">
+                                                                    <?php if (!empty($day['day_highlight_image']['url'])) {
+                                                                    ?>
+                                                                        <img class="pdp-itinerary-day__accordion-image" src="<?php echo $day['day_highlight_image']['url']; ?>" alt="<?php echo $day['day_highlight_title']; ?>">
+                                                                    <?php } ?>
+                                                                </div>
+                                                                <div class="it-col">
                                                                     <p class="fs-sm lh-sm fw-medium mb-1 pdp-itinerary-day__accordion-highlight">Highlight of the Day</p>
-                                                                <?php if (!empty($day['day_highlight_title']) ) {
-                                                                ?>
-                                                                    <p class="fs-md lh-md fw-medium mb-1"><?php echo $day['day_highlight_title']; ?></p>
-                                                                <?php } ?>
-                                                                <?php if (!empty($day['day_highlight_body'])) {
-                                                                ?>
-                                                                    <p class="fs-sm lh-sm mb-0 pdp-itinerary-day__accordion-right-clamp">                                                                
-                                                                    <?php if (strlen($day['day_highlight_body']) > 140) { ?>    
-                                                                        <span class="less-text"><?php echo dx_strip_text($day['day_highlight_body']); ?>...</span>
-                                                                        <span class="more-text d-none"><?php echo $day['day_highlight_body']; ?></span>
-                                                                        <a href="#" class="read-more-action-right">Read More</a>
-                                                                    <?php } else { ?>
-                                                                        <span><?php echo $day['day_highlight_body']; ?></span>
-                                                                    <?php } ?>                                                                   
-                                                                    </p>
-                                                                <?php } ?>
+                                                                    <?php if (!empty($day['day_highlight_title']) ) {
+                                                                    ?>
+                                                                        <p class="fs-md lh-md fw-medium mb-1"><?php echo $day['day_highlight_title']; ?></p>
+                                                                    <?php } ?>
+                                                                    <?php if (!empty($day['day_highlight_body'])) {
+                                                                    ?>
+                                                                        <p class="fs-sm lh-sm mb-0 pdp-itinerary-day__accordion-right-clamp">                                                                
+                                                                        <?php if (strlen($day['day_highlight_body']) > 140) { ?>    
+                                                                            <span class="less-text"><?php echo dx_strip_text($day['day_highlight_body']); ?>...</span>
+                                                                            <span class="more-text d-none"><?php echo $day['day_highlight_body']; ?></span>
+                                                                            <a href="#" class="read-more-action-right">Read More</a>
+                                                                        <?php } else { ?>
+                                                                            <span><?php echo $day['day_highlight_body']; ?></span>
+                                                                        <?php } ?>                                                                   
+                                                                        </p>
+                                                                    <?php } ?>
+                                                                </div>                                                                
                                                             </div>
                                                         </div>
                                                         <?php if (isset($day['ride_option_#']) && !empty($day['ride_option_#'])) { ?>
