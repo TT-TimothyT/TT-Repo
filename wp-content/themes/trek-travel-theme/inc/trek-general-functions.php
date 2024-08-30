@@ -941,12 +941,19 @@ function trek_update_trip_checklist_action_cb()
 
         // If the confirmed section is 'bike_section', add bike data.
         if( $is_section_confirmed['bike_section'] ) {
-            $booking_data['bike_selection'] = $_REQUEST['bikeId'];
-            $booking_data['bike_type_id']   = $_REQUEST['bikeTypeId'];
-            $booking_data['bike_id']        = $_REQUEST['bikeId'];
-            $booking_data['bike_size']      = $_REQUEST['tt-bike-size'];
+            // If $_REQUEST['bikeId'] is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $_REQUEST['tt-bike-size'].
+            $default_bike_id = '';
+            if ( isset( $_REQUEST['bikeId'] ) && is_numeric( $_REQUEST['bikeId'] ) && 0 === (int) $_REQUEST['bikeId'] ) {
+                $default_bike_id = 0;
 
-            $ns_user_booking_data['bikeId']       = tt_validate( $_REQUEST['bikeId'] );
+            }
+
+            $booking_data['bike_selection'] = tt_validate( $_REQUEST['bikeId'], $default_bike_id );
+            $booking_data['bike_type_id']   = tt_validate( $_REQUEST['bikeTypeId'] );
+            $booking_data['bike_id']        = tt_validate( $_REQUEST['bikeId'], $default_bike_id );
+            $booking_data['bike_size']      = tt_validate( $_REQUEST['tt-bike-size'] );
+
+            $ns_user_booking_data['bikeId']       = tt_validate( $_REQUEST['bikeId'], $default_bike_id );
             $ns_user_booking_data['bikeTypeName'] = tt_ns_get_bike_type_name( tt_validate( $_REQUEST['bikeTypeId'] ) );
         }
 
@@ -3523,7 +3530,13 @@ function tt_get_bikes_by_trip_info( $tripId = '', $tripCode = '', $bikeTypeId = 
     ];
     exit;
 }
-function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '',$bikeID='')
+
+/**
+ * Build an array with bike size and bike type options.
+ *
+ * @return array Bike size and bike type options html for the post booking checklist.
+ */
+function tt_get_bikes_by_trip_info_pbc( $tripId = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '', $bikeID = '', $selected_bike_id = '' )
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
@@ -3543,7 +3556,9 @@ function tt_get_bikes_by_trip_info_pbc($tripId = '', $tripCode = '', $bikeTypeId
     $bike_size_opts = '<option value="">Select bike size</option>';
      // Insert the "I don't know" option for bike sizes in the first position.
     $i_dont_know_selected = ( 33 == $s_bike_size_id ? 'selected' : '');
-    $bike_size_opts .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>';
+    if ( 33 == $s_bike_size_id ) {
+        $bike_size_opts .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>';
+    }
     $bike_Type_opts = '<option value="">Select bike type</option>';
     $bikes_arr = $wpdb->get_results($sql, ARRAY_A);
     if ($bikes_arr) {
@@ -4436,8 +4451,8 @@ function trek_tt_chk_bike_selection_ajax_action_cb()
 {
     $bikeTypeId = $_REQUEST['bikeTypeId'];
     $order_id = $_REQUEST['order_id'];
-    $tripInfo = tt_get_trip_pid_sku_by_orderId($order_id);
-    $opts = tt_get_bikes_by_trip_info($tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId);
+    $tripInfo = tt_get_trip_pid_sku_by_orderId( $order_id );
+    $opts = tt_get_bikes_by_trip_info_pbc( $tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId );
     echo json_encode($opts);
     exit;
 }
