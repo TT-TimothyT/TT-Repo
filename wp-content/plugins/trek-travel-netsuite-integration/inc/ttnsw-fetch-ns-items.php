@@ -105,39 +105,6 @@ function tt_admin_menu_page_cb()
                     add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trip_details' ), 'The sync of the trip details from NetSuite to the website, started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
                 }
                 break;
-            case 'hotels':
-                if ( function_exists('tt_sync_ns_trip_hotels') ) {
-                    if ( $with_filter ) {
-                        tt_sync_ns_trip_hotels( $filter_value, $filter_type );
-                    } else {
-                        // Will execute with the default time range.
-                        tt_sync_ns_trip_hotels();
-                    }
-                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trip_hotels' ), 'The sync of hotels started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
-                }
-                break;
-            case 'bikes':
-                if ( function_exists('tt_sync_ns_trip_bikes') ) {
-                    if ( $with_filter ) {
-                        tt_sync_ns_trip_bikes( $filter_value, $filter_type );
-                    } else {
-                        // Will execute with the default time range.
-                        tt_sync_ns_trip_bikes();
-                    }
-                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trip_bikes' ), 'The sync of bikes started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
-                }
-                break;
-            case 'addons':
-                if ( function_exists('tt_sync_ns_trip_addons') ) {
-                    if ( $with_filter ) {
-                        tt_sync_ns_trip_addons( $filter_value, $filter_type );
-                    } else {
-                        // Will execute with the default time range.
-                        tt_sync_ns_trip_addons();
-                    }
-                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_sync_ns_trip_addons' ), 'The sync of addons started at: ' . $start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
-                }
-                break;
             case 'product-sync':
                 if ( function_exists('tt_sync_wc_products_from_ns') ) {
                     if ( $with_filter ) {
@@ -347,10 +314,7 @@ function tt_admin_menu_page_cb()
                         <option value="">Select Sync Type</option>
                         <option value="trip">Step 1: Get All Trips</option>
                         <option value="trip-details">Step 2: Get Trip Details</option>
-                        <option value="bikes">Step 3: Get Bikes</option>
-                        <option value="hotels">Step 4: Get Hotels</option>
-                        <option value="addons">Step 5: Get Addons</option>
-                        <option value="product-sync">Step 6: Create WC Trip Products</option>
+                        <option value="product-sync">Step 3: Create WC Trip Products</option>
                         <option value="product-sync-all">Misc: Create WC Trip Products - [All]</option>
                         <option value="custom-items">Misc: Custom Items/Lists</option>
                         <option value="ns-wc-booking">Misc: NS<>WC Booking Sync</option>
@@ -480,134 +444,6 @@ function tt_admin_menu_page_cb()
             <div id="dx-repair-tools">
                 <hr>
                 <h3>DX Repair Tools</h3>
-                <p>This process below will add the column <code>is_guestreg_cancelled</code> in the <code>guest_bookings</code> table.</p>
-                <?php
-                    global $wpdb;
-                    $table_name = $wpdb->prefix . 'guest_bookings';
-                    $row        = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table_name}' AND column_name = 'is_guestreg_cancelled'"  );
-                ?>
-                <form action="" class="tt-locking-status-sync" method="post">
-                    <input type="hidden" name="action" value="dx-add-is-cancelled">
-                    <input type="submit" name="submit" value="Add is_guestreg_cancelled column" class="button-primary" <?php echo esc_attr( !empty($row) ? 'disabled="true"' : '' ); ?>>
-                </form>
-                <div id="dx-print_result" style="margin: 2% 0px;">
-                    <p><b>Bookings table status: </b>
-                        <?php if( empty($row) ) : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code>is_guestreg_cancelled</code> column missing yet</span>
-                        <?php else : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code>is_guestreg_cancelled</code> column</span>
-                        <?php endif; ?>
-                    </p>
-                </div>
-                <div style="display:none;">
-                    <hr>
-                    <p>This process below will take all the Guest Registration IDs from the <code>guest_bookings</code> table and loop through them to set the <code>isCancelled</code> status from NS.</p>
-                    <form action="" class="tt-locking-status-sync" method="post">
-                        <input type="hidden" name="action" value="dx-sync-is-cancelled">
-                        <input type="submit" name="submit" value="Sync isCancelled status" class="button-primary" <?php echo esc_attr( empty($row) ? 'disabled="true"' : '' ); ?>>
-                    </form>
-                    <div id="dx-print_result" style="margin: 2% 0px;">
-                        <p><b>Ready to sync - status: </b>
-                            <?php if( empty($row) ) : ?>
-                            <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">Not ready for sync! The <code>is_guestreg_cancelled</code> column missing yet</span>
-                            <?php else : ?>
-                            <span style="padding: 2px 5px;border-radius:4px; background-color:#00f; color: white;">Ready to sync <code>isCancelled</code> status</span>
-                            <?php endif; ?>
-                        </p>
-                    </div>
-                </div>
-                <hr>
-                <!-- Add the product_line column in the netsuite_trip_detail table -->
-                <?php
-                    global $wpdb;
-                    $trip_detail_table_name  = $wpdb->prefix . 'netsuite_trip_detail';
-                    $trip_detail_column_name = 'product_line';
-                    $trip_detail_row         = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$trip_detail_table_name}' AND column_name = '{$trip_detail_column_name}'"  );
-                    $trip_detail_add_action  = 'dx-add-product-line';
-                ?>
-                <p>This process below will add the column <code><?php echo esc_html( $trip_detail_column_name ); ?></code> in the <code><?php echo esc_html( $trip_detail_table_name ); ?></code> table.</p>
-                <form action="" class="tt-locking-status-sync" method="post">
-                    <input type="hidden" name="action" value="<?php echo esc_attr( $trip_detail_add_action ) ?>">
-                    <input type="submit" name="submit" value="Add <?php echo esc_attr( $trip_detail_column_name ); ?> column" class="button-primary" <?php echo esc_attr( ! empty( $trip_detail_row ) ? 'disabled="true"' : '' ); ?>>
-                </form>
-                <div id="dx-print_result" style="margin: 2% 0px;">
-                    <p><b>Trip Details table status: </b>
-                        <?php if( empty( $trip_detail_row ) ) : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code><?php echo esc_html( $trip_detail_column_name ); ?></code> column missing yet</span>
-                        <?php else : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code><?php echo esc_html( $trip_detail_column_name ); ?></code> column</span>
-                        <?php endif; ?>
-                    </p>
-                </div>
-                <hr>
-                <!-- Add the activity_level column in the guest_bookings table -->
-                <?php
-                    global $wpdb;
-                    $bookings_table_table_name  = $wpdb->prefix . 'guest_bookings';
-                    $bookings_table_column_name = 'activity_level';
-                    $bookings_table_row         = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$bookings_table_table_name}' AND column_name = '{$bookings_table_column_name}'"  );
-                    $bookings_table_add_action  = 'dx-add-activity-level';
-                ?>
-                <p>This process below will add the column <code><?php echo esc_html( $bookings_table_column_name ); ?></code> in the <code><?php echo esc_html( $bookings_table_table_name ); ?></code> table.</p>
-                <form action="" class="tt-locking-status-sync" method="post">
-                    <input type="hidden" name="action" value="<?php echo esc_attr( $bookings_table_add_action ) ?>">
-                    <input type="submit" name="submit" value="Add <?php echo esc_attr( $bookings_table_column_name ); ?> column" class="button-primary" <?php echo esc_attr( ! empty( $bookings_table_row ) ? 'disabled="true"' : '' ); ?>>
-                </form>
-                <div id="dx-print_result" style="margin: 2% 0px;">
-                    <p><b>Guest Bookings table status: </b>
-                        <?php if( empty( $bookings_table_row ) ) : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code><?php echo esc_html( $bookings_table_column_name ); ?></code> column missing yet</span>
-                        <?php else : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code><?php echo esc_html( $bookings_table_column_name ); ?></code> column</span>
-                        <?php endif; ?>
-                    </p>
-                </div>
-                <hr>
-                <!-- Add the bike_comments column in the guest_bookings table -->
-                <?php
-                    global $wpdb;
-                    $bike_comments_table_name  = $wpdb->prefix . 'guest_bookings';
-                    $bike_comments_column_name = 'bike_comments';
-                    $bike_comments_row         = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$bike_comments_table_name}' AND column_name = '{$bike_comments_column_name}'"  );
-                    $bike_comments_add_action  = 'dx-add-bike-comments';
-                ?>
-                <p>This process below will add the column <code><?php echo esc_html( $bike_comments_column_name ); ?></code> in the <code><?php echo esc_html( $bike_comments_table_name ); ?></code> table.</p>
-                <form action="" class="tt-locking-status-sync" method="post">
-                    <input type="hidden" name="action" value="<?php echo esc_attr( $bike_comments_add_action ) ?>">
-                    <input type="submit" name="submit" value="Add <?php echo esc_attr( $bike_comments_column_name ); ?> column" class="button-primary" <?php echo esc_attr( ! empty( $bike_comments_row ) ? 'disabled="true"' : '' ); ?>>
-                </form>
-                <div id="dx-print_result" style="margin: 2% 0px;">
-                    <p><b>Trip Details table status: </b>
-                        <?php if( empty( $bike_comments_row ) ) : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code><?php echo esc_html( $bike_comments_column_name ); ?></code> column missing yet</span>
-                        <?php else : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code><?php echo esc_html( $bike_comments_column_name ); ?></code> column</span>
-                        <?php endif; ?>
-                    </p>
-                </div>
-                <hr>
-                <!-- Add the substyle column in the netsuite_trip_detail table -->
-                <?php
-                    global $wpdb;
-                    $trip_detail_table_name  = $wpdb->prefix . 'netsuite_trip_detail';
-                    $trip_detail_column_name = 'subStyle';
-                    $trip_detail_row         = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$trip_detail_table_name}' AND column_name = '{$trip_detail_column_name}'"  );
-                    $trip_detail_add_action  = 'dx-add-substyle';
-                ?>
-                <p>This process below will add the column <code><?php echo esc_html( $trip_detail_column_name ); ?></code> in the <code><?php echo esc_html( $trip_detail_table_name ); ?></code> table.</p>
-                <form action="" class="tt-locking-status-sync" method="post">
-                    <input type="hidden" name="action" value="<?php echo esc_attr( $trip_detail_add_action ) ?>">
-                    <input type="submit" name="submit" value="Add <?php echo esc_attr( $trip_detail_column_name ); ?> column" class="button-primary" <?php echo esc_attr( ! empty( $trip_detail_row ) ? 'disabled="true"' : '' ); ?>>
-                </form>
-                <div id="dx-print_result" style="margin: 2% 0px;">
-                    <p><b>Trip Details table status: </b>
-                        <?php if( empty( $trip_detail_row ) ) : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code><?php echo esc_html( $trip_detail_column_name ); ?></code> column missing yet</span>
-                        <?php else : ?>
-                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code><?php echo esc_html( $trip_detail_column_name ); ?></code> column</span>
-                        <?php endif; ?>
-                    </p>
-                </div>
                 <div class="print-tax-ids">
                     <hr>
                     <h4>Taxonomy Switcher Helper</h4>

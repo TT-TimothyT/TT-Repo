@@ -1021,7 +1021,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 										$primary_bikeTypeId = isset($User_order_info[0]['bike_type_id']) ? $User_order_info[0]['bike_type_id'] : ''; //$bikeTypeId;
 										$primary_available_bike_html = '';
 										$bikes_model_id_in = [];
-										$available_bikes = tt_get_local_bike_detail($trip_sku);
+										$available_bikes = tt_get_local_bike_detail( $trip_information['ns_trip_Id'], $trip_sku );
 										$gear_preferences_bike_type = '';
 										$selected_bike_type_info = tt_ns_get_bike_type_info($primary_bikeTypeId);
 										$is_selected_bike_with_upgrade = false;
@@ -1115,7 +1115,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 										<div class="form-floating checkout-bikes__bike-size">
 											<select <?php echo $gray_out; ?> name="tt-bike-size" class="form-select tt_chk_bike_size_change bike_validation_select" id="floatingSelect1" aria-label="Floating label select example" required>
 												<?php
-												$bikeOpt_object = tt_get_bikes_by_trip_info_pbc('', $trip_sku, $primary_bikeTypeId, $bike_size, $bike_id);
+												$bikeOpt_object = tt_get_bikes_by_trip_info_pbc( $trip_information['ns_trip_Id'], $trip_sku, $primary_bikeTypeId, $bike_size, '', '' );
 												if ($bikeOpt_object && $bikeOpt_object['size_opts']) {
 													echo $bikeOpt_object['size_opts'];
 												}

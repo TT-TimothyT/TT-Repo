@@ -1,79 +1,9 @@
 <?php
 
 use TTNetSuite\NetSuiteClient;
-/**
- * @author  : Dharmesh Panchal
- * @version : 1.0.0
- * @return  : TT CRON Interval added for every 4 hours
- **/
-function tt_custom_cron_schedule( $schedules ) {
 
-    if( ! defined( 'DX_DEV' ) ) {
-        // Run the CRON JOBS only on production website.
-        $schedules['every_four_hours'] = array(
-            'interval' => 14400,
-            'display'  => __( 'Every 4 hours' ),
-        );
-
-        //Add every 1 hour to the existing schedules.
-        $schedules['every_one_hour'] = array(
-            'interval' => 3600,
-            'display'  => __( 'Every 1 hour' ),
-        );
-    }
-
-    return $schedules;
-}
-add_filter( 'cron_schedules', 'tt_custom_cron_schedule' );
-/**
- * @author  : Dharmesh Panchal
- * @version : 1.0.0
- * @return  : TT CRON fire hook every 4 hour
- **/
-add_action('tt_wc_ns_sync_hourly_event', 'tt_wc_ns_sync_hourly_event_cb');
-function tt_wc_ns_fire_cron_on_wp_init()
-{
-    if (!wp_next_scheduled('tt_wc_ns_sync_hourly_event')) {
-        wp_schedule_event(time(), 'every_four_hours', 'tt_wc_ns_sync_hourly_event');
-    }
-}
-
-
-add_action( 'tt_wc_ns_sync_one_hour_event', 'tt_wc_ns_sync_one_hour_event_cb' );
-
-function tt_wc_ns_fire_one_hour_cron() {
-    if (!wp_next_scheduled('tt_wc_ns_sync_one_hour_event')) {
-        wp_schedule_event(time(), 'every_one_hour', 'tt_wc_ns_sync_one_hour_event');
-    }
-}
-// Comment lines below to prevent registration of the Cron events, because the sync process will run through server-side related jobs via crontab.
-// if( ! defined( 'DX_DEV' ) ) {
-//     // Run the CRON JOBS only on production website.
-//     add_action( 'wp', 'tt_wc_ns_fire_one_hour_cron' );
-
-//     add_action('wp', 'tt_wc_ns_fire_cron_on_wp_init');
-// }
-function tt_wc_ns_sync_hourly_event_cb()
-{
-    tt_sync_ns_trips();
-    tt_sync_ns_trip_details();
-    tt_sync_ns_trip_hotels();
-    tt_sync_ns_trip_bikes();
-    tt_sync_ns_trip_addons();
-    tt_sync_wc_products_from_ns();
-    // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
-    tt_ns_guest_booking_details( false, '', '', DEFAULT_TIME_RANGE, true );
-
-    //Flush the cache
-    wp_cache_flush();
-}
-
-function tt_wc_ns_sync_one_hour_event_cb() {
-    tt_ns_fetch_registration_ids();
-}
-
-add_action('tt_trigger_cron_ns_booking', 'tt_trigger_cron_ns_booking_cb', 10, 2);
-function tt_trigger_cron_ns_booking_cb( $order_id, $user_id = 'null', $is_behalf=false ) {
+add_action( 'tt_trigger_cron_ns_booking', 'tt_trigger_cron_ns_booking_cb', 10, 2 );
+function tt_trigger_cron_ns_booking_cb( $order_id, $user_id = 'null', $is_behalf = false ) {
     if( $is_behalf == false ){
         $is_behalf = get_post_meta($order_id, 'tt_wc_order_ns_is_behalf', true);
         $is_behalf = $is_behalf == true ? true : false; 
@@ -488,41 +418,6 @@ function ttnsw_enqueue_custom_admin_style() {
 }
 add_action( 'admin_enqueue_scripts', 'ttnsw_enqueue_custom_admin_style' );
 
-function tt_update_bikes_table() {
-    global $wpdb;
-
-    if( $_GET['trekupdatebikestable'] == 'enable' && current_user_can( 'administrator' ) ) {
-
-        // Define the table name
-        $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
-
-        $after_column_name = 'bikeType';
-
-        // Define the new column name and data type
-        $new_column_name = 'bikeModel';
-        $data_type = 'TEXT';
-
-        // Check if the column already exists
-        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $table_name LIKE '$new_column_name'");
-
-        if (empty($column_exists)) {
-            // Alter the table to add the new column
-            $wpdb->query("ALTER TABLE $table_name ADD $new_column_name $data_type AFTER $after_column_name");
-
-            // You can also update the new column with initial values if needed
-            $wpdb->query("UPDATE $table_name SET $new_column_name = 'NULL'");
-
-            echo '<div class="notice notice-success is-dismissible">';
-            echo '<h2>Updated current DB</h2>';
-            echo '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
-        } else {
-            echo 'There has been an issue :/';
-        }
-    }
-}
-
-add_action( 'admin_init', 'tt_update_bikes_table' );
-
 /**
  * Check if we have this booking in guest_bookings table.
  *
@@ -743,19 +638,22 @@ function tt_get_order_by_booking( $booking_id, $full_order = true ) {
 }
 
 /**
- * Take all bike info from `netsuite_trip_bikes` by given trip code/sku and bike ID.
+ * Take all bike info from `netsuite_trip_detail` by given trip code/sku and bike ID.
  *
  * @param string     $trip_code The Trip code or SKU. 
  * @param int|string $bike_id The Bike ID.
  *
+ * @uses tt_get_local_bike_detail()
+ *
  * @return bool|array false on not found result or array with bike info.
  */
-function tt_get_bike_attributes_by_bike_id( $trip_code = '', $bike_id = 0 ) {
-	global $wpdb;
-    $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+function tt_get_bike_attributes_by_bike_id( $trip_id = '', $trip_code = '', $bike_id = 0 ) {
+    if ( empty( $trip_code ) || empty( $bike_id ) ) {
+        // Missing required parameters.
+        return false;
+    }
 
-	$sql        = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$trip_code}' AND ts.bikeId = '{$bike_id}'";
-	$bike_arr   = $wpdb->get_results( $sql, ARRAY_A );
+	$bike_arr = tt_get_local_bike_detail( $trip_id, $trip_code, $bike_id );
 
 	if( empty( $bike_arr ) ) {
 		return false;
@@ -782,7 +680,7 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
 
     $ns_guest_id        = $ns_guest_info_from_booking->guestId; // Ns guest.
 
-    $guest_bike_info    = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripCode, $ns_guest_info->bikeId );
+    $guest_bike_info    = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripId, $ns_booking_data->tripCode, $ns_guest_info->bikeId );
 
     $guest_bike_gears   = array(
         'rider_level'              => tt_validate( $ns_guest_booking_result->riderType->id ),
@@ -917,7 +815,7 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
         $_ns_guest_booking_result = tt_get_ns_guest_info( $_ns_guest_id, 0 );
         $_ns_guest_info           = tt_get_ns_guest_registrations_info( $guest->registrationId, true );
 
-        $_guest_bike_info         = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripCode, $_ns_guest_info->bikeId );
+        $_guest_bike_info         = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripId, $ns_booking_data->tripCode, $_ns_guest_info->bikeId );
 
         $_guest_bike_gears        = array(
             'rider_level'              => tt_validate( $_ns_guest_booking_result->riderType->id ),
@@ -1182,7 +1080,7 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
     $wp_user                 = get_user_by( 'email', $ns_guest_email );
     $wp_user_id              = $wp_user->ID;
     
-    $guest_bike_info         = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripCode, $ns_guest_info->bikeId );
+    $guest_bike_info         = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripId, $ns_booking_data->tripCode, $ns_guest_info->bikeId );
     
     $is_ride_camp            = tt_check_is_ride_camp_trip_from_dates( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate );
 

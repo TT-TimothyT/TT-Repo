@@ -3,7 +3,7 @@
  * Template file for the available bikes on the checkout page, step 3.
  */
 
-$available_bikes = tt_get_local_bike_detail( tt_validate( $args['sku'] ) );
+$available_bikes = tt_get_local_bike_detail( tt_validate( $args['ns_trip_id'] ), tt_validate( $args['sku'] ) );
 
 ?>
 <div class="checkout-bikes__bike-grid-guests checkout-bikes__bike-grid d-flex flex-column flex-lg-row flex-nowrap flex-lg-wrap">

@@ -141,7 +141,7 @@ if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['
 }
 
 // Set the bike name based on bike_id value.
-$local_bike_details     = tt_get_local_bike_detail( $trip_sku );
+$local_bike_details     = tt_get_local_bike_detail( $trip_information['ns_trip_Id'], $trip_sku );
 $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
 $bike_name              = '';
 if ( ( isset( $bike_id ) && $bike_id ) || 0 == $bike_id ) {

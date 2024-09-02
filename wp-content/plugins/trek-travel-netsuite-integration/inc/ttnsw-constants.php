@@ -56,8 +56,3 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'GET_BIKE_MODELS_SCRIPT_ID', '1301:2' );
     define( 'HIKER_BIKE_ID', 50433 );
 }
-
-// Alter Query
-/*
-1. ALTER TABLE `wp_netsuite_trip_detail` ADD `tripSpecificMessage` TEXT NULL DEFAULT NULL AFTER `addOns`;
-*/

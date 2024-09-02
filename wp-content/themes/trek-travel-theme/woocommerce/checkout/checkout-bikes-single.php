@@ -65,7 +65,7 @@ if( $is_primary ) {
 			'id'               => 'bikeSizeSelectPrimary',
 			'name'             => 'bike_gears[primary][bike_size]',
 			'data_guest_index' => 0,
-			'options_html'     => tt_get_bikes_by_trip_info( $args['ns_trip_Id'], $args['sku'], tt_validate( $args['posted_bike_type_id'] ), tt_validate( $args['bike_size'] ), tt_validate( $args['posted_bike_type_id'] ), '', $args['selected_bikes_arr'] )
+			'options_html'     => tt_get_bikes_by_trip_info( $args['ns_trip_id'], $args['sku'], tt_validate( $args['posted_bike_type_id'] ), tt_validate( $args['bike_size'] ), tt_validate( $args['posted_bike_type_id'] ), '', $args['selected_bikes_arr'] )
 		),
 		'rider_height' => array(
 			'id'           => 'riderHeightSelectPrimary',
@@ -131,7 +131,7 @@ if( $is_primary ) {
 			'id'               => 'bikeSizeSelectGuest' . $guest_num,
 			'name'             => 'bike_gears[guests][' .  $guest_num . '][bike_size]',
 			'data_guest_index' => $guest_num,
-			'options_html'     => tt_get_bikes_by_trip_info( $args['ns_trip_Id'], $args['sku'], tt_validate( $args['posted_bike_type_id'] ), tt_validate( $args['bike_size'] ), tt_validate( $args['posted_bike_type_id'] ), '', $args['selected_bikes_arr'] )
+			'options_html'     => tt_get_bikes_by_trip_info( $args['ns_trip_id'], $args['sku'], tt_validate( $args['posted_bike_type_id'] ), tt_validate( $args['bike_size'] ), tt_validate( $args['posted_bike_type_id'] ), '', $args['selected_bikes_arr'] )
 		),
 		'rider_height' => array(
 			'id'           => 'riderHeightSelectGuest' . $guest_num,
@@ -207,7 +207,7 @@ if( ! $is_primary ) :
 		<?php
 			$checkout_bikes_available_template = TREK_PATH . '/woocommerce/checkout/checkout-bikes-available.php';
 			if( is_readable( $checkout_bikes_available_template ) ) {
-				wc_get_template( 'woocommerce/checkout/checkout-bikes-available.php', array( 'is_primary' => $is_primary, 'sku' => $args['sku'], 'guest_num' => $guest_num, 'product_id' => $args['product_id'], 'posted_bike_id' => $args['posted_bike_id'], 'posted_bike_type_id' => $args['posted_bike_type_id'] ) );
+				wc_get_template( 'woocommerce/checkout/checkout-bikes-available.php', array( 'is_primary' => $is_primary, 'ns_trip_id' => $args['ns_trip_id'], 'sku' => $args['sku'], 'guest_num' => $guest_num, 'product_id' => $args['product_id'], 'posted_bike_id' => $args['posted_bike_id'], 'posted_bike_type_id' => $args['posted_bike_type_id'] ) );
 			} else {
 				?>
 					<h3><?php esc_html_e( 'Step 3', 'trek-travel-theme' ); ?></h3>

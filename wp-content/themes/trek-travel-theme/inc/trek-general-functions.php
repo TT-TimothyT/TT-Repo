@@ -3217,33 +3217,73 @@ function trek_tt_save_occupants_ajax_action_cb()
     );
     exit;
 }
-/**
- * @author  : Dharmesh Panchal
- * @version : 1.0.0
- * @return  : Get all bike details from local DB
- **/
-if (!function_exists('tt_get_local_bike_detail')) {
-    function tt_get_local_bike_detail($tripCode = '', $bikeId = '', $tripId = '')
-    {
+
+if ( ! function_exists( 'tt_get_local_bike_detail' ) ) {
+    /**
+     * Get the bikes details from the `netsuite_trip_detail` table.
+     *
+     * @param string     $trip_id   The trip NS ID.
+     * @param string     $trip_code The trip code/product sku.
+     * @param string|int $bike_id The bike_id.
+     *
+     * @return array Bike details for the given trip.
+     */
+    function tt_get_local_bike_detail( $trip_id = '', $trip_code = '', $bike_id = '' ) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+        $table_name = $wpdb->prefix . 'netsuite_trip_detail';
 
-        if( !empty( $tripCode ) ) {
+        if ( ! empty( $trip_code ) ) {
             // Get a trip code without suffix.
-            $tripCode = tt_get_local_trip_code( $tripCode );
+            $trip_code = tt_get_local_trip_code( $trip_code );
         }
 
-        $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
-        if ($bikeId) {
-            $sql .= " AND ts.bikeId = '{$bikeId}'";
+        $results = array();
+
+        // Check for a required parameter.
+        if( empty( $trip_code ) ) {
+            return $results;
         }
-        if ($tripId) {
-            $sql .= " AND ts.tripId = '{$tripId}'";
+
+        $sql = "SELECT bikes, tripId, tripCode from {$table_name} as ts WHERE ts.tripCode = '{$trip_code}' AND ts.tripId = '{$trip_id}'";
+
+        $sql_trip_id   = '';
+        $sql_trip_code = '';
+        $sql_result    = $wpdb->get_results( $sql, ARRAY_A );
+
+        if ( ! empty( $sql_result[0]['tripId'] ) ) {
+            $sql_trip_id = $sql_result[0]['tripId'];
         }
-        $results = $wpdb->get_results($sql, ARRAY_A);
+
+        if ( ! empty( $sql_result[0]['tripCode'] ) ) {
+            $sql_trip_code = $sql_result[0]['tripCode'];
+        }
+
+        if ( $sql_result && ! empty( $sql_result[0]['bikes'] ) ) {
+            $results = array_map( function( $bike_details ) use ( $sql_trip_id, $sql_trip_code ) { 
+                $bike_detail = array();
+                foreach ( $bike_details as $key => $detail ) {
+                    $bike_detail['tripId']   = $sql_trip_id;
+                    $bike_detail['tripCode'] = $sql_trip_code;
+                    if ( is_array( $detail ) ) {
+                        $bike_detail[$key] = wp_unslash( json_encode( $detail ) );
+                    } else {
+                        $bike_detail[$key] = strval( $detail );
+                    }
+                }
+                return $bike_detail;
+            }, json_decode( $sql_result[0]['bikes'], true ) );
+        }
+
+        if ( $bike_id && ! empty( $results )) {
+            $results = array_values( array_filter( $results, function( $bike ) use ( $bike_id ) {
+                return strval( $bike_id ) ===  $bike['bikeId'];
+            }));
+        }
+        
         return $results;
     }
 }
+
 
 // TT
 
@@ -3462,28 +3502,12 @@ function tt_get_trip_pid_sku_by_orderId($order_id)
  *
  * @return array Bike size and bike type options html.
  */
-function tt_get_bikes_by_trip_info( $tripId = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '', $bikeID='', $selected_bikes_arr = array() ) {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
-
-    if( !empty( $tripCode ) ) {
-        // Get a trip code without suffix.
-        $tripCode = tt_get_local_trip_code( $tripCode );
-    }
-
-    $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
-    // if ($tripId) {
-    //     $sql .= " AND ts.tripId = '{$tripId}'";
-    // }
-    if ($bikeID) {
-        $sql .= " AND ts.bikeId = '{$bikeID}'";
-    }
-    $bike_size_opts = '<option value="">Select bike size</option>';
-    // Insert the "I don't know" option for bike sizes in the first position.
+function tt_get_bikes_by_trip_info( $trip_id = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '', $bikeID='', $selected_bikes_arr = array() ) {
+    $bike_size_opts       = '<option value="">Select bike size</option>';
     $i_dont_know_selected = ( 33 == (int) $s_bike_size_id ? 'selected' : '');
-    $bike_size_opts .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>';
-    $bike_Type_opts = '<option value="">Select bike type</option>';
-    $bikes_arr = $wpdb->get_results($sql, ARRAY_A);
+    $bike_size_opts      .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>'; // Insert the "I don't know" option for bike sizes in the first position.
+    $bike_Type_opts       = '<option value="">Select bike type</option>';
+    $bikes_arr            = tt_get_local_bike_detail( $trip_id, $tripCode, $bikeID );
     if ($bikes_arr) {
         foreach ($bikes_arr as $bike_info) {
             $bike_available = $bike_info['available'];
@@ -3530,39 +3554,21 @@ function tt_get_bikes_by_trip_info( $tripId = '', $tripCode = '', $bikeTypeId = 
     ];
     exit;
 }
-
 /**
- * Build an array with bike size and bike type options.
+ * Build an array with bike size and bike type options in Post-Booking Checklist.
  *
- * @return array Bike size and bike type options html for the post booking checklist.
+ * @return array Bike size and bike type options html.
  */
-function tt_get_bikes_by_trip_info_pbc( $tripId = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '', $bikeID = '', $selected_bike_id = '' )
-{
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
-
-    if( !empty( $tripCode ) ) {
-        // Get a trip code without suffix.
-        $tripCode = tt_get_local_trip_code( $tripCode );
-    }
-
-    $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
-    if ($tripId) {
-        $sql .= " AND ts.tripId = '{$tripId}'";
-    }
-    if ($bikeID) {
-        $sql .= " AND ts.bikeId = '{$bikeID}'";
-    }
-    $bike_size_opts = '<option value="">Select bike size</option>';
-     // Insert the "I don't know" option for bike sizes in the first position.
+function tt_get_bikes_by_trip_info_pbc( $trip_id = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '',$bikeID='') {
+    $bike_size_opts       = '<option value="">Select bike size</option>';
     $i_dont_know_selected = ( 33 == $s_bike_size_id ? 'selected' : '');
     if ( 33 == $s_bike_size_id ) {
-        $bike_size_opts .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>';
+        $bike_size_opts      .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>'; // Insert the "I don't know" option for bike sizes in the first position.
     }
-    $bike_Type_opts = '<option value="">Select bike type</option>';
-    $bikes_arr = $wpdb->get_results($sql, ARRAY_A);
-    if ($bikes_arr) {
-        foreach ($bikes_arr as $bike_info) {
+    $bike_Type_opts       = '<option value="">Select bike type</option>';
+    $bikes_arr            = tt_get_local_bike_detail( $trip_id, $tripCode, $bikeID );
+    if ( $bikes_arr ) {
+        foreach ( $bikes_arr as $bike_info ) {
             $bike_available = $bike_info['available'];
             $bikeSizeObj = json_decode($bike_info['bikeSize'], true);
             $bikeTypeObj = json_decode($bike_info['bikeModel'], true);
@@ -3594,28 +3600,25 @@ function tt_get_bikes_by_trip_info_pbc( $tripId = '', $tripCode = '', $bikeTypeI
     ];
     exit;
 }
-function tt_get_bike_id_by_args($tripId = '', $tripCode = '', $bikeTypeId = '', $bike_size = '')
-{
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'netsuite_trip_bikes';
+/**
+ * Get the Bike ID for a trip by given Bike Type and Bike Szie.
+ *
+ * @param string $trip_code The trip code/product sku.
+ * @param string|int $bike_type The Bike Type ID.
+ * @param string|int $bike_size The Bike Size ID.
+ *
+ * @return array Status and Bike ID.
+ */
+function tt_get_bike_id_by_args( $trip_id = '', $trip_code = '', $bike_type = '', $bike_size = '' ) {
+    $bikes_arr = tt_get_local_bike_detail( $trip_id, $trip_code );
 
-    if( !empty( $tripCode ) ) {
-        // Get a trip code without suffix.
-        $tripCode = tt_get_local_trip_code( $tripCode );
-    }
-
-    $sql = "SELECT * from {$table_name} as ts WHERE ts.tripCode = '{$tripCode}' ";
-    if ($tripId) {
-        $sql .= " AND ts.tripId = '{$tripId}'";
-    }
-    $bikes_arr = $wpdb->get_results($sql, ARRAY_A);
-    if ($bikes_arr) {
-        foreach ($bikes_arr as $bike_info) {
-            $bikeSizeObj = json_decode($bike_info['bikeSize'], true);
-            $bikeTypeObj = json_decode($bike_info['bikeModel'], true);
-            $bike_size_id = $bikeSizeObj['id'];
-            $bike_type_id = $bikeTypeObj['id'];
-            if ($bike_type_id == $bikeTypeId && $bike_size_id ==  $bike_size) {
+    if ( $bikes_arr ) {
+        foreach ( $bikes_arr as $bike_info ) {
+            $bike_size_obj = json_decode( $bike_info['bikeSize'], true );
+            $bike_type_obj = json_decode( $bike_info['bikeModel'], true );
+            $bike_size_id  = $bike_size_obj['id'];
+            $bike_type_id  = $bike_type_obj['id'];
+            if ( $bike_type_id == $bike_type && $bike_size_id == $bike_size ) {
                 $bike_id = $bike_info['bikeId'];
             }
         }
@@ -3630,54 +3633,6 @@ function tt_get_bike_id_by_args($tripId = '', $tripCode = '', $bikeTypeId = '', 
         'status' => true,
         'bike_id' => $bike_id
     ];
-}
-function get_bike_sizes_by_sku($sku = '', $option_id="")
-{
-    $bike_opts = '';
-    if ($sku) {
-        $bikes = tt_get_local_trips_detail('bikes', '', $sku, true);
-        $bikes_arr = json_decode($bikes, true);
-        if ($bikes_arr) {
-            $bike_opts .= '<option value="">Select bike size</option>';
-            foreach ($bikes_arr as $bike_info) {
-                $bike_available = $bike_info['available'];
-                $bike_size_id = $bike_info['bikeSize']['id'];
-                $bike_size_name = $bike_info['bikeSize']['name'];
-                if ($bike_size_id) {
-                    $selected = ($option_id == $bike_size_id ? 'selected' : '');
-                    $disabled = ($option_id ? '' : 'disabled');
-                    $bike_opts .= '<option ' . $selected . ' ' . $disabled . ' value="' . $bike_size_id . '">' . $bike_size_name . '</option>';
-                } else {
-                    $bike_opts .= '<option value="">Not available</option>';
-                }
-            }
-        }
-    } else {
-        $bike_opts .= '<option value="">Not available</option>';
-    }
-    return $bike_opts;
-}
-function get_bike_sizes_by_sku_bikeID($sku = '', $bike_id="", $selected_bike_id="")
-{
-    $bike_opts = '';
-    if ($sku) {
-        $bikes = tt_get_local_bike_detail($sku, $bike_id);
-        if ($bikes) {
-            $bike_opts .= '<option value="">Select bike size</option>';
-            foreach ($bikes as $bike_info) {
-                $bikeSize = json_decode($bike_info['bikeSize']);
-                $bikeSizeId = $bikeSize['id'];
-                $bikeSizeName = $bikeSize['name'];
-                if ($bikeSizeId) {
-                    $selected = ($selected_bike_id == $bikeSizeId ? 'selected' : '');
-                    $bike_opts .= '<option ' . $selected . ' value="' . $bikeSizeId . '">' . $bikeSizeName . '</option>';
-                }
-            }
-        }
-    } else {
-        $bike_opts .= '<option value="">Not available</option>';
-    }
-    return $bike_opts;
 }
 /**
  * @author  : Dharmesh Panchal
@@ -3863,7 +3818,7 @@ function trek_tt_bike_selection_ajax_action_cb()
     $tripInfo           = tt_get_trip_pid_sku_from_cart();
     $selected_bikes_arr = tt_validate( $_REQUEST['selected_bikes_arr'] );
     $selected_bike_size = tt_validate( $_REQUEST['selected_bike_size'] );
-    $opts               = tt_get_bikes_by_trip_info($tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId, $selected_bike_size, '', '', $selected_bikes_arr);
+    $opts               = tt_get_bikes_by_trip_info( $tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId, $selected_bike_size, '', '', $selected_bikes_arr );
     $accepted_p_ids     = tt_get_line_items_product_ids();
     $product_id         = tt_create_line_item_product('TTWP23UPGRADES');
     $bikeUpgradePrice   = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
@@ -3976,13 +3931,12 @@ function trek_tt_update_occupant_popup_html_ajax_action_cb()
 }
 add_action('wp_ajax_tt_bike_size_change_ajax_action', 'trek_tt_bike_size_change_ajax_action_cb');
 add_action('wp_ajax_nopriv_tt_bike_size_change_ajax_action', 'trek_tt_bike_size_change_ajax_action_cb');
-function trek_tt_bike_size_change_ajax_action_cb()
-{
-    $bikeTypeId = $_REQUEST['bikeTypeId'];
-    $bike_size = $_REQUEST['bike_size'];
-    $tripInfo = tt_get_trip_pid_sku_from_cart();
-    $result = tt_get_bike_id_by_args($tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId, $bike_size);
-    echo json_encode($result);
+function trek_tt_bike_size_change_ajax_action_cb() {
+    $bike_type_id = $_REQUEST['bikeTypeId'];
+    $bike_size_id = $_REQUEST['bike_size'];
+    $trip_info    = tt_get_trip_pid_sku_from_cart();
+    $result       = tt_get_bike_id_by_args( $trip_info['ns_trip_Id'], $trip_info['sku'], $bike_type_id, $bike_size_id );
+    echo json_encode( $result );
     exit;
 }
 add_action('wp_ajax_tt_bike_upgrade_fees_ajax_action', 'trek_tt_bike_upgrade_fees_ajax_action_cb');
@@ -4417,8 +4371,8 @@ function trek_tt_chk_bike_selection_ajax_action_cb()
 {
     $bikeTypeId = $_REQUEST['bikeTypeId'];
     $order_id = $_REQUEST['order_id'];
-    $tripInfo = tt_get_trip_pid_sku_by_orderId( $order_id );
-    $opts = tt_get_bikes_by_trip_info_pbc( $tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId );
+    $trip_info = tt_get_trip_pid_sku_by_orderId( $order_id );
+    $opts = tt_get_bikes_by_trip_info_pbc( $trip_info['ns_trip_Id'], $trip_info['sku'], $bikeTypeId  );
     echo json_encode($opts);
     exit;
 }
@@ -4429,14 +4383,13 @@ function trek_tt_chk_bike_selection_ajax_action_cb()
  **/
 add_action('wp_ajax_tt_chk_bike_size_change_ajax_action', 'trek_tt_chk_bike_size_change_ajax_action_cb');
 add_action('wp_ajax_nopriv_tt_chk_bike_size_change_ajax_action', 'trek_tt_chk_bike_size_change_ajax_action_cb');
-function trek_tt_chk_bike_size_change_ajax_action_cb()
-{
-    $bikeTypeId = $_REQUEST['bikeTypeId'];
-    $bike_size = $_REQUEST['bike_size'];
-    $order_id = $_REQUEST['order_id'];
-    $tripInfo = tt_get_trip_pid_sku_by_orderId($order_id);
-    $result = tt_get_bike_id_by_args($tripInfo['ns_trip_Id'], $tripInfo['sku'], $bikeTypeId, $bike_size);
-    echo json_encode($result);
+function trek_tt_chk_bike_size_change_ajax_action_cb() {
+    $bike_type_id = $_REQUEST['bikeTypeId'];
+    $bike_size_id = $_REQUEST['bike_size'];
+    $order_id     = $_REQUEST['order_id'];
+    $trip_info    = tt_get_trip_pid_sku_by_orderId( $order_id );
+    $result       = tt_get_bike_id_by_args( $trip_info['ns_trip_Id'], $trip_info['sku'], $bike_type_id, $bike_size_id );
+    echo json_encode( $result );
     exit;
 }
 function tt_rooms_output($tt_posted = [], $is_all = false, $is_header=true)
@@ -4667,7 +4620,9 @@ function tt_guest_details($tt_posted = [])
         $city = isset($tt_posted['shipping_city']) ? $tt_posted['shipping_city'] : '';
         $postcode = isset($tt_posted['shipping_postcode']) ? $tt_posted['shipping_postcode'] : '';
         $sku = isset($tt_posted['sku']) ? $tt_posted['sku'] : '';
-        $local_bike_details = tt_get_local_bike_detail($sku);
+        $product_id = $tt_posted['product_id'];
+        $ns_trip_id = get_post_meta($product_id, 'tt_meta_tripId', true);
+        $local_bike_details = tt_get_local_bike_detail( $ns_trip_id, $sku );
         $local_bike_models_info = array_column( $local_bike_details, 'bikeModel', 'bikeId' );
         for ($iter = 0; $iter < $guest_count; $iter++) {
             if ($iter % $cols == 0) {
@@ -4962,11 +4917,7 @@ function er_logged_in_filter($classes)
     }
     return $classes;
 }
-add_action('run_cron_tt_ns_booking', 'run_cron_tt_ns_booking_cb', 10, 1);
-function run_cron_tt_ns_booking_cb($order_id){
-    do_action('tt_trigger_cron_ns_booking', $order_id, null);
-    tt_add_error_log('[End] - NS Trip Booking', [$order_id], ['dateTime' => date('Y-m-d H:i:s')]);
-}
+
 function get_trip_link_by_itinerary_id($itinerary_id=''){
     $trip_link = 'javascript:';
     if($itinerary_id){

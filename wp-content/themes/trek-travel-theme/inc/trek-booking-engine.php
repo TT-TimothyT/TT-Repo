@@ -1,104 +1,5 @@
 <?php
-//create Trips database table
-global $wpdb;
-$table_name = $wpdb->prefix . 'guest_bookings';
-$charset_collate = '';
-if (!empty($wpdb->charset)) {
-    $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
-}
-if (!empty($wpdb->collate)) {
-    $charset_collate .= " COLLATE {$wpdb->collate}";
-}
-// Check if table empty
-if ($wpdb->get_var($wpdb->prepare('show tables like %s', $table_name)) != $table_name) {
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    $sql = 'CREATE TABLE `' . $table_name . "` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
-        `guest_booking_id` int(11) NULL,
-        `guest_index_id` int(11) NULL,
-        `order_id` int(11) NULL,
-        `product_id` int(11) NULL,
-        `user_id` int(11) NULL,
-        `netsuite_guest_registration_id` int(11) NULL,
-        `itinerary_id` int(11) NULL,
-        `tripDateId` int(11) NULL,
-        `wantPrivate` int(11) DEFAULT 0,
-        `referralSourceType` int(11) DEFAULT NULL,
-        `referralSourceName` varchar(100) NULL,
-        `bikeUpgradePriceDisplayed` int(11) DEFAULT NULL,
-        `specialRoomRequests` varchar(100) NULL,
-        `bike_comments` varchar(100) NULL,
-        `promoCode` varchar(100) NULL,
-        `trip_code` varchar(100) NULL,
-        `trip_name` varchar(100) NULL,
-        `trip_city` varchar(100) NULL,
-        `trip_region` varchar(100) NULL,
-        `trip_total_amount` varchar(100) NULL,
-        `trip_number_of_guests` tinyint(10) NULL,
-        `trip_room_selection` varchar(100) NULL,
-        `trip_start_date` varchar(100) NULL,
-        `trip_end_date` varchar(100) NULL,
-        `guest_is_primary` int(11) DEFAULT 0,
-        `guest_first_name` varchar(100) NULL,
-        `guest_last_name` varchar(100) NULL,
-        `guest_email_address` varchar(100) NULL,
-        `guest_phone_number` varchar(100) NULL,
-        `guest_gender` varchar(100) NULL,
-        `guest_date_of_birth` varchar(100) NULL,
-        `bike_selection` varchar(100) NULL,
-        `helmet_selection` varchar(100) NULL,
-        `rider_height` varchar(100) NULL,
-        `rider_level` varchar(100) NULL,
-        `activity_level` varchar(100) NULL,
-        `bike_id` varchar(100) NULL,
-        `bike_size` varchar(100) NULL,
-        `pedal_selection` varchar(100) NULL,
-        `saddle_height` varchar(100) NULL,
-        `saddle_bar_reach_from_saddle` varchar(100) NULL,
-        `saddle_bar_height_from_wheel_center` varchar(100) NULL,
-        `jersey_style` varchar(100) NULL,
-        `tt_jersey_size` varchar(100) NULL,
-        `tshirt_size` varchar(100) NULL,
-        `race_fit_jersey_size` varchar(100) NULL,
-        `shorts_bib_size` varchar(100) NULL,
-        `emergency_contact_first_name` varchar(100) NULL,
-        `emergency_contact_last_name` varchar(100) NULL,
-        `emergency_contact_phone` varchar(100) NULL,
-        `emergency_contact_relationship` varchar(100) NULL,
-        `medical_conditions` text NULL,
-        `medications` text NULL,
-        `allergies` text NULL,
-        `dietary_restrictions` text NULL,
-        `waiver_signed` int(11) DEFAULT 0,
-        `passport_number` varchar(100) NULL,
-        `passport_issue_date` varchar(100) NULL,
-        `passport_expiration_date` varchar(100) NULL,
-        `passport_place_of_issue` varchar(100) NULL,
-        `full_name_on_passport` varchar(100) NULL,
-        `shipping_address_1` varchar(100) NULL,
-        `shipping_address_2` varchar(100) NULL,
-        `shipping_address_city` varchar(100) NULL,
-        `shipping_address_state` varchar(100) NULL,
-        `shipping_address_country` varchar(100) NULL,
-        `shipping_address_zipcode` varchar(100) NULL,
-        `wantsInsurance` varchar(100) NULL,
-        `insuranceAmount` varchar(100) NULL,
-        `addOnIds` varchar(400) NULL,
-        `bikeTypeName` varchar(100) NULL,
-        `isBikeUpgrade` int(11) DEFAULT 0,
-        `ns_booking_status` int(11) DEFAULT 0,
-        `ns_booking_response` text NULL,
-        `isDraftBooking` varchar(100) NULL,
-        `shouldSendDraftConfirmEmail` varchar(50) NULL,
-        `releaseFormId` varchar(50) NULL,
-        `modified_at` varchar(100) NULL,
-        `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        PRIMARY KEY (`id`)
-    ) $charset_collate;";
-    dbDelta($sql);
-}
-//add_action( 'woocommerce_checkout_order_processed', 'insert_records_guest_bookings_cb',  1, 1  );
-//add_action('woocommerce_checkout_order_created', 'insert_records_guest_bookings_cb');
+
 add_action( 'woocommerce_thankyou', 'insert_records_guest_bookings_cb');
 function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call_from_code = 'false'){
     $is_behalf = false;
@@ -352,20 +253,12 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
         }
         if( $insert_booking && $order_id ){
             tt_add_error_log('[Start] - NS Trip Booking', [$order_id], ['dateTime' => date('Y-m-d H:i:s')]);
-            //as_enqueue_async_action('run_cron_tt_ns_booking', array( $order_id ));
-            //as_schedule_single_action(time(), 'tt_trigger_cron_ns_booking', array( $order_id, null ) );
             as_enqueue_async_action('tt_trigger_cron_ns_booking', array( $order_id, null, $is_behalf ), '[Sync] - NetSuite Trip');
         }
         update_post_meta($order_id, 'tt_wc_order_ns_status', 'true');
         update_post_meta($order_id, 'tt_wc_order_ns_is_behalf', $is_behalf);
-        //update_post_meta($order_id, 'tt_wc_order_trip_user_emails', $tt_trip_user_emails);
     }
     if( ! $custom_user ){
         WC()->cart->empty_cart();
     }
 }
-/*
-==========Alter Query
-1. ALTER TABLE `wp_guest_bookings` ADD `rider_level` VARCHAR(100) NULL DEFAULT NULL AFTER `rider_height`;
-2. ALTER TABLE `wp_guest_bookings_old` CHANGE `guest_booking_id` `ns_trip_booking_id` INT NULL DEFAULT NULL;
-*/

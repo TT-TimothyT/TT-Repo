@@ -31,9 +31,6 @@ function tt_ns_wc_sync_cron() {
 	tt_add_error_log( '[Server Side Cron][START - Trips/Products Sync]', array( 'default_time_range' => DEFAULT_TIME_RANGE ), array( 'date_time' => date('Y-m-d H:i:s') ) );
 	tt_sync_ns_trips();
 	tt_sync_ns_trip_details();
-	tt_sync_ns_trip_hotels();
-	tt_sync_ns_trip_bikes();
-	tt_sync_ns_trip_addons();
 	tt_sync_wc_products_from_ns();
 
 	// Flush the cache.
