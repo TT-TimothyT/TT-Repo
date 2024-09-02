@@ -127,6 +127,32 @@ function tt_change_checkout_step(targetStep = '') {
     redirectURL.searchParams.set("step", targetStep);
     window.history.replaceState(null, null, redirectURL.toString());
     handleProgressBar(targetStep);
+
+    // Handle the country and state fields if on the relevant step
+    if (targetStep == 1) { // Check if we are on the relevant step
+      var countriesWithoutStates = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC'];
+      var selectedCountry = jQuery('select[name="shipping_country"]').val();
+      var isStateField = false;
+
+      if (countriesWithoutStates.includes(selectedCountry)) {
+        // Remove required attribute from shipping state fields if the country is in the list
+        jQuery('select[name="shipping_state"], input[name="shipping_state"]').each(function() {
+          jQuery(this).removeAttr('required');
+          jQuery(this).closest('div.form-row').removeClass('woocommerce-invalid woocommerce-validated');
+          jQuery(this).closest('div.form-floating').removeClass('woocommerce-invalid woocommerce-validated');
+          jQuery(this).closest('div.form-row').find(".invalid-feedback").hide();
+        });
+
+      } else {
+        // Ensure state field is required if the country requires it
+        jQuery('select[name="shipping_state"], input[name="shipping_state"]').each(function() {
+          jQuery(this).attr('required', 'required');
+          jQuery(this).closest('div.form-row').addClass('woocommerce-invalid');
+          jQuery(this).closest('div.form-floating').addClass('woocommerce-invalid');
+        });
+      }
+    }
+
     if( is_bikeForm == false ){
       jQuery('.checkout-bikes__edit-room-info-btn').trigger('click');
     }
@@ -855,6 +881,18 @@ jQuery('.billing_checkbox').on('change', function (e) {
     },
     success: function (response) {
       jQuery('.checkout-payment__pre-address').html(response.address);
+      // Clean up the address text
+      var $addressDiv = jQuery('.checkout-payment__pre-address');
+
+      $addressDiv.find('p.mb-0').each(function() {
+        var text = jQuery(this).text();
+
+        // Remove unnecessary commas
+        text = text.replace(/,\s*,/, ',').replace(/\s*,\s*$/, '').replace(/,\s*$/, '');
+        
+        // Set the cleaned text back
+        jQuery(this).text(text);
+      });
     },
     complete: function(){
       ttLoader.hide();
@@ -1099,6 +1137,18 @@ jQuery(document).ready(function () {
           if ((targetStep == 2 || targetStep == 4 || ( isHikingCheckout && targetStep == 3 ) ) && response.stepHTML) {
             if( 4 == targetStep || ( isHikingCheckout && targetStep == 3 ) ) {
               jQuery(`#tt-checkout-reviews-inner-html`).html(response.stepHTML);
+              var $addressDiv = jQuery('.checkout-payment__pre-address');
+    
+              // Find all <p> elements within the target div
+              $addressDiv.find('p.mb-0').each(function() {
+                  var text = jQuery(this).text();
+                  
+                  // Remove the unnecessary comma by trimming and replacing
+                  text = text.replace(/,\s*,/, ',');
+                  
+                  // Set the modified text back
+                  jQuery(this).text(text);
+              });
             } else {
               jQuery(`div.tab-pane[data-step="${targetStep}"]`).html(response.stepHTML);
               if( response.checkout_bikes && ! isHikingCheckout ) {
@@ -4147,6 +4197,24 @@ jQuery(document).on('change', 'select[name="shipping_country"]', function () {
   jQuery(`select[name="shipping_state"]`).closest('div.form-row').removeClass('woocommerce-invalid');
   jQuery(`select[name="shipping_state"]`).closest('div.form-row').removeClass('woocommerce-validated');
   jQuery(`select[name="shipping_state"]`).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+  jQuery(`select[name="shipping_state"]`).attr('required', 'required');
+
+  // Reset validation classes and hide invalid feedback
+  var $shippingStateField = jQuery('select[name="shipping_state"]');
+  var $shippingStateRow = $shippingStateField.closest('div.form-row');
+  
+  $shippingStateRow.removeClass('woocommerce-invalid');
+  $shippingStateRow.removeClass('woocommerce-validated');
+  $shippingStateRow.find(".invalid-feedback").css("display", "none");
+
+  // Add the required attribute to the shipping_state field
+  $shippingStateField.attr('required', 'required');
+
+  // Check if the state label contains "optional" and hide invalid-feedback if it does
+  var stateLabel = jQuery('label[for="shipping_state"]').html();
+  if (stateLabel && stateLabel.includes('(optional)')) {
+    $shippingStateRow.find(".invalid-feedback").css("display", "none");
+  }
 });
 
 
@@ -5311,3 +5379,48 @@ function centerMapCallback(Waymark) {
   });
 }
 
+
+
+jQuery(document).ready(function($) {
+  // List of countries without states
+  var countriesWithoutStates = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC'];
+
+  function updateStateField(countryFieldSelector, stateFieldSelector) {
+    var selectedCountry = $(countryFieldSelector).val();
+    var $stateField = $(stateFieldSelector);
+    var $stateRow = $stateField.closest('div.form-row');
+    var $formFloating = $stateField.closest('div.form-floating');
+
+    if (countriesWithoutStates.includes(selectedCountry)) {
+      // Make state field optional
+      $stateField.removeAttr('required');
+      $stateRow.removeClass('woocommerce-invalid woocommerce-validated');
+      $formFloating.removeClass('woocommerce-invalid woocommerce-validated');
+      $stateRow.find(".invalid-feedback").hide();
+    } else {
+      if ( selectedCountry != 'undefined' ) {
+        $stateField.attr('required', 'required');
+      } else {
+        $stateField.attr('required', 'required');
+        $stateRow.addClass('woocommerce-invalid');
+        $formFloating.addClass('woocommerce-invalid');
+      }
+    }
+  }
+
+  function handleCountryChange() {
+    // Update state fields based on country selection
+    updateStateField('select[name="billing_country"]', 'select[name="billing_state"]');
+    updateStateField('select[name="billing_country"]', 'input[name="billing_state"]');
+    updateStateField('select[name="shipping_country"]', 'select[name="shipping_state"]');
+    updateStateField('select[name="shipping_country"]', 'input[name="shipping_state"]');
+  }
+
+  // Handle country change
+  $(document).on('change blur', 'select[name="billing_country"], select[name="shipping_country"]', function () {
+    handleCountryChange();
+  });
+
+  // Initial check on page load
+  handleCountryChange();
+});

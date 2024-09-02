@@ -206,7 +206,11 @@ $shipping_country_name = WC()->countries->countries[$shipping_country];
 	<p class="mb-0"><?php echo esc_html( tt_validate( $tt_posted['shipping_first_name'] ) . ' ' . tt_validate( $tt_posted['shipping_last_name'] ) ); ?></p>
 	<p class="mb-0"><?php echo esc_html( tt_validate( $tt_posted['shipping_address_1'] ) ); ?></p>
 	<p class="mb-0"><?php echo esc_html( tt_validate( $tt_posted['shipping_address_2'] ) ); ?></p>
-	<p class="mb-0"><?php echo esc_html( tt_validate( $tt_posted['shipping_city'] ) ); ?>, <?php echo esc_html( $shipping_state_name ); ?>, <?php echo esc_html( tt_validate( $tt_posted['shipping_postcode'] ) ); ?></p>
+	<?php if ( ! empty( $shipping_state_name ) ) : ?>
+		<p class="mb-0"><?php echo esc_html( tt_validate( $tt_posted['shipping_city'] ) ); ?>, <?php echo esc_html( $shipping_state_name ); ?>, <?php echo esc_html( tt_validate( $tt_posted['shipping_postcode'] ) ); ?></p>
+	<?php else : ?>
+		<p class="mb-0"><?php echo esc_html( tt_validate( $tt_posted['shipping_city'] ) ); ?>, <?php echo esc_html( tt_validate( $tt_posted['shipping_postcode'] ) ); ?></p>
+	<?php endif; ?>
 	<p class="mb-0"><?php echo esc_html( $shipping_country_name ); ?></p>
 	<p class="mb-0"></p>
 </div>

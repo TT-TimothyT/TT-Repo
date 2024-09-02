@@ -4312,7 +4312,7 @@ function tt_checkout_fields_error_messages($fields, $errors)
     $s_email = $currentUser->user_email;
     $sp_phone = isset($_REQUEST['shipping_phone']) ? $_REQUEST['shipping_phone'] : '';
     $s_dob = isset($_REQUEST['custentity_birthdate']) ? $_REQUEST['custentity_birthdate'] : '';
-    $s_gender = isset($_REQUEST['custentity_gender']) && $_REQUEST['custentity_gender'] != 0  ? $_REQUEST['custentity_gender'] : '';
+    $s_gender = isset($_REQUEST['custentity_gender']) && $_REQUEST['custentity_gender'] != 0 ? $_REQUEST['custentity_gender'] : '';
     $s_addr1 = isset($_REQUEST['shipping_address_1']) ? $_REQUEST['shipping_address_1'] : '';
     $s_country = isset($_REQUEST['shipping_country']) ? $_REQUEST['shipping_country'] : '';
     $s_state = isset($_REQUEST['shipping_state']) ? $_REQUEST['shipping_state'] : '';
@@ -4320,24 +4320,35 @@ function tt_checkout_fields_error_messages($fields, $errors)
     $s_postcode = isset($_REQUEST['shipping_postcode']) ? $_REQUEST['shipping_postcode'] : '';
     $guests = isset($_REQUEST['guests']) ? $_REQUEST['guests'] : array();
     $is_same_billing_as_mailing = isset($_REQUEST['is_same_billing_as_mailing']) ? $_REQUEST['is_same_billing_as_mailing'] : 0;
+
+    // Correct the billing_info array to have unique fields
     $billing_info = [
         'billing_first_name',
-        'billing_first_name',
+        'billing_last_name',
         'billing_address_1',
         'billing_country',
         'billing_state',
         'billing_city',
-        'billing_city'
+        'billing_postcode'
     ];
+
     $p_fields = [];
     $p_user_1_error = $g_user_1_error = false;
     $p_user_2_error = $g_user_2_error = $billing_error = false;
+
     if ($no_of_guests > $trip_capacity) {
         $errors->add('woocommerce_trip_capacity_error', __('You cannot add more guests than the Trip capacity.'));
     }
+
+    // Define countries without states
+    $countries_without_states = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC'];
+
+    // Shipping fields validation
     if (
         empty($sf_name) || empty($sl_name) || empty($s_email) || empty($s_addr1) || empty($sp_phone)
-        || empty($s_dob) || empty($s_gender) || $s_gender == 0 || empty($s_country) || empty($s_state) || empty($s_city) || empty($s_postcode)
+        || empty($s_dob) || empty($s_gender) || $s_gender == 0 || empty($s_country) || 
+        (!empty($s_country) && !in_array($s_country, $countries_without_states) && empty($s_state)) ||
+        empty($s_city) || empty($s_postcode)
     ) {
         $p_fields[] = empty($sf_name) ? 'First Name' : '';
         $p_fields[] = empty($sl_name) ? 'Last Name' : '';
@@ -4347,76 +4358,30 @@ function tt_checkout_fields_error_messages($fields, $errors)
         $p_fields[] = empty($s_dob) ? 'DOB' : '';
         $p_fields[] = empty($s_gender) || $s_gender == 0 ? 'Gender' : '';
         $p_fields[] = empty($s_country) ? 'Country' : '';
-        $p_fields[] = empty($s_state) ? 'State' : '';
+        $p_fields[] = (!empty($s_country) && !in_array($s_country, $countries_without_states) && empty($s_state)) ? 'State' : '';
         $p_fields[] = empty($s_city) ? 'City' : '';
         $p_fields[] = empty($s_postcode) ? 'Postcode' : '';
         $p_user_1_error = true;
     }
-    if ($bike_gears) {
-        foreach ($bike_gears as $guest_type => $bike_gear) {
-            if ($guest_type == 'primary') {
-                if ($bike_gear) {
-                    foreach ($bike_gear as $bike_gear_key => $bike_gear_data) {
-                        if ($bike_gear_key == 'rider_level' && $bike_gear_data != 5) {
-                            if ($bike_gear_key == 'own_bike' && $bike_gear_data == 'yes') {
-                                if ($bike_gear_key != 'helmet_size' && $bike_gear_key != 'bikeTypeId' && $bike_gear_key != 'bikeId' && $bike_gear_key != 'rider_height' && $bike_gear_data == '') {
-                                    $p_user_2_error = true;
-                                }
-                            } else {
-                                if ($bike_gear_key != 'helmet_size' && $bike_gear_data == '') {
-                                    $p_user_2_error = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if ($guest_type == 'guests') {
-                if ($bike_gear) {
-                    foreach ($bike_gear as $bike_gear_key => $bike_gear_data) {
-                        if ($bike_gear_data) {
-                            foreach ($bike_gear_data as $bike_gear_data_k => $bike_gear_data_v) {
-                                if ($bike_gear_data_k == 'rider_level' && $bike_gear_data_v != 5) {
-                                    if ($bike_gear_data_k == 'own_bike' && $bike_gear_data_v == 'yes') {
-                                        if ($bike_gear_data_k != 'helmet_size' && $bike_gear_data_k != 'bikeTypeId' && $bike_gear_data_k != 'bikeId' && $bike_gear_data_k != 'rider_height' && $bike_gear_data_v == '') {
-                                            $g_user_2_error = true;
-                                        }
-                                    } else {
-                                        if ($bike_gear_data_k != 'helmet_size' && $bike_gear_data_v == '') {
-                                            $g_user_2_error = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if ($guests) {
-        foreach ($guests as $guest_key => $guest_data) {
-            $guest_fname = isset($guest_data['guest_fname']) ? $guest_data['guest_fname'] : '';
-            $guest_lname = isset($guest_data['guest_lname']) ? $guest_data['guest_lname'] : '';
-            $guest_email = isset($guest_data['guest_email']) ? $guest_data['guest_email'] : '';
-            $guest_phone = isset($guest_data['guest_phone']) ? $guest_data['guest_phone'] : '';
-            $guest_gender = isset($guest_data['guest_gender']) && $guest_data['guest_gender'] && $guest_data['guest_gender'] != 0 ? $guest_data['guest_gender'] : '';
-            $guest_dob = isset($guest_data['guest_dob']) ? $guest_data['guest_dob'] : '';
-            if (
-                empty($guest_fname) || empty($guest_lname) || empty($guest_email) || empty($guest_phone) || empty($guest_gender)
-                ||  empty($guest_dob)
-            ) {
-                $g_user_1_error = true;
-            }
-        }
-    }
-    if ($billing_info && $is_same_billing_as_mailing !=1 ) {
+
+    // Billing fields validation
+    if ($billing_info && $is_same_billing_as_mailing != 1) {
+        $billing_country = isset($_REQUEST['billing_country']) ? $_REQUEST['billing_country'] : '';
+
         foreach ($billing_info as $billing_field) {
-            if (!isset($_REQUEST[$billing_field]) || empty($_REQUEST[$billing_field])) {
+            if ($billing_field == 'billing_state') {
+                if (!in_array($billing_country, $countries_without_states) && empty($_REQUEST[$billing_field])) {
+                    $billing_error = true;
+                    $errors->add('woocommerce_billing_state_error', __("<strong>Billing State</strong> is a required field."));
+                    break;
+                }
+            } elseif ($billing_field != 'billing_state' && (!isset($_REQUEST[$billing_field]) || empty($_REQUEST[$billing_field]))) {
                 $billing_error = true;
+                break;
             }
         }
     }
+
     if (isset($_REQUEST['tt_waiver']) == false) {
         $errors->add('woocommerce_waiver_error', __("Please check Waiver checkbox."));
     }
@@ -4424,13 +4389,13 @@ function tt_checkout_fields_error_messages($fields, $errors)
         $errors->add('woocommerce_tt_terms_error', __("Please check the Terms and Conditions and Cancellation Policy."));
     }
     if ($p_user_1_error == true) {
-        $p_fields_string = is_array($p_fields) && $p_fields ? implode(', ',array_filter($p_fields)) : '';
+        $p_fields_string = is_array($p_fields) && $p_fields ? implode(', ', array_filter($p_fields)) : '';
         $errors->add('woocommerce_primary_guests_error', __('Please fill fields '.$p_fields_string.' of Primary user in step 1.'));
     }
     if ($g_user_1_error == true) {
         $errors->add('woocommerce_guests_error', __("Please fill all fields of Guest user in step 1."));
     }
-    if ($billing_error == true && $is_same_billing_as_mailing != 1 ) {
+    if ($billing_error == true && $is_same_billing_as_mailing != 1) {
         $errors->add('woocommerce_tt_billing_error', __("Please fill all billing fields in step 3"));
     }
     if ($p_user_2_error == true) {
@@ -4440,6 +4405,7 @@ function tt_checkout_fields_error_messages($fields, $errors)
         $errors->add('woocommerce_guest_gears_error', __('Please fill Guest user`s Bike & Gears fields.'));
     }
 }
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -7835,3 +7801,12 @@ function tt_rebuild_bike_size_options_cb() {
 }
 add_action('wp_ajax_tt_rebuild_bike_size_options_ajax_action', 'tt_rebuild_bike_size_options_cb');
 add_action('wp_ajax_nopriv_tt_rebuild_bike_size_options_ajax_action', 'tt_rebuild_bike_size_options_cb');
+
+function tt_custom_modify_biiling_state_field( $fields ) {
+    // Make the billing state field optional by default
+    $fields['billing']['billing_state']['required'] = false;
+
+    // Return the modified fields
+    return $fields;
+}
+add_filter( 'woocommerce_checkout_fields', 'tt_custom_modify_biiling_state_field' );
