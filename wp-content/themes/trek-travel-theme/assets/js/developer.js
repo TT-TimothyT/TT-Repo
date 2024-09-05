@@ -2294,22 +2294,40 @@ jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
     jQuery(divID).find('select').prop('required', false);
     jQuery(bikeCommentsDivID).find('input').prop('required', true);
     jQuery(bikeCommentsDivID).find('select').prop('required', true);
-    //empty/reset all Fields without bike type id fields.
+    // Empty/reset all Fields except bikeTypeId fields.
     jQuery(divID).find('input:not([name$="[bikeTypeId]"])').val('');
-    jQuery(divID).find('select').prop('selectedIndex',0);
+    jQuery(divID).find('select').prop('selectedIndex', 0);
+
+    var bikeTypeIdSelector, bikeSizeSelector;
     if (guest_id != 'primary') {
       jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val(5270);
-      // Set bike pedals to bring own.
+      // Set bikeId to "bring own."
       jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_pedal]"]').val(1);
-      // Set helmet size to bring own.
       jQuery('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"]').val(1);
-    }else{
-      jQuery('input[name="bike_gears[primary][bikeId]"]').val(5270)
-      // Set bike pedals to bring own
+      bikeTypeIdSelector = 'input[name="bike_gears[guests][' + guest_id + '][bikeTypeId]"]';
+      bikeSizeSelector = 'input[name="bike_gears[guests][' + guest_id + '][bike_size]"]';
+    } else {
+      jQuery('input[name="bike_gears[primary][bikeId]"]').val(5270);
+      // Set bikeId to "bring own."
       jQuery('select[name="bike_gears[primary][bike_pedal]"]').val(1);
-      // Set helmet size to bring own.
       jQuery('select[name="bike_gears[primary][helmet_size]"]').val(1);
+      bikeTypeIdSelector = 'input[name="bike_gears[primary][bikeTypeId]"]';
+      bikeSizeSelector = 'input[name="bike_gears[primary][bike_size]"]';
     }
+
+    // Save the current values in data attributes
+    var bikeTypeId = jQuery(bikeTypeIdSelector).val();
+    var bikeSize = jQuery(bikeSizeSelector).val();
+
+    jQuery(bikeTypeIdSelector).data('previous-bikeTypeId', bikeTypeId);
+    jQuery(bikeSizeSelector).data('previous-bikeSize', bikeSize);
+
+    // Unset the values
+    jQuery(bikeTypeIdSelector).val('');
+    jQuery(bikeSizeSelector).val('');
+
+
+
     jQuery(divID).hide();
     jQuery(bikeCommentsDivID).show();
     if (guest_id != 'primary') {
@@ -2328,29 +2346,52 @@ jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
       jQuery('select[name="bike_gears[primary][transportation_options]"]').prop('required', true);
     }
     let thisBikeSizeFieldName = jQuery(this).closest('.checkout-bikes__bike-selection').find('[name*="[bike_size]"]').attr('name');
-    // This is async function so think how to prevent unbloking UI before finished.
+    // This is an async function so think how to prevent unblocking UI before finished.
     reBuildBikeSizeOptions(thisBikeSizeFieldName);
   } else {
-    //empty/reset all bike comments fields.
+    // Empty/reset all bike comments fields.
     jQuery(bikeCommentsDivID).find('input').val('');
-    jQuery(bikeCommentsDivID).find('select').prop('selectedIndex',0);
+    jQuery(bikeCommentsDivID).find('select').prop('selectedIndex', 0);
+
+    var bikeTypeIdSelector, bikeSizeSelector;
+
     if (guest_id != 'primary') {
-      if(jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_size]"] option:selected').index() <= 0) {
-        jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val('');
+      bikeTypeIdSelector = 'input[name="bike_gears[guests][' + guest_id + '][bikeTypeId]"]';
+      bikeSizeSelector = 'input[name="bike_gears[guests][' + guest_id + '][bike_size]"]';
+
+      if (jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_size]"] option:selected').index() <= 0) {
+          jQuery('input[name="bike_gears[guests][' + guest_id + '][bikeId]"]').val('');
       }
+
       // Unset bike pedals value.
       jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_pedal]"]').val('');
-      // Unset helemt size value.
+      // Unset helmet size value.
       jQuery('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"]').val('');
-    }else{
-      if(jQuery('select[name="bike_gears[primary][bike_size]"] option:selected').index() <= 0) {
-        jQuery('input[name="bike_gears[primary][bikeId]"]').val('')
+    } else {
+      bikeTypeIdSelector = 'input[name="bike_gears[primary][bikeTypeId]"]';
+      bikeSizeSelector = 'input[name="bike_gears[primary][bike_size]"]';
+
+      if (jQuery('select[name="bike_gears[primary][bike_size]"] option:selected').index() <= 0) {
+          jQuery('input[name="bike_gears[primary][bikeId]"]').val('');
       }
+
       // Unset bike pedals value.
       jQuery('select[name="bike_gears[primary][bike_pedal]"]').val('');
-      // Unset helemt size value.
+      // Unset helmet size value.
       jQuery('select[name="bike_gears[primary][helmet_size]"]').val('');
     }
+
+    jQuery('.bike_selectionElement').each(function() {
+      // Get the `data-id` attribute from the parent `.bike_selectionElement` div
+      var bikeTypeId = jQuery(this).data('id');
+      
+      // Find the input element within this specific `.bike_selectionElement`
+      var bikeInput = jQuery(this).find('input[type="radio"]');
+      
+      // Set the value of the input field to the corresponding `data-id`
+      bikeInput.val(bikeTypeId);
+    });
+  
     jQuery(divID).show();
     jQuery(bikeCommentsDivID).hide();
     if (guest_id != 'primary') {
@@ -2370,6 +2411,7 @@ jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
     }
   }
 });
+
 jQuery(document).on('click', '.tt_change_checkout_step', function () {
   var step = jQuery(this).attr('data-step');
   tt_change_checkout_step(step);
@@ -2387,7 +2429,6 @@ jQuery(document).on('click', '[name="bring_own_bike_confirmation"]', function() 
 });
 
 jQuery(document).on( 'hidden.bs.modal', '#checkoutOwnBikeModal', function () {
-  console.log(this, 'modal closinggggg');
   // when the modal has finished being hidden from the user reset the checkbox and button states.
   jQuery('[name="bring_own_bike_confirmation"]').prop('checked', false);
   jQuery('#checkoutOwnBikeModal .proceed-btn').attr('disabled', true);
@@ -2513,6 +2554,28 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
           reBuildBikeSizeOptions(`bike_gears[guests][${guest_num[1]}][bike_size]`);
         }
       }
+      if (response.review_order) {
+        jQuery('#tt-review-order').html(response.review_order);
+      }
+      ttLoader.hide();
+      jQuery("#currency_switcher").trigger("change")
+    }
+  });
+});
+
+jQuery('body').on('click', '.tt_my_own_bike_checkbox', function () {
+  var bikeTypeId = '';
+  var targetElement = `${jQuery(this).attr('data-selector')}`;
+  var actionName = 'tt_bike_selection_ajax_action';
+  jQuery.ajax({
+    type: 'POST',
+    url: trek_JS_obj.ajaxURL,
+    data: { 'action': actionName, 'bikeTypeId': bikeTypeId },
+    dataType: 'json',
+    beforeSend: function () {
+      ttLoader.show();
+    },
+    success: function (response) {
       if (response.review_order) {
         jQuery('#tt-review-order').html(response.review_order);
       }
