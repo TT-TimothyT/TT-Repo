@@ -473,14 +473,35 @@ class Wt_Import_Export_For_Woo_Basic_Order_Import {
                     $this->item_data['meta_data'][] = array('key'=>'_ppcp_paypal_fees',  'value'=> json_decode($value, true));
                     continue;
                 }
+                
+                // WC Stripe currency
+                if ('meta:_stripe_currency' == $column ) {
 
-
+                    $this->item_data['meta_data'][] = array('key'=>'_stripe_currency',  'value'=>  json_decode($value, true));
+                    continue;
+                }
 
                 // WC Stripe fee
-                if ('meta:_stripe_fees' == $column ) {
+                if ('meta:_stripe_fee' == $column ) {
+
                     $this->item_data['meta_data'][] = array('key'=>'_stripe_fee',  'value'=> json_decode($value, true));
                     continue;
                 }
+
+                // WC Stripe net fee
+                if ('meta:_stripe_net' == $column ) {
+
+                    $this->item_data['meta_data'][] = array('key'=>'_stripe_net',  'value'=> json_decode($value, true));
+                    continue;
+                }
+
+                // WebToffee Stripe fee
+                if ('meta:eh_stripe_fees' == $column ) {
+
+                    $this->item_data['meta_data'][] = array('key'=>'eh_stripe_fee',  'value'=> json_decode($value, true));
+                    continue;
+                }
+                
                 // WebToffee Stripe fee
                 if ('meta:eh_stripe_fees' == $column ) {
 

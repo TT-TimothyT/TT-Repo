@@ -110,7 +110,9 @@ if (is_plugin_active('eh-stripe-payment-gateway/stripe-payment-gateway.php')):
 endif;
 
 if (is_plugin_active('woocommerce-gateway-stripe/woocommerce-gateway-stripe.php')):
-    $base_reserved_columns['meta:_stripe_fees'] = array('title' => 'Stripe fees', 'description' => 'stripe fees');
+    $base_reserved_columns['meta:_stripe_currency'] = array('title' => 'stripe_currency', 'description' => 'stripe currency');
+    $base_reserved_columns['meta:_stripe_fee'] = array('title' => 'Stripe fee', 'description' => 'stripe fee');
+    $base_reserved_columns['meta:_stripe_net'] = array('title' => 'stripe_net', 'description' => ' stripe net');
 endif;
 
 // Reserved column names

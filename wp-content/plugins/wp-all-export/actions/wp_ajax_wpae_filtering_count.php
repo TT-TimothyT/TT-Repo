@@ -136,8 +136,10 @@ function pmxe_wp_ajax_wpae_filtering_count()
             global $wpdb;
             $exportQuery->request = $wpdb->remove_placeholder_escape($exportQuery->request);
 
-            foreach( $exportQuery->query_vars['search_orderby_title'] as $key => $value ){
-                $exportQuery->query_vars['search_orderby_title'][$key] = $wpdb->remove_placeholder_escape($value);
+            if(!empty($exportQuery->query_vars['search_orderby_title'])) {
+	            foreach ( $exportQuery->query_vars['search_orderby_title'] as $key => $value ) {
+		            $exportQuery->query_vars['search_orderby_title'][ $key ] = $wpdb->remove_placeholder_escape( $value );
+	            }
             }
 
             if (!empty($exportQuery->found_posts)) {
@@ -298,7 +300,7 @@ function pmxe_wp_ajax_wpae_filtering_count()
 	                add_filter('posts_where', 'wp_all_export_numbering_where', 15, 1);
 
 
-	                if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
+	                if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() || XmlExportEngine::get_addons_service()->isWooCommerceOrderAddonActive()) {
 		                $ordersQuery = new \Wpae\WordPress\OrderQuery();
 
 		                $foundRecords = count($ordersQuery->getOrders());

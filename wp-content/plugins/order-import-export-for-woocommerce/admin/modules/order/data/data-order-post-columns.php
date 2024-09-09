@@ -113,7 +113,9 @@ if (is_plugin_active('eh-stripe-payment-gateway/stripe-payment-gateway.php')):
 endif;
 
 if (is_plugin_active('woocommerce-gateway-stripe/woocommerce-gateway-stripe.php')):
-    $base_columns['meta:_stripe_fees'] = 'Wc Stripe fees';
+    $base_columns['meta:_stripe_currency'] = 'Wc stripe currency';
+    $base_columns['meta:_stripe_fee'] = 'Wc Stripe fees';
+    $base_columns['meta:_stripe_net'] = 'Wc Stripe net';
 endif;
 
 return apply_filters('hf_csv_order_post_columns', $base_columns);

@@ -665,32 +665,57 @@ img.tips {
 }
 .wt-ierpro-header{
   background: #FFFFFF;
-  box-shadow: 0px 4px 19px rgba(49, 117, 252, 0.2);
   padding: 8px;
   margin-top: 15px;
+  width: 92%;
 }
 .wt-ierpro-name{
+  background-color: aliceblue;
+  height: 53px;
+  border-radius: 3px;
+  margin: -1px;
+  padding: 16px;
+  display: block;
+  width: inherit;
+  float: left;
+  position: relative;
+}
+.wt-ierpro-name-suite{
   border-radius: 3px;
   margin: 0;
   padding: 16px;
-  display: flex;
-  align-items: center;
+  display: block;
+  width: inherit;
+  float: left;
+  position: relative;
 }
 .wt-ierpro-name img{
-  width: 50px;
-  height: auto;
+  width: 47px;
+  height: 47px;
+  border-radius: 7px;
+}
+.wt-ierpro-name-suite img{
+  width: 47px;
+  height: 47px;
   border-radius: 7px;
 }
 .wt-ierpro-name h4{
   font-style: normal;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 20px;
   margin: 0 0 5px 12px;
 }
-.wt-ierpro-name .star-rating{
-    float: left;
+.wt-ierpro-name-suite h4{
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0 0 5px 12px;
 }
+/* .wt-ierpro-name .star-rating{
+    float: left;
+} */
 .wt-ierpro-mainfeatures ul{
   padding: 0;
   margin: 15px 25px 20px 25px;
@@ -730,7 +755,7 @@ img.tips {
 }
 .wt-ierpro-btn-wrapper{
   display: block;
-  margin: 20px auto 20px;
+  margin: -6px auto 13px;
   text-align: center;
 }
 .wt-ierpro-blue-btn, .wt-ierpro-blue-btn:visited{
@@ -768,7 +793,7 @@ img.tips {
   color: #FFFFFF;
 }
 .wt-ierpro-features{
-  padding: 20px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
 }
 .wt-ierpro-features ul{
   padding: 0;
@@ -886,16 +911,17 @@ ul.wt-ierpro-newfeat li {
     margin-left: 18px;
 }
 .wt-ier-all-in-one-text-sp{
-    font-size: 15px;
+    margin-top: -6px;
+    font-size: 13px;
 }
 .wt-ierpro-blue-btn-suite, .wt-ierpro-blue-btn-suite:visited{
-  background: linear-gradient(90.67deg, #2D9FFF -34.86%, #2D9FFF 115.74%);  
+  background: #3176FD;
   border-radius: 5px;
   padding: 10px 15px 10px 38px;
   display: inline-block;
   font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: 400;
+  font-size: 15px;
   line-height: 18px;
   color: #FFFFFF;
   text-decoration: none;
@@ -903,7 +929,7 @@ ul.wt-ierpro-newfeat li {
   position: relative;
   border: none;
   width: 70%;
-  margin-top: 15px;
+  margin-top: 6px;
 }
 
 .wt-ierpro-blue-btn-suite:hover{
@@ -1023,15 +1049,27 @@ ul.wt-ierpro-newfeat li {
     margin-bottom: 18px;
 }
 .wt-ier-primary-btn{
+    width:127px;
     background: #007CBA;
     border:1px solid #007CBA;
     color: #FFFFFF;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    text-decoration: none;
+    padding:10px 12px;
+    border-radius: 5px;
+    text-align: center;
+    display: inline-block;
+    transition: all .2s ease;
+    margin-top: 18px;
+
 }
 .wt-ier-secondary-btn{
+    width:127px;
     color: #007CBA;
     border:1px solid #007CBA;
-}
-.wt-ier-secondary-btn,.wt-ier-primary-btn{
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
@@ -1044,6 +1082,7 @@ ul.wt-ierpro-newfeat li {
     transition: all .2s ease;
     margin-top: 18px;
 }
+
 .wt-ier-primary-btn:hover,.wt-ier-primary-btn:focus{
     color:#fff;
 }
@@ -1062,9 +1101,9 @@ ul.wt-ierpro-newfeat li {
 .wt-ier-btn-group .wt-ier-btn{
     margin: 8px;
 }
-.wt-ier-box-highlight{
+/* .wt-ier-box-highlight{
     box-shadow: 0px 0px 20px rgba(19, 109, 200, 0.3);
-}
+} */
 .wt-ier-center{
     text-align: center;
 }
@@ -1268,7 +1307,7 @@ ul.wt-ierpro-newfeat li {
 .ier_pro_plugins_section_small{
     /*float: left;*/
     margin-top: 30px;
-    width: 100%;
+    width: 97%;
 }
 .wt-import-export-upsell-small-wrapper.market-box{
     /*width:32%;
@@ -1295,7 +1334,7 @@ ul.wt-ierpro-newfeat li {
   background: #FFFFFF;
   box-shadow: none;
   border-radius: 0px;
-  padding: 0px;
+  padding: 1px;
   margin: 0;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-name-small{
@@ -1358,7 +1397,7 @@ ul.wt-ierpro-newfeat li {
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-btn-wrapper{
   display: block;
-  margin: 20px auto 20px;
+  margin: -6px auto 20px;
   text-align: center;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-blue-btn, .wt-ierpro-blue-btn:visited{
@@ -1396,7 +1435,7 @@ ul.wt-ierpro-newfeat li {
   color: #FFFFFF;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-features{
-  padding: 0px 5px 5px 10px;
+  padding: 15px 5px 5px 10px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-features ul{
   padding: 0;
@@ -1407,7 +1446,7 @@ ul.wt-ierpro-newfeat li {
   font-weight: 500;
   font-size: 13px;
   line-height: 17px;
-  color: #001A69;
+  color: #474747;
   list-style: none;
   position: relative;
   padding-left: 35px;
@@ -1432,7 +1471,7 @@ ul.wt-ierpro-newfeat li {
   position: absolute;
   height: 16px;
   width: 16px;
-  background-image: url(../../assets/images/gopro/tick.svg);
+  background-image: url(../../assets/images/gopro/planetick.svg);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -1482,8 +1521,13 @@ ul.wt-ierpro-newfeat li {
 }
 
 .wt-cs-rating-money-back{
-    margin-top: 30px;
-    background-color: #fff;
+  margin: auto;
+  margin-bottom: 10px;
+  background-color:#EFEDFF54;
+  width: 290px;
+  height: 162px;
+  border-radius: 3px 0px 0px 0px;
+  border: 1px solid #E4E4E4;
 }
 .wt-money-back{
     border-bottom: 1px solid #ccc;
@@ -1618,4 +1662,15 @@ ul.wt-ierpro-newfeat li {
 .wt_iew_post-type-card-hd {
   position: absolute;
   bottom: 1px;
+}
+.wt_iew_suite_banner{
+  width: 98%;
+  height: 63px;
+  margin-left: 10px;
+  background-color: #FFFCE1;
+}
+.wt_iew_suite_banner_border{
+  width: 2px; 
+  height: 63px;
+  background-color:#E6CE5C
 }

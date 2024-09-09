@@ -42,6 +42,21 @@ function pmxe_wp_ajax_wpae_preview(){
 		$custom_xml_template_line_count = substr_count($exportOptions['custom_xml_template'], "\n");
     }
 
+	if(empty($exportOptions['cpt'])) {
+		$postTypes           = [];
+		$exportqueryPostType = [];
+
+		if ( isset( $exportOptions['exportquery'] ) && ! empty( $exportOptions['exportquery']->query['post_type'] ) ) {
+			$exportqueryPostType = [ $exportOptions['exportquery']->query['post_type'] ];
+		}
+
+		if ( empty( $postTypes ) ) {
+			$postTypes = $exportqueryPostType;
+		}
+
+		$exportOptions['cpt'] = $postTypes;
+	}
+
     $errors = new WP_Error();
 
 	$engine = new XmlExportEngine($exportOptions, $errors);

@@ -2315,8 +2315,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		 */
 		public static function update_options_key( $options_name, $key, $value, $protect = false, $site = false ) {
 
-			$opts = $site ? get_site_option( $options_name, $default = array() ) :	// Returns an array by default.
-				get_option( $options_name, $default = array() );		// Returns an array by default.
+			$opts = $site ? get_site_option( $options_name, $default = array() ) : get_option( $options_name, $default = array() );
 
 			if ( array_key_exists( $key, $opts ) ) {
 
@@ -2694,20 +2693,34 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		/*
 		 * Temporarily disable filters and actions hooks before calling get_option(), update_option(), and delete_option().
 		 */
-		public static function raw_do_option( $action, $opt_name, $value = null, $default = false ) {
+		public static function raw_do_option( $action, $opt_name, $value = null, $default = false, $autoload = null ) {
 
 			global $wp_filter, $wp_actions;
 
-			$saved_filter  = $wp_filter;
-			$saved_actions = $wp_actions;
+			$saved_filter  = $wp_filter;	// Save filters.
+			$saved_actions = $wp_actions;	// Save actions.
 
-			$wp_filter  = array();
-			$wp_actions = array();
+			$wp_filter  = array();	// Remove all filters.
+			$wp_actions = array();	// Remove all actions.
 
 			$success   = null;
-			$old_value = false;
+			$old_value = $default;
 
 			switch( $action ) {
+
+				case 'add':
+				case 'add_option':
+
+					$success = add_option( $opt_name, $value, $deprecated = '', $autoload );
+
+					break;
+
+				case 'delete':
+				case 'delete_option':
+
+					$success = delete_option( $opt_name );
+
+					break;
 
 				case 'get':
 				case 'get_option':
@@ -2721,20 +2734,13 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 					$old_value = get_option( $opt_name, $default );
 
-					$success = update_option( $opt_name, $value );
-
-					break;
-
-				case 'delete':
-				case 'delete_option':
-
-					$success = delete_option( $opt_name );
+					$success = update_option( $opt_name, $value, $autoload );
 
 					break;
 			}
 
-			$wp_filter  = $saved_filter;
-			$wp_actions = $saved_actions;
+			$wp_filter  = $saved_filter;	// Restore filters.
+			$wp_actions = $saved_actions;	// Restore actions.
 
 			unset( $saved_filter, $saved_actions );
 
@@ -2743,8 +2749,15 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 				case 'update':
 				case 'update_option':
 
-					do_action( 'sucom_update_option_' . $opt_name, $old_value, $value, $opt_name );
+					switch( $opt_name ) {
 
+						case 'home':
+
+							do_action( 'sucom_update_option_' . $opt_name, $old_value, $value, $opt_name );
+
+							break;
+					}
+	
 					break;
 			}
 

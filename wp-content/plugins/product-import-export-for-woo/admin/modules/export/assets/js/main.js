@@ -674,7 +674,7 @@ var wt_iew_basic_export=(function( $ ) {
 			$('.wt-ier-product-features').hide();
 			$('.wt-hide-features').html(wt_iew_basic_params.msgs.show_features);
 
-			$('.wt-you-may-like').css('margin-top', '-200px');
+			//$('.wt-you-may-like').css('margin-top', '-200px');
 
 		},
 		page_actions: function (step) {

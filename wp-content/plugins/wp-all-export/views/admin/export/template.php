@@ -176,7 +176,7 @@ if(!defined('ABSPATH')) {
 								<input type="hidden" id="is_product_export" value="1"/>
 								<?php endif; ?>
 
-								<?php if ( empty($post['cpt']) and ! ($addons->isWooCommerceAddonActive() && XmlExportWooCommerceOrder::$is_active) and ! ($addons->isUserAddonActive() && XmlExportUser::$is_active) and ! XmlExportTaxonomy::$is_active ) : ?>
+								<?php if ( empty($post['cpt']) and ! (($addons->isWooCommerceAddonActive() || $addons->isWooCommerceOrderAddonActive()) && XmlExportWooCommerceOrder::$is_active) and ! ($addons->isUserAddonActive() && XmlExportUser::$is_active) and ! XmlExportTaxonomy::$is_active ) : ?>
 								<input type="hidden" id="is_wp_query" value="1"/>								
 								<?php endif; ?>
 																									

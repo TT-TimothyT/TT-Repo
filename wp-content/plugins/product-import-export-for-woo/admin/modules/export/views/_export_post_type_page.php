@@ -17,8 +17,8 @@ if (!defined('ABSPATH')) {
 		?>
 			<div class="wt_iew_post-type-card <?php echo ($item_type == $key) ? 'selected' : ''; ?>" data-post-type="<?php echo esc_attr($key); ?>">
 				<div class="wt_iew_post-type-card2">
-   				 	<div class="wt_iew_image <?php echo 'wt_iew_image_' . esc_html($key); ?>" style="display : <?php echo ($item_type == $key) ? 'none' : 'block'; ?>">
-					<img src="<?php echo esc_url($postImageLink); ?>" />
+					<div class="wt_iew_image <?php echo 'wt_iew_image_' . esc_html($key); ?>" style="display : <?php echo ($item_type == $key) ? 'none' : 'block'; ?>">
+						<img src="<?php echo esc_url($postImageLink); ?>" />
 					</div>
 					<div class="<?php echo 'wt_iew_active_image_' . esc_html($key); ?>" style="display : <?php echo ($item_type == $key) ? 'block' : 'none'; ?>">
 						<img src="<?php echo esc_url($postImageLinkactive); ?>" />
@@ -31,25 +31,24 @@ if (!defined('ABSPATH')) {
 					$btn_href   = '';
 					$btn_text   = '';
 					$btn_class  = '';
-					if (!file_exists(WP_PLUGIN_DIR . '/' . $postTypeLink['basic_plugin'])) 
-                    {
+					if (!file_exists(WP_PLUGIN_DIR . '/' . $postTypeLink['basic_plugin'])) {
 						$btn_href = $postTypeLink['link'];
-                        $btn_text   = __('Install now', 'product-import-export-for-woo');
-                        $btn_class  = '';
-                        $btn_target = '_self';
-                    } elseif (!is_plugin_active($postTypeLink['basic_plugin'])) {
-                        $btn_href   = wp_nonce_url(self_admin_url('plugins.php?action=activate&plugin=' . urlencode($postTypeLink['basic_plugin']) . '&plugin_status=all&paged=1&s'), 'activate-plugin_' . $postTypeLink['basic_plugin']);
-                        $btn_text   = __('Activate', 'product-import-export-for-woo');
-                        $btn_class  = 'activate';
-                        $btn_target = '_self';
-                    }
+						$btn_text   = __('Install now', 'product-import-export-for-woo');
+						$btn_class  = '';
+						$btn_target = '_self';
+					} elseif (!is_plugin_active($postTypeLink['basic_plugin'])) {
+						$btn_href   = wp_nonce_url(self_admin_url('plugins.php?action=activate&plugin=' . urlencode($postTypeLink['basic_plugin']) . '&plugin_status=all&paged=1&s'), 'activate-plugin_' . $postTypeLink['basic_plugin']);
+						$btn_text   = __('Activate', 'product-import-export-for-woo');
+						$btn_class  = 'activate';
+						$btn_target = '_self';
+					}
 
-                    if ('subscription' === $key) {
-                        $btn_href = $postTypeLink['link'];
-                        $btn_text   = __('Premium', 'product-import-export-for-woo');
-                        $btn_class  = 'premium-button';
-                        $btn_target = '_blank';
-                    }
+					if ('subscription' === $key) {
+						$btn_href = $postTypeLink['link'];
+						$btn_text   = __('Premium', 'product-import-export-for-woo');
+						$btn_class  = 'premium-button';
+						$btn_target = '_blank';
+					}
 
 					if ($btn_href) {
 					?>
@@ -117,4 +116,11 @@ if (!defined('ABSPATH')) {
 		}
 	}
 	?>
+	<div class="wt_iew_suite_banner">
+		<div class="wt_iew_suite_banner_border"></div>
+		<p style="font-size: 13px; font-weight: 400; margin-top: -61px;margin-left: 13px; padding: 10px 10px;">
+			<strong><?php _e('💡 Did You Know?'); ?></strong> <?php _e('You can now get an all-in-one bundled solution to import and export WooCommerce products, orders, users, and more with premium exclusive features. Get'); ?>
+			<a href="<?php echo esc_url("https://www.webtoffee.com/product/woocommerce-import-export-suite/?utm_source=free_plugin_data_type&utm_medium=basic_revamp&utm_campaign=Import_Export_Suite" . WT_P_IEW_VERSION); ?>" style="color: blue;" target="_blank"><?php _e('Import Export Suite for WooCommerce.'); ?></a>
+		</p>
+	</div>
 </div>

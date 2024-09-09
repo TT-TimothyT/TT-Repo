@@ -15,7 +15,7 @@ if ( ! defined( 'WPINC' ) ) {die;
 .wt_widget_column_1{padding-top:18px;}
 .wt_widget_title_wrapper .wt_widget_column_2{align:top;}
 .wt_widget_column_2{font-size: 15px;text-align: top;padding-left:10px; width:100%;height:100px;}
-.wt_widget_column_3{;text-align:left;vertical-align: text-top;position: relative;height:170px;}
+.wt_widget_column_3{text-align:left;vertical-align: text-top;position: relative;height:170px;}
 .wt_installed_button{padding-left:10px;}
 .wt_free_button{padding-left:10px;}
 .wt_free_btn_a{}
@@ -23,6 +23,8 @@ if ( ! defined( 'WPINC' ) ) {die;
 .wt_get_premium_btn:hover {box-shadow: 0px 3px 13px rgb(46 80 242 / 50%);text-decoration: none;transform: translateY(2px);transition: all .2s ease;color: #FFFFFF;}
 .wt_installed_btn{height:30px;width:109px; border-style: solid;border-color: #2A2EEA;border-radius: 5px;color: #2A2EEA;}
 .wt_free_btn{height:30px;width:109px; border-style: solid;border-color: #2A2EEA;border-radius: 5px;color: #2A2EEA;cursor: pointer;}
+.wt_free_button.full_width {width: 100%;}
+.wt_free_btn.full_width {width: 100%;}
 </style>
 <div class="wt-iew-tab-content" data-id="<?php echo esc_attr($target_id);?>">
     <div class="wt_row"> 
@@ -55,24 +57,6 @@ $plugins=array(
         'basic_url'     => '',
         'pro_plugin'    => 'wt-woo-request-quote/wt-woo-request-quote.php',
         'basic_plugin'  => '',
-    ),
-    'diplay_discount' => array(
-        'title'         => __('Display Discounts for WooCommerce', 'users-customers-import-export-for-wp-woocommerce'),
-        'description'   => __('Display the WooCommerce coupon deals available for each product on the respective product pages. Make use of multiple coupon layouts & display options to fully optimize the look & feel of the coupons.', 'users-customers-import-export-for-wp-woocommerce'),
-        'image_url'     => 'display-discounts.png',
-        'premium_url'   => 'https://www.webtoffee.com/product/display-woocommerce-discounts/?utm_source=other_solution_page&utm_medium=free_plugin&utm_campaign=Display_Discounts',
-        'basic_url'     => '',
-        'pro_plugin'    => 'wt-display-discounts-for-woocommerce/wt-display-discounts-for-woocommerce.php',
-        'basic_plugin'  => '',
-    ),
-    'best_sellers_plugin' => array(
-        'title'         => __('WebToffee WooCommerce Best Sellers', 'users-customers-import-export-for-wp-woocommerce'),
-        'description'   => __('Highlight top-selling products on your WooCommerce store using best seller labels, sliders, and custom seals. You can display ranking positions for best-seller products in different categories.', 'users-customers-import-export-for-wp-woocommerce'),
-        'image_url'     => 'bestsellers_plugin.png',
-        'premium_url'   => 'https://www.webtoffee.com/product/woocommerce-best-sellers/?utm_source=other_solution_page&utm_medium=free_plugin&utm_campaign=WooCommerce_Best_Sellers',
-        'basic_url'     => '',
-        'pro_plugin'    => 'wt-woocommerce-best-seller/wt-woocommerce-best-sellers.php',
-        'basic_plugin'  => '', 
     ),
     'giftcards_plugin' => array(
         'title'         => __('WebToffee WooCommerce Gift Cards', 'users-customers-import-export-for-wp-woocommerce'),
@@ -244,7 +228,7 @@ $plugins=array(
         'title' => __('WordPress Backup and Migration', 'users-customers-import-export-for-wp-woocommerce'),
         'description' => __('A complete WordPress backup and migration plugin to easily back up and migrate your WordPress website and database. This fast and flexible backup solution makes creating and restoring backups easy.', 'users-customers-import-export-for-wp-woocommerce'),
         'image_url' => 'WordPress-backup-and-migration-plugin.png',
-        'premium_url' => 'https://www.webtoffee.com/product/wordpress-backup-and-migration/?utm_source=other_solution_page&utm_medium=free_plugin&utm_campaign=WordPress_Backup',
+        'premium_url' => '',
         'basic_url' => 'https://wordpress.org/plugins/wp-migration-duplicator/',
         'pro_plugin' => 'wp-migration-duplicator-pro/wp-migration-duplicator-pro.php',
         'basic_plugin' => 'wp-migration-duplicator/wp-migration-duplicator.php',
@@ -296,10 +280,13 @@ $plugins=array(
                     </p>
                 </div> 
                 <div class="wt_buttons">
+                <?php
+                if ( isset( $value['premium_url'] ) && ! empty( $value['premium_url'] ) ) {
+                ?>
                     <div class="wt_premium_button" style="width: 100%;">
-                        <a href="<?php echo esc_url($value['premium_url']); ?>" class="wt_get_premium_btn" target="_blank"><img src="<?php echo esc_url($wt_admin_img_path . '/promote_crown.png');?>" style="width: 10px;height: 10px;"><?php  _e(' Get Premium','users-customers-import-export-for-wp-woocommerce'); ?></a>
+                        <a href="<?php echo esc_url($value['premium_url']); ?>" class="wt_get_premium_btn" target="_blank"><img src="<?php echo esc_url($wt_admin_img_path . '/promote_crown.png');?>" style="width: 10px;height: 10px;"><?php  _e(' Get Premium','order-import-export-for-woocommerce'); ?></a>
                     </div> 
-<?php
+<?php           }  
                     if(is_plugin_active($value['basic_plugin']))
 		            { 
 ?>
@@ -313,12 +300,12 @@ $plugins=array(
                     && isset($value['basic_url']) && "" !== $value['basic_url'] && isset($value['pro_plugin']) && is_string($value['pro_plugin']) && "" !== $value['pro_plugin'] && !is_plugin_active($value['pro_plugin']))
 		            { 
 ?>
-                    <div class="wt_free_button">
-                        <a class="wt_free_btn_a" href="<?php echo esc_url($value['basic_url']); ?>" target="_blank">
-                            <button class="wt_free_btn">
-                                <?php _e('Get Free Plugin','users-customers-import-export-for-wp-woocommerce'); ?>
-                            </button>
-                        </a>
+                    <div class="wt_free_button<?php echo (empty($value['premium_url'])) ? ' full_width' : ''; ?>">
+                             <a class="wt_free_btn_a" href="<?php echo esc_url($value['basic_url']); ?>" target="_blank">
+                                <button class="wt_free_btn<?php echo (empty($value['premium_url'])) ? ' full_width' : ''; ?>">
+                                    <?php _e('Get Free Plugin', 'product-import-export-for-woo'); ?>
+                                </button>
+                            </a>
                     </div>
 
               <?php } ?>

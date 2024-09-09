@@ -13,6 +13,13 @@ if (!defined('ABSPATH')) {
 		</table>
 	</form>
 </div>
+<div class="wt_iew_suite_banner">
+	<div class="wt_iew_suite_banner_border"></div>
+	<p style="font-size: 13px; font-weight: 400; margin-top: -61px;margin-left: 13px; padding: 10px 10px;">
+		<strong><?php _e('💡 Did You Know?'); ?></strong> <?php _e('Get advanced features like FTP/SFTP export, and support for XLSX, XLS, XML, and TXT files with our premium version.'); ?>
+		<a href="<?php echo esc_url($link . WT_O_IEW_VERSION); ?>" style="color: blue;" target="_blank"><?php _e($text); ?></a>
+	</p>
+</div>
 <?php
 
 $file_int_field_tr_arr=array();
@@ -30,7 +37,7 @@ function wt_iew_set_file_into_fields(file_into)
 	}
 //	wt_iew_toggle_schedule_btn(0); //hide scheduler btn if exists
 	<?php
-	do_action('wt_iew_exporter_file_into_js_fn');
+	do_action('wt_iew_exporter_file_into_js_fn_basic');
 	?>
 }
 <?php /*

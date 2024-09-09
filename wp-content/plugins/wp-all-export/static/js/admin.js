@@ -1134,7 +1134,7 @@
                     return;
                 }
 
-                if (value.indexOf('shop_order') !== -1) {
+                if (value.indexOf('shop_order') !== -1 && !$('#pmxe_woocommerce_order_addon_installed').val()) {
                     $('.wpallexport-shop_order-export-notice').show();
                     $('.wpallexport-submit-buttons').hide();
                 }

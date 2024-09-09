@@ -45,12 +45,20 @@ $mailgun_from_name = $mailgun_from_name_const ?: $this->get_option('from-name');
 $mailgun_from_address_const = ((defined('MAILGUN_FROM_ADDRESS') && MAILGUN_FROM_ADDRESS) ? MAILGUN_FROM_ADDRESS : null);
 $mailgun_from_address = $mailgun_from_address_const ?: $this->get_option('from-address');
 
+$mailgunReplyToAddressConst = ((defined('MAILGUN_REPLY_TO_ADDRESS') && MAILGUN_REPLY_TO_ADDRESS) ? MAILGUN_REPLY_TO_ADDRESS : null);
+$mailgunReplyTo = $mailgunReplyToAddressConst ?: $this->get_option('reply_to');
+
 $mailgun_secure_const = (defined('MAILGUN_SECURE') ? MAILGUN_SECURE : null);
 $mailgun_secure = !is_null($mailgun_secure_const) ? ((string)(1 * $mailgun_secure_const)) : $this->get_option('secure');
 
 $mailgun_use_api_const = (defined('MAILGUN_USEAPI') ? MAILGUN_USEAPI : null);
 $mailgun_use_api = !is_null($mailgun_use_api_const) ? ((string)(1 * $mailgun_use_api_const)) : $this->get_option('useAPI');
 $icon = $mailgun->getAssetsPath() . 'icon-128x128.png';
+
+$trackClicks = (defined('MAILGUN_TRACK_CLICKS') ? MAILGUN_TRACK_CLICKS : null);
+$trackOpens = (defined('MAILGUN_TRACK_OPENS') ? MAILGUN_TRACK_OPENS : null);
+
+$suppressClicks = $this->get_option('suppress_clicks') ?: 'no';
 
 ?>
 <div class="wrap">
@@ -257,7 +265,7 @@ $icon = $mailgun->getAssetsPath() . 'icon-128x128.png';
                     <?php _e('Click Tracking', 'mailgun'); ?>
                 </th>
                 <td>
-                    <select name="mailgun[track-clicks]">
+                    <select name="mailgun[track-clicks]" <?php echo $trackClicks ? 'disabled="disabled"' : '' ?>>
                         <option value="htmlonly"<?php selected('htmlonly', $this->get_option('track-clicks')); ?>><?php _e('HTML Only', 'mailgun'); ?></option>
                         <option value="yes"<?php selected('yes', $this->get_option('track-clicks')); ?>><?php _e('Yes', 'mailgun'); ?></option>
                         <option value="no"<?php selected('no', $this->get_option('track-clicks')); ?>><?php _e('No', 'mailgun'); ?></option>
@@ -280,7 +288,7 @@ $icon = $mailgun->getAssetsPath() . 'icon-128x128.png';
                     <?php _e('Open Tracking', 'mailgun'); ?>
                 </th>
                 <td>
-                    <select name="mailgun[track-opens]">
+                    <select name="mailgun[track-opens]" <?php echo $trackOpens ? 'disabled="disabled"' : '' ?>>
                         <option value="1"<?php selected('1', $this->get_option('track-opens')); ?>><?php _e('Yes', 'mailgun'); ?></option>
                         <option value="0"<?php selected('0', $this->get_option('track-opens')); ?>><?php _e('No', 'mailgun'); ?></option>
                     </select>
@@ -314,6 +322,24 @@ $icon = $mailgun->getAssetsPath() . 'icon-128x128.png';
                     <p class="description">
                         <?php
                         _e('The &lt;address@mydomain.com&gt; part of the sender information (<code>"Excited User &lt;user@samples.mailgun.org&gt;"</code>). This address will appear as the `From` address on sent mail. <strong>It is recommended that the @mydomain portion matches your Mailgun sending domain.</strong>', 'mailgun');
+                        ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <?php _e('Reply To Address', 'mailgun'); ?>
+                </th>
+                <td>
+                    <input type="text"
+                           class="regular-text"
+                           name="mailgun[reply_to]"
+                           value="<?php esc_attr_e($mailgunReplyTo); ?>"
+                           placeholder="wordpress@mydomain.com"
+                    />
+                    <p class="description">
+                        <?php
+                        _e('Reply-to address', 'mailgun');
                         ?>
                     </p>
                 </td>
@@ -376,6 +402,21 @@ $icon = $mailgun->getAssetsPath() . 'icon-128x128.png';
                             ]
                         );
                         ?>
+                    </p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row">
+                    <?php _e('Suppress Click Track for password reset email', 'mailgun'); ?> <br>
+                </th>
+                <td>
+                    <select
+                            name="mailgun[suppress_clicks]">
+                        <option value="yes"<?php selected('yes', $suppressClicks); ?>><?php _e('Yes', 'mailgun'); ?></option>
+                        <option value="no"<?php selected('no', $suppressClicks); ?>><?php _e('No', 'mailgun'); ?></option>
+                    </select>
+                    <p class="description">
+                        <span><?php _e('Experimental function', 'mailgun'); ?></span>
                     </p>
                 </td>
             </tr>

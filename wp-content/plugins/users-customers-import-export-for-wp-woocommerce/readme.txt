@@ -1,10 +1,10 @@
 === Export and Import Users and Customers ===
 Contributors: webtoffee
-Tags: user import, user export, csv, woocommerce, customers, export import users, export customers, import customers, import, export, export users to csv, import users from csv 
+Tags: import customers, export customers, import users from csv, export users to csv, users
 Requires at least: 3.0.1
-Tested up to: 6.5.3
+Tested up to: 6.6
 Requires PHP: 5.6
-Stable tag: 2.5.5
+Stable tag: 2.5.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,13 +22,11 @@ You can import or export user/customer data using CSV files. This helps in migra
 &#128312; Change values (bulk modify) while importing user data using Evaluation Fields
 &#128312; Export guest users - Include data of WooCommerce guest customers (users who bought products from the site without creating an account)
 &#128312; Export specific users based on username/email - Suggests email addresses and names in export data filter fields while you type in
-&#128312; Tested OK with WordPress 6.5.3
-&#128312; Tested OK with WooCommerce 8.8.3
+&#128312; Tested OK with WordPress 6.6
+&#128312; Tested OK with WooCommerce 9.1.2
 &#128312; Tested OK with PHP 8.3
 
 = How does it work? =
-
-**See how the plugin works:<a rel="nofollow" href="https://demo.tastewp.com/user-import-export"> Try out demo </a>** 
 
 This WordPress user import export plugin uses CSV (Comma-Separated Values) files as input. You must create a CSV file and enter the user details in a structured format. (refer to this <a rel="nofollow" href="https://www.webtoffee.com/wp-content/uploads/2021/03/Users_SampleCSV.csv"> sample CSV)</a> This is to match each field of the user import CSV file to the appropriate user fields in WordPress.
 
@@ -208,6 +206,10 @@ Please refer the article on how to <a href="https://www.webtoffee.com/refresh-wo
 
 == Changelog ==
 
+= 2.5.6 2024-07-19 =
+* [Fix]- wc_last_active not exporting properly.
+* [Compatibility]-Tested Ok with Woocommerce 9.1.2
+* [Compatibility] - Tested OK with WordPress 6.6
 = 2.5.5 2024-05-13 =
 * [Compatibility]-Tested Ok with Woocommerce 8.8.3
 * [Compatibility] - Tested OK with WordPress 6.5.3
@@ -500,6 +502,7 @@ Please refer the article on how to <a href="https://www.webtoffee.com/refresh-wo
 
 == Upgrade Notice ==
 
-= 2.5.5 =
-* [Compatibility]-Tested Ok with Woocommerce 8.8.3
-* [Compatibility] - Tested OK with WordPress 6.5.3
+= 2.5.6 =
+* [Fix]- wc_last_active not exporting properly.
+* [Compatibility]-Tested Ok with Woocommerce 9.1.2
+* [Compatibility] - Tested OK with WordPress 6.6

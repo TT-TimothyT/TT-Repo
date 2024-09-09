@@ -625,6 +625,42 @@ class Wt_Import_Export_For_Woo_Basic_Import_Ajax
 
 			/* meta field list for quick import */
 			$this->get_mapping_templates();
+			$link_array = array(
+				'order' => array(
+					'link'  => 'https://www.webtoffee.com/product/order-import-export-plugin-for-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Order_Import_Export',
+					'text' => 'Upgrade to Order Import Export Pro.',
+				),
+				'coupon' => array(
+					'link'  => 'https://www.webtoffee.com/product/order-import-export-plugin-for-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Order_Import_Export',
+					'text' => 'Upgrade to Order Import Export Pro.',
+				),
+				'product' => array(
+					'link' => 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Product_Import_Export',
+					'text' => 'Upgrade to Product Import Export Pro.',
+				),
+				'product_review' => array(
+					'link' => 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Product_Import_Export',
+					'text' => 'Upgrade to Product Import Export Pro.'
+
+				),
+				'product_categories' => array(
+					'link' => 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Product_Import_Export',
+					'text' => 'Upgrade to Product Import Export Pro.'
+
+				),
+				'product_tags' => array(
+					'link' => 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Product_Import_Export',
+					'text' => 'Upgrade to Product Import Export Pro.'
+
+				),
+				'user' => array(
+					'link' => 'https://www.webtoffee.com/product/wordpress-users-woocommerce-customers-import-export/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=User_Import_Export',
+					'text' => 'Upgrade to User Import Export Pro.'
+
+				),
+			);
+			$link = $link_array[$this->to_import]['link'];
+			$text = $link_array[$this->to_import]['text'];
 
 			ob_start();		
 			$this->prepare_step_header_html();

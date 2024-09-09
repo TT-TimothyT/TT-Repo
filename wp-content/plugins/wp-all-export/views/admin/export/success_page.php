@@ -2,6 +2,24 @@
 if(!defined('ABSPATH')) {
     die();
 }
+
+if(empty($update_previous->options['cpt'])) {
+	$postTypes           = [];
+	$exportqueryPostType = [];
+
+	if ( isset( $update_previous->options['exportquery'] ) && ! empty( $update_previous->options['exportquery']->query['post_type'] ) ) {
+		$exportqueryPostType = [ $update_previous->options['exportquery']->query['post_type'] ];
+	}
+
+	if ( empty( $postTypes ) ) {
+		$postTypes = $exportqueryPostType;
+	}
+
+    $tmp_options = $update_previous->options;
+    $tmp_options['cpt'] = $postTypes;
+	$update_previous->options = $tmp_options;
+}
+
 $cron_job_key = PMXE_Plugin::getInstance()->getOption('cron_job_key');
 $urlToExport = site_url() . '/wp-load.php?security_token=' . substr(md5($cron_job_key . $update_previous->id), 0, 16) . '&export_id=' . $update_previous->id . '&action=get_data';
 $uploads = wp_upload_dir();

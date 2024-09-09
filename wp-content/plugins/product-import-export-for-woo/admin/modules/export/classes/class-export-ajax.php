@@ -508,6 +508,42 @@ class Wt_Import_Export_For_Woo_Basic_Export_Ajax
 			$advanced_form_data=(isset($this->selected_template_form_data['advanced_form_data']) ? $this->selected_template_form_data['advanced_form_data'] : array());
 
 			$advanced_screen_fields=$this->export_obj->get_advanced_screen_fields($advanced_form_data);
+				$link_array = array(
+					'order' => array(
+						'link'  => 'https://www.webtoffee.com/product/order-import-export-plugin-for-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Order_Import_Export',
+						'text' => 'Upgrade to Order Import Export Pro.',
+					),
+					'coupon' => array(
+						'link'  => 'https://www.webtoffee.com/product/order-import-export-plugin-for-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Order_Import_Export',
+						'text' => 'Upgrade to Order Import Export Pro.',
+					),
+					'product' => array(
+						'link' => 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Product_Import_Export',
+						'text' => 'Upgrade to Product Import Export Pro.',
+					),
+					'product_review' => array(
+						'link' => 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Product_Import_Export',
+						'text' => 'Upgrade to Product Import Export Pro.'
+
+					),
+					'product_categories' => array(
+						'link' => 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Product_Import_Export',
+						'text' => 'Upgrade to Product Import Export Pro.'
+
+					),
+					'product_tags' => array(
+						'link' => 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=Product_Import_Export',
+						'text' => 'Upgrade to Product Import Export Pro.'
+
+					),
+					'user' => array(
+						'link' => 'https://www.webtoffee.com/product/wordpress-users-woocommerce-customers-import-export/?utm_source=free_plugin_file_upload&utm_medium=basic_revamp&utm_campaign=User_Import_Export',
+						'text' => 'Upgrade to User Import Export Pro.'
+
+					),
+				);
+				$link = $link_array[$this->to_export]['link'];
+				$text = $link_array[$this->to_export]['text'];
 			
 			ob_start();
 			$this->prepare_step_header_html();

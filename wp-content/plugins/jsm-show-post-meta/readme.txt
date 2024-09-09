@@ -10,8 +10,8 @@ Tags: posts, custom fields, metadata, post types, inspector
 Contributors: jsmoriss
 Requires PHP: 7.2.34
 Requires At Least: 5.8
-Tested Up To: 6.5.2
-Stable Tag: 4.3.0
+Tested Up To: 6.6.1
+Stable Tag: 4.5.0
 
 Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.
 
@@ -50,7 +50,7 @@ Icon for the delete post meta button:
 = Related Plugins =
 
 * [JSM Show Comment Metadata](https://wordpress.org/plugins/jsm-show-comment-meta/)
-* [JSM Show Order Metadata for WooCommerce](https://wordpress.org/plugins/jsm-show-order-meta/)
+* [JSM Show Order Metadata for WooCommerce HPOS](https://wordpress.org/plugins/jsm-show-order-meta/)
 * [JSM Show Post Metadata](https://wordpress.org/plugins/jsm-show-post-meta/)
 * [JSM Show Term Metadata](https://wordpress.org/plugins/jsm-show-term-meta/)
 * [JSM Show User Metadata](https://wordpress.org/plugins/jsm-show-user-meta/)
@@ -81,6 +81,34 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 * [WordPress.org](https://plugins.trac.wordpress.org/browser/jsm-show-post-meta/)
 
 <h3>Changelog / Release Notes</h3>
+
+**Version 4.5.0 (2024/08/16)**
+
+* **New Features**
+	* None.
+* **Improvements**
+	* None.
+* **Bugfixes**
+	* None.
+* **Developer Notes**
+	* Removed deprecated methods from the `SucomUtil` class.
+* **Requires At Least**
+	* PHP v7.2.34.
+	* WordPress v5.8.
+
+**Version 4.4.0 (2024/08/12)**
+
+* **New Features**
+	* None.
+* **Improvements**
+	* None.
+* **Bugfixes**
+	* None.
+* **Developer Notes**
+	* Updated the jquery-admin-page.js functions (version 20240810).
+* **Requires At Least**
+	* PHP v7.2.34.
+	* WordPress v5.8.
 
 **Version 4.3.0 (2024/04/18)**
 
@@ -142,6 +170,14 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 	* WordPress v5.8.
 
 == Upgrade Notice ==
+
+= 4.5.0 =
+
+(2024/08/16) Removed deprecated methods from the `SucomUtil` class.
+
+= 4.4.0 =
+
+(2024/08/12) Updated the jquery-admin-page.js functions (version 20240810).
 
 = 4.3.0 =
 

@@ -136,6 +136,10 @@ if (!class_exists('XmlExportCustomRecord')) {
                     $element_name_in_file = str_replace('-', '_', $element_name_in_file);
                     $element_name_in_file = str_replace('/', '_', $element_name_in_file);
 
+	                if(is_numeric(substr($element_name_in_file, 0, 1))){
+		                $element_name_in_file = 'prepend_' . $element_name_in_file;
+	                }
+
                     $xmlWriter = apply_filters('wp_all_export_add_before_element', $xmlWriter, $element_name_in_file, XmlExportEngine::$exportID, $record->id);
 
                     $xmlWriter->beginElement($element_name_ns, $element_name_in_file, null);

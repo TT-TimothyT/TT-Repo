@@ -58,6 +58,13 @@ if (!defined('ABSPATH')) {
             Wt_Import_Export_For_Woo_Basic_Common_Helper::field_generator($method_import_screen_fields, $method_import_form_data);
             ?>
         </table>
+		<div class="wt_iew_suite_banner">
+			<div class="wt_iew_suite_banner_border"></div>
+			<p style="font-size: 13px; font-weight: 400; margin-top: -61px;margin-left: 13px; padding: 10px 10px;">
+				<strong><?php echo esc_html__('💡 Did You Know?'); ?></strong> <?php echo esc_html__('Get advanced features like FTP/SFTP import, and support for XLSX, XLS, XML, and TXT files with our premium version.'); ?>
+				<a href="<?php echo esc_url($link . WT_U_IEW_VERSION); ?>" style="color: blue;" target="_blank"><?php echo esc_html($text); ?></a>
+			</p>
+		</div>
     </form>
 </div>
 <script type="text/javascript">

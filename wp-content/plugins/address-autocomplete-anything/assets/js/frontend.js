@@ -3,18 +3,22 @@ function wps_aa() {
     for ( address_group of wps_aa_vars.instances ) {
         if ( address_group.init ) {
             // If the init selector is found on this page, then let's get this added!
-            var init_selector = document.querySelector( address_group.init );
-            if ( init_selector ) {
-                wps_aa_init_autocomplete( address_group );
+            if ( ! address_group.delay ) {
+				wps_aa_init_autocomplete( address_group );
+			} else if ( address_group.delay ) {
+				setTimeout( wps_aa_init_autocomplete, address_group.delay * 1000, address_group );
             }
         }
     }
 
 }
 
-
 function wps_aa_init_autocomplete( address_group ) {
     const init_selector = document.querySelector( address_group.init );
+	if ( ! init_selector ) {
+		console.log( 'Could not find address autocomplete initial selector: ' + address_group.init );
+		return;
+	}
     var options = {
         fields: [ "address_components", "geometry", "name" ],
     };
@@ -25,12 +29,14 @@ function wps_aa_init_autocomplete( address_group ) {
     const autocomplete = new google.maps.places.Autocomplete( init_selector, options );
     autocomplete.addListener( "place_changed", () => {
 
-        var values = {};
-        var replacements = [];
-        var populations = [];
+        let values = {};
+        let replacements = [];
+        let populations = [];
+		let final_data = [];
 
         // Get the place data
         const place = autocomplete.getPlace();
+		console.log( "Address found:", place );
 
         // Go through place address components and build all the possible replacement values
         for ( const place_components of place.address_components ) {
@@ -38,7 +44,9 @@ function wps_aa_init_autocomplete( address_group ) {
             values[ place_components.types[0] ] = place_components;
         }
 
-		console.log( values );
+		if ( place.hasOwnProperty( 'name' ) ) {
+			values['name'] = { long_name: place.name, short_name: place.name };
+		}
 
         // Attempts at country specific issues
 		/*
@@ -174,7 +182,12 @@ function wps_aa_init_autocomplete( address_group ) {
 
             wps_aa_change_value( selector, result );
 
+			final_data.push( { selector: selector, result: result } );
+
         }
+
+		const wps_aa_event = new CustomEvent( 'wps_aa', { detail: { data: final_data, init: address_group.init } } );
+		document.dispatchEvent( wps_aa_event );
 
     });
 
@@ -187,7 +200,7 @@ function wps_aa_parse_atts(inputString) {
 
     if (matches) {
         for (const match of matches) {
-            var attributeString = match.slice(1, -1);
+            let attributeString = match.slice(1, -1);
             const attributePairs = attributeString.match(/[\w-]+=".*?"/g);
 
             if (attributePairs) {
@@ -229,12 +242,14 @@ function wps_aa_change_value( selector, data ) {
         if ( where_to_populate.classList.contains( 'select2-hidden-accessible' ) ) {
             jQuery( selector ).trigger( 'change' );
         }
-    }
+    } else {
+		console.error( "Cannot find selector to attach address auto complete data", selector, data );
+	}
 }
 
 function wps_aa_address1_format( country ) {
     // These countries have the street number after the street name
-    const reverse_countries = [ 'DE', 'AT', 'MX', 'CH' ];
+    const reverse_countries = [ 'DE', 'AT', 'MX', 'CH', 'NL' ];
     if ( reverse_countries.includes( country ) ) {
         return 'reverse';
     }

@@ -63,7 +63,6 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
         
         $success = 0;
         $failed = 0;
-        $msg = 'User imported successfully.';
         foreach ($import_data as $key => $data) {
            $row = $batch_offset+$key+1;
            
@@ -75,7 +74,8 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
                
                 $result = $this->process_users($parsed_data,$data);
                 
-                if(!is_wp_error($result)){                                                            
+                if(!is_wp_error($result)){     
+                    $msg = 'User imported successfully.';                                                       
                     if($this->is_user_exist){
                         $msg = 'User updated successfully.';
                     }
@@ -201,6 +201,8 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
                 }elseif('update' == $this->found_action){
                     $this->merge = true;                     
                 }
+            }else{
+                $this->merge = false;
             }
 
 //            if(!$this->is_user_exist && $this->skip_new){
@@ -484,7 +486,7 @@ class Wt_Import_Export_For_Woo_basic_User_Import {
                 require_once ABSPATH . 'wp-admin/includes/user.php';
             }                                    
             $roles = get_editable_roles();
-			$new_rolse_input = isset($data['user_details']['roles']) ? $data['user_details']['roles'] : '';
+			$new_roles_str = isset($data['user_details']['roles']) ? $data['user_details']['roles'] : '';
             $new_roles = array_map('trim', explode(',', $new_roles_str));
             $new_roles = array_intersect($new_roles, array_keys($roles));
             $roles_to_remove = array();

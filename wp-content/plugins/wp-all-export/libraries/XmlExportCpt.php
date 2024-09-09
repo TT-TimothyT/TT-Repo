@@ -18,18 +18,17 @@ final class XmlExportCpt
 
         $article = array();
 
+	    if(!isset($entry->ID)) {
+		    $entryId = $entry->order_id ?? $entry->id;
+		    $entry->ID = $entry->id;
+	    } else {
+		    $entryId = $entry->order_id ?? $entry->ID;
+	    }
+
         // associate exported post with import
         if (!$is_item_data and wp_all_export_is_compatible() && isset($exportOptions['is_generate_import']) && isset($exportOptions['import_id'])) {
 
-	        if(!isset($entry->ID)) {
-		        $entryId = $entry->id;
-		        $entry->ID = $entry->id;
-	        } else {
-		        $entryId = $entry->ID;
-	        }
-
-
-	        $postRecord = new PMXI_Post_Record();
+	        $postRecord = new \PMXI_Post_Record();
             $postRecord->clear();
             $postRecord->getBy(array(
                 'post_id' => $entryId,
@@ -295,8 +294,28 @@ final class XmlExportCpt
                     case 'cf':
                         if (!empty($fieldValue)) {
 
-                            $val = "";
-                            $cur_meta_values = get_post_meta($entry->ID, $fieldValue);
+	                        // Clear the meta values from the previous iteration.
+	                        $cur_meta_values = null;
+
+	                        $val = "";
+
+	                        // Retrieve meta from *wc_orders_meta table if order export and HPOS enabled. Ensure a valid order
+	                        // object is returned.
+	                        if ( $pType === 'shop_order' && PMXE_Plugin::hposEnabled() && $order = wc_get_order( $entry->order_id ?? $entry->ID )) {
+
+		                        $metaName = 'get' . $fieldValue;
+
+		                        if(method_exists('WC_Order', $metaName)) {
+			                        $cur_meta_values = $order->$metaName();
+		                        }else {
+			                        $cur_meta_values = $order->get_meta( $fieldValue );
+		                        }
+	                        }
+
+	                        // Retrieve meta from *postmeta table if no value was found above.
+	                        if ( empty( $cur_meta_values ) ) {
+		                        $cur_meta_values = get_post_meta( $entry->order_id ?? $entry->ID, $fieldValue );
+	                        }
 
                             if (!empty($cur_meta_values) and is_array($cur_meta_values)) {
                                 foreach ($cur_meta_values as $key => $cur_meta_value) {
@@ -574,7 +593,15 @@ final class XmlExportCpt
                 if ($is_xml_export and isset($article[$element_name])) {
                     $element_name_in_file = XmlCsvExport::_get_valid_header_name($element_name);
 
-                    $xmlWriter = apply_filters('wp_all_export_add_before_element', $xmlWriter, $element_name_in_file, XmlExportEngine::$exportID, $entry->ID);
+	                $element_name_in_file = str_replace(' ', '', $element_name_in_file);
+	                $element_name_in_file = str_replace('-', '_', $element_name_in_file);
+	                $element_name_in_file = str_replace('/', '_', $element_name_in_file);
+
+	                if(is_numeric(substr($element_name_in_file, 0, 1))){
+		                $element_name_in_file = 'prepend_' . $element_name_in_file;
+	                }
+
+	                $xmlWriter = apply_filters('wp_all_export_add_before_element', $xmlWriter, $element_name_in_file, XmlExportEngine::$exportID, $entry->ID);
 
                     $xmlWriter->beginElement($element_name_ns, $element_name_in_file, null);
                     $xmlWriter->writeData($article[$element_name], $element_name_in_file);

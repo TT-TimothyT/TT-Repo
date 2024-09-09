@@ -205,3 +205,9 @@ msgstr ""
 #: includes/options-page.php:74
 msgid "Save Changes"
 msgstr "Guardar cambios"
+
+msgid "Reply-to address"
+msgstr "dirección de respuesta"
+
+msgid "Suppress Click Track for password reset email"
+msgstr "Suprimir seguimiento de clics para el email de restablecimiento de contraseña"

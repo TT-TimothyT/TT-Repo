@@ -256,7 +256,6 @@ if (!function_exists('wp_mail')) {
             'subject' => $subject,
         ];
 
-
         $rcpt_data = apply_filters('mg_mutate_to_rcpt_vars', $to);
         if (!is_null($rcpt_data['rcpt_vars'])) {
             $body['recipient-variables'] = $rcpt_data['rcpt_vars'];
@@ -273,6 +272,14 @@ if (!function_exists('wp_mail')) {
         } else {
             $trackOpens = empty($mailgun['track-opens']) ? 'no' : 'yes';
         }
+
+        if (isset($mailgun['suppress_clicks']) && $mailgun['suppress_clicks'] === 'yes') {
+            $passwordResetSubject = __('Password Reset Request', 'mailgun') ?: __( 'Password Reset Request', 'woocommerce' );
+            if (!empty($passwordResetSubject) && stripos($subject, $passwordResetSubject) !== false) {
+                $trackClicks = 'no';
+            }
+        }
+
         $body['o:tracking-clicks'] = $trackClicks;
         $body['o:tracking-opens'] = $trackOpens;
 
@@ -394,6 +401,11 @@ if (!function_exists('wp_mail')) {
             if (!strstr($headers['Content-Type'], 'charset')) {
                 $headers['Content-Type'] = rtrim($headers['Content-Type'], '; ') . "; charset={$charset}";
             }
+        }
+
+        $replyTo = (defined('MAILGUN_REPLY_TO_ADDRESS') && MAILGUN_REPLY_TO_ADDRESS) ? MAILGUN_REPLY_TO_ADDRESS : get_option('reply_to');
+        if (!empty($replyTo)) {
+            $headers['Reply-To'] = $replyTo;
         }
 
         // Set custom headers

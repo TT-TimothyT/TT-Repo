@@ -377,10 +377,26 @@ if ( ! class_exists('XmlExportEngine') ){
 				)						
 			);
 
-			if ( 'specific' == $this->post['export_type']) 
-			{ 
+			if ( 'specific' == $this->post['export_type'] || 'wp_query' == $this->post['wp_query_selector']) {
 
-				self::$post_types = ( ! is_array($this->post['cpt']) ) ? array($this->post['cpt']) : $this->post['cpt'];								
+				$postTypes = [];
+				$exportqueryPostType = [];
+
+				if (!empty($this->post['cpt'])) {
+					$postTypes = is_array( $this->post['cpt'] )
+						? $this->post['cpt']
+						: array( $this->post['cpt'] );
+				}
+
+				if (isset($this->post['exportquery']) && !empty($this->post['exportquery']->query['post_type'])) {
+					$exportqueryPostType = [$this->post['exportquery']->query['post_type']];
+				}
+
+				if (empty($postTypes)) {
+					$postTypes = $exportqueryPostType;
+				}
+
+				self::$post_types = $postTypes;
 
 				if( \class_exists('WooCommerce') && XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
                     if (in_array('product', self::$post_types) and !in_array('product_variation', self::$post_types)) self::$post_types[] = 'product_variation';
@@ -486,7 +502,7 @@ if ( ! class_exists('XmlExportEngine') ){
                 else if(!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() && strpos($this->post['wp_query'], 'product') !== false && \class_exists('WooCommerce')) {
                     $this->errors->add('form-validation', __('The WooCommerce Export Add-On Pro is required to Export WooCommerce Products', 'pmxe_plugin'));
                 }
-                else if(!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() && strpos($this->post['wp_query'], 'shop_order') !== false) {
+                else if(!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()  && !XmlExportEngine::get_addons_service()->isWooCommerceOrderAddonActive() && strpos($this->post['wp_query'], 'shop_order') !== false) {
                     $this->errors->add('form-validation', __('The WooCommerce Export Add-On Pro is required to Export WooCommerce Orders', 'pmxe_plugin'));
                 }
                 else if(!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() && strpos($this->post['wp_query'], 'shop_coupon') !== false) {

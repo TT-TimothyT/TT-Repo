@@ -139,7 +139,7 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 			else if (in_array('shop_order', $this->options['cpt']) && $this->hposEnabled()) {
 				add_filter('posts_where', 'wp_all_export_numbering_where', 15, 1);
 
-				if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
+				if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() || XMLExportEngine::get_addons_service()->isWooCommerceOrderAddonActive()) {
 					$exportQuery = new \Wpae\WordPress\OrderQuery();
 
 					$totalOrders = $exportQuery->getOrders();
@@ -287,7 +287,7 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 			else if (in_array('shop_order', $this->options['cpt']) && $this->hposEnabled()) {
 				add_filter('posts_where', 'wp_all_export_numbering_where', 15, 1);
 
-				if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive()) {
+				if(XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() || XMLExportEngine::get_addons_service()->isWooCommerceOrderAddonActive()) {
 					$exportQuery = new \Wpae\WordPress\OrderQuery();
 
 					$totalOrders = $exportQuery->getOrders();

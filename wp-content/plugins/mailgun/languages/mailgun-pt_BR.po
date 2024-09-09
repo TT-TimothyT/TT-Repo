@@ -363,3 +363,9 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "http://www.mailgun.com/"
 msgstr ""
+
+msgid "Reply-to address"
+msgstr ""
+
+msgid "Suppress Click Track for password reset email"
+msgstr ""

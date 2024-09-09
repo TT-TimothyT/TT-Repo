@@ -24,6 +24,21 @@ function pmxe_wp_ajax_wpae_filtering(){
 	
 	$post = $input->post('data', array());
 
+	if(empty($post['cpt'])) {
+		$postTypes           = [];
+		$exportqueryPostType = [];
+
+		if ( isset( $post['exportquery'] ) && ! empty( $post['exportquery']->query['post_type'] ) ) {
+			$exportqueryPostType = [ $post['exportquery']->query['post_type'] ];
+		}
+
+		if ( empty( $postTypes ) ) {
+			$postTypes = $exportqueryPostType;
+		}
+
+		$post['cpt'] = $postTypes;
+	}
+
 	if ( ! empty($post['cpt'])):		
 
 		$engine = new XmlExportEngine($post, $errors);	

@@ -78,7 +78,7 @@ final Class XmlCsvExport
 
 			$exportOptions = XmlExportEngine::$exportOptions;
 
-			if(in_array('shop_order', $exportOptions['cpt']) && PMXE_Plugin::hposEnabled()) {
+			if($exportOptions['export_type'] != 'advanced' && in_array('shop_order', $exportOptions['cpt']) && PMXE_Plugin::hposEnabled()) {
 
 
 				$exported = 0;
@@ -293,7 +293,7 @@ final Class XmlCsvExport
 
             }
 
-        } else if ( XmlExportEngine::$is_woo_order_export && PMXE_Plugin::hposEnabled() ) {
+        } else if ( XmlExportEngine::$exportOptions['export_type'] != 'advanced' && XmlExportEngine::$is_woo_order_export && PMXE_Plugin::hposEnabled() ) {
 			add_filter( 'posts_where', 'wp_all_export_numbering_where', 15, 1 );
 
 

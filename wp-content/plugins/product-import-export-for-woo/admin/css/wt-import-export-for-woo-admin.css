@@ -650,266 +650,290 @@ img.tips {
 
 /* start marketing section */
 .wt-import-export-upsell-wrapper.market-box{
-    width:27%;
-    float: right;
+  width:27%;
+  float: right;
 }
 .wrap .wt-import-export-upsell-wrapper .ier-premium-upgrade {
-    margin-top: 0px;
-    margin-right: 0px;
+  margin-top: 0px;
+  margin-right: 0px;
 }
 .wt-import-export-upsell-wrapper .ier-premium-upgrade {
-    margin-top: 30px;
-    margin-right: 15px;
+  margin-top: 30px;
+  margin-right: 15px;
 }
 
- .wt-ierpro-sidebar{
-  border-radius: 7px;
-  padding: 0;
+.wt-ierpro-sidebar{
+/*background: #FFFFFF;*/
+border-radius: 7px;
+padding: 0;
 }
 .wt-ierpro-header{
-  background: #FFFFFF;
-  box-shadow: 0px 4px 19px rgba(49, 117, 252, 0.2);
-  padding: 8px;
-  margin-top: 15px;
+background: #FFFFFF;
+padding: 8px;
+margin-top: 15px;
+width: 92%;
 }
 .wt-ierpro-name{
-  border-radius: 3px;
-  margin: 0;
-  padding: 16px;
-  display: flex;
-  align-items: center;
+background-color: aliceblue;
+height: 53px;
+border-radius: 3px;
+margin: -1px;
+padding: 16px;
+display: block;
+width: inherit;
+float: left;
+position: relative;
+}
+.wt-ierpro-name-suite{
+border-radius: 3px;
+margin: 0;
+padding: 16px;
+display: block;
+width: inherit;
+float: left;
+position: relative;
 }
 .wt-ierpro-name img{
-  width: 50px;
-  height: auto;
-  border-radius: 7px;
+width: 47px;
+height: 47px;
+border-radius: 7px;
+}
+.wt-ierpro-name-suite img{
+width: 47px;
+height: 47px;
+border-radius: 7px;
 }
 .wt-ierpro-name h4{
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 20px;
-  margin: 0 0 5px 12px;
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 20px;
+margin: 0 0 5px 12px;
 }
-.wt-ierpro-name .star-rating{
-    float: left;
+.wt-ierpro-name-suite h4{
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 20px;
+margin: 0 0 5px 12px;
 }
+/* .wt-ierpro-name .star-rating{
+  float: left;
+} */
 .wt-ierpro-mainfeatures ul{
-  padding: 0;
-  margin: 15px 25px 20px 25px;
+padding: 0;
+margin: 15px 25px 20px 25px;
 }
 .wt-ierpro-mainfeatures li{
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height:24px;
-  letter-spacing: -0.01em;
-  list-style: none;
-  position: relative;
-  color: #091E80;
-  padding-left: 28px;
+font-style: normal;
+font-weight: bold;
+font-size: 14px;
+line-height:24px;
+letter-spacing: -0.01em;
+list-style: none;
+position: relative;
+color: #091E80;
+padding-left: 28px;
 }
 .wt-ierpro-mainfeatures li.money-back:before{
-  content: '';
-  position: absolute;
-  left: 0;
-  height:24px ;
-  width: 16px;
-  background-image: url(../../assets/images/gopro/money-back.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
+content: '';
+position: absolute;
+left: 0;
+height:24px ;
+width: 16px;
+background-image: url(../../assets/images/gopro/money-back.svg);
+background-position: center;
+background-repeat: no-repeat;
+background-size: contain;
 }
 .wt-ierpro-mainfeatures li.support:before{
-  content: '';
-  position: absolute;
-  left: 0;
-  height:24px ;
-  width: 16px;
-  background-image: url(../../assets/images/gopro/support.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
+content: '';
+position: absolute;
+left: 0;
+height:24px ;
+width: 16px;
+background-image: url(../../assets/images/gopro/support.svg);
+background-position: center;
+background-repeat: no-repeat;
+background-size: contain;
 }
 .wt-ierpro-btn-wrapper{
-  display: block;
-  margin: 20px auto 20px;
-  text-align: center;
+display: block;
+margin: -6px auto 13px;
+text-align: center;
 }
 .wt-ierpro-blue-btn, .wt-ierpro-blue-btn:visited{
-  background: linear-gradient(90.67deg, #2608DF -34.86%, #3284FF 115.74%);
-  box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.39);
-  border-radius: 5px;
-  padding: 10px 15px 10px 38px;
-  display: inline-block;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
-  color: #FFFFFF;
-  text-decoration: none;
-  transition: all .2s ease;
-  position: relative;
-  border: none;
+background: linear-gradient(90.67deg, #2608DF -34.86%, #3284FF 115.74%);
+box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.39);
+border-radius: 5px;
+padding: 10px 15px 10px 38px;
+display: inline-block;
+font-style: normal;
+font-weight: bold;
+font-size: 14px;
+line-height: 18px;
+color: #FFFFFF;
+text-decoration: none;
+transition: all .2s ease;
+position: relative;
+border: none;
 }
 .wt-ierpro-blue-btn:before{
-  content: '';
-  position: absolute;
-  height: 15px;
-  width: 18px;
-  background-image: url(../../assets/images/gopro/white-crown.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  left: 15px;
+content: '';
+position: absolute;
+height: 15px;
+width: 18px;
+background-image: url(../../assets/images/gopro/white-crown.svg);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center;
+left: 15px;
 }
 .wt-ierpro-blue-btn:hover{
-  box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.5);
-  text-decoration: none;
-  transform: translateY(2px);
-  transition: all .2s ease;
-  color: #FFFFFF;
+box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.5);
+text-decoration: none;
+transform: translateY(2px);
+transition: all .2s ease;
+color: #FFFFFF;
 }
 .wt-ierpro-features{
-  padding: 20px 10px 10px 10px;
+padding: 10px 10px 10px 10px;
 }
 .wt-ierpro-features ul{
-  padding: 0;
-  margin: 0;
+padding: 0;
+margin: 0;
 }
 .wt-ierpro-features li{
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 17px;
-  color: #001A69;
-  list-style: none;
-  position: relative;
-  padding-left: 35px;
-  padding-right: 5px;  
-  margin: 0 0 15px 0;
-  display: flex;
-  align-items: center;
+font-style: normal;
+font-weight: 500;
+font-size: 13px;
+line-height: 17px;
+color: #001A69;
+list-style: none;
+position: relative;
+padding-left: 35px;
+padding-right: 5px;  
+margin: 0 0 15px 0;
+display: flex;
+align-items: center;
 }
 .wt-ierpro-newfeat li:before{
-  content: '';
-  position: absolute;
-  height: 39px;
-  width: 39px;
-  background-image: url(../../assets/images/gopro/new-badge.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  left: 0;
+content: '';
+position: absolute;
+height: 39px;
+width: 39px;
+background-image: url(../../assets/images/gopro/new-badge.svg);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center;
+left: 0;
 }
 .wt-ierpro-allfeat li:before{
-  content: '';
-  position: absolute;
-  height: 16px;
-  width: 16px;
-  background-image: url(../../assets/images/gopro/tick.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  left: 10px;
+content: '';
+position: absolute;
+height: 16px;
+width: 16px;
+background-image: url(../../assets/images/gopro/tick.svg);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center;
+left: 10px;
 }
 ul.wt-ierpro-newfeat li {
-  margin-bottom: 30px;
+margin-bottom: 30px;
 }
 .wt-ierpro-outline-btn, .wt-ierpro-outline-btn:visited{
-  background: linear-gradient(90.67deg, #2608DF -34.86%, #3284FF 115.74%);
-  box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.39);
-  border-radius: 5px;
-  padding: 10px 15px 10px 38px;
-  display: inline-block;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
-  color: #FFFFFF;
-  text-decoration: none;
-  transition: all .2s ease;
-  position: relative;
-  border: none;
+background: linear-gradient(90.67deg, #2608DF -34.86%, #3284FF 115.74%);
+box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.39);
+border-radius: 5px;
+padding: 10px 15px 10px 38px;
+display: inline-block;
+font-style: normal;
+font-weight: bold;
+font-size: 14px;
+line-height: 18px;
+color: #FFFFFF;
+text-decoration: none;
+transition: all .2s ease;
+position: relative;
+border: none;
 }
 .wt-ierpro-outline-btn:before{
-  content: '';
-  position: absolute;
-  height: 15px;
-  width: 18px;
-  background-image: url(../../assets/images/gopro/white-crown.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  left: 15px;
+content: '';
+position: absolute;
+height: 15px;
+width: 18px;
+background-image: url(../../assets/images/gopro/white-crown.svg);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center;
+left: 15px;
 }
 .wt-ierpro-outline-btn:hover{
-  box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.5);
-  text-decoration: none;
-  transform: translateY(2px);
-  transition: all .2s ease;
-  color: #FFFFFF;
+box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.5);
+text-decoration: none;
+transform: translateY(2px);
+transition: all .2s ease;
+color: #FFFFFF;
 }
 .wt-ier-rating-number{
-    float: left;
-    margin-left:10px;
-    margin-right:10px;
-    margin-top: 3px;
+  float: left;
+  margin-left:10px;
+  margin-right:10px;
+  margin-top: 3px;
 }
-
 
 .wt-star-rating{white-space: nowrap;}
 .wt-star-rating .wt-star{
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    -webkit-font-smoothing: antialiased;
-    font-size: 20px;
-    line-height: 1;
-    font-family: dashicons;
-    text-decoration: inherit;
-    font-weight: 400;
-    font-style: normal;
-    vertical-align: top;
-    transition: color .1s ease-in;
-    text-align: center;
-    color: #dba617;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  -webkit-font-smoothing: antialiased;
+  font-size: 20px;
+  line-height: 1;
+  font-family: dashicons;
+  text-decoration: inherit;
+  font-weight: 400;
+  font-style: normal;
+  vertical-align: top;
+  transition: color .1s ease-in;
+  text-align: center;
+  color: #dba617;
 }
 .wt-star-rating .wt-star-full:before {
-    content: "\f155";
+  content: "\f155";
 }
 .wt-star-rating .wt-star-half:before{
-    content: "\f459";
+  content: "\f459";
 }
 .wt-star-rating .wt-star-empty:before {
-    content: "\f154";
+  content: "\f154";
 }
-
-
 
 .wt-ier-all-in-one-text{
-    text-align: left;
-    margin-left: 18px;
+  text-align: left;
+  margin-left: 18px;
 }
 .wt-ier-all-in-one-text-sp{
-    font-size: 15px;
+  margin-top: -6px;
+  font-size: 13px;
 }
 .wt-ierpro-blue-btn-suite, .wt-ierpro-blue-btn-suite:visited{
-  background: linear-gradient(90.67deg, #2D9FFF -34.86%, #2D9FFF 115.74%);
-  border-radius: 5px;
-  padding: 10px 15px 10px 38px;
-  display: inline-block;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
-  color: #FFFFFF;
-  text-decoration: none;
-  transition: all .2s ease;
-  position: relative;
-  border: none;
-  width: 70%;
-  margin-top: 15px;
+background: #3176FD;
+border-radius: 5px;
+padding: 10px 15px 10px 38px;
+display: inline-block;
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 18px;
+color: #FFFFFF;
+text-decoration: none;
+transition: all .2s ease;
+position: relative;
+border: none;
+width: 70%;
+margin-top: 6px;
 }
 
 .wt-ierpro-blue-btn-suite:hover{
@@ -1029,26 +1053,38 @@ ul.wt-ierpro-newfeat li {
     margin-bottom: 18px;
 }
 .wt-ier-primary-btn{
-    background: #007CBA;
-    border:1px solid #007CBA;
-    color: #FFFFFF;
+  background: #007CBA;
+  border:1px solid #007CBA;
+  color: #FFFFFF;
+  font-style: normal;
+  width:127px;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 16px;
+  text-decoration: none;
+  padding:10px 12px;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block;
+  transition: all .2s ease;
+  margin-top: 18px;
 }
+
 .wt-ier-secondary-btn{
-    color: #007CBA;
-    border:1px solid #007CBA;
-}
-.wt-ier-secondary-btn,.wt-ier-primary-btn{
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 16px;
-    text-decoration: none;
-    padding:10px 12px;
-    border-radius: 5px;
-    text-align: center;
-    display: inline-block;
-    transition: all .2s ease;
-    margin-top: 18px;
+  font-style: normal;
+  width:127px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  text-decoration: none;
+  padding:10px 12px;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block;
+  transition: all .2s ease;
+  margin-top: 18px;
+  color: #007CBA;
+  border:1px solid #007CBA;
 }
 .wt-ier-primary-btn:hover,.wt-ier-primary-btn:focus{
     color:#fff;
@@ -1067,9 +1103,6 @@ ul.wt-ierpro-newfeat li {
 }
 .wt-ier-btn-group .wt-ier-btn{
     margin: 8px;
-}
-.wt-ier-box-highlight{
-    box-shadow: 0px 0px 20px rgba(19, 109, 200, 0.3);
 }
 .wt-ier-center{
     text-align: center;
@@ -1272,255 +1305,263 @@ ul.wt-ierpro-newfeat li {
 
 /* start small marketing section */
 .ier_pro_plugins_section_small{
-    margin-top: 30px;
-    width: 100%;
+  /*float: left;*/
+  margin-top: 30px;
+  width: 97%;
 }
 .wt-import-export-upsell-small-wrapper.market-box{
-    height:400px;
+  /*width:32%;
+  float: left;
+  margin-right: 15px;
+  */
+  height:400px;
 }
 .wrap .wt-import-export-small-upsell-wrapper .ier-premium-upgrade {
-    margin-top: 0px;
-    margin-right: 0px;
+  margin-top: 0px;
+  margin-right: 0px;
 }
 .wt-import-export-upsell-small-wrapper .ier-premium-upgrade {
-    margin-top: 0px;
-    margin-right: 0px;
+  margin-top: 0px;
+  margin-right: 0px;
 }
 
 .wt-import-export-upsell-small-wrapper .wt-ierpro-sidebar{
-  background: #FFFFFF;
-  border-radius: 7px;
-  padding: 0;
+background: #FFFFFF;
+border-radius: 7px;
+padding: 0;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-header{
-  background: #FFFFFF;
-  box-shadow: none;
-  border-radius: 0px;
-  padding: 0px;
-  margin: 0;
+background: #FFFFFF;
+box-shadow: none;
+border-radius: 0px;
+padding: 1px;
+margin: 0;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-name-small{
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  align-items: center;
+margin: 0;
+padding: 20px;
+display: flex;
+align-items: center;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-name-small img{
-  width: 36px;
-  height: auto;  
-  border-radius: 3px;
+width: 36px;
+height: auto;  
+border-radius: 3px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-name-small h4{
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 18px;
-  margin: 0 0 0 12px;
+font-style: normal;
+font-weight: 600;
+font-size: 15px;
+line-height: 18px;
+margin: 0 0 0 12px;
 }
 .rtl .wt-import-export-upsell-small-wrapper .wt-ierpro-name-small h4{
-    margin: 0 12px 0 0px;
+  margin: 0 12px 0 0px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-mainfeatures ul{
-  padding: 0;
-  margin: 15px 25px 20px 25px;
+padding: 0;
+margin: 15px 25px 20px 25px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-mainfeatures li{
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height:24px;
-  letter-spacing: -0.01em;
-  list-style: none;
-  position: relative;
-  color: #091E80;
-  padding-left: 28px;
+font-style: normal;
+font-weight: bold;
+font-size: 14px;
+line-height:24px;
+letter-spacing: -0.01em;
+list-style: none;
+position: relative;
+color: #091E80;
+padding-left: 28px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-mainfeatures li.money-back:before{
-  content: '';
-  position: absolute;
-  left: 0;
-  height:24px ;
-  width: 16px;
-  background-image: url(../../assets/images/gopro/money-back.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
+content: '';
+position: absolute;
+left: 0;
+height:24px ;
+width: 16px;
+background-image: url(../../assets/images/gopro/money-back.svg);
+background-position: center;
+background-repeat: no-repeat;
+background-size: contain;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-mainfeatures li.support:before{
-  content: '';
-  position: absolute;
-  left: 0;
-  height:24px ;
-  width: 16px;
-  background-image: url(../../assets/images/gopro/support.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
+content: '';
+position: absolute;
+left: 0;
+height:24px ;
+width: 16px;
+background-image: url(../../assets/images/gopro/support.svg);
+background-position: center;
+background-repeat: no-repeat;
+background-size: contain;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-btn-wrapper{
-  display: block;
-  margin: 20px auto 20px;
-  text-align: center;
+display: block;
+margin: -6px auto 20px;
+text-align: center;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-blue-btn, .wt-ierpro-blue-btn:visited{
-  background: linear-gradient(90.67deg, #2608DF -34.86%, #3284FF 115.74%);
-  box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.39);
-  border-radius: 5px;
-  padding: 10px 15px 10px 38px;
-  display: inline-block;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
-  color: #FFFFFF;
-  text-decoration: none;
-  transition: all .2s ease;
-  position: relative;
-  border: none;
+background: linear-gradient(90.67deg, #2608DF -34.86%, #3284FF 115.74%);
+box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.39);
+border-radius: 5px;
+padding: 10px 15px 10px 38px;
+display: inline-block;
+font-style: normal;
+font-weight: bold;
+font-size: 14px;
+line-height: 18px;
+color: #FFFFFF;
+text-decoration: none;
+transition: all .2s ease;
+position: relative;
+border: none;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-blue-btn:before{
-  content: '';
-  position: absolute;
-  height: 15px;
-  width: 18px;
-  background-image: url(../../assets/images/gopro/white-crown.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  left: 15px;
+content: '';
+position: absolute;
+height: 15px;
+width: 18px;
+background-image: url(../../assets/images/gopro/white-crown.svg);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center;
+left: 15px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-blue-btn:hover{
-  box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.5);
-  text-decoration: none;
-  transform: translateY(2px);
-  transition: all .2s ease;
-  color: #FFFFFF;
+box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.5);
+text-decoration: none;
+transform: translateY(2px);
+transition: all .2s ease;
+color: #FFFFFF;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-features{
-  padding: 0px 5px 5px 10px;
+padding: 15px 5px 5px 10px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-features ul{
-  padding: 0;
-  margin: 0;
+padding: 0;
+margin: 0;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-features li{
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 17px;
-  color: #001A69;
-  list-style: none;
-  position: relative;
-  padding-left: 35px;
-  padding-right: 5px;  
-  margin: 0 0 15px 0;
-  display: flex;
-  align-items: center;
+font-style: normal;
+font-weight: 500;
+font-size: 13px;
+line-height: 17px;
+color: #474747;
+list-style: none;
+position: relative;
+padding-left: 35px;
+padding-right: 5px;  
+margin: 0 0 15px 0;
+display: flex;
+align-items: center;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-newfeat li:before{
-  content: '';
-  position: absolute;
-  height: 39px;
-  width: 39px;
-  background-image: url(../../assets/images/gopro/new-badge.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  left: 0;
+content: '';
+position: absolute;
+height: 39px;
+width: 39px;
+background-image: url(../../assets/images/gopro/new-badge.svg);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center;
+left: 0;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-allfeat li:before{
-  content: '';
-  position: absolute;
-  height: 16px;
-  width: 16px;
-  background-image: url(../../assets/images/gopro/tick.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  left: 10px;
+content: '';
+position: absolute;
+height: 16px;
+width: 16px;
+background-image: url(../../assets/images/gopro/planetick.svg);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center;
+left: 10px;
 }
 .wt-import-export-upsell-small-wrapper ul.wt-ierpro-newfeat li {
-  margin-bottom: 30px;
+margin-bottom: 30px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-outline-btn, .wt-ierpro-outline-btn:visited{
-  background: linear-gradient(90.67deg, #2608DF -34.86%, #3284FF 115.74%);
-  box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.39);
-  border-radius: 5px;
-  padding: 10px 15px 10px 38px;
-  display: inline-block;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
-  color: #FFFFFF;
-  text-decoration: none;
-  transition: all .2s ease;
-  position: relative;
-  border: none;
+background: linear-gradient(90.67deg, #2608DF -34.86%, #3284FF 115.74%);
+box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.39);
+border-radius: 5px;
+padding: 10px 15px 10px 38px;
+display: inline-block;
+font-style: normal;
+font-weight: bold;
+font-size: 14px;
+line-height: 18px;
+color: #FFFFFF;
+text-decoration: none;
+transition: all .2s ease;
+position: relative;
+border: none;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-outline-btn:before{
-  content: '';
-  position: absolute;
-  height: 15px;
-  width: 18px;
-  background-image: url(../../assets/images/gopro/white-crown.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  left: 15px;
+content: '';
+position: absolute;
+height: 15px;
+width: 18px;
+background-image: url(../../assets/images/gopro/white-crown.svg);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center;
+left: 15px;
 }
 .wt-import-export-upsell-small-wrapper .wt-ierpro-outline-btn:hover{
-  box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.5);
-  text-decoration: none;
-  transform: translateY(2px);
-  transition: all .2s ease;
-  color: #FFFFFF;
+box-shadow: 0px 4px 13px rgba(46, 80, 242, 0.5);
+text-decoration: none;
+transform: translateY(2px);
+transition: all .2s ease;
+color: #FFFFFF;
 }
 
 .wp-submenu li span.wt-go-premium {
-    font-weight: 700;
-    color: #28e499;
+  font-weight: 700;
+  color: #28e499;
 }
-
 
 .wt-cs-rating-money-back{
-    margin-top: 30px;
-    background-color: #fff;
+margin: auto;
+margin-bottom: 10px;
+background-color:#EFEDFF54;
+width: 290px;
+height: 162px;
+border-radius: 3px 0px 0px 0px;
+border: 1px solid #E4E4E4;
 }
 .wt-money-back{
-    border-bottom: 1px solid #ccc;
-    padding:10px;
-    display: flex;
+  border-bottom: 1px solid #ccc;
+  padding:10px;
+  display: flex;
 }
 .wt-money-back img{
-   margin-right: 10px;
+ margin-right: 10px;
 }
 .wt-cs-rating img{
-   margin-right: 10px;
+ margin-right: 10px;
 }
 .wt-cs-rating{
-    display: flex;
-    padding: 10px;
+  display: flex;
+  padding: 10px;
 }
 .wt-ierpro-name-small-p{
-    margin-top: 0px;
-    font-size: 14px;
-    padding-left: 25px;
-    padding-bottom: 6px;
-    line-height: 20px;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 0px;
-    color:#959595;
+  margin-top: 0px;
+  font-size: 14px;
+  padding-left: 25px;
+  padding-bottom: 6px;
+  line-height: 20px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 0px;
+  color:#959595;
 }
 .wt-hide-features-view-plugin{
-    border-bottom: 1px solid #ccc;
-    padding:20px;
-    display: flex;
-    margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  padding:20px;
+  display: flex;
+  margin-bottom: 10px;
 }
-
 .wt-view-plugin, .wt-hide-features{
-    text-decoration:none;color:#3176FD;
+  text-decoration:none;color:#3176FD;
 }
 .wt_iew_post-type-cards {
   display: flex;
@@ -1619,4 +1660,15 @@ ul.wt-ierpro-newfeat li {
 .wt_iew_post-type-card-hd {
   position: absolute;
   bottom: 1px;
+}
+.wt_iew_suite_banner{
+  width: 98%;
+  height: 63px;
+  margin-left: 10px;
+  background-color: #FFFCE1;
+}
+.wt_iew_suite_banner_border{
+  width: 2px; 
+  height: 63px;
+  background-color:#E6CE5C
 }

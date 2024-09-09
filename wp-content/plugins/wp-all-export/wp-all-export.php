@@ -3,7 +3,7 @@
 Plugin Name: WP All Export
 Plugin URI: http://www.wpallimport.com/upgrade-to-wp-all-export-pro/?utm_source=export-plugin-free&utm_medium=wp-plugins-page&utm_campaign=upgrade-to-pro
 Description: Export any post type to a CSV or XML file. Edit the exported data, and then re-import it later using WP All Import.
-Version: 1.4.7
+Version: 1.4.8
 Author: Soflyy
 */
 
@@ -59,7 +59,7 @@ else {
 	 */
 	define('PMXE_PREFIX', 'pmxe_');
 
-	define('PMXE_VERSION', '1.4.7');
+	define('PMXE_VERSION', '1.4.8');
 
     define('PMXE_ASSETS_VERSION', '-1.0.2');
 
@@ -482,7 +482,7 @@ else {
                                     if(!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() && strpos($export->options['wp_query'], 'product') !== false && \class_exists('WooCommerce')) {
                                         die(\__('The WooCommerce Export Add-On Pro is required to run this export. If you already own it, you can download the add-on here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', 'wp_all_export_plugin'));
                                     }
-                                    else if( (!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() || !XmlExportEngine::get_addons_service()->isWooCommerceOrderAddonActive() ) && strpos($export->options['wp_query'], 'shop_order') !== false) {
+                                    else if( (!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() && !XmlExportEngine::get_addons_service()->isWooCommerceOrderAddonActive() ) && strpos($export->options['wp_query'], 'shop_order') !== false) {
                                         die(\__('The WooCommerce Export Add-On Pro is required to run this export. If you already own it, you can download the add-on here: <a href="http://www.wpallimport.com/portal/downloads" target="_blank">http://www.wpallimport.com/portal/downloads</a>', 'wp_all_export_plugin'));
                                     }
                                     else if(!XmlExportEngine::get_addons_service()->isWooCommerceAddonActive() && strpos($export->options['wp_query'], 'shop_coupon') !== false) {

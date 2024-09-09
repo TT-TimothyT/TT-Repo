@@ -714,7 +714,11 @@ class Wt_Import_Export_For_Woo_Basic_Order_Export {
          if ($this->is_wc_stripe_active):
 
             $stripe_fee =  $order->get_meta('_stripe_fee');
-            $order_data['meta:_stripe_fees'] = empty($stripe_fee) ? '' : json_encode($stripe_fee);
+            $stripe_currency =  $order->get_meta('_stripe_currency');
+            $stripe_net =  $order->get_meta('_stripe_net');
+            $order_data['meta:_stripe_fee'] = empty($stripe_fee) ? '' : json_encode($stripe_fee);
+            $order_data['meta:_stripe_currency'] = empty($stripe_currency) ? '' : json_encode($stripe_currency);
+            $order_data['meta:_stripe_net'] = empty($stripe_net) ? '' : json_encode($stripe_net);
          endif; 
          
         $order_export_data = array();

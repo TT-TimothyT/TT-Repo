@@ -240,7 +240,7 @@ class Wt_Import_Export_For_Woo_basic_User_Export {
                 elseif(strtotime($date_in_timestamp) == false){
                     $customer_data[$key] = date('Y-m-d H:i:s', $date_in_timestamp);
                 }else{
-                    $customer_data[$key] = $date_in_timestamp;
+                    $customer_data[$key] = $date_in_timestamp ? gmdate( 'Y-m-d', $date_in_timestamp ) : $date_in_timestamp;
                 }
                 continue;
             }
@@ -252,7 +252,7 @@ class Wt_Import_Export_For_Woo_basic_User_Export {
                 elseif(strtotime($date_in_timestamp) ==false){
                     $customer_data[$key] = date('Y-m-d', $date_in_timestamp);
                 }else{
-                    $customer_data[$key] = $date_in_timestamp;
+                    $customer_data[$key] = $date_in_timestamp ? gmdate( 'Y-m-d', $date_in_timestamp ) : $date_in_timestamp;
                 }
                 continue;
             }

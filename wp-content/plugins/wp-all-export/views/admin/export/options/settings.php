@@ -20,38 +20,54 @@ if(!defined('ABSPATH')) {
 							</div>
 
                             <?php
+
+                            if(empty($post['cpt'])) {
+	                            $postTypes           = [];
+	                            $exportqueryPostType = [];
+
+	                            if ( isset( $post['exportquery'] ) && ! empty( $post['exportquery']->query['post_type'] ) ) {
+		                            $exportqueryPostType = [ $post['exportquery']->query['post_type'] ];
+	                            }
+
+	                            if ( empty( $postTypes ) ) {
+		                            $postTypes = $exportqueryPostType;
+	                            }
+
+                                $post['cpt'] = $postTypes;
+                            }
+
                             $cpt_initial = $post['cpt'];
                             $cpt_name = is_array($post['cpt']) ? reset($post['cpt']) : $post['cpt'];
-                            if ('advanced' !== $post['export_type']) {
-                                if ($cpt_name !== 'taxonomies') {
 
-                                    if ($cpt_name === 'users') {
-                                        $cpt_name = 'user';
-                                    }
+                            if ( $cpt_name !== 'taxonomies' ) {
 
-                                    $display_verb = 'created';
-                                    $display_cpt_name = $cpt_name;
-                                    $tooltip_cpt_name = strtolower(wp_all_export_get_cpt_name($cpt_initial));
+	                            if ( $cpt_name === 'users' ) {
+		                            $cpt_name = 'user';
+	                            }
 
-                                    if ($display_cpt_name === 'shop_order') {
-                                        $display_cpt_name = 'WooCommerce Order';
-                                        $display_verb = 'completed';
-                                    }
+	                            $display_verb     = 'created';
+	                            $display_cpt_name = $cpt_name;
+	                            $tooltip_cpt_name = strtolower( wp_all_export_get_cpt_name( $cpt_initial ) );
 
-                                    if ($display_cpt_name === 'shop_customer') {
-                                        $display_cpt_name = 'WooCommerce Customer';
-                                        $display_verb = 'created';
-                                    }
+	                            if ( $display_cpt_name === 'shop_order' ) {
+		                            $display_cpt_name = 'WooCommerce Order';
+		                            $display_verb     = 'completed';
+	                            }
 
-                                    if ($display_cpt_name === 'custom_wpae-gf-addon') {
-                                        $display_cpt_name = 'Gravity Forms Entry';
-                                    }
+	                            if ( $display_cpt_name === 'shop_customer' ) {
+		                            $display_cpt_name = 'WooCommerce Customer';
+		                            $display_verb     = 'created';
+	                            }
 
-                                    if ($display_cpt_name === 'comments') {
-                                        $display_cpt_name = 'comment';
-                                    }
-                                }
+	                            if ( $display_cpt_name === 'custom_wpae-gf-addon' ) {
+		                            $display_cpt_name = 'Gravity Forms Entry';
+	                            }
+
+	                            if ( $display_cpt_name === 'comments' ) {
+		                            $display_cpt_name = 'comment';
+	                            }
                             }
+
 
                             ?>
                             <div class="input">

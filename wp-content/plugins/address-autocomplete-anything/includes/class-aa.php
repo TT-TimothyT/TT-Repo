@@ -79,8 +79,14 @@ class WPSunshine_Address_Autocomplete {
         // Check for available instances to show on the current page
         $available_instances = array();
         foreach ( $instances as $instance ) {
-            if ( !empty( $instance['page'] ) && $page_id != $instance['page'] ) {
-                continue;
+            if ( ! empty( $instance['page'] ) ) {
+				if ( is_array( $instance['page'] ) ) {
+					if ( ! in_array( $page_id, $instance['page'] ) ) {
+						continue;
+					}
+				} elseif ( $page_id != $instance['page'] ) {
+					continue;
+				}
             }
             $available_instances[] = $instance;
         }
@@ -105,6 +111,10 @@ class WPSunshine_Address_Autocomplete {
 
     public function frontend_js() {
 
+		if ( is_admin() ) {
+			return;
+		}
+
         $available_instances = $this->available_instances();
         $google_api_key = get_option( 'wps_aa_google_api_key' );
         if ( !empty( $available_instances ) ) {
@@ -128,16 +138,17 @@ class WPSunshine_Address_Autocomplete {
                 }
                 $instances_data[] = array(
                     'init' => $instance['init'],
-                    'allowed_countries' => ( !empty( $instance['allowed_countries'] ) ) ? $instance['allowed_countries'] : '',
-                    'fields' => $fields
+                    'allowed_countries' => ( ! empty( $instance['allowed_countries'] ) ) ? $instance['allowed_countries'] : '',
+                    'fields' => $fields,
+					'delay' => ( ! empty( $instance['delay'] ) ) ? $instance['delay'] : '',
                 );
 
             }
 
             if ( ! empty( $instances_data ) && apply_filters( 'wps_aa_load_scripts', true ) ) {
-				wp_enqueue_script( 'wps-aa-frontend', WPS_AA_URL . 'assets/js/frontend.min.js', array( 'jquery' ), WPS_AA_VERSION, true );
+				wp_enqueue_script( 'wps-aa-frontend', WPS_AA_URL . 'assets/js/frontend.js', array( 'jquery' ), WPS_AA_VERSION, true );
                 wp_localize_script( 'wps-aa-frontend', 'wps_aa_vars', array( 'instances' => $instances_data ) );
-				wp_enqueue_script( 'wps-aa-google-maps', 'https://maps.googleapis.com/maps/api/js?key=' . sanitize_text_field( $google_api_key ) . '&callback=wps_aa&libraries=places&v=weekly&loading=async', '', WPS_AA_VERSION, array( 'strategy' => 'async', 'in_footer' => true ) );
+                wp_enqueue_script( 'wps-aa-google-maps', 'https://maps.googleapis.com/maps/api/js?key=' . sanitize_text_field( $google_api_key ) . '&callback=wps_aa&libraries=places&v=weekly&loading=async', '', WPS_AA_VERSION, array( 'strategy' => 'async', 'in_footer' => true ) );
             }
 
         }

@@ -252,9 +252,14 @@ class WPSunshine_Address_Autocomplete_Options {
                                 $place_components = WPS_AA()->get_available_place_components();
                                 foreach ( $place_components as $component ) {
                                     echo '<div class="select-place-component">';
-                                    echo '<span>' . esc_html( $component['label'] ) . '</span>';
-                                    echo '<a href="#" data-tag="{' . esc_js( $component['key'] ) . ':short_name}">' . __( 'Short', 'address-autocomplete-anything' ) . '</a>';
-                                    echo '<a href="#" data-tag="{' . esc_js( $component['key'] ) . ':long_name}">' . __( 'Long', 'address-autocomplete-anything' ) . '</a>';
+									if ( ! isset( $component['short_long'] ) ) {
+										echo '<span>' . esc_html( $component['label'] ) . '</span>';
+										echo '<a href="#" data-tag="{' . esc_js( $component['key'] ) . ':short_name}">' . __( 'Short', 'address-autocomplete-anything' ) . '</a>';
+	                                    echo '<a href="#" data-tag="{' . esc_js( $component['key'] ) . ':long_name}">' . __( 'Long', 'address-autocomplete-anything' ) . '</a>';
+									} else {
+										echo '<span>' . esc_html( $component['label'] ) . '</span>';
+										echo '<span><a href="#" data-tag="{' . esc_js( $component['key'] ) . '}">' . __( 'Value', 'address-autocomplete-anything' ) . '</a></span>';
+									}
                                     echo '</div>' . "\r\n";
                                 }
                                 ?>
@@ -322,15 +327,28 @@ class WPSunshine_Address_Autocomplete_Options {
                     <th><?php _e( 'Restrict to page', 'address-autocomplete-anything' ); ?></th>
                     <td>
                         <?php
-                        wp_dropdown_pages(array(
-                            'name' => 'page',
-                            'show_option_none' => __( 'Do not restrict to a page', 'address-autocomplete-anything' ),
-                            'option_none_value' => '',
-                            'selected' => $instance['page'],
-                            'class' => 'pages'
-                        ));
+						$pages = get_pages();
+						echo '<select name="allowed_page[]" class="pages-select2" multiple="multiple" style="width:100%;">';
+						echo '<option value="">' . __('Do not restrict to a page', 'address-autocomplete-anything') . '</option>';
+						foreach ( $pages as $page ) {
+							$selected = in_array($page->ID, (array) $instance['page']) ? ' selected="selected"' : '';
+							echo '<option value="' . esc_attr($page->ID) . '"' . $selected . '>' . esc_html($page->post_title) . '</option>';
+						}
+						echo '</select>';
                         ?>
-                        <span class="wps-description"><?php _e( 'Output necessary Javascript only on this page, otherwise JavaScript is unnecessarily output on every page of your site', 'address-autocomplete-anything' ); ?></span>
+                        <span class="wps-description"><?php _e( 'Output necessary Javascript only on these pages, otherwise JavaScript is unnecessarily output on every page of your site', 'address-autocomplete-anything' ); ?></span>
+						<script type="text/javascript">
+						jQuery(document).ready(function($) {
+							$(".pages-select2").select2();
+						});
+						</script>
+                    </td>
+                </tr>
+				<tr>
+                    <th><?php _e( 'Load delay', 'address-autocomplete-anything' ); ?></th>
+                    <td>
+                        <input type="number" step=".5" size="8" name="delay" value="<?php echo ( ! empty( $instance['delay'] ) ) ? esc_attr( $instance['delay'] ) : ''; ?>" />
+                        <span class="wps-description"><?php _e( 'In seconds, how long to delay loading of the address autocomplete.', 'address-autocomplete-anything' ); ?> <a href="https://wpsunshine.com/documentation/address-autocomplete-load-delay-option/" target="_blank">Learn more</a></span>
                     </td>
                 </tr>
             </table>
@@ -367,9 +385,10 @@ class WPSunshine_Address_Autocomplete_Options {
             }
             $instances[ $key ] = array(
                 'label' => isset( $_POST['label'] ) ? sanitize_text_field( $_POST['label'] ) : '',
-                'page' => isset( $_POST['page'] ) ? sanitize_text_field( $_POST['page'] ) : '',
+                'page' => isset( $_POST['allowed_page'] ) ? array_map( 'intval', $_POST['allowed_page'] ) : '',
                 'init' => isset( $_POST['init'] ) ? sanitize_text_field( stripslashes( $_POST['init'] ) ) : '',
                 'allowed_countries' => ( !empty( $_POST['allowed_countries'] ) ) ? array_map( 'sanitize_text_field', $_POST['allowed_countries'] ) : '',
+				'delay' => isset( $_POST['delay'] ) ? sanitize_text_field( $_POST['delay'] ) : '',
                 'fields' => $fields
             );
 
