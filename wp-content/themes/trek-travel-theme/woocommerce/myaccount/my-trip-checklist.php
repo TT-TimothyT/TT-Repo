@@ -986,9 +986,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 					<div class="accordion-item" >
 						<p class="accordion-header fw-medium fs-md lh-md" id="flush-heading-bikeInfo">
 							<button class="accordion-button px-0 collapsed bike_checklist-btn" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-bikeInfo" aria-expanded="false" aria-controls="flush-collapse-bikeInfo">
-							<?php if ( get_current_user_id() == 5636 ) : ?>
-								<img src="/wp-content/themes/trek-travel-theme/assets/images/success.png" alt="success icon">
-							<?php else : ?>
 								<?php if ( $lockedUserRecord || $lockedUserBike ) : ?>
 									<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
 								<?php else: ?>
@@ -998,7 +995,6 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
 										<img src="/wp-content/themes/trek-travel-theme/assets/images/error2.png" alt="error icon">
 									<?php endif; ?>
 								<?php endif; ?>
-							<?php endif; ?>
 								<?php echo $bike_review_string; ?>
 							</button>
 						</p>
