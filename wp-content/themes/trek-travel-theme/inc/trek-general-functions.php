@@ -801,6 +801,10 @@ function trek_update_trip_checklist_action_cb()
     $waiver_signed       = isset( $user_order_info[0]['waiver_signed'] ) ? $user_order_info[0]['waiver_signed'] : false;
     $trip_info           = tt_get_trip_pid_sku_from_cart( $_REQUEST['order_id'] );
     $is_hiking_checkout  = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+    $trip_style          = json_decode( tt_get_local_trips_detail( 'subStyle', '', $trip_info['sku'], true ) );
+    $trip_style_name     = $trip_style ? $trip_style->name : '';
+    // The trip sub-style includes either "Training", "Discover", or "Self-Guided" = hide jersey options.
+    $hide_jersey_for_arr = array( 'Training', 'Discover', 'Self-Guided' );
 
 
     // One of those medical_section, emergency_section, gear_section, passport_section, bike_section, gear_optional_section.
@@ -911,11 +915,15 @@ function trek_update_trip_checklist_action_cb()
             $booking_data['rider_height']              = tt_validate( $_REQUEST['tt-rider-height'] );
             $booking_data['pedal_selection']           = tt_validate( $_REQUEST['tt-pedal-selection'] );
             $booking_data['helmet_selection']          = tt_validate( $_REQUEST['tt-helmet-size'] );
-            $booking_data['jersey_style']              = tt_validate( $_REQUEST['tt-jerrsey-style'] );
+            if ( ! in_array( $trip_style_name, $hide_jersey_for_arr ) ) {
+                // Store Jersey fields only when they are applicable for the trip.
+                $booking_data['jersey_style'] = tt_validate( $_REQUEST['tt-jerrsey-style'] );
+            }
 
             if ( $is_hiking_checkout ) {
                 $booking_data['tshirt_size'] = tt_validate( $_REQUEST['tt-jerrsey-size'] );
-            } else {
+            } elseif ( ! in_array( $trip_style_name, $hide_jersey_for_arr ) ) {
+                // Store Jersey fields only when they are applicable for the trip.
                 $booking_data['tt_jersey_size'] = tt_validate( $_REQUEST['tt-jerrsey-size'] );
             }
             
@@ -925,7 +933,7 @@ function trek_update_trip_checklist_action_cb()
 
             if ( $is_hiking_checkout ) {
                 $ns_user_booking_data['tshirtSizeId'] = tt_validate( $_REQUEST['tt-jerrsey-size'] );
-            } else {
+            } elseif ( ! in_array( $trip_style_name, $hide_jersey_for_arr ) ) {
                 $ns_user_booking_data['jerseyId'] = tt_validate( $_REQUEST['tt-jerrsey-size'] );
             }
         }
