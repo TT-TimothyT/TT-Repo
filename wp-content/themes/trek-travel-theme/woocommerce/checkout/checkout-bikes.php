@@ -152,7 +152,7 @@ else:
 				<div class="modal-body">
 					<p class="fw-medium fs-xl lh-xl"><?php esc_html_e( 'Heads up!', 'trek-travel-theme' ); ?></p>
 					<p class="fw-normal fs-md lh-md">
-						<?php esc_html_e( 'You are more than welcome to bring your own bike, but please note that we cannot assume responsibility for the safety of or damage to your personal bike. You are responsible for the maintenance of your bike and any spare parts that may be used during the trip. You are also responsible for assembling your bike upon arrival and disassembling it upon departure as well as any and all shipping arrangements needed to get your bike to and from the trip. There is no trip price difference for bringing your own bike.', 'trek-travel-theme' ); ?>
+						<?php esc_html_e( 'You are welcome to bring your own bike once approved by our team. Please note that we cannot assume responsibility for the safety of or damage to your personal bike. You are responsible for the maintenance of your bike and any spare parts that may be used during the trip. You are also responsible for assembling your bike upon arrival and disassembling it upon departure as well as any and all shipping arrangements needed to get your bike to and from the trip. There is no trip price difference for bringing your own bike.', 'trek-travel-theme' ); ?>
 					</p>
 					<div class="form-check">
 						<input name="bring_own_bike_confirmation" class="form-check-input checkout-bikes__own-bike-confirmation-check shadow-none" type="checkbox" value="yes" id="bringOwnBikeConfirmation">
