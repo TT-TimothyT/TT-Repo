@@ -6297,20 +6297,18 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
 	$cart = WC()->session->get( 'cart', null );
 	$persistent_cart_count = isset( $cart_result['cart'] ) && $cart_result['cart'] ? count( $cart_result['cart'] ) : 0;
 
-	if ( !is_null( $cart ) && $persistent_cart_count > 0 ) {
+	if ( ! is_null( $cart ) && $persistent_cart_count > 0 ) {
         // We have started trip alredy. Now check if is out of date.
         $product_id = ''; // Something like this  ( int )  85028.
 
-        /**
-         * In general we should have one trip at a time in the cart.
-         *
-         * If we have more trips in the cart, we need to move the logic to foreach
-         * and adapt it to remove only a specific trip instead of clearing the whole cart
-         */
-        foreach ( $cart as $id => $child_product_data ) {
-            if( $child_product_data ) {
-                if( isset( $child_product_data['product_id'] ) && !empty( $child_product_data['product_id'] ) ){
-                    $product_id = $child_product_data['product_id'];
+        // Line item product IDs.
+        $accepted_p_ids = tt_get_line_items_product_ids();
+
+        foreach ( $cart as $cart_item ) {
+            if( $cart_item ) {
+                if( isset( $cart_item['product_id'] ) && ! empty( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
+                    // Take the ID of the trip product.
+                    $product_id = $cart_item['product_id'];
                 }
             }
         }
@@ -6318,7 +6316,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
         $product = wc_get_product( $product_id );
 
         // Check for WC_Product existing.
-        if( !$product ) {
+        if( ! $product ) {
             return;
         }
 
