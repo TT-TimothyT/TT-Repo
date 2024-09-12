@@ -277,7 +277,7 @@ $emptyBlockContent .= '</div></div>';
 
             <div class="card mb-3 border-0 trip-card-body">
                 <div class="c-card row g-0 mx-0">
-                    <div class="col-md-4 gallery-carousel">
+                    <div class="col-lg-4 gallery-carousel">
 
                         <div id="carouselExampleIndicators{{ data.post_id }}" class="carousel slide h-100">
                             <div class="carousel-indicators">
@@ -288,7 +288,7 @@ $emptyBlockContent .= '</div></div>';
                                 <# } #>
                             </div>
 
-                            <div class="carousel-inner h-100">
+                            <div class="carousel-inner">
                                 <# if (data.gallery_images) { #>
                                     <# data.gallery_images.forEach(function (item, index) { #>
                                         <#
@@ -317,7 +317,7 @@ $emptyBlockContent .= '</div></div>';
                         </div>
 
                     </div>
-                    <div class="col-md-6 desktop-hideme">
+                    <div class="col-lg-6 d-block d-lg-none">
                        <div class="product-head-info my-3">
                             <# if (data.taxonomies.product_tag) { 
                                 <!-- data.taxonomies.product_tag = data.taxonomies.product_tag.sort(); -->
@@ -343,7 +343,7 @@ $emptyBlockContent .= '</div></div>';
                             <h4 class="card-title fw-semibold trip-title">{{{ data._highlightResult.post_title.value }}}</h4>
                             </a>
                             <# if ( data.content ) { #>
-                            <p class="short-description">{{data.content.substring(0,50)}}...</p>
+                            <p class="short-description">{{data.content.substring(0,175)}}...</p>
                             <# } #>
                        </div>
                        <div class="trip-features d-flex justify-content-between">
@@ -395,7 +395,7 @@ $emptyBlockContent .= '</div></div>';
                                     <# } #>
                                 </div>
                                 <# if ( data['review_score'] ) { #>
-                                <div class="card-footer bg-transparent border-0 ms-md-4">
+                                <div class="card-footer bg-transparent border-0">
                                     <span class="fw-semibold"><i class="bi bi-star"></i> {{ (parseFloat(data['review_score']) % 1 === 0) ? parseFloat(data['review_score']).toFixed(0) : parseFloat(data['review_score']).toFixed(2) }} </span>
                                     <span class="text-muted review-text"> rating based on </span>
                                     <span class="fw-semibold reviews-count">{{data['total_review']}} </span>
@@ -427,7 +427,7 @@ $emptyBlockContent .= '</div></div>';
 
 
 
-                    <div class="col-lg-6 col-md-5 mobile-hideme">
+                    <div class="col-lg-6 d-none d-lg-block">
                         <div class="card-body ms-md-4 pt-0">
 
                             <# if (data.taxonomies.product_tag) { 
@@ -450,7 +450,7 @@ $emptyBlockContent .= '</div></div>';
                             </a>
 
                             <# if ( data.content ) { #>
-                            <p><small>{{data.content.substring(0,150)}}...</small></p>
+                            <p><small>{{data.content.substring(0,200)}}...</small></p>
                             <# } #>
 
                             <# if ( data['Trip Style'] ) { #>
@@ -511,7 +511,7 @@ $emptyBlockContent .= '</div></div>';
 
                     </div>
 
-                    <div class="col-lg-2 col-md-3 position-relative mobile-hideme">
+                    <div class="col-lg-2 position-relative d-none d-lg-block">
                         <# if ( data['Start Price'] ) { #>
                         <div class="card-body mt-5 pricing">
                             <small class="text-muted">Starting from</small>
