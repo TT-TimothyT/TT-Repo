@@ -283,18 +283,47 @@ function tt_trigger_cron_ns_booking_cb( $order_id, $user_id = 'null', $is_behalf
                     "passportExpDate"        => $passport_expiration_date,
                     "passportIssueDate"      => $passport_issue_date,
                     "placeOfBirth"           => $passport_place_of_issue,
-                    "medications"            => $medications,
-                    "allergies"              => $allergies,
-                    "medicalConditions"      => $medical_conditions,
-                    "dietaryRestrictions"    => $dietary_restrictions,
-                    "ecFirstName"            => $e_fname,
-                    "ecLastName"             => $e_lname,
-                    "ecPhone"                => $e_phone,
-                    "ecRelationship"         => $e_relationship,
                     "wantsInsurance"         => $wantsInsurance,
                     "insuranceAmount"        => $insuranceAmount,
                     'tripDiscountAmount'     => $wc_coupon_amount
                 ];
+
+                /**
+                 * Optional Data. Do not send an empty field, to prevent info wiped from NS.
+                 * This is most applicable for Secondary Guests, because in the trek-booking-engine.php,
+                 * for the secondary guest, we keep empty data, for the optional fields.
+                 * (we can upgrade this in the feature, to check for existing secondary guests).
+                 * Note: The data for those fields is taken from the user's meta.
+                 */
+
+                // Optional Medical Info. Add key to the payload if has info.
+                if ( ! empty( $medications ) ) {
+                    $ns_booking_payload['guestsData'][$wc_booking_key]['medications'] = $medications;
+                }
+                if ( ! empty( $allergies ) ) {
+                    $ns_booking_payload['guestsData'][$wc_booking_key]['allergies'] = $allergies;
+                }
+                if ( ! empty( $medical_conditions ) ) {
+                    $ns_booking_payload['guestsData'][$wc_booking_key]['medicalConditions'] = $medical_conditions;
+                }
+                if ( ! empty( $dietary_restrictions ) ) {
+                    $ns_booking_payload['guestsData'][$wc_booking_key]['dietaryRestrictions'] = $dietary_restrictions;
+                }
+
+                // Optional Emergency Contact Info. Add key to the payload if has info.
+                if ( ! empty( $e_fname ) ) {
+                    $ns_booking_payload['guestsData'][$wc_booking_key]['ecFirstName'] = $e_fname;
+                }
+                if ( ! empty( $e_lname ) ) {
+                    $ns_booking_payload['guestsData'][$wc_booking_key]['ecLastName'] = $e_lname;
+                }
+                if ( ! empty( $e_phone ) ) {
+                    $ns_booking_payload['guestsData'][$wc_booking_key]['ecPhone'] = $e_phone;
+                }
+                if ( ! empty( $e_relationship ) ) {
+                    $ns_booking_payload['guestsData'][$wc_booking_key]['ecRelationship'] = $e_relationship;
+                }
+
                 // Store all guest emails, so can use it in the tt_update_user_booking_info() function, to check if there existing users with these emails in WP and those users don't have ns_customer_internal_id (ns_user_id) can repair this on order creating.
                 $guests_email_addresses[ $wc_booking_key ] = $email;
             }

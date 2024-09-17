@@ -630,7 +630,7 @@ if ( ! function_exists( 'tt_ns_get_last_modified_gustes' ) ) {
  * @return  : tt_ns_guest_booking_details
  **/
 if (!function_exists('tt_ns_guest_booking_details')) {
-    function tt_ns_guest_booking_details( $single_guest = false, $ns_new_guest_id = '', $wc_user_id = '', $time_range = DEFAULT_TIME_RANGE, $is_sync_process = false )
+    function tt_ns_guest_booking_details( $single_guest = false, $ns_new_guest_id = '', $wc_user_id = '', $time_range = DEFAULT_TIME_RANGE, $is_sync_process = true )
     {
         global $wpdb;
         $table_name       = $wpdb->prefix . 'guest_bookings';
