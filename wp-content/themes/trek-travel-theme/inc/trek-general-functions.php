@@ -6947,6 +6947,8 @@ function tt_on_insert_update_post_cb( $post_id, $post, $update ) {
 
         // Create a Flag for Modified Yoast meta.
         update_post_meta( $post_id, 'tt_yoast_wpseo_meta-robots-has-been-modified', 1 );
+        // Add a log in the algolia debug file for products marked as private/custom trips.
+        tt_algolia_searchable_posts_index_post_updated( $post, array() );
     } else {
         // Add check if has modified Yoast meta, to restore initial values.
         $is_yoast_meta_has_been_modified = get_post_meta( $post_id, 'tt_yoast_wpseo_meta-robots-has-been-modified', true );
@@ -7537,7 +7539,7 @@ function tt_algolia_searchable_posts_index_post_updated( $post, $records ) {
             'post_title'             => $post->post_title,
             'post_type'              => $post->post_type,
             'post_status'            => $post->post_status,
-            'is_private_custom_trip' => get_field( 'is_private_custom_trip', $post->id ) // Check whether the product is marked as a Private/Custom trip.
+            'is_private_custom_trip' => get_field( 'is_private_custom_trip', $post->ID ) // Check whether the product is marked as a Private/Custom trip.
         );
 
         $current_user    = wp_get_current_user();
