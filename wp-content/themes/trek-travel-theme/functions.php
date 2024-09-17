@@ -515,6 +515,17 @@ if ( is_readable( $trek_booking_engine ) ) {
 	require_once $trek_booking_engine;
 }
 
+// Trek Email integration code.
+$trek_email_manager = __DIR__ . '/inc/trek-email-manager/trek-email-manager.php';
+if ( is_readable( $trek_email_manager ) ) {
+	require_once $trek_email_manager;
+}
+
+// Trek Booking status integration.
+$trek_booking_status = __DIR__ . '/inc/trek-booking-status.php';
+if ( is_readable( $trek_booking_status ) ) {
+	require_once $trek_booking_status;
+}
 
 /**
  * Loading All CSS Stylesheets and Javascript Files.

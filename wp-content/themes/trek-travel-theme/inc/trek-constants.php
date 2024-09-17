@@ -16,6 +16,44 @@ define( 'TT_CAN_POLICY_PAGE', $cancellation_policy_page_link );
 define( 'TT_LINE_ITEMS_PRODUCTS', ['TTWP23FEES' => ['name' => 'Travel Protection', 'price' => 999], 'TTWP23SUPP' => ['name' => 'Single Supplement Fees', 'price' => 1200], 'TTWP23UPGRADES' => ['name' => 'Bike Upgrades', 'price' => 399]] );
 define( 'TT_ACTIVITY_DASHBOARD_NAME_BIKING', 'Cycling' );
 define( 'TT_ACTIVITY_DASHBOARD_NAME_HW', 'Hiking and Walking' );
+define( 'TT_BOOKING_STATUSES', array( 
+    'booking_success'        => array(
+        'title'   => 'Booking Success',
+        'tooltip' => 'Booking has been successfully created in NetSuite and linked to this order',
+        'style'   => 'background: #c6e1c6;color: #5b841b;',
+    ),
+    'booking_failed'         => array(
+        'title'   => 'Booking Failed',
+        'tooltip' => 'There is no Booking in NetSuite, linked to this Order! Please review the logs for more information about the error that occurred',
+        'style'   => 'background: #eba3a3;color: #761919;',
+    ),
+    'booking_pending'        => array(
+        'title'   => 'Booking Pending',
+        'tooltip' => 'In progress! The booking information is not yet available as the order details are still being sent to NetSuite',
+        'style'   => 'background: #f8dda7;color: #94660c;',
+    ),
+    'booking_onhold'         => array(
+        'title'   => 'Booking On hold',
+        'tooltip' => 'The order was not sent to NetSuite! Something went wrong with importing the details into the guest booking table',
+        'style'   => 'background: #f8dda7;color: #94660c;',
+    ),
+    'booking_cancelled'      => array(
+        'title'   => 'Booking Cancelled',
+        'tooltip' => 'The Booking is fully canceled in NetSuite; there are no active guest registrations',
+        'style'   => 'background: #c8d7e1;color: #2e4453;',
+    ),
+    'registration_cancelled' => array(
+        'title'   => 'Registration Cancelled',
+        'tooltip' => 'This Booking has partially canceled guest registrations in NetSuite',
+        'style'   => 'background: #c8d7e1;color: #2e4453;',
+    ),
+    'booking_unknown'        => array(
+        'title'   => 'Booking Unknown',
+        'tooltip' => 'The Booking status cannot be determined :-(',
+        'style'   => 'background: #e5e5e5;color: #777;',
+    ),
+) );
+define( 'TT_HIDE_ORDER_BOOKING_STATUSES', array( 'booking_failed', 'booking_pending', 'booking_onhold' ) );
 
 /**
  * If we are not running the dev environment, load the Production Constants.

@@ -254,6 +254,10 @@ function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call
         if( $insert_booking && $order_id ){
             tt_add_error_log('[Start] - NS Trip Booking', [$order_id], ['dateTime' => date('Y-m-d H:i:s')]);
             as_enqueue_async_action('tt_trigger_cron_ns_booking', array( $order_id, null, $is_behalf ), '[Sync] - NetSuite Trip');
+            do_action( 'tt_set_ns_booking_status', $order_id, 'booking_pending' );
+        } else {
+            // There is no Order ID, or insertion in the bookings table failed.
+            do_action( 'tt_set_ns_booking_status', $order_id, 'booking_onhold' );
         }
         update_post_meta($order_id, 'tt_wc_order_ns_status', 'true');
         update_post_meta($order_id, 'tt_wc_order_ns_is_behalf', $is_behalf);

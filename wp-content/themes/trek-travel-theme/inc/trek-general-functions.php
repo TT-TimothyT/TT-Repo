@@ -2649,12 +2649,17 @@ if (!function_exists('tt_update_user_booking_info')) {
         $ns_booking_response_arr = json_decode($ns_booking_response, true);
         if ($ns_booking_response_arr && isset($ns_booking_response_arr['success']) && $ns_booking_response_arr['success'] == true) {
             $ns_booking_status = 1;
+            do_action( 'tt_set_ns_booking_status', $order_id, 'booking_success' );
             if (isset($ns_booking_response_arr['savedData']) && !empty($ns_booking_response_arr['savedData'])) {
                 $bookingId = isset($ns_booking_response_arr['savedData']['bookingId']) ? $ns_booking_response_arr['savedData']['bookingId'] : '';
                 $isDraftBooking = isset($ns_booking_response_arr['savedData']['isDraftBooking']) ? $ns_booking_response_arr['savedData']['isDraftBooking'] : '';
                 $ConfirmEmail = isset($ns_booking_response_arr['savedData']['shouldSendDraftConfirmEmail']) ? $ns_booking_response_arr['savedData']['shouldSendDraftConfirmEmail'] : '';
                 $guests = isset($ns_booking_response_arr['savedData']['guests']) ? $ns_booking_response_arr['savedData']['guests'] : array();
             }
+        } else {
+            // Booking creation Failure. Init the trek email notification sysytem.
+            do_action( 'netsuite_booking_failed', $order_id, $ns_booking_response_arr );
+            do_action( 'tt_set_ns_booking_status', $order_id, 'booking_failed' );
         }
         if ($bookingId == '' || $bookingId == null) {
             $ns_booking_status = 0;

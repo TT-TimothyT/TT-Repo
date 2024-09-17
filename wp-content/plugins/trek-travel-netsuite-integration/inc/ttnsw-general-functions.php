@@ -321,6 +321,7 @@ function tt_trigger_cron_ns_booking_cb( $order_id, $user_id = 'null', $is_behalf
             tt_add_error_log( 'BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, $ns_booking_payload, $ns_booking_result );
         } else {
             tt_add_error_log( 'BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, [], ['message' => 'no Payload found'] );
+            do_action( 'tt_set_ns_booking_status', $order_id, 'booking_onhold' );
         }
     } else {
         tt_add_error_log( 'BOOKING_SCRIPT_ID: ' . BOOKING_SCRIPT_ID, ['order_id' => $order_id ], ['message' => 'no booking found for Order ID'] );

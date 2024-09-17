@@ -339,9 +339,9 @@ function tt_admin_menu_page_cb()
                     </select>
                     <select name="trip_year" style="display: none;" required>
                         <option value="">Trip Year</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
+                        <option value="<?php echo( date( 'Y' ) ); ?>"><?php echo( date( 'Y' ) ); ?></option>
+                        <option value="<?php echo( date( 'Y', strtotime('+ 1 year') ) ); ?>"><?php echo( date( 'Y', strtotime('+ 1 year') ) ); ?></option>
+                        <option value="<?php echo( date( 'Y', strtotime('+ 2 years') ) ); ?>"><?php echo( date( 'Y', strtotime('+ 2 years') ) ); ?></option>
                     </select>
                     <?php if ( $is_itinerary_filter_available ) : ?>
                         <select name="itinerary_code" style="display: none;" required>

@@ -44,6 +44,12 @@ $wp_user_email = $userInfo->user_email;
 								// Skip the trip if the order trashed or with canceled status.
 								continue;
 							}
+							// Get The booking status.
+							$booking_status = tt_get_booking_status( $order_id );
+							if( $booking_status && in_array( $booking_status, TT_HIDE_ORDER_BOOKING_STATUSES ) ) {
+								// Skip the trip if the booking status is not allowed to show the order.
+								continue;
+							}
 							$order_details = trek_get_user_order_info($userInfo->ID, $order_id);
 							$is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
 							$waiver_signed = isset( $order_details[0]['waiver_signed'] ) ? $order_details[0]['waiver_signed'] : false;

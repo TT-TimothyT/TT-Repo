@@ -37,8 +37,12 @@ $trips = trek_get_guest_trips(get_current_user_id(), 1,'', $is_log);
 $TripsCounter = 0;
 foreach($trips['data'] as $trip ){
     $order = wc_get_order( $trip['order_id'] );
-    if ( $order && !in_array($order->get_status(), ['cancelled', 'trash']) ) {
-        $TripsCounter++;
+    if ( $order && ! in_array( $order->get_status(), ['cancelled', 'trash'] ) ) {
+		// Get The booking status.
+		$booking_status = tt_get_booking_status( $trip['order_id'] );
+		if( $booking_status && ! in_array( $booking_status, TT_HIDE_ORDER_BOOKING_STATUSES ) ) {
+			$TripsCounter++;
+		}
     }
 }
 $shipping_address = "";
@@ -177,10 +181,6 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 							$trips_html = '';
 							$showTwoTripsCounter = 0;
 							foreach($trips['data'] as $trip ){
-								// if ($showTwoTripsCounter == 2) {
-								// 	break;
-								// }
-								// $showTwoTripsCounter++;
 								$product_id = $trip['product_id'];
 								$order_id   = $trip['order_id'];
 								$order      = wc_get_order( $order_id );
@@ -192,6 +192,12 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 								$wc_order_status = $order->get_status();
 								if( 'cancelled' === $wc_order_status || 'trash' === $wc_order_status ) {
 									// Skip the trip if the order trashed or with canceled status.
+									continue;
+								}
+								// Get The booking status.
+								$booking_status = tt_get_booking_status( $order_id );
+								if( $booking_status && in_array( $booking_status, TT_HIDE_ORDER_BOOKING_STATUSES ) ) {
+									// Skip the trip if the booking status is not allowed to show the order.
 									continue;
 								}
 								$showTwoTripsCounter++;
