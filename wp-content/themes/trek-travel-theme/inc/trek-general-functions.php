@@ -7766,6 +7766,325 @@ function tt_rebuild_bike_size_options_cb() {
 add_action('wp_ajax_tt_rebuild_bike_size_options_ajax_action', 'tt_rebuild_bike_size_options_cb');
 add_action('wp_ajax_nopriv_tt_rebuild_bike_size_options_ajax_action', 'tt_rebuild_bike_size_options_cb');
 
+add_action( 'woocommerce_coupon_options_usage_restriction', 'tt_add_grouped_products_fields_to_usage_restriction', 10, 0 );
+function tt_add_grouped_products_fields_to_usage_restriction() {
+    global $post;
+
+    // Get selected grouped products for include and exclude
+    $include_grouped_products = get_post_meta( $post->ID, 'include_grouped_products', true );
+    $exclude_grouped_products = get_post_meta( $post->ID, 'exclude_grouped_products', true );
+
+    $include_grouped_products = is_array( $include_grouped_products ) ? $include_grouped_products : array();
+    $exclude_grouped_products = is_array( $exclude_grouped_products ) ? $exclude_grouped_products : array();
+
+    // Get all grouped products
+    $grouped_products = get_posts( array(
+        'post_type'      => 'product',
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'tax_query'      => array(
+            array(
+                'taxonomy' => 'product_type',
+                'field'    => 'slug',
+                'terms'    => 'grouped',
+            ),
+        ),
+    ));
+
+    if ( ! empty( $grouped_products ) ) {
+        ?>
+        <div class="options_group">
+            <p class="form-field">
+                <label for="include_grouped_products"><?php esc_html_e( 'Grouped Products - Include', 'woocommerce' ); ?></label>
+                <select id="include_grouped_products" name="include_grouped_products[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select grouped products', 'woocommerce' ); ?>">
+                    <?php
+                    foreach ( $grouped_products as $product ) {
+                        echo '<option value="' . esc_attr( $product->ID ) . '"' . ( in_array( $product->ID, $include_grouped_products ) ? ' selected' : '' ) . '>' . esc_html( $product->post_title ) . '</option>';
+                    }
+                    ?>
+                </select>
+                <?php echo wc_help_tip( __( 'Select grouped products that this coupon should apply to.', 'woocommerce' ) ); ?>
+            </p>
+
+            <p class="form-field">
+                <label for="exclude_grouped_products"><?php esc_html_e( 'Grouped Products - Exclude', 'woocommerce' ); ?></label>
+                <select id="exclude_grouped_products" name="exclude_grouped_products[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select grouped products that this coupon should not apply to.', 'woocommerce' ); ?>">
+                    <?php
+                    foreach ( $grouped_products as $product ) {
+                        echo '<option value="' . esc_attr( $product->ID ) . '"' . ( in_array( $product->ID, $exclude_grouped_products ) ? ' selected' : '' ) . '>' . esc_html( $product->post_title ) . '</option>';
+                    }
+                    ?>
+                </select>
+                <?php echo wc_help_tip( __( 'Select grouped products that this coupon should not apply to.', 'woocommerce' ) ); ?>
+            </p>
+        </div>
+        <?php
+    }
+}
+
+add_action( 'woocommerce_coupon_options_save', 'tt_save_grouped_products_fields', 10, 2 );
+function tt_save_grouped_products_fields( $post_id, $coupon ) {
+    // Save Grouped Products Include
+    if ( isset( $_POST['include_grouped_products'] ) ) {
+        $include_grouped_products = array_map( 'intval', $_POST['include_grouped_products'] );
+        update_post_meta( $post_id, 'include_grouped_products', $include_grouped_products );
+    } else {
+        delete_post_meta( $post_id, 'include_grouped_products' );
+    }
+
+    // Save Grouped Products Exclude
+    if ( isset( $_POST['exclude_grouped_products'] ) ) {
+        $exclude_grouped_products = array_map( 'intval', $_POST['exclude_grouped_products'] );
+        update_post_meta( $post_id, 'exclude_grouped_products', $exclude_grouped_products );
+    } else {
+        delete_post_meta( $post_id, 'exclude_grouped_products' );
+    }
+}
+
+add_filter( 'woocommerce_coupon_is_valid', 'tt_validate_coupon_grouped_products', 10, 3 );
+function tt_validate_coupon_grouped_products( $valid, $coupon, $discounts ) {
+    // Ensure WooCommerce cart is available
+    if ( ! WC()->cart ) {
+        return $valid;
+    }
+
+    // Get cart object
+    $cart = WC()->cart;
+
+    // Get included and excluded grouped products from the coupon
+    $include_grouped_products = get_post_meta( $coupon->get_id(), 'include_grouped_products', true );
+    $exclude_grouped_products = get_post_meta( $coupon->get_id(), 'exclude_grouped_products', true );
+
+    $include_grouped_products = is_array( $include_grouped_products ) ? $include_grouped_products : array();
+    $exclude_grouped_products = is_array( $exclude_grouped_products ) ? $exclude_grouped_products : array();
+
+    // Loop through each cart item
+    foreach ( $cart->get_cart() as $cart_item ) {
+        $product_id = $cart_item['product_id'];
+        $product_sku = get_post_meta( $product_id, '_sku', true );
+
+        // Get the parent (grouped) product for the current product
+        $parent_id = tt_get_parent_trip_id_by_child_sku( $product_sku );
+
+        // If the parent is a grouped product, validate against the parent
+        if ( $parent_id && get_post_type( $parent_id ) === 'product' ) {
+            $parent_product = wc_get_product( $parent_id );
+
+            if ( $parent_product && $parent_product->get_type() === 'grouped' ) {
+                // Validate inclusion
+                if ( ! empty( $include_grouped_products ) && ! in_array( $parent_id, $include_grouped_products ) ) {
+                    return false; // Invalid if the parent is not in the include list
+                }
+
+                // Validate exclusion
+                if ( ! empty( $exclude_grouped_products ) && in_array( $parent_id, $exclude_grouped_products ) ) {
+                    return false; // Invalid if the parent is in the exclude list
+                }
+            }
+        }
+    }
+
+    // If all checks pass, return valid
+    return $valid;
+}
+
+// Add custom taxonomy fields to the Usage Restrictions tab
+add_action( 'woocommerce_coupon_options_usage_restriction', 'tt_add_custom_taxonomy_fields_to_usage_restriction', 20, 0 );
+function tt_add_custom_taxonomy_fields_to_usage_restriction() {
+    global $post;
+
+    // Define the custom taxonomies
+    $custom_taxonomies = array(
+        'trip-style'     => 'Trip Styles',
+        'activity'       => 'Activity',
+        'destination'    => 'Destinations',
+        'activity-level' => 'Activity Levels',
+        'hotel-level'    => 'Hotel Levels',
+        'trip-class'     => 'Trip Classes',
+        'trip-duration'  => 'Trip Durations',
+        'trip-status'    => 'Trip Statuses',
+    );
+
+    foreach ( $custom_taxonomies as $taxonomy => $label ) {
+        // Retrieve selected terms for include and exclude
+        $include_terms = get_post_meta( $post->ID, 'include_' . $taxonomy, true );
+        $exclude_terms = get_post_meta( $post->ID, 'exclude_' . $taxonomy, true );
+
+        $include_terms = is_array( $include_terms ) ? $include_terms : array();
+        $exclude_terms = is_array( $exclude_terms ) ? $exclude_terms : array();
+
+        // Get all terms for the current taxonomy
+        $terms = get_terms( array(
+            'taxonomy'   => $taxonomy,
+            'orderby'    => 'name',
+            'hide_empty' => false,
+        ));
+
+        if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
+            ?>
+            <div class="options_group">
+                <p class="form-field">
+                    <label for="include_<?php echo $taxonomy; ?>"><?php echo esc_html( $label . ' - Include' ); ?></label>
+                    <select id="include_<?php echo $taxonomy; ?>" name="include_<?php echo $taxonomy; ?>[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select terms', 'woocommerce' ); ?>">
+                        <?php
+                        foreach ( $terms as $term ) {
+                            echo '<option value="' . esc_attr( $term->term_id ) . '"' . ( in_array( $term->term_id, $include_terms ) ? ' selected' : '' ) . '>' . esc_html( $term->name ) . '</option>';
+                        }
+                        ?>
+                    </select>
+                    <?php echo wc_help_tip( __( 'Select ' . $label . ' that this coupon should apply to.', 'woocommerce' ) ); ?>
+                </p>
+
+                <p class="form-field">
+                    <label for="exclude_<?php echo $taxonomy; ?>"><?php echo esc_html( $label . ' - Exclude' ); ?></label>
+                    <select id="exclude_<?php echo $taxonomy; ?>" name="exclude_<?php echo $taxonomy; ?>[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select terms', 'woocommerce' ); ?>">
+                        <?php
+                        foreach ( $terms as $term ) {
+                            echo '<option value="' . esc_attr( $term->term_id ) . '"' . ( in_array( $term->term_id, $exclude_terms ) ? ' selected' : '' ) . '>' . esc_html( $term->name ) . '</option>';
+                        }
+                        ?>
+                    </select>
+                    <?php echo wc_help_tip( __( 'Select ' . $label . ' that this coupon should not apply to.', 'woocommerce' ) ); ?>
+                </p>
+            </div>
+            <?php
+        }
+    }
+}
+
+// Save the custom taxonomy field values
+add_action( 'woocommerce_coupon_options_save', 'tt_save_custom_taxonomy_fields', 20, 2 );
+function tt_save_custom_taxonomy_fields( $post_id, $coupon ) {
+    $custom_taxonomies = array(
+        'trip-style',
+        'activity',
+        'destination',
+        'activity-level',
+        'hotel-level',
+        'trip-class',
+        'trip-duration',
+        'trip-status',
+    );
+
+    foreach ( $custom_taxonomies as $taxonomy ) {
+        if ( isset( $_POST['include_' . $taxonomy] ) ) {
+            update_post_meta( $post_id, 'include_' . $taxonomy, array_map( 'intval', $_POST['include_' . $taxonomy] ) );
+        } else {
+            delete_post_meta( $post_id, 'include_' . $taxonomy );
+        }
+
+        if ( isset( $_POST['exclude_' . $taxonomy] ) ) {
+            update_post_meta( $post_id, 'exclude_' . $taxonomy, array_map( 'intval', $_POST['exclude_' . $taxonomy] ) );
+        } else {
+            delete_post_meta( $post_id, 'exclude_' . $taxonomy );
+        }
+    }
+}
+
+add_filter( 'woocommerce_coupon_is_valid', 'tt_validate_coupon_custom_taxonomies', 20, 3 );
+function tt_validate_coupon_custom_taxonomies( $valid, $coupon, $discounts ) {
+    // Ensure WooCommerce cart is available
+    if ( ! WC()->cart ) {
+        return $valid;
+    }
+
+    // Get the cart object
+    $cart = WC()->cart;
+
+    // Define the taxonomies to check
+    $parent_product_taxonomies = array(
+        'trip-style'      => 'Trip Styles',
+        'activity-level'  => 'Activity Levels',
+        'activity'        => 'Activity',
+        'destination'     => 'Destinations',
+        'hotel-level'     => 'Hotel Levels',
+        'trip-class'      => 'Trip Classes',
+        'trip-duration'   => 'Trip Durations',
+    );
+
+    $product_taxonomies = array(
+        'trip-status'     => 'Trip Statuses',
+    );
+
+    // Loop through each cart item
+    foreach ( $cart->get_cart() as $cart_item ) {
+        $product_id  = $cart_item['product_id'];
+        $product_sku = get_post_meta( $product_id, '_sku', true );
+
+        // Check taxonomies related to parent/grouped product
+        foreach ( $parent_product_taxonomies as $taxonomy => $label ) {
+            $include_meta_key = 'include_' . $taxonomy;
+            $exclude_meta_key = 'exclude_' . $taxonomy;
+
+            // Retrieve and normalize include/exclude terms from the coupon
+            $include_terms = get_post_meta( $coupon->get_id(), $include_meta_key, true );
+            $exclude_terms = get_post_meta( $coupon->get_id(), $exclude_meta_key, true );
+
+            $include_terms = is_array( $include_terms ) ? $include_terms : array();
+            $exclude_terms = is_array( $exclude_terms ) ? $exclude_terms : array();
+
+            // Get the parent product ID if it's a grouped product
+            $parent_id = tt_get_parent_trip_id_by_child_sku( $product_sku );
+
+            // Check if the parent_id is valid and retrieve terms for the parent product
+            if ( is_numeric( $parent_id ) && $parent_id != "No grouped products found for this SKU." ) {
+                $parent_terms = wp_get_post_terms( $parent_id, $taxonomy, array( 'fields' => 'ids' ) );
+
+                // Check if there are terms to include
+                if ( ! empty( $include_terms ) ) {
+                    $intersection = array_intersect( $parent_terms, $include_terms );
+                    if ( empty( $intersection ) ) {
+                        return false;
+                    }
+                }
+
+                // Check if there are terms to exclude
+                if ( ! empty( $exclude_terms ) ) {
+                    $intersection = array_intersect( $parent_terms, $exclude_terms );
+                    if ( ! empty( $intersection ) ) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Check `Trip Status` taxonomy for the purchased product
+        foreach ( $product_taxonomies as $taxonomy => $label ) {
+            $include_meta_key = 'include_' . $taxonomy;
+            $exclude_meta_key = 'exclude_' . $taxonomy;
+
+            // Retrieve and normalize include/exclude terms from the coupon
+            $include_terms = get_post_meta( $coupon->get_id(), $include_meta_key, true );
+            $exclude_terms = get_post_meta( $coupon->get_id(), $exclude_meta_key, true );
+
+            $include_terms = is_array( $include_terms ) ? $include_terms : array();
+            $exclude_terms = is_array( $exclude_terms ) ? $exclude_terms : array();
+
+            // Get terms for the purchased product
+            $product_terms = wp_get_post_terms( $product_id, $taxonomy, array( 'fields' => 'ids' ) );
+
+            // Check if there are terms to include
+            if ( ! empty( $include_terms ) ) {
+                $intersection = array_intersect( $product_terms, $include_terms );
+                if ( empty( $intersection ) ) {
+                    return false;
+                }
+            }
+
+            // Check if there are terms to exclude
+            if ( ! empty( $exclude_terms ) ) {
+                $intersection = array_intersect( $product_terms, $exclude_terms );
+                if ( ! empty( $intersection ) ) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    // If all checks pass, the coupon is valid
+    return $valid;
+}
+
 function tt_custom_modify_biiling_state_field( $fields ) {
     // Make the billing state field optional by default
     $fields['billing']['billing_state']['required'] = false;
