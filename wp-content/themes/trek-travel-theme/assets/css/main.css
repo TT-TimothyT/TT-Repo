@@ -14696,6 +14696,9 @@ a.refineLink {
   z-index: 999;
 }
 
+.pdp-container {
+  position: relative;
+}
 .pdp-container .row {
   margin: 0;
   padding: 0;
@@ -14708,6 +14711,11 @@ a.refineLink {
   position: relative;
   top: -90px;
   visibility: hidden;
+}
+@media (min-width: 2560px) {
+  .pdp-container .pdp-content-section {
+    margin: auto;
+  }
 }
 
 .pdp-section#rider-information i, .pdp-section#inclusions i, .pdp-section#itinerary i {
@@ -15036,6 +15044,10 @@ a.refineLink {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-dash-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z'/%3E%3C/svg%3E");
 }
 
+.pdp-container > .row {
+  position: inherit;
+}
+
 .navigation-sticky {
   display: flex;
   flex-direction: column;
@@ -15050,6 +15062,17 @@ a.refineLink {
 
 .overview-sidebar-desktop {
   background-color: #D3D3D3;
+}
+@media (min-width: 3400px) {
+  .overview-sidebar-desktop {
+    width: 30%;
+  }
+}
+@media (min-width: 2560px) {
+  .overview-sidebar-desktop {
+    position: absolute;
+    height: 100%;
+  }
 }
 @media print {
   .overview-sidebar-desktop {

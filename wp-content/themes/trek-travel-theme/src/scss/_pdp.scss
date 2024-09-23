@@ -1,4 +1,5 @@
 .pdp-container{
+    position: relative;
     // max-width: 1480px;
     .row{
         margin: 0;
@@ -13,6 +14,13 @@
         position: relative;
         top: -90px;
         visibility: hidden;
+    }
+
+    .pdp-content-section {
+
+        @media (min-width: 2560px) {
+            margin: auto;
+        }
     }
 }
 

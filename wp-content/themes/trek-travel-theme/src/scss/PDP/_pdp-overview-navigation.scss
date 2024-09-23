@@ -2,9 +2,13 @@
 // *, *::before, *::after {
 //     box-sizing: border-box;
 // }
-// .pdp-container * {
-//     outline: 1px solid red;
-// }
+.pdp-container {
+
+    >.row {
+        position: inherit;
+    }
+}
+
 .navigation-sticky {
     display: flex;
     flex-direction: column;
@@ -18,6 +22,15 @@
 }
 
 .overview-sidebar-desktop {
+    @media (min-width: 3400px) {
+        width: 30%;
+    }
+
+    @media (min-width: 2560px) {
+        position: absolute;
+        height: 100%;
+    }
+
     @media print {
         display: none;
     }

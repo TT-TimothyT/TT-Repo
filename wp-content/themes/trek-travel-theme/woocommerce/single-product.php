@@ -33,7 +33,9 @@ if(count($attachment_ids) > 4){
 $activity_type = get_field('activity_type');
 
 get_header( 'shop' );
-
+?>
+<div class="pdp-hero">
+<?php
 // Hero Carousel //////////////////////////////////////////
 wc_get_template_part( 'partials/pdp', 'hero-carousel' );
 
@@ -44,7 +46,7 @@ wc_get_template_part( 'partials/pdp', 'overview-bar' );
 wc_get_template_part( 'partials/pdp', 'overview-navigation-mobile' );
 
 ?>
-
+</div>
 <div class="container-fluid p-0 pdp-container">
 	<div class="row">
 		<div class="col-md-3 overview-sidebar-desktop">
