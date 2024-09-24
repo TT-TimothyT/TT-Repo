@@ -30,13 +30,16 @@ if ( ! isset( $_GET['step'] ) && is_checkout() && ! is_admin() ) {
  * 
  * This function is located in /trek-travel-theme/inc/trek-general-function.php
  */
-tt_check_and_remove_old_trips_in_persistent_cart();
+do_action( 'tt_check_and_remove_old_trips_in_persistent_cart' );
 
 // If checkout registration is disabled and not logged in, the user cannot checkout.
 if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) {
 	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
 	return;
 }
+
+// Repair the missing discount on an existing coupon code.
+do_action( 'tt_repair_coupon_code' );
 
 $trip_info          = tt_get_trip_pid_sku_from_cart();
 $parent_trip_link   = tt_validate( $trip_info['parent_trip_link'], 'javascript:' );

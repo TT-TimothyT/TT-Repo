@@ -12,6 +12,7 @@ $is_travel_protection_pr = $guest_insurance['primary']['is_travel_protection'];
 $shipping_fname          = tt_validate( $tt_posted['shipping_first_name'] );
 $shipping_lname          = tt_validate( $tt_posted['shipping_last_name'] );
 $primary_name            = esc_html( $shipping_fname . ' ' . $shipping_lname );
+$is_protection_modal_showed = (bool) tt_validate( $tt_posted['is_protection_modal_showed'], false );
 
 // Primary Guest HTML.
 ?>
@@ -33,6 +34,7 @@ $primary_name            = esc_html( $shipping_fname . ' ' . $shipping_lname );
             <?php esc_html_e( 'Something went wrong during the calculation of the Travel Protection amount. Please double-check date of birth and address from step one to ensure they are entered correctly, and try again.', 'trek-travel-theme' ); ?>
         </div>
     <?php endif; ?>
+    <input type="hidden" name="is_protection_modal_showed" value="<?php echo esc_attr( $is_protection_modal_showed ); ?>">
 </div>
 
 <?php

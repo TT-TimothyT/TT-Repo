@@ -384,7 +384,7 @@ function save_checkout_steps_action_cb( $return_response = false )
     $redirect_url = trek_checkout_step_link($step);
     $accepted_p_ids = tt_get_line_items_product_ids();
     WC()->session->set('trek-checkout-data', $_REQUEST);
-    $cart = WC()->cart->cart_contents;
+    $cart = WC()->cart->get_cart_contents();
     $bikes_cart_item_data = $guests_bikes_data = array();
     $is_hiking_checkout = false;
     foreach ($cart as $cart_item_id => $cart_item) {
@@ -404,8 +404,8 @@ function save_checkout_steps_action_cb( $return_response = false )
                 }
             }
             // Check if the cart contains an already applied coupon and fix the missing coupon code.
-            if( WC()->cart->applied_coupons && isset( $_REQUEST['coupon_code'] ) && empty( $_REQUEST['coupon_code'] ) ) {
-                $applied_coupons = WC()->cart->applied_coupons;
+            if( WC()->cart->get_applied_coupons() && isset( $_REQUEST['coupon_code'] ) && empty( $_REQUEST['coupon_code'] ) ) {
+                $applied_coupons = WC()->cart->get_applied_coupons();
                 $_REQUEST['coupon_code'] = $applied_coupons[0];
             }
             $cart_item['trek_user_checkout_data'] = wp_unslash( $_REQUEST );
@@ -450,17 +450,25 @@ function save_checkout_steps_action_cb( $return_response = false )
                 $bikes_cart_item_data['cart_item_data'] = $guests_bikes_data;
             }
             $cart_item['trek_user_formatted_checkout_data'][1] = $bikes_cart_item_data;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart[$cart_item_id]                               = $cart_item;
             if ($step == 2 || $step == 1) {
-                WC()->cart->cart_contents[$cart_item_id]['quantity'] = isset($_REQUEST['no_of_guests']) ? $_REQUEST['no_of_guests'] : 1;
+                $cart[$cart_item_id]['quantity'] = isset( $_REQUEST['no_of_guests'] ) ? $_REQUEST['no_of_guests'] : 1;
             }
             // Set the Check for hiking checkout.
             $is_hiking_checkout = tt_is_product_line( 'Hiking', $_product->get_sku() );
+            
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
     $gearData = $_REQUEST['bike_gears']['primary'];
     if (isset($gearData['save_preferences']) && $gearData['save_preferences'] == 'yes' && isset($step) && $step == 4) {
         $p_bike = isset($gearData['bike_type_id_preferences']) ? $gearData['bike_type_id_preferences'] : '';
@@ -1165,21 +1173,24 @@ function custom_class($classes)
  * @version : 1.0.0
  * @return  : Get Trek user checkout saved data from steps
  **/
-function get_trek_user_checkout_data()
-{
+function get_trek_user_checkout_data() {
     $accepted_p_ids = tt_get_line_items_product_ids();
-    $tt_posted = $tt_formatted = array();
-    if (isset(WC()->cart->cart_contents)) {
-        $cart = WC()->cart->cart_contents;
-        foreach ($cart as $cart_item_id => $cart_item) {
-            if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
-                $tt_posted = isset($cart_item['trek_user_checkout_data']) ? $cart_item['trek_user_checkout_data'] : [];
-                $tt_formatted = isset($cart_item['trek_user_formatted_checkout_data']) ? $cart_item['trek_user_formatted_checkout_data'] : [];
+    $tt_posted      = $tt_formatted = array();
+
+    if ( ! WC()->cart->is_empty() ) {
+        // Cart has items.
+        // Get the current cart contents.
+        $cart_contents = WC()->cart->get_cart_contents();
+        foreach ( $cart_contents as $cart_item ) {
+            if ( isset( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
+                $tt_posted    = isset( $cart_item['trek_user_checkout_data'] ) ? $cart_item['trek_user_checkout_data'] : array();
+                $tt_formatted = isset( $cart_item['trek_user_formatted_checkout_data'] ) ? $cart_item['trek_user_formatted_checkout_data'] : array();
             }
         }
     }
+
     return array(
-        'posted' => $tt_posted,
+        'posted'    => $tt_posted,
         'formatted' => $tt_formatted
     );
 }
@@ -1283,28 +1294,29 @@ add_action('wp_ajax_nopriv_get_quote_travel_protection_action', 'trek_get_quote_
 function trek_get_quote_travel_protection_action_cb()
 {
     $res = array(
-    'status' => false,
-        'message' => '',
+        'status'       => false,
+        'message'      => '',
         'review_order' => ''
     );
-    $accepted_p_ids = tt_get_line_items_product_ids();
-    $fees_product_id = tt_create_line_item_product('TTWP23FEES');
-    $is_fees_exist = [];
-    $plan_id = 'TREKTRAVEL23';
+    $accepted_p_ids  = tt_get_line_items_product_ids();
+    $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
+    $is_fees_exist   = array();
+    $plan_id         = 'TREKTRAVEL23';
 
     if( ! empty( get_field( 'plan_id', 'option' ) ) ) {
         $plan_id = get_field( 'plan_id', 'option' );
     }
 
-    //Add travels data to Cart object
-    $cart = WC()->cart->get_cart();
-    $guest_insurance_data_arr = $guests_insurance_data = array();
+    // Add travels data to Cart object.
+    $cart                                 = WC()->cart->get_cart_contents();
+    $guest_insurance_data_arr             = array();
+    $guests_insurance_data                = array();
     $guests_insurance_data['guest_email'] = array();
-    foreach ($cart as $cart_item_id => $cart_item) {
+    foreach ( $cart as $cart_item_id => $cart_item ) {
         $product_id = $cart_item['product_id'];
-        $product = wc_get_product($product_id);
-        $sku = $product->get_sku();
-        if (!in_array($product_id, $accepted_p_ids)) {
+        $product    = wc_get_product($product_id);
+        $sku        = $product->get_sku();
+        if ( ! in_array( $product_id, $accepted_p_ids ) ) {
             $cart_item['trek_user_checkout_data'] = $_REQUEST;
             $cart_item['trek_user_checkout_data']['product_id'] = $product_id;
             $cart_item['trek_user_checkout_data']['sku'] = $product->get_sku();
@@ -1344,30 +1356,37 @@ function trek_get_quote_travel_protection_action_cb()
                 $guest_insurance_data_arr['cart_item_data'] = $guests_insurance_data;
             }
             $cart_item['trek_user_formatted_checkout_data'][2] = $guest_insurance_data_arr;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart[$cart_item_id] = $cart_item;
         }
-        if( $sku == 'TTWP23FEES' ){
-            //if ( $cart_item_id ) WC()->cart->remove_cart_item( $cart_item_id );
-            //WC()->cart->cart_contents[$cart_item_id]['quantity'] = 0;
+
+        if ( 'TTWP23FEES' === $sku ) {
             $is_fees_exist[] = true;
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    //WC()->cart->maybe_set_cart_cookies();
-    //Preparing insurance HTML
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
+    // Preparing insurance HTML.
     $tt_checkoutData =  get_trek_user_checkout_data();
-    $tt_posted = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
-    $product_id = null;
-    foreach (WC()->cart->get_cart() as $cart_item) {
-        if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
+    $tt_posted       = isset( $tt_checkoutData['posted'] ) ? $tt_checkoutData['posted'] : array();
+    $product_id      = null;
+    foreach ( WC()->cart->get_cart() as $cart_item ) {
+        if ( isset( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
             $product_id = $cart_item['product_id'];
         }
-        if( isset( $cart_item['product_id'] ) && $cart_item['product_id'] == 73798 ) {
-            $supplement_fees = wc_get_product( 73798 );
+        $supplement_fees_product_id = tt_create_line_item_product( 'TTWP23SUPP' );
+        if( isset( $cart_item['product_id'] ) && $cart_item['product_id'] == $supplement_fees_product_id ) {
+            $supplement_fees = wc_get_product( $supplement_fees_product_id );
         }
     }
-    $product = wc_get_product($product_id);
+    $product = wc_get_product( $product_id );
 
     $individualTripCost = 0;
     $sdate_info = $edate_info = '';
@@ -1394,16 +1413,18 @@ function trek_get_quote_travel_protection_action_cb()
             'y' => substr(date('Y'),0,2).$edate_obj[2]
         );
     }
-    $insuredPerson = $insuredPerson_single = array();
-    $effectiveDate = $expirationDate = '';
-    if( $sdate_info && is_array($sdate_info) ){
-        $effectiveDate = date('Y-m-d', strtotime(implode('-', $sdate_info)));
+    $insuredPerson        = array();
+    $insuredPerson_single = array();
+    $effectiveDate        = '';
+    $expirationDate       = '';
+    if ( $sdate_info && is_array( $sdate_info ) ) {
+        $effectiveDate = date( 'Y-m-d', strtotime(implode('-', $sdate_info ) ) );
     }
-    if( $edate_info && is_array($edate_info) ){
-        $expirationDate = date('Y-m-d', strtotime(implode('-', $edate_info)));
+    if ( $edate_info && is_array( $edate_info ) ) {
+        $expirationDate = date( 'Y-m-d', strtotime(implode( '-', $edate_info ) ) );
     }
 
-    //Current date minus 3 hours to match with the Arch time
+    // Current date minus 3 hours to match with the Arch time.
     $current_date = date('Y-m-d', strtotime('-3 hours' ) );
 
     $trek_insurance_args = [
@@ -1496,57 +1517,65 @@ function trek_get_quote_travel_protection_action_cb()
     $arcBasePremium = $tt_total_insurance_amount && $tt_total_insurance_amount > 0 ? $tt_total_insurance_amount : 0;
     //echo 'demo 3242 3992';
     if( $insuredPersonCount > 0 ){
-        if( !in_array(true, $is_fees_exist) ){
-            WC()->cart->add_to_cart($fees_product_id, 1, 0, array(), array('tt_cart_custom_fees_price' => $arcBasePremium));
+        if( ! in_array( true, $is_fees_exist ) ){
+            WC()->cart->add_to_cart( $fees_product_id, 1, 0, array(), array( 'tt_cart_custom_fees_price' => $arcBasePremium ) );
         }
     }
-    //save cart Logic
-    foreach ($cart as $cart_item_id => $cart_item) {
-        if (isset($cart_item['product_id']) && $cart_item['product_id'] == $fees_product_id) {
-            $product = wc_get_product($cart_item['product_id']);
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
-            $sku = $product->get_sku();
-            if ($sku == 'TTWP23FEES') {
-                if (isset($cart_item['tt_cart_custom_fees_price']) && $cart_item['tt_cart_custom_fees_price'] > 0) {
-                    if( in_array(true, $is_fees_exist) ){
-                        $cart_item['data']->set_price($arcBasePremium);
-                    }else{
-                        $cart_item['data']->set_price($cart_item['tt_cart_custom_fees_price']);
+    // Save cart Logic. Take the cart again, because above we added Travel Protection to the cart.
+    $cart = WC()->cart->get_cart_contents();
+    foreach ( $cart as $cart_item_id => $cart_item ) {
+        if ( isset( $cart_item['product_id'] ) && $cart_item['product_id'] == $fees_product_id ) {
+            $product             = wc_get_product( $cart_item['product_id'] );
+            $cart[$cart_item_id] = $cart_item;
+            $sku                 = $product->get_sku();
+            if ( $sku == 'TTWP23FEES' ) {
+                if ( isset( $cart_item['tt_cart_custom_fees_price'] ) && $cart_item['tt_cart_custom_fees_price'] > 0 ) {
+                    if( in_array( true, $is_fees_exist ) ) {
+                        $cart_item['data']->set_price( $arcBasePremium );
+                    } else {
+                        $cart_item['data']->set_price( $cart_item['tt_cart_custom_fees_price'] );
                     }
                 }
-                WC()->cart->cart_contents[$cart_item_id]['tt_cart_custom_fees_price'] = $arcBasePremium;
+                $cart[$cart_item_id]['tt_cart_custom_fees_price'] = $arcBasePremium;
             }
-            WC()->cart->cart_contents[$cart_item_id]['quantity'] = 1;
+            $cart[$cart_item_id]['quantity'] = 1;
         }
-        if ( isset($cart_item['product_id'])  && !in_array($cart_item['product_id'], $accepted_p_ids)) {
-            $cart_item['trek_user_checkout_data']['trek_guest_insurance'] = $guest_insurance;
-            $cart_item['trek_user_checkout_data']['insuredPerson'] = $is_travel_protection_count;
+        if ( isset( $cart_item['product_id'] )  && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
+            $cart_item['trek_user_checkout_data']['trek_guest_insurance']       = $guest_insurance;
+            $cart_item['trek_user_checkout_data']['insuredPerson']              = $is_travel_protection_count;
             $cart_item['trek_user_checkout_data']['tt_insurance_total_charges'] = $arcBasePremium;
             $cart_item['trek_user_checkout_data']['is_protection_modal_showed'] = true;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart[$cart_item_id]                                                = $cart_item;
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    //WC()->cart->maybe_set_cart_cookies();
-    //End: Save cart logic
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
+    // End: Save cart logic.
     $review_order_html = '';
     $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
-    if (is_readable($review_order)) {
+    if ( is_readable( $review_order ) ) {
         $review_order_html .= wc_get_template_html('woocommerce/checkout/review-order.php');
     } else {
         $review_order_html .= '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
     }
     $payment_option_html = '';
-    $review_order = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
-    if (is_readable($review_order)) {
+    $review_order        = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
+    if ( is_readable( $review_order ) ) {
         $payment_option_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php');
     } else {
         $payment_option_html .= '<h3>Step 4</h3><p>Checkout payment option file is missing!</p>';
     }
-    $insuredHTMLPopup = '';
+    $insuredHTMLPopup       = '';
     $checkout_insured_users = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests-popup.php';
-    if (is_readable($checkout_insured_users)) {
+    if ( is_readable( $checkout_insured_users ) ) {
         $insuredHTMLPopup .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests-popup.php');
     } else {
         $insuredHTMLPopup .= '<h3>Step 4</h3><p>checkout-insured-guests-popup.php form code is missing!</p>';
@@ -1558,15 +1587,15 @@ function trek_get_quote_travel_protection_action_cb()
     } else {
         $guest_insurance_html .= '<h3>Step 4</h3><p>checkout-insured-summary.php form code is missing!</p>';
     }
-    $res['status'] = true;
-    $res['fees_product_id'] = $fees_product_id;
+    $res['status']               = true;
+    $res['fees_product_id']      = $fees_product_id;
     $res['guest_insurance_html'] = $guest_insurance_html;
-    $res['insuredHTMLPopup'] = $insuredHTMLPopup;
-    $res['review_order'] = $review_order_html;
-    $res['payment_option'] = $payment_option_html;
-    $res['arcBasePremium'] = $arcBasePremium;
-    $res['message'] = "Your information has been changed successfully!";
-    echo json_encode($res);
+    $res['insuredHTMLPopup']     = $insuredHTMLPopup;
+    $res['review_order']         = $review_order_html;
+    $res['payment_option']       = $payment_option_html;
+    $res['arcBasePremium']       = $arcBasePremium;
+    $res['message']              = "Your information has been changed successfully!";
+    echo json_encode( $res );
     exit;
 }
 /* @return  : Ajax action for Bike & Gear [ My account page ]
@@ -2246,18 +2275,25 @@ function tt_items_select_options($item_name = "", $optionId="")
     return $opts;
 }
 
-function tt_is_coupon_applied( $coupon_code ) {
-    global $woocommerce;
+/**
+ * Check if is coupon applied.
+ *
+ * @param string $coupon_code The name of the coupon code.
+ *
+ * @return bool
+ */
+function tt_is_coupon_applied( $coupon_code = '' ) {
+    if( empty( $coupon_code ) ) {
+        return false;
+    }
 
-    $cart = $woocommerce->cart;
-
-    foreach ( $cart->get_applied_coupons() as $applied_coupon ) {
+    foreach ( WC()->cart->get_applied_coupons() as $applied_coupon ) {
         if ( strcasecmp( $applied_coupon, $coupon_code ) === 0 ) {
             return true;
         }
     }
 
-    // Coupon not found in the applied coupons list
+    // Coupon not found in the applied coupons list.
     return false;
 }
 
@@ -2298,23 +2334,32 @@ function trek_tt_apply_remove_coupan_action_cb()
         WC()->cart->calculate_totals();
     }
     $res['is_applied'] = $is_applied;
-    //Begin: Save coupan code Data in Cart Session
+    // Begin: Save coupan code Data in Cart Session.
     $accepted_p_ids = tt_get_line_items_product_ids();
-    $cart = WC()->cart->cart_contents;
-    foreach ($cart as $cart_item_id => $cart_item) {
-        if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
-            if ($is_applied == true) {
+    // Get the current cart contents.
+    $cart = WC()->cart->get_cart_contents();
+
+    foreach ( $cart as $cart_item_id => $cart_item ) {
+        if ( isset( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
+            if ( $is_applied == true ) {
                 $cart_item['trek_user_checkout_data']['coupon_code'] = $coupon_code;
             } else {
                 $cart_item['trek_user_checkout_data']['coupon_code'] = '';
             }
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart[$cart_item_id] = $cart_item;
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
-    //End: Save coupan code Data in Cart Session
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+    // End: Save coupan code Data in Cart Session.
+
     $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
     if (is_readable($review_order)) {
         $resHtml .= wc_get_template_html('woocommerce/checkout/review-order.php');
@@ -2396,47 +2441,54 @@ function tt_add_error_log($type, $args, $response)
  * @version : 1.0.0
  * @return  : Calculate cart Fees & Set tt_guest_insurance in session
  **/
-add_action('woocommerce_cart_calculate_fees', 'tt_woocommerce_cart_calculate_fees_cb');
-function tt_woocommerce_cart_calculate_fees_cb($cart)
-{
+function tt_woocommerce_cart_calculate_fees_cb( $cart ) {
     
-    $trek_user_checkout_data =  get_trek_user_checkout_data();
-    $tt_posted = isset($trek_user_checkout_data['posted']) ? $trek_user_checkout_data['posted'] : [];
-    $arch_info = tt_get_insurance_info($tt_posted);
-    $insuredPerson = isset($arch_info['count']) ? $arch_info['count'] : 0;
-    $insurance_amount = isset($arch_info['amount']) ? $arch_info['amount'] : 0;
-    $cartobj = WC()->cart->cart_contents;
-    $s_product_id = tt_create_line_item_product('TTWP23SUPP');
-    $occupants_private = (isset($tt_posted['occupants']['private']) ? $tt_posted['occupants']['private'] : array());
-    $occupants_roommate = (isset($tt_posted['occupants']['roommate']) ? $tt_posted['occupants']['roommate'] : array());
-    $suppliment_counts = intval(count($occupants_private)) + intval(count($occupants_roommate));
-    foreach ($cartobj as $cartobj_item_id => $cartobj_item) {
-        $_product = apply_filters('woocommerce_cart_item_product', $cartobj_item['data'], $cartobj_item, $cartobj_item_id);
-        $sku = $_product->get_sku();
-        //if ( isset($cartobj_item['product_id']) && $cartobj_item['product_id'] == $s_product_id) {
-        if ( isset($cartobj_item['product_id']) ) {    
-            WC()->cart->cart_contents[$cartobj_item_id] = $cartobj_item;
-            if ($sku == 'TTWP23FEES'){
-                if( $insuredPerson > 0 && $insurance_amount > 0  ){
-                    WC()->cart->cart_contents[$cartobj_item_id]['quantity'] = 1;
-                    $cartobj_item['data']->set_price($insurance_amount);
-                }else{
-                    WC()->cart->cart_contents[$cartobj_item_id]['quantity'] = 0;
+    $trek_user_checkout_data = get_trek_user_checkout_data();
+    $tt_posted               = isset( $trek_user_checkout_data['posted'] ) ? $trek_user_checkout_data['posted'] : [];
+    $arch_info               = tt_get_insurance_info( $tt_posted );
+    $insuredPerson           = isset( $arch_info['count'] ) ? $arch_info['count'] : 0;
+    $insurance_amount        = isset( $arch_info['amount'] ) ? $arch_info['amount'] : 0;
+    // Get the current cart contents.
+    $cartobj                 = WC()->cart->get_cart_contents();
+    $occupants_private       = isset( $tt_posted['occupants']['private'] ) ? $tt_posted['occupants']['private'] : array();
+    $occupants_roommate      = isset( $tt_posted['occupants']['roommate'] ) ? $tt_posted['occupants']['roommate'] : array();
+    $suppliment_counts       = intval( count( $occupants_private ) ) + intval( count( $occupants_roommate ) );
+    foreach ( $cartobj as $cartobj_item_id => $cartobj_item ) {
+        $_product = apply_filters('woocommerce_cart_item_product', $cartobj_item['data'], $cartobj_item, $cartobj_item_id );
+        $sku      = $_product->get_sku();
+        if ( isset( $cartobj_item['product_id'] ) ) {
+
+            if ( 'TTWP23FEES' === $sku ) {
+                if ( $insuredPerson > 0 && $insurance_amount > 0  ) {
+                    $cartobj[$cartobj_item_id]['quantity'] = 1;
+                    $cartobj_item['data']->set_price( $insurance_amount );
+                } else {
+                    $cartobj[$cartobj_item_id]['quantity'] = 0;
                     $cartobj_item['data']->set_price(0);
                 }
             }
-            if ( $sku == 'TTWP23SUPP' || $sku == 'TTWP23UPGRADES') {
-                if (isset($cartobj_item['tt_cart_custom_fees_price']) && $cartobj_item['tt_cart_custom_fees_price'] > 0) {
-                    $cartobj_item['data']->set_price($cartobj_item['tt_cart_custom_fees_price']);
+
+            if ( 'TTWP23SUPP' === $sku || 'TTWP23UPGRADES' === $sku ) {
+                if ( isset( $cartobj_item['tt_cart_custom_fees_price'] ) && $cartobj_item['tt_cart_custom_fees_price'] > 0 ) {
+                    $cartobj_item['data']->set_price( $cartobj_item['tt_cart_custom_fees_price'] );
                 }
             }
-            if( $sku == 'TTWP23SUPP' ){
-                WC()->cart->cart_contents[$cartobj_item_id]['quantity'] = $suppliment_counts;
+
+            if ( 'TTWP23SUPP' === $sku ) {
+                $cartobj[$cartobj_item_id]['quantity'] = $suppliment_counts;
             }
         }
     }
-    
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cartobj );
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
 }
+add_action( 'woocommerce_cart_calculate_fees', 'tt_woocommerce_cart_calculate_fees_cb' );
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -2515,53 +2567,29 @@ if (!function_exists('tt_get_booking_field')) {
  * @return  : Find User Room index function
  **/
 if (!function_exists('tt_get_user_room_index_by_user_key')) {
-    function tt_get_user_room_index_by_user_key($array, $key)
-    {
+    function tt_get_user_room_index_by_user_key( $array, $key ) {
         $room_index = null;
-        if ($array) {
-            foreach ($array as $room_type => $user_ids) {
-                if (($room_type == 'double1Bed' || $room_type == 'double2Beds')) {
-                    if (isset($user_ids) && $user_ids) {
-                        foreach ($user_ids as $room_id => $user__inner_id) {
-                            if (in_array($key, $user__inner_id)) {
+        if ( $array ) {
+            foreach ( $array as $room_type => $user_ids ) {
+                if ( ( 'double1Bed' === $room_type || 'double2Beds' === $room_type ) ) {
+                    if ( isset( $user_ids ) && $user_ids ) {
+                        foreach ( $user_ids as $room_id => $user_inner_id ) {
+                            if ( in_array( $key, $user_inner_id ) ) {
                                 $room_index = $room_id;
                             }
                         }
                     }
                 } else {
-                    if ($user_ids) {
-                        foreach ($user_ids as $room_id => $user__inner_ids) {
-                            if ($key ==  $user__inner_ids) {
+                    if ( $user_ids ) {
+                        foreach ( $user_ids as $room_id => $user_inner_ids ) {
+                            if ($key == $user_inner_ids) {
                                 $room_index = $room_id;
                             }
                         }
                     }
                 }
-                //&& is_array($user_ids[0]) == true 
-                // if (( $room_type == 'single' || $room_type == 'double2Beds' ))  { 
-                //     if (isset($user_ids) && $user_ids) {
-                //         foreach ($user_ids as $room_id => $user__inner_id) {
-                //             if (in_array($key, $user__inner_id)) {
-                //                 $room_index = $room_id;
-                //             }
-                //         }
-                //     }
-                // } else {
-                //     if ($user_ids) {
-                //         foreach ($user_ids as $room_id => $user__inner_ids) {
-                //             if (in_array($key, $user__inner_ids)) {
-                //                 $room_index = $room_id;
-                //             }
-                //         }
-                //     }
-                // }
             }
         }
-        $roomsResults = [
-            'rooms' => $array,
-            'room_index' => $room_index,
-            'key' => $key
-        ];
         return $room_index;
     }
 }
@@ -3037,36 +3065,43 @@ if (!function_exists('tt_create_line_item_product')) {
         return $product_id;
     }
 }
-add_action('woocommerce_before_calculate_totals', 'tt_woocommerce_before_calculate_totals_cb');
-function tt_woocommerce_before_calculate_totals_cb($cart_object)
-{
-    $accepted_p_ids = tt_get_line_items_product_ids();
-    $bike_upgrade_qty = 0;
-    $tt_checkoutData =  get_trek_user_checkout_data();
-    $tt_posted = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : array();
-    $arch_info = tt_get_insurance_info($tt_posted);
-    $insuredPerson = isset($arch_info['count']) ? $arch_info['count'] : 0;
-    $insurance_amount = isset($arch_info['amount']) ? $arch_info['amount'] : 0;
-    $occupants_private = (isset($tt_posted['occupants']['private']) ? $tt_posted['occupants']['private'] : array());
-    $occupants_roommate = (isset($tt_posted['occupants']['roommate']) ? $tt_posted['occupants']['roommate'] : array());
-    $suppliment_counts = intval(count($occupants_private)) + intval(count($occupants_roommate));
-    if (isset($tt_posted['bike_gears']) && $tt_posted['bike_gears']) {
-        foreach ($tt_posted['bike_gears'] as $bike_gear_type => $bike_gear) {
-            if ($bike_gear_type == 'primary') {
-                $bike_type_id = isset($bike_gear['bikeTypeId']) ? $bike_gear['bikeTypeId'] : '';
-                if ($bike_type_id) {
-                    $bikeTypeInfo = tt_ns_get_bike_type_info($bike_type_id);
-                    if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
+
+/**
+ * Modify the cart_contents before calculate totals.
+ *
+ * ! This function makes very similar things with tt_woocommerce_cart_calculate_fees_cb(),
+ * so think about how to combine them or find what is the difference.
+ *
+ * @param WC_Cart $cart_object The WC_Cart instance.
+ */
+function tt_woocommerce_before_calculate_totals_cb( $cart_object ) {
+    $accepted_p_ids     = tt_get_line_items_product_ids();
+    $bike_upgrade_qty   = 0;
+    $tt_checkoutData    = get_trek_user_checkout_data();
+    $tt_posted          = isset( $tt_checkoutData['posted'] ) ? $tt_checkoutData['posted'] : array();
+    $arch_info          = tt_get_insurance_info( $tt_posted );
+    $insuredPerson      = isset( $arch_info['count'] ) ? $arch_info['count'] : 0;
+    $insurance_amount   = isset( $arch_info['amount'] ) ? $arch_info['amount'] : 0;
+    $occupants_private  = isset( $tt_posted['occupants']['private'] ) ? $tt_posted['occupants']['private'] : array();
+    $occupants_roommate = isset( $tt_posted['occupants']['roommate'] ) ? $tt_posted['occupants']['roommate'] : array();
+    $suppliment_counts  = intval( count( $occupants_private ) ) + intval( count( $occupants_roommate ) );
+    if ( isset( $tt_posted['bike_gears'] ) && $tt_posted['bike_gears'] ) {
+        foreach ( $tt_posted['bike_gears'] as $bike_gear_type => $bike_gear ) {
+            if ( 'primary' === $bike_gear_type ) {
+                $bike_type_id = isset( $bike_gear['bikeTypeId'] ) ? $bike_gear['bikeTypeId'] : '';
+                if ( $bike_type_id ) {
+                    $bikeTypeInfo = tt_ns_get_bike_type_info( $bike_type_id );
+                    if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
                         $bike_upgrade_qty++;
                     }
                 }
             } else {
-                if ($bike_gear) {
-                    foreach ($bike_gear as $guest_key => $guestData) {
-                        $bike_type_id = isset($guestData['bikeTypeId']) ? $guestData['bikeTypeId'] : '';
-                        if ($bike_type_id) {
-                            $bikeTypeInfo = tt_ns_get_bike_type_info($bike_type_id);
-                            if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
+                if ( $bike_gear ) {
+                    foreach ( $bike_gear as $guestData ) {
+                        $bike_type_id = isset( $guestData['bikeTypeId'] ) ? $guestData['bikeTypeId'] : '';
+                        if ( $bike_type_id ) {
+                            $bikeTypeInfo = tt_ns_get_bike_type_info( $bike_type_id );
+                            if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
                                 $bike_upgrade_qty++;
                             }
                         }
@@ -3075,118 +3110,130 @@ function tt_woocommerce_before_calculate_totals_cb($cart_object)
             }
         }
     }
-    foreach ($cart_object->get_cart() as $item_key => $item) {
-        if( isset($item['product_id']) && in_array($item['product_id'], $accepted_p_ids) ){
-            $product = wc_get_product($item['product_id']);
-            if( $product ){
+    // Get the current cart contents.
+    $cart_contents = WC()->cart->get_cart_contents();
+    foreach ( $cart_contents as $item_key => $item ) {
+        if ( isset( $item['product_id'] ) && in_array( $item['product_id'], $accepted_p_ids ) ) {
+            $product = wc_get_product( $item['product_id'] );
+            if ( $product ) {
                 $sku = $product->get_sku();
-                if ($sku == 'TTWP23SUPP' && $suppliment_counts > 0 ) {
-                    WC()->cart->cart_contents[$item_key]['quantity'] = $suppliment_counts;
-                }
-                if ($sku == 'TTWP23UPGRADES' && $bike_upgrade_qty > 0 ) {
-                    WC()->cart->cart_contents[$item_key]['quantity'] = $bike_upgrade_qty;
-                }
-                if ($sku == 'TTWP23FEES') {
-                    if( $insuredPerson > 0 && $insurance_amount > 0  ){
-                        WC()->cart->cart_contents[$item_key]['quantity'] = 1;
-                        $item['data']->set_price($insurance_amount);
-                    }else{
-                        WC()->cart->cart_contents[$item_key]['quantity'] = 0;
+                if ( 'TTWP23FEES' === $sku ) {
+                    if ( $insuredPerson > 0 && $insurance_amount > 0  ) {
+                        $cart_contents[$item_key]['quantity'] = 1;
+                        $item['data']->set_price( $insurance_amount );
+                    } else {
+                        $cart_contents[$item_key]['quantity'] = 0;
                         $item['data']->set_price(0);
                     }
                 }
-                if ( $sku == 'TTWP23SUPP' || $sku == 'TTWP23UPGRADES') {
-                    if (isset($item['tt_cart_custom_fees_price']) && $item['tt_cart_custom_fees_price'] > 0) {
-                        $item['data']->set_price($item['tt_cart_custom_fees_price']);
+                if ( 'TTWP23SUPP' === $sku || 'TTWP23UPGRADES' === $sku ) {
+                    if ( isset( $item['tt_cart_custom_fees_price'] ) && $item['tt_cart_custom_fees_price'] > 0 ) {
+                        $item['data']->set_price( $item['tt_cart_custom_fees_price'] );
                     }
-                    if ($sku == 'TTWP23SUPP' && $suppliment_counts > 0 ) {
-                        WC()->cart->cart_contents[$item_key]['quantity'] = $suppliment_counts;
+                    if ( 'TTWP23SUPP' === $sku && $suppliment_counts > 0 ) {
+                        $cart_contents[$item_key]['quantity'] = $suppliment_counts;
                     }
-                    if ($sku == 'TTWP23UPGRADES' && $bike_upgrade_qty > 0 ) {
-                        WC()->cart->cart_contents[$item_key]['quantity'] = $bike_upgrade_qty;
+                    if ( 'TTWP23UPGRADES' === $sku && $bike_upgrade_qty > 0 ) {
+                        $cart_contents[$item_key]['quantity'] = $bike_upgrade_qty;
                     }
                 }
             }
         }
     }
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart_contents );
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
 }
-add_action('wp_ajax_tt_save_occupants_ajax_action', 'trek_tt_save_occupants_ajax_action_cb');
-add_action('wp_ajax_nopriv_tt_save_occupants_ajax_action', 'trek_tt_save_occupants_ajax_action_cb');
-function trek_tt_save_occupants_ajax_action_cb()
-{
-    $accepted_p_ids = tt_get_line_items_product_ids();
-    $cart = WC()->cart->cart_contents;
-    $s_product_id = tt_create_line_item_product('TTWP23SUPP');
-    $occupants_private = (isset($_REQUEST['occupants']['private']) ? $_REQUEST['occupants']['private'] : array());
-    $occupants_roommate = (isset($_REQUEST['occupants']['roommate']) ? $_REQUEST['occupants']['roommate'] : array());
-    $suppliment_counts = count($occupants_private) + count($occupants_roommate);
-    $trip_sku = tt_get_trip_pid_sku_from_cart();
-    $singleSupplementPrice = get_post_meta( $trip_sku['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true);
-    if ($singleSupplementPrice && $singleSupplementPrice > 0) {
-        WC()->cart->add_to_cart($s_product_id, $suppliment_counts, 0, array(), array('tt_cart_custom_fees_price' => $singleSupplementPrice));
+add_action( 'woocommerce_before_calculate_totals', 'tt_woocommerce_before_calculate_totals_cb' );
+
+/**
+ * Save occupants AJAX callback.
+ */
+function trek_tt_save_occupants_ajax_action_cb() {
+    $accepted_p_ids        = tt_get_line_items_product_ids();
+    $s_product_id          = tt_create_line_item_product( 'TTWP23SUPP' );
+    $occupants_private     = isset( $_REQUEST['occupants']['private'] ) ? $_REQUEST['occupants']['private'] : array();
+    $occupants_roommate    = isset( $_REQUEST['occupants']['roommate'] ) ? $_REQUEST['occupants']['roommate'] : array();
+    $suppliment_counts     = count( $occupants_private ) + count( $occupants_roommate );
+    $trip_sku              = tt_get_trip_pid_sku_from_cart();
+    $singleSupplementPrice = get_post_meta( $trip_sku['product_id'], TT_WC_META_PREFIX . 'singleSupplementPrice', true );
+    if ( $singleSupplementPrice && $singleSupplementPrice > 0 ) {
+        WC()->cart->add_to_cart( $s_product_id, $suppliment_counts, 0, array(), array( 'tt_cart_custom_fees_price' => $singleSupplementPrice ) );
     }
-    foreach ($cart as $cart_item_id => $cart_item) {
-        $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_id);
+    // Get the current cart contents.
+    $cart                  = WC()->cart->get_cart_contents();
+    foreach ( $cart as $cart_item_id => $cart_item ) {
+        $_product      = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_id);
         $_product_name = $_product->get_name();
-        $product_id = isset($cart_item['product_id']) ? $cart_item['product_id'] : '';
-        $sku = $_product->get_sku();
-        if ( isset($cart_item['product_id']) && $cart_item['product_id'] == $s_product_id) {
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
-            if ($sku == 'TTWP23SUPP') {
-                if (isset($cart_item['tt_cart_custom_fees_price']) && $cart_item['tt_cart_custom_fees_price'] > 0) {
-                    $cart_item['data']->set_price($cart_item['tt_cart_custom_fees_price']);
+        $product_id    = isset($cart_item['product_id']) ? $cart_item['product_id'] : '';
+        $sku           = $_product->get_sku();
+        if ( isset( $cart_item['product_id'] ) && $cart_item['product_id'] == $s_product_id ) {
+            $cart[$cart_item_id] = $cart_item;
+            if ( 'TTWP23SUPP' === $sku ) {
+                if ( isset( $cart_item['tt_cart_custom_fees_price'] ) && $cart_item['tt_cart_custom_fees_price'] > 0 ) {
+                    $cart_item['data']->set_price( $cart_item['tt_cart_custom_fees_price'] );
                     $singleSupplementPrice = $cart_item['tt_cart_custom_fees_price'];
                 }
-                WC()->cart->cart_contents[$cart_item_id]['quantity'] = $suppliment_counts;
+                $cart[$cart_item_id]['quantity'] = $suppliment_counts;
             }
         }
-        if (!in_array($product_id, $accepted_p_ids)) {
-            $cart_posted_data = $cart_item['trek_user_checkout_data'];
-            $guest_req = (isset($_REQUEST['guests']) ? $_REQUEST['guests'] : $cart_posted_data['guests']);
-            $guest_req = $guest_req && is_array($guest_req) ? $guest_req : array();
+        if ( ! in_array( $product_id, $accepted_p_ids ) ) {
+            $cart_posted_data     = $cart_item['trek_user_checkout_data'];
+            $guest_req            = isset( $_REQUEST['guests'] ) ? $_REQUEST['guests'] : $cart_posted_data['guests'];
+            $guest_req            = $guest_req && is_array( $guest_req ) ? $guest_req : array();
             $bikes_cart_item_data = array(
                 'cart_item' => $_product_name,
-                'quantity' => count($guest_req) + 1
+                'quantity'  => count( $guest_req ) + 1
             );
             $guests_p_arr = array(
-                "guest_fname" => $cart_posted_data['shipping_first_name'],
-                "guest_lname" => $cart_posted_data['shipping_last_name'],
-                "guest_email" => $cart_posted_data['email'],
-                "guest_phone" => $cart_posted_data['shipping_phone'],
+                "guest_fname"  => $cart_posted_data['shipping_first_name'],
+                "guest_lname"  => $cart_posted_data['shipping_last_name'],
+                "guest_email"  => $cart_posted_data['email'],
+                "guest_phone"  => $cart_posted_data['shipping_phone'],
                 "guest_gender" => $cart_posted_data['custentity_gender'],
-                "guest_dob" => $cart_posted_data['custentity_birthdate'],
+                "guest_dob"    => $cart_posted_data['custentity_birthdate'],
             );
-            if ($cart_posted_data && !empty($cart_posted_data)) {
-                foreach ($cart_posted_data['bike_gears'] as $trek_bike_gear_k => $trek_bike_gear) {
-                    if ($trek_bike_gear_k == 'primary') {
-                        $guests_bikes_data[] = array_merge($guests_p_arr, $trek_bike_gear);
+            if ( $cart_posted_data && ! empty( $cart_posted_data ) ) {
+                foreach ( $cart_posted_data['bike_gears'] as $trek_bike_gear_k => $trek_bike_gear ) {
+                    if ( 'primary' === $trek_bike_gear_k ) {
+                        $guests_bikes_data[] = array_merge( $guests_p_arr, $trek_bike_gear );
                     }
-                    if ($trek_bike_gear_k == 'guests' && $trek_bike_gear) {
-                        foreach ($trek_bike_gear as $inner_k => $trek_bike_gear_inner_guest) {
+                    if ( 'guests' === $trek_bike_gear_k && $trek_bike_gear ) {
+                        foreach ( $trek_bike_gear as $inner_k => $trek_bike_gear_inner_guest ) {
                             $inner_guest_arr = $guest_req[$inner_k];
-                            if(is_array($inner_guest_arr)){
-                                $guests_bikes_data[] = array_merge($inner_guest_arr, $trek_bike_gear_inner_guest);
+                            if( is_array( $inner_guest_arr ) ) {
+                                $guests_bikes_data[] = array_merge( $inner_guest_arr, $trek_bike_gear_inner_guest );
                             }
                         }
                     }
                 }
                 $bikes_cart_item_data['cart_item_data'] = $guests_bikes_data;
             }
-            $cart_item['trek_user_formatted_checkout_data'][1] = $bikes_cart_item_data;
-            $cart_item['trek_user_checkout_data']['occupants'] = isset($_REQUEST['occupants']) ? $_REQUEST['occupants'] : array();
-            $cart_item['trek_user_checkout_data']['private'] = isset($_REQUEST['private']) ? $_REQUEST['private'] : 0;
-            $cart_item['trek_user_checkout_data']['roommate'] = isset($_REQUEST['roommate']) ? $_REQUEST['roommate'] : 0;
+            $cart_item['trek_user_formatted_checkout_data'][1]                    = $bikes_cart_item_data;
+            $cart_item['trek_user_checkout_data']['occupants']                    = isset($_REQUEST['occupants']) ? $_REQUEST['occupants'] : array();
+            $cart_item['trek_user_checkout_data']['private']                      = isset($_REQUEST['private']) ? $_REQUEST['private'] : 0;
+            $cart_item['trek_user_checkout_data']['roommate']                     = isset($_REQUEST['roommate']) ? $_REQUEST['roommate'] : 0;
             $cart_item['trek_user_checkout_data']['tt_single_supplement_charges'] = $singleSupplementPrice;
-            $cart_item['trek_user_checkout_data']['tt_single_supplement_qty'] = $suppliment_counts;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart_item['trek_user_checkout_data']['tt_single_supplement_qty']     = $suppliment_counts;
+            $cart[$cart_item_id]                                                  = $cart_item;
         }
-    } 
-    WC()->cart->set_session();
+    }
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
     $review_order_html = '';
-    $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
-    if (is_readable($review_order)) {
+    $review_order      = TREK_PATH . '/woocommerce/checkout/review-order.php';
+    if ( is_readable( $review_order ) ) {
         $review_order_html .= wc_get_template_html('woocommerce/checkout/review-order.php');
     } else {
         $review_order_html .= '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
@@ -3230,6 +3277,8 @@ function trek_tt_save_occupants_ajax_action_cb()
     );
     exit;
 }
+add_action( 'wp_ajax_tt_save_occupants_ajax_action', 'trek_tt_save_occupants_ajax_action_cb' );
+add_action( 'wp_ajax_nopriv_tt_save_occupants_ajax_action', 'trek_tt_save_occupants_ajax_action_cb' );
 
 if ( ! function_exists( 'tt_get_local_bike_detail' ) ) {
     /**
@@ -3781,37 +3830,40 @@ function tt_cron_try_sync_user_ns_again_cb( $user_id, $attempt_number )
     }
 }
 
-add_action('wp_ajax_tt_bike_selection_ajax_action', 'trek_tt_bike_selection_ajax_action_cb');
-add_action('wp_ajax_nopriv_tt_bike_selection_ajax_action', 'trek_tt_bike_selection_ajax_action_cb');
-function trek_tt_bike_selection_ajax_action_cb()
-{
-    $bikeTypeId = $_REQUEST['bikeTypeId'];
-    $isBikeUpgrade = false;
-    $bikeUpgradeQty = $_REQUEST['bikeUpgradeQty'];
-    $bike_upgrade_qty = 0;
-    $guest_number = $_REQUEST['guest_number'];
-    $trek_user_checkout_data =  get_trek_user_checkout_data();
-    $postedData = isset($trek_user_checkout_data['posted']) ? $trek_user_checkout_data['posted'] : array();
-    if (isset($postedData['bike_gears']) && $postedData['bike_gears']) {
-        foreach ($postedData['bike_gears'] as $bike_gear_type => $bike_gear) {
-            if ($bike_gear_type == 'primary') {
-                if ($guest_number != 0) {
-                    $bike_type_id = isset($bike_gear['bikeTypeId']) ? $bike_gear['bikeTypeId'] : '';
-                    if ($bike_type_id) {
-                        $bikeTypeInfo = tt_ns_get_bike_type_info($bike_type_id);
-                        if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
+/**
+ * Bike selection AJAX callback.
+ *
+ * ! This function makes very similar things with tt_woocommerce_before_calculate_totals_cb(),
+ * so think about how to combine them or find what is the difference.
+ */
+function trek_tt_bike_selection_ajax_action_cb() {
+    $bikeTypeId              = $_REQUEST['bikeTypeId'];
+    $isBikeUpgrade           = false;
+    $bikeUpgradeQty          = $_REQUEST['bikeUpgradeQty'];
+    $bike_upgrade_qty        = 0;
+    $guest_number            = $_REQUEST['guest_number'];
+    $trek_user_checkout_data = get_trek_user_checkout_data();
+    $postedData              = isset( $trek_user_checkout_data['posted'] ) ? $trek_user_checkout_data['posted'] : array();
+    if ( isset( $postedData['bike_gears'] ) && $postedData['bike_gears'] ) {
+        foreach ( $postedData['bike_gears'] as $bike_gear_type => $bike_gear ) {
+            if ( 'primary' === $bike_gear_type ) {
+                if ( $guest_number != 0 ) {
+                    $bike_type_id = isset( $bike_gear['bikeTypeId'] ) ? $bike_gear['bikeTypeId'] : '';
+                    if ( $bike_type_id ) {
+                        $bikeTypeInfo = tt_ns_get_bike_type_info( $bike_type_id );
+                        if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
                             $bike_upgrade_qty++;
                         }
                     }
                 }
             } else {
-                if ($bike_gear) {
-                    foreach ($bike_gear as $guest_key => $guestData) {
-                        if ($guest_number != $guest_key) {
-                            $bike_type_id = isset($guestData['bikeTypeId']) ? $guestData['bikeTypeId'] : '';
-                            if ($bike_type_id) {
-                                $bikeTypeInfo = tt_ns_get_bike_type_info($bike_type_id);
-                                if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
+                if ( $bike_gear ) {
+                    foreach ( $bike_gear as $guest_key => $guestData ) {
+                        if ( $guest_number != $guest_key ) {
+                            $bike_type_id = isset( $guestData['bikeTypeId']) ? $guestData['bikeTypeId'] : '';
+                            if ( $bike_type_id ) {
+                                $bikeTypeInfo = tt_ns_get_bike_type_info( $bike_type_id );
+                                if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
                                     $bike_upgrade_qty++;
                                 }
                             }
@@ -3821,9 +3873,9 @@ function trek_tt_bike_selection_ajax_action_cb()
             }
         }
     }
-    if ($bikeTypeId) {
-        $bikeTypeInfo = tt_ns_get_bike_type_info($bikeTypeId);
-        if ($bikeTypeInfo && isset($bikeTypeInfo['isBikeUpgrade']) && $bikeTypeInfo['isBikeUpgrade'] == 1) {
+    if ( $bikeTypeId ) {
+        $bikeTypeInfo = tt_ns_get_bike_type_info( $bikeTypeId );
+        if ( $bikeTypeInfo && isset( $bikeTypeInfo['isBikeUpgrade'] ) && $bikeTypeInfo['isBikeUpgrade'] == 1 ) {
             $bike_upgrade_qty++;
             $isBikeUpgrade = true;
         }
@@ -3835,67 +3887,78 @@ function trek_tt_bike_selection_ajax_action_cb()
     $accepted_p_ids     = tt_get_line_items_product_ids();
     $product_id         = tt_create_line_item_product('TTWP23UPGRADES');
     $bikeUpgradePrice   = get_post_meta( $tripInfo['product_id'], TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
-    if ($bikeUpgradePrice && $bikeUpgradePrice > 0) {
-        WC()->cart->add_to_cart($product_id, $bike_upgrade_qty, 0, array(), array('tt_cart_custom_fees_price' => $bikeUpgradePrice));
+    if ( $bikeUpgradePrice && $bikeUpgradePrice > 0 ) {
+        WC()->cart->add_to_cart( $product_id, $bike_upgrade_qty, 0, array(), array( 'tt_cart_custom_fees_price' => $bikeUpgradePrice ) );
     }
-    foreach (WC()->cart->get_cart() as $cart_item_id => $cart_item) {
-        if ( isset($cart_item['product_id']) && $cart_item['product_id'] == $product_id) {
-            $product = wc_get_product($product_id);
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
-            $sku = $product->get_sku();
-            if ($sku == 'TTWP23UPGRADES') {
-                if (isset($cart_item['tt_cart_custom_fees_price']) && $cart_item['tt_cart_custom_fees_price'] > 0) {
+    // Get the current cart contents.
+    $cart_contents = WC()->cart->get_cart_contents();
+    foreach ( $cart_contents as $cart_item_id => $cart_item ) {
+        if ( isset( $cart_item['product_id'] ) && $cart_item['product_id'] == $product_id ) {
+            $product                      = wc_get_product($product_id);
+            $cart_contents[$cart_item_id] = $cart_item;
+            $sku                          = $product->get_sku();
+            if ( 'TTWP23UPGRADES' === $sku ) {
+                if ( isset( $cart_item['tt_cart_custom_fees_price'] ) && $cart_item['tt_cart_custom_fees_price'] > 0 ) {
                     $cart_item['data']->set_price($cart_item['tt_cart_custom_fees_price']);
                     $bikeUpgradePrice = $cart_item['tt_cart_custom_fees_price'];
                 }
-                WC()->cart->cart_contents[$cart_item_id]['quantity'] = $bike_upgrade_qty;
+                $cart_contents[$cart_item_id]['quantity'] = $bike_upgrade_qty;
             }
         }
         if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
-            if ($guest_number == 0) {
+            if ( $guest_number == 0 ) {
                 $cart_item['trek_user_checkout_data']['bike_gears']['primary']['bikeTypeId'] = $bikeTypeId;
             } else {
                 $cart_item['trek_user_checkout_data']['bike_gears']['guests'][$guest_number]['bikeTypeId'] = $bikeTypeId;
             }
-            if ($guest_number == 0 && $isBikeUpgrade == true) {
+            if ( $guest_number == 0 && $isBikeUpgrade == true ) {
                 $cart_item['trek_user_checkout_data']['bike_gears']['primary']['upgrade'] = 'yes';
             }
-            if ($guest_number != 0 && is_numeric($guest_number) && $guest_number > 0 && $isBikeUpgrade == true) {
+            if ( $guest_number != 0 && is_numeric( $guest_number ) && $guest_number > 0 && $isBikeUpgrade == true) {
                 $cart_item['trek_user_checkout_data']['bike_gears']['guests'][$guest_number]['upgrade'] = 'yes';
             }
-            $cart_item['trek_user_checkout_data']['tt_bike_upgrade_qty'] = $bike_upgrade_qty;
+            $cart_item['trek_user_checkout_data']['tt_bike_upgrade_qty']     = $bike_upgrade_qty;
             $cart_item['trek_user_checkout_data']['tt_bike_upgrade_charges'] = $bikeUpgradePrice;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart_contents[$cart_item_id]                                    = $cart_item;
         }
     }
-    WC()->cart->set_session();
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart_contents );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
     $review_order_html = '';
     $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
-    if (is_readable($review_order)) {
+    if ( is_readable( $review_order ) ) {
         $review_order_html .= wc_get_template_html('woocommerce/checkout/review-order.php');
     } else {
         $review_order_html .= '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
     }
-    $opts['review_order'] = $review_order_html;
+    $opts['review_order']     = $review_order_html;
     $opts['bike_upgrade_qty'] = $bike_upgrade_qty;
-    $opts['isBikeUpgrade'] = $isBikeUpgrade;
-    echo json_encode($opts);
+    $opts['isBikeUpgrade']    = $isBikeUpgrade;
+    echo json_encode( $opts );
     exit;
 }
-add_action('wp_ajax_tt_update_occupant_popup_html_ajax_action', 'trek_tt_update_occupant_popup_html_ajax_action_cb');
-add_action('wp_ajax_nopriv_tt_update_occupant_popup_html_ajax_action', 'trek_tt_update_occupant_popup_html_ajax_action_cb');
-function trek_tt_update_occupant_popup_html_ajax_action_cb()
-{
+add_action( 'wp_ajax_tt_bike_selection_ajax_action', 'trek_tt_bike_selection_ajax_action_cb' );
+add_action( 'wp_ajax_nopriv_tt_bike_selection_ajax_action', 'trek_tt_bike_selection_ajax_action_cb' );
+
+/**
+ * Update occupant popup HTML AJAX callback.
+ */
+function trek_tt_update_occupant_popup_html_ajax_action_cb() {
     $accepted_p_ids = tt_get_line_items_product_ids();
-    $trip_capacity  = get_trip_capacity_info();
-    $cart           = WC()->cart->cart_contents;
+    // Get the current cart contents.
+    $cart           = WC()->cart->get_cart_contents();
     $single         = intval( tt_validate( $_REQUEST['single'], 0 ) );
     $double         = intval( tt_validate( $_REQUEST['double'], 0 ) );
     $private        = intval( tt_validate( $_REQUEST['private'], 0 ) );
     $roommate       = intval( tt_validate( $_REQUEST['roommate'], 0 ) );
-    foreach ($cart as $cart_item_id => $cart_item) {
+    foreach ( $cart as $cart_item_id => $cart_item ) {
         if ( isset( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
             $cart_item['trek_user_checkout_data']['single']   = $single;
             $cart_item['trek_user_checkout_data']['double']   = $double;
@@ -3913,17 +3976,24 @@ function trek_tt_update_occupant_popup_html_ajax_action_cb()
             if( 0 === $roommate ) {
                 $cart_item['trek_user_checkout_data']['occupants']['roommate'] = [];
             }
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart[$cart_item_id] = $cart_item;
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
-    $trek_user_checkout_data       =  get_trek_user_checkout_data();
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
+    $trek_user_checkout_data       = get_trek_user_checkout_data();
     $trek_user_checkout_posted     = $trek_user_checkout_data['posted'];
     $occupant_popup_html           = '';
     $checkout_hotel_occupant_popup = TREK_PATH . '/woocommerce/checkout/checkout-hotel-occupant-popup.php';
-    if( is_readable( $checkout_hotel_occupant_popup ) ) {
+    if ( is_readable( $checkout_hotel_occupant_popup ) ) {
         $occupant_popup_html = wc_get_template_html('woocommerce/checkout/checkout-hotel-occupant-popup.php', $trek_user_checkout_posted );
     } else {
         $occupant_popup_html = '<p>The checkout-hotel-occupant-popup.php template is missing!</p>';
@@ -3942,8 +4012,12 @@ function trek_tt_update_occupant_popup_html_ajax_action_cb()
     );
     exit;
 }
-add_action('wp_ajax_tt_bike_size_change_ajax_action', 'trek_tt_bike_size_change_ajax_action_cb');
-add_action('wp_ajax_nopriv_tt_bike_size_change_ajax_action', 'trek_tt_bike_size_change_ajax_action_cb');
+add_action( 'wp_ajax_tt_update_occupant_popup_html_ajax_action', 'trek_tt_update_occupant_popup_html_ajax_action_cb' );
+add_action( 'wp_ajax_nopriv_tt_update_occupant_popup_html_ajax_action', 'trek_tt_update_occupant_popup_html_ajax_action_cb' );
+
+/**
+ * Bike size change AJAX callback.
+ */
 function trek_tt_bike_size_change_ajax_action_cb() {
     $bike_type_id = $_REQUEST['bikeTypeId'];
     $bike_size_id = $_REQUEST['bike_size'];
@@ -3952,60 +4026,79 @@ function trek_tt_bike_size_change_ajax_action_cb() {
     echo json_encode( $result );
     exit;
 }
-add_action('wp_ajax_tt_bike_upgrade_fees_ajax_action', 'trek_tt_bike_upgrade_fees_ajax_action_cb');
-add_action('wp_ajax_nopriv_tt_bike_upgrade_fees_ajax_action', 'trek_tt_bike_upgrade_fees_ajax_action_cb');
-function trek_tt_bike_upgrade_fees_ajax_action_cb()
-{
-    $res = ['status' => false];
-    $upgrade_count = isset($_REQUEST['upgrade_count']) ? $_REQUEST['upgrade_count'] : 0;
-    $guest_index = isset($_REQUEST['guest_index']) ? $_REQUEST['guest_index'] : '';
-    $accepted_p_ids = tt_get_line_items_product_ids();
-    $tripInfo = tt_get_trip_pid_sku_from_cart();
-    $product_id = tt_create_line_item_product('TTWP23UPGRADES');
-    $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $tripInfo['sku'], true);
-    if ($bikeUpgradePrice && $bikeUpgradePrice > 0) {
-        WC()->cart->add_to_cart($product_id, $upgrade_count, 0, array(), array('tt_cart_custom_fees_price' => $bikeUpgradePrice));
+add_action( 'wp_ajax_tt_bike_size_change_ajax_action', 'trek_tt_bike_size_change_ajax_action_cb' );
+add_action( 'wp_ajax_nopriv_tt_bike_size_change_ajax_action', 'trek_tt_bike_size_change_ajax_action_cb' );
+
+/**
+ * Bike upgrade fees AJAX callback.
+ *
+ * ! This function has duplicate code like the other functions above. Needs Optimisation here.
+ */
+function trek_tt_bike_upgrade_fees_ajax_action_cb() {
+    $res              = ['status' => false];
+    $upgrade_count    = isset( $_REQUEST['upgrade_count'] ) ? $_REQUEST['upgrade_count'] : 0;
+    $guest_index      = isset( $_REQUEST['guest_index'] ) ? $_REQUEST['guest_index'] : '';
+    $accepted_p_ids   = tt_get_line_items_product_ids();
+    $tripInfo         = tt_get_trip_pid_sku_from_cart();
+    $product_id       = tt_create_line_item_product('TTWP23UPGRADES');
+    $bikeUpgradePrice = tt_get_local_trips_detail( 'bikeUpgradePrice', '', $tripInfo['sku'], true );
+
+    if ( $bikeUpgradePrice && $bikeUpgradePrice > 0 ) {
+        WC()->cart->add_to_cart( $product_id, $upgrade_count, 0, array(), array('tt_cart_custom_fees_price' => $bikeUpgradePrice ) );
     }
-    foreach (WC()->cart->get_cart() as $cart_item_id => $cart_item) {
-        if ( isset($cart_item['product_id']) && $cart_item['product_id'] == $product_id) {
-            $product = wc_get_product($product_id);
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
-            $sku = $product->get_sku();
-            if ($sku == 'TTWP23UPGRADES') {
-                if (isset($cart_item['tt_cart_custom_fees_price']) && $cart_item['tt_cart_custom_fees_price'] > 0) {
-                    $cart_item['data']->set_price($cart_item['tt_cart_custom_fees_price']);
+
+    // Get the current cart contents.
+    $cart_contents = WC()->cart->get_cart_contents();
+    foreach ( $cart_contents as $cart_item_id => $cart_item ) {
+        if ( isset( $cart_item['product_id'] ) && $cart_item['product_id'] == $product_id ) {
+            $product                      = wc_get_product( $product_id );
+            $cart_contents[$cart_item_id] = $cart_item;
+            $sku                          = $product->get_sku();
+            if ( 'TTWP23UPGRADES' === $sku ) {
+                if ( isset( $cart_item['tt_cart_custom_fees_price']) && $cart_item['tt_cart_custom_fees_price'] > 0 ) {
+                    $cart_item['data']->set_price( $cart_item['tt_cart_custom_fees_price'] );
                     $bikeUpgradePrice = $cart_item['tt_cart_custom_fees_price'];
                 }
             }
-            WC()->cart->cart_contents[$cart_item_id]['quantity'] = $upgrade_count;
+            $cart_contents[$cart_item_id]['quantity'] = $upgrade_count;
         }
-        if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
-            if ($guest_index == 0) {
+        if ( isset( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
+            if ( $guest_index == 0 ) {
                 $cart_item['trek_user_checkout_data']['bike_gears']['primary']['upgrade'] = 'yes';
             }
-            if ($guest_index != 0 && is_numeric($guest_index) && $guest_index > 0) {
+            if ( $guest_index != 0 && is_numeric( $guest_index ) && $guest_index > 0 ) {
                 $cart_item['trek_user_checkout_data']['bike_gears']['guests'][$guest_index]['upgrade'] = 'yes';
             }
-            $cart_item['trek_user_checkout_data']['tt_bike_upgrade_qty'] = 1;
+            $cart_item['trek_user_checkout_data']['tt_bike_upgrade_qty']     = 1;
             $cart_item['trek_user_checkout_data']['tt_bike_upgrade_charges'] = $bikeUpgradePrice;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart_contents[$cart_item_id]                                    = $cart_item;
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart_contents );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
     $review_order_html = '';
-    $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
-    if (is_readable($review_order)) {
+    $review_order     = TREK_PATH . '/woocommerce/checkout/review-order.php';
+    if ( is_readable( $review_order ) ) {
         $review_order_html .= wc_get_template_html('woocommerce/checkout/review-order.php');
     } else {
         $review_order_html .= '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
     }
     $res['review_order'] = $review_order_html;
-    $res['status'] = true;
-    echo json_encode($res);
+    $res['status']       = true;
+    echo json_encode( $res );
     exit;
 }
+add_action( 'wp_ajax_tt_bike_upgrade_fees_ajax_action', 'trek_tt_bike_upgrade_fees_ajax_action_cb' );
+add_action( 'wp_ajax_nopriv_tt_bike_upgrade_fees_ajax_action', 'trek_tt_bike_upgrade_fees_ajax_action_cb' );
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -4032,77 +4125,106 @@ if (!function_exists('tt_ns_get_bike_type_info')) {
         return $result;
     }
 }
-add_action('wp_ajax_tt_guest_rooms_selection_ajax_action', 'trek_tt_guest_rooms_selection_ajax_action_cb');
-add_action('wp_ajax_nopriv_tt_guest_rooms_selection_ajax_action', 'trek_tt_guest_rooms_selection_ajax_action_cb');
-function trek_tt_guest_rooms_selection_ajax_action_cb()
-{
-    $res = ['status' => false];
-    $trek_user_checkout_data =  get_trek_user_checkout_data();
+
+/**
+ * Guest rooms selection AJAX callback.
+ */
+function trek_tt_guest_rooms_selection_ajax_action_cb() {
+    $res                       = array( 'status' => false );
+    $trek_user_checkout_data   =  get_trek_user_checkout_data();
     $trek_user_checkout_posted = $trek_user_checkout_data['posted'];
-    $output = tt_rooms_output($trek_user_checkout_posted, true, true);
-    $accepted_p_ids = tt_get_line_items_product_ids();
-    $single = isset($_REQUEST['single']) ? $_REQUEST['single'] : 0;
-    $double = isset($_REQUEST['double']) ? $_REQUEST['double'] : 0;
-    $roommate = isset($_REQUEST['roommate']) ? $_REQUEST['roommate'] : 0;
-    $private = isset($_REQUEST['private']) ? $_REQUEST['private'] : 0;
-    $special_needs = isset($_REQUEST['special_needs']) ? $_REQUEST['special_needs'] : 0;
-    if (strlen($special_needs) > 250) {
-        $special_needs = substr($special_needs, 0, 250);
+    $output                    = tt_rooms_output( $trek_user_checkout_posted, true, true );
+    $accepted_p_ids            = tt_get_line_items_product_ids();
+    $single                    = isset( $_REQUEST['single'] ) ? $_REQUEST['single'] : 0;
+    $double                    = isset( $_REQUEST['double'] ) ? $_REQUEST['double'] : 0;
+    $roommate                  = isset( $_REQUEST['roommate'] ) ? $_REQUEST['roommate'] : 0;
+    $private                   = isset( $_REQUEST['private'] ) ? $_REQUEST['private'] : 0;
+    $special_needs             = isset( $_REQUEST['special_needs'] ) ? $_REQUEST['special_needs'] : 0;
+    if ( strlen( $special_needs ) > 250 ) {
+        $special_needs = substr( $special_needs, 0, 250 );
     }
-    foreach (WC()->cart->get_cart() as $cart_item_id => $cart_item) {
-        if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
-            $cart_item['trek_user_checkout_data']['single'] = $single;
-            $cart_item['trek_user_checkout_data']['double'] = $double;
-            $cart_item['trek_user_checkout_data']['roommate'] = $roommate;
-            $cart_item['trek_user_checkout_data']['private'] = $private;
+    // Get the current cart contents.
+    $cart_contents = WC()->cart->get_cart_contents();
+    foreach ( $cart_contents as $cart_item_id => $cart_item ) {
+        if ( isset( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
+            $cart_item['trek_user_checkout_data']['single']        = $single;
+            $cart_item['trek_user_checkout_data']['double']        = $double;
+            $cart_item['trek_user_checkout_data']['roommate']      = $roommate;
+            $cart_item['trek_user_checkout_data']['private']       = $private;
             $cart_item['trek_user_checkout_data']['special_needs'] = $special_needs;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart_contents[$cart_item_id]                          = $cart_item;
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart_contents );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
     $res['status'] = true;
-    $res['html'] = $output;
-    echo json_encode($res);
+    $res['html']   = $output;
+    echo json_encode( $res );
     exit;
 }
-add_action('wp_ajax_tt_pay_amount_change_ajax_action', 'trek_tt_pay_amount_change_ajax_action_cb');
-add_action('wp_ajax_nopriv_tt_pay_amount_change_ajax_action', 'trek_tt_pay_amount_change_ajax_action_cb');
-function trek_tt_pay_amount_change_ajax_action_cb()
-{
-    $res = ['status' => false];
-    $paymentType = isset($_REQUEST['paymentType']) ? $_REQUEST['paymentType'] : 0;
+add_action( 'wp_ajax_tt_guest_rooms_selection_ajax_action', 'trek_tt_guest_rooms_selection_ajax_action_cb' );
+add_action( 'wp_ajax_nopriv_tt_guest_rooms_selection_ajax_action', 'trek_tt_guest_rooms_selection_ajax_action_cb' );
+
+/**
+ * Pay amount change AJAX callback.
+ */
+function trek_tt_pay_amount_change_ajax_action_cb() {
+    $res            = array( 'status' => false );
+    $paymentType    = isset($_REQUEST['paymentType']) ? $_REQUEST['paymentType'] : 0;
     $accepted_p_ids = tt_get_line_items_product_ids();
-    foreach (WC()->cart->get_cart() as $cart_item_id => $cart_item) {
-        if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
+    // Get the current cart contents.
+    $cart_contents = WC()->cart->get_cart_contents();
+    foreach ( $cart_contents as $cart_item_id => $cart_item ) {
+        if ( isset( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
             $cart_item['trek_user_checkout_data']['pay_amount'] = $paymentType;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart_contents[$cart_item_id] = $cart_item;
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart_contents );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    WC()->cart->maybe_set_cart_cookies();
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
     $review_order_html = '';
-    $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
-    if (is_readable($review_order)) {
+    $review_order      = TREK_PATH . '/woocommerce/checkout/review-order.php';
+
+    if ( is_readable( $review_order ) ) {
         $review_order_html .= wc_get_template_html('woocommerce/checkout/review-order.php');
     } else {
         $review_order_html .= '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
     }
+
     $payment_option_html = '';
-    $review_order = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
+    $review_order        = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
+
     if (is_readable($review_order)) {
         $payment_option_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php');
     } else {
         $payment_option_html .= '<h3>Step 4</h3><p>Checkout payment option file is missing!</p>';
     }
-    $res['review_order'] = $review_order_html;
+
+    $res['review_order']   = $review_order_html;
     $res['payment_option'] = $payment_option_html;
-    $res['status'] = true;
-    echo json_encode($res);
+    $res['status']         = true;
+    echo json_encode( $res );
     exit;
 }
+add_action( 'wp_ajax_tt_pay_amount_change_ajax_action', 'trek_tt_pay_amount_change_ajax_action_cb' );
+add_action( 'wp_ajax_nopriv_tt_pay_amount_change_ajax_action', 'trek_tt_pay_amount_change_ajax_action_cb' );
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -4196,40 +4318,58 @@ if (!function_exists('get_trip_capacity_info')) {
         return $res;
     }
 }
-add_action('woocommerce_add_to_cart', 'tt_woocommerce_add_to_cart_cb');
-function tt_woocommerce_add_to_cart_cb()
-{
+
+/**
+ * Add to cart callback.
+ * Triggering on the Book Now button click via JS and form submit.
+ *
+ * Initialize the trek_user_checkout_data item meta for the trip
+ * with essential basic info which will be used on the checkout page.
+ */
+function tt_woocommerce_add_to_cart_cb() {
     $accepted_p_ids = tt_get_line_items_product_ids();
-    $cart = WC()->cart->cart_contents;
-    if ($cart) {
-        foreach ($cart as $cart_item_id => $cart_item) {
-            $wcData = isset($cart_item['data']) ? $cart_item['data'] : '';
-            $_product = apply_filters('woocommerce_cart_item_product', $wcData, $cart_item, $cart_item_id);
-            $product_id =  isset($cart_item['product_id']) ? $cart_item['product_id'] : '';
-            if ($product_id && !in_array($product_id, $accepted_p_ids)) {
-                //Trip Parent ID
-                $parent_product_id = tt_get_parent_trip_id_by_child_sku($_product->get_sku());
-                $cart_item['trek_user_checkout_data']['parent_product_id'] = $parent_product_id;
-                $cart_item['trek_user_checkout_data']['product_id'] = $product_id;
-                $cart_item['trek_user_checkout_data']['sku'] = $_product->get_sku();
-                $bikeUpgradePrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
-                $singleSupplementPrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
-                $cart_item['trek_user_checkout_data']['bikeUpgradePrice'] = $bikeUpgradePrice;
-                $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = $singleSupplementPrice;
-                WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+    // Get the current cart contents.
+    $cart_contents  = WC()->cart->get_cart_contents();
+    if ( $cart_contents ) {
+        foreach ( $cart_contents as $cart_item_id => $cart_item ) {
+            $wc_data     = isset( $cart_item['data'] ) ? $cart_item['data'] : '';
+            $_product   = apply_filters( 'woocommerce_cart_item_product', $wc_data, $cart_item, $cart_item_id );
+            $product_id = isset( $cart_item['product_id'] ) ? $cart_item['product_id'] : '';
+            if ( $product_id && ! in_array( $product_id, $accepted_p_ids ) ) {
+                // Trip Parent ID.
+                $cart_item['trek_user_checkout_data']['parent_product_id']     = tt_get_parent_trip_id_by_child_sku( $_product->get_sku() );
+                $cart_item['trek_user_checkout_data']['product_id']            = $product_id;
+                $cart_item['trek_user_checkout_data']['sku']                   = $_product->get_sku();
+                $cart_item['trek_user_checkout_data']['bikeUpgradePrice']      = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
+                $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
+                $cart_contents[$cart_item_id]                                  = $cart_item;
             }
         }
+
+        // Store the updated cart.
+        WC()->cart->set_cart_contents( $cart_contents );
+        // Recalculate the totals after modifying the cart.
+        WC()->cart->calculate_totals();
+        // Save the updated cart to the session.
         WC()->cart->set_session();
-        //WC()->cart->calculate_totals();
-        //WC()->cart->maybe_set_cart_cookies();
+        // Update persistent_cart.
+        WC()->cart->persistent_cart_update();
     }
 }
-add_filter('wc_add_to_cart_message_html', 'tt_wc_add_to_cart_message_html', 10, 3);
-function tt_wc_add_to_cart_message_html($message, $products, $show_qty)
-{
+add_action( 'woocommerce_add_to_cart', 'tt_woocommerce_add_to_cart_cb' );
+
+/**
+ * Add to cart message filter callback.
+ *
+ * @param mixed     $message The message.
+ * @param int|array $products Product ID list or single product ID.
+ * @param bool      $show_qty Should quantities be shown? Added in 2.6.0.
+ */
+function tt_wc_add_to_cart_message_html( $message, $products, $show_qty ) {
     $message = '';
     return $message;
 }
+add_filter( 'wc_add_to_cart_message_html', 'tt_wc_add_to_cart_message_html', 10, 3 );
 
 function trek_isMobile()
 {
@@ -5004,17 +5144,17 @@ add_action( 'wp_ajax_tt_generate_save_insurance_quote', 'tt_generate_save_insura
 add_action( 'wp_ajax_nopriv_tt_generate_save_insurance_quote', 'tt_generate_save_insurance_quote_cb' );
 add_action( 'wp_ajax_tt_recalculate_travel_protection', 'tt_generate_save_insurance_quote_cb' );
 add_action( 'wp_ajax_nopriv_tt_recalculate_travel_protection', 'tt_generate_save_insurance_quote_cb' );
-function tt_generate_save_insurance_quote_cb()
-{
+function tt_generate_save_insurance_quote_cb() {
     $accepted_p_ids = tt_get_line_items_product_ids();
-    //Add travels data to Cart object
-    $cart = WC()->cart->get_cart();
-    //Preparing insurance HTML
+    // Add travels data to Cart object.
+    // Get the current cart contents.
+    $cart = WC()->cart->get_cart_contents();
+    // Preparing insurance HTML
     $tt_checkoutData = get_trek_user_checkout_data();
     $tt_posted       = isset($tt_checkoutData['posted']) ? $tt_checkoutData['posted'] : [];
     // Check if the cart contains an already applied coupon and fix the missing coupon code.
-    if( WC()->cart->applied_coupons && isset( $tt_posted['coupon_code'] ) && empty( $tt_posted['coupon_code'] ) ) {
-        $applied_coupons = WC()->cart->applied_coupons;
+    if( WC()->cart->get_applied_coupons() && isset( $tt_posted['coupon_code'] ) && empty( $tt_posted['coupon_code'] ) ) {
+        $applied_coupons = WC()->cart->get_applied_coupons();
         $tt_posted['coupon_code'] = $applied_coupons[0];
     }
     $coupon_code     = strtolower( $tt_posted['coupon_code'] );
@@ -5204,49 +5344,56 @@ function tt_generate_save_insurance_quote_cb()
         }
     }
     $trek_insurance_args["insuredPerson"] = $insuredPerson;
-    $arcBasePremium = $tt_total_insurance_amount && $tt_total_insurance_amount > 0 ? $tt_total_insurance_amount : 0;
-    $fees_product_id = tt_create_line_item_product('TTWP23FEES');
-    //save cart Logic
-    foreach ($cart as $cart_item_id => $cart_item) {
-        if (isset($cart_item['product_id']) && $cart_item['product_id'] == $fees_product_id) {
-            $product = wc_get_product($cart_item['product_id']);
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
-            $sku = $product->get_sku();
-            if ($sku == 'TTWP23FEES') {
-                if (isset($cart_item['tt_cart_custom_fees_price']) && $cart_item['tt_cart_custom_fees_price'] > 0) {
-                    $cart_item['data']->set_price($cart_item['tt_cart_custom_fees_price']);
+    $arcBasePremium                       = $tt_total_insurance_amount && $tt_total_insurance_amount > 0 ? $tt_total_insurance_amount : 0;
+    $fees_product_id                      = tt_create_line_item_product( 'TTWP23FEES' );
+    // Save cart Logic.
+    foreach ( $cart as $cart_item_id => $cart_item ) {
+        if ( isset( $cart_item['product_id'] ) && $cart_item['product_id'] == $fees_product_id ) {
+            $product             = wc_get_product( $cart_item['product_id'] );
+            $sku                 = $product->get_sku();
+            if ( 'TTWP23FEES' === $sku ) {
+                if ( isset( $cart_item['tt_cart_custom_fees_price'] ) && $cart_item['tt_cart_custom_fees_price'] > 0 ) {
+                    $cart_item['data']->set_price( $cart_item['tt_cart_custom_fees_price'] );
                 }
             }
-            WC()->cart->cart_contents[$cart_item_id]['quantity'] = 1;
+            $cart[$cart_item_id]['quantity'] = 1;
         }
-        if ( isset($cart_item['product_id'])  && !in_array($cart_item['product_id'], $accepted_p_ids)) {
-            $cart_item['trek_user_checkout_data']['trek_guest_insurance'] = $guest_insurance;
-            $cart_item['trek_user_checkout_data']['insuredPerson'] = count($insuredPerson);
+        if ( isset( $cart_item['product_id'] )  && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
+            $cart_item['trek_user_checkout_data']['trek_guest_insurance']       = $guest_insurance;
+            $cart_item['trek_user_checkout_data']['insuredPerson']              = count( $insuredPerson );
             $cart_item['trek_user_checkout_data']['tt_insurance_total_charges'] = $arcBasePremium;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart_item['trek_user_checkout_data']['is_protection_modal_showed'] = true;
+            $cart[$cart_item_id]                                                = $cart_item;
         }
     }
-    WC()->cart->set_session();
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart );
+    // Recalculate the totals after modifying the cart.
     WC()->cart->calculate_totals();
-    //WC()->cart->maybe_set_cart_cookies();
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
+
     //End: Save cart logic
     $review_order_html = '';
-    $review_order = TREK_PATH . '/woocommerce/checkout/review-order.php';
-    if (is_readable($review_order)) {
+    $review_order      = TREK_PATH . '/woocommerce/checkout/review-order.php';
+    if ( is_readable( $review_order ) ) {
         $review_order_html .= wc_get_template_html('woocommerce/checkout/review-order.php');
     } else {
         $review_order_html .= '<h3>Step 4</h3><p>Checkout review form code is missing!</p>';
     }
     $payment_option_html = '';
-    $review_order = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
-    if (is_readable($review_order)) {
+    $review_order        = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php';
+    if ( is_readable( $review_order ) ) {
         $payment_option_html .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-payment-options.php');
     } else {
         $payment_option_html .= '<h3>Step 4</h3><p>Checkout payment option file is missing!</p>';
     }
-    $insuredHTMLPopup = '';
+    $insuredHTMLPopup       = '';
     $checkout_insured_users = TREK_PATH . '/woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests-popup.php';
-    if (is_readable($checkout_insured_users)) {
+    if ( is_readable( $checkout_insured_users ) ) {
         $insuredHTMLPopup .= wc_get_template_html('woocommerce/checkout/checkout-ajax-templates/checkout-insured-guests-popup.php');
     } else {
         $insuredHTMLPopup .= '<h3>Step 4</h3><p>checkout-insured-guests-popup.php form code is missing!</p>';
@@ -5264,7 +5411,7 @@ function tt_generate_save_insurance_quote_cb()
     $res['review_order']         = $review_order_html;
     $res['payment_option']       = $payment_option_html;
     $res['message']              = "Your information has been changed successfully!";
-    echo json_encode($res);
+    echo json_encode( $res );
     exit;
 }
 /**
@@ -5959,34 +6106,38 @@ function recalculate_tax_on_cart_update( $cart ) {
     $cart->remove_taxes();
 }
 
-// Filter to adjust the cart subtotal
-add_filter( 'woocommerce_calculated_total', 'update_cart_subtotal', 10, 2 );
+/**
+ * Filter to adjust the cart subtotal.
+ *
+ * @param int|float $cart_total The Cart total.
+ * @param WC_Cart   $cart Reference to cart object.
+ */
 function update_cart_subtotal( $cart_total, $cart ) {
     $cart      = WC()->cart;
     $total_tax = calculate_cart_total_tax( $cart );
 
     $cart_total = floatval( $cart->cart_contents_total );
 
-    // Add the calculated tax to the cart subtotal
+    // Add the calculated tax to the cart subtotal.
     $cart_total += $total_tax;
 
     $trek_user_checkout_data = get_trek_user_checkout_data();
     $tt_posted               = $trek_user_checkout_data['posted'];
     $tt_coupon_code          = ( isset( $tt_posted['coupon_code'] ) && $tt_posted['coupon_code'] ? $tt_posted['coupon_code'] : '' );
     // Check if the cart contains an already applied coupon and fix the missing coupon code.
-    if( WC()->cart->applied_coupons && isset( $tt_coupon_code ) && empty( $tt_coupon_code ) ) {
-        $applied_coupons = WC()->cart->applied_coupons;
-        $tt_coupon_code = $applied_coupons[0];
+    if( WC()->cart->get_applied_coupons() && isset( $tt_coupon_code ) && empty( $tt_coupon_code ) ) {
+        $applied_coupons = WC()->cart->get_applied_coupons();
+        $tt_coupon_code  = $applied_coupons[0];
     }
-    $no_of_guests            = isset( $tt_posted['no_of_guests'] ) ? $tt_posted['no_of_guests'] : 1;
+    $no_of_guests = isset( $tt_posted['no_of_guests'] ) ? $tt_posted['no_of_guests'] : 1;
     if ( ! $cart->is_empty() ) {
-        // Get the cart items
+        // Get the cart items.
         $cart_items = $cart->get_cart();
     
-        // Get the first cart item
-        $first_cart_item = reset($cart_items);
+        // Get the first cart item.
+        $first_cart_item = reset( $cart_items );
     
-        // Access the SKU of the first item
+        // Access the SKU of the first item.
         $sku                   = $first_cart_item['data']->get_sku();
         $pay_amount            = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_amount'] : '';
         $deposit_amount        = tt_get_local_trips_detail( 'depositAmount', '', $sku, true );
@@ -6019,13 +6170,22 @@ function update_cart_subtotal( $cart_total, $cart ) {
     }
 
     $accepted_p_ids = tt_get_line_items_product_ids();
-    foreach (WC()->cart->get_cart() as $cart_item_id => $cart_item) {
+    // Get the current cart contents.
+    $cart_contents = WC()->cart->get_cart_contents();
+    foreach ( $cart_contents as $cart_item_id => $cart_item ) {
         if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
             // Take the Cart total for the full amount only we need to keep it for reference and calculations.
             $cart_item['trek_user_checkout_data']['cart_total_full_amount'] = $cart_total;
-            WC()->cart->cart_contents[$cart_item_id] = $cart_item;
+            $cart_contents[$cart_item_id]                                   = $cart_item;
         }
     }
+
+    // Store the updated cart.
+    WC()->cart->set_cart_contents( $cart_contents );
+    // Save the updated cart to the session.
+    WC()->cart->set_session();
+    // Update persistent_cart.
+    WC()->cart->persistent_cart_update();
 
     // Adjust the cart total if we choose to pay only the deposit. Deposit eligible trips with travel protection should charge deposit amount + the travel protection amount.
     if ( isset( $tt_posted['pay_amount'] ) ) {
@@ -6036,6 +6196,7 @@ function update_cart_subtotal( $cart_total, $cart ) {
 
     return $cart_total;
 }
+add_filter( 'woocommerce_calculated_total', 'update_cart_subtotal', 10, 2 );
 
 add_action('woocommerce_admin_order_totals_after_tax', 'add_custom_line_before_tax');
 function add_custom_line_before_tax() {
@@ -6295,7 +6456,7 @@ add_action( 'wp_ajax_nopriv_dx_get_current_user_bike_preferences', 'dx_get_curre
  * This function will be used in the Checkout Form Template located in
  * /trek-travel-theme/woocommerce/checkout/form-checkout.php
  */
-function tt_check_and_remove_old_trips_in_persistent_cart() {
+function tt_check_and_remove_old_trips_in_persistent_cart_cb() {
     global $woocommerce;
 
 	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
@@ -6353,6 +6514,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart() {
 
     // There is no trip in the cart.
 }
+add_action( 'tt_check_and_remove_old_trips_in_persistent_cart', 'tt_check_and_remove_old_trips_in_persistent_cart_cb' );
 
 /**
  * Function to get real local Trip Code (SKU)
@@ -8093,3 +8255,27 @@ function tt_custom_modify_biiling_state_field( $fields ) {
     return $fields;
 }
 add_filter( 'woocommerce_checkout_fields', 'tt_custom_modify_biiling_state_field' );
+
+/**
+ * Repair the missing discount on an existing coupon code.
+ */
+function tt_repair_coupon_code_cb() {
+    $trek_user_checkout_data = get_trek_user_checkout_data();
+    $tt_posted               = $trek_user_checkout_data['posted'];
+    $tt_coupon_code          = tt_validate( $tt_posted['coupon_code'] );
+    if( ! empty( $tt_coupon_code ) && ! WC()->cart->has_discount( $tt_coupon_code ) ) {
+        // There is a coupon_code stored in the cart item meta but it's not applied. Fix that.
+        $coupon      = new WC_Coupon( $tt_coupon_code );
+        $coupon_post = get_post( $coupon->id );
+        if ( $coupon_post ) {
+            WC()->cart->apply_coupon( $tt_coupon_code );
+            // Recalculate the totals after modifying the cart.
+            WC()->cart->calculate_totals();
+            // Save the updated cart to the session.
+            WC()->cart->set_session();
+            // Update persistent_cart.
+            WC()->cart->persistent_cart_update();
+        }
+    }
+}
+add_action( 'tt_repair_coupon_code', 'tt_repair_coupon_code_cb' );

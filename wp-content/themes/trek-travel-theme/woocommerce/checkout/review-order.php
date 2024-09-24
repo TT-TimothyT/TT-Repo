@@ -21,8 +21,8 @@ $trek_user_checkout_data = get_trek_user_checkout_data();
 $tt_posted               = $trek_user_checkout_data['posted'];
 $tt_coupon_code          = tt_validate( $tt_posted['coupon_code'] );
 // Check if the cart contains an already applied coupon and fix the missing coupon code.
-if( WC()->cart->applied_coupons && isset( $tt_coupon_code ) && empty( $tt_coupon_code ) ) {
-    $applied_coupons = WC()->cart->applied_coupons;
+if( WC()->cart->get_applied_coupons() && isset( $tt_coupon_code ) && empty( $tt_coupon_code ) ) {
+    $applied_coupons = WC()->cart->get_applied_coupons();
     $tt_coupon_code = $applied_coupons[0];
 }
 $applied_coupon          = false;
