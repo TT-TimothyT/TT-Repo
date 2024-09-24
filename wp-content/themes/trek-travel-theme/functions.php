@@ -945,6 +945,12 @@ function tt_product_taxonomies()  {
 		'query_var'         => true,
 		'has_archive'       => true,
 		'rewrite'           => array( 'hierarchical' => true, 'slug' => 'tours/destinations' ),
+		'capabilities'          => [
+			'manage_terms' => 'edit_posts',
+			'edit_terms'   => 'edit_posts',
+			'delete_terms' => 'edit_posts',
+			'assign_terms' => 'edit_posts',
+	],
 	);
 
 	register_taxonomy( 'destination', array( 'product' ), $destinations_tax_args );
