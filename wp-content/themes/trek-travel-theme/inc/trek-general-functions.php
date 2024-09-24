@@ -4504,6 +4504,29 @@ function tt_checkout_fields_error_messages($fields, $errors)
     }
     if ($billing_error == true && $is_same_billing_as_mailing != 1) {
         $errors->add('woocommerce_tt_billing_error', __("Please fill all billing fields in step 3"));
+    } elseif ( $is_same_billing_as_mailing != 1 ) {
+        // Let's store the billing address here, before completing the checkout process.
+        // This will fire on click the Pay Now button and if there is no error with the billing address, we can store it.
+        $save_billing_data = array( 'is_same_billing_as_mailing' => $is_same_billing_as_mailing );
+
+        $billing_info_fields = array(
+            'billing_first_name',
+            'billing_last_name',
+            'billing_address_1',
+            'billing_address_2',
+            'billing_country',
+            'billing_state',
+            'billing_city',
+            'billing_postcode'
+        );
+
+        foreach ( $billing_info_fields as $billing_field ) {
+            if( isset( $_REQUEST[$billing_field] ) ) {
+                $save_billing_data[$billing_field] = sanitize_text_field( wp_unslash( $_REQUEST[$billing_field] ) );
+            }
+        }
+
+        tt_update_trek_user_checkout_data( $save_billing_data );
     }
     if ($p_user_2_error == true) {
         $errors->add('woocommerce_gears_error', __('Please fill Primary user`s Bike & Gears fields.'));
@@ -8279,3 +8302,58 @@ function tt_repair_coupon_code_cb() {
     }
 }
 add_action( 'tt_repair_coupon_code', 'tt_repair_coupon_code_cb' );
+
+/**
+ * Update the trek_user_checkout_data item meta of the trip for objects from the first level.
+ * If you want to update a multidimensional array should send the $data in the proper structure.
+ *
+ * @param array $data Array with trek_user_checkout_data keys and for value whatever you want.
+ *
+ * @return bool Whether the cart item meta was updated.
+ */
+function tt_update_trek_user_checkout_data( $data ) {
+    // Check for data.
+    if( empty( $data ) || ! is_array( $data ) || WC()->cart->is_empty() ) {
+        return false;
+    }
+
+    $cart_updated   = false;
+    $accepted_p_ids = tt_get_line_items_product_ids();
+    $cart_content   = WC()->cart->get_cart_contents();
+    foreach ( $cart_content as $cart_item_key => $cart_item ) {
+        $product_id = isset( $cart_item['product_id'] ) ? $cart_item['product_id'] : '';
+        if ( ! in_array( $product_id, $accepted_p_ids ) ) {
+            $cart_posted_data = $cart_item['trek_user_checkout_data'];
+
+            // Ensure the trek_user_checkout_data exists as meta to the trip.
+            if ( ! $cart_posted_data || empty( $cart_posted_data ) ) {
+                $cart_item['trek_user_checkout_data'] = array();
+            }
+
+            foreach ( $data as $key => $value ) {
+                $cart_item['trek_user_checkout_data'][$key] = $value;
+            }
+
+            $cart_content[$cart_item_key] = $cart_item;
+
+            // Cart item meta for the trip was updated.
+            $cart_updated = true;
+
+            break; // Stop the loop once the product is found and updated.
+        }
+    }
+
+    if ( $cart_updated ) {
+
+        // Store the updated cart.
+        WC()->cart->set_cart_contents( $cart_content );
+        // Recalculate the totals after modifying the cart.
+        WC()->cart->calculate_totals();
+        // Save the updated cart to the session.
+        WC()->cart->set_session();
+        // Update persistent_cart.
+        WC()->cart->persistent_cart_update();
+    }
+
+    return $cart_updated;
+}
