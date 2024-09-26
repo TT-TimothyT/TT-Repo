@@ -45,6 +45,10 @@ class Trek_Email_Manager {
 		if ( ! isset( $emails[ 'Failed_Booking_Email' ] ) ) {
 			$emails[ 'Failed_Booking_Email' ] = include_once( 'emails/class-failed-booking-email.php' );
 		}
+		// Include Admin On-hold Email.
+		if ( ! isset( $emails[ 'TT_WC_Email_On_Hold_Order' ] ) ) {
+			$emails[ 'TT_WC_Email_On_Hold_Order' ] = include_once( 'emails/class-wc-email-on-hold-order.php' );
+		}
 	
 		return $emails;
 	}
