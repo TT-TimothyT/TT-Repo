@@ -11,6 +11,9 @@ $fields                    = $woocommerce->checkout->get_checkout_fields('shippi
 $trip_info                 = tt_get_trip_pid_sku_from_cart();
 $is_hiking_checkout        = tt_is_product_line( 'Hiking', $trip_info['sku'] );
 
+
+
+
 if( $is_hiking_checkout ) :
     $bike_gears_fields = array(
         'activity_level' => array(

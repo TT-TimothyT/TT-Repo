@@ -11,6 +11,16 @@ $trek_user_checkout_data   = get_trek_user_checkout_data();
 $trek_user_checkout_posted = $trek_user_checkout_data['posted'];
 $user_info                 = wp_get_current_user();
 $trip_info                 = tt_get_trip_pid_sku_from_cart();
+
+if (isset($trip_info['sku']) && strpos($trip_info['sku'], '25NC') !== false) {
+    echo '<div style="padding: 15px; margin-bottom: 10px; border-radius: 8px; background-color: #28AAE1;">
+            <p style="color: black; line-height: normal; font-size: 15px; margin-bottom: 0;"> 
+                *Notice <br>
+                We are monitoring the current conditions and assessing our Spring 2025 trip departures due to the recent devastations from Hurricane Helene. Please call for more information. Our thoughts are with those as they recover their communities.
+            </p>
+          </div>';
+}
+
 ?>
 <div class="guest-checkout">
     <div class="d-flex align-items-center guest-checkout__guest-number flex-wrap">
