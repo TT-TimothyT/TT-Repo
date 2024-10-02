@@ -2794,8 +2794,10 @@ class PMXI_Admin_Import extends PMXI_Controller_Admin {
 										$log_data = ob_get_clean();
 										if ($log_storage) {
 											$log = @fopen($log_file, 'a+');
-											@fwrite($log, $log_data);
-											@fclose($log);
+											if ( is_resource( $log ) ) {
+												@fwrite($log, $log_data);
+												@fclose($log);
+											}
 										}
 										$iteration_execution_time = time() - $iteration_start_time;
 										wp_send_json(array(
@@ -2843,8 +2845,10 @@ class PMXI_Admin_Import extends PMXI_Controller_Admin {
 			$log_data = ob_get_clean();
 			if ($log_storage) {
 				$log = @fopen($log_file, 'a+');
-				@fwrite($log, $log_data);
-				@fclose($log);
+				if ( is_resource( $log ) ) {
+					@fwrite($log, $log_data);
+					@fclose($log);
+				}
 			}
 			$iteration_execution_time = time() - $iteration_start_time;
 			if ( $ajax_processing and ! $is_all_records_deleted ) {

@@ -15,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Admin extends App {
-	const USAGE_PARAM_INSTALL_TIME = 'install_time_pro';
 
 	/**
 	 * Get module name.
@@ -246,27 +245,11 @@ class Admin extends App {
 		return $plugin_meta;
 	}
 
-	public function change_tracker_params( $params ) {
-		unset( $params['is_first_time'] );
-
-		if ( ! isset( $params['events'] ) ) {
-			$params['events'] = [];
-		}
-
-		$params['events'] = array_merge( $params['events'], [
-			self::USAGE_PARAM_INSTALL_TIME => gmdate( 'Y-m-d H:i:s', Plugin::instance()->license_admin->get_installed_time() ),
-		] );
-
-		return $params;
-	}
-
 	public function add_finder_items( array $categories ) {
-		$settings_url = Settings::get_url();
-
 		$categories['settings']['items']['integrations'] = [
 			'title' => esc_html__( 'Integrations', 'elementor-pro' ),
 			'icon' => 'integration',
-			'url' => $settings_url . '#tab-integrations',
+			'url' => Settings::get_settings_tab_url( 'integrations' ),
 			'keywords' => [ 'integrations', 'settings', 'typekit', 'facebook', 'recaptcha', 'mailchimp', 'drip', 'activecampaign', 'getresponse', 'convertkit', 'elementor' ],
 		];
 
@@ -290,7 +273,6 @@ class Admin extends App {
 
 		add_filter( 'elementor/finder/categories', [ $this, 'add_finder_items' ] );
 
-		add_filter( 'elementor/tracker/send_tracking_data_params', [ $this, 'change_tracker_params' ], 200 );
 		add_action( 'admin_post_elementor_pro_rollback', [ $this, 'post_elementor_pro_rollback' ] );
 		add_action( 'in_plugin_update_message-' . ELEMENTOR_PRO_PLUGIN_BASE, function( $plugin_data ) {
 			Plugin::elementor()->admin->version_update_warning( ELEMENTOR_PRO_VERSION, $plugin_data['new_version'] );

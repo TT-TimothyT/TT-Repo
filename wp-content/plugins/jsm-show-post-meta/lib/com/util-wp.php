@@ -1650,11 +1650,11 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		/*
 		 * Returns false or the admin screen base string.
 		 */
-		public static function get_screen_base( $screen = false ) {
+		public static function get_screen_base( $screen = null ) {
 
-			if ( false === $screen ) {
+			if ( null === $screen || ! is_object( $screen ) ) {
 
-				if ( function_exists( 'get_current_screen' ) ) {
+				if ( function_exists( 'get_current_screen' ) ) {	// Just in case.
 
 					$screen = get_current_screen();
 				}
@@ -1671,11 +1671,11 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		/*
 		 * Returns false or the admin screen id string.
 		 */
-		public static function get_screen_id( $screen = false ) {
+		public static function get_screen_id( $screen = null ) {
 
-			if ( false === $screen ) {
+			if ( null === $screen || ! is_object( $screen ) ) {
 
-				if ( function_exists( 'get_current_screen' ) ) {
+				if ( function_exists( 'get_current_screen' ) ) {	// Just in case.
 
 					$screen = get_current_screen();
 				}
@@ -1894,23 +1894,25 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		 */
 		public static function get_locale( $mixed = 'current', $read_cache = true ) {
 
-			if ( empty( $mixed ) ) {	// Just in case.
-
-				$mixed = 'current';
-			}
+			if ( empty( $mixed ) ) $mixed = 'current';	// Just in case.
 
 			/*
-			 * If $mixed is an array, get its salt, otherwise use the string or post ID.
+			 * Note that the sort order, page number, locale, amp and embed checks are provided by
+			 * WpssoHead->get_head_cache_index() and not SucomUtil::get_mod_salt().
 			 *
-			 * Note that SucomUtil::get_mod_salt() does not include the page number or locale.
+			 * Example cache salts:
+			 *
+			 * 	'post:123_type:page'
+			 *	'post:123_type:product_is_pta'	// WooCommerce shop page.
+			 *	'term:123_tax:product_cat'	// WooCommerce category page.
 			 */
-			$cache_index = is_array( $mixed ) ? self::get_mod_salt( $mixed ) : $mixed;
+			$cache_salt = is_array( $mixed ) ? self::get_mod_salt( $mixed ) : $mixed;
 
 			if ( $read_cache ) {
 
-				if ( isset( self::$locale_cache[ $cache_index ] ) ) {
+				if ( isset( self::$locale_cache[ $cache_salt ] ) ) {
 
-					return self::$locale_cache[ $cache_index ];
+					return self::$locale_cache[ $cache_salt ];
 				}
 			}
 
@@ -1918,40 +1920,18 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				global $wp_local_package;
 
-				if ( isset( $wp_local_package ) ) {
+				if ( isset( $wp_local_package ) ) $locale = $wp_local_package;
 
-					$locale = $wp_local_package;
-				}
-
-				if ( defined( 'WPLANG' ) ) {
-
-					$locale = WPLANG;
-				}
+				if ( defined( 'WPLANG' ) ) $locale = WPLANG;
 
 				/*
 				 * The database 'WPLANG' values override the 'WPLANG' constant.
 				 */
-				if ( is_multisite() ) {
+				$db_locale = get_option( 'WPLANG' );
 
-					if ( ( $multisite_locale = get_option( 'WPLANG' ) ) === false ) {
+				if ( false === $db_locale && is_multisite() ) $db_locale = get_site_option( 'WPLANG' );
 
-						$multisite_locale = get_site_option( 'WPLANG' );
-					}
-
-					if ( false !== $multisite_locale ) {
-
-						$locale = $multisite_locale;
-					}
-
-				} else {
-
-					$db_locale = get_option( 'WPLANG' );
-
-					if ( false !== $db_locale ) {
-
-						$locale = $db_locale;
-					}
-				}
+				if ( false !== $db_locale ) $locale = $db_locale;
 
 			} elseif ( 'current' === $mixed || is_array( $mixed ) ) {
 
@@ -1965,23 +1945,17 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				$locale_names = self::get_available_locale_names();	// Uses a local cache.
 
-				if ( isset( $locale_names[ $mixed ] ) ) {
-
-					$locale = $mixed;
-				}
+				if ( isset( $locale_names[ $mixed ] ) ) $locale = $mixed;
 			}
 
-			if ( empty( $locale ) ) {	// Just in case.
-
-				$locale = 'en_US';
-			}
+			if ( empty( $locale ) ) $locale = 'en_US';	// Just in case.
 
 			/*
 			 * Filtered by WpssoIntegLangPolylang->filter_get_locale() and WpssoIntegLangWpml->filter_get_locale().
 			 */
 			$locale = apply_filters( 'sucom_get_locale', $locale, $mixed );
 
-			return self::$locale_cache[ $cache_index ] = $locale;
+			return self::$locale_cache[ $cache_salt ] = $locale;
 		}
 
 		/*
@@ -2381,6 +2355,10 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		 *	raw_site_url()
 		 *	raw_get_site_url()
 		 *	raw_set_url_scheme()
+		 *	raw_add_option()
+		 *	raw_delete_option()
+		 *	raw_get_option()
+		 *	raw_update_option()
 		 *	raw_do_option()
 		 *	raw_delete_transient()
 		 *	raw_get_transient()
@@ -2495,7 +2473,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		/*
 		 * Unfiltered version of home_url() from wordpress/wp-includes/link-template.php
 		 *
-		 * Last synchronized with WordPress v5.8.1 on 2021/10/15.
+		 * Last synchronized with WordPress v6.6.2 on 2024/09/16.
 		 */
 		public static function raw_home_url( $path = '', $scheme = null ) {
 
@@ -2505,36 +2483,46 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		/*
 		 * Unfiltered version of get_home_url() from wordpress/wp-includes/link-template.php
 		 *
-		 * Last synchronized with WordPress v5.8.1 on 2021/10/15.
+		 * Last synchronized with WordPress v6.6.2 on 2024/09/16.
 		 */
 		public static function raw_get_home_url( $blog_id = null, $path = '', $scheme = null ) {
 
 			$is_multisite = is_multisite();
 
-			if ( empty( $blog_id ) || ! $is_multisite ) {
+			if ( $is_multisite && ! empty( $blog_id ) ) {
 
-				/*
-				 * The WordPress _config_wp_home() function is hooked to the 'option_home' filter in order to
-				 * override the database value. Since we're not using the default filters, check for WP_HOME or
-				 * WP_SITEURL and update the stored database value if necessary.
-				 *
-				 * The homepage of the website:
-				 *
-				 *	WP_HOME
-				 *	home_url()
-				 *	get_home_url()
-				 *	Site Address (URL)
-				 *	http://example.com
-				 *
-				 * The WordPress installation (ie. where you can reach the site by adding /wp-admin):
-				 *
-				 *	WP_SITEURL
-				 *	site_url()
-				 *	get_site_url()
-				 *	WordPress Address (URL)
-				 *	http://example.com/wp/
-				 */
-				if ( ! $is_multisite && defined( 'WP_HOME' ) && WP_HOME ) {
+				switch_to_blog( $blog_id );
+			}
+
+			/*
+			 * The WordPress _config_wp_home() function is hooked to the 'option_home' filter in order to override the
+			 * database value. Since we're not using the default filters, check for WP_HOME or WP_SITEURL and update
+			 * the stored database value if necessary.
+			 *
+			 * The homepage of the website:
+			 *
+			 *	WP_HOME
+			 *	home_url()
+			 *	get_home_url()
+			 *	Site Address (URL)
+			 *	http://example.com
+			 *
+			 * The WordPress installation (ie. where you can reach the site by adding /wp-admin):
+			 *
+			 *	WP_SITEURL
+			 *	site_url()
+			 *	get_site_url()
+			 *	WordPress Address (URL)
+			 *	http://example.com/wp/
+			 *
+			 * The WordPress _config_wp_home() function is unhooked for multisites as WP_HOME and WP_SITEURL are not
+			 * used in a multisite configuration. If this is a multisite, ignore the WP_HOME and WP_SITEURL values.
+			 *
+			 * See wordpress/wp-includes/ms-default-filters.php
+			 */
+			if ( ! $is_multisite ) {
+
+				if ( defined( 'WP_HOME' ) && WP_HOME ) {
 
 					$url = untrailingslashit( WP_HOME );
 
@@ -2544,25 +2532,19 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 						self::raw_do_option( $action = 'update', $opt_name = 'home', $url );
 					}
+				}
+			}
 
-				} else $url = self::raw_do_option( $action = 'get', $opt_name = 'home' );
+			$url = self::raw_do_option( $action = 'get', $opt_name = 'home' );
 
-			} else {
-
-				switch_to_blog( $blog_id );
-
-				$url = self::raw_do_option( $action = 'get', $opt_name = 'home' );
+			if ( $is_multisite && ! empty( $blog_id ) ) {
 
 				restore_current_blog();
 			}
 
 			if ( ! in_array( $scheme, array( 'http', 'https', 'relative' ), $strict = true ) ) {
 
-				if ( is_ssl() ) {
-
-					$scheme = 'https';
-
-				} else $scheme = wp_parse_url( $url, PHP_URL_SCHEME );
+				$scheme = is_ssl() ? 'https' : wp_parse_url( $url, PHP_URL_SCHEME );
 			}
 
 			$url = self::raw_set_url_scheme( $url, $scheme );
@@ -2575,10 +2557,11 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 			return $url;
 		}
 
+
 		/*
 		 * Unfiltered version of site_url() from wordpress/wp-includes/link-template.php
 		 *
-		 * Last synchronized with WordPress v5.8.1 on 2021/10/15.
+		 * Last synchronized with WordPress v6.6.2 on 2024/09/16.
 		 */
 		public static function raw_site_url( $path = '', $scheme = null ) {
 
@@ -2588,35 +2571,45 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		/*
 		 * Unfiltered version of get_site_url() from wordpress/wp-includes/link-template.php
 		 *
-		 * Last synchronized with WordPress v5.8.1 on 2021/10/15.
+		 * Last synchronized with WordPress v6.6.2 on 2024/09/16.
 		 */
 		public static function raw_get_site_url( $blog_id = null, $path = '', $scheme = null ) {
 
 			$is_multisite = is_multisite();
 
-			if ( empty( $blog_id ) || ! $is_multisite ) {
+			if ( $is_multisite && ! empty( $blog_id ) ) {
 
-				/*
-				 * The WordPress _config_wp_home() function is hooked to the 'option_home' filter in order to
-				 * override the database value. Since we're not using the default filters, check for WP_HOME or
-				 * WP_SITEURL and update the stored database value if necessary.
-				 *
-				 * The homepage of the website:
-				 *
-				 *	WP_HOME
-				 *	home_url()
-				 *	get_home_url()
-				 *	Site Address (URL)
-				 *	http://example.com
-				 *
-				 * The WordPress installation (ie. where you can reach the site by adding /wp-admin):
-				 *
-				 *	WP_SITEURL
-				 *	site_url()
-				 *	get_site_url()
-				 *	WordPress Address (URL)
-				 *	http://example.com/wp/
-				 */
+				switch_to_blog( $blog_id );
+			}
+
+			/*
+			 * The WordPress _config_wp_home() function is hooked to the 'option_home' filter in order to override the
+			 * database value. Since we're not using the default filters, check for WP_HOME or WP_SITEURL and update
+			 * the stored database value if necessary.
+			 *
+			 * The homepage of the website:
+			 *
+			 *	WP_HOME
+			 *	home_url()
+			 *	get_home_url()
+			 *	Site Address (URL)
+			 *	http://example.com
+			 *
+			 * The WordPress installation (ie. where you can reach the site by adding /wp-admin):
+			 *
+			 *	WP_SITEURL
+			 *	site_url()
+			 *	get_site_url()
+			 *	WordPress Address (URL)
+			 *	http://example.com/wp/
+			 *
+			 * The WordPress _config_wp_home() function is unhooked for multisites as WP_HOME and WP_SITEURL are not
+			 * used in a multisite configuration. If this is a multisite, ignore the WP_HOME and WP_SITEURL values.
+			 *
+			 * See wordpress/wp-includes/ms-default-filters.php
+			 */
+			if ( ! $is_multisite ) {
+
 				if ( ! $is_multisite && defined( 'WP_SITEURL' ) && WP_SITEURL ) {
 
 					$url = untrailingslashit( WP_SITEURL );
@@ -2627,14 +2620,12 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 						self::raw_do_option( $action = 'update', $opt_name = 'siteurl', $url );
 					}
+				}
+			}
 
-				} else $url = self::raw_do_option( $action = 'get', $opt_name = 'siteurl' );
+			$url = self::raw_do_option( $action = 'get', $opt_name = 'siteurl' );
 
-			} else {
-
-				switch_to_blog( $blog_id );
-
-				$url = self::raw_do_option( $action = 'get', $opt_name = 'siteurl' );
+			if ( $is_multisite && ! empty( $blog_id ) ) {
 
 				restore_current_blog();
 			}
@@ -2652,7 +2643,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		/*
 		 * Unfiltered version of set_url_scheme() from wordpress/wp-includes/link-template.php
 		 *
-		 * Last synchronized with WordPress v5.8.1 on 2021/10/15.
+		 * Last synchronized with WordPress v6.6.2 on 2024/09/16.
 		 */
 		private static function raw_set_url_scheme( $url, $scheme = null ) {
 
@@ -2671,7 +2662,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 			$url = trim( $url );
 
-			if ( substr( $url, 0, 2 ) === '//' ) {
+			if ( str_starts_with( $url, '//' ) ) {
 
 				$url = 'http:' . $url;
 			}
@@ -2691,7 +2682,40 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		}
 
 		/*
-		 * Temporarily disable filters and actions hooks before calling get_option(), update_option(), and delete_option().
+		 * Temporarily removes filter and action hooks before calling add_option().
+		 */
+		public static function raw_add_option( $opt_name, $value = '', $deprecated = '', $autoload = null ) {
+
+			return self::raw_do_option( __FUNCTION__, $opt_name, $value, $default = false, $autoload );
+		}
+
+		/*
+		 * Temporarily removes filter and action hooks before calling delete_option().
+		 */
+		public static function raw_delete_option( $opt_name ) {
+
+			return self::raw_do_option( __FUNCTION__, $opt_name, $value = null, $default = false, $autoload = null );
+		}
+
+		/*
+		 * Temporarily removes filter and action hooks before calling get_option().
+		 */
+		public static function raw_get_option( $opt_name, $default = false ) {
+
+			return self::raw_do_option( __FUNCTION__, $opt_name, $value = null, $default, $autoload = null );
+		}
+
+		/*
+		 * Temporarily removes filter and action hooks before calling update_option().
+		 */
+		public static function raw_update_option( $opt_name, $value, $autoload = null ) {
+
+			return self::raw_do_option( __FUNCTION__, $opt_name, $value, $default = false, $autoload );
+		}
+
+		/*
+		 * Temporarily removes filter and action hooks before calling add_option(), delete_option(), get_option(), and
+		 * update_option().
 		 */
 		public static function raw_do_option( $action, $opt_name, $value = null, $default = false, $autoload = null ) {
 
@@ -2710,6 +2734,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				case 'add':
 				case 'add_option':
+				case 'raw_add_option':
 
 					$success = add_option( $opt_name, $value, $deprecated = '', $autoload );
 
@@ -2717,6 +2742,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				case 'delete':
 				case 'delete_option':
+				case 'raw_delete_option':
 
 					$success = delete_option( $opt_name );
 
@@ -2724,6 +2750,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				case 'get':
 				case 'get_option':
+				case 'raw_get_option':
 
 					$success = get_option( $opt_name, $default );
 
@@ -2731,6 +2758,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				case 'update':
 				case 'update_option':
+				case 'raw_update_option':
 
 					$old_value = get_option( $opt_name, $default );
 
@@ -2748,6 +2776,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				case 'update':
 				case 'update_option':
+				case 'raw_update_option':
 
 					switch( $opt_name ) {
 
@@ -2757,7 +2786,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 							break;
 					}
-	
+
 					break;
 			}
 

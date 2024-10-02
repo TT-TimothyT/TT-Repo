@@ -4,7 +4,7 @@ Tags: GIS, Map maker, GPX, Track, Elevation
 Requires at least: 4.6
 Tested up to: 6.5
 Requires PHP: 5.2
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,8 @@ Waymark adds powerful mapping features to WordPress that are easy to use. Create
 🌟 [GitHub](https://github.com/opengis/waymark)
 ❤️ [WordPress](https://wordpress.org/plugins/waymark/)
 ☕️ [Waymark JS](https://www.waymark.dev/js)
+
+**If you find value in Waymark please consider supporting it's continued development through [sponsorship](https://github.com/sponsors/OpenGIS). Any amount is appreciated.**
 
 ### Creating Maps
 
@@ -170,6 +172,11 @@ Built on the shoulders of giants, [thank you](https://www.waymark.dev/docs/thank
 10. Documentation and Help is available from the <a href="https://www.waymark.dev/">Waymark</a> website.
 
 == Changelog ==
+
+= 1.4.0 = 
+
+- Added the ability to show/hide all Types initially when using the Shortcode by specifying "*" as the Type key. For example, to initially hide all Marker Types, except "photo" and "alert", use `[Waymark map_id="1234" hide_marker="*" show_marker="photo,alert"]`. Thanks to [Association Franc-Comtoise du Chemin de Compostelle](https://www.af-ccc.fr) for requesting this.
+- Improved debugging output.
 
 = 1.3.2 = 
 
