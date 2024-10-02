@@ -172,6 +172,8 @@ class Failed_Booking_Email extends WC_Email {
 
 		if ( isset( $ns_response['success'] ) ) {
 			$email_data_object->ns_response->success = $ns_response['success'];
+		} else {
+			$email_data_object->ns_response->success = 'No response returned from NS for success.';
 		}
 
 		if ( isset( $ns_response['errors'] ) ) {
@@ -181,10 +183,14 @@ class Failed_Booking_Email extends WC_Email {
 			} else {
 				$email_data_object->ns_response->errors = array( $ns_response['errors'] );
 			}
+		} else {
+			$email_data_object->ns_response->errors = array( 'No response returned from NS for errors.' );
 		}
 
 		if ( isset( $ns_response['savedData'] ) ) {
 			$email_data_object->ns_response->saved_data = $ns_response['savedData'];
+		} else {
+			$email_data_object->ns_response->saved_data = 'No response returned from NS for savedData.';
 		}
 
 		return $email_data_object;

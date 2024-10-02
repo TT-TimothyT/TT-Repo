@@ -40,7 +40,7 @@ echo __( 'The details from the NetSuite Response are as follows:', 'trek-travel-
 
 echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 
-echo sprintf( __( 'NetSuite Success: %s', 'trek-travel-theme' ), $item_data->ns_response->success ? 'true' : 'false' ) . "\n";
+echo sprintf( __( 'NetSuite Success: %s', 'trek-travel-theme' ), is_bool( $item_data->ns_response->success ) ? ( $item_data->ns_response->success ? 'true' : 'false' ) : $item_data->ns_response->success ) . "\n";
 
 echo sprintf( __( 'NetSuite Errors: %s', 'trek-travel-theme' ), implode( ';', $item_data->ns_response->errors ) ) . "\n";
 

@@ -65,7 +65,7 @@ if ( $order && $billing_first_name && $billing_last_name ) : ?>
 	<tbody>
 		<tr>
 			<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php _e( 'NetSuite Success', 'trek-travel-theme' ); ?></th>
-			<td style="text-align:left; border: 1px solid #eee;"><?php echo $item_data->ns_response->success ? 'true' : 'false'; ?></td>
+			<td style="text-align:left; border: 1px solid #eee;"><?php echo is_bool( $item_data->ns_response->success ) ? ( $item_data->ns_response->success ? 'true' : 'false' ) : esc_html( $item_data->ns_response->success ); ?></td>
 		</tr>
 		<tr>
 			<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php _e( 'NetSuite Errors', 'trek-travel-theme' ); ?></th>
