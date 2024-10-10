@@ -208,7 +208,7 @@ function tt_change_checkout_step(targetStep = '') {
 
     // Handle the country and state fields if on the relevant step
     if (targetStep == 1) { // Check if we are on the relevant step
-      var countriesWithoutStates = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC'];
+      var countriesWithoutStates = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC', 'DK'];
       var selectedCountry = jQuery('select[name="shipping_country"]').val();
       var isStateField = false;
 
@@ -1334,19 +1334,93 @@ jQuery(document).ready(function () {
       });
   }
 
-  jQuery('body').on('click', 'form.checkout.woocommerce-checkout .btn-next', function () {
+  // Validate Shipping Post Code
+  async function postCodeValidation() {
+      return jQuery.ajax({
+        type: 'POST',
+        url: trek_JS_obj.ajaxURL,
+        data: {
+          action: 'tt_validate_post_code',
+          post_code: jQuery('input[name="shipping_postcode"]').val(),
+          country_code: jQuery('select[name="shipping_country"]').val()
+        },
+        dataType: 'json',
+      }).then( response => response.data );
+  }
+
+  jQuery('body').on('click', 'form.checkout.woocommerce-checkout .btn-next', async function () {
+    const currentStep = jQuery('input[name="step"]').val();
+    if( 1 == currentStep ) {
+      try {
+        ttLoader.show();
+        const postCodeValidationResult = await postCodeValidation();
+        if( postCodeValidationResult.status ) {
+          if ( true == postCodeValidationResult.result ) {
+            // Post code validation pass.
+            jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+            jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').addClass('woocommerce-validated');
+            jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+          } else {
+            // Post code validation fail.
+            jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').addClass('woocommerce-invalid');
+            jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').removeClass('woocommerce-validated');
+            jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+            ttLoader.hide();
+            return false;
+          }
+        } else {
+          // Validation failure or not found.
+          console.log( 'TT_VALIDATE_POST_CODE', postCodeValidationResult );
+        }
+        ttLoader.hide();
+      } catch (error) {
+        console.log( 'TT_VALIDATE_POST_CODE', error );
+        ttLoader.hide();
+      }
+    }
+  
     StepValidation();
   });
 
-  jQuery('body').on('click', '.checkout-timeline .nav-link', function (e) {
+  jQuery('body').on('click', '.checkout-timeline .nav-link', async function (e) {
     var $clickedLink = jQuery(this);
     var $clickedItem = jQuery(this).parent();
     var $activeLink = jQuery('.checkout-timeline .nav-item.active');
    
-    //Check if the clicked link is not the active link and not before the active link
+    // Check if the clicked link is not the active link and not before the active link
     if (!$clickedItem.hasClass('active') && $clickedItem.index() >= $activeLink.index()) {
       e.preventDefault();
       var navLink = $clickedLink.attr('href');
+      const currentStep = jQuery('input[name="step"]').val();
+      if( 1 == currentStep ) {
+        try {
+          ttLoader.show();
+          const postCodeValidationResult = await postCodeValidation();
+          if( postCodeValidationResult.status ) {
+            if ( true == postCodeValidationResult.result ) {
+              // Post code validation pass.
+              jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').removeClass('woocommerce-invalid');
+              jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').addClass('woocommerce-validated');
+              jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').find(".invalid-feedback").css("display", "none");
+            } else {
+              // Post code validation fail.
+              jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').addClass('woocommerce-invalid');
+              jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').removeClass('woocommerce-validated');
+              jQuery(`input[name="shipping_postcode"]`).closest('div.form-row').find(".invalid-feedback").css("display", "block");
+              ttLoader.hide();
+              return false;
+            }
+          } else {
+            // Validation failure or not found.
+            console.log( 'TT_VALIDATE_POST_CODE', postCodeValidationResult );
+          }
+          ttLoader.hide();
+        } catch (error) {
+          console.log( 'TT_VALIDATE_POST_CODE', error );
+          ttLoader.hide();
+        }
+      }
+
       StepValidation();
       if (validationStatus == true) {
         window.location.href = navLink;
@@ -5524,7 +5598,7 @@ function centerMapCallback(Waymark) {
 
 jQuery(document).ready(function($) {
   // List of countries without states
-  var countriesWithoutStates = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC'];
+  var countriesWithoutStates = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC', 'DK'];
 
   function updateStateField(countryFieldSelector, stateFieldSelector) {
     var selectedCountry = $(countryFieldSelector).val();

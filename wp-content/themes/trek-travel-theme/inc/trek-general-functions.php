@@ -4448,7 +4448,7 @@ function tt_checkout_fields_error_messages($fields, $errors)
     }
 
     // Define countries without states
-    $countries_without_states = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC'];
+    $countries_without_states = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC', 'DK'];
 
     // Shipping fields validation
     if (
@@ -8370,3 +8370,56 @@ function tt_update_trek_user_checkout_data( $data ) {
 
     return $cart_updated;
 }
+
+/**
+ * @param string $postcode_validation_notice
+ */
+function tt_woocommerce_checkout_postcode_validation_notice( $postcode_validation_notice ) {
+    $postcode_validation_notice .= esc_html__( ' If you have selected the option "Same as my mailing address," please check the ZIP code from step one "Guest Info".', 'trek-travel-theme' );
+    return $postcode_validation_notice;
+}
+add_filter( 'woocommerce_checkout_postcode_validation_notice', 'tt_woocommerce_checkout_postcode_validation_notice' );
+
+/**
+ * Validate the post code using the WC_Validation.
+ */
+function tt_validate_post_code( $raw_post_code, $country_code ) {
+    // Validate input.
+    if( empty( $raw_post_code ) || empty( $country_code ) ) {
+        return false;
+    }
+
+    $post_code = wc_format_postcode( $raw_post_code, $country_code );
+
+    if ( ! empty( $post_code ) && ! WC_Validation::is_postcode( $post_code, $country_code ) ) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Post Code Validation AJAX handler callback.
+ */
+function tt_validate_post_code_cb() {
+	// Check for data exist.
+	if ( empty( $_POST['post_code'] ) || empty( $_POST['country_code'] ) ) {
+		wp_send_json_error( array( 'status' => false, 'result' => 'Data not found!' ) );
+		exit;
+	}
+
+	$post_code    = sanitize_text_field( wp_unslash( $_POST['post_code'] ) );
+	$country_code = sanitize_text_field( wp_unslash( $_POST['country_code'] ) );
+
+	$result = tt_validate_post_code( $post_code, $country_code );
+
+	$success_response = array(
+		'status' => true,
+		'result' => $result
+	);
+
+	wp_send_json_success( $success_response );
+	exit;
+}
+add_action( 'wp_ajax_tt_validate_post_code', 'tt_validate_post_code_cb' );
+add_action( 'wp_ajax_nopriv_tt_validate_post_code', 'tt_validate_post_code_cb' );
