@@ -50,7 +50,7 @@
                 thead {
                     tr:first-child {
                         th {
-                            padding-bottom: 16px;
+                            // padding-bottom: 16px;
                         }
                     }
                 }
@@ -75,7 +75,7 @@
                         }
                         
                         &.active:not(.end-date) {
-                            border-radius: 100%;
+                            // border-radius: 100%;
                             box-shadow: 16px 0px 0px 0px rgba(244,244,244,1);
                         }
                         &.in-range {
@@ -89,7 +89,7 @@
                         }
                         &.end-date {
                             box-shadow: none;
-                            border-radius: 100%;
+                            // border-radius: 100%;
                         }
 
                         &:hover {
@@ -129,7 +129,7 @@
     .daterangepicker td.available:hover, .daterangepicker th.available:hover{
         border: 1px solid #000000;
         background-color: transparent;
-        border-radius: 1rem;
+        // border-radius: 1rem;
     }
     .daterangepicker .daterangepicker_input{
         display: none !important;
@@ -139,10 +139,10 @@
     // }
     .daterangepicker td.active, .daterangepicker td.active:hover, .daterangepicker td.start-date.end-date{
         background-color: #000000 !important;
-        border-radius: 1rem;
+        // border-radius: 1rem;
     }
     .daterangepicker td.in-range{
-        background-color: #f4f4f4;
+        background-color: $blue;
 
     }
     .daterangepicker.dropup {

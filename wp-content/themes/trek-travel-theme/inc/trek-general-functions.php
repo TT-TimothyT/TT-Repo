@@ -6643,8 +6643,8 @@ function tt_get_lowest_starting_from_price( $id = 0 ) {
                         $current_month = date( 'm', strtotime( date( 'Y-m-d H:i:s' ) ) );
                         $current_year  = date( 'Y', strtotime( date( 'Y-m-d H:i:s' ) ) );
 
-                        // Check for year to skip the trip is in the past.
-                        if ( (int) $month < (int) $current_month && ( int ) $year <= (int)  $current_year ) {
+                        // Check for year to skip the trip if it's in the past.
+                        if ( (int) $month < (int) $current_month && (int) $year <= (int) $current_year ) {
                             continue;
                         }
 
@@ -6660,11 +6660,10 @@ function tt_get_lowest_starting_from_price( $id = 0 ) {
 
                                 // If the date of the trip is today or in the past, skip the trip;
                                 if( $trip_start_date && $trip_start_date <= $today_date ) {
-
                                     continue;
                                 }
 
-                                // Check child product is marked as Private/Custom trip.
+                                // Check if the child product is marked as Private/Custom trip.
                                 $is_private_custom_trip = get_field( 'is_private_custom_trip', $child_product_details['product_id'] );
 
                                 // If the child product is marked as a private/custom trip, continue to the next one.
@@ -6672,7 +6671,7 @@ function tt_get_lowest_starting_from_price( $id = 0 ) {
                                     continue;
                                 }
 
-                                // If Trip Status is Private skip for pricing
+                                // If Trip Status is Private, skip for pricing
                                 if( $child_product_details['trip_status'] == 'Private' ) {
                                     continue;
                                 }
@@ -6689,21 +6688,23 @@ function tt_get_lowest_starting_from_price( $id = 0 ) {
         // If we have any price in the available prices array, take the lowest.
         if( ! empty( $available_prices ) ) {
             $start_price = min( $available_prices );
+        } else {
+            return false; // No valid price found
         }
     }
 
-    return $start_price;
+    return floatval( $start_price );
 }
 
 /**
  * Take the lowest price in the available trips
  * and overwrite algolia Start Price attribute,
  * that displays the price on the destination archive page.
- * 
+ *
  * @uses tt_get_lowest_starting_from_price function to take
  * the lowest price for given grouped product.
- * 
- * @param array   $shared_attributes Array with algolia shared attributes.
+ *
+ * @param array   $shared_attributes Array with Algolia shared attributes.
  * @param WP_Post $post The post.
  */
 function tt_algolia_modify_starting_from_price( $shared_attributes, $post ) {
@@ -6715,7 +6716,7 @@ function tt_algolia_modify_starting_from_price( $shared_attributes, $post ) {
         $shared_attributes['Start Price'] = tt_get_lowest_starting_from_price( $shared_attributes['post_id'] );
     }
 
-	return $shared_attributes;
+    return $shared_attributes;
 }
 add_filter( 'algolia_searchable_post_shared_attributes', 'tt_algolia_modify_starting_from_price', 10, 2 );
 
@@ -7516,11 +7517,11 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
         }
     }
 
-    if ( $shared_attributes['post_type_label'] == 'Products' ) {
+    if ( 'Products' === $shared_attributes['post_type_label'] ) {
         $shared_attributes['post_type_label'] = 'Trips';
     }
 
-    if ( $shared_attributes['post_type_label'] == 'Posts' ) {
+    if ( 'Posts' === $shared_attributes['post_type_label'] ) {
         $shared_attributes['post_type_label'] = 'Articles';
     }
 
@@ -7528,39 +7529,51 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
 
         $attachment_ids = $product->get_gallery_attachment_ids();
 
-        foreach( $attachment_ids as $index=>$attachment_id ) {
+        foreach ( $attachment_ids as $index=>$attachment_id ) {
             $shared_attributes['gallery_images'][$index] = wp_get_attachment_image_src( $attachment_id, 'shop_catalog' )[0];
 
         }
         
         $activity_level = tt_get_custom_product_tax_value( $post->ID, 'activity-level', true );
 
-        if( $activity_level ) {
+        if ( $activity_level ) {
             $shared_attributes['Activity Level'] = $activity_level;
         }
 
         $trip_style = tt_get_custom_product_tax_value( $post->ID, 'trip-style', true );
 
-        if( $trip_style ) {
+        if ( $trip_style ) {
             $shared_attributes['Trip Style'] = $trip_style;
         }
 
         $hotel_level = tt_get_custom_product_tax_value( $post->ID, 'hotel-level', true );
 
-        if( $hotel_level ) {
+        if ( $hotel_level ) {
             $shared_attributes['Hotel Level'] = $hotel_level;
         }
 
-        $trip_duration = tt_get_custom_product_tax_value( $post->ID, 'trip-duration', true );
+        $trip_duration = tt_get_custom_product_tax_value( $post->ID, 'trip-duration', false, true ); // Returns the term object.
 
-        if( $trip_duration ) {
-            $shared_attributes['Duration'] = $trip_duration;
+        if ( $trip_duration ) {
+            $trip_duration_pdp_name     = get_term_meta( $trip_duration->term_id, 'pdp_name', true ); // Get the value from the ACF Field with name pdp_name.
+            if( $trip_duration_pdp_name ) {
+                $shared_attributes['Duration'] = esc_html( $trip_duration_pdp_name );
+            } else {
+                // Fall Back to the Default name.
+                $shared_attributes['Duration'] = esc_html( $trip_duration->name );
+            }
         }
 
         $badge = tt_get_custom_product_tax_value( $post->ID, 'product_tag', true );
 
-        if( $badge ) {
+        if ( $badge ) {
             $shared_attributes['Badge'] = $badge;
+        }
+
+        $product_subtitle = get_field( 'product_overview_product_subtitle', $post->ID, true, true );
+
+        if ( $product_subtitle ) {
+            $shared_attributes['Product Subtitle'] = $product_subtitle;
         }
     }
 

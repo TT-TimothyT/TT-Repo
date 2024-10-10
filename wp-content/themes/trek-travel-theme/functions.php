@@ -1676,6 +1676,36 @@ function tt_trip_class_updated_messages( $messages ) {
 }
 add_filter( 'term_updated_messages', 'tt_trip_class_updated_messages' );
 
+/**
+ * Add info to the new trip duration columns.
+ *
+ * @param string $string Custom column output. Default empty.
+ * @param string $column_name Name of the column.
+ * @param int    $term_id Term ID.
+ *
+ * @return void
+ */
+function tt_show_trip_duration_info_in_columns( $string, $column_name, $term_id ) {
+    switch ( $column_name ) {
+        case 'trip-duration-pdp-name' :
+            echo esc_html( get_term_meta( $term_id, 'pdp_name', true ) );
+        break;
+    }
+}
+add_action( 'manage_trip-duration_custom_column', 'tt_show_trip_duration_info_in_columns', 10, 3 );
+
+/**
+ * Adding the new column titles in the trip duration taxonomy.
+ *
+ * @param string[] $columns The column header labels keyed by column ID.
+ *
+ * @return string[] $columns The column header label keyed by column ID with added new columns.
+ */
+function tt_add_trip_duration_columns( $columns ) {
+	$columns['trip-duration-pdp-name'] = __( 'PDP Name / Algolia Filter', 'trek-travel-theme' );
+    return $columns;
+}
+add_filter( 'manage_edit-trip-duration_columns', 'tt_add_trip_duration_columns' );
 
 // Woocommerce Simple Products NOINDEX
 

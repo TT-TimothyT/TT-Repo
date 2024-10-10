@@ -44,7 +44,85 @@ jQuery(document).ready(function($) {
       cursor: 'default'
     }
   }
+
+  $('.grid-view').on('click', function() {
+    $(this).addClass('active');
+    $(this).siblings().removeClass('active');
+    $(this).parent().parent().siblings('#algolia-hits').addClass('grid-view');
+  })
+
+  $('.standart-view').on('click', function() {
+    $(this).addClass('active');
+    $(this).siblings().removeClass('active');
+    $(this).parent().parent().siblings('#algolia-hits').removeClass('grid-view');
+  })
+
+  if(jQuery(window).width() < 1024) {
+    ('#algolia-hits').addClass('grid-view');
+  }
 });
+
+jQuery(document).ready(function() {
+  function equalizeHeights(selector) {
+    const items = jQuery(selector);
+    if (items.length > 0) {
+      let maxHeight = 0;
+      let currentRow = [];
+  
+      items.each(function(index) {
+        const $item = jQuery(this);
+        $item.css('height', 'auto'); // Reset height
+        currentRow.push($item);
+  
+        // Apply the max height after every 3 items or at the last item
+        if ((index + 1) % 3 === 0 || index === items.length - 1) {
+          maxHeight = Math.max(...currentRow.map(item => item.outerHeight()));
+          currentRow.forEach(function(item) {
+            item.css('height', maxHeight + 'px');
+          });
+  
+          currentRow = []; // Clear the row array
+        }
+      });
+    }
+  }
+  
+  function equalizeContentHeights(useTimeout = true) {
+    if (useTimeout) {
+      setTimeout(() => {
+        equalizeHeights('#algolia-hits .card-body .card-title'); // Equalize title heights
+        equalizeHeights('#algolia-hits .trip-desc');  // Equalize description heights
+      }, 1500);
+    } else {
+      equalizeHeights('#algolia-hits .card-body .card-title'); // Equalize title heights
+      equalizeHeights('#algolia-hits .trip-desc');  // Equalize description heights
+    }
+  }
+  
+  // Initial call on page load with timeout
+  equalizeContentHeights(true);
+  
+  // Reapply equalizeHeights on window resize without timeout
+  jQuery(window).on('resize', function() {
+    equalizeContentHeights(false); // No timeout on resize
+  });
+  
+  
+
+
+
+  var headerHeight = jQuery('header').height();
+
+  if(jQuery('body').hasClass('admin-bar')) {
+    var adminHeight = jQuery('#wpadminbar').height();
+
+    headerHeight = headerHeight + adminHeight;
+  }
+  jQuery('.algolia-search-box-wrapper-cont').css('top', headerHeight);
+
+});
+
+
 
 const ttLoader = {
   /**

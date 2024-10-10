@@ -44,6 +44,10 @@
         >.row {
         padding: 1rem 0;
         }
+
+        p {
+            margin: 0;
+        }
     }
     
     @include media-breakpoint-up(lg) {
