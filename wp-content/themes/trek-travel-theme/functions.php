@@ -1852,83 +1852,65 @@ function startdob_localize_trek_script() {
 add_action('wp_enqueue_scripts', 'startdob_localize_trek_script');
 
 
-// LOAD LAZYLOAD FOR PRINT
+// Step 1: Add a new address type called 'Continental US'
+add_filter('gform_address_types', 'add_continental_us_address_type');
+function add_continental_us_address_type($address_types) {
+    $address_types['continental_us'] = array(
+        'label'       => 'Continental US',  // The label for the new address type
+        'country'     => 'US',              // The country that this address type is for
+        'zip_label'   => 'ZIP Code',        // The label for ZIP code
+        'state_label' => 'State',           // The label for the state field
+        'states'      => array(  // Enable state dropdown
+							'AL' => 'Alabama',
+							'AZ' => 'Arizona',
+							'AR' => 'Arkansas',
+							'CA' => 'California',
+							'CO' => 'Colorado',
+							'CT' => 'Connecticut',
+							'DE' => 'Delaware',
+							'FL' => 'Florida',
+							'GA' => 'Georgia',
+							'ID' => 'Idaho',
+							'IL' => 'Illinois',
+							'IN' => 'Indiana',
+							'IA' => 'Iowa',
+							'KS' => 'Kansas',
+							'KY' => 'Kentucky',
+							'LA' => 'Louisiana',
+							'ME' => 'Maine',
+							'MD' => 'Maryland',
+							'MA' => 'Massachusetts',
+							'MI' => 'Michigan',
+							'MN' => 'Minnesota',
+							'MS' => 'Mississippi',
+							'MO' => 'Missouri',
+							'MT' => 'Montana',
+							'NE' => 'Nebraska',
+							'NV' => 'Nevada',
+							'NH' => 'New Hampshire',
+							'NJ' => 'New Jersey',
+							'NM' => 'New Mexico',
+							'NY' => 'New York',
+							'NC' => 'North Carolina',
+							'ND' => 'North Dakota',
+							'OH' => 'Ohio',
+							'OK' => 'Oklahoma',
+							'OR' => 'Oregon',
+							'PA' => 'Pennsylvania',
+							'RI' => 'Rhode Island',
+							'SC' => 'South Carolina',
+							'SD' => 'South Dakota',
+							'TN' => 'Tennessee',
+							'TX' => 'Texas',
+							'UT' => 'Utah',
+							'VT' => 'Vermont',
+							'VA' => 'Virginia',
+							'WA' => 'Washington',
+							'WV' => 'West Virginia',
+							'WI' => 'Wisconsin',
+							'WY' => 'Wyoming',
+						)             
+    );
+    return $address_types;
+}
 
-
-// // WOCOMM REVISIONS ENABLE
-
-// add_filter('woocommerce_register_post_type_product', 'enable_product_revisions');
-// function enable_product_revisions($args) {
-//     $args['supports'][] = 'revisions';
-//     return $args;
-// }
-
-// add_filter('wp_revisions_to_keep', 'limit_product_revisions', 10, 2);
-// function limit_product_revisions($num, $post) {
-//     if ($post->post_type == 'product') {
-//         return 5; // Limit to 5 revisions for WooCommerce products
-//     }
-//     return $num; // Keep the default limit for other post types
-// }
-
-
-
-// // SEO SUBMIT FOR REVIEW
-
-// add_action('save_post_product', function($post_id, $post, $update) {
-//     if ($post->post_type == 'product' && current_user_can('seo_master') && $update) {
-//         // Save the changes as a revision without updating the live product
-//         wp_save_post_revision($post_id);
-        
-//         // Restore the product to its original state
-//         remove_action('save_post_product', 'wp_save_post_revision'); // Prevent infinite loop
-//         $original_post = wp_get_post_revision($post_id);
-        
-//         // Restore the original content, title, and excerpt
-//         wp_update_post([
-//             'ID' => $post_id,
-//             'post_content' => $original_post->post_content,
-//             'post_title' => $original_post->post_title,
-//             'post_excerpt' => $original_post->post_excerpt
-//         ]);
-        
-//         // Re-flag as pending revision
-//         update_post_meta($post_id, '_revision_pending', true);
-        
-//         add_action('save_post_product', 'wp_save_post_revision');
-//     }
-// }, 10, 3);
-
-
-// // ADMIN REVIEW NOTICE
-
-// add_action('save_post_product', function($post_id, $post, $update) {
-//     if ($post->post_type == 'product' && current_user_can('seo_master') && $update) {
-//         update_post_meta($post_id, '_revision_pending', true);
-//     }
-// }, 10, 3);
-
-// add_filter('manage_product_posts_columns', 'add_revision_column');
-// function add_revision_column($columns) {
-//     $columns['revision_notice'] = 'Revisions Pending';
-//     return $columns;
-// }
-
-// add_action('manage_product_posts_custom_column', 'display_revision_notice', 10, 2);
-// function display_revision_notice($column, $post_id) {
-//     if ($column === 'revision_notice') {
-//         $revision_pending = get_post_meta($post_id, '_revision_pending', true);
-//         if ($revision_pending) {
-//             echo '<span style="color: red; font-weight: bold;">Pending Review</span>';
-//         }
-//     }
-// }
-
-// // Clear the pending notice when the revision is accepted or denied.
-// function clear_revision_pending($post_id) {
-//     if (get_post_meta($post_id, '_revision_pending', true)) {
-//         delete_post_meta($post_id, '_revision_pending');
-//     }
-// }
-
-// add_action('wp_publish_post', 'clear_revision_pending');
