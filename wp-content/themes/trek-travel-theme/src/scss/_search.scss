@@ -846,6 +846,10 @@ a.refineLink {
         @media (max-width: 767px)  {
             top: 50px;
         }
+
+        select, .fake-selector {
+            color: black;
+        }
     }
     .algolia-search-box-wrapper-cont,
     .algolia-search-box-wrapper {

@@ -553,6 +553,10 @@
                 @media screen and (max-width: 767px) {
                   border-spacing: 11px;
                 }
+
+                @media screen and (max-width: 400px) {
+                  border-spacing: 0px;
+                }
                 tbody td {
                   @media screen and (max-width: 767px) {
                     padding-top: 3px;
@@ -619,7 +623,7 @@
           margin-top: 16px;
 
           @media screen and (max-width: 470px) {
-            width: 43%;
+            width: 42%;
           }
 
           input {
