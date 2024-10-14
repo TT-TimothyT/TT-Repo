@@ -69,7 +69,7 @@ if( ! defined( 'DX_DEV' ) ) {
     define( 'TREK_INRURANCE_API_URL', 'https://services.archinsurancesolutions.com/PartnerService/api' );
 
     // Waiver URL.
-    define( 'TT_WAIVER_URL', 'https://661527.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527&h=1d9367cf147b5322893e&whence=' );
+    define( 'TT_WAIVER_URL', 'https://661527.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527&ns-at=AAEJ7tMQzhyEX0U40Wl4gEO2yqGsbUpiMQcWPLUNM9W00rDQ19A&whence=' );
 } else {
     /**
      * Dev Constants.
@@ -81,5 +81,5 @@ if( ! defined( 'DX_DEV' ) ) {
     define( 'TREK_INRURANCE_API_URL', 'https://testservices.archinsurancesolutions.com/PartnerService/api' );
 
     // Waiver URL.
-    define( 'TT_WAIVER_URL', 'https://661527-sb2.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527_SB2&h=629b0eb96224bcaa55bd&whence=' );
+    define( 'TT_WAIVER_URL', 'https://661527-sb2.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=40&deploy=1&compid=661527_SB2&ns-at=AAEJ7tMQFVtLIEl7xtRYIBUG9bmirz5DbmC7CC4I7PLYu17JV-0&whence=' );
 }
