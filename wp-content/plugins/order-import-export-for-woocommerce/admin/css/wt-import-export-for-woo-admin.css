@@ -378,6 +378,17 @@ progress[value]::-webkit-progress-value {
     margin-left:25px;
     width:95%;
 }
+.progresscta{
+  margin: 0px 30px 20px 30px;
+  height: 63px;
+  background-color: #DAFCE2;
+  display: flex;
+}
+.wt_iew_cta_banner_border{
+  width: 2px; 
+  height: 63px;
+  background-color: #299A42;
+}
 .progressab {
     /*background-image: -webkit-linear-gradient(45deg,rgba(255,255,255,0.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,0.15) 50%,rgba(255,255,255,0.15) 75%,transparent 75%,transparent);
     background-image: -o-linear-gradient(45deg,rgba(255,255,255,0.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,0.15) 50%,rgba(255,255,255,0.15) 75%,transparent 75%,transparent);

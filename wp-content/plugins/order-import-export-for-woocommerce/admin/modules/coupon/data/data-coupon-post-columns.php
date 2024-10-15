@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-return apply_filters('coupon_csv_coupon_post_columns', array(
+$base_columns = array(
     'ID'                    => 'ID',
     'post_title'            => 'Coupon code',
     'post_excerpt'          => 'Description',
@@ -31,4 +31,18 @@ return apply_filters('coupon_csv_coupon_post_columns', array(
     'minimum_amount'        => 'Minimum amount',
     'maximum_amount'        => 'Maximum amount',
     'customer_email'        => 'Allowed emails',
-) );
+) ;
+
+if (is_plugin_active('wt-woocommerce-gift-cards/wt-woocommerce-gift-cards.php')): 
+    $base_columns['meta:_wt_gc_auto_generated_store_credit_coupon'] = 'Auto generated store credit coupon';
+    $base_columns['meta:_wt_gc_store_credit_coupon'] = 'Store credit coupon';
+    $base_columns['meta:_wt_smart_coupon_credit_activated'] = 'Smart coupon credit activated';
+    $base_columns['meta:_wt_smart_coupon_initial_credit'] = 'Smart coupon initial credit';
+    $base_columns['meta:_wt_sc_send_date_gmt'] = 'Send date';
+    $base_columns['meta:wt_auto_generated_store_credit_coupon'] = 'Auto generated store credit coupon';
+    $base_columns['meta:wt_credit_history'] = 'Credit history';
+    $base_columns['meta:_wt_sc_send_the_generated_credit'] = 'Generated credit';
+    $base_columns['meta:_wt_gc_suggest_product_ids'] = 'Suggested product IDs';
+endif;
+
+return apply_filters('coupon_csv_coupon_post_columns', $base_columns);

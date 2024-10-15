@@ -2,9 +2,9 @@
 Contributors: webtoffee
 Tags: woocommerce export orders, woocommerce import orders, advanced order export, coupon import export, woocommerce order import export
 Requires at least: 3.0
-Tested up to: 6.6.1
+Tested up to: 6.6.2
 Requires PHP: 5.6
-Stable tag: 2.5.6
+Stable tag: 2.5.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -28,8 +28,8 @@ The following are functionalities offered by the basic version of the order impo
  &#128312; Bulk update WooCommerce orders and coupons.
  &#128312; Compatible with YITH WooCommerce Order Tracking plugin.
  &#128312; Supports various export filters (order status, product, coupon, customer, date range) for order export to CSV.
- &#128312; Tested OK with WooCommerce 9.2.3
- &#128312; Tested OK with WordPress 6.6.1
+ &#128312; Tested OK with WooCommerce 9.3.3
+ &#128312; Tested OK with WordPress 6.6.2
  &#128312; Tested OK with PHP 8.3
 
 Additional features of the order import and order export plugin that will help you in the CSV export and import process:
@@ -207,6 +207,9 @@ Yes.
 
 == Changelog ==
 
+= 2.5.7 2024-10-11 =
+* [Compatibility] - Tested OK with WooCommerce 9.3.3
+* [Compatibility] - Tested OK with WordPress 6.6.2
 = 2.5.6 2024-08-29 =
 * [Compatibility] - Tested OK with WooCommerce 9.2.3
 * [Compatibility] - Tested OK with WordPress 6.6.1
@@ -590,6 +593,6 @@ Yes.
 
 == Upgrade Notice ==
 
-= 2.5.6 =
-* [Compatibility] - Tested OK with WooCommerce 9.2.3
-* [Compatibility] - Tested OK with WordPress 6.6.1
+= 2.5.7 =
+* [Compatibility] - Tested OK with WooCommerce 9.3.3
+* [Compatibility] - Tested OK with WordPress 6.6.2
