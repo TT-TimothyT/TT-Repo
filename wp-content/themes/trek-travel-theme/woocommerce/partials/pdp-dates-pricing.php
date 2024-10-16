@@ -404,7 +404,10 @@ if( $available_child_products ) {
                         '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
                             <h6 class="accordion-header" id="flush-headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
-                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
+                                    <div class="d-box">
+                                        <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
+                                        <span class="fw-normal fs-sm lh-sm available">Available</span>
+                                    </div>
                                 </button>
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
@@ -431,7 +434,10 @@ if( $available_child_products ) {
                         '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
                             <h6 class="accordion-header" id="flush-headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
-                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
+                                    <div class="d-box">
+                                        <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
+                                        <span class="fw-normal fs-sm lh-sm available">Available</span>
+                                    </div>
                                 </button>
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">

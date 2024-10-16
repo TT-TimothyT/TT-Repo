@@ -4448,7 +4448,7 @@ function tt_checkout_fields_error_messages($fields, $errors)
     }
 
     // Define countries without states
-    $countries_without_states = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC', 'DK'];
+    $countries_without_states = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC'];
 
     // Shipping fields validation
     if (
@@ -5506,30 +5506,69 @@ function tt_product_custom_column_value( $column_name, $post_id ) {
             break;
     }
 }
+
 function tt_get_jersey_sizes($gender="", $jersey_size=""){
     $opts = "";
     $opts .= '<option value="">Select Jersey Size</option>';
     $itemData = tt_get_custom_item_name('syncJerseySizes');
-    if( $itemData && isset($itemData['options']) && $itemData['options'] ){
-        foreach($itemData['options'] as $jerseyOptions){
+
+    // Define the desired size order
+    $sizeOrder = [
+        'XX-Small',
+        'X-Small',
+        'Small',
+        'Medium',
+        'Large',
+        'X-Large',
+        '2X-Large',
+        '3X-Large',
+        '4X-Large'
+    ];
+
+    if ($itemData && isset($itemData['options']) && $itemData['options']) {
+        // Reorder the options based on the size order after processing them
+        $itemData['options'] = specific_reorder($itemData['options'], $sizeOrder);
+
+        // Loop through the options and build the <option> list
+        foreach ($itemData['options'] as $jerseyOptions) {
             $jersey_Size = isset($jerseyOptions['optionValue']) ? $jerseyOptions['optionValue'] : '';
             $jersey_id = isset($jerseyOptions['optionId']) ? $jerseyOptions['optionId'] : '';
-            if( str_contains($jersey_Size, ' ') ){
+            if (str_contains($jersey_Size, ' ')) {
                 $jersey_size_Arr = explode(' ', $jersey_Size);
-                $loopGender =  isset($jersey_size_Arr[0]) ? $jersey_size_Arr[0] : '';
-                $loopSize =  isset($jersey_size_Arr[1]) ? $jersey_size_Arr[1] : '';
+                $loopGender = isset($jersey_size_Arr[0]) ? $jersey_size_Arr[0] : '';
+                $loopSize = isset($jersey_size_Arr[1]) ? $jersey_size_Arr[1] : '';
                 $selected = ($jersey_id == $jersey_size ? 'selected' : '');
-                if( $gender == "men" && $loopGender == "Men's" ){
+
+                if ($gender == "men" && $loopGender == "Men's") {
                     $opts .= '<option value="' . $jersey_id . '" ' . $selected . '>' . $loopSize . '</option>';
                 }
-                if( $gender == "women" && $loopGender == "Women's" ){
+                if ($gender == "women" && $loopGender == "Women's") {
                     $opts .= '<option value="' . $jersey_id . '" ' . $selected . '>' . $loopSize . '</option>';
                 }
             }
         }
     }
+
     return $opts;
 }
+
+// Helper function to reorder an array in specific order
+function specific_reorder($options, $sizeOrder) {
+    usort($options, function($a, $b) use ($sizeOrder) {
+        // Extract the size (second word in optionValue) from the optionValue
+        $sizeA = explode(' ', isset($a['optionValue']) ? $a['optionValue'] : '')[1] ?? '';
+        $sizeB = explode(' ', isset($b['optionValue']) ? $b['optionValue'] : '')[1] ?? '';
+
+        // Compare the position of the sizes in the custom size order array
+        $posA = array_search($sizeA, $sizeOrder);
+        $posB = array_search($sizeB, $sizeOrder);
+
+        return $posA <=> $posB; // Sort based on the position in the sizeOrder array
+    });
+    
+    return $options;
+}
+
 /**
  * Take jersey style by given jersey size id.
  * Jersey Style is gender equivalent, man or women.
@@ -8370,56 +8409,3 @@ function tt_update_trek_user_checkout_data( $data ) {
 
     return $cart_updated;
 }
-
-/**
- * @param string $postcode_validation_notice
- */
-function tt_woocommerce_checkout_postcode_validation_notice( $postcode_validation_notice ) {
-    $postcode_validation_notice .= esc_html__( ' If you have selected the option "Same as my mailing address," please check the ZIP code from step one "Guest Info".', 'trek-travel-theme' );
-    return $postcode_validation_notice;
-}
-add_filter( 'woocommerce_checkout_postcode_validation_notice', 'tt_woocommerce_checkout_postcode_validation_notice' );
-
-/**
- * Validate the post code using the WC_Validation.
- */
-function tt_validate_post_code( $raw_post_code, $country_code ) {
-    // Validate input.
-    if( empty( $raw_post_code ) || empty( $country_code ) ) {
-        return false;
-    }
-
-    $post_code = wc_format_postcode( $raw_post_code, $country_code );
-
-    if ( ! empty( $post_code ) && ! WC_Validation::is_postcode( $post_code, $country_code ) ) {
-        return false;
-    }
-
-    return true;
-}
-
-/**
- * Post Code Validation AJAX handler callback.
- */
-function tt_validate_post_code_cb() {
-	// Check for data exist.
-	if ( empty( $_POST['post_code'] ) || empty( $_POST['country_code'] ) ) {
-		wp_send_json_error( array( 'status' => false, 'result' => 'Data not found!' ) );
-		exit;
-	}
-
-	$post_code    = sanitize_text_field( wp_unslash( $_POST['post_code'] ) );
-	$country_code = sanitize_text_field( wp_unslash( $_POST['country_code'] ) );
-
-	$result = tt_validate_post_code( $post_code, $country_code );
-
-	$success_response = array(
-		'status' => true,
-		'result' => $result
-	);
-
-	wp_send_json_success( $success_response );
-	exit;
-}
-add_action( 'wp_ajax_tt_validate_post_code', 'tt_validate_post_code_cb' );
-add_action( 'wp_ajax_nopriv_tt_validate_post_code', 'tt_validate_post_code_cb' );
