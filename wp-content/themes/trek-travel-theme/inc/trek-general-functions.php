@@ -949,10 +949,24 @@ function trek_update_trip_checklist_action_cb()
         // If the confirmed section is 'passport_section', add passport data.
         if( $is_section_confirmed['passport_section'] ) {
             $booking_data['passport_number']          = tt_validate( $_REQUEST['passport_number'] );
-            $booking_data['passport_issue_date']      = tt_validate( $_REQUEST['passport_issue_date'] );
+            $booking_data['passport_issue_date']      = tt_validate( $_REQUEST['passport_issue_date'] ); // This is not populated from the my trip checklist form.
             $booking_data['passport_expiration_date'] = tt_validate( $_REQUEST['passport_expiration_date'] );
             $booking_data['passport_place_of_issue']  = tt_validate( $_REQUEST['passport_place_of_issue'] );
             $booking_data['full_name_on_passport']    = tt_validate( $_REQUEST['full_name_on_passport'] );
+
+            // Collect passport information to send to NetSuite.
+
+            // The NS Script 1292 expects first and last names as separate fields, but we collect the full name from the user's form.
+            // So let's split the names by space and extract first and last names.
+            $guest_names                                = explode( ' ', tt_validate( $_REQUEST['full_name_on_passport'] ) );
+            $guest_last_name                            = array_pop( $guest_names );
+            $guest_first_name                           = implode( ' ', $guest_names );
+            $ns_user_booking_data['passportFirstName']  = $guest_first_name;
+            $ns_user_booking_data['passportLastName']   = $guest_last_name;
+
+            $ns_user_booking_data['passportNumber']     = tt_validate( $_REQUEST['passport_number'] );
+            $ns_user_booking_data['passportIssuePlace'] = tt_validate( $_REQUEST['passport_place_of_issue'] );
+            $ns_user_booking_data['passportExpDate']    = tt_validate( $_REQUEST['passport_expiration_date'] );
         }
 
         // If the confirmed section is 'bike_section', add bike data.
