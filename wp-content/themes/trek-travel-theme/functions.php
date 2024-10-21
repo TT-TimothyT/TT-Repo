@@ -527,6 +527,12 @@ if ( is_readable( $trek_booking_status ) ) {
 	require_once $trek_booking_status;
 }
 
+// Trek WC Persistent Cart Controller integration.
+$trek_wc_persistent_cart = __DIR__ . '/inc/trek-wc-persistent-cart.php';
+if ( is_readable( $trek_wc_persistent_cart ) ) {
+	require_once $trek_wc_persistent_cart;
+}
+
 /**
  * Loading All CSS Stylesheets and Javascript Files.
  *

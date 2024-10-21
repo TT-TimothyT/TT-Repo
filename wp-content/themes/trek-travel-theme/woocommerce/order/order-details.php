@@ -146,6 +146,10 @@ $occupants                = isset($trek_checkout_data['occupants']) && $trek_che
 $single_supplement_qty   += isset($occupants['private']) && $occupants['private'] ? count($occupants['private']) : 0;
 $single_supplement_qty   += isset($occupants['roommate']) && $occupants['roommate'] ? count($occupants['roommate']) : 0;
 $singleSupplementPrice    = isset($trek_checkout_data['singleSupplementPrice']) ? $trek_checkout_data['singleSupplementPrice'] : 0;
+// Fix older orders, that don't have singleSupplementPrice in the trek_user_checkout_data cart item meta.
+if ( empty( $singleSupplementPrice ) ) {
+    $singleSupplementPrice = tt_validate( tt_get_local_trips_detail( 'singleSupplementPrice', '', $trip_sku, true ), 0 );
+}
 
 // Calculate the price depends on guest number.
 $supplement_fees          = str_ireplace(',','',$singleSupplementPrice); // Strip the , from the price if there's such.

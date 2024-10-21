@@ -57,7 +57,10 @@
 </head>
 
 <?php
-$search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-value.
+$search_enabled = get_theme_mod('search_enabled', '1'); // Get custom meta-value.
+
+// Run the cart check once.
+$is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters( 'tt_is_persistent_cart_valid', true );
 ?>
 
 <body <?php body_class(); ?>>
@@ -184,12 +187,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 	</div><!-- /.container -->
 
 	<!-- saved cart bar -->
-	<?php
-	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true);
-	$cart = WC()->session->get( 'cart', null );
-	$persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
-	if ( !is_null($cart) && $persistent_cart_count > 0 ) {
-	?>
+	<?php if ( $is_cart_check ) { ?>
 		<div class="container-fluid saved-cart d-flex justify-content-md-center align-items-center p-lg-0 p-3">
 		<p class="fw-normal fs-md lh-md mb-0">
 			Almost there! <a href="<?php echo trek_checkout_step_link(1); ?>" class="fw-semibold">Complete your booking</a> and get ready for your vacation of a lifetime
@@ -251,12 +249,7 @@ $search_enabled  = get_theme_mod('search_enabled', '1'); // Get custom meta-valu
 </nav><!-- /#header -->
 
 	<!-- saved cart bar -->
-	<?php
-	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true);
-	$cart = WC()->session->get( 'cart', null );
-	$persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
-	if ( !is_null($cart) && $persistent_cart_count > 0 ) {
-	?>
+	<?php if ( $is_cart_check ) { ?>
 		<div class="container-fluid saved-cart mobile d-md-none d-flex justify-content-center text-center p-1">
 			<p class="fw-normal fs-md lh-md mb-0">
 			Almost there! <a href="<?php echo trek_checkout_step_link(1); ?>" class="fw-semibold">Complete your booking</a> and get ready for your vacation of a lifetime

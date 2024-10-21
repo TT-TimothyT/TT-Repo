@@ -387,6 +387,7 @@ function save_checkout_steps_action_cb( $return_response = false )
     $cart = WC()->cart->get_cart_contents();
     $bikes_cart_item_data = $guests_bikes_data = array();
     $is_hiking_checkout = false;
+    $single_supplement_price = 0;
     foreach ($cart as $cart_item_id => $cart_item) {
         $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_id);
         $_product_name = $_product->get_name();
@@ -415,9 +416,9 @@ function save_checkout_steps_action_cb( $return_response = false )
             $cart_item['trek_user_checkout_data']['product_id'] = $product_id;
             $cart_item['trek_user_checkout_data']['sku'] = $_product->get_sku();
             $bikeUpgradePrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
-            $singleSupplementPrice = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
+            $single_supplement_price = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
             $cart_item['trek_user_checkout_data']['bikeUpgradePrice'] = $bikeUpgradePrice;
-            $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = $singleSupplementPrice;
+            $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = $single_supplement_price;
             $cart_posted_data = $cart_item['trek_user_checkout_data'];
             $guest_req = isset($_REQUEST['guests']) ? $_REQUEST['guests'] : $cart_posted_data['guests'];
             $guest_req = $guest_req && is_array($guest_req) ? $guest_req : array();
@@ -468,6 +469,22 @@ function save_checkout_steps_action_cb( $return_response = false )
     WC()->cart->set_session();
     // Update persistent_cart.
     WC()->cart->persistent_cart_update();
+
+    if ( 2 == $step && isset( $_REQUEST['step'] ) && 1 == $_REQUEST['step'] ) {
+        // Check and repair the missing Single Supplement in step 1.
+        $occupants_private  = isset( $_REQUEST['occupants']['private'] ) ? $_REQUEST['occupants']['private'] : array();
+        $occupants_roommate = isset( $_REQUEST['occupants']['roommate'] ) ? $_REQUEST['occupants']['roommate'] : array();
+        $suppliment_counts  = count( $occupants_private ) + count( $occupants_roommate );
+        if ( 0 < $suppliment_counts && ! empty( $single_supplement_price ) ) {
+            $supplement_fees_product_id = tt_create_line_item_product( 'TTWP23SUPP' );
+            $supplement_product_cart_id = WC()->cart->generate_cart_id( $supplement_fees_product_id, 0, array(), array( 'tt_cart_custom_fees_price' => $single_supplement_price ) ); // !!! Keep in mind that this will work when the arguments are the same passed during add_to_cart.
+
+            if ( ! WC()->cart->find_product_in_cart( $supplement_product_cart_id ) ) {
+                // Needs add to cart single supplement.
+                WC()->cart->add_to_cart( $supplement_fees_product_id, $suppliment_counts, 0, array(), array( 'tt_cart_custom_fees_price' => $single_supplement_price ) );
+            }
+        }
+    }
 
     $gearData = $_REQUEST['bike_gears']['primary'];
     if (isset($gearData['save_preferences']) && $gearData['save_preferences'] == 'yes' && isset($step) && $step == 4) {
@@ -1208,20 +1225,30 @@ function get_trek_user_checkout_data() {
         'formatted' => $tt_formatted
     );
 }
-/* @return  : Allow only 1 product/Package in cart and replace it with new product.
- **/
-add_filter('woocommerce_add_to_cart_validation', 'trek_woocom_cart_validation_cb', 10, 3);
-function trek_woocom_cart_validation_cb($valid, $product_id, $quantity)
-{
-    $is_tt_valid = tt_get_cart_products_ids();
+
+/**
+ * Allow only 1 Product/Package in the cart and replace it with the new product.
+ *
+ * @param boolean $passed_validation True if the item passed validation.
+ * @param integer $product_id        Product ID being validated.
+ * @param integer $quantity          Quantity added to the cart.
+ *
+ * @return bool
+ */
+function trek_woocom_cart_validation_cb( $passed_validation, $product_id, $quantity ) {
+    $is_tt_valid       = tt_get_cart_products_ids();
     $custom_fees_p_ids = tt_get_line_items_product_ids();
-    if ($custom_fees_p_ids && !in_array($product_id, $custom_fees_p_ids)) {
-        if (!empty(WC()->cart->get_cart()) && $is_tt_valid == false ) {
-            WC()->cart->empty_cart();
+
+    if ( $custom_fees_p_ids && ! in_array( $product_id, $custom_fees_p_ids ) ) {
+        if ( ! empty( WC()->cart->get_cart() ) && false == $is_tt_valid ) {
+            do_action( 'tt_clear_persistent_cart' );
         }
     }
-    return $valid;
+
+    return $passed_validation;
 }
+add_filter( 'woocommerce_add_to_cart_validation', 'trek_woocom_cart_validation_cb', 20, 3 );
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -1331,9 +1358,9 @@ function trek_get_quote_travel_protection_action_cb()
         $product    = wc_get_product($product_id);
         $sku        = $product->get_sku();
         if ( ! in_array( $product_id, $accepted_p_ids ) ) {
-            $cart_item['trek_user_checkout_data'] = $_REQUEST;
-            $cart_item['trek_user_checkout_data']['product_id'] = $product_id;
-            $cart_item['trek_user_checkout_data']['sku'] = $product->get_sku();
+            // Do not overwrite trek_user_checkout_data; instead, merge it with the information already collected in trek_user_checkout_data.
+            $cart_req_data = wp_unslash( $_REQUEST );
+            $cart_item['trek_user_checkout_data'] = array_merge( $cart_item['trek_user_checkout_data'], $cart_req_data );
             $cart_posted_data = $cart_item['trek_user_checkout_data'];
             $insuredReq  = isset($_REQUEST['trek_guest_insurance']) ? $_REQUEST['trek_guest_insurance'] : [];
             $insuredReqGuests = isset($insuredReq['guests']) ? $insuredReq['guests'] : [];
@@ -4287,16 +4314,7 @@ if (!function_exists('tt_get_itinerary_link')) {
         return $itinerary_link;
     }
 }
-add_action('wp_ajax_tt_clear_cart_ajax_action', 'trek_tt_clear_cart_ajax_action_cb');
-add_action('wp_ajax_nopriv_tt_clear_cart_ajax_action', 'trek_tt_clear_cart_ajax_action_cb');
-function trek_tt_clear_cart_ajax_action_cb()
-{
-    global $woocommerce;
-    $woocommerce->cart->empty_cart();
-    $res['status'] = true;
-    echo json_encode($res);
-    exit;
-}
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
@@ -4343,10 +4361,10 @@ if (!function_exists('get_trip_capacity_info')) {
 function tt_woocommerce_add_to_cart_cb() {
     $accepted_p_ids = tt_get_line_items_product_ids();
     // Get the current cart contents.
-    $cart_contents  = WC()->cart->get_cart_contents();
+    $cart_contents = WC()->cart->get_cart_contents();
     if ( $cart_contents ) {
         foreach ( $cart_contents as $cart_item_id => $cart_item ) {
-            $wc_data     = isset( $cart_item['data'] ) ? $cart_item['data'] : '';
+            $wc_data    = isset( $cart_item['data'] ) ? $cart_item['data'] : '';
             $_product   = apply_filters( 'woocommerce_cart_item_product', $wc_data, $cart_item, $cart_item_id );
             $product_id = isset( $cart_item['product_id'] ) ? $cart_item['product_id'] : '';
             if ( $product_id && ! in_array( $product_id, $accepted_p_ids ) ) {
@@ -4357,6 +4375,9 @@ function tt_woocommerce_add_to_cart_cb() {
                 $cart_item['trek_user_checkout_data']['bikeUpgradePrice']      = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
                 $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
                 $cart_contents[$cart_item_id]                                  = $cart_item;
+
+                // This will add the date the first time only, if the date is missing.
+                do_action( 'tt_set_add_to_cart_date' );
             }
         }
 
@@ -6533,21 +6554,24 @@ add_action( 'wp_ajax_nopriv_dx_get_current_user_bike_preferences', 'dx_get_curre
  * /trek-travel-theme/woocommerce/checkout/form-checkout.php
  */
 function tt_check_and_remove_old_trips_in_persistent_cart_cb() {
-    global $woocommerce;
 
-	$cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
-	$cart = WC()->session->get( 'cart', null );
-	$persistent_cart_count = isset( $cart_result['cart'] ) && $cart_result['cart'] ? count( $cart_result['cart'] ) : 0;
+	if ( apply_filters( 'tt_is_persistent_cart', true ) ) {
+        if ( ! apply_filters( 'tt_is_persistent_cart_valid', true ) ) {
+            // Clear the cart if it is not valid based on the datetime expiration.
+            do_action( 'tt_clear_persistent_cart' );
+        }
 
-	if ( ! is_null( $cart ) && $persistent_cart_count > 0 ) {
         // We have started trip alredy. Now check if is out of date.
         $product_id = ''; // Something like this  ( int )  85028.
 
         // Line item product IDs.
         $accepted_p_ids = tt_get_line_items_product_ids();
 
+        // Get the cart.
+	    $cart = WC()->session->get( 'cart', null );
+
         foreach ( $cart as $cart_item ) {
-            if( $cart_item ) {
+            if ( $cart_item ) {
                 if( isset( $cart_item['product_id'] ) && ! empty( $cart_item['product_id'] ) && ! in_array( $cart_item['product_id'], $accepted_p_ids ) ) {
                     // Take the ID of the trip product.
                     $product_id = $cart_item['product_id'];
@@ -6558,7 +6582,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart_cb() {
         $product = wc_get_product( $product_id );
 
         // Check for WC_Product existing.
-        if( ! $product ) {
+        if ( ! $product ) {
             return;
         }
 
@@ -6582,7 +6606,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart_cb() {
 
         if( in_array( $trip_status , $in_status ) || $remove_from_stella == true ) {
             // Trip not available for booking already. Need to remove it from the cart.
-            $woocommerce->cart->empty_cart();
+            do_action( 'tt_clear_persistent_cart' );
         }
 
         // The trip can stay in the cart.

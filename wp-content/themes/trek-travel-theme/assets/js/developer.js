@@ -2743,20 +2743,7 @@ jQuery('body').on('click', '#trip-booking-modal', function () {
 });
 
 jQuery('body').on('click', '.proceed-booking-btn', function () {
-  removeCartAnalytics()
-  var actionName = 'tt_clear_cart_ajax_action';
-  jQuery.ajax({
-    type: 'POST',
-    url: trek_JS_obj.ajaxURL,
-    data: { action: actionName },
-    dataType: 'json',
-    beforeSend: function () {
-      ttLoader.show();
-    },
-    success: function (response) {
-      ttLoader.hide();
-    }
-  });
+  removeCartAnalytics();
   var myBookId = jQuery("#bookId").val();
   jQuery("#flush-collapse-" + myBookId + " .accordion-book-now form").first().submit()
 });

@@ -151,6 +151,9 @@ foreach( $get_child_products as $year => $get_child_product ) {
 
 $contentFlag = false;
 
+// Run the cart check once.
+$is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters( 'tt_is_persistent_cart_valid', true );
+
 if( $available_child_products ) {
 
     ksort($available_child_products);
@@ -536,22 +539,17 @@ if( $available_child_products ) {
                                 }
                                 if( in_array($trip_status, $wait_status) ){
                                     $formUrl = "waitlist";
-                                }                              
-                                
-                                $cart_result = get_user_meta(get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true); 
-                                $cart = WC()->session->get( 'cart', null );
-                                $persistent_cart_count = isset($cart_result['cart']) && $cart_result['cart'] ? count($cart_result['cart']) : 0;
-                                
-                                if ( !is_null($cart) && $persistent_cart_count > 0 ) {
-                                    if ( isset( $formUrl ) && !empty( $formUrl ) ) {
+                                }
+                                if ( $is_cart_check ) {
+                                    if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
                                         $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                     } else {
                                         $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                     }
-                                }else{
-                                    if (isset($formUrl) && !empty($formUrl)) {
+                                } else {
+                                    if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
                                         $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 mb-1 dates-pricing-book-now">Book Now</a>';
-                                    }else{
+                                    } else {
                                         $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                     }
                                 }
