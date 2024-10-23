@@ -49,12 +49,20 @@ jQuery(document).ready(function($) {
     $(this).addClass('active');
     $(this).siblings().removeClass('active');
     $(this).parent().parent().siblings('#algolia-hits').addClass('grid-view');
+    dataLayer.push({
+      'event': 'view_layout_change',
+      'layout_type': 'grid view'
+    });
   })
 
   $('.standart-view').on('click', function() {
     $(this).addClass('active');
     $(this).siblings().removeClass('active');
     $(this).parent().parent().siblings('#algolia-hits').removeClass('grid-view');
+    dataLayer.push({
+      'event': 'view_layout_change',
+      'layout_type': 'list view'
+    });
   })
 
   if(jQuery(window).width() < 1024) {
