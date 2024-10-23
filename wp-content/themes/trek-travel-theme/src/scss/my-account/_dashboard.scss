@@ -66,6 +66,14 @@
         font-size: 12px;
         line-height: 16px;
     }
+    &__good-to-go-badge {
+        &__img {
+            width: 18px; margin-top: -2px; margin-right: 4px;
+        }
+        &__text {
+            color: #167332;
+        }
+    }
     a {
         &:hover {
             text-decoration: none;

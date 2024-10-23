@@ -128,6 +128,8 @@ $wp_user_email = $userInfo->user_email;
 										// Show this message on locked record or locked bike.
 										if ( $lockedUserRecord || $lockedUserBike ) {
 											$trips_html .= '<p class="fw-normal fs-sm lh-sm d-inline text-danger"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> Your Checklist or a checklist item is locked. <a href="tel:8664648735">Call us</a> if you have any questions or concerns.</p>';
+										} else {
+											$trips_html .= '<img class="my-trips__good-to-go-badge__img" src="' . esc_url( get_template_directory_uri() . '/assets/images/success.png' ) . '" alt="success icon"><span class="mb-0 fs-sm lh-sm my-trips__good-to-go-badge__text rounded-1 p-1">' . __( 'Good to go! Your checklist is complete.', 'trek-travel-theme' ) . '</span>';
 										}
 									}
 

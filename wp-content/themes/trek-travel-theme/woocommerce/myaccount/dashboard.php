@@ -272,6 +272,8 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 										// Show this message on locked record or locked bike.
 										if ( $lockedUserRecord || $lockedUserBike ) {
 											$trips_html .= '<p class="dashboard__error"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> Your Checklist or a checklist item is locked</p>';
+										} else {
+											$trips_html .= '<img class="dashboard__good-to-go-badge__img" src="' . esc_url( get_template_directory_uri() . '/assets/images/success.png' ) . '" alt="success icon"><span class="mb-0 fs-sm lh-sm dashboard__good-to-go-badge__text rounded-1 p-1">' . __( 'Good to go! Your checklist is complete.', 'trek-travel-theme' ) . '</span>';
 										}
 									}
 								

@@ -30,6 +30,14 @@
             }
         }
     }
+    &__good-to-go-badge {
+        &__img {
+            width: 18px; margin-top: -2px; margin-right: 4px;
+        }
+        &__text {
+            color: #167332;
+        }
+    }
     @include media-breakpoint-up(lg) {
         .card{
             .past-title, .upcoming-title{
