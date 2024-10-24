@@ -90,6 +90,11 @@
 				</div>
 			</div>
 		</div><!-- /copyright -->
+		<?php if ( is_active_sidebar('tt_currency_converter_widget_area') ) : ?>
+			<div id="fix-currency-converter-geolocation" style="display:none;">
+				<?php dynamic_sidebar('tt_currency_converter_widget_area'); ?>
+			</div>
+		<?php endif; ?>
 	</footer><!-- /#footer -->
 	</div><!-- /#wrapper - open in header.php -->
 	<?php

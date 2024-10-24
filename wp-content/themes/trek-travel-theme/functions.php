@@ -260,6 +260,18 @@ function trek_travel_theme_widgets_init() {
 			'after_title'   => '</h3>',
 		)
 	);
+
+	// Area 4.
+	register_sidebar(
+		array(
+			'name'          => 'Fix Currency Converter Widget Geolocation (Hidden)',
+			'id'            => 'tt_currency_converter_widget_area',
+			'before_widget' => '',
+			'after_widget'  => '',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
+		)
+	);
 }
 add_action( 'widgets_init', 'trek_travel_theme_widgets_init' );
 
