@@ -704,7 +704,7 @@ a.refineLink {
                 @media screen and (max-width: 991px) {
                 gap: 0;
                 }
-    
+
                 .card {
                     .c-card {
                         @media screen and (min-width: 768px) {
@@ -713,7 +713,7 @@ a.refineLink {
                         .gallery-carousel {
                             width: 100%;
                         }
-    
+
                         .card-body {
                             margin: 0 !important;
                             padding: 0 !important;
@@ -724,7 +724,7 @@ a.refineLink {
                                 top: 16px;
                                 left: 16px;
                             }
-    
+
                             .list-inline {
 
                                 .list-inline-item {
@@ -735,16 +735,16 @@ a.refineLink {
                                 //     display: block;
                                 // }
                             }
-    
+
                             .card-title {
                                 font-size: 20px;
                                 line-height: 30px;
                             }
-    
+
                             .trip-price {
                                 font-size: 20px;
                                 line-height: 30px;
-    
+
                                 @media screen and (max-width: 1366px) {
                                     font-size: 18px;
                                     line-height: 30px;
@@ -760,11 +760,15 @@ a.refineLink {
                             
                         }
                         .card-info {
+                            z-index: 2;
+
                             @media screen and (min-width: 768px) {
                                 width: 100%;
                             }
                         }
                         .card-price {
+                            z-index: 1;
+
                             @media screen and (min-width: 768px) {
                                 width: 100%;
                                 text-align: right;
@@ -772,19 +776,19 @@ a.refineLink {
                                 bottom: 0;
                                 right: 0;
                             }
-    
+
                             @media screen and (max-width: 1366px) {
                                 width: 32%;
                             }
                         }
-    
+
                         .card-footer {
-                            @media screen and (min-width: 768px) { 
+                            @media screen and (min-width: 768px) {
                                 display: none;
                             }
                         }
                     }
-    
+
                     .card-divider {
                         @media screen and (min-width: 991px) {
                             display: none;
