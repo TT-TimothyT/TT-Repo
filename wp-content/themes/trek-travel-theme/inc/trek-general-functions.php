@@ -3608,7 +3608,11 @@ function tt_get_trip_pid_sku_by_orderId($order_id)
 function tt_get_bikes_by_trip_info( $trip_id = '', $tripCode = '', $bikeTypeId = '', $s_bike_size_id = '', $s_bike_type_id = '', $bikeID='', $selected_bikes_arr = array() ) {
     $bike_size_opts       = '<option value="">Select bike size</option>';
     $i_dont_know_selected = ( 33 == (int) $s_bike_size_id ? 'selected' : '');
-    $bike_size_opts      .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>'; // Insert the "I don't know" option for bike sizes in the first position.
+    $bike_type_info       = tt_ns_get_bike_type_info( $bikeTypeId );
+    // Remove "I don't know" for upgrade bikes and Electric Assist bike types in Checkout.
+    if ( ! empty( $bike_type_info ) && is_array( $bike_type_info ) && isset( $bike_type_info['name'] ) && isset( $bike_type_info['isBikeUpgrade'] ) && stripos( $bike_type_info['name'], 'electric-assist' ) === false && $bike_type_info['isBikeUpgrade'] != 1 ) {
+        $bike_size_opts .= '<option ' . $i_dont_know_selected . ' value="33">I don\'t know</option>'; // Insert the "I don't know" option for bike sizes in the first position.
+    }
     $bike_Type_opts       = '<option value="">Select bike type</option>';
     $bikes_arr            = tt_get_local_bike_detail( $trip_id, $tripCode, $bikeID );
     if ($bikes_arr) {
@@ -4145,24 +4149,26 @@ add_action( 'wp_ajax_nopriv_tt_bike_upgrade_fees_ajax_action', 'trek_tt_bike_upg
  * @version : 1.0.0
  * @return  : tt_ns_get_bike_type_info
  **/
-if (!function_exists('tt_ns_get_bike_type_info')) {
-    function tt_ns_get_bike_type_info($bikeTypeId)
-    {
-        $result = [];
-        $ns_bikeType_Info = get_option(TT_OPTION_PREFIX . 'ns_bikeType_info');
-        if (empty($ns_bikeType_Info)) {
+if ( ! function_exists( 'tt_ns_get_bike_type_info' ) ) {
+    function tt_ns_get_bike_type_info( $bike_type_id ) {
+        $result = array();
+        $ns_bike_type_info = get_option(TT_OPTION_PREFIX . 'ns_bikeType_info');
+        if ( empty( $ns_bike_type_info ) ) {
             tt_ns_fetch_bike_type_info();
-            $ns_bikeType_Info = get_option(TT_OPTION_PREFIX . 'ns_bikeType_info');
+            $ns_bike_type_info = get_option( TT_OPTION_PREFIX . 'ns_bikeType_info' );
         }
-        if ($ns_bikeType_Info && $bikeTypeId) {
-            $ns_bikeType_result = json_decode($ns_bikeType_Info, true);
-            $keys = array_column($ns_bikeType_result, 'id');
-            $index =  array_search($bikeTypeId, $keys);
-            $result = [
-                'isActive' => $ns_bikeType_result[$index]['isActive'],
-                'isBikeUpgrade' => $ns_bikeType_result[$index]['isBikeUpgrade']
-            ];
+
+        if ( $ns_bike_type_info && $bike_type_id ) {
+            $ns_bike_type_result = json_decode( $ns_bike_type_info, true );
+            $keys                = array_column( $ns_bike_type_result, 'id' );
+            $index               = array_search( $bike_type_id, $keys );
+            $result = array(
+                'name'          => $ns_bike_type_result[$index]['name'],
+                'isActive'      => $ns_bike_type_result[$index]['isActive'],
+                'isBikeUpgrade' => $ns_bike_type_result[$index]['isBikeUpgrade']
+            );
         }
+
         return $result;
     }
 }
