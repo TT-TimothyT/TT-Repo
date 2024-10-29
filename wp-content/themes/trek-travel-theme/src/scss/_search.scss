@@ -714,7 +714,7 @@ a.refineLink {
     }
 }
 
-.archive {
+.archive, .search {
     .ais-InfiniteHits-list {
         padding: 0;
     }
@@ -907,6 +907,11 @@ a.refineLink {
         padding-bottom: 15px;
     }
 }
+.search {
+    .algolia-search-box-wrapper {
+        top: 0 !important;
+    }
+}
 @media (max-width: 767px) {
     li.ais-InfiniteHits-item{
         .card-body{
@@ -941,9 +946,19 @@ a.refineLink {
     .search-results-container{
         padding-left: 2px;
         padding-right: 2px;
+
+        @media screen and (max-width: 767.98px) {
+            padding: 0;
+        }
         #ais-main{
             padding-left: 12px;
             padding-right: 12px;
+        }
+
+        @media screen and (max-width: 767.98px) {
+            .algolia-search-box-wrapper {
+                top: 0 !important
+            }
         }
     }
 }
@@ -984,4 +999,21 @@ a.refineLink {
 /* Hide the Filter by Relevance */
 .archive #ais-sortBy {
     // display: none;
+}
+
+.search-results-summary-container {
+    background-color: #f4f4f4;
+
+    .search-summary {
+        margin: 0 !important;
+        padding: 32px 0 !important;
+
+        p {
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+        h2 {
+            font-weight: 500;
+        }
+    }
 }
