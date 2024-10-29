@@ -34,7 +34,7 @@
 }
 
 .search-form {
-  border-top: 1px solid hsl(0, 0%, 73%);
+  // border-top: 1px solid hsl(0, 0%, 73%);
 
   &__icon {
     z-index: 10;
@@ -511,20 +511,86 @@
   }
 }
 
-#globalSearchModal{
-  .modal-dialog{
-    // top: 12%;
-    width: 100%;
-    /* margin: auto 0; */
+// #globalSearchModal{
+//   position: fixed;
+//   width: 100%;
+//   left: 0;
+//   z-index: 9999;
+//   transition: top 0.3s ease;
+
+//   &.show {
+//     // overflow-y: scroll;
+//   }
+
+//   .modal-dialog{
+//     // top: 12%;
+//     width: 100%;
+//     /* margin: auto 0; */
+//     max-width: 100%;
+//     margin-top: 0;
+//     .search-form{
+//       border: none;
+//     }
+//   }
+//   @include media-breakpoint-down(md) {
+//     .modal-body, .modal-content{
+//       padding: 1rem 0 !important;
+//     }
+//   }
+// }
+
+#globalSearchModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  // background-color: rgba(0, 0, 0, 0.5); /* Slight overlay background */
+
+  .result-container {
+    padding-bottom: 90px;
+  }
+
+  &.show {
+        overflow-y: scroll;
+
+        @include media-breakpoint-down(md) {
+          overflow-y: hidden;
+        }
+      }
+
+  /* Ensure that clicking anywhere outside the dialog will trigger modal close */
+  .modal-dialog {
+    // position: absolute;
+    // width: 100%;
     max-width: 100%;
-    margin-top: 0;
-    .search-form{
-      border: none;
+    margin: 0;
+
+    @media screen and (max-width: 768px) {
+      overflow: scroll;
+      height: -webkit-fill-available;
     }
   }
-  @include media-breakpoint-down(md) {
-    .modal-body, .modal-content{
-      padding: 1rem 0 !important;
+
+  .modal-content {
+    background-clip: unset;
+    border: none;
+    border-radius: unset;
+  }
+
+  .modal-body {
+    padding: 0;
+    border-top: 3px solid $blue;
+  }
+
+  .search-form {
+
+  }
+
+  @media (max-width: 767px) {
+    .modal-body, .modal-content {
+      // padding: 1rem 0 !important;
     }
   }
 }

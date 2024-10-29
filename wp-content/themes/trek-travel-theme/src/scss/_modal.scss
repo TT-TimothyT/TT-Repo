@@ -7,6 +7,10 @@
 
 
 // Container that the modal scrolls within
+
+.modal-open {
+  overflow: hidden !important;
+}
 .modal {
   // scss-docs-start modal-css-vars
   --#{$prefix}modal-zindex: #{$zindex-modal};

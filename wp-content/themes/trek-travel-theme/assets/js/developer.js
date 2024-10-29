@@ -4233,27 +4233,60 @@ function resetMobileMenu(){
   jQuery('.mega-menu-toggle.mega-menu-open').removeClass('active');
 }
 
-jQuery('body').on('shown.bs.modal', '#globalSearchModal', function () {
-  isSticked = jQuery("header.header-main").hasClass("add-shadow")
-  if (window.matchMedia('(min-width: 768px)').matches && window.matchMedia('(max-width: 1439px)').matches) {
-    if (isSticked) {
-      jQuery("#globalSearchModal").css("top", "7%")
-      jQuery(".modal-backdrop.show").css("top", "15%")
-    } else {
-      jQuery("#globalSearchModal").css("top", "13%")
-      jQuery(".modal-backdrop.show").css("top", "15%")
-    }
+jQuery(document).ready(function() {
+  // Function to position the modal-dialog below the header
+  function updateModalPosition() {
+    const header = jQuery('header.header-main');
+    const headerRect = header[0].getBoundingClientRect();
+    const modalDialog = jQuery("#globalSearchModal .modal-dialog");
+    
+    // Position the modal-dialog directly below the header
+    const dialogTop = headerRect.bottom;
+    modalDialog.css({
+      "top": dialogTop + "px", // Set top position relative to header
+      "left": "0",             // Ensure modal dialog is left aligned
+      "width": "100%",         // Full width for modal dialog
+      "position": "absolute"   // Keep it positioned within the container
+    });
   }
-  if (window.matchMedia('(min-width: 1440px)').matches) {
-    if (isSticked) {
-      jQuery("#globalSearchModal").css("top", "6%")
-      jQuery(".modal-backdrop.show").css("top", "15%")
-    } else {
-      jQuery("#globalSearchModal").css("top", "11%")
-      jQuery(".modal-backdrop.show").css("top", "15%")
+
+  // Ensure modal-dialog is positioned correctly on page load
+  updateModalPosition(); // Correctly set the modal position immediately when the page loads
+
+  // Ensure the modal-dialog is positioned correctly when modal opens
+  jQuery('a[data-bs-toggle="modal"]').on('click', function(e) {
+    e.preventDefault(); // Prevent default anchor behavior
+    updateModalPosition(); // Position the modal-dialog before it is shown
+    jQuery('#globalSearchModal').modal('show');
+  });
+
+  // Adjust the modal-dialog position on window resize or scroll
+  jQuery(window).on('resize scroll', updateModalPosition);
+
+  // Automatically focus the input field when the modal is fully shown
+  jQuery('#globalSearchModal').on('shown.bs.modal', function () {
+    // Focus on the input field
+    jQuery(this).find('input[type="text"]').focus();
+
+    // Disable body scroll
+    jQuery('body').addClass('modal-open');
+  });
+
+  // Re-enable body scroll when the modal is hidden
+  jQuery('#globalSearchModal').on('hidden.bs.modal', function () {
+    // Re-enable body scroll
+    jQuery('body').removeClass('modal-open');
+  });
+
+  // Close the modal if clicked outside the modal-dialog
+  jQuery('#globalSearchModal').on('click', function(e) {
+    const modalDialog = jQuery('.modal-dialog');
+    if (!modalDialog.is(e.target) && modalDialog.has(e.target).length === 0) {
+      jQuery('#globalSearchModal').modal('hide');
     }
-  }
+  });
 });
+
 
 jQuery(document).on('change blur', 'input[name="shipping_first_name"]', function () {
   jQuery('input[name="shipping_first_name"]').attr('required', 'required');
