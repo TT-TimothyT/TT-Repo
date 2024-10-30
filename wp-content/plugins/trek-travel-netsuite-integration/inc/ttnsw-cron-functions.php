@@ -396,12 +396,12 @@ function tt_sync_wc_product_from_ns( $trek_trip ) {
             }
         }
 
-        $custom_attributes = [
-            'pa_duration' => $daysToTrip, // This will keep as is it, based on a discussion on call with the client.
-            'pa_season' => $tripSeason,
-            'pa_start-date' => date('d/m/y', $attr_startDate),
-            'pa_end-date' => date('d/m/y', $attr_endDate)
-        ];
+        $custom_attributes = array(
+            'pa_duration'   => $daysToTrip, // This will keep as is it, based on a discussion on call with the client.
+            'pa_season'     => $tripSeason,
+            'pa_start-date' => ! empty( $attr_startDate ) ? date( 'd/m/y', $attr_startDate ) : '',
+            'pa_end-date'   => ! empty( $attr_endDate ) ? date( 'd/m/y', $attr_endDate ) : '',
+        );
         if( $custom_attributes ){
             foreach($custom_attributes as $custom_attribute_k=>$custom_attribute_v){
                 if( $custom_attribute_v ){
