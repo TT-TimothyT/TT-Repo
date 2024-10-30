@@ -1932,3 +1932,21 @@ function add_continental_us_address_type($address_types) {
     return $address_types;
 }
 
+function renew_currency_cookie_if_needed() {
+    // Check if the currency cookie exists
+    if (isset($_COOKIE['woocommerce_current_currency'])) {
+        // Extract the currency value and timestamp from the cookie
+        list($currency_value, $timestamp) = explode('|', $_COOKIE['woocommerce_current_currency']);
+
+        // Calculate remaining time in seconds
+        $remaining_time = ($timestamp + DAY_IN_SECONDS) - time();
+
+        // Renew the cookie only if it has more than 24 hours remaining
+        if ($remaining_time > DAY_IN_SECONDS) {
+            // Update the cookie with a new timestamp
+            $new_cookie_value = $currency_value . '|' . time();
+            setcookie('woocommerce_current_currency', $new_cookie_value, time() + DAY_IN_SECONDS, '/');
+        }
+    }
+}
+add_action('init', 'renew_currency_cookie_if_needed');
