@@ -3561,7 +3561,7 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
         'parent_trip_image'  => $product_image_url,
         'tt_posted'          => $tt_posted,
         'tt_formatted_data'  => $tt_formatted_data,
-        'product_line_obj'   => json_decode( tt_get_local_trips_detail( 'product_line', '', $cart_product_info['sku'], true ) ),
+        'product_line_obj'   => json_decode( tt_get_local_trips_detail( 'product_line', '', $sku, true ) ),
     ];
 }
 function tt_get_trip_pid_sku_by_orderId($order_id)
@@ -7469,7 +7469,8 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
                 $json_data['Title']     = $product->get_title();
                 $json_data['Permalink'] = $product->get_permalink();
 
-                $attachment_ids         = $product->get_gallery_attachment_ids();
+                $attachment_ids         = $product->get_gallery_image_ids();
+                
 
                 foreach( $attachment_ids as $index=>$attachment_id )
                 {
@@ -7487,7 +7488,7 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
                 $json_data['Title']     = $product->get_title();
                 $json_data['Permalink'] = $product->get_permalink();
 
-                $attachment_ids         = $product->get_gallery_attachment_ids();
+                $attachment_ids         = $product->get_gallery_image_ids();
 
                 foreach( $attachment_ids as $index=>$attachment_id )
                 {
@@ -7505,7 +7506,7 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
                 $json_data['Title']     = $product->get_title();
                 $json_data['Permalink'] = $product->get_permalink();
 
-                $attachment_ids         = $product->get_gallery_attachment_ids();
+                $attachment_ids         = $product->get_gallery_image_ids();
 
                 foreach( $attachment_ids as $index=>$attachment_id )
                 {
@@ -7523,7 +7524,7 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
                 $json_data['Title']     = $product->get_title();
                 $json_data['Permalink'] = $product->get_permalink();
 
-                $attachment_ids         = $product->get_gallery_attachment_ids();
+                $attachment_ids         = $product->get_gallery_image_ids();
 
                 foreach( $attachment_ids as $index=>$attachment_id )
                 {
@@ -7610,10 +7611,12 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
 
     if ( wc_get_product( $post->ID ) ) {
 
-        $attachment_ids = $product->get_gallery_attachment_ids();
+        $gallery_image_ids = $product->get_gallery_image_ids();
 
-        foreach ( $attachment_ids as $index=>$attachment_id ) {
-            $shared_attributes['gallery_images'][$index] = wp_get_attachment_image_src( $attachment_id, 'shop_catalog' )[0];
+        foreach ( $gallery_image_ids as $index => $gallery_image_id ) {
+            $gallery_image_url = wp_get_attachment_image_src( $gallery_image_id, 'featured-archive' )[0];
+
+            $shared_attributes['gallery_images'][$index] = tt_get_trip_carousel_image_url( $gallery_image_url );
 
         }
         
@@ -8506,3 +8509,23 @@ function tt_validate_post_code_cb() {
 }
 add_action( 'wp_ajax_tt_validate_post_code', 'tt_validate_post_code_cb' );
 add_action( 'wp_ajax_nopriv_tt_validate_post_code', 'tt_validate_post_code_cb' );
+
+/**
+ * Adjust the image sizes in the carousels on the Archive and Search pages.
+ *
+ * @param string|bool|null $source_image_url The source image URL.
+ *
+ * @return string
+ */
+function tt_get_trip_carousel_image_url( $source_image_url ) {
+	$image_url = str_replace( '-300x300', '-886x664', $source_image_url );
+
+	$file_headers = @get_headers( $image_url );
+
+	if ( ! $file_headers || 'HTTP/1.1 200 OK' !== $file_headers[0] ) {
+		// File not found. Fallback to the original image size.
+		$image_url = str_replace( '-300x300', '', $source_image_url );
+	}
+
+	return $image_url;
+}

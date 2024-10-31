@@ -29,8 +29,7 @@ get_header();
 $newval              = get_search_query();
 $tt_compare_products = ( isset($_SESSION['tt_compare_products']) ? $_SESSION['tt_compare_products'] : array()  );
 $compare_div_style   = ( $tt_compare_products && count($tt_compare_products) > 0 ? 'display:flex;' : 'display:none;' );
-$params              = $_GET;
-$svar                = $_GET['s'];
+$svar                = isset( $_GET['s'] ) ? $_GET['s'] : '';
 
 if ( ! $svar ) {
     header( "Location: /?s=algolia&wp_searchable_posts[query]=".$newval );

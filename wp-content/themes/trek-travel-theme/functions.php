@@ -567,6 +567,10 @@ function trek_travel_theme_scripts_loader() {
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
+
+	if ( is_archive() || is_search() ) {
+		wp_enqueue_script( 'tt-bs-carousel-lazy-load', get_theme_file_uri( 'assets/js/tt-bs-carousel-lazy-load.js' ), array(), time(), true );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'trek_travel_theme_scripts_loader' );
 

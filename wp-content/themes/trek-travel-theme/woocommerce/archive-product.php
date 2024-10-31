@@ -44,11 +44,11 @@ get_header();
  */
 
 // Take the Date/Time filter params from the URL.
-$urlStartTime  = $_GET['start_time'];
-$urlEndTime    = $_GET['end_time'];
+$urlStartTime  = isset( $_GET['start_time'] ) ? sanitize_text_field( wp_unslash( $_GET['start_time'] ) ) : '';
+$urlEndTime    = isset( $_GET['end_time'] ) ? sanitize_text_field( wp_unslash( $_GET['end_time'] ) ) : '';
 $urlDateFilter = '';
 $urlFlag       = 0;
-if ( isset( $urlStartTime ) && ! empty( $urlStartTime ) && isset( $urlEndTime ) && ! empty( $urlEndTime ) ) {
+if ( ! empty( $urlStartTime ) && ! empty( $urlEndTime ) ) {
     $urlDateFilter = "AND start_date_unix:".$urlStartTime." TO ".$urlEndTime;
     $urlFlag       = 1;
 }
