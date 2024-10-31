@@ -8,14 +8,6 @@
  * Author : Manish Gautam
  */
 // including development toolkit provided by Netsuite
-require_once TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php';
-require_once TMWNI_DIR . 'inc/common.php';
-foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
-	require_once $filename;
-}
-
-
-
 
 use NetSuite\NetSuiteService;
 use NetSuite\Classes\GetRequest;
@@ -82,7 +74,7 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 			$selectedField = new SearchMultiSelectField();
 			$selectedField->searchValue = $internalIds_array;
 			$selectedField->type = 'salesOrder';
-			$selectedField->operator = SEARCHENUMMULTISELECTFIELDOPERATOR::ANYOF;
+			$selectedField->operator = 'anyOf';
 
 
 			$tranSearch = new TransactionSearchBasic();
@@ -124,6 +116,8 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 
 		$order = wc_get_orders($args);
 		$order_id = $order[0]->get_id();
+
+		do_action('tm_ns_order_tracking', $record, $order, $order_id);
 
 		if (isset($record->linkedTrackingNumbers) && !empty($record->linkedTrackingNumbers)) {
 			$trackingNo = str_replace(' ', ',', $record->linkedTrackingNumbers);

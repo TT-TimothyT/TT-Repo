@@ -6,6 +6,7 @@
 class TMWNI_Settings {
 	public static $VERSION = 1;
 	public static $ns_inventory_log_file = 'netsuite-inventory-log.html';
+	public static $ns_price_log_file = 'netsuite-price-log.html';
 
 	public static $ns_order_id = 'ns_order_internal_id';
 	public static $ns_rec_type_order = 'order';

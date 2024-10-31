@@ -422,14 +422,16 @@
 																<span class="progress_details_item updated_count" style="">
 																	Updated <span class="updated_records_count">0</span>
 																</span>
-																<span class="progress_details_item skipped_count">
-																	Skipped <span class="skipped_records_count">0</span>
-																</span>
 															</div>
 														</span>
 													</div>
+													<fieldset class="price-logs">
+														<legend class="log-head">Price Log</legend>
+														<div class="price-log-list">
+														</div>
+													</fieldset>
 													<fieldset class="inventory-logs">
-														<legend class="log-head">Log</legend>
+														<legend class="log-head">Inventory Log</legend>
 														<div class="log-list">
 														</div>
 													</fieldset>

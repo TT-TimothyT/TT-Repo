@@ -1,5 +1,15 @@
 *** WooCommerce CyberSource Gateway Changelog ***
 
+2024.07.09 - version 2.8.2
+ * Misc - Prevent bypassing Payer Authentication enrollment check when 3DS is enabled
+ * Misc - Update SkyVerge Plugin Framework to 5.12.5
+ * Fix - Ensure Enrollment check is performed only once for 3DS transactions.
+
+2024.05.27 - version 2.8.1
+ * Fix - Address a fatal error on shop pages when 3DS is enabled with an empty card types list
+ * Fix - Address a fatal error when multiple payment gateways with different framework versions are active
+ * Misc - Update SkyVerge Plugin Framework to 5.12.3
+
 2024.03.26 - version 2.8.0
  * Feature - Add support for the WooCommerce Checkout Block
  * Feature - Update Flex Microform to v2.0

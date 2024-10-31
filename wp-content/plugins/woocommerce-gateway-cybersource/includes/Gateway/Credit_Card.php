@@ -28,9 +28,9 @@ use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\Frontend;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
 use SkyVerge\WooCommerce\Cybersource\Blocks\Credit_Card_Checkout_Block_Integration;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2\SV_WC_Helper;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Helper;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -47,15 +47,15 @@ class Credit_Card extends Gateway {
 
 
 	/** @var string whether 3D Secure is enabled, 'yes' or 'no' */
-	protected $enable_threed_secure;
+	protected $enable_threed_secure = 'no';
 
 
-	/** @var string[] 3D Secure card types */
-	protected $threed_secure_card_types;
+	/** @var string[] 3D Secure card types (property not typed due to WC setting empty values to strings) */
+	protected $threed_secure_card_types = [];
 
 
 	/** @var ThreeD_Secure|null 3D Secure handler */
-	private $threed_secure;
+	private ?ThreeD_Secure $threed_secure = null;
 
 	/** @var Credit_Card_Checkout_Block_Integration|null */
 	protected ?Credit_Card_Checkout_Block_Integration $credit_card_checkout_block_integration = null;
@@ -434,7 +434,7 @@ class Credit_Card extends Gateway {
 		$this->threed_secure
 			->set_gateway( $this )
 			->set_enabled( $this->is_3d_secure_enabled() )
-			->set_enabled_card_types( $this->threed_secure_card_types )
+			->set_enabled_card_types( $this->get_3d_secure_card_types() )
 			->set_test_mode( $this->is_test_environment() )
 			->init();
 	}
@@ -674,6 +674,33 @@ class Credit_Card extends Gateway {
 	public function is_3d_secure_enabled(): bool {
 
 		return 'yes' === $this->enable_threed_secure;
+	}
+
+
+	/**
+	 * Gets a list of enabled card types for 3DS.
+	 *
+	 * @since 2.8.1
+	 *
+	 * @return string[]
+	 */
+	public function get_3d_secure_card_types(): array {
+
+		return is_array( $this->threed_secure_card_types ) ? $this->threed_secure_card_types : [];
+	}
+
+
+	/**
+	 * Determines whether 3D Secure is enabled for a specific card type.
+	 *
+	 * @since 2.8.2
+	 *
+	 * @param string $type
+	 * @return bool
+	 */
+	public function is_3d_secure_enabled_for_card_type(string $type) : bool
+	{
+		return in_array($type, $this->get_3d_secure_card_types(), true);
 	}
 
 

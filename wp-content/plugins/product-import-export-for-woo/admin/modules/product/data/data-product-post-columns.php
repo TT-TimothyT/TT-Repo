@@ -64,6 +64,7 @@ $post_columns = array(
     "$file_path_header" => 'Downloadable file paths',
     'product_page_url' => 'Product page URL',
 	'meta:total_sales' => 'Total sales count',
+    'meta:_global_unique_id' => 'GTIN, UPC, EAN, or ISBN',
     //'taxonomies' => 'Taxonomies (cat/tags/shipping-class)',
     //'meta' => 'Meta (custom fields)',
     //'attributes' => 'Attributes',

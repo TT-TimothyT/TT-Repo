@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'kestrelwp/woocommerce-currency-converter-widget',
-        'pretty_version' => '2.2.3',
-        'version' => '2.2.3.0',
-        'reference' => '70daf0b910c81a562566bb0dc1905f27f9e90335',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '18bbc0035c95a9595592d6422a90932d53d78c5e',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'kestrelwp/woocommerce-currency-converter-widget' => array(
-            'pretty_version' => '2.2.3',
-            'version' => '2.2.3.0',
-            'reference' => '70daf0b910c81a562566bb0dc1905f27f9e90335',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '18bbc0035c95a9595592d6422a90932d53d78c5e',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

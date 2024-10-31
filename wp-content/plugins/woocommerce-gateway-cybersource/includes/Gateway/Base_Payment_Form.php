@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\Device_Data;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
 
 /**
  * The base payment form handler.

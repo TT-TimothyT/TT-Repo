@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit0067bbad013fa5189bd97424e9f1cf81
+class ComposerStaticInit5e510dc1c67cdedaaf8be7887c129677
 {
     public static $prefixLengthsPsr4 = array (
         'T' => 
@@ -30,14 +30,39 @@ class ComposerStaticInit0067bbad013fa5189bd97424e9f1cf81
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'KoiLab\\WC_Currency_Converter\\AJAX' => __DIR__ . '/../..' . '/src/AJAX.php',
+        'KoiLab\\WC_Currency_Converter\\Admin\\Admin' => __DIR__ . '/../..' . '/src/Admin/Admin.php',
+        'KoiLab\\WC_Currency_Converter\\Admin\\Settings\\General' => __DIR__ . '/../..' . '/src/Admin/Settings/General.php',
+        'KoiLab\\WC_Currency_Converter\\Admin\\Settings\\Integration' => __DIR__ . '/../..' . '/src/Admin/Settings/Integration.php',
+        'KoiLab\\WC_Currency_Converter\\Autoloader' => __DIR__ . '/../..' . '/src/Autoloader.php',
+        'KoiLab\\WC_Currency_Converter\\Checkout' => __DIR__ . '/../..' . '/src/Checkout.php',
+        'KoiLab\\WC_Currency_Converter\\Exchange\\Providers\\Base_Exchange_Provider' => __DIR__ . '/../..' . '/src/Exchange/Providers/Base_Exchange_Provider.php',
+        'KoiLab\\WC_Currency_Converter\\Exchange\\Providers\\Exchange_Provider' => __DIR__ . '/../..' . '/src/Exchange/Providers/Exchange_Provider.php',
+        'KoiLab\\WC_Currency_Converter\\Exchange\\Providers\\Kestrel_Exchange_Provider' => __DIR__ . '/../..' . '/src/Exchange/Providers/Kestrel_Exchange_Provider.php',
+        'KoiLab\\WC_Currency_Converter\\Exchange\\Providers\\Open_Exchange_Provider' => __DIR__ . '/../..' . '/src/Exchange/Providers/Open_Exchange_Provider.php',
+        'KoiLab\\WC_Currency_Converter\\Exchange\\Rates' => __DIR__ . '/../..' . '/src/Exchange/Rates.php',
+        'KoiLab\\WC_Currency_Converter\\Internal\\Admin\\Settings\\Abstracts\\Integration' => __DIR__ . '/../..' . '/src/Internal/Admin/Settings/Abstracts/Integration.php',
+        'KoiLab\\WC_Currency_Converter\\Internal\\Admin\\Settings\\Abstracts\\Settings_API' => __DIR__ . '/../..' . '/src/Internal/Admin/Settings/Abstracts/Settings_API.php',
+        'KoiLab\\WC_Currency_Converter\\Internal\\Traits\\Singleton' => __DIR__ . '/../..' . '/src/Internal/Traits/Singleton.php',
+        'KoiLab\\WC_Currency_Converter\\Logger' => __DIR__ . '/../..' . '/src/Logger.php',
+        'KoiLab\\WC_Currency_Converter\\Plugin' => __DIR__ . '/../..' . '/src/Plugin.php',
+        'KoiLab\\WC_Currency_Converter\\Privacy' => __DIR__ . '/../..' . '/src/Privacy.php',
+        'KoiLab\\WC_Currency_Converter\\Requirements' => __DIR__ . '/../..' . '/src/Requirements.php',
+        'KoiLab\\WC_Currency_Converter\\Utilities\\Currency_Utils' => __DIR__ . '/../..' . '/src/Utilities/Currency_Utils.php',
+        'KoiLab\\WC_Currency_Converter\\Utilities\\Exchange_Utils' => __DIR__ . '/../..' . '/src/Utilities/Exchange_Utils.php',
+        'KoiLab\\WC_Currency_Converter\\Utilities\\L10n_Utils' => __DIR__ . '/../..' . '/src/Utilities/L10n_Utils.php',
+        'KoiLab\\WC_Currency_Converter\\Utilities\\Plugin_Utils' => __DIR__ . '/../..' . '/src/Utilities/Plugin_Utils.php',
+        'KoiLab\\WC_Currency_Converter\\Utilities\\String_Utils' => __DIR__ . '/../..' . '/src/Utilities/String_Utils.php',
+        'KoiLab\\WC_Currency_Converter\\Utilities\\Widget_Utils' => __DIR__ . '/../..' . '/src/Utilities/Widget_Utils.php',
+        'KoiLab\\WC_Currency_Converter\\Widget' => __DIR__ . '/../..' . '/src/Widget.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit0067bbad013fa5189bd97424e9f1cf81::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit0067bbad013fa5189bd97424e9f1cf81::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit0067bbad013fa5189bd97424e9f1cf81::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5e510dc1c67cdedaaf8be7887c129677::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5e510dc1c67cdedaaf8be7887c129677::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit5e510dc1c67cdedaaf8be7887c129677::$classMap;
 
         }, null, ClassLoader::class);
     }

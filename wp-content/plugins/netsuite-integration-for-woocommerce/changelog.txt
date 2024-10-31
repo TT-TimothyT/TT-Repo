@@ -1,4 +1,13 @@
 *** NetSuite Integration for WooCommerce Changelog ***
+2024-09-10 - version 1.6.2
+* Fix - Guest customer issue fixed.
+
+2024-09-09 - version 1.6.1
+* Fix - Improved efficiency and speed  for getting inventory data, reducing wait times.
+
+2024-07-02 - version 1.6.0
+* Fix - Improved efficiency and speed in syncing orders and inventory, reducing wait times.
+
 2024-04-30 - version 1.5.9
 * Fix - Conditional mapping issue.
 

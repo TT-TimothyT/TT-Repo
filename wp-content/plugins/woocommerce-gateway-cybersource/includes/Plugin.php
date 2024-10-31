@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
 
 /**
  * WooCommerce CyberSource Gateway main plugin class.
@@ -36,7 +36,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 
 	/** version number */
-	const VERSION = '2.8.0';
+	const VERSION = '2.8.2';
 
 	/** @var Plugin single instance of this plugin */
 	protected static $instance;

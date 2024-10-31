@@ -55,6 +55,7 @@ $post_columns =  array(
                 'images' => array('title'=>'Images/Gallery','description'=>'Image URLs seperated with &#124;'),
                 'product_page_url' => array('title'=>'Product page URL','description'=>'Product Page URL'),
                 'meta:total_sales' => array('title'=>'meta:total_sales','description'=>'Total sales for the Product'),
+                'meta:_global_unique_id' => array('title'=>'GTIN, UPC, EAN, or ISBN','description'=>'Global unique ID'),
 //                'tax:product_type' => array('title'=>'Product Type','description'=>'( eg:- simple , variable)'),
 //                'tax:product_cat' => array('title'=>'Product Categories','description'=>'Product related categories'),
 //                'tax:product_tag' => array('title'=>'Product Tags','description'=>'Product related tags'),

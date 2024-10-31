@@ -1,14 +1,26 @@
 <?php
 /**
  * Plugin Name: NetSuite Integration for WooCommerce
- * Description: Plugin will be used to add/update WooCommerce orders and customers to Netsuite.
- * Version: 1.5.9
- * Author: Manish Gautam
+ * Plugin URI: https://woocommerce.com/products/netsuite-integration-for-woocommerce/
+ * Description: Plugin will be used to add/update WooCommerce orders and customers to NetSuite .
+ * Version: 1.6.2
+ * Author: Techmarbles
+ * Author URI: https://techmarbles.com/
  * Text Domain: TMWNI
  * WC requires at least: 2.2
- * WC tested up to: 5.6
+ * WC tested up to: 8.8
  * Woo: 8277071:774402b21708c84be5bee56906b069f1
+
  */
+
+// Debugging function
+if (!function_exists('pr')) {
+	function pr($data) {
+		echo '<pre>';
+		print_r($data);
+		echo '</pre>';
+	}
+}
 
 defined('ABSPATH') || exit();
 
@@ -27,6 +39,22 @@ if (!is_woocommerce_active()) {
 	return;
 }
 
+add_action('admin_init', 'tm_netsuite_integration_redirect_after_activation');
+
+function tm_netsuite_integration_redirect_after_activation() {
+	if (get_transient('_tm_netsuite_integration_redirect_after_activation')) {
+		delete_transient('_tm_netsuite_integration_redirect_after_activation');
+
+		if (is_network_admin() || wp_doing_ajax() || wp_doing_cron()) {
+			return;
+		}
+
+		wp_safe_redirect(admin_url('admin.php?page=tmwni&tab=general_settings'));
+		exit;
+	}
+}
+
+
 // Initialize the plugin
 add_action('plugins_loaded', 'init_tm_netsuite_integration', 1);
 
@@ -35,7 +63,7 @@ function init_tm_netsuite_integration() {
 	$plugin_data = get_file_data(__FILE__, ['Version' => 'Version'], false);
 	$plugin_version = isset($plugin_data['Version'])
 		? $plugin_data['Version']
-		: '1.5.1';
+		: '1.6.0';
 	define('WC_TM_NETSUITE_INTEGRATION_INIT_VERSION', $plugin_version);
 
 	// Check if WooCommerce is active in multisite
@@ -47,10 +75,7 @@ function init_tm_netsuite_integration() {
 		 *
 		 * @since 1.0.0
 		 */
-		$active_plugins = apply_filters(
-			'active_plugins',
-			get_option('active_plugins')
-		);
+		$active_plugins = get_option('active_plugins');
 	}
 	/**
 	 * Check if WooCommerce is not activated and deactivate the plugin
@@ -72,11 +97,13 @@ function init_tm_netsuite_integration() {
 	// Define plugin constants
 	define('TMWNI_DIR', plugin_dir_path(__FILE__));
 	define('TMWNI_URL', plugin_dir_url(__FILE__));
+	define('TMWNI_BASEURL', plugin_basename(__FILE__));
 
 	// Include settings
 	require_once TMWNI_DIR . 'inc/tmwni-settings.php';
 	$TMWNI_OPTIONS = TMWNI_Settings::getTabSettings();
 	$GLOBALS['TMWNI_OPTIONS'] = $TMWNI_OPTIONS;
+	require_once plugin_dir_path(__FILE__) . 'inc/tmAutoloader.php';
 
 	// Include admin functionality if in the admin area
 	if (is_admin()) {
@@ -87,6 +114,7 @@ function init_tm_netsuite_integration() {
 	if (!empty($TMWNI_OPTIONS)) {
 		require_once plugin_dir_path(__FILE__) . 'inc/loader.php';
 		$GLOBALS['TMWNI_Loader'] = TMWNI_Loader(); // Global for backwards compatibility
+
 	}
 	/**
 	 * Hook for Netsuite loaded
@@ -105,6 +133,7 @@ function deactivate_tm_netsuite_integration_plugin() {
 register_activation_hook(__FILE__, 'install_tm_netsuite_integration_plugin');
 
 function install_tm_netsuite_integration_plugin() {
+
 	// Check if SOAPClient class exists
 	if (!class_exists('SOAPClient')) { ?>
 		<div class="notice notice-warning is-dismissible">
@@ -112,6 +141,8 @@ function install_tm_netsuite_integration_plugin() {
 		</div>
 		<?php 
 		die();}
+
+	set_transient('_tm_netsuite_integration_redirect_after_activation', true, 30);
 
 	if (is_multisite()) {
 		$active_plugins = get_site_option('active_sitewide_plugins');
@@ -137,7 +168,7 @@ function install_tm_netsuite_integration_plugin() {
 		 *
 		 * @since 1.0.0
 		 */
-		$active_plugins = apply_filters('active_plugins', get_option('active_plugins'));
+		$active_plugins = get_option('active_plugins');
 		$uploads_dir = wp_upload_dir();
 		$plugin_folder = trailingslashit($uploads_dir['basedir']) . 'TM-NetSuite';
 
@@ -225,6 +256,8 @@ function install_tm_netsuite_integration_plugin() {
 			'Your store needs to be WooCommerce-ready to activate this plugin.'
 		);
 	}
+
+
 }
 
 // Declare compatibility with custom order tables if the class

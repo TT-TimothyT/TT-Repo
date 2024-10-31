@@ -25,9 +25,9 @@ namespace SkyVerge\WooCommerce\Cybersource\Blocks;
 
 use SkyVerge\WooCommerce\Cybersource\Gateway\Electronic_Check;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2\SV_WC_Payment_Gateway;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2\SV_WC_Payment_Gateway_Plugin;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway_Plugin;
 
 /**
  * Checkout block integration for the electronic check gateway.
@@ -111,10 +111,10 @@ class Electronic_Check_Checkout_Block_Integration extends Gateway_Checkout_Block
 	 * @since 2.8.0
 	 *
 	 * @param array<string, string> $params
-	 * @param SV_WC_Payment_Gateway $gateway
+	 * @param SV_WC_Payment_Gateway $gateway (note: param not typed in signature to avoid TypeError when multiple gateways are active)
 	 * @return array<string, string>
 	 */
-	public function add_payment_form_localized_script_params( array $params, SV_WC_Payment_Gateway $gateway ) : array {
+	public function add_payment_form_localized_script_params( array $params, $gateway ) : array {
 
 		if ( $gateway->get_id() !== $this->gateway->get_id() ) {
 			return $params;

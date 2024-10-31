@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Apple_Pay;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
 
 /**
  * The Apple Pay frontend handler.
@@ -46,7 +46,7 @@ class Frontend extends Framework\SV_WC_Payment_Gateway_Apple_Pay_Frontend {
 
 		parent::enqueue_scripts();
 
-		wp_enqueue_script( 'wc-cybersource-apple-pay', $this->get_plugin()->get_plugin_url() . '/assets/js/frontend/wc-cybersource-apple-pay.min.js', [ 'jquery', 'sv-wc-apple-pay-v5_12_2' ], $this->get_plugin()->get_version() );
+		wp_enqueue_script( 'wc-cybersource-apple-pay', $this->get_plugin()->get_plugin_url() . '/assets/js/frontend/wc-cybersource-apple-pay.min.js', [ 'jquery', 'sv-wc-apple-pay-v5_12_5' ], $this->get_plugin()->get_version() );
 	}
 
 

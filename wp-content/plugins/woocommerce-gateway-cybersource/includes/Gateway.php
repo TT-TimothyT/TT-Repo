@@ -27,7 +27,7 @@ use Firebase\JWT\JWT;
 use SkyVerge\WooCommerce\Cybersource\Blocks\Credit_Card_Checkout_Block_Integration;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Base_Payment_Form;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Payment_Form;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

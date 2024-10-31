@@ -24,7 +24,7 @@
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payer_Authentication;
 
 use SkyVerge\WooCommerce\Cybersource\API\Requests\Payments\Payment;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

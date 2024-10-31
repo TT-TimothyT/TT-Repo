@@ -1,12 +1,5 @@
 <?php
 
-require_once TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php';
-foreach ( glob( TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php' ) as $filename ) {
-	require_once $filename;
-}
-require_once TMWNI_DIR . 'inc/common.php';
-require_once TMWNI_DIR . 'inc/helper.php';
-
 use NetSuite\Classes\GetServerTimeRequest;
 use NetSuite\NetSuiteService;
 use NetSuite\Classes\Customer;
@@ -108,13 +101,17 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 		add_action( 'admin_menu', array( $this, 'TMWNIAdminMenu' ) );
 
+		add_filter( 'plugin_action_links_' . TMWNI_BASEURL, array( $this,'tm_plugin_settings') );
+
+		add_filter( 'plugin_row_meta', array( $this,'tm_custom_plugin_row_meta') , 10, 2);
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'TMWNIAdminScript' ) );
 
 		add_action( 'admin_post_save_tm_ns_settings', array( $this, 'tmwniHanldeActions' ) );
 
 		add_action( 'wp_ajax_load_tmwni_logs', array( $this, 'getLogs' ) );
 
-		add_action( 'wp_ajax_tm_clear_customcer_ns_id', array( $this, 'tmwniDeleteValue' ) );
+		add_action( 'wp_ajax_tm_clear_customer_ns_id', array( $this, 'tmwniDeleteValue' ) );
 
 		add_action( 'admin_post_import_export_tm_ns', array( $this, 'tmwniHanldeExportActions' ) );
 
@@ -150,7 +147,42 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 			add_action( 'wp_ajax_tm_load_ns_price_currency', array( $this, 'loadNsPriceCurrency' ) );
 
+			add_action( 'admin_notices', array( $this, 'inventory_custom_notices' ) );
+
 		}
+	}
+
+	public function inventory_custom_notices() {
+		$permission_enable = get_option('tm_rest_web_service_enable');
+		if ('no' == $permission_enable) {
+			?>
+	<div class="notice notice-success is-dismissible">
+		<h2><?php esc_html_e('TM WooCommerce NetSuite Integration', 'my-text-domain'); ?></h2>
+		<p><?php esc_html_e('We have made an important update to the Inventory Sync settings. To ensure continued operation, you will need to update the user role permissions in NetSuite accordingly.', 'my-text-domain'); ?></p>
+		<p>
+			<a href="https://techmarbles.com/docs/woocommerce-netsuite-integration/general-settings/" target="_blank" class="button button-primary">
+				<?php esc_html_e('Follow Instructions', 'my-text-domain'); ?>
+			</a>
+		</p>
+	</div>
+	<?php
+		}
+	}
+
+	public function tm_plugin_settings( $settings ) {
+		array_unshift($settings, '<a href="admin.php?page=tmwni">Settings</a>');
+		return $settings;
+	}
+
+	public function tm_custom_plugin_row_meta( $plugin_meta, $plugin_file ) {
+		if ( 'netsuite-integration-for-woocommerce/netsuite-integration-for-woocommerce.php' === $plugin_file ) {
+			$new_plugin_meta = array(
+				'docs' => '<a href="' . esc_url( 'https://techmarbles.com/docs/woocommerce-netsuite-integration/' ) . '" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'View plugin documentation', 'your-text-domain' ) . '">' . esc_html__( 'Docs' ) . '</a>',
+			);
+			return array_merge( $plugin_meta, $new_plugin_meta );
+		}
+
+		return $plugin_meta;
 	}
 
 	public function getOrderLogs() {
@@ -226,7 +258,27 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 					if ( ! empty( $where ) ) {
 						$where_arr = explode( ' ', $where );
 						$where     = str_replace( "'", '', $where_arr[4] );
-						$data      = $wpdb->get_results( $wpdb->prepare( "SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog WHERE (orderlog.woo_object_id  LIKE %d) ORDER BY id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2] ), ARRAY_A );
+
+						$data = $wpdb->get_results(
+							$wpdb->prepare(
+								"SELECT SQL_CALC_FOUND_ROWS 
+								orderlog.id as id,
+								orderlog.created_at as created_at,
+								orderlog.operation as operation,
+								orderlog.ns_order_status as ns_order_status,
+								orderlog.notes as notes,
+								orderlog.woo_object_id as woo_object_id,
+								orderlog.ns_order_internal_id as ns_order_internal_id 
+								FROM {$wpdb->netsuite_order_logs} as orderlog 
+								WHERE (orderlog.woo_object_id LIKE %s) 
+								ORDER BY id DESC 
+								LIMIT %d, %d",
+								'%' . $where . '%', // This adds the wildcards for the LIKE clause
+								$limit_arr[1], 
+								$limit_arr[2]
+							),
+							ARRAY_A
+						);
 					} else {
 						$data = $wpdb->get_results( $wpdb->prepare( "SELECT SQL_CALC_FOUND_ROWS orderlog.id as id,orderlog.created_at as created_at,orderlog.operation as operation,orderlog.ns_order_status as ns_order_status,orderlog.notes as notes,orderlog.woo_object_id as woo_object_id,orderlog.ns_order_internal_id as ns_order_internal_id FROM {$wpdb->netsuite_order_logs} as orderlog  ORDER BY id DESC limit %d, %d", $limit_arr[1], $limit_arr[2] ), ARRAY_A );
 					}
@@ -398,10 +450,10 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 					$return['status']  = 1;
 					$return['message'] = 'Congrats. API connection is successful.';
 				} elseif ( isset( $rtn_data->detail->invalidCredentialsFault->message ) && ! empty( $rtn_data->detail->invalidCredentialsFault->message ) ) {
-						$return['status']  = 0;
-						$error_msg         = $rtn_data->detail->invalidCredentialsFault->message;
-						$return['message'] = 'Something wrong with API Credentials. Please check logs tab for more help';
-						$this->handleLog( 0, 0, 'validate creds', $error_msg );
+					$return['status']  = 0;
+					$error_msg         = $rtn_data->detail->invalidCredentialsFault->message;
+					$return['message'] = 'Something wrong with API Credentials. Please check logs tab for more help';
+					$this->handleLog( 0, 0, 'validate creds', $error_msg );
 
 				}
 			} catch ( SoapFault $e ) {
@@ -684,7 +736,8 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 	}
 
 	public function extra_user_profile_fields( $user ) {
-		$ns_customer_internal_id = get_the_author_meta( 'ns_customer_internal_id', $user->ID );?>
+		$ns_customer_internal_id = get_the_author_meta( 'ns_customer_internal_id', $user->ID );
+		?>
 
 		<table class="form-table">
 			<tr>
@@ -696,7 +749,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 				<td>
 					<input type="submit" class="button-primary" name="delete" value="Delete" id="delete_user_ns_id" user-id="<?php echo esc_attr( $user->ID ); ?>" <?php echo ! empty( $ns_customer_internal_id ) ? ' ' : "disabled='disabled'"; ?>/>
-					
+
 				</td> 
 			</tr>
 		</table>
@@ -715,12 +768,12 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 						if ( count( $request ) > 1 ) {
 							unset( $request[ $key ] );
 							die(
-								json_encode(
-									array(
-										'type' => 'blankfield',
-										'msg'  => 'Required fields cannot be left blank',
-									)
+							json_encode(
+								array(
+									'type' => 'blankfield',
+									'msg'  => 'Required fields cannot be left blank',
 								)
+							)
 							);
 						}
 						break;
@@ -728,12 +781,12 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 						if ( ! isset( $mapping['wc_field_key'] ) || '' == $mapping['wc_field_key'] || ! isset( $mapping['wc_field_value'] ) || '' == $mapping['wc_field_value'] || ! isset( $mapping['ns_field_key'] ) || '' == $mapping['ns_field_key'] || ! isset( $mapping['ns_field_value'] ) || '' == $mapping['ns_field_value'] ) {
 							unset( $request[ $key ] );
 							die(
-								json_encode(
-									array(
-										'type' => 'blankfield',
-										'msg'  => 'Required fields cannot be left blank',
-									)
+							json_encode(
+								array(
+									'type' => 'blankfield',
+									'msg'  => 'Required fields cannot be left blank',
 								)
+							)
 							);
 						}
 						break;
@@ -741,12 +794,12 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 						if ( ! isset( $mapping['ns_field_key'] ) || '' == $mapping['ns_field_key'] || ! isset( $mapping['ns_field_value'] ) || '' == $mapping['ns_field_value'] ) {
 							unset( $request[ $key ] );
 							die(
-								json_encode(
-									array(
-										'type' => 'blankfield',
-										'msg'  => 'Required fields cannot be left blank',
-									)
+							json_encode(
+								array(
+									'type' => 'blankfield',
+									'msg'  => 'Required fields cannot be left blank',
 								)
+							)
 							);
 						}
 						break;
@@ -754,17 +807,17 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 						if ( ( '0' == $mapping['type'] ) || ( '0' == $mapping['wc_field_key'] ) || '' == $mapping['wc_field_key'] || ! isset( $mapping['ns_field_key'] ) || '' == $mapping['ns_field_key'] ) {
 							unset( $request[ $key ] );
 							die(
-								json_encode(
-									array(
-										'type' => 'blankfield',
-										'msg'  => 'Required fields cannot be left blank',
-									)
+							json_encode(
+								array(
+									'type' => 'blankfield',
+									'msg'  => 'Required fields cannot be left blank',
 								)
+							)
 							);
 						}
 						break;
 					default:
-						unset( $request[ $key ] );
+					unset( $request[ $key ] );
 						break;
 				}
 			}
@@ -831,19 +884,19 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 					$template .= '<input class="form-control input-sm" type="text" name="cm[' . $index . '][wc_field_key]" value="' . ( '' != $cm_wc_field_key ? $cm_wc_field_key : $mapping['wc_field_key'] ) . '"></div>';
 				}
 
-				$template .= $this->getWCFieldCompOperatorTemplate( $index, $mapping, $cm_wc_where_op );
+			$template .= $this->getWCFieldCompOperatorTemplate( $index, $mapping, $cm_wc_where_op );
 
-				$template .= '<td><span class="h6 required">WC Field Value</span><br/><input class="form-control input-sm" type="text" name="cm[' . $index . '][wc_field_value]" value="' . ( '' != $cm_wc_field_value ? $cm_wc_field_value : $mapping['wc_field_value'] ) . '"></td></tr>';
-				$template .= '<tr>';
+			$template .= '<td><span class="h6 required">WC Field Value</span><br/><input class="form-control input-sm" type="text" name="cm[' . $index . '][wc_field_value]" value="' . ( '' != $cm_wc_field_value ? $cm_wc_field_value : $mapping['wc_field_value'] ) . '"></td></tr>';
+			$template .= '<tr>';
 
-				$template .= $this->getNetSuiteAttributeTypeTemplate( $index, $attr_type, $mapping );
+			$template .= $this->getNetSuiteAttributeTypeTemplate( $index, $attr_type, $mapping );
 
 				if ( ( 1 == $attr_type ) || ( isset( $mapping['ns_attr_type'] ) && 1 == $mapping['ns_attr_type'] ) ) {
 					$template .= $this->getNetSuiteDefaultFieldTemplate( $index, $mapping );
 				} elseif ( ( 2 == $attr_type ) || ( isset( $mapping['ns_attr_type'] ) && 2 == $mapping['ns_attr_type'] ) ) {
 					$template .= $this->getNetSuiteCustomFieldTemplate( $index, $mapping );
 				}
-				$template .= '</tr>';
+			$template .= '</tr>';
 				break;
 			case 2:
 				if ( empty( $mapping ) ) {
@@ -852,16 +905,16 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 					$mapping['ns_field_type_value'] = '';
 					$mapping['ns_attr_type']        = '';
 				}
-				$template .= '<tr>';
+			$template .= '<tr>';
 
-				$template .= $this->getNetSuiteAttributeTypeTemplate( $index, $attr_type, $mapping );
+			$template .= $this->getNetSuiteAttributeTypeTemplate( $index, $attr_type, $mapping );
 
 				if ( ( 1 == $attr_type ) || ( isset( $mapping['ns_attr_type'] ) && 1 == $mapping['ns_attr_type'] ) ) {
 					$template .= $this->getNetSuiteDefaultFieldTemplate( $index, $mapping );
 				} elseif ( ( 2 == $attr_type ) || ( isset( $mapping['ns_attr_type'] ) && 2 == $mapping['ns_attr_type'] ) ) {
 					$template .= $this->getNetSuiteCustomFieldTemplate( $index, $mapping );
 				}
-				$template .= '</tr>';
+			$template .= '</tr>';
 
 				break;
 			case 3:
@@ -872,9 +925,9 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 					$mapping['ns_field_type_value']   = '';
 				}
 
-				$template .= '<tr>';
+			$template .= '<tr>';
 
-				$template .= $this->getNetSuiteAttributeTypeTemplate( $index, $attr_type, $mapping );
+			$template .= $this->getNetSuiteAttributeTypeTemplate( $index, $attr_type, $mapping );
 
 				// NETSUITE Default Field
 				if ( ( 1 == $attr_type ) || ( isset( $mapping['ns_attr_type'] ) && 1 == $mapping['ns_attr_type'] ) ) {
@@ -1056,8 +1109,8 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 				}
 			}
 
-			echo json_encode( $return );
-			die;
+		echo json_encode( $return );
+		die;
 		} else {
 			die( 'Nonce Error' );
 		}
@@ -1065,12 +1118,12 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 	public function add_meta_box() {
 		tmns_hpos_add_meta_box(
-			'woocommerce-netsuite-order-sync',
-			__( 'NetSuite Sales Order Synchronization', 'woocommerce-netsuite-order-sync' ),
-			array( $this, 'meta_box_sales_order' ),
-			'shop_order',
-			'side',
-			'high'
+		'woocommerce-netsuite-order-sync',
+		__( 'NetSuite Sales Order Synchronization', 'woocommerce-netsuite-order-sync' ),
+		array( $this, 'meta_box_sales_order' ),
+		'shop_order',
+		'side',
+		'high'
 		);
 	}
 
@@ -1112,7 +1165,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 					*
 					* @since 1.0.0
 		*/
-		do_action( 'tm_ns_after_meta_box_sales_order', $post_or_order_object );
+					do_action( 'tm_ns_after_meta_box_sales_order', $post_or_order_object );
 	}
 
 	public function tmwniHanldeExportActions() {
@@ -1161,24 +1214,24 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 	}
 
 	public function ImportNetsuiteSettings() {
-		if ( isset( $_POST['nonce'] ) && ! empty( $_POST['nonce'] ) && wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'security_nonce' ) ) {
-			if ( isset( $_FILES['importfile']['tmp_name'] ) ) {
-				$data = $_FILES;
-				self::importJSONFile( $data );
-			} else {
-				die(
-					json_encode(
-						array(
-							'status' => 'false',
-							'msg'    => 'Something went wrong',
-						)
-					)
-				);
-			}
-		} else {
-			die( 'Nonce Error' );
+
+		if ( ! isset( $_POST['nonce'] ) || empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'security_nonce' ) ) {
+			wp_send_json_error( 'Nonce error' );
 		}
+
+	// Sanitize and validate the file input
+		if ( isset($_FILES['importfile']['tmp_name'])) {
+			$data = $_FILES;
+			self::importJSONFile( $data );
+			wp_send_json_success( 'File imported successfully' );
+		} else {
+			wp_send_json_error( 'Missing or invalid file' );
+
+		}
+
+	wp_die(); // Ensure script terminates gracefully
 	}
+
 
 	public function importJSONFile( $data ) {
 		$fileData = json_decode( file_get_contents( $data['importfile']['tmp_name'] ) );
@@ -1188,27 +1241,26 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 				$settings_array = unserialize( $settings->option_value );
 
 				if ( ! empty( $settings_array['ns_host'] ) && ! empty( $settings_array['ns_account'] ) && ! empty( $settings_array['ns_consumer_key'] ) && ! empty( $settings_array['ns_token_id'] ) && ! empty( $settings_array['ns_token_secret'] ) ) {
-
 					$validate_credentials = $this->validateCredsJSONFile( $settings_array );
 				} else {
 					die(
-						json_encode(
-							array(
-								'status' => 'false',
-								'msg'    => 'All required credentials are not defined',
-							)
+					json_encode(
+						array(
+							'status' => 'false',
+							'msg'    => 'All required credentials are not defined',
 						)
+					)
 					);
 
 				}
 				if ( isset( $validate_credentials ) && ! empty( $validate_credentials ) && 0 == $validate_credentials['status'] ) {
 					die(
-						json_encode(
-							array(
-								'status' => 'false',
-								'msg'    => 'Something wrong with API Credentials',
-							)
+					json_encode(
+						array(
+							'status' => 'false',
+							'msg'    => 'Something wrong with API Credentials',
 						)
+					)
 					);
 
 				} else {
@@ -1218,12 +1270,12 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 						update_option( $option_key, $settings_array, 'no' );
 					}
 					die(
-						json_encode(
-							array(
-								'status' => 'true',
-								'msg'    => 'Settings successfully imported!',
-							)
+					json_encode(
+						array(
+							'status' => 'true',
+							'msg'    => 'Settings successfully imported!',
 						)
+					)
 					);
 				}
 			}
@@ -1242,7 +1294,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		$settings_array['token']          = $settings['ns_token_id'];
 		$settings_array['tokenSecret']    = $settings['ns_token_secret'];
 		if ( isset( $settings['hma_algorithm_method'] ) && 'HMAC-SHA1' == $settings['hma_algorithm_method'] ) {
-				$settings_array['signatureAlgorithm'] = 'sha1';
+			$settings_array['signatureAlgorithm'] = 'sha1';
 		} else {
 			$settings_array['signatureAlgorithm'] = 'sha256';
 		}
@@ -1311,36 +1363,36 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 				$datatables = new Datatables();
 
 				$columns = array(
-					array(
-						'db'     => 'log.id as id',
-						'dt'     => 0,
-						'db_ref' => 'id',
-					),
-					array(
-						'db'     => 'log.created_at as created_at',
-						'dt'     => 1,
-						'db_ref' => 'created_at',
-					),
-					array(
-						'db'     => 'log.operation as operation',
-						'dt'     => 2,
-						'db_ref' => 'operation',
-					),
-					array(
-						'db'     => 'log.status as status',
-						'dt'     => 3,
-						'db_ref' => 'status',
-					),
-					array(
-						'db'     => 'log.notes as notes',
-						'dt'     => 4,
-						'db_ref' => 'notes',
-					),
-					array(
-						'db'     => 'log.woo_object_id as woo_object_id',
-						'dt'     => 5,
-						'db_ref' => 'woo_object_id',
-					),
+				array(
+					'db'     => 'log.id as id',
+					'dt'     => 0,
+					'db_ref' => 'id',
+				),
+				array(
+					'db'     => 'log.created_at as created_at',
+					'dt'     => 1,
+					'db_ref' => 'created_at',
+				),
+				array(
+					'db'     => 'log.operation as operation',
+					'dt'     => 2,
+					'db_ref' => 'operation',
+				),
+				array(
+					'db'     => 'log.status as status',
+					'dt'     => 3,
+					'db_ref' => 'status',
+				),
+				array(
+					'db'     => 'log.notes as notes',
+					'dt'     => 4,
+					'db_ref' => 'notes',
+				),
+				array(
+					'db'     => 'log.woo_object_id as woo_object_id',
+					'dt'     => 5,
+					'db_ref' => 'woo_object_id',
+				),
 
 				);
 
@@ -1450,13 +1502,13 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 						$data      = $wpdb->get_results( $wpdb->prepare( "SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log WHERE (log.status  LIKE %s OR log.notes  LIKE %s) ORDER BY woo_object_id DESC limit %d, %d", $where, $where, $limit_arr[1], $limit_arr[2] ), ARRAY_A );
 					} else {
 						$data = $wpdb->get_results(
-							$wpdb->prepare(
-								"SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo
+						$wpdb->prepare(
+							"SELECT SQL_CALC_FOUND_ROWS log.id as id,log.created_at as created_at,log.operation as operation,log.status as status,log.notes as notes,log.woo
 							_object_id as woo_object_id FROM {$wpdb->netsuite_logs} as log  ORDER BY woo_object_id DESC limit %d, %d",
-								$limit_arr[1],
-								$limit_arr[2]
-							),
-							ARRAY_A
+							$limit_arr[1],
+							$limit_arr[2]
+						),
+						ARRAY_A
 						);
 					}
 				}
@@ -1523,24 +1575,24 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 				// 'data' => $unprocessed_rows,
 				// ));
 				echo json_encode(
-					array(
-						'draw'            => intval( $request['draw'] ),
-						'recordsTotal'    => intval( $recordsTotal ),
-						'recordsFiltered' => intval( $recordsFiltered ),
-						'data'            => $unprocessed_rows,
-					)
+				array(
+					'draw'            => intval( $request['draw'] ),
+					'recordsTotal'    => intval( $recordsTotal ),
+					'recordsFiltered' => intval( $recordsFiltered ),
+					'data'            => $unprocessed_rows,
+				)
 				);
 				die;
 			}
 			die;
 		} else {
 			echo json_encode(
-				array(
-					'draw'            => 0,
-					'recordsTotal'    => 0,
-					'recordsFiltered' => 0,
-					'data'            => 0,
-				)
+			array(
+				'draw'            => 0,
+				'recordsTotal'    => 0,
+				'recordsFiltered' => 0,
+				'data'            => 0,
+			)
 			);
 			die;
 
@@ -1563,12 +1615,12 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		wp_enqueue_script( 'tmwni-common-js', TMWNI_URL . '/assets/js/common.js', false, WC_TM_NETSUITE_INTEGRATION_INIT_VERSION, 'all' );
 
 		wp_localize_script(
-			'tmwni-common-js',
-			'tmwni_common_js',
-			array(
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'security_nonce' ),
-			)
+		'tmwni-common-js',
+		'tmwni_common_js',
+		array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => wp_create_nonce( 'security_nonce' ),
+		)
 		);
 	}
 
@@ -1594,28 +1646,28 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 		switch ( $intented_tab ) {
 			case 'customer_settings':
-				$current_tab_id = 'customer_settings';
+			$current_tab_id = 'customer_settings';
 				break;
 			case 'general_settings':
-				$current_tab_id = 'general_settings';
+			$current_tab_id = 'general_settings';
 				break;
 			case 'help':
-				$current_tab_id = 'help';
+			$current_tab_id = 'help';
 				break;
 			case 'import_export_settings':
-				$current_tab_id = 'import_export_settings';
+			$current_tab_id = 'import_export_settings';
 				break;
 			case 'inventory_settings':
-				$current_tab_id = 'inventory_settings';
+			$current_tab_id = 'inventory_settings';
 				break;
 			case 'logs':
-				$current_tab_id = 'logs';
+			$current_tab_id = 'logs';
 				break;
 			case 'order_settings':
-				$current_tab_id = 'order_settings';
+			$current_tab_id = 'order_settings';
 				break;
 			default:
-				$current_tab_id = TMWNI_Settings::$default_tab;
+			$current_tab_id = TMWNI_Settings::$default_tab;
 		}
 		if ( strpos( $current_tab_id, 'settings' ) ) {
 			if ( 'inventory_settings' == $current_tab_id ) {
@@ -1652,7 +1704,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 				$options = TMWNI_Settings::getTabSettings( $current_tab_id );
 			}
 
-			if ( ! empty( $order_line_item_settings ) ) {
+			if ( ! empty( $order_line_item_settings ) && !empty($options)) {
 				$options = array_merge( $options, $order_line_item_settings );
 			}
 
@@ -1808,7 +1860,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		if ( isset( $_POST['nonce'] ) && ! empty( $_POST['nonce'] ) && wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'security_nonce' ) ) {
 			if ( ! empty( $_POST['form_data'] ) && 'clearDashboardLogs' == $_POST['form_data'] ) {
 				global $wpdb;
-				$result = $wpdb->get_results( $wpdb->prepare( 'TRUNCATE TABLE ' . $wpdb->prefix . 'tm_woo_netsuite_auto_sync_order_status' ) );
+				$result = $wpdb->query( 'TRUNCATE TABLE ' . $wpdb->prefix . 'tm_woo_netsuite_auto_sync_order_status' );
 				if ( empty( $result ) ) {
 					exit( 'success' );
 				} else {
@@ -1824,7 +1876,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 			if ( ! empty( $_POST['form_data'] ) && 'clearLogs' == $_POST['form_data'] ) {
 				global $wpdb;
 				$table  = $wpdb->prefix . 'tm_woo_netsuite_logs';
-				$result = $wpdb->get_results( $wpdb->prepare( 'TRUNCATE TABLE ' . $wpdb->prefix . 'tm_woo_netsuite_logs' ) );
+				$result = $wpdb->query( 'TRUNCATE TABLE ' . $wpdb->prefix . 'tm_woo_netsuite_logs' );
 				if ( empty( $result ) ) {
 					exit( 'success' );
 				} else {

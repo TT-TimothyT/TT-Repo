@@ -40,7 +40,7 @@ echo "target='_blank'"; }
 	   <?php } ?>  --> 
 	</nav>
 	<div id="tab-<?php echo esc_attr($current_tab_id); ?>">
-		<?php if (strpos($current_tab_id, 'settings')) { ?>
+		<?php if (strpos($current_tab_id, 'settings') && 'inventory_settings' != $current_tab_id) { ?>
 			<div class="notice notice-warning">
 				<h4>If you made any changes here, please make sure to save settings before moving to another tab :) </h4>
 			</div>

@@ -1,4 +1,6 @@
 <?php
+use Automattic\WooCommerce\Utilities\OrderUtil;
+
 class CommonIntegrationFunctions {
 	/**
 	 * Handling API response for ADD operations
@@ -108,9 +110,8 @@ class CommonIntegrationFunctions {
 		global $wpdb;
 		$wpdb->netsuite_order_logs = $wpdb->prefix . 'tm_woo_netsuite_auto_sync_order_status';
 
-
-		$order_data_logs = $wpdb->get_results($wpdb->prepare(" SELECT DISTINCT id FROM {$wpdb->netsuite_order_logs} WHERE woo_object_id = %d ", $object_id, OBJECT)); 
-
+		$order_data_logs = $wpdb->get_results($wpdb->prepare("SELECT DISTINCT id FROM {$wpdb->netsuite_order_logs} WHERE woo_object_id = %d", $object_id));
+ 
 		$query_array = array( 'operation' => $object, 'status' => $status, 'ns_order_internal_id' => $ns_order_internal_id, 'woo_object_id' => $object_id, 'ns_order_status'=>$ns_status );
 		
 		$query_array['notes'] = $error;
@@ -143,8 +144,24 @@ class CommonIntegrationFunctions {
 	public function getNetsuiteOrderSync() {
 		global $wpdb;
 		$wpdb->post_meta = $wpdb->prefix . 'postmeta';
-		$order_sync = $wpdb->get_results( "SELECT DISTINCT meta_value FROM $wpdb->post_meta WHERE meta_key = 'ns_order_internal_id'", OBJECT );
-		return $order_sync; 
+			$order_sync = $wpdb->get_results( "SELECT DISTINCT meta_value FROM $wpdb->post_meta WHERE meta_key = 'ns_order_internal_id'", OBJECT );
+		if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled() ) {
+			$wpdb->post_meta = $wpdb->prefix . 'wc_orders_meta';
+			$order_sync = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT DISTINCT meta_value FROM {$wpdb->post_meta} WHERE meta_key = %s",
+					'ns_order_internal_id'
+				),
+				OBJECT
+			);
+
+		} else {
+			$wpdb->post_meta = $wpdb->prefix . 'postmeta';
+			$order_sync = $wpdb->get_results( "SELECT DISTINCT meta_value FROM $wpdb->post_meta WHERE meta_key = 'ns_order_internal_id'", OBJECT );
+		}
+
+		return $order_sync; 	
+		
 	}
 
 	public function getOrderSyncLogs() {

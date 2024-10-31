@@ -316,6 +316,7 @@ var wt_iew_basic_import=(function( $ ) {
                                                                     elm.style.width = 100+"%";
                                                                     document.getElementById('row-' + ( newk )).scrollIntoView(false);                                                                  
                                                                     $('.progressa').hide();
+																	$('.progresscta').hide();
                                                                     
                                                                     $('#wt-iew-import-results-total-count').html((data.total_success + data.total_failed));
                                                                     $('#wt-iew-import-results-imported-count').html(data.total_success);
@@ -384,6 +385,7 @@ var wt_iew_basic_import=(function( $ ) {
                                                                         $("#wt_iew_import_progress_tbody").empty();
                                                                         //$('#import-start-area').hide();
                                                                         $('.progressa').show();
+																		$('.progresscta').show();
                                                                         $('.wt-iew-import-completed').hide();
                                                                         $('.wt-iew-import-time').hide();
                                                                         $('.wt_iew_popup_close_btn').hide();

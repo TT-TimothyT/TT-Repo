@@ -9,12 +9,6 @@
  */
 
 // Including development toolkit provided by Netsuite
-require_once TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php';
-require_once TMWNI_DIR . 'inc/common.php';
-foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
-	require_once $filename;
-}
-
 use NetSuite\NetSuiteService;
 use NetSuite\Classes\Customer;
 use NetSuite\Classes\UpdateRequest;

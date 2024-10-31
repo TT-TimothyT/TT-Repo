@@ -3,7 +3,7 @@
         'name' => 'skyverge/woocommerce-gateway-cybersource',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'fe344e3fb1e77f8289d1f72b66a0b52e3e425149',
+        'reference' => '9346497344ea3f59aa866b9e44ccb2a34c3d461a',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -185,8 +185,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0.0 || 2.0.0 || 3.0.0',
-                1 => '1.0|2.0',
+                0 => '1.0|2.0',
+                1 => '1.0.0 || 2.0.0 || 3.0.0',
             ),
         ),
         'psr/simple-cache' => array(
@@ -205,9 +205,9 @@
             ),
         ),
         'skyverge/wc-plugin-framework' => array(
-            'pretty_version' => '5.12.2',
-            'version' => '5.12.2.0',
-            'reference' => '299f993b0866e55a562e5fcab3a36088dba6e5d7',
+            'pretty_version' => '5.12.5',
+            'version' => '5.12.5.0',
+            'reference' => '92a658378342a4d84573e957e7339623d45c43d6',
             'type' => 'library',
             'install_path' => __DIR__ . '/../skyverge/wc-plugin-framework',
             'aliases' => array(),
@@ -216,7 +216,7 @@
         'skyverge/woocommerce-gateway-cybersource' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'fe344e3fb1e77f8289d1f72b66a0b52e3e425149',
+            'reference' => '9346497344ea3f59aa866b9e44ccb2a34c3d461a',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -435,113 +435,97 @@
         'web-token/encryption-pack' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-bundle' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-checker' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-console' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-core' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-easy' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-aescbc' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-aesgcm' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-aesgcmkw' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-aeskw' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-dir' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-ecdh-es' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-experimental' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-pbes2' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-encryption-algorithm-rsa' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-framework' => array(
@@ -550,86 +534,73 @@
             'reference' => '6f2de5ae47c975dc13e5343a695a977cc29d91e0',
             'type' => 'symfony-bundle',
             'install_path' => __DIR__ . '/../web-token/jwt-framework',
-            'aliases' => array(
-                0 => '9999999-dev',
-            ),
+            'aliases' => array(),
             'dev_requirement' => false,
         ),
         'web-token/jwt-key-mgmt' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-nested-token' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-signature' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-signature-algorithm-ecdsa' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-signature-algorithm-eddsa' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-signature-algorithm-experimental' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-signature-algorithm-hmac' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-signature-algorithm-none' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-signature-algorithm-rsa' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/jwt-util-ecc' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
         'web-token/signature-pack' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '9999999-dev',
-                1 => 'v2.2.x-dev',
+                0 => 'v2.2.x-dev',
             ),
         ),
     ),

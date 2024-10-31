@@ -245,7 +245,7 @@ class WC_Currency_Converter extends Plugin {
 	 * Enqueue Styles and scripts
 	 */
 	public function enqueue_assets() {
-		if ( ! $this->widget ) {
+		if ( ! $this->is_active() ) {
 			return;
 		}
 
@@ -407,5 +407,18 @@ class WC_Currency_Converter extends Plugin {
 		wc_deprecated_function( __FUNCTION__, '2.2.2', '\KoiLab\WC_Currency_Converter\Utilities\Currency_Utils::get_geolocated()' );
 
 		return Currency_Utils::get_geolocated();
+	}
+
+	/**
+	 * Function to return if the widget is configured, and active on the current page.
+	 *
+	 * @since 2.2.4
+	 *
+	 * @return bool is the widget active
+	 */
+	private function is_active(): bool {
+		global $post;
+
+		return ( $this->widget && is_active_widget( false, false, $this->widget->id_base, true ) ) || ( $post && has_shortcode( $post->post_content, 'woocommerce_currency_converter' ) );
 	}
 }

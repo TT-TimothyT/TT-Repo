@@ -6,741 +6,337 @@
  *
  * Author : Manish Gautam
  */
-// including development toolkit provided by Netsuite
-require_once TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php';
-require_once TMWNI_DIR . 'inc/common.php';
-foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
-	require_once $filename;
-}
+
+require_once TMWNI_DIR . 'inc/NS_Restlet/netsuiteRestAPI.php';
+
 use NetSuite\NetSuiteService;
-use Netsuite\Classes\SearchStringField;
-use Netsuite\Classes\ItemSearchBasic;
-use Netsuite\Classes\SearchRequest;
-use Netsuite\Classes\AssemblyItem;
-use Netsuite\Classes\SearchMultiSelectField;
-use Netsuite\Classes\RecordRef;
-use Netsuite\Classes\ItemAvailabilityFilter;
-use Netsuite\Classes\RecordRefList;
-use Netsuite\Classes\GetItemAvailabilityRequest;
-use Netsuite\Classes\SearchCustomFieldList;
-use NetSuite\Classes\SearchCustomField;
-use NetSuite\Classes\SearchStringCustomField;
-use NetSuite\Classes\SearchBooleanField;
-
-
-
 
 class ItemClient extends CommonIntegrationFunctions {
 
-	public $netsuiteService = '';
+	public $netsuiteService;
 	public $object_id;
 
 	public function __construct() {
-
-		if (empty($this->netsuiteService)) {
-			//intialising netsuite service
-			if (TMWNI_Settings::areCredentialsDefined()) {
-				$this->netsuiteService = new NetSuiteService(null, array('exceptions' => true));
-			}
+		if (empty($this->netsuiteService) && TMWNI_Settings::areCredentialsDefined()) {
+			// Initializing NetSuite service
+			$this->netsuiteService = new NetSuiteService(null, ['exceptions' => true]);
 		}
 	}
-
 	/**
-	 * Get Product From NS
-	 *
-	*/ 
-	public function getList() {
-
-		//search preference
-		$this->netsuiteService->setSearchPreferences(false, 1000, true);
-
-		$SearchField = new SearchMultiSelectField();
-		$SearchField->operator = 'anyOf';
-
-		$SearchField->searchValue = array('internalId' => 2);
-
-		//search on items
-		$search = new ItemSearchBasic();
-		$search->department = $SearchField;
-
-		//set search request
-		$request = new SearchRequest();
-		$request->searchRecord = $search;
-		//perofrm search request
-		$searchResponse = $this->netsuiteService->search($request);
-		$i = 1;
-		if ($searchResponse->searchResult->status->isSuccess) {
-			$file_name = __DIR__ . '/product_data_' . $i . '.json';
-			touch($file_name);
-			file_put_contents($file_name, json_encode($searchResponse->searchResult->recordList->record));
-
-			for ($i = 2; $i <= $searchResponse->searchResult->totalPages; $i++) {
-				$file_name = __DIR__ . '/product_data_' . $i . '.json';
-				touch($file_name);
-
-				$searchMoreRequest = new SearchMoreWithIdRequest();
-				$searchMoreRequest->pageIndex = $i;
-				$searchMoreRequest->searchId = $searchResponse->searchResult->searchId;
-				$moreResults = $this->netsuiteService->searchMoreWithId($searchMoreRequest);
-
-				if ($moreResults->searchResult->status->isSuccess) {
-					file_put_contents($file_name, json_encode($moreResults->searchResult->recordList->record));
-				}
-			}
-		}
-
-		// pr($moreResults);die;
-	}
-
-	/**
-	 * Search Product From NS By Sku and Update Internal Id
-	 *
-	*/ 
-	public function searchItemUpdateInternalID( $item_sku, $product_id) {
-		$response = $this->_searchItem($item_sku, $product_id);
-		if ($response['status']) {
-			$searchResponse = $response['search_response'];
-			$item_internal_id = $searchResponse->searchResult->recordList->record[0]->internalId;
-			update_post_meta($product_id, TMWNI_Settings::$ns_product_id, $item_internal_id);
-
-			$item_location_id = $searchResponse->searchResult->recordList->record[0]->location->internalId;
-
-			if (!empty($item_location_id)  || !is_null($item_location_id)) { 
-				update_post_meta($product_id, 'ns_item_location_id', $item_location_id);
-			}			
-		}
-	}
-
-
-
-
-	public function searchItemUpdateInventory( $item_sku, $product_id) {
-		$this->object_id = $product_id;
-		$kit_item_sync_status = true;
-		$item_sync_status  = true;
-		$file_dir = wp_upload_dir();
-
-		$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_inventory_log_file;
-		if (empty($item_sku)) {
-			$empty_skus = get_option('empty_skus');
-			
-			$empty_skus[] = $product_id;
-			update_option('empty_skus', array_unique($empty_skus));
-			$content = '<p><b>SKU Missing for Product ID ' . $product_id . '</b></p>';
-			file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
-			$content = '<p><b>Skipped</b></p>';
-			file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
-			return;
-
-		}
-
-		$content = '<p>Product SKU ' . $item_sku . '</p>';
-		file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
-		$content = '<p><b>Action: Inventory/Price Update</b></p>';
-		file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
-		
-		$response = $this->_searchItem($item_sku, $product_id);
-
-		if ($response['status']) {
-			
-			$searchResponse = $response['search_response'];
-
-			//NetSuite item interanl id
-			$item_internal_id = $searchResponse->searchResult->recordList->record[0]->internalId;
-			update_post_meta($product_id, TMWNI_Settings::$ns_product_id, $item_internal_id);
-
-			//netsuite item dafault location id 
-
-			$item_location_id = '';
-			if (isset($searchResponse->searchResult->recordList->record[0]->location->internalId)) {
-				$item_location_id = $searchResponse->searchResult->recordList->record[0]->location->internalId;
-				if (!empty($item_location_id)  || !is_null($item_location_id)) { 
-					update_post_meta($product_id, 'ns_item_location_id', $item_location_id);
-				}
-			}
-
-
-
-
-			$class = get_class($searchResponse->searchResult->recordList->record[0]);
-			$pieces = explode('\\', $class);
-			$item_type = end($pieces);
-
-			// pr($item_type); die('doneee');
-
-			if ('KitItem' == $item_type) {
-				/**
-					* Filter for check kit item status.
-					*
-					* @since 1.0.0
-
-					**/	
-					$kit_item_sync_status = apply_filters('tm_ns_kit_item_status', $kit_item_sync_status, $searchResponse, $product_id);
-
-
-				if (false != $kit_item_sync_status) {
-					$this->_updatekitItemData($searchResponse, $product_id, $item_location_id);
-					/**
-						* Action for after update the kit item data.
-						*
-						* @since 1.0.0
-
-						**/
-					do_action('tm_ns_after_update_kit_item_data', $searchResponse, $product_id);
-
-				}					
-			} else {
-				/**
-					* Filter for check inventory item status.
-					*
-					* @since 1.0.0
-
-					**/	
-				$item_sync_status = apply_filters('tm_ns_item_status', $item_sync_status, $searchResponse, $product_id);
-				if (false != $item_sync_status) {
-					$this->_updateItemData($searchResponse, $product_id, $item_location_id);
-					/**
-						* Action for after update the inventory item data.
-						*
-						* @since 1.0.0
-
-						**/
-					do_action('tm_ns_after_update_item_data', $searchResponse, $product_id);		
-				}
-			}
-
-		} else {
-
-			$not_found_skus = get_option('not_found_skus');
-			$not_found_skus[] = $item_sku;
-			update_option('not_found_skus', $not_found_skus);
-			$content = '<p><b>Item Number/SKU not found on NetSuite</b></p>';
-			file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
-		}
-
-
-	}
-
-
-	/**
-	 * Search Product From NS By Sku and Update Inventory
-	 *
-	*/ 
-	public function _searchItem( $item_sku, $product_id) {
-		/** 
-			*Inventory search item sku  hook.
-		
-			* @since 1.4.8
- 
-			**/
-			$item_sku = apply_filters('tm_netsuite_inventory_search_sku', $item_sku, $product_id);
-			$response = array();
-			$response['status'] = 0;
-			global $TMWNI_OPTIONS;
-
-
-		//search preference
-			$this->netsuiteService->setSearchPreferences(false, 20);
-		//set search field
-			$SearchField = new SearchStringField();
-			$SearchField->operator = 'is';
-			$SearchField->searchValue = $item_sku;
-
-
-		//search on items
-			$search = new ItemSearchBasic();
-
-		if (!isset($TMWNI_OPTIONS['sku_mapping_field']) || empty($TMWNI_OPTIONS['sku_mapping_field']) ) {
-			$search->itemId = $SearchField;
-		} elseif ('customFieldList' == $TMWNI_OPTIONS['sku_mapping_field']) {
-			$search->{$TMWNI_OPTIONS['sku_mapping_field']} = $this->customSearchStringField($TMWNI_OPTIONS['sku_mapping_custom_field'], $item_sku);
-		} else {
-			$search->{$TMWNI_OPTIONS['sku_mapping_field']} = $SearchField;
-		}
-
-		$inactive = new SearchBooleanField();
-		$inactive->searchValue = false;
-		$search->isInactive = $inactive;
-
-		/**
-			* Filter search item on netsuite request.
-			*
-			* @since 1.0.0
-
-			**/
-			$search = apply_filters('tm_ns_search_item', $search, $item_sku, $product_id);
-			$request = new SearchRequest();
-			$request->searchRecord = $search;
-			$quantity = false;
-
-		// die('*!*');
-
-		try {
-			//perofrm search request
-			$searchResponse = $this->netsuiteService->search($request);
-			/**
-			* Filter search item  netsuite response.
-			*
-			* @since 1.0.0
-
-			**/
-			apply_filters('tm_ns_search_item_response', $searchResponse, $product_id);
-			if (!$searchResponse->searchResult->status->isSuccess) {
-
-				$object = 'inventory_item';
-				$error_msg = "'" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $product_id . '. ';
-
-				$error_msg .= 'Search Keyword:' . $item_sku . '. ';
-
-				$error_msg .= 'Error Message : ' . $response->writeResponse->status->statusDetail[0]->message;
-				$this->handleLog(0, $product_id, $object, $error_msg);
-			} else {
-
-				//Check if search record found
-				if (1 == $searchResponse->searchResult->totalRecords) {
-					/**
-					* After Item Search on NetSuite.
-					*
-					* @since 1.0.0
-
-					**/
-					do_action('tm_ns_search_item_after', $product_id, $searchResponse);
-
-					$response['status'] = 1;
-					$response['search_response'] = $searchResponse;
-				}
-			}
-		} catch (SoapFault $e) {
-
-			$object = 'inventory_item';
-			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
-			$error_msg .= 'Search Keyword: ' . $item_sku . '. ';
-			$error_msg .= 'Error Message: ' . $e->getMessage();
-
-			$this->handleLog(0, $product_id, $object, $error_msg);
-
-		}
-		return $response;
-	}
-
-
-
-	/**
-	 * Earch Product From NS By Internal Id
-	 *
-	*/ 
-	public function _searchItemByInternalId( $internalId, $product_id) {
-		// $item_sku = 'MISCBOTTLESFLINT';
-
-		$response = array();
-		$response['status'] = 0;
-		global $TMWNI_OPTIONS;
-
-		//search preference
-		$this->netsuiteService->setSearchPreferences(false, 20);
-		//set search field
-		$SearchField = new SearchMultiSelectField();
-		$SearchField->operator = 'anyOf';
-		$SearchField->searchValue = array('internalId' => $internalId);
-
-
-		//search on items
-		$search = new ItemSearchBasic();
-		$search->internalId = $SearchField;
-
-		//set search request
-		$request = new SearchRequest();
-		$request->searchRecord = $search;
-
-		try {
-			//perofrm search request
-
-			$searchResponse = $this->netsuiteService->search($request);
-			/**
-					* Item response on NetSuite.
-					*
-					* @since 1.0.0
-
-					**/
-					apply_filters('tm_ns_search_item_response', $searchResponse, $product_id);
-
-			if (!$searchResponse->searchResult->status->isSuccess) {
-
-				$object = 'inventory_item';
-				$error_msg = "'" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $product_id . '. ';
-
-				$error_msg .= 'Search Keyword:' . $item_sku . '. ';
-
-				$error_msg .= 'Error Message : ' . $response->writeResponse->status->statusDetail[0]->message;
-				$this->handleLog(0, $product_id, $object, $error_msg);
-			} else {
-
-				//Check if search record found
-				if (1 == $searchResponse->searchResult->totalRecords) {
-					$response['status'] = 1;
-					$response['search_response'] = $searchResponse;
-				}
-			}
-		} catch (SoapFault $e) {
-
-			$object = 'inventory_item';
-			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
-			$error_msg .= 'Search Keyword: ' . $item_sku . '. ';
-			$error_msg .= 'Error Message: ' . $e->getMessage();
-
-			$this->handleLog(0, $product_id, $object, $error_msg);
-
-		}
-				return $response;
-	}
-
-	/**
-	 * Select item quantity based on default location
-	 *
-	 * Param type $item_location_id int
-	 * Param type $item_locations object of all item locations
+	 * Get product data from NetSuite
+	 * 
+	 * @param string $skus
+	 * @param string $map_field_name
+	 * @param string $price_level_name
+	 * @param string $price_currency
+	 * @param string $urlAPIEndPoint
 	 */
-	public function getNetSuiteProductPrices( $searchResponse) {
-		global $TMWNI_OPTIONS; 
-		if (isset($searchResponse->searchResult->recordList->record[0]->pricingMatrix)) {
-			$product = $searchResponse->searchResult->recordList->record[0]->pricingMatrix;
-			foreach ($product->pricing as $pricing) {
-				$name = $pricing->priceLevel->internalId;
-				$currency = $pricing->currency->internalId;
-				if (isset($TMWNI_OPTIONS['price_level_name']) && !empty($TMWNI_OPTIONS['price_level_name'])) {
-					$price_level_name = $TMWNI_OPTIONS['price_level_name']; 
-				} else {
-					$price_level_name = TMWNI_Settings::$pricing_group;
-				}
+	public function getProductPriceData($skus, $map_field_name, $price_level_name, $price_currency, $urlAPIEndPoint,$by_queue) {
+		global $TMWNI_OPTIONS;
 
+		$select_fields = "item.$map_field_name, currency.id AS currency_code, pricing.*";
 
-				$price_currency_name = $TMWNI_OPTIONS['price_currency']; 
+		$pricing_query = [
+			'q' => "SELECT $select_fields 
+			FROM item 
+			LEFT JOIN pricing ON pricing.item = item.id LEFT JOIN currency ON currency.id = pricing.currency 
+			WHERE item.$map_field_name IN ($skus) 
+			AND pricing.pricelevel = '$price_level_name' 
+			AND currency.id = '$price_currency'"
+		];
 
+		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
+		$response = $this->NetsuiteRestAPIClient->nsRESTRequest('post', $urlAPIEndPoint, true, $pricing_query);	
 
-				if (isset($TMWNI_OPTIONS['price_currency']) && !empty($TMWNI_OPTIONS['price_currency'])) {
-
-					$price_currency_name = $TMWNI_OPTIONS['price_currency']; 
-
-					if ($price_level_name == $name  && $price_currency_name == $currency) {
-						
-						return $pricing->priceList->price;
-					} 
-				} else {
-
-					if ($price_level_name == $name) {
-						return $pricing->priceList->price;
-					} elseif ($price_level_name == $pricing->priceLevel->name) {
-						return $pricing->priceList->price;
-					}
-					
-				}
-
-				
-			}
+		if (isset($response['items'])) {
+			update_option('tm_rest_web_service_enable', 'yes');
 		}
-
-
-		return array();
-	}
-
-	
-
-	//update kit item data
-	public function _updatekitItemData( $searchResponse, $product_id, $item_location_id) {
-		global $TMWNI_OPTIONS; 
-		if (( isset($TMWNI_OPTIONS['enablePriceSync']) && 'on' == $TMWNI_OPTIONS['enablePriceSync'] )) {
-			$prices = $this->getNetSuiteProductPrices($searchResponse);	
-			/** 
-				*Product price hook.
-		
-				* @since 1.0.0
- 
-				**/
-				$prices = apply_filters('tm_ns_kit_item_prices', $prices, $searchResponse, $product_id);
-				$this->_updateWooPrice($prices, $product_id);				
-		}	
-
-		if (( isset($TMWNI_OPTIONS['enableInventorySync']) && 'on' == $TMWNI_OPTIONS['enableInventorySync'] )) {
-			$item_members = $searchResponse->searchResult->recordList->record[0]->memberList->itemMember;
-			$last_quantity = 0;
-
-			foreach ($item_members as $key => $item_member) {
-				$child_item_internal_id = $item_member->item->internalId;
-				$response = $this->_searchItemByInternalId($child_item_internal_id, $product_id);
-				if (1 == $response['status']) {
-					$searchResponse = $response['search_response'];
-					$quantity = $this->getItemQuantity($searchResponse, $item_location_id, $product_id, $child_item_internal_id);
-					/**
-					* Kit Item Quantity Filter.
-					*
-					* @since 1.0.0
-
-					**/
-					$quantity = apply_filters('tm_ns_kit_item_quantity', $quantity, $searchResponse, $item_location_id, $product_id, $child_item_internal_id);
-					
-					$last_quantity += $quantity;
-				}
-
-			}
+		if (isset($response['items']) && !empty($response['items'])) {
+			$this->updateProductPrice($response['items'], $skus, $map_field_name, $by_queue);
 			
-			$this->updateWooQuantity($product_id, $last_quantity);
-
-
-		}
-
-	}
-
-	//update  item data
-	public function _updateItemData( $searchResponse, $product_id, $item_location_id) {
-		global $TMWNI_OPTIONS;
-		if (( isset($TMWNI_OPTIONS['enablePriceSync']) && 'on' == $TMWNI_OPTIONS['enablePriceSync'] )) {
-			$prices = $this->getNetSuiteProductPrices($searchResponse);	
-			/** 
-				*Product price hook.
-		
-				* @since 1.0.0
- 
-				**/
-				$prices = apply_filters('tm_ns_item_prices', $prices, $searchResponse, $product_id);
-				$this->_updateWooPrice($prices, $product_id);				
-		}	
-
-		if (( isset($TMWNI_OPTIONS['enableInventorySync']) && 'on' == $TMWNI_OPTIONS['enableInventorySync'] )) {
-				
-			$item_internal_id = $searchResponse->searchResult->recordList->record[0]->internalId;
-				
-			$quantity = $this->getItemQuantity($searchResponse, $item_location_id, $product_id, $item_internal_id);
-			/**
-					* Inventory Item Quantity Filter.
-					*
-					* @since 1.0.0
-
-					**/			
-				$quantity = apply_filters('tm_ns_item_quantity', $quantity, $searchResponse, $item_location_id, $product_id, $item_internal_id);
-					
-				$this->updateWooQuantity($product_id, $quantity);
-					
-		}
-	}
-
-	//update woo price
-	public function _updateWooPrice( $prices, $product_id) {
-				
-		if (!empty($prices) && isset($prices[0]->value)) {
-			$main_price = $prices[0]->value;
-			update_post_meta($product_id, '_regular_price', $main_price);
-			$sale_price = get_post_meta($product_id, '_sale_price', $product_id, true);
-			if (empty($sale_price)) {
-				update_post_meta($product_id, '_price', $main_price);
-			}
-			$content = '<p><b>Action: Price updated</b></p>';
-			if (( isset($TMWNI_OPTIONS['enableInventorySync']) && 'on' == $TMWNI_OPTIONS['enableInventorySync'] )) {
-				$new_count = 0;
-			} else {
-				$old_count = get_option('updated_products_count');
-				$new_count = $old_count + 1;
-			}
-			$this->updateLogFileContent($content, $new_count);
-		}
-
-	}
-
-
-	public function getItemQuantity( $searchResponse, $item_location_id, $product_id, $item_internal_id) {
-		global $TMWNI_OPTIONS;	
-		if (!empty($searchResponse->searchResult->recordList->record[0]->locationsList)) {
-			$item_locations = $searchResponse->searchResult->recordList->record[0]->locationsList->locations;
-		}	
-		if (isset($item_locations) && !empty($item_locations)) {
-			$quantity = $this->_getItemQuantityfromLocations($item_locations, $item_location_id);
-
 		} else {
-			$item_availabitliy = $this->tm_item_availabitlity_search_on_netsuite($product_id, $item_internal_id);
-			$quantity = $this->_getItemQuantityfromLocations($item_availabitliy, $item_location_id);
-		}
-
-		return $quantity; 
-				
-	}
-
-
-	public function _getItemQuantityfromLocations( $item_locations, $item_location_id) {
-		global $TMWNI_OPTIONS;
-		$quantity = 0;
-
-		if (isset($TMWNI_OPTIONS['inventorySyncField']) && !empty($TMWNI_OPTIONS['inventorySyncField'])) {
-			$quantityField = $TMWNI_OPTIONS['inventorySyncField'];
-		} else {
-			$quantityField = 'quantityAvailable';
-		}
-
-
-		if (isset($TMWNI_OPTIONS['inventoryDefaultLocation']) && ( 'on' == $TMWNI_OPTIONS['inventoryDefaultLocation'] || 2 == $TMWNI_OPTIONS['inventoryDefaultLocation'] )) {
-			if (isset($item_location_id) && !empty($item_location_id)) {
-				foreach ($item_locations as $item_location) {
-					if ($item_location_id == $item_location->locationId->internalId && !is_null($item_location->$quantityField)) {
-						$quantity = (int) $item_location->$quantityField;
-					}
-				}
+			if (isset($response['o:errorDetails'][0]['o:errorCode'])) {
+				$errorCode = $response['o:errorDetails'][0]['o:errorCode']; 
 			} else {
-				foreach ($item_locations as $item_location) {
-					if (!is_null($item_location->$quantityField)) {
-						$quantity += (int) $item_location->$quantityField;
-					}
+				if (isset($response['items']) && empty($response['items'])) {
+					$errorCode = 'Multiple item sku not found on netsuite';
+				} else {
+					$errorCode = 'something wrong for price search';
 				}
+				
+			}
+			if ('INVALID_LOGIN' == $errorCode) {
+				update_option('tm_rest_web_service_enable', 'no');
+			}
 
-			}
-		} elseif (!isset($TMWNI_OPTIONS['inventoryDefaultLocation']) || 1 == $TMWNI_OPTIONS['inventoryDefaultLocation'] ) {
-			foreach ($item_locations as $item_location) {
-				if (!is_null($item_location->$quantityField)) {
-					$quantity += (int) $item_location->$quantityField;
-				}
-			}
-		} elseif (isset($TMWNI_OPTIONS['inventoryDefaultLocation']) || 3 == $TMWNI_OPTIONS['inventoryDefaultLocation'] ) {
-			foreach ($item_locations as $item_location) {
-				if (!is_null($item_location->$quantityField)) {
-					if (in_array($item_location->locationId->internalId, $TMWNI_OPTIONS['netstuite_locations'] )) {
-						$quantity += (int) $item_location->$quantityField;
-					}
-				}
-			}
+			$this->handleLog(0, 0, 'price_search', $errorCode);
 		}
 
-		return !empty($quantity) ? $quantity : 0; 
+		if (!empty($response['hasMore'])) {
+			$count = $response['count'];
+			$offset = $response['offset'] + $count;
+			$urlAPIEndPoint = "/suiteql?limit=$count&offset=$offset";
+			$this->getProductPriceData($skus, $map_field_name, $price_level_name, $price_currency, $urlAPIEndPoint, $by_queue);
+		}
+
+		return true;
 	}
 
-
-	public function updateWooQuantity( $product_id, $quantity) {
+	/**
+	 * Update product price and quantity
+	 * 
+	 * @param array $items
+	 * @param string $skus
+	 * @param string $map_field_name
+	 */
+	public function updateProductPrice($items, $all_skus, $map_field_name,$by_queue) {
 		global $TMWNI_OPTIONS;
-		/**
-					* NetSuite Item Quantity Filter.
-					*
-					* @since 1.3.6
 
-					**/
-			$quantity = apply_filters('tm_ns_last_item_quantity', $quantity, $product_id);
-			update_post_meta($product_id, '_stock', $quantity);
-		if (isset($TMWNI_OPTIONS['overrideManageStock']) && 'on' == $TMWNI_OPTIONS['overrideManageStock'] ) {
-				$manage_stock = update_post_meta($product_id, '_manage_stock', 'yes');
-		} 
-
-		if ('no' != $TMWNI_OPTIONS['updateStockStatus']) {
-					$this->updateStock($product_id, $quantity);
-		}	
-
-
+		foreach ($items as $item) {
+			$sku = $item[strtolower($TMWNI_OPTIONS['sku_mapping_field'])];
+			$product_id = $this->getProductIdBySku($sku);
+			if (!empty($product_id)) {
+				$main_price = $item['unitprice'];
+				update_post_meta($product_id, '_regular_price', $main_price);
+				$sale_price = get_post_meta($product_id, '_sale_price', true);
+				if (empty($sale_price)) {
+					update_post_meta($product_id, '_price', $main_price);
+				}
+				if (true == $by_queue) {
+					$file_dir = wp_upload_dir();
+					$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_price_log_file;
+					$content = '<p>Product SKU ' . $sku . ' Price updated</p>';
+					file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
 					$old_count = get_option('updated_products_count');
 					$new_count = $old_count + 1;
-					$content = '<p><b>Action: Inventory updated</b></p>';
 					$this->updateLogFileContent($content, $new_count);
-
-	}
-
-
-	public function updateStock( $product_id, $quantity) {
-
-		if ('onbackorder' != get_post_meta($product_id, '_stock_status', true)) {
-			if ($quantity > 0) {
-				update_post_meta($product_id, '_stock_status', 'instock');
-			} else {
-				update_post_meta($product_id, '_stock_status', 'outofstock');
-			}
-		}
-
-	}
-
-	public function tm_item_availabitlity_search_on_netsuite( $product_id, $item_internal_id) {
-		global $TMWNI_OPTIONS;
-		//search preference
-		$this->netsuiteService->setSearchPreferences(false, 20);
-
-
-
-		$ItemRecordRef = new RecordRef();
-		$ItemRecordRef->internalId = $item_internal_id;
-		//$ItemRecordRef->type = 'lotNumberedAssemblyItem';
-
-		$filter = new ItemAvailabilityFilter();
-		$filter->item = new RecordRefList();
-		$filter->item->recordRef =  array($ItemRecordRef);
-
-
-
-		$search = new GetItemAvailabilityRequest();
-		$search->itemAvailabilityFilter = $filter;
-
-		try {
-			//perofrm search request
-			$getResponse = $this->netsuiteService->getItemAvailability($search);
-			/**
-					* Item Availability response Filter.
-					*
-					* @since 1.0.0
-
-					**/
-		apply_filters('tm_ns_item_availability_response', $getResponse, $product_id, $item_internal_id);
-			if (1 == $getResponse->getItemAvailabilityResult->status->isSuccess) {
-				if (isset($getResponse->getItemAvailabilityResult->itemAvailabilityList->itemAvailability)) {
-					$item_locations_inventory = $getResponse->getItemAvailabilityResult->itemAvailabilityList->itemAvailability;
-					return $item_locations_inventory; 
 				}
-			}
 
-		} catch (SoapFault $e) {
-			$object = 'item_locations';
-			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Search' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
-			$error_msg .= 'Search Keyword: ' . $internal_id . '. ';
-			$error_msg .= 'Error Message: ' . $e->getMessage();
-
-			$this->handleLog(0, $this->object_id, $object, $error_msg);
-
-			return 0;
-
-		}
+				do_action('tm_netsuite_after_update_price', $main_price, $product_id);
 				
+			}
+		}
 	}
 
-
-	public function updateLogFileContent( $content, $new_count) {
-		$file_dir = wp_upload_dir();
-		$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_inventory_log_file;
-		file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
+	public function updateLogFileContent( $content, $new_count ) {
 		if (0 != $new_count) {
 			update_option('updated_products_count', $new_count);
 		}
 	}
 
-
 	/**
-	 * Creating custom field list array.
+	 * Get default location inventory
+	 * 
+	 * @param string $skus
+	 * @param string $mapFieldName
+	 * @param string $urlAPIEndPoint
 	 */
-	public function customSearchFieldList( $custfield) {
-		$customFieldList = new SearchCustomFieldList();
-		$customFieldList->customField = [$custfield];
-		return $customFieldList;
+	public function getDefaultLocationInventory($skus, $mapFieldName, $urlAPIEndPoint,$by_queue) {
+		global $TMWNI_OPTIONS;
+
+		$qtyField = strtolower($TMWNI_OPTIONS['inventorySyncField']);
+		$selected_location_query = [
+			'q' => "SELECT item.$mapFieldName, inventoryitemlocations.location, inventoryitemlocations.$qtyField FROM inventoryitemlocations LEFT JOIN item ON inventoryitemlocations.item = item.id WHERE item.$mapFieldName IN ($skus) AND inventoryitemlocations.location = item.location"
+		];
+
+		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
+		$response = $this->NetsuiteRestAPIClient->nsRESTRequest('post', $urlAPIEndPoint, true, $selected_location_query);
+
+		if (!empty($response['items'])) {
+			$item_quantity_array = $this->getQuantity($response['items'], $skus);
+			update_option('tm_rest_web_service_enable', 'yes');
+			$this->updateWooQuantity($item_quantity_array, $by_queue);
+		} else {
+			if (isset($response['o:errorDetails'][0]['o:errorCode']) && 'INVALID_LOGIN' == $response['o:errorDetails'][0]['o:errorCode']) {
+				update_option('tm_rest_web_service_enable', 'no');
+			} 
+		}
+
+		if (!empty($response['hasMore'])) {
+			$count = $response['count'];
+			$offset = $response['offset'] + $count;
+			$urlAPIEndPoint = "/suiteql?limit=$count&offset=$offset";
+			$this->getDefaultLocationInventory($skus, $mapFieldName, $urlAPIEndPoint, $by_queue);
+		}
 	}
 
-
 	/**
-	 * Creating custom string field instance.
+	 * Get inventory for all locations
+	 * 
+	 * @return string
 	 */
-	public function customSearchField( $scriptId, $value) {
-		$custfield = new SearchCustomField();
-		$custfield->internalId = $scriptId;
-		$custfield->value = $value;
-		return $this->customSearchFieldList($custfield);
+	public function inventoryAllLocations() {
+		$inventory_locations = get_option('netstuite_locations');
+		$locations = array_keys($inventory_locations);
+		return implode(', ', array_map(fn($key) => "'$key'", $locations));
 	}
 
 	/**
-	 * Creating custom string field instance.
+	 * Get inventory for selected locations
+	 * 
+	 * @return string
 	 */
-	public function customSearchStringField( $scriptId, $value) {		
-		$custfield = new SearchStringCustomField();
-		$custfield->scriptId = $scriptId;
-		$custfield->searchValue = $value;
-		$custfield->operator = 'is';
-		return $this->customSearchFieldList($custfield);
+	public function inventorySelectedLocations() {
+		global $TMWNI_OPTIONS;
+		$unique_netsuite_location_array = array_unique($TMWNI_OPTIONS['netstuite_locations']);
+		return "'" . join("', '", $unique_netsuite_location_array) . "'";
 	}
 
+	/**
+	 * Get quantity from location data
+	 * 
+	 * @param array $location_data
+	 * @param string $all_sku
+	 * @return array
+	 */
+	public function getQuantity($location_data, $all_sku) {
+		global $TMWNI_OPTIONS;
+
+		$sku_array = explode(', ', str_replace("'", '', $all_sku));
+		$quantity_field_name = strtolower($TMWNI_OPTIONS['inventorySyncField']);
+		$map_field_name = strtolower($TMWNI_OPTIONS['sku_mapping_field']);
+		$grouped_data = [];
+
+		foreach ($location_data as $item) {
+			$itemid = $item[$map_field_name];
+			if (array_key_exists($quantity_field_name, $item)) {
+				$quantity = $item[$quantity_field_name];
+				$grouped_data[$itemid] = isset($grouped_data[$itemid]) ? $grouped_data[$itemid] + $quantity : $quantity;
+			}
+		}
+
+		return $grouped_data;
+	}
+
+	/**
+	 * Perform NetSuite location query
+	 * 
+	 * @param string $skus
+	 * @param string $mapFieldName
+	 * @param string $urlAPIEndPoint
+	 */
+	public function getInventoryFromNetsuite($skus, $mapFieldName, $urlAPIEndPoint,$by_queue) {
+		global $TMWNI_OPTIONS;
+
+		$qtyField = strtolower($TMWNI_OPTIONS['inventorySyncField']);
+
+		$locations = $this->getInventoryLocations($skus, $mapFieldName, $urlAPIEndPoint);
+
+
+		$selected_location_query = array('q' => 
+			'SELECT item.' . $mapFieldName . ', inventoryitemlocations.location, inventoryitemlocations.' . $qtyField . ',from inventoryitemlocations LEFT JOIN item ON inventoryitemlocations.item = item.id  where item.' . $mapFieldName . ' in (' . $skus . ') and inventoryitemlocations.location in (' . $locations . ')'
+		); 
+
+
+
+
+		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
+		$response = $this->NetsuiteRestAPIClient->nsRESTRequest('post', $urlAPIEndPoint, true, $selected_location_query);
+
+		if (!empty($response['items'])) {
+			$item_quantity_array = $this->getQuantity($response['items'], $skus);
+			update_option('tm_rest_web_service_enable', 'yes');
+			$this->updateWooQuantity($item_quantity_array, $by_queue);
+		} else {
+			if (isset($response['o:errorDetails'][0]['o:errorCode']) && 'INVALID_LOGIN' == $response['o:errorDetails'][0]['o:errorCode']) {
+				update_option('tm_rest_web_service_enable', 'no');
+			} 
+		}
+
+		if (!empty($response['hasMore'])) {
+			$count = $response['count'];
+			$offset = $response['offset'] + $count;
+			$urlAPIEndPoint = "/suiteql?limit=$count&offset=$offset";
+			$this->getInventoryFromNetsuite($skus, $mapFieldName, $urlAPIEndPoint, $by_queue);
+		}
+	}
+
+	 /**
+	 * Get inventory locations
+	 * 
+	 * @param string $skus
+	 * @param string $mapFieldName
+	 * @param string $urlAPIEndPoint
+	 * @return string
+	 */
+	private function getInventoryLocations($skus, $mapFieldName, $urlAPIEndPoint) {
+		global $TMWNI_OPTIONS;
+
+		if (!empty($TMWNI_OPTIONS['inventoryDefaultLocation'])) {
+			if (1 == $TMWNI_OPTIONS['inventoryDefaultLocation']) {
+				return $this->inventoryAllLocations();
+			} elseif (3 == $TMWNI_OPTIONS['inventoryDefaultLocation']) {
+				return $this->inventorySelectedLocations();
+			}
+		}
+	}
+
+	/**
+	 * Update WooCommerce quantity
+	 * 
+	 * @param array $item_quantity_array
+	 */
+	public function updateWooQuantity($item_quantity_array,$by_queue) {
+		global $TMWNI_OPTIONS;
+
+		foreach ($item_quantity_array as $sku => $quantity) {
+			$product_id = $this->getProductIdBySku($sku);
+			if (!empty($product_id)) {
+				$quantity = apply_filters('tm_ns_last_item_quantity', $quantity, $product_id);
+				if (!empty($quantity)) {
+					update_post_meta($product_id, '_stock', $quantity);
+				}
+				if (!empty($TMWNI_OPTIONS['overrideManageStock']) && 'on' === $TMWNI_OPTIONS['overrideManageStock']) {
+					update_post_meta($product_id, '_manage_stock', 'yes');
+				}
+				if ('no' !== $TMWNI_OPTIONS['updateStockStatus']) {
+					$this->updateStock($product_id, $quantity);
+				}
+				$file_dir = wp_upload_dir();
+				$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_inventory_log_file;
+				$content = '<p>Product SKU ' . $sku . ' Inventory updated</p>';
+				file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
+				if (true == $by_queue && !isset($TMWNI_OPTIONS['enablePriceSync'])) {
+					$old_count = get_option('updated_products_count');
+					$new_count = $old_count + 1;
+					$this->updateLogFileContent($content, $new_count);
+				}
+				
+			}
+		}
+
+		do_action('tm_ns_after_update_item_quantity_data', $item_quantity_array);
+	}
+
+	/**
+	 * Update WooCommerce stock status
+	 * 
+	 * @param int $product_id
+	 * @param int $quantity
+	 */
+	public function updateStock($product_id, $quantity) {
+		if (get_post_meta($product_id, '_stock_status', true) !== 'onbackorder') {
+			$stock_status = $quantity > 0 ? 'instock' : 'outofstock';
+			update_post_meta($product_id, '_stock_status', $stock_status);
+		}
+	}
+
+	/**
+	 * Get product ID by SKU
+	 * 
+	 * @param string $sku
+	 * @return int|null
+	 */
+	public function getProductIdBySku($sku) {
+		global $wpdb;
+		$result = $wpdb->get_var($wpdb->prepare("
+			SELECT post_id
+			FROM {$wpdb->postmeta}
+			WHERE meta_key = '_sku'
+			AND meta_value = %s
+			LIMIT 1
+			", $sku));
+		return null !== $result ? $result : null;
+	}
 
 }

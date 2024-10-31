@@ -682,7 +682,7 @@ function makeSelectfieldsSelect2($){
 var timeOutId = 0;
 
 jQuery(document).on('click', '.manual-update-inventory',function(e){
-
+    console.log('abcd');
     jQuery(this).attr("disabled", true);
     jQuery('.inventory-loader').css('display', 'inline-block');
     jQuery.ajax({
@@ -695,18 +695,29 @@ jQuery(document).on('click', '.manual-update-inventory',function(e){
                 if(!jQuery('.progress').length){
                     jQuery('.form-table-last').after('<div class="progress"><div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:0%"><span class="sr-only">0% Complete</span></div></div>');
                 }
-                fetchWooInventoryStatus(response.total_count);
+                if(response.price_sync == 'off'){
+                    fetchWooInventoryStatus(response.total_count);
+                }else{
+                    fetchWooPriceStatus(response.total_count);
+                }
+                
+                
             }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('error');
+            console.log('AJAX Error: ', textStatus, errorThrown);
+            console.log(jqXHR.responseText);
         }
     });
 });
 
-function fetchWooInventoryStatus(total_count){
+function fetchWooPriceStatus(total_count){
     jQuery.ajax({
         type: "POST",
         dataType: "json",
         url: tmwni_admin_settings_js.ajax_url,
-        data: {action: "fetch_inventory_progress",nonce:tmwni_admin_settings_js.nonce},
+        data: {action: "fetch_price_progress",nonce:tmwni_admin_settings_js.nonce},
         // async: false,
         success: function(response){
             if(response.success){
@@ -719,9 +730,42 @@ function fetchWooInventoryStatus(total_count){
                 jQuery('#of').html(total_count);
                 jQuery('.progress_details').show();
                 jQuery('.updated_records_count').html(response.updated_count);
-                jQuery('.skipped_records_count').html(response.skus.length + response.empty_skus.length);
+                jQuery('.price-logs').show();               
+                jQuery('.price-log-list').html(response.price_logs);
+                jQuery('html, body').animate({
+                    scrollTop: jQuery(".price-logs").offset().top
+                }, 2000);
+                var $t = jQuery('.price-logs');
+                $t.animate({"scrollTop": jQuery('.price-logs')[0].scrollHeight}, "slow");
+            }
+        },
+        complete:function(response){
+            if(total_count == response.responseJSON.processed_count){
+                fetchWooInventoryStatus(total_count);
+           } else {
+            timeOutId = setTimeout(fetchWooPriceStatus, 2000, total_count);
+        }
+    }
+
+});
+}
+
+function fetchWooInventoryStatus(total_count){
+    jQuery.ajax({
+        type: "POST",
+        dataType: "json",
+        url: tmwni_admin_settings_js.ajax_url,
+        data: {action: "fetch_inventory_progress",nonce:tmwni_admin_settings_js.nonce},
+        // async: false,
+        success: function(response){
+            if(response.success){
+                jQuery('.inventory-loader').hide();
+                jQuery('.progress_processed').show();
+                jQuery('.processed_count').html(response.processed_count);
+                jQuery('#of').html(total_count);
+                jQuery('.progress_details').show();
+                jQuery('.updated_records_count').html(response.updated_count);
                 jQuery('.inventory-logs').show();
-                
                 jQuery('.log-list').html(response.logs);
                 jQuery('html, body').animate({
                     scrollTop: jQuery(".inventory-logs").offset().top
@@ -731,14 +775,19 @@ function fetchWooInventoryStatus(total_count){
             }
         },
         complete:function(response){
-            if(total_count === response.responseJSON.processed_count){
-               clearTimeout(timeOutId);
+            if(total_count == response.responseJSON.processed_count){
+                clearTimeout(timeOutId);
                jQuery('.manual-update-inventory').attr("disabled", false);
                jQuery('.progress').remove();
-           } else {
-            timeOutId = setTimeout(fetchWooInventoryStatus, 2000, total_count);
-        }
+               jQuery('.progress_details').hide();
+            } else {
+                timeOutId = setTimeout(fetchWooInventoryStatus, 2000, total_count);
+            }
+               
+          
     }
 
 });
 }
+
+

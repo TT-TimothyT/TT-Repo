@@ -3,7 +3,7 @@ Author: skyverge
 Tags: woocommerce
 Requires PHP: 8.0
 Requires at least: 5.6
-Tested up to: 6.4.3
+Tested up to: 6.5.5
 
 Accept credit cards in WooCommerce with the CyberSource (SOAP) payment gateway
 

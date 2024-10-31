@@ -17,17 +17,17 @@ class Requirements {
 	/**
 	 * Minimum PHP version required.
 	 */
-	const MINIMUM_PHP_VERSION = '7.0';
+	const MINIMUM_PHP_VERSION = '7.4';
 
 	/**
 	 * Minimum WordPress version required.
 	 */
-	const MINIMUM_WP_VERSION = '5.0';
+	const MINIMUM_WP_VERSION = '5.6';
 
 	/**
 	 * Minimum WooCommerce version required.
 	 */
-	const MINIMUM_WC_VERSION = '4.0';
+	const MINIMUM_WC_VERSION = '7.0';
 
 	/**
 	 * Requirements errors.

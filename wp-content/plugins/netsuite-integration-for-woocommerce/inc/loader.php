@@ -1,10 +1,7 @@
 <?php
-require_once TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php';
 require_once TMWNI_DIR . 'inc/background-process/class-add-netsuite-order.php';
-require_once TMWNI_DIR . 'inc/helper.php';
-foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
-	require_once $filename;
-}
+require_once TMWNI_DIR . 'inc/NS_Restlet/netsuiteRestAPI.php';
+
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
@@ -50,6 +47,8 @@ class TMWNI_Loader {
 	}
 
 	public $netsuiteOrderClient = '';
+	public  $add_netsuite_order;
+	public  $netsuiteService;
 	/**
 	 * Construct
 	 *
@@ -157,7 +156,7 @@ class TMWNI_Loader {
 					}
 
 					if (isset($TMWNI_OPTIONS['ns_auto_invoice_sync']) && !empty($TMWNI_OPTIONS['ns_auto_invoice_sync'])) {
-						add_action('woocommerce_order_status_' . $TMWNI_OPTIONS['ns_order_autosync_status'], array(
+						add_action('woocommerce_order_status_' . $TMWNI_OPTIONS['ns_auto_invoice_status'], array(
 							$this,
 							'syncSOInvoice'
 						));
@@ -228,7 +227,6 @@ class TMWNI_Loader {
 			->cancel_process();
 		}
 	}
-
 	public function soap_notice() {
 		?>
 		<div class="notice notice-warning is-dismissible">
@@ -335,6 +333,9 @@ class TMWNI_Loader {
 			} else {
 				$customer_internal_id = $this->addUpdateNetsuiteCustomer($user_id, $order_id);
 			}
+
+			$customer_internal_id = apply_filters('tm_netsuite_order_customer_internal_id', $customer_internal_id, $order_id, $order, $user_id);
+
 			$order_data = $this->getOrderData($order_id, TMWNI_Settings::$ns_rec_type_order);
 			/**
 			 * Order data hook.
@@ -365,6 +366,8 @@ class TMWNI_Loader {
 			} else {
 				$customer_internal_id = $this->addUpdateNetsuiteCustomer($user_id, $order_id);
 			}
+
+			$customer_internal_id = apply_filters('tm_netsuite_order_customer_internal_id', $customer_internal_id, $order_id, $order, $user_id);
 
 			// get required order data
 			$order_data = $this->getOrderData($order_id, TMWNI_Settings::$ns_rec_type_order);
@@ -424,31 +427,11 @@ class TMWNI_Loader {
 		$status = true;
 
 		if (isset($TMWNI_OPTIONS['enableOrderSync']) && 'on' == $TMWNI_OPTIONS['enableOrderSync']) {
-			if (!is_object($order)) {
-				/**
-				 * Order add status hook.
-				 *
-				 * @since 1.0.0
-				 */
-				$status = apply_filters('tm_add_netsuite_order', $status, $order);
-
-				if (true == $status) {
-					$this->push_orders_to_queue($order->get_id());
-				}
-			} else {
-				/**
-				 * Order add status hook.
-				 *
-				 * @since 1.0.0
-				 */
-				$status = apply_filters('tm_add_netsuite_order', $status, $order->get_id());
-
-				if (true == $status) {
-					$this->push_orders_to_queue($order->get_id());
-				}
-			}
+			$status = apply_filters('tm_add_netsuite_order', $status, $order);
+			if (true == $status) {
+				$this->addNetsuiteOrder($order->get_id());
+			}	
 		}
-
 		return;
 	}
 
@@ -477,274 +460,279 @@ class TMWNI_Loader {
 			do_action('before_add_update_netsuite_customer', $customer_id, $order_id);
 		}
 		if (true == $customer_sync) {
-
-			global $TMWNI_OPTIONS;
-			$customer_internal_id = 0;
-			$customerSearchResponseByEmail = '';
-
-			//get and set customer data
-			$woo_customer_data = get_userdata($customer_id);
-
-			$user_roles = $woo_customer_data->roles;
-			$find_common_role = array_intersect($user_roles, $TMWNI_OPTIONS['customer_roles']);
-
-			//check if passed user is a customer
-			if (!empty($find_common_role)) {
-				require_once TMWNI_DIR . 'inc/customer.php';
-
-				//instance of API client
-				$netsuiteCustomerClient = new CustomerClient();
-				$email = $woo_customer_data
-				->data->user_email;
-
-				$get_customer_internalid_from_db_status = true;
-				/** 
-				 *Hook for get status customer internal id from database.
-				 *
-				 * @since 1.0.0
-				 *
-				 */
-				$get_customer_internalid_from_db_status = apply_filters('tm_netsuite_get_customer_db_status', $get_customer_internalid_from_db_status, $customer_id);
-
-				if (true == $get_customer_internalid_from_db_status) {
-					$customer_internal_id = get_user_meta($customer_id, TMWNI_Settings::$ns_customer_id, true);
-				}
-
-				if (empty($customer_internal_id)) {
-					/** 
-					 *Hook for email by search customer on NetSuite.
-					 *
-					 * @since 1.3.7
-					 *
-					 */
-					$email = apply_filters('tm_ns_search_customer_email', $email, $customer_id);
-					//check if customer already registered on netsuite
-					if (!empty($email)) {
-						$customerSearchResponseByEmail = $netsuiteCustomerClient->searchCustomer($email, $customer_id);
-					}
-
-					if (isset($customerSearchResponseByEmail
-						->searchResult
-						->recordList
-						->record[0]
-						->internalId) && !empty($customerSearchResponseByEmail
-							->searchResult
-							->recordList
-							->record[0]
-							->internalId)) {
-						$customer_internal_id = $customerSearchResponseByEmail
-						->searchResult
-						->recordList
-						->record[0]->internalId;
-					}
-				}
-
-				if (!empty($woo_customer_data->first_name) && !empty($woo_customer_data->last_name)) {
-					$first_name = $woo_customer_data->first_name;
-					$last_name = $woo_customer_data->last_name;
-				} else {
-					$first_name = get_user_meta($customer_id, 'billing_first_name', true);
-					$last_name = get_user_meta($customer_id, 'billing_last_name', true);
-				}
-
-				$company_name = get_user_meta($customer_id, 'billing_company', true);
-				$phone = get_user_meta($customer_id, 'billing_phone', true);
-
-				$customer_data = array(
-					'customer_id' => $customer_id,
-					'firstName' => $first_name,
-					'lastName' => $last_name,
-					'email' => $email,
-					'companyName' => $company_name,
-					'phone' => $phone
-				);
-
-				update_user_meta($customer_id, TMWNI_Settings::$ns_customer_id, $customer_internal_id);
-				if (empty($customer_internal_id)) {
-					$address_type = array(
-						'billing',
-						'shipping'
-					);
-					$addresses = array();
-
-					$addresses = $this->getRegisterUserAddress($address_type, $customer_id);
-
-					$alb = '';
-					$als = '';
-
-					foreach ($addresses as $key => $address) {
-						if (!empty($address['postcode'])) {
-							if (isset($address['country']) && !empty($address['country'])) {
-								$ns_country = TMWNI_Settings::$netsuite_country[$address['country']];
-							} else {
-								$ns_country = '';
-							}
-
-							if ('billing' == $key) {
-								$alb = new CustomerAddressbook();
-								$alb->internalId = $customer_internal_id;
-								$alb->defaultShipping = false;
-								$alb->defaultBilling = true;
-								$alb->isResidential = true;
-								$alb->label = 'Customer Address Billing';
-								$alb->addressbookAddress = new Address();
-								$alb
-								->addressbookAddress->addr1 = $address['address1'];
-								$alb
-								->addressbookAddress->addr2 = $address['address2'];
-								$alb
-								->addressbookAddress->addr3 = '';
-
-								$alb
-								->addressbookAddress->addrPhone = $phone;
-								$alb
-								->addressbookAddress->addrText = $address['address1'];
-
-								$alb
-								->addressbookAddress->city = $address['city'];
-								$alb
-								->addressbookAddress->country = $ns_country;
-								$alb
-								->addressbookAddress->internalId = $customer_internal_id;
-								$alb
-								->addressbookAddress->override = false;
-								$alb
-								->addressbookAddress->state = $address['state'];
-								$alb
-								->addressbookAddress->zip = $address['postcode'];
-
-								if (!empty($address['companyName'])) {
-									$alb
-									->addressbookAddress->attention = $address['firstName'] . ' ' . $address['lastName'];
-									$alb
-									->addressbookAddress->addressee = $address['companyName'];
-
-								} else {
-									// $alb->addressbookAddress->addressee = $address['firstName'] . ' ' . $address['lastName'];
-									$alb
-									->addressbookAddress->attention = $address['firstName'] . ' ' . $address['lastName'];
-
-								}
-							} elseif ('shipping' == $key) {
-								if (isset($address['country']) && !empty($address['country'])) {
-									$ns_shipping_country = TMWNI_Settings::$netsuite_country[$address['country']];
-								} else {
-									$ns_shipping_country = '';
-								}
-								$als = new CustomerAddressbook();
-								$als->internalId = $customer_internal_id;
-								$als->defaultShipping = true;
-								$als->defaultBilling = false;
-								$als->isResidential = false;
-								$als->label = 'Customer Address Shipping';
-								$als->addressbookAddress = new Address();
-								$als
-								->addressbookAddress->addr1 = $address['address1'];
-								$als
-								->addressbookAddress->addr2 = $address['address2'];
-								$als
-								->addressbookAddress->addr3 = '';
-								$als
-								->addressbookAddress->addrPhone = '';
-								$als
-								->addressbookAddress->addrText = $address['address1'];
-								$als
-								->addressbookAddress->city = $address['city'];
-								$als
-								->addressbookAddress->country = $ns_shipping_country;
-								$als
-								->addressbookAddress->internalId = $customer_internal_id;
-								$als
-								->addressbookAddress->override = false;
-								$als
-								->addressbookAddress->state = $address['state'];
-								$als
-								->addressbookAddress->zip = $address['postcode'];
-
-								if (!empty($address['companyName'])) {
-									$als
-									->addressbookAddress->attention = $address['firstName'] . ' ' . $address['lastName'];
-									$als
-									->addressbookAddress->addressee = $address['companyName'];
-
-								} else {
-									// $als->addressbookAddress->addressee = $address['firstName'] . ' ' . $address['lastName'];
-									$als
-									->addressbookAddress->attention = $address['firstName'] . ' ' . $address['lastName'];
-
-								}
-							}
-
-							$address_data = [$alb, $als];
-						}
-
-					}
-
-				} else {
-					if (isset($customerSearchResponseByEmail
-						->searchResult
-						->recordList
-						->record[0]
-						->addressbookList) && !empty($customerSearchResponseByEmail
-							->searchResult
-							->recordList
-							->record[0]
-							->addressbookList)) {
-
-						$existing_customer_address = $customerSearchResponseByEmail
-						->searchResult
-						->recordList
-						->record[0]->addressbookList;
-					} else {
-						$existing_customer_address = $netsuiteCustomerClient->searchCustomerByInternalId($customer_internal_id, $customer_id);
-					}
-					$address_data = $this->existingRegisterCustomerAddressData($existing_customer_address, $customer_internal_id, $customer_id);
-				}
-				/** 
-				 *Custome Address data hook.
-				 *
-				 * @since 1.0.0
-				 *
-				 */
-				$address_data = apply_filters('tm_netsuite_customer_address_data', $address_data, $customer_id);
-				$al = new CustomerAddressbookList();
-				$al->addressbook = $address_data;
-				$al->replaceAll = false;
-
-				if (!empty($customer_internal_id)) {
-					/** 
-					 *Custome data hook for update customer.
-					 *
-					 * @since 1.3.7
-					 *
-					 */
-					$customer_data = apply_filters('tm_netsuite_customer_data', $customer_data, $customer_id, $customerSearchResponseByEmail);
-
-					$netsuiteCustomerClient->updateCustomer($customer_data, $customer_internal_id, $al, $order_id);
-				} else {
-					//add customer to netsuite
-					$customer_internal_id = $netsuiteCustomerClient->addCustomer($customer_data, $al, $order_id);
-					if ($customer_internal_id) {
-						update_user_meta($customer_id, TMWNI_Settings::$ns_customer_id, $customer_internal_id);
-					}
-				}
-
-				return $customer_internal_id;
-
-			} else {
-				require_once TMWNI_DIR . 'inc/common.php';
-				if (isset($woo_customer_data->roles[0]) && !empty($woo_customer_data->roles[0])) {
-					$netsuiteCommonIntegrationFunctions = new CommonIntegrationFunctions();
-					$error_msg = 'Please select ' . $woo_customer_data->roles[0] . ' role in customer tab';
-					$netsuiteCommonIntegrationFunctions->handleLog(1, $customer_id, 'Customer', $error_msg);
-				}
-
-				return 0;
-
-			}
+			$customer_internal_id = $this->syncNetSuiteCustomerData($customer_id, $order_id);
+			return $customer_internal_id;
 
 		}
 
+	}
+
+	public function syncNetSuiteCustomerData($customer_id, $order_id) {
+
+		global $TMWNI_OPTIONS;
+		$customer_internal_id = 0;
+		$customerSearchResponseByEmail = '';
+
+			//get and set customer data
+		$woo_customer_data = get_userdata($customer_id);
+
+		$user_roles = $woo_customer_data->roles;
+		$find_common_role = array_intersect($user_roles, $TMWNI_OPTIONS['customer_roles']);
+
+			//check if passed user is a customer
+		if (!empty($find_common_role)) {
+			require_once TMWNI_DIR . 'inc/customer.php';
+
+			//instance of API client
+			$netsuiteCustomerClient = new CustomerClient();
+			$email = $woo_customer_data
+			->data->user_email;
+
+			$get_customer_internalid_from_db_status = true;
+			/** 
+			 *Hook for get status customer internal id from database.
+			 *
+			 * @since 1.0.0
+			 *
+			 */
+			$get_customer_internalid_from_db_status = apply_filters('tm_netsuite_get_customer_db_status', $get_customer_internalid_from_db_status, $customer_id);
+
+			if (true == $get_customer_internalid_from_db_status) {
+				$customer_internal_id = get_user_meta($customer_id, TMWNI_Settings::$ns_customer_id, true);
+			}
+
+			if (empty($customer_internal_id)) {
+				/** 
+				 *Hook for email by search customer on NetSuite.
+				 *
+				 * @since 1.3.7
+				 *
+				 */
+				$email = apply_filters('tm_ns_search_customer_email', $email, $customer_id);
+				//check if customer already registered on netsuite
+				if (!empty($email)) {
+					$customerSearchResponseByEmail = $netsuiteCustomerClient->searchCustomer($email, $customer_id);
+				}
+
+				if (isset($customerSearchResponseByEmail
+					->searchResult
+					->recordList
+					->record[0]
+					->internalId) && !empty($customerSearchResponseByEmail
+						->searchResult
+						->recordList
+						->record[0]
+						->internalId)) {
+					$customer_internal_id = $customerSearchResponseByEmail
+					->searchResult
+					->recordList
+					->record[0]->internalId;
+				}
+			}
+
+			if (!empty($woo_customer_data->first_name) && !empty($woo_customer_data->last_name)) {
+				$first_name = $woo_customer_data->first_name;
+				$last_name = $woo_customer_data->last_name;
+			} else {
+				$first_name = get_user_meta($customer_id, 'billing_first_name', true);
+				$last_name = get_user_meta($customer_id, 'billing_last_name', true);
+			}
+
+			$company_name = get_user_meta($customer_id, 'billing_company', true);
+			$phone = get_user_meta($customer_id, 'billing_phone', true);
+
+			$customer_data = array(
+				'customer_id' => $customer_id,
+				'firstName' => $first_name,
+				'lastName' => $last_name,
+				'email' => $email,
+				'companyName' => $company_name,
+				'phone' => $phone
+			);
+
+			update_user_meta($customer_id, TMWNI_Settings::$ns_customer_id, $customer_internal_id);
+			if (empty($customer_internal_id)) {
+				$address_type = array(
+					'billing',
+					'shipping'
+				);
+				$addresses = array();
+
+				$addresses = $this->getRegisterUserAddress($address_type, $customer_id);
+
+				$alb = '';
+				$als = '';
+
+				foreach ($addresses as $key => $address) {
+					if (!empty($address['postcode'])) {
+						if (isset($address['country']) && !empty($address['country'])) {
+							$ns_country = TMWNI_Settings::$netsuite_country[$address['country']];
+						} else {
+							$ns_country = '';
+						}
+
+						if ('billing' == $key) {
+							$alb = new CustomerAddressbook();
+							$alb->internalId = $customer_internal_id;
+							$alb->defaultShipping = false;
+							$alb->defaultBilling = true;
+							$alb->isResidential = true;
+							$alb->label = 'Customer Address Billing';
+							$alb->addressbookAddress = new Address();
+							$alb
+							->addressbookAddress->addr1 = $address['address1'];
+							$alb
+							->addressbookAddress->addr2 = $address['address2'];
+							$alb
+							->addressbookAddress->addr3 = '';
+
+							$alb
+							->addressbookAddress->addrPhone = $phone;
+							$alb
+							->addressbookAddress->addrText = $address['address1'];
+
+							$alb
+							->addressbookAddress->city = $address['city'];
+							$alb
+							->addressbookAddress->country = $ns_country;
+							$alb
+							->addressbookAddress->internalId = $customer_internal_id;
+							$alb
+							->addressbookAddress->override = false;
+							$alb
+							->addressbookAddress->state = $address['state'];
+							$alb
+							->addressbookAddress->zip = $address['postcode'];
+
+							if (!empty($address['companyName'])) {
+								$alb
+								->addressbookAddress->attention = $address['firstName'] . ' ' . $address['lastName'];
+								$alb
+								->addressbookAddress->addressee = $address['companyName'];
+
+							} else {
+								// $alb->addressbookAddress->addressee = $address['firstName'] . ' ' . $address['lastName'];
+								$alb
+								->addressbookAddress->attention = $address['firstName'] . ' ' . $address['lastName'];
+
+							}
+						} elseif ('shipping' == $key) {
+							if (isset($address['country']) && !empty($address['country'])) {
+								$ns_shipping_country = TMWNI_Settings::$netsuite_country[$address['country']];
+							} else {
+								$ns_shipping_country = '';
+							}
+							$als = new CustomerAddressbook();
+							$als->internalId = $customer_internal_id;
+							$als->defaultShipping = true;
+							$als->defaultBilling = false;
+							$als->isResidential = false;
+							$als->label = 'Customer Address Shipping';
+							$als->addressbookAddress = new Address();
+							$als
+							->addressbookAddress->addr1 = $address['address1'];
+							$als
+							->addressbookAddress->addr2 = $address['address2'];
+							$als
+							->addressbookAddress->addr3 = '';
+							$als
+							->addressbookAddress->addrPhone = '';
+							$als
+							->addressbookAddress->addrText = $address['address1'];
+							$als
+							->addressbookAddress->city = $address['city'];
+							$als
+							->addressbookAddress->country = $ns_shipping_country;
+							$als
+							->addressbookAddress->internalId = $customer_internal_id;
+							$als
+							->addressbookAddress->override = false;
+							$als
+							->addressbookAddress->state = $address['state'];
+							$als
+							->addressbookAddress->zip = $address['postcode'];
+
+							if (!empty($address['companyName'])) {
+								$als
+								->addressbookAddress->attention = $address['firstName'] . ' ' . $address['lastName'];
+								$als
+								->addressbookAddress->addressee = $address['companyName'];
+
+							} else {
+								// $als->addressbookAddress->addressee = $address['firstName'] . ' ' . $address['lastName'];
+								$als
+								->addressbookAddress->attention = $address['firstName'] . ' ' . $address['lastName'];
+
+							}
+						}
+
+						$address_data = [$alb, $als];
+					}
+
+				}
+
+			} else {
+				if (isset($customerSearchResponseByEmail
+					->searchResult
+					->recordList
+					->record[0]
+					->addressbookList) && !empty($customerSearchResponseByEmail
+						->searchResult
+						->recordList
+						->record[0]
+						->addressbookList)) {
+
+					$existing_customer_address = $customerSearchResponseByEmail
+					->searchResult
+					->recordList
+					->record[0]->addressbookList;
+				} else {
+					$existing_customer_address = $netsuiteCustomerClient->searchCustomerByInternalId($customer_internal_id, $customer_id);
+				}
+				$address_data = $this->existingRegisterCustomerAddressData($existing_customer_address, $customer_internal_id, $customer_id);
+			}
+			/** 
+			 *Custome Address data hook.
+			 *
+			 * @since 1.0.0
+			 *
+			 */
+			$address_data = apply_filters('tm_netsuite_customer_address_data', $address_data, $customer_id);
+			$al = new CustomerAddressbookList();
+			$al->addressbook = $address_data;
+			$al->replaceAll = false;
+
+			if (!empty($customer_internal_id)) {
+				/** 
+				 *Custome data hook for update customer.
+				 *
+				 * @since 1.3.7
+				 *
+				 */
+				$customer_data = apply_filters('tm_netsuite_customer_data', $customer_data, $customer_id, $customerSearchResponseByEmail);
+
+				$netsuiteCustomerClient->updateCustomer($customer_data, $customer_internal_id, $al, $order_id);
+			} else {
+				//add customer to netsuite
+				$customer_internal_id = $netsuiteCustomerClient->addCustomer($customer_data, $al, $order_id);
+				if ($customer_internal_id) {
+					update_user_meta($customer_id, TMWNI_Settings::$ns_customer_id, $customer_internal_id);
+				}
+			}
+
+			return $customer_internal_id;
+
+		} else {
+			require_once TMWNI_DIR . 'inc/common.php';
+			if (isset($woo_customer_data->roles[0]) && !empty($woo_customer_data->roles[0])) {
+				$netsuiteCommonIntegrationFunctions = new CommonIntegrationFunctions();
+				$error_msg = 'Please select ' . $woo_customer_data->roles[0] . ' role in customer tab';
+				$netsuiteCommonIntegrationFunctions->handleLog(1, $customer_id, 'Customer', $error_msg);
+			}
+
+			return 0;
+
+		}
 	}
 
 	public function getRegisterUserAddress($address_type, $customer_id) {
@@ -766,11 +754,21 @@ class TMWNI_Loader {
 		return $addresses;
 	}
 
+	public function addUpdateNetsuiteGuestCustomer($order) {
+		$guest_customer_sync = true;
+		$guest_customer_sync = apply_filters('tm_ns_guest_customer_sync_status_check', $guest_customer_sync, $order);
+		if (true == $guest_customer_sync) {
+			$customer_internal_id = $this->syncNetSuiteGuestCustomerData($order);
+			return $customer_internal_id;
+		}
+
+	}
+
 	/**
 	 * Sync Guest Customer
 	 *
 	 */
-	public function addUpdateNetsuiteGuestCustomer($order) {
+	public function syncNetSuiteGuestCustomerData($order) {
 		if ($order) {
 
 			$customerSearchResponseByEmail = '';
@@ -1553,6 +1551,7 @@ class TMWNI_Loader {
 				tm_ns_delete_post_meta($post_id, TMWNI_Settings::$ns_order_id, $nsOrderInternalId);
 				$wpdb->netsuite_order_logs = $wpdb->prefix . 'tm_woo_netsuite_auto_sync_order_status';
 				$order_data_logs_delete = $wpdb->query($wpdb->prepare(" DELETE  FROM {$wpdb->netsuite_order_logs} WHERE ns_order_internal_id = %d ", $nsOrderInternalId, OBJECT));
+
 			}
 
 		}

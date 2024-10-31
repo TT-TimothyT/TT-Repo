@@ -6,14 +6,6 @@
  *
  * Author : Manish Gautam
  */
-// Including development toolkit provided by Netsuite
-require_once TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php';
-require_once TMWNI_DIR . 'inc/NS_Toolkit/src/includes/functions.php';
-require_once TMWNI_DIR . 'inc/common.php';
-foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
-	require_once $filename;
-}
-
 use NetSuite\NetSuiteService;
 use NetSuite\Classes\SearchStringField;
 use NetSuite\Classes\ItemSearchBasic;
@@ -759,36 +751,45 @@ class OrderClient extends CommonIntegrationFunctions {
 	 */
 	public function createCustomerDeposite( $order_data, $customer_internal_id, $order_internal_id ) {
 		global $TMWNI_OPTIONS;
-		$order_id = $order_data['order_id'];
-		$order = wc_get_order($order_id);
+		$customer_deposit_sync = true;
+		$customer_deposit_sync = apply_filters('tm_ns_customer_deposit_sync_status_check', $customer_deposit_sync, $order_data, $customer_internal_id, $order_internal_id);
 
-		$this->object_id = 'CustomerDeposite';
+		if (true == $customer_deposit_sync) {
+			$order_id = $order_data['order_id'];
+			$order = wc_get_order($order_id);
 
-		$customer_deposite = new CustomerDeposit();
+			$this->object_id = 'CustomerDeposite';
 
-		$customer_deposite->customer = new RecordRef();
-		$customer_deposite->customer->internalId = $customer_internal_id;
+			$customer_deposite = new CustomerDeposit();
 
-		$customer_deposite->salesOrder = new RecordRef();
-		$customer_deposite->salesOrder->internalId = $order_internal_id;
+			$customer_deposite->customer = new RecordRef();
+			$customer_deposite->customer->internalId = $customer_internal_id;
 
-		$customer_deposite->payment = $order->total;
+			$customer_deposite->salesOrder = new RecordRef();
+			$customer_deposite->salesOrder->internalId = $order_internal_id;
 
-		$request = new AddRequest();
-		$request->record = $customer_deposite;
+			$customer_deposite->payment = $order->total;
 
-		try {
-			$addResponse = $this->netsuiteService->add($request);
-			return $this->handleAPIAddResponse($addResponse, 'customer deposite');
-		} catch (SoapFault $e) {
-			$object = 'customer deposite';
-			$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Add' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
-			$error_msg .= 'Error Message: ' . $e->getMessage();
+			$customer_deposite = apply_filters('tm_customer_deposit_data', $customer_deposite, $order_data, $customer_internal_id, $order_internal_id);
 
-			$this->handleLog(0, $this->object_id, $object, $error_msg);
+			$request = new AddRequest();
+			$request->record = $customer_deposite;
 
-			return 0;
+			try {
+				$addResponse = $this->netsuiteService->add($request);
+				return $this->handleAPIAddResponse($addResponse, 'customer deposite');
+			} catch (SoapFault $e) {
+				$object = 'customer deposite';
+				$error_msg = "SOAP API Error occured on '" . ucfirst($object) . " Add' operation failed for WooCommerce " . $object . ', ID = ' . $this->object_id . '. ';
+				$error_msg .= 'Error Message: ' . $e->getMessage();
+
+				$this->handleLog(0, $this->object_id, $object, $error_msg);
+
+				return 0;
+			}
+
 		}
+		
 	} 
 
 
@@ -1019,6 +1020,7 @@ class OrderClient extends CommonIntegrationFunctions {
 							} else if (3 == $mapping['type']) {
 								if (!empty($order)) {
 									$saved_value = tm_ns_get_order_data($order, $mapping);
+
 								}
 							} else if (4 == $mapping ['type']) {
 								if (!empty($order)) {
@@ -1028,11 +1030,11 @@ class OrderClient extends CommonIntegrationFunctions {
 						
 
 							if ('contains'  == $mapping['wc_where_op'] ) {
-								if (false !== strpos(strtolower($saved_value), strtolower($mapping['wc_field_value']))) {
+								if (false !== strpos(html_entity_decode(mb_strtolower($saved_value)), html_entity_decode(mb_strtolower($mapping['wc_field_value'])))) {
 									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							} elseif ('doesnotcontain' == $mapping['wc_where_op']) {
-								if (false === strpos(strtolower($saved_value), strtolower($mapping['wc_field_value']))) {
+								if (false === strpos(html_entity_decode(strtolower($saved_value)), html_entity_decode(strtolower($mapping['wc_field_value'])))) {
 									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							} elseif ('is' == $mapping['wc_where_op']) {
@@ -1040,16 +1042,18 @@ class OrderClient extends CommonIntegrationFunctions {
 									if (empty($saved_value)) {
 										$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 									}
-								} elseif (html_entity_decode(strtolower($mapping['wc_field_value']))  == html_entity_decode(strtolower($saved_value))) {
-									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
-
+								} elseif (html_entity_decode(strtolower($mapping['wc_field_value'])) == html_entity_decode(strtolower($saved_value))) {
+									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array(
+										'type' => trim($mapping['ns_field_type_value']),
+										'value' => $mapping['ns_field_value']
+									);
 								}
 							} elseif ('isnot' == $mapping['wc_where_op']) {
 								if ('null' == strtolower($mapping['wc_field_value'])) {
 									if (!empty($saved_value)) {
 										$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 									}
-								} elseif ( strtolower($saved_value) != strtolower($mapping['wc_field_value'])) {
+								} elseif ( html_entity_decode(strtolower($saved_value)) != html_entity_decode(strtolower($mapping['wc_field_value']))) {
 									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array( 'type'=>trim($mapping['ns_field_type_value']), 'value'=>$mapping['ns_field_value'] );
 								}
 							}

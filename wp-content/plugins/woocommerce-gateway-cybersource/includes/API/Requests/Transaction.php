@@ -24,7 +24,7 @@
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests;
 
 use SkyVerge\WooCommerce\Cybersource\API\Request;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_2 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -37,4 +37,3 @@ abstract class Transaction extends Request implements Framework\SV_WC_Payment_Ga
 
 
 }
-

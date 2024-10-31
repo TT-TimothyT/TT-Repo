@@ -2,35 +2,40 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce CyberSource Gateway 2.8.0\n"
+"Project-Id-Version: WooCommerce CyberSource Gateway 2.8.2\n"
 "Report-Msgid-Bugs-To: https://woocommerce.com/my-account/marketplace-ticket-form/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-26T02:18:08+00:00\n"
+"POT-Creation-Date: 2024-07-09T07:30:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: woocommerce-gateway-cybersource\n"
 
 #. Plugin Name of the plugin
+#: woocommerce-gateway-cybersource.php
 msgid "WooCommerce CyberSource Gateway"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: woocommerce-gateway-cybersource.php
 msgid "http://www.woocommerce.com/products/cybersource-payment-gateway/"
 msgstr ""
 
 #. Description of the plugin
+#: woocommerce-gateway-cybersource.php
 msgid "Accept credit cards in WooCommerce with the CyberSource (SOAP) payment gateway"
 msgstr ""
 
 #. Author of the plugin
+#: woocommerce-gateway-cybersource.php
 msgid "SkyVerge"
 msgstr ""
 
 #. Author URI of the plugin
+#: woocommerce-gateway-cybersource.php
 msgid "http://www.woocommerce.com/"
 msgstr ""
 
@@ -46,6 +51,10 @@ msgstr ""
 #: includes/Legacy/Gateway.php:201
 msgctxt "hash before order number"
 msgid "#"
+msgstr ""
+
+#: includes/API/Requests/Payments/Credit_Card_Payment.php:235
+msgid "Payer Authentication is required for the selected payment method. Please try again or contact the store for further information."
 msgstr ""
 
 #: includes/Blocks/Electronic_Check_Checkout_Block_Integration.php:124

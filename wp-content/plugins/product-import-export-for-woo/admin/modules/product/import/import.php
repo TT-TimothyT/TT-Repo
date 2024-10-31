@@ -2010,7 +2010,7 @@ class Wt_Import_Export_For_Woo_Basic_Product_Import {
             foreach ($data['meta_data'] as $meta) {
                 if(''== $meta)
                     continue;    
-				$function	 = 'set_' . $meta[ 'key' ];
+				$function	 = 'set_' . trim($meta[ 'key' ],'_');
 				$has_setter	 = is_callable( array( $product, $function ) );
 				if ( $has_setter ) {
 					$product->{$function}( $meta[ 'value' ] );

@@ -7,14 +7,6 @@
  *
  * Author : Manish Gautam
  */
-
-// Including development toolkit provided by Netsuite
-require_once(TMWNI_DIR . 'inc/NS_Toolkit/src/NetSuiteService.php');
-require_once TMWNI_DIR . 'inc/common.php';
-foreach (glob(TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/*.php') as $filename) {
-	require_once $filename;
-}
-
 use NetSuite\NetSuiteService;
 use NetSuite\Classes\ReturnAuthorization;
 use NetSuite\Classes\ReturnAuthorizationItemList;
@@ -30,11 +22,6 @@ use NetSuite\Classes\SearchStringField;
 use NetSuite\Classes\SearchStringFieldOperator;
 use NetSuite\Classes\GetRequest;
 use NetSuite\Classes\SearchEnumMultiSelectField;
-
-
-
-
-
 
 
 class OrderRefund extends CommonIntegrationFunctions {
@@ -66,9 +53,6 @@ class OrderRefund extends CommonIntegrationFunctions {
 			$refund = $refund_order;
 		}
 
-
-
-
 		$ReturnAuthorization = new ReturnAuthorization();
 		
 		$ReturnAuthorization->entity = new RecordRef();
@@ -77,8 +61,6 @@ class OrderRefund extends CommonIntegrationFunctions {
 
 		$ReturnAuthorization->createdFrom = new RecordRef();
 		$ReturnAuthorization->createdFrom->internalId = $order_ns_internal_id;
-
-
 
 
 		$ReturnAuthorization->itemList = new ReturnAuthorizationItemList();
@@ -180,11 +162,11 @@ class OrderRefund extends CommonIntegrationFunctions {
 
 			$selectedField = new SearchMultiSelectField();
 			$selectedField->searchValue = $internalIds_array;
-			$selectedField->operator = SEARCHENUMMULTISELECTFIELDOPERATOR::ANYOF;
+			$selectedField->operator = 'anyOf';
 
 			$RecordType = new SearchStringField();
-			$RecordType->searchValue = RecordType::RETURNAUTHORIZATION;
-			$RecordType->operator = SearchStringFieldOperator::IS;
+			$RecordType->searchValue = 'returnAuthorization';
+			$RecordType->operator = 'is';
 
 			$tranSearch = new TransactionSearchBasic();
 			$tranSearch->createdFrom = $selectedField;
@@ -241,7 +223,7 @@ class OrderRefund extends CommonIntegrationFunctions {
 		$request = new GetRequest();
 		$request->baseRef = new RecordRef();
 		$request->baseRef->internalId = $order_refund_id; //<< REPLACE THIS WITH YOUR INTERNAL ID
-		$request->baseRef->type = RecordType::RETURNAUTHORIZATION;
+		$request->baseRef->type = 'returnAuthorization';
 		try {
 			$getResponse = $ns_service->get($request);
 			if (isset($getResponse->readResponse->status->isSuccess) && 1 == $getResponse->readResponse->status->isSuccess ) {

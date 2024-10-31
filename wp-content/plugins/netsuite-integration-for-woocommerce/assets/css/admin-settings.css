@@ -25,15 +25,15 @@
 }
 /* Tooltip arrow */
 .tooltip .tooltiptext::after {
-   content: " ";
-   position: absolute;
-   bottom: 100%;
-   left: 15px;
-   margin-left: -5px;
-   border-width: 5px;
-   border-style: solid;
-   border-color: transparent transparent #2271b1 transparent;
-   top: auto;
+ content: " ";
+ position: absolute;
+ bottom: 100%;
+ left: 15px;
+ margin-left: -5px;
+ border-width: 5px;
+ border-style: solid;
+ border-color: transparent transparent #2271b1 transparent;
+ top: auto;
 }
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
@@ -142,7 +142,7 @@ td.promo_required_fields{
 }
 .ns_order_shiping_line_item, .ns_order_admin_email_field{
     display: none !important;
-    }
+}
 
 .hidden_tr_input{
     display: none !important;
@@ -211,7 +211,7 @@ td.forminp.forminp-checkbox input[type="checkbox"] {
     -webkit-animation: spin 2s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
     animation: spin 2s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
 }
- 
+
 #loader:before {
     content: "";
     position: absolute;
@@ -223,9 +223,9 @@ td.forminp.forminp-checkbox input[type="checkbox"] {
     border: 3px solid transparent;
     border-top-color: #e74c3c;
     -webkit-animation: spin 3s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
-      animation: spin 3s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+    animation: spin 3s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
 }
- 
+
 #loader:after {
     content: "";
     position: absolute;
@@ -237,7 +237,7 @@ td.forminp.forminp-checkbox input[type="checkbox"] {
     border: 3px solid transparent;
     border-top-color: #f9c922;
     -webkit-animation: spin 1.5s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
-      animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+    animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
 }
 .notify{
     top:5% !important;
@@ -255,7 +255,7 @@ td.forminp.forminp-checkbox input[type="checkbox"] {
     content:" *";
     color: black !important;
 }
- 
+
 @-webkit-keyframes spin {
     0%   {
         -webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */
@@ -338,169 +338,169 @@ td.forminp.forminp-checkbox input[type="checkbox"] {
 /*    padding: 10px 20px;
 */}
 
-input#export_settings,#import_settings{
-    background: #2271b1 !important;
-    /*border: 0px;*/
-    padding: 10px 20px;
+    input#export_settings,#import_settings{
+        background: #2271b1 !important;
+        /*border: 0px;*/
+        padding: 10px 20px;
 
-}
+    }
 
-input#test_api_creds {
-    background: #2271b1;
-}
+    input#test_api_creds {
+        background: #2271b1;
+    }
 
-.btn:hover {
-    background: #2271b1;
-}
-.wp-core-ui .form-table .button-primary, .wp-core-ui .form-table .button-primary:hover {
-    background: #2271b1;
-    border-color: #2271b1;
-    color: #fff;
-    text-decoration: none;
-    text-shadow: none;
-    padding: 5px 20px;
-    font-size: 15px;
-}
-table.netsuite_conditional_mapping.table tr {
-    border-top: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    margin: 10px 0 0;
-}
-table.netsuite_conditional_mapping.table td select, table.netsuite_conditional_mapping.table td input {
-    width: 100% !important;
-    max-width: 100%;
-    height: 40px !important;
-    border: 1px solid #ccc !important;
-}
-table.netsuite_conditional_mapping.table td span.required, table.netsuite_conditional_mapping.table td span.h6, table.netsuite_conditional_mapping.table td span.h5 {
-    font-size: 16px;
-    display: inline-block;
-}
-table.netsuite_conditional_mapping.table td span.select2 {
-    width: 100% !important;
-    height: 40px !important;
-    display: inline-block;
-}
+    .btn:hover {
+        background: #2271b1;
+    }
+    .wp-core-ui .form-table .button-primary, .wp-core-ui .form-table .button-primary:hover {
+        background: #2271b1;
+        border-color: #2271b1;
+        color: #fff;
+        text-decoration: none;
+        text-shadow: none;
+        padding: 5px 20px;
+        font-size: 15px;
+    }
+    table.netsuite_conditional_mapping.table tr {
+        border-top: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        margin: 10px 0 0;
+    }
+    table.netsuite_conditional_mapping.table td select, table.netsuite_conditional_mapping.table td input {
+        width: 100% !important;
+        max-width: 100%;
+        height: 40px !important;
+        border: 1px solid #ccc !important;
+    }
+    table.netsuite_conditional_mapping.table td span.required, table.netsuite_conditional_mapping.table td span.h6, table.netsuite_conditional_mapping.table td span.h5 {
+        font-size: 16px;
+        display: inline-block;
+    }
+    table.netsuite_conditional_mapping.table td span.select2 {
+        width: 100% !important;
+        height: 40px !important;
+        display: inline-block;
+    }
 
-table.netsuite_conditional_mapping.table td span.select2 span.select2-selection {
-    height: 40px;
-    line-height: 40px;
-    padding: 5px 0;
-    display: block;
-}
+    table.netsuite_conditional_mapping.table td span.select2 span.select2-selection {
+        height: 40px;
+        line-height: 40px;
+        padding: 5px 0;
+        display: block;
+    }
 
-table.netsuite_conditional_mapping.table td span.select2 span.select2-selection__arrow {
-    height: 40px;
-}
-table.netsuite_conditional_mapping.table td span.required, table.netsuite_conditional_mapping.table td span.h6, table.netsuite_conditional_mapping.table td span.h5 {
-    font-size: 16px;
-    display: inline-block;
-    margin: 5px 0 7px;
-}
-table.netsuite_conditional_mapping.table tr {
-    border-top: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    margin: 10px 0 0;
-}
+    table.netsuite_conditional_mapping.table td span.select2 span.select2-selection__arrow {
+        height: 40px;
+    }
+    table.netsuite_conditional_mapping.table td span.required, table.netsuite_conditional_mapping.table td span.h6, table.netsuite_conditional_mapping.table td span.h5 {
+        font-size: 16px;
+        display: inline-block;
+        margin: 5px 0 7px;
+    }
+    table.netsuite_conditional_mapping.table tr {
+        border-top: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        margin: 10px 0 0;
+    }
 
-table.netsuite_conditional_mapping.table td br {
-    display: none !important;
-}
+    table.netsuite_conditional_mapping.table td br {
+        display: none !important;
+    }
 
-.tm-netsuite-container .row>h3 {margin: 20px 0 15px 15px;font-weight: 600;color: #2271b1;position: relative;padding: 0 0 15px;}
+    .tm-netsuite-container .row>h3 {margin: 20px 0 15px 15px;font-weight: 600;color: #2271b1;position: relative;padding: 0 0 15px;}
 
 /*.tm-netsuite-container .row>h3:after 
 {content: "";position: absolute;left: 0;background: transparent;bottom: 0;width: 200px;height: 8px;border-top: 2px dotted #2271b1;border-bottom: 2px dotted #1e2120;}
 */
-table.netsuite_conditional_mapping.table td:empty {
-    display: none;
-}
-form.tm_netsuite_ajax_form_save {
-    overflow: hidden;
-}
-#logList {
-    background: #eee;
-    margin: 30px 0 0 !important;
-    display: block;
-    box-shadow: 0 0 4px #ccc;
-    width: 100% !important;
-    float: left;
-    border: 0px;
-}
-#logList tr.even {
-    background: #eee;
-}
+    table.netsuite_conditional_mapping.table td:empty {
+        display: none;
+    }
+    form.tm_netsuite_ajax_form_save {
+        overflow: hidden;
+    }
+    #logList {
+        background: #eee;
+        margin: 30px 0 0 !important;
+        display: block;
+        box-shadow: 0 0 4px #ccc;
+        width: 100% !important;
+        float: left;
+        border: 0px;
+    }
+    #logList tr.even {
+        background: #eee;
+    }
 
-#logList tr {
-    height: 50px;
-}
-#logList th {
-    color: #1e2120;
-}
-#logList_paginate {
-    margin-top: 10px;
-}
+    #logList tr {
+        height: 50px;
+    }
+    #logList th {
+        color: #1e2120;
+    }
+    #logList_paginate {
+        margin-top: 10px;
+    }
 
-#logList_paginate a.paginate_button.current {
-    background: #2271b1;
-    border: 0;
-    color: #fff !important;
-}
+    #logList_paginate a.paginate_button.current {
+        background: #2271b1;
+        border: 0;
+        color: #fff !important;
+    }
 
-div#logList_info {
-    margin: 10px 0 0;
-    font-weight: 600;
-}
-#wpbody-content #wrap nav.nav-tab-wrapper {
-    margin: 0 0 30px;
-    display: flex;
-    border: 1px solid #ccc;
-    padding: 0;
-}
+    div#logList_info {
+        margin: 10px 0 0;
+        font-weight: 600;
+    }
+    #wpbody-content #wrap nav.nav-tab-wrapper {
+        margin: 0 0 30px;
+        display: flex;
+        border: 1px solid #ccc;
+        padding: 0;
+    }
 
-#wpbody-content #wrap nav.nav-tab-wrapper .nav-tab.nav-tab-active:after {content: "";width: 0;height: 0;border-left: 20px solid transparent;border-right: 20px solid transparent;border-top: 30px solid #2271b1;position: absolute;left: 50%;transform: translateX(-50%);bottom: -25px;}
+    #wpbody-content #wrap nav.nav-tab-wrapper .nav-tab.nav-tab-active:after {content: "";width: 0;height: 0;border-left: 20px solid transparent;border-right: 20px solid transparent;border-top: 30px solid #2271b1;position: absolute;left: 50%;transform: translateX(-50%);bottom: -25px;}
 
-#wpbody-content #wrap nav.nav-tab-wrapper .nav-tab.nav-tab-active {
-    position: relative;
-}
+    #wpbody-content #wrap nav.nav-tab-wrapper .nav-tab.nav-tab-active {
+        position: relative;
+    }
 
-select#customer_roles, select#netsuite_countries, select#netstuite_locations {
-    width: 100%;
-    padding: 10px 10px;
-    border: 0;
-    background: #e8e5e5;
-    min-height: 150px;
-    overflow-y: scroll;
-}
+    select#customer_roles, select#netsuite_countries, select#netstuite_locations {
+        width: 100%;
+        padding: 10px 10px;
+        border: 0;
+        background: #e8e5e5;
+        min-height: 150px;
+        overflow-y: scroll;
+    }
 
-select#customer_roles option, select#netsuite_countries option, select#netstuite_locations option {
-    background: #2271b100 !important;
-    padding: 9px;
-}
+    select#customer_roles option, select#netsuite_countries option, select#netstuite_locations option {
+        background: #2271b100 !important;
+        padding: 9px;
+    }
 
-.tm-netsuite-container .row .col-md-12 h4 {
-    font-size: 18px;
-    font-weight: 600;
-    background: #1e2120;
-    color: #fff;
-    padding: 10px 50px 10px 20px;
-    border-radius: 5px;
-    display: inline-block;
-    position: relative;
-}
+    .tm-netsuite-container .row .col-md-12 h4 {
+        font-size: 18px;
+        font-weight: 600;
+        background: #1e2120;
+        color: #fff;
+        padding: 10px 50px 10px 20px;
+        border-radius: 5px;
+        display: inline-block;
+        position: relative;
+    }
 
-.tm-netsuite-container .row .col-md-12 h4:after
-{content: "";width: 0;height: 0;border-top: 20px solid transparent;border-right: 30px solid #fff;border-bottom: 20px solid transparent;position: absolute;right: 0;top: 0;}
+    .tm-netsuite-container .row .col-md-12 h4:after
+    {content: "";width: 0;height: 0;border-top: 20px solid transparent;border-right: 30px solid #fff;border-bottom: 20px solid transparent;position: absolute;right: 0;top: 0;}
 
-#tab-logs .heading h2, #tab-inventory_settings .tm-netsuite-container form>h2 {
-    margin: 20px 0 25px 0;
-    font-weight: 600;
-    color: #2271b1;
-    position: relative;
-    padding: 0 0 15px;
-}
+    #tab-logs .heading h2, #tab-inventory_settings .tm-netsuite-container form>h2 {
+        margin: 20px 0 25px 0;
+        font-weight: 600;
+        color: #2271b1;
+        position: relative;
+        padding: 0 0 15px;
+    }
 
 /*#tab-logs .heading h2:after, #tab-inventory_settings .tm-netsuite-container form>h2:after {
     content: "";
@@ -686,7 +686,7 @@ table.form-table.general-form-table select, table.form-table.general-form-table 
     display: none;
 }
 
-.inventory-logs{
+.inventory-logs, .price-logs{
     display: none;
 }
 fieldset.inventory-logs {
@@ -695,6 +695,18 @@ fieldset.inventory-logs {
     height: 380px;
     overflow: auto;
     margin-top: 10px;
+    width: 49%;
+    float : right;
+
+}
+fieldset.price-logs {
+    border: 1px solid #aaa;
+    padding: 20px;
+    height: 380px;
+    overflow: auto;
+    margin-top: 10px;
+    width: 49%;
+    float : left;
 }
 
 legend.log-head {
@@ -807,7 +819,7 @@ a.button-primary.manual-update-inventory {
     margin: 20px 10px 0 10px
 
 }
- 
+
 .forminp span.select2-selection.select2-selection--multiple {
     height: 50px;
     min-height: unset;
@@ -883,6 +895,19 @@ span.select2-selection__choice__remove {
     border: 1px solid #ccc;
     display: flex;
     align-items: center;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+.container fieldset {
+    width: 45%;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+.log-head {
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
 

@@ -1,5 +1,10 @@
 *** Currency Converter Changelog ***
 
+2024-07-17 - version 2.2.4
+* Tweak - Only load assets when widget or shortcode exist on page and plugin is configured.
+* Tweak - Add an attribute to the widget currency options to instruct browsers to not translate the currency codes within
+* Misc - Require PHP 7.4 or newer
+
 2024-03-25 - version 2.2.3
 * Misc - Update brand to Kestrel
 

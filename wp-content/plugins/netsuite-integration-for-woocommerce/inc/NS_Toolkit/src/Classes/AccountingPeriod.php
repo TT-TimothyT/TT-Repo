@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * This file is part of the netsuitephp/netsuite-php library
  * AND originally from the NetSuite PHP Toolkit.

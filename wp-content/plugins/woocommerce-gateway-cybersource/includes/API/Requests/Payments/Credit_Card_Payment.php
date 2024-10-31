@@ -23,8 +23,12 @@
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payments;
 
+use Exception;
+use SkyVerge\WooCommerce\Cybersource\API\Helper;
 use SkyVerge\WooCommerce\Cybersource\API\Visa_Checkout\Traits\Can_Add_Visa_Checkout_Request_Data;
+use SkyVerge\WooCommerce\Cybersource\Gateway\Credit_Card;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\AJAX;
+use SkyVerge\WooCommerce\Cybersource\Plugin;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -195,10 +199,11 @@ class Credit_Card_Payment extends Payment {
 	 *
 	 * Sets the Apple Pay payment solution if paying with Apple Pay.
 	 *
-	 * @since 2.0.0
-	 *
 	 * @param bool $settlement_type settlement type
 	 * @return array<string, mixed>
+	 * @throws Exception
+	 * @since 2.0.0
+	 *
 	 */
 	protected function get_processing_information( bool $settlement_type = false ): array {
 
@@ -213,8 +218,22 @@ class Credit_Card_Payment extends Payment {
 			$data['paymentSolution'] = self::PAYMENT_SOLUTION_GOOGLE_PAY;
 		}
 
-		/** @see AJAX::check_enrollment() */
-		if ( ! empty( $threed_secure_data = $this->get_order()->threed_secure ) ) {
+		/** @var Credit_Card $gateway */
+		$gateway = wc_cybersource()->get_gateway( Plugin::CREDIT_CARD_GATEWAY_ID );
+
+		if ( $gateway->is_3d_secure_enabled() &&
+			$gateway->is_3d_secure_enabled_for_card_type( (string) $this->get_payment_method_card_type() ) ) {
+
+			/**
+			 * @see AJAX::check_enrollment()
+			 * @see Credit_Card::get_order()
+			 */
+			$threed_secure_data = $this->get_order()->threed_secure;
+
+			// ensure we have at least the reference ID and enrollment status available
+			if ( empty( $threed_secure_data ) || ! $threed_secure_data->reference_id || ! $threed_secure_data->enrollment_status ) {
+				throw new Exception( __( 'Payer Authentication is required for the selected payment method. Please try again or contact the store for further information.', 'woocommerce-gateway-cybersource' ) );
+			}
 
 			// set the commerce indicator from check enrollment response, if available
 			if ( ! empty( $threed_secure_data->consumer_authentication_information->ecommerceIndicator ) ) {
@@ -227,9 +246,13 @@ class Credit_Card_Payment extends Payment {
 			// As a workaround,  we will re-check enrollment if enrollment check did not require a step-up challenge - this
 			// ensures that the enrollment check results are available in the Decision Manager, allowing the merchant to
 			// use the results for fraud screening.
-			if ( $threed_secure_data->enrollment_status === 'AUTHENTICATION_SUCCESSFUL' ) {
-				$data['actionList'][] = 'CONSUMER_AUTHENTICATION';
-			}
+			// TODO: UPDATE 2024-07-01 {@itambek} - unfortunately, while the above is true and ensures data is available
+			//  in Decision Manager, it results in the merchant being charged twice for the enrollment check. As such,
+			//  we will disable the 2nd enrollment check until we can hopefully combine the enrollment check with the
+			//  authorization request in way that will result in a single check per transaction.
+//			if ( $threed_secure_data->enrollment_status === 'AUTHENTICATION_SUCCESSFUL' ) {
+//				$data['actionList'][] = 'CONSUMER_AUTHENTICATION';
+//			}
 
 			// validate consumer authentication for 3DSecure transactions, if a challenge was required when checking enrollment
 			if ( $threed_secure_data->enrollment_status === 'PENDING_AUTHENTICATION' ) {
@@ -313,6 +336,33 @@ class Credit_Card_Payment extends Payment {
 		}
 
 		return str_replace( $encoded_value, $replacement, $string );
+	}
+
+	/**
+	 * Gets the card type for the current payment card.
+	 *
+	 * Determines card type for both new and saved cards.
+	 *
+	 * @return string|null
+	 */
+	protected function get_payment_method_card_type() : ?string
+	{
+		$payment = $this->get_order()?->payment;
+
+		if ($payment && $payment->token) {
+			$token = wc_cybersource()
+				->get_gateway(Plugin::CREDIT_CARD_GATEWAY_ID)
+				->get_payment_tokens_handler()
+				->get_token(get_current_user_id(), $payment->token);
+
+			return $token?->get_card_type();
+		}
+
+		if ($payment->jwt) {
+			return Helper::convert_code_to_card_type($this->get_detected_card_code_from_jwt($payment->jwt));
+		}
+
+		return null;
 	}
 
 
