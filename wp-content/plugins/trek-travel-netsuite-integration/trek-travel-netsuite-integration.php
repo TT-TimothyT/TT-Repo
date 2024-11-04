@@ -217,3 +217,6 @@ require_once TTNSW_DIR.'/inc/OAuthRequest.php';
 require_once TTNSW_DIR.'inc/ttnsw-cron-functions.php';
 require_once TTNSW_DIR.'inc/ttnsw-general-functions.php';
 require_once TTNSW_DIR.'inc/ttnsw-fetch-ns-items.php';
+
+// Custom WP-CLI Commands.
+include_once TTNSW_DIR.'inc/ttnsw-wp-cli.php';
