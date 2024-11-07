@@ -8529,3 +8529,21 @@ function tt_get_trip_carousel_image_url( $source_image_url ) {
 
 	return $image_url;
 }
+
+/**
+ * Filters the Yoast SEO Page title.
+ *
+ * @link https://developer.yoast.com/features/seo-tags/titles/api/
+ *
+ * @param string $title The current page's generated title.
+ *
+ * @return string The filtered title.
+ */
+function tt_filter_wpseo_title( $title ) {
+    if ( is_search() ) {
+        // Change the title on the Search page.
+        $title = __( 'Search - Trek Travel', 'trek-travel-theme' );
+    }
+    return $title;
+}
+add_filter( 'wpseo_title', 'tt_filter_wpseo_title' );
