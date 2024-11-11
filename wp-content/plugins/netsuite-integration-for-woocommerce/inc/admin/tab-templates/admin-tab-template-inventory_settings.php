@@ -145,6 +145,22 @@
 											</td>
 										</tr>
 										<tr valign="top">
+										<th scope="row" class="titledesc">
+											Update Stock to 0 When NetSuite Inventory is Zero
+											<div class="tooltip dashicons-before dashicons-editor-help">
+												<span class="tooltiptext">If selected, this WooCommerce product's stock quantity will automatically be updated to 0 when the inventory in NetSuite is zero.</span>
+											</div>
+										</th>
+										<td class="forminp forminp-checkbox">
+											<input name="updateStockZero" 
+											<?php 
+											if (isset($options['updateStockZero']) && 'on' == $options['updateStockZero']) {
+												echo 'checked ';} 
+											?>
+												id="updateStockZero" type="checkbox">                    
+											</td>
+										</tr>
+										<tr valign="top">
 											<th scope="row" class="titledesc">
 												Update stock status
 												<div class="tooltip dashicons-before dashicons-editor-help">

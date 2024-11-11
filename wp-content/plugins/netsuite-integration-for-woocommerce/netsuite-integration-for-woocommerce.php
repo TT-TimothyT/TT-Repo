@@ -3,7 +3,7 @@
  * Plugin Name: NetSuite Integration for WooCommerce
  * Plugin URI: https://woocommerce.com/products/netsuite-integration-for-woocommerce/
  * Description: Plugin will be used to add/update WooCommerce orders and customers to NetSuite .
- * Version: 1.6.2
+ * Version: 1.6.3
  * Author: Techmarbles
  * Author URI: https://techmarbles.com/
  * Text Domain: TMWNI

@@ -80,7 +80,7 @@ class Wt_Import_Export_For_Woo_Basic {
 		if ( defined( 'WT_O_IEW_VERSION' ) ) {
 			$this->version = WT_O_IEW_VERSION;
 		} else {
-			$this->version = '2.5.7';
+			$this->version = '2.5.8';
 		}
 		$this->plugin_name = 'wt-import-export-for-woo-basic';
 
@@ -152,6 +152,11 @@ class Wt_Import_Export_For_Woo_Basic {
 		 * Class includes helper functions for import and export modules
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'helpers/class-wt-import-export-helper.php';
+
+		/**
+		 * Class includes helper functions for bfcm banner
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/banner/class-wtier-bfcm-twenty-twenty-four.php';
 
 		/**
 		 * Class includes log writing functions
@@ -332,6 +337,25 @@ class Wt_Import_Export_For_Woo_Basic {
 		}
 		return $adapters;
 	}
+
+	/**
+     * To Check if the current date is on or between the start and end date of black friday and cyber monday banner for 2024.
+     * @since 2.5.8
+     */
+    public static function is_bfcm_season() {
+        $start_date = new DateTime( '25-NOV-2024, 12:00 AM', new DateTimeZone( 'Asia/Kolkata' ) ); // Start date.
+        $current_date = new DateTime( 'now', new DateTimeZone( 'Asia/Kolkata' ) ); // Current date.
+        $end_date = new DateTime( '02-DEC-2024, 11:59 PM', new DateTimeZone( 'Asia/Kolkata' ) ); // End date.
+
+        /**
+         * check if the date is on or between the start and end date of black friday and cyber monday banner for 2024.
+         */
+        if ( $current_date < $start_date  || $current_date >= $end_date) {
+            return false;
+        }
+        return true;
+    }
+
 
 }
 }

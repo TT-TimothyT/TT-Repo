@@ -229,11 +229,22 @@ class Wt_Import_Export_For_Woo_Admin_Basic {
 				array($this,'admin_settings_page'),
 				'dashicons-controls-repeat',
 				56
-			)
+			),
+				'scheduled-job' => array(
+					'submenu',
+					WT_IEW_PLUGIN_ID_BASIC,
+					__('Schedule Job'),
+					__('Scheduled Job') . ' <img src="' . esc_url(plugin_dir_url(__FILE__) . '../assets/images/wt_iew_crown.svg') . '" alt="' . esc_attr__('Crown', 'order-import-export-for-woocommerce') . '" style="vertical-align: middle;">',
+					apply_filters('wt_import_export_allowed_capability', 'import'),
+					'wt_iew_scheduled_job',
+					array($this, 'admin_scheduled_job_page')
+				)
+
+
 		);
 		$menus=apply_filters('wt_iew_admin_menu_basic',$menus);
 
-		$menu_order=array("export","export-sub","import","history","history_log");
+		$menu_order=array("export","export-sub","import","history","history_log","scheduled-job","general-settings","general-settings-sub");
 		$this->wt_menu_order_changer($menus,$menu_order);                                            
 
 		$main_menu = reset($menus); //main menu must be first one
@@ -292,7 +303,11 @@ class Wt_Import_Export_For_Woo_Admin_Basic {
 		wp_safe_redirect(admin_url('admin.php?page=wt_import_export_for_woo_basic#wt-pro-upgrade'));
 		exit();
 	}
+	public function admin_scheduled_job_page()
+	{
 
+		include(plugin_dir_path(__FILE__) . 'partials/wt-import-export-for-woo-admin-schedule-job.php');
+	}
 	
 	/**
 	* 	Save admin settings and module settings ajax hook

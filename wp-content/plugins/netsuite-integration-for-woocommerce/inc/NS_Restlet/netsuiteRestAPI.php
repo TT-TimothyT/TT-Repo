@@ -200,7 +200,7 @@ class NetsuiteRESTAPI {
 		return $response;
 	}
 
-	public function nsRESTRequest($method='',$endPoint,$queryEnable,$requestBody=null) {
+	public function nsRESTRequest($method,$endPoint,$queryEnable,$requestBody=null) {
 
 		if (empty($method)) {
 			return;

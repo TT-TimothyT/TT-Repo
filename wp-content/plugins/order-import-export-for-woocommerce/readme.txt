@@ -4,7 +4,7 @@ Tags: woocommerce export orders, woocommerce import orders, advanced order expor
 Requires at least: 3.0
 Tested up to: 6.6.2
 Requires PHP: 5.6
-Stable tag: 2.5.7
+Stable tag: 2.5.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -207,6 +207,9 @@ Yes.
 
 == Changelog ==
 
+= 2.5.8 2024-11-07 =
+* [Compatibility] - Tested OK with WooCommerce 9.3.3
+* [Compatibility] - Tested OK with WordPress 6.6.2
 = 2.5.7 2024-10-11 =
 * [Compatibility] - Tested OK with WooCommerce 9.3.3
 * [Compatibility] - Tested OK with WordPress 6.6.2
@@ -593,6 +596,6 @@ Yes.
 
 == Upgrade Notice ==
 
-= 2.5.7 =
+= 2.5.8 =
 * [Compatibility] - Tested OK with WooCommerce 9.3.3
 * [Compatibility] - Tested OK with WordPress 6.6.2

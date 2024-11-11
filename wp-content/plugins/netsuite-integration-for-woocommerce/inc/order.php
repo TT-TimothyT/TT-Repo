@@ -624,8 +624,14 @@ class OrderClient extends CommonIntegrationFunctions {
 
 		$customForm = new RecordRef();
 
-		if (isset($TMWNI_OPTIONS['ns_promo_custform_id']) && !empty($TMWNI_OPTIONS['ns_promo_custform_id']) ) {
-			$customForm->internalId = $TMWNI_OPTIONS['ns_promo_custform_id'];
+		$promoCustomForm = get_option( 'netsuite_promo_customForm');
+
+		$promoForm = array_search('Order Promotion', $promoCustomForm);
+
+		$customForm = new RecordRef();
+
+		if (isset($promoForm) && !empty($promoForm) ) {
+			$customForm->internalId = $promoForm;
 		}
 
 		$fieldsArray = array(

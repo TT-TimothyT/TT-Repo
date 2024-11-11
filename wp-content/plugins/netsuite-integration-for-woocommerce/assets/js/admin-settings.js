@@ -740,7 +740,16 @@ function fetchWooPriceStatus(total_count){
             }
         },
         complete:function(response){
-            if(total_count == response.responseJSON.processed_count){
+            
+            if(response.responseJSON.skipped_count != 'undefined'){
+                var processedCount = parseInt(response.responseJSON.processed_count, 10); // Use parseFloat if needed
+                var skippedCount = parseInt(response.responseJSON.skipped_count, 10); // Use parseFloat if needed
+                var all_processed_count = processedCount + skippedCount;
+            }else{
+                var all_processed_count = response.responseJSON.processed_count;
+            }
+
+            if(total_count == all_processed_count){
                 fetchWooInventoryStatus(total_count);
            } else {
             timeOutId = setTimeout(fetchWooPriceStatus, 2000, total_count);
@@ -775,7 +784,15 @@ function fetchWooInventoryStatus(total_count){
             }
         },
         complete:function(response){
-            if(total_count == response.responseJSON.processed_count){
+            if(response.responseJSON.skipped_count != 'undefined'){
+                var processedCount = parseInt(response.responseJSON.processed_count, 10); // Use parseFloat if needed
+                var skippedCount = parseInt(response.responseJSON.skipped_count, 10); // Use parseFloat if needed
+                var all_processed_count = processedCount + skippedCount;
+            }else{
+                var all_processed_count = response.responseJSON.processed_count;
+            }
+
+            if(total_count == all_processed_count){
                 clearTimeout(timeOutId);
                jQuery('.manual-update-inventory').attr("disabled", false);
                jQuery('.progress').remove();

@@ -57,6 +57,11 @@ select[name=wt_iew_file_from]{visibility: hidden;}
 		<div class="progressa">
 			<div class="progressab" style="background-color: rgb(178, 222, 75);width:5px; "></div>
 		</div>
+		<div class="progresscta">
+			<div class="wt_iew_cta_banner_border"></div>
+			<p id="dynamic-cta-content" style="font-size: 13px; font-weight: 400; padding:0px 20px;">
+			</p>
+			</div>
 		
 	<div class="wt-iew-import-completed" style="display:none;border-top: 1px outset;">
 		<h3><?php _e('Import Completed'); ?><span style="color:green" class="dashicons dashicons-yes-alt"></span></h3>
@@ -158,4 +163,30 @@ function wt_iew_importer_reset_form_data_basic()
 	do_action('wt_iew_importer_reset_form_data_basic');
 	?>
 }
+document.addEventListener('DOMContentLoaded', function() {
+		var ctaHeaders = [
+			'<?php echo esc_js(__("Get scheduled imports and exports")); ?>',
+			'<?php echo esc_js(__("Did You Know?")); ?>',
+			'<?php echo esc_js(__("Get Premium Support")); ?>',
+			'<?php echo esc_js(__("99% Happy Customers 😊")); ?>'
+		];
+
+		var ctaContents = [
+			'<?php echo esc_js(__("Upgrade to premium and enjoy scheduled imports and exports using WordPress cron and Server cron.")); ?> <a href="<?php echo esc_url("https://www.webtoffee.com/product/woocommerce-import-export-suite/?utm_source=free_plugin_data_type&utm_medium=basic_revamp&utm_campaign=Import_Export_Suite" . WT_U_IEW_VERSION); ?>" style="color: blue;" target="_blank"><?php echo esc_js(__("Upgrade to pro now.")); ?></a>',
+			'<?php echo esc_js(__("With the premium version, you can import and export custom fields and meta data.")); ?> <a href="<?php echo esc_url("https://www.webtoffee.com/product/woocommerce-import-export-suite/?utm_source=free_plugin_data_type&utm_medium=basic_revamp&utm_campaign=Import_Export_Suite" . WT_U_IEW_VERSION); ?>" style="color: blue;" target="_blank"><?php echo esc_js(__("Upgrade to pro now.")); ?></a>',
+			'<?php echo esc_js(__("Experience our premium and priority support for hassle-free import/export of WooCommerce products.")); ?> <a href="<?php echo esc_url("https://www.webtoffee.com/product/woocommerce-import-export-suite/?utm_source=free_plugin_data_type&utm_medium=basic_revamp&utm_campaign=Import_Export_Suite" . WT_U_IEW_VERSION); ?>" style="color: blue;" target="_blank"><?php echo esc_js(__("Get Premium Support.")); ?></a>',
+			'<?php echo esc_js(__("We take pride in our 99% customer satisfaction rating and provide top-tier priority support to enhance your experience.")); ?> <a href="<?php echo esc_url("https://www.webtoffee.com/product/woocommerce-import-export-suite/?utm_source=free_plugin_data_type&utm_medium=basic_revamp&utm_campaign=Import_Export_Suite" . WT_U_IEW_VERSION); ?>" style="color: blue;" target="_blank"><?php echo esc_js(__("Join 99% Happy Customers.")); ?></a>'
+		];
+
+		var currentIndex = 0;
+		var ctaElement = document.getElementById('dynamic-cta-content');
+
+		setInterval(function() {
+			currentIndex = (currentIndex + 1) % ctaHeaders.length;
+
+			ctaElement.innerHTML = '<img src="<?php echo esc_url(WT_U_IEW_PLUGIN_URL . '/assets/images/greenbulb.png'); ?>" style="margin-right: 5px;float:inline-start;">' +
+				'<strong style="float:inline-start;">' + ctaHeaders[currentIndex] + '</strong><br>' +
+				ctaContents[currentIndex];
+		}, 20000); // Change content and header every 20 seconds
+	});
 </script>

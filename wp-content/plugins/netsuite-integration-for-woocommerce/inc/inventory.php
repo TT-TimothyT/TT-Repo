@@ -212,8 +212,11 @@ class NS_Inventory {
 			$sku = get_post_meta($product->ID, '_sku', true);
 			if (!empty($sku)) {
 				$sku_lot[] = "'" . esc_sql($sku) . "'";
+			} else {
+				$skipped_sku_count++;
 			}
 		}
+		update_option('skipped_count', $skipped_sku_count);
 
 			return $sku_lot; 
 			// return implode(', ', $sku_lot);

@@ -49,6 +49,8 @@ class User_import_export_Review_Request
 
         add_action($this->activation_hook, array($this, 'on_activate'));
         add_action($this->deactivation_hook, array($this, 'on_deactivate'));
+        add_action('admin_notices', array($this, 'show_banner_cta'));
+
 
         if ($this->check_condition()) /* checks the banner is active now */ {
             $this->banner_message = sprintf(__("Hey, we at %sWebToffee%s would like to thank you for using our plugin. We would really appreciate if you could take a moment to drop a quick review that will inspire us to keep going."), '<b>', '</b>');
@@ -247,6 +249,109 @@ class User_import_export_Review_Request
         }
 
         return false;
+    }
+    public function show_banner_cta()
+    {
+        // Check if the WooCommerce Product Import Export plugin is active
+        if (is_plugin_active('users-customers-import-export-for-wp-woocommerce/users-customers-import-export-for-wp-woocommerce.php')) {
+
+            // Check if either Order Import Export or User Import Export is NOT active
+            if (!is_plugin_active('order-import-export-for-woocommerce/order-import-export-for-woocommerce.php') && !is_plugin_active('product-import-export-for-woo/product-import-export-for-woo.php')) {
+
+                // Get the current screen object
+                $screen = get_current_screen();
+
+                // Check if we're on the WooCommerce Reports page
+                if ($screen->id == 'woocommerce_page_wc-reports') {
+                    // Set 'orders' as default tab if no 'tab' is set
+                    $current_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'orders';
+
+                    // Define content and plugin URL based on the current tab
+                    $content = '';
+                    $plugin_url = '';
+                    $title = esc_html__('Did You Know?', 'users-customers-import-export-for-wp-woocommerce');
+                    $cookie_name = ''; // We'll set this based on the current tab
+
+                    switch ($current_tab) {
+                        case 'orders':
+                            // Check if the 'orders' banner has been hidden
+                            $cookie_name = 'hide_cta_orders';
+                            if (isset($_COOKIE[$cookie_name]) && sanitize_text_field($_COOKIE[$cookie_name]) == 'true') {
+                                return; // Don't show the banner if the cookie is set
+                            }
+
+                            $content = '<span style="color: #212121;">' . esc_html__('You can now export WooCommerce order', 'users-customers-import-export-for-wp-woocommerce') . '</span> <span style="color: #5454A5; font-weight: bold;">' . esc_html__('data with custom filters, custom metadata, FTP export, and scheduling options.', 'users-customers-import-export-for-wp-woocommerce') . '</span> <span style="color: #212121;">' . esc_html__('Bulk edit or update orders using CSV, XML, Excel, or TSV files in one go.', 'users-customers-import-export-for-wp-woocommerce') . '</span>';
+                            $plugin_url = 'https://www.webtoffee.com/product/order-import-export-plugin-for-woocommerce/?utm_source=free_plugin_report&utm_medium=basic_revamp&utm_campaign=Order_Import_Export';
+                            break;
+
+                        case 'customers':
+                            // Check if the 'customers' banner has been hidden
+                            $cookie_name = 'hide_cta_customers';
+                            if (isset($_COOKIE[$cookie_name]) && sanitize_text_field($_COOKIE[$cookie_name]) == 'true') {
+                                return; // Don't show the banner if the cookie is set
+                            }
+
+                            $content = '<span style="color: #212121;">' . esc_html__('You can easily bulk export your customers’', 'users-customers-import-export-for-wp-woocommerce') . '</span> <span style="color: #5454A5; font-weight: bold;">' . esc_html__('data to CSV, XML, Excel, or TSV files in just a few clicks.', 'users-customers-import-export-for-wp-woocommerce') . '</span> <span style="color: #212121;">' . esc_html__('Export custom user metadata of third-party plugins seamlessly.', 'users-customers-import-export-for-wp-woocommerce') . '</span>';
+                            $plugin_url = 'https://www.webtoffee.com/product/wordpress-users-woocommerce-customers-import-export/?utm_source=free_plugin_report&utm_medium=basic_revamp&utm_campaign=User_Import_Export';
+                            break;
+
+                        case 'stock':
+                            // Check if the 'stock' banner has been hidden
+                            $cookie_name = 'hide_cta_stock';
+                            if (isset($_COOKIE[$cookie_name]) && sanitize_text_field($_COOKIE[$cookie_name]) == 'true') {
+                                return; // Don't show the banner if the cookie is set
+                            }
+
+                            $content = '<span style="color: #212121;">' . esc_html__('Get your store products', 'users-customers-import-export-for-wp-woocommerce') . '</span> <span style="color: #5454A5; font-weight: bold;">' . esc_html__('bulk exported for hassle-free migration, inventory management, and bookkeeping.', 'users-customers-import-export-for-wp-woocommerce') . '</span> <span style="color: #212121;">' . esc_html__('Import/export WooCommerce products with reviews, images, and custom metadata.', 'users-customers-import-export-for-wp-woocommerce') . '</span>';
+                            $plugin_url = 'https://www.webtoffee.com/product/product-import-export-woocommerce/?utm_source=free_plugin_report&utm_medium=basic_revamp&utm_campaign=Product_Import_Export';
+                            break;
+
+                        case 'subscriptions':
+                            // Check if the 'subscriptions' banner has been hidden
+                            $cookie_name = 'hide_cta_subscriptions';
+                            if (isset($_COOKIE[$cookie_name]) && sanitize_text_field($_COOKIE[$cookie_name]) == 'true') {
+                                return; // Don't show the banner if the cookie is set
+                            }
+
+                            $content = '<span style="color: #212121;">' . esc_html__('Get your subscription orders exported to a', 'users-customers-import-export-for-wp-woocommerce') . '</span> <span style="color: #5454A5; font-weight: bold;">' . esc_html__('CSV, XML, Excel, or TSV file.', 'users-customers-import-export-for-wp-woocommerce') . '</span> <span style="color: #212121;">' . esc_html__('Featuring scheduled exports, advanced filters, custom metadata, and more.', 'users-customers-import-export-for-wp-woocommerce') . '</span>';
+                            $plugin_url = 'https://www.webtoffee.com/product/order-import-export-plugin-for-woocommerce/?utm_source=free_plugin_report&utm_medium=basic_revamp&utm_campaign=Order_Import_Export';
+                            break;
+
+                        default:
+                            return; // Exit if not on a recognized tab
+                    }
+
+                    // HTML for the banner remains unchanged
+        ?>
+                    <div id="cta-banner" class="notice notice-info" style="position: relative; padding: 15px; background-color: #f3f0ff; border-left: 4px solid #5454A5; display: flex; justify-content: space-between; align-items: center; border-radius: 1px;">
+                        <div style="flex: 1; margin-right: 10px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                                <img src="<?php echo esc_url(WT_U_IEW_PLUGIN_URL . 'assets/images/idea_bulb_purple.svg'); ?>" style="width: 25px; margin-right: 10px;">
+                                <h2 style="margin: 0; font-size: 16px; color: #2d2d77; font-weight: 600;"><?php echo esc_html($title); ?></h2>
+                            </div>
+                            <p style="margin: 0; font-size: 14px; color: #6f6f6f; line-height: 1.4;"><?php echo wp_kses_post($content); ?></p>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <a href="<?php echo esc_url($plugin_url); ?>" target="_blank" class="button-primary" style="background: #5454A5; color: white; border: none; padding: 8px 15px; border-radius: 4px; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 14px;"><?php esc_html_e('Check out plugin ➔', 'users-customers-import-export-for-wp-woocommerce'); ?></a>
+                            <button id="maybe-later" class="button-secondary" style="background-color: #f3f0ff; color: #4a42a3; padding: 8px 15px; border: 1px solid #5454A5; border-radius: 4px; font-size: 14px;"><?php esc_html_e('Maybe later', 'users-customers-import-export-for-wp-woocommerce'); ?></button>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+                        (function($) {
+                            $('#maybe-later').on('click', function(e) {
+                                e.preventDefault();
+                                // Set a cookie to hide the banner for 30 days for this specific tab
+                                document.cookie = "<?php echo esc_js($cookie_name); ?>=true; path=/; max-age=" + (30 * 24 * 60 * 60) + ";";
+                                $('#cta-banner').remove();
+                            });
+                        })(jQuery);
+                    </script>
+<?php
+                }
+            }
+        }
     }
 }
 new User_import_export_Review_Request();

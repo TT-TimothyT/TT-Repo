@@ -146,6 +146,7 @@ class ItemClient extends CommonIntegrationFunctions {
 			$item_quantity_array = $this->getQuantity($response['items'], $skus);
 			update_option('tm_rest_web_service_enable', 'yes');
 			$this->updateWooQuantity($item_quantity_array, $by_queue);
+			do_action('tm_ns_after_update_inventory', $response, $skus, $mapFieldName, $urlAPIEndPoint);
 		} else {
 			if (isset($response['o:errorDetails'][0]['o:errorCode']) && 'INVALID_LOGIN' == $response['o:errorDetails'][0]['o:errorCode']) {
 				update_option('tm_rest_web_service_enable', 'no');
@@ -237,6 +238,7 @@ class ItemClient extends CommonIntegrationFunctions {
 			$item_quantity_array = $this->getQuantity($response['items'], $skus);
 			update_option('tm_rest_web_service_enable', 'yes');
 			$this->updateWooQuantity($item_quantity_array, $by_queue);
+			do_action('tm_ns_after_update_inventory', $response, $skus, $mapFieldName, $urlAPIEndPoint);
 		} else {
 			if (isset($response['o:errorDetails'][0]['o:errorCode']) && 'INVALID_LOGIN' == $response['o:errorDetails'][0]['o:errorCode']) {
 				update_option('tm_rest_web_service_enable', 'no');
@@ -285,6 +287,8 @@ class ItemClient extends CommonIntegrationFunctions {
 				$quantity = apply_filters('tm_ns_last_item_quantity', $quantity, $product_id);
 				if (!empty($quantity)) {
 					update_post_meta($product_id, '_stock', $quantity);
+				} else if (!empty($TMWNI_OPTIONS['updateStockZero']) && 'on' === $TMWNI_OPTIONS['updateStockZero']) {
+					update_post_meta($product_id, '_stock', 0);
 				}
 				if (!empty($TMWNI_OPTIONS['overrideManageStock']) && 'on' === $TMWNI_OPTIONS['overrideManageStock']) {
 					update_post_meta($product_id, '_manage_stock', 'yes');
