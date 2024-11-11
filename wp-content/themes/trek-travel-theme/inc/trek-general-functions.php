@@ -1553,10 +1553,7 @@ function trek_get_quote_travel_protection_action_cb()
     }
     $trek_insurance_args["insuredPerson"] = $insuredPerson;
     $insuredPersonCount = $is_travel_protection_count; //count($insuredPerson);
-    //$archinsuranceRes = tt_set_calculate_insurance_fees_api($trek_insurance_args);
-    //$arcBasePremium = isset($archinsuranceRes['basePremium']) ? $archinsuranceRes['basePremium'] : 0;
     $arcBasePremium = $tt_total_insurance_amount && $tt_total_insurance_amount > 0 ? $tt_total_insurance_amount : 0;
-    //echo 'demo 3242 3992';
     if( $insuredPersonCount > 0 ){
         if( ! in_array( true, $is_fees_exist ) ){
             WC()->cart->add_to_cart( $fees_product_id, 1, 0, array(), array( 'tt_cart_custom_fees_price' => $arcBasePremium ) );
@@ -2107,9 +2104,10 @@ function tt_set_calculate_insurance_fees_api($trek_insurance_args)
                 $res['status'] = true;
             }
         }
+        $res['responseCode'] = isset( $trek_insurance_result_decode->responseCode ) ? $trek_insurance_result_decode->responseCode : '';
     }
-    $res['basePremium'] = $basePremium;
-    $res_mess_arr       = json_decode( isset( $res['message']['body'] ) ? $res['message']['body'] : '', true );
+    $res['basePremium']  = $basePremium;
+    $res_mess_arr        = json_decode( isset( $res['message']['body'] ) ? $res['message']['body'] : '', true );
     if( isset( $res_mess_arr['quotes'] ) ) {
         unset( $res_mess_arr['quotes'] );
     }
@@ -5349,6 +5347,11 @@ function tt_generate_save_insurance_quote_cb() {
                 );
                 $trek_insurance_args["insuredPerson"] = $insuredPerson_single;
                 $archinsuranceResPP = tt_set_calculate_insurance_fees_api($trek_insurance_args);
+                if ( isset( $archinsuranceResPP['responseCode'] ) && ! empty( $archinsuranceResPP['responseCode'] ) && 'InvalidDepositDate' === $archinsuranceResPP['responseCode'] ) {
+                    // Try Again with an empty Deposit Date.
+                    $trek_insurance_args['coverage']['depositDate'] = '';
+                    $archinsuranceResPP = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
+                }
                 $arcBasePremiumPP = isset($archinsuranceResPP['basePremium']) ? $archinsuranceResPP['basePremium'] : 0;
                 $guest_insurance['primary']['basePremium'] = $arcBasePremiumPP;
                 if ($guest_insurance_val['is_travel_protection'] == 1) {
@@ -5398,6 +5401,11 @@ function tt_generate_save_insurance_quote_cb() {
                     );
                     $trek_insurance_args["insuredPerson"] = $insuredPerson_single;
                     $archinsuranceResPG = tt_set_calculate_insurance_fees_api($trek_insurance_args);
+                    if ( isset( $archinsuranceResPG['responseCode'] ) && ! empty( $archinsuranceResPG['responseCode'] ) && 'InvalidDepositDate' === $archinsuranceResPG['responseCode'] ) {
+                        // Try Again with an empty Deposit Date.
+                        $trek_insurance_args['coverage']['depositDate'] = '';
+                        $archinsuranceResPG = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
+                    }
                     $arcBasePremiumPG = isset($archinsuranceResPG['basePremium']) ? $archinsuranceResPG['basePremium'] : 0;
                     $guest_insurance['guests'][$guest_key]['basePremium'] = $arcBasePremiumPG;
                     if ($guest_insurance_Data['is_travel_protection'] == 1) {
