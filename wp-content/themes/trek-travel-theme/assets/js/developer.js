@@ -4131,7 +4131,7 @@ jQuery('.mega-toggle-blocks-left').on('click', function(e) {
 })
 
 jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu li.mega-menu-item a', function (e) {
-  if(jQuery(this).attr('href') === undefined) {
+  if(jQuery(this).attr('href') === undefined && jQuery(window).width() < 769) {
     jQuery(".mega-toggle-blocks-center").text(jQuery(this).text())
     if(jQuery(window).width() < 768) {
       jQuery(this).parent().siblings().addClass("d-none");
@@ -4148,16 +4148,18 @@ jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu li.mega-menu-item a', 
   }
 });
 
-jQuery("nav #mega-menu-wrap-main-menu li.mega-menu-item a .mega-indicator").on("click", function() { 
-  jQuery(".mega-toggle-blocks-center").text(jQuery(this).parent().text())
-  jQuery(this).parent().parent().siblings().addClass("d-none");
-  jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 1)
-  jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").show()
-  jQuery(this).parent().hide()
+jQuery("nav #mega-menu-wrap-main-menu li.mega-menu-item a .mega-indicator").on("click", function() {
+  if( jQuery(window).width() < 769 )  {
+    jQuery(".mega-toggle-blocks-center").text(jQuery(this).parent().text())
+    jQuery(this).parent().parent().siblings().addClass("d-none");
+    jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 1)
+    jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").show()
+    jQuery(this).parent().hide()
+  }
 });
 
 jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-category-sub-menu ul.mega-sub-menu li a', function (e) {
-  if(jQuery(this).attr('href') === undefined) {
+  if(jQuery(this).attr('href') === undefined && jQuery(window).width() < 769) {
     let parentText = jQuery(this).parents("li.mega-menu-item").eq(1).find("a").eq(0).text()
     jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").attr("parent-text", parentText)
     jQuery(this).parent().parent().parent().siblings().addClass("d-none");
@@ -4167,11 +4169,13 @@ jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-category-sub-men
 });
 
 jQuery('nav #mega-menu-wrap-main-menu .mega-category-sub-menu ul.mega-sub-menu li a .mega-indicator').on('click', function () {
-  let parentText = jQuery(this).parents("li.mega-menu-item").eq(1).find("a").eq(0).text()
-  jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").attr("parent-text", parentText)
-  jQuery(this).parent().parent().parent().parent().siblings().addClass("d-none");
-  jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 2)
-  jQuery(this).parent().hide()
+  if( jQuery(window).width() < 769 ) {
+    let parentText = jQuery(this).parents("li.mega-menu-item").eq(1).find("a").eq(0).text()
+    jQuery("nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left a.mega-icon").attr("parent-text", parentText)
+    jQuery(this).parent().parent().parent().parent().siblings().addClass("d-none");
+    jQuery(".mega-toggle-blocks-left a.mega-icon").attr("level", 2)
+    jQuery(this).parent().hide()
+  }
 });
 
 jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-toggle-blocks-left ', function (e) {
@@ -4192,7 +4196,7 @@ jQuery('body').on('click', 'nav #mega-menu-wrap-main-menu .mega-toggle-blocks-le
     jQuery("#mega-menu-wrap-main-menu .mega-category-sub-menu").find("a").attr("aria-expanded", "false")
     jQuery("#mega-menu-wrap-main-menu .mega-category-sub-menu").find("a").show()
     jQuery(this).attr("level", 1)
-    jQuery(".mega-toggle-blocks-center").text(jQuery(this).attr("parent-text"))      
+    jQuery(".mega-toggle-blocks-center").text(jQuery(this).attr("parent-text"))
   }
 })
 
