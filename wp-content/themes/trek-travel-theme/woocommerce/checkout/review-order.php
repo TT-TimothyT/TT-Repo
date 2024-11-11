@@ -101,16 +101,16 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 			<hr>
 			<div class="checkout-summary__promo">
 				<span class="promo"><?php esc_html_e( 'Promo Code', 'trek-travel-theme' ); ?></span>
-				<div class="mt-5 d-flex justify-content-between align-items-start promo-form checkout-summary__promo<?php echo esc_attr( $applied_coupon ? ' ' . 'd-none' : ' ' . 'd-flex' ); ?>">
-					<div class="form-group form-floating mb-0 w-75">
-						<input type="text" class="input-text form-control rounded-1 promo-input coupon-code-input" name="coupon_code" placeholder="<?php esc_html_e( 'Enter promo code', 'trek-travel-theme' ); ?>" value="<?php echo $tt_coupon_code; ?>" required>
+				<div class="mt-5 d-flex justify-content-start align-items-start promo-form checkout-summary__promo<?php echo esc_attr( $applied_coupon ? ' ' . 'd-none' : ' ' . 'd-flex' ); ?>">
+					<div class="form-group form-floating mb-0 coupon-field">
+						<input type="text" class="input-text form-control rounded-1 promo-input coupon-code-input h-100" name="coupon_code" placeholder="<?php esc_html_e( 'Enter promo code', 'trek-travel-theme' ); ?>" value="<?php echo $tt_coupon_code; ?>" required>
 						<label><?php esc_html_e( 'Enter promo code', 'trek-travel-theme' ); ?></label>
 						<div class="invalid-feedback invalid-code" style="<?php echo esc_attr( true !== $applied_coupon && ! empty( $tt_coupon_code ) ? 'display:block' : 'display:none' ); ?>">
 							<img class="invalid-icon" />
-							<?php esc_html_e( 'This code is no longer valid.', 'trek-travel-theme' ); ?>
+							This code is no longer valid. <br> Need help with your promo code? <br> Call us at <a href="tel:8664648735">(866) 464-8735</a>
 						</div>
 					</div>
-					<button type="button" id="promo-checkout" class="btn btn-primary rounded-1 checkout-summary__submit tt_apply_coupan promo-code-submit w-25" data-action="add" name="Submit" value="Submit"><?php esc_html_e( 'Submit', 'trek-travel-theme' ); ?></button>
+					<button type="button" id="promo-checkout" class="btn btn-primary rounded-1 checkout-summary__submit tt_apply_coupan promo-code-submit" data-action="add" name="Submit" value="Submit"><?php esc_html_e( 'Submit', 'trek-travel-theme' ); ?></button>
 				</div>
 				<div class="checkout-summary__applied d-flex mt-4<?php echo esc_attr( $applied_coupon ? ' ' . 'd-flex' : ' ' . 'd-none' ); ?>">
 					<p class="fs-md lh-md mb-0"><?php esc_html_e( 'Promo', 'trek-travel-theme' ); ?> <span class="fw-bold" id="tt-applied-code"><?php echo $tt_coupon_code; ?></span> <?php esc_html_e( 'Applied', 'trek-travel-theme' ); ?></p>
