@@ -19,14 +19,15 @@ const TT_BLOCK_UI_LOADER_ATTRIBUTES = {
     '-webkit-border-radius': '10px',
     '-moz-border-radius': '10px',
     opacity: .5,
-    color: '#fff'
+    color: '#fff',
+    width: '38%'
   }
 };
 
 jQuery(document).ready(function($) {
-  if ( trek_JS_obj && trek_JS_obj.is_checkout == true ) {
+  if ( trek_JS_obj && ( true == trek_JS_obj.is_checkout || true == trek_JS_obj.is_archive || true == trek_JS_obj.is_search ) ) {
     /**
-     * blockUI plugin - clear out plugin default styling on the checkout page.
+     * blockUI plugin - clear out plugin default styling on the checkout, archive and search pages.
      *
      * @link https://malsup.com/jquery/block/overlay.html
      */
@@ -139,8 +140,8 @@ const ttLoader = {
    * @param {string} targetElement The HTML element selector for which to add the loader.
    */
   show: function( targetElement = '' ) {
-    if ( trek_JS_obj && trek_JS_obj.is_checkout == true ) {
-      // The checkout loader style.
+    if ( trek_JS_obj && ( true == trek_JS_obj.is_checkout || true == trek_JS_obj.is_archive || true == trek_JS_obj.is_search ) ) {
+      // The checkout, archive and search pages loader style.
       if( 'string' === typeof targetElement && 0 < targetElement.length ) {
         // Make the loader align inside, depending on the container.
         TT_CHECKOUT_LOADER_ATTRIBUTES.css.position = 'absolute';

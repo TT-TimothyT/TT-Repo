@@ -43,7 +43,7 @@ if ( $svar != 'algolia' ) {
 $dest_terms_args = array(
     'taxonomy'     => 'destination',
     'parent'        => 0,
-    'hide_empty'    => true           
+    'hide_empty'    => true
 );
 $dest_terms_top_level = get_terms( $dest_terms_args );
 $dest_filters = array();
@@ -89,7 +89,7 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
                 <!-- Modal Container -->
                 <div class="container">
                     <!-- Modal -->
-                    <?php get_template_part('algolia/partials/filters', 'modal', array( 'dest_filters' => $dest_filters ) ); ?>
+                    <?php get_template_part('algolia/partials/modal', 'filters', array( 'dest_filters' => $dest_filters ) ); ?>
                 </div> <!-- / Modal .container -->
             </main>
         </div>
@@ -133,8 +133,8 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
                             // Google Tag Manager (GTM)
                             // You can use `uiState` to make payloads for third-party trackers.
                             window.dataLayer = window.dataLayer || [];
-                            var impressions = [];                
-                            jQuery( ".trip-card-body" ).each(function( index ) {                    
+                            var impressions = [];
+                            jQuery( ".trip-card-body" ).each(function( index ) {
                                 let impression = {
                                     'name': jQuery( this ).find(".trip-title" ).first().text() ,
                                     'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString(),
@@ -143,7 +143,7 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
                                     'category': jQuery( this ).find(".trip-category" ).text(),
                                     'list': 'search',
                                     'position': index+1
-                                };                
+                                };
                                 impressions.push(impression)
                             });
                             dataLayer.push ({
@@ -523,7 +523,7 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
                 window.dataLayer = window.dataLayer || [];
                 var impressions = [];
                 
-                jQuery( ".trip-card-body" ).each(function( index ) {                    
+                jQuery( ".trip-card-body" ).each(function( index ) {
                     let impression = {
                         'name': jQuery( this ).find(".trip-title" ).first().text() ,
                         'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString(),
@@ -532,7 +532,7 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
                         'category': jQuery( this ).find(".trip-category" ).text(),
                         'list': 'search',
                         'position': index+1
-                    };                
+                    };
                     impressions.push(impression)
                 });
                 dataLayer.push ({
@@ -572,10 +572,6 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
             const querySearchParam = urlParams.get('wp_searchable_posts[query]');
             let currentUrl = window.location.href
             window.location.href = currentUrl.split('?')[0] + `?s=algolia&wp_searchable_posts[query]=${querySearchParam}`;
-            // jQuery('.fs-destination').text('Destination');
-            // jQuery('#ais-date-selector .fake-selector').text('Date')
-            // jQuery('#ais-destination-selector .fake-selector').toggleClass("border-dark fw-semibold")
-            // jQuery('#ais-date-selector .fake-selector').toggleClass("border-dark fw-semibold")
         });
 
         function postRenderOps() {
@@ -625,6 +621,15 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
             });
         }
 	</script>
+
+    <!-- #quickLookModal -->
+    <?php get_template_part('algolia/partials/modal', 'quick-look' ); ?>
+
+    <!-- #tripBookingModal -->
+    <?php get_template_part('algolia/partials/modal', 'trip-booking-warning' ); ?>
+
+    <!-- #tripBookingModal -->
+    <?php get_template_part('algolia/partials/scripts', 'quick-look' ); ?>
 
 <?php
 

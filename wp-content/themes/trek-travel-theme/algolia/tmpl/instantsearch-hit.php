@@ -158,13 +158,43 @@
 						</div>
 
 						<div class="card text-end border-0">
-							<div class="card-body text-start">
-								<# if ( data['Start Price'] ) { #>                                    
+							<# if ( data['Start Price'] ) { #>                                    
+								<div class="card-body text-start">
 									<small class="text-muted">Starting from</small>
 									<h5 class="trip-price" data-price="{{data['Start Price']}}">
 										<span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>{{data['Start Price']}}</span><span class="fw-normal fs-sm">pp</span>
-									</h5>                                    
-								<# } #>
+									</h5>
+								</div>
+							<# } #>
+							<div class="card-footer bg-transparent border-0 position-absolute bottom-0 right-0">
+								<a class="quick-view-button"
+									href="#"
+									data-bs-toggle="modal"
+									data-bs-target="#quickLookModal"
+									data-bs-product-id="{{ data.post_id }}"
+									<# if ( data['Trip Style'] ) { #>
+										data-bs-trip-style="{{data['Trip Style']}}"
+									<# } #>
+									<# if ( data['Duration'] ) { #>
+										data-bs-trip-duration="{{ data['Duration'].replace(/&amp;/g, '/') }}"
+									<# } #>
+									<# if ( data['Activity Level'] ) { #>
+										data-bs-activity-level="{{data['Activity Level'].replace(/&amp;/g, ' & ')}}"
+										<# if (data.taxonomies.activity != TT_ACTIVITY_DASHBOARD_NAME_BIKING ) { #>
+											data-bs-activity-icon="fa-person-hiking"
+										<# } #>
+										<# if (data.taxonomies.activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING ) { #>
+											data-bs-activity-icon="fa-person-biking"
+										<# } #>
+									<# } #>
+									<# if ( data['Hotel Level'] ) { #>
+										data-bs-hotel-level="{{data['Hotel Level']}}"
+									<# } #>
+									>
+
+									<i class="fa-solid fa-bolt"></i>
+									<?php esc_html_e( 'Quick View', 'trek-travel-theme' ); ?>
+								</a>
 							</div>
 						</div>
 					</div>
@@ -268,6 +298,32 @@
 						</h5>
 					</div>
 					<# } #>
+					<div class="card-footer bg-transparent border-0 position-absolute bottom-0 right-0">
+						<a href="#" class="quick-view-button"  data-bs-toggle="modal" data-bs-target="#quickLookModal"
+						data-bs-product-id="{{ data.post_id }}"
+						<# if ( data['Trip Style'] ) { #>
+							data-bs-trip-style="{{data['Trip Style']}}"
+						<# } #>
+						<# if ( data['Duration'] ) { #>
+							data-bs-trip-duration="{{ data['Duration'].replace(/&amp;/g, '/') }}"
+						<# } #>
+						<# if ( data['Activity Level'] ) { #>
+							data-bs-activity-level="{{data['Activity Level'].replace(/&amp;/g, ' & ')}}"
+							<# if (data.taxonomies.activity != TT_ACTIVITY_DASHBOARD_NAME_BIKING ) { #>
+								data-bs-activity-icon="fa-person-hiking"
+							<# } #>
+							<# if (data.taxonomies.activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING ) { #>
+								data-bs-activity-icon="fa-person-biking"
+							<# } #>
+						<# } #>
+						<# if ( data['Hotel Level'] ) { #>
+							data-bs-hotel-level="{{data['Hotel Level']}}"
+						<# } #>
+						>
+						<i class="fa-solid fa-bolt"></i>
+						<?php esc_html_e( 'Quick View', 'trek-travel-theme' ); ?>
+						</a>
+					</div>
 				</div>
 			</div>
 

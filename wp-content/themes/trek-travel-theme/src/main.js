@@ -50,8 +50,8 @@ import { Carousel, Modal, Collapse, Toast } from 'bootstrap';
 		e.preventDefault()
 		// console.log("heerrroooo...........")
 		// toastLiveExample = jQuery('.link-copied')
-		var toastText = new Toast(jQuery('.link-copied'))
-		jQuery('.link-copied').addClass("show")
+		var toastText = new Toast(jQuery('.mobile-link-copied'))
+		jQuery('.mobile-link-copied').addClass("show")
 		// jQuery('.link-copied').fadeOut("slow")
 		navigator.clipboard.writeText(window.location.href);
 	})

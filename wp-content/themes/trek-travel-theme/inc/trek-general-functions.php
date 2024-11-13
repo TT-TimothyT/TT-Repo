@@ -182,6 +182,8 @@ function trek_wp_enqueue_scripts_cb()
         'temp_dir'                  => get_template_directory_uri(),
         'trip_booking_limit'        => $trip_booking_limit,
         'is_checkout'               => is_checkout(),
+        'is_archive'                => is_archive(),
+        'is_search'                 => is_search(),
         'rider_level'               => $cart_product_info['parent_rider_level'],
         'rider_level_text'          => $cart_product_info['rider_level_text'],
         'checkoutParentId'          => $cart_product_info['parent_product_id'],
@@ -192,13 +194,23 @@ function trek_wp_enqueue_scripts_cb()
         'order_id'                  => $order_id,
         'tt_loader_img'             => $checkout_loader_html
     ));
+
+    if( is_search() || is_archive() ) {
+        // Load the assets only on the archive and search pages.
+        wp_register_script( 'trek-quick-look', TREK_DIR . '/assets/js/trek-quick-look.js', array('jquery'), time(), true );
+        wp_enqueue_script( 'trek-quick-look' );
+        wp_localize_script( 'trek-quick-look', 'trek_quick_look_assets', array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( '_tt_quick_look_nonce' ),
+        ));
+    }
 }
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0
  * @return  : Get grouped products by ids
  **/
-function get_child_products($linked_products = array())
+function get_child_products($linked_products = array(), $is_quick_look = false )
 {
     $linked_product_arr = array();
     $status_not_in = ['Hold - Not on Web', 'Cancelled', 'Initial Build'];
@@ -229,8 +241,17 @@ function get_child_products($linked_products = array())
                     $start_date_text = date('F j', strtotime(implode('-', $sdate_info)));
                     $end_date_text_1 = date('F j, Y', strtotime(implode('-', $edate_info)));
                     $end_date_text_2 = date('j, Y', strtotime(implode('-', $edate_info)));
-                    $date_range_1 = $start_date_text . '-' . $end_date_text_2;
-                    $date_range_2 = $start_date_text . '-' . $end_date_text_1;
+                    $date_range_1 = $start_date_text . ' - ' . $end_date_text_2;
+                    $date_range_2 = $start_date_text . ' - ' . $end_date_text_1;
+                    if ( $is_quick_look ) {
+                        $start_date_text_range_2 = date( 'M j', strtotime( implode( '-', $sdate_info ) ) );
+                        $start_date_text_range_1 = date( 'M j', strtotime( implode( '-', $sdate_info ) ) );
+                        $end_date_text_range_2   = date( 'M j, Y', strtotime( implode( '-', $edate_info ) ) );
+                        $end_date_text_range_1   = date( 'j, Y', strtotime( implode( '-', $edate_info ) ) );
+
+                        $date_range_1            = $start_date_text_range_1 . ' - ' . $end_date_text_range_1;
+                        $date_range_2            = $start_date_text_range_2 . ' - ' . $end_date_text_range_2;
+                    }
                     $grouped_product = array(
                         'product_id' => $linked_product,
                         'start_date' => $start_date,
@@ -1254,49 +1275,34 @@ add_filter( 'woocommerce_add_to_cart_validation', 'trek_woocom_cart_validation_c
  * @version : 1.0.0
  * @return  : Ajax action for Login Feature
  **/
-add_action('wp_ajax_trek_login_action', 'trek_trek_login_action_cb');
-add_action('wp_ajax_nopriv_trek_login_action', 'trek_trek_login_action_cb');
-function trek_trek_login_action_cb()
-{
-    $http_referer = $_REQUEST['http_referer'];
-    $page_id = url_to_postid($http_referer);
-    $ref_sourceUrl = parse_url($http_referer);
-    $site_urlParse = parse_url(site_url());
-    $redirect_url = site_url('my-account');
-    $tt_Data = tt_get_trip_pid_sku_from_cart();
-    if ($ref_sourceUrl['host'] == $site_urlParse['host'] && get_post_type($page_id) == 'product' ) {
-        if( isset($tt_Data['sku']) && $tt_Data['sku'] && isset($tt_Data['product_id']) && $tt_Data['product_id'] ){
-            $redirect_url = trek_checkout_step_link(1);
-        }else{
-            $redirect_url = $http_referer;
-        }
-    }
+add_action( 'wp_ajax_trek_login_action', 'trek_trek_login_action_cb' );
+add_action( 'wp_ajax_nopriv_trek_login_action', 'trek_trek_login_action_cb' );
+function trek_trek_login_action_cb() {
     $res = array(
         'status' => false,
-        'message' => '',
-        'redirect' => $redirect_url
+        'message' => ''
     );
     $email         = $_REQUEST['email'];
     $password      = $_REQUEST['password'];
     $is_rememberme = isset( $_REQUEST['is_rememberme'] ) && 'true' === $_REQUEST['is_rememberme'] ? true : false;
-    if (!isset($_POST['woocommerce-login-nonce']) || !wp_verify_nonce($_POST['woocommerce-login-nonce'], 'woocommerce-login')) {
-        $res['message'] = "Sorry, your nonce did not verify.";
-    } elseif (!isset($email) && empty($email)) {
-        $res['message'] = "Please enter your email address";
-    } elseif (!email_exists($email)) {
-        $res['message'] = "That E-mail doesn't belong to any registered users on this site.";
+    if ( ! isset( $_POST['woocommerce-login-nonce'] ) || ! wp_verify_nonce( $_POST['woocommerce-login-nonce'], 'woocommerce-login' ) ) {
+        $res['message'] = __( 'Sorry, your nonce did not verify.', 'trek-travel-theme' );
+    } elseif ( ! isset( $email ) && empty( $email ) ) {
+        $res['message'] = __( 'Please enter your email address', 'trek-travel-theme' );
+    } elseif ( ! email_exists( $email ) ) {
+        $res['message'] = __( "That E-mail doesn't belong to any registered users on this site.", 'trek-travel-theme' );
     } else {
         $user_login = $email;
-        if (is_email($email)) {
-            $currentUser = get_user_by('email', $email);
-            $user_login = $currentUser->user_login;
+        if ( is_email( $email ) ) {
+            $current_user = get_user_by('email', $email);
+            $user_login   = $current_user->user_login;
         }
         $creds = array(
-            'user_login' => $user_login,
+            'user_login'    => $user_login,
             'user_password' => $password,
-            'remember' => true
+            'remember'      => true
         );
-        $user = wp_signon($creds, false);
+        $user = wp_signon( $creds, false );
         if ( is_wp_error( $user ) ) {
             $res['message'] = $user->get_error_message();
         } else {
@@ -1304,11 +1310,25 @@ function trek_trek_login_action_cb()
                 wp_clear_auth_cookie();
                 wp_set_auth_cookie( $user->ID, $is_rememberme ); // Set auth details in cookie.
             }
-            $res['status'] = true;
-            $res['message'] = "You have successfully loggedin!";
+            $res['status']  = true;
+            $res['message'] = __( 'You have successfully loggedin!', 'trek-travel-theme' );
+
+            if ( tt_should_redirect_user_to_checkout() ) {
+                $res['redirect'] = trek_checkout_step_link(1);
+            } else {
+                $http_referer   = $_REQUEST['http_referer'];
+                $page_id        = url_to_postid( $http_referer );
+                $ref_source_url = parse_url( $http_referer );
+                $site_url_parse = parse_url( site_url() );
+                if ( $ref_source_url['host'] === $site_url_parse['host'] && 'product' === get_post_type( $page_id ) ) {
+                    $res['redirect'] = $http_referer;
+                } else {
+                    $res['redirect'] = site_url( 'my-account' );
+                }
+            }
         }
     }
-    echo json_encode($res);
+    echo json_encode( $res );
     exit;
 }
 /**
@@ -4378,7 +4398,13 @@ function tt_woocommerce_add_to_cart_cb() {
                 $cart_item['trek_user_checkout_data']['sku']                   = $_product->get_sku();
                 $cart_item['trek_user_checkout_data']['bikeUpgradePrice']      = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true);
                 $cart_item['trek_user_checkout_data']['singleSupplementPrice'] = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
-                $cart_contents[$cart_item_id]                                  = $cart_item;
+                
+
+                // Set a redirect to checkout flag to true if the user is not logged in.
+                if ( ! is_user_logged_in() ) {
+                    $cart_item['trek_user_redirect_to_checkout'] = true;
+                }
+                $cart_contents[$cart_item_id] = $cart_item;
 
                 // This will add the date the first time only, if the date is missing.
                 do_action( 'tt_set_add_to_cart_date' );
@@ -6399,64 +6425,6 @@ function display_total_tax() {
     echo '<p class="mb-0 fw-bold fs-lg">' . wc_price( $total_tax ) . '</p>';
 }
 
-
-/**
- * Custom Redirect user after successful login.
- *
- * @param string $redirect_to URL to redirect to.
- * @param string $request URL the user is coming from.
- * @param object $user Logged user's data.
- * @return string
- */
-function custom_login_redirect( $redirect_to, $request, $user ) {
-    // If is admin panel login page leave default behavior of the function.
-    if( $GLOBALS['pagenow'] === 'wp-login.php' ){
-        //is there a user to check?
-	    if ( isset( $user->roles ) && is_array( $user->roles ) ) {
-	    	//check for admins
-	    	if ( in_array( 'administrator', $user->roles ) ) {
-	    		// redirect them to the default place
-	    		return $redirect_to;
-	    	} else {
-	    		return home_url();
-	    	}
-	    } else {
-	    	return $redirect_to;
-	    }
-    }
-
-    $return_url = isset($_GET['return_to']) ? sanitize_text_field($_GET['return_to']) : '';
-    if (!empty($return_url)) {
-        return home_url('/checkout/?step=1');
-    }
-
-    // Check for session variable to redirect and clear it. For now this is using only for redirect after register
-    if( isset( $_SESSION["return_url"] ) && !empty( $_SESSION["return_url"]) ) {
-        // Clear session variable.
-        unset( $_SESSION["return_url"] );
-    }
-
-    return $redirect_to;
-}
-add_filter('login_redirect', 'custom_login_redirect', 10, 3);
-
-/**
- * If user is not logged in, on some submission start session to keep a flag,
- * that we need to redirect user after login or register to the checkout step.
- */
-function tt_redirect_after_signin_signup_action_cb()
-{
-    if( !is_user_logged_in() ){
-        // Start Session
-        session_start();
-        // Assign redirect url to session variable
-        $_SESSION["return_url"]='/checkout/?step=1';
-    }
-    exit;
-}
-add_action('wp_ajax_tt_redirect_after_signin_signup_action', 'tt_redirect_after_signin_signup_action_cb');
-add_action('wp_ajax_nopriv_tt_redirect_after_signin_signup_action', 'tt_redirect_after_signin_signup_action_cb');
-
 /**
  * Send referral info from form on last step from checkout.
  * Using Netsuite client and NS script with ID 1475:2 - REFERRAL_SOURCE_SCRIPT_ID.
@@ -6618,7 +6586,7 @@ function tt_check_and_remove_old_trips_in_persistent_cart_cb() {
             "Hold"
         ];
 
-        if( in_array( $trip_status , $in_status ) || $remove_from_stella == true ) {
+        if ( in_array( $trip_status , $in_status ) || $remove_from_stella == true ) {
             // Trip not available for booking already. Need to remove it from the cart.
             do_action( 'tt_clear_persistent_cart' );
         }
@@ -8526,16 +8494,16 @@ add_action( 'wp_ajax_nopriv_tt_validate_post_code', 'tt_validate_post_code_cb' )
  * @return string
  */
 function tt_get_trip_carousel_image_url( $source_image_url ) {
-	$image_url = str_replace( '-300x300', '-886x664', $source_image_url );
+    $image_url = str_replace( '-300x300', '-886x664', $source_image_url );
 
-	$file_headers = @get_headers( $image_url );
+    $file_headers = @get_headers( $image_url );
 
-	if ( ! $file_headers || 'HTTP/1.1 200 OK' !== $file_headers[0] ) {
-		// File not found. Fallback to the original image size.
-		$image_url = str_replace( '-300x300', '', $source_image_url );
-	}
+    if ( ! $file_headers || 'HTTP/1.1 200 OK' !== $file_headers[0] ) {
+        // File not found. Fallback to the original image size.
+        $image_url = str_replace( '-300x300', '', $source_image_url );
+    }
 
-	return $image_url;
+    return $image_url;
 }
 
 /**
@@ -8555,3 +8523,111 @@ function tt_filter_wpseo_title( $title ) {
     return $title;
 }
 add_filter( 'wpseo_title', 'tt_filter_wpseo_title' );
+
+/**
+ * AJAX Function to take Quick Look tempalte
+ * for adding Dates and Price section on archive and search pages.
+ *
+ * @uses content-quick-view.php - Template for every Secondary Guest. 
+ */
+function tt_quick_look_cb() {
+    // Security check.
+    if ( ! isset( $_POST['nonce'] ) ) {
+        wp_send_json_error( array( 'status' => false, 'message' => 'Nonce Verification not available!' ) );
+        exit;
+    }
+
+    if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), '_tt_quick_look_nonce' ) ) {
+        wp_send_json_error( array( 'status' => false, 'message' => 'Nonce Verification fail!' ) );
+        exit;
+    }
+
+    // Check for data exist.
+    if ( ! isset( $_POST['product_id'] ) || empty( $_POST['product_id'] ) || ! is_numeric( $_POST['product_id'] ) ) {
+        wp_send_json_error( array( 'status' => false, 'message' => 'Product ID not found!' ) );
+        exit;
+    }
+
+    $quick_look_response = array(
+        'status' => true,
+    );
+
+    $tt_quick_look_tpl  = TREK_PATH . '/woocommerce/quick-view/content-quick-view.php';
+
+    if( is_readable( $tt_quick_look_tpl ) ) {
+        // Parent/Grouped Product ID.
+        $product_id                                = (int) sanitize_text_field( wp_unslash( $_POST['product_id'] ) );
+        $trip_data                                 = sanitize_text_field( wp_unslash( $_POST['trip_data'] ) );
+        $current_product                           = wc_get_product( $product_id );
+        $quick_look_response['tt_quick_look_html'] = wc_get_template_html( 'woocommerce/quick-view/content-quick-view.php', array( 'product_id' => $product_id, 'trip_data' => $trip_data ) );
+        $start_price                               = tt_get_lowest_starting_from_price( $product_id );
+        $quick_look_response['start_price']        = wc_price( $start_price );
+        $quick_look_response['view_trip_link']     = $current_product ? $current_product->get_permalink() : '';
+    } else {
+        wp_send_json_error( array( 'status' => false, 'message' => 'Quick View Template not found!' ) );
+        exit;
+    }
+
+    wp_send_json_success( $quick_look_response );
+    exit;
+}
+add_action('wp_ajax_tt_quick_look_action', 'tt_quick_look_cb');
+add_action('wp_ajax_nopriv_tt_quick_look_action', 'tt_quick_look_cb');
+
+/**
+ * Check if should redirect the user to the checkout after login/register.
+ *
+ * Read the item meta data from the date trip product,
+ * check for the `trek_user_redirect_to_checkout` meta,
+ * assign to the flag and clear the item meta key.
+ *
+ * @return bool Whether should redirect the user to the checkout.
+ */
+function tt_should_redirect_user_to_checkout() {
+    $should_redirect_user = false;
+    $accepted_p_ids       = tt_get_line_items_product_ids();
+    $cart_contents        = WC()->cart->get_cart_contents(); // Get the current cart contents.
+    if ( $cart_contents ) {
+        foreach ( $cart_contents as $cart_item_id => $cart_item ) {
+            $product_id = isset( $cart_item['product_id'] ) ? $cart_item['product_id'] : '';
+            if ( $product_id && ! in_array( $product_id, $accepted_p_ids ) ) {
+                // Date Trip Info.
+                $should_redirect_user = isset( $cart_item['trek_user_redirect_to_checkout'] ) ? (bool) $cart_item['trek_user_redirect_to_checkout'] : false;
+
+                if( $should_redirect_user ) {
+                    // Remove the cart item meta key.
+                    unset( $cart_item['trek_user_redirect_to_checkout'] );
+                    $cart_contents[$cart_item_id] = $cart_item;
+                }
+            }
+        }
+
+        if ( $should_redirect_user ) {
+            // Store the updated cart.
+            WC()->cart->set_cart_contents( $cart_contents );
+            // Recalculate the totals after modifying the cart.
+            WC()->cart->calculate_totals();
+            // Save the updated cart to the session.
+            WC()->cart->set_session();
+            // Update persistent_cart.
+            WC()->cart->persistent_cart_update();
+        }
+    }
+
+    return $should_redirect_user;
+}
+
+/**
+ * Modify the default woocommerce redirect URL after login.
+ *
+ * @param string $redirect Redirect URL.
+ *
+ * @return string Modified Redirect URL.
+ */
+function tt_woocommerce_login_redirect( $redirect ) {
+    if ( tt_should_redirect_user_to_checkout() ) {
+        return trek_checkout_step_link(1);
+    }
+    return $redirect;
+}
+add_filter( 'woocommerce_login_redirect', 'tt_woocommerce_login_redirect' );

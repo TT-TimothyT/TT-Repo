@@ -802,20 +802,6 @@ $data = $cartContentsArr[array_key_first($cartContentsArr)]['data'];
         })
     }
 
-    /**
-     * Run AJAX Request on Submit to check if you are not logged in,
-     * to store flag in session for later redirect to checkout, after login/register
-     */
-    jQuery('form.cart.grouped_form').on('submit', function () {
-        let action = 'tt_redirect_after_signin_signup_action';
-        jQuery.ajax({
-            type: 'POST',
-            url: trek_JS_obj.ajaxURL,
-            data: "action=" + action,
-            dataType: 'json'
-        });
-    })
-
     document.addEventListener("DOMContentLoaded", function() {
     // Get all select dropdown elements that start with "select-month-"
     var monthSelects = document.querySelectorAll('[id^="select-month-"]');

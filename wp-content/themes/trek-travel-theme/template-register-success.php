@@ -3,24 +3,12 @@
 
 get_header();
 
-// If user is logged in check if there has session variable with redirect url, and use it to redirect the user.
-if( is_user_logged_in() ){
+if ( is_user_logged_in() ) {
 
-    // Start Session
-    session_start();
-
-    // Redirect to checkout page
-    if( isset( $_SESSION["return_url"] ) && !empty( $_SESSION["return_url"]) ) {
-        // Store the value from session.
-        $redirect_to =  $_SESSION["return_url"];
-
-        // Clear session variable.
-        unset( $_SESSION["return_url"] );
-
-        // Redirect user to the checkout page.
-        wp_redirect( home_url( $redirect_to ) );
+    if ( tt_should_redirect_user_to_checkout() ) {
+        // Redirect to checkout page.
+        wp_redirect( trek_checkout_step_link(1) );
         exit;
-
     } else {
 
         echo '<div class="row create-account-success">';

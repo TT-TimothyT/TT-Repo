@@ -133,7 +133,7 @@ $emptyBlockContent .= '</div></div>';
 $dest_terms_args = array(
     'taxonomy'     => 'destination',
     'parent'        => 0,
-    'hide_empty'    => true           
+    'hide_empty'    => true
 );
 $dest_terms_top_level = get_terms( $dest_terms_args );
 $dest_filters = array();
@@ -162,10 +162,10 @@ if( 'taxonomies.destination' === $filter_name ) {
             <div class="banner-section">
             <?php echo $imgTag; ?>
                 <div class="container">
-                    
+
                     <h1 class="fw-semibold"><?php echo $plp_algolia_category->name; ?></h1>
                 </div>
-                
+
             </div>
             <div class="container description-section">
                 <div class="row justify-content-between">
@@ -187,7 +187,7 @@ if( 'taxonomies.destination' === $filter_name ) {
     <div class="plp-list-container">
         <div id="ais-wrapper">
             <main id="ais-main">
-                
+
                 <div id="search-nav-tabs" class="my-4 d-none">
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -210,7 +210,7 @@ if( 'taxonomies.destination' === $filter_name ) {
                 <!-- Modal Container -->
                 <div class="container">
                     <!-- Modal -->
-                    <?php get_template_part('algolia/partials/filters', 'modal', array( 'dest_filters' => $dest_filters ) ); ?>
+                    <?php get_template_part('algolia/partials/modal', 'filters', array( 'dest_filters' => $dest_filters ) ); ?>
                 </div> <!-- / Modal .container -->
             </main>
         </div>
@@ -259,7 +259,7 @@ if( 'taxonomies.destination' === $filter_name ) {
                             var impressions = [];   
                             var url = window.location.href;
                             var splitUrl = url.split(".com");
-                            var textAfterCom = splitUrl[splitUrl.length - 1];             
+                            var textAfterCom = splitUrl[splitUrl.length - 1];
                             jQuery( ".trip-card-body" ).each(function( index ) {
                                 let impression = {
                                     'name': jQuery( this ).find(".trip-title" ).first().text() ,
@@ -269,7 +269,7 @@ if( 'taxonomies.destination' === $filter_name ) {
                                     'category': jQuery( this ).find(".trip-category" ).text(),
                                     'list': textAfterCom,
                                     'position': index+1
-                                };                
+                                };
                                 impressions.push(impression)
                             });
                             dataLayer.push ({
@@ -533,7 +533,7 @@ if( 'taxonomies.destination' === $filter_name ) {
                         });
                         jQuery('#search-daterange').on('cancel.daterangepicker', function (ev, picker) {
                             jQuery(this).val('');
-                            jQuery("#rangeDateVal").remove();                        
+                            jQuery("#rangeDateVal").remove();
                             filterTime(0,0);
                             jQuery("#ais-date-selector .fake-selector").text('Date');
                             jQuery('#ais-date-selector .fake-selector').toggleClass("border-dark fw-semibold")
@@ -670,8 +670,7 @@ if( 'taxonomies.destination' === $filter_name ) {
         function destinationClick(elm) {
             let data = elm.attr('data-value');
             jQuery('#ais-destination-selector .fake-selector').text( data.replaceAll('Bike Tours', '').trim() );
-            jQuery('#ais-destination-selector .fake-selector').toggleClass("border-dark fw-semibold")
-            // console.log(elm);
+            jQuery('#ais-destination-selector .fake-selector').toggleClass("border-dark fw-semibold");
         }
 
         jQuery( document ).ready(function() {
@@ -701,12 +700,7 @@ if( 'taxonomies.destination' === $filter_name ) {
         })
         jQuery("body").on("click", "#clear-refinements", function() {
             currentUrl = window.location.href
-            window.location.href = currentUrl.split('?')[0] 
-            // jQuery('.fs-destination').text('Destination');
-            // jQuery('#ais-date-selector .fake-selector').text('Date')
-            // jQuery('#ais-destination-selector .fake-selector').toggleClass("border-dark fw-semibold")
-            // jQuery('#ais-date-selector .fake-selector').toggleClass("border-dark fw-semibold")
-
+            window.location.href = currentUrl.split('?')[0]
         });
 
         jQuery(window).load(function() {
@@ -714,8 +708,8 @@ if( 'taxonomies.destination' === $filter_name ) {
             var impressions = [];
             var url = window.location.href;
             var splitUrl = url.split(".com");
-            var textAfterCom = splitUrl[splitUrl.length - 1];                
-            jQuery( ".trip-card-body" ).each(function( index ) {                    
+            var textAfterCom = splitUrl[splitUrl.length - 1];
+            jQuery( ".trip-card-body" ).each(function( index ) {
                 let impression = {
                     'name': jQuery( this ).find(".trip-title" ).first().text() ,
                     'id': jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id") ? jQuery( this ).find(".woocommerce-products-compare-checkbox" ).data("product-id").toString() : '',
@@ -724,7 +718,7 @@ if( 'taxonomies.destination' === $filter_name ) {
                     'category': jQuery( this ).find(".trip-category" ).text(),
                     'list': textAfterCom,
                     'position': index+1
-                };                
+                };
                 impressions.push(impression)
             });
             dataLayer.push ({
@@ -735,7 +729,7 @@ if( 'taxonomies.destination' === $filter_name ) {
                 }
             })
 
-            <?php if ($urlFlag == 1) { ?>                
+            <?php if ($urlFlag == 1) { ?>
                 convertedStartEpoch = convertEpochToDate(<?php echo $urlStartTime; ?>)
                 convertedEndEpoch = convertEpochToDate(<?php echo $urlEndTime; ?>)
                 if ( convertedStartEpoch && convertedEndEpoch ) {
@@ -803,12 +797,21 @@ if( 'taxonomies.destination' === $filter_name ) {
                             }
                         },
                     })
-                    return false                    
-                }                    
-            });            
+                    return false;
+                }
+            });
         }
 
     </script>
+
+    <!-- #quickLookModal -->
+    <?php get_template_part('algolia/partials/modal', 'quick-look' ); ?>
+
+    <!-- #tripBookingModal -->
+    <?php get_template_part('algolia/partials/modal', 'trip-booking-warning' ); ?>
+
+    <!-- #tripBookingModal -->
+    <?php get_template_part('algolia/partials/scripts', 'quick-look' ); ?>
 
 <?php
 
