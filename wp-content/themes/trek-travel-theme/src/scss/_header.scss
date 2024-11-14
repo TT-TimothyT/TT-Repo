@@ -15,7 +15,7 @@
     .bi {
       padding-right: 8px;
     }
-    @include media-breakpoint-up(md) {
+    @media screen and (min-width: 769px) {
       display: block;
     }
   }
@@ -136,7 +136,7 @@
 
 .desktop-nav{
   display: none;
-  @include media-breakpoint-up(md) {
+  @media screen and (min-width: 769px) {
     display: flex;
     flex-direction: column;
     background: #fff;
@@ -301,7 +301,7 @@
     align-items: center;
 
   }
-  @include media-breakpoint-up(md) {
+  @media screen and (min-width: 769px) {
     display: none;
   }
   ul#mega-menu-main-menu{
@@ -474,7 +474,7 @@
   }
 }
 
-@media only screen and (max-width: 991px) and (min-width: 768px)  {
+@media only screen and (max-width: 991px) and (min-width: 769px)  {
   nav.desktop-nav{
     .container {
       max-width: 768px;
