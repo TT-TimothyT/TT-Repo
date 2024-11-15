@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
     }
   }
 
-  $('.grid-view').on('click', function() {
+  $('.select-grid-view > .grid-view').on('click', function() {
     $(this).addClass('active');
     $(this).siblings().removeClass('active');
     $(this).parent().parent().siblings('#algolia-hits').addClass('grid-view');
@@ -56,7 +56,7 @@ jQuery(document).ready(function($) {
     });
   })
 
-  $('.standart-view').on('click', function() {
+  $('.select-grid-view > .standart-view').on('click', function() {
     $(this).addClass('active');
     $(this).siblings().removeClass('active');
     $(this).parent().parent().siblings('#algolia-hits').removeClass('grid-view');
@@ -2231,7 +2231,7 @@ if (jQuery('#tt-occupants-btn').length > 0) {
     //return false;
   });
 }
-jQuery('body').on('click', '.dates-pricing-book-now', function () {
+jQuery('body').on('click', '.dates-pricing-book-now:not(.qv-book-now-btn)', function () {
   dataLayer.push({
     'event': 'book_now'
   });

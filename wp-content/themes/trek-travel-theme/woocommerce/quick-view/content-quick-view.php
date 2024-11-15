@@ -216,7 +216,7 @@ if ( $available_child_products ) {
 								'tripdate' => $date_range
 							);
 							$form_url        = add_query_arg( $form_url_args, home_url( $form_url_path ) );
-							$book_now_button = '<a href="' . esc_url( $form_url ) . '" class="btn btn-primary btn-md rounded-1 mb-4 dates-pricing-book-now">Book now</a>';
+							$book_now_button = '<a href="' . esc_url( $form_url ) . '" class="btn btn-primary btn-md rounded-1 mb-4 dates-pricing-book-now qv-book-now-btn">Book now</a>';
 						} else {
 							$cart_result           = get_user_meta( get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true ); 
 							$cart                  = WC()->session->get( 'cart', null );
@@ -224,9 +224,9 @@ if ( $available_child_products ) {
 
 							if ( ! is_null( $cart ) && $persistent_cart_count > 0 ) {
 								// Already has started the booking process. Show the warning modal.
-								$book_now_button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="' . $accordion_item_id . '" data-return-url="/?trip=' . $product->name . '">Book now</button>';
+								$book_now_button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now qv-book-now-btn" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="' . $accordion_item_id . '" data-return-url="/?trip=' . $product->name . '">Book now</button>';
 							} else {
-								$book_now_button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip=' . $product->name . '">Book now</button>';
+								$book_now_button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now qv-book-now-btn" data-return-url="/?trip=' . $product->name . '">Book now</button>';
 							}
 						}
 
@@ -414,7 +414,7 @@ $pdp_bikes = get_field( 'bikes', $p_id );
 					<a href="<?php echo esc_url( home_url( 'pro-race-difference/pro-race-reservations/' ) ); ?>" class="btn btn-primary" target="_blank"><?php esc_html_e( 'Place Deposit', 'trek-travel-theme' ); ?></a>
 				<?php } else { ?>
 					<span class="h5 text-center">Dates are coming soon for <?php echo $product->get_title(); ?>. Please submit your trip inquiry below.</span>
-					<a href="<?php echo esc_url( add_query_arg( array( 'tripname' => $product->name, 'tripdate' => 'To Be Determined' ), home_url( 'reserve-a-trip' ) ) ); ?>" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" target="_blank"><?php esc_html_e( 'Inquire Now', 'trek-travel-theme' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( array( 'tripname' => $product->name, 'tripdate' => 'To Be Determined' ), home_url( 'reserve-a-trip' ) ) ); ?>" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now qv-book-now-btn" target="_blank"><?php esc_html_e( 'Inquire Now', 'trek-travel-theme' ); ?></a>
 				<?php } ?>
 			</div>
 		<?php } else { ?>

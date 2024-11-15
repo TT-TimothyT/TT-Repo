@@ -15,7 +15,7 @@ $data              = $cart_contents_arr[ array_key_first( $cart_contents_arr ) ]
 		var childSku = jQuery(this).closest(".accordion-item").data("sku")
 		dataLayer.push({ 'ecommerce': null });  // Clear the previous ecommerce object.
 		dataLayer.push({
-			'event':'add_to_cart',
+			'event':'quick_view_add_to_cart',
 			'ecommerce': {
 				'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
 				'add': {
@@ -36,7 +36,7 @@ $data              = $cart_contents_arr[ array_key_first( $cart_contents_arr ) ]
 	function removeCartAnalytics() {
 		dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
 		dataLayer.push({
-			'event':'remove_from_cart',
+			'event':'quick_view_remove_from_cart',
 			'ecommerce': {
 				'currencyCode': jQuery("#currency_switcher").val(), // use the correct currency code value here
 				'remove': {
@@ -52,5 +52,44 @@ $data              = $cart_contents_arr[ array_key_first( $cart_contents_arr ) ]
 				}
 			}
 		})
+	}
+
+	jQuery(document).on( 'click', '.dates-pricing-book-now.qv-book-now-btn', function () {
+		dataLayer.push({
+			'event': 'quick_view_book_now'
+		});
+	});
+
+	jQuery(document).on( 'click', '.quick-view-button', function () {
+		const id = jQuery( this ).attr( 'data-bs-product-id' );
+		quickViewBtnClickEvent( id );
+	});
+
+	function quickViewBtnClickEvent( id ) {
+		window.dataLayer = window.dataLayer || [];
+		// Go trough all the cards displayed.
+		jQuery( ".trip-card-body" ).each(function( index ) {
+			const card_id = jQuery( this ).find( ".quick-view-button" ).data("bs-product-id");
+			const price   = jQuery( this ).find( ".trip-price").data( "price" );
+			// Find the clicked card.
+			if ( parseInt(id) == parseInt(card_id) ) {
+				dataLayer.push({
+					'event': 'quick_view_button_click',
+					'ecommerce': {
+						'click': {
+							'products': [{
+								'name': jQuery( this ).find(".trip-title" ).first().text(), // Please remove special characters
+								'id': id, // Parent ID
+								'price': parseFloat( price ).toFixed(2), // per unit price displayed to the user - no format is ####.## (no '$' or ',')
+								'brand': '', //
+								'category': '', //
+								'position': index + 1
+							}]
+						}
+					},
+				});
+				return false;
+			}
+		});
 	}
 </script>
