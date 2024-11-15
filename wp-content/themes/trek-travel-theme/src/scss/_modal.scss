@@ -1143,7 +1143,7 @@
 
 // Quick Look modal on the archive and search pages.
 .modal.quick-look-modal {
-  z-index: 99999999;
+  z-index: 9999;
   .checkout-summary__card-header{
     --summary-card-background:#28AAE1 ;
     &.style-hiking {
@@ -1210,6 +1210,7 @@
       padding: 0 !important;
       background-color: #f4f4f4;
       margin-bottom: 16px;
+      overflow: hidden;
     
       .overview-details {
         @media screen and (max-width: 768px) {
@@ -1257,6 +1258,7 @@
 
       .trip-title-copy-container {
         padding-top: 70px;
+        position: relative;
       }
       
       & > *:not(.checkout-summary__card) {
@@ -1278,12 +1280,13 @@
 
       .mobile-share-link  {
         // display: none;
-        
+          box-shadow: none !important;
           border: none;
           background: none;
           display: inline;
           padding: 0px 10px;
           margin-top: -5px;
+          color: #212529 ;
 
           i {
             &::before {
@@ -1308,18 +1311,27 @@
     
     .mobile-link-copied {
       width: fit-content !important;
-      // display: inline-block;
+      display: inline-block;
+      left: unset !important;
+      top: unset !important;
+      transition: all ease 0.8s;
+      position: absolute !important;
+      bottom: 16px !important;
+      height: fit-content;
+      right: -28%;
 
       @media screen and (min-width: 768px) {
         top: -5px;
       }
-      position: relative;
+      // position: relative;
 
       .toast-body {
         padding: 6px 12px;
       }
 
       &.show {
+       
+        right: 5px;
         @media screen and (min-width: 768px) {
           display: inline-block;
         }
