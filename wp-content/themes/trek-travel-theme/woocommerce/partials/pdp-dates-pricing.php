@@ -539,12 +539,26 @@ if( $available_child_products ) {
                                             break;
                                     }
                                 }
-                                if( in_array($trip_status, $wait_status) ){
+                                if (in_array($trip_status, $wait_status)) {
                                     $formUrl = "waitlist";
                                 }
+                                
                                 if ($is_tdf) {
-                                    $button = '<a href="tel:8664648735" class="btn btn-primary mb-4">Call to book</a>';
-                                 } else {
+                                    // Check for device type (desktop vs mobile)
+                                    $is_mobile = wp_is_mobile(); // WordPress function to detect mobile devices
+                                
+                                    if (isset($formUrl) && !empty($formUrl)) {
+                                        // Use formUrl if it exists
+                                        $button = '<a href="/tour-de-france/reservations/" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Place deposit</a>';
+                                    } else {
+                                        // Use Call to Book logic
+                                        if ($is_mobile) {
+                                            $button = '<a href="tel:8664648735" class="btn btn-primary mb-4">Call to book</a>';
+                                        } else {
+                                            $button = '<a href="/contact-us/" class="btn btn-primary mb-4">Call to book</a>';
+                                        }
+                                    }
+                                } else {
                                     if ( $is_cart_check ) {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
                                             $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
