@@ -8,6 +8,8 @@ $trip_style = tt_get_custom_product_tax_value( $p_id, 'trip-style', true );
 
 $activity_terms = get_the_terms( $p_id, 'activity' );
 
+$is_tdf = (strpos(get_the_title(), 'Tour de France') !== false) && has_term('2025', 'product_cat');
+
 foreach ( $activity_terms as $activity_term) {
 	$activity = $activity_term->name;   
 }
@@ -540,17 +542,21 @@ if( $available_child_products ) {
                                 if( in_array($trip_status, $wait_status) ){
                                     $formUrl = "waitlist";
                                 }
-                                if ( $is_cart_check ) {
-                                    if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
-                                        $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                if ($is_tdf) {
+                                    $button = '<a href="tel:8664648735" class="btn btn-primary mb-4">Call to book</a>';
+                                 } else {
+                                    if ( $is_cart_check ) {
+                                        if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
+                                            $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                        } else {
+                                            $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                        }
                                     } else {
-                                        $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
-                                    }
-                                } else {
-                                    if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
-                                        $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 mb-1 dates-pricing-book-now">Book Now</a>';
-                                    } else {
-                                        $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                        if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
+                                            $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 mb-1 dates-pricing-book-now">Book Now</a>';
+                                        } else {
+                                            $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                        }
                                     }
                                 }
                                 
