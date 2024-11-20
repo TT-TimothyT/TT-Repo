@@ -530,7 +530,7 @@ function tt_get_ns_guest_info( $ns_user_id, $with_booking_info = 1 ) {
  * @param bool      $is_single Whether to return a single object or an array.
  * @uses NS Script GET_REGISTRATIONS_SCRIPT_ID
  * 
- * @return array|false Guest registrations data.
+ * @return array|object|false Guest registrations data.
  */
 function tt_get_ns_guest_registrations_info( $user_reg_ids, $is_single = false ) {
     if( empty( $user_reg_ids ) ) {
@@ -1270,8 +1270,8 @@ function tt_guest_bookings_table_crud( $booking_table_data = array(), $where = a
 /**
  * Update WP user meta for guest preferences from NetSuite.
  *
- * @param $user_id WP User ID / Customer ID.
- * @param $guest_data NS Response from USER_BOOKINGS_SCRIPT_ID with guest data object.
+ * @param int    $user_id WP User ID / Customer ID.
+ * @param object $guest_data NS Response from USER_BOOKINGS_SCRIPT_ID with guest data object.
  *
  * @return void
  */

@@ -859,7 +859,7 @@ function trek_update_trip_checklist_action_cb()
     $form_nonce_name     = 'edit_trip_checklist_' . $confirmed_section . '_nonce';
     $form_nonce_action   = 'edit_trip_checklist_' . $confirmed_section . '_action';
 
-    if ( !isset( $_POST[ $form_nonce_name ] ) || !wp_verify_nonce( $_POST[ $form_nonce_name ], $form_nonce_action ) ) {
+    if ( ! isset( $_POST[ $form_nonce_name ] ) || ! wp_verify_nonce( $_POST[ $form_nonce_name ], $form_nonce_action ) ) {
         $res['message'] = "Sorry, your nonce did not verify.";
     } else {
         $lock_bike   = tt_is_registration_locked( $user->ID, $user_order_info[0]['guestRegistrationId'], 'bike' );
@@ -887,7 +887,7 @@ function trek_update_trip_checklist_action_cb()
         $confirmed_info_user         = get_user_meta( $user->ID, 'pb_checklist_cofirmations', true );
         $confirmed_info_unserialized = maybe_unserialize( $confirmed_info_user );
 
-        if( empty( $confirmed_info_unserialized ) ) {
+        if ( empty( $confirmed_info_unserialized ) ) {
             // User confirms a section for the first time.
             $confirmed_info_unserialized                                    = array();
             $confirmed_info_unserialized[ $order_id ][ $confirmed_section ] = true;
@@ -907,7 +907,7 @@ function trek_update_trip_checklist_action_cb()
         $ns_user_booking_data = array();
 
         // If the confirmed section is 'medical_section', add medical data.
-        if( $is_section_confirmed['medical_section'] ) {
+        if ( $is_section_confirmed['medical_section'] ) {
 
             $medical_conditions_value   = 'None';
             $medications_value          = 'None';
@@ -944,7 +944,7 @@ function trek_update_trip_checklist_action_cb()
         }
 
         // If the confirmed section is 'emergency_section', add emergency contact data.
-        if( $is_section_confirmed['emergency_section'] ) {
+        if ( $is_section_confirmed['emergency_section'] ) {
             $booking_data['emergency_contact_first_name']   = tt_validate( $_REQUEST['emergency_contact_first_name'] );
             $booking_data['emergency_contact_last_name']    = tt_validate( $_REQUEST['emergency_contact_last_name'] );
             $booking_data['emergency_contact_phone']        = tt_validate( $_REQUEST['emergency_contact_phone'] );
@@ -957,7 +957,7 @@ function trek_update_trip_checklist_action_cb()
         }
 
         // If the confirmed section is 'gear_section', add gear data.
-        if( $is_section_confirmed['gear_section'] ) {
+        if ( $is_section_confirmed['gear_section'] ) {
             $booking_data['rider_height']              = tt_validate( $_REQUEST['tt-rider-height'] );
             $booking_data['pedal_selection']           = tt_validate( $_REQUEST['tt-pedal-selection'] );
             $booking_data['helmet_selection']          = tt_validate( $_REQUEST['tt-helmet-size'] );
@@ -985,7 +985,7 @@ function trek_update_trip_checklist_action_cb()
         }
 
         // If the confirmed section is 'passport_section', add passport data.
-        if( $is_section_confirmed['passport_section'] ) {
+        if ( $is_section_confirmed['passport_section'] ) {
             $booking_data['passport_number']          = tt_validate( $_REQUEST['passport_number'] );
             $booking_data['passport_issue_date']      = tt_validate( $_REQUEST['passport_issue_date'] ); // This is not populated from the my trip checklist form.
             $booking_data['passport_expiration_date'] = tt_validate( $_REQUEST['passport_expiration_date'] );
@@ -1008,7 +1008,7 @@ function trek_update_trip_checklist_action_cb()
         }
 
         // If the confirmed section is 'bike_section', add bike data.
-        if( $is_section_confirmed['bike_section'] ) {
+        if ( $is_section_confirmed['bike_section'] ) {
             // If $_REQUEST['bikeId'] is with value 0, we need send 0 to NS, that means customer selected "I don't know" option for $_REQUEST['tt-bike-size'].
             $default_bike_id = '';
             if ( isset( $_REQUEST['bikeId'] ) && is_numeric( $_REQUEST['bikeId'] ) && 0 === (int) $_REQUEST['bikeId'] ) {
@@ -1026,10 +1026,17 @@ function trek_update_trip_checklist_action_cb()
         }
 
         // If the confirmed section is 'gear_optional_section', add gear optional data.
-        if( $is_section_confirmed['gear_optional_section'] ) {
-            $booking_data['saddle_height']                       = tt_validate( $_REQUEST['saddle_height'] );
-            $booking_data['saddle_bar_reach_from_saddle']        = tt_validate( $_REQUEST['bar_reach'] );
-            $booking_data['saddle_bar_height_from_wheel_center'] = tt_validate( $_REQUEST['bar_height'] );
+        if ( $is_section_confirmed['gear_optional_section'] ) {
+            // Store to DB if the values are not empty.
+            if ( ! empty( $_REQUEST['saddle_height'] ) ) {
+                $booking_data['saddle_height']                       = tt_validate( $_REQUEST['saddle_height'] );
+            }
+            if ( ! empty(  $_REQUEST['bar_reach'] ) ) {
+                $booking_data['saddle_bar_reach_from_saddle']        = tt_validate( $_REQUEST['bar_reach'] );
+            }
+            if ( ! empty(  $_REQUEST['bar_height'] ) ) {
+                $booking_data['saddle_bar_height_from_wheel_center'] = tt_validate( $_REQUEST['bar_height'] );
+            }
 
             $ns_user_booking_data['saddleHeight']                = tt_validate( $_REQUEST['saddle_height'] );
             $ns_user_booking_data['barReachFromSaddle']          = tt_validate( $_REQUEST['bar_reach'] );
@@ -1119,9 +1126,16 @@ function trek_update_trip_checklist_action_cb()
         }
 
         if ( $save_prefs_for_future_use || ( isset( $_REQUEST['tt_save_gear_info_optional'] ) && $_REQUEST['tt_save_gear_info_optional'] == 'yes' ) ) {
-            update_user_meta( $user->ID, 'gear_preferences_saddle_height', $_REQUEST['saddle_height'] );
-            update_user_meta( $user->ID, 'gear_preferences_bar_reach', $_REQUEST['bar_reach'] );
-            update_user_meta( $user->ID, 'gear_preferences_bar_height', $_REQUEST['bar_height'] );
+            // Store to the preferences if the values are not empty.
+            if ( ! empty( $_REQUEST['saddle_height'] ) ) {
+                update_user_meta( $user->ID, 'gear_preferences_saddle_height', $_REQUEST['saddle_height'] );
+            }
+            if ( ! empty( $_REQUEST['bar_reach'] ) ) {
+                update_user_meta( $user->ID, 'gear_preferences_bar_reach', $_REQUEST['bar_reach'] );
+            }
+            if ( ! empty( $_REQUEST['bar_height'] ) ) {
+                update_user_meta( $user->ID, 'gear_preferences_bar_height', $_REQUEST['bar_height'] );
+            }
         }
 
         $ns_user_id = get_user_meta( $user->ID, 'ns_customer_internal_id', true );
@@ -1147,12 +1161,13 @@ function trek_update_trip_checklist_action_cb()
             tt_add_error_log( '[Faild] Update Booking From Post-Booking', array( 'order_id' => $order_id, 'ns_user_id' => $ns_user_id ), array( 'last_error' => $wpdb->last_error ) );
         }
         $res['status']       = true;
-        $res['error']        = $wpdb->last_query;
+        $res['is_updated']   = $is_updated;
+        $res['last_query']   = $wpdb->last_query;
         $res['booking_data'] = $booking_data;
         $res['where']        = $where;
         $res['message']      = "Your Checklist information has been changed successfully!";
         $res['is_primary']   = $guest_is_primary && $guest_is_primary == 1 ? true : false;
-        tt_add_error_log('Post booking Log', $res, ['user_id' => $user->ID,'ns_user_id' => $ns_user_id, 'date' => date('Y-m-d H:i:s')]);
+        tt_add_error_log( 'Post booking Log', $res, array( 'user_id' => $user->ID,'ns_user_id' => $ns_user_id, 'date' => date('Y-m-d H:i:s') ) );
     }
     echo json_encode($res);
     exit;
@@ -1229,7 +1244,7 @@ function get_trek_user_checkout_data() {
     $accepted_p_ids = tt_get_line_items_product_ids();
     $tt_posted      = $tt_formatted = array();
 
-    if ( ! WC()->cart->is_empty() ) {
+    if ( WC()->cart && ! WC()->cart->is_empty() ) {
         // Cart has items.
         // Get the current cart contents.
         $cart_contents = WC()->cart->get_cart_contents();
@@ -6644,16 +6659,21 @@ function dx_get_user_pb_preferences( $user_id = 0 ) {
     $user_pb_preferences = array();
 
     // Get Medical Information.
-    $user_pb_preferences['med_info_medications']          = get_user_meta( $user_id, 'custentity_medications', true ); // Value of meta data field | false | empty string.
-    $user_pb_preferences['med_info_medical_conditions']   = get_user_meta( $user_id, 'custentity_medicalconditions', true );
-    $user_pb_preferences['med_info_allergies']            = get_user_meta( $user_id, 'custentity_allergies', true );
-    $user_pb_preferences['med_info_dietary_restrictions'] = get_user_meta( $user_id, 'custentity_dietaryrestrictions', true );
+    $user_pb_preferences['med_info_medications']            = get_user_meta( $user_id, 'custentity_medications', true ); // Value of meta data field | false | empty string.
+    $user_pb_preferences['med_info_medical_conditions']     = get_user_meta( $user_id, 'custentity_medicalconditions', true );
+    $user_pb_preferences['med_info_allergies']              = get_user_meta( $user_id, 'custentity_allergies', true );
+    $user_pb_preferences['med_info_dietary_restrictions']   = get_user_meta( $user_id, 'custentity_dietaryrestrictions', true );
 
     // Get Emergency Contact.
     $user_pb_preferences['em_info_em_contact_firstname']    = get_user_meta( $user_id, 'custentity_emergencycontactfirstname', true );
     $user_pb_preferences['em_info_em_contact_lastname']     = get_user_meta( $user_id, 'custentityemergencycontactlastname', true );
     $user_pb_preferences['em_info_em_contact_phonenumber']  = get_user_meta( $user_id, 'custentity_emergencycontactphonenumber', true );
     $user_pb_preferences['em_info_em_contact_relationship'] = get_user_meta( $user_id, 'custentity_emergencycontactrelationship', true );
+
+    // Bike fit (optional) info.
+    $user_pb_preferences['gear_preferences_bar_reach']      = get_user_meta( $user_id, 'gear_preferences_bar_reach', true );
+    $user_pb_preferences['gear_preferences_saddle_height']  = get_user_meta( $user_id, 'gear_preferences_saddle_height', true );
+    $user_pb_preferences['gear_preferences_bar_height']     = get_user_meta( $user_id, 'gear_preferences_bar_height', true );
 
     // Return user preferences.
     return $user_pb_preferences;

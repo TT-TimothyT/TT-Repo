@@ -669,10 +669,32 @@ if (!function_exists('tt_ns_guest_booking_details')) {
             // Before collect guest preferences, check for wp user existing.
             $ns_guest_email = isset( $ns_guest_booking_result->email ) ? $ns_guest_booking_result->email : '';
             $wp_user        = get_user_by( 'email', $ns_guest_email );
-            $wp_user_id     = $wp_user->ID;
+            $wp_user_id     = isset( $wp_user->ID ) ? $wp_user->ID : 0;
+
+            if ( empty( $wp_user_id ) ) {
+                // WP User not found by email, try to find WP User by NS User ID.
+                $wp_users_by_ns_user_id = get_users(
+                    array(
+                        'meta_key'   => 'ns_customer_internal_id',
+                        'meta_value' => (int) $guest_id
+                    )
+                );
+
+                if ( ! empty( $wp_users_by_ns_user_id ) && 1 === count( $wp_users_by_ns_user_id ) ) {
+                    $wp_user       = $wp_users_by_ns_user_id[0];
+                    $wp_user_id    = tt_validate( $wp_user->ID, 0 );
+                    $wp_user_email = tt_validate( $wp_user->data->user_email, '' );
+                    tt_add_error_log( 'Guest Sync Warning: Found WP User with a different primary email in NetSuite', array( 'ns_user_id' => $guest_id, 'ns_primary_email' => $ns_guest_email ), array( 'wp_user_id' => $wp_user_id, 'wp_user_email' => $wp_user_email ) );
+                } elseif ( count( $wp_users_by_ns_user_id ) > 1 ) {
+                    // Duplicate WP Users with the same NS User ID.
+                    $wp_users_data = array_column( $wp_users_by_ns_user_id, 'data' );
+	                $wp_users      = array_column( $wp_users_data, 'user_email', 'ID' );
+                    tt_add_error_log( 'Guest Sync Warning: Duplicate WP users with the same NS User ID', array( 'ns_user_id' => $guest_id, 'ns_primary_email' => $ns_guest_email ), array( 'found_wp_users' => $wp_users ) );
+                }
+            }
 
             // If we have wp user.
-            if( ! empty( $wp_user_id ) ) {
+            if ( ! empty( $wp_user_id ) ) {
 
                 if( empty( $wc_user_id ) ) {
                     $wc_user_id = $wp_user_id;

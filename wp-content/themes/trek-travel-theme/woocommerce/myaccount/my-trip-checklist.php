@@ -214,6 +214,20 @@ if( empty( $emergence_crelationship ) && ! empty( $current_user_preferences['em_
 	$emergence_crelationship = $current_user_preferences['em_info_em_contact_relationship'];
 }
 
+// Populate the Bike fit (optional) info user preferences if no value is confirmed yet.
+
+if( empty( $saddle_bar_reach_from_saddle ) && ! empty( $current_user_preferences['gear_preferences_bar_reach'] ) ) {
+	$saddle_bar_reach_from_saddle = $current_user_preferences['gear_preferences_bar_reach'];
+}
+
+if( empty( $saddle_height ) && ! empty( $current_user_preferences['gear_preferences_saddle_height'] ) ) {
+	$saddle_height = $current_user_preferences['gear_preferences_saddle_height'];
+}
+
+if( empty( $saddle_bar_height_from_wheel_center ) && ! empty( $current_user_preferences['gear_preferences_bar_height'] ) ) {
+	$saddle_bar_height_from_wheel_center = $current_user_preferences['gear_preferences_bar_height'];
+}
+
 $confirmed_info_user         = get_user_meta( $user_id, 'pb_checklist_cofirmations', true );
 $confirmed_info_unserialized = maybe_unserialize( $confirmed_info_user );
 
@@ -256,7 +270,11 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 		</div>
 	</div>
 
-	<div id="my-trips-responses"></div>
+	<div class="row mx-0">
+		<div class="col-lg-10">
+			<div id="my-trips-responses"></div>
+		</div>
+	</div>
 
 	<div class="row mx-0">
 		<div class="col-lg-10">
@@ -1148,22 +1166,34 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input <?php echo $gray_out; ?> name="saddle_height" id="saddle_height" placeholder="Saddle Height (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_height ?>">
+												<input <?php echo $gray_out; ?> name="saddle_height" id="saddle_height" placeholder="Saddle Height (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_height ?>" pattern="^(?!0(\.0+)?$)(\d+(\.\d+)?|\.\d+)$" required>
 												<label for="saddle_height">Saddle Height (cm)</label>
+												<div class="invalid-feedback">
+													<img class="invalid-icon" />
+													This field is required.
+												</div>
 											</div>
 										</div>
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input <?php echo $gray_out; ?> type="text" name="bar_reach" id="bar_reach" placeholder="Bar reach (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>">
+												<input <?php echo $gray_out; ?> type="text" name="bar_reach" id="bar_reach" placeholder="Bar reach (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_reach_from_saddle ?>" pattern="^(?!0(\.0+)?$)(\d+(\.\d+)?|\.\d+)$" required>
 												<label for="bar_reach">Bar reach (cm)</label>
+												<div class="invalid-feedback">
+													<img class="invalid-icon" />
+													This field is required.
+												</div>
 											</div>
 										</div>
 									</div>
 									<div class="row mx-0 guest-checkout__primary-form-row">
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input <?php echo $gray_out; ?> type="text" name="bar_height" id="bar_height" placeholder="Bar Height (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>">
+												<input <?php echo $gray_out; ?> type="text" name="bar_height" id="bar_height" placeholder="Bar Height (cm)" class="form-control gear_optional_validation_inputs" value="<?php echo $saddle_bar_height_from_wheel_center; ?>" pattern="^(?!0(\.0+)?$)(\d+(\.\d+)?|\.\d+)$" required>
 												<label for="bar_height">Bar Height (cm)</label>
+												<div class="invalid-feedback">
+													<img class="invalid-icon" />
+													This field is required.
+												</div>
 											</div>
 										</div>
 										<div class="col-md px-0">
