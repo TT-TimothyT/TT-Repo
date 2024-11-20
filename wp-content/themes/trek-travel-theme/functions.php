@@ -1724,7 +1724,7 @@ add_action( 'manage_trip-duration_custom_column', 'tt_show_trip_duration_info_in
  * @return string[] $columns The column header label keyed by column ID with added new columns.
  */
 function tt_add_trip_duration_columns( $columns ) {
-	$columns['trip-duration-pdp-name'] = __( 'PDP Name / Algolia Filter', 'trek-travel-theme' );
+	$columns['trip-duration-pdp-name'] = __( 'PDP Name', 'trek-travel-theme' );
     return $columns;
 }
 add_filter( 'manage_edit-trip-duration_columns', 'tt_add_trip_duration_columns' );

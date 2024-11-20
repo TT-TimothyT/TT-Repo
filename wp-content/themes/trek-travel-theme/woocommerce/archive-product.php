@@ -381,40 +381,58 @@ if( 'taxonomies.destination' === $filter_name ) {
                     }),
                     instantsearch.widgets.refinementList({
                         container: '#duration-facet',
-                        attribute: 'Duration',
-                        sortBy: ['name:desc'],
+                        attribute: 'taxonomies.trip-duration',
+                        sortBy: ( a, b ) => {
+                            // Try to extract a number from the `name`, if available
+                            const daysA = parseInt(a.name);
+                            const daysB = parseInt(b.name);
+
+                            // Check if the names contain numbers
+                            const hasNumberA = !isNaN(daysA);
+                            const hasNumberB = !isNaN(daysB);
+
+                            // First, sort based on whether the objects have numbers or not
+                            if (hasNumberA && !hasNumberB) return -1; // Objects with numbers come first
+                            if (!hasNumberA && hasNumberB) return 1;  // Objects without numbers come last
+
+                            // If both objects have numbers, compare the numbers
+                            if (hasNumberA && hasNumberB) return daysA - daysB;
+
+                            // If both objects do not have numbers, sort them alphabetically
+                            return a.name.localeCompare(b.name);
+                        },
                         operator: 'or',
-                        limit: 10,
+                        limit: 20,
                         templates: {
                             item: wp.template('instantsearch-menu-template')
                         }
                     }),
                     instantsearch.widgets.refinementList({
                         container: '#trip-style-facet',
-                        attribute: 'Trip Style',
+                        attribute: 'taxonomies.trip-style',
                         sortBy: ['name:desc'],
                         operator: 'or',
-                        limit: 10,
+                        limit: 20,
                         templates: {
                             item: wp.template('instantsearch-menu-template')
                         }
                     }),
                     instantsearch.widgets.refinementList({
                         container: '#rider-level-facet',
-                        attribute: 'Activity Level',
-                        sortBy: ['name:desc'],
+                        attribute: 'taxonomies.activity-level',
+                        sortBy: ['name:asc'],
                         operator: 'or',
-                        limit: 10,
+                        limit: 20,
                         templates: {
                             item: wp.template('instantsearch-menu-template')
                         }
                     }),
                     instantsearch.widgets.refinementList({
                         container: '#hotel-level-facet',
-                        attribute: 'Hotel Level',
+                        attribute: 'taxonomies.hotel-level',
                         sortBy: ['name:desc'],
                         operator: 'or',
-                        limit: 10,
+                        limit: 20,
                         templates: {
                             item: wp.template('instantsearch-menu-template')
                         }
@@ -434,7 +452,7 @@ if( 'taxonomies.destination' === $filter_name ) {
                                 instantsearch.widgets.refinementList({
                                     container: '#dest-<?php echo esc_attr( $dest_slug ); ?>',
                                     attribute: 'taxonomies_hierarchical.destination.lvl1',
-                                    sortBy: ['name:desc'],
+                                    sortBy: ['name:asc'],
                                     operator: 'or',
                                     limit: 150,
                                     templates: {
@@ -698,10 +716,6 @@ if( 'taxonomies.destination' === $filter_name ) {
                 });
             }
         })
-        jQuery("body").on("click", "#clear-refinements", function() {
-            currentUrl = window.location.href
-            window.location.href = currentUrl.split('?')[0]
-        });
 
         jQuery(window).load(function() {
             window.dataLayer = window.dataLayer || [];

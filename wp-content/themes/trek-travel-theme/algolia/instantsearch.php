@@ -256,37 +256,55 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
                     }),
                     instantsearch.widgets.refinementList({
                         container: '#duration-facet',
-                        attribute: 'Duration',
-                        sortBy: ['name:desc'],
-                        limit: 10,
+                        attribute: 'taxonomies.trip-duration',
+                        sortBy: ( a, b ) => {
+                            // Try to extract a number from the `name`, if available
+                            const daysA = parseInt(a.name);
+                            const daysB = parseInt(b.name);
+
+                            // Check if the names contain numbers
+                            const hasNumberA = !isNaN(daysA);
+                            const hasNumberB = !isNaN(daysB);
+
+                            // First, sort based on whether the objects have numbers or not
+                            if (hasNumberA && !hasNumberB) return -1; // Objects with numbers come first
+                            if (!hasNumberA && hasNumberB) return 1;  // Objects without numbers come last
+
+                            // If both objects have numbers, compare the numbers
+                            if (hasNumberA && hasNumberB) return daysA - daysB;
+
+                            // If both objects do not have numbers, sort them alphabetically
+                            return a.name.localeCompare(b.name);
+                        },
+                        limit: 20,
                         templates: {
                             item: wp.template('instantsearch-menu-template')
                         }
                     }),
                     instantsearch.widgets.refinementList({
                         container: '#trip-style-facet',
-                        attribute: 'Trip Style',
+                        attribute: 'taxonomies.trip-style',
                         sortBy: ['name:desc'],
-                        limit: 10,
+                        limit: 20,
                         templates: {
                             item: wp.template('instantsearch-menu-template')
                         }
                     }),
                     instantsearch.widgets.refinementList({
                         container: '#rider-level-facet',
-                        attribute: 'Activity Level',
-                        sortBy: ['name:desc'],
+                        attribute: 'taxonomies.activity-level',
+                        sortBy: ['name:asc'],
                         operator: 'or',
-                        limit: 10,
+                        limit: 20,
                         templates: {
                             item: wp.template('instantsearch-menu-template')
                         }
                     }),
                     instantsearch.widgets.refinementList({
                         container: '#hotel-level-facet',
-                        attribute: 'Hotel Level',
+                        attribute: 'taxonomies.hotel-level',
                         sortBy: ['name:desc'],
-                        limit: 10,
+                        limit: 20,
                         templates: {
                             item: wp.template('instantsearch-menu-template')
                         }
@@ -306,7 +324,7 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
                                 instantsearch.widgets.refinementList({
                                     container: '#dest-<?php echo esc_attr( $dest_slug ); ?>',
                                     attribute: 'taxonomies_hierarchical.destination.lvl1',
-                                    sortBy: ['name:desc'],
+                                    sortBy: ['name:asc'],
                                     operator: 'or',
                                     limit: 150,
                                     templates: {
@@ -567,12 +585,6 @@ if ( ! empty( $dest_terms_top_level )  && ! is_wp_error( $dest_terms_top_level )
                 });
             }
         })
-        jQuery("body").on("click", "#clear-refinements", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const querySearchParam = urlParams.get('wp_searchable_posts[query]');
-            let currentUrl = window.location.href
-            window.location.href = currentUrl.split('?')[0] + `?s=algolia&wp_searchable_posts[query]=${querySearchParam}`;
-        });
 
         function postRenderOps() {
             let resultText = jQuery('.filter-results-number span.ais-Stats-text').text();

@@ -139,7 +139,7 @@
 						<div class="col d-lg-flex justify-content-lg-end align-items-lg-baseline apply-filters-info">
 							<button type="button" class="btn btn-secondary d-none" data-bs-dismiss="modal"><?php esc_html_e( 'Close', 'trek-travel-theme' ); ?></button>
 							<span class="filter-results-number" id="algolia-stats"></span>
-							<button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?php esc_html_e( 'Apply filters', 'trek-travel-theme' ); ?></button>
+							<button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?php esc_html_e( 'Done', 'trek-travel-theme' ); ?></button>
 						</div>
 					</div>
 				</div>
