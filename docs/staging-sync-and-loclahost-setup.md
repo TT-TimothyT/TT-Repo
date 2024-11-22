@@ -16,7 +16,7 @@ This is why we'll sync the content pieces manually.
   * `BE_MEDIA_FROM_PRODUCTION_URL` must be set `'https://trektravel.com/'`
 * Disable temporarily sync cron
 
-## Production DB export
+## Production DB export or Pagely sync
 1) Connect to the server and do a production database export
 ```
 wp db export
@@ -50,6 +50,11 @@ wp search-replace "trektravel.com" "staging.trektravel.com" --allow-root --all-t
 ```
 wp option update blog_public 0 --skip-plugins --skip-themes
 ```
+Instead of updating with SQL, you might use something like:
+```
+pagely sync --rename --ignore-path=.git/ --ignore-path=wp-content/uploads  ~/sites/trektravel.com ~/sites/staging.trektravel.com --ignore-table=wp_tt_common_error_logs --ignore-table=wp_guest_bookings --ignore-table=wp_netsuite_trips --ignore-table=wp_netsuite_trip_detail --dry-run
+```
+
 
 5) Make sure the Pagely CDN settings are set properly:
 Go to /wp-admin/admin.php?page=press_cdn and set the following options:
