@@ -52,7 +52,7 @@ wp option update blog_public 0 --skip-plugins --skip-themes
 ```
 Instead of updating with SQL, you might use something like:
 ```
-pagely sync --rename --ignore-path=.git/ --ignore-path=wp-content/uploads  ~/sites/trektravel.com ~/sites/staging.trektravel.com --ignore-table=wp_tt_common_error_logs --ignore-table=wp_guest_bookings --ignore-table=wp_netsuite_trips --ignore-table=wp_netsuite_trip_detail --dry-run
+pagely sync --rename --ignore-path=.git/ --ignore-path=wp-content/uploads  ~/sites/trektravel.com ~/sites/staging3.trektravel.com --ignore-table=wp_tt_common_error_logs --ignore-table=wp_guest_bookings --ignore-table=wp_netsuite_trips --ignore-table=wp_netsuite_trip_detail --dry-run
 ```
 
 
