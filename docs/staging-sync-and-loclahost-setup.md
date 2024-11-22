@@ -50,10 +50,14 @@ wp search-replace "trektravel.com" "staging.trektravel.com" --allow-root --all-t
 ```
 wp option update blog_public 0 --skip-plugins --skip-themes
 ```
+
+## Staging 3 Sync
 Instead of updating with SQL, you might use something like:
 ```
-pagely sync --rename --ignore-path=.git/ --ignore-path=wp-content/uploads  ~/sites/trektravel.com ~/sites/staging3.trektravel.com --ignore-table=wp_tt_common_error_logs --ignore-table=wp_guest_bookings --ignore-table=wp_netsuite_trips --ignore-table=wp_netsuite_trip_detail --dry-run
+pagely sync --rename ~/sites/trektravel.com ~/sites/staging3.trektravel.com --ignore-path=.git --ignore-path=wp-content/uploads  --ignore-table=wp_tt_common_error_logs --ignore-table=wp_guest_bookings --ignore-table=wp_netsuite_trips --ignore-table=wp_netsuite_trip_detail --dry-run
 ```
+
+Once Staging 3 is synced, you can sync S2 and S1 from S3.
 
 
 5) Make sure the Pagely CDN settings are set properly:
