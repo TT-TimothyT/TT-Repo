@@ -149,7 +149,7 @@ function trek_wp_enqueue_scripts_cb()
     wp_register_script('trek-date', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js', array(), time(), true);
     wp_register_script('trek-developer', TREK_DIR . '/assets/js/developer.js', array(), time(), true);
     wp_register_script('trek-custom-calendar', TREK_DIR . '/assets/js/trek-daterangepicker.js', array(), time(), true);
-    wp_register_script('trek-trips-compare', TREK_DIR . '/assets/js/trek-compare-trips.js', array(), time(), true);
+    // wp_register_script('trek-trips-compare', TREK_DIR . '/assets/js/trek-compare-trips.js', array(), time(), true);
     
     wp_register_script('trek-instantsearch', TREK_DIR . '/assets/js/instantsearch.js', array(), time(), true);
     wp_register_script('trek-algoliasearch', TREK_DIR . '/assets/js/algoliasearch.umd.js', array(), time(), true);
@@ -2041,12 +2041,12 @@ add_action('wp_ajax_add_compare_product_ids_action', 'trek_add_compare_product_i
 add_action('wp_ajax_nopriv_add_compare_product_ids_action', 'trek_add_compare_product_ids_action_cb');
 function trek_add_compare_product_ids_action_cb()
 {
-    $compared_Ids = [];
-    if (isset($_REQUEST['product_ids']) && !empty($_REQUEST['product_ids'])) {
-        $compared_Ids = array_unique($_REQUEST['product_ids']);
-        setcookie('wc_products_compare_products', implode(',', $compared_Ids), strtotime('+10 day'));
-    }
-    $output = tt_compare_trips_html($compared_Ids, false);
+    // $compared_Ids = [];
+    // if (isset($_REQUEST['product_ids']) && !empty($_REQUEST['product_ids'])) {
+    //     $compared_Ids = array_unique($_REQUEST['product_ids']);
+    //     setcookie('wc_products_compare_products', implode(',', $compared_Ids), strtotime('+10 day'));
+    // }
+    // $output = tt_compare_trips_html($compared_Ids, false);
     // $output = '';
     // if (isset($_REQUEST['product_ids']) && !empty($_REQUEST['product_ids'])) {
     //     setcookie('wc_products_compare_products', array_unique($_REQUEST['product_ids']), strtotime('+1 day'));
@@ -2066,14 +2066,14 @@ function trek_add_compare_product_ids_action_cb()
     //         }
     //     }
     // }
-    echo json_encode(
-        array(
-            'status' => true,
+    // echo json_encode(
+    //     array(
+    //         'status' => true,
             //'tt_compare_products' => $_COOKIE['wc_products_compare_products'],
-            'output' => $output
-        )
-    );
-    exit;
+    //         'output' => $output
+    //     )
+    // );
+    // exit;
 }
 function get_bearer_token_insurance()
 {
@@ -6798,6 +6798,60 @@ function tt_algolia_modify_starting_from_price( $shared_attributes, $post ) {
     return $shared_attributes;
 }
 add_filter( 'algolia_searchable_post_shared_attributes', 'tt_algolia_modify_starting_from_price', 10, 2 );
+
+
+// Add Trip Weight to Algolia index
+add_filter('algolia_searchable_post_shared_attributes', 'add_trip_weight_to_algolia', 10, 2);
+function add_trip_weight_to_algolia($shared_attributes, $post) {
+    if ('product' === $post->post_type) {
+        // Retrieve the ACF field value
+        $trip_weight = get_field('trip_weight', $post->ID);
+        
+        if (!empty($trip_weight)) {
+            $shared_attributes['trip_weight'] = (int)$trip_weight;
+        }
+    }
+    return $shared_attributes;
+}
+
+// Add custom column for `trip_weight`
+add_filter('manage_edit-product_columns', 'add_trip_weight_column');
+function add_trip_weight_column($columns) {
+    $columns['trip_weight'] = __('Trip Weight', 'your-text-domain');
+    return $columns;
+}
+
+// Display `trip_weight` value in the custom column
+add_action('manage_product_posts_custom_column', 'show_trip_weight_column', 10, 2);
+function show_trip_weight_column($column, $post_id) {
+    if ('trip_weight' === $column) {
+        $trip_weight = get_field('trip_weight', $post_id);
+        echo esc_html($trip_weight);
+    }
+}
+
+// Make the `trip_weight` column sortable
+add_filter('manage_edit-product_sortable_columns', 'make_trip_weight_column_sortable');
+function make_trip_weight_column_sortable($sortable_columns) {
+    $sortable_columns['trip_weight'] = 'trip_weight';
+    return $sortable_columns;
+}
+
+// Modify the query to sort by `trip_weight` ACF field
+add_action('pre_get_posts', 'sort_by_trip_weight');
+function sort_by_trip_weight($query) {
+    if (!is_admin()) {
+        return;
+    }
+    
+    $orderby = $query->get('orderby');
+    if ('trip_weight' === $orderby) {
+        $query->set('meta_key', 'trip_weight');
+        $query->set('orderby', 'meta_value_num');
+    }
+}
+
+
 
 /**
  * Take the correct itinerary link from itineraries ACF Field in admin panel.

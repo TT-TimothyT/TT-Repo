@@ -3576,9 +3576,9 @@ jQuery(document).on('click', '#itinerary-print-button', function (e) {
 });
 
 function openOlarkChat(obj) {
-  console.log("Button clicked, openOlarkChat function called!");
+  // console.log("Button clicked, openOlarkChat function called!");
     olark('api.box.expand');
-    console.log("Button clicked, openOlarkChat work!!");
+    // console.log("Button clicked, openOlarkChat work!!");
 }
 
 

@@ -215,7 +215,6 @@ get_footer( 'shop' );
     elements.forEach(element => {
         const bounding = element.getBoundingClientRect();
         if (bounding.right > window.innerWidth || bounding.left < 0) {
-            console.log('Overflowing element:', element, 'Bounding:', bounding);
         }
     });
 });

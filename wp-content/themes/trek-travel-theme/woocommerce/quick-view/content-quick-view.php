@@ -443,13 +443,13 @@ $pdp_bikes = get_field( 'bikes', $p_id );
 
 	// Iterate over each select dropdown
 	monthSelects.forEach(function(monthSelect) {
-		console.log(monthSelect);
+		// console.log(monthSelect);
 
 		// Add a change event listener to each select dropdown
 		monthSelect.addEventListener('change', function() {
 			// Get the value of the selected option
 			var selectedMonthId = this.value;
-			console.log('selected: ' + selectedMonthId);
+			// console.log('selected: ' + selectedMonthId);
 
 			// Assuming each dropdown's corresponding tab content is grouped within a parent
 			// with a matching pattern in ID, like "nav-tabContent-months-123" for "select-month-123"
@@ -467,17 +467,17 @@ $pdp_bikes = get_field( 'bikes', $p_id );
 				// Show the selected tab pane within this container
 				var selectedPane = tabContentContainer.querySelector('#' + selectedMonthId);
 				if (selectedPane) {
-					console.log(selectedPane);
+					// console.log(selectedPane);
 					selectedPane.classList.add('show', 'active');
-					console.log('shown');
+					// console.log('shown');
 				}
 			} else {
-				console.log("Corresponding tab content container not found for " + this.id);
+				// console.log("Corresponding tab content container not found for " + this.id);
 			}
 		});
 	});
 
 	if (monthSelects.length === 0) {
-		console.log("No dropdown select elements found.");
+		// console.log("No dropdown select elements found.");
 	}
 </script>

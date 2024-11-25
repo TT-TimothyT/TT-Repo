@@ -3,6 +3,29 @@
     "title": "PDP",
     "fields": [
         {
+            "key": "field_66f5b4f146e0c",
+            "label": "Trip Weight",
+            "name": "trip_weight",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Add a number divisible by 5. This gives PDP a higher ranking above all other trips. Higher the number the higher on the PLP compared to other PDPs with a Trip Weight.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "35",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "allow_in_bindings": 1,
+            "placeholder": "",
+            "step": 5,
+            "prepend": "",
+            "append": ""
+        },
+        {
             "key": "field_6613de9139831",
             "label": "Is Private\/Custom Trip?",
             "name": "is_private_custom_trip",
@@ -12,15 +35,16 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "35",
                 "class": "",
                 "id": ""
             },
             "message": "Check the box if you do not want this PDP trips page to be indexed by Algolia and Google.",
             "default_value": 0,
-            "ui": 0,
+            "allow_in_bindings": 1,
             "ui_on_text": "",
-            "ui_off_text": ""
+            "ui_off_text": "",
+            "ui": 1
         },
         {
             "key": "field_65aebb0c08843",
@@ -32,7 +56,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "30",
                 "class": "",
                 "id": ""
             },
@@ -43,6 +67,7 @@
             "return_format": "object",
             "field_type": "radio",
             "allow_null": 1,
+            "allow_in_bindings": 1,
             "bidirectional": 0,
             "multiple": 0,
             "bidirectional_target": []
@@ -377,7 +402,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -397,7 +422,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -417,7 +442,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -437,7 +462,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -833,7 +858,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -853,7 +878,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -886,7 +911,7 @@
                         ]
                     ],
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -919,7 +944,7 @@
                         ]
                     ],
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -939,7 +964,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -959,7 +984,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -1370,7 +1395,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -1390,7 +1415,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -1410,7 +1435,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -1430,7 +1455,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -2178,5 +2203,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1723055710
+    "modified": 1731436108
 }
