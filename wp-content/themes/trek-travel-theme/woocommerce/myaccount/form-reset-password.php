@@ -13,7 +13,7 @@ do_action( 'woocommerce_before_reset_password_form' );
 
 				<div class="form-group my-4">
 					<div class="form-floating flex-grow-1">
-						<input type="password" class="input-text form-control" name="password_1" placeholder="Password" id="password_1" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,}$"  required />
+						<input type="password" class="input-text form-control" name="password_1" placeholder="Password" id="password_1" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[\S]{8,}$"  required />
 						<label for="password_1" class="label-for">New Password</label>
 						<span class="password-eye px-2"><i class="bi bi-eye-slash" id="togglePassword2"></i></span>
 						<div class="invalid-feedback">
@@ -29,7 +29,7 @@ do_action( 'woocommerce_before_reset_password_form' );
 
 				<div class="form-group my-4">
 					<div class="form-floating flex-grow-1">
-						<input type="password" class="input-text form-control" name="password_2" placeholder="Password" id="password_2" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,}$" required />
+						<input type="password" class="input-text form-control" name="password_2" placeholder="Password" id="password_2" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[\S]{8,}$" required />
 						<label for="password_2" class="label-for">Confirm New Password</label>
 						<span class="password-eye px-2"><i class="bi bi-eye-slash" id="togglePassword3"></i></span>
 						<div class="invalid-feedback">

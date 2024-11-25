@@ -51,7 +51,7 @@ function trek_registration_form_cb()
             </div>
             <div class="form-group my-4">
                <div class="form-floating flex-grow-1">
-                  <input type="password" class="input-text form-control" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" name="password" placeholder="Password" id="InputPassword" required />
+                  <input type="password" class="input-text form-control" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[\S]{8,}$" name="password" placeholder="Password" id="InputPassword" required />
                   <label for="password" class="label-for">Password*</label>
                   <span class="password-eye px-2"><i class="bi bi-eye-slash" id="togglePassword"></i></span>
                   <div class="invalid-feedback">
