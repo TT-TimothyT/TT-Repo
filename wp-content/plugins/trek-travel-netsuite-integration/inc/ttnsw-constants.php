@@ -54,5 +54,5 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'DEFAULT_TIME_RANGE_LOCKING_STATUS', '-2 hours' ); // Define a default time range for sync of bike and checklist locking status, when no parameter is passed.
     define( 'GET_MODIFIED_REGISTRATIONS', '1293:2' );
     define( 'GET_BIKE_MODELS_SCRIPT_ID', '1301:2' );
-    define( 'HIKER_BIKE_ID', 50433 );
+    define( 'HIKER_BIKE_ID', 50919 );
 }
