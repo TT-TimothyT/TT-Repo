@@ -9,14 +9,20 @@ function tmNetSuiteAutoLoader($className) {
 	$classNameParts = explode('\\', $className);
 	$className = end($classNameParts);
 	
+	// Define the base directory for the class files
 	$baseDirectory = TMWNI_DIR . 'inc/NS_Toolkit/src/Classes/';
 	
+	// Construct the file path
 	$filePath = $baseDirectory . $className . '.php';
 	
-	$realFilePath = realpath($filePath);
-	if ($realFilePath && strpos($realFilePath, $baseDirectory) === 0 && is_file($realFilePath) && file_exists($realFilePath)) {
-		require_once $realFilePath;
-	} 
+	// Normalize paths to use forward slashes for compatibility
+	$normalizedBaseDirectory = str_replace('\\', '/', $baseDirectory);
+	$normalizedFilePath = str_replace('\\', '/', realpath($filePath));
+	
+	// Check if the file exists within the plugin directory
+	if ($normalizedFilePath && strpos($normalizedFilePath, $normalizedBaseDirectory) === 0 && is_file($normalizedFilePath)) {
+		require_once $normalizedFilePath;
+	}
 }
 
 // Register the autoload function

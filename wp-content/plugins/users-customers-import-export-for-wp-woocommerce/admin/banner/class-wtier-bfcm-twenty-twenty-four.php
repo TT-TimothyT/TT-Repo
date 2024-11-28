@@ -166,12 +166,8 @@ if (!class_exists('\\Wtieruser\\Banners\\Wtier_Bfcm_Twenty_Twenty_Four')) {
              * 	
              * 	@param 	string[] 	Default screen ids
              */
-            $screens_to_show = (array) apply_filters('wtier_bfcm_banner_screens', array('toplevel_page_wt_import_export_for_woo_basic_export', 'webtoffee-import-export-basic_page_wt_import_export_for_woo_basic_import', 'webtoffee-import-export-basic_page_wt_iew_scheduled_job'));
+            $screens_to_show = (array) apply_filters('wtier_bfcm_banner_screens', array('toplevel_page_wt_import_export_for_woo_basic_export', 'webtoffee-import-export-basic_page_wt_import_export_for_woo_basic_import', 'webtoffee-import-export-basic_page_wt_iew_scheduled_job','webtoffee-import-export-basic_page_wt_import_export_for_woo_basic'));
             self::$show_banner = in_array($screen_id, $screens_to_show);
-
-            if ('woocommerce_page_wc-settings' === $screen_id && isset($_REQUEST['tab']) && "checkout" === $_REQUEST['tab']) {
-                self::$show_banner = true;
-            }
 
             return apply_filters("wtier_bfcm_show_banner", self::$show_banner);
         }

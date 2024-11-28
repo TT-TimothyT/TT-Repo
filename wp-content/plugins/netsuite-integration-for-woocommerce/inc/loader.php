@@ -1,5 +1,6 @@
 <?php
 require_once TMWNI_DIR . 'inc/background-process/class-add-netsuite-order.php';
+require_once TMWNI_DIR . 'inc/background-process/class-add-netsuite-customer.php';
 require_once TMWNI_DIR . 'inc/NS_Restlet/netsuiteRestAPI.php';
 
 
@@ -49,6 +50,7 @@ class TMWNI_Loader {
 	public $netsuiteOrderClient = '';
 	public  $add_netsuite_order;
 	public  $netsuiteService;
+	public $add_netsuite_customer;
 	/**
 	 * Construct
 	 *
@@ -59,12 +61,15 @@ class TMWNI_Loader {
 		if (class_exists('SOAPClient')) {
 			if (TMWNI_Settings::areCredentialsDefined()) {
 				require_once TMWNI_DIR . 'inc/order.php';
+				require_once TMWNI_DIR . 'inc/customer.php';
+				
 				$this->netsuiteOrderClient = new OrderClient();
 
 				$this->netsuiteService = new NetSuiteService(null, array(
 					'exceptions' => true
 				));
 				$this->add_netsuite_order = new Add_Netsuite_Order();
+				$this->add_netsuite_customer = new Add_Netsuite_Customer();
 				add_action('init', array(
 					$this,
 					'remove_background_process'
@@ -261,14 +266,21 @@ class TMWNI_Loader {
 		}
 	}
 
-	public function profileUpdateNetSuiteUser($customer_id) {
+	public function profileUpdateNetSuiteUser( $customer_id) {
+
 		$user_meta = get_userdata($customer_id);
 		$user_roles = $user_meta->roles;
-		if (!empty($_GET['wc-ajax']) && 'checkout' == $_GET['wc-ajax']) {
+
+		if (!empty($_GET['wc-ajax']) && 'checkout' ==$_GET['wc-ajax']) {
 			$var = 'checkout';
 		} else {
-			$this->addUpdateNetsuiteCustomer($customer_id);
+			if (!$this->is_post_in_queue($customer_id)) {
+				$this->add_netsuite_customer->push_to_queue($customer_id);
+				$this->add_netsuite_customer->save()->dispatch();
+				return false;
+			}
 		}
+
 	}
 
 	public function syncSOInvoice($order_id) {
@@ -297,19 +309,41 @@ class TMWNI_Loader {
 		}
 	}
 
-	public function syncNetSuiteOrder($order_id) {
+	public function syncNetSuiteOrder( $order_id) {
 		$status = true;
-
-		/**
-		 * Order Add status hook.
-		 *
-		 * @since 1.0.0
-		 */
-		$status = apply_filters('tm_netsuite_order_autosync_status', $status, $order_id);
-
+		/** 
+			*Order Add status hook.
+		
+			* @since 1.0.0
+ 
+			**/
+			$status = apply_filters('tm_netsuite_order_autosync_status', $status, $order_id);
 		if (true == $status) {
-			$this->push_orders_to_queue($order_id);
+			if (!$this->is_post_in_queue($order_id)) {
+				$this->push_orders_to_queue($order_id);
+			}
 		}
+
+	}
+
+	public function is_post_in_queue( $id) {
+		global $wpdb;
+		$ids = array();
+		$ids[0] = $id;
+		$wpdb->netsuite_queue = $wpdb->prefix . 'options';
+
+		$value = serialize($ids);
+
+		$count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->netsuite_queue WHERE option_value=%s", $value));
+
+		if (is_multisite()) {
+			$wpdb->netsuite_queue_site_meta_table = $wpdb->prefix . 'sitemeta';
+			$count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->netsuite_queue_site_meta_table WHERE meta_value=%s", $value));
+
+		}
+
+		return ( $count > 0 );
+
 	}
 
 	/**

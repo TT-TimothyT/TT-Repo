@@ -54,12 +54,11 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 			static $local_cache = null;
 
-			if ( $local_cache ) {	// Optimize - once true, stay true.
+			if ( null !== $local_cache ) {
 
-				return true;
+				return $local_cache;
 			}
 
-			$local_cache   = false;
 			$post_id       = false;
 			$can_edit_id   = false;
 			$can_edit_type = false;
@@ -130,7 +129,8 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 						}
 					}
 				}
-			}
+
+			} else return $local_cache = false;	// No post ID = No block editor.
 
 			if ( $can_edit_id && $can_edit_type ) {
 
@@ -194,22 +194,19 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				return false;
 
-			} elseif ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+			} elseif ( self::doing_cron() ) {
 
 				return false;
 
-			} elseif ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			} elseif ( self::doing_ajax() ) {
 
-				return true;	// An ajax call is considered a frontend task.
+				return true;	// An ajax call can be from the front or back-end.
 
 			} elseif ( self::doing_rest() ) {
 
 				return false;
 
-			} else {
-
-				return true;
-			}
+			} else return true;
 		}
 
 		public static function doing_iframe() {
@@ -255,39 +252,41 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 			static $local_cache = null;
 
-			if ( null === $local_cache ) {
+			if ( null !== $local_cache ) {
 
-				if ( is_admin() ) {
-
-					$local_cache = false;
-
-				/*
-				 * The amp_is_request() function cannot be called before the 'wp' action has run, so if the 'wp'
-				 * action has not run, leave the $local_cache as null to allow for future checks.
-				 */
-				} elseif ( function_exists( 'amp_is_request' ) ) {
-
-					if ( did_action( 'wp' ) ) {
-
-						$local_cache = amp_is_request();
-					}
-
-				} elseif ( function_exists( 'is_amp_endpoint' ) ) {
-
-					$local_cache = is_amp_endpoint();
-
-				} elseif ( function_exists( 'ampforwp_is_amp_endpoint' ) ) {
-
-					$local_cache = ampforwp_is_amp_endpoint();
-
-				} elseif ( defined( 'AMP_QUERY_VAR' ) ) {
-
-					$local_cache = get_query_var( AMP_QUERY_VAR, false ) ? true : false;
-
-				} else $local_cache = false;
+				return $local_cache;
 			}
 
-			return $local_cache;
+			if ( is_admin() ) {
+
+				return $local_cache = false;
+
+			/*
+			 * The amp_is_request() function cannot be called before the 'wp' action has run, so if the 'wp'
+			 * action has not run, leave the $local_cache as null to allow for future checks.
+			 */
+			} elseif ( function_exists( 'amp_is_request' ) ) {
+
+				if ( did_action( 'wp' ) ) {
+
+					return $local_cache = amp_is_request();
+
+				} else return $local_cache;	// Return null.
+
+			} elseif ( function_exists( 'is_amp_endpoint' ) ) {
+
+				return $local_cache = is_amp_endpoint();
+
+			} elseif ( function_exists( 'ampforwp_is_amp_endpoint' ) ) {
+
+				return $local_cache = ampforwp_is_amp_endpoint();
+
+			} elseif ( defined( 'AMP_QUERY_VAR' ) ) {
+
+				return $local_cache = get_query_var( AMP_QUERY_VAR, false ) ? true : false;
+			}
+
+			return $local_cache = false;
 		}
 
 		public static function is_home_page( $use_post = false ) {
@@ -583,24 +582,22 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		 */
 		public static function is_term_tax_slug( $term_id, $tax_slug ) {
 
-			/*
-			 * Optimize and get the term only once so this method can be called several times for different $tax_slugs.
-			 */
 			static $local_cache = array();
 
-			if ( ! isset( $local_cache[ $term_id ] ) ) {
+			if ( isset( $local_cache[ $term_id ][ $tax_slug ] ) ) {	// Boolean value.
 
-				$local_cache[ $term_id ] = get_term_by( 'id', $term_id, $tax_slug, OBJECT, 'raw' );
+				return $local_cache[ $term_id ][ $tax_slug ];
+
+			} elseif ( ! isset( $local_cache[ $term_id ] ) ) $local_cache[ $term_id ] = array();
+
+			$term_obj = get_term_by( 'id', $term_id, $tax_slug, OBJECT, 'raw' );
+
+			if ( ! empty( $term_obj->term_id ) && ! empty( $term_obj->taxonomy ) && $term_obj->taxonomy === $tax_slug ) {
+
+				return $local_cache[ $term_id ][ $tax_slug ] = true;
 			}
 
-			if ( ! empty( $local_cache[ $term_id ]->term_id ) &&
-				! empty( $local_cache[ $term_id ]->taxonomy ) &&
-					$local_cache[ $term_id ]->taxonomy === $tax_slug ) {
-
-				return true;
-			}
-
-			return false;
+			return $local_cache[ $term_id ][ $tax_slug ] = false;
 		}
 
 		/*
@@ -769,7 +766,8 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 				if ( isset( $local_cache[ $table ][ $obj_id ] ) ) {
 
 					return $local_cache[ $table ][ $obj_id ];
-				}
+
+				} elseif ( ! isset( $local_cache[ $table ] ) ) $local_cache[ $table ] = array();
 
 				global $wpdb;
 
@@ -941,9 +939,13 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				foreach ( $objects as $obj ) {
 
-					$obj_label = self::get_object_label( $obj );
+					if ( is_object( $obj ) ) {	// Just in case.
 
-					$values[ $val_prefix . $obj->name ] = trim( $label_prefix . ' ' . $obj_label );
+						$obj_label = self::get_object_label( $obj );
+
+						$values[ $val_prefix . $obj->name ] = trim( $label_prefix . ' ' . $obj_label );
+
+					} else SucomUtil::safe_error_log( __METHOD__ . ' error: post type object not an object: ' . print_r( $obj, true ) );
 				}
 			}
 
@@ -1166,9 +1168,12 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 				foreach ( $objects as $obj ) {
 
-					$obj_label = self::get_object_label( $obj );
+					if ( is_object( $obj ) ) {	// Just in case.
 
-					$values[ $val_prefix . $obj->name ] = trim( $label_prefix . ' ' . $obj_label );
+						$obj_label = self::get_object_label( $obj );
+
+						$values[ $val_prefix . $obj->name ] = trim( $label_prefix . ' ' . $obj_label );
+					}
 				}
 			}
 
@@ -1423,12 +1428,17 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 		 */
 		public static function get_object_label( $obj ) {
 
-			if ( empty( $obj->_builtin ) ) {	// Custom post type or taxonomy.
+			if ( is_object( $obj ) ) {	// Just in case.
 
-				return $obj->label . ' [' . $obj->name . ']';
+				if ( empty( $obj->_builtin ) ) {	// Custom post type or taxonomy.
+
+					return $obj->label . ' [' . $obj->name . ']';
+				}
+
+				return $obj->label;
 			}
 
-			return $obj->label;
+			return '';
 		}
 
 		public static function sort_objects_by_label( array &$objects ) {
@@ -1438,17 +1448,20 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 			foreach ( $objects as $num => $obj ) {
 
-				if ( ! empty( $obj->labels->name ) ) {
+				if ( is_object( $obj ) ) {	// Just in case.
 
-					$sort_key = $obj->labels->name . '-' . $num;
+					if ( ! empty( $obj->labels->name ) ) {
 
-				} elseif ( ! empty( $obj->label ) ) {
+						$sort_key = $obj->labels->name . '-' . $num;
 
-					$sort_key = $obj->label . '-' . $num;
+					} elseif ( ! empty( $obj->label ) ) {
 
-				} else $sort_key = $obj->name . '-' . $num;
+						$sort_key = $obj->label . '-' . $num;
 
-				$assoc[ $sort_key ] = $num;	// Make sure key is sortable and unique.
+					} else $sort_key = $obj->name . '-' . $num;
+
+					$assoc[ $sort_key ] = $num;	// Make sure key is sortable and unique.
+				}
 			}
 
 			ksort( $assoc );
@@ -2152,10 +2165,7 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 
 			$obj_id = absint( $obj_id );
 
-			if ( ! $obj_id ) {
-
-				return array();
-			}
+			if ( ! $obj_id ) return array();
 
 			/*
 			 * WordPress stores data using a post, term, or user ID, along with a group string.
@@ -2793,9 +2803,14 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 			return $success;
 		}
 
+		/*
+		 * Last synchronized with WordPress v6.6.2 on 2024/09/30.
+		 *
+		 * See https://core.trac.wordpress.org/browser/tags/6.6.2/src/wp-includes/option.php#L1348
+		 */
 		public static function raw_delete_transient( $transient ) {
 
-			if ( wp_using_ext_object_cache() ) {
+			if ( wp_using_ext_object_cache() || wp_installing() ) {
 
 				$result = wp_cache_delete( $transient, 'transient' );
 
@@ -2814,9 +2829,14 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 			return $result;
 		}
 
+		/*
+		 * Last synchronized with WordPress v6.6.2 on 2024/09/30.
+		 *
+		 * See https://core.trac.wordpress.org/browser/tags/6.6.2/src/wp-includes/option.php#L1399.
+		 */
 		public static function raw_get_transient( $transient ) {
 
-			if ( wp_using_ext_object_cache() ) {
+			if ( wp_using_ext_object_cache() || wp_installing() ) {
 
 				$value = wp_cache_get( $transient, 'transient' );
 
@@ -2856,11 +2876,16 @@ If ( ! class_exists( 'SucomUtilWP' ) ) {
 			return $value;
 		}
 
+		/*
+		 * Last synchronized with WordPress v6.6.2 on 2024/09/30.
+		 *
+		 * See https://core.trac.wordpress.org/browser/tags/6.6.2/src/wp-includes/option.php#L1477.
+		 */
 		public static function raw_set_transient( $transient, $value, $expiration = 0 ) {
 
 			$expiration = (int) $expiration;
 
-			if ( wp_using_ext_object_cache() ) {
+			if ( wp_using_ext_object_cache() || wp_installing() ) {
 
 				$result = wp_cache_set( $transient, $value, 'transient', $expiration );
 

@@ -101,12 +101,13 @@ if ( ! class_exists( 'JsmSpmPost' ) ) {
 
 			check_ajax_referer( JSMSPM_NONCE_NAME, '_ajax_nonce', $die = true );
 
-			if ( empty( $_POST[ 'post_id' ] ) ) {
+			$post_id = isset( $_POST[ 'post_id' ] ) ? SucomUtil::sanitize_int( $_POST[ 'post_id' ] ) : 0;	// Returns integer or null.
+
+			if ( empty( $post_id ) ) {
 
 				die( -1 );
 			}
 
-			$post_id = $_POST[ 'post_id' ];
 			$obj = SucomUtilWP::get_post_object( $post_id );
 
 			if ( ! is_object( $obj ) ) {
@@ -118,6 +119,14 @@ if ( ! class_exists( 'JsmSpmPost' ) ) {
 				die( -1 );
 
 			} elseif ( empty( $obj->post_status ) ) {
+
+				die( -1 );
+			}
+
+			$show_cap = apply_filters( 'jsmspm_show_metabox_capability', 'manage_options', $obj );
+			$can_show = current_user_can( $show_cap, $post_id, $obj );
+
+			if ( ! $can_show ) {
 
 				die( -1 );
 			}
@@ -142,7 +151,7 @@ if ( ! class_exists( 'JsmSpmPost' ) ) {
 			 * so that jQuery can hide the table row after a successful delete.
 			 */
 			$metabox_id   = 'jsmspm';
-			$obj_id       = SucomUtil::sanitize_int( $_POST[ 'obj_id' ] );
+			$obj_id       = SucomUtil::sanitize_int( $_POST[ 'obj_id' ] );	// Returns integer or null.
 			$meta_key     = SucomUtil::sanitize_meta_key( $_POST[ 'meta_key' ] );
 			$table_row_id = SucomUtil::sanitize_key( $metabox_id . '_' . $obj_id . '_' . $meta_key );
 			$post_obj     = get_post( $obj_id );

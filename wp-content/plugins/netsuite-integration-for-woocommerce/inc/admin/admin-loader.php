@@ -492,7 +492,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 	public function saveNetsuiteTaxCodes() {
 		$ns_tax_codes = $this->getNetsuiteTaxCodes();
-		if ( empty( $ns_tax_codes ) ) {
+		if (!empty( $ns_tax_codes ) ) {
 			update_option( 'netsuite_tax_codes', $ns_tax_codes, false );
 		}
 	}

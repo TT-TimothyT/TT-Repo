@@ -695,6 +695,12 @@ width: inherit;
 float: left;
 position: relative;
 }
+.wt-ierpro-name:has(.wtier-bfcm-banner-2024-offer) .wt-crown-image {
+  display: none;
+}
+.wt-ierpro-name-suite:has(.wtier-bfcm-banner-2024-offer) .wt-crown-image {
+  display: none;
+}
 .wt-ierpro-name-suite{
 border-radius: 3px;
 margin: 0;

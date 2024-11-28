@@ -4,7 +4,7 @@ Tags: product export, product import, CSV import export, woocommerce product imp
 Requires at least: 3.0.1
 Tested up to: 6.6.2
 Requires PHP: 5.6
-Stable tag: 2.4.7
+Stable tag: 2.4.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -236,6 +236,9 @@ Yes, you can import grouped, affiliate/external products in addition to simple p
 
 == CHANGELOG ==
 
+= 2.4.8 2024-11-07 =
+* [Compatibility]- Tested Ok with WooCommerce 9.3.3
+* [Compatibility] - Tested OK with WordPress 6.6.2
 = 2.4.7 2024-10-22 =
 * [Add]- Added Support for Global Unique identifier Import and Export.
 * [Compatibility]- Tested Ok with WooCommerce 9.3.3
@@ -692,8 +695,6 @@ Yes, you can import grouped, affiliate/external products in addition to simple p
 
 == Upgrade Notice ==
 
-= 2.4.7 =
-* [Add]- Added Support for Global Unique identifier Import and Export.
-* [Compatibility]- Tested Ok with WooCommerce 9.3.3
+= 2.4.8 =
+* [Compatibility] - Tested Ok with WooCommerce 9.3.3
 * [Compatibility] - Tested OK with WordPress 6.6.2
-

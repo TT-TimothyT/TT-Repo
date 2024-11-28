@@ -120,6 +120,9 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			'redirect_log_mongo_id',
 			'redirect_mongo_id',
 			'sb_referer_host',
+
+			// WordPress:
+			'doing_wp_cron',
 		);
 
 		protected static $publisher_languages = array(
@@ -543,7 +546,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 */
 		public static function array_slice_fifo( array $array, $max = 1 ) {
 
-			if ( is_numeric( $max ) && $max > 0 && count( $array ) > $max ) {
+			if ( ! empty( $array ) && is_numeric( $max ) && $max > 0 && count( $array ) > $max ) {
 
 				return array_slice( $array, -$max, $length = null, $preserve_keys = true );
 			}
@@ -971,7 +974,17 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 *	iso8601_to_seconds()
 		 *	maybe_iso8601_to_seconds()
 		 *	sprintf_date_time()
-		 *
+		 */
+		public static function format_human_bytes( $bytes, $dec = 2, $sep = ' ' ) {
+
+			$size = array( 'B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' );
+
+			$factor = floor( ( strlen( $bytes ) - 1 ) / 3 );
+
+    			return sprintf( "%.${dec}f${sep}%s", $bytes / pow( 1024, $factor ), $size[ $factor ] );
+		}
+
+		/*
 		 * Returns a date( 'P' ) formatted timezone value (ie. -07:00).
 		 */
 		public static function format_tz_offset( $offset ) {
@@ -1315,25 +1328,26 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		public static function get_mt_og_seed() {
 
 			return array(
-				'fb:admins'           => null,
-				'fb:app_id'           => null,
-				'og:time'             => null,	// Internal meta tag.
-				'og:type'             => null,
-				'og:url'              => null,
-				'og:redirect_url'     => null,	// Internal meta tag.
-				'og:locale'           => null,
-				'og:site_name'        => null,
-				'og:title'            => null,
-				'og:description'      => null,
-				'og:updated_time'     => null,
-				'og:video'            => null,
-				'og:image'            => null,
-				'schema:language'     => null,	// Internal meta tag.
-				'schema:type:id'      => null,	// Internal meta tag.
-				'schema:type:url'     => null,	// Internal meta tag.
-				'schema:type:context' => null,	// Internal meta tag.
-				'schema:type:name'    => null,	// Internal meta tag.
-				'schema:type:path'    => null,	// Internal meta tag.
+				'fb:admins'            => null,
+				'fb:app_id'            => null,
+				'og:time'              => null,	// Internal meta tag.
+				'og:type'              => null,
+				'og:url'               => null,
+				'og:redirect_url'      => null,	// Internal meta tag.
+				'og:locale'            => null,
+				'og:site_name'         => null,
+				'og:title'             => null,
+				'og:description'       => null,
+				'og:updated_time'      => null,
+				'og:video'             => null,
+				'og:image'             => null,
+				'schema:language'      => null,	// Internal meta tag.
+				'schema:type:id'       => null,	// Internal meta tag.
+				'schema:type:url'      => null,	// Internal meta tag.
+				'schema:type:context'  => null,	// Internal meta tag.
+				'schema:type:name'     => null,	// Internal meta tag.
+				'schema:type:path'     => null,	// Internal meta tag.
+				'schema:review:rating' => null,	// Internal meta tag.
 			);
 		}
 
@@ -2409,6 +2423,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				if ( ! empty( $query_args ) ) {	// Just in case.
 
 					$query_args = array_flip( $query_args );	// Move values to keys.
+
 					$query_args = array_fill_keys( array_keys( $query_args ), false );	// Set all values to false.
 
 					$local_cache[ $cache_idx ] = add_query_arg( $query_args, $local_cache[ $cache_idx ] );	// Remove keys with false values.

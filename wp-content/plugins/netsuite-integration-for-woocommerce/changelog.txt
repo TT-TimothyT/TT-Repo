@@ -1,4 +1,10 @@
 *** NetSuite Integration for WooCommerce Changelog ***
+2024-11-18 - version 1.6.5
+* Fix - Customer Update issue resolved.
+
+2024-11-15 - version 1.6.4
+* Update - Update SOAP API version.
+
 2024-11-05 - version 1.6.3
 * Add - Added feature to sync inventory stock when stock is 0 in NetSuite
 
