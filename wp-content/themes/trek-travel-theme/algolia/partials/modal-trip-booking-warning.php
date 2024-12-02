@@ -11,7 +11,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title text-center" id="tripBookingModalLabel">Filters</h5>
+					<h5 class="modal-title text-center" id="tripBookingModalLabel">Notice</h5>
 					<span type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 						<i type="button" class="bi bi-x"></i>
 					</span>

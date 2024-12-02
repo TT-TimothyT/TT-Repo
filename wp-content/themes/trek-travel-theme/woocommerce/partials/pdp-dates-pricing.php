@@ -542,37 +542,29 @@ if( $available_child_products ) {
                                 if (in_array($trip_status, $wait_status)) {
                                     $formUrl = "waitlist";
                                 }
-                                
-                                if ($is_tdf) {
-                                    // Check for device type (desktop vs mobile)
-                                    $is_mobile = wp_is_mobile(); // WordPress function to detect mobile devices
-                                
-                                    if (isset($formUrl) && !empty($formUrl)) {
-                                        // Use formUrl if it exists
-                                        $button = '<a href="/tour-de-france/reservations/" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Place deposit</a>';
-                                    } else {
-                                        // Use Call to Book logic
-                                        if ($is_mobile) {
-                                            $button = '<a href="tel:8664648735" class="btn btn-primary mb-4">Call to book</a>';
-                                        } else {
-                                            $button = '<a href="/contact-us/" class="btn btn-primary mb-4">Call to book</a>';
-                                        }
-                                    }
-                                } else {
                                     if ( $is_cart_check ) {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
-                                            $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                            if ($is_tdf) {
+                                                // Use formUrl if it exists
+                                                $button = '<a href="/tour-de-france/reservations/" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Place deposit</a>';
+                                            } else {
+                                                $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                            }
                                         } else {
                                             $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                         }
                                     } else {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
-                                            $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 mb-1 dates-pricing-book-now">Book Now</a>';
+                                            if ($is_tdf) {
+                                                $button = '<a href="/tour-de-france/reservations/" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Place deposit</a>';
+                                            } else {
+                                                $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 mb-1 dates-pricing-book-now">Book Now</a>';
+                                            }
                                         } else {
                                             $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                         }
                                     }
-                                }
+                                
                                 
                                     $month_content_output .= '<form class="cart grouped_form" action="'.esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ).'" method="post" enctype="multipart/form-data" target="_blank">
                                     <h5 class="fw-semibold"><span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>'.$child_product_data['price'].' </span> <span class="fw-normal fs-md lh-md">per person</span></h5>
