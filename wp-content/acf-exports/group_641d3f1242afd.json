@@ -91,13 +91,6 @@
             {
                 "param": "taxonomy",
                 "operator": "==",
-                "value": "hotel-type"
-            }
-        ],
-        [
-            {
-                "param": "taxonomy",
-                "operator": "==",
                 "value": "trip-class"
             }
         ],
@@ -114,6 +107,13 @@
                 "operator": "==",
                 "value": "trip-style"
             }
+        ],
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "activity-level"
+            }
         ]
     ],
     "menu_order": 0,
@@ -125,5 +125,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1715676811
+    "modified": 1732556275
 }
