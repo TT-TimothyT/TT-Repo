@@ -482,6 +482,10 @@
   .modal-content {
     overflow: hidden;
     height: 93vh;
+
+    @media (max-width: 767px) {
+      height: 83vh;
+    }
     background-color: #f4f4f4;
   }
 
