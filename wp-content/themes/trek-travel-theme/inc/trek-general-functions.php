@@ -3718,7 +3718,7 @@ function tt_get_bikes_by_trip_info_pbc( $trip_id = '', $tripCode = '', $bikeType
             if ($bike_type_id == $bikeTypeId ) {
                 $bike_type_name = $bikeTypeObj['name'];
                 $loop_bikeId = $bike_info['bikeId'];
-                if ( 0 < $bike_available ) {
+                if ( 0 < $bike_available || $bike_size_id == $s_bike_size_id ) {
                     $option_disabled = '';
                 } else {
                     $option_disabled = 'disabled';
