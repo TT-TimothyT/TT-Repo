@@ -44,24 +44,24 @@ get_header();
  */
 
 // Take the Date/Time filter params from the URL.
-$urlStartTime  = isset( $_GET['start_time'] ) ? sanitize_text_field( wp_unslash( $_GET['start_time'] ) ) : '';
-$urlEndTime    = isset( $_GET['end_time'] ) ? sanitize_text_field( wp_unslash( $_GET['end_time'] ) ) : '';
-$urlDateFilter = '';
-$urlFlag       = 0;
-if ( ! empty( $urlStartTime ) && ! empty( $urlEndTime ) ) {
-    $urlDateFilter = "AND start_date_unix:".$urlStartTime." TO ".$urlEndTime;
-    $urlFlag       = 1;
+$url_start_time  = sanitize_text_field( $_GET['start_time'] );
+$url_end_time    = sanitize_text_field( $_GET['end_time'] );
+$url_date_filter = '';
+$url_flag        = 0;
+if ( isset( $url_start_time ) && ! empty( $url_start_time ) && isset( $url_end_time ) && ! empty( $url_end_time ) ) {
+    $url_date_filter = "AND start_date_unix:".$url_start_time." TO ".$url_end_time;
+    $url_flag        = 1;
 }
 
 // Collect PLP attributes like description, Travel Info, Thumbnail, etc.
 $cate                 = get_queried_object();
-$cateID               = $cate->term_id;
-$plp_algolia_category = get_term($cateID);
+$cate_id              = $cate->term_id;
+$plp_algolia_category = get_term( $cate_id );
 
 // Set up the Algolia filter key.
 $filter_name          = 'taxonomies.product_cat';
 
-if( isset( $cate->taxonomy ) && ! empty( $cate->taxonomy ) ) {
+if ( isset( $cate->taxonomy ) && ! empty( $cate->taxonomy ) ) {
     switch ($cate->taxonomy) {
         case 'activity':
             $filter_name = 'taxonomies.activity';
@@ -102,7 +102,7 @@ if( isset( $cate->taxonomy ) && ! empty( $cate->taxonomy ) ) {
 }
 
 // Get the thumbnail ID from product_cat_thumbnail.
-$thumbnail_id = get_term_meta( $cateID, 'thumbnail_id', true );
+$thumbnail_id = get_term_meta( $cate_id, 'thumbnail_id', true );
 // If the thumbnail ID is empty, most probably this is a taxonomy and need to check for a thumbnail from the ACF field.
 if( empty( $thumbnail_id ) ) {
     // Get the thumbnail ID from the ACF field.
@@ -226,18 +226,22 @@ if( 'taxonomies.destination' === $filter_name ) {
     <?php get_template_part('algolia/tmpl/instantsearch', 'hit' ); ?>
 
     <script type="text/javascript">
-
+        // Global JS variables for the page
         let endTime;
         let startTime;
 
-        let calendarStartDate;
-        let calendarEndDate;
-        let urlFlag = false;
+        let convertedStartEpoch = '';
+        let convertedEndEpoch   = '';
 
+        let calendarOptions = {};
 
         jQuery(function() {
+            <?php if ( 1 === $url_flag ) { ?>
+                convertedStartEpoch = convertEpochToDate(<?php echo $url_start_time; ?>);
+                convertedEndEpoch   = convertEpochToDate(<?php echo $url_end_time; ?>);
+            <?php } ?>
 
-            if(1===1) {
+            if ( 1 === 1 ) {
 
                 if (algolia.indices.searchable_posts === undefined && jQuery('.admin-bar').length > 0) {
                     alert('It looks like you haven\'t indexed the searchable posts index. Please head to the Indexing page of the Algolia Search plugin and index it.');
@@ -445,7 +449,6 @@ if( 'taxonomies.destination' === $filter_name ) {
                         container: '#price-slider-facet',
                         attribute: 'Start Price',
                     }),
-
                     <?php
                         foreach( $dest_filters as $dest_slug => $dest_name ) {
                             ?>
@@ -481,17 +484,13 @@ if( 'taxonomies.destination' === $filter_name ) {
                     ?>
 
                     instantsearch.widgets.configure({
-                        filters: "<?php echo $filter_name; ?>: ' <?php
-							echo $plp_algolia_category->name;
-							?> '<?php echo $urlDateFilter; ?>",
+                        filters: "<?php echo esc_html( $filter_name ); ?>: ' <?php echo esc_html( $plp_algolia_category->name ); ?> '<?php echo esc_html( $url_date_filter ); ?>",
                         hitsPerPage: 24,
-                        analyticsTags: ['browse', '<?php
-							echo $plp_algolia_category->name;
-							?>'],
+                        analyticsTags: ['browse', '<?php echo esc_html( $plp_algolia_category->name ); ?>'],
                     })
                 ]);
-                if (1===1) {
-                     var calendarOptions = {
+                if ( 1 === 1 ) {
+                    calendarOptions = {
                         "autoUpdateInput": false,
                         "showCustomRangeLabel": true,
                         "singleDatePicker": false,
@@ -504,66 +503,51 @@ if( 'taxonomies.destination' === $filter_name ) {
                             "cancelLabel": "Clear Dates"
                         }
                     }
-                    if (isMobileDevice()) {
+                    if ( isMobileDevice() ) {
                         calendarOptions.linkedCalendars = false
                     }
-                    <?php if ($urlFlag == 1) { ?>
-                        convertedStartEpoch = convertEpochToDate(<?php echo $urlStartTime; ?>)
-                        convertedEndEpoch = convertEpochToDate(<?php echo $urlEndTime; ?>)
+                    <?php if ( 1 === $url_flag ) { ?>
                         calendarOptions.startDate = convertedStartEpoch
-                        calendarOptions.endDate = convertedEndEpoch
+                        calendarOptions.endDate   = convertedEndEpoch
                     <?php } ?>
-                    if(urlFlag) {
-                        convertedStartEpoch = convertEpochToDate(calendarStartDate)
-                        convertedEndEpoch = convertEpochToDate(calendarEndDate)
-                        calendarOptions.startDate = convertedStartEpoch
-                        calendarOptions.endDate = convertedEndEpoch
-                    }
 
-                    function initCalendar() {
-                        jQuery('#search-daterange').daterangepicker(calendarOptions);
-                        jQuery('#search-daterange').on('apply.daterangepicker', function (ev, picker) {
-                            jQuery(this).val(picker.startDate.format('MMMM D') + ' - ' + picker.endDate.format('MMMM D'));
-                            jQuery("#ais-date-selector .fake-selector").text(picker.startDate.format('MMMM D') + " - " + picker.endDate.format('MMMM D'));
-                            jQuery('#ais-date-selector .fake-selector').toggleClass("border-dark fw-semibold")
-                            jQuery('#start_time').val( picker.startDate._d.valueOf() );
-                            jQuery('#end_time').val( picker.endDate._d.valueOf() );
+                    jQuery('#search-daterange').daterangepicker(calendarOptions);
+                    jQuery('#search-daterange').on('apply.daterangepicker', function (ev, picker) {
+                        jQuery(this).val(picker.startDate.format('MMMM D') + ' - ' + picker.endDate.format('MMMM D'));
+                        jQuery("#ais-date-selector .fake-selector").text(picker.startDate.format('MMMM D') + " - " + picker.endDate.format('MMMM D'));
+                        jQuery('#ais-date-selector .fake-selector').toggleClass("border-dark fw-semibold")
+                        jQuery('#start_time').val( picker.startDate._d.valueOf() );
+                        jQuery('#end_time').val( picker.endDate._d.valueOf() );
 
-                            if (jQuery("#rangeDateVal").parent().length){
-                                jQuery("#rangeDateVal").html(picker.startDate.format('MMMM D') + " - " + picker.endDate.format('MMMM D'));
-                                startTime = picker.startDate._d.valueOf();
-                                endTime = picker.endDate._d.valueOf();
-                                startTime = startTime / 1000;
-                                endTime = endTime / 1000;
+                        if (jQuery("#rangeDateVal").parent().length){
+                            jQuery("#rangeDateVal").html(picker.startDate.format('MMMM D') + " - " + picker.endDate.format('MMMM D'));
+                            startTime = picker.startDate._d.valueOf();
+                            endTime = picker.endDate._d.valueOf();
+                            startTime = startTime / 1000;
+                            endTime = endTime / 1000;
 
-                                filterTime(Math.round(startTime),Math.round(endTime));
-                            }
-                            else{
-                                jQuery(".range_inputs").prepend("<span id='rangeDateVal'>"+picker.startDate.format('MMMM D') + " - " + picker.endDate.format('MMMM D')+"</span>");
-                                startTime = picker.startDate._d.valueOf();
-                                endTime = picker.endDate._d.valueOf();
-                                startTime = startTime / 1000;
-                                endTime = endTime / 1000;
+                            filterTime(Math.round(startTime),Math.round(endTime));
+                        } else {
+                            jQuery(".range_inputs").prepend("<span id='rangeDateVal'>"+picker.startDate.format('MMMM D') + " - " + picker.endDate.format('MMMM D')+"</span>");
+                            startTime = picker.startDate._d.valueOf();
+                            endTime = picker.endDate._d.valueOf();
+                            startTime = startTime / 1000;
+                            endTime = endTime / 1000;
 
-                                filterTime(Math.round(startTime),Math.round(endTime));
+                            filterTime(Math.round(startTime),Math.round(endTime));
 
-                            }
-                        });
-                        jQuery('#search-daterange').on('cancel.daterangepicker', function (ev, picker) {
-                            jQuery(this).val('');
-                            jQuery("#rangeDateVal").remove();
-                            filterTime(0,0);
-                            jQuery("#ais-date-selector .fake-selector").text('Date');
-                            jQuery('#ais-date-selector .fake-selector').toggleClass("border-dark fw-semibold")
-
-                            // Init a new calendar on clear dates.
-                            initCalendar();
-                            jQuery('#search-daterange').trigger('click');
-                        });
-                    }
-
-                    // Load for the first time.
-                    initCalendar();
+                        }
+                    });
+                    jQuery('#search-daterange').on('cancel.daterangepicker', function (ev, picker) {
+                        picker.setStartDate({})
+                        picker.setEndDate({})
+                        jQuery(this).val('');
+                        jQuery("#rangeDateVal").remove();                        
+                        filterTime(0,0);
+                        jQuery("#ais-date-selector .fake-selector").text('Date');
+                        jQuery('#ais-date-selector .fake-selector').toggleClass("border-dark fw-semibold");
+                        jQuery('#search-daterange').trigger('click');
+                    });
                 }
                 /* Start */
                 search.start();
@@ -638,29 +622,28 @@ if( 'taxonomies.destination' === $filter_name ) {
                     }, 500);
                 }
 
-                function filterTime(startTime,endTime) {
-
+                function filterTime( startTime, endTime ) {
+                    
                     let urlDateFilter = 0 < startTime && 0 < endTime ? `AND start_date_unix:${startTime} TO ${endTime}` : '';
 
-                    calendarStartDate = startTime;
-                    calendarEndDate = endTime;
-                    urlFlag = true;
+                    convertedStartEpoch = convertEpochToDate( startTime );
+                    convertedEndEpoch   = convertEpochToDate( endTime );
 
                     search.addWidgets([
-
                         instantsearch.widgets.configure({
-                        filters: `<?php echo $filter_name; ?>: ' <?php
-							echo $plp_algolia_category->name;
-							?> '${urlDateFilter}`,
-                        hitsPerPage: 24,
-                        analyticsTags: ['browse', '<?php
-							echo $plp_algolia_category->name;
-							?>'],
+                            filters: `<?php echo esc_html( $filter_name ); ?>: ' <?php echo esc_html( $plp_algolia_category->name ); ?> '${urlDateFilter}`,
+                            hitsPerPage: 24,
+                            analyticsTags: ['browse', '<?php echo esc_html( $plp_algolia_category->name ); ?>'],
                         })
                     ]);
 
                 }
-                
+
+                // Load the
+                if ( convertedStartEpoch && convertedEndEpoch ) {
+                    jQuery("#ais-date-selector .fake-selector").text(moment(convertedStartEpoch).format('MMM D') + " - " + moment(convertedEndEpoch).format('MMM D'));  
+                }
+
             }
         });
         function getUrlVars() {
@@ -679,7 +662,7 @@ if( 'taxonomies.destination' === $filter_name ) {
             };
         })();
 
-        jQuery(document).on( 'keyup change', '.ais-RangeInput-input', function(ev) { 
+        jQuery(document).on( 'keyup change', '.ais-RangeInput-input', function(ev) {
             submit_range_input_delay(function(){
                 jQuery('.ais-RangeInput-submit').click();
             }, 1000)
@@ -742,45 +725,14 @@ if( 'taxonomies.destination' === $filter_name ) {
                     'impressions': impressions
                 }
             })
-
-            <?php if ($urlFlag == 1) { ?>
-                convertedStartEpoch = convertEpochToDate(<?php echo $urlStartTime; ?>)
-                convertedEndEpoch = convertEpochToDate(<?php echo $urlEndTime; ?>)
-                if ( convertedStartEpoch && convertedEndEpoch ) {
-                    jQuery("#ais-date-selector .fake-selector").text(moment(convertedStartEpoch).format('MMM D') + " - " + moment(convertedEndEpoch).format('MMM D'));                
-                }
-            <?php } ?>
-
-            if( urlFlag ) {
-                convertedStartEpoch = convertEpochToDate(calendarStartDate)
-                convertedEndEpoch = convertEpochToDate(calendarEndDate)
-                if ( convertedStartEpoch && convertedEndEpoch ) {
-                    jQuery("#ais-date-selector .fake-selector").text(moment(convertedStartEpoch).format('MMM D') + " - " + moment(convertedEndEpoch).format('MMM D'));  
-                }
-            }
         })
 
         jQuery('#filterModal').on('show.bs.modal', function (event) {
-            <?php if ($urlFlag == 1) { ?>
-                convertedStartEpoch = convertEpochToDate(<?php echo $urlStartTime; ?>)
-                convertedEndEpoch = convertEpochToDate(<?php echo $urlEndTime; ?>)
-                if ( convertedStartEpoch && convertedEndEpoch ) {
-                    if (jQuery("#rangeDateVal").parent().length) {
-                        jQuery("#rangeDateVal").html(moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D'));
-                    } else {
-                        jQuery(".range_inputs").prepend("<span id='rangeDateVal'>"+moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D')+"</span>");
-                    }
-                }
-            <?php } ?>
-            if( urlFlag ) {
-                convertedStartEpoch = convertEpochToDate(calendarStartDate)
-                convertedEndEpoch = convertEpochToDate(calendarEndDate)
-                if ( convertedStartEpoch && convertedEndEpoch ) {
-                    if (jQuery("#rangeDateVal").parent().length) {
-                        jQuery("#rangeDateVal").html(moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D'));
-                    } else {
-                        jQuery(".range_inputs").prepend("<span id='rangeDateVal'>"+moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D')+"</span>");
-                    }
+            if ( convertedStartEpoch && convertedEndEpoch ) {
+                if (jQuery("#rangeDateVal").parent().length) {
+                    jQuery("#rangeDateVal").html(moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D'));
+                } else {
+                    jQuery(".range_inputs").prepend("<span id='rangeDateVal'>"+moment(convertedStartEpoch).format('MMMM D') + " - " + moment(convertedEndEpoch).format('MMMM D')+"</span>");
                 }
             }
         })

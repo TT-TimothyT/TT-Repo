@@ -21,27 +21,12 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
     jQuery('#dateRangePickerHeader').trigger('click')
   })
   jQuery('#mobileCalendarModal').on('show.bs.modal', function (event) {
-    jQuery('#dateRangePickerMobileCalendar').daterangepicker({
-      "linkedCalendars": false,
-      "singleDatePicker": false,
-      "autoApply": true,
-      "autoUpdateInput": false,
-      // "opens": "center",
-      // "drops": "up",
-      "parentEl": "#mobileCalendarTrigger",
-      "locale": {
-        "format": "MMMM D",
-        "separator": " - ",
-        "applyLabel": false,
-        "cancelLabel": "Clear Dates"
-      }
-  });
-    jQuery('#dateRangePickerMobileCalendar').trigger('click')
+    jQuery('#dateRangePickerMobileCalendar').trigger('click');
   })
   
   jQuery('#dateRangePickerMobileCalendar').on('apply.daterangepicker', function (ev, picker) {
-    startTime = picker.startDate._d.valueOf();
-    endTime = picker.endDate._d.valueOf();
+    let startTime = picker.startDate._d.valueOf();
+    let endTime = picker.endDate._d.valueOf();
     startTime = startTime / 1000;
     endTime = endTime / 1000;
     jQuery('#start_time').val(Math.round(startTime));
@@ -49,16 +34,19 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
   })
 
   jQuery('#dateRangePickerMobileCalendar').on('cancel.daterangepicker', function (ev, picker) {
+    picker.setStartDate({})
+    picker.setEndDate({})
     jQuery('.mobile-calendar-form #start_time').val('');
     jQuery('.mobile-calendar-form #end_time').val('');
     jQuery("#mobileCalendarTrigger tbody tr td.active").removeClass("active");
     jQuery("#mobileCalendarTrigger tbody tr td.today").addClass("active");
+    jQuery('#dateRangePickerMobileCalendar').trigger('click');
   })
   
   jQuery('#dateRangePickerHeader').on('apply.daterangepicker', function (ev, picker) {
     jQuery("#home-daterange").val(picker.startDate.format('MMMM D') + ' - ' + picker.endDate.format('MMMM D'));
-    startTime = picker.startDate._d.valueOf();
-    endTime = picker.endDate._d.valueOf();
+    let startTime = picker.startDate._d.valueOf();
+    let endTime = picker.endDate._d.valueOf();
     startTime = startTime / 1000;
     endTime = endTime / 1000;
     jQuery('.home-trip-finder-form #start_time').val(Math.round(startTime));
@@ -72,6 +60,8 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
     });
   });
   jQuery('#dateRangePickerHeader').on('cancel.daterangepicker', function (ev, picker) {
+    picker.setStartDate({})
+    picker.setEndDate({})
     jQuery("#home-daterange").val('');
     jQuery('.home-trip-finder-form #start_time').val('');
     jQuery('.home-trip-finder-form #end_time').val('');
@@ -93,6 +83,23 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
   })
 
   jQuery(document).ready(function () {
+    if (jQuery('#dateRangePickerMobileCalendar').length > 0) {
+      jQuery('#dateRangePickerMobileCalendar').daterangepicker({
+        "linkedCalendars": false,
+        "singleDatePicker": false,
+        "autoApply": true,
+        "autoUpdateInput": false,
+        // "opens": "center",
+        // "drops": "up",
+        "parentEl": "#mobileCalendarTrigger",
+        "locale": {
+          "format": "MMMM D",
+          "separator": " - ",
+          "applyLabel": false,
+          "cancelLabel": "Clear Dates"
+        }
+      });
+    }
     if (jQuery('#home-daterange').length > 0) {
         // For Homepage Trip finder
         if (window.matchMedia('(max-width: 767px)').matches) {
@@ -161,8 +168,8 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
           jQuery('.dates-placeholder-text').addClass('active');
           jQuery('#home-daterange').addClass('active');
           jQuery(this).val(picker.startDate.format('MMMM D') + ' - ' + picker.endDate.format('MMMM D'));
-          startTime = picker.startDate._d.valueOf();
-          endTime = picker.endDate._d.valueOf();
+          let startTime = picker.startDate._d.valueOf();
+          let endTime = picker.endDate._d.valueOf();
           startTime = startTime / 1000;
           endTime = endTime / 1000;
           jQuery('.home-trip-finder-form #start_time').val(Math.round(startTime));
@@ -180,6 +187,8 @@ jQuery('#mobile-header-calendar').on('click',function (e) {
           });
         });
         jQuery('#home-daterange').on('cancel.daterangepicker', function (ev, picker) {
+          picker.setStartDate({})
+          picker.setEndDate({})
           jQuery('.dates-placeholder-text').removeClass('active');
           jQuery('#home-daterange').removeClass('active');
           jQuery(this).val('');
