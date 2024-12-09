@@ -27,7 +27,7 @@ $activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level'
                             echo "Riders";
                             break;
                         default:
-                            echo "Hiking + Walking";
+                            echo "Hiking & Walking";
                             break;
                       }
                 ?>

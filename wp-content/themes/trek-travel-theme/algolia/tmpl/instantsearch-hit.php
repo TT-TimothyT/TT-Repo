@@ -72,7 +72,7 @@
 								data.taxonomies.product_tag.sort((a, b) =>  b.localeCompare(a, 'en', { sensitivity: 'base' }));
 								#>
 								<# data.taxonomies.product_tag.forEach(function (badge, index) { #>
-									<span class="badge <# if (badge == 'Hiking + Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>   
+									<span class="badge <# if (badge == 'Hiking & Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>   
 								<# }) #>
 							<# } #>
 						</div>
@@ -207,7 +207,7 @@
 								data.taxonomies.product_tag.sort((a, b) =>  b.localeCompare(a, 'en', { sensitivity: 'base' }));
 								#>
 								<# data.taxonomies.product_tag.forEach(function (badge, index) { #>
-									<span class="badge <# if (badge == 'Hiking + Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>
+									<span class="badge <# if (badge == 'Hiking & Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>
 								<# }) #>
 							<# } #>
 						</div>
