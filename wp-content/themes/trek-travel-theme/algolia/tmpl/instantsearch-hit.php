@@ -202,15 +202,18 @@
 
 				<div class="col-lg-6 d-none d-lg-block card-info">
 					<div class="card-body ms-md-4 pt-0">
-						<div class="badge-container">
-							<# if (data.taxonomies.product_tag) { 
-								data.taxonomies.product_tag.sort((a, b) =>  b.localeCompare(a, 'en', { sensitivity: 'base' }));
-								#>
-								<# data.taxonomies.product_tag.forEach(function (badge, index) { #>
-									<span class="badge <# if (badge == 'Hiking & Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>
-								<# }) #>
-							<# } #>
-						</div>
+					<div class="badge-container">
+						<# if (data.taxonomies.product_tag) { 
+							data.taxonomies.product_tag.sort((a, b) =>  b.localeCompare(a, 'en', { sensitivity: 'base' }));
+							#>
+							<# data.taxonomies.product_tag.forEach(function (badge, index) { 
+								// Decode HTML entities
+								let decodedBadge = badge.replace(/&amp;/g, '&');
+							#>
+								<span class="badge <# if (decodedBadge == 'Hiking & Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ decodedBadge }}</span>
+							<# }) #>
+						<# } #>
+					</div>
 
 						<# if ( data.taxonomies.city ) { #>
 						<p class="mb-0">
