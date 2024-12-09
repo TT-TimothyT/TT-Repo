@@ -226,7 +226,9 @@ function get_child_products($linked_products = array(), $is_quick_look = false )
                     $sdate_obj = explode('/', $start_date);
                     $sku = $p_obj->get_sku();
                     // Take the singleSupplementPrice from the post meta fields.
-                    $singleSupplementPrice = get_post_meta( $linked_product, TT_WC_META_PREFIX . 'singleSupplementPrice', true);
+                    $singleSupplementPrice = get_post_meta( $linked_product, TT_WC_META_PREFIX . 'singleSupplementPrice', true );
+                    // Take the Trip ID from the post meta fields.
+                    $trip_id = get_post_meta( $linked_product, TT_WC_META_PREFIX . 'tripId', true );
                     $sdate_info = array(
                         'd' => $sdate_obj[0],
                         'm' => $sdate_obj[1],
@@ -253,14 +255,15 @@ function get_child_products($linked_products = array(), $is_quick_look = false )
                         $date_range_2            = $start_date_text_range_2 . ' - ' . $end_date_text_range_2;
                     }
                     $grouped_product = array(
-                        'product_id' => $linked_product,
-                        'start_date' => $start_date,
-                        'end_date' => $end_date,
-                        'price' => $p_obj->get_price(),
-                        'trip_status' => $trip_status,
-                        'date_range' => $date_range_1,
-                        'sku' => $sku,
-                        'singleSupplementPrice' => $singleSupplementPrice
+                        'product_id'            => $linked_product,
+                        'start_date'            => $start_date,
+                        'end_date'              => $end_date,
+                        'price'                 => $p_obj->get_price(),
+                        'trip_status'           => $trip_status,
+                        'date_range'            => $date_range_1,
+                        'sku'                   => $sku,
+                        'singleSupplementPrice' => $singleSupplementPrice,
+                        'trip_id'               => $trip_id
                     );
                     if ($sdate_info['m'] != $edate_info['m']) {
                         $grouped_product['date_range'] = $date_range_2;
@@ -5071,10 +5074,10 @@ function tt_get_parent_trip($sku = "") {
     ];
 }
 
-function tt_get_hotel_bike_list( $sku ) {
+function tt_get_hotel_bike_list( $sku, $trip_id = '' ) {
     $bike_list   = $hotel_list = '';
 
-    $hotels_data = tt_get_local_trips_detail( 'hotels', '', $sku, true );
+    $hotels_data = tt_get_local_trips_detail( 'hotels', $trip_id, $sku, true );
     $hotels      = json_decode($hotels_data, true);
     if ( $hotels ) {
         $hotel_list .= '<ol>';
@@ -5084,7 +5087,7 @@ function tt_get_hotel_bike_list( $sku ) {
         $hotel_list .= '</ol>';
     }
 
-    $bikes_data   = tt_get_local_trips_detail( 'bikes', '', $sku, true );
+    $bikes_data   = tt_get_local_trips_detail( 'bikes', $trip_id, $sku, true );
     $bikes        = json_decode( $bikes_data, true );
     $bikes_models = [];
     if ( $bikes ) {
