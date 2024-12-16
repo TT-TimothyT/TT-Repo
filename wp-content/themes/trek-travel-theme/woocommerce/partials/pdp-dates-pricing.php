@@ -10,6 +10,8 @@ $activity_terms = get_the_terms( $p_id, 'activity' );
 
 $is_tdf = (strpos(get_the_title(), 'Tour de France') !== false) && has_term('2025', 'product_cat');
 
+$is_event = (strpos(get_the_title(), 'Event') !== false) && has_term('2025', 'product_cat');
+
 foreach ( $activity_terms as $activity_term) {
 	$activity = $activity_term->name;   
 }
@@ -545,8 +547,14 @@ if( $available_child_products ) {
                                     if ( $is_cart_check ) {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
                                             if ($is_tdf) {
+
+                                                if ($is_event) {
                                                 // Use formUrl if it exists
+                                                $button = '<a href="/tour-de-france/reservations/" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Call to Book</a>';
+                                                } else {
+                                                    // Use formUrl if it exists
                                                 $button = '<a href="/tour-de-france/reservations/" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Place deposit</a>';
+                                                }
                                             } else {
                                                 $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                             }
@@ -556,7 +564,14 @@ if( $available_child_products ) {
                                     } else {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
                                             if ($is_tdf) {
+
+                                                if ($is_event) {
+                                                // Use formUrl if it exists
+                                                $button = '<a href="/tour-de-france/reservations/" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Call to Book</a>';
+                                                } else {
+                                                    // Use formUrl if it exists
                                                 $button = '<a href="/tour-de-france/reservations/" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Place deposit</a>';
+                                                }
                                             } else {
                                                 $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 mb-1 dates-pricing-book-now">Book Now</a>';
                                             }
