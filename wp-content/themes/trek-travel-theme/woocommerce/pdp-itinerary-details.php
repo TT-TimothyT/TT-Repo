@@ -43,7 +43,7 @@ if ( $pdp_itineraries ) :
                     <div class="tour-actions">
                         <a href="#" id="itinerary-print-button" class="btn btn-white btn-md rounded-1 me-4">Print Itinerary</a>
 
-                        <a href="<?php echo $book_now_link; ?>" class="btn btn-primary btn-md rounded-1">Book now</a>
+                        <a href="<?php echo $book_now_link; ?>" class="btn btn-primary btn-md rounded-1">View Trip</a>
                         <div class="mt-5">
                             <p><em>Print Tip: For wider content, set Margins to 'Minimum' in the print window settings.</em></p>
                         </div>

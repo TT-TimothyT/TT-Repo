@@ -241,10 +241,10 @@
 							<# } #>
 
 							
-							<# if ( data['Trip Style'] ) { #>
+							<# if ( data['Trip Style'] ) {#>
 								<ul class="list-inline mb-0">
 									<li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
-									<li class="list-inline-item fs-sm">{{data['Trip Style']}}</li>
+									<li class="list-inline-item fs-sm">{{ data['Trip Style'].replace(/&amp;/g, '&') }}</li>
 									<li class="list-inline-item"><i class="bi bi-info-circle pdp-trip-styles"></i></li>
 								</ul>
 							<# } #>
