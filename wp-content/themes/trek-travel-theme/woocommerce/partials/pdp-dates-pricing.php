@@ -551,7 +551,11 @@ if( $available_child_products ) {
                                             //     $button = '<a href="/tour-de-france/#deposit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Call to Book</a>';
                                                 
                                             // } else {
-                                                $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                                if ($formUrl === "waitlist") {
+                                                $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Join Waitlist</a>';
+                                                } else {
+                                                    $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                                }
                                             // }
                                         } else {
                                             $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
@@ -568,7 +572,11 @@ if( $available_child_products ) {
                                             //     $button = '<a href="/tour-de-france/#deposit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Place Deposit</a>';
                                             //     }
                                             // } else {
-                                                $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 mb-1 dates-pricing-book-now">Book Now</a>';
+                                                if ($formUrl === "waitlist") {
+                                                    $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Join Waitlist</a>';
+                                                    } else {
+                                                        $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                                    }
                                             // }
                                         } else {
                                             $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
