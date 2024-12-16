@@ -367,7 +367,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                         <p class="mb-0 fw-semibold fs-md lh-md">Trip Total</p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-semibold fs-md lh-md"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ); ?></span></p>
+                                                        <p class="mb-0 fw-semibold fs-md lh-md"><?php echo wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ); ?></p>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -391,7 +391,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                         <p class="mb-0 fw-normal order-details__text"><?php echo $trip_name; ?> x <?php echo $trek_checkoutData['no_of_guests']; ?></p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_formatted_line_subtotal( $order_item ); ?></span></p>
+                                                        <p class="mb-0 fw-normal order-details__text"><?php echo $order->get_formatted_line_subtotal( $order_item ); ?></p>
                                                     </td>
                                                 </tr>
                                                 <?php if ( 0 < $singleSupplementQty ) : ?>
@@ -400,7 +400,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                             <p class="mb-0 fw-normal order-details__text">Single Supplement x <?php echo $singleSupplementQty; ?></p>
                                                         </td>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplementFees; ?></span></p>
+                                                            <p class="mb-0 fw-normal order-details__text"></span><?php echo wc_price( floatval( $supplementFees ) ); ?></p>
                                                         </td>
                                                     </tr>
                                                 <?php endif; ?>
@@ -410,7 +410,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                             <p class="mb-0 fw-normal order-details__text">Upgrade x <?php echo $tt_get_upgrade_qty; ?></p>
                                                         </td>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_get_upgrade_qty * $trek_checkoutData['bikeUpgradePrice']; ?></span></p>
+                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $tt_get_upgrade_qty * $trek_checkoutData['bikeUpgradePrice'] ); ?></p>
                                                         </td>
                                                     </tr>
                                                 <?php endif; ?>
@@ -420,7 +420,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                             <p class="mb-0 fw-normal order-details__text">Travel Protection x <?php echo $insuredPerson; ?></p>
                                                         </td>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_insurance_total_charges; ?></span></p>
+                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( floatval( $tt_insurance_total_charges ) ); ?></p>
                                                         </td>
                                                     </tr>
                                                 <?php endif; ?>
@@ -429,7 +429,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                         <p class="mb-0 fw-normal order-details__text">Subtotal</p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_subtotal(); ?></span></p>
+                                                        <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $order->get_subtotal() ); ?></p>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -437,7 +437,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                         <p class="mb-0 fw-normal order-details__text">Taxes</p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $total_tax ); ?></span></p>
+                                                        <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $total_tax ); ?></p>
                                                     </td>
                                                 </tr>
                                                 <?php if ( 0 < $discount_order ) : ?>
@@ -446,7 +446,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                             <p class="mb-0 fw-normal order-details__text">Discount x <?php echo $trek_checkoutData['no_of_guests']; ?></p>
                                                         </td>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $discount_order ); ?></span></p>
+                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $discount_order ); ?></p>
                                                         </td>
                                                     </tr>
                                                 <?php endif; ?>
@@ -455,7 +455,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                         <p class="mb-0 fw-semibold fs-md lh-md">Trip Total</p>
                                                     </td>
                                                     <td>
-                                                        <p class="mb-0 fw-semibold fs-md lh-md"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $cart_total; ?></span></p>
+                                                        <p class="mb-0 fw-semibold fs-md lh-md"><?php echo wc_price( floatval( $cart_total ) ); ?></p>
                                                     </td>
                                                 </tr>
                                                 <?php

@@ -184,6 +184,8 @@ function trek_wp_enqueue_scripts_cb()
         'is_checkout'               => is_checkout(),
         'is_archive'                => is_archive(),
         'is_search'                 => is_search(),
+        'is_view_order'             => is_wc_endpoint_url( 'view-order' ),
+        'is_my_trip'                => is_page( 'my-trip' ),
         'rider_level'               => $cart_product_info['parent_rider_level'],
         'rider_level_text'          => $cart_product_info['rider_level_text'],
         'checkoutParentId'          => $cart_product_info['parent_product_id'],
@@ -5721,17 +5723,20 @@ function tt_woocommerce_products_compare_max_products_cb(){
     $max_product = 3;
     return $max_product;
 }
-function tt_get_waiver_status($order_id=""){
+function tt_get_waiver_status( $order_id = "" ) {
     $netSuiteClient = new NetSuiteClient();
     $waiverAccepted = false;
     $user = wp_get_current_user();
     $order_details = trek_get_user_order_info($user->ID, $order_id);
     $guestRegistrationId = isset($order_details[0]['guestRegistrationId']) ? $order_details[0]['guestRegistrationId'] : 0;
-    if($guestRegistrationId){
+    if ( $guestRegistrationId ) {
         $guestRegistrationIdArray = array($guestRegistrationId);
         $ns_booking_result = $netSuiteClient->get('1294:2', array('registrationIds' => implode(',', $guestRegistrationIdArray)));
-        if( $ns_booking_result && isset($ns_booking_result[0]) ){
+        if ( $ns_booking_result && is_array( $ns_booking_result ) && ! empty( $ns_booking_result[0] ) ) {
             $waiverAccepted = $ns_booking_result[0]->waiverAccepted;
+        } elseif ( is_object( $ns_booking_result ) && isset( $ns_booking_result->error ) ) {
+            // Something went wrong. Log the error.
+            tt_add_error_log( '[Get waiver status] - 1294:2', array( 'order_id' => $order_id, 'guestRegistrationId' => $guestRegistrationId ), array( 'ns_booking_result' => $ns_booking_result ) );
         }
     }
     return $waiverAccepted;

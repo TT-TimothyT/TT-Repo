@@ -1,4 +1,4 @@
-<footer id="checkout-footer" class="text-white">		
+<footer id="checkout-footer" class="text-white">
 		<div class="container-fluid copyright text-white">
 			<!-- copyright -->
 			<div class="container">
@@ -9,13 +9,9 @@
 					<div class="col-12 col-md-9 checkout-footer-right">
 						<div class="checkout-footer-menu">
 							<a class="fw-normal fs-sm lh-sm" href="/contact-us/">Contact Us</a>
-							<a class="fw-normal fs-sm lh-sm" href="/cancellation-policy/">Cancellation Policy</a>						
+							<a class="fw-normal fs-sm lh-sm" href="/cancellation-policy/">Cancellation Policy</a>
 							<a class="fw-normal fs-sm lh-sm" href="/faq/">FAQs</a>
-							<a class="fw-normal fs-sm lh-sm" href="/travel-protection/">Travel Protection</a>						
-							<div class="footerCurrencySelector">
-								<label class="fw-normal fs-sm lh-sm">Currency</label>
-								<?php echo do_shortcode('[woocommerce_currency_converter currency_display="select" currency_codes="USD, EUR, CAD, GBP, AUD"]') ?>
-							</div>
+							<a class="fw-normal fs-sm lh-sm" href="/travel-protection/">Travel Protection</a>
 						</div>
 					</div>
 				</div>

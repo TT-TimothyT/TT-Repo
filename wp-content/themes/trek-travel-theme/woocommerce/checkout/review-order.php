@@ -52,9 +52,11 @@ $arch_info               = tt_get_insurance_info( $tt_posted );
 $insured_person          = tt_validate( $arch_info['count'], 0 );
 $tt_terms                = tt_validate( $tt_posted['tt_terms'], 0 );
 $outstanding_payment     = $cart_total_curr;
+$original_price_usd      = floatval( $cart_total );
 $remaining_amount_curr   = get_woocommerce_currency_symbol() . '0';
 if ( 'deposite' === $pay_amount ) {
     $outstanding_payment   = floatval( $deposit_amount );
+	$original_price_usd    = floatval( $deposit_amount );
     $remaining_amount_curr = get_woocommerce_currency_symbol() . ( $cart_total - $deposit_amount );
 }
 $product_name = '';
@@ -303,6 +305,7 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 								</div>
 								<div class="text-end">
 									<p class="h5 fw-semibold checkout-summary__font"><span class="amount"><?php echo $outstanding_payment; ?></span></p>
+									<span class="original-price-usd">(<?php echo get_woocommerce_currency_symbol( 'USD' ) . number_format( $original_price_usd, 2 ); ?> USD)</span>
 								</div>
 							</div>
 							

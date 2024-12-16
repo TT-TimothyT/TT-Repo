@@ -350,25 +350,25 @@ if ( $show_downloads ) {
 							<p class="mb-0 fw-normal order-details__text"><?php echo esc_html( $order_id ); ?></p>
 							<p class="mb-0 fw-normal order-details__text"><?php echo $order->get_formatted_line_subtotal( $order_item ) ?></p>
 							<?php if ( $tt_get_upgrade_qty > 0 &&  $trek_checkout_data['bikeUpgradePrice'] ) { ?>
-								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_get_upgrade_qty * $trek_checkout_data['bikeUpgradePrice']; ?></span></p>
+								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $tt_get_upgrade_qty * $trek_checkout_data['bikeUpgradePrice'] ); ?></p>
 							<?php } ?>
 							<?php if($single_supplement_qty > 0) { ?>
-								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $supplement_fees; ?></span></p>
+								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( floatval( $supplement_fees ) ); ?></p>
 							<?php } ?>
 							<?php if($insured_person > 0 && $tt_insurance_total_charges > 0 ) { ?>
-								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $tt_insurance_total_charges; ?></span></p>
+								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( floatval( $tt_insurance_total_charges ) ); ?></p>
 							<?php } ?>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $order->get_subtotal(); ?></span></p>
-							<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $total_tax ); ?></span></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $order->get_subtotal() ); ?></p>
+							<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $total_tax ); ?></p>
 							<?php if ( 0 < $discount_order ) : ?>
-								<p class="mb-0 fw-normal order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo wc_price( $discount_order ); ?></span></p>
+								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $discount_order ); ?></p>
 							<?php endif; ?>
 							<?php if ( ! empty( $dues ) ) : ?>
-								<p class="mb-0 pt-4 fw-medium fs-xl lh-lg order-details__text"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $cart_total; ?></span></p>
-								<p class="mb-0 mt-1 mt-lg-2 fs-md fw-medium order-details__textbold"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $deposit_amount; ?></span></p>
-								<p class="mt-2 mb-2 fs-md fw-medium order-details__textbold"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $remaining_amount; ?></span></p>
+								<p class="mb-0 pt-4 fw-medium fs-xl lh-lg order-details__text"><?php echo wc_price( floatval( $cart_total ) ); ?></p>
+								<p class="mb-0 mt-1 mt-lg-2 fs-md fw-medium order-details__textbold"><?php echo wc_price( $deposit_amount ); ?></p>
+								<p class="mt-2 mb-2 fs-md fw-medium order-details__textbold"><?php echo wc_price( $remaining_amount ); ?></p>
 							<?php else : ?>
-								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo $cart_total; ?></span></p>
+								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><?php echo wc_price( floatval( $cart_total ) ); ?></p>
 							<?php endif; ?>
 						</div>
 					</div>

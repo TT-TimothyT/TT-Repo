@@ -5627,8 +5627,6 @@ function centerMapCallback(Waymark) {
   });
 }
 
-
-
 jQuery(document).ready(function($) {
   // List of countries without states
   var countriesWithoutStates = ['LU', 'MC', 'SG', 'VA', 'IS', 'CY', 'MT', 'MO', 'LI', 'SM', 'AD', 'QA', 'BH', 'MV', 'SC', 'BN', 'BB', 'LC', 'DK'];
@@ -5671,4 +5669,72 @@ jQuery(document).ready(function($) {
 
   // Initial check on page load
   handleCountryChange();
+});
+
+/**
+ * Subscribe to the event triggered by the Currency Converter for WooCommerce plugin
+ * in the switch_currency() function
+ * in conversion.js file.
+ *
+ * @requires woocommerce-currency-converter-widget Installed and active Currency Converter for WooCommerce plugin.
+ * @requires conversion.js/conversion.min.js The JS file from the above plugin, that changes the price based on the selected currency. 
+ *
+ * @param {object} ev Custom Event from type currency_converter_switch. Fires at the end of the already converted and placed prices.
+ * @param {string} to_currency The selected currency sign, like USD, EUR, etc.
+ *
+ * @return void
+ */
+jQuery( 'body' ).on( 'currency_converter_switch', function( ev, to_currency ) {
+  // Do not convert prices on the Thank You page, My Account and View order pages.
+  if( true == trek_JS_obj.is_order_received || true == trek_JS_obj.is_my_trip || true == trek_JS_obj.is_view_order ) {
+    jQuery( 'span.amount, span.wc-block-formatted-money-amount' ).each( function() { // Use the same selectors as the plugin.
+      // Return the original price html.
+      jQuery( this ).html( jQuery( this ).data( 'original' ) );
+    });
+  } else {
+    const currencies_with_suffix = ['AUD', 'CAD'];
+  
+    // Add suffixes with the currency for all prices.
+    jQuery( 'span.amount, span.wc-block-formatted-money-amount' ).each( function() { // Use the same selectors as the plugin.
+      let current_currency_span = jQuery( this ).parent().find( '.current-currency' );
+      // Check for eligible currencies for which to add the currency sign suffix.
+      if ( currencies_with_suffix.includes( to_currency ) ) {
+        if ( 0 === current_currency_span.length ) {
+          // Append the suffix span, to the span with the price.
+          jQuery(this).after(`<span class="current-currency">${to_currency}</span>`);
+        } else {
+          // Update the currency sign in the suffix span.
+          current_currency_span.text( to_currency );
+        }
+      } else {
+        // Remove the suffix span.
+        current_currency_span.remove();
+      }
+    });
+  
+  }
+
+  // Add the logic for the original price on the checkout page.
+  if ( 'USD' != to_currency ) {
+    jQuery( '.checkout .checkout-summary__dues .checkout-summary__dues-today .original-price-usd' ).show();
+  } else {
+    jQuery( '.checkout .checkout-summary__dues .checkout-summary__dues-today .original-price-usd' ).hide();
+  }
+
+  /**
+   * Set the Currency Symbol in the header switcher.
+   *
+   * @global wc_currency_converter_params is coming from the plugin's script assets.
+   */
+  let currency_codes = { 'USD': '$', 'EUR': '€', 'GBP': '£', 'AUD': '$', 'CAD': '$' }; // Set the default known currency symbols.
+  if ( undefined != wc_currency_converter_params.currencies && 'string' === typeof wc_currency_converter_params.currencies && wc_currency_converter_params.currencies.length > 0 ) {
+    currency_codes = JSON.parse( wc_currency_converter_params.currencies ); // Take the default currency symbols from the plugin assets.
+  }
+
+  let current_currency_symbol = '$';
+  if ( currency_codes[ to_currency ] ) {
+    current_currency_symbol = currency_codes[ to_currency ];
+  }
+
+  jQuery( 'header .currency-symbol' ).text( current_currency_symbol );
 });

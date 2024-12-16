@@ -297,7 +297,7 @@
 						<small class="text-muted">Starting from</small>
 
 						<h5 class="trip-price" data-price="{{data['Start Price']}}">
-							<span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>{{data['Start Price']}}</span><span class="fw-normal fs-sm">pp</span>
+							<span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>{{data['Start Price']}}</span> <span class="fw-normal fs-sm">pp</span>
 						</h5>
 					</div>
 					<# } #>

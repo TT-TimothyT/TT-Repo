@@ -22,7 +22,7 @@ $is_protection_modal_showed = (bool) tt_validate( $tt_posted['is_protection_moda
     <div class="d-flex align-items-center mb-4">
         <input id="trek_guest_insurance_pr_add" type="radio" class="guest_radio" name="trek_guest_insurance[primary][is_travel_protection]" value="1" <?php echo esc_html( $is_travel_protection_pr != 0 ? 'checked' : '' ) ?>>
         <input type="hidden"  name="trek_guest_insurance[primary][basePremium]" value="<?php echo esc_attr( $base_premium_pr ) ?>">
-        <label for="trek_guest_insurance_pr_add"><?php esc_html_e( 'Add Travel Protection', 'trek-travel-theme' ); ?> <span class="fw-bold">(<span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo esc_attr( $base_premium_pr ); ?></span>)</span></label>
+        <label for="trek_guest_insurance_pr_add"><?php esc_html_e( 'Add Travel Protection', 'trek-travel-theme' ); ?> <span class="fw-bold">(<?php echo wc_price( floatval( esc_attr( $base_premium_pr ) ) ); ?>)</span></label>
     </div>
     <div class="d-flex align-items-center">
         <input id="trek_guest_insurance_pr_decline" type="radio" class="guest_radio" name="trek_guest_insurance[primary][is_travel_protection]" value="0" <?php echo esc_html( $is_travel_protection_pr == 0 ? 'checked' : '' ); ?>>
@@ -54,7 +54,7 @@ if( $guests ) :
                 <div class="d-flex align-items-center mb-4">
                     <input id="trek_guest_insurance_radio_add_<?php echo esc_attr( $guest_k ); ?>" type="radio" class="guest_radio" name="trek_guest_insurance[guests][<?php echo esc_attr( $guest_k ); ?>][is_travel_protection]" value="1" <?php echo esc_html( $is_travel_protection_guest != 0 ? 'checked' : '' ); ?>>
                     <input type="hidden" name="trek_guest_insurance[guests][<?php echo esc_attr( $guest_k ); ?>][basePremium]" value="<?php echo esc_attr( $base_premium_guest ); ?>">
-                    <label for="trek_guest_insurance_radio_add_<?php echo esc_attr( $guest_k ); ?>"><?php esc_html_e( 'Add Travel Protection', 'trek-travel-theme' ); ?> <span class="fw-bold">(<span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo esc_html( $base_premium_guest ); ?></span>)</span></label>
+                    <label for="trek_guest_insurance_radio_add_<?php echo esc_attr( $guest_k ); ?>"><?php esc_html_e( 'Add Travel Protection', 'trek-travel-theme' ); ?> <span class="fw-bold">(<?php echo wc_price( floatval( esc_html( $base_premium_guest ) ) ); ?>)</span></label>
                 </div>
                 <div class="d-flex align-items-center">
                     <input id="trek_guest_insurance_radio_decline_<?php echo esc_attr( $guest_k ); ?>" type="radio" class="guest_radio" name="trek_guest_insurance[guests][<?php echo esc_attr( $guest_k ); ?>][is_travel_protection]" value="0" <?php echo esc_html( $is_travel_protection_guest == 0 ? 'checked' : '' ); ?>>

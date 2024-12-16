@@ -72,6 +72,11 @@
 							<a class="d-flex align-items-center" target="_blank" href="<?php echo site_url('contact-us') ?>"><i class="bi bi-question m-auto"></i></a>
 						</div>
 						<a href="<?php echo site_url('contact-us') ?>" target="_blank" class="btn btn-md btn-light rounded-1 d-none d-lg-block btn-question">Questions?</a>
+
+						<div class="footerCurrencySelector">
+							<!-- <label class="currency-symbol fw-normal fs-sm lh-sm">$</label> -->
+							<?php echo do_shortcode('[woocommerce_currency_converter currency_display="select" currency_codes="USD, EUR, CAD, GBP, AUD"]') ?>
+						</div>
 					</div>
 
 				</div><!-- /.container -->
