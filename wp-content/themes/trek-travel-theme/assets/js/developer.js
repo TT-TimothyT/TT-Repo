@@ -5471,6 +5471,35 @@ jQuery(window).scroll(function() {
   handleScroll();
 });
 
+// Adjust Hash Anchor Scroll
+
+document.addEventListener("DOMContentLoaded", function () {
+  const headerHeight = document.querySelector('header').offsetHeight; // Adjust selector to match your header element
+
+  function scrollToAnchor() {
+      const hash = window.location.hash;
+      if (hash) {
+          const targetElement = document.querySelector(hash);
+          if (targetElement) {
+            const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight - 100;
+
+              // Smooth scroll to the adjusted position
+              window.scrollTo({
+                  top: targetPosition,
+                  behavior: "smooth"
+              });
+          }
+      }
+  }
+
+  // Adjust on page load if there's a hash in the URL
+  scrollToAnchor();
+
+  // Adjust when clicking on anchor links
+  window.addEventListener("hashchange", scrollToAnchor);
+});
+
+
 // Add event listener when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function() {
     // Get the input element

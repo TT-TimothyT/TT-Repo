@@ -63,7 +63,7 @@ if ( $pdp_itineraries ) :
                         $navKey = strtolower($navKey);
                         ?>
 
-                        <div class="tab-content hihihi" id="nav-tabContent">
+                        <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade <?php if($yj == 1) echo 'show active';?>" id="nav-<?php echo $navKey;?>" role="tabpanel" aria-labelledby="nav-<?php echo $navKey;?>-tab">
                             <?php
                                 $map_shortcode = get_field('map_shortcode', $itinerary->ID);
@@ -341,6 +341,7 @@ if ( $pdp_itineraries ) :
     </div>
 <?php endif; ?>
 <script>
+
     jQuery('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         tabDivId = jQuery(this).attr("aria-controls")
         if (jQuery("div#"+tabDivId+" div.waymark-map-container").length < 1) {            
@@ -348,4 +349,5 @@ if ( $pdp_itineraries ) :
             jQuery("div#"+tabDivId+" div.waymark-map").replaceWith(workingMapContainerClone)
         }
 	});
+    
 </script>
