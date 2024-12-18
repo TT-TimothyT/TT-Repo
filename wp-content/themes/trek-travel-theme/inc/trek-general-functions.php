@@ -8702,3 +8702,37 @@ function tt_woocommerce_login_redirect( $redirect ) {
     return $redirect;
 }
 add_filter( 'woocommerce_login_redirect', 'tt_woocommerce_login_redirect' );
+
+/**
+ * Require Authentication for All WP REST API Requests.
+ *
+ * @see https://developer.wordpress.org/rest-api/frequently-asked-questions/
+ *
+ * @param null|bool|WP_Error $result The type of the parameter indicates the state of authentication.
+ *
+ * - null: No authentication check has yet been performed, and the hook callback may apply custom authentication logic.
+ * - boolean: Indicates a previous authentication method check was performed. Boolean true indicates the request was successfully authenticated, and boolean false indicates authentication failed.
+ * - WP_Error: Some kind of error was encountered.
+ *
+ * @return null|bool|WP_Error The type of the parameter indicates the state of authentication.
+ */
+function tt_rest_authentication_errors( $result ) {
+    // If a previous authentication check was applied, pass that result along without modification.
+    if ( true === $result || is_wp_error( $result ) ) {
+        return $result;
+    }
+
+    // No authentication has been performed yet.
+    // Return an error if user is not logged in.
+    if ( ! is_user_logged_in() ) {
+        return new WP_Error(
+            'PERMISSION_DENIED',
+            __( 'Missing or insufficient permissions.' ),
+            array( 'status' => 401 )
+        );
+    }
+
+    // Our custom authentication check should have no effect on logged-in requests.
+    return $result;
+}
+add_filter( 'rest_authentication_errors', 'tt_rest_authentication_errors' );
