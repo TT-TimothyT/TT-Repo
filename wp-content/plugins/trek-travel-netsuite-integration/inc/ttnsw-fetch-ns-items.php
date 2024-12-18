@@ -153,7 +153,24 @@ function tt_admin_menu_page_cb()
         }
     }
     if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt_wp_manual_order_sync_action' && isset( $_REQUEST['order_id'] ) ) {
-        do_action('tt_trigger_cron_ns_booking', $_REQUEST['order_id'], null );
+        $order_id = sanitize_text_field( $_REQUEST['order_id'] );
+        if ( ! empty( $order_id ) && is_numeric( $order_id ) ) {
+            $order = wc_get_order( $order_id );
+            if ( $order ) {
+                $ns_order_status = get_post_meta( $order_id ,'tt_wc_order_ns_status', true );
+                if ( $ns_order_status != 'true' ) {
+                    // Do this sync only if the order is not in NS already. Prevent booking duplications!
+                    do_action( 'tt_trigger_cron_ns_booking', $order_id, null );
+                } else {
+                    $ns_booking_id = get_post_meta( $order_id, TT_WC_META_PREFIX . 'guest_booking_id', true );
+                    add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_wp_manual_order_sync_action' ), 'This order already has a booking in NetSuite with number: ' . esc_attr( $ns_booking_id ) , 'warning' );
+                }
+            } else {
+                add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_wp_manual_order_sync_action' ), 'Order not found!', 'error' );
+            }
+        } else {
+            add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_wp_manual_order_sync_action' ), 'Order ID can\'t be empty and should be a number!', 'error' );
+        }
     }
     if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt_wp_manual_guest_bookings_sync_action' && isset( $_REQUEST['ns_user_id'] ) ) {
         tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of guests information from NS to WC for single guest.', 'ns_user_id' => $_REQUEST['ns_user_id'] ), array( 'dateTime' => date('Y-m-d H:i:s') ) );

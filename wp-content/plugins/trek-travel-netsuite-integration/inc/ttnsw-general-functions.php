@@ -877,8 +877,8 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
             }
 
             // Compatibility solution for the old version of the NS Script 1305.
-            if( ! isset( $ns_guest_booking_result->addressInfo->shipping ) || ! isset( $ns_guest_booking_result->addressInfo->billing ) ) {
-                $address_full   = explode( ' ', tt_validate( $ns_guest_booking_result->addressInfo->address ), 2 );
+            if( ! isset( $_ns_guest_booking_result->addressInfo->shipping ) || ! isset( $_ns_guest_booking_result->addressInfo->billing ) ) {
+                $address_full   = explode( ' ', tt_validate( $_ns_guest_booking_result->addressInfo->address ), 2 );
                 $address_line_1 = $address_full[0];
                 $address_line_2 = ! empty( $address_full[1] ) ? $address_full[1] : '';
             }
@@ -890,24 +890,24 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
                 'phone'       => tt_validate( $_ns_guest_booking_result->phone ),
                 'address_info' => array(
                     'shipping' => array(
-                        'first_name' => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->firstname ) : tt_validate( $ns_guest_booking_result->firstname ),
-                        'last_name'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->lastname ) : tt_validate( $ns_guest_booking_result->lastname ),
-                        'address_1'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->address_1 ) : tt_validate( $address_line_1 ),
-                        'address_2'  => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->address_2 ) : tt_validate( $address_line_2 ),
-                        'city'       => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->city ) : tt_validate( $ns_guest_booking_result->addressInfo->city ),
-                        'state'      => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->state ) : tt_validate( $ns_guest_booking_result->addressInfo->state ),
-                        'postcode'   => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->zip ) : tt_validate( $ns_guest_booking_result->addressInfo->zip ),
-                        'country'    => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                        'first_name' => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->firstname ) : tt_validate( $_ns_guest_booking_result->firstname ),
+                        'last_name'  => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->lastname ) : tt_validate( $_ns_guest_booking_result->lastname ),
+                        'address_1'  => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->address_1 ) : tt_validate( $address_line_1 ),
+                        'address_2'  => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->address_2 ) : tt_validate( $address_line_2 ),
+                        'city'       => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->city ) : tt_validate( $_ns_guest_booking_result->addressInfo->city ),
+                        'state'      => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->state ) : tt_validate( $_ns_guest_booking_result->addressInfo->state ),
+                        'postcode'   => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->zip ) : tt_validate( $_ns_guest_booking_result->addressInfo->zip ),
+                        'country'    => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $_ns_guest_booking_result->addressInfo->country ),
                     ),
                     'billing' => array(
-                        'first_name' => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->firstname ) : tt_validate( $ns_guest_booking_result->firstname ),
-                        'last_name'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->lastname ) : tt_validate( $ns_guest_booking_result->lastname ),
-                        'address_1'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->address_1 ) : tt_validate( $address_line_1 ),
-                        'address_2'  => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->address_2 ) : tt_validate( $address_line_2 ),
-                        'city'       => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->city ) : tt_validate( $ns_guest_booking_result->addressInfo->city ),
-                        'state'      => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->state ) : tt_validate( $ns_guest_booking_result->addressInfo->state ),
-                        'postcode'   => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->zip ) :  tt_validate( $ns_guest_booking_result->addressInfo->zip ),
-                        'country'    => isset( $ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $ns_guest_booking_result->addressInfo->billing->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                        'first_name' => isset( $_ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $_ns_guest_booking_result->addressInfo->billing->firstname ) : tt_validate( $_ns_guest_booking_result->firstname ),
+                        'last_name'  => isset( $_ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $_ns_guest_booking_result->addressInfo->billing->lastname ) : tt_validate( $_ns_guest_booking_result->lastname ),
+                        'address_1'  => isset( $_ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $_ns_guest_booking_result->addressInfo->billing->address_1 ) : tt_validate( $address_line_1 ),
+                        'address_2'  => isset( $_ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $_ns_guest_booking_result->addressInfo->billing->address_2 ) : tt_validate( $address_line_2 ),
+                        'city'       => isset( $_ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $_ns_guest_booking_result->addressInfo->billing->city ) : tt_validate( $_ns_guest_booking_result->addressInfo->city ),
+                        'state'      => isset( $_ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $_ns_guest_booking_result->addressInfo->billing->state ) : tt_validate( $_ns_guest_booking_result->addressInfo->state ),
+                        'postcode'   => isset( $_ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $_ns_guest_booking_result->addressInfo->billing->zip ) :  tt_validate( $_ns_guest_booking_result->addressInfo->zip ),
+                        'country'    => isset( $_ns_guest_booking_result->addressInfo->billing ) ? tt_validate( $_ns_guest_booking_result->addressInfo->billing->country ) : tt_validate( $_ns_guest_booking_result->addressInfo->country ),
                     )
                 ),
                 'dob'         => ! empty( tt_validate( $_ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $_ns_guest_booking_result->birthdate ) ) : '',
