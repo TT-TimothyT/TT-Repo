@@ -535,6 +535,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 					</div> <!-- accordion-item ends -->
 				<?php  } */ ?>
 				<?php $medical_title_string = "Add any medical information we need to know"; ?>
+				<?php $gray_out = ''; ?>
 					<?php if( $lockedUserRecord == 1 ) { ?>
 						<?php $medical_title_string = 'Review your medical information'; ?>
 						<?php $gray_out = 'disabled style="color: #666666;"'; ?>
@@ -631,6 +632,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 					</form>
 				</div> <!-- accordion-item ends -->
 				<?php $emergency_title_string = "Add your emergency contact"; ?>
+				<?php $gray_out = ''; ?>
 				<?php if( $lockedUserRecord == 1 ) { ?>
 					<?php $emergency_title_string = 'Review your emergency contact'; ?>
 					<?php $gray_out = 'disabled style="color: #666666;"'; ?>
@@ -727,7 +729,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 				<?php $gray_out = ''; ?>
 					<?php if ( 5257 != $bike_id ) { ?>
 						<?php $title_string = 'Confirm your gear information'; ?>
-					<?php if( $lockedUserRecord == 1 || 5270 == $bike_id) { ?>
+					<?php if( $lockedUserRecord == 1 || 5270 == $bike_id ) { ?>
 						<?php $title_string = 'Review your gear information'; ?>
 						<?php $gray_out = 'disabled style="color: #666666;"'; ?>
 					<?php } ?>
@@ -858,7 +860,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 										</div>
 									</div>
 								<?php endif; ?>
-								<?php if ( $lockedUserRecord != 1 ) { ?>
+								<?php if ( $lockedUserRecord != 1 && 5270 != $bike_id ) { ?>
 									<div class="emergency-contact__button d-flex align-items-lg-center">
 										<div class="d-flex align-items-center emergency-contact__flex">
 											<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save" data-confirm="gear_section">Confirm</button>
@@ -876,6 +878,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 				</div> <!-- accordion-item ends -->
 				<?php } ?>
 				<?php if (isset($isPassportRequired) && $isPassportRequired == true) { ?>
+					<?php $gray_out = ''; ?>
 					<?php $passport_title_string = "Add your passport information"; ?>
 						<?php if( $lockedUserRecord == 1 ) { ?>
 							<?php $passport_title_string = 'Review your passport information'; ?>
@@ -935,8 +938,8 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 
 										<div class="col-md px-0">
 											<div class="form-floating">
-												<input <?php echo $gray_out; ?> type="tel" class="form-control passport_validation_inputs" name="passport_place_of_issue" id="passport_place_of_issue" placeholder="Passport Place of issue" value="<?php echo $passport_place_of_issue; ?>" required>
-												<label for="passport_place_of_issue">Passport Place of issue</label>
+												<input <?php echo $gray_out; ?> type="tel" class="form-control passport_validation_inputs" name="passport_place_of_issue" id="passport_place_of_issue" placeholder="Passport country of issue" value="<?php echo $passport_place_of_issue; ?>" required>
+												<label for="passport_place_of_issue">Passport country of issue</label>
 												<div class="invalid-feedback">
 													<img class="invalid-icon" />
 													This field is required.
@@ -1120,7 +1123,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 											</div>
 										</div>
 									<?php endif; ?>
-									<?php if ( $lockedUserRecord !=1 || $lockedUserBike != 1 ) { ?>
+									<?php if ( $lockedUserRecord !=1 && $lockedUserBike != 1 ) { ?>
 										<div class="emergency-contact__button d-flex align-items-lg-center">
 											<div class="d-flex align-items-center emergency-contact__flex">
 												<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save" data-confirm="bike_section">Confirm</button>
