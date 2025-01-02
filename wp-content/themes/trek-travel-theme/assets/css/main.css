@@ -22798,9 +22798,14 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   justify-content: center;
   background-size: cover;
   background-position: center center;
-  height: 100vh;
+  height: 60vh;
   max-height: 920px;
-  margin-bottom: 90px;
+  margin-bottom: 50px;
+}
+@media (max-width: 767.98px) {
+  .banner-hero-full {
+    margin-bottom: 30px;
+  }
 }
 
 .video-sect {
@@ -22925,7 +22930,7 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 60px;
+  gap: 40px;
 }
 
 .main-sect {
@@ -23026,13 +23031,19 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   align-items: center;
 }
 .levels-sect .lvl-header {
-  margin-bottom: 80px;
+  margin-bottom: 50px;
 }
 .levels-sect .lvl-container {
   display: flex;
   flex-direction: column;
   gap: 35px;
   margin-bottom: 60px;
+}
+.levels-sect .lvl-container .lvls-image {
+  display: flex;
+}
+.levels-sect .lvl-container .lvls-image a {
+  cursor: zoom-in;
 }
 .levels-sect .lvl-container .lvl-numbers {
   max-height: 40px;

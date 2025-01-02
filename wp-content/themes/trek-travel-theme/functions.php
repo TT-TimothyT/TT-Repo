@@ -1279,7 +1279,7 @@ function custom_breadcrumbs() {
     // Bail if home to avoid unnecessary breadcrumb
     if (is_front_page()) return;
 
-    echo '<nav class="container mb-40 mt-3" aria-label="breadcrumb">';
+    echo '<nav class="container mb-30" aria-label="breadcrumb">';
     echo '<ol class="breadcrumb mb-1">';
 
     // Home link

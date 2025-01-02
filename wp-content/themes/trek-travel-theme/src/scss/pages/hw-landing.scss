@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 60px;
+  gap: 40px;
 }
 
 // MAIN SECTION
@@ -152,7 +152,7 @@
   }
 
   .lvl-header {
-    margin-bottom: 80px;
+    margin-bottom: 50px;
   }
 
   .lvl-container {
@@ -160,6 +160,14 @@
     flex-direction: column;
     gap: 35px;
     margin-bottom: 60px;
+
+    .lvls-image {
+      display: flex;
+
+      a {
+        cursor: zoom-in;
+      }
+    }
 
     .lvl-numbers {
       max-height: 40px;

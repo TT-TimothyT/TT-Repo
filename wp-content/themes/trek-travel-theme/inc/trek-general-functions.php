@@ -8736,3 +8736,81 @@ function tt_rest_authentication_errors( $result ) {
     return $result;
 }
 add_filter( 'rest_authentication_errors', 'tt_rest_authentication_errors' );
+
+
+// ACF TT Button Group
+
+function tt_button($field_group_name, $button_class = 'btn btn-primary', $wrapper_class = 'tt-button-wrapper') {
+    // Get ACF fields
+    $text = get_field("{$field_group_name}_text");
+    $ntab = get_field("{$field_group_name}_new_tab");
+    $manual = get_field("{$field_group_name}_manual");
+    $link = get_field("{$field_group_name}_link"); // Post object field, returns post ID
+    $manual_link = get_field("{$field_group_name}_manual_link");
+
+    // Determine the URL
+    $url = '';
+    if ($manual && !empty($manual_link)) {
+        $url = esc_url($manual_link);
+    } elseif (!empty($link)) {
+        $url = get_permalink($link); // Get permalink from post ID
+    }
+
+    // Render the button only if text and URL exist
+    if (!empty($text) && !empty($url)) {
+        $target = $ntab ? ' target="_blank" rel="noopener noreferrer"' : '';
+        ?>
+        <div class="<?php echo esc_attr($wrapper_class); ?>">
+            <a href="<?php echo esc_url($url); ?>" class="<?php echo esc_attr($button_class); ?>"<?php echo $target; ?>>
+                <?php echo esc_html($text); ?>
+            </a>
+        </div>
+        <?php
+    }
+}
+
+
+// ACF Image
+/**
+ * Render an ACF Image Field with Custom Thumbnail Size and Lazy Loading.
+ *
+ */
+function tt_image($field_name, $size = 'full', $args = []) {
+    // Default arguments
+    $defaults = [
+        'class' => 'img-fluid mw-100', // Default image class
+        // 'wrapper_class' => '', // Wrapper class
+        // 'wrapper_element' => 'div', // Wrapper element, e.g., div or figure
+        'lazy' => true, // Lazy loading enabled by default
+        'lightbox' => true,
+    ];
+    $args = wp_parse_args($args, $defaults);
+
+    // Get the image field
+    $image = get_field($field_name);
+
+    // Ensure the image field is not empty and contains valid data
+    if (!empty($image) && is_array($image)) {
+        // Get the image attributes with !empty() checks
+        $full_image_url = $image['url'] ?? ''; // Full-size image for lightbox
+        $image_url = !empty($image['sizes'][$size]) ? $image['sizes'][$size] : (!empty($image['url']) ? $image['url'] : '');
+        $alt_text = !empty($image['alt']) ? $image['alt'] : ''; // Alt text fallback to empty string
+        $title_text = !empty($image['title']) ? $image['title'] : ''; // Title text fallback to empty string
+
+        if (!empty($image_url)) {
+            $lazy_attr = $args['lazy'] ? ' loading="lazy"' : '';
+            $class_attr = esc_attr($args['class']);
+
+            echo "<a target=\"_blank\" href=\"" . esc_url($full_image_url) . "\">";
+            echo "<img src=\"" . esc_url($image_url) . "\" 
+                    alt=\"" . esc_attr($alt_text) . "\" 
+                    title=\"" . esc_attr($title_text) . "\" 
+                    class=\"{$class_attr}\"{$lazy_attr}>";
+                    echo "</a>";
+
+        }
+    }
+}
+
+
+

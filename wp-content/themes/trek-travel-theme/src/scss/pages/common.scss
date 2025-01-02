@@ -6,9 +6,13 @@
   justify-content: center;
   background-size: cover;
   background-position: center center;
-  height: 100vh;
+  height: 60vh;
   max-height: 920px;
-  margin-bottom: 90px;
+  margin-bottom: 50px;
+
+  @include media-breakpoint-down(md) {
+    margin-bottom: 30px;
+  }
 }
 
 // VIDEO SECTION
