@@ -377,13 +377,16 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         >
                                         <?php $user = get_user_by('login', $user_login ); ?>
                                       <?php
-                                      /* translators: %s: Customer username */
-                                      echo sprintf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $user->first_name ) ) . "\n\n";
-                                      /* translators: %s: Store name */
-                                      echo sprintf( esc_html__( 'Someone has requested a new password for the following account on %s:', 'woocommerce' ), esc_html( wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES ) ) ) . "\n\n";
-                                      /* translators: %s: Customer username */
-                                      echo sprintf( esc_html__( 'Username: %s', 'woocommerce' ), esc_html( $user_login ) ) . "\n\n";
-                                      echo esc_html__( 'If you didn\'t make this request, just ignore this email. If you\'d like to proceed:', 'woocommerce' );
+
+                                        $first_name = !empty($user->first_name) ? $user->first_name : $user_login;
+
+                                        echo sprintf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $first_name ) ) . "\n\n";
+
+                                        /* translators: %s: Store name */
+                                        echo sprintf( esc_html__( 'Someone has requested a new password for the account associated with this email on %s.', 'woocommerce' ), esc_html( wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES ) ) ) . "\n\n";
+
+                                        echo esc_html__( 'If you didn\'t make this request, just ignore this email. If you\'d like to proceed:', 'woocommerce' );
+
                                       ?>
                                         
                                         
