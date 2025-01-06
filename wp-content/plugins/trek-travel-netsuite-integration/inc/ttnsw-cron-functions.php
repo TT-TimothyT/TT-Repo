@@ -786,12 +786,31 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                             continue;
                         }
 
+                        // Get Existing Orders for this booking.
+                        $existing_orders = tt_get_order_by_booking( $booking_id, true, true );
+
                         // If booking not found in the table, create an empty order and migrate this booking below.
                         $auto_generated_order = tt_create_order( $booking_id );
 
-                        
+
                         if ( $auto_generated_order ) {
                             tt_add_error_log( '[WC] - create auto-generated order', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'New Auto generated Order was created.', 'order_id' => $auto_generated_order->id ) );
+
+                            // Cancel all existing orders for this booking.
+                            if ( $existing_orders ) {
+                                foreach( $existing_orders as $existing_order ) {
+                                    if ( $existing_order->get_status() == 'wc-cancelled' ) {
+                                        continue;
+                                    }
+
+                                    // If the order is found, change the order status to cancelled.
+                                    $existing_order->set_status( 'wc-cancelled' );
+                                    $existing_order->save();
+
+                                    tt_add_error_log( '[WC] - cancel existing order', array( 'booking_id' => $booking_id, 'order_id' => $existing_order->id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'Existing Order was cancelled.' ) );
+                                }
+                            }
+
                             tt_finalize_migrated_order( $auto_generated_order, $product_id, $wc_user_id, $guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $guest );
                         }
 

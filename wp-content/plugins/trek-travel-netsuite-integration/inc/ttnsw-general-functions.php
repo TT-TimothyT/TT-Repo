@@ -645,10 +645,11 @@ function tt_create_order( $booking_id = null, $print_result = false ) {
  * 
  * @param int $booking_id The NS Booking ID.
  * @param bool $full_order Full order Object or the ID only.
+ * @param bool $is_all Return all orders or the first one.
  *
  * @return object|int|bool
  */
-function tt_get_order_by_booking( $booking_id, $full_order = true ) {
+function tt_get_order_by_booking( $booking_id, $full_order = true, $is_all = false ) {
 
     $args = array(
         // 'status'       => 'completed', // Accepts a string: one of 'pending', 'processing', 'on-hold', 'completed', 'refunded, 'failed', 'cancelled', or a custom order status.
@@ -660,7 +661,13 @@ function tt_get_order_by_booking( $booking_id, $full_order = true ) {
 
     $orders = wc_get_orders( $args );
 
-    if( ! empty( $orders ) ) {
+    if ( ! empty( $orders ) ) {
+        // Return all orders or the first one.
+        if ( $is_all ) {
+            return $orders;
+        }
+
+        // Return the first order.
         return $orders[0];
     }
 
@@ -1140,6 +1147,7 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
         $booking_table_data['guest_phone_number']       = tt_validate( $ns_guest_booking_result->phone );
         $booking_table_data['guest_gender']             = tt_validate( $ns_guest_booking_result->gender->id );
         $booking_table_data['guest_date_of_birth']      = ! empty( tt_validate( $ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ) : '';
+        $booking_table_data['ns_booking_status']        = 1;
 
         // Shipping Address.
         if( isset( $ns_guest_booking_result->addressInfo->shipping ) ) {
