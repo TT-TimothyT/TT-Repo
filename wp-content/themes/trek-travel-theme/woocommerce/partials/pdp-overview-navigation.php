@@ -87,14 +87,18 @@ foreach ( $activity_terms as $activity_term) {
                 const activeSectionId = entry.target.getAttribute('id');
                 if (entry.intersectionRatio > 0.5) {
                     navLinks.forEach(link => {
-                        link.classList.toggle('active', link.getAttribute('href').substring(1) === activeSectionId);
+                        const targetHref = link.getAttribute('href');
+                        if ( targetHref ) {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === activeSectionId);
+                        }
                     });
                 }
             });
         }, observerOptions);
 
         navLinks.forEach(link => {
-            const targetId = link.getAttribute('href').substring(1);
+            const targetHref = link.getAttribute('href');
+            const targetId = targetHref ? targetHref.substring(1) : null;
             const targetElement = document.getElementById(targetId);
             if (targetElement) {
                 observer.observe(targetElement);

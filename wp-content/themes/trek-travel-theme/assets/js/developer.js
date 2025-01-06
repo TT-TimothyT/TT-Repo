@@ -2830,7 +2830,7 @@ jQuery('body').on('keyup', 'textarea[name="special_needs"]', function () {
 
 //Do the same on step 2 load
 jQuery(document).ready(function () {
-  if (jQuery('body').hasClass('trek-checkout')) {
+  if (jQuery('body').hasClass('trek-checkout') && jQuery('textarea[name="special_needs"]').length > 0) {
     if (jQuery('textarea[name="special_needs"]').val().length > 250) {
       jQuery('#room-request-notice').show();
       jQuery('.tt_continue_bike_click_btn').prop('disabled', true);

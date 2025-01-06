@@ -37,24 +37,25 @@
 	<script src='https://www.google.com/recaptcha/api.js'></script>
 	<script src="https://www.google.com/recaptcha/api.js?render=6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV"></script>
 	<script>
-		const togglePassword = document
-			.querySelector('#togglePassword');
+		const togglePassword = document.querySelector('#togglePassword');
 
 		const password = document.querySelector('#InputPassword');
-
-		togglePassword.addEventListener('click', () => {
-
-			// Toggle the type attribute using
-			// getAttribure() method
-			const type = password
-				.getAttribute('type') === 'password' ?
-				'text' : 'password';
-
-			password.setAttribute('type', type);
-
-			// Toggle the eye and bi-eye icon
-			togglePassword.classList.toggle('bi-eye');
-		});
+		if( null !== togglePassword ) {
+			// Add the Event Listener if togglePassword exists.
+			togglePassword.addEventListener('click', () => {
+	
+				// Toggle the type attribute using
+				// getAttribure() method
+				const type = password
+					.getAttribute('type') === 'password' ?
+					'text' : 'password';
+	
+				password.setAttribute('type', type);
+	
+				// Toggle the eye and bi-eye icon
+				togglePassword.classList.toggle('bi-eye');
+			});
+		}
 
 		// Example starter JavaScript for disabling form submissions if there are invalid fields
 		(function() {
