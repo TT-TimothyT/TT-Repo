@@ -155,6 +155,10 @@ if( 'taxonomies.destination' === $filter_name ) {
     </script>
     <?php
 }
+
+// Custom taxonomies filters ordering.
+get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
+
 ?>
 
     <div class="plp-container">
@@ -414,7 +418,18 @@ if( 'taxonomies.destination' === $filter_name ) {
                     instantsearch.widgets.refinementList({
                         container: '#trip-style-facet',
                         attribute: 'taxonomies.trip-style',
-                        sortBy: ['name:desc'],
+                        sortBy: ( a, b ) => {
+                            // If tsOrderMap is empty or doesn't exist, sort by name ASC.
+                            if ( typeof tsOrderMap === 'undefined' || ! ( tsOrderMap instanceof Map ) || tsSortOrder.size === 0 ) {
+
+                                return a.name.localeCompare(b.name);
+                            } else {
+                                const indexA = tsOrderMap.get(a.name) ?? Infinity; // Items not in sortOrder go to the end
+                                const indexB = tsOrderMap.get(b.name) ?? Infinity;
+
+                                return indexA - indexB;
+                            }
+                        },
                         operator: 'or',
                         limit: 20,
                         templates: {
@@ -425,6 +440,27 @@ if( 'taxonomies.destination' === $filter_name ) {
                         container: '#rider-level-facet',
                         attribute: 'taxonomies.activity-level',
                         sortBy: ['name:asc'],
+                        operator: 'or',
+                        limit: 20,
+                        templates: {
+                            item: wp.template('instantsearch-menu-template')
+                        }
+                    }),
+                    instantsearch.widgets.refinementList({
+                        container: '#trip-class-facet',
+                        attribute: 'taxonomies.trip-class',
+                        sortBy: ( a, b ) => {
+                            // If tcOrderMap is empty or doesn't exist, sort by name ASC.
+                            if ( typeof tcOrderMap === 'undefined' || ! ( tcOrderMap instanceof Map ) || tcSortOrder.size === 0 ) {
+
+                                return a.name.localeCompare(b.name);
+                            } else {
+                                const indexA = tcOrderMap.get(a.name) ?? Infinity; // Items not in sortOrder go to the end
+                                const indexB = tcOrderMap.get(b.name) ?? Infinity;
+
+                                return indexA - indexB;
+                            }
+                        },
                         operator: 'or',
                         limit: 20,
                         templates: {

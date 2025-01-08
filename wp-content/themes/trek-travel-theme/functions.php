@@ -1729,6 +1729,68 @@ function tt_add_trip_duration_columns( $columns ) {
 }
 add_filter( 'manage_edit-trip-duration_columns', 'tt_add_trip_duration_columns' );
 
+/**
+ * Add info to the new trip style columns.
+ *
+ * @param string $string Custom column output. Default empty.
+ * @param string $column_name Name of the column.
+ * @param int    $term_id Term ID.
+ *
+ * @return void
+ */
+function tt_show_trip_style_info_in_columns( $string, $column_name, $term_id ) {
+    switch ( $column_name ) {
+        case 'trip-style-order-num' :
+            echo esc_html( get_term_meta( $term_id, 'order_number', true ) );
+        break;
+    }
+}
+add_action( 'manage_trip-style_custom_column', 'tt_show_trip_style_info_in_columns', 10, 3 );
+
+/**
+ * Adding the new column titles in the trip style taxonomy.
+ *
+ * @param string[] $columns The column header labels keyed by column ID.
+ *
+ * @return string[] $columns The column header label keyed by column ID with added new columns.
+ */
+function tt_add_trip_style_columns( $columns ) {
+	$columns['trip-style-order-num'] = __( 'Filters - Order Number', 'trek-travel-theme' );
+    return $columns;
+}
+add_filter( 'manage_edit-trip-style_columns', 'tt_add_trip_style_columns' );
+
+/**
+ * Add info to the new trip class columns.
+ *
+ * @param string $string Custom column output. Default empty.
+ * @param string $column_name Name of the column.
+ * @param int    $term_id Term ID.
+ *
+ * @return void
+ */
+function tt_show_trip_class_info_in_columns( $string, $column_name, $term_id ) {
+    switch ( $column_name ) {
+        case 'trip-class-order-num' :
+            echo esc_html( get_term_meta( $term_id, 'order_number', true ) );
+        break;
+    }
+}
+add_action( 'manage_trip-class_custom_column', 'tt_show_trip_class_info_in_columns', 10, 3 );
+
+/**
+ * Adding the new column titles in the trip class taxonomy.
+ *
+ * @param string[] $columns The column header labels keyed by column ID.
+ *
+ * @return string[] $columns The column header label keyed by column ID with added new columns.
+ */
+function tt_add_trip_class_columns( $columns ) {
+	$columns['trip-class-order-num'] = __( 'Filters - Order Number', 'trek-travel-theme' );
+    return $columns;
+}
+add_filter( 'manage_edit-trip-class_columns', 'tt_add_trip_class_columns' );
+
 // Woocommerce Simple Products NOINDEX
 
 function yoast_noindex_nofollow_simple_products($robots) {

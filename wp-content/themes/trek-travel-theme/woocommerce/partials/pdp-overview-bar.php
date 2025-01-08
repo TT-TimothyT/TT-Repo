@@ -24,6 +24,7 @@ $is_private_custom_trip = get_field( 'is_private_custom_trip', $product->id );
 
 $activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level', true );
 $trip_style     = tt_get_custom_product_tax_value( $product_id, 'trip-style', true );
+$trip_class     = tt_get_custom_product_tax_value( $product_id, 'trip-class', true );
 $hotel_level    = tt_get_custom_product_tax_value( $product_id, 'hotel-level', true );
 $trip_duration  = tt_get_custom_product_tax_value( $product_id, 'trip-duration', true );
 
@@ -73,7 +74,7 @@ if ($product_overview) :
                 </div>
                 <div class="trip-style">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Trip Style <i class="bi bi-info-circle pdp-trip-styles"></i></p>
-                    <p class="fw-medium fs-md lh-md mb-0"><?php echo $trip_style ? esc_html( $trip_style ) : ''; ?></p>
+                    <p class="fw-medium fs-md lh-md mb-0"><?php echo ( $trip_style ? esc_html( $trip_style ) : ''); echo ( $trip_class ? ', ' . esc_html( $trip_class ) : '' ); ?></p>
                 </div>
                 <div class="rider-level">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Activity Level <i class="bi bi-info-circle pdp-rider-level"></i></p>

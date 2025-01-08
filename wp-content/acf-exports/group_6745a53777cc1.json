@@ -1,0 +1,55 @@
+{
+    "key": "group_6745a53777cc1",
+    "title": "Taxonomies filters ordering",
+    "fields": [
+        {
+            "key": "field_6745a53896110",
+            "label": "Order Number",
+            "name": "order_number",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Enter an integer number indicating the order in which you want this filter to be displayed.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 1,
+            "max": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "step": "",
+            "prepend": "",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "trip-style"
+            }
+        ],
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "trip-class"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1734440569
+}

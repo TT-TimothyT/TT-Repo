@@ -105,7 +105,7 @@
 								<# if ( data['Trip Style'] ) { #>
 								<ul class="list-inline mb-1">
 									<li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
-									<li class="list-inline-item fs-sm">{{data['Trip Style']}}</li>
+									<li class="list-inline-item fs-sm">{{data['Trip Style']}}<# if( data.taxonomies['trip-class'] && data.taxonomies['trip-class'].length > 0 ) { #>, {{data.taxonomies['trip-class'].join(", ")}}<# } #></li>
 									<li class="list-inline-item"><i class="bi bi-info-circle pdp-trip-styles"></i></li>
 								</ul>
 								<# } #>
@@ -173,7 +173,7 @@
 									data-bs-target="#quickLookModal"
 									data-bs-product-id="{{ data.post_id }}"
 									<# if ( data['Trip Style'] ) { #>
-										data-bs-trip-style="{{data['Trip Style']}}"
+										data-bs-trip-style="{{data['Trip Style']}}<# if( data.taxonomies['trip-class'] && data.taxonomies['trip-class'].length > 0 ) { #>, {{data.taxonomies['trip-class'].join(", ")}}<# } #>"
 									<# } #>
 									<# if ( data['Duration'] ) { #>
 										data-bs-trip-duration="{{ data['Duration'].replace(/&amp;/g, '/') }}"
@@ -244,7 +244,7 @@
 							<# if ( data['Trip Style'] ) {#>
 								<ul class="list-inline mb-0">
 									<li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
-									<li class="list-inline-item fs-sm">{{ data['Trip Style'].replace(/&amp;/g, '&') }}</li>
+									<li class="list-inline-item fs-sm">{{ data['Trip Style'].replace(/&amp;/g, '&') }}<# if( data.taxonomies['trip-class'] && data.taxonomies['trip-class'].length > 0 ) { #>, {{data.taxonomies['trip-class'].join(", ")}}<# } #></li>
 									<li class="list-inline-item"><i class="bi bi-info-circle pdp-trip-styles"></i></li>
 								</ul>
 							<# } #>
@@ -305,7 +305,7 @@
 						<a href="#" class="quick-view-button"  data-bs-toggle="modal" data-bs-target="#quickLookModal"
 						data-bs-product-id="{{ data.post_id }}"
 						<# if ( data['Trip Style'] ) { #>
-							data-bs-trip-style="{{data['Trip Style']}}"
+							data-bs-trip-style="{{data['Trip Style']}}<# if( data.taxonomies['trip-class'] && data.taxonomies['trip-class'].length > 0 ) { #>, {{data.taxonomies['trip-class'].join(", ")}}<# } #>"
 						<# } #>
 						<# if ( data['Duration'] ) { #>
 							data-bs-trip-duration="{{ data['Duration'].replace(/&amp;/g, '/') }}"

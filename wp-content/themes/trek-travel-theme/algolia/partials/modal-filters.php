@@ -84,6 +84,7 @@
 						<div id="algoliaFilters-collapseFour" class="accordion-collapse collapse show" aria-labelledby="algoliaFilters-headingFour">
 							<div class="accordion-body">
 								<div id="trip-style-facet"></div>
+								<div id="trip-class-facet"></div>
 							</div>
 						</div>
 					</div>
