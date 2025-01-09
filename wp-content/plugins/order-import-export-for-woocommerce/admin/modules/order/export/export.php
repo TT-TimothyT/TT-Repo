@@ -114,10 +114,8 @@ class Wt_Import_Export_For_Woo_Basic_Order_Export {
         return $export_columns;
     }
     
-    public function wt_line_item_separate_row_csv_data($order_export_data, $order_data_filter_args) {
+    public function wt_line_item_separate_row_csv_data($order, $order_export_data, $order_data_filter_args) {
 
-        $order_id = $order_export_data['order_id'];
-        $order = wc_get_order($order_id);
         $row = array();
         if ($order) {
             foreach ($order->get_items() as $item_key => $item) {
@@ -762,7 +760,7 @@ class Wt_Import_Export_For_Woo_Basic_Order_Export {
         $order_data_filter_args = array('max_line_items' => $max_line_items);
         
         if ($this->export_to_separate_rows) {
-            $order_export_data = $this->wt_line_item_separate_row_csv_data($order_export_data, $order_data_filter_args);
+            $order_export_data = $this->wt_line_item_separate_row_csv_data($order, $order_export_data, $order_data_filter_args);
         } 
         return apply_filters('hf_alter_csv_order_data', $order_export_data, $order_data_filter_args);
     }

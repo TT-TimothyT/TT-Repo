@@ -3,14 +3,14 @@
  * Plugin Name: Abandoned Cart Lite for WooCommerce
  * Plugin URI: http://www.tychesoftwares.com/store/premium-plugins/woocommerce-abandoned-cart-pro
  * Description: This plugin captures abandoned carts by logged-in users & emails them about it. Enjoy all the premium features at no extra cost for 2 months. Click <strong><a href="https://www.tychesoftwares.com/products/woocommerce-abandoned-cart-pro-plugin-trial">here</a></strong> to Upgrade to PRO for FREE.
- * Version: 6.1.1
+ * Version: 6.2.0
  * Author: Tyche Softwares
  * Author URI: http://www.tychesoftwares.com/
  * Text Domain: woocommerce-abandoned-cart
  * Domain Path: /i18n/languages/
  * Requires PHP: 7.4 or higher
  * WC requires at least: 4.0.0
- * WC tested up to: 9.3.3
+ * WC tested up to: 9.4.3
  * Requires Plugins: woocommerce
  *
  * @package Abandoned-Cart-Lite-for-WooCommerce
@@ -121,7 +121,7 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 			}
 
 			if ( ! defined( 'WCAL_PLUGIN_VERSION' ) ) {
-				define( 'WCAL_PLUGIN_VERSION', '6.1.1' );
+				define( 'WCAL_PLUGIN_VERSION', '6.2.0' );
 			}
 
 			if ( ! defined( 'WCAL_PLUGIN_PATH' ) ) {
@@ -275,8 +275,8 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 			add_action( 'woocommerce_before_cart_table', array( 'wcal_common', 'wcal_apply_direct_coupon_code' ) );
 			// Add coupon when user views checkout page (would not be added otherwise, unless user views cart first).
 			add_action( 'woocommerce_before_checkout_form', array( 'wcal_common', 'wcal_apply_direct_coupon_code' ) );
-			add_filter( 'woocommerce_email_from_address', array( __CLASS__, 'wcal_from_address_for_emails' ), 10, 3 );
-			add_filter( 'woocommerce_email_from_name', array( __CLASS__, 'wcal_from_name_for_emails' ), 10, 3 );
+			add_filter( 'woocommerce_email_from_address', array( __CLASS__, 'wcal_from_address_for_emails' ), 10, 2 );
+			add_filter( 'woocommerce_email_from_name', array( __CLASS__, 'wcal_from_name_for_emails' ), 10, 2 );
 			// 5.14.0
 			if ( 'yes' === get_option( 'wcal_guest_users_manual_reset_needed', '' ) ) {
 				add_action( 'admin_notices', array( 'Wcal_Update', 'wcal_add_notice' ) );
@@ -373,8 +373,9 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 		 */
 		public static function wcal_add_component_file() {
 			if ( is_admin() ) {
-				require_once 'includes/class-wcal-all-component.php';
-
+				if ( file_exists( plugin_dir_path( __FILE__ ) . 'includes/class-wcal-all-component.php' ) ) {
+					require_once 'includes/class-wcal-all-component.php';
+				}
 			}
 		}
 
@@ -4112,7 +4113,7 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 		 *
 		 * @since 5.13.0
 		 */
-		public static function wcal_from_address_for_emails( $wp_admin_address, $email, $from_email ) {
+		public static function wcal_from_address_for_emails( $wp_admin_address, $email ) {
 			$from_address = '' == $email->title ? get_option( 'wcal_from_email' ) : $wp_admin_address; // phpcs:ignore
 			return $from_address;
 		}
@@ -4126,7 +4127,7 @@ if ( ! class_exists( 'woocommerce_abandon_cart_lite' ) ) {
 		 *
 		 * @since 5.13.0
 		 */
-		public static function wcal_from_name_for_emails( $wp_admin_name, $email, $from_name_default ) {
+		public static function wcal_from_name_for_emails( $wp_admin_name, $email ) {
 			$from_name = '' == $email->title ? get_option( 'wcal_from_name' ) : $wp_admin_name; // phpcs:ignore
 			return $from_name;
 		}

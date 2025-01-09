@@ -141,10 +141,6 @@ class Wt_Import_Export_For_Woo_Basic_Coupon_Export {
             foreach ($coupons as $coupon) {
                 if (!$coupons || is_wp_error($coupons))
                     break;
-                $get_wallet_user_id = get_post_meta($coupon->ID, '_wt_gc_user_wallet_coupon', true);
-                if($get_wallet_user_id){
-                    continue;
-                }
                 $data_array[]  = $this->generate_row_data($coupon);
             }            
             

@@ -43,6 +43,12 @@ if (is_plugin_active('wt-woocommerce-gift-cards/wt-woocommerce-gift-cards.php'))
     $base_columns['meta:wt_credit_history'] = 'Credit history';
     $base_columns['meta:_wt_sc_send_the_generated_credit'] = 'Generated credit';
     $base_columns['meta:_wt_gc_suggest_product_ids'] = 'Suggested product IDs';
+    //wallet meta
+    $base_columns['meta:_used_store_credit_expiry_data'] = 'Store credit data';
+    $base_columns['meta:_wt_gc_user_wallet_coupon'] = 'User wallet coupon';
+    $base_columns['meta:_wt_gc_wallet_balance'] = 'Wallet balance';
+    $base_columns['meta:_wt_gc_wallet_expired'] = 'Wallet expired';
+    $base_columns['meta:_wt_gc_wallet_used'] = 'Wallet used';
 endif;
 
 return apply_filters('coupon_csv_coupon_post_columns', $base_columns);

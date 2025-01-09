@@ -812,7 +812,7 @@ class Wt_Import_Export_For_Woo_Basic_Coupon_Import {
     }
 
     public function process_item($data) {
-
+        
         try {
             do_action('wt_woocommerce_coupon_import_before_process_item', $data);
             $data = apply_filters('wt_woocommerce_coupon_import_process_item', $data);  
@@ -865,6 +865,25 @@ class Wt_Import_Export_For_Woo_Basic_Coupon_Import {
             $coupon_object = apply_filters('wt_woocommerce_import_pre_insert_coupon_object', $coupon_object, $data);
             $coupon_object->save();
 
+            if (is_plugin_active('wt-woocommerce-gift-cards/wt-woocommerce-gift-cards.php')){
+                if(isset($data['meta_data'])){
+                    foreach($data['meta_data'] as $meta){
+                        if($meta['key'] == '_wt_gc_user_wallet_coupon' &&!empty($meta['value'])){
+                            $email = $data['email_restrictions'];
+                            if(isset($email[0])){
+                                $user = get_user_by('email', $email[0]);
+                                if ($user) {
+                                    $user_id = $user->ID;
+                                    update_user_meta($user_id, '_wt_gc_user_wallet_coupon', $coupon_object->get_id());
+                                    update_post_meta($coupon_object->get_id(), '_wt_gc_user_wallet_coupon', $user_id);
+                                }
+                            }
+    
+                        }
+                    }
+                }
+            }   
+                  
             do_action('wt_woocommerce_import_inserted_coupon_object', $coupon_object, $data);
 
             $result = array(

@@ -2,6 +2,7 @@
 
 // Reserved column names
 $base_columns = array(
+    'ID' => array('title'=>'ID','description'=>'Coupon ID'),
     'post_title' => array('title'=>'Coupon code','description'=>'Name of the coupon '), 
     'post_excerpt' => array('title'=>'Description','description'=>'Short description about the Coupon'),
     'post_status' => array('title'=>'Status','description'=>'Coupon Status (published, draft, etc.)'),                
@@ -36,6 +37,12 @@ if (is_plugin_active('wt-woocommerce-gift-cards/wt-woocommerce-gift-cards.php'))
         'meta:wt_credit_history' => array('title'=>'Credit history','description'=>'Numeric'),
         'meta:_wt_sc_send_the_generated_credit' => array('title'=>'Generated credit','description'=>'Numeric'),
         'meta:_wt_gc_suggest_product_ids' => array('title'=>'Suggested product IDs','description'=>'Numeric'),
+        //wallet meta
+        'meta:_used_store_credit_expiry_data' => array('title'=>'Store credit data','description'=>''),
+        'meta:_wt_gc_user_wallet_coupon' => array('title'=> 'User wallet coupon','description'=>''),
+        'meta:_wt_gc_wallet_balance' => array('title'=> 'Wallet balance','description'=>''),
+        'meta:_wt_gc_wallet_expired' => array('title'=>'Wallet expired','description'=>''),
+        'meta:_wt_gc_wallet_used' => array('title'=>'Wallet used','description'=>''),
     ));
 endif;
 
