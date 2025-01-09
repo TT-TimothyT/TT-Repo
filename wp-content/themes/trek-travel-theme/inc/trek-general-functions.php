@@ -88,6 +88,31 @@ function trek_extra_register_fields($customer_id)
     }
 }
 
+
+// CUSTOMER REGISTER USERNAME
+// add_action('woocommerce_register_post', 'trek_handle_registration', 10, 3);
+function trek_handle_registration($username, $email, $validation_errors)
+{
+    if (empty($_POST['username']) || !sanitize_text_field($_POST['username'])) {
+        $validation_errors->add('username_error', __('Username is required!', 'woocommerce'));
+    } else {
+        $username = sanitize_text_field($_POST['username']);
+    }
+
+    return $validation_errors;
+}
+
+// add_action('woocommerce_created_customer', 'trek_save_username', 10, 1);
+function trek_save_username($customer_id)
+{
+    if (isset($_POST['username'])) {
+        wp_update_user([
+            'ID' => $customer_id,
+            'user_login' => sanitize_text_field($_POST['username'])
+        ]);
+    }
+}
+
 /**
  * @author  : Dharmesh Panchal
  * @version : 1.0.0

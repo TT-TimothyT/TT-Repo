@@ -1,3 +1,136 @@
+// Sign in
+
+.sign-welcome {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+  // justify-content: space-between;
+  // gap: 30px;
+
+  .sign-logo {
+    display: flex;
+
+    img {
+      display: flex;
+      object-fit: contain;
+      width: 100%;
+      max-height: 200px;
+    }
+  }
+
+  .sign-text {
+    text-align: center;
+    width: 50%;
+  }
+
+  @include media-breakpoint-up(sm) {
+
+    justify-content: center;
+    flex-direction: column;
+
+    .sign-text {
+      margin-bottom: 20px;
+    }
+
+    .sign-logo {
+      margin-bottom: 30px;
+    }
+  }
+
+  @include media-breakpoint-down(xl) {
+    .sign-text {
+      width: 100%;
+    }
+  }
+
+  @include media-breakpoint-down(lg) {    
+    .sign-logo img {
+      max-height: 175px;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    margin-top: 50px;
+    .sign-logo img {
+      max-height: 100px;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    // flex-direction: column-reverse;
+    height: fit-content;
+    // margin-top: 20px;
+
+    .sign-logo {
+      display: none;
+    }
+  }
+}
+
+.register-form {
+
+  .woocommerce-privacy-policy-text {
+    font-size: 0.75rem;
+    line-height: normal;
+  }
+}
+
+.login-form {
+  margin-top: 80px;
+
+  .sign-btns {
+    justify-content: space-between;
+    align-items: end;
+  }
+
+  .register-btn {
+    width: 100%;
+    margin-bottom: 1rem;
+    height: 40px;
+  }
+
+  .form-group {
+    margin-bottom: 0px;
+  }
+
+  .form-floating {
+    margin-bottom: 1rem !important;
+  }
+
+  .login-title {
+      margin-bottom: 15px;
+  }
+
+  .forgot-pwd {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+
+  @include media-breakpoint-up(lg) {
+    // margin-left: auto;
+    margin-right: auto;
+  }
+
+  @include media-breakpoint-up(md) {
+    margin-left: 30px;
+  }
+
+  @include media-breakpoint-down(lg) {
+    margin-top: 50px;
+    
+  }
+
+  @include media-breakpoint-down(md) {
+    margin-top: 30px;
+  }
+  @include media-breakpoint-down(sm) {
+    margin-left: auto;
+  }
+}
+
 // BANNER HERO
 
 .banner-hero-full {

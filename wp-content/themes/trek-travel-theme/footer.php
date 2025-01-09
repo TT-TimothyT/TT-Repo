@@ -1,6 +1,13 @@
-<?php echo tt_compare_trips_html(); ?>
+<?php 
+// echo tt_compare_trips_html(); 
+?>
 	<footer id="footer" class="text-white">
-	<?php get_template_part('tpl-parts/newsletter', 'signup'); ?>
+	<?php
+		if (!is_page('register')) {
+			get_template_part('tpl-parts/newsletter', 'signup');
+		}
+	?>
+
 		<div class="divider"></div>
 		<div class="container">
 			<div class="row">

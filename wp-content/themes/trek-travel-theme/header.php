@@ -127,7 +127,7 @@ $is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters
 				<div class="container">
 					<ul class="nav justify-content-end">
 						<li class="nav-item">
-							<a class="nav-link d-flex align-items-center" href="<?php echo site_url('catalog') ?>" onclick="dataLayer.push({'event': 'catalog_request'});"><i class="bi bi-book"></i>Request a Catalog</a>
+							<a class="nav-link d-flex align-items-center" href="<?php echo site_url('trip-planner') ?>" onclick="dataLayer.push({'event': 'catalog_request'});"><i class="bi bi-book"></i>Request a Trip Planner</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link d-flex align-items-center" href="<?php echo site_url('contact-us') ?>"><i class="bi bi-envelope"></i>Contact Us</a>

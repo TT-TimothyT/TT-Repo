@@ -81,18 +81,23 @@
             line-height: $line-height-base;
             text-decoration-line: underline;
             color: $black;
-            margin-bottom: 2rem;
+            margin-bottom: 10px;
             a {
                 &:hover {
                     color: $black;
                 }
             }
         }
+
+        .login-submit {
+            color: $white;
+            background-color: $black;
+        }
         .login-submit,
         .reset-submit {
             width:100%;
             border-radius: $border-radius-sm;
-            padding: 1rem 1.25rem;
+            // padding: 1rem 1.25rem;
             font-weight: $font-weight-medium;
             border: unset;
             margin-bottom: 1rem;
