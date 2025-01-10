@@ -36,32 +36,74 @@
             text-decoration: none;
         }
     }
-    .trips-list-item{
-        padding: 1rem;
-        .trip-image{
+    .trips-list-item {
+        display: flex;
+        justify-content: space-between;
+
+        .trip-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+        }
+        .trip-info{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            h5 {
+                line-height: normal;
+            }
+            p {
+                margin-bottom: 0;
+            }
+        }
+        .trip-image {
+            height: 275px;
             img{
                 width: 100%;
-                aspect-ratio: 4/3;
-                object-fit: cover;
+                height: 100%;
                 border-radius: 4px;
+                object-fit: cover;
+            }
+        }
+        .trip-details-cta{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            a {
+                white-space: nowrap;
+            }
+        }
+
+        @include media-breakpoint-down(xl) {
+            .trip-box {
+            flex-direction: column;
+            align-items: flex-start;
+            }
+        }
+
+        @include media-breakpoint-down(lg) {
+            .trip-details-cta {
+                width: 100%;
             }
         }
     }
     
     @include media-breakpoint-up(lg) {
-        .trips-list-item{
-            display: flex;
-            gap: 2%;
-            .trip-info{
-                flex-grow: 1;
-            }
-            .trip-image{
-                img{
-                    width: 227px;
-                    height: 151px;
-                }
-            }
-        }
+        // .trips-list-item{
+        //     display: flex;
+        //     gap: 2%;
+        //     .trip-info{
+        //         flex-grow: 1;
+        //     }
+        //     .trip-image{
+        //         img{
+        //             width: 227px;
+        //             height: 151px;
+        //         }
+        //     }
+        // }
         &__title {
             font-size: 36px;
             line-height: 48px;
@@ -71,7 +113,7 @@
             }
         }
         &__card {
-            padding: 48px 48px 56px 48px;
+            // padding: 48px 48px 56px 48px;
         }
         &__flex {
             order: 1;

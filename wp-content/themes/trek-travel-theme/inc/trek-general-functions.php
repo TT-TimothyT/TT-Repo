@@ -5067,7 +5067,7 @@ function tt_guest_details($tt_posted = [])
         'hiking_gears' => $hiking_gear_html,
     ];
 }
-function tt_get_parent_trip($sku = "") {
+function tt_get_parent_trip_group($sku = "") {
     // Trip Parent ID
     $parent_product_id = tt_get_parent_trip_id_by_child_sku($sku);
     $product_image_url = '';

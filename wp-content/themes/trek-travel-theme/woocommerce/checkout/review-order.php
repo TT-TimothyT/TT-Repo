@@ -96,7 +96,7 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 				<img src="<?php echo esc_url( $trip_info['parent_trip_image'] ); ?>">
 			</div>
 		</div>
-		<div class="checkout-summary__card-body">
+eme/src/scss		<div class="checkout-summary__card-body">
 			<div class="checkout-summary__card-body-header">
 				<h5 class="text-center checkout-summary__title mb-1"><?php echo esc_html( get_the_title($parent_id) ); ?></h5>
 				<p class="text-center checkout-summary__date trip-duration mb-0"><?php printf( '%1$s - %2$s', esc_attr( $trip_start_date ), esc_attr( $trip_end_date ) ) ?></p>

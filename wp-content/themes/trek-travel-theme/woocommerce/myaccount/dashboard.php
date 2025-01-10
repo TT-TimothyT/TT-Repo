@@ -172,120 +172,109 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 						<a class="fs-sm lh-sm fw-medium" href="<?php echo site_url('my-account/my-trips'); ?>">View All Trips (<?php echo $TripsCounter; ?>)</a>
 					</div>
 					<h6 class="card-subtitle fs-sm lh-sm fw-medium mb-2">Upcoming</h6>
-					<?php if(empty($trips) || (isset($trips['count']) && $trips['count'] <=0 )) { ?>
-					<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>
-					<a href="<?php echo site_url('tours/all/') ?>" class="btn btn-lg btn-primary dashboard__button rounded-1 mb-4">Book a trip</a>
-					<?php }else{
+					
+					<?php if (empty($trips) || (isset($trips['count']) && $trips['count'] <= 0)) { ?>
+						<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>
+						<a href="<?php echo site_url('tours/all/') ?>" class="btn btn-lg btn-primary dashboard__button rounded-1 mb-4">Book a trip</a>
+					<?php } else {
 						$trips_html = '<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>';
-						if($trips && isset($trips['data'])){
-							$trips_html = '';
+						if ($trips && isset($trips['data'])) {
+							$trips_html = '<div class="trips-box">'; // Open .trips-box container
+
 							$showTwoTripsCounter = 0;
-							foreach($trips['data'] as $trip ){
+							
+							foreach ($trips['data'] as $trip) {
 								$product_id = $trip['product_id'];
-								$order_id   = $trip['order_id'];
-								$order      = wc_get_order( $order_id );
-								if ( ! $order ) {
-									// Skip the trip if does not exist the order on the website.
-									continue;
-								}
-								// Get Order Status.
+								$order_id = $trip['order_id'];
+								$order = wc_get_order($order_id);
+
+								if (!$order) continue;
+
+								// Get Order Status
 								$wc_order_status = $order->get_status();
-								if( 'cancelled' === $wc_order_status || 'trash' === $wc_order_status ) {
-									// Skip the trip if the order trashed or with canceled status.
-									continue;
-								}
-								// Get The booking status.
-								$booking_status = tt_get_booking_status( $order_id );
-								if( $booking_status && in_array( $booking_status, TT_HIDE_ORDER_BOOKING_STATUSES ) ) {
-									// Skip the trip if the booking status is not allowed to show the order.
-									continue;
-								}
+								if ('cancelled' === $wc_order_status || 'trash' === $wc_order_status) continue;
+
+								// Get The booking status
+								$booking_status = tt_get_booking_status($order_id);
+								if ($booking_status && in_array($booking_status, TT_HIDE_ORDER_BOOKING_STATUSES)) continue;
+
 								$showTwoTripsCounter++;
-								if ($showTwoTripsCounter == 2) {
-									break;
-								}
-                                $order_details = trek_get_user_order_info($userInfo->ID, $order_id);
-								$guest_is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
-								$waiver_signed = isset( $order_details[0]['waiver_signed'] ) ? $order_details[0]['waiver_signed'] : false;
-								$product = wc_get_product( $product_id );
-								$product_name = '';
-								if( $product ) {
-									$product_name = $product->get_name();
-								}
-								$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
-								$is_checklist_completed = tt_is_checklist_completed( $userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $guest_is_primary, $waiver_signed );
-								if( $product ){
-									$trip_status = tt_get_custom_product_tax_value( $product_id, 'trip-status', true );
-									$trip_sdate = $product->get_attribute( 'pa_start-date' ); 
-									$trip_edate = $product->get_attribute( 'pa_end-date' );
-									$trip_name = $product->get_name();
+								if ($showTwoTripsCounter > 3) break;
+
+								$order_details = trek_get_user_order_info($userInfo->ID, $order_id);
+								$guest_is_primary = isset($order_details[0]['guest_is_primary']) ? $order_details[0]['guest_is_primary'] : 0;
+								$waiver_signed = isset($order_details[0]['waiver_signed']) ? $order_details[0]['waiver_signed'] : false;
+								$product = wc_get_product($product_id);
+
+								if ($product) {
+									$trip_link = esc_url(add_query_arg('order_id', $order_id, get_permalink(TREK_MY_ACCOUNT_PID) . 'my-trip'));
 									$trip_sku = $product->get_sku();
+									$trip_sdate = $product->get_attribute('pa_start-date');
+									$trip_edate = $product->get_attribute('pa_end-date');
 									$tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
-									$pa_city = $product->get_attribute( 'pa_city' );
+									$pa_city = $product->get_attribute('pa_city');
+									$is_checklist_completed = tt_is_checklist_completed($userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $guest_is_primary, $waiver_signed);
+
+									// Retrieve parent trip details by child SKU
+									$parent_trip = tt_get_parent_trip_group($trip_sku); // Returns details including the image
+
+									// Load parent product if available
+									$parent_product = $parent_trip['id'] ? wc_get_product($parent_trip['id']) : null;
+
+									// Set parent product name and link, with fallbacks if parent is unavailable
+									$parent_name = $parent_product ? $parent_product->get_name() : $product->get_name();
+									$parent_trip_link = $parent_trip['link'];;
+									$parent_image = $parent_trip['image'];
+
+									// Date formatting
 									$sdate_obj = explode('/', $trip_sdate);
-									$sdate_info = array(
-										'd' => $sdate_obj[0],
-										'm' => $sdate_obj[1],
-										'y' => substr(date('Y'),0,2).$sdate_obj[2]
-									);
 									$edate_obj = explode('/', $trip_edate);
-									$edate_info = array(
-										'd' => $edate_obj[0],
-										'm' => $edate_obj[1],
-										'y' => substr(date('Y'),0,2).$edate_obj[2]
-									);
+									$sdate_info = ['d' => $sdate_obj[0], 'm' => $sdate_obj[1], 'y' => substr(date('Y'), 0, 2) . $sdate_obj[2]];
+									$edate_info = ['d' => $edate_obj[0], 'm' => $edate_obj[1], 'y' => substr(date('Y'), 0, 2) . $edate_obj[2]];
 									$start_date_text = date('F jS, Y', strtotime(implode('-', $sdate_info)));
-									$end_date_text_1 = date('F jS, Y', strtotime(implode('-', $edate_info)));
-									$end_date_text_2 = date('jS, Y', strtotime(implode('-', $edate_info)));
-									$date_range_1 = $start_date_text. ' - '.$end_date_text_2;
-									$date_range_2 = $start_date_text. ' - '.$end_date_text_1;
-									$date_range = $date_range_1;
-									if( $sdate_info['m'] != $edate_info['m'] ){
-										$date_range = $date_range_2;
-									}
-									$product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
-									if( has_post_thumbnail($product) ){
-										$product_image_url = wp_get_attachment_url($product->get_image_id());
-									}
-									$trip_sku = $product->get_sku();
-									$parentTrip = tt_get_parent_trip($trip_sku);
-									$trip_link = esc_url( add_query_arg( 'order_id', $order_id, get_permalink( TREK_MY_ACCOUNT_PID ).'my-trip' ) );
-								}
-								$trips_html .= '<div class="dashboard__trip d-flex"><div class="my-upcoming-trips"><img src="'.$parentTrip['image'].'"></div><div class="w-50"><h6 class="fs-sm lh-sm fw-bold mb-1"><a href="'.$trip_link.'">'.$product_name.'</a></h6>';
+									$end_date_text = date('F jS, Y', strtotime(implode('-', $edate_info)));
+									$date_range = $start_date_text . ' - ' . date('jS, Y', strtotime(implode('-', $edate_info)));
 
-								// Check if $pa_city exists before adding it
-								if ( ! empty( $pa_city ) ) {
-									$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-1">'.$pa_city.', '.$tripRegion.'</p>';
-								} else {
-									$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-1">'.$tripRegion.'</p>';
-								}
+									$trips_html .= '<a href="' . $trip_link . '" class="dashboard__trip d-flex" style="text-decoration: none;">';
+									$trips_html .= '<div class="my-upcoming-trips"><img src="' . esc_url($parent_image) . '"></div>';
+									$trips_html .= '<div class="w-100">';
+									$trips_html .= '<h6 class="fs-sm lh-sm fw-bold mb-1">' . esc_html($parent_name) . '</h6>';
 
-								$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-2">'.$date_range.'</p>';
+									// Check if $pa_city exists before adding it
+									// if (!empty($pa_city)) {
+									// 	$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-1">' . esc_html($pa_city) . ', ' . esc_html($tripRegion) . '</p>';
+									// } else {
+									// 	$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-1">' . esc_html($tripRegion) . '</p>';
+									// }
 
-								$lockedUserRecord = tt_is_registration_locked( $userInfo->ID, $order_details[0]['guestRegistrationId'], 'record' );
-								$lockedUserBike   = tt_is_registration_locked( $userInfo->ID, $order_details[0]['guestRegistrationId'], 'bike' );
-								// Check if $order_details is not empty before adding the error message
-								
-									if ( ! empty( $order_details ) && ! $is_checklist_completed && 1 != $lockedUserRecord && 1 != $lockedUserBike ) { 
-										$trips_html .= '<p class="dashboard__error"><img src="'.TREK_DIR.'/assets/images/error.png"> You have pending items</p>';
+									$trips_html .= '<p class="fs-sm lh-sm fw-normal mb-2">' . esc_html($date_range) . '</p>';
+
+									// Checklist or Error Messages
+									$lockedUserRecord = tt_is_registration_locked($userInfo->ID, $order_details[0]['guestRegistrationId'], 'record');
+									$lockedUserBike = tt_is_registration_locked($userInfo->ID, $order_details[0]['guestRegistrationId'], 'bike');
+
+									if (!empty($order_details) && !$is_checklist_completed && !$lockedUserRecord && !$lockedUserBike) { 
+										$trips_html .= '<p class="dashboard__error"><img src="' . TREK_DIR . '/assets/images/error.png"> You have pending items</p>';
+									} elseif ($lockedUserRecord || $lockedUserBike) {
+										$trips_html .= '<p class="dashboard__error"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> Your Checklist or a checklist item is locked</p>';
 									} else {
-										// Show this message on locked record or locked bike.
-										if ( $lockedUserRecord || $lockedUserBike ) {
-											$trips_html .= '<p class="dashboard__error"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> Your Checklist or a checklist item is locked</p>';
-										} else {
-											$trips_html .= '<img class="dashboard__good-to-go-badge__img" src="' . esc_url( get_template_directory_uri() . '/assets/images/success.png' ) . '" alt="success icon"><span class="mb-0 fs-sm lh-sm dashboard__good-to-go-badge__text rounded-1 p-1">' . __( 'Good to go! Your checklist is complete.', 'trek-travel-theme' ) . '</span>';
-										}
+										$trips_html .= '<img class="dashboard__good-to-go-badge__img" src="' . esc_url(get_template_directory_uri() . '/assets/images/success.png') . '" alt="success icon">';
+										$trips_html .= '<span class="mb-0 fs-sm lh-sm dashboard__good-to-go-badge__text rounded-1 p-1">Good to go! Your checklist is complete.</span>';
 									}
-								
-								
-
-								$trips_html .= '</div></div>';
+									$trips_html .= '</div></a>';
+								}
 							}
+
+							$trips_html .= '</div>'; // Close .trips-box container
 						}
+
 						echo $trips_html;
 					} ?>
 				</div>
 			</div>
+
+
+
 			<!-- <div class="card mb-3 dashboard__card rounded-1">
 				<div class="card-body pb-0">
 					<div class="d-flex justify-content-between align-items-baseline mb-2">

@@ -29,6 +29,12 @@ foreach ($order_items as $item_id => $item) {
 			$trip_edate = $product->get_attribute('pa_end-date');
 			$trip_name = $product->get_name();
 			$trip_sku = $product->get_sku();
+			$parent_trip = tt_get_parent_trip_group($trip_sku);
+			// Load parent product if available
+			$parent_product = $parent_trip['id'] ? wc_get_product($parent_trip['id']) : null;
+
+			// Set parent product name and link, with fallbacks if parent is unavailable
+			$parent_name = $parent_product ? $parent_product->get_name() : $product->get_name();
 			$sdate_obj = explode('/', $trip_sdate);
 			$sdate_info = array(
 				'd' => $sdate_obj[0],
@@ -41,7 +47,7 @@ foreach ($order_items as $item_id => $item) {
 				'm' => $edate_obj[1],
 				'y' => substr(date('Y'), 0, 2) . $edate_obj[2]
 			);
-			$start_date_text = date('F jS, Y', strtotime(implode('-', $sdate_info)));
+			$start_date_text = date('F jS', strtotime(implode('-', $sdate_info)));
 			$end_date_text_1 = date('F jS, Y', strtotime(implode('-', $edate_info)));
 			$end_date_text_2 = date('jS, Y', strtotime(implode('-', $edate_info)));
 			$date_range_1 = $start_date_text . ' - ' . $end_date_text_2;
@@ -184,27 +190,21 @@ $tt_insurance_total_charges = isset($tt_posted['tt_insurance_total_charges']) ? 
 	<div id="my-trips-responses"></div>
 
 	<div class="row mx-0">
-		<div class="col-lg-10">
+		<div class="col-12">
 			<div class="card my-trip-order-summary__card rounded-1">
 
-				<div class="trips-list-item">
-					<div class="trip-image">
-						<img src="<?php echo $product_image_url; ?>" />
+				<div class="trips-list-item row">
+					<div class="trip-image col-12 col-md-6 col-xl-4">
+						<img src="<?php echo $product_image_url; ?>">
 					</div>
-					<div class="trip-info">
-						<p class="fw-normal fs-sm lh-sm mb-0 mt-4">
-						<?php
-							$trip_address = [$pa_city,$tripRegion];
-							$trip_address = array_filter($trip_address);
-							echo implode(', ', $trip_address);
-						?>
-						</p>
-						<h5 class="fw-semibold"><?php echo $trip_name; ?></h5>
-						<p class="fw-medium fs-sm lh-sm"><?php echo $date_range; ?></p>
-
-					</div>
-					<div class="trip-details-cta my-4">
-						<a href="" onclick="printThis('order-details-page');" class="btn btn-md w-100 btn-secondary btn-outline-dark rounded-1">Print Summary</a>
+					<div class="trip-box col-12 col-md-6 col-xl-8 col-xxl-7">
+						<div class="trip-info">
+						<h5 class="fw-semibold"><a href="<?php echo $parent_trip['link']; ?>" target="_blank"><?php echo $parent_name; ?></a></h5>
+							<p class="fw-medium lh-sm"><?php echo $date_range; ?></p>
+						</div>
+						<div class="trip-details-cta">
+							<a href="" onclick="printThis('order-details-page');" class="btn btn-secondary btn-outline-dark rounded-1">Print Summary</a>
+						</div>
 					</div>
 				</div>
 

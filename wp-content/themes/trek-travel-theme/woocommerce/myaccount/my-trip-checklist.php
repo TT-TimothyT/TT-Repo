@@ -21,7 +21,6 @@ $trek_formatted_checkoutData          = array();
 $trek_checkoutData                    = array();
 $trip_name                            = '';
 $trip_order_date                      = '';
-$trip_name                            = '';
 $trip_sdate                           = '';
 $trip_edate                           = '';
 $trip_sku                             = '';
@@ -42,6 +41,12 @@ foreach ( $order_items as $item_id => $item ) {
 			$trip_edate  = $product->get_attribute('pa_end-date');
 			$trip_name   = $product->get_name();
 			$trip_sku    = $product->get_sku();
+			$parent_trip = tt_get_parent_trip_group($trip_sku);
+			// Load parent product if available
+			$parent_product = $parent_trip['id'] ? wc_get_product($parent_trip['id']) : null;
+
+			// Set parent product name and link, with fallbacks if parent is unavailable
+			$parent_name = $parent_product ? $parent_product->get_name() : $product->get_name();
 			$sdate_obj   = explode('/', $trip_sdate);
 			$sdate_info  = array(
 				'd' => $sdate_obj[0],
@@ -54,7 +59,7 @@ foreach ( $order_items as $item_id => $item ) {
 				'm' => $edate_obj[1],
 				'y' => substr(date('Y'), 0, 2) . $edate_obj[2]
 			);
-			$start_date_text = date('F jS, Y', strtotime(implode('-', $sdate_info)));
+			$start_date_text = date('F jS', strtotime(implode('-', $sdate_info)));
 			$end_date_text_1 = date('F jS, Y', strtotime(implode('-', $edate_info)));
 			$end_date_text_2 = date('jS, Y', strtotime(implode('-', $edate_info)));
 			$date_range_1    = $start_date_text . ' - ' . $end_date_text_2;
@@ -271,88 +276,34 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 	</div>
 
 	<div class="row mx-0">
-		<div class="col-lg-10">
+		<div class="col-12">
 			<div id="my-trips-responses"></div>
 		</div>
 	</div>
 
 	<div class="row mx-0">
-		<div class="col-lg-10">
+		<div class="col-12">
 			<div class="card dashboard__card rounded-1">
 
-				<div class="trips-list-item desktop-hideme">
-					<div class="trip-image">
-						<img src="<?php echo $product_image_url; ?>" />
-						<div class="trip-info">
-							<p class="fw-normal fs-sm lh-sm mb-0 mt-4">
-								<?php
-								$trip_address = [$pa_city, $tripRegion];
-								$trip_address = array_filter($trip_address);
-								echo implode(', ', $trip_address);
-								?>
-							</p>
-							<h5 class="fw-semibold"><?php echo $trip_name; ?></h5>
-							<p class="fw-medium fs-sm lh-sm"><?php echo $date_range; ?></p>
-
-						</div>
-					</div>
-					<div class="booking-info">
-						<div class="trip-confirmation">
-							<p class="fw-medium fs-lg lh-lg line-item-title">Confirmation #</p>
-							<p class="fw-normal fs-md lh-md"><?php echo $order_id ?></p>
-						</div>
-						<div class="trip-total">
-							<p class="fw-medium fs-lg lh-lg line-item-title">Trip Total</p>
-							<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : wc_price( $cart_total ) ?></p>
-						</div>
-					</div>
-					<hr>
-					<div class="guests-info">
-						<div class="trip-guests">
-							<p class="fw-medium fs-lg lh-lg line-item-title">Guests</p>
-							<p class="fw-normal fs-md lh-md"><?php echo $trek_checkoutData['no_of_guests']; ?> Guests Attending</p>
-						</div>
-						<?php if( ! $is_order_auto_generated ) : ?>
-						<div class="guests-room">
-							<p class="fw-medium fs-lg lh-lg line-item-title">Room Selection</p>
-							<?php echo $tt_rooms_output; ?>
-						</div>
-						<?php endif; ?>
-					</div>
-					<div class="trip-details-cta my-4">
-						<?php if ($public_view_order_url) : ?>
-							<a href="<?php echo $public_view_order_url; ?>" class="btn btn-md w-100 btn-primary rounded-1 mb-3">View order summary</a>
-						<?php endif; ?>
-						<?php if ($itinerary_link) : ?>
-							<a href="<?php echo $itinerary_link; ?>" class="btn btn-md w-100 btn-secondary btn-outline-dark rounded-1">View full itinerary</a>
-						<?php endif; ?>
-					</div>
-				</div>
-
 				<!-- desktop start -->
-				<div class="trip-checklist-desktop mobile-hideme">
-					<div class="trips-list-item">
-						<div class="trip-image">
+				<div class="trip-checklist">
+					<div class="trips-list-item row">
+						<div class="trip-image col-12 col-md-6 col-xl-4">
 							<img src="<?php echo $product_image_url; ?>">
 						</div>
-						<div class="trip-info">
-							<p class="fw-normal fs-sm lh-sm mb-0 mt-4 mt-lg-0">
-								<?php
-								$trip_address = [$pa_city, $tripRegion];
-								$trip_address = array_filter($trip_address);
-								echo implode(', ', $trip_address);
-								?>
-							</p>
-							<h5 class="fw-semibold"><?php echo $trip_name; ?></h5>
-							<p class="fw-medium fs-sm lh-sm"><?php echo $date_range; ?></p>
-						</div>
-						<div class="trip-details-cta my-4 my-lg-0">
-							<?php if ($public_view_order_url) : ?>
-								<a href="<?php echo $public_view_order_url; ?>" class="btn btn-md w-100 btn-primary rounded-1 mb-3">View order summary</a>
-							<?php endif; ?>
-							<?php if ($itinerary_link) : ?>
-								<a href="<?php echo $itinerary_link; ?>" class="btn btn-md w-100 btn-secondary btn-outline-dark rounded-1">View full itinerary</a>
-							<?php endif; ?>
+						<div class="trip-box col-12 col-md-6 col-xl-8 col-xxl-7">
+							<div class="trip-info">
+							<h5 class="fw-semibold"><a href="<?php echo $parent_trip['link']; ?>" target="_blank"><?php echo $parent_name; ?></a></h5>
+								<p class="fw-medium lh-sm"><?php echo $date_range; ?></p>
+							</div>
+							<div class="trip-details-cta">
+								<?php if ($public_view_order_url) : ?>
+									<a href="<?php echo $public_view_order_url; ?>" class="btn btn-primary rounded-1 ">View order summary</a>
+								<?php endif; ?>
+								<?php if ($itinerary_link) : ?>
+									<a href="<?php echo $itinerary_link; ?>" class="btn btn-secondary btn-outline-dark rounded-1">View full itinerary</a>
+								<?php endif; ?>
+							</div>
 						</div>
 					</div>
 
@@ -388,7 +339,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 		</div>
 	</div> <!-- row ends -->
 	<div class="row mx-0">
-		<div class="col-lg-10">
+		<div class="col-12">
 			<h4 class="fw-semibold">Additional Trip Information</h4>
 			<?php if( $lockedUserRecord ) : ?>
 				<p class="fw-normal fs-lg lh-lg">
@@ -416,11 +367,11 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 	</div><!-- row ends -->
 
 	<div class="row mx-0">
-		<div class="col-lg-10 text-end">
+		<div class="col-12 text-end">
 			<a href="javascript:void(0)" class="fw-normal fs-md lh-md checklist-expand-all">Expand all</a>
 			<a href="#" class="fw-normal fs-md lh-md checklist-collapse-all">Collapse all</a>
 		</div>
-		<div class="col-lg-10 checklist-accordion">
+		<div class="col-12 checklist-accordion">
 			<div class="accordion accordion-flush" id="accordionFlushExample">
 				<!-- show for secondary guest only -->
 				<?php /* if ($guest_is_primary != 1) { ?>
@@ -1225,7 +1176,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 		</div>
 	</div> <!-- row ends -->
 	<div class="row mx-0 p-0 trip-waiver-info">
-		<div class="col-lg-10 waiver-col">
+		<div class="col-12 waiver-col">
 			<div class="card dashboard__card rounded-1">
 				<p class="fw-medium fs-xl lh-xl">Trip Waiver Status</p>
 				<?php if ( $waiver_signed == 1 ) {  ?>

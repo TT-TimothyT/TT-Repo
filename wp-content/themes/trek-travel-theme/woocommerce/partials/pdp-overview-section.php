@@ -6,6 +6,10 @@ $attachment_ids = $product->get_gallery_image_ids();
 if(count($attachment_ids) > 4){
 	$attachment_ids = array_slice($attachment_ids, 4);
 }
+
+$message_icon = get_field('message_icon'); // Font Awesome field
+$message_text = get_field('message_text'); // WYSIWYG editor field
+
 ?>
 <!-- <a class="pdp-anchor" id="overview"></a> -->
 <div class="mobile-share-wishlist desktop-hideme">
@@ -26,6 +30,21 @@ if(count($attachment_ids) > 4){
 <div class="container pdp-section overview-section-container" id="overview">
     <div class="row">
         <div class="col-12">
+
+        <?php if (!empty($message_icon) || !empty($message_text)): ?>
+            <div class="message-container">
+                <?php if (!empty($message_icon)): ?>
+                    <?php echo $message_icon; ?>
+                <?php endif; ?>
+
+                <?php if (!empty($message_text)): ?>
+                    <div class="message-text">
+                        <?php echo $message_text; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
             <?php 
             if(get_the_excerpt()):
                 $short_description =  get_the_excerpt();

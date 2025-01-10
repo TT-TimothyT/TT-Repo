@@ -1,3 +1,32 @@
+.overview-section-container {
+
+    .message-container {
+        width: fit-content;
+        display: flex;
+        gap: 15px;
+        border: 2px solid $blue;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 30px;
+
+        i {
+            font-size: 24px;
+        }
+
+        .message-text {
+            text-align: left;
+            h6 {
+                font-size: 20px;
+                font-weight: 500;
+            }
+
+            * {
+                margin: 0;
+            }
+        }
+    }
+}
+
 .overview-section-gallery{
     position: relative;
     .carousel-control-prev, .carousel-control-next{

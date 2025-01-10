@@ -23,6 +23,32 @@
             "new_lines": ""
         },
         {
+            "key": "field_673f935ddb965",
+            "label": "No Results Destinations",
+            "name": "no_results_destinations",
+            "aria-label": "",
+            "type": "taxonomy",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "taxonomy": "trip-style",
+            "add_term": 0,
+            "save_terms": 1,
+            "load_terms": 1,
+            "return_format": "object",
+            "field_type": "multi_select",
+            "allow_null": 0,
+            "allow_in_bindings": 0,
+            "bidirectional": 0,
+            "multiple": 0,
+            "bidirectional_target": []
+        },
+        {
             "key": "field_64fa4ddff3f1f",
             "label": "Search noresult suggestions",
             "name": "search_noresult_suggestions",
@@ -130,5 +156,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1706819443
+    "modified": 1732220404
 }

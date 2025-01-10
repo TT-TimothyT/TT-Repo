@@ -695,7 +695,7 @@ if( $available_child_products ) {
                 ?>
                 <?php if ( $is_tabs_visible ) { ?>
                     <button class="nav-link fs-lg lh-lg <?php echo $contentFlag ? '' : 'active'; ?>" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false"><span>Private Tour</span></button>
-                    <button class="nav-link fs-lg lh-lg" id="nav-custom-tab" data-bs-toggle="tab" data-bs-target="#nav-custom" type="button" role="tab" aria-controls="nav-custom" aria-selected="false"><span>Custom Tour</span></button>
+                    <!-- <button class="nav-link fs-lg lh-lg" id="nav-custom-tab" data-bs-toggle="tab" data-bs-target="#nav-custom" type="button" role="tab" aria-controls="nav-custom" aria-selected="false"><span>Custom Tour</span></button> -->
                 <?php } ?>
             </div>
         </nav>
@@ -740,12 +740,12 @@ if( $available_child_products ) {
                 </div>
 
             </div>
-            <!-- custom tour tab content -->
+            <!-- custom tour tab content
             <div class="tab-pane fade" id="nav-custom" role="tabpanel" aria-labelledby="nav-custom-tab" tabindex="0">
                 <h5 class="fw-semibold">Looking for a date that you don't see?</h5>
                 <p class="fw-normal fs-md lh-md">Look no further. Simply tell us your preferred travel dates and we’ll work together to deliver the same great trip on your custom schedule. Want to make a few changes to your itinerary, no problem. We will work with you to make sure your custom vacation is the ultimate vacation of a lifetime for your group.</p>
-                <a href="/trip-styles/custom-bike-tours?trip=<?php echo $product->name; ?>" target="_blank" class="btn btn-primary btn-md rounded-1 my-4">Book a Custom Tour</a>
-            </div>
+                <a href="/trip-styles/custom-bike-tours?trip=" target="_blank" class="btn btn-primary btn-md rounded-1 my-4">Book a Custom Tour</a>
+            </div> -->
             <?php } ?>
         </div>
     </div>
