@@ -47,13 +47,14 @@ $trip_class_names = wp_list_pluck( $trip_class_terms, 'name' );
 
 ?>
 	<script>
+		var tt_normalize_amp = (str) => str.replace(/&amp;/g, '&');
 		/**
 		 * Create a custom order map for the Trip Styles.
 		 *
 		 * If any taxonomy term doesn't have an order_number, it will be listed at the bottom of the filters, ordered by name ASC.
 		 */
 		var tsSortOrder = <?php echo json_encode( $trip_style_names ) ?>; // Sorted array with taxonomy terms names.
-		var tsOrderMap  = new Map( tsSortOrder.map( ( item, index ) => [item, index] ) );
+		var tsOrderMap  = new Map( tsSortOrder.map( ( item, index ) => [tt_normalize_amp( item ), index] ) );
 
 		/**
 		 * Create a custom order map for the Trip Classes.
@@ -61,5 +62,5 @@ $trip_class_names = wp_list_pluck( $trip_class_terms, 'name' );
 		 * If any taxonomy term doesn't have an order_number, it will be listed at the bottom of the filters, ordered by name ASC.
 		 */
 		var tcSortOrder = <?php echo json_encode( $trip_class_names ) ?>; // Sorted array with taxonomy terms names.
-		var tcOrderMap  = new Map( tcSortOrder.map( ( item, index ) => [item, index] ) );
+		var tcOrderMap  = new Map( tcSortOrder.map( ( item, index ) => [tt_normalize_amp( item ), index] ) );
 	</script>

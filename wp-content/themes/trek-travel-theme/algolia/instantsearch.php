@@ -293,8 +293,8 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
 
                                 return a.name.localeCompare(b.name);
                             } else {
-                                const indexA = tsOrderMap.get(a.name) ?? Infinity; // Items not in sortOrder go to the end
-                                const indexB = tsOrderMap.get(b.name) ?? Infinity;
+                                const indexA = tsOrderMap.get(tt_normalize_amp(a.name)) ?? Infinity; // Items not in sortOrder go to the end
+                                const indexB = tsOrderMap.get(tt_normalize_amp(b.name)) ?? Infinity;
 
                                 return indexA - indexB;
                             }
@@ -313,8 +313,8 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
 
                                 return a.name.localeCompare(b.name);
                             } else {
-                                const indexA = tcOrderMap.get(a.name) ?? Infinity; // Items not in sortOrder go to the end
-                                const indexB = tcOrderMap.get(b.name) ?? Infinity;
+                                const indexA = tcOrderMap.get(tt_normalize_amp(a.name)) ?? Infinity; // Items not in sortOrder go to the end
+                                const indexB = tcOrderMap.get(tt_normalize_amp(b.name)) ?? Infinity;
 
                                 return indexA - indexB;
                             }
