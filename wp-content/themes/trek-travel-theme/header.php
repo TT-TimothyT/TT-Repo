@@ -135,6 +135,12 @@ $is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters
 						<li class="nav-item">
 							<a class="nav-link d-flex align-items-center" href="tel:8664648735" onclick="dataLayer.push({'event': 'click_to_call'});"><i class="bi bi-telephone"></i>866-464-8735</a>
 						</li>
+						<li class="currency-switcher-header">
+						<div class="footerCurrencySelector">
+								<label class="currency-symbol fw-normal fs-sm lh-sm">$</label>
+								<?php echo do_shortcode('[woocommerce_currency_converter currency_display="select" currency_codes="USD, EUR, CAD, GBP, AUD"]') ?>
+							</div>
+						</li>
 					</ul>
 				</div>
 			</div>

@@ -18,6 +18,53 @@
     @media screen and (min-width: 769px) {
       display: block;
     }
+
+    .currency-switcher-header {
+      padding: 10px;
+      padding-right: 0;
+      padding-top: 9px;
+      .footerCurrencySelector {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 5px;
+        border: 1px solid black;
+        border-radius: 3px;
+        position: relative;
+
+        .currency-symbol  {
+          position: absolute;
+          left: 7px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+
+        .currency_switcher_label {
+          font-size: 12px;
+        }
+
+        select {
+          border: none !important;
+          width: auto !important;
+          color: black !important;
+          height: auto !important;
+          font-size: 12px !important;
+          outline: none;
+          padding: 0 !important;
+          padding-left: 15px !important;
+          padding-right: 7px !important;
+        }
+      }
+
+      &:hover {
+        color: var(--bs-nav-link-hover-color);
+        .footerCurrencySelector {
+          select {
+            color: var(--bs-nav-link-hover-color) !important;
+          }
+        }
+      }
+    }
   }
 
   &__search-account {
