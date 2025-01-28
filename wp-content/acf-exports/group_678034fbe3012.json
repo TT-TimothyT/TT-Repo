@@ -54,7 +54,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Book before January 29th to secure the best prices of the season!",
+            "default_value": "<h6>Book before January 29th to secure the best prices of the season!<\/h6>",
             "allow_in_bindings": 0,
             "tabs": "all",
             "toolbar": "full",
@@ -80,5 +80,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1736459948
+    "modified": 1736548835
 }
