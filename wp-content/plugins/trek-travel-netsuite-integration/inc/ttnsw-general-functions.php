@@ -439,14 +439,74 @@ function tt_get_bookings($limit=10)
 }
 function ttnsw_enqueue_custom_admin_style() {
     $currentScreen = get_current_screen();
-    if ($currentScreen->base == 'netsuitewc_page_tt-common-logs' || $currentScreen->base == 'toplevel_page_trek-travel-ns-wc' || $currentScreen->base == 'netsuitewc_page_tt-bookings' ) {
+    if ( $currentScreen->base == 'netsuitewc_page_tt-common-logs' || $currentScreen->base == 'toplevel_page_trek-travel-ns-wc' || $currentScreen->base == 'netsuitewc_page_tt-bookings' || $currentScreen->base == 'netsuitewc_page_tt-dev-tools' ) {
         wp_register_style( 'ttnsw-style', TTNSW_URL . '/assets/ttnsw-styles.css', false, time() );
         wp_enqueue_style( 'ttnsw-style' );
         wp_register_script( 'ttnsw-developer', TTNSW_URL.'/assets/ttnsw-developer.js', array(), time(), true );
+        wp_localize_script('ttnsw-developer', 'ttnsw_JS_obj', array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( '_ttnsw_nonce' )
+        ));
         wp_enqueue_script( 'ttnsw-developer' );
+
+        // Add Shepherd.js for tour guide
+        wp_enqueue_style( 'shepherd-css', TTNSW_URL . '/assets/shepherd.css' );
+        wp_enqueue_script( 'shepherd-js', TTNSW_URL . '/assets/shepherd.min.js', array(), null, true );
+        
+        // Add custom tour guide assets
+        wp_enqueue_style('ttnsw-tour-guide', TTNSW_URL . '/assets/ttnsw-tour-guide.css', array(), time());
+        wp_enqueue_script('ttnsw-tour-guide', TTNSW_URL . '/assets/ttnsw-tour-guide.js', array('jquery', 'shepherd-js'), time(), true);
+
+        // Check if user has seen the tour
+        $user_id = get_current_user_id();
+
+        switch ($currentScreen->base) {
+            case 'netsuitewc_page_tt-common-logs':
+                $show_tour = ! get_user_meta( $user_id, 'tt_tour_logs_table_seen', true );
+                $tour_name = 'logs_table';
+                break;
+            case 'netsuitewc_page_tt-bookings':
+                $show_tour = ! get_user_meta( $user_id, 'tt_tour_bookings_table_seen', true );
+                $tour_name = 'bookings_table';
+                break;
+            case 'toplevel_page_trek-travel-ns-wc':
+                $show_tour = ! get_user_meta( $user_id, 'tt_tour_sync_tab_seen', true );
+                $tour_name = 'sync_tab';
+                break;
+            default:
+                $show_tour = '';
+                $tour_name = 'no_tour';
+                break;
+        }
+
+        // Get current user info
+        $current_user = wp_get_current_user();
+        $user_display_name = $current_user->display_name;
+
+        wp_localize_script('ttnsw-tour-guide', 'ttnsw_tour_JS_obj', array(
+            'ajaxurl'        => admin_url('admin-ajax.php'),
+            'nonce'          => wp_create_nonce('_ttnsw_tour_nonce'),
+            'show_tour'      => $show_tour,
+            'user_name'      => $user_display_name, // Add user name
+            'current_screen' => $currentScreen->base,
+            'tour_name'      => $tour_name
+        ));
     }
 }
 add_action( 'admin_enqueue_scripts', 'ttnsw_enqueue_custom_admin_style' );
+
+// Add AJAX handler for saving tour status.
+function tt_save_tour_status() {
+    check_ajax_referer('_ttnsw_tour_nonce', 'nonce');
+    
+    $tour_name = sanitize_text_field($_POST['tour_name']); 
+    $user_id   = get_current_user_id();
+    
+    update_user_meta($user_id, 'tt_tour_' . $tour_name . '_seen', true);
+    
+    wp_send_json_success();
+}
+add_action('wp_ajax_tt_save_tour_status', 'tt_save_tour_status');
 
 /**
  * Check if we have this booking in guest_bookings table.
@@ -1744,4 +1804,106 @@ if ( ! function_exists( 'pr' ) ) {
 		print_r( $data );
 		echo '</pre>';
 	}
+}
+
+/**
+ * Save the screen option setting for the per_page option.
+ *
+ * @link https://humanmade.com/engineering/extend-and-create-screen-options-in-the-wordpress-admin/
+ *
+ * Modified the source hook from the link above with this set_screen_option_{$option}
+ * @see https://developer.wordpress.org/reference/hooks/set_screen_option_option/
+ *
+ * @param string $screen_option The default value for the filter. Using anything other than false assumes you are handling saving the option.
+ * @param string $option The option name.
+ * @param array  $value  Whatever option you're setting.
+ */
+function ttnsw_set_screen_option_per_page( $screen_option, $option, $value ) {
+	return $value;
+}
+add_filter( 'set_screen_option_ttnsw_common_logs_per_page', 'ttnsw_set_screen_option_per_page', 10, 3 );
+add_filter( 'set_screen_option_ttnsw_bookings_per_page', 'ttnsw_set_screen_option_per_page', 10, 3 );
+
+/**
+ * Remove the Admin notices on the plugin pages.
+ */
+function ttnsw_remove_third_party_admin_notices() {
+    $remove_notices_pages = array( 'toplevel_page_trek-travel-ns-wc', 'netsuitewc_page_tt-common-logs', 'netsuitewc_page_tt-bookings', 'netsuitewc_page_tt-dev-tools' );
+    $current_screen       = get_current_screen();
+    if( in_array( $current_screen->base, $remove_notices_pages ) ) {
+        remove_all_actions( 'admin_notices' );
+        remove_all_actions( 'all_admin_notices' );
+    }
+}
+add_action( 'in_admin_header', 'ttnsw_remove_third_party_admin_notices', 20 );
+
+/**
+ * Save the column group visibility settings.
+ */
+function ttnsw_save_column_group_visibility_cb() {
+    if( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), '_ttnsw_nonce' ) ) {
+        wp_send_json_error( 'Invalid nonce.' );
+    }
+    
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( 'You do not have permission to do this.' );
+    }
+    
+    $group   = sanitize_key( $_POST['group'] );
+    $visible = $_POST['visible'] === 'true' ? 'true' : 'false'; // Convert to string.
+    
+    update_user_option( get_current_user_id(), 'bookings_group_' . $group . '_visible', $visible );
+    wp_send_json_success();
+}
+add_action( 'wp_ajax_save_column_group_visibility', 'ttnsw_save_column_group_visibility_cb' );
+
+/**
+ * Add the screen options for the bookings table.
+ *
+ * @param string     $settings
+ * @param \WP_Screen $screen
+ */
+function ttnsw_bookings_table_screen_settings( $settings, \WP_Screen $screen ) {
+    global $ttnsw_bookings_page;
+
+    // Return if not on our settings page.
+    if( ! is_object( $screen ) || $screen->id !== $ttnsw_bookings_page) {
+        return $settings;
+    }
+
+    // Add column groups screen options
+    $ttnsw_bookings_table = new Guest_Bookings_Table();
+    $groups               = $ttnsw_bookings_table->get_column_groups();
+
+    $settings .= '<fieldset class="metabox-prefs column-groups">';
+    $settings .= '<legend>' . __('Column Groups', 'trek-travel-netsuite-integration') . '</legend>';
+
+    foreach ( $groups as $group_key => $group ) {
+        $checked   = get_user_option( 'bookings_group_' . $group_key . '_visible' ) !== 'false' ? 'checked="checked"' : '';
+        $settings .= sprintf(
+            '<label><input type="checkbox" class="hide-column-tog" name="bookings_group_%1$s" value="1" %3$s>%2$s</label>',
+            esc_attr($group_key),
+            esc_html($group['title']),
+            $checked
+        );
+    }
+
+    $settings .= '</fieldset>';
+
+    return $settings;
+
+}
+add_filter( 'screen_settings', 'ttnsw_bookings_table_screen_settings', 10, 2 );
+
+/**
+ * Helper function to load a template part and return its contents as a string
+ *
+ * @param string $template The template to load.
+ *
+ * @return string The template content.
+ */
+function ttnsw_load_template_part( $template ) {
+    ob_start();
+    include TTNSW_DIR . $template;
+    return ob_get_clean();
 }

@@ -1,0 +1,85 @@
+.shepherd-button {
+    background: #069;
+    border: 0;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 8px;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+.shepherd-button:hover {
+    background: rgba(0, 102, 153, 0.8);
+}
+
+.shepherd-button.shepherd-button-secondary {
+    background: #eee;
+    color: #333;
+}
+
+.shepherd-button.shepherd-button-secondary:hover {
+    background: #d9d9d9;
+    color: #222;
+}
+
+.shepherd-footer {
+    padding: 10px;
+}
+
+.shepherd-cancel-icon {
+    color: #888;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.shepherd-title {
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.shepherd-text {
+    color: #666;
+    line-height: 1.5em;
+    padding: 1em;
+}
+
+.shepherd-element {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    z-index: 9999;
+}
+
+/* Tour Guide Button */
+.tt-tour-guide-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #069;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 9998;
+}
+
+.tt-tour-guide-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.tt-tour-guide-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}

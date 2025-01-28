@@ -53,7 +53,9 @@ body[class^="tt_page_"] div#wpcontent {
     background: #fff;
     padding: 10px 25px;
     margin-bottom: 30px;
-    margin-top: 15px;
+    margin-top: 35px;
+    margin-right: 20px;
+    border-radius: 4px;
 }
 
 .tt-layout__header-wrapper>h1 {
@@ -63,12 +65,13 @@ body[class^="tt_page_"] div#wpcontent {
 
 .tt-contents,
 .tt-pl-40 {
-    padding-left: 40px;
+    /* padding-left: 40px; */
 }
 
 .tt-tabs {
-    width: 100%;
-    max-width: 90%;
+    /* width: 100%;
+    max-width: 90%; */
+    margin-right: 20px;
 }
 
 .tt-mt-30 {
@@ -296,12 +299,458 @@ table.table-old.tt-booking-table .expandable-cell.expanded .expand-cell:before {
 }
 .tt-sync-page {
     padding-right: 20px;
+    background: #f0f0f1;
+    min-height: calc(100vh - 32px);
 }
-.tt-sync-page .tt-wc-ns-admin-wrap > div {
-    /* background-color: #fff; */
+
+.tt-sync-page .tt-wc-ns-admin-wrap {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+@media screen and (min-width: 1700px) {
+    .tt-sync-page .tt-wc-ns-admin-wrap {
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    }
+}
+
+@media screen and (min-width: 2060px) {
+    .tt-sync-page .tt-wc-ns-admin-wrap {
+        grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    }
+}
+
+.tt-sync-page .tt-wc-ns-admin-wrap.tt-dev-tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+    gap: 20px;
+}
+
+#tt-print_result {
+    overflow: auto;
+    background: #f3f3f3;
+    border-radius: 4px;
+    padding: 0 10px;
+    margin: 20px 0;
+}
+
+.tt-sync-page .tt-wc-ns-admin-wrap > div{
+    background-color: #fff;
     border: 1px solid #c3c4c7;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    padding: 1rem 1.5rem 1.5rem;
-    margin: 1rem 0;
-    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin: 0;
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tt-sync-page .tt-wc-ns-admin-wrap > div:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tt-sync-page h3 {
+    color: #1d2327;
+    font-size: 1.2em;
+    margin: 0 0 1.2em;
+    padding-bottom: 0.8em;
+    border-bottom: 2px solid #069;
+}
+
+.tt-sync-page form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tt-sync-page select,
+.tt-sync-page input[type="text"],
+.tt-sync-page input[type="number"] {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.tt-sync-page input[type="submit"] {
+    align-self: flex-end;
+    padding: 8px 16px;
+    background-color: #069;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.tt-sync-page .tt-dev-tools input[type="submit"] {
+    align-self: flex-start;
+}
+
+.tt-sync-page input[type="submit"]:hover {
+    background-color: #047;
+}
+
+.tt-sync-page p {
+    color: #646970;
+    font-size: 13px;
+    margin: 0 0 12px;
+}
+
+.tt-sync-page p strong {
+    color: #1d2327;
+}
+
+/* Warning message styling */
+.tt-sync-page .tt-wc-ns-admin-notice {
+    background-color: #fef2f2;
+    color: #991b1b;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #fecaca;
+    margin-bottom: 1rem;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.tt-bookings-table-ctr table.bookings {
+    overflow-x: auto;
+    white-space: nowrap;
+    table-layout: auto;
+    position: relative;
+    border-radius: 4px;
+}
+
+table.tt-common-logs {
+    border-radius: 4px;
+}
+
+.tt-bookings-table-ctr table.bookings thead th a{
+    display: flex;
+}
+
+/* Table row highlight styles */
+.tt-bookings-table-ctr table.bookings tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.tt-bookings-table-ctr table.bookings tbody tr:hover {
+    background-color: rgba(0, 102, 153, 0.05);
+}
+
+.tt-bookings-table-ctr table.bookings tbody tr.selected {
+    background-color: rgba(0, 102, 153, 0.1);
+}
+
+/* ID */
+.tt-logs-table-ctr table.tt-common-logs th:nth-child(1),
+.tt-logs-table-ctr table.tt-common-logs td:nth-child(1) {
+    width: 4%;
+}
+/* Type */
+.tt-logs-table-ctr table.tt-common-logs th:nth-child(2),
+.tt-logs-table-ctr table.tt-common-logs td:nth-child(2) {
+    width: 9%;
+}
+/* Args */
+.tt-logs-table-ctr table.tt-common-logs th:nth-child(3),
+.tt-logs-table-ctr table.tt-common-logs td:nth-child(3) {
+    width: 36%;
+    
+}
+/* Response */
+.tt-logs-table-ctr table.tt-common-logs th:nth-child(4),
+.tt-logs-table-ctr table.tt-common-logs td:nth-child(4) {
+    white-space: wrap;
+    word-break: break-all;
+    width: 44%;
+}
+/* Created At */
+.tt-logs-table-ctr table.tt-common-logs th:nth-child(5),
+.tt-logs-table-ctr table.tt-common-logs td:nth-child(5) {
+    width: 7%;
+}
+
+#ttnsw-admin-notice-ctr .notice {
+    margin: 5px 20px 20px 0;
+    border-radius: 4px;
+}
+
+.tt-bookings-table-ctr .tablenav-pages,
+.tt-logs-table-ctr .tablenav-pages {
+    position: absolute;
+    right: 20px;
+}
+
+.tt-logs-table-ctr .search-box select {
+    float: left;
+    margin-right: 6px;
+    max-width: 150px;
+}
+
+@media screen and ( max-width: 782px ) {
+    .tt-bookings-table-ctr .tablenav-pages,
+    .tt-logs-table-ctr .tablenav-pages {
+        position: relative;
+        right: auto;
+    }
+}
+
+/* Column Groups in Screen Options */
+.column-groups {
+    margin: 20px 0;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+}
+
+.column-groups legend {
+    margin: 0;
+    padding: 0 6px;
+    font-weight: 600;
+}
+
+.column-groups label {
+    display: inline-block;
+    padding: 3px 0;
+    margin: 0 10px;
+}
+
+.column-groups .hide-column-tog {
+    margin: -1px 4px 0 0;
+}
+
+/* Truncated content styles */
+.truncated-content {
+    position: relative;
+    padding-right: 25px;
+}
+
+.expand-modal {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #2271b1;
+}
+
+.expand-modal:hover {
+    color: #135e96;
+}
+
+/* Modal styles */
+.ttnsw-modal {
+    display: none;
+    position: fixed;
+    z-index: 100000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.ttnsw-modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.ttnsw-modal-title {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ttnsw-modal-title-main {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.ttnsw-modal-meta {
+    font-size: 0.8em;
+    color: #646970;
+    font-weight: normal;
+    display: flex;
+    gap: 12px;
+}
+
+.ttnsw-modal-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ttnsw-modal-meta-label {
+    font-weight: 500;
+}
+
+.ttnsw-modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.ttnsw-modal-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.ttnsw-modal-close:hover {
+    color: #000;
+}
+
+/* Full content styles */
+.full-content {
+    position: relative;
+    padding-right: 25px;
+    word-break: break-word;
+}
+
+/* Preserve existing modal button styles */
+.full-content .expand-modal {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: none;
+    cursor: pointer;
+    color: #2271b1;
+}
+
+/* Split view for logs modal */
+.ttnsw-modal-body.split-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 100%;
+}
+
+.ttnsw-modal-body.split-view .column {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+.ttnsw-modal-body.split-view .column-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: -10px;
+    background: #fff;
+    z-index: 1;
+}
+
+.ttnsw-modal-body.split-view .column pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
+    position: sticky;
+    top: 20px;
+}
+
+/* Custom Tab Styling */
+.nav-tab-wrapper .nav-tab {
+    position: relative;
+    padding: 8px 16px 8px 32px;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
+    background: #fff;
+    color: #50575e;
+    transition: all 0.2s ease;
+    border-radius: 4px 4px 0 0;
+    margin-right: 4px;
+}
+
+.nav-tab-wrapper .nav-tab:hover {
+    background: #fff;
+    color: #069;
+    border-color: #069;
+    transform: translateY(-2px);
+}
+
+.nav-tab-wrapper .nav-tab-active {
+    background: #f0f0f0;
+    color: #069;
+    font-weight: 600;
+    position: relative;
+}
+
+.nav-tab-wrapper .nav-tab-active:hover {
+    background: #fff;
+    color: #069;
+    transform: none;
+    border-bottom: none;
+}
+
+/* Tab icons colors update */
+.nav-tab-wrapper .nav-tab .dashicons {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.nav-tab-wrapper .nav-tab:hover .dashicons {
+    opacity: 1;
+}
+
+.nav-tab-wrapper .nav-tab-active .dashicons {
+    opacity: 1;
+    color: #069;
+}
+
+/* Tab icons specific colors */
+.nav-tab-wrapper .nav-tab .dashicons-update-alt {
+    color: #2fb344;
+}
+
+.nav-tab-wrapper .nav-tab .dashicons-list-view {
+    color: #ca4a1f; 
+}
+
+.nav-tab-wrapper .nav-tab .dashicons-calendar-alt {
+    color: #1e90ff;
+}
+
+.nav-tab-wrapper .nav-tab .dashicons-admin-tools {
+    color: #f0ad4e;
 }

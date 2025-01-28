@@ -2,20 +2,26 @@
 
 use TTNetSuite\NetSuiteClient;
 
-add_action('admin_menu', 'trek_ns_intergration_create_menu');
-function trek_ns_intergration_create_menu()
-{
+/**
+ * Add a custom admin dashboard page and subpages.
+ */
+function trek_ns_intergration_create_menu() {
     $tt_menu_slug = 'trek-travel-ns-wc';
+    $icon_url     = TTNSW_URL . '/assets/ns-fav-16x16.png';
+
     add_menu_page(
         'NetSuite<>WC',
         'NetSuite<>WC',
         'manage_options',
         $tt_menu_slug,
         'tt_admin_menu_page_cb',
-        'dashicons-admin-customizer',
+        $icon_url,
         6
     );
-    add_submenu_page(
+
+    // Create global main page variable 
+    global $ttnsw_sync_page;
+    $ttnsw_sync_page = add_submenu_page(
         $tt_menu_slug,
         'Sync',
         'Sync',
@@ -23,7 +29,10 @@ function trek_ns_intergration_create_menu()
         $tt_menu_slug,
         'tt_admin_menu_page_cb'
     );
-    add_submenu_page(
+    add_action( 'load-' . $ttnsw_sync_page, 'ttnsw_sync_page_screen_options' );
+    // Create global subpage variable.
+    global $ttnsw_logs_page;
+    $ttnsw_logs_page = add_submenu_page(
         $tt_menu_slug,
         'Logs',
         'Logs',
@@ -31,15 +40,210 @@ function trek_ns_intergration_create_menu()
         'tt-common-logs',
         'tt_common_logs_admin_menu_page_cb'
     );
-    add_submenu_page(
+    add_action( 'load-' . $ttnsw_logs_page, 'ttnsw_logs_page_screen_options' );
+    // Create global subpage variable.
+    global $ttnsw_bookings_page;
+    $ttnsw_bookings_page = add_submenu_page(
         $tt_menu_slug,
         'Bookings',
         'Bookings',
         'manage_options',
         'tt-bookings',
-        'tt_bookings_admin_menu_page_cb'
+        'tt_guest_bookings_admin_menu_page_cb'
+    );
+    add_action( 'load-' . $ttnsw_bookings_page, 'ttnsw_bookings_page_screen_options' );
+    // Create global subpage variable.
+    global $ttnsw_dev_tools;
+    $ttnsw_dev_tools = add_submenu_page(
+        $tt_menu_slug,
+        'Dev Tools',
+        'Dev Tools',
+        'manage_options',
+        'tt-dev-tools',
+        'tt_dev_tools_admin_menu_page_cb'
+    );
+    add_action( 'load-' . $ttnsw_dev_tools, 'ttnsw_dev_tools_page_screen_options' );
+}
+add_action('admin_menu', 'trek_ns_intergration_create_menu');
+
+/**
+ * Add screen options to the Logs page.
+ *
+ * @link https://www.diversifyindia.in/how-to-use-wp-list-table-class/
+ */
+function ttnsw_logs_page_screen_options() {
+    // Create an instance of class.
+    require_once TTNSW_DIR . 'inc/ttnsw-table-common-logs.php';
+
+    // Declare $ttnsw_logs_page and $ttnsw_logs_table as a global variable.
+    global $ttnsw_logs_page, $ttnsw_logs_table;
+
+    // Return if not on our settings page.
+    $screen = get_current_screen();
+    if( ! is_object( $screen ) || $screen->id !== $ttnsw_logs_page) {
+        return;
+    }
+
+    // Add help tabs
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_logs_help_overview',
+            'title'   => __('Overview', 'trek-travel-netsuite-integration'),
+            'content' => ttnsw_load_template_part( 'tt-templates/help-tabs/logs-tab/logs-overview.php' )
+        )
+    );
+
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_logs_help_features',
+            'title'   => __('Features', 'trek-travel-netsuite-integration'),
+            'content' => ttnsw_load_template_part( 'tt-templates/help-tabs/logs-tab/logs-features.php' )
+        )
+    );
+
+    $args = array(
+        'label'   => __( 'Logs per page', 'trek-travel-netsuite-integration' ),
+        'default' => 20,
+        'option'  => 'ttnsw_common_logs_per_page'
+    );
+    add_screen_option( 'per_page', $args );
+
+    $ttnsw_logs_table = new TT_Common_Logs(
+        array(
+            'plural'   => __( 'tt-common-logs', 'trek-travel-netsuite-integration' ),
+            'singular' => __( 'tt-common-log', 'trek-travel-netsuite-integration' ),
+            'ajax'     => false
+        )
     );
 }
+
+/**
+ * Add screen options to the Bookings page.
+ *
+ * @link https://www.diversifyindia.in/how-to-use-wp-list-table-class/
+ */
+function ttnsw_bookings_page_screen_options() {
+    // Create an instance of class.
+    require_once TTNSW_DIR . 'inc/ttnsw-table-bookings.php';
+
+    // Declare $ttnsw_bookings_page and $ttnsw_bookings_table as a global variable.
+    global $ttnsw_bookings_page, $ttnsw_bookings_table;
+
+    // Return if not on our settings page.
+    $screen = get_current_screen();
+    if( ! is_object( $screen ) || $screen->id !== $ttnsw_bookings_page) {
+        return;
+    }
+
+    // Add help tabs
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_bookings_help_overview',
+            'title'   => __('Overview', 'trek-travel-netsuite-integration'),
+            'content' => ttnsw_load_template_part( 'tt-templates/help-tabs/bookings-tab/bookings-overview.php' )
+        )
+    );
+
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_bookings_help_features',
+            'title'   => __('Features & Usage', 'trek-travel-netsuite-integration'), 
+            'content' => ttnsw_load_template_part( 'tt-templates/help-tabs/bookings-tab/bookings-features.php' )
+        )
+    );
+
+    $args = array(
+        'label'   => __( 'Bookings per page', 'trek-travel-netsuite-integration' ),
+        'default' => 20,
+        'option'  => 'ttnsw_bookings_per_page'
+    );
+    add_screen_option( 'per_page', $args );
+
+    $ttnsw_bookings_table = new Guest_Bookings_Table(
+        array(
+            'plural'   => __( 'Bookings', 'trek-travel-netsuite-integration' ),
+            'singular' => __( 'Booking', 'trek-travel-netsuite-integration' ),
+            'ajax'     => false
+        )
+    );
+}
+
+/**
+ * Add screen options and help tabs to the sync page.
+ */
+function ttnsw_sync_page_screen_options() {
+    global $ttnsw_sync_page;
+
+    // Return if not on our settings page.
+    $screen = get_current_screen();
+    if( ! is_object( $screen ) || $screen->id !== $ttnsw_sync_page) {
+        return;
+    }
+    
+    // Add help tabs
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_sync_help_overview',
+            'title'   => __('Overview', 'trek-travel-netsuite-integration'),
+            'content' => ttnsw_load_template_part( 'tt-templates/help-tabs/sync-tab/sync-overview.php' )
+        )
+    );
+
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_sync_help_details', 
+            'title'   => __('Detailed Functions', 'trek-travel-netsuite-integration'),
+            'content' => ttnsw_load_template_part( 'tt-templates/help-tabs/sync-tab/sync-details.php' )
+        )
+    );
+
+    // CRON help tab
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_sync_help_crons',
+            'title'   => __('CRON Jobs', 'trek-travel-netsuite-integration'),
+            'content' => ttnsw_load_template_part('tt-templates/help-tabs/sync-tab/sync-crons.php')
+        )
+    );
+}
+
+/**
+ * Add screen options and help tabs to the dev tools page.
+ */
+function ttnsw_dev_tools_page_screen_options() {
+    global $ttnsw_dev_tools;
+
+    // Return if not on our settings page
+    $screen = get_current_screen();
+    if ( ! is_object( $screen ) || $screen->id !== $ttnsw_dev_tools) {
+        return;
+    }
+
+    // Add help tabs
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_dev_tools_help_overview',
+            'title'   => __('Overview', 'trek-travel-netsuite-integration'),
+            'content' => ttnsw_load_template_part('tt-templates/help-tabs/dev-tools-tab/dev-tools-overview.php')
+        )
+    );
+
+    $screen->add_help_tab(
+        array(
+            'id'      => 'ttnsw_dev_tools_help_features',
+            'title'   => __('Features & Usage', 'trek-travel-netsuite-integration'),
+            'content' => ttnsw_load_template_part('tt-templates/help-tabs/dev-tools-tab/dev-tools-features.php')
+        )
+    );
+
+    // Add a sidebar
+    $screen->set_help_sidebar(
+        '<p><strong>' . __('For more information:', 'trek-travel-netsuite-integration') . '</strong></p>' .
+        '<p><a href="https://developer.wordpress.org/plugins/" target="_blank">' . 
+        __('WordPress Plugin Development', 'trek-travel-netsuite-integration') . '</a></p>'
+    );
+}
+
 function tt_admin_menu_page_cb()
 {
     if ( isset( $_REQUEST['action']) && $_REQUEST['action'] == 'tt_wp_manual_sync_action' && isset( $_REQUEST['type'] ) ) {
@@ -230,8 +434,8 @@ function tt_admin_menu_page_cb()
     <div class="tt-admin-page-div tt-pl-40 tt-mt-30 tt-sync-page">
         <div class="tt-wc-ns-admin-wrap">
             <div id="tt-ns-sync-class">
-                <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">Clear Caches After Manual Trip Sync!</span>
                 <h3>Manual Sync for WC<>NS</h3>
+                <span class="tt-wc-ns-admin-notice">Clear Caches After Manual Trip Sync!</span>
                 <form class="tt-wp-manual-sync" action="" method="post">
                     <select name="type" required>
                         <option value="">Select Sync Type</option>
@@ -298,6 +502,7 @@ function tt_admin_menu_page_cb()
             </div>
             <div id="tt-order-sync-admin">
                 <h3>Manual WC Order Sync to NS</h3>
+                <p>Send WooCommerce order to NetSuite to create a new booking</p>
                 <form action="" class="tt-order-sync" method="post">
                     <input type="number" name="order_id" placeholder="Enter WC Order ID" required>
                     <input type="hidden" name="action" value="tt_wp_manual_order_sync_action">
@@ -313,7 +518,7 @@ function tt_admin_menu_page_cb()
                     <input type="submit" name="submit" value="Sync Trip Details" class="button-primary">
                 </form>
             </div>
-            <div id="tt-order-sync-admin">
+            <div id="tt-trip-product-sync-admin">
                 <h3>Manual Trip Sync from NS to WC</h3>
                 <p>This action will <strong>sync only product</strong>, not the trip details table in the DB</p>
                 <form action="" class="tt-order-sync" method="post">
@@ -324,6 +529,7 @@ function tt_admin_menu_page_cb()
             </div>
             <div id="tt-bookings-sync-admin">
                 <h3>Manual Single Guest Bookings/Preferences Sync from NS to WC</h3>
+                <p>Sync bookings and preferences for a specific NetSuite guest</p>
                 <form action="" class="tt-bookings-sync" method="post">
                     <input type="text" name="ns_user_id" placeholder="Enter NetSuite User ID" required>
                     <input type="hidden" name="action" value="tt_wp_manual_guest_bookings_sync_action">
@@ -338,86 +544,29 @@ function tt_admin_menu_page_cb()
                     <input type="submit" name="submit" value="Sync" class="button-primary">
                 </form>
             </div>
-            <!-- Temp Code -->
-            <div id="tt-order-sync-print_r">
-                <h3>Print user & order_meta</h3>
-                <form action="" class="tt-order-sync" method="post">
-                    <input type="number" name="order_id" placeholder="Enter WC Order ID">
-                    <input type="number" name="user_id" placeholder="Enter User ID">
-                    <input type="hidden" name="action" value="tt_print_r">
-                    <input type="submit" name="submit" value="Print" class="button-primary">
-                </form>
-                <div id="tt-print_result" style="margin: 5% 0px;">
-                        <?php
-                        $pr_data = [];
-                        if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tt_print_r') {
-                            if( isset($_REQUEST['order_id']) && $_REQUEST['order_id'] ){
-                                $pr_data = get_post_meta($_REQUEST['order_id']);
-                            }
-                            if( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] ){
-                                $pr_data = get_user_meta($_REQUEST['user_id']);
-                            }
-                            pr($pr_data);
-                        }
-                        ?>
-                </div>
-            </div>
-            <!-- End Temp code -->
-            <!-- Temp Code -->
-            <div id="dx-repair-tools">
-                <hr>
-                <h3>DX Repair Tools</h3>
-                <div class="print-tax-ids">
-                    <hr>
-                    <h4>Taxonomy Switcher Helper</h4>
-                    <p>Print the terms IDs for the given taxonomy, split by a comma for easy transfer when using the Taxonomy Switcher Plugin</p>
-                    <form action="" class="tt-print-tax-ids" method="post">
-                        <input type="text" name="tax_name" placeholder="Enter Taxonomy Name" required>
-                        <input type="hidden" name="action" value="dx-print-tax-ids">
-                        <input type="submit" name="submit" value="Print Taxonomy Terms IDs" class="button-primary">
-                    </form>
-                    <div class="tax-print-result" style="padding: 1rem;background: #fefefe;margin: 1rem 0;border-radius: 4px;overflow:hidden;">
-                        <h4 style="font-size: 1.2rem;text-align: center;background: #28AAE1;margin: 0 0 0.5rem;padding: 0.5rem;border-radius: 4px;color: #000;letter-spacing: 2px;text-transform: uppercase;">Result</h4>
-                        <hr>
-                        <?php
-                            if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'dx-print-tax-ids' && isset($_REQUEST['tax_name'])) :
-                                $tax_terms = get_terms(
-                                    array(
-                                        'taxonomy'   => $_REQUEST['tax_name'],
-                                        'hide_empty' => false,
-                                    )
-                                );
-                                if( is_wp_error( $tax_terms ) ) {
-                                    echo '<span style="background:#f00;color:#fff;padding:0.2rem;border-radius:4px">Something went wrong!</span>';
-                                    echo '<div><pre>';
-                                    print_r( $tax_terms );
-                                    echo '</pre></div>';
-                                } else {
-                                    if( ! empty( $tax_terms ) ) {
-                                        echo '<span style="background:#0f0;color:#000;padding:0.2rem;border-radius:4px">Terms IDs for: <b>' . $_REQUEST['tax_name'] . '</b></span><br>';
-                                        echo '<div style="overflow: auto;border: 1px solid #0f0f0f;margin: 1rem 0;"><pre>';
-                                        print_r( implode( ',', array_column( $tax_terms, 'term_id' ) ) );
-                                        echo '</pre></div>';
-                                    } else {
-                                        echo '<span style="background:#28AAE1;color:#fff;padding:0.2rem;border-radius:4px">This taxonomy does not have any terms yet!</span>';
-                                    }
-                                }
-                                ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-            <div class="dx-hidden-section" style="position:relative">
-                <button type="button" class="dx-show-hidden" style="position:absolute;right:20px;bottom:0;width:2rem;height:2rem;display:flex;justify-content: center;align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></svg>
-                </button>
-            </div>
-            <!-- End Temp code -->
         </div>
     </div>
 <?php
 }
-function tt_common_logs_admin_menu_page_cb()
+/**
+ * Callback to render the Logs subpage.
+ */
+function tt_common_logs_admin_menu_page_cb() {
+    // Define $ttnsw_logs_table as a global variable.
+    global $ttnsw_logs_table;
+
+    require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
+
+    echo '<div style="margin: 10px 20px 0 2px;" class="tt-logs-table-ctr">';
+    echo '<form method="get">';
+    echo '<input type="hidden" name="page" value="tt-common-logs">';
+    $ttnsw_logs_table->prepare_items();
+    $ttnsw_logs_table->search_box( 'Search Logs','search_record' );
+    $ttnsw_logs_table->display();
+    echo '</form>';
+    echo '</div>';
+}
+function tt_common_logs_admin_menu_page_cb_old()
 {
     require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
     $logs_results = tt_get_common_logs();
@@ -466,6 +615,23 @@ function tt_common_logs_admin_menu_page_cb()
         </div>
     </div>
 <?php
+}
+function tt_guest_bookings_admin_menu_page_cb() {
+    // Define $ttnsw_bookings_table as a global variable.
+    global $ttnsw_bookings_table;
+
+    require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
+
+    echo '<div style="margin: 10px 20px 0 2px;" class="tt-bookings-table-ctr">';
+    echo '<form method="get">';
+    echo '<input type="hidden" name="page" value="tt-bookings">';
+    $ttnsw_bookings_table->prepare_items();
+    $ttnsw_bookings_table->search_box( 'Search Bookings','search_record' );
+    echo '<div style="display: block;width: 100%;overflow-x: auto;padding-bottom: 1rem;-webkit-overflow-scrolling: touch;-ms-overflow-style: -ms-autohiding-scrollbar;">';
+    $ttnsw_bookings_table->display();
+    echo '</div>';
+    echo '</form>';
+    echo '</div>';
 }
 function tt_bookings_admin_menu_page_cb()
 {
@@ -533,6 +699,88 @@ function tt_bookings_admin_menu_page_cb()
                     </tr>
                 </tfoot>
             </table>
+        </div>
+    </div>
+<?php
+}
+
+function tt_dev_tools_admin_menu_page_cb() {
+    require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
+?>
+    <div class="tt-admin-page-div tt-pl-40 tt-mt-30 tt-sync-page">
+        <div class="tt-wc-ns-admin-wrap tt-dev-tools">
+            <!-- Temp Code -->
+            <div id="tt-order-sync-print_r">
+                <h3>Print user & order_meta</h3>
+                <form action="" class="tt-order-sync" method="post">
+                    <input type="number" name="order_id" placeholder="Enter WC Order ID">
+                    <input type="number" name="user_id" placeholder="Enter User ID">
+                    <input type="hidden" name="action" value="tt_print_r">
+                    <input type="submit" name="submit" value="Print" class="button-primary">
+                </form>
+                <div id="tt-print_result">
+                        <?php
+                        $pr_data = [];
+                        if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tt_print_r') {
+                            if( isset($_REQUEST['order_id']) && $_REQUEST['order_id'] ){
+                                $pr_data = get_post_meta($_REQUEST['order_id']);
+                            }
+                            if( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] ){
+                                $pr_data = get_user_meta($_REQUEST['user_id']);
+                            }
+                            pr($pr_data);
+                        }
+                        ?>
+                </div>
+            </div>
+            <!-- End Temp code -->
+            <!-- Temp Code -->
+            <div id="dx-repair-tools">
+                <h3>DX Repair Tools</h3>
+                <div class="print-tax-ids">
+                    <h4>Taxonomy Switcher Helper</h4>
+                    <p>Print the terms IDs for the given taxonomy, split by a comma for easy transfer when using the Taxonomy Switcher Plugin</p>
+                    <form action="" class="tt-print-tax-ids" method="post">
+                        <input type="text" name="tax_name" placeholder="Enter Taxonomy Name" required>
+                        <input type="hidden" name="action" value="dx-print-tax-ids">
+                        <input type="submit" name="submit" value="Print Taxonomy Terms IDs" class="button-primary">
+                    </form>
+                    <div class="tax-print-result" style="padding: 1rem 0;background: #fefefe;margin: 1rem 0;border-radius: 4px;overflow:hidden;">
+                        <h4 style="font-size: 1.2rem;text-align: center;background: #28AAE1;margin: 0 0 0.5rem;padding: 0.5rem;border-radius: 4px;color: #000;letter-spacing: 2px;text-transform: uppercase;">Result</h4>
+                        <?php
+                            if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'dx-print-tax-ids' && isset($_REQUEST['tax_name'])) :
+                                $tax_terms = get_terms(
+                                    array(
+                                        'taxonomy'   => $_REQUEST['tax_name'],
+                                        'hide_empty' => false,
+                                    )
+                                );
+                                if( is_wp_error( $tax_terms ) ) {
+                                    echo '<span style="background:#f00;color:#fff;padding:0.2rem;border-radius:4px">Something went wrong!</span>';
+                                    echo '<div><pre>';
+                                    print_r( $tax_terms );
+                                    echo '</pre></div>';
+                                } else {
+                                    if( ! empty( $tax_terms ) ) {
+                                        echo '<span style="background:#0f0;color:#000;padding:0.2rem;border-radius:4px">Terms IDs for: <b>' . $_REQUEST['tax_name'] . '</b></span><br>';
+                                        echo '<div style="overflow: auto;border: 1px solid #0f0f0f;margin: 1rem 0;"><pre>';
+                                        print_r( implode( ',', array_column( $tax_terms, 'term_id' ) ) );
+                                        echo '</pre></div>';
+                                    } else {
+                                        echo '<span style="background:#28AAE1;color:#fff;padding:0.2rem;border-radius:4px">This taxonomy does not have any terms yet!</span>';
+                                    }
+                                }
+                                ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <p class="dx-hidden-section" style="position:relative; padding: 20px 0;">
+                <button type="button" class="dx-show-hidden" style="position:absolute;right:0;bottom:0;width:2rem;height:2rem;display:flex;justify-content: center;align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></svg>
+                </button>
+            </p>
+            <!-- End Temp code -->
         </div>
     </div>
 <?php
