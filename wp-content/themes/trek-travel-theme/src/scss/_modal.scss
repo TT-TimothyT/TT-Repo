@@ -1303,6 +1303,9 @@
         &:hover {
           color: rgb(124, 124, 124);
         }
+        @media screen and (max-width: 420px) {
+          padding-right: 0;
+        }
       }
 
       .bikes-container {
@@ -1340,6 +1343,10 @@
         @media screen and (min-width: 768px) {
           display: inline-block;
         }
+      }
+
+      @media screen and (max-width: 420px) {
+        right: -46%;
       }
     }
 
@@ -1396,6 +1403,24 @@
 
     .dates-pricing-container {
       padding: 0 32px !important;
+    }
+  }
+
+  .modal-price {
+    .pp-text-mobile {
+      display: none;
+    }
+    @media screen and (max-width: 420px) {
+      font-size: 19px;
+
+      .pp-text {
+        // font-size: 12px;
+        display: none;
+      }
+
+      .pp-text-mobile {
+        display: inline-block;
+      }
     }
   }
 }

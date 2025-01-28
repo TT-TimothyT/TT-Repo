@@ -920,6 +920,28 @@ a.refineLink {
                         align-items: end;
                     }
                 }
+
+                @media screen and (max-width: 480px) {
+                    .trip-features > div:last-child{
+                        min-width: 140px !important;
+                    }
+
+                    .trip-features .card .card-body {
+                        .list-inline:first-of-type {
+                            .list-inline-item:nth-child(2) {
+                                display: inline !important;
+                            }
+                        }
+                    }
+
+                    .trip-features .trip-info-box-width {
+                        max-width: 54%;
+                    }
+
+                    .trip-features .rating-stars {
+                        width: fit-content;
+                    }
+                }
         }
     }
 
@@ -1037,6 +1059,25 @@ a.refineLink {
         @media screen and (max-width: 767.98px) {
             .algolia-search-box-wrapper {
                 top: 0 !important
+            }
+        }
+    }
+}
+
+@media (max-width: 420px) {
+    li.ais-InfiniteHits-item{
+        .card-body{
+            h5.trip-price{
+                span.amount{
+                    font-family: 'Poppins';
+                    font-size: 18px !important;
+                }
+                .current-currency {
+                    font-size: 14px !important;
+                }
+                .current-currency+* {
+                    font-size: 12px;
+                }
             }
         }
     }

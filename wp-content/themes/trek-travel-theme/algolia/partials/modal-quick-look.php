@@ -14,9 +14,10 @@
 			<div class="modal-footer">
 				<div class="me-auto ps-3">
 					<p class="fw-normal fs-sm lh-sm mb-0 text-muted starting-from"><?php esc_html_e( 'Starting from', 'trek-travel-theme' ) ?></p>
-					<p class="fw-bold fs-xl lh-xl mb-0">
+					<p class="fw-bold fs-xl lh-xl mb-0 modal-price">
 						<span class="starting-from-price"></span>
-						<span class="fw-normal fs-sm"><?php esc_html_e( 'per person', 'trek-travel-theme' ) ?></span>
+						<span class="fw-normal fs-sm pp-text"><?php esc_html_e( 'per person', 'trek-travel-theme' ) ?></span>
+						<span class="fw-normal fs-sm pp-text pp-text-mobile"><?php esc_html_e( 'pp', 'trek-travel-theme' ) ?></span>
 					</p>
 				</div>
 			</div><!-- .modal-footer -->

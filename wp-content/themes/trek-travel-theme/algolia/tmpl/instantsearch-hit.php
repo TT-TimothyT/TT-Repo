@@ -71,8 +71,11 @@
 							<# if (data.taxonomies.product_tag) {
 								data.taxonomies.product_tag.sort((a, b) =>  b.localeCompare(a, 'en', { sensitivity: 'base' }));
 								#>
-								<# data.taxonomies.product_tag.forEach(function (badge, index) { #>
-									<span class="badge <# if (badge == 'Hiking & Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ badge }}</span>   
+								<# data.taxonomies.product_tag.forEach(function (badge, index) { 
+									// Decode HTML entities
+									let decodedBadge = badge.replace(/&amp;/g, '&');
+								#>
+									<span class="badge <# if (decodedBadge == 'Hiking & Walking') { #>hw<# } else { #>bg-dark<# } #>">{{ decodedBadge }}</span>   
 								<# }) #>
 							<# } #>
 						</div>
@@ -100,12 +103,12 @@
 						<# } #>
 					</div>
 					<div class="trip-features d-flex justify-content-between">
-						<div class="card border-0">
+						<div class="card border-0 trip-info-box-width">
 							<div class="card-body">
 								<# if ( data['Trip Style'] ) { #>
 								<ul class="list-inline mb-1">
 									<li class="list-inline-item"><i class="bi bi-briefcase"></i></li>
-									<li class="list-inline-item fs-sm">{{data['Trip Style']}}<# if( data.taxonomies['trip-class'] && data.taxonomies['trip-class'].length > 0 ) { #>, {{data.taxonomies['trip-class'].join(", ")}}<# } #></li>
+									<li class="list-inline-item fs-sm">{{ data['Trip Style'].replace(/&amp;/g, '&') }}<# if( data.taxonomies['trip-class'] && data.taxonomies['trip-class'].length > 0 ) { #>, {{data.taxonomies['trip-class'].join(", ")}}<# } #></li>
 									<li class="list-inline-item"><i class="bi bi-info-circle pdp-trip-styles"></i></li>
 								</ul>
 								<# } #>
@@ -148,7 +151,7 @@
 								<# } #>
 							</div>
 							<# if ( data['review_score'] ) { #>
-							<div class="card-footer bg-transparent border-0">
+							<div class="card-footer bg-transparent border-0 rating-stars">
 								<span class="fw-semibold"><i class="bi bi-star"></i> {{ (parseFloat(data['review_score']) % 1 === 0) ? parseFloat(data['review_score']).toFixed(0) : parseFloat(data['review_score']).toFixed(2) }} </span>
 								<span class="text-muted review-text"> rating based on </span>
 								<span class="fw-semibold reviews-count">{{data['total_review']}} </span>
