@@ -31,19 +31,61 @@ $message_text = get_field('message_text'); // WYSIWYG editor field
     <div class="row">
         <div class="col-12">
 
-        <?php if (!empty($message_icon) || !empty($message_text)): ?>
-            <div class="message-container">
-                <?php if (!empty($message_icon)): ?>
-                    <?php echo $message_icon; ?>
-                <?php endif; ?>
+            <?php
+            // Global Fields (from ACF Options Page)
+            $global_icon    = get_field('global_message_icon', 'option');
+            $g_msg_border = get_field('global_message_border_color', 'option');
+            $global_message = get_field('global_message_text', 'option');
 
-                <?php if (!empty($message_text)): ?>
+            // Product-Specific Fields
+            $product_icon   = get_field('product_icon');
+            $msg_border = get_field('message_border_color');
+            $product_message = get_field('product_message');
+            $replace_global = get_field('replace__add_product_message');
+            ?>
+            
+            <?php
+            // Replace Global (Show Only Product Icon & Message)
+            if (!empty($replace_global)) {
+                if (!empty($product_message)) {
+            ?>
+                <div class="message-container" <?php if(!empty($msg_border)) { ?> style="border-color:<?php echo $msg_border; }?>">
+                    <?php if(!empty($product_icon)){ ?>
+                        <i class="<?php echo $product_icon; ?>"></i>
+                    <?php } ?>
                     <div class="message-text">
-                        <?php echo $message_text; ?>
+                        <?php echo $product_message; ?>
                     </div>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
+                </div>
+            <?php 
+                }
+            } else {
+                if (!empty($global_message)) {
+                ?>
+                <div class="message-container"<?php if(!empty($g_msg_border)) { ?> style="border-color:<?php echo $g_msg_border; }?>">
+                    <?php if(!empty($global_icon)){ ?>
+                        <i class="<?php echo $global_icon; ?>"></i>
+                    <?php } ?>
+                    <div class="message-text">
+                        <?php echo $global_message; ?>
+                    </div>
+                </div>
+                <?php
+                }
+                if (!empty($product_message)) {
+                    ?>
+                    <div class="message-container"<?php if(!empty($msg_border)) { ?> style="border-color:<?php echo $msg_border; }?>">
+                        <?php if(!empty($product_icon)){ ?>
+                            <i class="<?php echo $product_icon; ?>"></i>
+                        <?php } ?>
+                        <div class="message-text">
+                            <?php echo $product_message; ?>
+                        </div>
+                    </div>       
+            <?php 
+                }
+            }
+            ?>
 
             <?php 
             if(get_the_excerpt()):

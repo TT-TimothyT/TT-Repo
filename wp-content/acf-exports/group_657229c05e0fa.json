@@ -8,11 +8,11 @@
             "name": "trip_weight",
             "aria-label": "",
             "type": "number",
-            "instructions": "Add a number divisible by 5. This gives PDP a higher ranking above all other trips. Higher the number the higher on the PLP compared to other PDPs with a Trip Weight.",
+            "instructions": "Number divisible by 5. Gives PDP ranking order in PLPs. Higher number higher ranking.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "35",
+                "width": "10",
                 "class": "",
                 "id": ""
             },
@@ -31,6 +31,105 @@
             "name": "is_private_custom_trip",
             "aria-label": "",
             "type": "true_false",
+            "instructions": "Check box if you don't want this PDP to be indexed by Algolia and Google.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "10",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
+            "key": "field_679bad657e450",
+            "label": "Replace \/ Add Product Message",
+            "name": "replace__add_product_message",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "15",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 1,
+            "ui_on_text": "Replace",
+            "ui_off_text": "Add",
+            "ui": 1
+        },
+        {
+            "key": "field_679baefb7e451",
+            "label": "Product Icon",
+            "name": "product_icon",
+            "aria-label": "",
+            "type": "font-awesome",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "15",
+                "class": "",
+                "id": ""
+            },
+            "icon_sets": [
+                "solid",
+                "sharp_solid",
+                "regular",
+                "sharp_regular",
+                "light",
+                "sharp_light",
+                "thin",
+                "sharp_thin",
+                "sharp-duotone_solid",
+                "duotone_solid",
+                "brands"
+            ],
+            "custom_icon_set": "",
+            "default_label": "",
+            "default_value": "",
+            "save_format": "class",
+            "allow_null": 1,
+            "show_preview": 1,
+            "enqueue_fa": 1,
+            "allow_in_bindings": 0,
+            "fa_live_preview": "",
+            "choices": []
+        },
+        {
+            "key": "field_679bec2c6db88",
+            "label": "Message Border Color",
+            "name": "message_border_color",
+            "aria-label": "",
+            "type": "color_picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "15",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "enable_opacity": 0,
+            "return_format": "string",
+            "allow_in_bindings": 0
+        },
+        {
+            "key": "field_679baf947e452",
+            "label": "Product Message",
+            "name": "product_message",
+            "aria-label": "",
+            "type": "wysiwyg",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -39,38 +138,12 @@
                 "class": "",
                 "id": ""
             },
-            "message": "Check the box if you do not want this PDP trips page to be indexed by Algolia and Google.",
-            "default_value": 0,
-            "allow_in_bindings": 1,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "ui": 1
-        },
-        {
-            "key": "field_65aebb0c08843",
-            "label": "Activity",
-            "name": "Activity",
-            "aria-label": "",
-            "type": "taxonomy",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "30",
-                "class": "",
-                "id": ""
-            },
-            "taxonomy": "activity",
-            "add_term": 0,
-            "save_terms": 1,
-            "load_terms": 1,
-            "return_format": "object",
-            "field_type": "radio",
-            "allow_null": 1,
-            "allow_in_bindings": 1,
-            "bidirectional": 0,
-            "multiple": 0,
-            "bidirectional_target": []
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 0,
+            "delay": 0
         },
         {
             "key": "field_65a57b5961d37",
@@ -2203,5 +2276,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1731436108
+    "modified": 1738272039
 }

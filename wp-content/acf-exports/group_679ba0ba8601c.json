@@ -1,11 +1,11 @@
 {
-    "key": "group_678034fbe3012",
-    "title": "Product Top Message",
+    "key": "group_679ba0ba8601c",
+    "title": "Global Product Message",
     "fields": [
         {
-            "key": "field_678034fda6e00",
-            "label": "Message Icon",
-            "name": "message_icon",
+            "key": "field_679ba0bc82d18",
+            "label": "Global Message Icon",
+            "name": "global_message_icon",
             "aria-label": "",
             "type": "font-awesome",
             "instructions": "",
@@ -27,12 +27,13 @@
                 "sharp_thin",
                 "sharp-duotone_solid",
                 "duotone_solid",
+                "fak",
                 "brands"
             ],
             "custom_icon_set": "",
-            "default_label": "&lt;i class=\"fa-classic fa-solid fa-circle-bolt fa-fw\"&gt;&lt;\/i&gt; Circle Bolt",
-            "default_value": "{\"family\" : \"classic\", \"style\" : \"solid\", \"id\" : \"circle-bolt\", \"label\" : \"Circle Bolt\", \"unicode\" : \"e0fe\"}",
-            "save_format": "element",
+            "default_label": "",
+            "default_value": "",
+            "save_format": "class",
             "allow_null": 1,
             "show_preview": 1,
             "enqueue_fa": 1,
@@ -41,20 +42,38 @@
             "choices": []
         },
         {
-            "key": "field_678036a9a6e02",
-            "label": "Message Text",
-            "name": "message_text",
+            "key": "field_679bee4ebc366",
+            "label": "Global Message Border Color",
+            "name": "global_message_border_color",
+            "aria-label": "",
+            "type": "color_picker",
+            "instructions": "",
+            "required": false,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "enable_opacity": false,
+            "return_format": "string"
+        },
+        {
+            "key": "field_679ba15c82d1a",
+            "label": "Global Message Text",
+            "name": "global_message_text",
             "aria-label": "",
             "type": "wysiwyg",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "70",
+                "width": "40",
                 "class": "",
                 "id": ""
             },
-            "default_value": "<h6>Book before January 29th to secure the best prices of the season!<\/h6>",
+            "default_value": "",
             "allow_in_bindings": 0,
             "tabs": "all",
             "toolbar": "full",
@@ -65,14 +84,14 @@
     "location": [
         [
             {
-                "param": "post_type",
+                "param": "options_page",
                 "operator": "==",
-                "value": "product"
+                "value": "acf-options"
             }
         ]
     ],
     "menu_order": 0,
-    "position": "acf_after_title",
+    "position": "normal",
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
@@ -80,5 +99,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1736548835
+    "modified": 1738272385
 }
