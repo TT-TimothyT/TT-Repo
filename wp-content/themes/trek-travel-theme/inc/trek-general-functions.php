@@ -3510,8 +3510,14 @@ function tt_get_parent_trip_id_by_child_sku($sku) {
         'post_status' => 'publish',
         'posts_per_page' => 1,  // Query only the first grouped product
         'meta_query' => array(
+            'relation' => 'OR',
             array(
                 'key' => '_children',
+                'value' => $product_id,  // Direct product ID
+                'compare' => 'LIKE'
+            ),
+            array(
+                'key' => '_grouped_old_trip_dates',
                 'value' => $product_id,  // Direct product ID
                 'compare' => 'LIKE'
             )

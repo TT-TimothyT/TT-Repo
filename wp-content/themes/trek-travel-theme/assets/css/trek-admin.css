@@ -1,0 +1,11 @@
+/**
+ * Styles for the admin edit.php area
+ */
+
+/* Adjust the width of the product listing columns. */
+table.wp-list-table .column-ns_last_synced,
+table.wp-list-table .column-taxonomy-activity,
+table.wp-list-table .column-parent_product,
+table.wp-list-table .column-orders_count {
+	width: 7% !important;
+}

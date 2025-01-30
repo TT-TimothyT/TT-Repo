@@ -545,6 +545,13 @@ if ( is_readable( $trek_wc_persistent_cart ) ) {
 	require_once $trek_wc_persistent_cart;
 }
 
+// Trek Old Trip Dates integration.
+$trek_old_trip_dates = __DIR__ . '/inc/trek-old-trip-dates.php';
+if ( is_readable( $trek_old_trip_dates ) ) {
+	require_once $trek_old_trip_dates;
+}
+
+
 /**
  * Loading All CSS Stylesheets and Javascript Files.
  *
@@ -573,6 +580,22 @@ function trek_travel_theme_scripts_loader() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'trek_travel_theme_scripts_loader' );
+
+/**
+ * Enqueue a script in the WordPress admin on edit.php.
+ *
+ * @param string $hook_suffix Hook suffix for the current admin page.
+ */
+function trek_travel_theme_admin_assets_loader( $hook_suffix ) {
+	// Return if this is not edit.php
+	if ( 'edit.php' !== $hook_suffix ) {
+		return;
+	}
+
+	wp_register_style( 'trek-admin', get_theme_file_uri() . '/assets/css/trek-admin.css', false, '1.0.0' );
+	wp_enqueue_style( 'trek-admin' );
+}
+add_action( 'admin_enqueue_scripts', 'trek_travel_theme_admin_assets_loader' );
 
 /**
 
@@ -1866,7 +1889,11 @@ add_filter( 'gform_countries', function () {
 // Add custom column to product list
 add_filter('manage_edit-product_columns', 'add_parent_product_column', 15);
 function add_parent_product_column($columns) {
-    $columns['parent_product'] = __('Parent Product', 'woocommerce');
+	$date = $columns['date'];
+	unset( $columns['date'] );
+	$columns['parent_product'] = __('Parent Product', 'woocommerce');
+	$columns['orders_count']   = __('Orders Count', 'woocommerce');
+	$columns['date']           = $date;
     return $columns;
 }
 
@@ -1884,6 +1911,20 @@ function add_parent_product_column_content($column, $post_id) {
             echo __('None', 'woocommerce');
         }
     }
+
+	// Populate the orders count column on the products listing page.
+	if( 'orders_count' === $column ) {
+		// Note: if the $post_id is an empty string 0, null, or false will return all the orders.
+		$orders_ids = (array) get_orders_ids_by_product_id( $post_id );
+
+		if( ! empty( $orders_ids ) ) {
+			$orders_count = count( $orders_ids );
+			printf( '<span style="%s" class="tips" data-tip="%s"><strong style="color:#5b841b;">%s</strong></span>', 'border: 1px dashed #c6e1c6;border-radius: 50%;width: 1.3rem;height: 1.3rem;display: flex;align-items: center;justify-content: center;cursor: inherit !important;background: #c6e1c6;color: #5b841b;', 'This product is linked to ' . $orders_count . ' orders.', $orders_count );
+		} else {
+			// Orders not found for this product.
+			printf( '<span style="%s" class="tips" data-tip="%s"><strong style="color:#50575e;">%s</strong></span>', 'border: 1px dashed #50575e;border-radius: 50%;width: 1.3rem;height: 1.3rem;display: flex;align-items: center;justify-content: center;cursor: inherit !important;', 'No orders related to this product were found.', 0 );
+		}
+	}
 }
 
 // Retrieve parent products for a simple product
@@ -1906,6 +1947,39 @@ function get_parent_products($product_id) {
     }
 
     return $parent_ids;
+}
+
+/**
+ * Get All defined statuses Orders IDs for a defined product ID (or variation ID)
+ *
+ * @param int $product_id The product ID.
+ *
+ * @link https://stackoverflow.com/questions/43664819/get-all-orders-ids-from-a-product-id-in-woocommerce-hpos
+ *
+ * @return array The Array with Order IDs for this product.
+ */
+function get_orders_ids_by_product_id( $product_id ) {
+    global $wpdb;
+
+    // HERE Define the orders status to include IN (each order status always starts with "wc-")
+    $orders_statuses = array('wc-completed', 'wc-processing', 'wc-on-hold');
+
+    // Convert order statuses array to a string for the query
+    $orders_statuses = "'" . implode("', '", $orders_statuses) . "'";
+
+    // The query
+    return $wpdb->get_col( $wpdb->prepare("
+        SELECT DISTINCT woi.order_id
+        FROM {$wpdb->prefix}woocommerce_order_itemmeta woim
+        JOIN {$wpdb->prefix}woocommerce_order_items woi
+            ON woi.order_item_id = woim.order_item_id
+        JOIN {$wpdb->prefix}posts p
+            ON woi.order_id = p.ID
+        WHERE p.post_status IN ( {$orders_statuses} )
+        AND woim.meta_key IN ( '_product_id', '_variation_id' )
+        AND woim.meta_value = %d
+        ORDER BY woi.order_item_id DESC;", intval($product_id) ) 
+    );
 }
 
 // // LOCALIZE START DATE

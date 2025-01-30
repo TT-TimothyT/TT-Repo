@@ -32,12 +32,18 @@
   # Run the locking status sync every 1 hour
   0 */1 * * *        /usr/bin/php ~/sites/trektravel.com/tt-crons/tt-netsuite-wc-locking-status-sync.php
   
+  # Run the old products type sync once a day at noon
+  0 12 * * *          /usr/bin/php ~/sites/trektravel.com/tt-crons/tt-wc-old-products-type-update.php
+  
   # ~ Staging crontab setup | Only trips/products and locking status syncs ~
   # Run the trip sync every 2 hours
   15 1-23/2 * * *     /usr/bin/php ~/sites/staging.trektravel.com/tt-crons/tt-netsuite-wc-trip-sync.php
   
   # Run the locking status sync every 1 hour
   15 */1 * * *        /usr/bin/php ~/sites/staging.trektravel.com/tt-crons/tt-netsuite-wc-locking-status-sync.php
+  
+  # Run the old products type sync once a day at noon
+  15 12 * * *          /usr/bin/php ~/sites/staging.trektravel.com/tt-crons/tt-wc-old-products-type-update.php
   
   # ~ Staging 2 crontab setup | Only trips/products and locking status syncs ~
   # Run the trip sync every 2 hours
@@ -46,9 +52,15 @@
   # Run the locking status sync every 1 hour
   30 */1 * * *        /usr/bin/php ~/sites/staging2.trektravel.com/tt-crons/tt-netsuite-wc-locking-status-sync.php
   
+  # Run the old products type sync once a day at noon
+  30 12 * * *          /usr/bin/php ~/sites/staging2.trektravel.com/tt-crons/tt-wc-old-products-type-update.php
+  
   # ~ Staging 3 crontab setup | Only trips/products and locking status syncs ~
   # Run the trip sync every 2 hours
   45 1-23/2 * * *     /usr/bin/php ~/sites/staging3.trektravel.com/tt-crons/tt-netsuite-wc-trip-sync.php
   
   # Run the locking status sync every 1 hour
   45 */1 * * *        /usr/bin/php ~/sites/staging3.trektravel.com/tt-crons/tt-netsuite-wc-locking-status-sync.php
+  
+  # Run the old products type sync once a day at noon
+  45 12 * * *          /usr/bin/php ~/sites/staging3.trektravel.com/tt-crons/tt-wc-old-products-type-update.php
