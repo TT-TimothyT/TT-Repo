@@ -1892,7 +1892,6 @@ function add_parent_product_column($columns) {
 	$date = $columns['date'];
 	unset( $columns['date'] );
 	$columns['parent_product'] = __('Parent Product', 'woocommerce');
-	$columns['orders_count']   = __('Orders Count', 'woocommerce');
 	$columns['date']           = $date;
     return $columns;
 }
@@ -1911,20 +1910,6 @@ function add_parent_product_column_content($column, $post_id) {
             echo __('None', 'woocommerce');
         }
     }
-
-	// Populate the orders count column on the products listing page.
-	if( 'orders_count' === $column ) {
-		// Note: if the $post_id is an empty string 0, null, or false will return all the orders.
-		$orders_ids = (array) get_orders_ids_by_product_id( $post_id );
-
-		if( ! empty( $orders_ids ) ) {
-			$orders_count = count( $orders_ids );
-			printf( '<span style="%s" class="tips" data-tip="%s"><strong style="color:#5b841b;">%s</strong></span>', 'border: 1px dashed #c6e1c6;border-radius: 50%;width: 1.3rem;height: 1.3rem;display: flex;align-items: center;justify-content: center;cursor: inherit !important;background: #c6e1c6;color: #5b841b;', 'This product is linked to ' . $orders_count . ' orders.', $orders_count );
-		} else {
-			// Orders not found for this product.
-			printf( '<span style="%s" class="tips" data-tip="%s"><strong style="color:#50575e;">%s</strong></span>', 'border: 1px dashed #50575e;border-radius: 50%;width: 1.3rem;height: 1.3rem;display: flex;align-items: center;justify-content: center;cursor: inherit !important;', 'No orders related to this product were found.', 0 );
-		}
-	}
 }
 
 // Retrieve parent products for a simple product

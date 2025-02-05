@@ -418,6 +418,9 @@ function tt_sync_wc_product_from_ns( $trek_trip ) {
         // Add 'nofollow' and 'noindex' for the Date Trip / Simple product.
         update_post_meta( $product_id, '_yoast_wpseo_meta-robots-noindex', 1 ); // Update Yoast meta for noindex.
         update_post_meta( $product_id, '_yoast_wpseo_meta-robots-nofollow', 1 ); // Update Yoast meta for nofollow.
+
+        // Make empty update of the post to save the apply the yoast updates.
+        wp_update_post( array( 'ID' => $product_id ) );
     }
 }
 

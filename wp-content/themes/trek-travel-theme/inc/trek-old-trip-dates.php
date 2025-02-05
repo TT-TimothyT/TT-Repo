@@ -272,10 +272,8 @@ class TT_Old_Trip_Date_List_Table extends WP_List_Table {
 			'title'          => __( 'Product Title', 'woocommerce' ),
 			'id'             => __( 'Product ID', 'woocommerce' ),
 			'sku'            => __( 'SKU', 'woocommerce' ),
-			'price'          => __( 'Price', 'woocommerce' ),
 			'last_synced'    => __( 'Last Synced', 'woocommerce' ),
 			'parent_product' => __( 'Parent Product', 'woocommerce' ),
-			'orders_count'   => __( 'Orders Count', 'woocommerce' ),
 		);
 		return $columns;
 	}
@@ -349,8 +347,6 @@ class TT_Old_Trip_Date_List_Table extends WP_List_Table {
 				return get_post_meta( $item->ID, '_sku', true );
 			case 'id':
 				return $item->ID;
-			case 'price':
-				return wc_price( get_post_meta( $item->ID, '_price', true ) );
 			case 'stock':
 				return wc_stock_amount( get_post_meta( $item->ID, '_stock', true ) );
 			case 'last_synced':
@@ -378,17 +374,6 @@ class TT_Old_Trip_Date_List_Table extends WP_List_Table {
 					$parents_output .= __('None', 'woocommerce');
 				}
 				return $parents_output;
-			case 'orders_count':
-				// Note: if the $item->ID is an empty string, 0, null, or false will return all the orders.
-				$orders_ids = (array) get_orders_ids_by_product_id( $item->ID );
-
-				if( ! empty( $orders_ids ) ) {
-					$orders_count = count( $orders_ids );
-					return sprintf( '<span style="%s" class="tips" data-tip="%s"><strong style="color:#5b841b;">%s</strong></span>', 'border: 1px dashed #c6e1c6;border-radius: 50%;width: 1.3rem;height: 1.3rem;display: flex;align-items: center;justify-content: center;cursor: inherit !important;background: #c6e1c6;color: #5b841b;', 'This product is linked to ' . $orders_count . ' orders.', $orders_count );
-				} else {
-					// Orders not found for this product.
-					return sprintf( '<span style="%s" class="tips" data-tip="%s"><strong style="color:#50575e;">%s</strong></span>', 'border: 1px dashed #50575e;border-radius: 50%;width: 1.3rem;height: 1.3rem;display: flex;align-items: center;justify-content: center;cursor: inherit !important;', 'No orders related to this product were found.', 0 );
-				}
 			default:
 				return print_r( $item, true ); // Show the whole array for debugging purposes
 		}
