@@ -6257,8 +6257,8 @@ function calculate_cart_total_tax( $cart ) {
         $product_tax_rate        = floatval( get_post_meta( $product_id, 'tt_meta_taxRate', true ) );
         $first_product_price     = get_post_meta( $product_id, '_price', true );
         $first_product_price     = str_replace( ',', '', $first_product_price );
-        $single_supplement_price = floatval( get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true ) );
-        $bike_upgrade_price      = floatval( get_post_meta( $product_id, 'tt_meta_bikeUpgradePrice', true ) );
+        $single_supplement_price = wc_format_decimal( get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true ) );
+        $bike_upgrade_price      = wc_format_decimal( get_post_meta( $product_id, 'tt_meta_bikeUpgradePrice', true ) );
         $discount_total          = $cart->get_cart_discount_total();
         if ( isset( $discount_total ) && ! empty( $discount_total ) && 0 < $discount_total ) {
             $first_product_price = floatval( $first_product_price ) - floatval( $discount_total );
@@ -6278,7 +6278,7 @@ function calculate_cart_total_tax( $cart ) {
                     if ( 78972 === $item_id ) {
                         $product_price = $bike_upgrade_price;
                     }
-                    if ( $product_id === $item_id & $first_product === false ) {
+                    if ( $product_id === $item_id && $first_product === false ) {
                         $first_product = true;
                         $product_price = $first_product_price;
                     }

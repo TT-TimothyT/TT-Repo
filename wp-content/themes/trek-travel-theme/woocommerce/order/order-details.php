@@ -37,7 +37,7 @@ if ( $first_item ) {
 	$first_product_price     = get_post_meta( $product_id, '_price', true );
 	$first_product_price     = str_replace( ',', '', $first_product_price );
 	$product_tax_rate        = floatval( get_post_meta( $product_id, 'tt_meta_taxRate', true ) );
-	$single_supplement_price = floatval( get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true ) );
+	$single_supplement_price = wc_format_decimal( get_post_meta( $product_id, 'tt_meta_singleSupplementPrice', true ) );
 	$discount_total          = $order->get_discount_total();
 	if ( isset( $discount_total ) && ! empty( $discount_total ) ) {
 		$first_product_price = floatval( $first_product_price ) - floatval( $discount_total );
