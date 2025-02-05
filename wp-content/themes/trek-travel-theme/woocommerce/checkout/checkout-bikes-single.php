@@ -5,10 +5,19 @@
  * @uses checkout-bikes-available.php template for the bike selecting grid box listing.
  */
 
+$auto_sel_bm_id    = tt_get_auto_select_bike_model_id( $args );
+if ( empty( $args['posted_bike_type_id'] ) && ! empty( $auto_sel_bm_id ) ) {
+	// Set the auto selected bike model id.
+	$args['posted_bike_type_id'] = $auto_sel_bm_id;
+}
 $is_primary        = isset( $args['is_primary'] ) && is_bool( $args['is_primary'] ) ? $args['is_primary'] : true;
 $guest_name        = tt_validate( $args['guest_name'] );
 $guest_num         = intval( tt_validate( $args['guest_num'], 1 ) );
 $posted_bike_id    = is_numeric( $args['posted_bike_id'] ) ? (int) $args['posted_bike_id'] : '';
+$bike_type_info    = tt_ns_get_bike_type_info( $args['posted_bike_type_id'] );
+$is_bike_upgrade   = $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ? true : false;
+$bike_arr          = tt_get_local_bike_detail( $args['ns_trip_id'], $args['sku'], $posted_bike_id );
+$is_bike_available = $bike_arr && isset( $bike_arr[0]['available'] ) && (int) $bike_arr[0]['available'] > 0 ? true : false;
 $non_rider_bike_id = 5257;
 $own_bike_id       = 5270;
 
@@ -35,7 +44,6 @@ if( in_array( $trip_style_name, $hide_jersey_for_arr ) ) {
 	// Hide the Jersey options.
 	$should_show_jersey_select = false;
 }
-
 
 /**
  * Fields settings.
@@ -219,6 +227,40 @@ if( ! $is_primary ) :
 	<!-- Additional Bike and Gear Info -->
 	<div class="checkout-bikes__additional-bike-info my-4">
 		<p class="fw-medium fs-xl lh-md"><?php esc_html_e( 'Additional Bike & Gear Information', 'trek-travel-theme' ); ?></p>
+		<?php if ( $is_bike_upgrade ) : ?>
+			<div class="checkout-timeline__info rounded-1 mb-20 w-100 bike-size-disclaimer-ctr" style="display: flex;">
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/checkout/checkout-info.svg' ); ?>">
+				<p class="mb-0 fs-sm lh-sm bike-size-disclaimer">
+				<?php
+					// Limited quantities available for each trip date. Call for more info.
+					printf(
+						wp_kses(
+							/* translators: %1$s: Phone number; */
+							__( 'Limited quantities available for each trip date. <a href="%1$s">Call</a> for more info.', 'trek-travel-theme' ), 
+							array(
+								'a' => array(
+									'class'  => array(),
+									'href'   => array(),
+									'target' => array()
+								)
+							)
+						),
+						esc_url( 'tel:8664648735' ),
+					);
+					?>
+				</p>
+			</div>
+		<?php elseif ( $posted_bike_id && ! $is_bike_upgrade && ! $is_bike_available ) : ?>
+			<div class="checkout-timeline__info rounded-1 mb-20 w-100 bike-size-disclaimer-ctr" style="display: flex;">
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/checkout/checkout-info.svg' ); ?>">
+				<p class="mb-0 fs-sm lh-sm bike-size-disclaimer"><?php esc_html_e( 'Your request for this bike size is being processed and is not guaranteed. We will follow up with you in 1 business day.', 'trek-travel-theme' ); ?></p>
+			</div>
+		<?php else : ?>
+			<div class="checkout-timeline__info rounded-1 mb-20 w-100 bike-size-disclaimer-ctr" style="display: none;">
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/checkout/checkout-info.svg' ); ?>">
+				<p class="mb-0 fs-sm lh-sm bike-size-disclaimer"></p>
+			</div>
+		<?php endif; ?>
 		<!-- Bike Size -->
 		<div class="form-floating checkout-bikes__bike-size" data-id="<?php echo esc_attr( $bike_gears_fields['own_bike']['data_type'] ); ?>" style="<?php echo esc_attr( $bike_gears_fields['own_bike']['style'] ); ?>">
 			<select name="<?php echo esc_attr( $bike_gears_fields['bike_size']['name'] ); ?>" class="form-select tt_bike_size_change" data-guest-index="<?php echo esc_attr( $bike_gears_fields['bike_size']['data_guest_index'] ); ?>" id="<?php echo esc_attr( $bike_gears_fields['bike_size']['id'] ); ?>" aria-label="<?php esc_html_e( 'Bike size select', 'trek-travel-theme' ); ?>"<?php echo esc_attr( $own_bike_id !== $posted_bike_id && $non_rider_bike_id !== $posted_bike_id ? ' ' . 'required' : '' ); ?>>

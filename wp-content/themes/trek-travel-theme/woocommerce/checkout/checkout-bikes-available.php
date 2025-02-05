@@ -85,6 +85,9 @@ if ( $available_bikes ) :
 							<span class="radio-selection<?php echo esc_attr( $is_selected_bike_model ? ' ' . 'checkout-bikes__selected-bike-icon' : ' ' . 'checkout-bikes__select-bike-icon' ); ?>"></span>
 						</div>
 						<?php if( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) : ?>
+							<div class="d-flex ms-4">
+								<p class="fw-normal fs-sm lh-sm"><?php esc_html_e( 'Limited Quantities Available!', 'trek-travel-theme' ); ?></p>
+							</div>
 							<div class="checkout-bikes__price-upgrade d-flex ms-4">
 								<p class="fw-normal fs-sm lh-sm"><?php esc_html_e( 'Upgrade now', 'trek-travel-theme' ); ?></p>
 								<p class="fw-bold fs-sm lh-sm">&nbsp;+<span class="amount"><span class="woocommerce-Price-currencySymbol"></span><?php echo esc_attr( $bike_upgrade_price );?></span></p>

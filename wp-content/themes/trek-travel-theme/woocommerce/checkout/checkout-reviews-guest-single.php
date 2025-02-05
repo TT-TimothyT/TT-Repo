@@ -47,7 +47,7 @@ endif;
 				<?php foreach( $args['bike_info'] as $item_key => $bike_info ) : ?>
 					<?php if( ! empty( $bike_info ) && '-' !== $bike_info ) : ?>
 						<li class="fs-md lh-sm mb-0 mb-md-1">
-							<?php echo esc_html( $item_key . ' ' . $bike_info ); ?>
+							<?php echo wp_kses_post( $item_key . ' ' . $bike_info ); ?>
 						</li>
 					<?php endif; ?>
 				<?php endforeach; ?>

@@ -3710,15 +3710,45 @@ function tt_get_bikes_by_trip_info( $trip_id = '', $tripCode = '', $bikeTypeId =
                         $option_disabled = '';
                     }
                 } else {
-                    $option_disabled = 'disabled';
+                    if ( $bike_type_info['isBikeUpgrade'] === 1 ) {
+                        $option_disabled = 'disabled';
+                    }
                 }
                 if ($bike_size_id && $bike_size_name) {
-                    $selected = ($bike_size_id == $s_bike_size_id ? 'selected' : '');
-                    $bike_size_opts .= '<option ' . $selected . ' value="' . $bike_size_id . '" ' . $option_disabled . '>' . $bike_size_name . '</option>';
+                    if ( $bike_type_info['isBikeUpgrade'] === 1 ) {
+                        if ( $option_disabled === 'disabled' ) {
+                            $selected = ( $bike_size_id == $s_bike_size_id ? 'selected' : '' );
+                            $bike_size_opts .= '<option ' . $selected . ' class="upgrade" value="' . $bike_size_id . '" ' . $option_disabled . '>' . $bike_size_name . ' (Sold out)</option>';
+                        } else {
+                            $selected = ( $bike_size_id == $s_bike_size_id ? 'selected' : '' );
+                            $bike_size_opts .= '<option ' . $selected . ' class="upgrade" value="' . $bike_size_id . '" ' . $option_disabled . '>' . $bike_size_name . ' (Only ' . $bike_available . ' left)</option>';
+                        }
+                    } else {
+                        $selected = ($bike_size_id == $s_bike_size_id ? 'selected' : '');
+                        if ( (int) $bike_available <= 0 ) {
+                            $bike_size_opts .= '<option ' . $selected . ' class="limited" value="' . $bike_size_id . '">' . $bike_size_name . ' (request this size)</option>';
+                        } else {
+                            $bike_size_opts .= '<option ' . $selected . ' value="' . $bike_size_id . '">' . $bike_size_name . '</option>';
+                        }
+                    }
                 }
                 if ($bike_type_id && $bike_type_name) {
-                    $selected1 = ($loop_bikeId == $s_bike_type_id ? 'selected' : '');
-                    $bike_Type_opts .= '<option ' . $selected1 . ' value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . '</option>';
+                    if ( $bike_type_info['isBikeUpgrade'] === 1 ) {
+                        if ( $option_disabled === 'disabled' ) {
+                            $selected1 = ( $loop_bikeId == $s_bike_type_id ? 'selected' : '' );
+                            $bike_Type_opts .= '<option ' . $selected1 . ' class="upgrade" value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . ' (Sold out)</option>';
+                        } else {
+                            $selected1 = ( $loop_bikeId == $s_bike_type_id ? 'selected' : '' );
+                            $bike_Type_opts .= '<option ' . $selected1 . ' class="upgrade" value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . ' (Only ' . $bike_available . ' left)</option>';
+                        }
+                    } else {
+                        $selected1 = ( $loop_bikeId == $s_bike_type_id ? 'selected' : '' );
+                        if ( (int) $bike_available <= 0 ) {
+                            $bike_Type_opts .= '<option ' . $selected1 . ' class="limited" value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . ' (request this size)</option>';
+                        } else {
+                            $bike_Type_opts .= '<option ' . $selected1 . ' value="' . $bike_type_id . '" ' . $option_disabled . '>' . $bike_type_name . '</option>';
+                        }
+                    }
                 }
             }
         }
@@ -4021,8 +4051,12 @@ function trek_tt_bike_selection_ajax_action_cb() {
         if ( isset($cart_item['product_id']) && !in_array($cart_item['product_id'], $accepted_p_ids)) {
             if ( $guest_number == 0 ) {
                 $cart_item['trek_user_checkout_data']['bike_gears']['primary']['bikeTypeId'] = $bikeTypeId;
+                $cart_item['trek_user_checkout_data']['bike_gears']['primary']['bikeId']     = ''; // Reset bikeId.
+                $cart_item['trek_user_checkout_data']['bike_gears']['primary']['bike_size']  = ''; // Reset bike_size.
             } else {
                 $cart_item['trek_user_checkout_data']['bike_gears']['guests'][$guest_number]['bikeTypeId'] = $bikeTypeId;
+                $cart_item['trek_user_checkout_data']['bike_gears']['guests'][$guest_number]['bikeId']     = ''; // Reset bikeId.
+                $cart_item['trek_user_checkout_data']['bike_gears']['guests'][$guest_number]['bike_size']  = ''; // Reset bike_size.
             }
             if ( $guest_number == 0 && $isBikeUpgrade == true ) {
                 $cart_item['trek_user_checkout_data']['bike_gears']['primary']['upgrade'] = 'yes';
@@ -8843,5 +8877,42 @@ function tt_image($field_name, $size = 'full', $args = []) {
     }
 }
 
+/**
+ * Take the bike model ID from the available bikes if there is only one bike available.
+ *
+ * @param array $args The arguments for the function.
+ * @param int $args['ns_trip_id'] The trip ID.
+ * @param string $args['sku'] The SKU of the bike.
+ *
+ * @return int|null The ID of bike model for auto selection.
+ */
+function tt_get_auto_select_bike_model_id( $args = array() ) {
+    if ( empty( $args ) ) {
+        return null;
+    }
 
+    $available_bikes             = tt_get_local_bike_detail( tt_validate( $args['ns_trip_id'] ), tt_validate( $args['sku'] ) );
+    $auto_selected_bike_model_id = null;
+    try {
+        // Extract the bike model ids from the available bikes.
+        $unique_available_bikes = array_unique(array_filter(array_map(function ($bike) {
+            if (!isset($bike['bikeModel'])) {
+                return null;
+            }
+            $bikeModel = json_decode($bike['bikeModel'], true);
+            return $bikeModel['id'] ?? null;
+        }, $available_bikes)));
+
+        // Count unique bike models.
+        $unique_available_bikes_count = count( $unique_available_bikes );
+        if ( $unique_available_bikes_count === 1 ) {
+            // Auto select the bike model if there is only one bike available.
+            $auto_selected_bike_model_id = (int) $unique_available_bikes[0];
+        }
+    } catch ( Exception $e ) {
+        $auto_selected_bike_model_id  = null;
+    }
+
+    return $auto_selected_bike_model_id;
+}
 

@@ -2700,6 +2700,21 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
         if (response.size_opts) {
           jQuery('select[name="bike_gears[primary][bike_size]"]').html(response.size_opts);
         }
+        let isBikeUpgrade = response.isBikeUpgrade;
+        // Traverse up to the `.checkout-bikes__grid-list` container
+        var gridList = parentDiv.closest('.checkout-bikes__grid-list');
+
+        // Find `.bike-size-disclaimer` within the same `.checkout-bikes__additional-bike-info` block
+        var closestDisclaimer = gridList.siblings('.checkout-bikes__additional-bike-info').find('.bike-size-disclaimer');
+
+        if (isBikeUpgrade === true) {
+          if (closestDisclaimer.length) {
+            closestDisclaimer.closest('.bike-size-disclaimer-ctr').css('display','flex');
+            closestDisclaimer.html(`Limited quantities available for each trip date. <a href="tel:8664648735">Call</a> for more info.`);
+          }
+        } else {
+          closestDisclaimer.closest('.bike-size-disclaimer-ctr').css('display','none');
+        }
         // This is async function so think how to prevent unbloking UI before finished.
         reBuildBikeSizeOptions(`bike_gears[primary][bike_size]`);
       }
@@ -2710,6 +2725,21 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
           jQuery('input[name="bike_gears[guests][' + guest_num[1] + '][bikeId]"]').val('');
           if (response.size_opts) {
             jQuery(`select[name="bike_gears[guests][${guest_num[1]}][bike_size]"]`).html(response.size_opts);
+          }
+          let isBikeUpgrade = response.isBikeUpgrade;
+          // Traverse up to the `.checkout-bikes__grid-list` container
+          var gridList = parentDiv.closest('.checkout-bikes__grid-list');
+
+          // Find `.bike-size-disclaimer` within the same `.checkout-bikes__additional-bike-info` block
+          var closestDisclaimer = gridList.siblings('.checkout-bikes__additional-bike-info').find('.bike-size-disclaimer');
+
+          if (isBikeUpgrade === true) {
+            if (closestDisclaimer.length) {
+              closestDisclaimer.html(`Limited quantities available for each trip date. <a href="tel:8664648735">Call</a> for more info.`);
+              closestDisclaimer.closest('.bike-size-disclaimer-ctr').css('display','flex');
+            }
+          } else {
+            closestDisclaimer.closest('.bike-size-disclaimer-ctr').css('display','none');
           }
           // This is async function so think how to prevent unbloking UI before finished.
           reBuildBikeSizeOptions(`bike_gears[guests][${guest_num[1]}][bike_size]`);
@@ -3113,6 +3143,22 @@ jQuery('body').on('change', '.tt_bike_size_change', function () {
     bikeTypeId = jQuery(`div[data-selector="tt_bike_selection_guest_${guest_index}"] input[type="radio"]:checked`).val();
   }
   var bike_size = jQuery(this).val();
+  var limitedSize = jQuery(this).find('option:selected').hasClass('limited');
+  var upgradeSize = jQuery(this).find('option:selected').hasClass('upgrade');
+
+  // Find the bike size disclaimer element
+  var disclaimerElement = jQuery(this).closest('.form-floating').parents('.checkout-bikes__additional-bike-info').find('.bike-size-disclaimer');
+
+  if (limitedSize === true) {
+    disclaimerElement.text("Your request for this bike size is being processed and is not guaranteed. We will follow up with you in 1 business day.");
+    disclaimerElement.closest('.bike-size-disclaimer-ctr').css('display', 'flex');
+  } else if( upgradeSize === true ) {
+    disclaimerElement.html(`Limited quantities available for each trip date. <a href="tel:8664648735">Call</a> for more info.`);
+    disclaimerElement.closest('.bike-size-disclaimer-ctr').css('display', 'flex');
+  } else {
+    disclaimerElement.closest('.bike-size-disclaimer-ctr').css('display', 'none');
+  }
+
   var targetInput = jQuery(bikeidInput);
   var actionName = 'tt_bike_size_change_ajax_action';
   jQuery.ajax({

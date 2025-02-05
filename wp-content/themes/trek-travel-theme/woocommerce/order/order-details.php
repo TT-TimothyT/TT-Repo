@@ -541,6 +541,13 @@ if ( $show_downloads ) {
 												'shipping'     => 'Shipping',
 												'i am driving' => "I'm driving"
 											);
+
+											$bike_type_info_primary    = tt_ns_get_bike_type_info( $review_bikes_arr_primary['bikeTypeId'] );
+											$is_bike_upgrade_primary   = $bike_type_info && isset( $bike_type_info_primary['isBikeUpgrade'] ) && $bike_type_info_primary['isBikeUpgrade'] == 1 ? true : false;
+											$bike_arr_primary          = tt_get_local_bike_detail( $trip_info['ns_trip_Id'], $trip_info['sku'], $review_bikes_arr_primary['bikeId'] );
+											$is_bike_available_primary = $bike_arr_primary && isset( $bike_arr_primary[0]['available'] ) && (int) $bike_arr_primary[0]['available'] > 0 ? true : false;
+											
+											$requested_label_primary   = $review_bikes_arr_primary['bikeId'] && ! $is_bike_upgrade_primary && ! $is_bike_available_primary ? ' (<span class="fw-bold">' . __( 'request pending', 'trek-travel-theme' ) . '</span>)' : '';
 		
 											$checkout_review_bike_primary_args = array(
 												'is_non_rider' => $non_rider_bike_id === (int) tt_validate( $review_bikes_arr_primary['bikeId'] ),
@@ -549,7 +556,7 @@ if ( $show_downloads ) {
 												'bike_info'    => array(
 													'Activity Level:'         => ! $is_hiking_checkout ? str_replace( 'Non-Hiker', 'Non-Rider', tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_primary['rider_level'] ) ) ) : tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_primary['activity_level'] ) ),
 													'Bike:'                   => ! in_array( (int) tt_validate( $review_bikes_arr_primary['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? tt_validate( tt_get_custom_item_name('ns_bikeType_info' )[ tt_validate( array_search( tt_validate( $review_bikes_arr_primary['bikeTypeId'] ), array_column( tt_get_custom_item_name( 'ns_bikeType_info' ), 'id' ) ) ) ]['name'] ) : ( $own_bike_id === (int) tt_validate( $review_bikes_arr_primary['bikeId'] ) ? 'Bringing own' : '' ),
-													'Bike Size:'              => tt_get_custom_item_name( 'syncBikeSizes', tt_validate( $review_bikes_arr_primary['bike_size'] ) ),
+													'Bike Size:'              => tt_get_custom_item_name( 'syncBikeSizes', tt_validate( $review_bikes_arr_primary['bike_size'] ) ) . $requested_label_primary,
 													'Transportation Options:' => $transportation_options[ tt_validate( $review_bikes_arr_primary['transportation_options'] ) ], // If selected Own Bike.
 													'Type of bike:'           => tt_validate( $review_bikes_arr_primary['type_of_bike'] ), // If selected Own Bike.
 													'Rider Height:'           => tt_get_custom_item_name( 'syncHeights', tt_validate( $review_bikes_arr_primary['rider_height'] ) ),
@@ -565,6 +572,14 @@ if ( $show_downloads ) {
 											if( $guests ) {
 												foreach ( $guests as $guest_num => $guest ) {
 													$review_bikes_arr_guest = $review_bikes_arr[$guest_num];
+
+													$bike_type_info_guest    = tt_ns_get_bike_type_info( $review_bikes_arr_guest['bikeTypeId'] );
+													$is_bike_upgrade_guest   = $bike_type_info && isset( $bike_type_info_guest['isBikeUpgrade'] ) && $bike_type_info_guest['isBikeUpgrade'] == 1 ? true : false;
+													$bike_arr_guest          = tt_get_local_bike_detail( $trip_info['ns_trip_Id'], $trip_info['sku'], $review_bikes_arr_guest['bikeId'] );
+													$is_bike_available_guest = $bike_arr_guest && isset( $bike_arr_guest[0]['available'] ) && (int) $bike_arr_guest[0]['available'] > 0 ? true : false;
+
+													$requested_label_guest   = $review_bikes_arr_guest['bikeId'] && ! $is_bike_upgrade_guest && ! $is_bike_available_guest ? ' (<span class="fw-bold">' . __( 'request pending', 'trek-travel-theme' ) . '</span>)' : '';
+													
 													$checkout_review_bike_guest_args = array(
 														'is_non_rider' => $non_rider_bike_id === (int) tt_validate( $review_bikes_arr_guest['bikeId'] ),
 														'is_primary'   => false,
@@ -579,7 +594,7 @@ if ( $show_downloads ) {
 														'bike_info'    => array(
 															'Activity Level:'         => ! $is_hiking_checkout ? str_replace( 'Non-Hiker', 'Non-Rider', tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_guest['rider_level'] ) ) ) : tt_get_custom_item_name( 'syncActivityLevel', tt_validate( $review_bikes_arr_guest['activity_level'] ) ),
 															'Bike:'                   => ! in_array( (int) tt_validate( $review_bikes_arr_guest['bikeId'] ), array( $own_bike_id, $non_rider_bike_id ) ) ? tt_validate( tt_get_custom_item_name('ns_bikeType_info' )[ tt_validate( array_search( tt_validate( $review_bikes_arr_guest['bikeTypeId'] ), array_column( tt_get_custom_item_name( 'ns_bikeType_info' ), 'id' ) ) ) ]['name'] ) : ( $own_bike_id === (int) tt_validate( $review_bikes_arr_guest['bikeId'] ) ? 'Bringing own' : '' ),
-															'Bike Size:'              => tt_get_custom_item_name( 'syncBikeSizes', tt_validate( $review_bikes_arr_guest['bike_size'] ) ),
+															'Bike Size:'              => tt_get_custom_item_name( 'syncBikeSizes', tt_validate( $review_bikes_arr_guest['bike_size'] ) ) . $requested_label_guest,
 															'Transportation Options:' => $transportation_options[ tt_validate( $review_bikes_arr_guest['transportation_options'] ) ], // If selected Own Bike.
 															'Type of bike:'           => tt_validate( $review_bikes_arr_guest['type_of_bike'] ), // If selected Own Bike.
 															'Rider Height:'           => tt_get_custom_item_name( 'syncHeights', tt_validate( $review_bikes_arr_guest['rider_height'] ) ),

@@ -21,7 +21,7 @@
 				<?php foreach( $args['bike_info'] as $item_key => $bike_info ) : ?>
 					<?php if( ! empty( $bike_info ) && '-' !== $bike_info ) : ?>
 						<li class="mb-0 fw-normal order-details__text">
-							<?php echo esc_html( $item_key . ' ' . $bike_info ); ?>
+							<?php echo wp_kses_post( $item_key . ' ' . $bike_info ); ?>
 						</li>
 					<?php endif; ?>
 				<?php endforeach; ?>
