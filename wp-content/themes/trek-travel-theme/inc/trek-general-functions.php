@@ -8693,7 +8693,7 @@ function tt_quick_look_cb() {
     if( is_readable( $tt_quick_look_tpl ) ) {
         // Parent/Grouped Product ID.
         $product_id                                = (int) sanitize_text_field( wp_unslash( $_POST['product_id'] ) );
-        $trip_data                                 = sanitize_text_field( wp_unslash( $_POST['trip_data'] ) );
+        $trip_data                                 = sanitize_text_field( wp_unslash( base64_decode( $_POST['trip_data'] ) ) );
         $current_product                           = wc_get_product( $product_id );
         $quick_look_response['tt_quick_look_html'] = wc_get_template_html( 'woocommerce/quick-view/content-quick-view.php', array( 'product_id' => $product_id, 'trip_data' => $trip_data ) );
         $start_price                               = tt_get_lowest_starting_from_price( $product_id );

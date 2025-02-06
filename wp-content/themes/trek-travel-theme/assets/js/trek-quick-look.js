@@ -47,7 +47,7 @@ jQuery( document ).ready( function( $ ) {
 		jQuery.ajax({
 			type: 'POST',
 			url: trek_quick_look_assets.ajaxurl,
-			data: "action=" + action + "&product_id=" + productId + "&trip_data=" + JSON.stringify( allData ) + "&nonce=" + trek_quick_look_assets.nonce,
+			data: "action=" + action + "&product_id=" + productId + "&trip_data=" + btoa(JSON.stringify( allData )) + "&nonce=" + trek_quick_look_assets.nonce,
 			dataType: 'json',
 			beforeSend : function() {
 				// Maybe Set loader.
