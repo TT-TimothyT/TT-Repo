@@ -582,6 +582,34 @@ function checkout_steps_validations(step = 1) {
       });
     }
 
+    if(jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").text() != '0') {
+      jQuery(".checkout-step-two-hotel__guests-left-counter").addClass('woocommerce-invalid')
+      jQuery(".checkout-step-two-hotel__guests-left-counter").css('color', '#a00');
+      jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").addClass('woocommerce-invalid')
+      jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").css('border-color','#a00');
+      jQuery(".checkout-step-two-hotel__guests-left-counter").siblings('.checkout-step-two-hotel__room-options').css('border','8px solid transparent');
+      jQuery(".checkout-step-two-hotel__guests-left-counter").siblings('.checkout-step-two-hotel__room-options').css('box-shadow','0px 0px 0px 2px rgba(170,0,0,1)');
+      jQuery(".checkout-step-two-hotel__guests-left-counter").children('div:not(.d-flex)').show();
+
+    } else {
+      jQuery(".checkout-step-two-hotel__guests-left-counter").removeClass('woocommerce-invalid')
+      jQuery(".checkout-step-two-hotel__guests-left-counter").css('color', 'black');
+      jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").removeClass('woocommerce-invalid')
+      jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").css('border-color','#b2b3b6');
+      jQuery(".checkout-step-two-hotel__guests-left-counter").siblings('.checkout-step-two-hotel__room-options').css('border','none');
+      jQuery(".checkout-step-two-hotel__guests-left-counter").siblings('.checkout-step-two-hotel__room-options').css('box-shadow','unset');
+    }
+
+    jQuery('.checkout-step-two-hotel__add-occupants').each(function() {
+      if (jQuery(this).is(':visible')) {
+        jQuery(this).children('button').addClass('woocommerce-invalid')
+        jQuery(this).children('button').attr('style', 'border: 1px solid #a00 !important');
+        jQuery(this).children('button').siblings('span').addClass('show-msg');
+      } else {
+        jQuery(this).children('button').siblings('span').removeClass('show-msg');
+      }
+    });
+
     if (selectedGuests != no_of_guests) {
       isValidated = true;
     }
@@ -620,6 +648,7 @@ function checkout_steps_validations(step = 1) {
           isValidated = true;
           validationMessages.push(`Step 2: Field [name: ${CurrentName}, Value: ${CurrentVal}]`);
         } else {
+          console.log(345);
           jQuery(`input[name="${CurrentName}"]`).closest('div.form-floating').removeClass('woocommerce-invalid');
           jQuery(`input[name="${CurrentName}"]`).closest('div.form-floating').addClass('woocommerce-validated');
         }
@@ -639,7 +668,10 @@ function checkout_steps_validations(step = 1) {
           jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "block");
           isValidated = true;
           validationMessages.push(`Step 3: Field [name: ${CurrentName}, Value: ${CurrentVal}]`);
+          // jQuery(this).closest('.checkout-bikes__bike-selection').siblings('.d-flex').removeClass('show-msg');
         } else {
+          console.log(999);
+          jQuery(this).closest('.checkout-bikes__bike-selection').siblings('.d-flex').addClass('show-msg');
           jQuery(`select[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-invalid');
           jQuery(`select[name="${CurrentName}"]`).closest('div').addClass('woocommerce-validated');
           jQuery(this).closest('div.form-row').find(".invalid-feedback").css("display", "none");
@@ -665,7 +697,9 @@ function checkout_steps_validations(step = 1) {
             jQuery(`select[name="${CurrentName}"]`).closest('div').addClass('woocommerce-validated');
         }else{
           if (CurrentVal == '' || CurrentVal == undefined) {
-            jQuery(`input[name="${CurrentName}"]`).closest('div').addClass('woocommerce-invalid');
+            if(!jQuery(`input[name="${CurrentName}"]`).closest('div').hasClass('checkout-bikes__bike-grid-guests') && !jQuery(`input[name="${CurrentName}"]`).closest('div').hasClass('checkout-bikes__grid-list') ) {
+              jQuery(`input[name="${CurrentName}"]`).closest('div').addClass('woocommerce-invalid');
+            }
             jQuery(`input[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-validated');
             jQuery(`select[name="${CurrentName}"]`).closest('div').addClass('woocommerce-invalid');
             jQuery(`select[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-validated');
@@ -679,6 +713,7 @@ function checkout_steps_validations(step = 1) {
             jQuery(`input[name="${CurrentName}"]`).closest('div').addClass('woocommerce-validated');
             jQuery(`select[name="${CurrentName}"]`).closest('div').removeClass('woocommerce-invalid');
             jQuery(`select[name="${CurrentName}"]`).closest('div').addClass('woocommerce-validated');
+            // jQuery(this).closest('.checkout-bikes__bike-selection').siblings('.d-flex').addClass('show-msg');
             if (CurrentName == "tt_waiver") {
               jQuery('.tt_waiver_required').css('display', "none")
             }
@@ -690,6 +725,11 @@ function checkout_steps_validations(step = 1) {
   console.log(validationMessages);
   return isValidated;
 }
+
+jQuery('.checkout-bikes__bike').on('click', function() {
+  jQuery(this).siblings().removeClass('woocommerce-invalid')
+})
+
 var headerMargin = parseInt(jQuery('#header .container').css("marginLeft").replace('px', ''))
   if(jQuery(window).width() > 768 && jQuery(window).width() <= 1440) {
     jQuery('#similar-trips').css('padding-left', headerMargin + 10 + 'px');
@@ -1194,7 +1234,20 @@ jQuery(document).ready(function () {
         validationStatus = true;
       }
       if (validationStatus == true) {
-        var firstInvalidField = jQuery('.woocommerce-invalid').eq(0);
+        if (3 == currentStep) {
+          jQuery('.checkout-bikes__bike-selection').each(function() {
+            var bikeSelection = jQuery(this); // Cache the current element
+            // Check if there is a visible .woocommerce-invalid inside this selection
+            if (bikeSelection.find('.woocommerce-invalid:visible').length > 0) {
+              bikeSelection.parent().addClass('show-error-msg');
+              bikeSelection.siblings('.d-flex').addClass('show-msg');
+              bikeSelection.siblings('.d-flex').children('p:last-of-type').addClass('woocommerce-invalid');
+            } else {
+                bikeSelection.parent().removeClass('show-error-msg'); // Optional: Remove if not needed
+            }
+          });
+        }
+        var firstInvalidField = jQuery('.woocommerce-invalid').filter(':visible').eq(0);
         if(firstInvalidField) {
           jQuery('html, body').animate({
             scrollTop: firstInvalidField.offset().top - 120
@@ -1388,6 +1441,18 @@ jQuery(document).ready(function () {
       }
     }
   
+    if (3 == currentStep) {
+      jQuery('.checkout-bikes__bike-grid-guests').closest('.checkout-bikes__bike-selection').siblings('.d-flex').addClass('show-msg')
+      jQuery('.checkout-bikes__bike-grid-guests').each(function() {
+        jQuery(this).children().each(function() {
+          if (jQuery(this).hasClass('bike-selected')) {
+            jQuery(this).parent().removeClass('woocommerce-invalid'); // Fixed typo here
+            jQuery(this).closest('.checkout-bikes__bike-selection').siblings('.d-flex').removeClass('show-msg')
+          }
+        });
+      });
+    }
+      
     StepValidation();
   });
 
@@ -2465,13 +2530,15 @@ jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
       // Set bikeId to "bring own."
       jQuery('select[name="bike_gears[guests][' + guest_id + '][bike_pedal]"]').val(1);
       jQuery('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"]').val(1);
+      jQuery('select[name="bike_gears[guests][' + guest_id + '][helmet_size]"]').parent().addClass('woocommerce-validated');
       bikeTypeIdSelector = 'input[name="bike_gears[guests][' + guest_id + '][bikeTypeId]"]';
       bikeSizeSelector = 'input[name="bike_gears[guests][' + guest_id + '][bike_size]"]';
     } else {
       jQuery('input[name="bike_gears[primary][bikeId]"]').val(5270);
       // Set bikeId to "bring own."
       jQuery('select[name="bike_gears[primary][bike_pedal]"]').val(1);
-      jQuery('select[name="bike_gears[primary][helmet_size]"]').val(1);
+      jQuery('select[name="bike_gears[primary][helmet_size]"]').val(1); 
+      jQuery('select[name="bike_gears[primary][helmet_size]"]').parent().addClass('woocommerce-validated');
       bikeTypeIdSelector = 'input[name="bike_gears[primary][bikeTypeId]"]';
       bikeSizeSelector = 'input[name="bike_gears[primary][bike_size]"]';
     }
@@ -2488,7 +2555,7 @@ jQuery(document).on('change', '.tt_my_own_bike_checkbox', function () {
     jQuery(bikeSizeSelector).val('');
 
 
-
+    //hide bikes selection boxes 
     jQuery(divID).hide();
     jQuery(bikeCommentsDivID).show();
     if (guest_id != 'primary') {
@@ -2682,6 +2749,7 @@ jQuery('body').on('click', '.bike_selectionElement', function () {
   parentDiv.find('.bike_selectionElement').removeClass("bike-selected");
   jQuery(this).find('.radio-selection').addClass("checkout-bikes__selected-bike-icon");
   jQuery(this).addClass("bike-selected");
+  jQuery(this).siblings().removeClass('woocommerce-invalid');
   // Set bike type id for Bike & Gear Preferences.
   var bikeTypeIdPreferences = jQuery(this).attr('data-type-id');
   jQuery('[name="bike_gears[primary][bike_type_id_preferences]"]').val(bikeTypeIdPreferences);
@@ -2994,6 +3062,13 @@ if (jQuery('.checkout-step-two-hotel__room-options button.btn-number').length > 
             jQuery('div[data-room="d"]').hide();
             jQuery('div[data-room="d-assign"]').hide();
           }
+        }
+        if(jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").text() == '0') {
+          jQuery(".checkout-step-two-hotel__guests-left-counter").css('color', 'black');
+          jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").removeClass('woocommerce-invalid');
+          jQuery(".checkout-step-two-hotel__guests-left-counter span.badge").css('border-color','#b2b3b6');
+          jQuery(".checkout-step-two-hotel__guests-left-counter").siblings('.checkout-step-two-hotel__room-options').css('box-shadow','unset');
+          jQuery(".checkout-step-two-hotel__guests-left-counter").children('div:not(.d-flex)').hide();
         }
         ttLoader.hide();
         jQuery("#currency_switcher").trigger("change")

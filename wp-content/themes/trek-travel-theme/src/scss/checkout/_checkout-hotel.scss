@@ -1,6 +1,27 @@
 .checkout-step-two-hotel{
     &__guests-left-counter {
         align-items: baseline;
+        
+        & > div {
+            align-items: baseline;
+
+            &:last-of-type {
+                display: none;
+            }
+        }
+
+        &.woocommerce-invalid {
+            justify-content: space-between;
+
+            @media (max-width: 768px)  {
+                flex-direction: column;
+            }
+            & > div {
+                &:last-of-type {
+                    display: block;
+                }
+            }
+        }
         .badge{
             background: #FFFFFF;
             color: $black;
@@ -41,8 +62,24 @@
             margin-right: 1rem;
         }
     
+    &__add-occupants:has(> span.show-msg) {
+        flex-direction: column;
+        display: flex;
+
+        align-items: flex-end;
+
+        & > * {
+            width: fit-content;
+        }
+    }
     &__add-occupants-btn{
         order: 3;
+    }
+
+    span.show-msg {
+        display: block !important;
+        color: rgb(170, 0, 0);
+        font-size: 14px;
     }
     &__assigned-occupants-list{
         margin-bottom: 1rem;

@@ -186,7 +186,10 @@ if( ! $is_primary ) :
 ?>
 <hr>
 <?php endif; ?>
-<p class="fw-medium fs-xl lh-lg"><?php echo esc_html( $bike_gears_fields['guest_name'] ) ?></p>
+<div class="d-flex show-msg">
+	<p class="fw-medium fs-xl lh-lg"><?php echo esc_html( $bike_gears_fields['guest_name'] ) ?></p>
+	<p class="fw-medium fs-xl lh-lg woocommerce-invalid"><?php esc_html_e( 'Please make a bike model and gear selection for this guest', 'trek-travel-theme' ); ?></p>
+</div>
 <?php if( $non_rider_bike_id ===  $posted_bike_id ) : ?>
 	<?php $non_rider_level_name = tt_get_custom_item_name( 'syncRiderLevels', tt_validate( $args['rider_level'] ) ); ?>
 	<div class="row">
@@ -322,7 +325,7 @@ if( ! $is_primary ) :
 		</div>
 		<!-- Helmet size -->
 		<div class="form-floating checkout-bikes__bike-size">
-			<select name="<?php echo esc_attr( $bike_gears_fields['helmet_size']['name'] ); ?>" class="form-select" id="<?php echo esc_attr( $bike_gears_fields['helmet_size']['id'] ); ?>" aria-label="<?php esc_html_e( 'Helmet size select', 'trek-travel-theme' ); ?>">
+			<select name="<?php echo esc_attr( $bike_gears_fields['helmet_size']['name'] ); ?>" class="form-select" id="<?php echo esc_attr( $bike_gears_fields['helmet_size']['id'] ); ?>" aria-label="<?php esc_html_e( 'Helmet size select', 'trek-travel-theme' ); ?>" <?php echo esc_attr( $non_rider_bike_id !== $posted_bike_id ? ' ' . 'required' : '' ); ?>>
 				<?php
 					print wp_kses(
 						$bike_gears_fields['helmet_size']['options_html'],

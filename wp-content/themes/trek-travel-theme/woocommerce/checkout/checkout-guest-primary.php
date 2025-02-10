@@ -159,10 +159,19 @@ $bike_gears_fields = array(
                                     $woo_field_value = ! empty( $woo_field_value ) ? date( 'Y-m-d', $woo_field_value ) : '';
                                 }
                                 if ( 'shipping_first_name' === $key ) {
-                                    $woo_field_value = $user_info->first_name;
+                                    if ( !empty( $trek_user_checkout_posted['shipping_first_name']) ) {
+                                        $woo_field_value = $trek_user_checkout_posted['shipping_first_name'];
+                                    } else {
+                                        $woo_field_value = $user_info->first_name;
+                                    }
+
                                 }
                                 if ( 'shipping_last_name' === $key ) {
-                                    $woo_field_value = $user_info->last_name;
+                                    if ( !empty( $trek_user_checkout_posted['shipping_last_name']) ) {
+                                        $woo_field_value = $trek_user_checkout_posted['shipping_last_name'];
+                                    } else {
+                                        $woo_field_value = $user_info->last_name;
+                                    }
                                 }
                                 if ( 'shipping_email' === $key ) {
                                     $woo_field_value = $user_info->user_email;

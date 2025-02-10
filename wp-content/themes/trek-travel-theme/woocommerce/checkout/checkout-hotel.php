@@ -31,7 +31,10 @@ $is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_sku );
 <div class="checkout-step-two-hotel collapse multi-collapse show" id="multiCollapseExample1">
     <p class="fw-medium fs-xxl lh-xl title-poppins"><?php esc_html_e( 'Select Room & Occupants', 'trek-travel-theme' ); ?></p>
     <div class="checkout-step-two-hotel__guests-left-counter d-flex">
-        <p class="fw-medium fs-xl lh-lg"><?php esc_html_e( 'Guests left to assign', 'trek-travel-theme' ); ?></p><span class="badge"><?php echo esc_attr( $number_of_guests ); ?></span>
+        <div class="d-flex">
+            <p class="fw-medium fs-xl lh-lg"><?php esc_html_e( 'Guests left to assign', 'trek-travel-theme' ); ?></p><span class="badge"><?php echo esc_attr( $number_of_guests ); ?></span>
+        </div>
+        <div><?php esc_html_e( 'Please make a room selection for all guests', 'trek-travel-theme' ); ?></div>
     </div>
     <input type="hidden" name="is_open_to_roommate_disabled" value="<?php echo esc_attr( $is_open_to_roommate_disabled ); ?>" />
     <hr>
@@ -50,6 +53,7 @@ $is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_sku );
             <p class="fw-normal fs-md lh-sm mb-4 text-gray-600 checkout-step-two-hotel__room-occupancy"><?php esc_html_e( 'Double Occupancy', 'trek-travel-theme' ); ?> <i class="bi bi-info-circle pdp-double-occupancy checkout-double-occupancy"></i></p>
             <div class="checkout-step-two-hotel__add-occupants" data-room="s-assign" <?php echo wp_strip_all_tags( $s_occupant_hide_show_style ); ?>>
                 <button type="button" class="btn btn-md rounded-1 checkout-step-two-hotel__add-occupants-btn align-items-center mb-4 <?php echo esc_attr( $number_of_guests === 2 ? 'd-none' : '' ); ?>" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/assign_occupants.svg" /><?php esc_html_e( 'Assign Occupants', 'trek-travel-theme' ); ?></button>
+                <span class="d-none">Please assign occupants</span>
             </div>
             <div class="checkout-step-two-hotel__edit-occupants" data-room="s" <?php echo wp_strip_all_tags( $s_occupant_hide_show_style ); ?>>
                 <button type="button" class="btn btn-md rounded-1 checkout-step-two-hotel__edit-occupants-btn align-items-center <?php echo esc_attr( $number_of_guests === 2 ? 'd-none' : '' ); ?>" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/edit_occupants.svg" /><?php esc_html_e( 'Edit Occupants', 'trek-travel-theme' ); ?></button>
@@ -72,6 +76,7 @@ $is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_sku );
             <p class="fw-normal fs-md lh-sm mb-4 text-gray-600 checkout-step-two-hotel__room-occupancy"><?php esc_html_e( 'Double Occupancy', 'trek-travel-theme' ); ?> <i class="bi bi-info-circle pdp-double-occupancy checkout-double-occupancy"></i></p>
             <div class="checkout-step-two-hotel__add-occupants" data-room="d-assign" <?php echo wp_strip_all_tags( $d_occupant_hide_show_style ); ?>>
                 <button type="button" class="btn btn-md rounded-1 checkout-step-two-hotel__add-occupants-btn align-items-center mb-4 <?php echo esc_attr( $number_of_guests === 2 ? 'd-none' : '' ); ?>" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/assign_occupants.svg' ); ?>" /><?php esc_html_e( 'Assign Occupants', 'trek-travel-theme' ); ?></button>
+                <span class="d-none">Please assign occupants</span>
             </div>
             <div class="checkout-step-two-hotel__edit-occupants" data-room="d" <?php echo wp_strip_all_tags( $d_occupant_hide_show_style ); ?>>
                 <button type="button" class="btn btn-md rounded-1 checkout-step-two-hotel__edit-occupants-btn align-items-center <?php echo esc_attr( $number_of_guests === 2 ? 'd-none' : '' ); ?>" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/edit_occupants.svg' ); ?>" /><?php esc_html_e( 'Edit Occupants', 'trek-travel-theme' ); ?></button>
@@ -94,6 +99,7 @@ $is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_sku );
             <p class="fw-normal fs-md lh-sm mb-4 text-gray-600 checkout-step-two-hotel__room-occupancy"><?php esc_html_e( 'Double Occupancy', 'trek-travel-theme' ); ?> <i class="bi bi-info-circle pdp-double-occupancy checkout-double-occupancy"></i></p>
             <div class="checkout-step-two-hotel__add-occupants" data-room="r-assign" <?php echo wp_strip_all_tags( $r_occupant_hide_show_style ); ?>>
                 <button type="button" class="btn btn-md rounded-1 checkout-step-two-hotel__add-occupants-btn align-items-center mb-4 <?php echo esc_attr( $number_of_guests === 1 ? 'd-none' : '' ); ?>" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/assign_occupants.svg' ); ?>" /><?php esc_html_e( 'Assign Occupants', 'trek-travel-theme' ); ?></button>
+                <span class="d-none">Please assign occupants</span>
             </div>
             <div class="checkout-step-two-hotel__edit-occupants" data-room="r" <?php echo wp_strip_all_tags( $r_occupant_hide_show_style ); ?>>
                 <button type="button" class="btn btn-md rounded-1 checkout-step-two-hotel__edit-occupants-btn align-items-center <?php echo esc_attr( $number_of_guests === 1 ? 'd-none' : '' ); ?>" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/edit_occupants.svg' ); ?>" /><?php esc_html_e( 'Edit Occupants', 'trek-travel-theme' ); ?></button>
@@ -118,6 +124,7 @@ $is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_sku );
             <p class="fw-normal fs-md lh-sm mb-4 text-gray-600 checkout-step-two-hotel__room-occupancy"><?php esc_html_e( 'Private', 'trek-travel-theme' ); ?> <i class="bi bi-info-circle checkout-private-popup"></i></p>
             <div class="checkout-step-two-hotel__add-occupants" data-room="p-assign" <?php echo wp_strip_all_tags( $p_occupant_hide_show_style ); ?>>
                 <button type="button" class="btn btn-md rounded-1 checkout-step-two-hotel__add-occupants-btn align-items-center mb-4 <?php echo esc_attr( $number_of_guests === 1 ? 'd-none' : '' ); ?>" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/assign_occupants.svg" /><?php esc_html_e( 'Assign Occupants', 'trek-travel-theme' ); ?></button>
+                <span class="d-none">Please assign occupants</span>
             </div>
             <div class="checkout-step-two-hotel__edit-occupants" data-room="p" <?php echo wp_strip_all_tags( $p_occupant_hide_show_style ); ?>>
                 <button type="button" class="btn btn-md rounded-1 checkout-step-two-hotel__edit-occupants-btn align-items-center <?php echo esc_attr( $number_of_guests === 1 ? 'd-none' : '' ); ?>" id="" data-bs-toggle="modal" data-bs-target="#addOccupantsModal"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/edit_occupants.svg" /><?php esc_html_e( 'Edit Occupants', 'trek-travel-theme' ); ?></button>

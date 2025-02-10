@@ -4652,7 +4652,7 @@ function tt_checkout_fields_error_messages($fields, $errors)
         $errors->add('woocommerce_guests_error', __("Please fill all fields of Guest user in step 1."));
     }
     if ($billing_error == true && $is_same_billing_as_mailing != 1) {
-        $errors->add('woocommerce_tt_billing_error', __("Please fill all billing fields in step 3"));
+        $errors->add('woocommerce_tt_billing_error', __("Please fill all billing fields"));
     } elseif ( $is_same_billing_as_mailing != 1 ) {
         // Let's store the billing address here, before completing the checkout process.
         // This will fire on click the Pay Now button and if there is no error with the billing address, we can store it.
