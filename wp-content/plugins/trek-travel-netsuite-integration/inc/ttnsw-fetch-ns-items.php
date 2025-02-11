@@ -554,13 +554,14 @@ function tt_admin_menu_page_cb()
 function tt_common_logs_admin_menu_page_cb() {
     // Define $ttnsw_logs_table as a global variable.
     global $ttnsw_logs_table;
+    $ttnsw_logs_table->prepare_items();
 
     require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
 
     echo '<div style="margin: 10px 20px 0 2px;" class="tt-logs-table-ctr">';
     echo '<form method="get">';
     echo '<input type="hidden" name="page" value="tt-common-logs">';
-    $ttnsw_logs_table->prepare_items();
+
     $ttnsw_logs_table->search_box( 'Search Logs','search_record' );
     $ttnsw_logs_table->display();
     echo '</form>';
@@ -619,13 +620,14 @@ function tt_common_logs_admin_menu_page_cb_old()
 function tt_guest_bookings_admin_menu_page_cb() {
     // Define $ttnsw_bookings_table as a global variable.
     global $ttnsw_bookings_table;
+    $ttnsw_bookings_table->prepare_items();
 
     require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
 
     echo '<div style="margin: 10px 20px 0 2px;" class="tt-bookings-table-ctr">';
     echo '<form method="get">';
     echo '<input type="hidden" name="page" value="tt-bookings">';
-    $ttnsw_bookings_table->prepare_items();
+
     $ttnsw_bookings_table->search_box( 'Search Bookings','search_record' );
     echo '<div style="display: block;width: 100%;overflow-x: auto;padding-bottom: 1rem;-webkit-overflow-scrolling: touch;-ms-overflow-style: -ms-autohiding-scrollbar;">';
     $ttnsw_bookings_table->display();
@@ -705,8 +707,60 @@ function tt_bookings_admin_menu_page_cb()
 }
 
 function tt_dev_tools_admin_menu_page_cb() {
+
+    // Handle index creation requests
+    if ( isset( $_POST['action'] ) && strpos( $_POST['action'], 'create-index-' ) === 0 ) {
+        check_admin_referer( 'ttnsw_create_index' );
+        
+        $index_name = str_replace( 'create-index-', '', $_POST['action'] );
+        
+        switch ( $index_name ) {
+            case 'created_at':
+                $result = ttnsw_create_index_async( TTNSW_IDX_CREATED_AT );
+                break;
+            case 'args':
+                $result = ttnsw_create_index_async( TTNSW_IDX_ARGS );
+                break;
+            case 'response':
+                $result = ttnsw_create_index_async( TTNSW_IDX_RESPONSE );
+                break;
+            case 'type':
+                $result = ttnsw_create_index_async( TTNSW_IDX_TYPE );
+                break;
+        }
+        
+        if ( $result ) {
+            add_settings_error(
+                'ttnsw-admin-notice',
+                'index-creation-started',
+                sprintf( __( 'Index creation for %s started in background', 'trek-travel-netsuite-integration' ), $index_name ),
+                'info'
+            );
+        } else {
+            add_settings_error(
+                'ttnsw-admin-notice',
+                'index-creation-error',
+                __( 'Another index creation is already in progress', 'trek-travel-netsuite-integration' ),
+                'error'
+            );
+        }
+    }
+
+    // Get current index status
+    $in_progress = ttnsw_get_index_in_progress();
+    $status = get_option( TTNSW_INDEX_STATUS_OPTION, array() );
+
+    if ( $in_progress ) {
+        add_settings_error(
+            'ttnsw-admin-notice',
+            'index-creation-in-progress',
+            sprintf( __( 'Index creation for %s is in progress (started at %s)', 'trek-travel-netsuite-integration' ), $in_progress, $status['started_at'] ),
+            'warning'
+        );
+    }
+
     require_once TTNSW_DIR . 'tt-templates/ttnsw-admin-header.php';
-?>
+    ?>
     <div class="tt-admin-page-div tt-pl-40 tt-mt-30 tt-sync-page">
         <div class="tt-wc-ns-admin-wrap tt-dev-tools">
             <!-- Temp Code -->
@@ -735,8 +789,64 @@ function tt_dev_tools_admin_menu_page_cb() {
             </div>
             <!-- End Temp code -->
             <!-- Temp Code -->
+            <!-- Hidden Developer Tools Section -->
             <div id="dx-repair-tools">
                 <h3>DX Repair Tools</h3>
+                
+                <!-- New Index Management Section -->
+                <div class="add-table-indexes">
+                    <h4>Add Database Logs Table Indexes</h4>
+                    <?php if ( $in_progress ) : ?>
+                        <div class="notice notice-warning inline">
+                            <p>
+                                <?php 
+                                printf(
+                                    __( 'Index creation for %s is in progress (started at %s)', 'trek-travel-netsuite-integration' ),
+                                    esc_html( $in_progress ),
+                                    esc_html( $status['started_at'] )
+                                ); 
+                                ?>
+                            </p>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <form method="post" <?php echo $in_progress ? 'disabled' : ''; ?>>
+                        <?php wp_nonce_field( 'ttnsw_create_index' ); ?>
+                        <button type="submit" name="action" value="create-index-created_at" class="button" 
+                            <?php echo $in_progress || ttnsw_check_index_exists( TTNSW_IDX_CREATED_AT ) ? 'disabled' : ''; ?>>
+                            Create Created At Index
+                            <?php echo ttnsw_check_index_exists( TTNSW_IDX_CREATED_AT ) ? '(Exists)' : ''; ?>
+                        </button>
+                    </form>
+                    
+                    <form method="post" <?php echo $in_progress ? 'disabled' : ''; ?>>
+                        <?php wp_nonce_field( 'ttnsw_create_index' ); ?>
+                        <button type="submit" name="action" value="create-index-args" class="button"
+                            <?php echo $in_progress || ttnsw_check_index_exists( TTNSW_IDX_ARGS ) ? 'disabled' : ''; ?>>
+                            Create Args Fulltext Index
+                            <?php echo ttnsw_check_index_exists( TTNSW_IDX_ARGS ) ? '(Exists)' : ''; ?>
+                        </button>
+                    </form>
+                    
+                    <form method="post" <?php echo $in_progress ? 'disabled' : ''; ?>>
+                        <?php wp_nonce_field( 'ttnsw_create_index' ); ?>
+                        <button type="submit" name="action" value="create-index-response" class="button"
+                            <?php echo $in_progress || ttnsw_check_index_exists( TTNSW_IDX_RESPONSE ) ? 'disabled' : ''; ?>>
+                            Create Response Fulltext Index
+                            <?php echo ttnsw_check_index_exists( TTNSW_IDX_RESPONSE ) ? '(Exists)' : ''; ?>
+                        </button>
+                    </form>
+                    
+                    <form method="post" <?php echo $in_progress ? 'disabled' : ''; ?>>
+                        <?php wp_nonce_field( 'ttnsw_create_index' ); ?>
+                        <button type="submit" name="action" value="create-index-type" class="button"
+                            <?php echo $in_progress || ttnsw_check_index_exists( TTNSW_IDX_TYPE ) ? 'disabled' : ''; ?>>
+                            Create Type Fulltext Index
+                            <?php echo ttnsw_check_index_exists( TTNSW_IDX_TYPE ) ? '(Exists)' : ''; ?>
+                        </button>
+                    </form>
+                </div>
+                <hr>
                 <div class="print-tax-ids">
                     <h4>Taxonomy Switcher Helper</h4>
                     <p>Print the terms IDs for the given taxonomy, split by a comma for easy transfer when using the Taxonomy Switcher Plugin</p>

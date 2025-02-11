@@ -40,63 +40,159 @@ class Guest_Bookings_Table extends WP_List_Table {
 		parent::__construct( $args );	
 	}
 
+	/**
+	 * Get the where conditions for the query
+	 *
+	 * @return array Array of where conditions and values
+	 */
+	private static function get_where_conditions() {
+		global $wpdb;
+		$where_conditions = array();
+		$where_values    = array();
+
+		if ( ! isset( $_REQUEST['s'] ) || empty( $_REQUEST['s'] ) ) {
+			return array( $where_conditions, $where_values );
+		}
+
+		$search_request = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
+		$search_column  = isset( $_REQUEST['search_column'] ) ? sanitize_text_field( $_REQUEST['search_column'] ) : 'all';
+
+		// Define the allowed search columns
+		$allowed_columns = array(
+			'ns_trip_booking_id',
+			'order_id',
+			'guestRegistrationId',
+			'netsuite_guest_registration_id',
+			'guest_email_address',
+			'guest_first_name',
+			'guest_last_name',
+			'trip_code'
+		);
+
+		if ( 'all' === $search_column ) {
+			$search_conditions = array();
+			foreach ( $allowed_columns as $column ) {
+				$search_conditions[] = $column . ' LIKE %s';
+				$where_values[]     = '%' . $wpdb->esc_like( $search_request ) . '%';
+			}
+			$where_conditions[] = '(' . implode( ' OR ', $search_conditions ) . ')';
+		} elseif ( in_array( $search_column, $allowed_columns ) ) {
+			$where_conditions[] = $search_column . ' LIKE %s';
+			$where_values[]     = '%' . $wpdb->esc_like( $search_request ) . '%';
+		}
+
+		return array( $where_conditions, $where_values );
+	}
+
+	/**
+	 * Get paginated and filtered records
+	 *
+	 * @param int $per_page Number of records per page
+	 * @param int $page_number Current page number
+	 * @return array
+	 */
 	private static function get_records( $per_page = 20, $page_number = 1 ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'guest_bookings';
-		$sql        = "SELECT *, COUNT(*) OVER() as cnt FROM {$table_name}";
-		$where_values = array();
-		
-		if ( isset( $_REQUEST['s'] ) && ! empty( $_REQUEST['s'] ) ) {
-			$search_request = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
-			$search_column = isset($_REQUEST['search_column']) ? sanitize_text_field($_REQUEST['search_column']) : 'all';
 
-			// Define the allowed search columns.
-			$allowed_columns = array(
-				'ns_trip_booking_id',
-				'order_id',
-				'guestRegistrationId',
-				'netsuite_guest_registration_id',
-				'guest_email_address',
-				'guest_first_name',
-				'guest_last_name',
-				'trip_code'
-			);
+		// Get where conditions
+		list( $where_conditions, $where_values ) = self::get_where_conditions();
 
-			if ($search_column === 'all') {
-				$search_conditions = array();
-				foreach ($allowed_columns as $column) {
-					$search_conditions[] = $column . ' LIKE %s';
-					$where_values[] = '%' . $wpdb->esc_like($search_request) . '%';
-				}
-				$sql .= ' WHERE (' . implode(' OR ', $search_conditions) . ')';
-			} else {
-				// Check if the selected column is in the allowed list.
-				if (in_array($search_column, $allowed_columns)) {
-					$sql .= ' WHERE ' . $search_column . ' LIKE %s';
-					$where_values[] = '%' . $wpdb->esc_like($search_request) . '%';
+		// Build base query
+		$sql = "SELECT * FROM {$table_name}";
+
+		// Add where conditions
+		if ( ! empty( $where_conditions ) ) {
+			$sql .= ' WHERE ' . implode( ' AND ', $where_conditions );
+		} else {
+			// Load the first page faster by limiting the results to the last 30 days
+			if ( 1 === (int) $page_number ) {
+				$order = ( isset( $_REQUEST['order'] ) && strtoupper( $_REQUEST['order'] ) === 'ASC' ) ? 'ASC' : 'DESC';
+				if ( 'ASC' === $order ) {
+					$earliest_date = $wpdb->get_var( "SELECT MIN(created_at) FROM {$table_name}" );
+					if ( $earliest_date ) {
+						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_ADD(%s, INTERVAL 30 DAY)", $earliest_date );
+					}
+				} else {
+					$sql .= ' WHERE created_at >= NOW() - INTERVAL 30 DAY ';
 				}
 			}
 		}
 
-		// Sort.
+		// Handle ordering
 		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			$allowed_orderby = array('id', 'ns_trip_booking_id', 'order_id', 'created_at', 'modified_at');
-			$orderby = in_array($_REQUEST['orderby'], $allowed_orderby) ? $_REQUEST['orderby'] : 'id';
-			$order = (isset($_REQUEST['order']) && strtoupper($_REQUEST['order']) === 'DESC') ? 'DESC' : 'ASC';
-			$sql .= ' ORDER BY ' . $orderby . ' ' . $order;
+			$allowed_orderby = array( 'id', 'ns_trip_booking_id', 'order_id', 'created_at', 'modified_at' );
+			$orderby = in_array( $_REQUEST['orderby'], $allowed_orderby ) ? $_REQUEST['orderby'] : 'id';
+			$order = ( isset( $_REQUEST['order'] ) && strtoupper( $_REQUEST['order'] ) === 'DESC' ) ? 'DESC' : 'ASC';
+			$sql .= ' ORDER BY ' . esc_sql( $orderby ) . ' ' . esc_sql( $order );
 		} else {
 			$sql .= ' ORDER BY id DESC';
 		}
 
+		// Add pagination
 		$sql .= ' LIMIT %d OFFSET %d';
 		$where_values[] = $per_page;
-		$where_values[] = ($page_number - 1) * $per_page;
+		$where_values[] = ( $page_number - 1 ) * $per_page;
 
-		// Prepare and execute the query with parameterized values.
-		$sql = $wpdb->prepare($sql, $where_values);
-		$result = $wpdb->get_results($sql, 'ARRAY_A');
-		
+		// Prepare and execute query
+		$sql = $wpdb->prepare( $sql, $where_values );
+
+		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
+
+		if ( $wpdb->last_error ) {
+			add_settings_error( 'ttnsw-admin-notice', 'ttnsw_logs_error', $wpdb->last_error, 'error' );
+		}
+
 		return $result;
+	}
+
+	/**
+	 * Get filtered count of records
+	 *
+	 * @return int Total number of records
+	 */
+	private static function get_records_count() {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'guest_bookings';
+		
+		 // Build cache key
+		 $cache_key = 'ttnsw_bookings_count';
+		 if ( isset( $_REQUEST['s'] ) && ! empty( $_REQUEST['s'] ) ) {
+			 $search_request = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
+			 $search_column = isset( $_REQUEST['search_column'] ) ? sanitize_text_field( $_REQUEST['search_column'] ) : 'all';
+			 $cache_key .= '_' . $search_column . '_' . md5( $search_request );
+		 }
+	 
+		 // Try to get cached results
+		 $cached_count = get_transient( $cache_key );
+		 if ( false !== $cached_count ) {
+			 return (int) $cached_count;
+		 }
+	 
+		 // Get where conditions
+		 list( $where_conditions, $where_values ) = self::get_where_conditions();
+	 
+		 // Build the query
+		 $sql = "SELECT COUNT(id) FROM {$table_name}";
+		 
+		 if ( ! empty( $where_conditions ) ) {
+			 $sql .= ' WHERE ' . implode( ' AND ', $where_conditions );
+		 }
+	 
+		 if ( ! empty( $where_values ) ) {
+			 $sql = $wpdb->prepare( $sql, $where_values );
+		 }
+	 
+		 $total = $wpdb->get_var( $sql );
+		 
+		 // Cache the result for 5 minutes
+		 set_transient( $cache_key, $total, 300 );
+	 
+		 return (int) $total;
+	}
+
+	public static function record_count($data = null) {
+		return self::get_records_count();
 	}
 
 	public function get_column_groups() {
@@ -418,29 +514,29 @@ class Guest_Bookings_Table extends WP_List_Table {
 			case 'passport_country_of_issue':
 			case 'place_of_birth':
 				// Display raw data.
-				return $item[ $column_name ];
+				return esc_html($item[ $column_name ]);
 			case 'trip_code':
 				$trip_info     = tt_get_trip_pid_sku_by_orderId( $item[ 'order_id' ] );
 				$trip_id       = $trip_info['ns_trip_Id'];
 				$trip_url_args = array( 'id' => (int) $trip_id );
 				$trip_url      = add_query_arg( $trip_url_args, TT_NS_BASE_URL . TT_NS_SERVICE_ITEM_PATH );
-				return '<a href="' . esc_url( $trip_url ) . '" target="_blank">' . $item[ $column_name ] . '</a>';
+				return '<a href="' . esc_url( $trip_url ) . '" target="_blank">' . esc_html($item[ $column_name ]) . '</a>';
 			case 'ns_trip_booking_id':
 				$booking_url_args = array( 'id' => (int) $item[ $column_name ], 'whence' => '' );
 				$booking_url      = add_query_arg( $booking_url_args, TT_NS_BASE_URL . TT_NS_BOOKINGS_PATH );
-				return '<a href="' . esc_url( $booking_url ) . '" target="_blank">' . $item[ $column_name ] . '</a>';
+				return '<a href="' . esc_url( $booking_url ) . '" target="_blank">' . esc_html($item[ $column_name ]) . '</a>';
 			case 'guestRegistrationId':
 				$guest_reg_url_args = array( 'rectype' => 246, 'id' => (int) $item[ $column_name ], 'whence' => '' );
 				$guest_reg_url      = add_query_arg( $guest_reg_url_args, TT_NS_BASE_URL . TT_NS_CUST_REC_ENTRY_PATH );
-				return '<a href="' . esc_url( $guest_reg_url ) . '" target="_blank">' . $item[ $column_name ] . '</a>';
+				return '<a href="' . esc_url( $guest_reg_url ) . '" target="_blank">' . esc_html($item[ $column_name ]) . '</a>';
 			case 'netsuite_guest_registration_id':
 				$guest_url_args = array( 'id' => (int) $item[ $column_name ], 'whence' => '' );
 				$guest_url      = add_query_arg( $guest_url_args, TT_NS_BASE_URL . TT_NS_GUEST_PATH );
-				return '<a href="' . esc_url( $guest_url ) . '" target="_blank">' . $item[ $column_name ] . '</a>';
+				return '<a href="' . esc_url( $guest_url ) . '" target="_blank">' . esc_html($item[ $column_name ]) . '</a>';
 			case 'releaseFormId':
 				$rf_url_args = array( 'rectype' => 162, 'id' => (int) $item[ $column_name ] );
 				$rf_url      = add_query_arg( $rf_url_args, TT_NS_BASE_URL . TT_NS_CUST_REC_ENTRY_PATH );
-				return '<a href="' . esc_url( $rf_url ) . '" target="_blank">' . $item[ $column_name ] . '</a>';
+				return '<a href="' . esc_url( $rf_url ) . '" target="_blank">' . esc_html($item[ $column_name ]) . '</a>';
 			case 'guest_is_primary':
 			case 'waiver_signed':
 			case 'is_guestreg_cancelled':
@@ -452,13 +548,13 @@ class Guest_Bookings_Table extends WP_List_Table {
 					case 2:
 						return __( 'Female', 'trek-travel-netsuite-integration' );
 					default:
-						return $item[ $column_name ];
+						return esc_html($item[ $column_name ]);
 				}
 			case 'product_id':
 			case 'order_id':
 				$order_url_args = array( 'post' => (int) $item[ $column_name ], 'action' => 'edit' );
 				$order_url      = add_query_arg($order_url_args, admin_url( 'post.php') );
-				return '<a href="' . esc_url( $order_url ) . '" target="_blank">' . $item[ $column_name ] . '</a>';
+				return '<a href="' . esc_url( $order_url ) . '" target="_blank">' . esc_html($item[ $column_name ]) . '</a>';
 			case 'web_order':
 				$order         = wc_get_order( $item[ 'order_id' ] );
 				$tt_order_type = $order->get_meta( 'tt_wc_order_type' );
@@ -512,16 +608,6 @@ class Guest_Bookings_Table extends WP_List_Table {
 			default:
 				return print_r( $item, true );
 		}
-	}
-
-	public static function record_count( $data ) {
-		$total_items = 0;
-
-		if( ! empty( $data ) && is_array( $data ) ) {
-			$total_items = isset( $data[0]['cnt'] ) ? ( int ) $data[0]['cnt'] : 0;
-		}
-
-		return $total_items;
 	}
 
 	public function no_items() {

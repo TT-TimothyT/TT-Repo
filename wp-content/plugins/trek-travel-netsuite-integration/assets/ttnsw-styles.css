@@ -455,7 +455,7 @@ table.tt-common-logs {
 /* ID */
 .tt-logs-table-ctr table.tt-common-logs th:nth-child(1),
 .tt-logs-table-ctr table.tt-common-logs td:nth-child(1) {
-    width: 4%;
+    width: 5%;
 }
 /* Type */
 .tt-logs-table-ctr table.tt-common-logs th:nth-child(2),
@@ -753,4 +753,27 @@ table.tt-common-logs {
 
 .nav-tab-wrapper .nav-tab .dashicons-admin-tools {
     color: #f0ad4e;
+}
+
+.add-table-indexes form {
+    margin-bottom: 10px;
+}
+
+.add-table-indexes button {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+}
+
+.add-table-indexes button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.add-table-indexes .notice {
+    margin: 0 0 1rem;
+}
+
+.add-table-indexes .notice p {
+    margin-bottom: 0;
 }

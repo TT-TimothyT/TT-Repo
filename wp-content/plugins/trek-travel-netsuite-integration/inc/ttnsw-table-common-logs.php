@@ -14,6 +14,12 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 class TT_Common_Logs extends WP_List_Table {
 
+	/**
+	 * Database table name.
+	 * @var string
+	 */
+	private static $table_name = 'tt_common_error_logs';
+
 	public function __construct( $args = array() ) {
 
 		if ( empty( $args ) ) {
@@ -27,45 +33,210 @@ class TT_Common_Logs extends WP_List_Table {
 		parent::__construct( $args );
 	}
 
-	private static function get_records( $per_page = 20, $page_number = 1 ) {
+	/**
+	 * Get the where conditions for the query
+	 *
+	 * @return array Array of where conditions and values
+	 */
+	private static function get_where_conditions() {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'tt_common_error_logs';
-		$sql        = "SELECT *, COUNT(*) OVER() as cnt FROM {$table_name}";
-		$where_values = array();
-		
-		if ( isset( $_REQUEST['s'] ) && !empty($_REQUEST['s']) ) {
-			$search_request = sanitize_text_field(wp_unslash($_REQUEST['s']));
-			$search_column = isset($_REQUEST['search_column']) ? sanitize_text_field($_REQUEST['search_column']) : 'all';
+		$where_conditions = array();
+		$where_values     = array();
 
-			if ($search_column === 'all') {
-				$sql .= ' WHERE (type LIKE %s OR args LIKE %s OR response LIKE %s OR created_at LIKE %s)';
-				$search_pattern = '%' . $wpdb->esc_like($search_request) . '%';
-				$where_values = array_merge($where_values, array($search_pattern, $search_pattern, $search_pattern, $search_pattern));
-			} else {
-				$valid_columns = array('type', 'args', 'response', 'created_at');
-				if (in_array($search_column, $valid_columns)) {
-					$sql .= ' WHERE ' . $search_column . ' LIKE %s';
-					$where_values[] = '%' . $wpdb->esc_like($search_request) . '%';
+		if ( ! isset( $_REQUEST['s'] ) || empty( $_REQUEST['s'] ) ) {
+			return array( $where_conditions, $where_values );
+		}
+
+		$search_request = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
+		
+		// Prepare search term for exact matching
+		$exact_search_term = str_replace(
+			array( '"', "'" ),     // Search for both single and double quotes
+			array( '\"', "\'" ),   // Replace with escaped versions
+			$search_request
+		);
+		$exact_search_term = '"' . $exact_search_term . '"';
+
+		$search_column  = isset( $_REQUEST['search_column'] ) ? sanitize_text_field( $_REQUEST['search_column'] ) : 'all';
+
+		// Get table indexes for FULLTEXT search capabilities
+		$table_name = $wpdb->prefix . self::$table_name;
+		$indexes    = $wpdb->get_results( "SHOW INDEX FROM {$table_name}", ARRAY_A );
+		
+		 // Map columns to their index types
+		$column_index_types = array();
+		if ( $indexes ) {
+			foreach ( $indexes as $index ) {
+				$column_index_types[ $index['Column_name'] ] = strtoupper( $index['Index_type'] );
+			}
+		}
+
+		if ( 'all' === $search_column ) {
+			$fulltext_conditions = array();
+			$like_conditions    = array();
+
+			$searchable_columns = array( 'type', 'args', 'response', 'created_at' );
+			
+			foreach ( $searchable_columns as $column ) {
+				if ( isset( $column_index_types[ $column ] ) && 'FULLTEXT' === $column_index_types[ $column ] ) {
+					 // Add both exact and natural language search for each FULLTEXT column
+					$fulltext_conditions[] = "MATCH({$column}) AGAINST(%s IN NATURAL LANGUAGE MODE)";
+					$where_values[]        = $exact_search_term;
+				} else {
+					// Use LIKE for columns without FULLTEXT index
+					$like_conditions[] = "{$column} LIKE %s";
+					$where_values[]    = '%' . $wpdb->esc_like( $search_request ) . '%';
+				}
+			}
+
+			// Combine all conditions
+			$all_conditions = array_merge( $fulltext_conditions, $like_conditions );
+			if ( ! empty( $all_conditions ) ) {
+				$where_conditions[] = '(' . implode( ' OR ', $all_conditions ) . ')';
+			}
+
+			return array( $where_conditions, $where_values );
+		}
+
+		// Single column search logic
+		$valid_columns = array( 'type', 'args', 'response', 'created_at' );
+		if ( ! in_array( $search_column, $valid_columns ) ) {
+			return array( $where_conditions, $where_values );
+		}
+
+		// Use MATCH AGAINST if column has FULLTEXT index
+		if ( isset( $column_index_types[ $search_column ] ) && 'FULLTEXT' === $column_index_types[ $search_column ] ) {
+			// Try exact phrase search first, fallback to natural language if no results
+			$where_conditions[] = "MATCH({$search_column}) AGAINST(%s IN NATURAL LANGUAGE MODE)";
+			$where_values[]     = $exact_search_term;
+		} else {
+			$where_conditions[] = "{$search_column} LIKE %s";
+			$where_values[]     = '%' . $wpdb->esc_like( $search_request ) . '%';
+		}
+
+		return array( $where_conditions, $where_values );
+	}
+
+	/**
+	 * Get filtered count of records
+	 *
+	 * @return int Total number of records
+	 */
+	private static function get_records_count() {
+		global $wpdb;
+		
+		 // Build cache key
+		$cache_key = 'ttnsw_logs_count';
+		if ( isset( $_REQUEST['s'] ) && ! empty( $_REQUEST['s'] ) ) {
+			$search_request = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
+			$search_column = isset( $_REQUEST['search_column'] ) ? sanitize_text_field( $_REQUEST['search_column'] ) : 'all';
+			$cache_key .= '_' . $search_column . '_' . md5( $search_request );
+		}
+
+		// Try to get cached results
+		$cached_count = get_transient( $cache_key );
+		if ( false !== $cached_count ) {
+			return (int) $cached_count;
+		}
+
+		// Get where conditions
+		list( $where_conditions, $where_values ) = self::get_where_conditions();
+
+		// Build the query
+		$table_name = $wpdb->prefix . self::$table_name;
+		$sql = "SELECT COUNT(id) FROM {$table_name}";
+		
+		if ( ! empty( $where_conditions ) ) {
+			$sql .= ' WHERE ' . implode( ' AND ', $where_conditions );
+		}
+
+		if ( ! empty( $where_values ) ) {
+			$sql = $wpdb->prepare( $sql, $where_values );
+		}
+
+		$total = $wpdb->get_var( $sql );
+		
+		// Cache the result for 5 minutes
+		set_transient( $cache_key, $total, 300 );
+
+		return (int) $total;
+	}
+
+	/**
+	 * Get paginated and filtered records
+	 *
+	 * @param int $per_page Number of records per page
+	 * @param int $page_number Current page number
+	 * @return array
+	 */
+	private static function get_records($per_page = 20, $page_number = 1) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . self::$table_name;
+
+		// Get where conditions
+		list( $where_conditions, $where_values ) = self::get_where_conditions();
+
+		// Build base query
+		$sql = "SELECT id, type, args, response, created_at FROM {$table_name}";
+
+		// Add where conditions if we have any, otherwise add date filtering for first page
+		if ( ! empty( $where_conditions ) ) {
+			$sql .= ' WHERE ' . implode( ' AND ', $where_conditions );
+		} else {
+			// Load the first page faster by limiting the results to the last 30 days
+			if ( 1 === (int) $page_number ) {
+				$order = ( isset( $_REQUEST['order'] ) && strtoupper( $_REQUEST['order'] ) === 'ASC' ) ? 'ASC' : 'DESC';
+				if ( 'ASC' === $order ) {
+					$earliest_date = $wpdb->get_var( "SELECT MIN(created_at) FROM {$table_name}" );
+					if ( $earliest_date ) {
+						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_ADD(%s, INTERVAL 30 DAY)", $earliest_date );
+					}
+				} else {
+					$sql .= ' WHERE created_at >= NOW() - INTERVAL 30 DAY ';
 				}
 			}
 		}
 
+		// Add ordering
 		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			$allowed_orderby = array('id', 'created_at');
-			$orderby = in_array($_REQUEST['orderby'], $allowed_orderby) ? $_REQUEST['orderby'] : 'id';
-			$order = (isset($_REQUEST['order']) && strtoupper($_REQUEST['order']) === 'DESC') ? 'DESC' : 'ASC';
-			$sql .= ' ORDER BY ' . $orderby . ' ' . $order;
+			$allowed_orderby = array( 'id', 'created_at' );
+			$orderby = in_array( $_REQUEST['orderby'], $allowed_orderby ) ? $_REQUEST['orderby'] : 'id';
+			$order = ( isset( $_REQUEST['order'] ) && strtoupper( $_REQUEST['order'] ) === 'ASC' ) ? 'ASC' : 'DESC';
+			$sql .= ' ORDER BY ' . esc_sql( $orderby ) . ' ' . esc_sql( $order );
 		} else {
 			$sql .= ' ORDER BY id DESC';
 		}
 
+		// Add pagination
 		$sql .= ' LIMIT %d OFFSET %d';
 		$where_values[] = $per_page;
-		$where_values[] = ($page_number - 1) * $per_page;
+		$where_values[] = ( $page_number - 1 ) * $per_page;
 
-		$sql = $wpdb->prepare($sql, $where_values);
-		$result = $wpdb->get_results($sql, 'ARRAY_A');
+		// Prepare and execute query
+		$sql = $wpdb->prepare( $sql, $where_values );
+
+		// Debug query execution time
+		$start = microtime( true );
+		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
+		$end = microtime( true );
+		$time = $end - $start;
+
+		add_settings_error( 'ttnsw-admin-notice', 'ttnsw_logs_error', 'Database query time: ' . self::format_execution_time( $time ), 'info' );
+		if ( $wpdb->last_error ) {
+			add_settings_error( 'ttnsw-admin-notice', 'ttnsw_logs_error', $wpdb->last_error, 'error' );
+		}
+
 		return $result;
+	}
+
+	/**
+	 * Get total number of records
+	 *
+	 * @param array $data Not used anymore, kept for backward compatibility
+	 * @return int
+	 */
+	public static function record_count($data = null) {
+		return self::get_records_count();
 	}
 
 	public function get_columns() {
@@ -100,7 +271,7 @@ class TT_Common_Logs extends WP_List_Table {
 			case 'id':
 			case 'type':
 			case 'created_at':
-				return $item[ $column_name ];
+				return esc_html($item[ $column_name ]);
 			case 'args':
 			case 'response':
 				$content = $item[ $column_name ];
@@ -125,16 +296,6 @@ class TT_Common_Logs extends WP_List_Table {
 			default:
 				return print_r( $item, true );
 		}
-	}
-
-	public static function record_count( $data ) {
-		$total_items = 0;
-
-		if( ! empty( $data ) && is_array( $data ) ) {
-			$total_items = isset( $data[0]['cnt'] ) ? ( int ) $data[0]['cnt'] : 0;
-		}
-
-		return $total_items;
 	}
 
 	public function no_items() {
@@ -185,6 +346,7 @@ class TT_Common_Logs extends WP_List_Table {
 		$this->set_pagination_args( [
 			'total_items' => $total_items,
 			'per_page'    => $per_page,
+			'total_pages' => (int) ceil($total_items / $per_page),
 		]);
 		$this->items = $data;
 	}
@@ -212,6 +374,24 @@ class TT_Common_Logs extends WP_List_Table {
 			<?php submit_button($text, '', '', false, array('id' => 'search-submit')); ?>
 		</p>
 		<?php
+	}
+
+	/**
+	 * Formats the execution time in seconds to a human-readable format.
+	 *
+	 * @param float $time Time in seconds
+	 * @return string Formatted time
+	 */
+	private static function format_execution_time($time) {
+		if ($time < 0.001) {
+			return number_format($time * 1000, 2) . ' ms';
+		} elseif ($time < 60) {
+			return number_format($time, 3) . ' s';
+		} else {
+			$minutes = floor($time / 60);
+			$seconds = $time % 60;
+			return $minutes . 'm ' . number_format($seconds, 2) . 's';
+		}
 	}
 
 	public function display() {
