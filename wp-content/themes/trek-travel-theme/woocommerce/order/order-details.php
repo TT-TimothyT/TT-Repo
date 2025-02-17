@@ -353,7 +353,7 @@ if ( $show_downloads ) {
 								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $tt_get_upgrade_qty * $trek_checkout_data['bikeUpgradePrice'] ); ?></p>
 							<?php } ?>
 							<?php if($single_supplement_qty > 0) { ?>
-								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( floatval( $supplement_fees ) ); ?></p>
+								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( wc_format_decimal( $supplement_fees ) ); ?></p>
 							<?php } ?>
 							<?php if($insured_person > 0 && $tt_insurance_total_charges > 0 ) { ?>
 								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( floatval( $tt_insurance_total_charges ) ); ?></p>

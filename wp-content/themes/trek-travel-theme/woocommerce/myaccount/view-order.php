@@ -239,6 +239,7 @@ if ( empty( $singleSupplementPrice ) ) {
 }
 // Calculate the price depends on guest number.
 $supplementFees     = str_ireplace( ',', '', $singleSupplementPrice ); // Strip the , from the price if there's such.
+$supplementFees     = wc_format_decimal( $supplementFees );
 $calcSupplementFees = floatval( $supplementFees ) * $singleSupplementQty; // Calculate the full price.
 $calcSupplementFees = strval( $calcSupplementFees ); // Get the , back to the string.
 $supplementFees     = number_format( $calcSupplementFees, 2 );
@@ -400,7 +401,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                             <p class="mb-0 fw-normal order-details__text">Single Supplement x <?php echo $singleSupplementQty; ?></p>
                                                         </td>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text"></span><?php echo wc_price( floatval( $supplementFees ) ); ?></p>
+                                                            <p class="mb-0 fw-normal order-details__text"></span><?php echo wc_price( wc_format_decimal( $supplementFees ) ); ?></p>
                                                         </td>
                                                     </tr>
                                                 <?php endif; ?>

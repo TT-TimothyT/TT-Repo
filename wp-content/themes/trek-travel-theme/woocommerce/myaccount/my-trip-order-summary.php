@@ -119,6 +119,7 @@ $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true)
 
 //get the supliment fees
 $supplementFees = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku, true);
+$supplementFees = wc_format_decimal( $supplementFees );
 
 //Get the products from the order
 $products = $order->get_items();
