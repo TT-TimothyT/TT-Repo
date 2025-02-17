@@ -3,16 +3,31 @@
 use TTNetSuite\NetSuiteClient;
 
 /**
+ * Check if current user has E-comm User Data Admin role
+ *
+ * @return bool
+ */
+function ttnsw_is_ecomm_user_data_admin() {
+    $user = wp_get_current_user();
+    return in_array('ecomm_user_data_admin', (array) $user->roles);
+}
+
+/**
  * Add a custom admin dashboard page and subpages.
  */
 function trek_ns_intergration_create_menu() {
     $tt_menu_slug = 'trek-travel-ns-wc';
     $icon_url     = TTNSW_URL . '/assets/ns-fav-16x16.png';
 
+    // Check user role
+    $is_ecomm_admin = ttnsw_is_ecomm_user_data_admin();
+    $capability     = $is_ecomm_admin ? 'manage_guest_data' : 'manage_options';
+
+    // Only show main menu for full admins or ecomm admins
     add_menu_page(
         'NetSuite<>WC',
         'NetSuite<>WC',
-        'manage_options',
+        $capability,
         $tt_menu_slug,
         'tt_admin_menu_page_cb',
         $icon_url,
@@ -25,7 +40,7 @@ function trek_ns_intergration_create_menu() {
         $tt_menu_slug,
         'Sync',
         'Sync',
-        'manage_options',
+        $capability,
         $tt_menu_slug,
         'tt_admin_menu_page_cb'
     );
@@ -179,7 +194,11 @@ function ttnsw_sync_page_screen_options() {
     if( ! is_object( $screen ) || $screen->id !== $ttnsw_sync_page) {
         return;
     }
-    
+
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
     // Add help tabs
     $screen->add_help_tab(
         array(
@@ -430,103 +449,108 @@ function tt_admin_menu_page_cb()
             $is_itinerary_filter_available = true;
         }
     }
+
+    $is_ecomm_admin = ttnsw_is_ecomm_user_data_admin();
 ?>
     <div class="tt-admin-page-div tt-pl-40 tt-mt-30 tt-sync-page">
         <div class="tt-wc-ns-admin-wrap">
-            <div id="tt-ns-sync-class">
-                <h3>Manual Sync for WC<>NS</h3>
-                <span class="tt-wc-ns-admin-notice">Clear Caches After Manual Trip Sync!</span>
-                <form class="tt-wp-manual-sync" action="" method="post">
-                    <select name="type" required>
-                        <option value="">Select Sync Type</option>
-                        <option value="trip">Step 1: Get All Trips</option>
-                        <option value="trip-details">Step 2: Get Trip Details</option>
-                        <option value="product-sync">Step 3: Create WC Trip Products</option>
-                        <option value="product-sync-all">Misc: Create WC Trip Products - [All]</option>
-                        <option value="custom-items">Misc: Custom Items/Lists</option>
-                        <option value="ns-wc-booking">Misc: NS<>WC Booking Sync</option>
-                    </select>
-                    <select name="filter_type" style="display: none;" required>
-                        <option value="">Filter Type</option>
-                        <option value="modifiedAfter">By Last Modified Date</option>
-                        <option value="tripYear">By Trip Year</option>
+            <?php if (!$is_ecomm_admin) : ?>
+                <div id="tt-ns-sync-class">
+                    <h3>Manual Sync for WC<>NS</h3>
+                    <span class="tt-wc-ns-admin-notice">Clear Caches After Manual Trip Sync!</span>
+                    <form class="tt-wp-manual-sync" action="" method="post">
+                        <select name="type" required>
+                            <option value="">Select Sync Type</option>
+                            <option value="trip">Step 1: Get All Trips</option>
+                            <option value="trip-details">Step 2: Get Trip Details</option>
+                            <option value="product-sync">Step 3: Create WC Trip Products</option>
+                            <option value="product-sync-all">Misc: Create WC Trip Products - [All]</option>
+                            <option value="custom-items">Misc: Custom Items/Lists</option>
+                            <option value="ns-wc-booking">Misc: NS<>WC Booking Sync</option>
+                        </select>
+                        <select name="filter_type" style="display: none;" required>
+                            <option value="">Filter Type</option>
+                            <option value="modifiedAfter">By Last Modified Date</option>
+                            <option value="tripYear">By Trip Year</option>
+                            <?php if ( $is_itinerary_filter_available ) : ?>
+                                <option value="itineraryCode">By Itinerary Code</option>
+                                <!-- This option below is very similar to By Itinerary Code. I'm hiding it visually so we have it as a reference and option if we need to use it in the future -->
+                                <!-- <option value="itineraryId">By Itinerary ID</option> -->
+                            <?php endif; ?>
+                        </select>
+                        <select name="time_range" style="display: none;" required>
+                            <option value="">Time Range</option>
+                            <option value="-12 hours">Last 12 Hours</option>
+                            <option value="-24 hours">Last 24 Hours</option>
+                            <option value="-1 week">Last Week</option>
+                            <option value="-1 month">Last Month</option>
+                            <option value="-1 year">Last Year</option>
+                        </select>
+                        <select name="trip_year" style="display: none;" required>
+                            <option value="">Trip Year</option>
+                            <option value="<?php echo( date( 'Y' ) ); ?>"><?php echo( date( 'Y' ) ); ?></option>
+                            <option value="<?php echo( date( 'Y', strtotime('+ 1 year') ) ); ?>"><?php echo( date( 'Y', strtotime('+ 1 year') ) ); ?></option>
+                            <option value="<?php echo( date( 'Y', strtotime('+ 2 years') ) ); ?>"><?php echo( date( 'Y', strtotime('+ 2 years') ) ); ?></option>
+                        </select>
                         <?php if ( $is_itinerary_filter_available ) : ?>
-                            <option value="itineraryCode">By Itinerary Code</option>
-                            <!-- This option below is very similar to By Itinerary Code. I'm hiding it visually so we have it as a reference and option if we need to use it in the future -->
-                            <!-- <option value="itineraryId">By Itinerary ID</option> -->
+                            <select name="itinerary_code" style="display: none;" required>
+                                <option value="">Itinerary Code</option>
+                                <?php
+                                    foreach( $itinerary_codes['options'] as $itinerary_code ) {
+                                        if( is_array( $itinerary_code ) && ! empty( $itinerary_code ) ) {
+                                            ?>
+                                                <option value="<?php echo esc_attr( $itinerary_code['optionValue'] ) ?>"><?php echo esc_attr( $itinerary_code['optionValue'] ) ?></option>
+                                            <?php
+                                        }
+                                    }
+                                ?>
+                            </select>
+                            <select name="itinerary_id" style="display: none;" required>
+                                <option value="">Itinerary ID</option>
+                                <?php
+                                    foreach( $itinerary_codes['options'] as $itinerary_code ) {
+                                        if( is_array( $itinerary_code ) && ! empty( $itinerary_code ) ) {
+                                            ?>
+                                                <option value="<?php echo esc_attr( $itinerary_code['optionId'] ) ?>"><?php echo esc_attr( $itinerary_code['optionId'] ) ?> ( <?php echo esc_attr( $itinerary_code['optionValue'] ); ?> ) </option>
+                                            <?php
+                                        }
+                                    }
+                                ?>
+                            </select>
                         <?php endif; ?>
-                    </select>
-                    <select name="time_range" style="display: none;" required>
-                        <option value="">Time Range</option>
-                        <option value="-12 hours">Last 12 Hours</option>
-                        <option value="-24 hours">Last 24 Hours</option>
-                        <option value="-1 week">Last Week</option>
-                        <option value="-1 month">Last Month</option>
-                        <option value="-1 year">Last Year</option>
-                    </select>
-                    <select name="trip_year" style="display: none;" required>
-                        <option value="">Trip Year</option>
-                        <option value="<?php echo( date( 'Y' ) ); ?>"><?php echo( date( 'Y' ) ); ?></option>
-                        <option value="<?php echo( date( 'Y', strtotime('+ 1 year') ) ); ?>"><?php echo( date( 'Y', strtotime('+ 1 year') ) ); ?></option>
-                        <option value="<?php echo( date( 'Y', strtotime('+ 2 years') ) ); ?>"><?php echo( date( 'Y', strtotime('+ 2 years') ) ); ?></option>
-                    </select>
-                    <?php if ( $is_itinerary_filter_available ) : ?>
-                        <select name="itinerary_code" style="display: none;" required>
-                            <option value="">Itinerary Code</option>
-                            <?php
-                                foreach( $itinerary_codes['options'] as $itinerary_code ) {
-                                    if( is_array( $itinerary_code ) && ! empty( $itinerary_code ) ) {
-                                        ?>
-                                            <option value="<?php echo esc_attr( $itinerary_code['optionValue'] ) ?>"><?php echo esc_attr( $itinerary_code['optionValue'] ) ?></option>
-                                        <?php
-                                    }
-                                }
-                            ?>
-                        </select>
-                        <select name="itinerary_id" style="display: none;" required>
-                            <option value="">Itinerary ID</option>
-                            <?php
-                                foreach( $itinerary_codes['options'] as $itinerary_code ) {
-                                    if( is_array( $itinerary_code ) && ! empty( $itinerary_code ) ) {
-                                        ?>
-                                            <option value="<?php echo esc_attr( $itinerary_code['optionId'] ) ?>"><?php echo esc_attr( $itinerary_code['optionId'] ) ?> ( <?php echo esc_attr( $itinerary_code['optionValue'] ); ?> ) </option>
-                                        <?php
-                                    }
-                                }
-                            ?>
-                        </select>
-                    <?php endif; ?>
-                    <input type="hidden" name="action" value="tt_wp_manual_sync_action">
-                    <input type="submit" name="submit" value="Sync" class="button-primary">
-                </form>
-            </div>
-            <div id="tt-order-sync-admin">
-                <h3>Manual WC Order Sync to NS</h3>
-                <p>Send WooCommerce order to NetSuite to create a new booking</p>
-                <form action="" class="tt-order-sync" method="post">
-                    <input type="number" name="order_id" placeholder="Enter WC Order ID" required>
-                    <input type="hidden" name="action" value="tt_wp_manual_order_sync_action">
-                    <input type="submit" name="submit" value="Sync Order" class="button-primary">
-                </form>
-            </div>
-            <div id="tt-trip-details-sync-admin">
-                <h3>Manual Trip Details Sync from NS to WC</h3>
-                <p>This action will <strong>sync the trip details</strong> for a single trip</p>
-                <form action="" class="tt-trip-details-sync" method="post">
-                    <input type="text" name="trip_id" placeholder="Enter Trip ID (xxxxx)" required>
-                    <input type="hidden" name="action" value="tt_wp_manual_trip_details_sync_action">
-                    <input type="submit" name="submit" value="Sync Trip Details" class="button-primary">
-                </form>
-            </div>
-            <div id="tt-trip-product-sync-admin">
-                <h3>Manual Trip Sync from NS to WC</h3>
-                <p>This action will <strong>sync only product</strong>, not the trip details table in the DB</p>
-                <form action="" class="tt-order-sync" method="post">
-                    <input type="text" name="trip_code" placeholder="Enter TRIP Code/SKU" required>
-                    <input type="hidden" name="action" value="tt_wp_manual_trip_sync_action">
-                    <input type="submit" name="submit" value="Sync Trip (Product)" class="button-primary">
-                </form>
-            </div>
+                        <input type="hidden" name="action" value="tt_wp_manual_sync_action">
+                        <input type="submit" name="submit" value="Sync" class="button-primary">
+                    </form>
+                </div>
+                <div id="tt-order-sync-admin">
+                    <h3>Manual WC Order Sync to NS</h3>
+                    <p>Send WooCommerce order to NetSuite to create a new booking</p>
+                    <form action="" class="tt-order-sync" method="post">
+                        <input type="number" name="order_id" placeholder="Enter WC Order ID" required>
+                        <input type="hidden" name="action" value="tt_wp_manual_order_sync_action">
+                        <input type="submit" name="submit" value="Sync Order" class="button-primary">
+                    </form>
+                </div>
+                <div id="tt-trip-details-sync-admin">
+                    <h3>Manual Trip Details Sync from NS to WC</h3>
+                    <p>This action will <strong>sync the trip details</strong> for a single trip</p>
+                    <form action="" class="tt-trip-details-sync" method="post">
+                        <input type="text" name="trip_id" placeholder="Enter Trip ID (xxxxx)" required>
+                        <input type="hidden" name="action" value="tt_wp_manual_trip_details_sync_action">
+                        <input type="submit" name="submit" value="Sync Trip Details" class="button-primary">
+                    </form>
+                </div>
+                <div id="tt-trip-product-sync-admin">
+                    <h3>Manual Trip Sync from NS to WC</h3>
+                    <p>This action will <strong>sync only product</strong>, not the trip details table in the DB</p>
+                    <form action="" class="tt-order-sync" method="post">
+                        <input type="text" name="trip_code" placeholder="Enter TRIP Code/SKU" required>
+                        <input type="hidden" name="action" value="tt_wp_manual_trip_sync_action">
+                        <input type="submit" name="submit" value="Sync Trip (Product)" class="button-primary">
+                    </form>
+                </div>
+            <?php endif; ?>
+            
             <div id="tt-bookings-sync-admin">
                 <h3>Manual Single Guest Bookings/Preferences Sync from NS to WC</h3>
                 <p>Sync bookings and preferences for a specific NetSuite guest</p>
@@ -536,14 +560,17 @@ function tt_admin_menu_page_cb()
                     <input type="submit" name="submit" value="Sync Guest Bookings" class="button-primary">
                 </form>
             </div>
-            <div id="tt-checklist-sync">
-                <h3>Sync all user meta and checklist locking</h3>
-                <form action="" class="tt-checklist-sync" method="post">
-                    Click to sync the user checklist locking for the past <?php echo DEFAULT_TIME_RANGE_LOCKING_STATUS; ?>
-                    <input type="hidden" name="action" value="tt_wp_manual_checklist_sync_action">
-                    <input type="submit" name="submit" value="Sync" class="button-primary">
-                </form>
-            </div>
+
+            <?php if (!$is_ecomm_admin) : ?>
+                <div id="tt-checklist-sync">
+                    <h3>Sync all user meta and checklist locking</h3>
+                    <form action="" class="tt-checklist-sync" method="post">
+                        Click to sync the user checklist locking for the past <?php echo DEFAULT_TIME_RANGE_LOCKING_STATUS; ?>
+                        <input type="hidden" name="action" value="tt_wp_manual_checklist_sync_action">
+                        <input type="submit" name="submit" value="Sync" class="button-primary">
+                    </form>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 <?php

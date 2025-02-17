@@ -28,6 +28,17 @@ function plugins_loaded_trek_ns_integration(){
 }
 register_activation_hook(__FILE__, 'register_activation_trek_ns_integration');
 function register_activation_trek_ns_integration(){
+  // Create E-comm User Data Admin role
+  add_role(
+      'ecomm_user_data_admin',
+      __('E-comm User Data Admin', 'trek-travel-netsuite-integration'),
+      array(
+          'read' => true,
+          'view_admin_dashboard' => true,
+          'manage_guest_data' => true // Custom capability
+      )
+  );
+
   global $wpdb;
   $table_name_1 = $wpdb->prefix . 'netsuite_trips';
   $table_name_2 = $wpdb->prefix . 'netsuite_trip_detail';
@@ -208,6 +219,14 @@ function register_activation_trek_ns_integration(){
     dbDelta($sql_4);
   }
 }
+
+// Add deactivation hook
+register_deactivation_hook(__FILE__, 'register_deactivation_trek_ns_integration');
+function register_deactivation_trek_ns_integration() {
+    // Remove role on plugin deactivation
+    remove_role('ecomm_user_data_admin');
+}
+
 define('TTNSW_DIR', plugin_dir_path(__FILE__));
 define('TTNSW_URL', plugin_dir_url(__FILE__));
 require_once TTNSW_DIR.'inc/ttnsw-settings.php';

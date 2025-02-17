@@ -483,13 +483,16 @@ function ttnsw_enqueue_custom_admin_style() {
         $current_user = wp_get_current_user();
         $user_display_name = $current_user->display_name;
 
+        $user_roles = $current_user->roles;
+
         wp_localize_script('ttnsw-tour-guide', 'ttnsw_tour_JS_obj', array(
             'ajaxurl'        => admin_url('admin-ajax.php'),
             'nonce'          => wp_create_nonce('_ttnsw_tour_nonce'),
             'show_tour'      => $show_tour,
             'user_name'      => $user_display_name, // Add user name
             'current_screen' => $currentScreen->base,
-            'tour_name'      => $tour_name
+            'tour_name'      => $tour_name,
+            'user_roles'     => $user_roles
         ));
     }
 }
@@ -1907,3 +1910,15 @@ function ttnsw_load_template_part( $template ) {
     include TTNSW_DIR . $template;
     return ob_get_clean();
 }
+
+/**
+ * Remove the menu items for the users with the 'manage_guest_data' capability.
+ */
+function ttnsw_remove_menu_items() {
+    if( current_user_can( 'manage_guest_data' ) ) {
+        remove_menu_page( 'revisionary-archive' );
+        remove_menu_page( 'profile.php' );
+        remove_menu_page( 'algolia' );
+    }
+}
+add_action( 'admin_menu', 'ttnsw_remove_menu_items', 11 );

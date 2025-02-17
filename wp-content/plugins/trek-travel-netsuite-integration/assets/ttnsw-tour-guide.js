@@ -315,6 +315,8 @@ jQuery(document).ready(function($) {
     }
 
     function startSyncTabTour() {
+        const is_data_admin = ttnsw_tour_JS_obj.user_roles && ttnsw_tour_JS_obj.user_roles.includes('ecomm_user_data_admin');
+
         const tour = new Shepherd.Tour({
             useModalOverlay: true,
             defaultStepOptions: {
@@ -345,6 +347,33 @@ jQuery(document).ready(function($) {
                 }
             ]
         });
+
+        if ( is_data_admin ) {
+            // Allowing only data admin to see this step
+            tour.addStep({
+                id: 'guest-sync',
+                text: 'Synchronize guest bookings and preferences using their NetSuite User ID.',
+                attachTo: {
+                    element: '#tt-bookings-sync-admin',
+                    on: 'bottom'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back
+                    },
+                    {
+                        text: 'Finish',
+                        action: function() {
+                            storeSeenStatus();
+                            tour.complete();
+                        }
+                    }
+                ]
+            });
+
+            return tour;
+        }
 
         tour.addStep({
             id: 'help-tab',
