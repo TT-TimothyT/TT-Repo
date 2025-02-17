@@ -28,9 +28,9 @@ use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\Frontend;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
 use SkyVerge\WooCommerce\Cybersource\Blocks\Credit_Card_Checkout_Block_Integration;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Helper;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Helper;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -309,14 +309,18 @@ class Credit_Card extends Gateway {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param int $order_id order ID
+	 * @param int|\WC_Order $order_id WooCommerce order ID or object*
 	 * @return \WC_Order $order order object
 	 */
 	public function get_order( $order_id ) {
 
 		$order = parent::get_order( $order_id );
 
-		if ( $this->is_3d_secure_enabled() && ! empty( $threed_secure_reference_id = $this->threed_secure->get_reference_id() ) ) {
+		if (
+			$this->is_3d_secure_enabled() &&
+			! $this->is_automatic_renewal($order->get_id()) &&
+			! empty($threed_secure_reference_id = $this->threed_secure->get_reference_id())
+		) {
 			$order->threed_secure = (object) [
 				'reference_id'                        => $threed_secure_reference_id,
 				'enrollment_status'                   => $this->threed_secure->get_enrollment_status(),
@@ -326,7 +330,7 @@ class Credit_Card extends Gateway {
 
 		// if testing and a specific amount was set
 		if ( $this->is_test_environment() && $test_amount = Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-test-amount' ) ) {
-			$order->payment_total = Framework\SV_WC_Helper::number_format( $test_amount );
+			$order->payment_total = Framework\Helpers\NumberHelper::format($test_amount);
 		}
 
 		return $order;
@@ -603,7 +607,7 @@ class Credit_Card extends Gateway {
 	 * @param int $order_id
 	 * @return bool
 	 */
-	protected function is_automatic_renewal( int $order_id ): bool {
+	public function is_automatic_renewal( int $order_id ): bool {
 
 		return function_exists( 'wcs_order_contains_renewal' )
 			&& wcs_order_contains_renewal( $order_id )

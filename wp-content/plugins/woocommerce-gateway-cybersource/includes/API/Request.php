@@ -23,7 +23,7 @@
 
 namespace SkyVerge\WooCommerce\Cybersource\API;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -115,7 +115,11 @@ abstract class Request extends Framework\SV_WC_API_JSON_Request {
 			'phone'   => '',
 		] );
 
-		$formatted_address = [
+		if ( 'MX' == mb_strtoupper( $address['country'] ?? '' ) ) {
+			$address = $this->map_mexican_state( $address );
+		}
+
+		return [
 			'firstName'          => Framework\SV_WC_Helper::str_truncate( $address['first_name'], 60, '' ),
 			'lastName'           => Framework\SV_WC_Helper::str_truncate( $address['last_name'], 60, '' ),
 			'company'            => Framework\SV_WC_Helper::str_truncate( $address['company'], 60, '' ),
@@ -128,8 +132,61 @@ abstract class Request extends Framework\SV_WC_API_JSON_Request {
 			'email'              => Framework\SV_WC_Helper::str_truncate( $address['email'], 320, '' ),
 			'phoneNumber'        => Framework\SV_WC_Helper::str_truncate( preg_replace( '/[^-\d().]/', '', $address['phone'] ), 32, '' ),
 		];
+	}
 
-		return array_filter( $formatted_address );
+
+	/**
+	 * Maps Mexican state codes to ISO 3166-2 codes, as required by CyberSource.
+	 *
+	 * @since 2.8.3
+	 *
+	 * @param array<string, string> $address address data
+	 * @return array<string, string>
+	 */
+	protected function map_mexican_state( array $address ) : array {
+
+		$state_code_map = [
+			'AG' => 'AGU',
+			'BN' => 'BCN',
+			'BS' => 'BCS',
+			'CP' => 'CAM',
+			'CS' => 'CHP',
+			'CI' => 'CHH',
+			'CH' => 'COA',
+			'CL' => 'COL',
+			'DF' => 'CMX',
+			'DG' => 'DUR',
+			'GJ' => 'GUA',
+			'GE' => 'GRO',
+			'HD' => 'HID',
+			'JA' => 'JAL',
+			'MX' => 'MEX',
+			'MC' => 'MIC',
+			'MR' => 'MOR',
+			'NA' => 'NAY',
+			'NL' => 'NLE',
+			'OA' => 'OAX',
+			'PU' => 'PUE',
+			'QE' => 'QUE',
+			'QI' => 'ROO',
+			'SL' => 'SLP',
+			'SI' => 'SIN',
+			'SO' => 'SON',
+			'TB' => 'TAB',
+			'TA' => 'TAM',
+			'TL' => 'TLA',
+			'VC' => 'VER',
+			'YU' => 'YUC',
+			'ZA' => 'ZAC',
+		];
+
+		if (! $state_code = mb_strtoupper( $address['state'] ?? '' ) ) {
+			return $address;
+		}
+
+		$address['state'] = $state_code_map[ $state_code ] ?? $state_code;
+
+		return $address;
 	}
 
 

@@ -2,32 +2,33 @@
 
 class Waymark_Helper {
 
-	static public function inc($path = '') {
+	public static function inc($path = '') {
 		$path = plugin_dir_path(__DIR__) . $path;
 
 		require_once $path;
 	}
 
-	static public function plugin_about() {
+	public static function plugin_about() {
 		$out = '';
 
 		$out .= '	<div id="waymark-about">' . "\n";
 		$out .= '		<img width="75" height="75" alt="Joe\'s mug" src="//www.morehawes.ca/assets/images/Joe1BW.jpg" />' . "\n";
+		// translators: %s: Joe, the author of the plugin
 		$out .= '		<p class="waymark-first"><b>' . sprintf(esc_html__("Hi, I'm %s.", 'waymark'), "Joe") . '</b></p>' . "\n";
-
 		$out .= '		<p>' . __('Waymark is <strong><a href="https://github.com/opengis/waymark">open source</a></strong> and a work in progress.', 'waymark') . '</p>' . "\n";
 		$out .= '		<p>' . __('Feedback is very important, so please feel free to get in touch by either:', 'waymark') . '</p>' . "\n";
 
 		$out .= '		<ul>' . "\n";
-		$out .= '			<li>' . sprintf(__('Leaving a <strong><a href="%s">review</a></strong>, or creating a <a href="%s">support topic</a> on the WordPress plugin directory.', 'waymark'), 'https://wordpress.org/support/plugin/waymark/reviews/#new-post', 'https://wordpress.org/support/plugin/waymark/#new-topic-0') . '</li>' . "\n";
-		$out .= '			<li>' . sprintf(__('Posting in the <a href="%s">Forums</a>.', 'waymark'), 'https://www.waymark.dev/forums/') . '</li>' . "\n";
+		// translators: Links to the WordPress plugin directory
+		$out .= '			<li>' . sprintf(__('Leaving a <strong><a href="%1$s">review</a></strong>, or creating a <a href="%2$s">support topic</a> on the WordPress plugin directory.', 'waymark'), 'https://wordpress.org/support/plugin/waymark/reviews/#new-post', 'https://wordpress.org/support/plugin/waymark/#new-topic-0') . '</li>' . "\n";
+		// translators: Links to the GitHub repository
 		$out .= '			<li>' . sprintf(__('Creating a <a href="%s">GitHub issue</a>.', 'waymark'), 'https://github.com/opengis/waymark/issues/new') . '</li>' . "\n";
 		$out .= '		</ul>' . "\n";
-
+		// translators: Thank you message
 		$out .= '		<p>' . esc_html__('Thanks', 'waymark') . '!</p>' . "\n";
 
 		$out .= '		<hr />' . "\n";
-
+		// translators: Link to the documentation thanks page
 		$out .= '		<p>' . sprintf(__('Built on the shoulders of giants, <a href="%s">thank you</a>!', 'waymark'), 'https://www.waymark.dev/docs/thanks/') . '</p>' . "\n";
 
 		// Debug Info
@@ -39,44 +40,44 @@ class Waymark_Helper {
 		return $out;
 	}
 
-	static public function logo($colour = 'dark', $width = '20', $height = '20', $title = false) {
-		if (!$title) {
+	public static function logo($colour = 'dark', $width = '20', $height = '20', $title = false) {
+		if (! $title) {
 			$title = Waymark_Config::get_name();
 		}
 		return '<img class="waymark-logo" alt="' . Waymark_Config::get_name() . '" src="' . self::asset_url('img/waymark-icon-' . $colour . '.png') . '" width="' . $width . '" height="' . $height . '" />';
 	}
 
-	static public function site_url($url_path = '') {
+	public static function site_url($url_path = '') {
 		return Waymark_Config::get_item('site_url') . $url_path;
 	}
 
-	static public function asset_url($file_path = '') {
+	public static function asset_url($file_path = '') {
 		return plugin_dir_url('') . 'waymark/assets/' . $file_path;
 	}
 
-	static public function plugin_url($file_path = '') {
+	public static function plugin_url($file_path = '') {
 		return plugin_dir_url('') . 'waymark/' . $file_path;
 	}
 
-	static public function http_url($data = array()) {
-		return trim(add_query_arg(array_merge(array('waymark_http' => '1'), $data), home_url('/')), '/');
+	public static function http_url($data = []) {
+		return trim(add_query_arg(array_merge(['waymark_http' => '1'], $data), home_url('/')), '/');
 	}
 
-	static function waymark_array_random_assoc($arr, $num = 1) {
+	public static function waymark_array_random_assoc($arr, $num = 1) {
 		$keys = array_keys($arr);
 		shuffle($keys);
 
-		$r = array();
+		$r = [];
 		for ($i = 0; $i < $num; $i++) {
 			$r[$keys[$i]] = $arr[$keys[$i]];
 		}
 		return $r;
 	}
 
-	static public function get_meta($post_id) {
+	public static function get_meta($post_id) {
 		$meta_array = get_post_meta($post_id);
 
-		$meta_out = array();
+		$meta_out = [];
 		foreach ($meta_array as $meta_key => $meta_value) {
 			if ($meta_key[0] == '_') {
 				continue;
@@ -92,28 +93,28 @@ class Waymark_Helper {
 		return $meta_out;
 	}
 
-	static public function get_map_meta($Map, $context = 'map_single') {
-		$map_meta = array();
+	public static function get_map_meta($Map, $context = 'map_single') {
+		$map_meta = [];
 
 		// =============== PREPEND ===============
 
 		//Thumbnail?
-		$map_thumbnail = get_the_post_thumbnail($Map->post_id, 'large', array(
+		$map_thumbnail = get_the_post_thumbnail($Map->post_id, 'large', [
 			'class' => 'waymark-map-thumbnail',
 			'width' => '',
 			'height' => '',
-		));
+		]);
 		if ($map_thumbnail) {
 			if ($context == 'shortcode') {
 				$map_thumbnail = '<a href="' . get_permalink($Map->post_id) . '">' . $map_thumbnail . '</a>';
 			}
 
-			$map_meta['map_thumbnail'] = array(
+			$map_meta['map_thumbnail'] = [
 				'meta_key' => 'map_thumbnail',
 				'meta_value' => $map_thumbnail,
 				'meta_title' => '',
 				'meta_group' => '',
-			);
+			];
 		}
 
 		// =============== SETTINGS ===============
@@ -124,7 +125,7 @@ class Waymark_Helper {
 		foreach ($settings_meta as $setting_meta) {
 			//Shortcode output setting
 			//If we are displaying the shortcode *and* there is a meta_shortcode setting *AND* it's set to false
-			if ($context == 'shortcode' && (isset($setting_meta['meta_shortcode']) && !$setting_meta['meta_shortcode'])) {
+			if ($context == 'shortcode' && (isset($setting_meta['meta_shortcode']) && ! $setting_meta['meta_shortcode'])) {
 				//Don't display this
 				continue;
 			}
@@ -132,15 +133,15 @@ class Waymark_Helper {
 			$meta_key = self::make_key($setting_meta['meta_title'], 'map');
 
 			//If we have data
-			if (array_key_exists($meta_key, $Map->data) && !empty($Map->data[$meta_key])) {
-				$data = array(
+			if (array_key_exists($meta_key, $Map->data) && ! empty($Map->data[$meta_key])) {
+				$data = [
 					'meta_key' => $meta_key,
 					'meta_title' => $setting_meta['meta_title'],
 					'meta_group' => isset($setting_meta['meta_group']) ? $setting_meta['meta_group'] : '',
-				);
+				];
 
 				//Select
-				if (in_array($setting_meta['meta_type'], array('select')) && array_key_exists('meta_options', $setting_meta)) {
+				if (in_array($setting_meta['meta_type'], ['select']) && array_key_exists('meta_options', $setting_meta)) {
 					$options_array = self::comma_string_to_array($setting_meta['meta_options']);
 
 					//Only if option exists
@@ -148,7 +149,7 @@ class Waymark_Helper {
 						$data['meta_value'] = $options_array[$Map->data[$meta_key]];
 					}
 					//Multi-Select
-				} elseif (in_array($setting_meta['meta_type'], array('select_multi')) && array_key_exists('meta_options', $setting_meta)) {
+				} elseif (in_array($setting_meta['meta_type'], ['select_multi']) && array_key_exists('meta_options', $setting_meta)) {
 					$options_array = self::comma_string_to_array($setting_meta['meta_options']);
 					$values_array = self::array_string_to_array($Map->data[$meta_key]);
 
@@ -161,7 +162,7 @@ class Waymark_Helper {
 						}
 					}
 					//Rich text
-				} elseif (in_array($setting_meta['meta_type'], array('textarea_rich'))) {
+				} elseif (in_array($setting_meta['meta_type'], ['textarea_rich'])) {
 					$data['meta_value'] = wpautop($Map->data[$meta_key]);
 					//Value
 				} else {
@@ -181,24 +182,24 @@ class Waymark_Helper {
 
 			$meta_title = esc_html__('Collection', 'waymark');
 
-			$map_meta['collection_list'] = array(
+			$map_meta['collection_list'] = [
 				'meta_key' => 'collection_list',
 				'meta_title' => $meta_title,
 				'meta_value' => $collection_list,
 				'meta_group' => '',
-			);
+			];
 		}
 
 		//Add Export dropdown/link
 		$has_features = array_key_exists('map_data', $Map->data) && Waymark_GeoJSON::get_feature_count($Map->data['map_data']);
 		if ($has_features && Waymark_Config::get_setting('misc', 'map_options', 'allow_export') == true) {
-			$map_meta['export_data'] = array(
+			$map_meta['export_data'] = [
 				'meta_key' => 'export_data',
 				'meta_title' => esc_html__('Export', 'waymark'),
 				'meta_value' => self::map_export_html($Map),
 				'meta_info' => '<a data-title="' . esc_attr__('This will download the Overlays currently displayed by the Map in the selected format.', 'waymark') . '" href="#" onclick="return false;" class="waymark-tooltip">?</a>',
 				'meta_group' => '',
-			);
+			];
 		}
 
 // 		self::debug($map_meta);
@@ -206,28 +207,28 @@ class Waymark_Helper {
 		return $map_meta;
 	}
 
-	static public function get_collection_meta($Collection, $context = 'shortcode') {
-		$map_meta = array();
+	public static function get_collection_meta($Collection, $context = 'shortcode') {
+		$map_meta = [];
 
 		//Add Description
 		if ($Collection->description) {
-			$map_meta['collection_desc'] = array(
+			$map_meta['collection_desc'] = [
 				'meta_key' => 'collection_desc',
 				'meta_title' => '',
 				'meta_group' => '',
 				'meta_value' => $Collection->description,
-			);
+			];
 		}
 
 		//Add Export dropdown/link
 		if (sizeof($Collection->Maps) && Waymark_Config::get_setting('misc', 'map_options', 'allow_export') == true) {
-			$map_meta['export_data'] = array(
+			$map_meta['export_data'] = [
 				'meta_key' => 'export_data',
 				'meta_title' => esc_html__('Export', 'waymark'),
 				'meta_value' => self::collection_export_html($Collection),
 				'meta_info' => '<a data-title="' . esc_attr__('This will download the Overlays currently displayed by the Map in the selected format.', 'waymark') . '" href="#" onclick="return false;" class="waymark-tooltip">?</a>',
 				'meta_group' => '',
-			);
+			];
 		}
 
 // 		self::debug($map_meta);
@@ -235,7 +236,7 @@ class Waymark_Helper {
 		return $map_meta;
 	}
 
-	static public function get_meta_groups() {
+	public static function get_meta_groups() {
 		//Get Groups
 		$meta_groups = Waymark_Config::get_item('meta', 'groups', true);
 		$meta_groups = self::multi_use_as_key($meta_groups, 'group_title');
@@ -243,8 +244,8 @@ class Waymark_Helper {
 		return $meta_groups;
 	}
 
-	static public function group_meta($meta_array, $meta_groups = []) {
-		if (!$meta_groups) {
+	public static function group_meta($meta_array, $meta_groups = []) {
+		if (! $meta_groups) {
 			//Get Groups
 			$meta_groups = self::get_meta_groups();
 		}
@@ -265,7 +266,7 @@ class Waymark_Helper {
 		return $meta_grouped;
 	}
 
-	static public function map_meta_html($meta_array = array()) {
+	public static function map_meta_html($meta_array = []) {
 		$out = '';
 
 		//Do we have data?
@@ -326,11 +327,11 @@ class Waymark_Helper {
 		return $out;
 	}
 
-	static public function meta_entry_html($meta) {
+	public static function meta_entry_html($meta) {
 		$out = '';
 
 		//Ensure we have a value
-		if (!isset($meta['meta_value'])) {
+		if (! isset($meta['meta_value'])) {
 			return $out;
 		}
 
@@ -340,7 +341,7 @@ class Waymark_Helper {
 			$out .= '		<div colspan="3" class="waymark-meta-content">' . $meta['meta_value'] . '</div>' . "\n";
 		} else {
 			$out .= '		<div class="waymark-meta-info">' . "\n";
-			if (array_key_exists('meta_info', $meta) && !empty($meta['meta_info'])) {
+			if (array_key_exists('meta_info', $meta) && ! empty($meta['meta_info'])) {
 				$out .= $meta['meta_info'];
 			}
 			$out .= '		</div>' . "\n";
@@ -352,8 +353,8 @@ class Waymark_Helper {
 		return $out;
 	}
 
-	static public function flatten_meta($data_in) {
-		$data_out = array();
+	public static function flatten_meta($data_in) {
+		$data_out = [];
 
 		if (is_array($data_in)) {
 			foreach ($data_in as $data_key => $data_value) {
@@ -365,7 +366,7 @@ class Waymark_Helper {
 	}
 
 	//Thanks https://stackoverflow.com/questions/2526304/php-extract-gps-exif-data/16437888#16437888
-	static public function exif_gps_to_gps_float($coordinate, $hemisphere) {
+	public static function exif_gps_to_gps_float($coordinate, $hemisphere) {
 		if (is_string($coordinate)) {
 			$coordinate = array_map("trim", explode(",", $coordinate));
 		}
@@ -387,7 +388,7 @@ class Waymark_Helper {
 		return $sign * ($degrees + $minutes / 60 + $seconds / 3600);
 	}
 
-	static public function make_key($str, $prefix = '', $use_underscores = true) {
+	public static function make_key($str, $prefix = '', $use_underscores = true) {
 		$str = str_replace(' ', '_', $str);
 
 		if ($prefix) {
@@ -395,7 +396,7 @@ class Waymark_Helper {
 		}
 
 		//Like in JS
-		if (!$use_underscores) {
+		if (! $use_underscores) {
 			$str = str_replace('_', '', $str);
 		}
 
@@ -405,7 +406,7 @@ class Waymark_Helper {
 		return $str;
 	}
 
-	static public function latlng_string_to_array($latlng_string) {
+	public static function latlng_string_to_array($latlng_string) {
 		$latlng_array = explode(',', $latlng_string);
 
 		if (is_array($latlng_array) && sizeof($latlng_array) == 2) {
@@ -417,15 +418,17 @@ class Waymark_Helper {
 		return false;
 	}
 
-	static public function is_debug() {
+	public static function is_debug() {
 		return (true == Waymark_Config::get_setting('misc', 'advanced', 'debug_mode'));
 	}
 
-	static public function debug($thing, $die = true) {
-		if (!self::is_debug()) {
+	public static function debug($thing, $die = true) {
+		// Only in debug mode
+		if (! self::is_debug()) {
 			return;
 		}
 
+		// Output debug content
 		echo '<pre>';
 		print_r($thing);
 		echo '</pre>';
@@ -435,9 +438,9 @@ class Waymark_Helper {
 	}
 
 	//Thanks! https://stackoverflow.com/a/24365425/569788
-	static public function stringify_numbers($obj) {
+	public static function stringify_numbers($obj) {
 		//Bad data
-		if (!$obj) {
+		if (! $obj) {
 			return $obj;
 		}
 
@@ -454,19 +457,19 @@ class Waymark_Helper {
 		return $obj;
 	}
 
-	static public function set_map_data_property($map_data, $key = false, $value = false, $append = false) {
+	public static function set_map_data_property($map_data, $key = false, $value = false, $append = false) {
 		$FeatureCollection = json_decode($map_data);
 
 		//Ensure valid data
 		if ($FeatureCollection && sizeof($FeatureCollection->features)) {
 			foreach ($FeatureCollection->features as &$feature) {
 				//No existing properties
-				if (!property_exists($feature, 'properties')) {
+				if (! property_exists($feature, 'properties')) {
 					$feature->properties = new stdClass();
 				}
 
 				//Set
-				if (!property_exists($feature->properties, $key)) {
+				if (! property_exists($feature->properties, $key)) {
 					$feature->properties->{$key} = $value;
 					//Update
 				} else {
@@ -482,10 +485,10 @@ class Waymark_Helper {
 			return $map_data;
 		}
 
-		return json_encode($FeatureCollection);
+		return wp_json_encode($FeatureCollection);
 	}
 
-	static public function add_map_link_to_description($map_id = null, $map_title = false, $map_data = null) {
+	public static function add_map_link_to_description($map_id = null, $map_title = false, $map_data = null) {
 		$desc_append = '<div class="waymark-description-link">';
 
 		// Title?
@@ -516,7 +519,7 @@ class Waymark_Helper {
 	public static function convert_single_value_to_array($value_in) {
 		//Array
 		if (is_array($value_in)) {
-			$array_out = array();
+			$array_out = [];
 
 			foreach ($value_in as $key => $value) {
 				$multi = explode(Waymark_Config::get_item('multi_value_seperator'), $value);
@@ -538,15 +541,15 @@ class Waymark_Helper {
 	}
 
 	public static function convert_values_to_single_value($array_in) {
-		$array_out = array();
+		$array_out = [];
 
-		if (!is_array($array_in)) {
+		if (! is_array($array_in)) {
 			return $array_out;
 		}
 
 		foreach ($array_in as $key => $value) {
 			//Single value
-			if (!is_array($value)) {
+			if (! is_array($value)) {
 				//Use that
 				$array_out[$key] = $value;
 				//Multiple values
@@ -560,7 +563,7 @@ class Waymark_Helper {
 	}
 
 	public static function multi_use_as_key($array_in, $as_key = false) {
-		$array_out = array();
+		$array_out = [];
 
 		$count = 0;
 		if (is_array($array_in)) {
@@ -628,7 +631,7 @@ class Waymark_Helper {
 	}
 
 	public static function array_string_to_array($string) {
-		$string = str_replace(array('[', ']', '"', '"'), array('', '', '', ''), $string);
+		$string = str_replace(['[', ']', '"', '"'], ['', '', '', ''], $string);
 
 		return self::comma_string_to_array($string);
 	}
@@ -636,7 +639,7 @@ class Waymark_Helper {
 	public static function comma_string_to_array($string) {
 		//Process options
 		$options_exploded = explode(',', $string);
-		$options_array = array();
+		$options_array = [];
 		foreach ($options_exploded as $option) {
 			$value = trim($option);
 			$key = self::make_key($value);
@@ -647,8 +650,8 @@ class Waymark_Helper {
 		return $options_array;
 	}
 
-	static public function map_export_html($Map) {
-		if (!isset($Map->post_id) || !isset($Map->post_title)) {
+	public static function map_export_html($Map) {
+		if (! isset($Map->post_id) || ! isset($Map->post_title)) {
 			return false;
 		}
 
@@ -664,16 +667,17 @@ class Waymark_Helper {
 		$out .= '	<input type="hidden" name="waymark_security" value="' . wp_create_nonce(Waymark_Config::get_item('nonce_string')) . '" />' . "\n";
 		$out .= '	<input type="hidden" name="map_data" value="" />' . "\n";
 		$out .= '	<input type="hidden" name="map_id" value="' . $Map->post_id . '" />' . "\n";
+		$out .= '	<input type="hidden" name="map_title" value="' . esc_attr($Map->post_title) . '" />' . "\n";
 		$out .= '	<input type="submit" value="' . __('Download', 'waymark') . '" class="button" />' . "\n";
 		$out .= '</' . $element . '>' . "\n";
 
 		return $out;
 	}
 
-	static public function collection_export_html($Collection) {
+	public static function collection_export_html($Collection) {
 // 		self::debug($Collection);
 
-		if (!isset($Collection->collection_id)) {
+		if (! isset($Collection->collection_id)) {
 			return false;
 		}
 
@@ -695,7 +699,7 @@ class Waymark_Helper {
 		return $out;
 	}
 
-	static public function get_section_repeatable_count($section_data) {
+	public static function get_section_repeatable_count($section_data) {
 		$first_field = $section_data['fields'][array_keys($section_data['fields'])[0]];
 
 		if (is_array($first_field['default'])) {
@@ -705,11 +709,11 @@ class Waymark_Helper {
 		return false;
 	}
 
-	static public function repeatable_setting_option_array($tab, $section, $key) {
-		$options_array = array();
+	public static function repeatable_setting_option_array($tab, $section, $key) {
+		$options_array = [];
 		$values = Waymark_Config::get_item($tab, $section, true);
 
-		if (!is_array($values)) {
+		if (! is_array($values)) {
 			return null;
 		}
 
@@ -730,7 +734,7 @@ class Waymark_Helper {
 	 * =====================================
 	 */
 
-	static function country_code_to_bounds($country_code = '') {
+	public static function country_code_to_bounds($country_code = '') {
 		$country_bounding_boxes = [
 			'AF' => [60.5284298033, 29.318572496, 75.1580277851, 38.4862816432],
 			'AO' => [11.6400960629, -17.9306364885, 24.0799052263, -4.43802336998],
@@ -925,7 +929,7 @@ class Waymark_Helper {
 		}
 	}
 
-	static function allowable_file($ext = '', $mime = false, $file_image = 'file') {
+	public static function allowable_file($ext = '', $mime = false, $file_image = 'file') {
 		$allowable_mimes = Waymark_Config::get_item('mimes', $file_image);
 
 		//Make always lower
@@ -961,12 +965,12 @@ class Waymark_Helper {
 	 * @access public
 	 * @static
 	 */
-	static public function build_icon_data($type = []) {
+	public static function build_icon_data($type = []) {
 
 		// self::debug($type);
 
 		// If Type key not set
-		if (!isset($type['type_key'])) {
+		if (! isset($type['type_key'])) {
 			//Create Type Key
 			$type['type_key'] = self::make_key($type['marker_title']);
 
@@ -1082,7 +1086,7 @@ class Waymark_Helper {
 	 * @access public
 	 * @static
 	 */
-	static public function build_icon_html($icon_data = []) {
+	public static function build_icon_html($icon_data = []) {
 
 		// self::debug($icon_data);
 
@@ -1208,7 +1212,7 @@ class Waymark_Helper {
 		// i.e. array('radius', 'type', 'title', 'description', 'image_thumbnail_url', 'image_medium_url', 'image_large_url')
 		foreach (Waymark_Helper::get_overlay_properties() as $property_key) {
 			//Property not set
-			if (!isset($feature['properties'][$property_key])) {
+			if (! isset($feature['properties'][$property_key])) {
 				continue;
 			}
 
@@ -1335,8 +1339,8 @@ class Waymark_Helper {
 	 * Each overlay is displayed as a list item
 	 * Each overlay has a title, description and image
 	 *
-	 * @param  array $overlays	An array containing 'marker' => [ $markers ], 'line' => [ $lines ], 'shape' => [ $shapes ]
-	 * @return string			HTML
+	 * @param  array $overlays    An array containing 'marker' => [ $markers ], 'line' => [ $lines ], 'shape' => [ $shapes ]
+	 * @return string            HTML
 	 * @since  2024.1
 	 * @access public
 	 * @static
@@ -1345,12 +1349,12 @@ class Waymark_Helper {
 	public static function overlays_list_html($overlays = []) {
 		$out = '';
 
-		if (!sizeof($overlays)) {
+		if (! sizeof($overlays)) {
 			return $out;
 		}
 
 		// $overlays must have one of these keys: markers, lines, shapes
-		if (!array_key_exists('markers', $overlays) && !array_key_exists('lines', $overlays) && !array_key_exists('shapes', $overlays)) {
+		if (! array_key_exists('markers', $overlays) && ! array_key_exists('lines', $overlays) && ! array_key_exists('shapes', $overlays)) {
 			return $out;
 		}
 
@@ -1358,7 +1362,7 @@ class Waymark_Helper {
 
 		foreach ($overlays as $overlay_type => $overlay) {
 			// $overlay must be an array
-			if (!is_array($overlay)) {
+			if (! is_array($overlay)) {
 				continue;
 			}
 
@@ -1374,14 +1378,14 @@ class Waymark_Helper {
 				// Every marker type
 				foreach ($overlay as $marker_type => $markers) {
 					// Ensure we have markers
-					if (!sizeof($markers)) {
+					if (! sizeof($markers)) {
 						continue;
 					}
 
 					// Get type data
 					$type_data = self::get_type_data('marker', $marker_type);
 
-					if (!$type_data) {
+					if (! $type_data) {
 						continue;
 					}
 
@@ -1420,7 +1424,7 @@ class Waymark_Helper {
 				// Every line type
 				foreach ($overlay as $line_type => $lines) {
 					// Ensure is valid line type
-					if (!array_key_exists($line_type, $line_types)) {
+					if (! array_key_exists($line_type, $line_types)) {
 						continue;
 					}
 
@@ -1440,7 +1444,7 @@ class Waymark_Helper {
 				foreach ($overlay as $shape_type => $shapes) {
 
 					// Ensure is valid shape type
-					if (!array_key_exists($shape_type, $shape_types)) {
+					if (! array_key_exists($shape_type, $shape_types)) {
 						continue;
 					}
 
@@ -1470,5 +1474,133 @@ class Waymark_Helper {
 		}
 
 		return array_merge($default, $extra);
+	}
+
+	public static function parameter_allowed_html() {
+		return;
+	}
+
+	public static function allowable_tags($kind = '') {
+		switch ($kind) {
+		case 'parameter':
+			return [
+				'div' => [
+					'id' => [],
+					'class' => [],
+					'title' => [],
+				],
+				'legend' => [
+					'title' => [],
+				],
+				'link' => [
+					'rel' => [],
+					'href' => [],
+					'media' => [],
+					'id' => [],
+				],
+				'textarea' => [
+					'class' => [],
+					'name' => [],
+					'data-id' => [],
+					'rows' => [],
+					'cols' => [],
+					'id' => [],
+				],
+				'a' => [
+					'data-title' => [],
+					'href' => [],
+					'onclick' => [],
+					'class' => [],
+				],
+				'label' => [
+					'for' => [],
+					'class' => [],
+				],
+				'input' => [
+					'type' => [],
+					'name' => [],
+					'data-id' => [],
+					'value' => [],
+					'class' => [],
+					'id' => [],
+				],
+				'select' => [
+					'multiple' => [],
+					'class' => [],
+					'name' => [],
+					'data-id' => [],
+					'data-multi-value' => [],
+				],
+				'option' => [
+					'value' => [],
+					'selected' => [],
+				],
+				'button' => [
+					'type' => [],
+					'class' => [],
+					'data-id' => [],
+				],
+				'span' => [
+					'class' => [],
+				],
+				'small' => [
+					'class' => [],
+				],
+			];
+
+			break;
+
+		case 'kml':
+			return [
+				'kml' => [
+					'xmlns' => true,
+				],
+				'document' => [],
+				'placemark' => [],
+				'name' => [],
+				'extendeddata' => [],
+				'data' => [
+					'name' => true,
+				],
+				'value' => [],
+				'point' => [],
+				'coordinates' => [],
+				'description' => [],
+				'linestring' => [],
+				'linearring' => [],
+				'polygon' => [],
+				'outerboundaryis' => [],
+				'innerboundaryis' => [],
+				'multigeometry' => [],
+			];
+
+			break;
+		case 'gpx':
+			return [
+				'gpx' => [
+					'creator' => true,
+					'version' => true,
+					'xmlns' => true,
+					'xmlns:xsi' => true,
+					'xsi:schemaLocation' => true,
+				],
+				'metadata' => [],
+				'name' => [],
+				'wpt' => [
+					'lat' => true,
+					'lon' => true,
+				],
+				'desc' => [],
+				'trk' => [],
+				'trkseg' => [],
+				'trkpt' => [
+					'lat' => true,
+					'lon' => true,
+				],
+				'ele' => [],
+			];
+
+			break;
+		}
 	}
 }

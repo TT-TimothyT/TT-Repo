@@ -99,7 +99,7 @@ class Credit_Card_Payment extends Payment {
 	 */
 	private function get_consumer_authentication_information( \WC_Order $order ): array {
 
-		if ( empty( $reference_id = $order->threed_secure->reference_id ) ) {
+		if (!isset($order->threed_secure) || empty($reference_id = $order->threed_secure->reference_id)) {
 			return [];
 		}
 
@@ -221,8 +221,11 @@ class Credit_Card_Payment extends Payment {
 		/** @var Credit_Card $gateway */
 		$gateway = wc_cybersource()->get_gateway( Plugin::CREDIT_CARD_GATEWAY_ID );
 
-		if ( $gateway->is_3d_secure_enabled() &&
-			$gateway->is_3d_secure_enabled_for_card_type( (string) $this->get_payment_method_card_type() ) ) {
+		if (
+			$gateway->is_3d_secure_enabled() &&
+			! $gateway->is_automatic_renewal( $this->get_order()->get_id() ) &&
+			$gateway->is_3d_secure_enabled_for_card_type( (string) $this->get_payment_method_card_type() )
+		) {
 
 			/**
 			 * @see AJAX::check_enrollment()

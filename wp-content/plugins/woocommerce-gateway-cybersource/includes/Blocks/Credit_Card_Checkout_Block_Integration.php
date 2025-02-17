@@ -26,10 +26,10 @@ namespace SkyVerge\WooCommerce\Cybersource\Blocks;
 use SkyVerge\WooCommerce\Cybersource\Device_Data;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Credit_Card;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_API_Exception;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway_Plugin;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_API_Exception;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway_Plugin;
 
 /**
  * Checkout block integration for the credit card gateway.
@@ -96,10 +96,6 @@ class Credit_Card_Checkout_Block_Integration extends Gateway_Checkout_Block_Inte
 				],
 			],
 		], $payment_method_data );
-
-		if ( $gateway->is_decision_manager_enabled() && $session_id = Device_Data::get_session_id() ) {
-			$data['device_data_session_id'] = $session_id;
-		}
 
 		try {
 

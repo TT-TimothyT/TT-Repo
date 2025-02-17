@@ -4,7 +4,7 @@ Tags: GIS, Map maker, GPX, Track, Elevation
 Requires at least: 4.6
 Tested up to: 6.7
 Requires PHP: 5.2
-Stable tag: 1.4.2
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -172,6 +172,27 @@ Built on the shoulders of giants, [thank you](https://www.waymark.dev/docs/thank
 10. Documentation and Help is available from the <a href="https://www.waymark.dev/">Waymark</a> website.
 
 == Changelog ==
+
+= 1.5.2 =
+
+- Fixed a bug where Map data was being lost when editing a Map. Thanks to [hogg66](https://wordpress.org/support/users/hogg66/) for [reporting this](https://wordpress.org/support/topic/map-reverts-to-empty-default-when-i-add-a-new-marker/).
+
+= 1.5.1 = 
+
+- Improved escaping of Shortcode attributes.
+
+= 1.5.0 = 
+
+- **Security update** This is a big update which includes a number of security fixes, many highlighted by the [Plugin Check](https://wordpress.org/plugins/plugin-check/) plugin.
+- Fixed a vulnerability where Shortcode attributes were not being escaped. Thanks to Muhammad Yudha for reporting this via Patchstack.
+- Added `waymark_pre_update_post_meta` filter. This filter is called before the `update_post_meta` function is called, allowing you to modify the meta data before it is saved. It receives two parameters - `$param_value` and `$param_definition`. Thanks to [DrogoNevets](https://github.com/DrogoNevets) for the [PR](https://github.com/OpenGIS/Waymark/issues/58).
+- Submission button bug fix. Thanks to [DrogoNevets](https://github.com/DrogoNevets) for this.
+
+= 1.4.3 = 
+
+- Add missing MultiPolygon support. Raised [here](https://wordpress.org/support/topic/large-kml-display-issue/) and [here](https://github.com/OpenGIS/Waymark/issues/55).
+- [Taxonomy label fix](https://github.com/OpenGIS/Waymark/issues/47).
+- [Added Name to GPX metadata on Export](https://github.com/OpenGIS/Waymark/issues/48).
 
 = 1.4.2 =
 

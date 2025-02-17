@@ -21,6 +21,8 @@
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
+use SkyVerge\WooCommerce\Cybersource\Plugin;
+
 defined( 'ABSPATH' ) or exit;
 
 
@@ -29,9 +31,9 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 2.0.0
  *
- * @return \SkyVerge\WooCommerce\Cybersource\Plugin
+ * @return Plugin
  */
-function wc_cybersource() {
-
-	return \SkyVerge\WooCommerce\Cybersource\Plugin::instance();
+function wc_cybersource() : Plugin
+{
+	return Plugin::instance();
 }

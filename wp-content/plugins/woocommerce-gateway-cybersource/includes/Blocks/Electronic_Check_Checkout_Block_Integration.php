@@ -25,9 +25,9 @@ namespace SkyVerge\WooCommerce\Cybersource\Blocks;
 
 use SkyVerge\WooCommerce\Cybersource\Gateway\Electronic_Check;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway_Plugin;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway_Plugin;
 
 /**
  * Checkout block integration for the electronic check gateway.

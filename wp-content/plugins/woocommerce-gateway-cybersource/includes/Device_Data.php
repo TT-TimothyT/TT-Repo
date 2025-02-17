@@ -42,14 +42,14 @@ class Device_Data {
 	 *
 	 * @since 2.3.0
 	 *
+	 * @deprecated 2.8.3
+	 *
 	 * @param string|null $gateway_id unused since 2.8.0
 	 * @param string|null $session_id session ID
 	 */
 	public static function render_session_id_input( ?string $gateway_id = null, ?string $session_id = null ): void {
 
-		?>
-		<input type="hidden" name="wc_cybersource_device_data_session_id" value="<?php echo esc_attr( $session_id ?: '' ); ?>" />
-		<?php
+		_deprecated_function( __METHOD__, '2.8.3' );
 	}
 
 

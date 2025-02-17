@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
 
 /**
  * WooCommerce CyberSource Gateway main plugin class.
@@ -36,37 +36,37 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 
 	/** version number */
-	const VERSION = '2.8.2';
+	public const VERSION = '2.8.3';
 
 	/** @var Plugin single instance of this plugin */
 	protected static $instance;
 
 	/** gateway id */
-	const PLUGIN_ID = 'cybersource';
+	public const PLUGIN_ID = 'cybersource';
 
 	/** class name to load as gateway, can be base or subscriptions class */
-	const CREDIT_CARD_GATEWAY_CLASS_NAME = Gateway\Credit_Card::class;
+	public const CREDIT_CARD_GATEWAY_CLASS_NAME = Gateway\Credit_Card::class;
 
 	/** string gateway id */
-	const CREDIT_CARD_GATEWAY_ID = 'cybersource_credit_card';
+	public const CREDIT_CARD_GATEWAY_ID = 'cybersource_credit_card';
 
 	/** class name to load as gateway, can be base or subscriptions class */
-	const ECHECK_GATEWAY_CLASS_NAME = Gateway\Electronic_Check::class;
+	public const ECHECK_GATEWAY_CLASS_NAME = Gateway\Electronic_Check::class;
 
 	/** string gateway id */
-	const ECHECK_GATEWAY_ID = 'cybersource_echeck';
+	public const ECHECK_GATEWAY_ID = 'cybersource_echeck';
 
 	/** class name to load as legacy gateway, for existing installations */
-	const LEGACY_GATEWAY_CLASS_NAME = Legacy\Gateway::class;
+	public const LEGACY_GATEWAY_CLASS_NAME = Legacy\Gateway::class;
 
 	/** string gateway id */
-	const LEGACY_GATEWAY_ID = 'cybersource';
+	public const LEGACY_GATEWAY_ID = 'cybersource';
 
 	/** class name for the Visa Checkout gateway */
-	const VISA_CHECKOUT_GATEWAY_CLASS_NAME = Gateway\Visa_Checkout::class;
+	public const VISA_CHECKOUT_GATEWAY_CLASS_NAME = Gateway\Visa_Checkout::class;
 
 	/** Visa Checkout gateway ID */
-	const VISA_CHECKOUT_GATEWAY_ID = 'cybersource_visa_checkout';
+	public const VISA_CHECKOUT_GATEWAY_ID = 'cybersource_visa_checkout';
 
 
 	/** @var Orders orders handler instance */

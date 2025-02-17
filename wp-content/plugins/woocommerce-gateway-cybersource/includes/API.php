@@ -32,8 +32,8 @@ use CyberSource\Logging\LogConfiguration;
 use Exception;
 use SkyVerge\WooCommerce\Cybersource\API\Requests;
 use SkyVerge\WooCommerce\Cybersource\API\Responses;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway_Helper;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway_Helper;
 use WC_Log_Handler_File;
 
 defined( 'ABSPATH' ) or exit;
@@ -568,7 +568,7 @@ class API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Ga
 
 		} elseif ( is_array( $response ) ) {
 
-			list( $data, $code, $headers ) = $response;
+			[ $data, $code, $headers ] = $response;
 
 			$body = json_encode( $data, true );
 

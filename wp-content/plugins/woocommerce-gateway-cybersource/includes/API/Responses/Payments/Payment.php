@@ -26,9 +26,9 @@ namespace SkyVerge\WooCommerce\Cybersource\API\Responses\Payments;
 use SkyVerge\WooCommerce\Cybersource\API\Message_Helper;
 use SkyVerge\WooCommerce\Cybersource\API\Responses\Payments;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Payment_Token;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_API_Exception;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway_API_Create_Payment_Token_Response;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\SV_WC_Payment_Gateway_API_Customer_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_API_Exception;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway_API_Create_Payment_Token_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway_API_Customer_Response;
 
 defined( 'ABSPATH' ) or exit;
 

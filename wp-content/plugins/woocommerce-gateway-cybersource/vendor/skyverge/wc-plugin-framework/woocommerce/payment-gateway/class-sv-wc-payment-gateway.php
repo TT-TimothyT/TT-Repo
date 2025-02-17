@@ -22,16 +22,16 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-namespace SkyVerge\WooCommerce\PluginFramework\v5_12_5;
+namespace SkyVerge\WooCommerce\PluginFramework\v5_15_3;
 
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\Blocks\Blocks_Handler;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\Blocks\Blocks_Handler;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
 use stdClass;
 
 defined( 'ABSPATH' ) or exit;
 
-if ( ! class_exists( '\\SkyVerge\\WooCommerce\\PluginFramework\\v5_12_5\\SV_WC_Payment_Gateway' ) ) :
+if ( ! class_exists( '\\SkyVerge\\WooCommerce\\PluginFramework\\v5_15_3\\SV_WC_Payment_Gateway' ) ) :
 
 
 /**
@@ -473,7 +473,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 		}
 
 		$handle           = 'sv-wc-payment-gateway-payment-form';
-		$versioned_handle = $handle . '-v5_12_5';
+		$versioned_handle = $handle . '-v5_15_3';
 
 		// Frontend JS
 		wp_enqueue_script( $versioned_handle, $this->get_plugin()->get_payment_gateway_framework_assets_url() . '/dist/frontend/' . $handle . '.js', array( 'jquery-payment' ), SV_WC_Plugin::VERSION, true );
@@ -785,11 +785,18 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 * Direct gateway: "Place order"
 	 * Redirect/Hosted gateway: "Continue to Payment"
 	 *
+	 * If a gateway has a separate payment page, then we expect to show "Continue to Payment" on checkout, and
+	 * "Place order" on the separate pay page.
+	 *
 	 * @since 4.0.0
 	 */
 	protected function get_order_button_text() {
 
 		$text = $this->is_hosted_gateway() ? esc_html__( 'Continue to Payment', 'woocommerce-plugin-framework' ) : esc_html__( 'Place order', 'woocommerce-plugin-framework' );
+
+		if ($this->hasSeparatePaymentPage()) {
+			$text = SV_WC_Helper::isCheckoutPayPage() ? esc_html__( 'Place order', 'woocommerce-plugin-framework' ) : esc_html__( 'Continue to Payment', 'woocommerce-plugin-framework' );
+		}
 
 		/**
 		 * Payment Gateway Place Order Button Text Filter.
@@ -936,7 +943,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function get_payment_method_defaults() {
 
-		assert( $this->supports_payment_form() );
+		$this->get_plugin()->assert( $this->supports_payment_form() );
 
 		$defaults = array(
 			'account-number' => '',
@@ -3294,7 +3301,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	protected function add_authorization_charge_form_fields( $form_fields ) {
 
-		assert( $this->supports_credit_card_authorization() && $this->supports_credit_card_charge() );
+		$this->get_plugin()->assert( $this->supports_credit_card_authorization() && $this->supports_credit_card_charge() );
 
 		$form_fields['transaction_type'] = array(
 			'title'    => esc_html__( 'Transaction Type', 'woocommerce-plugin-framework' ),
@@ -3374,7 +3381,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function perform_credit_card_charge( \WC_Order $order = null ) {
 
-		assert( $this->supports_credit_card_charge() );
+		$this->get_plugin()->assert( $this->supports_credit_card_charge() );
 
 		$perform = self::TRANSACTION_TYPE_CHARGE === $this->transaction_type;
 
@@ -3405,7 +3412,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function perform_credit_card_authorization( \WC_Order $order = null ) {
 
-		assert( $this->supports_credit_card_authorization() );
+		$this->get_plugin()->assert( $this->supports_credit_card_authorization() );
 
 		$perform = self::TRANSACTION_TYPE_AUTHORIZATION === $this->transaction_type && ! $this->perform_credit_card_charge( $order );
 
@@ -3430,7 +3437,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function is_partial_capture_enabled() {
 
-		assert( $this->supports_credit_card_partial_capture() );
+		$this->get_plugin()->assert( $this->supports_credit_card_partial_capture() );
 
 		/**
 		 * Filters whether partial capture is enabled.
@@ -3509,7 +3516,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function get_card_types() {
 
-		assert( $this->supports_card_types() );
+		$this->get_plugin()->assert( $this->supports_card_types() );
 
 		return is_array( $this->card_types ) ? $this->card_types : [];
 	}
@@ -3525,7 +3532,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	protected function add_card_types_form_fields( $form_fields ) {
 
-		assert( $this->supports_card_types() );
+		$this->get_plugin()->assert( $this->supports_card_types() );
 
 		$form_fields['card_types'] = array(
 			'title'       => esc_html__( 'Accepted Card Logos', 'woocommerce-plugin-framework' ),
@@ -3555,7 +3562,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function get_available_card_types() {
 
-		assert( $this->supports_card_types() );
+		$this->get_plugin()->assert( $this->supports_card_types() );
 
 		// default available card types
 		if ( ! isset( $this->available_card_types ) ) {
@@ -3605,7 +3612,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function tokenization_enabled() {
 
-		assert( $this->supports_tokenization() );
+		$this->get_plugin()->assert( $this->supports_tokenization() );
 
 		return 'yes' == $this->tokenization;
 	}
@@ -3620,7 +3627,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	protected function add_tokenization_form_fields( $form_fields ) {
 
-		assert( $this->supports_tokenization() );
+		$this->get_plugin()->assert( $this->supports_tokenization() );
 
 		$form_fields['tokenization'] = array(
 			/* translators: http://www.cybersource.com/products/payment_security/payment_tokenization/ and https://en.wikipedia.org/wiki/Tokenization_(data_security) */
@@ -4135,7 +4142,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function supports_check_field( $field_name ) {
 
-		assert( $this->is_echeck_gateway() );
+		$this->get_plugin()->assert( $this->is_echeck_gateway() );
 
 		return is_array( $this->supported_check_fields ) && in_array( $field_name, $this->supported_check_fields );
 
@@ -4370,6 +4377,19 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 		return false;
 	}
 
+	/**
+	 * Returns true if the gateway has a separate, dedicated payment page after the normal Checkout page.
+	 * This usually means the checkout page would show a "Continue to Payment" button, which when clicked redirects
+	 * the customer to a separate page (probably on-site) where payment is actually taken.
+	 *
+	 * @since 5.12.7
+	 * @return bool
+	 */
+	public function hasSeparatePaymentPage(): bool
+	{
+		return false;
+	}
+
 
 	/**
 	 * Returns the payment type for this gateway
@@ -4458,7 +4478,7 @@ abstract class SV_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	public function get_api() {
 
 		// concrete stub method
-		assert( false );
+		$this->get_plugin()->assert( false );
 	}
 
 

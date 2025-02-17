@@ -1,5 +1,12 @@
 *** WooCommerce CyberSource Gateway Changelog ***
 
+2025.01.28 - version 2.8.3
+ * Fix - Start device fingerprinting session on first page load to help ensure sufficient time for completion
+ * Fix - Pass correct Merchant ID to Google Pay
+ * Fix - Gracefully handles subscription renewal attempt with 3DS token
+ * Fix - Use ISO 3166-2:MX 3-digit state codes for Mexican states to avoid Payer Authentication check failures
+ * Misc - Update SkyVerge Plugin Framework to 5.15.3
+
 2024.07.09 - version 2.8.2
  * Misc - Prevent bypassing Payer Authentication enrollment check when 3DS is enabled
  * Misc - Update SkyVerge Plugin Framework to 5.12.5

@@ -27,7 +27,7 @@ use SkyVerge\WooCommerce\Cybersource\API\Helper;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Credit_Card;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway\Visa_Checkout;
 
 use SkyVerge\WooCommerce\Cybersource\Device_Data;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Visa_Checkout;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -139,11 +139,6 @@ class Payment_Form extends Framework\SV_WC_Payment_Gateway_Payment_Form {
 		</div>
 
 		<?php
-
-		// render the session ID input if DM is enabled and there is a session ID
-		if ( ( $session_id = Device_Data::get_session_id() ) && $this->get_gateway()->is_decision_manager_enabled()) {
-			Device_Data::render_session_id_input( null, $session_id );
-		}
 	}
 
 

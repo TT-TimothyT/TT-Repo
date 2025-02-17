@@ -25,6 +25,7 @@ return array(
     'Symfony\\Component\\DependencyInjection\\' => array($vendorDir . '/symfony/dependency-injection'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
+    'SkyVerge\\WooCommerce\\PluginFramework\\v5_15_3\\' => array($vendorDir . '/skyverge/wc-plugin-framework/woocommerce'),
     'SkyVerge\\WooCommerce\\Cybersource\\' => array($baseDir . '/includes'),
     'Safe\\' => array($vendorDir . '/thecodingmachine/safe/lib', $vendorDir . '/thecodingmachine/safe/deprecated', $vendorDir . '/thecodingmachine/safe/generated'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),

@@ -22,11 +22,13 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-namespace SkyVerge\WooCommerce\PluginFramework\v5_12_5;
+namespace SkyVerge\WooCommerce\PluginFramework\v5_15_3;
+
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3\Helpers\NumberHelper;
 
 defined( 'ABSPATH' ) or exit;
 
-if ( ! class_exists( '\\SkyVerge\\WooCommerce\\PluginFramework\\v5_12_5\\SV_WC_Helper' ) ) :
+if ( ! class_exists( '\\SkyVerge\\WooCommerce\\PluginFramework\\v5_15_3\\SV_WC_Helper' ) ) :
 
 
 /**
@@ -497,13 +499,14 @@ class SV_WC_Helper {
 	 *
 	 * Commonly used for payment gateways which require amounts in this format.
 	 *
+	 * @deprecated 5.15.0 - use {@see NumberHelper::format()} instead
+	 *
 	 * @since 3.0.0
 	 * @param float $number
 	 * @return string
 	 */
 	public static function number_format( $number ) {
-
-		return number_format( (float) $number, 2, '.', '' );
+		return NumberHelper::format($number);
 	}
 
 
@@ -759,6 +762,28 @@ class SV_WC_Helper {
 		return ( is_multisite() ) ? get_blog_details()->blogname : get_bloginfo( 'name' );
 	}
 
+	/**
+	 * Determines whether we're on the WooCommerce checkout "pay page".
+	 *
+	 * @since 5.12.7
+	 * @return bool
+	 */
+	public static function isCheckoutPayPage(): bool
+	{
+		global $wp_query;
+
+		if (function_exists('is_checkout_pay_page') && ! empty($wp_query) && is_checkout_pay_page() === true) {
+			return true;
+		}
+
+		/**
+		 * This is a fallback, in case we need to check for the pay page very early in the lifecycle, when
+		 * {@see is_checkout_pay_page()} would normally return false.
+		 * An example of this is in {@see SV_WC_Payment_Gateway::get_order_button_text()}
+		 */
+		return isset($_GET['pay_for_order']);
+	}
+
 
 	/** JavaScript helper functions ***************************************/
 
@@ -1005,9 +1030,9 @@ class SV_WC_Helper {
 	 *
 	 * @return bool
 	 */
-	public static function is_enhanced_admin_screen() {
-
-		return is_admin() && SV_WC_Plugin_Compatibility::is_enhanced_admin_available() && ( \Automattic\WooCommerce\Admin\Loader::is_admin_page() || \Automattic\WooCommerce\Admin\Loader::is_embed_page() );
+	public static function is_enhanced_admin_screen() : bool
+	{
+		return is_admin() && SV_WC_Plugin_Compatibility::is_enhanced_admin_available() && (\Automattic\WooCommerce\Admin\PageController::is_admin_page() || \Automattic\WooCommerce\Admin\PageController::is_embed_page());
 	}
 
 
@@ -1016,16 +1041,46 @@ class SV_WC_Helper {
 	 *
 	 * @since 5.10.6
 	 *
+	 * @deprecated with no alternatives
+	 *
 	 * @return bool
 	 */
-	public static function is_wc_navigation_enabled() {
+	public static function is_wc_navigation_enabled() : bool
+	{
+		if (SV_WC_Plugin_Compatibility::is_wc_version_gte('9.3')) {
+			self::enhancedNavigationDeprecationNotice();
+			return false;
+		}
 
-		return
-			is_callable( [ \Automattic\WooCommerce\Admin\Features\Navigation\Screen::class, 'register_post_type' ] ) &&
-			is_callable( [ \Automattic\WooCommerce\Admin\Features\Navigation\Menu::class, 'add_plugin_item' ] ) &&
-			is_callable( [ \Automattic\WooCommerce\Admin\Features\Navigation\Menu::class, 'add_plugin_category' ] ) &&
-			is_callable( [ \Automattic\WooCommerce\Admin\Features\Features::class, 'is_enabled' ] ) &&
-			\Automattic\WooCommerce\Admin\Features\Features::is_enabled( 'navigation' );
+		return self::isEnhancedNavigationFeatureEnabled();
+	}
+
+	/**
+	 * Determines whether Woo's Enhanced Eavigation feature is enabled.
+	 *
+	 * @since 5.15.1
+	 *
+	 * @return bool
+	 */
+	protected static function isEnhancedNavigationFeatureEnabled() : bool
+	{
+		return is_callable([\Automattic\WooCommerce\Admin\Features\Navigation\Screen::class, 'register_post_type']) &&
+			is_callable([\Automattic\WooCommerce\Admin\Features\Navigation\Menu::class, 'add_plugin_item']) &&
+			is_callable([\Automattic\WooCommerce\Admin\Features\Navigation\Menu::class, 'add_plugin_category']) &&
+			is_callable([\Automattic\WooCommerce\Admin\Features\Features::class, 'is_enabled']) &&
+			\Automattic\WooCommerce\Admin\Features\Features::is_enabled('navigation');
+	}
+
+	/**
+	 * Logs a notice for the Enhanced Navigation feature being deprecated.
+	 *
+	 * @since 5.15.1
+	 *
+	 * @return void
+	 */
+	protected static function enhancedNavigationDeprecationNotice() : void
+	{
+		error_log('The Enhanced navigation feature has been deprecated since WooCommerce 9.3 with no alternative. Navigation classes will be removed in WooCommerce 9.4');
 	}
 
 

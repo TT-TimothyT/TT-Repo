@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
 
 use SkyVerge\WooCommerce\Cybersource\API\Response;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

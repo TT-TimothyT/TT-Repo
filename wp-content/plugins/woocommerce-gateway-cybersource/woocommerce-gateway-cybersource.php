@@ -6,11 +6,15 @@
  * Description: Accept credit cards in WooCommerce with the CyberSource (SOAP) payment gateway
  * Author: SkyVerge
  * Author URI: http://www.woocommerce.com/
- * Version: 2.8.2
+ * Version: 2.8.3
  * Text Domain: woocommerce-gateway-cybersource
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
+ * Requires PHP: 8.0
+ * Requires at least: 5.6
+ * Tested up to: 6.7.1
+ *
+ * Copyright: (c) 2012-2025, SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,12 +22,12 @@
  * @package   WC-CyberSource
  * @author    SkyVerge
  * @category  Payment-Gateways
- * @copyright Copyright (c) 2012-2024, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright Copyright (c) 2012-2025, SkyVerge, Inc. (info@skyverge.com)
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
  * Woo: 18690:3083c0ed00f4a1a2acc5f9044442a7a8
  * WC requires at least: 3.9.4
- * WC tested up to: 9.0.2
+ * WC tested up to: 9.6.0
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -37,26 +41,25 @@ class WC_Cybersource_Loader {
 
 
 	/** minimum PHP version required by this plugin */
-	const MINIMUM_PHP_VERSION = '8.0';
+	public const MINIMUM_PHP_VERSION = '8.0';
 
 	/** minimum WordPress version required by this plugin */
-	const MINIMUM_WP_VERSION = '5.6';
+	public const MINIMUM_WP_VERSION = '5.6';
 
 	/** minimum WooCommerce version required by this plugin */
-	const MINIMUM_WC_VERSION = '3.9.4';
+	public const MINIMUM_WC_VERSION = '3.9.4';
 
 	/** SkyVerge plugin framework version used by this plugin */
-	const FRAMEWORK_VERSION = '5.12.5';
+	public const FRAMEWORK_VERSION = '5.15.3';
 
 	/** the plugin name, for displaying notices */
-	const PLUGIN_NAME = 'WooCommerce Cybersource';
+	public const PLUGIN_NAME = 'WooCommerce Cybersource';
 
-
-	/** @var \WC_Cybersource_Loader single instance of this class */
-	protected static $instance;
+	/** @var WC_Cybersource_Loader|null single instance of this class */
+	protected static ?WC_Cybersource_Loader $instance = null;
 
 	/** @var array the admin notices to add */
-	protected $notices = array();
+	protected array $notices = [];
 
 
 	/**
@@ -108,11 +111,9 @@ class WC_Cybersource_Loader {
 	 *
 	 * @since 1.9.0
 	 */
-	public function init_plugin() {
-
+	public function init_plugin() : void
+	{
 		if ( $this->plugins_compatible() ) {
-
-			$this->load_framework();
 
 			// autoload plugin and vendor files
 			require_once( plugin_dir_path( __FILE__ ) . 'vendor/autoload.php' );
@@ -121,25 +122,6 @@ class WC_Cybersource_Loader {
 
 			// fire it up!
 			wc_cybersource();
-		}
-	}
-
-
-	/**
-	 * Loads the base framework classes.
-	 *
-	 * @since 1.9.0
-	 */
-	protected function load_framework() {
-
-		if ( ! class_exists( '\\SkyVerge\\WooCommerce\\PluginFramework\\' . $this->get_framework_version_namespace() . '\\SV_WC_Plugin' ) ) {
-
-			require_once( plugin_dir_path( __FILE__ ) . 'vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php' );
-		}
-
-		if ( ! class_exists( '\\SkyVerge\\WooCommerce\\PluginFramework\\' . $this->get_framework_version_namespace() . '\\SV_WC_Payment_Gateway_Plugin' ) ) {
-
-			require_once( plugin_dir_path( __FILE__ ) . 'vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php' );
 		}
 	}
 
@@ -377,16 +359,11 @@ class WC_Cybersource_Loader {
 	 *
 	 * @since 1.9.0
 	 *
-	 * @return \WC_Cybersource_Loader
+	 * @return WC_Cybersource_Loader
 	 */
-	public static function instance() {
-
-		if ( null === self::$instance ) {
-
-			self::$instance = new self();
-		}
-
-		return self::$instance;
+	public static function instance() : WC_Cybersource_Loader
+	{
+		return self::$instance ??= new self();
 	}
 
 

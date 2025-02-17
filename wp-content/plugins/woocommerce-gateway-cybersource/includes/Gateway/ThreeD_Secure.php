@@ -29,7 +29,7 @@ use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\Frontend;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\AJAX;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
 
 /**
  * 3D Secure (Payer Authentication) handler.
@@ -360,7 +360,7 @@ class ThreeD_Secure {
 	 */
 	public function get_reference_id(): ?string {
 
-		return WC()->session->get( 'cybersource_threed_secure_reference_id' );
+		return WC()->session ? WC()->session->get( 'cybersource_threed_secure_reference_id' ) : null;
 	}
 
 
@@ -376,7 +376,7 @@ class ThreeD_Secure {
 	 */
 	public function get_enrollment_status(): ?string {
 
-		return WC()->session->get( 'wc_cybersource_threed_secure_enrollment_status' );
+		return WC()->session ? WC()->session->get( 'wc_cybersource_threed_secure_enrollment_status' ) : null;
 	}
 
 
@@ -393,7 +393,7 @@ class ThreeD_Secure {
 	 */
 	public function get_consumer_authentication_information(): ?object {
 
-		$data = WC()->session->get( 'wc_cybersource_threed_secure_consumer_authentication_information' );
+		$data = WC()->session ? WC()->session->get( 'wc_cybersource_threed_secure_consumer_authentication_information' ) : null;
 
 		return ! empty( $data ) ? (object) $data : null;
 	}

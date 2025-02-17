@@ -26,8 +26,9 @@ namespace SkyVerge\WooCommerce\Cybersource;
 use Firebase\JWT\JWT;
 use SkyVerge\WooCommerce\Cybersource\Blocks\Credit_Card_Checkout_Block_Integration;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Base_Payment_Form;
+use SkyVerge\WooCommerce\Cybersource\Gateway\Integrations\SubscriptionIntegration;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Payment_Form;
-use SkyVerge\WooCommerce\PluginFramework\v5_12_5 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -103,7 +104,7 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 		parent::__construct( $id, $plugin, $args );
 
 		// add the device data iframe to the checkout markup
-		add_action( 'woocommerce_before_checkout_form', [ $this, 'add_device_data_iframe' ] );
+		add_action( 'wp_footer', [ $this, 'add_device_data_iframe' ] );
 
 		// blocks initialize (and enqueue scripts) at 5, so we need to register the scripts before that
 		add_action( 'init', [ $this, 'register_scripts' ], 1 );
@@ -148,10 +149,10 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 		wp_register_script( 'wc-cybersource-flex-microform', $this->get_flex_microform_js_url(), [], $this->get_plugin()->get_version() );
 
 		/**
-		 * Device Data JS will be enqueued by the shortcode payment form and the checkout block.
+		 * Device Data JS will be enqueued by the gateway if Decision Manager is enabled.
 		 *
+		 * @see static::enqueue_gateway_assets()
 		 * @see Credit_Card_Checkout_Block_Integration::__construct()
-		 * @see Payment_Form::render_js()
 		 */
 		if ( $this->is_decision_manager_enabled() && ! is_admin() && ! wp_script_is( 'wc-cybersource-device-data', 'registered' ) ) {
 
@@ -170,18 +171,18 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 	 */
 	protected function enqueue_gateway_assets() {
 
+		// if enabled, enqueue the device data collection JS and generate a new session ID
+		if ( $this->is_decision_manager_enabled() ) {
+
+			wp_enqueue_script('wc-cybersource-device-data');
+		}
+
 		// bail if on my account page and *not* on add payment method page
 		if ( is_account_page() && ! is_add_payment_method_page() ) {
 			return;
 		}
 
 		parent::enqueue_gateway_assets();
-
-		// if enabled, enqueue the device data collection JS and generate a new session ID
-		if ( $this->is_decision_manager_enabled() && is_checkout() ) {
-
-			wp_enqueue_script( "wc-cybersource-device-data" );
-		}
 	}
 
 
@@ -449,8 +450,8 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 
 		$order->use_decision_manager = $this->is_decision_manager_enabled();
 
-		// if the session ID was present, add it to the order
-		if ( $session_id = Framework\SV_WC_Helper::get_posted_value( 'wc_cybersource_device_data_session_id' ) ) {
+		// if the device data (fingerprinting) session ID is present, add it to the order
+		if ( $session_id = Device_Data::get_session_id() ) {
 			$order->decision_manager_session_id = $session_id;
 		}
 
@@ -874,6 +875,5 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 			? 'https://flex.cybersource.com/microform/bundle/v2/flex-microform.min.js'
 			: 'https://testflex.cybersource.com/microform/bundle/v2/flex-microform.min.js';
 	}
-
 
 }
