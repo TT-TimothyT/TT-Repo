@@ -84,6 +84,7 @@ $cc_expiry_date               = implode( '/',$cc_expiry_date_arr );
 $cc_card_type                 = get_post_meta( $order_id, '_wc_cybersource_credit_card_card_type', true );
 $product_image_url            = get_template_directory_uri() . '/assets/images/Thankyou.jpg';
 $trip_info                    = tt_get_trip_pid_sku_from_cart($order_id);
+$parent_id                    = tt_get_parent_trip_id_by_child_sku( $trip_info['sku'] );
 $product_image_url            = $trip_info['parent_trip_image'];
 $trip_product_line_name       = tt_is_product_line( 'Hiking', $trip_info['sku'] ) ? 'Hiking' : 'Cycling';
 $trip_start_date              = tt_get_local_trips_detail( 'startDate', '', $trip_info['sku'], true ); // The value or empty string.
@@ -105,26 +106,12 @@ foreach ( $order_items as $item_id => $item ) {
 			$trip_name   = $product->get_name();
 			$trip_sku    = $product->get_sku();
 			$sdate_obj   = explode('/', $trip_sdate);
-			$sdate_info  = array(
-				'd' => $sdate_obj[0],
-				'm' => $sdate_obj[1],
-				'y' => substr(date('Y'),0,2).$sdate_obj[2]
-			);
-			$edate_obj  = explode('/', $trip_edate);
-			$edate_info = array(
-				'd' => $edate_obj[0],
-				'm' => $edate_obj[1],
-				'y' => substr(date('Y'),0,2).$edate_obj[2]
-			);
-			$start_date_text = date('F jS, Y', strtotime(implode('-', $sdate_info)));
-			$end_date_text_1 = date('F jS, Y', strtotime(implode('-', $edate_info)));
-			$end_date_text_2 = date('jS, Y', strtotime(implode('-', $edate_info)));
-			$date_range_1    = $start_date_text. ' - '.$end_date_text_2;
-			$date_range_2    = $start_date_text. ' - '.$end_date_text_1;
-			$date_range      = $date_range_1;
-			if( $sdate_info['m'] != $edate_info['m'] ){
-				$date_range = $date_range_2;
-			}
+			$edate_obj   = explode('/', $trip_edate);
+			
+			$start_date = sprintf('%02d/%02d/%04d', $sdate_obj[1], $sdate_obj[0], substr(date('Y'), 0, 2) . $sdate_obj[2]);
+			$end_date   = sprintf('%02d/%02d/%04d', $edate_obj[1], $edate_obj[0], substr(date('Y'), 0, 2) . $edate_obj[2]);
+			
+			$date_range = $start_date . ' - ' . $end_date;
 		}
 	}
 }
@@ -213,8 +200,8 @@ if ( $show_downloads ) {
 			<div class="order-details__number border text-center">
 				<div>
 					<p class="trip-product-line"><?php echo esc_html( $trip_product_line_name ); ?></p>
-					<h4 class="order-details__heading px-5"><?php echo esc_html( $trip_name ); ?></h4>
-					<p class="trip-duration mb-0 px-5"><?php printf( '%1$s - %2$s', esc_attr( $trip_start_date ), esc_attr( $trip_end_date ) ) ?></p>
+					<h4 class="order-details__heading px-5"><?php echo esc_html( get_the_title( $parent_id ) ); ?></h4>
+					<p class="trip-duration mb-0 px-5"><?php echo $date_range; ?></p>
 					<hr>
 					<p class="fs-lg lh-sm px-5"><?php esc_html_e( 'Your confirmation number is', 'trek-travel-theme' ); ?> <span class="fw-bold"><?php echo $order_id; ?></span></p>
 					<hr class="light-line">

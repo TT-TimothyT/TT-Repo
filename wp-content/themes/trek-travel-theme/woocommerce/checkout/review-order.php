@@ -34,7 +34,7 @@ $no_of_guests            = tt_validate( $tt_posted['no_of_guests'], 1 );
 $accepted_p_ids          = tt_get_line_items_product_ids();
 $guest_insurance         = tt_validate( $tt_posted['trek_guest_insurance'], array() );
 $trip_info               = tt_get_trip_pid_sku_from_cart();
-$parent_id = tt_get_parent_trip_id_by_child_sku( $trip_info['sku'] );
+$parent_id               = tt_get_parent_trip_id_by_child_sku( $trip_info['sku'] );
 $trip_start_date         = tt_get_local_trips_detail( 'startDate', '', $trip_info['sku'], true ); // The value or empty string.
 $trip_end_date           = tt_get_local_trips_detail( 'endDate', '', $trip_info['sku'], true ); // The value or empty string.
 $trip_product_line_name  = tt_is_product_line( 'Hiking', $trip_info['sku'] ) ? 'Hiking' : 'Cycling';
@@ -60,14 +60,44 @@ if ( 'deposite' === $pay_amount ) {
     $remaining_amount_curr = get_woocommerce_currency_symbol() . ( $cart_total - $deposit_amount );
 }
 $product_name = '';
+$trip_sdate   = '';
+$trip_edate   = '';
 foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-    $_product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
-    if (
-        $_product && $_product->exists() && $cart_item['quantity'] > 0 && !in_array($cart_item['product_id'], $accepted_p_ids)
-        && apply_filters('woocommerce_checkout_cart_item_visible', true, $cart_item, $cart_item_key)
-    ) {
-        $product_name = $_product->get_name();
-    }
+	$_product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
+	if (
+		$_product && $_product->exists() && $cart_item['quantity'] > 0 && !in_array($cart_item['product_id'], $accepted_p_ids)
+		&& apply_filters('woocommerce_checkout_cart_item_visible', true, $cart_item, $cart_item_key)
+	) {
+		$product_name = $_product->get_name();
+		if ( $_product ) {
+			$p_id        = $_product->get_id();
+			$trip_status = tt_get_custom_product_tax_value( $p_id, 'trip-status', true );
+			$trip_sdate  = $_product->get_attribute( 'pa_start-date' );
+			$trip_edate  = $_product->get_attribute( 'pa_end-date' );
+			$trip_name   = $_product->get_name();
+			$trip_sku    = $_product->get_sku();
+			$parent_trip = tt_get_parent_trip_group($trip_sku);
+			// Load parent product if available
+			$parent_product = $parent_trip['id'] ? wc_get_product( $parent_trip['id'] ) : null;
+
+			// Set parent product name and link, with fallbacks if parent is unavailable
+			$parent_name = $parent_product ? $parent_product->get_name() : $_product->get_name();
+
+			// Convert dates to new format
+			$sdate_obj = explode( '/', $trip_sdate );
+			$edate_obj = explode( '/', $trip_edate );
+			
+			$start_date = sprintf( '%02d/%02d/%04d', $sdate_obj[1], $sdate_obj[0], substr(date('Y'), 0, 2) . $sdate_obj[2] );
+			$end_date   = sprintf( '%02d/%02d/%04d', $edate_obj[1], $edate_obj[0], substr(date('Y'), 0, 2) . $edate_obj[2] );
+			
+			$date_range = $start_date . ' - ' . $end_date;
+
+			$product_image_url = get_template_directory_uri() . '/assets/images/TT-Logo.png';
+			if ( has_post_thumbnail( $product_id ) && $product_id ) {
+				$product_image_url = get_the_post_thumbnail_url( $product_id );
+			}
+		}
+	}
 }
 
 ?>
@@ -99,7 +129,7 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 		<div class="checkout-summary__card-body">
 			<div class="checkout-summary__card-body-header">
 				<h5 class="text-center checkout-summary__title mb-1"><?php echo esc_html( get_the_title($parent_id) ); ?></h5>
-				<p class="text-center checkout-summary__date trip-duration mb-0"><?php printf( '%1$s - %2$s', esc_attr( $trip_start_date ), esc_attr( $trip_end_date ) ) ?></p>
+				<p class="text-center checkout-summary__date trip-duration mb-0"><?php echo $date_range; ?></p>
 			</div>
 			<hr>
 			<div class="checkout-summary__promo">
