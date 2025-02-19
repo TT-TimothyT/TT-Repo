@@ -40,14 +40,16 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		 * ## EXAMPLES
 		 *
 		 *     wp ttnsw product list --product_type=simple
+		 *     wp ttnsw product list --product_type=old_trip_date
 		 *     wp ttnsw product list --product_type=simple,grouped
 		 *     wp ttnsw product list --product_type=simple --count
 		 *     wp ttnsw product list --line-item
+		 *     wp ttnsw product list --without-product-type
 		 *
-		 *     wp ttnsw product noindex-simple-products
-		 *     wp ttnsw product index-simple-products
+		 *     wp ttnsw product noindex-products
+		 *     wp ttnsw product index-products
 		 *
-		 * @synopsis <action> [--product_type=<term>] [--line-item] [--count]
+		 * @synopsis <action> [--product_type=<term>] [--line-item] [--count] [--without-product-type]
 		 * @param array $args All positional arguments for the command.
 		 * @param array $assoc_args All associative arguments for the command.
 		 */
@@ -59,58 +61,91 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 					$product_type = \WP_CLI\Utils\get_flag_value( $assoc_args, 'product_type', '' );
 					$count_only   = \WP_CLI\Utils\get_flag_value( $assoc_args, 'count', false );
 					$is_line_item = \WP_CLI\Utils\get_flag_value( $assoc_args, 'line-item', false );
+					$no_pr_type   = \WP_CLI\Utils\get_flag_value( $assoc_args, 'without-product-type', false );
 
-					WP_CLI::log( 'Found products: ' . json_encode( $this->get_products( $product_type, $is_line_item, $count_only ) ) );
+					WP_CLI::log( 'Found products: ' . json_encode( $this->get_products( $product_type, $is_line_item, $count_only, $no_pr_type ) ) );
 					break;
 
-				case 'noindex-simple-products':
-					$simple_products = $this->get_products( 'simple' );
+				case 'noindex-products':
+					$product_type = \WP_CLI\Utils\get_flag_value( $assoc_args, 'product_type', '' );
+					$no_pr_type   = \WP_CLI\Utils\get_flag_value( $assoc_args, 'without-product-type', false );
 
-					if ( empty( $simple_products ) || ! is_countable( $simple_products ) ) {
-						WP_CLI::error( 'Simple products are not found!' );
+					if ( empty( $product_type ) && ! $no_pr_type ) {
+						WP_CLI::error( 'Please provide the --product_type=... or --without-product-type flag for the action!' );
 					}
 
-					$simple_products_count = count( $simple_products );
+					$products = $this->get_products( $product_type, false, false, $no_pr_type );
 
-					WP_CLI::log( 'Found ' . $simple_products_count . ' simple products.' );
+					if ( empty( $products ) || ! is_countable( $products ) ) {
+						WP_CLI::error( $product_type . ' products are not found!' );
+					}
+
+					$products_count = count( $products );
+
+					WP_CLI::log( 'Found ' . $products_count . ' ' . $product_type . ' products.' );
 					WP_CLI::confirm( __( 'Do you want to proceed with the adding of "_yoast_wpseo_meta-robots-noindex" and "_yoast_wpseo_meta-robots-nofollow" meta, so to can\'t be indexed these products?', 'trek-travel' ) );
 
-					$progress = \WP_CLI\Utils\make_progress_bar( 'Updating meta', $simple_products_count );
+					$progress = \WP_CLI\Utils\make_progress_bar( 'Updating meta', $products_count );
 
-					for ( $i = 0; $i < $simple_products_count; $i++ ) {
-						update_post_meta( $simple_products[$i], '_yoast_wpseo_meta-robots-noindex', 1 ); // Update Yoast meta for noindex.
-						update_post_meta( $simple_products[$i], '_yoast_wpseo_meta-robots-nofollow', 1 ); // Update Yoast meta for nofollow.
+					for ( $i = 0; $i < $products_count; $i++ ) {
+						update_post_meta( $products[$i], '_yoast_wpseo_meta-robots-noindex', 1 ); // Update Yoast meta for noindex.
+						update_post_meta( $products[$i], '_yoast_wpseo_meta-robots-nofollow', 1 ); // Update Yoast meta for nofollow.
+						wp_update_post( array( 'ID' => $products[$i] ) );
 						$progress->tick();
 					}
 
 					$progress->finish();
 
 					WP_CLI::success( 'The products meta "_yoast_wpseo_meta-robots-noindex" and "_yoast_wpseo_meta-robots-nofollow" were updated!' );
+
+					// Flush the cache.
+					$cache_flushed = wp_cache_flush();
+					if ( $cache_flushed ) {
+						WP_CLI::success( 'The cache was flushed!' );
+					} else {
+						WP_CLI::warning( 'The cache was not flushed!' );
+					}
 					break;
 
-				case 'index-simple-products':
-					$simple_products = $this->get_products( 'simple' );
+				case 'index-products':
+					$product_type = \WP_CLI\Utils\get_flag_value( $assoc_args, 'product_type', '' );
+					$no_pr_type   = \WP_CLI\Utils\get_flag_value( $assoc_args, 'without-product-type', false );
 
-					if ( empty( $simple_products ) || ! is_countable( $simple_products ) ) {
-						WP_CLI::error( 'Simple products are not found!' );
+					if ( empty( $product_type ) && ! $no_pr_type ) {
+						WP_CLI::error( 'Please provide the --product_type=... or --without-product-type flag for the action!' );
 					}
 
-					$simple_products_count = count( $simple_products );
+					$products = $this->get_products( $product_type, false, false, $no_pr_type );
 
-					WP_CLI::log( 'Found ' . $simple_products_count . ' simple products.' );
+					if ( empty( $products ) || ! is_countable( $products ) ) {
+						WP_CLI::error( $product_type . ' products are not found!' );
+					}
+
+					$products_count = count( $products );
+
+					WP_CLI::log( 'Found ' . $products_count . ' ' . $product_type . ' products.' );
 					WP_CLI::confirm( __( 'Do you want to proceed with the deleting of "_yoast_wpseo_meta-robots-noindex" and "_yoast_wpseo_meta-robots-nofollow" meta, so can be indexed these products?', 'trek-travel' ) );
 
-					$progress = \WP_CLI\Utils\make_progress_bar( 'Deleting meta', $simple_products_count );
+					$progress = \WP_CLI\Utils\make_progress_bar( 'Deleting meta', $products_count );
 
-					for ( $i = 0; $i < $simple_products_count; $i++ ) {
-						delete_post_meta( $simple_products[$i], '_yoast_wpseo_meta-robots-noindex' ); // Delete Yoast meta for noindex.
-						delete_post_meta( $simple_products[$i], '_yoast_wpseo_meta-robots-nofollow' ); // Delete Yoast meta for nofollow.
+					for ( $i = 0; $i < $products_count; $i++ ) {
+						delete_post_meta( $products[$i], '_yoast_wpseo_meta-robots-noindex' ); // Delete Yoast meta for noindex.
+						delete_post_meta( $products[$i], '_yoast_wpseo_meta-robots-nofollow' ); // Delete Yoast meta for nofollow.
+						wp_update_post( array( 'ID' => $products[$i] ) );
 						$progress->tick();
 					}
 
 					$progress->finish();
 
 					WP_CLI::success( 'The products meta "_yoast_wpseo_meta-robots-noindex" and "_yoast_wpseo_meta-robots-nofollow" were deleted!' );
+
+					// Flush the cache.
+					$cache_flushed = wp_cache_flush();
+					if ( $cache_flushed ) {
+						WP_CLI::success( 'The cache was flushed!' );
+					} else {
+						WP_CLI::warning( 'The cache was not flushed!' );
+					}
 					break;
 				
 				default:
@@ -129,7 +164,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		 *
 		 * @return array|int Array with the product IDs or number of the products.
 		 */
-		protected function get_products( $product_type = '', $is_line_item = false, $count_only = false ) {
+		protected function get_products( $product_type = '', $is_line_item = false, $count_only = false, $no_pr_type = false ) {
 
 			$products_query_args = array(
 				'post_type'      => 'product',
@@ -148,7 +183,14 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				);
 			}
 
-			if ( $product_type ) {
+			if ( $no_pr_type ) {
+				$products_query_args['tax_query'] = array(
+					array(
+						'taxonomy' => 'product_type',
+						'operator' => 'NOT EXISTS'
+					)
+				);
+			} elseif ( $product_type ) {
 				$products_query_args['tax_query'] = array(
 					array(
 						'taxonomy' => 'product_type',
