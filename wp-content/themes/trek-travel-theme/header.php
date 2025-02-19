@@ -4,6 +4,10 @@
 <head>
 	<meta charset="<?php bloginfo('charset'); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<?php if ( is_front_page() ) : ?>
+		<link rel="preload" href="<?php echo get_site_url(); ?>/wp-content/uploads/2025/01/25MK-New-Trips-2025-Marquee-1.png" as="image">
+	<?php endif; ?>
+
 	<script>
 		window.dataLayer = window.dataLayer || [];
 	</script>

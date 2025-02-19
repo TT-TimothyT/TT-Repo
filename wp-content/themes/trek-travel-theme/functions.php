@@ -2056,3 +2056,23 @@ function add_continental_us_address_type($address_types) {
     );
     return $address_types;
 }
+
+add_filter( 'template_include', function( $template ) {
+    if ( false !== strpos( $template, 'header-footer' ) && is_front_page() ) {
+        $custom_template = get_stylesheet_directory() . '/elementor/modules/page-templates/templates/header-footer.php';
+        if ( file_exists( $custom_template ) ) {
+            return $custom_template;
+        }
+    }
+    return $template;
+}, 12 );
+
+// Function to clear the Elementor content cache
+function dx_tt_clear_homepage_elementor_cache( $post_id ) {
+    if ( (int) get_option( 'page_on_front' ) === (int) $post_id ) {
+        delete_transient( 'homepage_elementor_template' );
+    }
+}
+
+// Clear cache when saving/updating posts/pages/products
+add_action( 'save_post', 'dx_tt_clear_homepage_elementor_cache' ); // Clears cache on post/page update
