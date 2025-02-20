@@ -105,16 +105,23 @@ class Guest_Bookings_Table extends WP_List_Table {
 		if ( ! empty( $where_conditions ) ) {
 			$sql .= ' WHERE ' . implode( ' AND ', $where_conditions );
 		} else {
-			// Load the first page faster by limiting the results to the last 30 days
+			// Load the first page faster by smart date limiting
 			if ( 1 === (int) $page_number ) {
 				$order = ( isset( $_REQUEST['order'] ) && strtoupper( $_REQUEST['order'] ) === 'ASC' ) ? 'ASC' : 'DESC';
 				if ( 'ASC' === $order ) {
 					$earliest_date = $wpdb->get_var( "SELECT MIN(created_at) FROM {$table_name}" );
 					if ( $earliest_date ) {
-						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_ADD(%s, INTERVAL 30 DAY)", $earliest_date );
+						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_SUB(%s, INTERVAL 30 DAY)", $earliest_date );
 					}
 				} else {
-					$sql .= ' WHERE created_at >= NOW() - INTERVAL 30 DAY ';
+					// Get the latest date
+					$latest_date = $wpdb->get_var( "SELECT MAX(created_at) FROM {$table_name}" );
+					if ( $latest_date ) {
+						$sql .= $wpdb->prepare(
+							" WHERE created_at >= DATE_SUB(%s, INTERVAL 30 DAY)",
+							$latest_date
+						);
+					}
 				}
 			}
 		}

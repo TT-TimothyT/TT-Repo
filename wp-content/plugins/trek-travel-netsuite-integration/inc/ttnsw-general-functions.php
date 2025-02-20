@@ -445,7 +445,15 @@ function ttnsw_enqueue_custom_admin_style() {
         wp_register_script( 'ttnsw-developer', TTNSW_URL.'/assets/ttnsw-developer.js', array(), time(), true );
         wp_localize_script('ttnsw-developer', 'ttnsw_JS_obj', array(
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
-            'nonce'   => wp_create_nonce( '_ttnsw_nonce' )
+            'nonce'   => wp_create_nonce( '_ttnsw_nonce' ),
+            'i18n'    => array(
+                'approximateCountInfo' => __(
+                    'This is an approximate count shown for better performance. ' .
+                    'The exact count is being calculated in the background and will update automatically. ' .
+                    'For large datasets, this helps avoid database slowdowns.',
+                    'trek-travel-netsuite-integration'
+                ),
+            ),
         ));
         wp_enqueue_script( 'ttnsw-developer' );
 

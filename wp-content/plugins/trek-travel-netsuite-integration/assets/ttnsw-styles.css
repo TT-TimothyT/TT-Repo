@@ -777,3 +777,54 @@ table.tt-common-logs {
 .add-table-indexes .notice p {
     margin-bottom: 0;
 }
+
+.calculating-indicator {
+    float: none;
+    margin: 0 0 0 5px;
+    vertical-align: middle;
+}
+
+.ttnsw-count-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ttnsw-count-info {
+    color: #666;
+    cursor: help;
+}
+
+.ttnsw-count-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 10px;
+    border-radius: 4px;
+    width: 300px;
+    z-index: 100;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.ttnsw-count-info:hover .ttnsw-count-tooltip {
+    display: block;
+}
+
+.displaying-num.approximate-count {
+    color: #666;
+    font-style: italic;
+    display: inline-flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.displaying-num .calculating-indicator {
+    margin-left: 4px;
+}

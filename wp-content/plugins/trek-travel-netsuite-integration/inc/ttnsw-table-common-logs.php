@@ -118,48 +118,45 @@ class TT_Common_Logs extends WP_List_Table {
 	}
 
 	/**
-	 * Get filtered count of records
+	 * Get filtered count of records using information_schema for better performance
 	 *
 	 * @return int Total number of records
 	 */
 	private static function get_records_count() {
 		global $wpdb;
-		
-		 // Build cache key
-		$cache_key = 'ttnsw_logs_count';
-		if ( isset( $_REQUEST['s'] ) && ! empty( $_REQUEST['s'] ) ) {
-			$search_request = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
-			$search_column = isset( $_REQUEST['search_column'] ) ? sanitize_text_field( $_REQUEST['search_column'] ) : 'all';
-			$cache_key .= '_' . $search_column . '_' . md5( $search_request );
-		}
-
-		// Try to get cached results
-		$cached_count = get_transient( $cache_key );
-		if ( false !== $cached_count ) {
-			return (int) $cached_count;
-		}
+		$table_name = $wpdb->prefix . self::$table_name;
 
 		// Get where conditions
 		list( $where_conditions, $where_values ) = self::get_where_conditions();
 
-		// Build the query
-		$table_name = $wpdb->prefix . self::$table_name;
-		$sql = "SELECT COUNT(id) FROM {$table_name}";
-		
+		// If we have search conditions, use regular COUNT with cache
 		if ( ! empty( $where_conditions ) ) {
+			// Build cache key for filtered results
+			$cache_key = 'ttnsw_logs_count_' . md5( implode( '', $where_conditions ) . implode( '', $where_values ) );
+
+			// Try to get cached count first
+			$cached_count = get_transient( $cache_key );
+			if ( false !== $cached_count ) {
+				return (int) $cached_count;
+			}
+
+			// Build filtered count query
+			$sql = "SELECT COUNT(id) FROM {$table_name}";
 			$sql .= ' WHERE ' . implode( ' AND ', $where_conditions );
+			$count = (int) $wpdb->get_var( $wpdb->prepare( $sql, $where_values ) );
+
+			// Cache filtered count for 5 minutes
+			set_transient( $cache_key, $count, 300 );
+			
+			return $count;
 		}
 
-		if ( ! empty( $where_values ) ) {
-			$sql = $wpdb->prepare( $sql, $where_values );
+		$total_count = get_transient('ttnsw_logs_exact_count');
+		if ( $total_count ) {
+			return (int) $total_count;
 		}
 
-		$total = $wpdb->get_var( $sql );
-		
-		// Cache the result for 5 minutes
-		set_transient( $cache_key, $total, 300 );
-
-		return (int) $total;
+		return self::get_approximate_count();
 	}
 
 	/**
@@ -189,10 +186,17 @@ class TT_Common_Logs extends WP_List_Table {
 				if ( 'ASC' === $order ) {
 					$earliest_date = $wpdb->get_var( "SELECT MIN(created_at) FROM {$table_name}" );
 					if ( $earliest_date ) {
-						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_ADD(%s, INTERVAL 30 DAY)", $earliest_date );
+						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_SUB(%s, INTERVAL 30 DAY)", $earliest_date );
 					}
 				} else {
-					$sql .= ' WHERE created_at >= NOW() - INTERVAL 30 DAY ';
+					// Get the latest date
+					$latest_date = $wpdb->get_var( "SELECT MAX(created_at) FROM {$table_name}" );
+					if ( $latest_date ) {
+						$sql .= $wpdb->prepare(
+							" WHERE created_at >= DATE_SUB(%s, INTERVAL 30 DAY)",
+							$latest_date
+						);
+					}
 				}
 			}
 		}
@@ -397,15 +401,116 @@ class TT_Common_Logs extends WP_List_Table {
 	public function display() {
 		// Add modal HTML before displaying the table
 		?>
-		<div id="content-modal" class="ttnsw-modal">
-			<div class="ttnsw-modal-content">
-				<span class="ttnsw-modal-close">&times;</span>
-				<h3 class="ttnsw-modal-title"></h3>
-				<div class="ttnsw-modal-body"></div>
+			<div id="content-modal" class="ttnsw-modal">
+				<div class="ttnsw-modal-content">
+					<span class="ttnsw-modal-close">&times;</span>
+					<h3 class="ttnsw-modal-title"></h3>
+					<div class="ttnsw-modal-body"></div>
+				</div>
 			</div>
+		<?php
+			parent::display();
+
+			// Add flag for approximate count
+			list( $where_conditions ) = self::get_where_conditions();
+			$total_count              = get_transient('ttnsw_logs_exact_count');
+			$is_approximate           = empty($where_conditions) && ! $total_count;
+		?>
+			<span class="ttnsw-is-approximate" data-is-approximate="<?php echo esc_attr($is_approximate ? 'true' : 'false'); ?>" hidden></span>
+			<span class="ttnsw-is-exact-count" data-is-exact-count="<?php echo esc_attr($total_count ? 'true' : 'false'); ?>" hidden></span>
+		<?php
+	}
+
+	/**
+	 * Add extra tablenav elements
+	 * 
+	 * @param string $which top or bottom
+	 */
+	public function extra_tablenav($which) {
+		if ( $which === 'top' ) {
+			// Add date range filter
+			$this->render_total_count();
+		}
+	}
+
+	/**
+	 * Render total count of records with loading state and explanation
+	 * 
+	 * Displays an approximate count initially to provide fast page load times,
+	 * then triggers a background process to calculate the exact count.
+	 */
+	private function render_total_count() {
+		$exact_count  = get_transient('ttnsw_logs_exact_count');
+		$approx_count = self::get_approximate_count();
+		
+		?>
+		<div class="alignleft actions ttnsw-count-wrapper">
+			<span class="ttnsw-logs-total-count" 
+				  data-nonce="<?php echo wp_create_nonce('ttnsw_calculate_exact_count'); ?>"
+				  data-approx="<?php echo esc_attr($approx_count); ?>">
+				<?php
+				if ( ! $exact_count ) {
+					printf(
+						/* translators: %s: approximate number of records */
+						__('Total (refreshes every 5min): ~%s records <span class="calculating-indicator spinner is-active"></span>', 'trek-travel-netsuite-integration'),
+						number_format_i18n($approx_count)
+					);
+					?>
+					<?php
+				} else {
+					printf(
+						/* translators: %s: exact number of records */
+						__('Total (refreshes every 5min): %s records', 'trek-travel-netsuite-integration'),
+						number_format_i18n($exact_count)
+					);
+				}
+				?>
+			</span>
 		</div>
 		<?php
+	}
 
-		parent::display();
+	/**
+	 * Get approximate count from information schema
+	 *
+	 * @return int Approximate number of records.
+	 */
+	private static function get_approximate_count() {
+		global $wpdb;
+		$table_name = $wpdb->prefix . self::$table_name;
+
+		// For unfiltered counts, use information_schema
+		static $total_rows = null;
+
+		// Check if we already calculated total rows in this request
+		if ( null === $total_rows ) {
+			// Try to get cached total first
+			$total_rows = get_transient( 'ttnsw_logs_total_count' );
+
+			if ( false === $total_rows ) {
+				// Get approximate row count from information_schema
+				$total_rows = $wpdb->get_var( $wpdb->prepare(
+					"SELECT TABLE_ROWS 
+					FROM information_schema.TABLES 
+					WHERE TABLE_SCHEMA = DATABASE()
+					AND TABLE_NAME = %s",
+					$table_name
+				) );
+
+				if ( empty( $total_rows ) ) {
+					// Fallback to regular COUNT if information_schema is not available
+					$total_rows = $wpdb->get_var("SELECT COUNT(id) FROM {$table_name}");
+				}
+
+				if ( $wpdb->last_error ) {
+					add_settings_error( 'ttnsw-admin-notice', 'ttnsw_logs_error', $wpdb->last_error, 'error' );
+				}
+
+				// Cache for 5 minutes
+				set_transient( 'ttnsw_logs_total_count', $total_rows, 300 );
+			}
+		}
+
+		return (int) $total_rows;
 	}
 }

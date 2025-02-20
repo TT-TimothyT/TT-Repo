@@ -241,3 +241,5 @@ require_once TTNSW_DIR.'inc/ttnsw-fetch-ns-items.php';
 include_once TTNSW_DIR.'inc/ttnsw-wp-cli.php';
 
 require_once TTNSW_DIR . 'inc/ttnsw-db-helpers.php';
+
+require_once TTNSW_DIR . 'inc/ttnsw-ajax-handlers.php';

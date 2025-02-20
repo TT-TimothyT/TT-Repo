@@ -308,3 +308,92 @@ jQuery(document).ready(function ($) {
         $(this).toggleClass('selected').siblings().removeClass('selected');
     });
 });
+
+// Handle total count calculation
+jQuery(document).ready(function($) {
+    function initTotalCount() {
+        const $totalCount = $('.ttnsw-logs-total-count');
+        if (!$totalCount.length) return;
+
+        const nonce = $totalCount.data('nonce');
+        const $container = $('.ttnsw-is-exact-count');
+        const isExactCount = $container.data('is-exact-count') === true;
+
+        // No need to calculate if exact count is already displayed.
+        if ( isExactCount ) return;
+
+        // Start background calculation
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'ttnsw_calculate_exact_count',
+                nonce: nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Update display with exact count
+                    $totalCount.html(`Total (refreshes every 5min): ${response.data.count.toLocaleString()} records`);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error calculating exact count:', error);
+            }
+        });
+
+        // Poll for updates
+        const checkExactCount = setInterval(function() {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'ttnsw_get_exact_count',
+                    nonce: nonce
+                },
+                success: function(response) {
+                    if (response.success && response.data.count && ! response.data.is_calculating) {
+                        // Update display and stop polling
+                        $totalCount.html(`Total (refreshes every 5min): ${response.data.count.toLocaleString()} records`);
+                        clearInterval(checkExactCount);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error getting exact count:', error);
+                }
+            });
+        }, 5000); // Check every 5 seconds
+
+        // Stop checking after 5 minutes
+        setTimeout(function() {
+            clearInterval(checkExactCount);
+        }, 300000);
+    }
+
+    initTotalCount();
+});
+
+// Handle approximate count display
+jQuery(document).ready(function($) {
+    const $container = $('.ttnsw-is-approximate');
+    if ( ! $container.length ) return;
+
+    const isApproximate = $container.data('is-approximate') === true;
+
+    if( ! isApproximate ) return;   
+
+    const $displayingNum = $('.displaying-num');
+    if ($displayingNum.length) {
+        // Add approximate indicator and tooltip
+        $displayingNum
+            .addClass('approximate-count')
+            .prepend('~')
+            .append(`
+                <span class="ttnsw-count-info">
+                    <span class="dashicons dashicons-info"></span>
+                    <span class="ttnsw-count-tooltip">
+                        ${ttnsw_JS_obj.i18n.approximateCountInfo}
+                    </span>
+                </span>
+            `);
+    }
+});
