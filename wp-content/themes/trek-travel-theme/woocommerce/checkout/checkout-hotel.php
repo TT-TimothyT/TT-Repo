@@ -17,6 +17,8 @@ $p_occupant_hide_show_style   = ( $room_private === 0 ? 'style="display:none;"' 
 $r_occupant_hide_show_style   = ( $room_roommate === 0 ? 'style="display:none;"' : 'style="display:flex;"' );
 $tt_rooms_output              = tt_rooms_output( $trek_user_checkout_posted, false, false );
 $trip_sku                     = tt_validate( $trek_user_checkout_posted['sku'] );
+$product_id                   = tt_validate( $trek_user_checkout_posted['product_id'] );
+$trip_id                      = get_post_meta($product_id, 'tt_meta_tripId', true);
 $single_supplement_price      = 0;
 $single_supplement_price_curr = '';
 
@@ -25,8 +27,8 @@ if( $trek_user_checkout_posted['product_id'] ) {
     $single_supplement_price_curr = get_woocommerce_currency_symbol() . $single_supplement_price;
 }
 
-$is_open_to_roommate_disabled = tt_get_local_trips_detail( 'isOpenToRoommateDisabled', '', $trip_sku, true );
-$is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_sku );
+$is_open_to_roommate_disabled = tt_get_local_trips_detail( 'isOpenToRoommateDisabled', $trip_id, $trip_sku, true );
+$is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_sku, $trip_id );
 ?>
 <div class="checkout-step-two-hotel collapse multi-collapse show" id="multiCollapseExample1">
     <p class="fw-medium fs-xxl lh-xl title-poppins"><?php esc_html_e( 'Select Room & Occupants', 'trek-travel-theme' ); ?></p>

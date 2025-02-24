@@ -86,10 +86,10 @@ $product_image_url            = get_template_directory_uri() . '/assets/images/T
 $trip_info                    = tt_get_trip_pid_sku_from_cart($order_id);
 $parent_id                    = tt_get_parent_trip_id_by_child_sku( $trip_info['sku'] );
 $product_image_url            = $trip_info['parent_trip_image'];
-$trip_product_line_name       = tt_is_product_line( 'Hiking', $trip_info['sku'] ) ? 'Hiking' : 'Cycling';
-$trip_start_date              = tt_get_local_trips_detail( 'startDate', '', $trip_info['sku'], true ); // The value or empty string.
-$trip_end_date                = tt_get_local_trips_detail( 'endDate', '', $trip_info['sku'], true ); // The value or empty string.
-$is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+$trip_product_line_name       = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] ) ? 'Hiking' : 'Cycling';
+$trip_start_date              = tt_get_local_trips_detail( 'startDate', $trip_info['ns_trip_Id'], $trip_info['sku'], true ); // The value or empty string.
+$trip_end_date                = tt_get_local_trips_detail( 'endDate', $trip_info['ns_trip_Id'], $trip_info['sku'], true ); // The value or empty string.
+$is_hiking_checkout           = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
 
 foreach ( $order_items as $item_id => $item ) {
 	$product_id = $item['product_id'];
@@ -135,7 +135,7 @@ $single_supplement_qty   += isset($occupants['roommate']) && $occupants['roommat
 $singleSupplementPrice    = isset($trek_checkout_data['singleSupplementPrice']) ? $trek_checkout_data['singleSupplementPrice'] : 0;
 // Fix older orders, that don't have singleSupplementPrice in the trek_user_checkout_data cart item meta.
 if ( empty( $singleSupplementPrice ) ) {
-    $singleSupplementPrice = tt_validate( tt_get_local_trips_detail( 'singleSupplementPrice', '', $trip_sku, true ), 0 );
+    $singleSupplementPrice = tt_validate( tt_get_local_trips_detail( 'singleSupplementPrice', $trip_info['ns_trip_Id'], $trip_sku, true ), 0 );
 }
 
 // Calculate the price depends on guest number.
@@ -144,7 +144,7 @@ $calc_supplement_fees     = floatval( $supplement_fees ) * $single_supplement_qt
 $calc_supplement_fees     = strval( $calc_supplement_fees ); // Get the , back to the string.
 $supplement_fees          = number_format( $calc_supplement_fees, 2 );
 // Deposite due vars.
-$deposit_amount           = tt_get_local_trips_detail( 'depositAmount', '', $trip_sku, true );
+$deposit_amount           = tt_get_local_trips_detail( 'depositAmount', $trip_info['ns_trip_Id'], $trip_sku, true );
 $deposit_amount           = $deposit_amount ? str_ireplace( ',','',$deposit_amount ) : 0;
 $deposit_amount           = floatval( $deposit_amount ) * intval( tt_validate( $trek_checkout_data['no_of_guests'], 1 ) );
 $pay_amount               = isset( $trek_checkout_data['pay_amount'] ) ? $trek_checkout_data['pay_amount'] : 'full';

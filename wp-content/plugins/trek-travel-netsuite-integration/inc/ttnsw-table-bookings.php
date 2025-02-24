@@ -111,7 +111,7 @@ class Guest_Bookings_Table extends WP_List_Table {
 				if ( 'ASC' === $order ) {
 					$earliest_date = $wpdb->get_var( "SELECT MIN(created_at) FROM {$table_name}" );
 					if ( $earliest_date ) {
-						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_SUB(%s, INTERVAL 30 DAY)", $earliest_date );
+						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_ADD(%s, INTERVAL 30 DAY)", $earliest_date );
 					}
 				} else {
 					// Get the latest date
@@ -567,7 +567,9 @@ class Guest_Bookings_Table extends WP_List_Table {
 				$tt_order_type = $order->get_meta( 'tt_wc_order_type' );
 				return 'auto-generated' === $tt_order_type ? 'no' : 'yes';
 			case 'trip_type':
-				$is_hiking_checkout = tt_is_product_line( 'Hiking', $item[ 'trip_code' ] );
+				$trip_info          = tt_get_trip_pid_sku_by_orderId( $item[ 'order_id' ] );
+				$trip_id            = $trip_info['ns_trip_Id'];
+				$is_hiking_checkout = tt_is_product_line( 'Hiking', $item[ 'trip_code' ], $trip_id );
 				return $is_hiking_checkout ? 'Hiking' : 'Cycling';
 			case 'bike':
 				$own_bike_id       = 5270;

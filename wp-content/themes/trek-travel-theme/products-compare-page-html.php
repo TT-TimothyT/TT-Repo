@@ -41,8 +41,9 @@ get_header( 'shop' ); ?>
 					if ($productCounter > 0) {
 						$visibilityClass = "invisible"	;							
 					}
-					$product = wc_get_product( $product );
-					$tripRegion = tt_get_local_trips_detail('tripRegion', '', $product->get_sku(), true);
+					$product           = wc_get_product( $product );
+					$trip_id           = get_post_meta( $product->get_id(), TT_WC_META_PREFIX . 'tripId', true );
+					$tripRegion        = tt_get_local_trips_detail('tripRegion', $trip_id, $product->get_sku(), true);
 					$parent_product_id = tt_get_parent_trip_id_by_child_sku($product->get_sku());
 					$pa_city = '';
 					if( $parent_product_id ){

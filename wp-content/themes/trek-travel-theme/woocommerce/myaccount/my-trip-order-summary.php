@@ -115,10 +115,10 @@ $product_image_url = $trip_information['parent_trip_image'];
 $rooms_html = tt_rooms_output($tt_posted, true);
 $guests_gears_data = tt_guest_details($tt_posted);
 //deposite due vars
-$depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
+$depositAmount = tt_get_local_trips_detail('depositAmount', $trip_information['ns_trip_Id'], $trip_sku, true);
 
 //get the supliment fees
-$supplementFees = tt_get_local_trips_detail('singleSupplementPrice', '', $trip_sku, true);
+$supplementFees = tt_get_local_trips_detail('singleSupplementPrice', $trip_information['ns_trip_Id'], $trip_sku, true);
 $supplementFees = wc_format_decimal( $supplementFees );
 
 //Get the products from the order
@@ -166,7 +166,7 @@ $remaining_amount = $cart_total - ($depositAmount ? $depositAmount : 0);
 $remaining_amountCurr = get_woocommerce_currency_symbol() . $remaining_amount;
 $cart_totalCurr = get_woocommerce_currency_symbol() . $cart_total;
 $depositAmountCurr  = get_woocommerce_currency_symbol() . $depositAmount;
-$tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
+$tripRegion = tt_get_local_trips_detail('tripRegion', $trip_information['ns_trip_Id'], $trip_sku, true);
 $parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
 $p_product = wc_get_product( $parent_product_id );
 $pa_city = $p_product->get_attribute( 'pa_city' );

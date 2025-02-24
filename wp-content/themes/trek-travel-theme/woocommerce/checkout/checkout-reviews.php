@@ -26,7 +26,7 @@ global $woocommerce;
 							$own_bike_id             = 5270;
 							$non_rider_bike_id       = 5257;
 							$trip_info               = tt_get_trip_pid_sku_from_cart();
-							$is_hiking_checkout      = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+							$is_hiking_checkout      = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
 							?>
 								<div class="checkout-review__guest mb-sm-0">
 									<?php

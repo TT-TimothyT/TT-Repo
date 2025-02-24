@@ -129,13 +129,15 @@ $lockedUserBike   = tt_is_registration_locked( $current_user_id, $user_order_inf
 $lockedUserRecord = tt_is_registration_locked( $current_user_id, $user_order_info[0]['guestRegistrationId'], 'record' );
 $bikeUpgradePrice = 0;
 $bikePriceCurr    = '';
+$trip_id          = '';
 if ( $trip_sku ) {
-	$bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $trip_sku, true);
+	$trip_id          = get_post_meta( $booked_trip_id, TT_WC_META_PREFIX . 'tripId', true );
+	$bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', $trip_id, $trip_sku, true);
 	$bikePriceCurr    = get_woocommerce_currency_symbol() . $bikeUpgradePrice;
 }
 $trip_information  = tt_get_trip_pid_sku_from_cart($order_id);
 $product_image_url = $trip_information['parent_trip_image'];
-$tripRegion        = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
+$tripRegion        = tt_get_local_trips_detail('tripRegion', $trip_id, $trip_sku, true);
 
 $is_nested_dates_trip = false;
 $nested_dates_period  = explode( '-', $trip_sku )[1];
@@ -165,7 +167,7 @@ $gear_pointer_none = '';
 $jersey_hideme = '';
 
 // Get the trip style object, if it matches one of the items from the array, then we hide the jersey options.
-$trip_style           = json_decode( tt_get_local_trips_detail( 'subStyle', '', $trip_sku, true ) );
+$trip_style           = json_decode( tt_get_local_trips_detail( 'subStyle', $trip_id, $trip_sku, true ) );
 
 $trip_style_name      = $trip_style ? $trip_style->name : '';
 
@@ -261,7 +263,7 @@ $pay_amount             = isset( $trek_checkoutData['pay_amount'] ) ? $trek_chec
 $cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) ? $trek_checkoutData['cart_total_full_amount'] : '';
 $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total( $order_item );
 
-$is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku'] );
+$is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku'], $trip_information['ns_trip_Id'] );
 ?>
 
 <div class="container my-trips-checklist my-4">

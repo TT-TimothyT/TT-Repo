@@ -10,7 +10,7 @@ $tt_posted               = $trek_user_checkout_data['posted'];
 $guests                  = tt_validate( $tt_posted['guests'], array() );
 $trip_info               = tt_get_trip_pid_sku_from_cart();
 $tt_rooms_output         = tt_rooms_output( $tt_posted, true, true );
-$is_hiking_checkout      = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+$is_hiking_checkout      = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
 
 if( $is_hiking_checkout ) :
 ?>

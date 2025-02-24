@@ -198,14 +198,14 @@ if( $available_child_products ) {
                 if($get_child_product_data){
                     foreach($get_child_product_data as $index => $child_product_data){
 
-                        $contentFlag = true;
-                        $accordina_id = $my.$child_product_data['product_id'];
-                        $date_range = $child_product_data['start_date'].' - '.$child_product_data['end_date'];
-                        $date_range = $child_product_data['date_range'];
-                        $trip_status = $child_product_data['trip_status'];
-                        $bike_hotels = tt_get_hotel_bike_list($child_product_data['sku'], $child_product_data['trip_id']);
-                        $removeFromStella = tt_get_local_trips_detail('removeFromStella', '', $child_product_data['sku'], true);
-                        $singleSupplementPrice = isset($child_product_data['singleSupplementPrice']) ? $child_product_data['singleSupplementPrice'] : 0;
+                        $contentFlag               = true;
+                        $accordina_id              = $my.$child_product_data['product_id'];
+                        $date_range                = $child_product_data['start_date'].' - '.$child_product_data['end_date'];
+                        $date_range                = $child_product_data['date_range'];
+                        $trip_status               = $child_product_data['trip_status'];
+                        $bike_hotels               = tt_get_hotel_bike_list( $child_product_data['sku'], $child_product_data['trip_id'] );
+                        $removeFromStella          = tt_get_local_trips_detail( 'removeFromStella', $child_product_data['trip_id'], $child_product_data['sku'], true );
+                        $singleSupplementPrice     = isset($child_product_data['singleSupplementPrice']) ? $child_product_data['singleSupplementPrice'] : 0;
                         $singleSupplementPriceCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>'.$singleSupplementPrice.'<span>';
                         // $status_class = strtolower($trip_status);
                         // $status_class = str_ireplace(' ', '-', $status_class);

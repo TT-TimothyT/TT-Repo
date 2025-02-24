@@ -204,7 +204,7 @@ $guests_gears_data = tt_guest_details($trek_checkoutData);
 $trip_information = tt_get_trip_pid_sku_from_cart($order_id);
 $product_image_url = $trip_information['parent_trip_image'];
 //deposite due vars
-$depositAmount = tt_get_local_trips_detail('depositAmount', '', $trip_sku, true);
+$depositAmount = tt_get_local_trips_detail('depositAmount', $trip_information['ns_trip_Id'], $trip_sku, true);
 $insuredPerson = isset($trek_checkoutData['insuredPerson']) ? $trek_checkoutData['insuredPerson'] : 0;
 $tt_insurance_total_charges = isset($trek_checkoutData['tt_insurance_total_charges']) ? $trek_checkoutData['tt_insurance_total_charges'] : 0;
 $insurance_array = isset($trek_checkoutData['trek_guest_insurance']) ? $trek_checkoutData['trek_guest_insurance'] : 0;
@@ -235,7 +235,7 @@ $singleSupplementQty  += isset( $occupants['roommate'] ) && $occupants['roommate
 $singleSupplementPrice = isset( $trek_checkoutData['singleSupplementPrice'] ) ? $trek_checkoutData['singleSupplementPrice'] : 0;
 // Fix older orders, that don't have singleSupplementPrice in the trek_user_checkout_data cart item meta.
 if ( empty( $singleSupplementPrice ) ) {
-    $singleSupplementPrice = tt_validate( tt_get_local_trips_detail( 'singleSupplementPrice', '', $trip_sku, true ), 0 );
+    $singleSupplementPrice = tt_validate( tt_get_local_trips_detail( 'singleSupplementPrice', $trip_information['ns_trip_Id'], $trip_sku, true ), 0 );
 }
 // Calculate the price depends on guest number.
 $supplementFees     = str_ireplace( ',', '', $singleSupplementPrice ); // Strip the , from the price if there's such.
@@ -295,7 +295,7 @@ $remaining_amount = $cart_total - ($depositAmount ? $depositAmount : 0);
 $remaining_amountCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $remaining_amount . '</span>';
 $cart_totalCurr = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $cart_total . '</span>';
 $depositAmountCurr  = '<span class="amount"><span class="woocommerce-Price-currencySymbol"></span>' . $depositAmount . '</span>';
-$tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
+$tripRegion = tt_get_local_trips_detail('tripRegion', $trip_information['ns_trip_Id'], $trip_sku, true);
 $parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
 $pa_city = "";
 if( $parent_product_id ){
@@ -305,7 +305,7 @@ if( $parent_product_id ){
     }
 }
 
-$is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
+$is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'], $trip_information['ns_trip_Id'] );
 ?>
 <div class="container my-trip-order-summary my-4">
     <div class="row mx-0 flex-column flex-lg-row">
@@ -466,7 +466,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'] );
                                                 ?>
                                                 <?php if ( 'deposite' === $pay_amount && '1' === $is_order_transaction_deposit ) : ?>
                                                     <?php
-                                                    $deposit_amount = tt_get_local_trips_detail( 'depositAmount', '', $trip_sku, true );
+                                                    $deposit_amount = tt_get_local_trips_detail( 'depositAmount', $trip_information['ns_trip_Id'], $trip_sku, true );
                                                     if ( $trek_checkoutData['no_of_guests'] ) {
                                                         $deposit_amount              = ( intval( $trek_checkoutData['no_of_guests'] ) ) * floatval( $deposit_amount );
                                                         $deposit_amount             += $tt_insurance_total_charges;

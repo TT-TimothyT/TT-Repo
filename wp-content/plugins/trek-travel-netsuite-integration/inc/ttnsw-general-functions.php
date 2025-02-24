@@ -110,19 +110,18 @@ function tt_trigger_cron_ns_booking_cb( $order_id, $user_id = 'null', $is_behalf
     $cc_card_type                = get_post_meta($order_id, '_wc_cybersource_credit_card_card_type', true);
     $cc_processor_transaction_id = get_post_meta($order_id, '_wc_cybersource_credit_card_processor_transaction_id', true);
     //End: orders extra meta data(Financial Data)
-    $depositAmount = tt_get_local_trips_detail('depositAmount', '', $trek_checkoutData['sku'], true);
-    $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', '', $trek_checkoutData['sku'], true);
-    $cart_total = $order->get_total();
-    if( $transaction_deposit == true ){
+    $trip_info        = tt_get_trip_pid_sku_from_cart($order_id);
+    $depositAmount    = tt_get_local_trips_detail('depositAmount', $trip_info['ns_trip_Id'], $trek_checkoutData['sku'], true);
+    $bikeUpgradePrice = tt_get_local_trips_detail('bikeUpgradePrice', $trip_info['ns_trip_Id'], $trek_checkoutData['sku'], true);
+    if ( $transaction_deposit == true ) {
         $trip_transaction_amount = intval( $guests_count ) * floatval( $depositAmount );
-    }else{
+    } else {
         $trip_transaction_amount = $authorization_amount;
     }
     $booking_index = 0;
     if ($wc_booking_result) {
         $total_insuarance_ammount = 0;
-        $trip_info                = tt_get_trip_pid_sku_from_cart($order_id);
-        $is_hiking_checkout       = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+        $is_hiking_checkout       = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
         foreach ($wc_booking_result as $wc_booking_key => $wc_booking) {
             $ns_trip_ID = NULL;
             if ($wc_booking->product_id) {

@@ -33,7 +33,7 @@ $own_bike_id       = 5270;
 $should_show_jersey_select = true;
 
 //Get the trip style object, if it matches one of the items from the array, then we hide the jersey options.
-$trip_style                = json_decode( tt_get_local_trips_detail( 'subStyle', '', $args['sku'], true ) );
+$trip_style                = json_decode( tt_get_local_trips_detail( 'subStyle', $args['ns_trip_id'], $args['sku'], true ) );
 
 $trip_style_name           = $trip_style ? $trip_style->name : '';
 

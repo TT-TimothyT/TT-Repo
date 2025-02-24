@@ -206,13 +206,14 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 								$waiver_signed = isset($order_details[0]['waiver_signed']) ? $order_details[0]['waiver_signed'] : false;
 								$product = wc_get_product($product_id);
 
-								if ($product) {
-									$trip_link = esc_url(add_query_arg('order_id', $order_id, get_permalink(TREK_MY_ACCOUNT_PID) . 'my-trip'));
-									$trip_sku = $product->get_sku();
-									$trip_sdate = $product->get_attribute('pa_start-date');
-									$trip_edate = $product->get_attribute('pa_end-date');
-									$tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
-									$pa_city = $product->get_attribute('pa_city');
+								if ( $product ) {
+									$trip_link              = esc_url(add_query_arg('order_id', $order_id, get_permalink(TREK_MY_ACCOUNT_PID) . 'my-trip'));
+									$trip_sku               = $product->get_sku();
+									$trip_sdate             = $product->get_attribute('pa_start-date');
+									$trip_edate             = $product->get_attribute('pa_end-date');
+									$trip_id                = get_post_meta( $product_id, TT_WC_META_PREFIX . 'tripId', true );
+									$tripRegion             = tt_get_local_trips_detail( 'tripRegion', $trip_id, $trip_sku, true );
+									$pa_city                = $product->get_attribute('pa_city');
 									$is_checklist_completed = tt_is_checklist_completed($userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $guest_is_primary, $waiver_signed);
 
 									// Retrieve parent trip details by child SKU

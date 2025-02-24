@@ -178,7 +178,7 @@ if ( $available_child_products ) {
 						$date_range                   = $child_product_data['date_range'];
 						$trip_status                  = $child_product_data['trip_status'];
 						$bike_hotels                  = tt_get_hotel_bike_list( $child_product_data['sku'], $child_product_data['trip_id'] );
-						$remove_from_stella           = tt_get_local_trips_detail( 'removeFromStella', '', $child_product_data['sku'], true );
+						$remove_from_stella           = tt_get_local_trips_detail( 'removeFromStella', $child_product_data['trip_id'], $child_product_data['sku'], true );
 						$single_supplement_price      = isset( $child_product_data['singleSupplementPrice'] ) ? $child_product_data['singleSupplementPrice'] : 0;
 						$trip_web_status              = get_web_dispaly_status( $trip_status );
 						$trip_web_status_class        = strtolower( str_ireplace( ' ', '-', $trip_web_status ) );

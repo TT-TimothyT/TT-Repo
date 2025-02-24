@@ -186,7 +186,7 @@ class TT_Common_Logs extends WP_List_Table {
 				if ( 'ASC' === $order ) {
 					$earliest_date = $wpdb->get_var( "SELECT MIN(created_at) FROM {$table_name}" );
 					if ( $earliest_date ) {
-						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_SUB(%s, INTERVAL 30 DAY)", $earliest_date );
+						$sql .= $wpdb->prepare( " WHERE created_at <= DATE_ADD(%s, INTERVAL 30 DAY)", $earliest_date );
 					}
 				} else {
 					// Get the latest date

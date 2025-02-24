@@ -89,10 +89,11 @@ $wp_user_email = $userInfo->user_email;
 								$parent_product = $parent_trip['id'] ? wc_get_product($parent_trip['id']) : null;
 
 								// Set parent product name and link, with fallbacks if parent is unavailable
-								$parent_name = $parent_product ? $parent_product->get_name() : $product->get_name();
-								$trip_link = 'javascript:';
-								$tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
-								$pa_city = '';
+								$parent_name       = $parent_product ? $parent_product->get_name() : $product->get_name();
+								$trip_link         = 'javascript:';
+								$trip_id           = get_post_meta( $product_id, TT_WC_META_PREFIX . 'tripId', true );
+								$tripRegion        = tt_get_local_trips_detail( 'tripRegion', $trip_id, $trip_sku, true );
+								$pa_city           = '';
 								$parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
 								if( $parent_product_id ){
 									$p_product = wc_get_product( $parent_product_id );
@@ -213,9 +214,10 @@ $wp_user_email = $userInfo->user_email;
 								$parent_product = $parent_trip['id'] ? wc_get_product($parent_trip['id']) : null;
 
 								// Set parent product name and link, with fallbacks if parent is unavailable
-								$parent_name = $parent_product ? $parent_product->get_name() : $product->get_name();
-								$trip_link = 'javascript:';
-								$tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
+								$parent_name       = $parent_product ? $parent_product->get_name() : $product->get_name();
+								$trip_link         = 'javascript:';
+								$trip_id           = get_post_meta( $product_id, TT_WC_META_PREFIX . 'tripId', true );
+								$tripRegion        = tt_get_local_trips_detail( 'tripRegion', $trip_id, $trip_sku, true );
 								$parent_product_id = $pa_city = '';
 								$parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
 								if( $parent_product_id ){
@@ -311,9 +313,10 @@ $wp_user_email = $userInfo->user_email;
 									$parent_product = $parent_trip['id'] ? wc_get_product($parent_trip['id']) : null;
 
 									// Set parent product name and link, with fallbacks if parent is unavailable
-									$parent_name = $parent_product ? $parent_product->get_name() : $product->get_name();
+									$parent_name       = $parent_product ? $parent_product->get_name() : $product->get_name();
 									$trip_link         = 'javascript:';
-									$tripRegion        = tt_get_local_trips_detail( 'tripRegion', '', $trip_sku, true );
+									$trip_id           = get_post_meta( $product_id, TT_WC_META_PREFIX . 'tripId', true );
+									$tripRegion        = tt_get_local_trips_detail( 'tripRegion', $trip_id, $trip_sku, true );
 									$parent_product_id = $pa_city = '';
 									$parent_product_id = tt_get_parent_trip_id_by_child_sku($trip_sku);
 									if( $parent_product_id ){

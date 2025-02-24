@@ -128,10 +128,10 @@ $bikeTypeId = tt_get_custom_item_name('syncBikeTypes', $bikeTypeId);
 $bike_pedal = tt_get_custom_item_name('syncPedals', $pedal_selection);
 $jersey_size = tt_get_custom_item_name('syncJerseySizes', $tt_jersey_size);
 $jersey_style = tt_get_custom_item_name('syncJerseySizes', $jersey_style);
-$tripRegion = tt_get_local_trips_detail('tripRegion', '', $trip_sku, true);
+$tripRegion = tt_get_local_trips_detail('tripRegion', $trip_information['ns_trip_Id'], $trip_sku, true);
 
-$SmugMugLink = tt_get_local_trips_detail( 'SmugMugLink',  '', $trip_sku, true );
-$SmugMugPassword = tt_get_local_trips_detail( 'SmugMugPassword',  '', $trip_sku, true );
+$SmugMugLink = tt_get_local_trips_detail( 'SmugMugLink', $trip_information['ns_trip_Id'], $trip_sku, true );
+$SmugMugPassword = tt_get_local_trips_detail( 'SmugMugPassword', $trip_information['ns_trip_Id'], $trip_sku, true );
 
 $wheel_upgrade = 'No';
 $bike_type_id = $User_order_info[0]['bike_type_id'];

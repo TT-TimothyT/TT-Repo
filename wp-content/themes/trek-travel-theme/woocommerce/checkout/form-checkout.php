@@ -43,7 +43,7 @@ do_action( 'tt_repair_coupon_code' );
 
 $trip_info          = tt_get_trip_pid_sku_from_cart();
 $parent_trip_link   = tt_validate( $trip_info['parent_trip_link'], 'javascript:' );
-$is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+$is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
 $current_step       = tt_validate( $_REQUEST['step'], '1' );
 ?>
 <div class="card-wizard">

@@ -9,7 +9,7 @@ $guest_num             = 0;
 $guest                 = array();
 $show_mailing_checkbox = true;
 $trip_info             = tt_get_trip_pid_sku_from_cart();
-$is_hiking_checkout    = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+$is_hiking_checkout    = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
 
 if ( isset( $args ) && ! empty( $args ) ) {
 

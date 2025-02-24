@@ -215,7 +215,7 @@ function trek_wp_enqueue_scripts_cb()
         'rider_level_text'          => $cart_product_info['rider_level_text'],
         'checkoutParentId'          => $cart_product_info['parent_product_id'],
         'checkoutSku'               => $cart_product_info['sku'],
-        'checkout_product_line_obj' => json_decode( tt_get_local_trips_detail( 'product_line', '', $cart_product_info['sku'], true ) ),
+        'checkout_product_line_obj' => json_decode( tt_get_local_trips_detail( 'product_line', $cart_product_info['ns_trip_Id'], $cart_product_info['sku'], true ) ),
         // 'review_order' => tt_get_review_order_html(), // I'm commenting this out for the moment, as I don't see a place where it can be used, and it's called on every page load, which is redundant.
         'is_order_received'         => is_wc_endpoint_url( 'order-received' ),
         'order_id'                  => $order_id,
@@ -507,7 +507,8 @@ function save_checkout_steps_action_cb( $return_response = false )
                 $cart[$cart_item_id]['quantity'] = isset( $_REQUEST['no_of_guests'] ) ? $_REQUEST['no_of_guests'] : 1;
             }
             // Set the Check for hiking checkout.
-            $is_hiking_checkout = tt_is_product_line( 'Hiking', $_product->get_sku() );
+            $trip_id            = get_post_meta( $product_id, TT_WC_META_PREFIX . 'tripId', true );
+            $is_hiking_checkout = tt_is_product_line( 'Hiking', $_product->get_sku(), $trip_id );
             
         }
     }
@@ -876,8 +877,8 @@ function trek_update_trip_checklist_action_cb()
     $guest_email_address = isset( $user_order_info[0]['guest_email_address'] ) ? $user_order_info[0]['guest_email_address'] : '';
     $waiver_signed       = isset( $user_order_info[0]['waiver_signed'] ) ? $user_order_info[0]['waiver_signed'] : false;
     $trip_info           = tt_get_trip_pid_sku_from_cart( $_REQUEST['order_id'] );
-    $is_hiking_checkout  = tt_is_product_line( 'Hiking', $trip_info['sku'] );
-    $trip_style          = json_decode( tt_get_local_trips_detail( 'subStyle', '', $trip_info['sku'], true ) );
+    $is_hiking_checkout  = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
+    $trip_style          = json_decode( tt_get_local_trips_detail( 'subStyle', $trip_info['ns_trip_Id'], $trip_info['sku'], true ) );
     $trip_style_name     = $trip_style ? $trip_style->name : '';
     // The trip sub-style includes either "Training", "Discover", or "Self-Guided" = hide jersey options.
     $hide_jersey_for_arr = array( 'Training', 'Discover', 'Self-Guided' );
@@ -3600,7 +3601,7 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
         $ns_trip_Id = get_post_meta($product_id, 'tt_meta_tripId', true);
     }
     //Trip Parent ID
-    $parent_rider_level = tt_get_local_trips_detail('riderType', '', $sku, true);
+    $parent_rider_level = tt_get_local_trips_detail('riderType', $ns_trip_Id, $sku, true);
     $parent_rider_level = json_decode($parent_rider_level);
     $parent_rider_level_id = is_object($parent_rider_level) ? $parent_rider_level->id : 0;
     $itemData = tt_get_custom_item_name('syncRiderLevels');    
@@ -3629,7 +3630,7 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
         'parent_trip_image'  => $product_image_url,
         'tt_posted'          => $tt_posted,
         'tt_formatted_data'  => $tt_formatted_data,
-        'product_line_obj'   => json_decode( tt_get_local_trips_detail( 'product_line', '', $sku, true ) ),
+        'product_line_obj'   => json_decode( tt_get_local_trips_detail( 'product_line', $ns_trip_Id, $sku, true ) ),
     ];
 }
 function tt_get_trip_pid_sku_by_orderId($order_id)
@@ -4188,7 +4189,7 @@ function trek_tt_bike_upgrade_fees_ajax_action_cb() {
     $accepted_p_ids   = tt_get_line_items_product_ids();
     $tripInfo         = tt_get_trip_pid_sku_from_cart();
     $product_id       = tt_create_line_item_product('TTWP23UPGRADES');
-    $bikeUpgradePrice = tt_get_local_trips_detail( 'bikeUpgradePrice', '', $tripInfo['sku'], true );
+    $bikeUpgradePrice = tt_get_local_trips_detail( 'bikeUpgradePrice', $tripInfo['$ns_trip_Id'], $tripInfo['sku'], true );
 
     if ( $bikeUpgradePrice && $bikeUpgradePrice > 0 ) {
         WC()->cart->add_to_cart( $product_id, $upgrade_count, 0, array(), array('tt_cart_custom_fees_price' => $bikeUpgradePrice ) );
@@ -4429,28 +4430,27 @@ if (!function_exists('tt_get_itinerary_link')) {
  * @return  : get_trip_capacity_info
  **/
 if (!function_exists('get_trip_capacity_info')) {
-    function get_trip_capacity_info()
-    {
-        $res = [
-            'capacity' => 0,
-            'booked' => 0,
+    function get_trip_capacity_info() {
+        $res = array(
+            'capacity'  => 0,
+            'booked'    => 0,
             'remaining' => 0
-        ];
+        );
         $cart_product_info = tt_get_trip_pid_sku_from_cart();
-        $product_sku = $cart_product_info['sku'];
-        $ns_trip_Id = $cart_product_info['ns_trip_Id'];
-        $capacity = tt_get_local_trips_detail('capacity', $ns_trip_Id, $product_sku, true);
-        $booked = tt_get_local_trips_detail('booked', $ns_trip_Id, $product_sku, true);
-        $remaining = tt_get_local_trips_detail('remaining', $ns_trip_Id, $product_sku, true);
-        if ($booked) {
+        $product_sku       = $cart_product_info['sku'];
+        $ns_trip_Id        = $cart_product_info['ns_trip_Id'];
+        $capacity          = tt_get_local_trips_detail( 'capacity', $ns_trip_Id, $product_sku, true );
+        $booked            = tt_get_local_trips_detail( 'booked', $ns_trip_Id, $product_sku, true );
+        $remaining         = tt_get_local_trips_detail( 'remaining', $ns_trip_Id, $product_sku, true );
+        if ( $booked ) {
             $res['booked'] = $booked;
         }
-        if ($capacity) {
+        if ( $capacity ) {
             $res['capacity'] = $capacity;
         }
-        if ($remaining) {
+        if ( $remaining ) {
             $res['remaining'] = $remaining;
-            if( 4 < intval( $remaining ) ) {
+            if ( 4 < intval( $remaining ) ) {
                 // Limit guest capacity to 4 only available per trip.
                 $res['remaining'] = 4;
             }
@@ -6354,7 +6354,8 @@ function update_cart_subtotal( $cart_total, $cart ) {
         // Access the SKU of the first item.
         $sku                   = $first_cart_item['data']->get_sku();
         $pay_amount            = isset( $tt_posted['pay_amount'] ) ? $tt_posted['pay_amount'] : '';
-        $deposit_amount        = tt_get_local_trips_detail( 'depositAmount', '', $sku, true );
+        $trip_id               = get_post_meta( $first_cart_item['product_id'], TT_WC_META_PREFIX . 'tripId', true );
+        $deposit_amount        = tt_get_local_trips_detail( 'depositAmount', $trip_id, $sku, true );
         $trek_guests_insurance = $tt_posted['trek_guest_insurance'];
         $insuarance_amount     = 0;
         $primary_insuarance    = $trek_guests_insurance['primary'];
@@ -6430,6 +6431,7 @@ function add_custom_line_before_tax() {
             $fisrt_product = $first_item->get_product();
             if ( $fisrt_product ) {
                 $fisrt_product_sku = $fisrt_product->get_sku();
+                $first_product_id  = $fisrt_product->get_id();
             }
     
             // Get the quantity of the first product
@@ -6460,7 +6462,8 @@ function add_custom_line_before_tax() {
         <?php endif; ?>
         <?php if ( 'deposite' === $pay_amount && '1' === $is_order_transaction_deposit ) : ?>
             <?php
-            $deposit_amount         = tt_get_local_trips_detail( 'depositAmount', '', $fisrt_product_sku, true );
+            $trip_id                = get_post_meta( $first_product_id, TT_WC_META_PREFIX . 'tripId', true );
+            $deposit_amount         = tt_get_local_trips_detail( 'depositAmount', $trip_id, $fisrt_product_sku, true );
             $cart_total_full_amount = isset( $trek_user_checkout_data['cart_total_full_amount'] ) ? $trek_user_checkout_data['cart_total_full_amount'] : '';
             $remaining_due          = floatval( $cart_total_full_amount ) - floatval( $order->get_total() );
             if ( $first_item_quantity ) {
@@ -6652,7 +6655,8 @@ function tt_check_and_remove_old_trips_in_persistent_cart_cb() {
         $trip_status = tt_get_custom_product_tax_value( $product_id, 'trip-status', true );
 
         // Remove from stela status.
-        $remove_from_stella = tt_get_local_trips_detail( 'removeFromStella', '', $sku, true );
+        $trip_id            = get_post_meta( $product_id, TT_WC_META_PREFIX . 'tripId', true );
+        $remove_from_stella = tt_get_local_trips_detail( 'removeFromStella', $trip_id, $sku, true );
 
         // Statuses that lock trip for booking.
         $in_status = [
@@ -7008,7 +7012,7 @@ function tt_get_itinerary_link_from_trip_itineraries($trip_sku, $parent_product_
 function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary, $waiver_signed ) {
 	$is_checklist_completed = true;
     $trip_info              = tt_get_trip_pid_sku_from_cart( $order_id );
-    $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+    $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
 
 
 	// Get info for completed PB checklist sections from the user meta.
@@ -7279,12 +7283,14 @@ function tt_get_deposit_info( $sku = '', $guests_number = 1, $insurance_amount =
     $deposit_allowed     = false;
 
     if( isset( $sku ) && ! empty( $sku ) ) {
-        $deposit_amount      = tt_get_local_trips_detail( 'depositAmount', '', $sku, true );
+        $product_id          = tt_get_product_by_sku($sku, true);
+        $trip_id             = get_post_meta( $product_id, TT_WC_META_PREFIX . 'tripId', true );
+        $deposit_amount      = tt_get_local_trips_detail( 'depositAmount', $trip_id, $sku, true );
         $deposit_amount      = $deposit_amount ? str_ireplace( ',', '', $deposit_amount ) : 0;
         if( $deposit_amount ) {
             $deposit_amount = floatval( $deposit_amount ) * intval( $guests_number ) + $insurance_amount;
         }
-        $deposit_before_date = tt_get_local_trips_detail( 'depositBeforeDate', '', $sku, true );
+        $deposit_before_date = tt_get_local_trips_detail( 'depositBeforeDate', $trip_id, $sku, true );
     }
 
     $is_deposited = tt_get_trip_payment_mode( $deposit_before_date ); // true/false.
@@ -7840,7 +7846,8 @@ function tt_woocommerce_coupon_get_items_to_validate( $items, $discounts ) {
             if ( ! in_array( $product_id, $accepted_p_ids ) ) {
                 $product_sku = $item->product->get_sku();
     
-                $is_ride_camp = tt_get_local_trips_detail( 'isRideCamp',  '', $product_sku, true );
+                $trip_id      = get_post_meta( $product_id, TT_WC_META_PREFIX . 'tripId', true );
+                $is_ride_camp = tt_get_local_trips_detail( 'isRideCamp', $trip_id, $product_sku, true );
     
                 // Find the product ID by the parent SKU.
                 $parent_product_id = tt_get_parent_trip_id_by_child_sku( $product_sku, $is_ride_camp );
@@ -8020,14 +8027,15 @@ add_action( 'wp_ajax_nopriv_after_add_remove_guest_template_action', 'after_add_
  *
  * @param string $product_line_name The name of the check product line.
  * @param string $sku               The product SKU.
+ * @param string $trip_id           The trip ID.
  *
  * @uses tt_get_local_trips_detail() helper function.
  * @uses tt_validate() helper function.
   *
  * @return bool|null Whether the trip is from the given product line or null if the product line is not found in the trip_details table.
  */
-function tt_is_product_line( $product_line_name = '', $sku = '' ) {
-    $product_line = tt_get_local_trips_detail( 'product_line', '', $sku, true ); // The value or empty string.
+function tt_is_product_line( $product_line_name = '', $sku = '', $trip_id = '' ) {
+    $product_line = tt_get_local_trips_detail( 'product_line', $trip_id, $sku, true ); // The value or empty string.
 
     // Product line not found for given SKU.
     if( empty( $product_line ) ) {
@@ -8079,8 +8087,9 @@ function tt_add_checkout_style_body_class( $classes ) {
             if( $product_id && ! in_array( $product_id, $accepted_p_ids ) ) {
                 $product     = wc_get_product( $product_id );
                 $product_sku = $product->get_sku();
+                $trip_id     = get_post_meta( $product_id, 'tt_meta_tripId', true );
 
-                if( tt_is_product_line( 'Hiking', $product_sku ) ) {
+                if( tt_is_product_line( 'Hiking', $product_sku, $trip_id ) ) {
                     $classes[] = 'checkout-style-hiking';
                 } else {
                     $classes[] = 'checkout-style-cycling';
@@ -8098,7 +8107,7 @@ function tt_add_checkout_style_body_class( $classes ) {
             $order = wc_get_order( $order_id );
             if( $order ) {
                 $trip_info          = tt_get_trip_pid_sku_from_cart( $order_id );
-                $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_info['sku'] );
+                $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
                 if( $is_hiking_checkout ) {
                     $classes[] = 'checkout-style-hiking';
                 } else {
