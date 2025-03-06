@@ -2076,3 +2076,42 @@ function dx_tt_clear_homepage_elementor_cache( $post_id ) {
 
 // Clear cache when saving/updating posts/pages/products
 add_action( 'save_post', 'dx_tt_clear_homepage_elementor_cache' ); // Clears cache on post/page update
+
+
+// Add custom field to the product variations
+function acf_location_rule_woocommerce_product_type($match, $rule, $options) {
+    if (isset($options['post_id'])) {
+        $post_id = $options['post_id'];
+        
+        if (get_post_type($post_id) !== 'product') {
+            return false;
+        }
+
+        $product = wc_get_product($post_id);
+
+        if ($product) {
+            $product_type = $product->get_type();
+
+            if ($rule['operator'] === '==' && $product_type === $rule['value']) {
+                $match = true;
+            } elseif ($rule['operator'] === '!=' && $product_type !== $rule['value']) {
+                $match = true;
+            } else {
+                $match = false;
+            }
+        }
+    }
+
+    return $match;
+}
+add_filter('acf/location/rule_match/post_type', 'acf_location_rule_woocommerce_product_type', 10, 3);
+
+function acf_location_rule_woocommerce_product_type_choices($choices) {
+    $choices['simple'] = 'Simple Product';
+    $choices['variable'] = 'Variable Product';
+    $choices['grouped'] = 'Grouped Product';
+    $choices['external'] = 'External/Affiliate Product';
+    
+    return $choices;
+}
+add_filter('acf/location/rule_values/post_type', 'acf_location_rule_woocommerce_product_type_choices');

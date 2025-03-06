@@ -203,6 +203,7 @@ if( $available_child_products ) {
                         $date_range                = $child_product_data['start_date'].' - '.$child_product_data['end_date'];
                         $date_range                = $child_product_data['date_range'];
                         $trip_status               = $child_product_data['trip_status'];
+                        
                         $bike_hotels               = tt_get_hotel_bike_list( $child_product_data['sku'], $child_product_data['trip_id'] );
                         $removeFromStella          = tt_get_local_trips_detail( 'removeFromStella', $child_product_data['trip_id'], $child_product_data['sku'], true );
                         $singleSupplementPrice     = isset($child_product_data['singleSupplementPrice']) ? $child_product_data['singleSupplementPrice'] : 0;
@@ -214,7 +215,22 @@ if( $available_child_products ) {
                         // Check child product is marked as Private/Custom trip.
                         $is_pc_trip = get_field( 'is_private_custom_trip');                        
                         // Check child product is marked as Private/Custom trip.
-                        $is_pc_trip = get_field( 'is_private_custom_trip');                   
+                        $is_pc_trip = get_field( 'is_private_custom_trip');    
+                        $date_icon               = get_field('date_icon',$child_product_data['product_id']);
+                        $date_text               = get_field('date_text',$child_product_data['product_id']);
+
+                        $date_cta = (!empty($date_icon) && !empty($date_text)) 
+                            ? '<span class="fw-normal fs-sm lh-sm d-cta">' 
+                                . $date_icon 
+                                . (wp_is_mobile() 
+                                    ? '<a class="d-msg" href="tel:8664648735">' . $date_text . '</a>' 
+                                    : '<div class="d-msg">' . $date_text . '</div>'
+                                ) 
+                            . '</span>' 
+                            : '';
+
+
+                        
 
                         if ($tripWebStatus == 'Private') {
                             if( true == $is_pc_trip ) {
@@ -413,8 +429,9 @@ if( $available_child_products ) {
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
                                     <div class="d-box">
                                         <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
-                                        <span class="fw-normal fs-sm lh-sm available">Available</span>
-                                    </div>
+                                        <span class="fw-normal fs-sm lh-sm available">Available</span>'
+                                        . $date_cta .
+                                    '</div>
                                 </button>
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
@@ -443,8 +460,9 @@ if( $available_child_products ) {
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
                                     <div class="d-box">
                                         <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
-                                        <span class="fw-normal fs-sm lh-sm available">Available</span>
-                                    </div>
+                                        <span class="fw-normal fs-sm lh-sm available">Available</span>'
+                                        . $date_cta .
+                                    '</div>
                                 </button>
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
@@ -474,8 +492,9 @@ if( $available_child_products ) {
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
                                 <div class="d-box">
                                     <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'</span>
-                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
-                                </div>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>'
+                                    . $date_cta .
+                                    '</div>
                                 </button>
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
@@ -504,8 +523,9 @@ if( $available_child_products ) {
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
                                 <div class="d-box">
                                     <span class="fw-medium w-40 fs-lg lh-lg">'.$date_range.'<!-- January 24-30, 2022 --></span>
-                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>
-                                </div>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>'
+                                    . $date_cta .
+                                    '</div>
                                 </button>
                             </h6>
                         <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
@@ -876,5 +896,14 @@ $data = $cartContentsArr[array_key_first($cartContentsArr)]['data'];
         // console.log("No dropdown select elements found.");
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".d-cta a").forEach(function(link) {
+        link.addEventListener("click", function(event) {
+            event.stopPropagation(); // Prevents click from triggering the accordion toggle
+        });
+    });
+});
+
 
 </script>

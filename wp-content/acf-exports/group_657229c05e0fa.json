@@ -3,27 +3,22 @@
     "title": "PDP",
     "fields": [
         {
-            "key": "field_66f5b4f146e0c",
-            "label": "Trip Weight",
-            "name": "trip_weight",
+            "key": "field_679d012c59d87",
+            "label": "PDP Content",
+            "name": "",
             "aria-label": "",
-            "type": "number",
-            "instructions": "Number divisible by 5. Gives PDP ranking order in PLPs. Higher number higher ranking.",
+            "type": "tab",
+            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "10",
+                "width": "",
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
-            "min": "",
-            "max": "",
-            "allow_in_bindings": 1,
-            "placeholder": "",
-            "step": 5,
-            "prepend": "",
-            "append": ""
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
         },
         {
             "key": "field_6613de9139831",
@@ -47,103 +42,27 @@
             "ui": 1
         },
         {
-            "key": "field_679bad657e450",
-            "label": "Replace \/ Add Product Message",
-            "name": "replace__add_product_message",
+            "key": "field_66f5b4f146e0c",
+            "label": "Trip Weight",
+            "name": "trip_weight",
             "aria-label": "",
-            "type": "true_false",
-            "instructions": "",
+            "type": "number",
+            "instructions": "Number divisible by 5. Gives PDP ranking order in PLPs. Higher number higher ranking.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "15",
+                "width": "10",
                 "class": "",
                 "id": ""
             },
-            "message": "",
-            "default_value": 0,
+            "default_value": "",
+            "min": "",
+            "max": "",
             "allow_in_bindings": 1,
-            "ui_on_text": "Replace",
-            "ui_off_text": "Add",
-            "ui": 1
-        },
-        {
-            "key": "field_679baefb7e451",
-            "label": "Product Icon",
-            "name": "product_icon",
-            "aria-label": "",
-            "type": "font-awesome",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "15",
-                "class": "",
-                "id": ""
-            },
-            "icon_sets": [
-                "solid",
-                "sharp_solid",
-                "regular",
-                "sharp_regular",
-                "light",
-                "sharp_light",
-                "thin",
-                "sharp_thin",
-                "sharp-duotone_solid",
-                "duotone_solid",
-                "brands"
-            ],
-            "custom_icon_set": "",
-            "default_label": "",
-            "default_value": "",
-            "save_format": "class",
-            "allow_null": 1,
-            "show_preview": 1,
-            "enqueue_fa": 1,
-            "allow_in_bindings": 0,
-            "fa_live_preview": "",
-            "choices": []
-        },
-        {
-            "key": "field_679bec2c6db88",
-            "label": "Message Border Color",
-            "name": "message_border_color",
-            "aria-label": "",
-            "type": "color_picker",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "15",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "enable_opacity": 0,
-            "return_format": "string",
-            "allow_in_bindings": 0
-        },
-        {
-            "key": "field_679baf947e452",
-            "label": "Product Message",
-            "name": "product_message",
-            "aria-label": "",
-            "type": "wysiwyg",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "35",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "allow_in_bindings": 0,
-            "tabs": "all",
-            "toolbar": "full",
-            "media_upload": 0,
-            "delay": 0
+            "placeholder": "",
+            "step": 5,
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_65a57b5961d37",
@@ -2256,6 +2175,123 @@
                     "parent_repeater": "field_63334a21b82bd"
                 }
             ]
+        },
+        {
+            "key": "field_679d007c59d86",
+            "label": "Top Message",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_679bad657e450",
+            "label": "Replace \/ Add Product Message",
+            "name": "replace__add_product_message",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "20",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 1,
+            "ui_on_text": "Replace",
+            "ui_off_text": "Add",
+            "ui": 1
+        },
+        {
+            "key": "field_679baefb7e451",
+            "label": "Product Icon",
+            "name": "product_icon",
+            "aria-label": "",
+            "type": "font-awesome",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "20",
+                "class": "",
+                "id": ""
+            },
+            "icon_sets": [
+                "solid",
+                "sharp_solid",
+                "regular",
+                "sharp_regular",
+                "light",
+                "sharp_light",
+                "thin",
+                "sharp_thin",
+                "sharp-duotone_solid",
+                "duotone_solid",
+                "brands"
+            ],
+            "custom_icon_set": "",
+            "default_label": "",
+            "default_value": "",
+            "save_format": "class",
+            "allow_null": 1,
+            "show_preview": 1,
+            "enqueue_fa": 1,
+            "allow_in_bindings": 0,
+            "fa_live_preview": "",
+            "choices": []
+        },
+        {
+            "key": "field_679bec2c6db88",
+            "label": "Message Border Color",
+            "name": "message_border_color",
+            "aria-label": "",
+            "type": "color_picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "20",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "enable_opacity": 0,
+            "return_format": "string",
+            "allow_in_bindings": 0
+        },
+        {
+            "key": "field_679baf947e452",
+            "label": "Product Message",
+            "name": "product_message",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "40",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 0,
+            "delay": 0
         }
     ],
     "location": [
@@ -2264,6 +2300,20 @@
                 "param": "post_type",
                 "operator": "==",
                 "value": "product"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "grouped"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "simple"
             }
         ]
     ],
@@ -2276,5 +2326,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1738272039
+    "modified": 1741293643
 }

@@ -146,6 +146,23 @@
                     flex-wrap: wrap;
                     gap: 15px;
                 }
+
+                .d-cta {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    margin: auto;
+                    i {
+                        font-size: 18px;
+                        color: #C11700;
+                    }
+                    .d-msg {
+                        pointer-events: auto;
+                        text-decoration: none;
+                        border-bottom: 1px solid #C11700;
+                        color: inherit;
+                    }
+                }
             }
 
 
