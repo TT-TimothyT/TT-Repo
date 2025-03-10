@@ -6048,56 +6048,56 @@ jQuery(document).ready(function($) {
   });
 });
 // Fix for form tabbing functionality
-(function($) {
-  // Function to prevent Elementor's dialog from capturing tab events
-  function preventDialogCapture(event) {
-      if (event.keyCode === 9) { // Tab key
-          // Only stop propagation if we're in a form field or focusable element
-          if ($(event.target).is('input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])')) {
-              event.stopPropagation();
-          }
-      }
-  }
+// (function($) {
+//   // Function to prevent Elementor's dialog from capturing tab events
+//   function preventDialogCapture(event) {
+//       if (event.keyCode === 9) { // Tab key
+//           // Only stop propagation if we're in a form field or focusable element
+//           if ($(event.target).is('input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])')) {
+//               event.stopPropagation();
+//           }
+//       }
+//   }
 
-  // Function to set focus on the first visible focusable element
-  function setInitialFocus() {
-      setTimeout(function() {
-          const firstFocusable = $('input:visible, select:visible, textarea:visible, button:visible, [href]:visible, [tabindex]:not([tabindex="-1"]):visible').first();
-          if (firstFocusable.length) {
-              firstFocusable.focus();
-          }
-      }, 500);
-  }
+//   // Function to set focus on the first visible focusable element
+//   function setInitialFocus() {
+//       setTimeout(function() {
+//           const firstFocusable = $('input:visible, select:visible, textarea:visible, button:visible, [href]:visible, [tabindex]:not([tabindex="-1"]):visible').first();
+//           if (firstFocusable.length) {
+//               firstFocusable.focus();
+//           }
+//       }, 500);
+//   }
 
-  // Initialize the functionality
-  function initTabbing() {
-      // Add event listener to capture tab events before they reach Elementor
-      $(document).on('keydown', preventDialogCapture);
+//   // Initialize the functionality
+//   function initTabbing() {
+//       // Add event listener to capture tab events before they reach Elementor
+//       $(document).on('keydown', preventDialogCapture);
 
-      // Handle select2 fields specifically
-      $(document).on('select2:open', function() {
-          document.querySelector('.select2-search__field').focus();
-      });
+//       // Handle select2 fields specifically
+//       $(document).on('select2:open', function() {
+//           document.querySelector('.select2-search__field').focus();
+//       });
 
-      // Set initial focus
-      setInitialFocus();
-  }
+//       // Set initial focus
+//       setInitialFocus();
+//   }
 
-  // Run on document ready
-  $(document).ready(initTabbing);
+//   // Run on document ready
+//   $(document).ready(initTabbing);
 
-  // Run when URL parameters change
-  $(window).on('popstate', function() {
-      setInitialFocus();
-  });
+//   // Run when URL parameters change
+//   $(window).on('popstate', function() {
+//       setInitialFocus();
+//   });
 
-  // Watch for URL parameter changes
-  let lastUrl = location.href; 
-  new MutationObserver(() => {
-      const url = location.href;
-      if (url !== lastUrl) {
-          lastUrl = url;
-          setInitialFocus();
-      }
-  }).observe(document, {subtree: true, childList: true});
-})(jQuery);
+//   // Watch for URL parameter changes
+//   let lastUrl = location.href; 
+//   new MutationObserver(() => {
+//       const url = location.href;
+//       if (url !== lastUrl) {
+//           lastUrl = url;
+//           setInitialFocus();
+//       }
+//   }).observe(document, {subtree: true, childList: true});
+// })(jQuery);
