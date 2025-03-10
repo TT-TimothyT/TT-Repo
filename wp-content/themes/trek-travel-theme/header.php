@@ -74,7 +74,11 @@ $is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters
 
 	<?php wp_body_open(); ?>
 
-	<a href="#main" class="visually-hidden-focusable"><?php esc_html_e('Skip to main content', 'trek-travel-theme'); ?></a>
+	<!-- <a href="#main" class="visually-hidden-focusable"> -->
+		<?php 
+		// esc_html_e('Skip to main content', 'trek-travel-theme'); 
+		?>
+		<!-- </a> -->
 
 	<div id="wrapper">
 
