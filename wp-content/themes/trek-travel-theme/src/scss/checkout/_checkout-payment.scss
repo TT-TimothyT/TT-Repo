@@ -298,6 +298,14 @@ body {
     .wc-cybersource-credit-card-new-payment-method-form{
         display: flex;
         flex-wrap: wrap;
+        .woocommerce-cybersource-error {
+            &.invalid-feedback {
+                font-size: 12px;
+                color: #a00;
+                line-height: 1.2;
+            }
+        }
+
         div.form-row-wide{
             width: 100%;
             // height: 6rem;
@@ -350,6 +358,7 @@ body {
             display: none;
         }
     }
+
     @include media-breakpoint-up(lg) {
         &__add-travel {
             margin-bottom: 40px;
@@ -457,6 +466,14 @@ body {
         .wc-cybersource-credit-card-new-payment-method-form{
             display: flex;
             flex-wrap: wrap;
+
+            .woocommerce-cybersource-error {
+                &.invalid-feedback {
+                    font-size: 12px;
+                    color: #a00;
+                    line-height: 1.2;
+                }
+            }
             div.form-row-wide{
                 width: 40%;
                 height: 6rem;

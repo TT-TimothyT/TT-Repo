@@ -5889,6 +5889,164 @@ jQuery( 'body' ).on( 'currency_converter_switch', function( ev, to_currency ) {
   jQuery( 'header .currency-symbol' ).text( current_currency_symbol );
 });
 
+/**
+ * Custom error rendering handler for Cybersource payment form validation.
+ * Extends the SV_WC_Payment_Form_Handler to display errors inline under form fields.
+ *
+ * ⚠ WARNING: This customization may break with future updates of the Cybersource plugin.
+ * Ensure compatibility after each update.
+ *
+ * @requires sv-wc-payment-gateway-payment-form.js The main JS file from the Cybersource plugin.
+ */
+jQuery(document.body).on('sv_wc_payment_form_handler_v5_15_3_loaded', function() {
+
+  // Extend the prototype with custom error rendering
+  window.SV_WC_Payment_Form_Handler_v5_15_3.prototype.render_errors = function(errors) {
+    // Reset all previous error states
+    jQuery('.woocommerce-cybersource-error').remove();
+    jQuery('.form-row').removeClass('woocommerce-invalid');
+
+    // Error mapping logic
+    errors.forEach(function(errorMessage) {
+      let $targetField;
+      let fieldId = '';
+      let isUnknownError = false;
+
+      // Determine which field the error belongs to
+      switch(errorMessage) {
+        case 'Card number is invalid':
+          fieldId = 'wc-cybersource-credit-card-account-number-hosted';
+          break;
+          
+        case 'Card security code is invalid (must be 3 or 4 digits)':
+          fieldId = 'wc-cybersource-credit-card-csc-hosted';
+          break;
+          
+        case 'Card expiration date is invalid':
+          fieldId = 'wc-cybersource-credit-card-expiry';
+          break;
+          
+        default:
+          // Default to card number field for unknown errors
+          fieldId = 'wc-cybersource-credit-card-account-number-hosted';
+          isUnknownError = true;
+          break;
+      }
+
+      // Find the relevant form field container
+      $targetField = jQuery('#' + fieldId);
+
+      if ($targetField.length > 0 && !isUnknownError) {
+        // Get the parent form row
+        var $formRow = $targetField.closest('.form-row');
+
+        // Add error class to form row
+        $formRow.addClass('woocommerce-invalid');
+
+        // Create and append error message
+        var $errorMessage = jQuery('<div class="woocommerce-cybersource-error invalid-feedback d-block">' + errorMessage + '</div>');
+        $formRow.append($errorMessage);
+      }
+
+      if (isUnknownError) {
+        $ccForm = jQuery('#wc-cybersource-credit-card-credit-card-form');
+
+        // Check the error message contained an error message for when there was an issue processing payment.
+        if (errorMessage.includes('An error occurred, please try again or try an alternate form of payment.')) {
+          errorMessage = 'There was a problem processing your payment. Please check your billing information and try again, or use a different payment method.';
+        }
+
+        // Create and append error message
+        var $errorMessage = jQuery('<div class="woocommerce-cybersource-error invalid-feedback d-block">' + errorMessage + '</div>');
+        $ccForm.append($errorMessage);
+
+        jQuery('html, body').animate({
+          scrollTop: $ccForm.offset().top - 120
+        }, 500);
+      }
+
+    });
+
+    var firstInvalidField = jQuery('.woocommerce-invalid').filter(':visible').eq(0);
+    if (firstInvalidField.length > 0) {
+      jQuery('html, body').animate({
+        scrollTop: firstInvalidField.offset().top - 120
+      }, 500);
+    }
+
+    // Remove the processing class from the form
+    this.form.removeClass("processing").unblock();
+
+    // Prevent default WooCommerce error scroll behavior
+    return false;
+  };
+});
+
+jQuery(document).ready(function($) {
+  /**
+   * Reset all previous error states
+   */
+  $( 'form.checkout' ).on( 'checkout_place_order', function() {
+      var $targetField = jQuery('.woocommerce-cybersource-error, .woocommerce-checkout-last-step-error');
+      var $formRow = $targetField.closest('.form-row');
+      var $targetFieldBefore = $targetField.prev();
+      $targetField.remove();
+      $formRow.removeClass('woocommerce-invalid');
+      $targetFieldBefore.removeClass('woocommerce-invalid');
+  });
+
+  /**
+   * Custom error rendering handler for the checkout form on the last step.
+   */
+  $(document.body).on('checkout_error', (ev, data) => {
+    if (data && $(data).length > 0) {
+      // Extract all errors from the list
+      var errorList = $(data).find('ul.woocommerce-error li');
+
+      if (errorList.length > 0) {
+        errorList.each(function () {
+          var errorText = $(this).text().trim();
+
+          switch (errorText) {
+              case 'Please check Waiver checkbox.':
+                jQuery('.woocommerce-error').remove(); // Remove old error messages
+
+                var $targetField = jQuery('#tt_waiver_checkbox');
+                var $formRow = $targetField.closest('div');
+                $formRow.addClass('woocommerce-invalid');
+                var $errorMessage = jQuery('<div class="woocommerce-checkout-last-step-error invalid-feedback d-block">' + errorText + '</div>');
+                $formRow.after($errorMessage);
+                break;
+
+              case 'Billing Street address is a required field.':
+              case 'Billing Country / Region is a required field.':
+              case 'Billing City is a required field.':
+              case 'Billing ZIP Code is a required field.':
+              case 'Please fill all billing fields':
+                jQuery('.woocommerce-error').remove(); // Remove old error messages
+
+                break;
+
+              // You can add more cases for other errors here
+
+              default:
+                // All other errors from the list. Most errors are added in the tt_checkout_fields_error_messages() function.
+                console.log('Unhandled error .woocommerce-checkout-last-step-error: ' + errorText);
+                break;
+          }
+        });
+
+        // Scroll to the first invalid field.
+        var firstInvalidField = jQuery('.woocommerce-invalid').filter(':visible').eq(0);
+        if (firstInvalidField.length) {
+          jQuery('html, body').stop(true, true).animate({
+              scrollTop: firstInvalidField.offset().top - 120
+          }, 500);
+        }
+      }
+    }
+  });
+});
 // Fix for form tabbing functionality
 (function($) {
   // Function to prevent Elementor's dialog from capturing tab events
