@@ -6060,17 +6060,29 @@ jQuery(document).ready(function($) {
       }
   }
 
-  // Function to set focus on the first visible focusable element
   function setInitialFocus() {
-    const scrollPosition = $(window).scrollTop(); // Store current scroll position
+    const currentURL = window.location.href;
+
+    // Check if we are on checkout/cart page
+    const isCheckoutPage = currentURL.includes('/checkout') || currentURL.includes('/cart');
+
+    if (!isCheckoutPage) {
+        return; // Do nothing if not on checkout/cart page
+    }
+
+    const previousScroll = $(window).scrollTop(); // Store current scroll position
 
     setTimeout(function () {
-        const firstFocusable = $('input:visible, select:visible, textarea:visible, button:visible, [href]:visible, [tabindex]:not([tabindex="-1"]):visible').first();
-        if (firstFocusable.length) {
-            firstFocusable.focus();
-        }
+      const firstFocusable = $('input:visible, select:visible, textarea:visible, button:visible, [href]:visible, [tabindex]:not([tabindex="-1"]):visible').first();
+      if (firstFocusable.length) {
+          firstFocusable.focus();
+      }
 
-        $(window).scrollTop(scrollPosition); // Restore scroll position
+      requestAnimationFrame(() => {
+          if (Math.abs($(window).scrollTop() - previousScroll) < 10) {
+              $(window).scrollTop(previousScroll);
+          }
+      });
     }, 500);
   }
 
