@@ -233,7 +233,7 @@
         {
             "key": "field_638bb98a9d2de",
             "label": "Bar Reach",
-            "name": "gear_preferences_bar_reach",
+            "name": "gear_preferences_barreachfromsaddle",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -253,7 +253,7 @@
         {
             "key": "field_638bb99d9d2df",
             "label": "Bar Height",
-            "name": "gear_preferences_bar_height",
+            "name": "gear_preferences_barheightfromwheel",
             "aria-label": "",
             "type": "text",
             "instructions": "",

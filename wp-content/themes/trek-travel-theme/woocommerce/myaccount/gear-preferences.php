@@ -1,14 +1,14 @@
 <?php
-$userInfo = wp_get_current_user();
-$bike_type = get_user_meta($userInfo->ID, 'gear_preferences_bike_type', true);
-$rider_height = get_user_meta($userInfo->ID, 'gear_preferences_rider_height', true);
+$userInfo      = wp_get_current_user();
+$bike_type     = get_user_meta($userInfo->ID, 'gear_preferences_bike_type', true);
+$rider_height  = get_user_meta($userInfo->ID, 'gear_preferences_rider_height', true);
 $select_pedals = get_user_meta($userInfo->ID, 'gear_preferences_select_pedals', true);
-$helmet_size = get_user_meta($userInfo->ID, 'gear_preferences_helmet_size', true);
-$jersey_style = get_user_meta($userInfo->ID, 'gear_preferences_jersey_style', true);
-$jersey_size = get_user_meta($userInfo->ID, 'gear_preferences_jersey_size', true);
+$helmet_size   = get_user_meta($userInfo->ID, 'gear_preferences_helmet_size', true);
+$jersey_style  = get_user_meta($userInfo->ID, 'gear_preferences_jersey_style', true);
+$jersey_size   = get_user_meta($userInfo->ID, 'gear_preferences_jersey_size', true);
 $saddle_height = get_user_meta($userInfo->ID, 'gear_preferences_saddle_height', true);
-$bar_reach = get_user_meta($userInfo->ID, 'gear_preferences_bar_reach', true);
-$bar_height = get_user_meta($userInfo->ID, 'gear_preferences_bar_height', true);
+$bar_reach     = get_user_meta($userInfo->ID, 'gear_preferences_barreachfromsaddle', true);
+$bar_height    = get_user_meta($userInfo->ID, 'gear_preferences_barheightfromwheel', true);
 ?>
 <div class="container gear-preferences px-0 my-4">
     <div class="row mx-0 flex-column flex-lg-row">

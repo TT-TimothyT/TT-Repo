@@ -1402,8 +1402,8 @@ function tt_sync_guest_preferences( $user_id = 0, $guest_data = [] ) {
 
         // Collect Gear Optional Preferences.
         'gear_preferences_saddle_height'          => tt_validate( $guest_data->saddleHeight ),
-        'gear_preferences_bar_height'             => tt_validate( $guest_data->barReachFromSaddle ),
-        'gear_preferences_bar_reach'              => tt_validate( $guest_data->barHeightFromWheel ),
+        'gear_preferences_barheightfromwheel'     => tt_validate( $guest_data->barHeightFromWheel ),
+        'gear_preferences_barreachfromsaddle'     => tt_validate( $guest_data->barReachFromSaddle ),
 
         // Collect Passport Preferences.
         'custentity_passport_number'              => tt_validate( $guest_data->passportNumber ),

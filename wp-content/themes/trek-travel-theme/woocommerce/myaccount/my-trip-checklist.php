@@ -223,16 +223,16 @@ if( empty( $emergence_crelationship ) && ! empty( $current_user_preferences['em_
 
 // Populate the Bike fit (optional) info user preferences if no value is confirmed yet.
 
-if( empty( $saddle_bar_reach_from_saddle ) && ! empty( $current_user_preferences['gear_preferences_bar_reach'] ) ) {
-	$saddle_bar_reach_from_saddle = $current_user_preferences['gear_preferences_bar_reach'];
+if( empty( $saddle_bar_reach_from_saddle ) && ! empty( $current_user_preferences['gear_preferences_barreachfromsaddle'] ) ) {
+	$saddle_bar_reach_from_saddle = $current_user_preferences['gear_preferences_barreachfromsaddle'];
 }
 
 if( empty( $saddle_height ) && ! empty( $current_user_preferences['gear_preferences_saddle_height'] ) ) {
 	$saddle_height = $current_user_preferences['gear_preferences_saddle_height'];
 }
 
-if( empty( $saddle_bar_height_from_wheel_center ) && ! empty( $current_user_preferences['gear_preferences_bar_height'] ) ) {
-	$saddle_bar_height_from_wheel_center = $current_user_preferences['gear_preferences_bar_height'];
+if( empty( $saddle_bar_height_from_wheel_center ) && ! empty( $current_user_preferences['gear_preferences_barheightfromwheel'] ) ) {
+	$saddle_bar_height_from_wheel_center = $current_user_preferences['gear_preferences_barheightfromwheel'];
 }
 
 $confirmed_info_user         = get_user_meta( $user_id, 'pb_checklist_cofirmations', true );

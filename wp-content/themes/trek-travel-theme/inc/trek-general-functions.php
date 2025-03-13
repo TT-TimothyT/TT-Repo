@@ -1162,10 +1162,10 @@ function trek_update_trip_checklist_action_cb()
                 update_user_meta( $user->ID, 'gear_preferences_saddle_height', $_REQUEST['saddle_height'] );
             }
             if ( ! empty( $_REQUEST['bar_reach'] ) ) {
-                update_user_meta( $user->ID, 'gear_preferences_bar_reach', $_REQUEST['bar_reach'] );
+                update_user_meta( $user->ID, 'gear_preferences_barreachfromsaddle', $_REQUEST['bar_reach'] );
             }
             if ( ! empty( $_REQUEST['bar_height'] ) ) {
-                update_user_meta( $user->ID, 'gear_preferences_bar_height', $_REQUEST['bar_height'] );
+                update_user_meta( $user->ID, 'gear_preferences_barheightfromwheel', $_REQUEST['bar_height'] );
             }
         }
 
@@ -1724,8 +1724,8 @@ function trek_update_bike_gear_info_action_cb()
             'gear_preferences_jersey_style',
             'gear_preferences_jersey_size',
             'gear_preferences_saddle_height',
-            'gear_preferences_bar_reach',
-            'gear_preferences_bar_height'
+            'gear_preferences_barreachfromsaddle',
+            'gear_preferences_barheightfromwheel'
         );
         if ($bike_references_fields) {
             foreach ($bike_references_fields as $bike_references_field) {
@@ -6737,9 +6737,9 @@ function dx_get_user_pb_preferences( $user_id = 0 ) {
     $user_pb_preferences['em_info_em_contact_relationship'] = get_user_meta( $user_id, 'custentity_emergencycontactrelationship', true );
 
     // Bike fit (optional) info.
-    $user_pb_preferences['gear_preferences_bar_reach']      = get_user_meta( $user_id, 'gear_preferences_bar_reach', true );
-    $user_pb_preferences['gear_preferences_saddle_height']  = get_user_meta( $user_id, 'gear_preferences_saddle_height', true );
-    $user_pb_preferences['gear_preferences_bar_height']     = get_user_meta( $user_id, 'gear_preferences_bar_height', true );
+    $user_pb_preferences['gear_preferences_barreachfromsaddle'] = get_user_meta( $user_id, 'gear_preferences_barreachfromsaddle', true );
+    $user_pb_preferences['gear_preferences_saddle_height']      = get_user_meta( $user_id, 'gear_preferences_saddle_height', true );
+    $user_pb_preferences['gear_preferences_barheightfromwheel'] = get_user_meta( $user_id, 'gear_preferences_barheightfromwheel', true );
 
     // Return user preferences.
     return $user_pb_preferences;
