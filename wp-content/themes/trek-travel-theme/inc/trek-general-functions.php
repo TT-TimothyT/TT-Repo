@@ -658,9 +658,18 @@ function save_checkout_steps_action_cb( $return_response = false )
  * @version : 1.0.0
  * @return  : Algolia Popular Search results data
  **/
-function trek_algolia_popular_search()
-{
+function trek_algolia_popular_search() {
     $popular1 = $popular2 = $popular3 = $popular4 = $results = array();
+
+    // Check if we have cached results
+    $transient_key  = 'trek_algolia_popular_search_results';
+    $cached_results = get_transient( $transient_key );
+
+    if ( false !== $cached_results ) {
+        // Return cached results if available
+        return $cached_results;
+    }
+
     if ( class_exists( 'Psr\Log\AbstractLogger' ) && class_exists( 'WebDevStudios\WPSWA\Algolia\AlgoliaSearch\SearchClient' ) ) {
         $upload_dir = wp_upload_dir();
         $baseDir = $upload_dir['basedir'] . '/algolia/';
@@ -683,19 +692,34 @@ function trek_algolia_popular_search()
         if (isset($algolia_search_api_key) && isset($algolia_application_id)) {
             $client = SearchClient::create($algolia_application_id, $algolia_search_api_key);
             $index = $client->initIndex("wp_searchable_posts_query_suggestions");
-            $results = $index->search("");
+
+            // Request only 5 results
+            $search_params = [
+                'hitsPerPage' => 5,
+                'attributesToRetrieve' => ['query'] // Only retrieve the 'query' field
+            ];
+
+            $results = $index->search("", $search_params);
             if( !is_array($results) ){
                 $results = json_decode($results, true);
             }
         }
     }
-    return array(
-        'results' => $results,
+
+    $response_data = array(
+        'results'   => $results,
         'popular_1' => $popular1,
         'popular_2' => $popular2,
         'popular_3' => $popular3,
         'popular_4' => $popular4,
     );
+
+    // Cache the results for 5 hours if the request was successful
+    if ( ! empty( $results ) ) {
+        set_transient( $transient_key, $response_data, 5 * HOUR_IN_SECONDS );
+    }
+
+    return $response_data;
 }
 /**
  * @author  : Ehsan Khakbaz
