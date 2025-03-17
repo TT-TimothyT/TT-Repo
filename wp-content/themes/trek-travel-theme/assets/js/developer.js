@@ -3617,8 +3617,32 @@ jQuery('body').on('click', '.bike_selectionElementchk', function () {
         jQuery('select[name="tt-bike-size"]').html(response.size_opts);
       }
       jQuery('input[name="bikeTypeId"]').val(bikeTypeId);
-      ttLoader.hide();
-      jQuery("#currency_switcher").trigger("change")
+      let bikeSizeFieldValue = jQuery('.tt_chk_bike_size_change').find(":selected").val();
+      if ( bikeTypeId && '' !== bikeTypeId.trim() && bikeSizeFieldValue && '' !== bikeSizeFieldValue.trim() ) {
+        var actionName = 'tt_chk_bike_size_change_ajax_action';
+        jQuery.ajax({
+          type: 'POST',
+          url: trek_JS_obj.ajaxURL,
+          data: { 'action': actionName, 'bike_size': bikeSizeFieldValue, 'bikeTypeId': bikeTypeId, order_id: order_id },
+          dataType: 'json',
+          beforeSend: function () {
+            // ttLoader.show();
+          },
+          success: function (response) {
+            if (response.status == true && response.bike_id) {
+              jQuery('input[name="bikeId"]').val(response.bike_id);
+            }
+            ttLoader.hide();
+          },
+          error: function (response) {
+            console.log('Error: ', response);
+            ttLoader.hide();
+          }
+        });
+      } else {
+        ttLoader.hide();
+      }
+      jQuery("#currency_switcher").trigger("change");
     }
   });
 });

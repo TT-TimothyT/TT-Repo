@@ -4716,12 +4716,16 @@ function tt_checkout_fields_error_messages($fields, $errors)
  **/
 add_action('wp_ajax_tt_chk_bike_selection_ajax_action', 'trek_tt_chk_bike_selection_ajax_action_cb');
 add_action('wp_ajax_nopriv_tt_chk_bike_selection_ajax_action', 'trek_tt_chk_bike_selection_ajax_action_cb');
-function trek_tt_chk_bike_selection_ajax_action_cb()
-{
-    $bikeTypeId = $_REQUEST['bikeTypeId'];
-    $order_id = $_REQUEST['order_id'];
-    $trip_info = tt_get_trip_pid_sku_by_orderId( $order_id );
-    $opts = tt_get_bikes_by_trip_info_pbc( $trip_info['ns_trip_Id'], $trip_info['sku'], $bikeTypeId  );
+function trek_tt_chk_bike_selection_ajax_action_cb() {
+    $bike_type_id    = $_REQUEST['bikeTypeId'];
+    $order_id        = $_REQUEST['order_id'];
+    $trip_info       = tt_get_trip_pid_sku_by_orderId( $order_id );
+    $user_info       = wp_get_current_user();
+    $user_id         = $user_info->ID;
+    $user_order_info = trek_get_user_order_info( $user_id, $order_id );
+    $s_bike_type     = tt_validate( $user_order_info[0]['bike_type_id'] );
+    $s_bike_size     = $s_bike_type == $bike_type_id ? tt_validate( $user_order_info[0]['bike_size'] ) : ''; // If bike type is same then get the bike size.
+    $opts            = tt_get_bikes_by_trip_info_pbc( $trip_info['ns_trip_Id'], $trip_info['sku'], $bike_type_id, $s_bike_size );
     echo json_encode($opts);
     exit;
 }
