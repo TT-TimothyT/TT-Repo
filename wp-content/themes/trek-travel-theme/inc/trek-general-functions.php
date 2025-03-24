@@ -8953,3 +8953,46 @@ function tt_get_auto_select_bike_model_id( $args = array() ) {
     return $auto_selected_bike_model_id;
 }
 
+/**
+ * Fix the automatic currency selection based on user location.
+ *
+ * This is a working but not very reliable fix at this stage.
+ *
+ * The issue occurs with how the Currency Converter for WooCommerce plugin localizes 
+ * variables in the WC_Currency_Converter class. The enqueue_assets method dynamically 
+ * adds hooks in a way that causes conflicts.
+ *
+ *  if ( ! has_action( 'wp_print_footer_scripts', array( $this, 'localize_script' ) ) ) {
+ *      add_action( 'wp_print_footer_scripts', array( $this, 'localize_script' ), 5 );
+ *  }
+ * 
+ * Direct script localization $this->localize_script(); would work, but would require forking the plugin.
+ * 
+ * When using this localization hook wp_print_footer_scripts, Elementor's Widget_WordPress class somehow 
+ * overwrites WP Widget instances and changes their IDs by appending "REPLACE_TO_ID" 
+ * to all of them.
+ *
+ * For this reason, the Currency Converter for WooCommerce plugin 
+ * cannot properly set the currency, as it subsequently searches for the ID 
+ * as a number and when it doesn't find it, returns false and uses 
+ * the default currency.
+ *
+ * The solution is to set the widget_id to a fixed value,
+ * so that the plugin can find the widget and set the currency.
+ *
+ * To find the widget ID, inspect the database table wp_options
+ * and search for the widget_woocommerce_currency_converter.
+ *
+ * @see https://github.com/elementor/elementor/issues/2900
+ *
+ * @param array $wc_currency_converter_params The parameters for the Currency Converter for WooCommerce plugin.
+ *
+ * @return array The modified parameters.
+ */
+function tt_wc_currency_converter_params( $wc_currency_converter_params ) {
+    $wc_currency_converter_params['widget_id'] = 'woocommerce_currency_converter-2';
+
+    return $wc_currency_converter_params;
+}
+
+add_filter( 'wc_currency_converter_params', 'tt_wc_currency_converter_params' );
