@@ -275,6 +275,44 @@ a img.aligncenter {
 	padding-top: 1.625rem;
     padding-bottom: 0.625rem;
 }
+
+.shipping-address #formID .form-floating input {
+	padding: 1rem 0.75rem !important;
+
+}
+
+/* #formID .billing_row #shipping_state, #formID .billing_row #billing_state {
+	height: auto !important;
+	padding-top: 0.5em !important;
+} */
+
+#formID .billing_row .select2 .select2-selection  {
+	border: 1px solid #ced4da !important;
+}
+
+#formID .billing_row .select2 .select2-selection  .select2-selection__rendered{
+	font-size: 14px;
+	line-height: 1 !important;
+	padding: 1rem 0.75rem !important;
+	padding-bottom: 24px !important;
+	padding-left: 20px !important;
+}
+
+#formID .billing_row .form-floating.woocommerce-validated .select2 .select2-selection .select2-selection__rendered,
+#formID .billing_row .form-floating:not(.woocommerce-invalid) .select2 .select2-selection .select2-selection__rendered {
+	padding: 1.187rem 0.75rem !important;
+	/* padding-left: 20px !important; */
+	font-size: 16px;
+}
+
+#formID .billing_row .select2 .select2-selection .select2-selection__placeholder{
+	color: #c6c6c6 !important;
+}
+
+#formID .billing_row .select2 .select2-selection .select2-selection__arrow b {
+	opacity: 0.3;
+}
+
 ul.list-inline.mb-0.star-rating-custom {
     padding-top: 3%;
 }

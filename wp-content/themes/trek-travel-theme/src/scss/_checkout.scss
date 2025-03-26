@@ -37,7 +37,7 @@
 	}
 
 	.form-floating input[type="date"]:not(:focus):not(:valid) {
-		color: transparent;
+		color: transparent !important;
 	}
 
 	input[type="date"] {
@@ -190,13 +190,13 @@ body.trek-checkout:not(.admin-bar) .mx-0.checkout-trek.pt-5 {
 	.form-floating > .form-select,
 	.form-floating > .form-control,
 	.form-floating > .form-control-plaintext {
-		padding: 12px 20px;
-		height: auto;
+		padding: 12px 20px !important;
+		height: auto !important;
 		font-size: 14px;
-		line-height: 1.2;
+		line-height: 1.2 !important;
 
 		option[value=""]{
-			color: #C6C6C6;
+			color: #C6C6C6 !important;
 		}
 	}
     select.multi-select{
