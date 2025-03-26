@@ -52,6 +52,8 @@
             margin-bottom: 20px;
 
             .nav-tabs {
+                border-color: black;
+                padding-bottom: 1px;
 
                 @include media-breakpoint-up(md){
                     gap: 10px;
@@ -73,10 +75,14 @@
                     border-bottom: none;
                 }
                 .nav-link {
+                    position: relative;
+                    border-bottom: 4px solid transparent;
+                    outline: 1px solid #F4F4F4;
+                    line-height: normal;
                     @media (max-width: 540px) {
                         flex: none;
                         color: $gray-500;
-                        
+                        border-bottom: 4px solid transparent;
                         border-radius: 4px;
                         margin-right: 0 !important;
                     }
@@ -84,7 +90,7 @@
                     color: $gray-500;
                     background: #F4F4F4;
                     border-radius: 4px 4px 0px 0px;
-                    padding: 8px 16px;
+                    padding: 8px 16px 4px;
                     
                     @include media-breakpoint-down(lg) {
                         font-size: 16px;
@@ -94,21 +100,67 @@
                         font-weight: $font-weight-bold;
                         color: $black;
                         background: transparent;
+                        outline:1px solid black;
+                        border-bottom: 4px solid #000;
                         @media (max-width: 540px) {
                             font-weight: $font-weight-bold;
                             border: 1px solid $gray-300;
+                            border-bottom: 4px solid $black;
                             color: $black;
+                            outline: none;
                             span {
-                                border-bottom: 4px solid $black;
+                                
                                 padding-bottom: 7px;
+                            }
+                        }
+                    }
+
+                    &.new-tab {
+                        &::before {
+                            content: 'New 6 Day';
+                            position: absolute;
+                            bottom: 100%;
+                            left: 0;
+                            font-weight: 500;
+                            color: rgba(0, 0, 0, 0.801);
+                            font-size: 12px;
+                            font-family: 'Poppins';
+                            text-transform: capitalize;
+                            background-color:#28AAE1C7;
+                            width: 100%;
+                            outline: 1px solid #28AAE1C7;
+                            height: 20px;
+                            line-height: 1.7;
+                            border-radius: 5px 5px 0 0;
+                            @media (max-width: 540px) {
+                                width: fit-content;
+                                border-radius: 3px;
+                                padding: 2px 5px;
+                                bottom: 0;
+                                top: 0;
+                                left: 8px;
+                                margin: auto;
+                                line-height: normal;
+                                
+                            }
+                        }
+                        &.active {
+                            
+                            @media (min-width: 541px) {
+                                border-radius: unset;
+                            }
+
+                            &::before {
+                                outline: 1px solid #28AAE1;
+                                background-color: #28AAE1;
                             }
                         }
                     }
                 }
             }
             .nav-tabs-months {
-                gap: 1px;
-                border-bottom: 1px solid #D9D9D9;
+                gap: 2px;
+                border-bottom: 1px solid black;
                 .nav-link {
                     background: transparent;
                     color: $gray-500;

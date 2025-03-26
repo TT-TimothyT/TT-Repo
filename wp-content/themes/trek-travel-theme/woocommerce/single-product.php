@@ -42,11 +42,12 @@ wc_get_template_part( 'partials/pdp', 'hero-carousel' );
 // overview bar //////////////////////////////////////////
 wc_get_template_part( 'partials/pdp', 'overview-bar' );
 
-// Overview navigation - mobile ///////////////////////////
-wc_get_template_part( 'partials/pdp', 'overview-navigation-mobile' );
-
 ?>
 </div>
+<?php
+// Overview navigation - mobile ///////////////////////////
+wc_get_template_part( 'partials/pdp', 'overview-navigation-mobile' );
+?>
 <div class="container-fluid p-0 pdp-container">
 	<div class="row">
 		<div class="col-md-3 overview-sidebar-desktop">

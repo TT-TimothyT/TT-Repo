@@ -3,7 +3,7 @@
     "title": "PDP",
     "fields": [
         {
-            "key": "field_679d012c59d87",
+            "key": "field_67ddbb668f7db",
             "label": "PDP Content",
             "name": "",
             "aria-label": "",
@@ -30,7 +30,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "10",
+                "width": "30",
                 "class": "",
                 "id": ""
             },
@@ -51,7 +51,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "10",
+                "width": "30",
                 "class": "",
                 "id": ""
             },
@@ -2108,7 +2108,7 @@
             },
             "open": 1,
             "multi_expand": 1,
-            "endpoint": 0
+            "endpoint": 1
         },
         {
             "key": "field_63334a21b82bd",
@@ -2177,7 +2177,7 @@
             ]
         },
         {
-            "key": "field_679d007c59d86",
+            "key": "field_67ddbb8b8f7dc",
             "label": "Top Message",
             "name": "",
             "aria-label": "",
@@ -2306,14 +2306,14 @@
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "grouped"
+                "value": "post"
             }
         ],
         [
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "simple"
+                "value": "post"
             }
         ]
     ],
@@ -2326,5 +2326,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1741293643
+    "modified": 1742585521
 }

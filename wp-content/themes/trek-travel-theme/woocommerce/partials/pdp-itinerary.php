@@ -30,19 +30,27 @@ if ( $pdp_itineraries ) :
                         $yi = 0;
                         foreach( $pdp_itineraries as $itinerary ):
                             $yi++;
-
-                            // To get ACF
+                        
                             setup_postdata($itinerary);
-
-                            // Cleaning up the year value to be used as the navKey for IDs of the tabs 
-                            $navKey = preg_replace('/\s*/', '', get_field( 'year', $itinerary->ID ));
-                            $navKey = strtolower($navKey);
-                            ?>
-
-                            <button class="nav-link <?php if ($yi == 1) echo 'active';?>" id="nav-<?php echo $navKey;?>-tab" data-bs-toggle="tab" data-bs-target="#nav-<?php echo $navKey;?>" type="button" role="tab" aria-controls="nav-<?php echo $navKey;?>" aria-selected="true"><?php echo esc_attr( get_field( 'year', $itinerary->ID ) ); ?></button>
+                        
+                            $year_raw = get_field('year', $itinerary->ID);
+                            $navKey = sanitize_title($year_raw); // safe for IDs
+                        ?>
+                        
+                            <button class="nav-link <?php if ($yi == 1) echo 'active';?>" 
+                                id="nav-<?php echo esc_attr($navKey); ?>-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#nav-<?php echo esc_attr($navKey); ?>" 
+                                type="button" role="tab" 
+                                aria-controls="nav-<?php echo esc_attr($navKey); ?>" 
+                                aria-selected="true">
+                                <?php echo esc_html($year_raw); ?>
+                            </button>
+                        
                         <?php 
                         endforeach;
-                        wp_reset_postdata(); ?>
+                        wp_reset_postdata(); 
+                         ?>
 
                         </div>
                     </nav>
@@ -50,17 +58,16 @@ if ( $pdp_itineraries ) :
                     $yj = 0;
                     foreach( $pdp_itineraries as $itinerary ):
                         $yj++;
-			//var_dump( $itinerary->ID );
-			//var_dump( get_the_ID() );
+
                         // To get ACF
                         setup_postdata($itinerary);
-                        //var_dump( $post->ID );
-			$arrivalArray = get_field('arrival', $itinerary->ID);
+                        
+                        $arrivalArray = get_field('arrival', $itinerary->ID);
                         $departureArray = get_field('departure', $itinerary->ID);
 
                         // Cleaning up the year value to be used as the navKey for IDs of the tabs 
-                        $navKey = preg_replace('/\s*/', '', get_field( 'year', $itinerary->ID ));
-                        $navKey = strtolower($navKey);
+                        $year_raw = get_field('year', $itinerary->ID);
+                        $navKey = sanitize_title($year_raw);
                         ?>
 
                         <div class="tab-content" id="nav-tabContent">

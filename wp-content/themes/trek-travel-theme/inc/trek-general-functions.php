@@ -6991,10 +6991,11 @@ function tt_get_itinerary_link_from_trip_itineraries($trip_sku, $parent_product_
     }
 
     // Filter itineraries by SKU suffix.
-    $matching_itineraries = array_values(array_filter($all_active_itineraries, function($itinerary) use ($sku_suffix) {
+    $matching_itineraries = array_values(array_filter($all_active_itineraries, function ($itinerary) use ($sku_suffix) {
         return strpos($itinerary->post_title, $sku_suffix) !== false;
     }));
 
+    
     // Determine the appropriate itinerary based on ride camp and period.
     if ($is_ride_camp && !empty($matching_itineraries)) {
         if ($is_nested_dates_trip) {
