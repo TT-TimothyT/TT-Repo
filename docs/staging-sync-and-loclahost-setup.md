@@ -81,7 +81,7 @@ Staging 3:
 * Deactivate the active production plugins.
 
 ```
-wp plugin deactivate dxsf-wordpress-proxy mailgun microsoft-clarity wps-hide-login wps-hide-login wp-2fa
+wp plugin deactivate dxsf-wordpress-proxy mailgun microsoft-clarity wps-hide-login wp-2fa
 ```
 ⚠️ Important Note: The Email plugins might send emails to real users, so it’s **very important they will be deactivated/removed if needed**.
 
