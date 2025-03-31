@@ -43,7 +43,7 @@ wp db import ***.sql
 ```
 3) Once the database has been imported, make sure you’ll update the site URL across all tables
 ```
-wp search-replace "trektravel.com" "staging.trektravel.com" --allow-root --all-tables --precise;
+wp search-replace "https://trektravel.com" "https://staging.trektravel.com" --allow-root --all-tables --precise;
 ```
 
 4) Make sure the staging is set as noindex and nofollow:
@@ -78,16 +78,16 @@ Staging 3:
 
 ## Prepare a clean staging setup
 * Checkout to the master branch and pull the latest changes
-* Deactivate all active production plugins
+* Deactivate the active production plugins.
 
 ```
-wp plugin deactivate --all
+wp plugin deactivate dxsf-wordpress-proxy mailgun microsoft-clarity wps-hide-login wps-hide-login wp-2fa
 ```
 ⚠️ Important Note: The Email plugins might send emails to real users, so it’s **very important they will be deactivated/removed if needed**.
 
-* Activate the staging plugins. The `woocommerce` plugin should be the first activated plugin.
+* Activate the staging plugins.
 ```
-wp plugin activate woocommerce woocommerce-gateway-cybersource advanced-custom-fields-pro be-media-from-production content-control woocommerce-currency-converter-widget dx-acf-synchronize dx-localhost elementor elementor-pro gravityforms gf-netsuite-crm-perks-pro users-customers-import-export-for-wp-woocommerce jsm-show-post-meta megamenu netsuite-integration-for-woocommerce olark-live-chat pages-with-category-and-tag password-protected product-import-export-for-woo woocommerce-products-compare regenerate-thumbnails wp-smushit taxonomy-switcher trek-travel-netsuite-integration user-role-editor user-switching waymark wordpress-importer wp-all-import wp-crontrol wp-search-with-algolia duplicate-post wordpress-seo wordpress-seo-premium yotpo-social-reviews-for-woocommerce
+wp plugin activate be-media-from-production dx-localhost password-protected query-monitor
 ```
 
 * Delete all users, but keep TT and DX administrators. For `--reassign` use the ID from any of those account
@@ -100,9 +100,9 @@ Repeat the step above for other user roles as well like subscriber, editor, auth
  * Add this file as a MU Plugin [WC Clear Sensitive Data](https://github.com/DevriX/devrix-cli/blob/main/wc-clear-sensitive-data.php)
  * Then use the following WP-CLI command
  ```
- wp clear wc_data --url=https://satging.trektravel.com
+ wp clear wc_data --url=https://staging.trektravel.com
  ```
-* Delete All the data from the custom DB tables. You can use phpMyAdmin.
+* Delete all the data from the custom DB tables. You can use phpMyAdmin.
   * Delete all Error Logs from `tt_common_error_logs`
   * Delete all Bookings from `guest_bookings`
   * Delete all Trips from `netsuite_trips`
@@ -110,6 +110,23 @@ Repeat the step above for other user roles as well like subscriber, editor, auth
   * Delete all Trip Bikes from `netsuite_trip_bikes`
   * Delete all Trip Hotels from `netsuite_trip_hotels`
   * Delete all Trip AddOns from `netsuite_trip_addons`
+
+* Delete All Simple Products While Keeping Grouped and Line Item Products
+
+To list all grouped products before deletion, you can use the following command:
+```
+wp ttnsw product list --product_type=grouped
+```
+To list all Line Items products before deletion, you can use the following command:
+```
+wp ttnsw product list --line-item
+```
+Run the following command to delete all simple products while preserving grouped and Line Item products:
+
+```
+wp post delete $(wp post list --post_status='publish' --post_type='product' --format=ids --post__not_in=78972,73798,73795,116066,115747,115746,114464,114446,114443,108664,107458,107389,103337,104574,103360,103353,103350,102872,102610,102354,101819,98996,97732,90498,90492,90490,90038,86572,86533,86372,86328,86296,86077,86074,86063,86062,86060,84633,84623,84638,84616,84305,83863,83793,83735,83665,81034,80392,80376,80374,79911,74455,71297,70795,69553,69314,69018,68871,68495,68524,68505,68271,68244,67946,67916,67740,67592,67559,67477,67464,67388,67272,67250,67249,67022,66283,1556,1557,1558,1491,1486,1488,1489,1490,1482,1485,1477,1478,1480,1481,1476,1468,1471,1472,1465,1466,1467,1136,1140,1132,1134,1135,1127,1128,1129,1130,1131,1122,1123,1124,1125,1126,1117,1121) --force
+```
+This command removes all published products except for grouped and Line Item products, identified by their IDs in the `--post__not_in` parameter.
 
 ## Dashbord Settings preparation
 Once we have a clean database we can now make the specific staging settings
@@ -131,21 +148,29 @@ and set the proper Algolia API key details
 You can get these from [Trek Travel Algolia Details](https://app.asana.com/0/1205472772784381/1206349252116376)
 
 ### NetSuite Sync
-* Go to wp-admin/admin.php?page=trek-travel-ns-wc
+* Go to `wp-admin/admin.php?page=trek-travel-ns-wc`
 * Select items from `Manual Sync for WC<>NS`
 * First sync the **Misc: Custom Items/Lists**
-* After that run the Steps syncs from 1 to 6
+* After that run the Steps syncs from 1 to 3
 * Go for a coffee and monitor the sync process, as this will take some time
 
 ### Password Protected
 Password protect your web site. Users will be asked to enter a password to view the site.
+* Go to `wp-admin/options-general.php?page=password-protected`
+* Toggle the **Password Protected Status** button
+* For **Protected Permissions** choose:
+  -  [x]  Allow Administrators
+  -  [x]  Allow Logged In Users
+* New Password: `dxttstaging!`
+* Toggle the **Allow Remember me** button
+* Click the **Save Changes**
 
 ## Server Cron Enabling
 Once the whole sync process is ready, **Enable** sync cron
 
 ## Agolia sync with the new content
 * Once the sync is ready, go to Algolia and hit re-sync
-* Go to wp-admin/admin.php?page=algolia and hit Re-Sync for All posts
+* Go to `wp-admin/admin.php?page=algolia` and hit Re-Sync for All posts
 * Do **NOT** hit push settings
 
 ## Staging 2, 3, etc
@@ -153,7 +178,7 @@ Once the whole sync process is ready, **Enable** sync cron
 * Go to the staging directory, export staging.trektravel.com
 * Reset the stagingX database
 * Import the staging database
-* run search-replace with `wp search-replace "staging.trektravel.com" "staging2.trektravel.com"`
+* run search-replace with `wp search-replace "https://staging.trektravel.com" "https://staging2.trektravel.com"`
 * Connect the proper Algolia settings from [Trek Travel Algolia Details](https://app.asana.com/0/1205472772784381/1206349252116376)
 * [Re-Sync Algolia](#agolia-sync-with-the-new-content)
 * repeat the same for Staging 3, 4, etc
@@ -163,7 +188,7 @@ Once the whole sync process is ready, **Enable** sync cron
 * You can prepare a new fresh localhost setup from the newly created staging database
 * Download the staging DB
 * Import it locally
-* run search-replace with `wp search-replace "staging.trektravel.com" "local.trektravel.com"`
+* run search-replace with `wp search-replace "https://staging.trektravel.com" "https://local.trektravel.com"`
 * Delete WordPress users
 * Make sure we have one admin user
 * Run the NS Sync once again, just in case
