@@ -13874,6 +13874,11 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
 .modal.quick-look-modal .modal-body .dates-pricing-container {
   padding: 0 32px !important;
 }
+@media (min-width: 576px) {
+  .modal.quick-look-modal .modal-body .dates-pricing-container {
+    padding-top: 10px !important;
+  }
+}
 .modal.quick-look-modal .modal-price .pp-text-mobile {
   display: none;
 }
@@ -16955,7 +16960,7 @@ body.search .blockUI.blockOverlay::before {
   }
 }
 .dates-pricing-container .dates-pricing nav #nav-tab-year .nav-link.new-tab::before {
-  content: "New 6 Day";
+  content: "New 6-Day";
   position: absolute;
   bottom: 100%;
   left: 0;
@@ -16974,11 +16979,11 @@ body.search .blockUI.blockOverlay::before {
 @media (max-width: 540px) {
   .dates-pricing-container .dates-pricing nav #nav-tab-year .nav-link.new-tab::before {
     width: fit-content;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 2px 5px;
     bottom: 0;
     top: 0;
-    left: 8px;
+    left: 18px;
     margin: auto;
     line-height: normal;
   }
@@ -17012,7 +17017,7 @@ body.search .blockUI.blockOverlay::before {
 .dates-pricing-container .dates-pricing nav .nav-tabs-months .nav-link.active {
   background-color: white;
   font-weight: 700;
-  border: 2px solid;
+  border: 1px solid;
   border-bottom: 4px solid #000;
   color: #000;
   border-color: black;

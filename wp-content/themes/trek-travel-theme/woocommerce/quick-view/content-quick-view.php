@@ -139,8 +139,14 @@ if ( $available_child_products ) {
 	$iter = 1;
 	foreach ( $available_child_products as $year=>$get_child_product ) {
 
-		// nav year tabs & button HTML creation.
-		$nav_year_tab .= '<button class="nav-link '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'-tab" data-bs-toggle="tab" data-bs-target="#nav-year'.$year.'" type="button" role="tab" aria-controls="nav-year'.$year.'" aria-selected="true"><span>'.$year.' Tours</span></button>';
+		$nav_year_tab .= 
+            '<button class="nav-link ' 
+                . ($iter == 1 ? 'active ' : '') 
+                . ($trip_style == 'Ride Camp' && $year == '2026' ? 'new-tab ' : '') 
+                . '" id="nav-year' . $year . '-tab" data-bs-toggle="tab" data-bs-target="#nav-year' . $year . '" 
+                type="button" role="tab" aria-controls="nav-year' . $year . '" aria-selected="true">
+                <span>' . $year . ' Tours</span>
+            </button>';
 		// nav year tab content HTML creation.
 		$nav_year_tab_content .= '<div class="tab-pane fade show '.($iter == 1 ? 'active' : '').'" id="nav-year'.$year.'" role="tabpanel" aria-labelledby="nav-year'.$year.'-tab" tabindex="0">';
 

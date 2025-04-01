@@ -1403,6 +1403,9 @@
 
     .dates-pricing-container {
       padding: 0 32px !important;
+      @include media-breakpoint-up(sm) {
+        padding-top: 10px !important;
+      }
     }
   }
 

@@ -117,7 +117,7 @@
 
                     &.new-tab {
                         &::before {
-                            content: 'New 6 Day';
+                            content: 'New 6-Day';
                             position: absolute;
                             bottom: 100%;
                             left: 0;
@@ -134,11 +134,11 @@
                             border-radius: 5px 5px 0 0;
                             @media (max-width: 540px) {
                                 width: fit-content;
-                                border-radius: 3px;
+                                border-radius: 2px;
                                 padding: 2px 5px;
                                 bottom: 0;
                                 top: 0;
-                                left: 8px;
+                                left: 18px;
                                 margin: auto;
                                 line-height: normal;
                                 
@@ -176,7 +176,7 @@
                     &.active {
                         background-color: white;
                         font-weight: $font-weight-bold;
-                        border: 2px solid;
+                        border: 1px solid;
                         border-bottom: 4px solid $black;
                         color: $black;
                         border-color: black;
