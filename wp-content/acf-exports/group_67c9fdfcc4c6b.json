@@ -59,7 +59,7 @@
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "simple"
+                "value": "product"
             }
         ]
     ],
@@ -72,5 +72,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1741291144
+    "modified": 1741377532
 }
