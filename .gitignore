@@ -95,6 +95,8 @@ wp-content/webtoffee_import/
 cache/
 !wp-content/plugins/**/*/cache
 
+/wp-content/wp-rocket-config/
+
 
 # IDE Files
 .buildpath
