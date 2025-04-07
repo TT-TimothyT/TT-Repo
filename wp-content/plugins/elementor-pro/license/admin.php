@@ -236,7 +236,7 @@ class Admin {
 					<h3>
 						<?php $this->render_part_license_status_header( $license_data ); ?>
 						<small>
-							<?php // Fake link to make the user think something is going on. In fact, every refresh of this page will re-check the license status. ?>
+							<?php // Force-refresh this page to re-check the license status. ?>
 							<a class="button" href="<?php echo esc_url( static::get_url() . '&check-license=1' ); ?>">
 								<i class="eicon-sync" aria-hidden="true"></i>
 								<?php echo esc_html__( 'Check license status', 'elementor-pro' ); ?>
