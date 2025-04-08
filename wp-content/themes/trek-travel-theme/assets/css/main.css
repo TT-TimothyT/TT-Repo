@@ -20869,6 +20869,10 @@ input#typeOfBikeGuest3::placeholder {
   background: var(--summary-card-background);
   border-radius: 4px;
 }
+.order-details__number .m-msg {
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  line-height: normal;
+}
 .order-details__number > div {
   background-color: white;
 }
@@ -20881,9 +20885,7 @@ input#typeOfBikeGuest3::placeholder {
   margin-bottom: 24px;
 }
 .order-details__number > div .order-details__heading {
-  font-size: 24px;
   font-weight: 700;
-  line-height: 28px;
   margin-bottom: 6px;
 }
 .order-details__number > div .trip-duration {
@@ -20929,14 +20931,6 @@ input#typeOfBikeGuest3::placeholder {
 .order-details__heading {
   font-family: "Poppins";
   font-weight: 600;
-  font-size: 24px;
-  line-height: 36px;
-}
-.order-details__text {
-  line-height: 1.2495rem;
-}
-.order-details__text:not(.fs-xl) {
-  font-size: 0.875rem;
 }
 .order-details__textbold {
   line-height: 1.5rem;
@@ -20997,44 +20991,45 @@ input#typeOfBikeGuest3::placeholder {
   background-size: unset !important;
 }
 .order-details__banner {
-  height: 375px;
-  padding: 32px 20px;
+  height: 40vw;
+  max-height: 600px;
   background-image: linear-gradient(0deg, #000000 -7.63%, rgba(0, 0, 0, 0) 55.25%), url("../../assets/images/ThankyouMobile.jpg");
   color: #fff;
   position: relative;
 }
+.order-details__banner .od-box {
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.6);
+  gap: 10px;
+}
+@media (max-width: 767.98px) {
+  .order-details__banner {
+    height: fit-content;
+    padding: 30px 15px;
+    min-height: 75vw;
+  }
+}
 .order-details__banner-heading {
   font-family: "Poppins";
   font-weight: 600;
-  font-size: 36px;
-  line-height: 48px;
+  font-size: 4.5rem;
+  line-height: 1.15;
   z-index: 999;
 }
-@media (max-width: 992px) {
+@media (max-width: 1439.98px) {
   .order-details__banner-heading {
-    font-size: 40px;
-    margin-bottom: 12px !important;
+    font-size: 3.5rem;
+    line-height: 1.1;
+  }
+}
+@media (max-width: 991.98px) {
+  .order-details__banner-heading {
+    font-size: 2.5rem;
+    line-height: 1.1;
   }
 }
 .order-details__banner-text {
   z-index: 999;
-  line-height: 24px;
-}
-@media (max-width: 992px) {
-  .order-details__banner-text {
-    font-size: 16px;
-    line-height: 20px;
-    max-width: 80%;
-    margin-inline: auto;
-  }
-}
-@media (max-width: 520px) {
-  .order-details__banner-text {
-    max-width: 100%;
-  }
-}
-.order-details__banner-text:not(.fs-xl) {
-  font-size: 16px;
+  line-height: 1.2;
 }
 .order-details__banner::after {
   content: "";
@@ -21064,18 +21059,6 @@ input#typeOfBikeGuest3::placeholder {
   background-color: black !important;
 }
 @media (min-width: 992px) {
-  .order-details {
-    padding: 0px 297px;
-    margin-top: 56px;
-    max-width: 100%;
-  }
-  .order-details__heading {
-    font-size: 24px;
-    line-height: 28px;
-  }
-  .order-details__text {
-    line-height: 1.5rem;
-  }
   .order-details__text:not(.fs-xl) {
     font-size: 1rem;
   }
@@ -21106,43 +21089,23 @@ input#typeOfBikeGuest3::placeholder {
     margin-bottom: 112px;
   }
   .order-details__banner {
-    height: 506px;
-    padding: 56px 80px;
-    padding-top: 100px;
     background-image: linear-gradient(0deg, #000000 -7.63%, rgba(0, 0, 0, 0) 55.25%), url("../../assets/images/Thankyou.jpg");
-  }
-  .order-details__banner-heading {
-    font-size: 68px;
-    line-height: 82px;
-    font-weight: 700;
-  }
-  .order-details__banner-text {
-    font-size: 20px;
-    line-height: 24px;
-    font-weight: 500;
-    max-width: 994px;
-    margin: 12px auto 1rem;
+    background-position: center 30%;
   }
 }
 .order-details .order-details-container {
-  width: 580px;
   margin: 0 auto;
 }
-@media (max-width: 992px) {
-  .order-details .order-details-container {
-    width: 94%;
-  }
-}
-
 body:not(.trek-my-account) #order-details-page {
-  transform: translateY(-150px);
+  transform: translateY(0px);
   z-index: 999;
   position: relative;
-  margin-top: 0;
+  margin-top: 30px;
 }
-@media (max-width: 520px) {
+@media (min-width: 1200px) {
   body:not(.trek-my-account) #order-details-page {
-    transform: translateY(-80px);
+    transform: translateY(-100px);
+    margin-top: 0;
   }
 }
 

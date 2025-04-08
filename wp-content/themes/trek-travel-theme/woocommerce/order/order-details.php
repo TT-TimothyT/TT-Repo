@@ -191,24 +191,33 @@ if ( $show_downloads ) {
 }
 ?>
 <div class="container-fluid order-details__banner d-flex flex-column" style="background-repeat: no-repeat;background-size: cover;background-image:linear-gradient(0deg, #000000 -7.63%, rgba(0, 0, 0, 0) 55.25%),url('<?php echo esc_url( $product_image_url ) ?>');">
-	<h1 class="mb-0 mb-lg-1 order-details__banner-heading text-center"><?php esc_html_e( 'Thanks! You’re booked.', 'trek-travel-theme' ); ?></h1>
-	<p class="order-details__banner-text text-center fs-xl"><?php esc_html_e( 'Your booking was successfully completed.', 'trek-travel-theme' ); ?></p>
+	<div class="row my-auto">
+		<div class="col-12 col-lg-10 mx-auto text-center">
+			<div class="d-flex flex-column justify-content-center align-items-center od-box">
+				<h1 class="mb-0 mb-lg-1 order-details__banner-heading text-center"><?php esc_html_e( 'Thanks for choosing Trek Travel for your vacation of a lifetime.', 'trek-travel-theme' ); ?></h1>
+				<h3 class="order-details__banner-text text-center"><?php esc_html_e( 'We’re thrilled to adventure with you!', 'trek-travel-theme' ); ?></h3>
+			</div>
+		</div>
+	
+	
+	</div>
 </div>
 <div class="container order-details" id="order-details-page">
 	<div class="row">
-		<div class="col-12 col-xl-6 mx-xl-auto order-details-container">
+		<div class="col-12 col-lg-8 col-xl-6 mx-auto order-details-container">
 			<div class="order-details__number border text-center">
-				<div>
+				<div class="d-flex flex-column ">
 					<p class="trip-product-line"><?php echo esc_html( $trip_product_line_name ); ?></p>
-					<h4 class="order-details__heading px-5"><?php echo esc_html( get_the_title( $parent_id ) ); ?></h4>
-					<p class="trip-duration mb-0 px-5"><?php echo $date_range; ?></p>
+					<h4 class="order-details__heading px-3"><?php echo esc_html( get_the_title( $parent_id ) ); ?></h4>
+					<p class="trip-duration mb-0 px-3"><?php echo $date_range; ?></p>
 					<hr>
-					<p class="fs-lg lh-sm px-5"><?php esc_html_e( 'Your confirmation number is', 'trek-travel-theme' ); ?> <span class="fw-bold"><?php echo $order_id; ?></span></p>
-					<hr class="light-line">
-					<p class="fs-lg lh-sm px-5"><?php esc_html_e( 'We will send a confirmation email to', 'trek-travel-theme' ); ?> <span class="fw-medium" id="wc-order-emails"><?php echo $guest_emails && !is_array($guest_emails) ? $guest_emails : ''; ?></span></p>
-					<button class="btn btn-lg btn-primary rounded-1 order-details__print mt-20" onclick="printThis('order-details-page');"><?php esc_html_e( 'Print summary', 'trek-travel-theme' ); ?></button>
+					<p class="m-msg h5 px-3 pb-5"><?php esc_html_e( 'Keep an eye on your inbox— ', 'trek-travel-theme' ); ?> <span class="fw-medium" id="wc-order-emails"><?php echo $guest_emails && !is_array($guest_emails) ? $guest_emails : ''; ?></span><br><?php esc_html_e( 'we’ll confirm your trip within 1 business day.', 'trek-travel-theme' ); ?> </p>
 				</div>
 			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-12 col-lg-8 col-xl-6 mx-auto">
 			<div class="order-details__quite rounded-1">
 			<svg class="info-img" width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M16.8125 12.5312C17.3125 13.4062 16.6875 14.5 15.6562 14.5H2.3125C1.28125 14.5 0.65625 13.4062 1.15625 12.5312L7.8125 1.15625C8.34375 0.28125 9.625 0.28125 10.125 1.15625L16.8125 12.5312ZM8.25 4.75V8.75C8.25 9.1875 8.5625 9.5 9 9.5C9.40625 9.5 9.75 9.1875 9.75 8.75V4.75C9.75 4.34375 9.40625 4 9 4C8.5625 4 8.25 4.34375 8.25 4.75ZM9 12.5C9.53125 12.5 9.96875 12.0625 9.96875 11.5312C9.96875 11 9.53125 10.5625 9 10.5625C8.4375 10.5625 8 11 8 11.5312C8 12.0625 8.4375 12.5 9 12.5Z" fill="#28AAE1"/>
@@ -232,7 +241,7 @@ if ( $show_downloads ) {
 						);
 						?>
 				</p>
-				<p class="fs-sm lh-sm mb-0">
+				<p class="lh-sm mb-0">
 					<?php
 						printf(
 							wp_kses(
@@ -299,6 +308,7 @@ if ( $show_downloads ) {
 					}
 				?>
 			</div>
+		
 			<div class="order-details__summary">
 				<h4 class="order-details__heading text-center"><?php esc_html_e( 'Order Summary', 'trek-travel-theme' ); ?></h4>
 				<hr>
@@ -636,11 +646,16 @@ if ( $show_downloads ) {
 					?>
 				</div>
 			</div>
+			</div>
+		</div>
 		</div>
 	</div>
 </div>
 
 <script>
+
+jQuery('body').removeClass('elementor-kit-14');
+
 	jQuery(document).ready(function () {
 
 		dataLayer.push({ ecommerce: null });

@@ -3638,7 +3638,7 @@ function tt_get_trip_pid_sku_from_cart($order_id = null)
     $parent_product_id = tt_get_parent_trip_id_by_child_sku($sku);
     if ($parent_product_id) {
         if( has_post_thumbnail($parent_product_id) ){
-            $product_image_url = get_the_post_thumbnail_url($parent_product_id);
+            $product_image_url = get_the_post_thumbnail_url($parent_product_id,'full');
         }
         $parent_trip_link = get_the_permalink($parent_product_id) ? get_the_permalink($parent_product_id) : 'javascript:';
     }
