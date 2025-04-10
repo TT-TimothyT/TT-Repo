@@ -251,11 +251,26 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
                     alert('It looks like you haven\'t indexed the searchable posts index. Please head to the Indexing page of the Algolia Search plugin and index it.');
                 }
 
+                let storedUiState = {};
+
                 /* Instantiate instantsearch.js */
                 var search = instantsearch({
                     indexName: algolia.indices.searchable_posts.name,
                     searchClient: algoliasearch( algolia.application_id, algolia.search_api_key ),
-                    routing: true
+                    routing: true,
+                    onStateChange({uiState, setUiState}) {
+                        storedUiState = uiState;
+
+                        // Clear any existing timeout
+                        if (window.stateChangeTimeout) {
+                            clearTimeout(window.stateChangeTimeout);
+                        }
+                        
+                        // Set new timeout to update state after 500ms
+                        window.stateChangeTimeout = setTimeout(() => {
+                            setUiState(storedUiState);
+                        }, 500);
+                    }
                 });
 
                 const analyticsMiddleware = () => {
@@ -627,6 +642,36 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
 
                     // Initial call on page load, and filtering.
                     equalizeContentHeights();
+
+                    // Remove any existing click handlers before adding new ones to prevent duplicates
+                    jQuery('.ais-RefinementList-item .ais-anchor').off('click').on('click', function(ev) {
+                        if (jQuery(this).closest('.ais-RefinementList-item').hasClass('ais-RefinementList-item--selected')) {
+                            jQuery(this).closest('.ais-RefinementList-item').removeClass('ais-RefinementList-item--selected');
+                        } else {
+                            jQuery(this).closest('.ais-RefinementList-item').addClass('ais-RefinementList-item--selected');
+                        }
+
+                        if (jQuery(this).closest('#destinations')) {
+                            let allDestWrappers = jQuery( '#destinations div[class^="dest"]' );
+                            allDestWrappers.each(function(i, el) {
+                                let allItemsLength         = jQuery(el).find('.ais-RefinementList-item').length;
+                                let allSelectedItemsLength = jQuery(el).find('.ais-RefinementList-item--selected').length;
+
+                                if( allItemsLength === allSelectedItemsLength ) {
+                                    // Make the toggle active.
+                                    jQuery(el).find('input[name^="select-all"]').prop( "checked", true ).prop( "indeterminate", false );
+                                    jQuery(el).removeClass( 'select-all-active' );
+                                } else if( allSelectedItemsLength === 0 ) {
+                                    // Make the toggle inactive.
+                                    jQuery(el).find('input[name^="select-all"]').prop( "checked", false ).prop( "indeterminate", false );
+                                    jQuery(el).removeClass( 'select-all-inactive' );
+                                } else {
+                                    // Indeterminate.
+                                    jQuery(el).find('input[name^="select-all"]').prop( "checked", false ).prop( "indeterminate", true );
+                                }
+                            })
+                        }
+                    });
                 });
 
                 function equalizeHeights(selector) {
@@ -680,6 +725,11 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
                     jQuery("#ais-date-selector .fake-selector").text(moment(convertedStartEpoch).format('MMM D') + " - " + moment(convertedEndEpoch).format('MMM D'));  
                 }
 
+                // !!! Keep for now. Manual set UI state. First will test with timeout.
+                // document.getElementById('search-button').addEventListener('click', () => {
+                //     search.setUiState(storedUiState);
+                // });
+
             }
         });
         function getUrlVars() {
@@ -716,7 +766,7 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
         // Select all functionality for destionations filter.
         jQuery(document).on( 'change', '#destinations [name^="select-all"]', function(ev) {
             if( jQuery(this).is(":checked") ) {
-                jQuery(this).closest( 'div[class^="dest"]' ).addClass( 'select-all-active' ).removeClass('select-all-inactive');
+                // jQuery(this).closest( 'div[class^="dest"]' ).addClass( 'select-all-active' ).removeClass('select-all-inactive');
                 // Should select all destinations from this continent.
                 jQuery(this).closest( 'div[class^="dest"]' ).find( 'div[id^="dest"] .ais-anchor' ).each(function(i, el) {
                     // If any of the regions is not selected, select it.
@@ -725,7 +775,7 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
                     }
                 });
             } else {
-                jQuery(this).closest( 'div[class^="dest"]' ).removeClass( 'select-all-active' ).addClass('select-all-inactive');
+                // jQuery(this).closest( 'div[class^="dest"]' ).removeClass( 'select-all-active' ).addClass('select-all-inactive');
                 // Should unselect all destinations from this continent.
                 jQuery(this).closest( 'div[class^="dest"]' ).find( 'div[id^="dest"] .ais-anchor' ).each(function(i, el) {
                     // If any of the regions is selected, deselect it.
