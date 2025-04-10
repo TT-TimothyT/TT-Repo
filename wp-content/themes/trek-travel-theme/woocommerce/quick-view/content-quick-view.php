@@ -319,6 +319,9 @@ if ( $product_subtitle ) {
 
 // Trip Bikes.
 $pdp_bikes = get_field( 'bikes', $p_id );
+
+// Trip Duration Names.
+$trip_duration_names = tt_get_trip_duration_names( $p_id );
 ?>
 <div class="checkout-summary__card-header px-3<?php echo esc_attr( TT_ACTIVITY_DASHBOARD_NAME_HW === $activity ? ' ' . 'style-hiking' : '' ); ?>">
 	<div class="checkout-summary__card">
@@ -354,10 +357,22 @@ $pdp_bikes = get_field( 'bikes', $p_id );
 				</ul>
 			<?php endif; ?>
 
-			<?php if( isset( $trip_data[ 'bsTripDuration' ] ) && ! empty( $trip_data[ 'bsTripDuration' ] ) ) : ?>
+			<?php if ( ! empty( $trip_duration_names ) ): ?>
 				<ul class="list-inline mb-1 me-2 pe-2 border-end border-2">
-					<li class="list-inline-item"><i class="bi bi-calendar"></i></li>
-					<li class="list-inline-item fs-sm"><?php echo esc_html( $trip_data[ 'bsTripDuration' ] ); ?></li>
+					<li class="list-inline-item align-top"><i class="bi bi-calendar"></i></li>
+					<li class="list-inline-item fs-sm tour-duration-text">
+						<?php
+						$current_year = date('Y');
+						foreach ( $trip_duration_names as $key => $trip_duration_name ) {
+							if ($key === 0) {
+								echo '<span>' . esc_html( $trip_duration_name ) . '</span>';
+							} else {
+								$year_to_show = $current_year + $key;
+								echo '<br><span><strong>' . esc_html( $year_to_show ) . ':</strong> ' . esc_html( $trip_duration_name ) . '</span>';
+							}
+						}
+						?>
+					</li>
 					<li class="list-inline-item"></li>
 				</ul>
 			<?php endif; ?>

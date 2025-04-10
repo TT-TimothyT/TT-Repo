@@ -52,6 +52,38 @@
                     padding-right: 0.5rem;
                 }
             }
+
+            .tour-duration-text span {
+                display: inline-block;
+                width: 100%;
+                position: relative;
+
+                strong {
+                    font-weight: 900;
+                }
+
+                &:not(:last-of-type) {
+                    padding-bottom: 0.2rem;
+                    margin-bottom: 0.2rem;
+                    position: relative;
+                    
+                    // Using box-shadow instead of border-bottom for better cross-device rendering
+                    box-shadow: 0 1px 0 0 #000;
+                    
+                    // Alternative: can use pseudo-element if box-shadow doesn't work well
+                    /*
+                    &:after {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        bottom: 0;
+                        height: 1px;
+                        width: 100%;
+                        background-color: #000;
+                    }
+                    */
+                }
+            }
         }
         .bikes{
             @media (min-width: 768px) {

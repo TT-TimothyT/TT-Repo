@@ -1206,6 +1206,15 @@
       padding-bottom: 32px !important;
     }
 
+    .tour-duration-text span {
+      display: inline-block;
+      width: 100%;
+
+      &:not(:last-of-type) {
+        border-bottom: 1px solid #000;
+      }
+    }
+
     .trip-product-line {
        background-color: unset !important;
        display: block !important;

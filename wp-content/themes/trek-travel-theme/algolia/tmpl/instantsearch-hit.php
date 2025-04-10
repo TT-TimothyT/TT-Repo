@@ -9,6 +9,38 @@
 	<#
 		const TT_ACTIVITY_DASHBOARD_NAME_BIKING = '<?php echo esc_attr( TT_ACTIVITY_DASHBOARD_NAME_BIKING ); ?>';
 		const TT_ACTIVITY_DASHBOARD_NAME_HW     = '<?php echo esc_attr( TT_ACTIVITY_DASHBOARD_NAME_HW ); ?>';
+
+		/**
+		 * Format duration display based on array values.
+		 * 
+		 * @param {Array|string} durationData - Duration data, either array or string
+		 * @return {string} - Formatted duration text
+		 */
+		function formatDurationDisplay(durationData) {
+			if (!durationData) return '';
+
+			// If it's not an array, return as is
+			if (!Array.isArray(durationData)) {
+				return '<span class="duration-item">' + durationData + '</span>';
+			}
+
+			let formattedDuration = '<div class="duration-wrapper">';
+			const currentYear = new Date().getFullYear();
+
+			durationData.forEach((item, index) => {
+				if (index === 0) {
+					// First item displays as is
+					formattedDuration += '<span class="duration-item">' + item + '</span>';
+				} else {
+					// Subsequent items display with year prefix
+					const yearPrefix = currentYear + index;
+					formattedDuration += '<span class="duration-item"><strong>' + yearPrefix + ':' + '</strong> ' + item + '</span>';
+				}
+			});
+
+			formattedDuration += '</div>';
+			return formattedDuration;
+		}
 	#>
 
 	<article itemtype="http://schema.org/Article" id="algoliaSearchResults">
@@ -115,16 +147,16 @@
 
 								<# if ( data['taxonomies.product_cat'] ) { #>
 								<ul class="list-inline mb-1">
-									<li class="list-inline-item"><i class="bi bi-calendar"></i></li>
-									<li class="list-inline-item fs-sm">{{ data['Duration'].replace(/&amp;/g, '/') }}</li>
+									<li class="list-inline-item align-top"><i class="bi bi-calendar"></i></li>
+									<li class="list-inline-item fs-sm">{{{ formatDurationDisplay(data['Duration']) }}}</li>
 									<li class="list-inline-item"></li>
 								</ul>
 								<# } #>
 
 								<# if ( data['Duration'] ) { #>
-								<ul class="list-inline mb-1">
-									<li class="list-inline-item"><i class="bi bi-calendar"></i></li>
-									<li class="list-inline-item fs-sm">{{ data['Duration'].replace(/&amp;/g, '/') }}</li>
+								<ul class="list-inline mb-1 d-flex flex-wrap">
+									<li class="list-inline-item align-top"><i class="bi bi-calendar"></i></li>
+									<li class="list-inline-item fs-sm">{{{ formatDurationDisplay(data['Duration']) }}}</li>
 									<li class="list-inline-item"></li>
 								</ul>
 								<# } #>
@@ -179,7 +211,7 @@
 										data-bs-trip-style="{{data['Trip Style']}}<# if( data.taxonomies['trip-class'] && data.taxonomies['trip-class'].length > 0 ) { #>, {{data.taxonomies['trip-class'].join(", ")}}<# } #>"
 									<# } #>
 									<# if ( data['Duration'] ) { #>
-										data-bs-trip-duration="{{ data['Duration'].replace(/&amp;/g, '/') }}"
+										data-bs-trip-duration="{{ data['Duration'] }}"
 									<# } #>
 									<# if ( data['Activity Level'] ) { #>
 										data-bs-activity-level="{{data['Activity Level'].replace(/&amp;/g, ' & ')}}"
@@ -254,16 +286,16 @@
 
 							<# if ( data['taxonomies.product_cat'] ) { #>
 								<ul class="list-inline mb-0">
-									<li class="list-inline-item"><i class="bi bi-calendar"></i></li>
-									<li class="list-inline-item fs-sm">{{ data['Duration'].replace(/&amp;/g, '/') }}</li>
+									<li class="list-inline-item align-top"><i class="bi bi-calendar"></i></li>
+									<li class="list-inline-item fs-sm">{{{ formatDurationDisplay(data['Duration']) }}}</li>
 									<li class="list-inline-item"></li>
 								</ul>
 							<# } #>
 
 							<# if ( data['Duration'] ) { #>
 								<ul class="list-inline mb-0">
-									<li class="list-inline-item"><i class="bi bi-calendar"></i></li>
-									<li class="list-inline-item fs-sm">{{ data['Duration'].replace(/&amp;/g, '/') }}</li>
+									<li class="list-inline-item align-top"><i class="bi bi-calendar"></i></li>
+									<li class="list-inline-item fs-sm">{{{ formatDurationDisplay(data['Duration']) }}}</li>
 									<li class="list-inline-item"></li>
 								</ul>
 							<# } #>
@@ -311,7 +343,7 @@
 							data-bs-trip-style="{{data['Trip Style']}}<# if( data.taxonomies['trip-class'] && data.taxonomies['trip-class'].length > 0 ) { #>, {{data.taxonomies['trip-class'].join(", ")}}<# } #>"
 						<# } #>
 						<# if ( data['Duration'] ) { #>
-							data-bs-trip-duration="{{ data['Duration'].replace(/&amp;/g, '/') }}"
+							data-bs-trip-duration="{{ data['Duration'] }}"
 						<# } #>
 						<# if ( data['Activity Level'] ) { #>
 							data-bs-activity-level="{{data['Activity Level'].replace(/&amp;/g, ' & ')}}"

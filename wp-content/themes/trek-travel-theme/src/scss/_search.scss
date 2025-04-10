@@ -154,6 +154,29 @@
     }
 }
 
+// Duration styling
+.duration-wrapper {
+    display: flex;
+    flex-direction: column;
+    
+    .duration-item {
+        display: block;
+        padding-bottom: 5px;
+        width: 100%;
+        
+        &:not(:last-child) {
+            border-bottom: 1px solid #000;
+            margin-bottom: 5px;
+        }
+    }
+}
+
+// Align calendar icon to the top
+#algoliaSearchResults .list-inline-item.align-top {
+    vertical-align: top;
+    padding-top: 2px;
+}
+
 #search-nav-tabs{
     ul{
         list-style: none;

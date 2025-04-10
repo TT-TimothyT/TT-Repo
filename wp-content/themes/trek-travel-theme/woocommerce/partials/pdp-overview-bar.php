@@ -22,27 +22,12 @@ $is_simple_product = $product->is_type( 'simple' );
 // Check child product is marked as Private/Custom trip.
 $is_private_custom_trip = get_field( 'is_private_custom_trip', $product->id );
 
-$activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level', true );
-$trip_style     = tt_get_custom_product_tax_value( $product_id, 'trip-style', true );
-$trip_class     = tt_get_custom_product_tax_value( $product_id, 'trip-class', true );
-$hotel_level    = tt_get_custom_product_tax_value( $product_id, 'hotel-level', true );
-$trip_duration  = tt_get_custom_product_tax_value( $product_id, 'trip-duration', true );
+$activity_level      = tt_get_custom_product_tax_value( $product_id, 'activity-level', true );
+$trip_style          = tt_get_custom_product_tax_value( $product_id, 'trip-style', true );
+$trip_class          = tt_get_custom_product_tax_value( $product_id, 'trip-class', true );
+$hotel_level         = tt_get_custom_product_tax_value( $product_id, 'hotel-level', true );
+$trip_duration_names = tt_get_trip_duration_names( $product_id );
 
-$trip_duration_terms   = get_the_terms( $product_id, 'trip-duration' );
-$trip_duration_term_id = ! empty( $trip_duration_terms ) && ! is_wp_error( $trip_duration_terms ) ? $trip_duration_terms[0]->term_id : false;
-
-if ( ! empty( $trip_duration ) ) {
-    $trip_duration = str_replace( [' Days', ' Nights', '&amp;'], [' D', ' N', '/'], $trip_duration );
-} else {
-    $trip_duration = '';
-}
-
-if ( $trip_duration_term_id ) {
-    $pdp_name = get_field( 'pdp_name', 'trip-duration_' . $trip_duration_term_id );
-    if ( ! empty( $pdp_name ) ) {
-        $trip_duration = $pdp_name;
-    }
-}
 ?>
 
 <?php
@@ -68,10 +53,24 @@ if ($product_overview) :
                 </ul>
             </div>
             <div class="overview-details col-lg-5">
-                <div class="tour-duration">
-                    <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Tour Duration</p>
-                    <p class="fw-medium fs-md lh-md"><?php echo esc_html( $trip_duration ); ?></p>
-                </div>
+                <?php if ( ! empty( $trip_duration_names ) ): ?>
+                    <div class="tour-duration">
+                        <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Tour Duration</p>
+                        <p class="fw-medium fs-md lh-md tour-duration-text">
+                            <?php
+                            $current_year = date('Y');
+                            foreach ( $trip_duration_names as $key => $trip_duration_name ) {
+                                if ($key === 0) {
+                                    echo '<span>' . esc_html( $trip_duration_name ) . '</span>';
+                                } else {
+                                    $year_to_show = $current_year + $key;
+                                    echo '<br><span><strong>' . esc_html( $year_to_show ) . ':</strong> ' . esc_html( $trip_duration_name ) . '</span>';
+                                }
+                            }
+                            ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
                 <div class="trip-style">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Trip Style <i class="bi bi-info-circle pdp-trip-styles"></i></p>
                     <p class="fw-medium fs-md lh-md mb-0"><?php echo ( $trip_style ? esc_html( $trip_style ) : ''); echo ( $trip_class ? ', ' . esc_html( $trip_class ) : '' ); ?></p>

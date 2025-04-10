@@ -1919,13 +1919,23 @@ function ttnsw_load_template_part( $template ) {
 }
 
 /**
- * Remove the menu items for the users with the 'manage_guest_data' capability.
+ * Remove specific menu items for users with the 'manage_guest_data' capability
+ * but only if they are not administrators.
  */
 function ttnsw_remove_menu_items() {
-    if( current_user_can( 'manage_guest_data' ) ) {
-        remove_menu_page( 'revisionary-archive' );
-        remove_menu_page( 'profile.php' );
-        remove_menu_page( 'algolia' );
+    // Keep menus for administrators regardless of other capabilities
+    if (current_user_can('administrator')) {
+        return;
+    }
+
+    // Get current user
+    $user = wp_get_current_user();
+
+    // Check if user has the manage_guest_data capability OR has the guest_data_manager role
+    if (current_user_can('manage_guest_data') || in_array('guest_data_manager', (array) $user->roles)) {
+        remove_menu_page('revisionary-archive');
+        remove_menu_page('profile.php');
+        remove_menu_page('algolia');
     }
 }
-add_action( 'admin_menu', 'ttnsw_remove_menu_items', 11 );
+add_action('admin_menu', 'ttnsw_remove_menu_items', 11);

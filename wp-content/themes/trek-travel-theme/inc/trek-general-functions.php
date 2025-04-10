@@ -7784,17 +7784,10 @@ function tt_algolia_get_post_shared_attributes( $shared_attributes, $post ) {
         if ( $hotel_level ) {
             $shared_attributes['Hotel Level'] = $hotel_level;
         }
+        $trip_duration_names = tt_get_trip_duration_names( $post->ID );
 
-        $trip_duration = tt_get_custom_product_tax_value( $post->ID, 'trip-duration', false, true ); // Returns the term object.
-
-        if ( $trip_duration ) {
-            $trip_duration_pdp_name     = get_term_meta( $trip_duration->term_id, 'pdp_name', true ); // Get the value from the ACF Field with name pdp_name.
-            if( $trip_duration_pdp_name ) {
-                $shared_attributes['Duration'] = esc_html( $trip_duration_pdp_name );
-            } else {
-                // Fall Back to the Default name.
-                $shared_attributes['Duration'] = esc_html( $trip_duration->name );
-            }
+        if ( $trip_duration_names ) {
+            $shared_attributes['Duration'] = $trip_duration_names;
         }
 
         $badge = tt_get_custom_product_tax_value( $post->ID, 'product_tag', true );
@@ -8954,7 +8947,7 @@ function tt_get_auto_select_bike_model_id( $args = array() ) {
     return $auto_selected_bike_model_id;
 }
 
-/**
+/*
  * Fix the automatic currency selection based on user location.
  *
  * This is a working but not very reliable fix at this stage.
@@ -8997,3 +8990,50 @@ function tt_wc_currency_converter_params( $wc_currency_converter_params ) {
 }
 
 add_filter( 'wc_currency_converter_params', 'tt_wc_currency_converter_params' );
+
+/**
+ * Get the trip duration names with the primary duration first.
+ *
+ * This function retrieves all duration terms associated with a product
+ * and ensures the primary duration (identified by Yoast primary destination)
+ * is listed first in the returned array.
+ *
+ * @param int $product_id The product ID.
+ * @return array Array of trip duration names with primary duration first.
+ */
+function tt_get_trip_duration_names( $product_id ) {
+    $trip_duration_terms = get_the_terms( $product_id, 'trip-duration' );
+    $trip_duration_names = array();
+    $primary_duration    = '';
+    $other_durations     = array();
+
+    // Get the Yoast primary destination ID if available
+    $yoast_primary_duration_id = get_post_meta( $product_id, '_yoast_wpseo_primary_trip-duration', true );
+
+    if ( ! empty( $trip_duration_terms ) ) {
+        foreach ( $trip_duration_terms as $trip_duration_term ) {
+            $pdp_name      = get_field( 'pdp_name', 'trip-duration_' . $trip_duration_term->term_id );
+            $is_primary    = ( ! empty( $yoast_primary_duration_id ) && $trip_duration_term->term_id === (int) $yoast_primary_duration_id );
+            $duration_name = ! empty( $pdp_name ) ? $pdp_name : $trip_duration_term->name;
+
+            // Check if this term is primary either by ACF field or by Yoast primary destination
+            if ( $is_primary ) {
+                $primary_duration = $duration_name; // Store primary duration separately
+            } else {
+                $other_durations[] = $duration_name; // Store other durations in an array
+            }
+        }
+
+        // Add primary duration first if it exists
+        if ( ! empty( $primary_duration ) ) {
+            $trip_duration_names[] = $primary_duration;
+        }
+
+        // Add all other durations after the primary one
+        if ( ! empty( $other_durations ) ) {
+            $trip_duration_names = array_merge( $trip_duration_names, $other_durations );
+        }
+    }
+
+    return apply_filters( 'tt_get_trip_duration_names', $trip_duration_names, $product_id );
+}
