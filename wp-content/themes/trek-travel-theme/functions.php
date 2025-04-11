@@ -758,6 +758,123 @@ function resourcecenter_post_type() {
 }
 add_action('init', 'resourcecenter_post_type');
 
+// Register Team CPT
+function register_team_cpt() {
+    $labels = array(
+        'name'               => 'Team',
+        'singular_name'      => 'Team Member',
+        'menu_name'          => 'Team',
+        'add_new'            => 'Add New Member',
+        'add_new_item'       => 'Add New Team Member',
+        'edit_item'          => 'Edit Team Member',
+        'new_item'           => 'New Team Member',
+        'view_item'          => 'View Team Member',
+        'search_items'       => 'Search Team Members',
+        'not_found'          => 'No team members found',
+        'not_found_in_trash' => 'No team members found in trash'
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'has_archive'        => true,
+        'show_in_rest'       => true, // Enable Gutenberg
+        'menu_position'      => 8,
+        'menu_icon'          => 'dashicons-groups', // Team icon
+        'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'rewrite'            => array('slug' => 'team'),
+    );
+
+    register_post_type('team', $args);
+}
+add_action('init', 'register_team_cpt');
+
+// Register Team Departments Taxonomy
+function register_team_departments_taxonomy() {
+    $labels = array(
+        'name'              => 'Departments',
+        'singular_name'     => 'Department',
+        'search_items'      => 'Search Departments',
+        'all_items'         => 'All Departments',
+        'parent_item'       => 'Parent Department',
+        'parent_item_colon' => 'Parent Department:',
+        'edit_item'         => 'Edit Department',
+        'update_item'       => 'Update Department',
+        'add_new_item'      => 'Add New Department',
+        'new_item_name'     => 'New Department Name',
+        'menu_name'         => 'Departments'
+    );
+
+    $args = array(
+        'labels'            => $labels,
+        'hierarchical'      => true,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'query_var'         => true,
+        'rewrite'           => array('slug' => 'team-department'),
+        'show_in_rest'      => true,
+    );
+
+    register_taxonomy('team_department', array('team'), $args);
+}
+add_action('init', 'register_team_departments_taxonomy');
+
+function modify_guide_search($query) {
+    if (!is_admin() && $query->is_main_query() && is_page('our-guides') && isset($_GET['s'])) {
+        $query->set('post_type', 'guide'); // Only search Guide CPT
+        $query->set('orderby', 'title'); // Sort by title
+        $query->set('order', 'ASC'); // Alphabetical order
+        $query->set('meta_query', array()); // Ensure clean search
+    }
+}
+add_action('pre_get_posts', 'modify_guide_search');
+
+function get_years_guided($post_id) {
+    $start_year = get_field('guide_years', $post_id);
+
+    if (!$start_year || !is_numeric($start_year)) {
+        return 'Years Guided: N/A';
+    }
+
+    $current_year = date("Y");
+    $years_guided = max(1, $current_year - intval($start_year));
+
+    return $years_guided === 1 ? '1 Year Guiding' : $years_guided . ' Years Guiding';
+}
+
+
+// Register "Testimonials" CPT
+function register_testimonials_cpt() {
+    $labels = array(
+        'name'               => 'Testimonials',
+        'singular_name'      => 'Testimonial',
+        'menu_name'          => 'Testimonials',
+        'add_new'            => 'Add New Testimonial',
+        'add_new_item'       => 'Add New Testimonial',
+        'edit_item'          => 'Edit Testimonial',
+        'new_item'           => 'New Testimonial',
+        'view_item'          => 'View Testimonial',
+        'search_items'       => 'Search Testimonials',
+        'not_found'          => 'No testimonials found',
+        'not_found_in_trash' => 'No testimonials found in trash'
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'has_archive'        => true,
+        'show_in_rest'       => true, // Enable Gutenberg
+        'menu_position'      => 7,
+        'menu_icon'          => 'dashicons-testimonial',
+        'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'rewrite'            => array('slug' => 'testimonials'),
+    );
+
+    register_post_type('testimonial', $args);
+}
+add_action('init', 'register_testimonials_cpt');
+
+
 
 //  FOR FRONT-END DEV ONLY  - TO BE REMOVED PRE PRODUCTION ////////////////////
 /*function dev_components_post_type() {
@@ -1302,7 +1419,7 @@ function custom_breadcrumbs() {
     // Bail if home to avoid unnecessary breadcrumb
     if (is_front_page()) return;
 
-    echo '<nav class="container mb-30" aria-label="breadcrumb">';
+    echo '<nav class="container" aria-label="breadcrumb">';
     echo '<ol class="breadcrumb mb-1">';
 
     // Home link
@@ -2056,6 +2173,151 @@ function add_continental_us_address_type($address_types) {
     );
     return $address_types;
 }
+
+
+// Gravity Forms Trips Dropdown
+
+add_filter( 'gform_pre_render_27', 'populate_grouped_products');
+add_filter( 'gform_pre_validation_27', 'populate_grouped_products');
+add_filter( 'gform_pre_submission_filter_27', 'populate_grouped_products');
+add_filter( 'gform_admin_pre_render_27', 'populate_grouped_products');
+
+function populate_grouped_products($form) {
+    foreach ($form['fields'] as &$field) {
+        // Ensure the field is a dropdown and has the correct CSS class
+        if ($field->type !== 'select' || strpos($field->cssClass, 'populate-grouped-products') === false) {
+            continue;
+        }
+
+        $field->choices = []; // Clear existing choices
+
+        // Query to get WooCommerce Grouped Products
+        $args = array(
+            'post_type'      => 'product',
+            'posts_per_page' => -1,
+            'tax_query'      => array(
+                array(
+                    'taxonomy' => 'product_type',
+                    'field'    => 'slug',
+                    'terms'    => 'grouped'
+                )
+            )
+        );
+
+        $products = get_posts($args);
+        $choices = [];
+
+        foreach ($products as $product) {
+            $choices[] = array(
+                'text'  => get_the_title($product->ID),
+                'value' => $product->ID
+            );
+        }
+
+        $field->placeholder = 'Select a Grouped Product';
+        $field->choices = $choices;
+    }
+    return $form;
+}
+
+
+
+// Gravity Forms Guides Dropdown
+
+add_filter('gform_pre_render_27', 'populate_guides');
+add_filter('gform_pre_validation_27', 'populate_guides');
+add_filter('gform_pre_submission_filter_27', 'populate_guides');
+add_filter('gform_admin_pre_render_27', 'populate_guides');
+
+function populate_guides($form) {
+    foreach ($form['fields'] as &$field) {
+        // Ensure the field is a dropdown or multiselect and has the correct CSS class
+        if (($field->type !== 'select' && $field->type !== 'multiselect') || strpos($field->cssClass, 'populate-guides') === false) {
+            continue;
+        }
+
+        $field->choices = []; // Clear existing choices
+
+        // Query to get Guides from Custom Post Type 'team'
+        $args = array(
+            'post_type'      => 'team',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'tax_query'      => array(
+                array(
+                    'taxonomy' => 'team_department', 
+                    'field'    => 'slug',
+                    'terms'    => 'guide',
+                    'operator' => 'IN',
+                ),
+            ),
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+        );
+
+        $guides = get_posts($args);
+        $choices = [];
+
+        foreach ($guides as $guide) {
+            $choices[] = array(
+                'text'  => get_the_title($guide->ID),
+                'value' => $guide->ID,
+                'isSelected' => false // Ensures it's correctly formatted for multi-select fields
+            );
+        }
+
+        // Apply choices to dropdown and multi-select fields
+        $field->choices = $choices;
+
+        // Add a placeholder (only works for single dropdowns)
+        if ($field->type === 'select') {
+            $field->placeholder = 'Select a Guide';
+        }
+    }
+    return $form;
+}
+
+// Gravity Forms Dropbox path
+add_filter('gform_dropbox_folder_path', function ($path, $entry, $form) {
+    $first_name = rgar($entry, '1.3'); // First Name
+    $last_name = rgar($entry, '1.6');  // Last Name
+
+    // Combine first & last name, if both exist
+    $full_name = trim($first_name . ' ' . $last_name);
+
+    // Sanitize the name to remove spaces & special characters
+    $safe_name = preg_replace('/[^A-Za-z0-9_-]/', '_', sanitize_text_field($full_name));
+
+    // Ensure the full Dropbox path is returned
+    return "/Trek Travel/Apps/Gravity Forms Add-On/TT-Testimonials/{$safe_name}/";
+}, 10, 3);
+
+
+
+// Lightbox JS
+function enqueue_lity_scripts() {
+    if (is_page_template('tpl-landing-guides.php')) { 
+        wp_enqueue_style('lity-css', 'https://cdnjs.cloudflare.com/ajax/libs/lity/2.4.1/lity.min.css', array(), '2.4.1');
+        wp_enqueue_script('lity-js', 'https://cdnjs.cloudflare.com/ajax/libs/lity/2.4.1/lity.min.js', array('jquery'), '2.4.1', true);
+    }
+}
+add_action('wp_enqueue_scripts', 'enqueue_lity_scripts');
+
+
+// REMOVE COMMENTS
+function remove_comments_admin() {
+    // Remove Comments from Admin Menu
+    remove_menu_page('edit-comments.php');  
+
+    // Remove Comments from Admin Bar
+    add_action('wp_before_admin_bar_render', function() {
+        global $wp_admin_bar;
+        $wp_admin_bar->remove_menu('comments');
+    });
+}
+add_action('admin_menu', 'remove_comments_admin');
+
+
 
 add_filter( 'template_include', function( $template ) {
     if ( false !== strpos( $template, 'header-footer' ) && is_front_page() ) {

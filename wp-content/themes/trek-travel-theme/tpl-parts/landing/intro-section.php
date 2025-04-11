@@ -12,7 +12,6 @@ $intro_content = get_field('intro_content');
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-9">
                     <div class="intro-content">
-                        <h2 class="text-center"><?php echo esc_html($intro_header); ?></h2>
                         <div class="wysiwyg text-center"><?php echo $intro_content; ?></div>
                     </div>
                 </div>

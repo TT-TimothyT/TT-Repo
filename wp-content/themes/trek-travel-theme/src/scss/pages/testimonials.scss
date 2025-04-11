@@ -1,0 +1,59 @@
+.testimonial-main {
+
+    h3,.h3 {
+        font-weight: 600;
+    }
+
+    >:nth-last-child(even) {
+        background-color: $gray-300;
+    }
+
+    .content-box {
+        margin-top: 50px;
+        margin-bottom: 50px;
+        ul {
+            display: flex;
+                flex-direction: column;
+                width: fit-content;
+                margin: auto;
+                text-align: left;
+                gap: 5px;
+                font-size: 20px;
+        }
+    }
+
+    .main-content {
+        padding-top: 50px;
+        padding-bottom: 80px;
+    }
+
+    .f-header {
+        margin-bottom: 30px;
+
+    }
+
+    #t-form .f-box {
+        background-color: white;
+        -webkit-box-shadow: 0px 10px 15px 2px rgba(0, 0, 0, 0.3);
+        box-shadow: 0px 10px 15px 2px rgba(0, 0, 0, 0.3);
+        border: 3px solid $blue;
+        border-radius: 5px;
+        padding: 30px;
+
+        .gform-theme--foundation .gfield textarea.large {
+            min-block-size: 10rem;
+        }
+
+        .gform-theme--foundation .gform_footer {
+            justify-content: center;
+            input {
+                background-color: black;
+                font-size: 18px;
+                padding: 15px 25px;
+                text-transform: capitalize;
+            }
+        } 
+          
+        
+    }
+}

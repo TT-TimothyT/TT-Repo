@@ -166,15 +166,14 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
             <div class="banner-section">
             <?php echo $imgTag; ?>
                 <div class="container">
-
                     <h1 class="fw-semibold"><?php echo $plp_algolia_category->name; ?></h1>
                 </div>
-
             </div>
+            
             <div class="container description-section">
                 <div class="row justify-content-between">
                     <div class="col-12 col-lg-6 col-xl-7 my-4">
-                        <h4><?php echo $plp_algolia_category->description; ?></h4>
+                        <h2 class="h5"><?php echo $plp_algolia_category->description; ?></h2>
                     </div>
                     <div class="col-12 col-lg-6 col-xl-5 col-xxl-4 my-4">
                         <p class="fw-normal fs-md lh-md"><?php echo $plp_travel_info;?>

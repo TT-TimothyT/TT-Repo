@@ -1,10 +1,13 @@
-.plp-hero-banner{
+.plp-hero-banner {
     background-color: #F4F4F4;
     .banner-section{
         display: flex;
         justify-content: center;
         position: relative;
         text-shadow: 2px 2px 0px rgba(0,0,0,0.6);
+        min-height: 350px;
+        height: 35vw;
+        max-height: 800px;
 
         &:before {
             content: '';
@@ -17,12 +20,11 @@
         img{
             // height: 200px;
             // aspect-ratio: 7/3;
-            min-height: 33vh;
-            // aspect-ratio: 7/3;
-            min-height: 33vh;
+            width: 100%;
+            min-height: 300px;
             object-fit: cover;
-            max-height: 800px;
-            height: 80vw;
+            // max-height: 800px;
+            // height: 80vw;
         }
 
 
@@ -31,10 +33,11 @@
             position: absolute;
             bottom: 0;
             margin: auto;
+            margin-bottom: clamp(30px, 5vw, 70px);
 
             h1 {
                 color: #fff;
-                margin-bottom: clamp(30px, 8vw, 100px);
+                
             }
         }
     }

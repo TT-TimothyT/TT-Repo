@@ -2,12 +2,22 @@
 /**
  * Template file for the quick view content in the modal on the Archive and Search pages.
  */
+if (isset($args['trip_data'])) {
+    $raw_json = $args['trip_data'];
 
-$trip_data = array();
-if ( isset( $args['trip_data'] ) && ! empty( $args['trip_data'] ) ) {
-	// Trip taxonomy terms - Activity Level, Hotel Level, Trip Style ...
-	$trip_data = json_decode( $args['trip_data'], true );
+    // Fix cut-off JSON issue by ensuring it ends properly
+    if (substr($raw_json, -1) !== '}') {
+        $raw_json .= '"}';
+    }
+
+    $trip_data = json_decode($raw_json, true);
 }
+
+// $trip_data = array();
+// if ( isset( $args['trip_data'] ) && ! empty( $args['trip_data'] ) ) {
+// 	// Trip taxonomy terms - Activity Level, Hotel Level, Trip Style ...
+// 	$trip_data = json_decode( $args['trip_data'], true );
+// }
 
 $product            = wc_get_product( $args['product_id'] );
 $p_id               = $product->get_id();
