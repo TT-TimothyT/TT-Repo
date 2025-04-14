@@ -2,7 +2,18 @@
     .lity-close {
         display: none;
     }
+<<<<<<< HEAD
+
+   
 }
+.lity-active {
+    overflow: hidden !important;
+}
+
+
+=======
+}
+>>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
 .guides-content {
     margin-bottom: 80px;
 
@@ -194,6 +205,10 @@
     display: flex;
     min-height: 600px;
     max-width: 1000px;
+<<<<<<< HEAD
+    max-height: min(90vh, 700px) !important;
+=======
+>>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
     width: 55vw;
     border-radius: 10px;
     overflow: hidden;
@@ -230,6 +245,10 @@
 
         @include media-breakpoint-down(lg) {
             flex-direction: column;
+<<<<<<< HEAD
+            border-bottom: none;
+=======
+>>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
         }
 
     
@@ -326,6 +345,10 @@
         }
           @include media-breakpoint-down(lg) {
             padding: 20px;
+<<<<<<< HEAD
+            height: auto;
+=======
+>>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
         }
     }
     
@@ -352,6 +375,13 @@
             color: white;
             // padding: 30px;
         }
+<<<<<<< HEAD
+
+        @include media-breakpoint-down(lg) {
+            border-bottom: 5px solid #28AAE1;
+        }
+=======
+>>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
     }
 
     .g-body {
@@ -361,6 +391,18 @@
         width: 50%;
         overflow-x: hidden;
 
+<<<<<<< HEAD
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+    
+        &::-webkit-scrollbar-thumb {
+            background-color: $blue;
+            border-radius: 10px;
+        }
+
+=======
+>>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
         @include media-breakpoint-down(lg) {
             width: 100%;
         }
