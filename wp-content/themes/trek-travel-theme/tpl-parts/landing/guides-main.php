@@ -138,51 +138,6 @@ if (!empty($guides)): ?>
 
 <script>
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     const modals = document.querySelectorAll(".g-modal");
-
-//     function debounce(func, delay) {
-//         let timeout;
-//         return function () {
-//             clearTimeout(timeout);
-//             timeout = setTimeout(() => func.apply(this, arguments), delay);
-//         };
-//     }
-
-//     modals.forEach(modal => {
-//         const modalContent = modal.querySelector(".modal-content");
-
-//         if (modalContent) {
-//             // Smooth padding transition based on scroll position
-//             modalContent.addEventListener("scroll", debounce(function () {
-//                 if (modalContent.scrollTop > 10) {
-//                     modalContent.classList.add("scrolled");
-//                 } else {
-//                     modalContent.classList.remove("scrolled");
-//                 }
-//             }, 25));
-
-//             // 👇 Slower manual scroll on wheel
-//             modalContent.addEventListener("wheel", function (e) {
-//                 e.preventDefault();
-//                 const scrollStep = e.deltaY * 0.3; // Lower = slower scroll
-//                 modalContent.scrollTop += scrollStep;
-//                 console.log(`Custom scroll: deltaY=${e.deltaY}, scrollStep=${scrollStep}`);
-//             }, { passive: false });
-//         }
-
-//         // Update on resize when modal is open
-//         window.addEventListener("resize", function () {
-//             if (modal.classList.contains("show") && modalContent.classList.contains("scrolled")) {
-//                 updateHeaderHeight();
-//             }
-//         });
-//     });
-// });
-
-
-// 
-
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("guide-search");
     const guideCards = document.querySelectorAll(".g-search");
@@ -222,10 +177,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
 </script>
