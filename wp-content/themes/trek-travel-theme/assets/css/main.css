@@ -23839,13 +23839,10 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   display: none;
 }
 
-<<<<<<< HEAD
 .lity-active {
   overflow: hidden !important;
 }
 
-=======
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
 .guides-content {
   margin-bottom: 80px;
 }
@@ -24012,10 +24009,7 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   display: flex;
   min-height: 600px;
   max-width: 1000px;
-<<<<<<< HEAD
   max-height: min(90vh, 700px) !important;
-=======
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
   width: 55vw;
   border-radius: 10px;
   overflow: hidden;
@@ -24053,10 +24047,7 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 @media (max-width: 991.98px) {
   .g-modal .modal-content {
     flex-direction: column;
-<<<<<<< HEAD
     border-bottom: none;
-=======
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
   }
 }
 .g-modal .modal-content::-webkit-scrollbar {
@@ -24139,10 +24130,7 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 @media (max-width: 991.98px) {
   .g-modal .g-what, .g-modal .g-place {
     padding: 20px;
-<<<<<<< HEAD
     height: auto;
-=======
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
   }
 }
 .g-modal .what-content, .g-modal .place-content {
@@ -24163,14 +24151,11 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 .g-modal .g-place .p-text {
   color: white;
 }
-<<<<<<< HEAD
 @media (max-width: 991.98px) {
   .g-modal .g-place {
     border-bottom: 5px solid #28AAE1;
   }
 }
-=======
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
 .g-modal .g-body {
   display: flex;
   flex-direction: column;
@@ -24178,7 +24163,6 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   width: 50%;
   overflow-x: hidden;
 }
-<<<<<<< HEAD
 .g-modal .g-body::-webkit-scrollbar {
   width: 6px;
 }
@@ -24186,8 +24170,6 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   background-color: #28AAE1;
   border-radius: 10px;
 }
-=======
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
 @media (max-width: 991.98px) {
   .g-modal .g-body {
     width: 100%;

@@ -188,21 +188,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const guideCards = document.querySelectorAll(".g-search");
     const noResultsMessage = document.getElementById("no-results-message");
 
-<<<<<<< HEAD
-=======
-    // Normalize function to remove accents/diacritics
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
     function normalizeText(str) {
         return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
     searchInput.addEventListener("keyup", function () {
-<<<<<<< HEAD
         const query = normalizeText(searchInput.value.trim());
-=======
-        const query = normalizeText(searchInput.value);
-
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
         let anyMatch = false;
 
         guideCards.forEach(card => {
@@ -210,7 +201,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const modalId = href.replace("#", "");
             const modal = document.getElementById(modalId);
 
-<<<<<<< HEAD
             // Combine text from all name spans
             const nameSpans = card.querySelectorAll(".guide-name span");
             let nameText = '';
@@ -225,17 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const match = name.includes(query) || nickname.includes(query);
 
             card.style.display = match ? "flex" : "none";
-=======
-            const nameText = card.querySelector(".guide-name").textContent || '';
-            const nicknameText = modal?.querySelector(".g-nick")?.textContent || '';
-
-            const name = normalizeText(nameText);
-            const nickname = normalizeText(nicknameText);
-
-            const match = name.includes(query) || nickname.includes(query);
-            card.style.display = match ? "flex" : "none";
-
->>>>>>> 874d4257f505ad61963e58d6a6de53e1df4f4b48
             if (match) anyMatch = true;
         });
 
