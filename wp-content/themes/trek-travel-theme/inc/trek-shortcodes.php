@@ -6,109 +6,88 @@
  * @return  : Custom Register form
  **/
 
-add_shortcode('trek-register', 'trek_registration_form_cb');
-function trek_registration_form_cb()
-{
-   update_option( 'woocommerce_registration_generate_password', 'no' );
-   if (is_admin() || is_user_logged_in()) return;
-   do_action('woocommerce_before_customer_login_form');
-   $google_api_key = ( G_CAPTCHA_SITEKEY ? G_CAPTCHA_SITEKEY : '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV' );
-?>
-   <div class="container">
-      <div class="row my-4">
-         <div class="col-12 col-md-5 col-xl-6">
-            <div class="sign-welcome">
-               <div class="h5 sign-text">Join Trek Travel Today! <br> <div class="h6 my-1">Sign up with Trek Travel to personalize your experience and view trips.</div></div>
-               <div class="sign-logo">
-                  <img src="/wp-content/themes/trek-travel-theme/assets/images/TT-stacked-black-blue-crop.png" alt="">
-               </div>
-            </div>
-         </div>
-
-         <div class="col-12 col-md-6 col-xl-4 login-form register-form">
-            <form method="post" class="woocommerce-form woocommerce-form-register register needs-validation" novalidate <?php do_action('woocommerce_register_form_tag'); ?>>
-               <?php do_action('woocommerce_register_form_start'); ?>
-
-               <div class="d-flex flex-column align-items-baseline justify-content-between">
-                  <h2 class="login-title mb-2"><?php esc_html_e('Sign Up', 'trek-travel-theme'); ?></h2>
-                  <div class="fs-sm mb-4 lh-md fw-normal">
-                     Already have an account? <br> <a href="/login">Log in</a> or verify at <a href="<?php echo esc_url(wp_lostpassword_url()); ?>"><?php esc_html_e('Forgot password', 'trek-travel-theme'); ?></a>
-                  </div>
-               </div>
-
-               <div class="form-group form-floating">
-                  <input type="text" class="input-text form-control" pattern="[A-Za-z]+" name="billing_first_name" placeholder="First Name" id="InputFname" value="<?php echo (!empty($_POST['billing_first_name'])) ? esc_attr(wp_unslash($_POST['first_name'])) : ''; ?>" required />
-                  <label for="InputFname" class="label-for">First Name*</label>
-                  <div class="invalid-feedback">
-                     <img class="invalid-icon" />
-                     This field is required and only letters are allowed.
-                  </div>
-               </div>
-               <div class="form-group form-floating my-1">
-                  <input type="text" class="input-text form-control" pattern="[A-Za-z]+" name="billing_last_name" placeholder="Last Name" id="InputLname" value="<?php echo (!empty($_POST['billing_last_name'])) ? esc_attr(wp_unslash($_POST['last_name'])) : ''; ?>" required />
-                  <label for="InputLname" class="label-for">Last Name*</label>
-                  <div class="invalid-feedback">
-                     <img class="invalid-icon" />
-                     This field is required and only letters are allowed.
-                  </div>
-
-               </div>
-               <div class="form-group form-floating my-1">
-                  <input type="email" class="input-text form-control" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="Email" id="InputEmail" required />
-                  <label for="InputEmail" class="label-for">Email*</label>
-                  <div class="invalid-feedback">
-                     <img class="invalid-icon" />
-                     Please enter valid email address.
-                  </div>
-               </div>
-               <div class="form-group my-1">
-                  <div class="form-floating flex-grow-1">
-                     <input type="password" class="input-text form-control" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" name="password" placeholder="Password" id="InputPassword" required />
-                     <label for="password" class="label-for">Password*</label>
-                     <span class="password-eye px-2"><i class="bi bi-eye-slash" id="togglePassword"></i></span>
-                     <div class="invalid-feedback">
-                        <img class="invalid-icon" />
-                        Please enter valid password.
+ add_shortcode('trek-register', 'trek_registration_form_cb');
+ function trek_registration_form_cb()
+ {
+     update_option('woocommerce_registration_generate_password', 'no');
+     if (is_admin() || is_user_logged_in()) return;
+ 
+     do_action('woocommerce_before_customer_login_form');
+     $google_api_key = G_CAPTCHA_SITEKEY ?: '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV'; 
+     ?>
+     <div class="container">
+         <div class="row my-4">
+             <div class="col-12 col-md-5 col-xl-6">
+                 <div class="sign-welcome">
+                     <div class="h5 sign-text">Join Trek Travel Today! <br>
+                         <div class="h6 my-1">Sign up with Trek Travel to personalize your experience and view trips.</div>
                      </div>
-                  </div>
-
-                  <div id="passwordHelpBlock" class="form-text fs-xs lh-xs">
-                     Password must be at least 8 characters long, no spaces, and must contain one each of the following: one digit(0-9), one lowercase letter(a-z), and one uppercase letter (A-Z).
-                  </div>
-               </div>
-               <div class="form-group my-1">
-                  <input class="form-check-input" name="is_subscribed" type="checkbox" value="yes" id="flexCheckDefault">
-                  <label class="form-check-label" for="flexCheckDefault">
-                     Sign up for our Trek Travel Newsletter
-                  </label>
-                  <div id="newsletterHelpBlock" class="fs-xs form-text lh-xs">
-                     <p>By signing up for our Newsletter, you agree to receive marketing materials from Trek Travel and its affiliate Trek Bicycles. Your data is stored in the United States. View our <a target="_blank" href="<?php echo site_url('/privacy-policy'); ?>">privacy policy</a>.
-                     </p>
-                  </div>
-               </div>
-               <div class="form-group my-1">
-                  <div class="g-recaptcha" data-sitekey="<?php echo $google_api_key; ?>"></div>
-                  <div class="invalid-feedback invalid-captcha">
-                     <img class="invalid-icon" />
-                     Please complete captcha verification.
-                  </div>
-               </div>
-               <?php do_action('woocommerce_register_form'); ?>
-               <div class="form-group my-4 align-self-center">
-                  <?php wp_nonce_field('woocommerce-register', 'woocommerce-register-nonce'); ?>
-                  <button type="submit" class="btn btn-primary w-100" name="register" value="<?php esc_attr_e('Sign up', 'trek-travel-theme'); ?>"><?php esc_html_e('Sign up', 'trek-travel-theme'); ?></button>
-               </div>
-
+                     <div class="sign-logo">
+                         <img src="/wp-content/themes/trek-travel-theme/assets/images/TT-stacked-black-blue-crop.png" alt="">
+                     </div>
+                 </div>
+             </div>
+ 
+             <div class="col-12 col-md-6 col-xl-4 login-form register-form">
+                 <form method="post" class="woocommerce-form woocommerce-form-register register needs-validation" novalidate <?php do_action('woocommerce_register_form_tag'); ?>>
+                     <?php do_action('woocommerce_register_form_start'); ?>
+ 
+                     <h2 class="login-title mb-2"><?php esc_html_e('Sign Up', 'trek-travel-theme'); ?></h2>
+ 
+                     <div class="form-group form-floating">
+                         <input type="text" class="input-text form-control" name="billing_first_name" id="InputFname" pattern="[A-Za-z]+" placeholder="First Name" required />
+                         <label for="InputFname">First Name*</label>
+                         <div class="invalid-feedback">Only letters are allowed.</div>
+                     </div>
+ 
+                     <div class="form-group form-floating my-1">
+                         <input type="text" class="input-text form-control" name="billing_last_name" id="InputLname" pattern="[A-Za-z]+" placeholder="Last Name" required />
+                         <label for="InputLname">Last Name*</label>
+                         <div class="invalid-feedback">Only letters are allowed.</div>
+                     </div>
+ 
+                     <div class="form-group form-floating my-1">
+                         <input type="email" class="input-text form-control" name="email" id="InputEmail" placeholder="Email" required />
+                         <label for="InputEmail">Email*</label>
+                         <div class="invalid-feedback">Enter a valid email.</div>
+                     </div>
+ 
+                     <div class="form-group form-floating my-1">
+                         <input type="password" class="input-text form-control" name="password" id="InputPassword" placeholder="Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
+                         <label for="InputPassword">Password*</label>
+                         <div class="invalid-feedback">Must be 8+ characters with uppercase, lowercase, and a digit.</div>
+                     </div>
+ 
+                     <div class="form-group my-1">
+                         <input class="form-check-input" name="is_subscribed" type="checkbox" value="yes" id="newsletterCheck">
+                         <label for="newsletterCheck">Sign up for our Trek Travel Newsletter</label>
+                     </div>
+ 
+                     <input type="text" name="website-honey" style="display:none;" tabindex="-1" autocomplete="off" />
+ 
+                     <div class="form-group my-1">
+                         <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($google_api_key); ?>"></div>
+                         <div class="invalid-feedback">Please verify you're human.</div>
+                     </div>
+ 
+                     <?php do_action('woocommerce_register_form'); ?>
+                     <?php wp_nonce_field('woocommerce-register', 'woocommerce-register-nonce'); ?>
+ 
+                     <div class="form-group my-4 align-self-center">
+                         <button type="submit" class="btn btn-primary w-100" name="register">
+                             <?php esc_html_e('Sign up', 'trek-travel-theme'); ?>
+                         </button>
+                     </div>
+                 </form>
+             </div>
          </div>
-
-
-         <?php do_action('woocommerce_register_form_end'); ?>
-         </form>
-      </div>
-   </div>
-   <script src="https://www.google.com/recaptcha/api.js?render=6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV"></script>
-<?php
-}
+     </div>
+ 
+     <!-- reCAPTCHA JS -->
+     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+     <?php
+ }
+ 
 
 /**
  * @author  : Dharmesh Panchal

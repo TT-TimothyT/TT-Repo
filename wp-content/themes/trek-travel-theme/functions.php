@@ -2377,3 +2377,37 @@ add_action( 'save_post', 'dx_tt_clear_homepage_elementor_cache' ); // Clears cac
 //     return $choices;
 // }
 // add_filter('acf/location/rule_values/post_type', 'acf_location_rule_woocommerce_product_type_choices');
+
+
+// Server-side reCAPTCHA validation
+add_action('woocommerce_register_post', 'tt_verify_recaptcha', 10, 3);
+function tt_verify_recaptcha($username, $email, $validation_errors) {
+    $secret = '6LfNqogpAAAAAAaUuOa7ZlahZIUimafk-BTnv4AQ';
+
+    if (isset($_POST['g-recaptcha-response'])) {
+        $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
+            'body' => [
+                'secret' => $secret,
+                'response' => sanitize_text_field($_POST['g-recaptcha-response']),
+                'remoteip' => $_SERVER['REMOTE_ADDR'],
+            ],
+        ]);
+
+        $result = json_decode(wp_remote_retrieve_body($response), true);
+        if (empty($result['success'])) {
+            $validation_errors->add('recaptcha_error', __('Captcha verification failed. Please try again.', 'woocommerce'));
+        }
+    } else {
+        $validation_errors->add('recaptcha_missing', __('Please complete the captcha.', 'woocommerce'));
+    }
+}
+
+// Honeypot check
+add_action('woocommerce_register_post', 'tt_check_honeypot', 11, 3);
+function tt_check_honeypot($username, $email, $validation_errors) {
+    if (!empty($_POST['website-honey'])) {
+        $validation_errors->add('bot_detected', __('Bot detected. Registration blocked.', 'woocommerce'));
+    }
+}
+
+
