@@ -63,7 +63,7 @@
                          <label for="newsletterCheck">Sign up for our Trek Travel Newsletter</label>
                      </div>
  
-                     <input type="text" name="website-honey" style="display:none;" tabindex="-1" autocomplete="off" />
+                     <input type="text" name="tt-honey" style="display:none;" tabindex="-1" autocomplete="off" />
  
                      <div class="form-group my-1">
                          <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($google_api_key); ?>"></div>
@@ -78,6 +78,7 @@
                              <?php esc_html_e('Sign up', 'trek-travel-theme'); ?>
                          </button>
                      </div>
+                     <?php do_action('woocommerce_register_form_end'); ?>
                  </form>
              </div>
          </div>

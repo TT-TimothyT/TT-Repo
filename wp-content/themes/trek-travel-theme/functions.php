@@ -2405,7 +2405,7 @@ function tt_verify_recaptcha($username, $email, $validation_errors) {
 // Honeypot check
 add_action('woocommerce_register_post', 'tt_check_honeypot', 11, 3);
 function tt_check_honeypot($username, $email, $validation_errors) {
-    if (!empty($_POST['website-honey'])) {
+    if (!empty($_POST['tt-honey'])) {
         $validation_errors->add('bot_detected', __('Bot detected. Registration blocked.', 'woocommerce'));
     }
 }
