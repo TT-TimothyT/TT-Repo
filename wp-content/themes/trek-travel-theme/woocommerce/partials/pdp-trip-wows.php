@@ -5,6 +5,7 @@
         $product_id = $product->get_id();
         
         $activity_terms = get_the_terms( $product_id, 'activity' );
+        $is_event = has_term('Event Access', 'product_tag');
         
         foreach ( $activity_terms as $activity_term) {
             $activity = $activity_term->name;   
@@ -12,7 +13,7 @@
 ?>
 <div class="container pdp-section trip-wows-container">
     <div class="row">
-    	<h5 class="fw-semibold pdp-section__title fw-bold">Trip Wows</h5>
+    	<h5 class="fw-semibold pdp-section__title fw-bold"><?php echo $is_event ? 'Featured Experiences' : 'Trip Wows'; ?></h5>
 
         <div class="col-12 col-lg-7 left-wow-details">
             <ul class="wow-list">

@@ -10,7 +10,7 @@ $activity_terms = get_the_terms( $p_id, 'activity' );
 
 $is_tdf = (strpos(get_the_title(), 'Tour de France') !== false) && has_term('2025', 'product_cat');
 
-$is_event = (strpos(get_the_title(), 'Event') !== false) && has_term('Special Event', 'product_tag');
+$is_event = has_term('Event Access', 'product_tag');
 
 foreach ( $activity_terms as $activity_term) {
 	$activity = $activity_term->name;   
@@ -36,6 +36,7 @@ $in_trip_style = [
 ];
 
 $trip_styles = explode( ', ', strtolower( $trip_style ) );
+$is_event = has_term('Event Access', 'product_tag');
 
 $is_tabs_visible = true;
 
@@ -208,10 +209,10 @@ if( $available_child_products ) {
 
                         $contentFlag               = true;
                         $accordina_id              = $my.$child_product_data['product_id'];
+                        $simple_title = get_the_title( $child_product_data['product_id'] );
                         $date_range                = $child_product_data['start_date'].' - '.$child_product_data['end_date'];
                         $date_range                = $child_product_data['date_range'];
                         $trip_status               = $child_product_data['trip_status'];
-                        
                         $bike_hotels               = tt_get_hotel_bike_list( $child_product_data['sku'], $child_product_data['trip_id'] );
                         $removeFromStella          = tt_get_local_trips_detail( 'removeFromStella', $child_product_data['trip_id'], $child_product_data['sku'], true );
                         $singleSupplementPrice     = isset($child_product_data['singleSupplementPrice']) ? $child_product_data['singleSupplementPrice'] : 0;
@@ -219,9 +220,7 @@ if( $available_child_products ) {
                         // $status_class = strtolower($trip_status);
                         // $status_class = str_ireplace(' ', '-', $status_class);
                         $tripWebStatus = getWebDispalyStatus($trip_status);
-                        $tripWebStatusClass = strtolower(str_ireplace(" ","-",getWebDispalyStatus($trip_status)));
-                        // Check child product is marked as Private/Custom trip.
-                        $is_pc_trip = get_field( 'is_private_custom_trip');                        
+                        $tripWebStatusClass = strtolower(str_ireplace(" ","-",getWebDispalyStatus($trip_status)));                
                         // Check child product is marked as Private/Custom trip.
                         $is_pc_trip = get_field( 'is_private_custom_trip');    
                         $date_icon               = get_field('date_icon',$child_product_data['product_id']);
@@ -238,7 +237,43 @@ if( $available_child_products ) {
                             : '';
 
 
-                        
+                        if (!empty($is_event)) {
+                            $month_content_output .= 
+                        '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                            <h6 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
+                                <div class="d-box">
+                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$simple_title.'</span>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>'
+                                    . $date_cta .
+                                    '</div>
+                                </button>
+                            </h6>
+                        <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                            <hr>
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">';
+                                
+                                    $month_content_output .= 
+                                    '<div class="accordion-book-now w-100">';
+
+                                $all_month_content_output .= 
+                        '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
+                            <h6 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-'.$accordina_id.'" aria-expanded="false" aria-controls="flush-collapse-'.$accordina_id.'">
+                                <div class="d-box">
+                                    <span class="fw-medium w-40 fs-lg lh-lg">'.$simple_title.'<!-- January 24-30, 2022 --></span>
+                                    <span class="fw-normal fs-sm lh-sm '.$tripWebStatusClass.'">'.$tripWebStatus.'</span>'
+                                    . $date_cta .
+                                    '</div>
+                                </button>
+                            </h6>
+                        <div id="flush-collapse-'.$accordina_id.'" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample-'.$my.'">
+                            <hr>
+                            <div class="accordion-body '.strtolower($child_product_data['trip_status']).' d-flex justify-content-between">';
+                                
+                                    $all_month_content_output .= 
+                                    '<div class="accordion-book-now w-100">';
+                        } else {
 
                         if ($tripWebStatus == 'Private') {
                             if( true == $is_pc_trip ) {
@@ -429,7 +464,7 @@ if( $available_child_products ) {
                                         $all_month_content_output .= 
                                         '<div class="accordion-book-now">';
                                 }
-                                }
+                            }
                         } else if ($tripWebStatus == 'Not Guaranteed') {
                             $month_content_output .= 
                         '<div class="accordion-item" data-sku="'.$child_product_data['sku'].'" data-stella="'.$removeFromStella.'" data-status="'.$trip_status.'">
@@ -556,7 +591,13 @@ if( $available_child_products ) {
                                     $all_month_content_output .= 
                                     '<div class="accordion-book-now">';
                         }
+                    }
                                 $formUrl = '';
+
+                                if ($is_event) {
+                                    $formUrl = 'reserve-a-trip';
+                                }
+
                                 if( in_array($trip_status, $res_status) || $removeFromStella == true ){
                                     switch ( $activity ) {
                                         case TT_ACTIVITY_DASHBOARD_NAME_HW:
@@ -569,16 +610,12 @@ if( $available_child_products ) {
                                             break;
                                     }
                                 }
+
                                 if (in_array($trip_status, $wait_status)) {
                                     $formUrl = "waitlist";
                                 }
                                     if ( $is_cart_check ) {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
-                                            // if ($is_tdf) {
-                                            //     // Use formUrl if it exists
-                                            //     $button = '<a href="/tour-de-france/#deposit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Call to Book</a>';
-                                                
-                                            // } else {
                                                 if ($formUrl === "waitlist") {
                                                 $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Join Waitlist</a>';
                                                 } else {
@@ -590,33 +627,36 @@ if( $available_child_products ) {
                                         }
                                     } else {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
-                                            // if ($is_event) {
 
-                                            //     if ($is_event) {
-                                            //     // Use formUrl if it exists
-                                            //     $button = '<a href="/tour-de-france/#deposit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Call to Book</a>';
-                                            //     } else {
-                                            //         // Use formUrl if it exists
-                                            //     $button = '<a href="/tour-de-france/#deposit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Place Deposit</a>';
-                                            //     }
-                                            // } else {
+                                            if ($is_event) {
+
+                                                $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$simple_title.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
+                                            } else {
                                                 if ($formUrl === "waitlist") {
                                                     $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Join Waitlist</a>';
                                                     } else {
                                                         $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                                     }
-                                            // }
+                                            }
                                         } else {
                                             $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
                                         }
+                                    }
+
+                                    $double_occupancy = '';
+                                    $single_occupancy = '';
+
+                                    if (empty($is_event)) {
+                                        $double_occupancy = '<p class="fw-normal fs-xs lh-xs text-muted">Double Occupancy</p>';
+                                        $single_occupancy = '<p class="fw-normal fs-sm lh-sm text-muted">Single Occupancy from: +'.$singleSupplementPriceCurr.' <i class="bi bi-info-circle pdp-single-occupancy"></i></p>';
                                     }
                                 
                                 
                                     $month_content_output .= '<form class="cart grouped_form" action="'.esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ).'" method="post" enctype="multipart/form-data" target="_blank">
                                     <h5 class="fw-semibold"><span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>'.$child_product_data['price'].' </span> <span class="fw-normal fs-md lh-md">per person</span></h5>
-                                    <p class="fw-normal fs-xs lh-xs text-muted">Double Occupancy</p>
-                                    '.$button.'                                    
-                                    <p class="fw-normal fs-sm lh-sm text-muted">Single Occupancy from: +'.$singleSupplementPriceCurr.' <i class="bi bi-info-circle pdp-single-occupancy"></i></p>
+                                    '.$double_occupancy.'
+                                    '.$button.'
+                                    '.$single_occupancy.'
                                     <input type="hidden" name="' . esc_attr( 'quantity[' . $child_product_data['product_id'] . ']' ) . '" value="1" class="wc-grouped-product-add-to-cart-checkbox" />
                                     <input type="hidden" name="add-to-cart" value="'.$child_product_data['product_id'].'" />
                                     </form>
@@ -627,9 +667,9 @@ if( $available_child_products ) {
 
                     $all_month_content_output .= '<form class="cart grouped_form" action="'.esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ).'" method="post" enctype="multipart/form-data" target="_blank">
                                     <h5 class="fw-semibold"><span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>'.$child_product_data['price'].' </span> <span class="fw-normal fs-md lh-md">per person</span></h5>
-                                    <p class="fw-normal fs-xs lh-xs text-muted">Double Occupancy</p>
-                                    '.$button.'                                    
-                                    <p class="fw-normal fs-sm lh-sm text-muted">Single Occupancy from: +'.$singleSupplementPriceCurr.' <i class="bi bi-info-circle pdp-single-occupancy"></i></p>
+                                    '.$double_occupancy.'
+                                    '.$button.'
+                                    '.$single_occupancy.'
                                     <input type="hidden" name="' . esc_attr( 'quantity[' . $child_product_data['product_id'] . ']' ) . '" value="1" class="wc-grouped-product-add-to-cart-checkbox" />
                                     <input type="hidden" name="add-to-cart" value="'.$child_product_data['product_id'].'" />
                                     </form>
@@ -675,7 +715,7 @@ if( $available_child_products ) {
   
 }
 ?>
-<!-- <a class="pdp-anchor" id="dates-pricing"></a> -->
+
 <div class="container pdp-section dates-pricing-container" id="dates-pricing">
 <!-- <div class="container pdp-section dates-pricing-container"> -->
     <h3 class="fw-semibold">Dates & Pricing</h3>

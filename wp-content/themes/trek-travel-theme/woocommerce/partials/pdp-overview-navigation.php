@@ -4,6 +4,7 @@ global $product, $post;
 $product_id = $post->ID;
 
 $activity_terms = get_the_terms( $product_id, 'activity' );
+$is_event = has_term('Event Access', 'product_tag');
 
 foreach ( $activity_terms as $activity_term) {
 	$activity = $activity_term->name;   
@@ -15,7 +16,9 @@ foreach ( $activity_terms as $activity_term) {
 	<nav class="nav flex-column">
 		<a class="nav-link active" aria-current="page" href="#overview">Overview</a>
 		<a class="nav-link" href="#dates-pricing">Dates & Pricing</a>
-		<a class="nav-link" href="#itinerary">Itinerary</a>
+		<a class="nav-link" href="#itinerary">
+            <?php echo $is_event ? 'Details' : 'Itinerary'; ?>
+        </a>
 		<a class="nav-link" href="#hotels">Hotels</a>
 		<?php if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING): ?>
 			<a class="nav-link" href="#bikes-guides">Bikes & Gear</a>
@@ -52,57 +55,58 @@ foreach ( $activity_terms as $activity_term) {
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const header = document.querySelector('header');
-        const navigationSticky = document.querySelector('.navigation-sticky');
+	const header = document.querySelector('header');
+	const navigationSticky = document.querySelector('.navigation-sticky');
 
-        if (header && navigationSticky) {
-            const headerHeight = header.offsetHeight;
+	if (header && navigationSticky) {
+		const headerHeight = header.offsetHeight;
+		document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
 
-            // Set the CSS variable for header height
-            document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+		const adjustNavigationHeight = () => {
+			const viewportHeight = window.innerHeight;
+			const maxHeight = viewportHeight - headerHeight;
+			navigationSticky.style.maxHeight = `${maxHeight}px`;
+		};
 
-            // Adjust the max-height of the navigation sticky container
-            const adjustNavigationHeight = () => {
-                const viewportHeight = window.innerHeight;
-                const maxHeight = viewportHeight - headerHeight;
-                navigationSticky.style.maxHeight = `${maxHeight}px`;
-            };
+		adjustNavigationHeight();
+		window.addEventListener('resize', adjustNavigationHeight);
+	}
 
-            // Initial adjustment
-            adjustNavigationHeight();
+	const navLinks = document.querySelectorAll('.nav-link');
+	const observerOptions = {
+		root: null,
+		rootMargin: '0px',
+		threshold: Array.from({ length: 101 }, (_, i) => i / 100)
+	};
 
-            // Adjust on window resize
-            window.addEventListener('resize', adjustNavigationHeight);
-        }
+	const observer = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			const activeSectionId = entry.target.getAttribute('id');
+			if (entry.intersectionRatio > 0.5) {
+				navLinks.forEach(link => {
+					const targetHref = link.getAttribute('href');
+					if (targetHref) {
+						link.classList.toggle('active', targetHref.substring(1) === activeSectionId);
+					}
+				});
+			}
+		});
+	}, observerOptions);
 
-        const navLinks = document.querySelectorAll('.nav-link');
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: Array.from({ length: 101 }, (_, i) => i / 100) // Create an array of thresholds from 0 to 1 in increments of 0.01
-        };
+	navLinks.forEach(link => {
+		const targetHref = link.getAttribute('href');
+		const targetId = targetHref ? targetHref.substring(1) : null;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const activeSectionId = entry.target.getAttribute('id');
-                if (entry.intersectionRatio > 0.5) {
-                    navLinks.forEach(link => {
-                        const targetHref = link.getAttribute('href');
-                        if ( targetHref ) {
-                            link.classList.toggle('active', link.getAttribute('href').substring(1) === activeSectionId);
-                        }
-                    });
-                }
-            });
-        }, observerOptions);
+		if (targetId) {
+			const targetElement = document.getElementById(targetId);
+			if (targetElement) {
+				observer.observe(targetElement);
+			} else {
+				// 🔹 Hide the nav link if the target section doesn't exist
+				link.style.display = 'none';
+			}
+		}
+	});
+});
 
-        navLinks.forEach(link => {
-            const targetHref = link.getAttribute('href');
-            const targetId = targetHref ? targetHref.substring(1) : null;
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                observer.observe(targetElement);
-            }
-        });
-    });
 </script>

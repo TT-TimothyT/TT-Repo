@@ -4,7 +4,7 @@ $pdp_before = get_field('before');
 $pdp_before_after_identical = get_field('before_after_identical');
 $pdp_after = get_field('after');
 
-if (!empty($pdp_before) || !empty($pdp_after)) {
+if (!empty($pdp_before['before_title']) || !empty($pdp_after['after_title'])) {
     $pdp_before_image_url = $pdp_before['before_image'] ? wp_get_attachment_url($pdp_before['before_image']) : '';
     $pdp_after_image_url = $pdp_after['after_image'] ? wp_get_attachment_url($pdp_after['after_image']) : '';
 

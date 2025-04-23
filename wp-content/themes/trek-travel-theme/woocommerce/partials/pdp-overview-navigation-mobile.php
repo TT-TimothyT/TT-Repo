@@ -1,5 +1,7 @@
 <?php 
 // PDP - Overvew Navigation - Mobile
+
+$is_event = has_term('Event Access', 'product_tag');
 ?>
 
 <!-- PDP - Overview Navigation - Mobile  -->
@@ -16,7 +18,9 @@
 					<nav class="nav flex-column">
 						<a class="nav-link" aria-current="page" href="#overview">Overview</a>
 						<a class="nav-link" href="#dates-pricing">Dates & Pricing</a>
-						<a class="nav-link" href="#itinerary">Itinerary</a>
+						<a class="nav-link" href="#itinerary">
+							<?php echo $is_event ? 'Details' : 'Itinerary'; ?>
+						</a>
 						<a class="nav-link" href="#hotels">Hotels</a>
 						<a class="nav-link" href="#bikes-guides">Bikes & Guides</a>
 						<a class="nav-link" href="#inclusions">Inclusions</a>

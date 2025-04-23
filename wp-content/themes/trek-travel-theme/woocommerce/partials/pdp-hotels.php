@@ -8,7 +8,7 @@ $pdp_hotels = get_field('hotels');
 
 if ( $pdp_hotels ) :
 ?>
-<!-- <a class="pdp-anchor" id="hotels"></a> -->
+
 <div class="container pdp-section" id="hotels">
 
 	<h5 class="fw-semibold pdp-section__title">Hotels</h5>

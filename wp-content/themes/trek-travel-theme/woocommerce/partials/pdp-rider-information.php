@@ -11,6 +11,8 @@ foreach ( $activity_terms as $activity_term) {
 }
 
 $activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level', true );
+
+if(!empty($activity_level)) {
 ?>
 <div class="container pdp-section <?php if (!empty($activity) && $activity != TT_ACTIVITY_DASHBOARD_NAME_BIKING):?>hw<?php endif;?>" id="rider-information">
     <div class="row">
@@ -152,3 +154,4 @@ $activity_level = tt_get_custom_product_tax_value( $product_id, 'activity-level'
 
     <hr class="pdp-section__divider">
 </div>
+<?php } ?>

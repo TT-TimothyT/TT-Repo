@@ -2292,6 +2292,19 @@ add_filter('gform_dropbox_folder_path', function ($path, $entry, $form) {
     return "/Trek Travel/Apps/Gravity Forms Add-On/TT-Testimonials/{$safe_name}/";
 }, 10, 3);
 
+function trek_enqueue_guide_search_script() {
+    // Check for the specific page template
+    if (is_page_template('tpl-landing-guides.php')) {
+        wp_enqueue_script(
+            'guide-search',
+            get_template_directory_uri() . '/assets/js/tpl/team.js',
+            ['jquery'],
+            filemtime(get_template_directory() . '/assets/js/tpl/team.js'),
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'trek_enqueue_guide_search_script');
 
 
 // Lightbox JS

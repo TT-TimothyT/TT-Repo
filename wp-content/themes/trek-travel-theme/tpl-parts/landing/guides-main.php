@@ -76,10 +76,7 @@ if (!empty($guides)): ?>
             </a>
 
             <div class="g-modal lity-hide" id="guideModal-<?php echo $guide_id; ?>">
-                <!-- <div class="modal-dialog"> -->
-                <!-- <div class="m-outer"> -->
-                <button class="g-close" type="button" aria-label="Close (Press escape to close)" data-lity-close="" style="
-">×</button>
+                <button class="g-close" type="button" aria-label="Close (Press escape to close)" data-lity-close="" style="">×</button>
                     <div class="modal-content">
                     
                         <div class="g-header">
@@ -127,54 +124,10 @@ if (!empty($guides)): ?>
             <p id="no-results-message" style="display:none; text-align: center; font-weight: bold; margin-top: 20px;margin-bottom: 50px;">
                 No guides found.
             </p>
-        </div> <!-- End Bootstrap Grid Row -->
+        </div>
 </section>
 
 
 <?php else: ?>
     <p class="text-center">No guides found.</p>
 <?php endif; ?>
-
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("guide-search");
-    const guideCards = document.querySelectorAll(".g-search");
-    const noResultsMessage = document.getElementById("no-results-message");
-
-    function normalizeText(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    }
-
-    searchInput.addEventListener("keyup", function () {
-        const query = normalizeText(searchInput.value.trim());
-        let anyMatch = false;
-
-        guideCards.forEach(card => {
-            const href = card.getAttribute("href");
-            const modalId = href.replace("#", "");
-            const modal = document.getElementById(modalId);
-
-            // Combine text from all name spans
-            const nameSpans = card.querySelectorAll(".guide-name span");
-            let nameText = '';
-            nameSpans.forEach(span => {
-                nameText += span.textContent + ' ';
-            });
-
-            const nicknameText = modal?.querySelector(".g-nick")?.textContent || '';
-
-            const name = normalizeText(nameText.trim());
-            const nickname = normalizeText(nicknameText.trim());
-            const match = name.includes(query) || nickname.includes(query);
-
-            card.style.display = match ? "flex" : "none";
-            if (match) anyMatch = true;
-        });
-
-        noResultsMessage.style.display = anyMatch ? "none" : "block";
-    });
-});
-
-</script>

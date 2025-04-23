@@ -8,7 +8,7 @@ $pdp_bikes = get_field('bikes');
 
 if ( $pdp_bikes ) :
 ?>
-<!-- <a class="pdp-anchor" id="bikes-guides"></a> -->
+
 <div class="container pdp-section" id="bikes-guides">
 
 	<h5 class="fw-semibold pdp-section__title">Bikes & Gear</h5>

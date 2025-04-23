@@ -71,18 +71,25 @@ if ($product_overview) :
                         </p>
                     </div>
                 <?php endif; ?>
+                <?php if(!empty($trip_style)){ ?>
                 <div class="trip-style">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Trip Style <i class="bi bi-info-circle pdp-trip-styles"></i></p>
                     <p class="fw-medium fs-md lh-md mb-0"><?php echo ( $trip_style ? esc_html( $trip_style ) : ''); echo ( $trip_class ? ', ' . esc_html( $trip_class ) : '' ); ?></p>
                 </div>
+                <?php } ?>
+                <?php if(!empty($activity_level)){ ?>
                 <div class="rider-level">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Activity Level <i class="bi bi-info-circle pdp-rider-level"></i></p>
                     <p class="fw-medium fs-md lh-md"><?php echo $activity_level ? esc_html( $activity_level ) : ''; ?></p>
                 </div>
+                <?php } ?>
+                <?php if(!empty($hotel_level)){ ?>
                 <div class="hotel-level">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Hotel Level <i class="bi bi-info-circle pdp-hotel-levels"></i></p>
                     <p class="fw-medium fs-md lh-md mb-0"><?php echo $hotel_level ? esc_html( $hotel_level ) : ''; ?></p>
                 </div>
+                <?php } ?>
+                <?php if(!empty($pdp_bikes)){ ?>
                 <?php if (!empty($activity) && $activity == TT_ACTIVITY_DASHBOARD_NAME_BIKING): ?>
                 <div class="bikes">
                     <p class="fw-normal fs-sm lh-sm mb-0 text-muted">Bikes</p>
@@ -101,7 +108,8 @@ if ($product_overview) :
                     </p>
                     <a class="fs-sm view-details" href="#bikes-guides">View details</a>
                 </div>
-                <?php endif; ?>
+                <?php endif; 
+                } ?>
             </div>
             <div class="col-lg-2 pricing">
                 <p class="fw-normal fs-sm lh-sm mb-0 text-muted starting-from">Starting from</p>

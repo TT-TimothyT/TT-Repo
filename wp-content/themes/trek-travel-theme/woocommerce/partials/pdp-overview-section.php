@@ -10,8 +10,13 @@ if(count($attachment_ids) > 4){
 $message_icon = get_field('message_icon'); // Font Awesome field
 $message_text = get_field('message_text'); // WYSIWYG editor field
 
+
+if(!empty(get_the_excerpt()) && !empty(get_the_content())) {
+
 ?>
-<!-- <a class="pdp-anchor" id="overview"></a> -->
+
+
+
 <div class="mobile-share-wishlist desktop-hideme">
     <div class="overview-icons d-flex">
         <button type="button" class="btn btn-outline-dark share-link">
@@ -142,3 +147,4 @@ $message_text = get_field('message_text'); // WYSIWYG editor field
         </div>
     </div>
 </div>
+<?php } ?>
