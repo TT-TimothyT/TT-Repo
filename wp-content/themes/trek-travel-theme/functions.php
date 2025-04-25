@@ -2424,3 +2424,26 @@ function tt_check_honeypot($username, $email, $validation_errors) {
 }
 
 
+/**
+ * User Page -add Registration and Ordering by columns
+ */
+add_filter( 'manage_users_columns', 'tt_user_registration_column' );
+function tt_user_registration_column( $columns ) {
+    $columns['registered'] = 'Registration Date';
+    return $columns;
+}
+
+add_action( 'manage_users_custom_column', 'tt_show_user_registration_column_content', 10, 3 );
+function tt_show_user_registration_column_content( $value, $column_name, $user_id ) {
+    if ( 'registered' === $column_name ) {
+        $user = get_userdata( $user_id );
+        return date( 'Y-m-d H:i', strtotime( $user->user_registered ) );
+    }
+    return $value;
+}
+
+add_filter( 'manage_users_sortable_columns', 'tt_make_user_registration_column_sortable' );
+function tt_make_user_registration_column_sortable( $columns ) {
+    $columns['registered'] = 'user_registered';
+    return $columns;
+}
