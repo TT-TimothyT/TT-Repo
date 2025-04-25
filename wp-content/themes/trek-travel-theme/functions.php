@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * This is disabling the NetSuite user sync upon user registration. Most of the time it should stay commented out. However,
+ * if you have a SPAM flow from user reistration, just enable it and this will block the comments
+ *
+ * More information on this commit https://github.com/DevriX/Trek-Travel/commit/9ddf212cbb6a573dc7276f5e14796c793497ab04
+ */
+// define( 'TT_DISABLE_USER_SYNC', true ); // Most of the time it should stay commented out
+
+
+/**
  * Include Theme Constants.
  */
 $theme_constants = __DIR__ . '/inc/trek-constants.php';
