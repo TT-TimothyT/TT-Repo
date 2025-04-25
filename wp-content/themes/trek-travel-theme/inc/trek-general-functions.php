@@ -3945,7 +3945,7 @@ function tt_sync_user_metadata_from_ns_cb( $user_id )
     // Use TM NetSuite plugin to register customer in NetSuite.
     if ( class_exists('TMWNI_Loader') ) {
         $netsuite_user_client = new TMWNI_Loader();
-
+        $ns_user_id = '';
         if ( ! defined('TT_DISABLE_USER_SYNC') ) {
             $ns_user_id           = $netsuite_user_client->addUpdateNetsuiteCustomer( $user_id );
         }
@@ -3974,7 +3974,7 @@ function tt_cron_try_sync_user_ns_again_cb( $user_id, $attempt_number )
     // Use TM NetSuite plugin to register customer in NetSuite.
     if ( class_exists('TMWNI_Loader') ) {
         $netsuite_user_client = new TMWNI_Loader();
-
+        $ns_user_id = '';
         if ( ! defined('TT_DISABLE_USER_SYNC') ) {
             $ns_user_id           = $netsuite_user_client->addUpdateNetsuiteCustomer( $user_id );
         }
