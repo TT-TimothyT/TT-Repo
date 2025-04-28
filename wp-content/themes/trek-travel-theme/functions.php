@@ -2427,10 +2427,74 @@ function tt_verify_recaptcha($username, $email, $validation_errors) {
 // Honeypot check
 add_action('woocommerce_register_post', 'tt_check_honeypot', 11, 3);
 function tt_check_honeypot($username, $email, $validation_errors) {
-    if (!empty($_POST['tt-honey'])) {
+    if (!empty($_POST['tt-ba'])) {
         $validation_errors->add('bot_detected', __('Bot detected. Registration blocked.', 'woocommerce'));
     }
 }
+
+// Registration time check
+add_action('woocommerce_register_post', 'trek_validate_form_time_check', 10, 3);
+
+function trek_validate_form_time_check($username, $email, $validation_errors) {
+    // How many seconds minimum it should take to submit
+    $minimum_form_time = 9;
+
+    if (isset($_POST['form_start_time'])) {
+        $form_start_time = intval($_POST['form_start_time']);
+        $current_time = time();
+
+        if (($current_time - $form_start_time) < $minimum_form_time) {
+            $validation_errors->add('form_time_check', __('Form submitted too quickly. Please try again.', 'trek-travel-theme'));
+        }
+    } else {
+        // No timestamp? Probably suspicious
+        $validation_errors->add('form_time_check_missing', __('Form error detected. Please reload the page.', 'trek-travel-theme'));
+    }
+
+    return $validation_errors;
+}
+
+// IP Rate limiter
+add_action('woocommerce_register_post', 'trek_registration_rate_limiter', 20, 3);
+
+function trek_registration_rate_limiter($username, $email, $validation_errors) {
+    // Settings
+    $ip = sanitize_text_field($_SERVER['REMOTE_ADDR']);
+    $max_attempts = 5;
+    $time_window = 20 * MINUTE_IN_SECONDS; // 10 minutes
+    $now = time();
+
+    // Validate IP format
+    if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        return $validation_errors;
+    }
+
+    // Create unique transient key per IP
+    $transient_key = 'trek_reg_limit_' . wp_hash('register_' . $ip);
+
+    // Get current attempts
+    $attempt_data = get_transient($transient_key);
+
+    if ($attempt_data === false || ($now - $attempt_data['start_time']) > $time_window) {
+        $attempt_data = [
+            'count' => 1,
+            'start_time' => $now
+        ];
+    } else {
+        $attempt_data['count']++;
+    }
+
+    // Save attempt data
+    set_transient($transient_key, $attempt_data, $time_window);
+
+    // Block if limit exceeded
+    if ($attempt_data['count'] > $max_attempts) {
+        $validation_errors->add('too_many_attempts', __('Too many registration attempts from your IP. Please try again in a few minutes.', 'trek-travel-theme'));
+    }
+
+    return $validation_errors;
+}
+
 
 
 /**

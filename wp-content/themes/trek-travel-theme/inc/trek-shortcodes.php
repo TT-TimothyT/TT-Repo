@@ -62,9 +62,11 @@
                          <input class="form-check-input" name="is_subscribed" type="checkbox" value="yes" id="newsletterCheck">
                          <label for="newsletterCheck">Sign up for our Trek Travel Newsletter</label>
                      </div>
- 
-                     <input type="text" name="tt-honey" style="display:none;" tabindex="-1" autocomplete="off" />
- 
+                     
+                     <input type="text" name="tt-ba" style="display:none;" tabindex="-1" autocomplete="off" />
+
+                     <input type="hidden" name="form_start_time" value="<?php echo time(); ?>">
+
                      <div class="form-group my-1">
                          <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($google_api_key); ?>"></div>
                          <div class="invalid-feedback">Please verify you're human.</div>
