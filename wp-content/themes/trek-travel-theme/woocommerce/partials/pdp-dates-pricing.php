@@ -651,7 +651,7 @@ if( $available_child_products ) {
                                         $single_occupancy = '<p class="fw-normal fs-sm lh-sm text-muted">Single Occupancy from: +'.$singleSupplementPriceCurr.' <i class="bi bi-info-circle pdp-single-occupancy"></i></p>';
                                     }
 
-                                    $per_person_text = ( $child_product_sku !== '25TDFSEH0705' ) 
+                                    $per_person_text = ( $child_product_data['sku'] !== '25TDFSEH0705' ) 
                                         ? '<span class="fw-normal fs-md lh-md">per person</span>' 
                                         : '';
                                 
