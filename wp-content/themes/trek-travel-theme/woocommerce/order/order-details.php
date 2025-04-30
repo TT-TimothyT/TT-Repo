@@ -366,7 +366,7 @@ if ( $show_downloads ) {
 								<p class="mb-0 mt-1 mt-lg-2 fs-md fw-medium order-details__textbold"><?php echo wc_price( $deposit_amount ); ?> USD</p>
 								<p class="mt-2 mb-2 fs-md fw-medium order-details__textbold"><?php echo wc_price( $remaining_amount ); ?> USD</p>
 							<?php else : ?>
-								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><?php echo wc_price( floatval( $cart_total ) ); ?></p>
+								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><?php echo wc_price( floatval( $cart_total ) ); ?> USD</p>
 							<?php endif; ?>
 						</div>
 					</div>
