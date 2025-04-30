@@ -650,10 +650,14 @@ if( $available_child_products ) {
                                         $double_occupancy = '<p class="fw-normal fs-xs lh-xs text-muted">Double Occupancy</p>';
                                         $single_occupancy = '<p class="fw-normal fs-sm lh-sm text-muted">Single Occupancy from: +'.$singleSupplementPriceCurr.' <i class="bi bi-info-circle pdp-single-occupancy"></i></p>';
                                     }
+
+                                    $per_person_text = ( $child_product_sku !== '25TDFSEH0705' ) 
+                                        ? '<span class="fw-normal fs-md lh-md">per person</span>' 
+                                        : '';
                                 
                                 
                                     $month_content_output .= '<form class="cart grouped_form" action="'.esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ).'" method="post" enctype="multipart/form-data" target="_blank">
-                                    <h5 class="fw-semibold"><span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>'.$child_product_data['price'].' </span> <span class="fw-normal fs-md lh-md">per person</span></h5>
+                                    <h5 class="fw-semibold"><span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>'.$child_product_data['price'].' </span>'.$per_person_text.'</h5>
                                     '.$double_occupancy.'
                                     '.$button.'
                                     '.$single_occupancy.'
@@ -666,7 +670,7 @@ if( $available_child_products ) {
                     </div>';
 
                     $all_month_content_output .= '<form class="cart grouped_form" action="'.esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ).'" method="post" enctype="multipart/form-data" target="_blank">
-                                    <h5 class="fw-semibold"><span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>'.$child_product_data['price'].' </span> <span class="fw-normal fs-md lh-md">per person</span></h5>
+                                    <h5 class="fw-semibold"><span class="amount"><span class="woocommerce-Price-currencySymbol">$</span>'.$child_product_data['price'].' </span>'.$per_person_text.'</h5>
                                     '.$double_occupancy.'
                                     '.$button.'
                                     '.$single_occupancy.'
