@@ -13,7 +13,7 @@
      if (is_admin() || is_user_logged_in()) return;
  
      do_action('woocommerce_before_customer_login_form');
-     $google_api_key = G_CAPTCHA_SITEKEY ?: '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV'; 
+     $google_api_key = G_CAPTCHA_SITEKEY ?: '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV';
      ?>
      <div class="container">
          <div class="row my-4">
@@ -68,7 +68,7 @@
                      <input type="hidden" name="form_start_time" value="<?php echo time(); ?>">
 
                      <div class="form-group my-1">
-                         <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($google_api_key); ?>"></div>
+                     <div class="cf-turnstile" data-sitekey="0x4AAAAAABWi6ZkGeYPlL4wS" data-callback="javascriptCallback" data-theme="light"></div>
                          <div class="invalid-feedback">Please verify you're human.</div>
                      </div>
  
@@ -86,8 +86,9 @@
          </div>
      </div>
  
-     <!-- reCAPTCHA JS -->
-     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+     <!-- Turnstile JS -->
+     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
      <?php
  }
  
@@ -167,6 +168,10 @@ function trek_login_form()
                <a href="<?php echo esc_url(wp_lostpassword_url()); ?>"><?php esc_html_e('Forgot password?', 'trek-travel-theme'); ?></a>
             </div>
             <?php do_action('woocommerce_login_form'); ?>
+            <div class="form-group my-1">
+               <div class="cf-turnstile" data-sitekey="0x4AAAAAABWi6ZkGeYPlL4wS" data-callback="javascriptCallback" data-theme="light"></div>
+                  <div class="invalid-feedback">Please verify you're human.</div>
+            </div>
             
             <div class="row sign-btns">
                <div class="form-group col-12 col-md-6">
@@ -184,6 +189,7 @@ function trek_login_form()
          </form>
       </div>
    </div>
+   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <?php
    do_action('woocommerce_after_customer_login_form');
 }

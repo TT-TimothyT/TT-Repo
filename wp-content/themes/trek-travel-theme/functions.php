@@ -2400,29 +2400,167 @@ add_action( 'save_post', 'dx_tt_clear_homepage_elementor_cache' ); // Clears cac
 // }
 // add_filter('acf/location/rule_values/post_type', 'acf_location_rule_woocommerce_product_type_choices');
 
+// Turnstile Server-side Token Validation
+add_action('woocommerce_register_post', 'trek_turnstile_validate_registration', 5, 3);
 
-// Server-side reCAPTCHA validation
-add_action('woocommerce_register_post', 'tt_verify_recaptcha', 10, 3);
-function tt_verify_recaptcha($username, $email, $validation_errors) {
-    $secret = '6LfNqogpAAAAAAaUuOa7ZlahZIUimafk-BTnv4AQ';
+function trek_turnstile_validate_registration($username, $email, $validation_errors) {
+    if (!isset($_POST['cf-turnstile-response'])) {
+        $validation_errors->add('turnstile_missing', __('Human verification failed. Please try again.', 'your-theme'));
+        return $validation_errors;
+    }
 
-    if (isset($_POST['g-recaptcha-response'])) {
-        $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
+    $response = sanitize_text_field($_POST['cf-turnstile-response']);
+    $secret = '0x4AAAAAABWi6WFZMJqiGUSGPKqPKzQ9EBg';
+
+    $verify = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+        'body' => [
+            'secret' => $secret,
+            'response' => $response,
+            'remoteip' => $_SERVER['REMOTE_ADDR']
+        ]
+    ]);
+
+    $success = false;
+
+    if (!is_wp_error($verify)) {
+        $data = json_decode(wp_remote_retrieve_body($verify), true);
+        $success = !empty($data['success']);
+    }
+
+    if (!$success) {
+        $validation_errors->add('turnstile_failed', __('Human verification failed. Please try again.', 'your-theme'));
+    }
+
+    return $validation_errors;
+}
+
+// Login Form Turnstile Validation
+add_filter('woocommerce_process_login_errors', function($validation_error, $user_login, $user_password) {
+    if (!empty($_POST['login'])) {
+        if (empty($_POST['cf-turnstile-response'])) {
+            $validation_error->add('turnstile_missing', __('Please verify you are human.', 'trek-travel-theme'));
+            return $validation_error;
+        }
+
+        $token = sanitize_text_field($_POST['cf-turnstile-response']);
+        $secret = '0x4AAAAAABWi6WFZMJqiGUSGPKqPKzQ9EBg';
+
+        $response = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'body' => [
-                'secret' => $secret,
-                'response' => sanitize_text_field($_POST['g-recaptcha-response']),
-                'remoteip' => $_SERVER['REMOTE_ADDR'],
-            ],
+                'secret'   => $secret,
+                'response' => $token,
+                'remoteip' => $_SERVER['REMOTE_ADDR']
+            ]
         ]);
 
-        $result = json_decode(wp_remote_retrieve_body($response), true);
-        if (empty($result['success'])) {
-            $validation_errors->add('recaptcha_error', __('Captcha verification failed. Please try again.', 'woocommerce'));
+        if (is_wp_error($response)) {
+            $validation_error->add('turnstile_failed', __('Could not verify Turnstile. Please try again.', 'trek-travel-theme'));
+            return $validation_error;
         }
-    } else {
-        $validation_errors->add('recaptcha_missing', __('Please complete the captcha.', 'woocommerce'));
+
+        $data = json_decode(wp_remote_retrieve_body($response), true);
+        if (empty($data['success'])) {
+            $validation_error->add('turnstile_failed', __('Turnstile verification failed. Please try again.', 'trek-travel-theme'));
+        }
     }
-}
+
+    return $validation_error;
+}, 10, 3);
+
+// Intercept Login
+// add_action('wp_loaded', 'trek_intercept_login_and_validate_turnstile');
+
+// function trek_intercept_login_and_validate_turnstile() {
+//     if (
+//         isset($_POST['login']) &&
+//         isset($_POST['log']) &&
+//         isset($_POST['pwd']) &&
+//         !is_user_logged_in()
+//     ) {
+//         // Validate Turnstile
+//         if (empty($_POST['cf-turnstile-response'])) {
+//             wc_add_notice(__('Please verify you are human.', 'trek-travel-theme'), 'error');
+//             wp_safe_redirect(wp_get_referer() ?: wc_get_page_permalink('myaccount'));
+//             exit;
+//         }
+
+//         $token = sanitize_text_field($_POST['cf-turnstile-response']);
+//         $secret = '0x4AAAAAABWi6WFZMJqiGUSGPKqPKzQ9EBg';
+
+//         $response = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+//             'body' => [
+//                 'secret'   => $secret,
+//                 'response' => $token,
+//                 'remoteip' => $_SERVER['REMOTE_ADDR'],
+//             ]
+//         ]);
+
+//         if (is_wp_error($response) || empty(json_decode(wp_remote_retrieve_body($response), true)['success'])) {
+//             wc_add_notice(__('Turnstile verification failed. Please try again.', 'trek-travel-theme'), 'error');
+//             wp_safe_redirect(wp_get_referer() ?: wc_get_page_permalink('myaccount'));
+//             exit;
+//         }
+//     }
+// }
+
+// add_filter('woocommerce_process_login_errors', 'trek_turnstile_block_login', 10, 3);
+
+// function trek_turnstile_block_login($validation_error, $username, $password) {
+//     // Only run on actual login attempt
+//     if (isset($_POST['login'])) {
+//         if (empty($_POST['cf-turnstile-response'])) {
+//             $validation_error->add('turnstile_missing', __('Please verify you are human.', 'trek-travel-theme'));
+//             return $validation_error;
+//         }
+
+//         $token = sanitize_text_field($_POST['cf-turnstile-response']);
+//         $secret = '0x4AAAAAABWi6WFZMJqiGUSGPKqPKzQ9EBg';
+
+//         $response = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+//             'body' => [
+//                 'secret'   => $secret,
+//                 'response' => $token,
+//                 'remoteip' => $_SERVER['REMOTE_ADDR'],
+//             ]
+//         ]);
+
+//         if (is_wp_error($response)) {
+//             $validation_error->add('turnstile_failed', __('Could not validate Turnstile. Please try again.', 'trek-travel-theme'));
+//             return $validation_error;
+//         }
+
+//         $data = json_decode(wp_remote_retrieve_body($response), true);
+//         if (empty($data['success'])) {
+//             $validation_error->add('turnstile_invalid', __('Human verification failed. Please try again.', 'trek-travel-theme'));
+//         }
+//     }
+
+//     return $validation_error;
+// }
+
+
+// Server-side reCAPTCHA validation
+// add_action('woocommerce_register_post', 'tt_verify_recaptcha', 10, 3);
+// function tt_verify_recaptcha($username, $email, $validation_errors) {
+//     $secret = '6LfNqogpAAAAAAaUuOa7ZlahZIUimafk-BTnv4AQ';
+
+//     if (isset($_POST['g-recaptcha-response'])) {
+//         $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
+//             'body' => [
+//                 'secret' => $secret,
+//                 'response' => sanitize_text_field($_POST['g-recaptcha-response']),
+//                 'remoteip' => $_SERVER['REMOTE_ADDR'],
+//             ],
+//         ]);
+
+//         $result = json_decode(wp_remote_retrieve_body($response), true);
+//         if (empty($result['success'])) {
+//             $validation_errors->add('recaptcha_error', __('Captcha verification failed. Please try again.', 'woocommerce'));
+//         }
+//     } else {
+//         $validation_errors->add('recaptcha_missing', __('Please complete the captcha.', 'woocommerce'));
+//     }
+// }
 
 // Honeypot check
 add_action('woocommerce_register_post', 'tt_check_honeypot', 11, 3);
