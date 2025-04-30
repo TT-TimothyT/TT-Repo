@@ -334,6 +334,7 @@ if ( $show_downloads ) {
 							<?php if ( 0 < $discount_order ) : ?>
 								<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Discount', 'trek-travel-theme' ); ?></p>
 							<?php endif; ?>
+
 							<?php if ( ! empty( $dues ) ) : ?>
 								<p class="mb-0 pt-4 fw-medium fs-xl lh-lg order-details__text"><?php esc_html_e( 'Trip Total', 'trek-travel-theme' ); ?></p>
 								<p class="mb-0 mt-1 fs-md mt-lg-2 fw-medium order-details__textbold"><?php esc_html_e( 'Amount Paid', 'trek-travel-theme' ); ?></p>
@@ -361,9 +362,9 @@ if ( $show_downloads ) {
 								<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $discount_order ); ?></p>
 							<?php endif; ?>
 							<?php if ( ! empty( $dues ) ) : ?>
-								<p class="mb-0 pt-4 fw-medium fs-xl lh-lg order-details__text"><?php echo wc_price( floatval( $cart_total ) ); ?></p>
-								<p class="mb-0 mt-1 mt-lg-2 fs-md fw-medium order-details__textbold"><?php echo wc_price( $deposit_amount ); ?></p>
-								<p class="mt-2 mb-2 fs-md fw-medium order-details__textbold"><?php echo wc_price( $remaining_amount ); ?></p>
+								<p class="mb-0 pt-4 fw-medium fs-xl lh-lg order-details__text"><?php echo wc_price( floatval( $cart_total ) ); ?> USD</p>
+								<p class="mb-0 mt-1 mt-lg-2 fs-md fw-medium order-details__textbold"><?php echo wc_price( $deposit_amount ); ?> USD</p>
+								<p class="mt-2 mb-2 fs-md fw-medium order-details__textbold"><?php echo wc_price( $remaining_amount ); ?> USD</p>
 							<?php else : ?>
 								<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><?php echo wc_price( floatval( $cart_total ) ); ?></p>
 							<?php endif; ?>
