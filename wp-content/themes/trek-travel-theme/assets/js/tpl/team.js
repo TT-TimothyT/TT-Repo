@@ -36,3 +36,25 @@ document.addEventListener("DOMContentLoaded", function () {
 		noResultsMessage.style.display = anyMatch ? "none" : "block";
 	});
 });
+
+// Search Guide with url param
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("guide-search");
+
+    if (input && input.value.trim() !== '') {
+        // Trigger keyup event to activate search
+        const event = new Event('keyup');
+        input.dispatchEvent(event);
+
+        // Scroll to input with 100px offset from top
+        const offset = 350;
+        const inputTop = input.getBoundingClientRect().top + window.pageYOffset;
+        window.scrollTo({
+            top: inputTop - offset,
+            behavior: 'smooth'
+        });
+    }
+});
+
+
+

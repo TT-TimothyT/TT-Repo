@@ -31,10 +31,13 @@ if (!empty($guides)): ?>
                 ?>                
             </div>
             <div class="col-12 col-lg-6 col-xl-4 mx-auto">
-            
+                <h5 class="text-center mb-5">Find your Guides</h5>
                 <div class="guide-search-container">
                     <i class="fal fa-search search-icon"></i>
-                    <input type="text" id="guide-search" class="guide-search-input" placeholder="Search Guides">
+                    <input type="search" id="guide-search" class="guide-search-input" 
+       placeholder="Search Guides"
+       value="<?php echo isset($_GET['guide']) ? esc_attr($_GET['guide']) : ''; ?>">
+
                 </div>
             </div>
         </div>
