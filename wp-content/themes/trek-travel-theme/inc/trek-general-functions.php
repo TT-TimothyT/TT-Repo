@@ -6556,7 +6556,7 @@ function tt_send_referral_info_to_ns( $ns_referral_args )
     $ns_referral_info_response = $netSuiteClient->post(REFERRAL_SOURCE_SCRIPT_ID, json_encode($ns_referral_args));
 
     // Log result.
-    tt_add_error_log('[NetSuiteScript-1475:2] - Post referral', $ns_referral_args, $ns_referral_info_response);
+    tt_add_error_log('[NetSuiteScript-' . REFERRAL_SOURCE_SCRIPT_ID . '] - Post referral', $ns_referral_args, $ns_referral_info_response);
 
     // Return result with response from NS Script execution.
     return $ns_referral_info_response;
