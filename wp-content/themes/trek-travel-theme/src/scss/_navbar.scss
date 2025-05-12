@@ -288,8 +288,24 @@ li.n-header > a {
   margin-bottom: 10px !important;
 }
 
-li.nsub-header > a {
-  font-weight: 600 !important;
+li.nsub-header {
+
+  @include media-breakpoint-up(md) {
+    &.nsub-50 {
+      > ul.mega-sub-menu {
+        display: flex !important;
+        flex-wrap: wrap;
+
+        > li {
+          width: 50% !important;
+        }
+      }
+    }
+  }
+  
+    > a {
+    font-weight: 600 !important;
+    }
 }
 
 #mega-menu-wrap-main-menu #mega-menu-main-menu li.category-sub-menu.category-sub-menu:not(:last-child) {

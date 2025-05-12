@@ -12022,7 +12022,7 @@ input[type=password]::-ms-reveal, input[type=password]::-ms-clear {
     display: none !important;
   }
   #mega-menu-wrap-main-menu #mega-menu-main-menu .mega-sub-menu .mega-sub-menu .mega-sub-menu .mega-sub-menu {
-    display: block !important;
+    display: block;
   }
   #mega-menu-wrap-main-menu #mega-menu-main-menu > li > a {
     display: flex !important;
@@ -12492,6 +12492,15 @@ li.n-header > a {
   margin-bottom: 10px !important;
 }
 
+@media (min-width: 768px) {
+  li.nsub-header.nsub-50 > ul.mega-sub-menu {
+    display: flex !important;
+    flex-wrap: wrap;
+  }
+  li.nsub-header.nsub-50 > ul.mega-sub-menu > li {
+    width: 50% !important;
+  }
+}
 li.nsub-header > a {
   font-weight: 600 !important;
 }
