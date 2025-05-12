@@ -281,3 +281,21 @@
   --#{$prefix}navbar-toggler-border-color: #{$navbar-dark-toggler-border-color};
   --#{$prefix}navbar-toggler-icon-bg: #{escape-svg($navbar-dark-toggler-icon-bg)};
 }
+
+li.n-header > a {
+  text-align: center !important;
+  border-bottom: 2px solid $blue !important;
+  margin-bottom: 10px !important;
+}
+
+li.nsub-header > a {
+  font-weight: 600 !important;
+}
+
+#mega-menu-wrap-main-menu #mega-menu-main-menu li.category-sub-menu.category-sub-menu:not(:last-child) {
+  border-right: unset !important;
+}
+
+#mega-menu-wrap-main-menu #mega-menu-main-menu > li.mega-menu-megamenu > ul.mega-sub-menu {
+  border-bottom: 3px solid $blue !important;
+}
