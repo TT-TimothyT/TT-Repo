@@ -2342,9 +2342,30 @@ function tt_items_select_options($item_name = "", $optionId="")
                     // Remove the "Non-Rider" option from options list.
                     unset( $options[$index] );
 
-                    // Add the "Non-Rider" option before last option.
-                    array_splice( $options, count( $options ) - 1, 0, array( $non_rider_option ) );
+                    // Add the "Non-Rider" option at the end of the array
+                    $options[] = $non_rider_option;
                 }
+
+                /**
+                 * Sort the remaining options to match the desired order:
+                 * 1 - Bringing own
+                 * 3 - Small (51-57cm)
+                 * 2 - Medium (54-60cm)
+                 * 6 - Large (58-63cm)
+                 * 7 - X-Large (60-66cm)
+                 * 5 - Non-Rider (already added at the end)
+                 */
+                usort($options, function($a, $b) {
+                    $order = [1, 3, 2, 6, 7];
+                    $pos_a = array_search($a['optionId'], $order);
+                    $pos_b = array_search($b['optionId'], $order);
+
+                    // If not found in order array, put at the end
+                    if ($pos_a === false) $pos_a = 999;
+                    if ($pos_b === false) $pos_b = 999;
+
+                    return $pos_a - $pos_b;
+                });
             }
 
             // Sort options ASC by value in optionValue key if item name is "syncHeights" - only for Rider Height is available this.
