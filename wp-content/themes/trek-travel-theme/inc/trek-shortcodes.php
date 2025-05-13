@@ -35,15 +35,17 @@
                      <h2 class="login-title mb-2"><?php esc_html_e('Sign Up', 'trek-travel-theme'); ?></h2>
  
                      <div class="form-group form-floating">
-                         <input type="text" class="input-text form-control" name="billing_first_name" id="InputFname" pattern="[A-Za-z]+" placeholder="First Name" required />
-                         <label for="InputFname">First Name*</label>
-                         <div class="invalid-feedback">Only letters are allowed.</div>
+                        <input type="text" class="input-text form-control" name="billing_first_name" id="InputFname"
+                           pattern="[A-Za-zÀ-ÿĀ-žḀ-ỿ'’\- ]+" placeholder="First Name" required />
+                        <label for="InputFname">First Name*</label>
+                        <div class="invalid-feedback">Only valid characters are allowed (letters, spaces, hyphens, apostrophes).</div>
                      </div>
- 
+
                      <div class="form-group form-floating my-1">
-                         <input type="text" class="input-text form-control" name="billing_last_name" id="InputLname" pattern="[A-Za-z]+" placeholder="Last Name" required />
-                         <label for="InputLname">Last Name*</label>
-                         <div class="invalid-feedback">Only letters are allowed.</div>
+                        <input type="text" class="input-text form-control" name="billing_last_name" id="InputLname"
+                           pattern="[A-Za-zÀ-ÿĀ-žḀ-ỿ'’\- ]+" placeholder="Last Name" required />
+                        <label for="InputLname">Last Name*</label>
+                        <div class="invalid-feedback">Only valid characters are allowed (letters, spaces, hyphens, apostrophes).</div>
                      </div>
  
                      <div class="form-group form-floating my-1">
