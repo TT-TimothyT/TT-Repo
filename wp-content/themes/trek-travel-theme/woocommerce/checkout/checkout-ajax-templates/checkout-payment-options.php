@@ -62,9 +62,9 @@ $remaining_amount        = 'full' === $pay_amount ? 0 : $cart_total - $deposit_a
 	<div>
 		<input type="radio" name="pay_amount" required="required" value="full"<?php echo esc_attr( 'full' === $pay_amount ? ' ' . 'checked' : '' ); ?>>
 		<div class="checkout-payment__paydep rounded-1 d-flex justify-content-between align-items-center">
-			<p class="fs-lg lh-lg fw-medium mb-0"><?php esc_html_e( 'Pay Full Amount:', 'trek-travel-theme' ); ?>
+			<p class="fs-xl lh-lg fw-normal mb-0"><?php esc_html_e( 'Pay Full Amount:', 'trek-travel-theme' ); ?>
 				<span>
-					<span class="amount">
+					<span class="amount fw-medium">
 						<span class="woocommerce-Price-currencySymbol"></span>
 						<?php echo esc_attr( $cart_total ); ?>
 					</span>
