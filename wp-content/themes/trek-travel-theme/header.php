@@ -194,7 +194,7 @@ $is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters
 				</div>
 			<?php endif; ?>
 			<div class="account-in-header">
-				<a class="d-flex align-items-center" href="<?php echo is_user_logged_in() ? site_url('my-account') : site_url('login'); ?>"><i class="bi bi-person"></i></a>
+				<a class="d-flex align-items-center" data-lity href="#login-register-modal"><i class="bi bi-person"></i></a>
 			</div>
 			<a href="<?php echo site_url('tours/all/') ?>" class="btn btn-primary find-a-trip">Find a trip</a>
 		</div>

@@ -1,13 +1,18 @@
-// Sign in
+// Login Register Modal
 
-.sign-welcome {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  height: 100%;
-  justify-content: center;
-  // justify-content: space-between;
-  // gap: 30px;
+.lity-active button.lity-close {
+  position: absolute;
+    top: -20px;
+    right: -20px;
+    background-color: $blue;
+    border-radius: 50%;
+}
+
+#login-register-modal {
+  background: white;
+  border-radius: 5px;
+  padding: 3rem;
+
 
   .sign-logo {
     display: flex;
@@ -20,22 +25,48 @@
     }
   }
 
+  .nav-tabs {
+
+    .nav-item {
+      flex: 1;
+
+      .nav-link {
+        color: $gray-500;
+        text-align: center;
+        background-color: $gray-100;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          box-shadow: 0px -3px 4px -2px rgba(0, 0, 0, 0.3);
+        }
+        &.active {
+          color: black;
+          background-color: white;
+          border-bottom: 3px solid $blue;
+          box-shadow: none;
+
+        }
+      }
+    }
+  }
+
   .sign-text {
     text-align: center;
-    width: 50%;
+    // width: 50%;
   }
 
   @include media-breakpoint-up(sm) {
 
     justify-content: center;
-    flex-direction: column;
+    // flex-direction: column;
 
     .sign-text {
       margin-bottom: 20px;
     }
 
     .sign-logo {
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
   }
 
@@ -60,25 +91,40 @@
 
   @include media-breakpoint-down(sm) {
     // flex-direction: column-reverse;
-    height: fit-content;
+    // height: fit-content;
     // margin-top: 20px;
 
-    .sign-logo {
-      display: none;
-    }
+    // .sign-logo {
+    //   display: none;
+    // }
   }
+
 }
 
-.register-form {
+// Sign in
 
-  .woocommerce-privacy-policy-text {
-    font-size: 0.75rem;
-    line-height: normal;
-  }
+.sign-welcome {
+  display: flex;
+  flex-direction: c;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+  // justify-content: space-between;
+  // gap: 30px;
+
+  
 }
+
+// .register-form {
+
+//   .woocommerce-privacy-policy-text {
+//     font-size: 0.75rem;
+//     line-height: normal;
+//   }
+// }
 
 .login-form {
-  margin-top: 80px;
+  margin: auto;
 
   .sign-btns {
     justify-content: space-between;
@@ -111,23 +157,23 @@
 
   @include media-breakpoint-up(lg) {
     // margin-left: auto;
-    margin-right: auto;
+    // margin-right: auto;
   }
 
   @include media-breakpoint-up(md) {
-    margin-left: 30px;
+    // margin-left: 30px;
   }
 
   @include media-breakpoint-down(lg) {
-    margin-top: 50px;
+    // margin-top: 50px;
     
   }
 
   @include media-breakpoint-down(md) {
-    margin-top: 30px;
+    // margin-top: 30px;
   }
   @include media-breakpoint-down(sm) {
-    margin-left: auto;
+    // margin-left: auto;
   }
 }
 

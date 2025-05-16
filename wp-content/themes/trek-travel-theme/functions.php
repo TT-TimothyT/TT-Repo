@@ -2318,10 +2318,10 @@ add_action('wp_enqueue_scripts', 'trek_enqueue_guide_search_script');
 
 // Lightbox JS
 function enqueue_lity_scripts() {
-    if (is_page_template('tpl-landing-guides.php')) { 
+    // if (is_page_template('tpl-landing-guides.php')) { 
         wp_enqueue_style('lity-css', 'https://cdnjs.cloudflare.com/ajax/libs/lity/2.4.1/lity.min.css', array(), '2.4.1');
         wp_enqueue_script('lity-js', 'https://cdnjs.cloudflare.com/ajax/libs/lity/2.4.1/lity.min.js', array('jquery'), '2.4.1', true);
-    }
+    // }
 }
 add_action('wp_enqueue_scripts', 'enqueue_lity_scripts');
 

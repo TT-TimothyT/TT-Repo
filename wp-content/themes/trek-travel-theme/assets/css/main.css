@@ -23392,72 +23392,89 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   }
 }
 
-.sign-welcome {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  height: 100%;
-  justify-content: center;
+.lity-active button.lity-close {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  background-color: #28AAE1;
+  border-radius: 50%;
 }
-.sign-welcome .sign-logo {
+
+#login-register-modal {
+  background: white;
+  border-radius: 5px;
+  padding: 3rem;
+}
+#login-register-modal .sign-logo {
   display: flex;
 }
-.sign-welcome .sign-logo img {
+#login-register-modal .sign-logo img {
   display: flex;
   object-fit: contain;
   width: 100%;
   max-height: 200px;
 }
-.sign-welcome .sign-text {
+#login-register-modal .nav-tabs .nav-item {
+  flex: 1;
+}
+#login-register-modal .nav-tabs .nav-item .nav-link {
+  color: #666666;
   text-align: center;
-  width: 50%;
+  background-color: #F4F4F4;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+#login-register-modal .nav-tabs .nav-item .nav-link:hover {
+  box-shadow: 0px -3px 4px -2px rgba(0, 0, 0, 0.3);
+}
+#login-register-modal .nav-tabs .nav-item .nav-link.active {
+  color: black;
+  background-color: white;
+  border-bottom: 3px solid #28AAE1;
+  box-shadow: none;
+}
+#login-register-modal .sign-text {
+  text-align: center;
 }
 @media (min-width: 576px) {
-  .sign-welcome {
+  #login-register-modal {
     justify-content: center;
-    flex-direction: column;
   }
-  .sign-welcome .sign-text {
+  #login-register-modal .sign-text {
     margin-bottom: 20px;
   }
-  .sign-welcome .sign-logo {
-    margin-bottom: 30px;
+  #login-register-modal .sign-logo {
+    margin-bottom: 10px;
   }
 }
 @media (max-width: 1199.98px) {
-  .sign-welcome .sign-text {
+  #login-register-modal .sign-text {
     width: 100%;
   }
 }
 @media (max-width: 991.98px) {
-  .sign-welcome .sign-logo img {
+  #login-register-modal .sign-logo img {
     max-height: 175px;
   }
 }
 @media (max-width: 767.98px) {
-  .sign-welcome {
+  #login-register-modal {
     margin-top: 50px;
   }
-  .sign-welcome .sign-logo img {
+  #login-register-modal .sign-logo img {
     max-height: 100px;
   }
 }
-@media (max-width: 575.98px) {
-  .sign-welcome {
-    height: fit-content;
-  }
-  .sign-welcome .sign-logo {
-    display: none;
-  }
-}
-
-.register-form .woocommerce-privacy-policy-text {
-  font-size: 0.75rem;
-  line-height: normal;
+.sign-welcome {
+  display: flex;
+  flex-direction: c;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
 }
 
 .login-form {
-  margin-top: 80px;
+  margin: auto;
 }
 .login-form .sign-btns {
   justify-content: space-between;
@@ -23481,32 +23498,6 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   display: flex;
   justify-content: flex-end;
 }
-@media (min-width: 992px) {
-  .login-form {
-    margin-right: auto;
-  }
-}
-@media (min-width: 768px) {
-  .login-form {
-    margin-left: 30px;
-  }
-}
-@media (max-width: 991.98px) {
-  .login-form {
-    margin-top: 50px;
-  }
-}
-@media (max-width: 767.98px) {
-  .login-form {
-    margin-top: 30px;
-  }
-}
-@media (max-width: 575.98px) {
-  .login-form {
-    margin-left: auto;
-  }
-}
-
 .banner-hero-full {
   display: flex;
   align-items: center;

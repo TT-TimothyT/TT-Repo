@@ -16,23 +16,14 @@
      $google_api_key = G_CAPTCHA_SITEKEY ?: '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV';
      ?>
      <div class="container">
-         <div class="row my-4">
-             <div class="col-12 col-md-5 col-xl-6">
-                 <div class="sign-welcome">
-                     <div class="h5 sign-text">Join Trek Travel Today! <br>
-                         <div class="h6 my-1">Sign up with Trek Travel to personalize your experience and view trips.</div>
-                     </div>
-                     <div class="sign-logo">
-                         <img src="/wp-content/themes/trek-travel-theme/assets/images/TT-stacked-black-blue-crop.png" alt="">
-                     </div>
-                 </div>
-             </div>
  
-             <div class="col-12 col-md-6 col-xl-4 login-form register-form">
+             <div class="col-12 login-form register-form">
                  <form method="post" class="woocommerce-form woocommerce-form-register register needs-validation" novalidate <?php do_action('woocommerce_register_form_tag'); ?>>
                      <?php do_action('woocommerce_register_form_start'); ?>
  
-                     <h2 class="login-title mb-2"><?php esc_html_e('Sign Up', 'trek-travel-theme'); ?></h2>
+                     <div class="h5 sign-text">Join Trek Travel Today! <br>
+                         <div class="h6 my-1">Sign up with Trek Travel to personalize your experience and view trips.</div>
+                     </div>
  
                      <div class="form-group form-floating">
                         <input type="text" class="input-text form-control" name="billing_first_name" id="InputFname"
@@ -122,8 +113,8 @@ function trek_login_form()
       $('body').removeClass('elementor-kit-14');
    });
 </script>
-   <div class="row justify-content-between">
-      <div id="trek-login-responses"></div>
+   <div class="row">
+      <!-- <div id="trek-login-responses"></div>
       <div class="col-12 col-md-5 col-xl-6">
          <div class="sign-welcome">
             <div class="h5 sign-text">Welcome! <br> Find your vacation of a lifetime.</div>
@@ -131,12 +122,13 @@ function trek_login_form()
                <img src="/wp-content/themes/trek-travel-theme/assets/images/TT-stacked-black-blue-crop.png" alt="">
             </div>
          </div>
-      </div>
-      <div class="col-12 col-md-6 col-xl-4 login-form">
-         <div class="d-flex align-items-baseline justify-content-between">
-            <h2 class="login-title"><?php esc_html_e('Log In', 'trek-travel-theme'); ?></h2>
-            <a href="<?php echo esc_url(site_url('register')); ?>"><?php esc_html_e('Don\'t have an account?', 'trek-travel-theme'); ?></a>
-         </div>
+      </div> -->
+      <div class="col-12 login-form">
+
+         <!-- <div class="d-flex align-items-baseline justify-content-between"> -->
+            <div class="h5 sign-text">Welcome! <br> Find your vacation of a lifetime.</div>
+
+         <!-- </div> -->
          <p class="re-register-info">Log in to see upcoming trips, preferences, and much more.</strong></p>
          <form id="login-form" class="woocommerce-form-login needs-validation" method="post" name="trek-login-form" novalidate>
             <?php do_action('woocommerce_login_form_start'); ?>
@@ -176,15 +168,10 @@ function trek_login_form()
             </div>
             
             <div class="row sign-btns">
-               <div class="form-group col-12 col-md-6">
+               <div class="form-group col-12">
                   <?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
-                  <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-primary" name="login" value="<?php esc_attr_e('Sign in', 'trek-travel-theme'); ?>"><?php esc_html_e('Log in', 'trek-travel-theme'); ?></button>
+                  <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-white" name="login" value="<?php esc_attr_e('Sign in', 'trek-travel-theme'); ?>"><?php esc_html_e('Log in', 'trek-travel-theme'); ?></button>
                   <input type="hidden" name="http_referer" value="<?php echo $redirect_url; ?>">
-               </div>
-               <div class="col-12 col-md-5 ">
-                  <a class="register-btn btn btn-white" href="<?php echo esc_url(site_url('register')); ?>">
-                        <?php esc_html_e('Sign up', 'trek-travel-theme'); ?>
-                  </a>   
                </div>
             </div>
             <?php do_action('woocommerce_login_form_end'); ?>
@@ -475,4 +462,50 @@ function trek_my_trip_shortcode_cb() {
    } else {
       echo '<div class="alert alert-danger" role="alert">The <code>my-trip.php</code> is missing. Please create file at <code>woocommerce/myaccount/my-trip.php</code></div>';
    }
+}
+
+
+add_shortcode('trek-login-register-modal', 'trek_login_register_modal');
+function trek_login_register_modal() {
+
+    ob_start();
+    ?>
+
+<!-- Modal Content -->
+<div id="login-register-modal" class="lity-hide">
+    <div class="container modal-container">
+    <div class="row"> 
+    <div class="col"> 
+         <div class="row"> 
+            <div id="trek-login-responses"></div>
+            <div class="col-12 col-xl-9 mx-auto">
+                  <div class="sign-logo">
+                     <img src="/wp-content/themes/trek-travel-theme/assets/images/TT-stacked-black-blue-crop.png" alt="">
+                  </div>
+            </div>
+         </div>
+        <ul class="nav nav-tabs mb-3" id="loginTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="login-tab" data-bs-toggle="tab" href="#login" role="tab">Log In</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="register-tab" data-bs-toggle="tab" href="#register" role="tab">Sign Up</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="loginTabContent">
+            <div class="tab-pane fade show active" id="login" role="tabpanel">
+                <?php trek_login_form(); ?>
+            </div>
+            <div class="tab-pane fade" id="register" role="tabpanel">
+                <?php trek_registration_form_cb(); ?>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</div>
+
+    <?php
+    return ob_get_clean();
 }

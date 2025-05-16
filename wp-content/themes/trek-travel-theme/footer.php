@@ -104,6 +104,8 @@
 		<?php endif; ?>
 	</footer><!-- /#footer -->
 	</div><!-- /#wrapper - open in header.php -->
+	<?php echo trek_login_register_modal(); ?>
+
 	<?php
 	wp_footer();
 	?>
