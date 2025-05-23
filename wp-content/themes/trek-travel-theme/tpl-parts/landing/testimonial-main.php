@@ -1,26 +1,12 @@
 <?php
-
-$page_contents = get_field('page_content');
 $form_id = get_field('form_selection');
 
 ?>
 
 <main class="testimonial-main">
-<?php if (!empty($page_contents)): ?>
-    <?php foreach ($page_contents as $content): ?>
-    <section class="page-content">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-12 col-lg-8 mx-auto mb-4">
-                    <div class="content-box">
-                        <?php echo wp_kses_post($content['text_content']); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <?php endforeach; ?>
-    <?php endif; ?>
+
+    <?php get_template_part('tpl-parts/common/wysiwyg-repeater'); ?>
+    <?php get_template_part('tpl-parts/common/media-repeater'); ?>
 
 
     <section class="main-content" id="t-form">
@@ -30,8 +16,6 @@ $form_id = get_field('form_selection');
                 <div class="col-12 col-xl-8 mx-auto">
                 <div class="f-header h3 text-center">Your Story Starts Here</div>
                     <div class="f-box" >
-                        
-
                         <?php echo do_shortcode('[gravityform id="' . esc_attr($form_id) . '" title="false" description="false" ajax="true"]'); ?>
                     </div>
                 </div>           
