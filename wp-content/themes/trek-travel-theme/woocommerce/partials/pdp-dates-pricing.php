@@ -623,7 +623,13 @@ if( $available_child_products ) {
                                                 }
                                             // }
                                         } else {
-                                            $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                            $button = '<button type="button"
+                            class="btn btn-primary btn-md rounded-1 dates-pricing-book-now open-book-now"
+                            data-form-id="'.esc_attr($accordina_id).'"
+                            data-return-url="/?trip='.urlencode($product->get_name()).'">
+                            Book now
+                        </button>
+';
                                         }
                                     } else {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
@@ -639,7 +645,13 @@ if( $available_child_products ) {
                                                     }
                                             }
                                         } else {
-                                            $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                            $button = '<a href="#login-register-modal"
+                                                data-lity
+                                                class="btn btn-primary btn-md rounded-1 dates-pricing-book-now open-login-modal"
+                                                data-return-url="'.esc_url( get_permalink() . '?trip=' . urlencode( $product->get_name() ) ).'">
+                                                Book Now
+                                                </a>
+';
                                         }
                                     }
 
@@ -956,6 +968,49 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+// book now modals js
+
+jQuery(document).ready(function($) {
+  $(document).on('click', '.open-login-modal', function() {
+    const returnUrl = $(this).data('return-url');
+    $('#login-register-modal input[name="http_referer"]').val(returnUrl);
+  });
+});
+
+
+jQuery(document).ready(function($) {
+    let returnUrl = '';
+
+    // Handle click on Book Now button
+    $(document).on('click', '.open-book-now', function(e) {
+        e.preventDefault();
+
+        returnUrl = $(this).data('return-url');
+
+        // Simulated condition: if cart has an item (replace with your real check or AJAX call)
+        const cartHasItems = true;
+
+        if (cartHasItems) {
+            $('#tripBookingModal').modal('show');
+        } else {
+            openLoginModal(returnUrl);
+        }
+    });
+
+    // Proceed button inside tripBookingModal
+    $(document).on('click', '.proceed-booking-btn', function() {
+        openLoginModal(returnUrl);
+    });
+
+    function openLoginModal(url) {
+        const modal = $('#login-register-modal');
+        modal.find('input[name="http_referer"]').val(url);
+        lity('#login-register-modal');
+    }
+});
+
 
 
 </script>
