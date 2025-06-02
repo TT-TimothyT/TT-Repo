@@ -160,8 +160,7 @@ class CommonIntegrationFunctions {
 			$order_sync = $wpdb->get_results( "SELECT DISTINCT meta_value FROM $wpdb->post_meta WHERE meta_key = 'ns_order_internal_id'", OBJECT );
 		}
 
-		return $order_sync; 	
-		
+		return $order_sync;     
 	}
 
 	public function getOrderSyncLogs() {

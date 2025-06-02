@@ -23,8 +23,10 @@
 
 namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 
+use SkyVerge\WooCommerce\Cybersource\CaptureContextRetriever;
+use SkyVerge\WooCommerce\Cybersource\Flex_Helper;
 use SkyVerge\WooCommerce\Cybersource\Gateway;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -176,7 +178,7 @@ class Payment_Form extends Base_Payment_Form {
 	 *
 	 * @since 2.1.0
 	 *
-	 * @return string[]
+	 * @return string
 	 */
 	private function get_flex_microform_key() {
 
@@ -184,7 +186,7 @@ class Payment_Form extends Base_Payment_Form {
 
 			try {
 
-				$this->flex_microform_key_id = $this->get_gateway()->get_api()->generate_public_key()->get_key_id();
+				$this->flex_microform_key_id = CaptureContextRetriever::getCaptureContext();
 
 			} catch ( Framework\SV_WC_API_Exception $exception ) {
 
@@ -302,9 +304,10 @@ class Payment_Form extends Base_Payment_Form {
 
 		parent::render_js();
 
-		if ( ! empty( $this->get_flex_microform_key() ) && in_array( $this->get_gateway()->get_id(), $this->payment_form_js_rendered, true ) ) {
+		if (in_array($this->get_gateway()->get_id(), $this->payment_form_js_rendered, true) && ! empty($this->get_flex_microform_key())) {
+			Flex_Helper::addFlexMicroformScriptHooks();
 
-			wp_enqueue_script( 'wc-cybersource-flex-microform' );
+			wp_enqueue_script('wc-cybersource-flex-microform');
 		}
 	}
 

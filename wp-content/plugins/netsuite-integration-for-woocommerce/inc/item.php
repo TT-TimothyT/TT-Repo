@@ -19,7 +19,7 @@ class ItemClient extends CommonIntegrationFunctions {
 	public function __construct() {
 		if (empty($this->netsuiteService) && TMWNI_Settings::areCredentialsDefined()) {
 			// Initializing NetSuite service
-			$this->netsuiteService = new NetSuiteService(null, ['exceptions' => true]);
+			$this->netsuiteService = new NetSuiteService(null, array( 'exceptions' => true ));
 		}
 	}
 	/**
@@ -31,38 +31,43 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * @param string $price_currency
 	 * @param string $urlAPIEndPoint
 	 */
-	public function getProductPriceData($skus, $map_field_name, $price_level_name, $price_currency, $urlAPIEndPoint,$by_queue) {
+	public function getProductPriceData( $skus, $map_field_name, $price_level_name, $price_currency, $urlAPIEndPoint, $by_queue ) {
 		global $TMWNI_OPTIONS;
 
 		$select_fields = "item.$map_field_name, currency.id AS currency_code, pricing.*";
 
-		$pricing_query = [
+		$pricing_query = array(
 			'q' => "SELECT $select_fields 
 			FROM item 
 			LEFT JOIN pricing ON pricing.item = item.id LEFT JOIN currency ON currency.id = pricing.currency 
 			WHERE item.$map_field_name IN ($skus) 
 			AND pricing.pricelevel = '$price_level_name' 
-			AND currency.id = '$price_currency'"
-		];
+			AND currency.id = '$price_currency'
+			AND pricing.priceqty = 1",
+		);
 
 		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
-		$response = $this->NetsuiteRestAPIClient->nsRESTRequest('post', $urlAPIEndPoint, true, $pricing_query);	
+		$response = $this->NetsuiteRestAPIClient->nsRESTRequest('post', $urlAPIEndPoint, true, $pricing_query); 
 
 		if (isset($response['items'])) {
 			update_option('tm_rest_web_service_enable', 'yes');
 		}
 		if (isset($response['items']) && !empty($response['items'])) {
 			$this->updateProductPrice($response['items'], $skus, $map_field_name, $by_queue);
+			/**
+					*  Fires after the price update process has been completed, allowing you to modify or log the status.
+					*
+					* @since 1.6.6
+			*/
+			do_action('tm_ns_after_update_price', $response, $skus, $map_field_name, $urlAPIEndPoint);
 			
 		} else {
 			if (isset($response['o:errorDetails'][0]['o:errorCode'])) {
 				$errorCode = $response['o:errorDetails'][0]['o:errorCode']; 
-			} else {
-				if (isset($response['items']) && empty($response['items'])) {
+			} elseif (isset($response['items']) && empty($response['items'])) {
 					$errorCode = 'Multiple item sku not found on netsuite';
-				} else {
-					$errorCode = 'something wrong for price search';
-				}
+			} else {
+				$errorCode = 'something wrong for price search';
 				
 			}
 			if ('INVALID_LOGIN' == $errorCode) {
@@ -89,32 +94,48 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * @param string $skus
 	 * @param string $map_field_name
 	 */
-	public function updateProductPrice($items, $all_skus, $map_field_name,$by_queue) {
+	public function updateProductPrice( $items, $all_skus, $map_field_name, $by_queue ) {
 		global $TMWNI_OPTIONS;
 
 		foreach ($items as $item) {
+			$price_update_status = true;
 			$sku = $item[strtolower($TMWNI_OPTIONS['sku_mapping_field'])];
 			$product_id = $this->getProductIdBySku($sku);
 			if (!empty($product_id)) {
-				$main_price = $item['unitprice'];
-				update_post_meta($product_id, '_regular_price', $main_price);
-				$sale_price = get_post_meta($product_id, '_sale_price', true);
-				if (empty($sale_price)) {
-					update_post_meta($product_id, '_price', $main_price);
-				}
-				if (true == $by_queue) {
-					$file_dir = wp_upload_dir();
-					$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_price_log_file;
-					$content = '<p>Product SKU ' . $sku . ' Price updated</p>';
-					file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
-					$old_count = get_option('updated_products_count');
-					$new_count = $old_count + 1;
-					$this->updateLogFileContent($content, $new_count);
+				/**
+					* Filter to modify the status of the price update process.
+					*
+					* @since 1.6.6
+				*/
+				$price_update_status  = apply_filters('tm_netsuite_price_update_status', $price_update_status, $product_id, $item);
+				if (true == $price_update_status) {
+					$main_price = $item['unitprice'];
+					update_post_meta($product_id, '_regular_price', $main_price);
+					$sale_price = get_post_meta($product_id, '_sale_price', true);
+					if (empty($sale_price)) {
+						update_post_meta($product_id, '_price', $main_price);
+					}
+					if (true == $by_queue) {
+						$file_dir = wp_upload_dir();
+						$log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_price_log_file;
+						$content = '<p>Product SKU ' . $sku . ' Price updated</p>';
+						file_put_contents($log_file, $content . PHP_EOL, FILE_APPEND);
+						$old_count = get_option('updated_products_count');
+						$new_count = $old_count + 1;
+						$this->updateLogFileContent($content, $new_count);
+					}
+					/**
+						* Action perform after update price.
+						*
+						* @since 1.0.0
+					*/
+					do_action('tm_netsuite_after_update_price', $main_price, $product_id);
+
 				}
 
-				do_action('tm_netsuite_after_update_price', $main_price, $product_id);
-				
 			}
+
+
 		}
 	}
 
@@ -131,13 +152,13 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * @param string $mapFieldName
 	 * @param string $urlAPIEndPoint
 	 */
-	public function getDefaultLocationInventory($skus, $mapFieldName, $urlAPIEndPoint,$by_queue) {
+	public function getDefaultLocationInventory( $skus, $mapFieldName, $urlAPIEndPoint, $by_queue ) {
 		global $TMWNI_OPTIONS;
 
 		$qtyField = strtolower($TMWNI_OPTIONS['inventorySyncField']);
-		$selected_location_query = [
-			'q' => "SELECT item.$mapFieldName, inventoryitemlocations.location, inventoryitemlocations.$qtyField FROM inventoryitemlocations LEFT JOIN item ON inventoryitemlocations.item = item.id WHERE item.$mapFieldName IN ($skus) AND inventoryitemlocations.location = item.location"
-		];
+		$selected_location_query = array(
+			'q' => "SELECT item.$mapFieldName, inventoryitemlocations.location, inventoryitemlocations.$qtyField FROM inventoryitemlocations LEFT JOIN item ON inventoryitemlocations.item = item.id WHERE item.$mapFieldName IN ($skus) AND inventoryitemlocations.location = item.location",
+		);
 
 		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
 		$response = $this->NetsuiteRestAPIClient->nsRESTRequest('post', $urlAPIEndPoint, true, $selected_location_query);
@@ -146,11 +167,14 @@ class ItemClient extends CommonIntegrationFunctions {
 			$item_quantity_array = $this->getQuantity($response['items'], $skus);
 			update_option('tm_rest_web_service_enable', 'yes');
 			$this->updateWooQuantity($item_quantity_array, $by_queue);
+			/**
+					* Action Perform after update inventory.
+					*
+					* @since 1.0.0
+			*/
 			do_action('tm_ns_after_update_inventory', $response, $skus, $mapFieldName, $urlAPIEndPoint);
-		} else {
-			if (isset($response['o:errorDetails'][0]['o:errorCode']) && 'INVALID_LOGIN' == $response['o:errorDetails'][0]['o:errorCode']) {
-				update_option('tm_rest_web_service_enable', 'no');
-			} 
+		} elseif (isset($response['o:errorDetails'][0]['o:errorCode']) && 'INVALID_LOGIN' == $response['o:errorDetails'][0]['o:errorCode']) {
+				update_option('tm_rest_web_service_enable', 'no'); 
 		}
 
 		if (!empty($response['hasMore'])) {
@@ -169,7 +193,7 @@ class ItemClient extends CommonIntegrationFunctions {
 	public function inventoryAllLocations() {
 		$inventory_locations = get_option('netstuite_locations');
 		$locations = array_keys($inventory_locations);
-		return implode(', ', array_map(fn($key) => "'$key'", $locations));
+		return implode(', ', array_map(fn( $key ) => "'$key'", $locations));
 	}
 
 	/**
@@ -190,13 +214,13 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * @param string $all_sku
 	 * @return array
 	 */
-	public function getQuantity($location_data, $all_sku) {
+	public function getQuantity( $location_data, $all_sku ) {
 		global $TMWNI_OPTIONS;
 
 		$sku_array = explode(', ', str_replace("'", '', $all_sku));
 		$quantity_field_name = strtolower($TMWNI_OPTIONS['inventorySyncField']);
 		$map_field_name = strtolower($TMWNI_OPTIONS['sku_mapping_field']);
-		$grouped_data = [];
+		$grouped_data = array();
 
 		foreach ($location_data as $item) {
 			$itemid = $item[$map_field_name];
@@ -216,7 +240,7 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * @param string $mapFieldName
 	 * @param string $urlAPIEndPoint
 	 */
-	public function getInventoryFromNetsuite($skus, $mapFieldName, $urlAPIEndPoint,$by_queue) {
+	public function getInventoryFromNetsuite( $skus, $mapFieldName, $urlAPIEndPoint, $by_queue ) {
 		global $TMWNI_OPTIONS;
 
 		$qtyField = strtolower($TMWNI_OPTIONS['inventorySyncField']);
@@ -224,8 +248,9 @@ class ItemClient extends CommonIntegrationFunctions {
 		$locations = $this->getInventoryLocations($skus, $mapFieldName, $urlAPIEndPoint);
 
 
-		$selected_location_query = array('q' => 
-			'SELECT item.' . $mapFieldName . ', inventoryitemlocations.location, inventoryitemlocations.' . $qtyField . ',from inventoryitemlocations LEFT JOIN item ON inventoryitemlocations.item = item.id  where item.' . $mapFieldName . ' in (' . $skus . ') and inventoryitemlocations.location in (' . $locations . ')'
+		$selected_location_query = array(
+'q' => 
+			'SELECT item.' . $mapFieldName . ', inventoryitemlocations.location, inventoryitemlocations.' . $qtyField . ',from inventoryitemlocations LEFT JOIN item ON inventoryitemlocations.item = item.id  where item.' . $mapFieldName . ' in (' . $skus . ') and inventoryitemlocations.location in (' . $locations . ')',
 		); 
 
 
@@ -238,11 +263,14 @@ class ItemClient extends CommonIntegrationFunctions {
 			$item_quantity_array = $this->getQuantity($response['items'], $skus);
 			update_option('tm_rest_web_service_enable', 'yes');
 			$this->updateWooQuantity($item_quantity_array, $by_queue);
+			/**
+					* Action perform after update quantity.
+					*
+					* @since 1.0.0
+			*/
 			do_action('tm_ns_after_update_inventory', $response, $skus, $mapFieldName, $urlAPIEndPoint);
-		} else {
-			if (isset($response['o:errorDetails'][0]['o:errorCode']) && 'INVALID_LOGIN' == $response['o:errorDetails'][0]['o:errorCode']) {
-				update_option('tm_rest_web_service_enable', 'no');
-			} 
+		} elseif (isset($response['o:errorDetails'][0]['o:errorCode']) && 'INVALID_LOGIN' == $response['o:errorDetails'][0]['o:errorCode']) {
+				update_option('tm_rest_web_service_enable', 'no'); 
 		}
 
 		if (!empty($response['hasMore'])) {
@@ -261,7 +289,7 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * @param string $urlAPIEndPoint
 	 * @return string
 	 */
-	private function getInventoryLocations($skus, $mapFieldName, $urlAPIEndPoint) {
+	private function getInventoryLocations( $skus, $mapFieldName, $urlAPIEndPoint ) {
 		global $TMWNI_OPTIONS;
 
 		if (!empty($TMWNI_OPTIONS['inventoryDefaultLocation'])) {
@@ -278,12 +306,17 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * 
 	 * @param array $item_quantity_array
 	 */
-	public function updateWooQuantity($item_quantity_array,$by_queue) {
+	public function updateWooQuantity( $item_quantity_array, $by_queue ) {
 		global $TMWNI_OPTIONS;
 
 		foreach ($item_quantity_array as $sku => $quantity) {
 			$product_id = $this->getProductIdBySku($sku);
 			if (!empty($product_id)) {
+				/**
+					* Filter to modify the status of update quantity process.
+					*
+					* @since 1.0.0
+				*/
 				$quantity = apply_filters('tm_ns_last_item_quantity', $quantity, $product_id);
 				if (!empty($quantity)) {
 					update_post_meta($product_id, '_stock', $quantity);
@@ -308,7 +341,11 @@ class ItemClient extends CommonIntegrationFunctions {
 				
 			}
 		}
-
+		/**
+			* Action perform after update the quantity.
+			*
+			* @since 1.0.0
+		*/
 		do_action('tm_ns_after_update_item_quantity_data', $item_quantity_array);
 	}
 
@@ -318,7 +355,7 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * @param int $product_id
 	 * @param int $quantity
 	 */
-	public function updateStock($product_id, $quantity) {
+	public function updateStock( $product_id, $quantity ) {
 		if (get_post_meta($product_id, '_stock_status', true) !== 'onbackorder') {
 			$stock_status = $quantity > 0 ? 'instock' : 'outofstock';
 			update_post_meta($product_id, '_stock_status', $stock_status);
@@ -331,7 +368,7 @@ class ItemClient extends CommonIntegrationFunctions {
 	 * @param string $sku
 	 * @return int|null
 	 */
-	public function getProductIdBySku($sku) {
+	public function getProductIdBySku( $sku ) {
 		global $wpdb;
 		$result = $wpdb->get_var($wpdb->prepare("
 			SELECT post_id
@@ -342,5 +379,4 @@ class ItemClient extends CommonIntegrationFunctions {
 			", $sku));
 		return null !== $result ? $result : null;
 	}
-
 }

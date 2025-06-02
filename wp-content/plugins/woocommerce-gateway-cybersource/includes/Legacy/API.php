@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Legacy;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
 
 /**
  * API class for communicating with the CyberSource SOAP gateway

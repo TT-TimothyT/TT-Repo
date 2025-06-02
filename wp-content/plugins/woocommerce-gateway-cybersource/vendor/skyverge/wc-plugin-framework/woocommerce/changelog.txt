@@ -1,5 +1,26 @@
 *** SkyVerge WooCommerce Plugin Framework Changelog ***
 
+2025.nn.nn - version 5.15.10
+
+2025.nn.nn - version 5.15.9
+
+2025.nn.nn - version 5.15.8
+
+2025.04.29 - version 5.15.7
+* Fix: Avoid triggering notices for loading translations too early
+
+2025.03.11 - version 5.15.6
+* New: Added additional helper methods to the trait `HasEmailPreviewValuesTrait`
+
+2025.03.05 - version 5.15.5
+* New: Add a trait to assist in compatibility with new WooCommerce email preview feature
+* Fix: Undefined array key errors
+
+2025.02.20 - version 5.15.4
+* New: Added PageHelper class to assist in determining page contexts.
+* New: Add a helper method to get WooCommerce object meta values.
+* New: Add an array helper method to get value with dot notation and default value.
+
 2025.01.24 - version 5.15.3
 * Fix - Add Merchant ID to Google Pay, distinguishing it from Gateway merchant ID
 

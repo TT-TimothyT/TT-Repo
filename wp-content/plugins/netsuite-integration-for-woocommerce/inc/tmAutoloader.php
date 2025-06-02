@@ -5,7 +5,7 @@ require_once TMWNI_DIR . 'inc/common.php';
 require_once TMWNI_DIR . 'inc/helper.php';
 require_once TMWNI_DIR . 'inc/NS_Toolkit/src/includes/functions.php';
 
-function tmNetSuiteAutoLoader($className) {
+function tmNetSuiteAutoLoader( $className ) {
 	$classNameParts = explode('\\', $className);
 	$className = end($classNameParts);
 	

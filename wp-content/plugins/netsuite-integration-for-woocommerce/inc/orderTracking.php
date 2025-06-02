@@ -61,9 +61,9 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 			$order_status = $order->get_status();
 			if ('processing' == $order_status) {
 				$searchValue = new RecordRef();
-				$searchValue->internalId = $netSuiteSOInternalID;	
-				$internalIds_array[] = 	$searchValue;	
-			}	
+				$searchValue->internalId = $netSuiteSOInternalID;   
+				$internalIds_array[] =  $searchValue;   
+			}   
 
 
 		}
@@ -101,10 +101,9 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 			}
 			
 		}
-
 	}
 
-	public static function updateFulFIllment( $record) {
+	public static function updateFulFIllment( $record ) {
 		global $TMWNI_OPTIONS; 
 
 		$order_internal_id = $record->internalId;
@@ -116,14 +115,18 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 
 		$order = wc_get_orders($args);
 		$order_id = $order[0]->get_id();
-
+		/**
+			* Hook for order tracking information
+			*
+			* @since 1.0.0
+		*/
 		do_action('tm_ns_order_tracking', $record, $order, $order_id);
 
 		if (isset($record->linkedTrackingNumbers) && !empty($record->linkedTrackingNumbers)) {
 			$trackingNo = str_replace(' ', ',', $record->linkedTrackingNumbers);
 			if (isset($TMWNI_OPTIONS['ns_order_tracking_number']) && !empty($TMWNI_OPTIONS['ns_order_tracking_number'])) {
 				tm_ns_update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_tracking_number'], $trackingNo);
-			}	
+			}   
 			tm_ns_update_post_meta($order_id, 'ywot_tracking_code', $trackingNo);
 			tm_ns_update_post_meta($order_id, 'ywot_picked_up', 'on');
 
@@ -147,7 +150,7 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 				tm_ns_update_post_meta($order_id, $TMWNI_OPTIONS['ns_order_shipping_courier'], $ShippingCarrier);
 			} else {
 				tm_ns_update_post_meta($order_id, 'ywot_carrier_name', $ShippingCarrier);
-			}	
+			}   
 
 		}
 
@@ -161,7 +164,7 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 			} else {
 				tm_ns_update_post_meta($order_id, 'ywot_pick_up_date', $ShipDate);
 
-			}	
+			}   
 
 		}
 
@@ -175,12 +178,9 @@ class OrdertrackingClient extends CommonIntegrationFunctions {
 
 			}
 		}
-
 	}
 }
 
 $this->netsuiteOrderTrackingClient = new OrdertrackingClient();
 
 $this->netsuiteOrderTrackingClient->getProcessingOrders();
-
-

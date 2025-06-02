@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
 
 /**
  * The payment instrument class.

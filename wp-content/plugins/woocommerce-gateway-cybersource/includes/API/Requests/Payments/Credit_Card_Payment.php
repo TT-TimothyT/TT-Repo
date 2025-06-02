@@ -352,7 +352,7 @@ class Credit_Card_Payment extends Payment {
 	{
 		$payment = $this->get_order()?->payment;
 
-		if ($payment && $payment->token) {
+		if ($payment && ! empty($payment->token)) {
 			$token = wc_cybersource()
 				->get_gateway(Plugin::CREDIT_CARD_GATEWAY_ID)
 				->get_payment_tokens_handler()

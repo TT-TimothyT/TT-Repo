@@ -24,7 +24,7 @@
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests;
 
 use SkyVerge\WooCommerce\Cybersource\API\Visa_Checkout\Traits\Can_Add_Visa_Checkout_Request_Data;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -71,7 +71,7 @@ abstract class Payments extends Transaction {
 			'code'    => $code,
 			'partner' => [
 				// a.k.a PSID, this should be updated with a new value from CyberSource with each major/minor release
-				'solutionId' => 'E39VEQD3',
+				'solutionId' => 'H573ZQN7',
 			],
 		];
 

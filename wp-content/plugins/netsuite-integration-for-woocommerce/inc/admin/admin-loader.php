@@ -101,9 +101,9 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 		add_action( 'admin_menu', array( $this, 'TMWNIAdminMenu' ) );
 
-		add_filter( 'plugin_action_links_' . TMWNI_BASEURL, array( $this,'tm_plugin_settings') );
+		add_filter( 'plugin_action_links_' . TMWNI_BASEURL, array( $this, 'tm_plugin_settings' ) );
 
-		add_filter( 'plugin_row_meta', array( $this,'tm_custom_plugin_row_meta') , 10, 2);
+		add_filter( 'plugin_row_meta', array( $this, 'tm_custom_plugin_row_meta' ) , 10, 2);
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'TMWNIAdminScript' ) );
 
@@ -968,7 +968,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 		foreach ( $this->netsuiteParameters::$paramtypesmap as $key => $value ) {
 
-			if ( 'RecordRef' == $value || 'string' == $value || 'boolean' == $value || 'dateTime' == $value || 'float' == $value || 'integer' == $value || 'GlobalSubscriptionStatus' == $value ) {
+			if ( 'RecordRef' == $value || 'string' == $value || 'boolean' == $value || 'dateTime' == $value || 'float' == $value || 'integer' == $value || 'GlobalSubscriptionStatus' == $value  || 'SalesOrderOrderStatus' == $value) {
 
 				if ( $key == $mapping['ns_field_key'] ) {
 					$template .= '<option data-type="' . $value . '" value="' . $key . '" selected>' . $key . ' (' . $value . ')</option>';
@@ -1889,8 +1889,5 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 	}
 }
 
-function TMWNI_Admin_loader() {
-	return TMWNI_Admin_Loader::getInstance();
-}
 
-TMWNI_Admin_loader();
+TMWNI_Admin_Loader::getInstance();

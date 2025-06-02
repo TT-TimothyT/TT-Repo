@@ -12,18 +12,18 @@ class NS_Inventory {
 		global $TMWNI_OPTIONS;
 
 
-		require_once 'background-process/class-manual-update-inventory.php' ;	
+		require_once 'background-process/class-manual-update-inventory.php' ;   
 		$this->Manual_update_inventory = new Manually_Update_Inventory();
 
 		if (( isset($TMWNI_OPTIONS['enableInventorySync']) && 'on' === $TMWNI_OPTIONS['enableInventorySync'] ) || 
 			( isset($TMWNI_OPTIONS['enablePriceSync']) && 'on' === $TMWNI_OPTIONS['enablePriceSync'] )) {
-			add_action('wp_ajax_update_woo_inventory', array($this, 'tmNsUpdateWooInventory'));
-		add_action('wp_ajax_fetch_price_progress', array($this, 'fetchPriceUpdateStatus'));
-		add_action('wp_ajax_fetch_inventory_progress', array($this, 'fetchInventoryUpdateStatus'));
-		add_action('init', array($this, 'register_inventory_cron'));
-		add_action('tm_ns_process_inventories', array($this, 'updateWooInventory'));		
+			add_action('wp_ajax_update_woo_inventory', array( $this, 'tmNsUpdateWooInventory' ));
+		add_action('wp_ajax_fetch_price_progress', array( $this, 'fetchPriceUpdateStatus' ));
+		add_action('wp_ajax_fetch_inventory_progress', array( $this, 'fetchInventoryUpdateStatus' ));
+		add_action('init', array( $this, 'register_inventory_cron' ));
+		add_action('tm_ns_process_inventories', array( $this, 'updateWooInventory' ));        
 		}
-	add_filter('cron_schedules', array($this, 'custom_cron_schedules'));
+	add_filter('cron_schedules', array( $this, 'custom_cron_schedules' ));
 	}
 
 	/**
@@ -48,7 +48,7 @@ class NS_Inventory {
 	/**
 	 * Define custom cron schedules
 	 */
-	public function custom_cron_schedules($schedules) {
+	public function custom_cron_schedules( $schedules ) {
 		if (!isset($schedules['10min'])) {
 			$schedules['10min'] = array(
 				'interval' => 600,
@@ -81,6 +81,11 @@ class NS_Inventory {
 		global $TMWNI_OPTIONS, $wpdb;
 		$by_queue = false;
 		$sku_lot = $this->getProductSKULot();
+		/**
+			* Filter to modify the sku.
+			*
+			* @since 1.0.0
+		*/
 		$sku_lot = apply_filters('tm_woo_products_skus', $sku_lot);
 		$updateInventoryDateTime = gmdate('Y-m-d H:i:s a');
 		update_option('ns_woo_inventory_update', $updateInventoryDateTime, false);
@@ -90,7 +95,7 @@ class NS_Inventory {
 			foreach ($batches as $batch) {
 				$sku_lot = implode(', ', $batch);
 				$this->updateData($sku_lot, $by_queue);
-			}	
+			}   
 		}
 	}
 
@@ -134,14 +139,14 @@ class NS_Inventory {
 
 		if (!empty($sku_lot)) {
 			// $this->processedData($sku_lot);
-			$this->Manual_update_inventory->push_to_queue(array('product_sku' => $sku_lot));
+			$this->Manual_update_inventory->push_to_queue(array( 'product_sku' => $sku_lot ));
 		}
 				$this->Manual_update_inventory->save()->dispatch();
-				wp_send_json(array( 'success' => true, 'total_count' => $total_count,'price_sync' => $price_sync));
+				wp_send_json(array( 'success' => true, 'total_count' => $total_count, 'price_sync' => $price_sync ));
 				wp_die();
 	}
 
-	public function processedData($sku_array) {
+	public function processedData( $sku_array ) {
 		global $TMWNI_OPTIONS;
 		$batch_size = 1000;
 		$batches = array_chunk($sku_array, $batch_size);
@@ -155,11 +160,11 @@ class NS_Inventory {
 			update_option('processed_products', $new_count, false);
 			$this->updateData($sku_lot, $by_queue);
 
-		}	
+		}   
 		return true;
 	}
 
-	public function updateData($sku_lot,$by_queue) {
+	public function updateData( $sku_lot, $by_queue ) {
 		global $TMWNI_OPTIONS;
 		$urlAPIEndPoint = '/suiteql';
 		if ('customFieldList' == $TMWNI_OPTIONS['sku_mapping_field']) {
@@ -187,7 +192,6 @@ class NS_Inventory {
 			}
 
 		}
-
 	}
 
 	/**
@@ -233,7 +237,7 @@ class NS_Inventory {
 				$file_dir = wp_upload_dir();
 				$price_log_file = $file_dir['basedir'] . '/' . TMWNI_Settings::$ns_price_log_file;
 				$price_logs = file_get_contents($price_log_file);
-				wp_send_json(array( 'success' => true, 'processed_count' => $processed_count, 'skus' => $not_found_skus, 'updated_count' => $updated_count, 'price_logs' => $price_logs,'skipped_count' => $skipped_count ));
+				wp_send_json(array( 'success' => true, 'processed_count' => $processed_count, 'skus' => $not_found_skus, 'updated_count' => $updated_count, 'price_logs' => $price_logs, 'skipped_count' => $skipped_count ));
 				die();
 			} 
 		} else {
@@ -259,7 +263,6 @@ class NS_Inventory {
 			die('Nonce Error');
 		}
 	}
-
 }
 
 	new NS_Inventory();
