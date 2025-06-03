@@ -11338,18 +11338,6 @@ textarea.form-control-lg {
   margin-bottom: 1rem !important;
 }
 
-.login-form,
-.reset-form {
-  margin-top: 6rem;
-  margin-bottom: 7.9rem;
-}
-@media (max-width: 991.98px) {
-  .login-form,
-.reset-form {
-    margin-top: 3.5rem;
-    margin-bottom: 4.9rem;
-  }
-}
 .login-form .reset-p,
 .reset-form .reset-p {
   font-size: 1.125rem;
@@ -11454,10 +11442,6 @@ textarea.form-control-lg {
   top: 20px;
 }
 
-.register-form {
-  margin-top: 6rem;
-  margin-bottom: 7.9rem;
-}
 .register-form .re-register-info {
   font-size: 14px;
   line-height: 18px;
@@ -23401,9 +23385,12 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 }
 
 #login-register-modal {
+  max-width: 600px;
+  width: 90vw;
+  margin: auto;
   background: white;
   border-radius: 5px;
-  padding: 3rem;
+  padding: 1.5rem;
 }
 #login-register-modal .sign-logo {
   display: flex;
@@ -23435,6 +23422,14 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 }
 #login-register-modal .sign-text {
   text-align: center;
+  word-break: break-word;
+  max-width: 100%;
+}
+#login-register-modal .woocommerce-privacy-policy-text {
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  width: 100%;
+  word-wrap: break-word;
 }
 @media (min-width: 576px) {
   #login-register-modal {
@@ -23465,6 +23460,28 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
     max-height: 100px;
   }
 }
+#login-register-modal .fixed-tab-content {
+  position: relative;
+  min-height: 650px;
+}
+#login-register-modal .tab-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: opacity 0.3s ease-in-out;
+}
+#login-register-modal .tab-pane:not(.show) {
+  opacity: 0;
+  pointer-events: none;
+}
+#login-register-modal .tab-pane.show.active {
+  position: relative;
+  height: 100%;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .sign-welcome {
   display: flex;
   flex-direction: c;
@@ -23474,7 +23491,20 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 }
 
 .login-form {
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 650px;
+}
+.login-form form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.login-form form .f-btm {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: auto;
 }
 .login-form .sign-btns {
   justify-content: space-between;
