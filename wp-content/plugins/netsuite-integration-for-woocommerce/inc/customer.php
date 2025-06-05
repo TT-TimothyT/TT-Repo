@@ -145,7 +145,7 @@ class CustomerClient extends CommonIntegrationFunctions {
 		}
 	}
 
-	public function CustomerRequestData( $customer_data, $add_list, $order_id,$customer_internal_id=0 ) {
+	public function CustomerRequestData( $customer_data, $add_list, $order_id, $customer_internal_id = 0 ) {
 		global $TMWNI_OPTIONS;
 		$order = wc_get_order($order_id);
 		$log_id = !empty($customer_data['customer_id'])? $customer_data['customer_id'] : $order_id;

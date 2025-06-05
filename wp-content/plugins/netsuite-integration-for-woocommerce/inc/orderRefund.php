@@ -27,7 +27,7 @@ use NetSuite\Classes\SearchEnumMultiSelectField;
 class OrderRefund extends CommonIntegrationFunctions {
 
 	public $netsuiteService;
-	public $object_id;	
+	public $object_id;  
 	public $user_id;
 	public $custFields = array();
 
@@ -37,12 +37,12 @@ class OrderRefund extends CommonIntegrationFunctions {
 	public function __construct() {
 		//set netsuite API client object
 		if (TMWNI_Settings::areCredentialsDefined()) {
-			$this->netsuiteService = new NetSuiteService(null, array('exceptions' => true));
+			$this->netsuiteService = new NetSuiteService(null, array( 'exceptions' => true ));
 		}
 	}
 
 
-	public function create_nd_refund( $order_id, $refund_id, $order_ns_internal_id) {
+	public function create_nd_refund( $order_id, $refund_id, $order_ns_internal_id ) {
 		$this->object_id = $order_id;
 		
 		$customer_internal_id = tm_ns_get_post_meta($order_id, TMWNI_Settings::$ns_order_customer_id);
@@ -87,14 +87,10 @@ class OrderRefund extends CommonIntegrationFunctions {
 
 			return 0;
 		}
-
-
-
-
 	}
 
 
-	public static function _setRefundItems( $refund_items) {
+	public static function _setRefundItems( $refund_items ) {
 		$key=0;
 		foreach ($refund_items as $item_key => $item) {
 			$total_price = abs($item->get_total());
@@ -107,18 +103,18 @@ class OrderRefund extends CommonIntegrationFunctions {
 			$soi[$key]->item->internalId = $ns_product_id;
 			$soi[$key]->quantity = absint($item->get_quantity());
 			$soi[$key]->price = $unit_price;
+			$soi[$key]->amount = $total_price;
 			$key++;
 
 
 		}
 
 		return $soi; 
-
 	} 
 
 
 	public static function get_refund_order() {
-		global $TMWNI_OPTIONS;		
+		global $TMWNI_OPTIONS;      
 		$args = array(
 			'status' => 'processing',
 			'limit' => 1000,
@@ -148,11 +144,11 @@ class OrderRefund extends CommonIntegrationFunctions {
 				}
 				if (!empty($netSuiteSOInternalID)) {
 					$searchValue = new RecordRef();
-					$searchValue->internalId = $netSuiteSOInternalID;	
-					$internalIds_array[] = 	$searchValue;
+					$searchValue->internalId = $netSuiteSOInternalID;   
+					$internalIds_array[] =  $searchValue;
 					$order_internalIds_array[$netSuiteSOInternalID] = $order_id;
 
-				}		
+				}       
 			}
 
 		}
@@ -214,10 +210,9 @@ class OrderRefund extends CommonIntegrationFunctions {
 			}
 			
 		}
-
 	}
 
-	public static function getRefundAuthorization( $order_refund_id) {
+	public static function getRefundAuthorization( $order_refund_id ) {
 		$ns_service = new NetSuiteService();
 
 		$request = new GetRequest();
@@ -234,29 +229,26 @@ class OrderRefund extends CommonIntegrationFunctions {
 		}
 
 		return 0;
-
 	} 
 
-	public static function getRefundItems( $getResponse) {
+	public static function getRefundItems( $getResponse ) {
 		if (isset($getResponse->readResponse->record->itemList->item) && !empty($getResponse->readResponse->record->itemList->item)) {
 			$items = $getResponse->readResponse->record->itemList->item;
 			return $items;
 		}
 
 		return 0;
-
 	}
 
-	public static function getReturnAuthorizationDiscount( $getResponse) {
+	public static function getReturnAuthorizationDiscount( $getResponse ) {
 		if (isset($getResponse->readResponse->record->discountTotal) && !empty($getResponse->readResponse->record->discountTotal)) {
 			return $getResponse->readResponse->record->discountTotal;
 		}
 
 		return 0;
-
 	}
 
-	public static function orderRefundWoo($items, $order_id, $order_refund_id, $discountTotal) {
+	public static function orderRefundWoo( $items, $order_id, $order_refund_id, $discountTotal ) {
 	$order = wc_get_order($order_id);
 	$line_items = array();
 	$inv_lines = array();
@@ -269,6 +261,7 @@ class OrderRefund extends CommonIntegrationFunctions {
 				}
 			}
 		}
+		
 
 	$woo_order_items = $order->get_items('line_item');
 	$shipping_items = $order->get_items('shipping');
@@ -277,14 +270,12 @@ class OrderRefund extends CommonIntegrationFunctions {
 	$all_items_refunded = true;
 
 		if ($woo_order_items) {
+			
 			foreach ($all_order_items as $woo_order_item_id => $woo_order_item) {
 				// Check if the item is a product or flat-rate shipping
 				if ($woo_order_item->is_type('line_item')) {
 					$product_id = $woo_order_item->get_product_id();
-					$woo_item_quantity = $woo_order_item->get_quantity();
-					if ($woo_item_quantity != $item->quantity) {
-						$all_items_refunded = false; // Mark as not all items refunded
-					}
+					
 					if (isset($items[$product_id])) {
 						$item = $items[$product_id];
 						$item_qty_refunded = abs($order->get_qty_refunded_for_item($woo_order_item_id)); // Get the refunded amount for a line item.
@@ -293,26 +284,41 @@ class OrderRefund extends CommonIntegrationFunctions {
 							$item_meta = $order->get_item_meta($woo_order_item_id);
 							$quantity = ( $item->quantity - $item_qty_refunded );
 							$item_total = $item->rate * $quantity;
+							$woo_item_quantity = $woo_order_item->get_quantity();
+					
+							if ($woo_item_quantity != $item->quantity) {
+								$all_items_refunded = false; // Mark as not all items refunded
+							}
+							
+							if (empty($item_total)) {
+								$item_total = $item->amount;
+							}
 							$refund_total = $item_total - $discountTotal;
+							
+							
 							$refund_tax = $item->taxAmount;
-
+									
 							$refund_amount += round($refund_total) + round($refund_tax);
-
+						
 							$line_items[$woo_order_item_id] = array(
 							'qty' => $quantity,
-							'refund_total' => round($refund_total),
+							'refund_total' => round($refund_total * 100) / 100,
 							'refund_tax' => $refund_tax,
 							);
+												
 						}
 					}
-				} elseif ($woo_order_item->is_type('shipping') && true == $all_items_refunded) {
+				} elseif (( $woo_order_item->is_type('shipping') && true == $all_items_refunded ) || ( !empty($shipping_items) && true ==  $all_items_refunded )) {
 					// Handle flat-rate shipping
 					$shipping_total = $order->get_shipping_total();
-					$shipping_to_refund = $shipping_total;
+					$shipping_tax = $order->get_shipping_tax();
+				
+					$shipping_to_refund = $shipping_total + $shipping_tax;
 
 					if ($shipping_to_refund > 0) {
 						$refund_amount += $shipping_to_refund;
 					}
+			
 				}
 			}
 		}
@@ -323,18 +329,16 @@ class OrderRefund extends CommonIntegrationFunctions {
 			'reason' => 'NetSuite Refund',
 			'order_id' => $order_id,
 			'line_items' => $line_items,
-			'refund_payment' => false
+			'refund_payment' => false,
 			);
-
+									
 			$refund = var_dump(wc_create_refund($refund_data));
 
 			if (!is_wp_error($refund)) {
 				tm_ns_update_post_meta($order_id, TMWNI_Settings::$ns_order_refund_internal_id, $order_refund_id);
 			}
+			
+			
 		}
 	}
-
-
-		
-
 }

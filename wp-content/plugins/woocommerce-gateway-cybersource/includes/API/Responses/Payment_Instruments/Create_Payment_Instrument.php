@@ -24,7 +24,7 @@
 namespace SkyVerge\WooCommerce\Cybersource\API\Responses\Payment_Instruments;
 
 use SkyVerge\WooCommerce\Cybersource\API\Responses\Payment_Instruments;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

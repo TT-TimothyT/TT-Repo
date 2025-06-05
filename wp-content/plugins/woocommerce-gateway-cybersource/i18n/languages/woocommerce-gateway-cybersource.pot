@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce CyberSource Gateway 2.8.3\n"
+"Project-Id-Version: WooCommerce CyberSource Gateway 2.9.3\n"
 "Report-Msgid-Bugs-To: https://woocommerce.com/my-account/marketplace-ticket-form/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-01-28T23:18:41+00:00\n"
+"POT-Creation-Date: 2025-05-08T13:58:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: woocommerce-gateway-cybersource\n"
@@ -78,120 +78,120 @@ msgctxt "Bank check (noun)"
 msgid "Check number is invalid (must be 8 digits or less)"
 msgstr ""
 
-#: includes/Gateway.php:220
+#: includes/Gateway.php:224
 #: includes/Legacy/Gateway.php:126
 msgid "Merchant ID"
 msgstr ""
 
-#: includes/Gateway.php:223
+#: includes/Gateway.php:227
 msgid "The Merchant ID for your CyberSource account."
 msgstr ""
 
-#: includes/Gateway.php:227
+#: includes/Gateway.php:231
 msgid "API Key Detail"
 msgstr ""
 
-#: includes/Gateway.php:230
+#: includes/Gateway.php:234
 msgid "The API key ID for your CyberSource account."
 msgstr ""
 
-#: includes/Gateway.php:234
+#: includes/Gateway.php:238
 msgid "API Shared Secret Key"
 msgstr ""
 
-#: includes/Gateway.php:237
+#: includes/Gateway.php:241
 msgid "The API shared secret key for your CyberSource account."
 msgstr ""
 
-#: includes/Gateway.php:242
+#: includes/Gateway.php:246
 msgid "Test Merchant ID"
 msgstr ""
 
-#: includes/Gateway.php:245
+#: includes/Gateway.php:249
 msgid "The Merchant ID for your CyberSource sandbox account."
 msgstr ""
 
-#: includes/Gateway.php:249
+#: includes/Gateway.php:253
 msgid "Test API Key Detail"
 msgstr ""
 
-#: includes/Gateway.php:252
+#: includes/Gateway.php:256
 msgid "The API key ID for your CyberSource sandbox account."
 msgstr ""
 
-#: includes/Gateway.php:256
+#: includes/Gateway.php:260
 msgid "Test API Shared Secret Key"
 msgstr ""
 
-#: includes/Gateway.php:259
+#: includes/Gateway.php:263
 msgid "The API shared secret key for your CyberSource sandbox account."
 msgstr ""
 
-#: includes/Gateway.php:272
+#: includes/Gateway.php:276
 msgid "Migrate historical orders"
 msgstr ""
 
-#: includes/Gateway.php:279
+#: includes/Gateway.php:283
 msgid "Fraud management"
 msgstr ""
 
-#: includes/Gateway.php:280
+#: includes/Gateway.php:284
 msgid "Enable fraud management fraud prevention for your orders"
 msgstr ""
 
-#: includes/Gateway.php:281
+#: includes/Gateway.php:285
 #: includes/Gateway/Credit_Card.php:182
 msgid "Your merchant account must have this optional service enabled."
 msgstr ""
 
-#: includes/Gateway.php:307
-#: includes/Gateway.php:315
+#: includes/Gateway.php:311
+#: includes/Gateway.php:319
 msgid "Tokenization Profile ID"
 msgstr ""
 
-#: includes/Gateway.php:308
-#: includes/Gateway.php:316
+#: includes/Gateway.php:312
+#: includes/Gateway.php:320
 msgid "Your Token Management Server profile ID, provided by CyberSource."
 msgstr ""
 
-#: includes/Gateway.php:379
+#: includes/Gateway.php:383
 msgid "Update records"
 msgstr ""
 
-#: includes/Gateway.php:380
+#: includes/Gateway.php:384
 msgid "Please save your API credentials before migrating your historical orders"
 msgstr ""
 
-#: includes/Gateway.php:383
+#: includes/Gateway.php:387
 msgid "Migrate orders and subscriptions to use this gateway instead of the legacy CyberSource plugin"
 msgstr ""
 
-#: includes/Gateway.php:384
+#: includes/Gateway.php:388
 msgid "This action will update the payment method on historical orders and subscriptions to use the new CyberSource gateway. This allows you to capture existing payments or process refunds for historical transactions. For subscription records with manual renewals, this will not enable automatic renewals, as customers need to save a payment method first."
 msgstr ""
 
-#: includes/Gateway.php:386
+#: includes/Gateway.php:390
 msgid "Migrate orders to use this gateway instead of the legacy CyberSource plugin"
 msgstr ""
 
-#: includes/Gateway.php:387
+#: includes/Gateway.php:391
 msgid "This action will update the payment method on historical orders to use the new CyberSource gateway. This allows you to capture existing payments or process refunds for historical transactions."
 msgstr ""
 
-#: includes/Gateway.php:471
+#: includes/Gateway.php:475
 #: assets/js/blocks/wc-cybersource-checkout-block.js:1
 msgid "An error occurred, please try again or try an alternate form of payment."
 msgstr ""
 
-#: includes/Gateway.php:555
+#: includes/Gateway.php:559
 msgid "Order authorized by CyberSource fraud management."
 msgstr ""
 
-#: includes/Gateway.php:559
+#: includes/Gateway.php:563
 msgid "Order requires manual review in CyberSource Case Management system."
 msgstr ""
 
-#: includes/Gateway.php:563
+#: includes/Gateway.php:567
 msgid "Order rejected by CyberSource fraud management. View the CyberSource Case Management system for more details."
 msgstr ""
 
@@ -335,12 +335,12 @@ msgstr ""
 msgid "Recurring Authorization Message"
 msgstr ""
 
-#: includes/Gateway/Payment_Form.php:93
+#: includes/Gateway/Payment_Form.php:95
 msgid "Test card number: %s"
 msgstr ""
 
 #. translators: Placeholders: %1$s - <div> tag, %2$s - </div> tag
-#: includes/Gateway/Payment_Form.php:114
+#: includes/Gateway/Payment_Form.php:116
 msgid "%1$sCurrently unavailable. Please try a different payment method.%2$s"
 msgstr ""
 

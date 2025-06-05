@@ -18,7 +18,7 @@ class PayloadDigest
     public function __construct(\CyberSource\Logging\LogConfiguration $logConfig = null)
     {
         if (self::$logger === null) {
-            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $logConfig);
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class($this)), $logConfig);
         }
     }
     
@@ -44,7 +44,7 @@ class PayloadDigest
     //Generated Encoded Payload Data
     public function generateDigest($payLoad)
     {
-        $utf8EncodedString = utf8_encode($payLoad);
+        $utf8EncodedString = mb_convert_encoding($payLoad, 'UTF-8', mb_detect_encoding($payLoad));
         $digestEncode = hash("sha256", $utf8EncodedString, true);
         self::$logger->close();
         return base64_encode($digestEncode);

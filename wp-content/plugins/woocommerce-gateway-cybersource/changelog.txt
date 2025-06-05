@@ -1,5 +1,22 @@
 *** WooCommerce CyberSource Gateway Changelog ***
 
+2025.05.08 - version 2.9.3
+ * Fix - When using authorizations, the "Capture Charge" button in WP Admin wasn't working
+ * Fix - "Translations loaded too early" error
+ * Dev - Updated the SkyVerge Plugin Framework to v5.15.10
+
+2025.04.30 - version 2.9.2
+ * Dev - Update the SkyVerge Plugin Framework to v5.15.8 to fix potential JS errors
+
+2025.04.30 - version 2.9.1
+ * Fix - Address Flex Microform deprecation warning
+ * Dev - Update the SkyVerge Plugin Framework to 5.15.7
+
+2025.03.17 - version 2.9.0
+ * Dev - Update Flex Microform implementation to get the client library URL and integrity values from the JWT
+ * Dev - Update the CyberSource REST Client to v0.0.58
+ * Fix - Address some PHP warnings that occur during checkout
+
 2025.01.28 - version 2.8.3
  * Fix - Start device fingerprinting session on first page load to help ensure sufficient time for completion
  * Fix - Pass correct Merchant ID to Google Pay

@@ -24,7 +24,7 @@
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payer_Authentication;
 
 use SkyVerge\WooCommerce\Cybersource\API\Requests\Payments\Payment;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -64,13 +64,21 @@ class Check_Enrollment extends Payment {
 			'clientReferenceInformation' => $this->get_client_reference_information(),
 			'deviceInformation'          => $this->get_device_information(),
 			'orderInformation'           => $this->get_order_information(),
-			'paymentInformation'         => [
-				'card' => [
-					'expirationMonth' => $order->payment->expiration_month,
-					'expirationYear'  => $order->payment->expiration_year,
-				]
-			],
 		];
+
+		// We might not always have this data available. We need to check if it's not empty before adding
+		// because if we supply empty values, the CyberSource SDK will complain. Instead they want us to omit them
+		// if we don't have them.
+		$cardData = array_filter([
+			'expirationMonth' => $order->payment->expiration_month ?? null,
+			'expirationYear'  => $order->payment->expiration_year ?? null,
+		]);
+
+		if (! empty($cardData)) {
+			$this->data['paymentInformation'] = [
+				'card' => $cardData,
+			];
+		}
 
 		if ( $order->payment->is_transient ) {
 			/**

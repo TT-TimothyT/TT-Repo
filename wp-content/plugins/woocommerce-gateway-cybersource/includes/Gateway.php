@@ -28,7 +28,7 @@ use SkyVerge\WooCommerce\Cybersource\Blocks\Credit_Card_Checkout_Block_Integrati
 use SkyVerge\WooCommerce\Cybersource\Gateway\Base_Payment_Form;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Integrations\SubscriptionIntegration;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Payment_Form;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -107,7 +107,11 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 		add_action( 'wp_footer', [ $this, 'add_device_data_iframe' ] );
 
 		// blocks initialize (and enqueue scripts) at 5, so we need to register the scripts before that
-		add_action( 'init', [ $this, 'register_scripts' ], 1 );
+		if (! did_action('init')) {
+			add_action( 'init', [ $this, 'register_scripts' ], 1 );
+		} else {
+			$this->register_scripts();
+		}
 	}
 
 
@@ -862,6 +866,10 @@ abstract class Gateway extends Framework\SV_WC_Payment_Gateway_Direct {
 
 	/**
 	 * Gets the FLex Microform asset url.
+	 *
+	 * This value will be overridden by {@see Flex_Helper::addFlexMicroformScriptHooks()}
+	 * We don't add it in here directly to avoid calling {@see CaptureContextRetriever} unnecessarily on every page load.
+	 * By filtering the `src` value after the fact we ensure we only make API calls when the script is actually being used.
 	 *
 	 * @since 2.8.0
 	 *

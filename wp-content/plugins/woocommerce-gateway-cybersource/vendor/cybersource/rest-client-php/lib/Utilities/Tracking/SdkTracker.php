@@ -5,8 +5,6 @@ namespace CyberSource\Utilities\Tracking;
 class SdkTracker
 {
     private static $inclusionList = array(
-        'CreateP12KeysRequest',
-        'DeleteBulkP12KeysRequest',
         'CapturePaymentRequest',
         'CreateCreditRequest',
         'AddNegativeListRequest',
@@ -24,9 +22,6 @@ class SdkTracker
         'MitReversalRequest',
         'CreateSubscriptionRequest',
         'UpdateSubscription',
-        'CreateSharedSecretKeysRequest',
-        'CreateSharedSecretKeysVerifiRequest',
-        'DeleteBulkSymmetricKeysRequest',
         'TaxRequest',
         'VoidTaxRequest',
         'ValidateExportComplianceRequest',
@@ -40,7 +35,7 @@ class SdkTracker
 
     public function __construct() {}
 
-    public function insertDeveloperIdTracker($requestObj, $requestClass, $runEnvironment)
+    public function insertDeveloperIdTracker($requestObj, $requestClass, $runEnvironment, $defaultDeveloperId)
     {
         if (in_array($requestClass, self::$inclusionList))
         {
@@ -53,6 +48,10 @@ class SdkTracker
             else
             {
                 $developer_id_value = 'S2TBCVPH';
+            }
+
+            if (isset($defaultDeveloperId) && !empty(trim($defaultDeveloperId))) {
+                $developer_id_value = trim($defaultDeveloperId);
             }
 
             if (!empty($requestObj->getClientReferenceInformation()))

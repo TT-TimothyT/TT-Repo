@@ -40,6 +40,9 @@ class NetsuiteRESTAPI {
 	}
 
 	public function getNSRequestUrl() {
+		if (substr($this->apiHost, -1) !== '/') {
+			$this->apiHost .= '/';
+		}
 
 		$this->url = trim($this->apiHost . $this->apiPath . $this->apiVersion . $this->apiEndPoint);
 		if (filter_var($this->url, FILTER_VALIDATE_URL) === false) {
@@ -47,7 +50,7 @@ class NetsuiteRESTAPI {
 		}
 	}
 
-	protected function parseRequestQuery($query) {
+	protected function parseRequestQuery( $query ) {
 		if (is_null($query)) {
 			return '';
 		} elseif (is_array($query)) {
@@ -57,16 +60,16 @@ class NetsuiteRESTAPI {
 		}
 	}
 
-	public function addRequestHeaderData($body) {
+	public function addRequestHeaderData( $body ) {
 		$urlComponents = parse_url($this->url);
 		$limit=null;
 		$offset=null;
-		$queryParams = [];
+		$queryParams = array();
 		if (array_key_exists('query', $urlComponents)) {
-		  parse_str($urlComponents['query'], $queryParams);
+			parse_str($urlComponents['query'], $queryParams);
 			if (count($queryParams) > 0) {
-			  $limit = isset($queryParams['limit']) ? $queryParams['limit'] : null;
-			  $offset = isset($queryParams['offset']) ? $queryParams['offset'] : null;
+				$limit = isset($queryParams['limit']) ? $queryParams['limit'] : null;
+				$offset = isset($queryParams['offset']) ? $queryParams['offset'] : null;
 			}
 		}
 		$accountID = $this->apiHost;
@@ -90,27 +93,27 @@ class NetsuiteRESTAPI {
 			$baseString = $this->restNetsuiteAPIMethod . '&' . rawurlencode($baseUrl) . '&'
 			. rawurlencode(
 	//APPLY PARAMETERS IN ALPHABETICAL ORDER, URL ENCODED IN HERE
-			   'oauth_consumer_key=' . rawurlencode($ckey)
-			   . '&oauth_nonce=' . rawurlencode($nonce)
-			   . '&oauth_signature_method=' . rawurlencode($signatureMethod)
-			   . '&oauth_timestamp=' . rawurlencode($timestamp)
-			   . '&oauth_token=' . rawurlencode($tkey)
-			   . '&oauth_version=1.0'
-			   . ( isset($offset) ? '&offset=' . rawurlencode($offset) : null )
-		   );
+				'oauth_consumer_key=' . rawurlencode($ckey)
+				. '&oauth_nonce=' . rawurlencode($nonce)
+				. '&oauth_signature_method=' . rawurlencode($signatureMethod)
+				. '&oauth_timestamp=' . rawurlencode($timestamp)
+				. '&oauth_token=' . rawurlencode($tkey)
+				. '&oauth_version=1.0'
+				. ( isset($offset) ? '&offset=' . rawurlencode($offset) : null )
+			);
 		} else {
 			$baseString = $this->restNetsuiteAPIMethod . '&' . rawurlencode($baseUrl) . '&'
 			. rawurlencode(
 	//APPLY PARAMETERS IN ALPHABETICAL ORDER, URL ENCODED IN HERE
-			   ( isset($limit) ? 'limit=' . rawurlencode($limit) : null )
-			   . '&oauth_consumer_key=' . rawurlencode($ckey)
-			   . '&oauth_nonce=' . rawurlencode($nonce)
-			   . '&oauth_signature_method=' . rawurlencode($signatureMethod)
-			   . '&oauth_timestamp=' . rawurlencode($timestamp)
-			   . '&oauth_token=' . rawurlencode($tkey)
-			   . '&oauth_version=1.0'
-			   . ( isset($offset) ? '&offset=' . rawurlencode($offset) : null )
-		   );
+				( isset($limit) ? 'limit=' . rawurlencode($limit) : null )
+				. '&oauth_consumer_key=' . rawurlencode($ckey)
+				. '&oauth_nonce=' . rawurlencode($nonce)
+				. '&oauth_signature_method=' . rawurlencode($signatureMethod)
+				. '&oauth_timestamp=' . rawurlencode($timestamp)
+				. '&oauth_token=' . rawurlencode($tkey)
+				. '&oauth_version=1.0'
+				. ( isset($offset) ? '&offset=' . rawurlencode($offset) : null )
+			);
 		}
 		$key = rawurlencode($csecret) . '&' . rawurlencode($tsecret);
 		$signature = base64_encode(hash_hmac('sha256', $baseString, $key, true));
@@ -128,7 +131,7 @@ class NetsuiteRESTAPI {
 	}
 
 
-	public function curlRestRequest($body) {
+	public function curlRestRequest( $body ) {
 
 		$curl = curl_init();
 
@@ -142,15 +145,18 @@ class NetsuiteRESTAPI {
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => $this->restNetsuiteAPIMethod,
 			CURLOPT_HTTPHEADER => $this->headers,
-			CURLOPT_POSTFIELDS => $body
+			CURLOPT_POSTFIELDS => $body,
 		);
 
 		curl_setopt_array($curl, $opts);
 		$response = curl_exec($curl);
 
 
+
 		if (curl_errno($curl)) {
 			$error_message = curl_error($curl);
+			pr($error_message);
+die;
 			$this->message = "\n cURL error: $error_message";
 		}
 
@@ -173,7 +179,7 @@ class NetsuiteRESTAPI {
 		return $data;
 	}
 
-	private function _request($body) {
+	private function _request( $body ) {
 
 		//Prepare the request arguments
 		$args = array(
@@ -200,7 +206,7 @@ class NetsuiteRESTAPI {
 		return $response;
 	}
 
-	public function nsRESTRequest($method,$endPoint,$queryEnable,$requestBody=null) {
+	public function nsRESTRequest( $method, $endPoint, $queryEnable, $requestBody = null ) {
 
 		if (empty($method)) {
 			return;
@@ -215,9 +221,10 @@ class NetsuiteRESTAPI {
 		$this->getNSRequestUrl();
 
 		$this->addRequestHeaderData($body);
-		 $response = $this->curlRestRequest($body);
+		$response = $this->curlRestRequest($body);
 
-		 return $response;
+
+		return $response;
 		
 		return null;
 	}   

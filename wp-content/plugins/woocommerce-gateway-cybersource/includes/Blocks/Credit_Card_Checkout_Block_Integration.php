@@ -23,13 +23,15 @@
 
 namespace SkyVerge\WooCommerce\Cybersource\Blocks;
 
+use SkyVerge\WooCommerce\Cybersource\CaptureContextRetriever;
 use SkyVerge\WooCommerce\Cybersource\Device_Data;
+use SkyVerge\WooCommerce\Cybersource\Flex_Helper;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Credit_Card;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_API_Exception;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway_Plugin;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10\Payment_Gateway\Blocks\Gateway_Checkout_Block_Integration;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10\SV_WC_API_Exception;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10\SV_WC_Payment_Gateway;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10\SV_WC_Payment_Gateway_Plugin;
 
 /**
  * Checkout block integration for the credit card gateway.
@@ -60,6 +62,14 @@ class Credit_Card_Checkout_Block_Integration extends Gateway_Checkout_Block_Inte
 		}
 
 		$this->add_main_script_dependency( 'wc-cybersource-flex-microform' );
+	}
+
+	/** @inheritDoc */
+	protected function add_hooks() : void
+	{
+		parent::add_hooks();
+
+		Flex_Helper::addFlexMicroformScriptHooks();
 	}
 
 
@@ -99,7 +109,7 @@ class Credit_Card_Checkout_Block_Integration extends Gateway_Checkout_Block_Inte
 
 		try {
 
-			$data['capture_context'] = $gateway->get_api()->generate_public_key()->get_key_id();
+			$data['capture_context'] = CaptureContextRetriever::getCaptureContext();
 
 		} catch ( SV_WC_API_Exception $exception ) {
 

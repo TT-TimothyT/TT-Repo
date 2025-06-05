@@ -161,7 +161,7 @@ class OrderClient extends CommonIntegrationFunctions {
 		}
 	}
 
-	public function OrderNSRequest( $order_data, $customer_internal_id , $order_internal_id=0) {
+	public function OrderNSRequest( $order_data, $customer_internal_id, $order_internal_id = 0 ) {
 			
 		global $TMWNI_OPTIONS;
 
@@ -309,7 +309,7 @@ class OrderClient extends CommonIntegrationFunctions {
 						$order = wc_get_order($order_data['order_id']);
 						if ( $order->has_status($TMWNI_OPTIONS['ns_auto_invoice_status']) ) {
 							$this->createSOInvoice($order_data['order_id'], $customer_internal_id, $order_internal_id);
-						}			
+						}           
 					}
 					/** 
 						*After Add order data response hook.
@@ -404,7 +404,7 @@ class OrderClient extends CommonIntegrationFunctions {
 			}
 		}
 	}
-	public function createSOInvoice($order_id,$customer_internal_id,$order_internal_id) {
+	public function createSOInvoice( $order_id, $customer_internal_id, $order_internal_id ) {
 		$this->object_id = $order_id;
 
 		$invoice = new Invoice();
@@ -624,22 +624,22 @@ class OrderClient extends CommonIntegrationFunctions {
 
 		$customForm = new RecordRef();
 
-		$promoCustomForm = get_option( 'netsuite_promo_customForm');
 
-		$promoForm = array_search('Order Promotion', $promoCustomForm);
+		$promoCustomForm = get_option( 'netsuite_promo_customForm');
+		if (!empty($promoCustomForm)) {
+			$promoForm = array_search('Order Promotion', $promoCustomForm);
+		}
 
 		$customForm = new RecordRef();
 
 		if (isset($promoForm) && !empty($promoForm) ) {
 			$customForm->internalId = $promoForm;
-		}
-
-		$fieldsArray = array(
-			'customForm' => $customForm,
-			'name' => $coupon_post_obj->post_name, 
-			'code' => $coupon_post_obj->post_title, 
+			$fieldsArray = array(
+				'customForm' => $customForm,
+				'name' => $coupon_post_obj->post_name, 
+				'code' => $coupon_post_obj->post_title, 
 						//"discount" => $this->createRecordRef($discount_internal_id),   //Uncomment if discount internal id is availble (Use 1701 for testing)
-			'discount' => $discRef,
+				'discount' => $discRef,
 						'rate' => $discountRate,                                               //Uncomment if "discount" field is active
 						//"useType" => $usetype,                                               //INSUFFICIENT_PERMISSION or Readonly field
 						'description' => $coupon_post_obj->post_excerpt,
@@ -647,10 +647,11 @@ class OrderClient extends CommonIntegrationFunctions {
 						'endDate' => $coupan_expiry,
 					);
 
-		setFields($coupon_data, $fieldsArray);
+			setFields($coupon_data, $fieldsArray);
 
 
-		return $coupon_data;
+			return $coupon_data;
+		}
 	}
 
 
@@ -758,6 +759,13 @@ class OrderClient extends CommonIntegrationFunctions {
 	public function createCustomerDeposite( $order_data, $customer_internal_id, $order_internal_id ) {
 		global $TMWNI_OPTIONS;
 		$customer_deposit_sync = true;
+		/**
+				* Filter to modify the status of the  customer deposit process.
+		 *
+				* @since 1.0.0
+				*
+
+		*/
 		$customer_deposit_sync = apply_filters('tm_ns_customer_deposit_sync_status_check', $customer_deposit_sync, $order_data, $customer_internal_id, $order_internal_id);
 
 		if (true == $customer_deposit_sync) {
@@ -776,6 +784,13 @@ class OrderClient extends CommonIntegrationFunctions {
 
 			$customer_deposite->payment = $order->total;
 
+			/**
+				* Filter to modify the customer deposit data.
+			 *
+				* @since 1.0.0
+				*
+
+			*/
 			$customer_deposite = apply_filters('tm_customer_deposit_data', $customer_deposite, $order_data, $customer_internal_id, $order_internal_id);
 
 			$request = new AddRequest();
@@ -795,7 +810,6 @@ class OrderClient extends CommonIntegrationFunctions {
 			}
 
 		}
-		
 	} 
 
 
@@ -840,7 +854,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	public function createRequest( &$so, $order_data ) {
 		foreach ($order_data['ns_salesorder_fields'] as $nsfield => $value) {
 
-			if (isset($value['type']) && ( 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type'] )) {
+			if (isset($value['type']) && ( 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type'] | 'SalesOrderOrderStatus' == $value['type'] )) {
 				if ('phone'==$nsfield && strlen($value['value']) > 6) {
 					$so->$nsfield = $value['value'];
 				} else {
@@ -1050,8 +1064,8 @@ class OrderClient extends CommonIntegrationFunctions {
 									}
 								} elseif (html_entity_decode(strtolower($mapping['wc_field_value'])) == html_entity_decode(strtolower($saved_value))) {
 									$order_data['ns_salesorder_fields'][trim($mapping['ns_field_key'])] = array(
-										'type' => trim($mapping['ns_field_type_value']),
-										'value' => $mapping['ns_field_value']
+									'type' => trim($mapping['ns_field_type_value']),
+									'value' => $mapping['ns_field_value'],
 									);
 								}
 							} elseif ('isnot' == $mapping['wc_where_op']) {

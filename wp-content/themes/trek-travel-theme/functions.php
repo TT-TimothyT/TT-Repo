@@ -2203,14 +2203,24 @@ function populate_grouped_products($form) {
         // Query to get WooCommerce Grouped Products
         $args = array(
             'post_type'      => 'product',
+			'post_status'    => 'publish',
             'posts_per_page' => -1,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
             'tax_query'      => array(
                 array(
                     'taxonomy' => 'product_type',
                     'field'    => 'slug',
                     'terms'    => 'grouped'
                 )
-            )
+			),
+			'meta_query'     => array(
+				array(
+					'key'     => 'is_private_custom_trip',
+					'value'   => '0',
+					'compare' => '='
+			),
+    ),
         );
 
         $products = get_posts($args);
@@ -2223,7 +2233,6 @@ function populate_grouped_products($form) {
             );
         }
 
-        $field->placeholder = 'Select a Grouped Product';
         $field->choices = $choices;
     }
     return $form;
@@ -2287,19 +2296,19 @@ function populate_guides($form) {
 }
 
 // Gravity Forms Dropbox path
-add_filter('gform_dropbox_folder_path', function ($path, $entry, $form) {
-    $first_name = rgar($entry, '1.3'); // First Name
-    $last_name = rgar($entry, '1.6');  // Last Name
+// add_filter('gform_dropbox_folder_path', function ($path, $entry, $form) {
+//     $first_name = rgar($entry, '1.3'); // First Name
+//     $last_name = rgar($entry, '1.6');  // Last Name
 
-    // Combine first & last name, if both exist
-    $full_name = trim($first_name . ' ' . $last_name);
+//     // Combine first & last name, if both exist
+//     $full_name = trim($first_name . ' ' . $last_name);
 
-    // Sanitize the name to remove spaces & special characters
-    $safe_name = preg_replace('/[^A-Za-z0-9_-]/', '_', sanitize_text_field($full_name));
+//     // Sanitize the name to remove spaces & special characters
+//     $safe_name = preg_replace('/[^A-Za-z0-9_-]/', '_', sanitize_text_field($full_name));
 
-    // Ensure the full Dropbox path is returned
-    return "/Trek Travel/Apps/Gravity Forms Add-On/TT-Testimonials/{$safe_name}/";
-}, 10, 3);
+//     // Ensure the full Dropbox path is returned
+//     return "/Trek Travel/Apps/Gravity Forms Add-On/TT-Testimonials/{$safe_name}/";
+// }, 10, 3);
 
 function trek_enqueue_guide_search_script() {
     // Check for the specific page template
@@ -2314,6 +2323,63 @@ function trek_enqueue_guide_search_script() {
     }
 }
 add_action('wp_enqueue_scripts', 'trek_enqueue_guide_search_script');
+
+// function trek_enqueue_select2() {
+//     // Check for the specific page template
+//     if (is_page_template('tpl-landing-testimonial.php')) {
+// 		wp_enqueue_style('select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
+//         wp_enqueue_script('select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['jquery'], null, true);
+
+//         // Init script
+//         wp_add_inline_script('select2-js', "
+//             jQuery(document).ready(function($) {
+//                 $('.use-select2 select[multiple]').select2({
+//                     placeholder: 'Select Guides',
+//                     allowClear: true
+//                 });
+//             });
+//         ");
+//     }
+// }
+// add_action('wp_enqueue_scripts', 'trek_enqueue_select2');
+
+function trek_enqueue_select2() {
+    wp_enqueue_style(
+        'select2-css',
+        'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+    );
+    wp_enqueue_script(
+        'select2-js',
+        'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+        ['jquery'],
+        null,
+        true
+    );
+
+    $inline_js = "
+    function initSelect2Default(context) {
+        jQuery('.use-select2 select', context).each(function () {
+            jQuery(this).select2({
+                placeholder: 'Search here',
+                allowClear: true,
+                width: 'resolve'
+            });
+        });
+    }
+
+    jQuery(document).ready(function($) {
+        initSelect2Default(document);
+        $(document).on('gform_post_render', function() {
+            initSelect2Default(document);
+        });
+    });
+    ";
+
+    wp_add_inline_script('select2-js', $inline_js);
+}
+add_action('wp_enqueue_scripts', 'trek_enqueue_select2');
+
+
 
 
 // Lightbox JS

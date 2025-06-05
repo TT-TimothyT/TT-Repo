@@ -3,12 +3,12 @@
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
 
-function tm_ns_get_post_meta( $post_id, $meta_key) {
+function tm_ns_get_post_meta( $post_id, $meta_key ) {
 	$meta_value = '';
 	if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled() ) {
 		// HPOS usage is enabled.
 		$order = wc_get_order($post_id);
-		$meta_value = $order ? $order->get_meta($meta_key, true) : null;		
+		$meta_value = $order ? $order->get_meta($meta_key, true) : null;        
 	} else {
 		$meta_value =  get_post_meta($post_id, $meta_key, true);    
 	}
@@ -18,7 +18,7 @@ function tm_ns_get_post_meta( $post_id, $meta_key) {
 
 
 
-function tm_ns_update_post_meta( $post_id, $meta_key, $meta_value) {
+function tm_ns_update_post_meta( $post_id, $meta_key, $meta_value ) {
 	if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled() ) {
 		$order = wc_get_order($post_id);
 		$order->update_meta_data($meta_key, $meta_value );
@@ -26,10 +26,9 @@ function tm_ns_update_post_meta( $post_id, $meta_key, $meta_value) {
 	} else {
 		update_post_meta($post_id, $meta_key, $meta_value);    
 	}
-
 }
 
-function tm_ns_delete_post_meta( $post_id, $meta_key, $meta_value) {
+function tm_ns_delete_post_meta( $post_id, $meta_key, $meta_value ) {
 	if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled() ) {
 		$order = wc_get_order($post_id);
 		$order->delete_meta_data($meta_key, $meta_value);
@@ -37,10 +36,9 @@ function tm_ns_delete_post_meta( $post_id, $meta_key, $meta_value) {
 	} else {
 		delete_post_meta($post_id, $meta_key);    
 	}
-
 }
 
-function tm_ns_get_post_type( $post_id) {
+function tm_ns_get_post_type( $post_id ) {
 	if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled() ) {
 		$post_type = OrderUtil::get_order_type( $post_id );
 	} else {
@@ -49,10 +47,9 @@ function tm_ns_get_post_type( $post_id) {
 
 
 	return $post_type; 
-
 }
 
-function tm_ns_get_order_data( $order, $mapping) {
+function tm_ns_get_order_data( $order, $mapping ) {
 	$saved_value = '';
 	if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled() ) {
 		$meta_key = '_' . $mapping['wc_field_key'];
@@ -131,8 +128,6 @@ function tm_ns_get_order_data( $order, $mapping) {
 
 
 	return $saved_value; 
-
-
 }
 
 if (!function_exists('tmns_hpos_add_meta_box')) {

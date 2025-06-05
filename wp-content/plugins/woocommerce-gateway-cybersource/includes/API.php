@@ -32,8 +32,8 @@ use CyberSource\Logging\LogConfiguration;
 use Exception;
 use SkyVerge\WooCommerce\Cybersource\API\Requests;
 use SkyVerge\WooCommerce\Cybersource\API\Responses;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3\SV_WC_Payment_Gateway_Helper;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10\SV_WC_Payment_Gateway_Helper;
 use WC_Log_Handler_File;
 
 defined( 'ABSPATH' ) or exit;

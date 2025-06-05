@@ -40,7 +40,6 @@ class TMWNI_Admin_Dashboard {
 	public function get_inventory_update_time() {
 		return $this->inventory_update_time;
 	}
-
 }
 $dashboard = new TMWNI_Admin_Dashboard();
 

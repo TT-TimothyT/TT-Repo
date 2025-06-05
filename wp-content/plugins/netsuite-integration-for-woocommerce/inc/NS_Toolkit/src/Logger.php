@@ -73,6 +73,4 @@ class Logger {
 			fclose($Handle);
 		}
 	}
-
-	
 }

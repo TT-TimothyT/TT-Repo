@@ -3,7 +3,7 @@
  * Plugin Name: NetSuite Integration for WooCommerce
  * Plugin URI: https://woocommerce.com/products/netsuite-integration-for-woocommerce/
  * Description: Plugin will be used to add/update WooCommerce orders and customers to NetSuite .
- * Version: 1.6.5
+ * Version: 1.6.7
  * Author: Techmarbles
  * Author URI: https://techmarbles.com/
  * Text Domain: TMWNI
@@ -15,7 +15,7 @@
 
 // Debugging function
 if (!function_exists('pr')) {
-	function pr($data) {
+	function pr( $data ) {
 		echo '<pre>';
 		print_r($data);
 		echo '</pre>';
@@ -60,7 +60,7 @@ add_action('plugins_loaded', 'init_tm_netsuite_integration', 1);
 
 function init_tm_netsuite_integration() {
 	// Define the plugin version
-	$plugin_data = get_file_data(__FILE__, ['Version' => 'Version'], false);
+	$plugin_data = get_file_data(__FILE__, array( 'Version' => 'Version' ), false);
 	$plugin_version = isset($plugin_data['Version'])
 		? $plugin_data['Version']
 		: '1.6.0';
@@ -77,15 +77,16 @@ function init_tm_netsuite_integration() {
 		 */
 		$active_plugins = get_option('active_plugins');
 	}
-	/**
-	 * Check if WooCommerce is not activated and deactivate the plugin
-	 *
-	 * @since 1.0.0
-	 */
+	
 	if (
 		!isset($active_plugins['woocommerce/woocommerce.php']) &&
 		!in_array(
 			'woocommerce/woocommerce.php',
+			/**
+				* Check if WooCommerce is not activated and deactivate the plugin
+				*
+				* @since 1.0.0
+			*/
 			apply_filters('active_plugins', get_option('active_plugins'))
 		)
 	) {
@@ -113,7 +114,7 @@ function init_tm_netsuite_integration() {
 	// Load the main file
 	if (!empty($TMWNI_OPTIONS)) {
 		require_once plugin_dir_path(__FILE__) . 'inc/loader.php';
-		$GLOBALS['TMWNI_Loader'] = TMWNI_Loader(); // Global for backwards compatibility
+		$GLOBALS['TMWNI_Loader'] = TMWNI_Loader::getInstance(); // Global for backwards compatibility
 
 	}
 	/**
@@ -146,7 +147,7 @@ function install_tm_netsuite_integration_plugin() {
 
 	if (is_multisite()) {
 		$active_plugins = get_site_option('active_sitewide_plugins');
-		$site_ids = get_sites(['fields' => 'ids']);
+		$site_ids = get_sites(array( 'fields' => 'ids' ));
 
 		// Loop through each site and create the directory
 		foreach ($site_ids as $site_id) {
@@ -177,15 +178,16 @@ function install_tm_netsuite_integration_plugin() {
 			wp_mkdir_p($plugin_folder);
 		}
 	}
-	/**
-	 * Check if WooCommerce is activated and create logs table
-	 *
-	 * @since 1.0.0
-	 */
+	
 	if (
 		isset($active_plugins['woocommerce/woocommerce.php']) ||
 		in_array(
 			'woocommerce/woocommerce.php',
+			/**
+				* Check if WooCommerce is activated and create logs table
+				*
+				* @since 1.0.0
+			*/
 			apply_filters('active_plugins', get_option('active_plugins'))
 		)
 	) {
@@ -256,8 +258,6 @@ function install_tm_netsuite_integration_plugin() {
 			'Your store needs to be WooCommerce-ready to activate this plugin.'
 		);
 	}
-
-
 }
 
 // Declare compatibility with custom order tables if the class

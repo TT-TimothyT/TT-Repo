@@ -192,11 +192,18 @@ class MerchantConfiguration
     protected $runEnvironment="";
 
     /**
-     * Curl RUN Environment
+     * Curl IntermediateHost
      *
      * @var string
      */
     protected $IntermediateHost="";
+
+    /**
+     * Curl DefaultDeveloperId
+     * 
+     * @var string
+     */
+    protected $defaultDeveloperId="";
 
     /**
      * Solution ID
@@ -221,6 +228,13 @@ class MerchantConfiguration
     protected $jwePEMFileDirectory;
 
     /**
+     * tempFolderPath directory
+     *
+     * @var string
+     */
+    protected $tempFolderPath;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -229,7 +243,7 @@ class MerchantConfiguration
         $this->logConfig = new LogConfiguration();
 
         if (self::$logger === null) {
-            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $this->logConfig);
+            self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class($this)), $this->logConfig);
         }
     }
 
@@ -309,6 +323,28 @@ class MerchantConfiguration
     public function getIntermediateHost()
     {
         return $this->IntermediateHost;
+    }
+
+    /**
+     * Sets the DefaultDeveloperId for axa intermediate feature
+     *
+     * @param string $defaultDeveloperId url for intermediate host
+     *
+     * @return void
+     */
+    public function setDefaultDeveloperId($defaultDeveloperId)
+    {
+        $this->defaultDeveloperId = $defaultDeveloperId;
+        return $this;
+    }
+
+    /**
+     * Gets the DefaultDeveloperId for intermediate url
+     * @return string $DefaultDeveloperId
+     */
+    public function getDefaultDeveloperId()
+    {
+        return $this->defaultDeveloperId;
     }
 
 
@@ -1139,7 +1175,7 @@ class MerchantConfiguration
             }
         }
 		
-        self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class()), $this->getLogConfiguration());
+        self::$logger = (new LogFactory())->getLogger(\CyberSource\Utilities\Helpers\ClassHelper::getClassName(get_class($this)), $this->getLogConfiguration());
         self::$logger->info(GlobalParameter::LOG_START_MSG);
         $logConfig = $this->getLogConfiguration();
         $configurationData = array(

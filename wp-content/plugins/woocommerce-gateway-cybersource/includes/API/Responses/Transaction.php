@@ -24,7 +24,7 @@
 namespace SkyVerge\WooCommerce\Cybersource\API\Responses;
 
 use SkyVerge\WooCommerce\Cybersource\API\Response;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_3 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

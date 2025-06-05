@@ -1,6 +1,15 @@
 *** NetSuite Integration for WooCommerce Changelog ***
+
+2025-05-03 - version 1.6.7
+* Fix - Solve coupon sync issue.
+
+2025-04-29 - version 1.6.6
+* Fix - Get price from QTY0.
+* Fix - Inventory sync issue.
+* Add - Conditional mapping support order status feature.
+
 2024-11-18 - version 1.6.5
-* Fix - Customer Update issue resolved.
+* Update - Customer Update issue resolved.
 
 2024-11-15 - version 1.6.4
 * Update - Update SOAP API version.
