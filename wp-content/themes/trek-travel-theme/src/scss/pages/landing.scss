@@ -1,11 +1,16 @@
 // COMMON + Spacing + TYPE
 
 .landing-page-container {
-  p {
-  font-size: 20px;
-  line-height: 38px;
+
+  &.hw {
+    p {
+      font-size: 20px;
+      line-height: 38px;
+      }
   }
+ 
 }
+
 .intro-sect {
   margin-bottom: 85px;
 }

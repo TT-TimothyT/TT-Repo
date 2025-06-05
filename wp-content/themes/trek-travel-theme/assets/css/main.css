@@ -23645,7 +23645,7 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
     display: none !important;
   }
 }
-.landing-page-container p {
+.landing-page-container.hw p {
   font-size: 20px;
   line-height: 38px;
 }
@@ -24236,6 +24236,9 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   text-align: center;
 }
 .testimonial-main .content-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 50px;
   margin-bottom: 50px;
 }
@@ -24247,6 +24250,10 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   text-align: left;
   gap: 5px;
   font-size: 20px;
+}
+.testimonial-main .content-box a.btn {
+  font-size: 20px;
+  padding: 16px 24px 16px 24px;
 }
 .testimonial-main .main-content {
   padding-top: 50px;
@@ -24263,6 +24270,16 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   background-color: black;
   padding: 50px 0;
 }
+.testimonial-main .media-repeater .swiper-button-prev,
+.testimonial-main .media-repeater .swiper-button-next {
+  color: #28AAE1;
+}
+.testimonial-main .media-repeater .swiper-button-next {
+  right: var(--swiper-navigation-sides-offset, -5px);
+}
+.testimonial-main .media-repeater .swiper-button-prev {
+  left: var(--swiper-navigation-sides-offset, -5px);
+}
 @media (min-width: 1200px) {
   .testimonial-main .media-repeater .swiper-button-prev,
 .testimonial-main .media-repeater .swiper-button-next {
@@ -24273,7 +24290,16 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   margin-bottom: 50px;
 }
 .testimonial-main .media-repeater .media-swiper {
-  padding: 50px 20px;
+  overflow: visible;
+  padding-bottom: 50px;
+}
+.testimonial-main .media-repeater .media-swiper .swiper-pagination-bullet {
+  width: 15px;
+  height: 15px;
+  background: white;
+}
+.testimonial-main .media-repeater .media-swiper .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background: #28AAE1;
 }
 .testimonial-main .media-repeater .row {
   justify-content: space-around;
@@ -24282,6 +24308,8 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 12px;
 }
 .testimonial-main .media-repeater .media-item {
   display: flex;
@@ -24290,6 +24318,7 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   transition: all 0.3s;
   overflow: hidden;
   width: fit-content;
+  max-width: 350px;
 }
 .testimonial-main .media-repeater .media-item .video-wrapper {
   position: relative;
@@ -24372,22 +24401,18 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   padding: 0.5rem 0.75rem;
 }
 .testimonial-main .media-repeater .media-item:hover {
-  -webkit-box-shadow: 5px 5px 15px 5px #28AAE1;
-  box-shadow: 0px 0px 15px 5px #28AAE1;
+  transition: all 0.3s;
+  -webkit-box-shadow: 5px 5px 12px 5px #28AAE1;
+  box-shadow: 0px 0px 12px 5px #28AAE1;
 }
 .testimonial-main .media-repeater .media-item:hover .video-wrapper .video-overlay .v-grad {
-  background: linear-gradient(0deg, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0.25) 50%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(0deg, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 40%, rgba(255, 255, 255, 0) 100%);
 }
 .testimonial-main .media-repeater .media-item:hover .video-wrapper .video-overlay .play-icon-overlay {
   text-shadow: 0px 0px 20px #000000;
 }
 .testimonial-main #t-form {
-  background-color: #B2B3B6;
-  /* Match single and multi-select input appearance */
-  /* Placeholder appearance for multi-select */
-  /* When no items selected, show consistent height */
-  /* Padding fix for empty state */
-  /* Adjust tag spacing */
+  background-color: #E5E5E5;
 }
 .testimonial-main #t-form .f-box {
   background-color: white;
@@ -24400,33 +24425,61 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 .testimonial-main #t-form .f-box .gform-theme--foundation .gfield textarea.large {
   min-block-size: 10rem;
 }
+.testimonial-main #t-form .f-box .gform_description {
+  text-align: center;
+}
 .testimonial-main #t-form .f-box .gform-theme--foundation .gform_footer {
   justify-content: center;
 }
 .testimonial-main #t-form .f-box .gform-theme--foundation .gform_footer input {
+  border: 2px solid black;
+  border-radius: 5px;
   background-color: black;
   font-size: 18px;
-  padding: 15px 25px;
+  padding: 12px 20px;
   text-transform: capitalize;
 }
-.testimonial-main #t-form .select2-dropdown .select2-search--dropdown {
+.testimonial-main #t-form .f-box .gform-theme--foundation .gform_footer input:hover {
+  border-color: #28AAE1;
+  background-color: white;
+  color: black;
+}
+
+body.page-template-tpl-landing-testimonial {
+  /* Match single and multi-select input appearance */
+  /* Placeholder appearance for multi-select */
+  /* When no items selected, show consistent height */
+  /* Padding fix for empty state */
+  /* Adjust tag spacing */
+  /* Force proper positioning and z-index for select2 dropdown */
+  /* Fix input box inside dropdown on iOS */
+  /* Fix line height & padding for better touch area */
+  /* Prevent dropdown from being cut off */
+  /* Fix blinking cursor issue on iOS */
+  /* Optional: increase touch target size */
+  /* Also force width on results list */
+}
+body.page-template-tpl-landing-testimonial .select2-dropdown .select2-search--dropdown {
   padding: 0.25rem;
 }
-.testimonial-main #t-form .select2-search--dropdown .select2-search__field {
+body.page-template-tpl-landing-testimonial .select2-selection__placeholder {
+  color: black;
+}
+body.page-template-tpl-landing-testimonial .select2-search--dropdown .select2-search__field {
   border: 1px solid #ccc;
   padding: 0.25rem 0.5rem;
   font-size: 1rem;
   box-shadow: none;
 }
-.testimonial-main #t-form .select2-container--default .select2-selection--single, .testimonial-main #t-form .select2-container--default .select2-selection--multiple {
+body.page-template-tpl-landing-testimonial .select2-container--default .select2-selection--single, body.page-template-tpl-landing-testimonial .select2-container--default .select2-selection--multiple {
   padding: 0.4rem 0.75rem;
   height: auto;
 }
-.testimonial-main #t-form .select2-search {
+body.page-template-tpl-landing-testimonial .select2-search {
   width: 100%;
   font-style: normal;
 }
-.testimonial-main #t-form .select2-container--default .select2-selection--multiple {
+body.page-template-tpl-landing-testimonial .select2-container--default .select2-selection--multiple {
   padding: 6px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -24437,38 +24490,82 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   align-items: center;
   flex-wrap: wrap;
 }
-.testimonial-main #t-form .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+body.page-template-tpl-landing-testimonial .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
   font-size: 1rem;
   margin: 0;
   padding: 0;
   height: 24px;
   line-height: 1.5;
 }
-.testimonial-main #t-form .select2-selection__rendered {
-  padding: 2px 0px;
-}
-.testimonial-main #t-form .select2-selection__choice {
+body.page-template-tpl-landing-testimonial .select2-selection__choice {
   margin: 2px 4px 2px 0;
   padding: 3px 6px;
   font-size: 0.875rem;
 }
-.testimonial-main #t-form .select2-selection__placeholder {
+body.page-template-tpl-landing-testimonial .select2-selection__placeholder {
   color: black;
 }
-.testimonial-main #t-form .select2-selection__clear {
+body.page-template-tpl-landing-testimonial .select2-selection__clear {
   background-color: #28AAE1;
   color: black;
 }
-.testimonial-main #t-form .select2-selection__choice {
+body.page-template-tpl-landing-testimonial .select2-selection__choice {
   width: fit-content;
   padding-left: 20px;
 }
-.testimonial-main #t-form .select2-selection__choice__remove {
+body.page-template-tpl-landing-testimonial .select2-selection__choice__remove {
   color: black;
   background-color: #28AAE1;
   padding: 2px;
   top: -50%;
 }
-.testimonial-main #t-form #select2-input_27_10-container {
+body.page-template-tpl-landing-testimonial #select2-input_27_10-container {
   width: auto;
+}
+body.page-template-tpl-landing-testimonial .select2-container--default .select2-results > .select2-results__options {
+  z-index: 999999 !important;
+  max-height: 200px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+}
+body.page-template-tpl-landing-testimonial .select2-search__field {
+  font-size: 16px !important; /* prevents iOS zoom */
+  -webkit-appearance: none;
+}
+body.page-template-tpl-landing-testimonial .select2-search--dropdown .select2-search__field {
+  width: unset !important;
+}
+body.page-template-tpl-landing-testimonial .select2-dropdown {
+  box-sizing: border-box;
+  max-width: 100vw;
+}
+body.page-template-tpl-landing-testimonial .select2-search--dropdown .select2-search__field {
+  min-width: max-content;
+}
+body.page-template-tpl-landing-testimonial .select2-search--dropdown .select2-search__field::-webkit-input-placeholder {
+  opacity: 1;
+}
+body.page-template-tpl-landing-testimonial .select2-container .select2-selection--single {
+  min-height: 38px;
+}
+body.page-template-tpl-landing-testimonial .select2-container--default .select2-results {
+  width: auto !important; /* Let width be automatic */
+  min-width: 200px !important; /* Minimum width for dropdown */
+  max-width: 100vw !important; /* Max width to avoid overflow */
+  box-sizing: border-box !important;
+  background: white !important;
+  z-index: 999999 !important;
+  border: 1px solid #aaa !important;
+  border-radius: 4px !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important; /* smooth scroll on iOS */
+}
+body.page-template-tpl-landing-testimonial .select2-container--default .select2-results__options {
+  width: max-content !important;
+  background: white !important;
+}
+body.page-template-tpl-landing-testimonial .select2-container {
+  display: flex;
+  flex-direction: column;
+  height: 50px;
 }

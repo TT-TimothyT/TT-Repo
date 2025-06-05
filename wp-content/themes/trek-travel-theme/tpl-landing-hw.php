@@ -7,7 +7,7 @@ get_header();
 
 ?>
 
-<main class="landing-page-container">
+<main class="landing-page-container hw">
 
     <?php get_template_part('tpl-parts/common/hero', 'full'); ?>
     <?php get_template_part('tpl-parts/landing/intro', 'section'); ?>

@@ -84,6 +84,7 @@ $cached_html = get_transient($cache_key);
                 </div>
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
             </div>
         </div>
     </section>
@@ -101,11 +102,13 @@ $cached_html = get_transient($cache_key);
     const swiper = new Swiper('.media-swiper', {
         slidesPerView: 'auto',
         spaceBetween: 60,
+        loop: true,
+        cssMode: true,
         breakpoints: {
             1200: {
             slidesPerView: '3',
             spaceBetween: 30,
-            enabled: false
+            // enabled: false
             },
             768: {
             slidesPerView: 2,
@@ -116,6 +119,14 @@ $cached_html = get_transient($cache_key);
             spaceBetween: 20,
             },
         },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev'
+        },
+        pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
         });
 
 

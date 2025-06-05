@@ -10,13 +10,13 @@ $form_id = get_field('form_selection');
 
 
     <section class="main-content" id="t-form">
-        <div class="container py-5">
+        <div class="container">
             <?php if (!empty($form_id)) { ?>
             <div class="row">
                 <div class="col-12 col-xl-8 mx-auto">
-                <div class="f-header h3 text-center">Your Story Starts Here</div>
+                <div class="f-header h3 text-center">Your story starts here</div>
                     <div class="f-box" >
-                        <?php echo do_shortcode('[gravityform id="' . esc_attr($form_id) . '" title="false" description="false" ajax="true"]'); ?>
+                        <?php gravity_form($form_id,false,true,false,'',true)?>
                     </div>
                 </div>           
             </div>
@@ -31,6 +31,21 @@ $form_id = get_field('form_selection');
 
 if ($form_id): ?>
     <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const forms = document.querySelectorAll('form.open-on-submit');
+
+    forms.forEach(function (form) {
+        form.addEventListener('submit', function () {
+        const redirectField = form.querySelector('.upload-link input');
+        const url = redirectField?.value;
+        if (url) {
+            window.open(url, '_blank');
+        }
+        });
+    });
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
         jQuery(document).on("submit", "form[gformid='<?php echo esc_js($form_id); ?>']", function (event) {
             let pickYourTrip = jQuery("#input_<?php echo esc_js($form_id); ?>_6").val(); // Pick Your Trip dropdown
