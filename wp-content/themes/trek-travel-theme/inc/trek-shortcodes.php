@@ -15,42 +15,41 @@
      do_action('woocommerce_before_customer_login_form');
      $google_api_key = G_CAPTCHA_SITEKEY ?: '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV';
      ?>
-     <div class="container">
       <div class="row">
-             <div class="col-12 login-form register-form">
+             <div class="col-12 login-form">
 
-               <div class="h5 sign-text">Join Trek Travel Today! <br>
-                     <div class="h6 my-1">Sign up with Trek Travel to personalize your experience and view trips.</div>
+               <div class="sign-text"><div class="h6">Join Trek Travel Today!</div>
+                     <p class="my-1">Sign up to personalize your experience and trips.</p>
                </div>
 
                  <form method="post" class="woocommerce-form woocommerce-form-register needs-validation" novalidate <?php do_action('woocommerce_register_form_tag'); ?>>
                      <?php do_action('woocommerce_register_form_start'); ?>
  
-                     <div class="field-group">
+                     <div class="field-group my-auto">
  
                         <div class="form-group form-floating">
                            <input type="text" class="input-text form-control" name="billing_first_name" id="InputFname"
                               pattern="[A-Za-zÀ-ÿĀ-žḀ-ỿ'’\- ]+" placeholder="First Name" required />
-                           <label for="InputFname">First Name*</label>
+                           <label class="label-for" for="InputFname">First Name*</label>
                            <div class="invalid-feedback">Only valid characters are allowed (letters, spaces, hyphens, apostrophes).</div>
                         </div>
 
                         <div class="form-group form-floating my-1">
                            <input type="text" class="input-text form-control" name="billing_last_name" id="InputLname"
                               pattern="[A-Za-zÀ-ÿĀ-žḀ-ỿ'’\- ]+" placeholder="Last Name" required />
-                           <label for="InputLname">Last Name*</label>
+                           <label class="label-for" for="InputLname">Last Name*</label>
                            <div class="invalid-feedback">Only valid characters are allowed (letters, spaces, hyphens, apostrophes).</div>
                         </div>
    
                         <div class="form-group form-floating my-1">
                            <input type="email" class="input-text form-control" name="email" id="InputEmail" placeholder="Email" required />
-                           <label for="InputEmail">Email*</label>
+                           <label class="label-for" for="InputEmail">Email*</label>
                            <div class="invalid-feedback">Enter a valid email.</div>
                         </div>
    
                         <div class="form-group form-floating my-1">
                            <input type="password" class="input-text form-control" name="password" id="InputPassword" placeholder="Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
-                           <label for="InputPassword">Password*</label>
+                           <label class="label-for" for="InputPassword">Password*</label>
                            <div class="invalid-feedback">Must be 8+ characters with uppercase, lowercase, and a digit.</div>
                         </div>
    
@@ -71,7 +70,7 @@
                         </div>
                          <div class="invalid-feedback">Please verify you're human.</div>
                          <?php wp_nonce_field('woocommerce-register', 'woocommerce-register-nonce'); ?>
-                         <button type="submit" class="btn btn-primary w-100" name="register">
+                         <button type="submit" class="btn btn-bb" name="register">
                              <?php esc_html_e('Sign up', 'trek-travel-theme'); ?>
                          </button>
                      </div>
@@ -79,7 +78,6 @@
                  </form>
              </div>
          </div>
-     </div>
  
      <!-- Turnstile JS -->
      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -119,14 +117,14 @@ function trek_login_form()
 
       <div class="col-12 login-form">
 
-            <div class="h5 sign-text">Welcome! <br> Find your vacation of a lifetime.
+            <div class="sign-text"><div class="h6">Welcome!<br> Find your vacation of a lifetime.</div> 
                <p class="re-register-info">Log in to see upcoming trips, preferences, and much more.</strong></p>
             </div>
 
          
          <form id="login-form" class="woocommerce-form woocommerce-form-login needs-validation" method="post" name="trek-login-form" novalidate>
             <?php do_action('woocommerce_login_form_start'); ?>
-            <div class="field-group">
+            <div class="field-group my-auto">
 
                <div class="form-group form-floating">
                   <input type="email" class="input-text form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" name="email" placeholder="Email" id="InputEmail" value="<?php echo (!empty($_POST['email'])) ? esc_attr(wp_unslash($_POST['email'])) : ''; ?>" required />
@@ -162,7 +160,7 @@ function trek_login_form()
                <div class="cf-turnstile" data-sitekey="0x4AAAAAABWi6ZkGeYPlL4wS" data-callback="javascriptCallback" data-theme="light"></div>
                   <div class="invalid-feedback">Please verify you're human.</div>
                   <?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
-                  <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-white" name="login" value="<?php esc_attr_e('Sign in', 'trek-travel-theme'); ?>"><?php esc_html_e('Log in', 'trek-travel-theme'); ?></button>
+                  <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-blue" name="login" value="<?php esc_attr_e('Sign in', 'trek-travel-theme'); ?>"><?php esc_html_e('Log in', 'trek-travel-theme'); ?></button>
                   <input type="hidden" name="http_referer" value="<?php echo $redirect_url; ?>">
             </div>
             <?php do_action('woocommerce_login_form_end'); ?>

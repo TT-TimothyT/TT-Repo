@@ -1,5 +1,11 @@
 // Login Register Modal
 
+body.lity-login-modal .lity {
+	background: rgba(0, 0, 0, 0.3); // Custom opacity for login modal only
+  backdrop-filter: blur(3px);
+}
+
+
 .lity-active button.lity-close {
   position: absolute;
     top: -20px;
@@ -9,12 +15,12 @@
 }
 
 #login-register-modal {
-  max-width: 600px; // ← consistent width
+  max-width: 500px; // ← consistent width
   width: 90vw;
   margin: auto;
   background: white;
   border-radius: 5px;
-  padding: 1.5rem;
+  padding: 1rem;
 
 
   .sign-logo {
@@ -24,7 +30,7 @@
       display: flex;
       object-fit: contain;
       width: 100%;
-      max-height: 200px;
+      max-height: 150px;
     }
   }
 
@@ -113,7 +119,7 @@
 
   .fixed-tab-content {
     position: relative;
-    min-height: 650px;
+    height: 500px;
     // overflow: hidden;
   }
 
@@ -164,7 +170,7 @@
 .login-form {
   display: flex;
   flex-direction: column;
-  min-height: 650px;
+  min-height: 500px;
 
   form {
     height: 100%;
@@ -196,6 +202,11 @@
 
   .form-floating {
     margin-bottom: 1rem !important;
+
+    .form-control, label {
+      height: 3rem;
+      padding: 0.5rem 0.75rem;
+    }
   }
 
   .login-title {

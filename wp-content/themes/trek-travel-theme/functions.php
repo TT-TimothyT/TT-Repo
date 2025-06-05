@@ -2428,7 +2428,7 @@ function trek_turnstile_validate_registration($username, $email, $validation_err
     }
 
     if (!$success) {
-        $validation_errors->add('turnstile_failed', __('Human verification failed. Please try again.', 'your-theme'));
+        $validation_errors->add('turnstile_failed', __('Human verification failed. Please try again.', 'trek-travel-theme'));
     }
 
     return $validation_errors;
@@ -2466,101 +2466,6 @@ add_filter('woocommerce_process_login_errors', function($validation_error, $user
 
     return $validation_error;
 }, 10, 3);
-
-// Intercept Login
-// add_action('wp_loaded', 'trek_intercept_login_and_validate_turnstile');
-
-// function trek_intercept_login_and_validate_turnstile() {
-//     if (
-//         isset($_POST['login']) &&
-//         isset($_POST['log']) &&
-//         isset($_POST['pwd']) &&
-//         !is_user_logged_in()
-//     ) {
-//         // Validate Turnstile
-//         if (empty($_POST['cf-turnstile-response'])) {
-//             wc_add_notice(__('Please verify you are human.', 'trek-travel-theme'), 'error');
-//             wp_safe_redirect(wp_get_referer() ?: wc_get_page_permalink('myaccount'));
-//             exit;
-//         }
-
-//         $token = sanitize_text_field($_POST['cf-turnstile-response']);
-//         $secret = '0x4AAAAAABWi6WFZMJqiGUSGPKqPKzQ9EBg';
-
-//         $response = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-//             'body' => [
-//                 'secret'   => $secret,
-//                 'response' => $token,
-//                 'remoteip' => $_SERVER['REMOTE_ADDR'],
-//             ]
-//         ]);
-
-//         if (is_wp_error($response) || empty(json_decode(wp_remote_retrieve_body($response), true)['success'])) {
-//             wc_add_notice(__('Turnstile verification failed. Please try again.', 'trek-travel-theme'), 'error');
-//             wp_safe_redirect(wp_get_referer() ?: wc_get_page_permalink('myaccount'));
-//             exit;
-//         }
-//     }
-// }
-
-// add_filter('woocommerce_process_login_errors', 'trek_turnstile_block_login', 10, 3);
-
-// function trek_turnstile_block_login($validation_error, $username, $password) {
-//     // Only run on actual login attempt
-//     if (isset($_POST['login'])) {
-//         if (empty($_POST['cf-turnstile-response'])) {
-//             $validation_error->add('turnstile_missing', __('Please verify you are human.', 'trek-travel-theme'));
-//             return $validation_error;
-//         }
-
-//         $token = sanitize_text_field($_POST['cf-turnstile-response']);
-//         $secret = '0x4AAAAAABWi6WFZMJqiGUSGPKqPKzQ9EBg';
-
-//         $response = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-//             'body' => [
-//                 'secret'   => $secret,
-//                 'response' => $token,
-//                 'remoteip' => $_SERVER['REMOTE_ADDR'],
-//             ]
-//         ]);
-
-//         if (is_wp_error($response)) {
-//             $validation_error->add('turnstile_failed', __('Could not validate Turnstile. Please try again.', 'trek-travel-theme'));
-//             return $validation_error;
-//         }
-
-//         $data = json_decode(wp_remote_retrieve_body($response), true);
-//         if (empty($data['success'])) {
-//             $validation_error->add('turnstile_invalid', __('Human verification failed. Please try again.', 'trek-travel-theme'));
-//         }
-//     }
-
-//     return $validation_error;
-// }
-
-
-// Server-side reCAPTCHA validation
-// add_action('woocommerce_register_post', 'tt_verify_recaptcha', 10, 3);
-// function tt_verify_recaptcha($username, $email, $validation_errors) {
-//     $secret = '6LfNqogpAAAAAAaUuOa7ZlahZIUimafk-BTnv4AQ';
-
-//     if (isset($_POST['g-recaptcha-response'])) {
-//         $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
-//             'body' => [
-//                 'secret' => $secret,
-//                 'response' => sanitize_text_field($_POST['g-recaptcha-response']),
-//                 'remoteip' => $_SERVER['REMOTE_ADDR'],
-//             ],
-//         ]);
-
-//         $result = json_decode(wp_remote_retrieve_body($response), true);
-//         if (empty($result['success'])) {
-//             $validation_errors->add('recaptcha_error', __('Captcha verification failed. Please try again.', 'woocommerce'));
-//         }
-//     } else {
-//         $validation_errors->add('recaptcha_missing', __('Please complete the captcha.', 'woocommerce'));
-//     }
-// }
 
 // Honeypot check
 add_action('woocommerce_register_post', 'tt_check_honeypot', 11, 3);
@@ -2657,4 +2562,36 @@ add_filter( 'manage_users_sortable_columns', 'tt_make_user_registration_column_s
 function tt_make_user_registration_column_sortable( $columns ) {
     $columns['registered'] = 'user_registered';
     return $columns;
+}
+
+
+// Login Register Modal Link Function
+
+function trek_login_register_modal_link( $args = [] ) {
+    $defaults = [
+        'text'        => '',
+        'class'       => 'btn btn-primary',
+        'icon'        => '', // e.g., <i class="bi bi-person"></i>
+        'return_url'  => '', // if you want to override default
+        'wrapper'     => '', // span, div, etc. if needed
+    ];
+    $args = wp_parse_args( $args, $defaults );
+
+    $url = '#login-register-modal';
+    $return_url = $args['return_url'] ?: esc_url( add_query_arg( 'return_url', rawurlencode( get_permalink() ), home_url() ) );
+
+    $html = sprintf(
+        '<a href="%s" data-lity class="%s open-login-modal" data-return-url="%s">%s %s</a>',
+        esc_attr( $url ),
+        esc_attr( $args['class'] ),
+        esc_attr( $return_url ),
+        $args['icon'],
+        esc_html( $args['text'] )
+    );
+
+    if ( $args['wrapper'] ) {
+        return sprintf( '<%1$s>%2$s</%1$s>', $args['wrapper'], $html );
+    }
+
+    return $html;
 }
