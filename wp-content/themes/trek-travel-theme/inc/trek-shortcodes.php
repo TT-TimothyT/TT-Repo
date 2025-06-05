@@ -18,7 +18,7 @@
       <div class="row">
              <div class="col-12 login-form">
 
-               <div class="sign-text"><div class="h6">Join Trek Travel Today!</div>
+               <div class="sign-text"><div class="h5">Join Trek Travel Today!</div>
                      <p class="my-1">Sign up to personalize your experience and trips.</p>
                </div>
 
@@ -117,7 +117,7 @@ function trek_login_form()
 
       <div class="col-12 login-form">
 
-            <div class="sign-text"><div class="h6">Welcome!<br> Find your vacation of a lifetime.</div> 
+            <div class="sign-text"><div class="h5">Welcome!<br> Find your vacation of a lifetime.</div> 
                <p class="re-register-info">Log in to see upcoming trips, preferences, and much more.</strong></p>
             </div>
 
@@ -160,7 +160,7 @@ function trek_login_form()
                <div class="cf-turnstile" data-sitekey="0x4AAAAAABWi6ZkGeYPlL4wS" data-callback="javascriptCallback" data-theme="light"></div>
                   <div class="invalid-feedback">Please verify you're human.</div>
                   <?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
-                  <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-blue" name="login" value="<?php esc_attr_e('Sign in', 'trek-travel-theme'); ?>"><?php esc_html_e('Log in', 'trek-travel-theme'); ?></button>
+                  <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-bb" name="login" value="<?php esc_attr_e('Sign in', 'trek-travel-theme'); ?>"><?php esc_html_e('Log in', 'trek-travel-theme'); ?></button>
                   <input type="hidden" name="http_referer" value="<?php echo $redirect_url; ?>">
             </div>
             <?php do_action('woocommerce_login_form_end'); ?>
