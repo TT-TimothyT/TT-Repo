@@ -656,6 +656,10 @@ if (!function_exists('tt_ns_guest_booking_details')) {
 
         // Guests IDs not found.
         if( ! $guest_ids ) {
+            // If this was a single guest sync from registration, mark it as complete
+            if($single_guest && !empty($wc_user_id)) {
+                do_action('tt_ns_guest_booking_details_complete', $wc_user_id);
+            }
             return;
         }
 
@@ -853,6 +857,11 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $update_booking_data ), $where );
                 }
             }
+        }
+
+        // At the end of processing, if this was a single guest sync from registration, mark it as complete
+        if($single_guest && !empty($wc_user_id)) {
+            do_action('tt_ns_guest_booking_details_complete', $wc_user_id);
         }
     }
 }

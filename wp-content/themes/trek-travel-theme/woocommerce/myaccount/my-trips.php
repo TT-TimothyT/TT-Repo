@@ -27,7 +27,21 @@ $wp_user_email = $userInfo->user_email;
 				<h5 class="fw-semibold upcoming-title">Upcoming Trips</h5>
 				<?php
 				$trips_html = '';
-				$trips = trek_get_guest_trips(get_current_user_id(), 1, '', $is_log);
+				// Check if user sync is in progress
+				$sync_in_progress = get_user_meta(get_current_user_id(), 'tt_user_sync_in_progress', true) === 'yes';
+
+				// Check when the sync started
+				$sync_started_at = intval(get_user_meta(get_current_user_id(), 'tt_user_sync_started_at', true));
+
+				// If sync started more than 5 minutes ago, consider it timed out
+				if ($sync_in_progress && $sync_started_at > 0 && (time() - $sync_started_at) > 300) {
+					$sync_in_progress = false;
+					// Auto-clear the flag after timeout
+					delete_user_meta(get_current_user_id(), 'tt_user_sync_in_progress');
+					delete_user_meta(get_current_user_id(), 'tt_user_sync_started_at');
+				}
+				// Get trips only if sync is not in progress
+				$trips = ($sync_in_progress) ? array('data' => array(), 'count' => 0) : trek_get_guest_trips(get_current_user_id(), 1, '', $is_log);
 				if (!empty($trips) && isset($trips['count']) && $trips['count'] != 0 && is_user_logged_in()) {
 					if ( $trips && isset( $trips['data'] ) ) {
 						foreach ( $trips['data'] as $trip ) {
@@ -144,7 +158,13 @@ $wp_user_email = $userInfo->user_email;
 						}
 					}
 				} else {
-					$trips_html .= '<p class="no-trip-text mt-2">Your trips are on the way. To view them, please reload the page after a few seconds.</p>';
+					if ($sync_in_progress) {
+						// Show a message indicating that the sync is in progress
+						$trips_html .= '<p class="no-trip-text mt-2">Your trips are on the way! Please check back in a few minutes to view your trip details.</p>';
+					} else {
+						// Show a message indicating no trips found
+						$trips_html .= '<p class="no-trip-text mt-2">Looks like you have no trips planned yet!</p>';
+					}
 				}
 				echo $trips_html;
 				?>

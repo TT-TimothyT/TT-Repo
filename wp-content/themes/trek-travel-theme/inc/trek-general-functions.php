@@ -3984,6 +3984,10 @@ function tt_sync_user_metadata_from_ns_cb( $user_id )
             // Try after 3 minutes again.
             as_schedule_single_action( time() + 180, 'tt_cron_try_sync_user_ns_again', array( $user_id, 1 ) );
         }
+
+        // Set the sync flag to indicate that the user is being synced.
+        update_user_meta( $user_id, 'tt_user_sync_in_progress', 'yes' );
+        update_user_meta( $user_id, 'tt_user_sync_started_at', time() );
     } else {
         tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => false, 'message' => 'The TMWNI_Loader class does not exist. Verify that the TM NetSuite plugin is enabled and that its API configuration is working.' ) );
     }
@@ -5970,6 +5974,9 @@ function tt_trigger_cron_ns_guest_booking_details_cb($single_req,$ns_user_id, $w
     tt_add_error_log('[Start] - Adding Trips', [ 'ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id, 'is_sync_process' => $is_sync_process ], ['dateTime' => date('Y-m-d H:i:s')]);
     tt_ns_guest_booking_details( $single_req, $ns_user_id, $wc_user_id, $time_range, $is_sync_process );
     tt_add_error_log('[End] - Adding Trips', [ 'ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id, 'is_sync_process' => $is_sync_process ], ['dateTime' => date('Y-m-d H:i:s')]);
+    
+    // Trigger the completion action to clear the sync flag
+    do_action('tt_ns_guest_booking_details_complete', $wc_user_id);
 }
 function tt_get_ns_booking_details_by_order( $order_id, $user_info = null ){
     $release_form_id = $booking_id = $waiver_link = "";
@@ -9064,3 +9071,22 @@ function tt_get_trip_duration_names( $product_id ) {
 
     return apply_filters( 'tt_get_trip_duration_names', $trip_duration_names, $product_id );
 }
+
+/**
+ * Callback function for tt_ns_guest_booking_details_complete action.
+ *
+ * This function is triggered when the guest booking details are completed.
+ * It deletes the user meta data related to synchronization progress.
+ *
+ * @param int $user_id The ID of the user whose booking details are completed.
+ */
+function tt_ns_guest_booking_details_complete_cb( $user_id = 0 ) {
+    if ( ! $user_id ) {
+        return;
+    }
+
+    delete_user_meta( $user_id, 'tt_user_sync_in_progress' );
+    delete_user_meta( $user_id, 'tt_user_sync_started_at' );
+}
+
+add_action( 'tt_ns_guest_booking_details_complete', 'tt_ns_guest_booking_details_complete_cb', 10, 1 );

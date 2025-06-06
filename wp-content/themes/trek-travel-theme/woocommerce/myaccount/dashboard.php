@@ -33,18 +33,37 @@ $phone = "";
 $dob = "";
 $ns_user_id = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
 $is_log = isset($_REQUEST['log']) && $_REQUEST['log'] == 1 ? true : false;
-$trips = trek_get_guest_trips(get_current_user_id(), 1,'', $is_log);
+
+// Check if user sync is in progress
+$sync_in_progress = get_user_meta(get_current_user_id(), 'tt_user_sync_in_progress', true) === 'yes';
+
+// Check when the sync started
+$sync_started_at = intval(get_user_meta(get_current_user_id(), 'tt_user_sync_started_at', true));
+
+// If sync started more than 5 minutes ago, consider it timed out
+if ($sync_in_progress && $sync_started_at > 0 && (time() - $sync_started_at) > 300) {
+    $sync_in_progress = false;
+    // Auto-clear the flag after timeout
+    delete_user_meta(get_current_user_id(), 'tt_user_sync_in_progress');
+    delete_user_meta(get_current_user_id(), 'tt_user_sync_started_at');
+}
+
+// Get trips only if sync is not in progress
+$trips = ($sync_in_progress) ? array('data' => array(), 'count' => 0) : trek_get_guest_trips(get_current_user_id(), 1, '', $is_log);
 $TripsCounter = 0;
-foreach($trips['data'] as $trip ){
-    $order = wc_get_order( $trip['order_id'] );
-    if ( $order && ! in_array( $order->get_status(), ['cancelled', 'trash'] ) ) {
-		// Get The booking status.
-		$booking_status = tt_get_booking_status( $trip['order_id'] );
-		if( $booking_status && ! in_array( $booking_status, TT_HIDE_ORDER_BOOKING_STATUSES ) ) {
-			$TripsCounter++;
-		}
+if (!$sync_in_progress) {
+    foreach($trips['data'] as $trip ){
+        $order = wc_get_order( $trip['order_id'] );
+        if ( $order && ! in_array( $order->get_status(), ['cancelled', 'trash'] ) ) {
+            // Get The booking status.
+            $booking_status = tt_get_booking_status( $trip['order_id'] );
+            if( $booking_status && ! in_array( $booking_status, TT_HIDE_ORDER_BOOKING_STATUSES ) ) {
+                $TripsCounter++;
+            }
+        }
     }
 }
+
 $shipping_address = "";
 $billing_address = "";
 $fullname = $userInfo->first_name;
@@ -173,11 +192,15 @@ $billing_country_name = WC()->countries->countries[$billing_country];
 					</div>
 					<h6 class="card-subtitle fs-sm lh-sm fw-medium mb-2">Upcoming</h6>
 					
-					<?php if (empty($trips) || (isset($trips['count']) && $trips['count'] <= 0)) { ?>
-						<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>
+					<?php if ($sync_in_progress || empty($trips) || (isset($trips['count']) && $trips['count'] <= 0)) { ?>
+						<?php if ( $sync_in_progress ) { ?>
+							<p class="fs-sm lh-sm fw-normal">Your trips are on the way! Please check back in a few minutes to view your trip details.</p>
+						<?php } else { ?>
+							<p class="fs-sm lh-sm fw-normal">Looks like you have no trips planned yet!</p>
+							<?php } ?>
 						<a href="<?php echo site_url('tours/all/') ?>" class="btn btn-lg btn-primary dashboard__button rounded-1 mb-4">Book a trip</a>
 					<?php } else {
-						$trips_html = '<p class="fs-sm lh-sm fw-normal">Your trips are on the way. To view them, please reload the page after a few seconds.</p>';
+						$trips_html = '<p class="fs-sm lh-sm fw-normal">Your trips are on the way! Please check back in a few minutes to view your trip details.</p>';
 						if ($trips && isset($trips['data'])) {
 							$trips_html = '<div class="trips-box">'; // Open .trips-box container
 
