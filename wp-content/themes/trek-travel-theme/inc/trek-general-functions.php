@@ -173,7 +173,13 @@ function trek_wp_enqueue_scripts_cb()
     
     wp_register_script('trek-date', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js', array(), time(), true);
     wp_register_script('trek-developer', TREK_DIR . '/assets/js/developer.js', array(), time(), true);
-    wp_register_script('trek-developer', TREK_DIR . '/assets/js/tt-global-commmon.js', array(), time(), true);
+    wp_register_script(
+        'trek-developer',
+        TREK_DIR . '/assets/js/tt-global-commmon.js',
+        ['jquery', 'lity-js'], 
+        time(),
+        true
+    );
     wp_register_script('trek-custom-calendar', TREK_DIR . '/assets/js/trek-daterangepicker.js', array(), time(), true);
     // wp_register_script('trek-trips-compare', TREK_DIR . '/assets/js/trek-compare-trips.js', array(), time(), true);
     

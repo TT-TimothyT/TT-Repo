@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('Trek Travel Theme Global Common JS Loaded');
 	// Inject return URL into login form
 	jQuery(document).on('lity:open', function (event, instance) {
 		const $opener = instance.opener();
@@ -17,3 +18,4 @@ document.addEventListener('DOMContentLoaded', function () {
 		document.body.classList.remove('lity-login-modal');
 	});
 });
+
