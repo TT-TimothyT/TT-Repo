@@ -23392,10 +23392,8 @@ body.lity-login-modal .lity {
 
 .lity-active button.lity-close {
   position: absolute;
-  top: -20px;
-  right: -20px;
-  background-color: #28AAE1;
-  border-radius: 50%;
+  color: black;
+  transition: all 0.5s;
 }
 
 #login-register-modal {
@@ -23408,12 +23406,13 @@ body.lity-login-modal .lity {
 }
 #login-register-modal .sign-logo {
   display: flex;
+  padding: 20px 0;
 }
 #login-register-modal .sign-logo img {
   display: flex;
   object-fit: contain;
   width: 100%;
-  max-height: 150px;
+  max-height: 100px;
 }
 #login-register-modal .nav-tabs .nav-item {
   flex: 1;

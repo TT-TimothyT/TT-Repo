@@ -469,7 +469,7 @@ function trek_login_register_modal() {
             <div id="trek-login-responses"></div>
             <div class="col-12 col-xl-9 mx-auto">
                   <div class="sign-logo">
-                     <img src="/wp-content/themes/trek-travel-theme/assets/images/TT-stacked-black-blue-crop.png" alt="">
+                     <img src="<?php echo get_template_directory_uri(); ?>/assets/images/desktop_logo.svg" alt="">
                   </div>
             </div>
          </div>
