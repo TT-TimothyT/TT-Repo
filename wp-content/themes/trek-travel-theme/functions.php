@@ -2661,3 +2661,57 @@ function trek_login_register_modal_link( $args = [] ) {
 
     return $html;
 }
+
+
+function redirect_my_account_to_modal() {
+    if ( is_account_page() && ! is_user_logged_in() && ! is_ajax() ) {
+        ?>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                if (!document.body.classList.contains('woocommerce-checkout')) {
+                    lity('#login-register-modal');
+                }
+            });
+        </script>
+        <?php
+    }
+}
+add_action( 'wp_footer', 'redirect_my_account_to_modal' );
+
+function trek_prevent_wc_login_template() {
+    if ( is_account_page() && ! is_user_logged_in() && ! is_checkout() ) {
+        wp_redirect( home_url() );
+        exit;
+    }
+}
+add_action( 'template_redirect', 'trek_prevent_wc_login_template', 1 );
+
+function trek_my_account_link() {
+    if ( ! is_user_logged_in() ) {
+        $return_url = esc_url( home_url( $_SERVER['REQUEST_URI'] ) );
+        return '<a href="#login-register-modal" data-lity class="open-login-modal" data-return-url="' . $return_url . '">My Account</a>';
+    } else {
+        return '<a href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '">My Account</a>';
+    }
+}
+
+add_filter('wp_nav_menu_objects', 'trek_mmm_modify_my_account_menu_link', 10, 2);
+function trek_mmm_modify_my_account_menu_link($items, $args) {
+    foreach ($items as &$item) {
+        // Replace with your actual menu location or condition
+        if (strpos($item->url, '/my-account/') !== false && $item->ID == 83692) {
+            if (!is_user_logged_in()) {
+                $item->url = '#login-register-modal';
+                $item->title = 'My Account';
+                $item->classes[] = 'open-login-modal';
+                $item->classes[] = 'data-lity'; // we’ll convert this to data-lity in the output fix below
+                $item->classes[] = 'data-return-url-' . urlencode(home_url(add_query_arg([]))); // custom encoding
+            }
+        }
+    }
+    return $items;
+}
+
+
+
+

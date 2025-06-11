@@ -1,5 +1,9 @@
 // Login Register Modal
 
+.lity {
+  z-index: 10000 !important; // Ensure it appears above other content
+}
+
 body.lity-login-modal .lity {
 	background: rgba(0, 0, 0, 0.3); // Custom opacity for login modal only
   backdrop-filter: blur(3px);
