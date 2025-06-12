@@ -2343,41 +2343,93 @@ add_action('wp_enqueue_scripts', 'trek_enqueue_guide_search_script');
 // }
 // add_action('wp_enqueue_scripts', 'trek_enqueue_select2');
 
-function trek_enqueue_select2() {
+// function trek_enqueue_select2() {
+//     wp_enqueue_style(
+//         'select2-css',
+//         'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+//     );
+//     wp_enqueue_script(
+//         'select2-js',
+//         'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+//         ['jquery'],
+//         null,
+//         true
+//     );
+
+//     $inline_js = "
+//     function initSelect2Default(context) {
+//         jQuery('.use-select2 select', context).each(function () {
+//             jQuery(this).select2({
+//                 placeholder: 'Search here',
+//                 allowClear: true,
+//                 width: 'resolve'
+//             });
+//         });
+//     }
+
+//     jQuery(document).ready(function($) {
+//         initSelect2Default(document);
+//         $(document).on('gform_post_render', function() {
+//             initSelect2Default(document);
+//         });
+//     });
+//     ";
+
+//     wp_add_inline_script('select2-js', $inline_js);
+// }
+// add_action('wp_enqueue_scripts', 'trek_enqueue_select2');
+
+// Tom Select Enqueue
+
+function trek_enqueue_tomselect() {
     wp_enqueue_style(
-        'select2-css',
-        'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+        'tom-select-css',
+        'https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css'
     );
+
     wp_enqueue_script(
-        'select2-js',
-        'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-        ['jquery'],
+        'tom-select-js',
+        'https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js',
+        [],
         null,
         true
     );
 
-    $inline_js = "
-    function initSelect2Default(context) {
-        jQuery('.use-select2 select', context).each(function () {
-            jQuery(this).select2({
+    $inline_js = <<<JS
+    function initTomSelect(context) {
+        context = context || document;
+        const selects = context.querySelectorAll('.use-select2 select:not(.ts-initialized)');
+
+        selects.forEach(function(select) {
+            if (!select.options || select.options.length === 0) return;
+
+            new TomSelect(select, {
+                // allowEmptyOption: true,
                 placeholder: 'Search here',
-                allowClear: true,
-                width: 'resolve'
+                // maxOptions: 1000,
+                plugins: ['remove_button']
             });
+
+            select.classList.add('ts-initialized');
         });
     }
 
-    jQuery(document).ready(function($) {
-        initSelect2Default(document);
-        $(document).on('gform_post_render', function() {
-            initSelect2Default(document);
-        });
+    document.addEventListener('DOMContentLoaded', function () {
+        initTomSelect(document);
     });
-    ";
 
-    wp_add_inline_script('select2-js', $inline_js);
+    if (typeof jQuery !== 'undefined') {
+        jQuery(document).on('gform_post_render', function(event, formId, currentPage) {
+            initTomSelect(document);
+        });
+    }
+JS;
+
+    wp_add_inline_script('tom-select-js', $inline_js);
 }
-add_action('wp_enqueue_scripts', 'trek_enqueue_select2');
+add_action('wp_enqueue_scripts', 'trek_enqueue_tomselect');
+
+
 
 
 

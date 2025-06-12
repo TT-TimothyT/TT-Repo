@@ -11338,6 +11338,12 @@ textarea.form-control-lg {
   margin-bottom: 1rem !important;
 }
 
+.ginput_container_select .ts-wrapper, .ginput_container_multiselect .ts-wrapper {
+  border: 1px solid black !important;
+  border-radius: 3px;
+  padding: 5px 10px !important;
+}
+
 .login-form,
 .reset-form {
   margin-top: 6rem;
@@ -24270,19 +24276,52 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   background-color: black;
   padding: 50px 0;
 }
-.testimonial-main .media-repeater .swiper-button-prev,
-.testimonial-main .media-repeater .swiper-button-next {
-  color: #28AAE1;
+.testimonial-main .media-repeater .swiper-nav {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: fit-content;
+  margin: auto;
+  padding-top: 10px;
 }
-.testimonial-main .media-repeater .swiper-button-next {
+.testimonial-main .media-repeater .swiper-nav .s-btn-prev,
+.testimonial-main .media-repeater .swiper-nav .s-btn-next {
+  position: relative;
+}
+.testimonial-main .media-repeater .swiper-nav .s-btn-prev::after,
+.testimonial-main .media-repeater .swiper-nav .s-btn-next::after {
+  font-family: "Font Awesome 6 Pro";
+  color: white;
+  font-size: 1.75rem;
+}
+.testimonial-main .media-repeater .swiper-nav .s-btn-next {
   right: var(--swiper-navigation-sides-offset, -5px);
 }
-.testimonial-main .media-repeater .swiper-button-prev {
+.testimonial-main .media-repeater .swiper-nav .s-btn-next::after {
+  content: "\f054";
+}
+.testimonial-main .media-repeater .swiper-nav .s-btn-prev {
   left: var(--swiper-navigation-sides-offset, -5px);
 }
+.testimonial-main .media-repeater .swiper-nav .s-btn-prev::after {
+  content: "\f053";
+}
+.testimonial-main .media-repeater .swiper-nav .swiper-pagination {
+  position: relative;
+  padding: 5px 30px;
+  bottom: auto;
+}
+.testimonial-main .media-repeater .swiper-nav .swiper-pagination-bullet {
+  width: 15px;
+  height: 15px;
+  background: white;
+}
+.testimonial-main .media-repeater .swiper-nav .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background: #28AAE1;
+}
 @media (min-width: 1200px) {
-  .testimonial-main .media-repeater .swiper-button-prev,
-.testimonial-main .media-repeater .swiper-button-next {
+  .testimonial-main .media-repeater .swiper-nav .s-btn-prev,
+.testimonial-main .media-repeater .swiper-nav .s-btn-next {
     display: none !important;
   }
 }
@@ -24292,14 +24331,6 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 .testimonial-main .media-repeater .media-swiper {
   overflow: visible;
   padding-bottom: 50px;
-}
-.testimonial-main .media-repeater .media-swiper .swiper-pagination-bullet {
-  width: 15px;
-  height: 15px;
-  background: white;
-}
-.testimonial-main .media-repeater .media-swiper .swiper-pagination-bullet.swiper-pagination-bullet-active {
-  background: #28AAE1;
 }
 .testimonial-main .media-repeater .row {
   justify-content: space-around;
@@ -24370,6 +24401,13 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   color: #fff;
   text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
 }
+.testimonial-main .media-repeater .media-item .video-wrapper .video-overlay .play-icon-overlay::before {
+  content: "\f144";
+  font-family: "Font Awesome 6 Pro";
+  font-weight: 700;
+  color: white;
+  font-size: 2.5rem;
+}
 .testimonial-main .media-repeater .media-item .video-wrapper .video-overlay .video-overlay-text {
   position: absolute;
   bottom: 20px;
@@ -24414,7 +24452,7 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 .testimonial-main #t-form {
   background-color: #E5E5E5;
 }
-.testimonial-main #t-form .f-box {
+.testimonial-main #t-form .f-box form, .testimonial-main #t-form .f-box .gform_confirmation_message {
   background-color: white;
   -webkit-box-shadow: 0px 10px 15px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0px 10px 15px 2px rgba(0, 0, 0, 0.3);

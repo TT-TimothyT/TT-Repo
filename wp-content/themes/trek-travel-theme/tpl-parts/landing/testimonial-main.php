@@ -31,6 +31,8 @@ $form_id = get_field('form_selection');
 
 if ($form_id): ?>
     <script>
+<<<<<<< HEAD
+=======
 
     document.addEventListener('DOMContentLoaded', function () {
     const forms = document.querySelectorAll('form.open-on-submit');
@@ -52,19 +54,24 @@ if ($form_id): ?>
             let manualTripChecked = jQuery("#input_<?php echo esc_js($form_id); ?>_7").is(":checked"); // Checkbox
             let enterYourTrip = jQuery("#input_<?php echo esc_js($form_id); ?>_8").val(); // Manual Trip Text Field
             let errorMessage = "Please select a trip from the dropdown OR enter a trip manually.";
+>>>>>>> b09dc4edd2329a81bc84f8c0febe19b37554c100
 
-            // If neither option is filled, show an error
-            if ((!pickYourTrip || pickYourTrip === "") && !manualTripChecked) {
-                alert(errorMessage);
-                event.preventDefault();
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+    const forms = document.querySelectorAll('.open-on-submit');
 
-            // If "Manual Trip Entry" is checked but no text is entered, show an error
-            if (manualTripChecked && (!enterYourTrip || enterYourTrip.trim() === "")) {
-                alert(errorMessage);
-                event.preventDefault();
-            }
+    forms.forEach(function (form) {
+        form.addEventListener('submit', function () {
+        const redirectField = form.querySelector('.upload-link input');
+        const url = redirectField?.value;
+        if (url) {
+            window.open(url, '_blank');
+        }
         });
     });
+    });
+
+
+
+
     </script>
 <?php endif; ?>

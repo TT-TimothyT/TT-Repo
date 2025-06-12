@@ -52,7 +52,7 @@ $cached_html = get_transient($cache_key);
                                             <div class="video-overlay-text"><?php echo esc_html($text); ?></div>
                                             <?php endif; ?>
                                             
-                                            <div class="play-icon-overlay">▶</div>
+                                            <div class="play-icon-overlay"></div>
                                         </div>
                                     </div>
 
@@ -72,7 +72,7 @@ $cached_html = get_transient($cache_key);
                                             <div class="video-overlay-text"><?php echo esc_html($text); ?></div>
                                             <?php endif; ?>
                                             
-                                            <div class="play-icon-overlay">▶</div>
+                                            <div class="play-icon-overlay"></div>
                                         </div>
                                     </div>
                                 <?php else: ?>
@@ -82,9 +82,12 @@ $cached_html = get_transient($cache_key);
                         </div>
                     <?php endwhile; ?>
                 </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-pagination"></div>
+                <div class="swiper-nav">
+                                    
+                    <div class="s-btn-prev"></div>
+                    <div class="swiper-pagination"></div>
+                    <div class="s-btn-next"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -103,7 +106,7 @@ $cached_html = get_transient($cache_key);
         slidesPerView: 'auto',
         spaceBetween: 60,
         loop: true,
-        cssMode: true,
+        // cssMode: true,
         breakpoints: {
             1200: {
             slidesPerView: '3',
@@ -120,8 +123,8 @@ $cached_html = get_transient($cache_key);
             },
         },
         navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev'
+            nextEl: '.s-btn-next',
+            prevEl: '.s-btn-prev'
         },
         pagination: {
         el: ".swiper-pagination",
@@ -173,60 +176,6 @@ jQuery(document).ready(function($) {
     // });
   });
 });
-
-
-// jQuery(document).ready(function($) {
-//   // On click overlay (play icon or preview image)
-//   $(document).on('click', '.video-overlay', function() {
-//     var $overlay = $(this);
-//     var $wrapper = $overlay.closest('.video-wrapper');
-//     var video = $wrapper.find('video').get(0);
-
-//     if (!video) return;
-
-//     if (video.paused) {
-//       video.muted = false;           // unmute on play
-//       video.play();
-//       $overlay.addClass('faded');    // hide overlay
-//     } else {
-//       video.pause();
-//       $overlay.removeClass('faded'); // show overlay when paused
-//     }
-//   });
-
-//   // Clicking video toggles pause/play
-//   $(document).on('click', '.video-element', function(e) {
-//     e.preventDefault();
-//     var video = this;
-
-//     if (video.paused) {
-//       video.play();
-//       $(video).siblings('.video-overlay').addClass('faded');
-//     } else {
-//       video.pause();
-//       $(video).siblings('.video-overlay').removeClass('faded');
-//     }
-//   });
-
-//   // When video ends, show overlay again
-//   $(document).on('ended', '.video-element', function() {
-//     $(this).siblings('.video-overlay').removeClass('faded');
-//   });
-// });
-
-
-// jQuery(document).ready(function ($) {
-//     $('[data-video-play]').on('click', function () {
-//         const $overlay = $(this);
-//         const $wrapper = $overlay.closest('.video-wrapper');
-//         const $video = $wrapper.find('.video-element').get(0);
-
-//         $overlay.addClass('faded');
-//         if ($video) {
-//             $video.play();
-//         }
-//     });
-// });
 
 
 </script>
