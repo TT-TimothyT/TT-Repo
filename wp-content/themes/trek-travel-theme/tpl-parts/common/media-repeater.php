@@ -39,8 +39,8 @@ $cached_html = get_transient($cache_key);
                             <div class="media-item p-2 h-100">
                                 <?php if ($is_video && $preview): ?>
                                     <div class="video-wrapper">
-                                        <video class="video-element" controls playsinline preload="metadata" poster="<?php echo esc_url($preview['url']); ?>">
-                                            <source src="<?php echo esc_url($file['url']); ?>" type="<?php echo esc_attr($file['mime_type']); ?>">
+                                        <video class="video-element" controls playsinline preload="metadata" <?php if (!empty($preview)) { ?>poster="<?php echo esc_url($preview['url']); ?>" <?php } ?>>
+                                            <source src="<?php echo esc_url($file['url']); ?>#t=0.001" type="<?php echo esc_attr($file['mime_type']); ?>">
                                             Your browser does not support the video tag.
                                         </video>
 
@@ -59,8 +59,8 @@ $cached_html = get_transient($cache_key);
 
                                 <?php elseif ($is_video): ?>
                                     <div class="video-wrapper">
-                                        <video class="video-element" playsinline preload="metadata" poster="<?php echo esc_url($preview['url']); ?>">
-                                            <source src="<?php echo esc_url($file['url']); ?>" type="<?php echo esc_attr($file['mime_type']); ?>">
+                                        <video class="video-element" playsinline preload="metadata" <?php if (!empty($preview)) { ?>poster="<?php echo esc_url($preview['url']); ?>" <?php } ?>>
+                                            <source src="<?php echo esc_url($file['url']); ?>#t=0.001" type="<?php echo esc_attr($file['mime_type']); ?>">
                                             Your browser does not support the video tag.
                                         </video>
 
@@ -92,11 +92,11 @@ $cached_html = get_transient($cache_key);
         </div>
     </section>
     <?php
-    // $cached_html = ob_get_clean();
-    // set_transient($cache_key, $cached_html, HOUR_IN_SECONDS);
-// }
+    $cached_html = ob_get_clean();
+    set_transient($cache_key, $cached_html, HOUR_IN_SECONDS);
 
-// echo $cached_html;
+
+echo $cached_html;
 ?>
 
 <script>
@@ -166,14 +166,6 @@ jQuery(document).ready(function($) {
       $video.currentTime = 0;     // reset video position if desired
     });
 
-    // Optional: pause on click video to toggle play/pause
-    // $($video).on('click', function() {
-    //   if ($video.paused) {
-    //     $video.play();
-    //   } else {
-    //     $video.pause();
-    //   }
-    // });
   });
 });
 
