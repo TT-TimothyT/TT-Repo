@@ -5,7 +5,7 @@
 		<form   action="admin-post.php" method="post" id="settings_tm_ns"> 
 			<div class="well">
 				<input type="hidden" name="action" value="save_tm_ns_settings"> 
-				<input type="hidden" name="current_tab_id" value="<?php echo esc_attr($current_tab_id . '_general_settings'); ?>">
+				<input type="hidden" name="current_tab_id" value="<?php echo esc_attr( $current_tab_id . '_general_settings' ); ?>">
 				<?php wp_nonce_field(); ?>
 
 				<table class="form-table general-form-table">
@@ -19,7 +19,7 @@
 							<td class="forminp forminp-checkbox">
 								<input name="enableOrderSync" 
 								<?php
-								if (isset($options['enableOrderSync']) && 'on' == $options['enableOrderSync']) {
+								if ( isset( $options['enableOrderSync'] ) && 'on' == $options['enableOrderSync'] ) {
 									echo 'checked ';
 								}
 								?>
@@ -29,7 +29,7 @@
 					</tbody>
 					<tbody id="order_enable_fields" 
 					<?php
-					if (!isset($options['enableOrderSync'])) {
+					if ( ! isset( $options['enableOrderSync'] ) ) {
 						?>
 						class= "order_enable_fields" 
 						<?php
@@ -50,7 +50,7 @@
 								<select class="input-text  " type="text" name="ns_order_record_type" id="ns_order_record_type">
 									<option value="salesorder" 
 									<?php
-									if (isset($options['ns_order_record_type']) && 'salesorder' == $options['ns_order_record_type']) {
+									if ( isset( $options['ns_order_record_type'] ) && 'salesorder' == $options['ns_order_record_type'] ) {
 										echo 'selected';
 									}
 									?>
@@ -58,7 +58,7 @@
 								</option>
 								<option value="cashsale" 
 								<?php
-								if (isset($options['ns_order_record_type']) && 'cashsale' == $options['ns_order_record_type']) {
+								if ( isset( $options['ns_order_record_type'] ) && 'cashsale' == $options['ns_order_record_type'] ) {
 									echo 'selected';
 								}
 								?>
@@ -86,20 +86,20 @@
 						<select class="input-text  " type="text" name="ns_order_autosync_status" id="ns_order_autosync_status">
 							<option value="">Please select</option>
 							<?php
-							foreach ($wc_order_status as $status_key => $status_label) :
+							foreach ( $wc_order_status as $status_key => $status_label ) :
 								?>
 								<?php
-								if ('wc-cancelled' != $status_key && 'wc-refunded' != $status_key && 'wc-failed' != $status_key) :
+								if ( 'wc-cancelled' != $status_key && 'wc-refunded' != $status_key && 'wc-failed' != $status_key ) :
 									?>
-									<option value="<?php echo wp_kses_data(str_replace('wc-', '', $status_key)); ?>" 
+									<option value="<?php echo wp_kses_data( str_replace( 'wc-', '', $status_key ) ); ?>" 
 										<?php
-										if (isset($options['ns_order_autosync_status']) && wp_kses_data(str_replace('wc-', '', $status_key)) == $options['ns_order_autosync_status']) {
+										if ( isset( $options['ns_order_autosync_status'] ) && wp_kses_data( str_replace( 'wc-', '', $status_key ) ) == $options['ns_order_autosync_status'] ) {
 											echo 'selected';
 										}
 										?>
 										>
 										<?php
-										echo esc_attr(trim($status_label));
+										echo esc_attr( trim( $status_label ) );
 										?>
 									</option>
 									<?php
@@ -112,7 +112,7 @@
 					</fieldset>
 				</td>
 			</tr>
-			<tr valign="top" id="customer_deposit_field" class="<?php echo ( isset($options['ns_order_record_type']) && 'cashsale' !== $options['ns_order_record_type'] ) ? '' : 'ns_order_shiping_line_item'; ?>" >
+			<tr valign="top" id="customer_deposit_field" class="<?php echo ( isset( $options['ns_order_record_type'] ) && 'cashsale' !== $options['ns_order_record_type'] ) ? '' : 'ns_order_shiping_line_item'; ?>" >
 				<th scope="row" class="titledesc">
 					Create Woo Orders deposit
 					<span class="woocommerce-help-tip" data-tip="To enable order sync"></span>
@@ -124,14 +124,14 @@
 				<td class="forminp forminp-checkbox">
 					<input name="enableCustomerDeposit" 
 					<?php
-					if (isset($options['enableCustomerDeposit']) && 'on' == $options['enableCustomerDeposit']) {
+					if ( isset( $options['enableCustomerDeposit'] ) && 'on' == $options['enableCustomerDeposit'] ) {
 						echo 'checked ';
 					}
 					?>
 					id="enableCustomerDeposit" type="checkbox">                        
 				</td>
 			</tr>
-			<tr valign="top" id="invoice_fields" class="<?php echo ( !isset($options['ns_order_record_type']) || 'cashsale' !== $options['ns_order_record_type'] ? '' : 'ns_order_shiping_line_item' ); ?>">
+			<tr valign="top" id="invoice_fields" class="<?php echo ( ! isset( $options['ns_order_record_type'] ) || 'cashsale' !== $options['ns_order_record_type'] ? '' : 'ns_order_shiping_line_item' ); ?>">
 
 				<th scope="row" class="titledesc">
 					Auto Create Invoice
@@ -142,14 +142,14 @@
 				<td class="forminp forminp-select">
 					<input name="ns_auto_invoice_sync" 
 					<?php
-					if (isset($options['ns_auto_invoice_sync']) && 'on' == $options['ns_auto_invoice_sync']) {
+					if ( isset( $options['ns_auto_invoice_sync'] ) && 'on' == $options['ns_auto_invoice_sync'] ) {
 						echo 'checked ';
 					}
 					?>
 					id="ns_auto_invoice_sync" type="checkbox"> 
 					<span  id="ns_auto_invoice_field" 
 					<?php
-					if (!isset($options['ns_auto_invoice_sync'])) {
+					if ( ! isset( $options['ns_auto_invoice_sync'] ) ) {
 						?>
 						class= "ns_order_shiping_line_item" 
 						<?php
@@ -162,20 +162,20 @@
 						?>
 						<option value="">Please select</option>
 						<?php
-						foreach ($wc_order_status as $status_key => $status_label) :
+						foreach ( $wc_order_status as $status_key => $status_label ) :
 							?>
 							<?php
-							if ('wc-cancelled' != $status_key && 'wc-refunded' != $status_key && 'wc-failed' != $status_key) :
+							if ( 'wc-cancelled' != $status_key && 'wc-refunded' != $status_key && 'wc-failed' != $status_key ) :
 								?>
-								<option value="<?php echo wp_kses_data(str_replace('wc-', '', $status_key)); ?>" 
+								<option value="<?php echo wp_kses_data( str_replace( 'wc-', '', $status_key ) ); ?>" 
 									<?php
-									if (isset($options['ns_auto_invoice_status']) && wp_kses_data(str_replace('wc-', '', $status_key)) == $options['ns_auto_invoice_status']) {
+									if ( isset( $options['ns_auto_invoice_status'] ) && wp_kses_data( str_replace( 'wc-', '', $status_key ) ) == $options['ns_auto_invoice_status'] ) {
 										echo 'selected';
 									}
 									?>
 									>
 									<?php
-									echo esc_attr(trim($status_label));
+									echo esc_attr( trim( $status_label ) );
 									?>
 								</option>
 								<?php
@@ -198,7 +198,7 @@
 			<td class="forminp forminp-checkbox">
 				<input name="syncDeletedOrders" 
 				<?php
-				if (isset($options['syncDeletedOrders']) && 'on' == $options['syncDeletedOrders']) {
+				if ( isset( $options['syncDeletedOrders'] ) && 'on' == $options['syncDeletedOrders'] ) {
 					echo 'checked ';
 				}
 				?>
@@ -216,7 +216,7 @@
 			<td class="forminp forminp-checkbox">
 				<input name="ns_coupon_netsuite_sync" 
 				<?php
-				if (isset($options['ns_coupon_netsuite_sync']) && 'on' == $options['ns_coupon_netsuite_sync']) {
+				if ( isset( $options['ns_coupon_netsuite_sync'] ) && 'on' == $options['ns_coupon_netsuite_sync'] ) {
 					echo 'checked ';
 				}
 				?>
@@ -227,7 +227,7 @@
 		<tr >
 			<td id="promo_required_fields"
 			<?php
-			if (!isset($options['ns_coupon_netsuite_sync'])) {
+			if ( ! isset( $options['ns_coupon_netsuite_sync'] ) ) {
 				?>
 				class="promo_required_fields forminp forminp-select"
 				<?php
@@ -240,30 +240,29 @@
 				<select id="ns_promo_discount_id" name="ns_promo_discount_id">
 					<option value="">Choose Discount Item for accounting</option>
 					<?php
-					$discountItem = get_option('netsuite_promo_discountItem');
-					if (!empty($discountItem)) {
-						foreach ($discountItem as $item_key => $item_value) {
-							if (!empty($options['ns_promo_discount_id']) && ( $item_key == $options['ns_promo_discount_id'] )) {
+					$discountItem = get_option( 'netsuite_promo_discountItem' );
+					if ( ! empty( $discountItem ) ) {
+						foreach ( $discountItem as $item_key => $item_value ) {
+							if ( ! empty( $options['ns_promo_discount_id'] ) && ( $item_key == $options['ns_promo_discount_id'] ) ) {
 								?>
-								<option value="<?php echo esc_attr($item_key); ?>" selected="selected">
+								<option value="<?php echo esc_attr( $item_key ); ?>" selected="selected">
 									<?php
-									echo esc_attr($item_value);
+									echo esc_attr( $item_value );
 									?>
 								</option>
 								<?php
 							} else {
 								?>
 
-								<option value="<?php echo esc_attr($item_key); ?>">
+								<option value="<?php echo esc_attr( $item_key ); ?>">
 									<?php
-									echo esc_attr($item_value);
+									echo esc_attr( $item_value );
 									?>
 
 								</option>
 								<?php
 							}
 						}
-
 					}
 					?>
 
@@ -291,7 +290,7 @@
 		<td class="forminp forminp-checkbox">
 			<input name="enableDisplayOrderTrackingNumber" 
 			<?php
-			if (isset($options['enableDisplayOrderTrackingNumber']) && 'on' == $options['enableDisplayOrderTrackingNumber']) {
+			if ( isset( $options['enableDisplayOrderTrackingNumber'] ) && 'on' == $options['enableDisplayOrderTrackingNumber'] ) {
 				echo 'checked ';
 			}
 			?>
@@ -308,7 +307,7 @@
 		<td class="forminp">
 			<input name="ns_order_send_email_to_admin_enable" 
 			<?php
-			if (isset($options['ns_order_send_email_to_admin_enable']) && 'on' == $options['ns_order_send_email_to_admin_enable']) {
+			if ( isset( $options['ns_order_send_email_to_admin_enable'] ) && 'on' == $options['ns_order_send_email_to_admin_enable'] ) {
 				echo 'checked ';
 			}
 			?>
@@ -317,26 +316,25 @@
 			<span>
 				<input 
 				<?php
-				if (!isset($options['ns_order_send_email_to_admin_enable'])) {
+				if ( ! isset( $options['ns_order_send_email_to_admin_enable'] ) ) {
 					?>
 					class= "ns_order_admin_email_field" 
 					<?php
 				}
 				?>
-				type="text" name="ns_order_admin_email" id="ns_order_admin_email" value="<?php isset($options['ns_order_admin_email']) ? esc_attr_e(trim($options['ns_order_admin_email'])) : ''; ?>">
+				type="text" name="ns_order_admin_email" id="ns_order_admin_email" value="<?php isset( $options['ns_order_admin_email'] ) ? esc_attr_e( trim( $options['ns_order_admin_email'] ) ) : ''; ?>">
 			</span>
 		</td>
 
 	</tr>
 
 	<?php
-/**
- * Order setting hook.
- *
- * @since 1.0.0
- 
- **/
-do_action('tm_ns_after_order_settings');
+	/**
+	 * Order setting hook.
+	 *
+	 * @since 1.0.0
+	 **/
+	do_action( 'tm_ns_after_order_settings' );
 	?>
 
 </tbody>
@@ -354,16 +352,15 @@ do_action('tm_ns_after_order_settings');
  * Order setting hook.
  *
  * @since 1.0.0
- 
  **/
-do_action('tm_ns_after_order_general_settings');
+do_action( 'tm_ns_after_order_general_settings' );
 ?>
 <!-- Order line item settings -->
 <h4>Order Line Item Settings</h4>
 <form   action="admin-post.php" method="post" id="settings_tm_ns"> 
 	<div class="well">
 		<input type="hidden" name="action" value="save_tm_ns_settings"> 
-		<input type="hidden" name="current_tab_id" value="<?php echo esc_attr($current_tab_id . '_line_item_settings'); ?>
+		<input type="hidden" name="current_tab_id" value="<?php echo esc_attr( $current_tab_id . '_line_item_settings' ); ?>
 		">
 		<?php
 		wp_nonce_field();
@@ -381,16 +378,16 @@ do_action('tm_ns_after_order_general_settings');
 					<td class="forminp">
 						<input name="ns_order_shiping_line_item_enable" 
 						<?php
-						if (isset($options['ns_order_shiping_line_item_enable']) && 'on' == $options['ns_order_shiping_line_item_enable']) {
+						if ( isset( $options['ns_order_shiping_line_item_enable'] ) && 'on' == $options['ns_order_shiping_line_item_enable'] ) {
 							echo 'checked ';
 						}
 						?>
 						id="ns_order_shiping_line_item_enable" type="checkbox"> 
 
 						<span>
-							<input type="text" name="ns_order_shiping_line_item" id="ns_order_shiping_line_item" value="<?php isset($options['ns_order_shiping_line_item']) ? esc_attr_e(trim($options['ns_order_shiping_line_item'])) : ''; ?>" 
+							<input type="text" name="ns_order_shiping_line_item" id="ns_order_shiping_line_item" value="<?php isset( $options['ns_order_shiping_line_item'] ) ? esc_attr_e( trim( $options['ns_order_shiping_line_item'] ) ) : ''; ?>" 
 							<?php
-							if (!isset($options['ns_order_shiping_line_item_enable'])) {
+							if ( ! isset( $options['ns_order_shiping_line_item_enable'] ) ) {
 								?>
 								class= "ns_order_shiping_line_item" 
 								<?php
@@ -414,7 +411,7 @@ do_action('tm_ns_after_order_general_settings');
 							<label>
 								<input type="radio" value="1" name="order_item_location" id="not_required" 
 								<?php
-								if (( !isset($options['order_item_location']) ) || ( isset($options['order_item_location']) && ( 1 == $options['order_item_location'] ) )) {
+								if ( ( ! isset( $options['order_item_location'] ) ) || ( isset( $options['order_item_location'] ) && ( 1 == $options['order_item_location'] ) ) ) {
 									echo 'checked';
 								}
 								?>
@@ -430,7 +427,7 @@ do_action('tm_ns_after_order_general_settings');
 								<label>
 									<input type="radio" name="order_item_location" id="default_location"  value="2" 
 									<?php
-									if (( isset($options['order_item_location']) && ( 2 == $options['order_item_location'] ) )) {
+									if ( ( isset( $options['order_item_location'] ) && ( 2 == $options['order_item_location'] ) ) ) {
 										echo 'checked';
 									}
 									?>
@@ -447,7 +444,7 @@ do_action('tm_ns_after_order_general_settings');
 								<label>
 									<input type="radio" name="order_item_location" id="defined_location" value="3" 
 									<?php
-									if (( isset($options['order_item_location']) && ( 3 == $options['order_item_location'] ) )) {
+									if ( ( isset( $options['order_item_location'] ) && ( 3 == $options['order_item_location'] ) ) ) {
 										echo 'checked';
 									}
 									?>
@@ -459,7 +456,7 @@ do_action('tm_ns_after_order_general_settings');
 					</tr>
 					<tr id="hidden_tr_input" 
 					<?php
-					if (!isset($options['order_item_location']) || ( isset($options['order_item_location']) && 3 != $options['order_item_location'] )) {
+					if ( ! isset( $options['order_item_location'] ) || ( isset( $options['order_item_location'] ) && 3 != $options['order_item_location'] ) ) {
 						?>
 						class= 'hidden_tr_input' 
 						<?php
@@ -470,13 +467,13 @@ do_action('tm_ns_after_order_general_settings');
 					<td>
 						<input 
 						<?php
-						if (isset($options['order_item_location']) && 3 == $options['order_item_location']) {
+						if ( isset( $options['order_item_location'] ) && 3 == $options['order_item_location'] ) {
 							?>
 							required 
 							<?php
 						}
 						?>
-						class="form-control input-sm ns-field-value" type="text" name="order_item_location_value"  value="<?php isset($options['order_item_location_value']) ? esc_attr_e(trim($options['order_item_location_value'])) : ''; ?>">
+						class="form-control input-sm ns-field-value" type="text" name="order_item_location_value"  value="<?php isset( $options['order_item_location_value'] ) ? esc_attr_e( trim( $options['order_item_location_value'] ) ) : ''; ?>">
 					</td>
 				</tr> 
 
@@ -490,14 +487,14 @@ do_action('tm_ns_after_order_general_settings');
 					<td class="forminp forminp-select">
 						<input name="order_item_price_level_name_enable" 
 						<?php
-						if (isset($options['order_item_price_level_name_enable']) && 'on' == $options['order_item_price_level_name_enable']) {
+						if ( isset( $options['order_item_price_level_name_enable'] ) && 'on' == $options['order_item_price_level_name_enable'] ) {
 							echo 'checked ';
 						}
 						?>
 						id="order_item_price_level_name_enable" type="checkbox"> 
 						<span  id="order_price_level_field" 
 						<?php
-						if (!isset($options['order_item_price_level_name_enable'])) {
+						if ( ! isset( $options['order_item_price_level_name_enable'] ) ) {
 							?>
 							class= "ns_order_shiping_line_item" 
 							<?php
@@ -508,37 +505,36 @@ do_action('tm_ns_after_order_general_settings');
 							<option 
 							<?php
 
-							$price_levels = get_option('netstuite_price_levels');
-							if (!empty($price_levels)) {
-								
-								
-								
-								foreach ($price_levels as $key => $price_level) {
-									if (isset($options['order_item_price_level_name']) && !empty($options['order_item_price_level_name']) && $options['order_item_price_level_name'] == $key) {
+							$price_levels = get_option( 'netstuite_price_levels' );
+							if ( ! empty( $price_levels ) ) {
+
+
+
+								foreach ( $price_levels as $key => $price_level ) {
+									if ( isset( $options['order_item_price_level_name'] ) && ! empty( $options['order_item_price_level_name'] ) && $options['order_item_price_level_name'] == $key ) {
 										?>
-										<option selected="selected" value="<?php echo esc_attr($key); ?>">
+										<option selected="selected" value="<?php echo esc_attr( $key ); ?>">
 											<?php
-											echo esc_attr($price_level);
+											echo esc_attr( $price_level );
 											?>
 										</option>
 
 										<?php
 									} else {
 										?>
-										<option value="<?php echo esc_attr($key); ?>">
+										<option value="<?php echo esc_attr( $key ); ?>">
 											<?php
-											echo esc_attr($price_level);
+											echo esc_attr( $price_level );
 											?>
 										</option>
 
 										<?php
 									}
 								}
-								
 							}
 							?>
 							<?php
-							if (isset($options['order_item_price_level_name']) && !empty($options['order_item_price_level_name']) && -1 == $options['order_item_price_level_name']) {
+							if ( isset( $options['order_item_price_level_name'] ) && ! empty( $options['order_item_price_level_name'] ) && -1 == $options['order_item_price_level_name'] ) {
 								$selected = 'selected';
 							} else {
 								$selected = '';
@@ -552,7 +548,7 @@ do_action('tm_ns_after_order_general_settings');
 
 						<option value="-1" 
 						<?php
-						echo esc_attr($selected);
+						echo esc_attr( $selected );
 						?>
 						>Custom Price Level</option>
 					</select>
@@ -572,14 +568,14 @@ do_action('tm_ns_after_order_general_settings');
 			<td class="forminp forminp-select" id="tm_select">
 				<input name="order_item_tax_code_enable" 
 				<?php
-				if (isset($options['order_item_tax_code_enable']) && 'on' == $options['order_item_tax_code_enable']) {
+				if ( isset( $options['order_item_tax_code_enable'] ) && 'on' == $options['order_item_tax_code_enable'] ) {
 					echo 'checked ';
 				}
 				?>
 				id="order_item_tax_code_enable" type="checkbox"> 
 				<span  id="order_tax_code_field" 
 				<?php
-				if (!isset($options['order_item_tax_code_enable'])) {
+				if ( ! isset( $options['order_item_tax_code_enable'] ) ) {
 					?>
 					class= "ns_order_shiping_line_item" 
 					<?php
@@ -590,31 +586,30 @@ do_action('tm_ns_after_order_general_settings');
 					<option 
 					<?php
 
-					$tax_codes = get_option('netsuite_tax_codes');
-					if (!empty($tax_codes)) {
+					$tax_codes = get_option( 'netsuite_tax_codes' );
+					if ( ! empty( $tax_codes ) ) {
 
-						foreach ($tax_codes as $key => $tax_code) {
-							if (isset($options['order_item_tax_code']) && !empty($options['order_item_tax_code']) && $options['order_item_tax_code'] == $key) {
+						foreach ( $tax_codes as $key => $tax_code ) {
+							if ( isset( $options['order_item_tax_code'] ) && ! empty( $options['order_item_tax_code'] ) && $options['order_item_tax_code'] == $key ) {
 								?>
-								<option selected="selected" value="<?php echo esc_attr($key); ?>">
+								<option selected="selected" value="<?php echo esc_attr( $key ); ?>">
 									<?php
-									echo esc_attr($tax_code);
+									echo esc_attr( $tax_code );
 									?>
 								</option>
 
 								<?php
 							} else {
 								?>
-								<option value="<?php echo esc_attr($key); ?>">
+								<option value="<?php echo esc_attr( $key ); ?>">
 									<?php
-									echo esc_attr($tax_code);
+									echo esc_attr( $tax_code );
 									?>
 								</option>
 
 								<?php
 							}
 						}
-
 					}
 					?>
 				</select>
@@ -656,7 +651,7 @@ do_action('tm_ns_after_order_general_settings');
 		<input type="hidden" name="action" value="save_tm_ns_settings"> 
 		<input type="hidden" name="current_tab_id" value="
 		<?php
-		echo esc_attr($current_tab_id . '_refund_settings');
+		echo esc_attr( $current_tab_id . '_refund_settings' );
 		?>
 		">
 		<?php
@@ -676,7 +671,7 @@ do_action('tm_ns_after_order_general_settings');
 					<td class="forminp forminp-checkbox">
 						<input name="refund_order_ns_to_woo" 
 						<?php
-						if (isset($options['refund_order_ns_to_woo']) && 'on' == $options['refund_order_ns_to_woo']) {
+						if ( isset( $options['refund_order_ns_to_woo'] ) && 'on' == $options['refund_order_ns_to_woo'] ) {
 							echo 'checked ';
 						}
 						?>
@@ -686,7 +681,7 @@ do_action('tm_ns_after_order_general_settings');
 				<td class="forminp">
 					<fieldset id=refundOrderStatus 
 					<?php
-					if (!isset($options['refund_order_ns_to_woo'])) {
+					if ( ! isset( $options['refund_order_ns_to_woo'] ) ) {
 						?>
 						class= "order_refund_fields_enable" 
 						<?php
@@ -698,20 +693,20 @@ do_action('tm_ns_after_order_general_settings');
 						<option value="">Select Status</option>>
 						<option value="All" 
 						<?php
-						if (isset($options['ns_order_refund_status']) && 'All' == $options['ns_order_refund_status']) {
+						if ( isset( $options['ns_order_refund_status'] ) && 'All' == $options['ns_order_refund_status'] ) {
 							echo 'selected';
 						}
 						?>
 						>Both</option>
 						<option value="_returnAuthorizationPendingReceipt" 
 						<?php
-						if (isset($options['ns_order_refund_status']) && '_returnAuthorizationPendingReceipt' == $options['ns_order_refund_status']) {
+						if ( isset( $options['ns_order_refund_status'] ) && '_returnAuthorizationPendingReceipt' == $options['ns_order_refund_status'] ) {
 							echo 'selected';}
 						?>
 							>PENDING BILLING</option>
 							<option value="_returnAuthorizationRefunded" 
 							<?php
-							if (isset($options['ns_order_refund_status']) && '_returnAuthorizationRefunded' == $options['ns_order_refund_status']) {
+							if ( isset( $options['ns_order_refund_status'] ) && '_returnAuthorizationRefunded' == $options['ns_order_refund_status'] ) {
 								echo 'selected';
 							}
 							?>
@@ -730,7 +725,7 @@ do_action('tm_ns_after_order_general_settings');
 					<td class="forminp forminp-checkbox">
 						<input name="refund_order_woo_to_ns" 
 						<?php
-						if (isset($options['refund_order_woo_to_ns']) && 'on' == $options['refund_order_woo_to_ns']) {
+						if ( isset( $options['refund_order_woo_to_ns'] ) && 'on' == $options['refund_order_woo_to_ns'] ) {
 							echo 'checked ';
 						}
 						?>
@@ -753,12 +748,12 @@ do_action('tm_ns_after_order_general_settings');
 </div>
 <!-- refund settings close -->
 <?php
-if (isset($options['ns_order_record_type']) && 'cashsale' == $options['ns_order_record_type']) {
+if ( isset( $options['ns_order_record_type'] ) && 'cashsale' == $options['ns_order_record_type'] ) {
 	$record_type = 'cash_sale';
 } else {
 	$record_type = 'sales_order';
 }
-if ('cash_sale' !== $record_type) :
+if ( 'cash_sale' !== $record_type ) :
 	?>
 <h4>Fulfillment Sync</h4>
 <form   action="admin-post.php" method="post" id="settings_tm_ns"> 
@@ -766,7 +761,7 @@ if ('cash_sale' !== $record_type) :
 		<input type="hidden" name="action" value="save_tm_ns_settings"> 
 		<input type="hidden" name="current_tab_id" value="
 		<?php
-		echo esc_attr($current_tab_id . '_fulfillment_settings');
+		echo esc_attr( $current_tab_id . '_fulfillment_settings' );
 		?>
 		">
 		<?php
@@ -782,7 +777,7 @@ if ('cash_sale' !== $record_type) :
 					<td class="forminp forminp-checkbox">
 						<input name="enableFulfilmentSync" 
 						<?php
-						if (isset($options['enableFulfilmentSync']) && 'on' == $options['enableFulfilmentSync']) {
+						if ( isset( $options['enableFulfilmentSync'] ) && 'on' == $options['enableFulfilmentSync'] ) {
 							echo 'checked ';
 						}
 						?>
@@ -793,7 +788,7 @@ if ('cash_sale' !== $record_type) :
 			</tbody>
 			<tbody id="order_fulfilment_fields" 
 			<?php
-			if (!isset($options['enableFulfilmentSync'])) {
+			if ( ! isset( $options['enableFulfilmentSync'] ) ) {
 				?>
 				class= "order_fulfilment_fields" 
 				<?php
@@ -810,7 +805,7 @@ if ('cash_sale' !== $record_type) :
 				<td class="forminp forminp-checkbox">
 					<input name="ns_order_auto_complete" 
 					<?php
-					if (isset($options['ns_order_auto_complete']) && 'on' == $options['ns_order_auto_complete']) {
+					if ( isset( $options['ns_order_auto_complete'] ) && 'on' == $options['ns_order_auto_complete'] ) {
 						echo 'checked ';
 					}
 					?>
@@ -827,7 +822,7 @@ if ('cash_sale' !== $record_type) :
 				<td class="forminp forminp-checkbox">
 					<input name="ns_order_tracking_email" 
 					<?php
-					if (isset($options['ns_order_tracking_email']) && 'on' == $options['ns_order_tracking_email']) {
+					if ( isset( $options['ns_order_tracking_email'] ) && 'on' == $options['ns_order_tracking_email'] ) {
 						echo 'checked ';
 					}
 					?>
@@ -843,7 +838,7 @@ if ('cash_sale' !== $record_type) :
 					Tracking Number
 				</th>
 				<td class="forminp">
-					<input  class="input-text" type="text" name="ns_order_tracking_number" id="ns_order_tracking_number" value="<?php isset($options['ns_order_tracking_number']) ? esc_attr_e($options['ns_order_tracking_number']) : ''; ?>">                      
+					<input  class="input-text" type="text" name="ns_order_tracking_number" id="ns_order_tracking_number" value="<?php isset( $options['ns_order_tracking_number'] ) ? esc_attr_e( $options['ns_order_tracking_number'] ) : ''; ?>">                      
 				</td>
 			</tr>
 			<tr valign="top" class="">
@@ -852,7 +847,7 @@ if ('cash_sale' !== $record_type) :
 				</th>
 				<td class="forminp">
 					<input class="input-text" name="ns_order_shipping_courier" 
-					value="<?php isset($options['ns_order_shipping_courier']) ? esc_attr_e($options['ns_order_shipping_courier']) : ''; ?>" type="text" id="ns_order_shipping_courier">                      
+					value="<?php isset( $options['ns_order_shipping_courier'] ) ? esc_attr_e( $options['ns_order_shipping_courier'] ) : ''; ?>" type="text" id="ns_order_shipping_courier">                      
 				</td>
 			</tr>
 			<tr valign="top" class="">
@@ -860,17 +855,16 @@ if ('cash_sale' !== $record_type) :
 					Pickup date
 				</th>
 				<td class="forminp">
-					<input  class="input-text" type="text" name="ns_order_pickup_date" id="ns_order_pickup_date" value="<?php isset($options['ns_order_pickup_date']) ? esc_attr_e($options['ns_order_pickup_date']) : ''; ?>">                      
+					<input  class="input-text" type="text" name="ns_order_pickup_date" id="ns_order_pickup_date" value="<?php isset( $options['ns_order_pickup_date'] ) ? esc_attr_e( $options['ns_order_pickup_date'] ) : ''; ?>">                      
 				</td>
 			</tr>
 			<?php
-/**
- * Order fulfillment setting hook.
- *
- * @since 1.0.0
- 
- **/
-do_action('tm_ns_after_order_fulfillment_settings');
+			/**
+			 * Order fulfillment setting hook.
+			 *
+			 * @since 1.0.0
+			 **/
+			do_action( 'tm_ns_after_order_fulfillment_settings' );
 			?>
 </tbody>
 <tbody>
@@ -892,26 +886,26 @@ do_action('tm_ns_after_order_fulfillment_settings');
 	<form class="tm_netsuite_ajax_form_save" role="form">
 		<h4>Order Conditional Mapping</h4>
 		<?php
-		if (!empty($cm_options)) {
-			foreach ($cm_options as $key => $cm_option) {
+		if ( ! empty( $cm_options ) ) {
+			foreach ( $cm_options as $key => $cm_option ) {
 				$index = $key + 1;
 				?>
 
-				<div class="well" data-index="<?php echo esc_attr($index); ?>">
+				<div class="well" data-index="<?php echo esc_attr( $index ); ?>">
 					<table class="netsuite_conditional_mapping table" cellspacing="0" cellpadding="0">
 						<tbody>
 							<span class="exlcude_in_update">
 								<input type="checkbox" 
 								<?php
-								if (isset($cm_option['exlcude_in_update'])) {
+								if ( isset( $cm_option['exlcude_in_update'] ) ) {
 									echo 'checked';
 								}
 								?>
-								name="cm[<?php echo esc_attr($index); ?>][exlcude_in_update]" class="form-control update_checkbox" />
+								name="cm[<?php echo esc_attr( $index ); ?>][exlcude_in_update]" class="form-control update_checkbox" />
 								<label>Exclude in Update</label>
 							</span>
 
-							<?php if (isset($cm_option['required']) && 1 == $cm_option['required']) { ?>    
+							<?php if ( isset( $cm_option['required'] ) && 1 == $cm_option['required'] ) { ?>    
 								<span class="text-danger requiredCM pull-right">(*) Required Field</span>  
 							<?php } else { ?>
 								<span style="float:right;" class='btn btn-danger removeCMRow'>X</span>                       
@@ -919,53 +913,53 @@ do_action('tm_ns_after_order_fulfillment_settings');
 							<tr>
 								<td>
 									<span class="h5 required">Operation</span><br />
-									<select class="cm_operator input-sm" name="cm[<?php echo esc_attr($index); ?>][operator]">
+									<select class="cm_operator input-sm" name="cm[<?php echo esc_attr( $index ); ?>][operator]">
 										<option value="0">-- select operator --</option>
 										<option value="1" 
 										<?php
-										if (1 == $cm_option['operator']) {
+										if ( 1 == $cm_option['operator'] ) {
 											echo 'selected';
 										}
 										?>
 										>Map Netsuite Field to Fixed Value Based on WC Field Value</option>
 										<option value="2" 
 										<?php
-										if (2 == $cm_option['operator']) {
+										if ( 2 == $cm_option['operator'] ) {
 											echo 'selected';
 										}
 										?>
 										>Map NetSuite Field to Fixed Value</option>
 										<option value="3" 
 										<?php
-										if (3 == $cm_option['operator']) {
+										if ( 3 == $cm_option['operator'] ) {
 											echo 'selected';
 										}
 										?>
 										>Map NetSuite Field to WC Field</option>
 									</select>
 								</td>
-								<?php if (2 != $cm_option['operator']) { ?>
+								<?php if ( 2 != $cm_option['operator'] ) { ?>
 									<td>
 										<span class="h6 required">WC Field Source</span><br/>
-										<select class="cm_type input-sm" name="cm[<?php echo esc_attr($index); ?>][type]">
+										<select class="cm_type input-sm" name="cm[<?php echo esc_attr( $index ); ?>][type]">
 											<option value="0">-- select field type --</option>
 											<option value="1" 
 											<?php
-											if (1 == $cm_option['type']) {
+											if ( 1 == $cm_option['type'] ) {
 												echo 'selected';
 											}
 											?>
 											>Customer Field</option>
 											<option value="2" 
 											<?php
-											if (2 == $cm_option['type']) {
+											if ( 2 == $cm_option['type'] ) {
 												echo 'selected';
 											}
 											?>
 											>Customer Meta Field</option>
 											<option value="3" 
 											<?php
-											if (3 == $cm_option['type']) {
+											if ( 3 == $cm_option['type'] ) {
 												echo 'selected';
 											}
 											?>
@@ -973,7 +967,7 @@ do_action('tm_ns_after_order_fulfillment_settings');
 
 											<option value="4" 
 											<?php
-											if (4 == $cm_option['type']) {
+											if ( 4 == $cm_option['type'] ) {
 												echo 'selected';
 											}
 											?>
@@ -984,10 +978,10 @@ do_action('tm_ns_after_order_fulfillment_settings');
 								<?php } ?>
 							</tr>
 
-							<?php 
-							$allow_html =TMWNI_Settings::shapeSpace_allowed_html();
-							echo wp_kses($cm_option['template'], $allow_html);
-							//echo ($cm_option['template']); 
+							<?php
+							$allow_html = TMWNI_Settings::shapeSpace_allowed_html();
+							echo wp_kses( $cm_option['template'], $allow_html );
+							// echo ($cm_option['template']);
 							?>
 						</tbody>
 					</table>

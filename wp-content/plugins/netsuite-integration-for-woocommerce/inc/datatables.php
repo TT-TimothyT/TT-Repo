@@ -1,11 +1,11 @@
 <?php
 class Datatables {
-	//datatables
+	// datatables
 	public function limit( $request ) {
 		$limit = '';
-		if (isset($request['start']) && -1 != $request['length']) {
-			 $limit = 'LIMIT ' . intval($request['start']) . ', ' . intval($request['length']);
-			//$limit = intval($request['start']) . ', ' . intval($request['length']);
+		if ( isset( $request['start'] ) && -1 != $request['length'] ) {
+			 $limit = 'LIMIT ' . intval( $request['start'] ) . ', ' . intval( $request['length'] );
+			// $limit = intval($request['start']) . ', ' . intval($request['length']);
 		}
 		return $limit;
 	}
@@ -20,23 +20,23 @@ class Datatables {
 	 */
 	public function order( $request, $columns ) {
 		$order = '';
-		if (isset($request['order']) && count($request['order'])) {
+		if ( isset( $request['order'] ) && count( $request['order'] ) ) {
 			$orderBy = array();
-			$dtColumns = $this->pluck($columns, 'dt');
-			for ($i = 0, $ien = count($request['order']); $i < $ien; $i++) {
+			$dtColumns = $this->pluck( $columns, 'dt' );
+			for ( $i = 0, $ien = count( $request['order'] ); $i < $ien; $i++ ) {
 				// Convert the column index into the column data property
-				$columnIdx = intval($request['order'][$i]['column']);
-				$requestColumn = $request['columns'][$columnIdx];
-				$columnIdx = array_search($requestColumn['data'], $dtColumns);
-				$column = $columns[$columnIdx];
-				if ('true' == $requestColumn['orderable']) {
-					$dir = 'asc' === $request['order'][$i]['dir'] ?
+				$columnIdx = intval( $request['order'][ $i ]['column'] );
+				$requestColumn = $request['columns'][ $columnIdx ];
+				$columnIdx = array_search( $requestColumn['data'], $dtColumns );
+				$column = $columns[ $columnIdx ];
+				if ( 'true' == $requestColumn['orderable'] ) {
+					$dir = 'asc' === $request['order'][ $i ]['dir'] ?
 							'ASC' :
 							'DESC';
 					$orderBy[] = '' . $column['db_ref'] . ' ' . $dir;
 				}
 			}
-			$order = 'ORDER BY ' . implode(', ', $orderBy);
+			$order = 'ORDER BY ' . implode( ', ', $orderBy );
 		}
 		return $order;
 	}
@@ -58,53 +58,53 @@ class Datatables {
 	public function filter( $request, $columns, &$bindings ) {
 		$globalSearch = array();
 		$columnSearch = array();
-		$dtColumns = $this->pluck($columns, 'dt');
-		if (isset($request['search']) && '' != $request['search']['value']) {
+		$dtColumns = $this->pluck( $columns, 'dt' );
+		if ( isset( $request['search'] ) && '' != $request['search']['value'] ) {
 			$str = $request['search']['value'];
-			for ($i = 0, $ien = count($request['columns']); $i < $ien; $i++) {
-				$requestColumn = $request['columns'][$i];
-				$columnIdx = array_search($requestColumn['data'], $dtColumns);
-				$column = $columns[$columnIdx];
-				
-				if ('true' == $requestColumn['searchable']) {
-									$this_db_ref  = str_replace('as ' . $column['db_ref'] , '', $column['db']);
+			for ( $i = 0, $ien = count( $request['columns'] ); $i < $ien; $i++ ) {
+				$requestColumn = $request['columns'][ $i ];
+				$columnIdx = array_search( $requestColumn['data'], $dtColumns );
+				$column = $columns[ $columnIdx ];
+
+				if ( 'true' == $requestColumn['searchable'] ) {
+									$this_db_ref  = str_replace( 'as ' . $column['db_ref'], '', $column['db'] );
 
 					$globalSearch[] = '' . $this_db_ref . " LIKE '%" . $request['search']['value'] . "%'";
-				   
+
 				}
 			}
 		}
 		// Individual column filtering
-		for ($i = 0, $ien = count($request['columns']); $i < $ien; $i++) {
-			$requestColumn = $request['columns'][$i];
-			$columnIdx = array_search($requestColumn['data'], $dtColumns);
-			$column = $columns[$columnIdx];
+		for ( $i = 0, $ien = count( $request['columns'] ); $i < $ien; $i++ ) {
+			$requestColumn = $request['columns'][ $i ];
+			$columnIdx = array_search( $requestColumn['data'], $dtColumns );
+			$column = $columns[ $columnIdx ];
 			$str = $requestColumn['search']['value'];
-			if ('true' == $requestColumn['searchable'] &&
-					'' != $str) {
-				
+			if ( 'true' == $requestColumn['searchable'] &&
+					'' != $str ) {
+
 				$columnSearch[] = '' . $column['db_ref'] . " LIKE '%" . $str . "%'";
 			}
 		}
 		// Combine the filters into a single string
 		$where = '';
-		if (count($globalSearch)) {
-			$where = '(' . implode(' OR ', $globalSearch) . ')';
+		if ( count( $globalSearch ) ) {
+			$where = '(' . implode( ' OR ', $globalSearch ) . ')';
 		}
-		if (count($columnSearch)) {
+		if ( count( $columnSearch ) ) {
 			$where = '' === $where ?
-					implode(' AND ', $columnSearch) :
-					$where . ' AND ' . implode(' AND ', $columnSearch);
+					implode( ' AND ', $columnSearch ) :
+					$where . ' AND ' . implode( ' AND ', $columnSearch );
 		}
-		if ('' !== $where) {
+		if ( '' !== $where ) {
 			$where = 'WHERE ' . $where;
 		}
 		return $where;
 	}
 	public function pluck( $a, $prop ) {
 		$out = array();
-		for ($i = 0, $len = count($a); $i < $len; $i++) {
-			$out[] = $a[$i][$prop];
+		for ( $i = 0, $len = count( $a ); $i < $len; $i++ ) {
+			$out[] = $a[ $i ][ $prop ];
 		}
 		return $out;
 	}
@@ -113,13 +113,13 @@ class Datatables {
 	 * when executing a query with sql_exec()
 	 *
 	 * @param  array &$a    Array of bindings
-	 * @param  *      $val  Value to bind
-	 * @param  int    $type PDO field type
+	 * @param  *     $val  Value to bind
+	 * @param  int   $type PDO field type
 	 * @return string       Bound key to be used in the SQL where this parameter
 	 *   would be used.
 	 */
 	public function bind( &$a, $val, $type ) {
-		$key = ':binding_' . count($a);
+		$key = ':binding_' . count( $a );
 		$a[] = array(
 			'key' => $key,
 			'val' => $val,
@@ -135,15 +135,14 @@ class Datatables {
 	 *  @return array          Formatted data in a row based format
 	 */
 	public function data_output( $columns, $data ) {
-//       
-		$out = array();
-		for ($i = 0, $ien = count($data); $i < $ien; $i++) {
+				$out = array();
+		for ( $i = 0, $ien = count( $data ); $i < $ien; $i++ ) {
 			$row = array();
-			for ($j = 0, $jen = count($columns); $j < $jen; $j++) {
-				$column = $columns[$j];
-//               
+			for ( $j = 0, $jen = count( $columns ); $j < $jen; $j++ ) {
+				$column = $columns[ $j ];
+				//
 				// Is there a formatter?
-				$row[$column['dt']] = $data[$i][$columns[$j]['db_ref']];
+				$row[ $column['dt'] ] = $data[ $i ][ $columns[ $j ]['db_ref'] ];
 			}
 			$out[] = $row;
 		}

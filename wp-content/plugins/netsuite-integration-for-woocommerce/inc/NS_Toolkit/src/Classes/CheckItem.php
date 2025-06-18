@@ -92,7 +92,7 @@ class CheckItem {
 	 */
 	public $grossAmt;
 	/**
-	 *Var \NetSuite\Classes\RecordRef
+	 * Var \NetSuite\Classes\RecordRef
 	 */
 	public $class;
 	/**

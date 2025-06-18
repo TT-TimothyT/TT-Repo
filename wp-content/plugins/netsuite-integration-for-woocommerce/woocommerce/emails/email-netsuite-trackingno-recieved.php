@@ -25,46 +25,46 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @hooked WC_Emails::email_header() Output the email header
 
  * @since 2.5.0
- 
- **/
+ */
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php /* translators: %s: Customer first name */ ?>
 
-<?php 
+<?php
 global $TMWNI_OPTIONS;
 
-//$orderId = trim(str_replace('#', '', $order->get_order_number())); 
+// $orderId = trim(str_replace('#', '', $order->get_order_number()));
 
 $order_id = $order->ID;
 
-$ups_trackingno = tm_ns_get_post_meta($order_id, 'ywot_tracking_code');
-if (isset($TMWNI_OPTIONS['ns_order_shipping_courier']) && !empty($TMWNI_OPTIONS['ns_order_shipping_courier'])) {
+$ups_trackingno = tm_ns_get_post_meta( $order_id, 'ywot_tracking_code' );
+if ( isset( $TMWNI_OPTIONS['ns_order_shipping_courier'] ) && ! empty( $TMWNI_OPTIONS['ns_order_shipping_courier'] ) ) {
 
-	$shipping_carrier = tm_ns_get_post_meta($order_id, $TMWNI_OPTIONS['ns_order_shipping_courier']);
+	$shipping_carrier = tm_ns_get_post_meta( $order_id, $TMWNI_OPTIONS['ns_order_shipping_courier'] );
 } else {
-	$shipping_carrier =     tm_ns_get_post_meta($order_id, 'ywot_carrier_name');
+	$shipping_carrier = tm_ns_get_post_meta( $order_id, 'ywot_carrier_name' );
 }
 
 ?>
 <p>
-	<?php 
+	<?php
 	/* translators: %s Order date */
-	printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); 
+	printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) );
 
 	?>
 </p>
 <p>
 	<?php
-	/* translators: %s Order date */
+	/*
+	 translators: %s Order date */
 		// printf( esc_html__( 'Your order has been picked up by UPS on %s:', 'woocommerce' ), esc_html( wc_format_datetime( $order->get_date_created() ) ) );
-	printf( esc_html__( 'Your order has been picked up', 'woocommerce' ));
+	printf( esc_html__( 'Your order has been picked up', 'woocommerce' ) );
 	?>
 </p>
 <p>
 	<?php
 	/* translators: %s Order date */
-	printf( esc_html__( 'This is the %1$s tracking number for your order : %2$s', 'woocommerce' ), esc_html($shipping_carrier), esc_html( $ups_trackingno ) );
+	printf( esc_html__( 'This is the %1$s tracking number for your order : %2$s', 'woocommerce' ), esc_html( $shipping_carrier ), esc_html( $ups_trackingno ) );
 	?>
 </p>
 <?php
@@ -83,9 +83,8 @@ do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, $plain_tex
  * Hook for the woocommerce_email_order_meta.
  *
  * @hooked WC_Emails::order_meta() Shows order meta data.
- 
- * @since 2.5.0
 
+ * @since 2.5.0
  */
 do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email );
 
@@ -112,6 +111,5 @@ do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_
  * @hooked WC_Emails::email_footer() Output the email footer
 
  * @since 2.5.0
- 
  */
 do_action( 'woocommerce_email_footer', $email );

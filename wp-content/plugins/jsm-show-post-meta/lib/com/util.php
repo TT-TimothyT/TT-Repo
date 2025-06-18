@@ -2,7 +2,7 @@
 /*
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl.txt
- * Copyright 2012-2024 Jean-Sebastien Morisset (https://surniaulula.com/)
+ * Copyright 2012-2025 Jean-Sebastien Morisset (https://surniaulula.com/)
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -411,7 +411,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 			$flattened = array();
 
-		        foreach ( $arr as $key => $value ) {
+			foreach ( $arr as $key => $value ) {
 
 				if ( is_array( $value ) ) {
 
@@ -430,9 +430,9 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 			$imploded = '';
 
-		        foreach ( $arr as $value ) {
+			foreach ( $arr as $value ) {
 
-			        if ( is_array( $value ) ) {
+				if ( is_array( $value ) ) {
 
 					$imploded .= self::array_implode( $value, $glue ) . $glue;
 
@@ -616,7 +616,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 		public static function get_array_parents( array $arr, $parent_key = '', $gparent_key = '', &$parents = array() ) {
 
-		        foreach ( $arr as $child_key => $value ) {
+			foreach ( $arr as $child_key => $value ) {
 
 				if ( is_array( $value ) ) {
 
@@ -906,7 +906,10 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				require_once dirname( __FILE__ ) . '/currencies.php';
 			}
 
-			if ( is_string( $key ) ) return SucomCurrencies::get( $key, $format );
+			if ( is_string( $key ) ) {
+
+				return SucomCurrencies::get( $key, $format );
+			}
 
 			return self::get_array_or_element( SucomCurrencies::get( null, $format ), $key, $add_none );
 		}
@@ -981,7 +984,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 			$factor = floor( ( strlen( $bytes ) - 1 ) / 3 );
 
-    			return sprintf( "%.{$dec}f{$sep}%s", $bytes / pow( 1024, $factor ), $size[ $factor ] );
+			return sprintf( "%.{$dec}f{$sep}%s", $bytes / pow( 1024, $factor ), $size[ $factor ] );
 		}
 
 		/*
@@ -1060,7 +1063,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 			$times = array();
 
-		        foreach ( range( $start_secs, $end_secs, $step_secs ) as $ts ) {
+			foreach ( range( $start_secs, $end_secs, $step_secs ) as $ts ) {
 
 				$value = gmdate( 'H:i', $ts );
 
@@ -1157,7 +1160,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 			$interval = new \DateInterval( $iso8601 );
 
-		        return ( $interval->d * 24 * 60 * 60 ) + ( $interval->h * 60 * 60 ) + ( $interval->i * 60 ) + $interval->s;
+			return ( $interval->d * 24 * 60 * 60 ) + ( $interval->h * 60 * 60 ) + ( $interval->i * 60 ) + $interval->s;
 		}
 
 		public static function maybe_iso8601_to_seconds( $mixed ) {
@@ -1286,7 +1289,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 			$is_true = is_string( $mixed ) ? filter_var( $mixed, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE ) : (bool) $mixed;
 
-		        return null === $is_true && ! $allow_null ? false : $is_true;
+			return null === $is_true && ! $allow_null ? false : $is_true;
 		}
 
 		/*
@@ -1450,13 +1453,16 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				 */
 				$mt_pre . ':min_advert_price:amount'         => null,		// Internal meta tag.
 				$mt_pre . ':min_advert_price:currency'       => null,		// Internal meta tag.
+				$mt_pre . ':original_price:type'             => null,		// Internal meta tag.
 				$mt_pre . ':original_price:amount'           => null,
 				$mt_pre . ':original_price:currency'         => null,
 				$mt_pre . ':pretax_price:amount'             => null,
 				$mt_pre . ':pretax_price:currency'           => null,
-				$mt_pre . ':price_type'                      => null,		// Internal meta tag.
+				$mt_pre . ':price:type'                      => null,		// Internal meta tag.
 				$mt_pre . ':price:amount'                    => null,
 				$mt_pre . ':price:currency'                  => null,
+				$mt_pre . ':price:vat_included'              => null,		// Internal meta tag.
+				$mt_pre . ':sale_price:type'                 => null,		// Internal meta tag.
 				$mt_pre . ':sale_price:amount'               => null,
 				$mt_pre . ':sale_price:currency'             => null,
 				$mt_pre . ':sale_price_dates:start'          => null,
@@ -1817,7 +1823,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		/*
 		 * Sanitize an option array key.
 		 *
-		 * Unlike the WordPress sanitize_key() function, this method allows for colon and hash characters, and (optionally)
+		 * Unlike the WordPress sanitize_key() function, this method allows for colon and hash characters and (optionally)
 		 * upper case characters.
 		 *
 		 * See sucomSanitizeKey() in wpsso/js/com/jquery-admin-page.js
@@ -1825,18 +1831,25 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 */
 		public static function sanitize_key( $key, $allow_upper = false ) {
 
-			/*
-			 * Scalar variables are those containing an int, float, string or bool. Types array, object, resource and
-			 * null are not scalar.
-			 */
-			if ( is_scalar( $key ) ) {
+			if ( is_scalar( $key ) ) {	// Int, float, string or bool.
 
-				if ( ! $allow_upper ) {
-
-					$key = strtolower( $key );	// Convert upper case characters to lower case.
-				}
+				if ( ! $allow_upper ) $key = strtolower( $key );	// Convert upper case characters to lower case.
 
 				return preg_replace( '/[^a-zA-Z0-9_\-:#]/', '', $key );
+			}
+
+			return '';
+		}
+
+		public static function sanitize_schema_id( $key ) {
+
+			if ( is_scalar( $key ) ) {	// Int, float, string or bool.
+
+				$key = strtolower( $key );	// Convert upper case characters to lower case.
+
+				$key = preg_replace( '/[_\-]/', '.', $key );	// Convert underscores and hyphens to periods.
+
+				return preg_replace( '/[^a-z\.]/', '', $key );	// Keep only alphabetic and period characters.
 			}
 
 			return '';
@@ -2274,7 +2287,8 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 				if ( ! empty( $mod[ 'post_type' ] ) ) {	// Add the post type name.
 
-					$mod_salt .= $sep . 'type:' . $mod[ 'post_type' ];
+					$mod_salt .= $sep . 'type:' . ( is_string( $mod[ 'post_type' ] ) ?
+						$mod[ 'post_type' ] : print_r( $mod[ 'post_type' ], true ) );
 
 					if ( ! empty( $mod[ 'is_post_type_archive' ] ) ) {	// Post type archive page.
 

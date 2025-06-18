@@ -4,22 +4,21 @@
 
 class Add_Netsuite_Customer extends WP_Background_Process {
 
-	
+
 	protected $action = 'tm_ns_process_customers';
 
-	
+
 	protected function task( $customer_id ) {
 		// Actions to perform
 		require_once TMWNI_DIR . 'inc/loader.php';
-		$this->deleteQueueFromDataBase($customer_id);
+		$this->deleteQueueFromDataBase( $customer_id );
 		$this->netsuiteLoaderClient = new TMWNI_Loader();
-		$order_netsuite_internal_id = $this->netsuiteLoaderClient->addUpdateNetsuiteCustomer($customer_id);
-
+		$order_netsuite_internal_id = $this->netsuiteLoaderClient->addUpdateNetsuiteCustomer( $customer_id );
 
 		return false;
 	}
 
-	
+
 	protected function complete() {
 		parent::complete();
 
@@ -30,7 +29,7 @@ class Add_Netsuite_Customer extends WP_Background_Process {
 	public function cancel_process() {
 		if ( ! $this->is_queue_empty() ) {
 			$batch = $this->get_batch();
-			pr($batch);
+			pr( $batch );
 
 			$this->delete( $batch->key );
 
@@ -41,7 +40,7 @@ class Add_Netsuite_Customer extends WP_Background_Process {
 
 	public function delete( $key ) {
 		delete_site_option( $key );
-		die('delete_order_queue');
+		die( 'delete_order_queue' );
 
 		return $this;
 	}
@@ -53,14 +52,13 @@ class Add_Netsuite_Customer extends WP_Background_Process {
 		$ids[0] = $order_id;
 		$wpdb->netsuite_order_queue = $wpdb->prefix . 'options';
 
-		$value = serialize($ids);
+		$value = serialize( $ids );
 
-		$removefromdb = $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->netsuite_order_queue WHERE option_value=%s", $value));
+		$removefromdb = $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->netsuite_order_queue WHERE option_value=%s", $value ) );
 
-
-		if (is_multisite()) {
+		if ( is_multisite() ) {
 			$wpdb->netsuite_order_queue_site_meta_table = $wpdb->prefix . 'sitemeta';
-			$removefromdb = $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->netsuite_order_queue_site_meta_table WHERE meta_value=%s", $value));
+			$removefromdb = $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->netsuite_order_queue_site_meta_table WHERE meta_value=%s", $value ) );
 
 		}
 	}

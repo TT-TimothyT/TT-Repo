@@ -1,7 +1,7 @@
 <?php
 
 
-	//define( 'WC_ODOO_INTEGRATION_INIT_VERSION', $plugin_version );
+	// define( 'WC_ODOO_INTEGRATION_INIT_VERSION', $plugin_version );
 
 class TMWNI_Settings {
 	public static $VERSION = 1;
@@ -24,9 +24,9 @@ class TMWNI_Settings {
 	public static $error_log_file_name = 'tmwni_errors.log';
 	public static $ns_order_customer_id = 'ns_order_customer_id';
 	public static $inventory_sku_lot_limit = 50;
-	//define default tab
+	// define default tab
 	public static $default_tab = 'dashboard';
-	//customer
+	// customer
 	public static $order_shipping_line_item_id = '2174';
 	public static $pricing_group = 'Base Price';
 	public static $customerDummyFisrtName = 'Woo';
@@ -37,8 +37,8 @@ class TMWNI_Settings {
 		'AX' => '_alandIslands',
 		'AL' => '_albania',
 		'DZ' => '_algeria',
-//    '' => '_americanSamoa',
-		'AD' => '_andorra',
+		// '' => '_americanSamoa',
+					'AD' => '_andorra',
 		'AO' => '_angola',
 		'AI' => '_anguilla',
 		'AQ' => '_antarctica',
@@ -73,24 +73,24 @@ class TMWNI_Settings {
 		'KH' => '_cambodia',
 		'CM' => '_cameroon',
 		'CA' => '_canada',
-//    '' => '_canaryIslands',
-		'CV' => '_capeVerde',
+		// '' => '_canaryIslands',
+					'CV' => '_capeVerde',
 		'KY' => '_caymanIslands',
 		'CF' => '_centralAfricanRepublic',
-//    '' => '_ceutaAndMelilla',
-		'TD' => '_chad',
+		// '' => '_ceutaAndMelilla',
+					'TD' => '_chad',
 		'CL' => '_chile',
 		'CN' => '_china',
 		'CX' => '_christmasIsland',
 		'CC' => '_cocosKeelingIslands',
 		'CO' => '_colombia',
 		'KM' => '_comoros',
-//    '' => '_congoDemocraticPeoplesRepublic',
-//    '' => '_congoRepublicOf',
-		'CK' => '_cookIslands',
+		// '' => '_congoDemocraticPeoplesRepublic',
+		// '' => '_congoRepublicOf',
+			'CK' => '_cookIslands',
 		'CR' => '_costaRica',
-//    '' => '_coteDIvoire',
-		'HR' => '_croatiaHrvatska',
+		// '' => '_coteDIvoire',
+					'HR' => '_croatiaHrvatska',
 		'CU' => '_cuba',
 		'CW' => '_curacao',
 		'CY' => '_cyprus',
@@ -99,8 +99,8 @@ class TMWNI_Settings {
 		'DJ' => '_djibouti',
 		'DM' => '_dominica',
 		'DO' => '_dominicanRepublic',
-//    '' => '_eastTimor',
-		'EC' => '_ecuador',
+		// '' => '_eastTimor',
+					'EC' => '_ecuador',
 		'EG' => '_egypt',
 		'SV' => '_elSalvador',
 		'GQ' => '_equatorialGuinea',
@@ -125,16 +125,16 @@ class TMWNI_Settings {
 		'GL' => '_greenland',
 		'GD' => '_grenada',
 		'GP' => '_guadeloupe',
-//    '' => '_guam',
-		'GT' => '_guatemala',
+		// '' => '_guam',
+					'GT' => '_guatemala',
 		'GG' => '_guernsey',
 		'GN' => '_guinea',
 		'GW' => '_guineaBissau',
 		'GY' => '_guyana',
 		'HT' => '_haiti',
 		'HM' => '_heardAndMcDonaldIslands',
-//    '' => '_holySeeCityVaticanState',
-		'HN' => '_honduras',
+		// '' => '_holySeeCityVaticanState',
+					'HN' => '_honduras',
 		'HK' => '_hongKong',
 		'HU' => '_hungary',
 		'IS' => '_iceland',
@@ -153,10 +153,10 @@ class TMWNI_Settings {
 		'KZ' => '_kazakhstan',
 		'KE' => '_kenya',
 		'KI' => '_kiribati',
-//    '' => '_koreaDemocraticPeoplesRepublic',
-//    '' => '_koreaRepublicOf',
-//    '' => '_kosovo',
-		'KW' => '_kuwait',
+		// '' => '_koreaDemocraticPeoplesRepublic',
+		// '' => '_koreaRepublicOf',
+		// '' => '_kosovo',
+			'KW' => '_kuwait',
 		'KG' => '_kyrgyzstan',
 		'LA' => '_laoPeoplesDemocraticRepublic',
 		'LV' => '_latvia',
@@ -201,12 +201,12 @@ class TMWNI_Settings {
 		'NG' => '_nigeria',
 		'NU' => '_niue',
 		'NF' => '_norfolkIsland',
-//    '' => '_northernMarianaIslands',
-		'NO' => '_norway',
+		// '' => '_northernMarianaIslands',
+					'NO' => '_norway',
 		'OM' => '_oman',
 		'PK' => '_pakistan',
-//    '' => '_palau',
-		'PA' => '_panama',
+		// '' => '_palau',
+					'PA' => '_panama',
 		'PG' => '_papuaNewGuinea',
 		'PY' => '_paraguay',
 		'PE' => '_peru',
@@ -214,8 +214,8 @@ class TMWNI_Settings {
 		'PN' => '_pitcairnIsland',
 		'PL' => '_poland',
 		'PT' => '_portugal',
-//    '' => '_puertoRico',
-		'QA' => '_qatar',
+		// '' => '_puertoRico',
+					'QA' => '_qatar',
 		'RE' => '_reunionIsland',
 		'RO' => '_romania',
 		'RU' => '_russianFederation',
@@ -235,8 +235,8 @@ class TMWNI_Settings {
 		'SC' => '_seychelles',
 		'SL' => '_sierraLeone',
 		'SG' => '_singapore',
-//    '' => '_sintMaarten',
-		'SK' => '_slovakRepublic',
+		// '' => '_sintMaarten',
+					'SK' => '_slovakRepublic',
 		'SI' => '_slovenia',
 		'SB' => '_solomonIslands',
 		'SO' => '_somalia',
@@ -245,9 +245,9 @@ class TMWNI_Settings {
 		'SS' => '_southSudan',
 		'ES' => '_spain',
 		'LK' => '_sriLanka',
-//    '' => '_stateOfPalestine',
-//    '' => '_stPierreAndMiquelon',
-		'SD' => '_sudan',
+		// '' => '_stateOfPalestine',
+		// '' => '_stPierreAndMiquelon',
+			'SD' => '_sudan',
 		'SR' => '_suriname',
 		'SJ' => '_svalbardAndJanMayenIslands',
 		'SZ' => '_swaziland',
@@ -273,135 +273,129 @@ class TMWNI_Settings {
 		'GB' => '_unitedKingdom',
 		'US' => '_unitedStates',
 		'UY' => '_uruguay',
-//    '' => '_uSMinorOutlyingIslands',
-		'UZ' => '_uzbekistan',
+		// '' => '_uSMinorOutlyingIslands',
+					'UZ' => '_uzbekistan',
 		'VU' => '_vanuatu',
 		'VE' => '_venezuela',
 		'VN' => '_vietnam',
 		'VG' => '_virginIslandsBritish',
-//    '' => '_virginIslandsUSA',
-		'WF' => '_wallisAndFutunaIslands',
+		// '' => '_virginIslandsUSA',
+					'WF' => '_wallisAndFutunaIslands',
 		'EH' => '_westernSahara',
 		'YE' => '_yemen',
 		'ZM' => '_zambia',
 		'ZW' => '_zimbabwe',
 	);
-	//map tab ids to tab names
+	// map tab ids to tab names
 	public static $tabs = array(
-	'general_settings' => 'General Settings',
-	'inventory_settings' => 'Inventory Settings',
-	'customer_settings' => 'Customer Settings',
-	'order_settings' => 'Order Settings',
-	'logs' => 'NetSuite API Logs',
-	'help' => 'Help & Support',
-	'dashboard' => 'Dashboard',
-	'import_export_settings' => 'Import/Export Settings',
+		'general_settings' => 'General Settings',
+		'inventory_settings' => 'Inventory Settings',
+		'customer_settings' => 'Customer Settings',
+		'order_settings' => 'Order Settings',
+		'logs' => 'NetSuite API Logs',
+		'help' => 'Help & Support',
+		'dashboard' => 'Dashboard',
+		'import_export_settings' => 'Import/Export Settings',
 
-);
+	);
 	public static $inventory_sync_frequency = array(
-	'hourly' => 'Hourly',
-	'twicedaily' => 'Twice a day',
-	'daily' => 'Every day',
-);
+		'hourly' => 'Hourly',
+		'twicedaily' => 'Twice a day',
+		'daily' => 'Every day',
+	);
 	public static $hma_method = array(
-	'HMAC-SHA1' => 'HMAC-SHA1',
-	'HMAC-SHA256' => 'HMAC-SHA256',
-);
+		'HMAC-SHA1' => 'HMAC-SHA1',
+		'HMAC-SHA256' => 'HMAC-SHA256',
+	);
 
 	/**
 	 * Get Tab Settings
-	 *
-	*/ 
+	 */
 	public static function getTabSettings( $tab_id = '', $sub_tab = '' ) {
 		$settings = array();
-		if ('' == $tab_id) {
-			foreach (self::$tabs as $tab_id => $tab_heading) {
-				$option_key = self::getTabOptionKey($tab_id);
-				if ('Order Settings' == $tab_heading) {
+		if ( '' == $tab_id ) {
+			foreach ( self::$tabs as $tab_id => $tab_heading ) {
+				$option_key = self::getTabOptionKey( $tab_id );
+				if ( 'Order Settings' == $tab_heading ) {
 
-					$order_fulfillment_settings = get_option('tmwni_order_settings_fulfillment_settings_options');
+					$order_fulfillment_settings = get_option( 'tmwni_order_settings_fulfillment_settings_options' );
 
-					
-					$order_general_settings = get_option('tmwni_order_settings_general_settings_options');
-					
-					$order_refund_settings = get_option('tmwni_order_settings_refund_settings_options');
+					$order_general_settings = get_option( 'tmwni_order_settings_general_settings_options' );
 
+					$order_refund_settings = get_option( 'tmwni_order_settings_refund_settings_options' );
 
-					$order_line_item_settings = get_option('tmwni_order_settings_line_item_settings_options');
+					$order_line_item_settings = get_option( 'tmwni_order_settings_line_item_settings_options' );
 					// pr($order_general_settings); die('zzzz');
-					if (!empty($order_refund_settings) && !empty($order_general_settings) && !empty($order_fulfillment_settings)) {
-						$tab_option_data = array_merge($order_refund_settings, $order_general_settings, $order_fulfillment_settings);
-					} elseif (!empty($order_refund_settings) && !empty($order_general_settings)) {
-						$tab_option_data = array_merge($order_refund_settings, $order_general_settings);
-					} elseif (!empty($order_fulfillment_settings) && !empty($order_general_settings)) {
-						$tab_option_data = array_merge($order_fulfillment_settings, $order_general_settings);
-					} elseif (!empty($order_general_settings)) {
+					if ( ! empty( $order_refund_settings ) && ! empty( $order_general_settings ) && ! empty( $order_fulfillment_settings ) ) {
+						$tab_option_data = array_merge( $order_refund_settings, $order_general_settings, $order_fulfillment_settings );
+					} elseif ( ! empty( $order_refund_settings ) && ! empty( $order_general_settings ) ) {
+						$tab_option_data = array_merge( $order_refund_settings, $order_general_settings );
+					} elseif ( ! empty( $order_fulfillment_settings ) && ! empty( $order_general_settings ) ) {
+						$tab_option_data = array_merge( $order_fulfillment_settings, $order_general_settings );
+					} elseif ( ! empty( $order_general_settings ) ) {
 						$tab_option_data = $order_general_settings;
 					} else {
-						$tab_option_data = get_option($option_key);
+						$tab_option_data = get_option( $option_key );
 					}
 
-
-					if (!empty($order_line_item_settings) && !empty($tab_option_data)) {
-						$tab_option_data = array_merge($order_line_item_settings, $tab_option_data);
+					if ( ! empty( $order_line_item_settings ) && ! empty( $tab_option_data ) ) {
+						$tab_option_data = array_merge( $order_line_item_settings, $tab_option_data );
 					}
-					
-					
 				} else {
-					$tab_option_data = get_option($option_key);
-					
+					$tab_option_data = get_option( $option_key );
+
 				}
 
-				if (!empty($tab_option_data)) {
-					$settings = array_merge($settings, $tab_option_data);
+				if ( ! empty( $tab_option_data ) ) {
+					$settings = array_merge( $settings, $tab_option_data );
 				}
-				
 			}
 		} else {
-			$option_key = self::getTabOptionKey($tab_id, $sub_tab);
-			$settings = get_option($option_key);
+			$option_key = self::getTabOptionKey( $tab_id, $sub_tab );
+			$settings = get_option( $option_key );
 		}
 		return $settings;
 	}
 	/**
 	 * Get Tab
-	 *
-	*/ 
+	 */
 	public static function getTabOptionKey( $tab_id, $sub_tab = '' ) {
-		if ('' != $sub_tab) {
+		if ( '' != $sub_tab ) {
 			$sub_tab = '_' . $sub_tab;
 		}
 		return self::$page_id . '_' . $tab_id . $sub_tab . '_options';
 	}
 	/**
 	 * Save Options
-	 *
-	*/ 
+	 */
 	public static function saveOption( $data, $tab_id = '' ) {
-		if ('' == $tab_id) {
+		if ( '' == $tab_id ) {
 			$tab_id = self::$default_tab;
 		}
-		$option_key = self::getTabOptionKey($tab_id);
-		update_option($option_key, $data, 'no');
+		$option_key = self::getTabOptionKey( $tab_id );
+		update_option( $option_key, $data, 'no' );
 	}
 
-	//Check if required amazon creds are saved by admin
+	// Check if required amazon creds are saved by admin
 	public static function areCredentialsDefined() {
 		global $TMWNI_OPTIONS;
-		if (empty($TMWNI_OPTIONS['ns_consumer_key']) || empty($TMWNI_OPTIONS['ns_consumer_secret']) || empty($TMWNI_OPTIONS['ns_token_id']) || empty($TMWNI_OPTIONS['ns_token_secret']) || empty($TMWNI_OPTIONS['ns_account']) || empty($TMWNI_OPTIONS['ns_host'])) {
+		if ( empty( $TMWNI_OPTIONS['ns_consumer_key'] ) || empty( $TMWNI_OPTIONS['ns_consumer_secret'] ) || empty( $TMWNI_OPTIONS['ns_token_id'] ) || empty( $TMWNI_OPTIONS['ns_token_secret'] ) || empty( $TMWNI_OPTIONS['ns_account'] ) || empty( $TMWNI_OPTIONS['ns_host'] ) ) {
 			return false;
 		}
 		return true;
 	}
 	/**
 	 * Write Logs to DB
-	 *
-	*/ 
+	 */
 	public static function writeLogtoDB( $status, $object_id, $object, $error = '' ) {
 		global $wpdb;
-		$query_array = array( 'status' => $status, 'woo_object_id' => $object_id, 'operation' => $object );
+		$query_array = array(
+			'status' => $status,
+			'woo_object_id' => $object_id,
+			'operation' => $object,
+		);
 		$query_array['notes'] = $error;
-		$wpdb->insert($wpdb->prefix . 'tm_woo_netsuite_logs', $query_array);
+		$wpdb->insert( $wpdb->prefix . 'tm_woo_netsuite_logs', $query_array );
 		return false;
 	}
 	public static function shapeSpace_allowed_html() {
@@ -432,14 +426,14 @@ class TMWNI_Settings {
 			'height'     => array(),
 			'data'       => array(),
 			'title'      => array(),
-			'checked'=>true,
-			'select'=>array(),
-			'option'=>array(),
-			'selected'=>array(),
-			'multiple'=>array(),
+			'checked' => true,
+			'select' => array(),
+			'option' => array(),
+			'selected' => array(),
+			'multiple' => array(),
 		);
 		$fields['form'] = array(
-'action'         => true,
+			'action'         => true,
 			'accept'         => true,
 			'accept-charset' => true,
 			'enctype'        => true,
@@ -447,7 +441,7 @@ class TMWNI_Settings {
 			'name'           => true,
 			'target'         => true,
 			'class'         => true,
-);
+		);
 		$fields['input'] = $allowed_atts;
 		$fields['select'] = $allowed_atts;
 		$fields['option'] = $allowed_atts;
@@ -455,8 +449,6 @@ class TMWNI_Settings {
 		$fields['style']    = $allowed_atts;
 		// $fields['div']    = $allowed_atts;
 
-
-
-		return $fields;     
+		return $fields;
 	}
 }

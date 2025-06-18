@@ -1,24 +1,24 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-exit; // Exit if accessed directly
+	exit; // Exit if accessed directly
 }
 
 if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 
-/**
- * A custom UPS Order Status WooCommerce Email class
- *
- * @since 0.1
- * @extends \WC_Email
- */
+	/**
+	 * A custom UPS Order Status WooCommerce Email class
+	 *
+	 * @since 0.1
+	 * @extends \WC_Email
+	 */
 	class WC_UPS_Order_TrackingNo_Email extends WC_Email {
 
 		 /**
-		 * Set email defaults
-		 *
-		 * @since 0.1
-		 */
+		  * Set email defaults
+		  *
+		  * @since 0.1
+		  */
 		public function __construct() {
 
 			// set ID, this simply needs to be a unique name
@@ -36,7 +36,7 @@ if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 			$this->heading = 'Order Tracking No.';
 			$this->subject = 'Order Tracking No.';
 
-			$this->template_base  = TMWNI_DIR . 'woocommerce/' ;    // Fix the template base lookup for use on admin screen template path display
+			$this->template_base  = TMWNI_DIR . 'woocommerce/';    // Fix the template base lookup for use on admin screen template path display
 
 			$this->template_html  = 'emails/email-ups-trackingno-recieved.php';
 			$this->template_plain = 'emails/plain/email-ups-trackingno-recieved.php';
@@ -66,7 +66,6 @@ if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 				$this->placeholders['{order_date}']   = wc_format_datetime( $this->object->get_date_created() );
 				$this->placeholders['{order_number}'] = $this->object->get_order_number();
 			}
-		
 
 			if ( $this->get_recipient() ) {
 				$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
@@ -83,13 +82,16 @@ if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 		 */
 		public function get_content_html() {
 			return wc_get_template_html(
-				$this->template_html, array(
+				$this->template_html,
+				array(
 					'order'         => $this->object,
 					'email_heading' => $this->get_heading(),
 					'sent_to_admin' => false,
 					'plain_text'    => false,
 					'email'         => $this,
-				), '', $this->template_base
+				),
+				'',
+				$this->template_base
 			);
 		}
 
@@ -102,50 +104,56 @@ if ( ! class_exists( 'WC_UPS_Order_TrackingNo_Email', false ) ) :
 		 */
 		public function get_content_plain() {
 			return wc_get_template_html(
-				$this->template_plain, array(
+				$this->template_plain,
+				array(
 					'order'         => $this->object,
 					'email_heading' => $this->get_heading(),
 					'sent_to_admin' => false,
 					'plain_text'    => false,
 					'email'         => $this,
-				), '', $this->template_base
+				),
+				'',
+				$this->template_base
 			);
 		}
 
 		  /**
-		 * Initialize Settings Form Fields
-		 *
-		 * @since 0.1
-		 */
+		   * Initialize Settings Form Fields
+		   *
+		   * @since 0.1
+		   */
 		public function init_form_fields() {
 
 			$this->form_fields = array(
-			'subject'    => array(
-				'title'       => 'Subject',
-				'type'        => 'text',
-				'description' => sprintf( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', $this->subject ),
-				'placeholder' => '',
-				'default'     => '',
-			),
-			'heading'    => array(
-				'title'       => 'Email Heading',
-				'type'        => 'text',
-				'description' => 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', $this->heading,
-				'placeholder' => '',
-				'default'     => '',
-			),
-			'email_type' => array(
-				'title'       => 'Email type',
-				'type'        => 'select',
-				'description' => 'Choose which format of email to send.',
-				'default'     => 'html',
-				'class'       => 'email_type',
-				'options'     => array(
-					'plain'     => 'Plain text',
-					'html'      => 'HTML', 'woocommerce',
-					'multipart' => 'Multipart', 'woocommerce',
+				'subject'    => array(
+					'title'       => 'Subject',
+					'type'        => 'text',
+					'description' => sprintf( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', $this->subject ),
+					'placeholder' => '',
+					'default'     => '',
 				),
-			),
+				'heading'    => array(
+					'title'       => 'Email Heading',
+					'type'        => 'text',
+					'description' => 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.',
+					$this->heading,
+					'placeholder' => '',
+					'default'     => '',
+				),
+				'email_type' => array(
+					'title'       => 'Email type',
+					'type'        => 'select',
+					'description' => 'Choose which format of email to send.',
+					'default'     => 'html',
+					'class'       => 'email_type',
+					'options'     => array(
+						'plain'     => 'Plain text',
+						'html'      => 'HTML',
+						'woocommerce',
+						'multipart' => 'Multipart',
+						'woocommerce',
+					),
+				),
 			);
 		}
 	}

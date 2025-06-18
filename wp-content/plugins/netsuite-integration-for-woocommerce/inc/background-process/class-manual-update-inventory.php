@@ -2,19 +2,19 @@
 
 class Manually_Update_Inventory extends WP_Background_Process {
 
-	
+
 	protected $action = 'tm_ns_manual_process_inventories';
 
-	
+
 	protected function task( $data ) {
 		// Actions to perform
 		require_once TMWNI_DIR . 'inc/inventory.php';
 		$netsuiteClient = new NS_Inventory();
-		$netsuiteClient->processedData($data['product_sku']);
+		$netsuiteClient->processedData( $data['product_sku'] );
 		return false;
 	}
 
-	
+
 	protected function complete() {
 		parent::complete();
 	}
@@ -31,7 +31,7 @@ class Manually_Update_Inventory extends WP_Background_Process {
 
 	public function delete( $key ) {
 		delete_site_option( $key );
-		die('delete_inventory_queue');
+		die( 'delete_inventory_queue' );
 
 		return $this;
 	}

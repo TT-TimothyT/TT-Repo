@@ -36,7 +36,7 @@ class SearchRecordType {
 	const CONTACT = 'contact';
 	const CONTACTCATEGORY = 'contactCategory';
 	const CONTACTROLE = 'contactRole';
-	const COSTCATEGORY = 'costCategory';    
+	const COSTCATEGORY = 'costCategory';
 	const CONSOLIDATEDEXCHANGERATE = 'consolidatedExchangeRate';
 	const COUPONCODE = 'couponCode';
 	const CURRENCYRATE = 'currencyRate';

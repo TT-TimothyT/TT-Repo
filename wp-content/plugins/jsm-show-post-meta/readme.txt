@@ -10,8 +10,8 @@ Tags: posts, custom fields, metadata, post types, inspector
 Contributors: jsmoriss
 Requires PHP: 7.4.33
 Requires At Least: 5.9
-Tested Up To: 6.7.1
-Stable Tag: 4.6.2
+Tested Up To: 6.8.1
+Stable Tag: 4.6.3
 
 Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.
 
@@ -82,6 +82,20 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 
 <h3>Changelog / Release Notes</h3>
 
+**Version 4.6.3 (2025/06/11)**
+
+* **New Features**
+	* None.
+* **Improvements**
+	* None.
+* **Bugfixes**
+	* Added a call to `clean_post_cache()` in `SucomUtilWP::raw_update_post()`.
+* **Developer Notes**
+	* None.
+* **Requires At Least**
+	* PHP v7.4.33.
+	* WordPress v5.9.
+
 **Version 4.6.2 (2024/12/26)**
 
 * **New Features**
@@ -112,6 +126,10 @@ Version components: `{major}.{minor}.{bugfix}[-{stage}.{level}]`
 	* WordPress v5.9.
 
 == Upgrade Notice ==
+
+= 4.6.3 =
+
+(2025/06/11) Added a call to `clean_post_cache()` in `SucomUtilWP::raw_update_post()`.
 
 = 4.6.2 =
 

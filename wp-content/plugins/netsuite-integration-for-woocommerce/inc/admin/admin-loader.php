@@ -844,6 +844,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 
 	private function getTemplate( $type, $operator, $index = 1, $mapping = array(), $tab = '', $attr_type = '', $cm_wc_field_key = '', $cm_wc_field_value = '', $cm_wc_where_op = '' ) {
+		global $TMWNI_OPTIONS;
 		if ( 'customer_settings' == $tab ) {
 			$this->netsuiteParameters = new Customer();
 		} elseif ( 'order_settings' == $tab ) {
@@ -968,7 +969,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 
 		foreach ( $this->netsuiteParameters::$paramtypesmap as $key => $value ) {
 
-			if ( 'RecordRef' == $value || 'string' == $value || 'boolean' == $value || 'dateTime' == $value || 'float' == $value || 'integer' == $value || 'GlobalSubscriptionStatus' == $value  || 'SalesOrderOrderStatus' == $value) {
+			if ( 'RecordRef' == $value || 'string' == $value || 'boolean' == $value || 'dateTime' == $value || 'float' == $value || 'integer' == $value || 'GlobalSubscriptionStatus' == $value  || 'SalesOrderOrderStatus' == $value || 'SalesOrderHandlingMode' == $value || 'CashSaleHandlingMode' == $value) {
 
 				if ( $key == $mapping['ns_field_key'] ) {
 					$template .= '<option data-type="' . $value . '" value="' . $key . '" selected>' . $key . ' (' . $value . ')</option>';

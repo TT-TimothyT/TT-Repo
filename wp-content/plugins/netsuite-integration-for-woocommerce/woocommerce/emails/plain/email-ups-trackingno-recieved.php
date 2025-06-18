@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
  * @hooked WC_Emails::email_header() Output the email header
  * @since 2.5.0
- **/
+ */
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php /* translators: %s: Customer first name */ ?>
@@ -53,7 +53,7 @@ do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, $plain_tex
  * @hooked WC_Emails::order_meta() Shows order meta data.
 
  * @since 2.5.0
- **/
+ */
 do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email );
 
 /**
@@ -64,7 +64,7 @@ do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, 
  * @hooked WC_Emails::email_address() Shows email address
 
  * @since 2.5.0
- **/
+ */
 do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email );
 
 ?>
@@ -77,7 +77,7 @@ do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_
  * Woocommerce action
 
  * @hooked WC_Emails::email_footer() Output the email footer
- 
+
  * @since 2.5.0
  **/
 do_action( 'woocommerce_email_footer', $email );
