@@ -38,11 +38,11 @@
 }
 .login-form,
 .reset-form {
-    margin-top: 6rem;
-    margin-bottom: 7.9rem;
+    // margin-top: 6rem;
+    // margin-bottom: 7.9rem;
     @include media-breakpoint-down(lg) {
-        margin-top: 3.5rem;
-        margin-bottom: 4.9rem;
+        // margin-top: 3.5rem;
+        // margin-bottom: 4.9rem;
     }
     .reset-p {
         font-size: 1.125rem;
@@ -96,11 +96,11 @@
             }
         }
 
-        .login-submit {
-            color: $white;
-            background-color: $black;
-        }
-        .login-submit,
+        // .login-submit {
+        //     color: $white;
+        //     background-color: $black;
+        // }
+        // .login-submit,
         .reset-submit {
             width:100%;
             border-radius: $border-radius-sm;
@@ -141,8 +141,8 @@
 // register form styling
 
 .register-form{
-    margin-top: 6rem;
-    margin-bottom: 7.9rem;
+    // margin-top: 6rem;
+    // margin-bottom: 7.9rem;
 
     .re-register-info {
         font-size: 14px;

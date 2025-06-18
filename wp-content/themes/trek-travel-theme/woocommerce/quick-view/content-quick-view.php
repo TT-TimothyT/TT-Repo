@@ -225,26 +225,36 @@ if ( $available_child_products ) {
 							$form_url_path = "waitlist";
 						}
 
+						$is_logged_in = is_user_logged_in();
+
 						if ( ! empty( $form_url_path ) ) {
-							// The trip date is not available for web booking.
+							// Booking URL scenario
 							$form_url_args = array(
 								'tripname' => $product->name,
 								'tripdate' => $date_range
 							);
-							$form_url        = add_query_arg( $form_url_args, home_url( $form_url_path ) );
+							$form_url = add_query_arg( $form_url_args, home_url( $form_url_path ) );
+
 							$book_now_button = '<a href="' . esc_url( $form_url ) . '" class="btn btn-primary btn-md rounded-1 mb-4 dates-pricing-book-now qv-book-now-btn">Book now</a>';
 						} else {
-							$cart_result           = get_user_meta( get_current_user_id(),'_woocommerce_persistent_cart_' . get_current_blog_id(), true ); 
-							$cart                  = WC()->session->get( 'cart', null );
-							$persistent_cart_count = isset( $cart_result['cart'] ) && $cart_result['cart'] ? count( $cart_result['cart'] ) : 0;
+							// Add-to-cart scenario
+							$checkout_url = wc_get_checkout_url() . '?add-to-cart=' . $child_product_data['product_id'];
 
-							if ( ! is_null( $cart ) && $persistent_cart_count > 0 ) {
-								// Already has started the booking process. Show the warning modal.
-								$book_now_button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now qv-book-now-btn" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="' . $accordion_item_id . '" data-return-url="/?trip=' . $product->name . '">Book now</button>';
+							if ( ! $is_logged_in ) {
+								$book_now_button = '<a href="#login-register-modal"
+									data-lity
+									class="btn btn-primary btn-md rounded-1 mb-4 dates-pricing-book-now qv-book-now-btn open-login-modal"
+									data-return-url="' . esc_url( $checkout_url ) . '">
+									Book now
+								</a>';
 							} else {
-								$book_now_button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now qv-book-now-btn" data-return-url="/?trip=' . $product->name . '">Book now</button>';
+								$book_now_button = '<form method="post" action="' . esc_url( wc_get_checkout_url() ) . '" target="_blank">
+									<input type="hidden" name="add-to-cart" value="' . esc_attr( $child_product_data['product_id'] ) . '">
+									<button type="submit" class="btn btn-primary btn-md rounded-1 mb-4 dates-pricing-book-now qv-book-now-btn">Book now</button>
+								</form>';
 							}
 						}
+
 
 						$date_trip_item_args = array(
 							'sku'                     => $child_product_data['sku'],

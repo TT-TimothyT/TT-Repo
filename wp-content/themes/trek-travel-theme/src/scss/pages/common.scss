@@ -1,41 +1,93 @@
-// Sign in
+// Login Register Modal
 
-.sign-welcome {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  height: 100%;
-  justify-content: center;
-  // justify-content: space-between;
-  // gap: 30px;
+.lity {
+  z-index: 10000 !important; // Ensure it appears above other content
+}
+
+body.lity-login-modal .lity {
+	background: rgba(0, 0, 0, 0.3); // Custom opacity for login modal only
+  backdrop-filter: blur(3px);
+}
+
+
+.lity-active button.lity-close {
+  position: absolute;
+  color: black;
+  transition: all 0.5s;
+}
+
+#login-register-modal {
+  max-width: 500px; // ← consistent width
+  width: 90vw;
+  margin: auto;
+  background: white;
+  border-radius: 5px;
+  padding: 1rem;
+
 
   .sign-logo {
     display: flex;
+    padding: 20px 0;
 
     img {
       display: flex;
       object-fit: contain;
       width: 100%;
-      max-height: 200px;
+      max-height: 100px;
+    }
+  }
+
+  .nav-tabs {
+
+    .nav-item {
+      flex: 1;
+
+      .nav-link {
+        color: $gray-500;
+        text-align: center;
+        background-color: $gray-100;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          box-shadow: 0px -3px 4px -2px rgba(0, 0, 0, 0.3);
+        }
+        &.active {
+          color: black;
+          background-color: white;
+          border-bottom: 3px solid $blue;
+          box-shadow: none;
+
+        }
+      }
     }
   }
 
   .sign-text {
     text-align: center;
-    width: 50%;
+    word-break: break-word; // prevent overflow
+    max-width: 100%;
+    // width: 50%;
+  }
+
+  .woocommerce-privacy-policy-text {
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    width: 100%;
+    word-wrap: break-word;
   }
 
   @include media-breakpoint-up(sm) {
 
     justify-content: center;
-    flex-direction: column;
+    // flex-direction: column;
 
     .sign-text {
       margin-bottom: 20px;
     }
 
     .sign-logo {
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
   }
 
@@ -60,25 +112,81 @@
 
   @include media-breakpoint-down(sm) {
     // flex-direction: column-reverse;
-    height: fit-content;
+    // height: fit-content;
     // margin-top: 20px;
 
-    .sign-logo {
-      display: none;
-    }
+    // .sign-logo {
+    //   display: none;
+    // }
   }
+
+  .fixed-tab-content {
+    position: relative;
+    height: 500px;
+    // overflow: hidden;
+  }
+
+  .tab-pane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .tab-pane:not(.show) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .tab-pane.show.active {
+    position: relative;
+    height: 100%;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
 }
 
-.register-form {
+// Sign in
 
-  .woocommerce-privacy-policy-text {
-    font-size: 0.75rem;
-    line-height: normal;
-  }
+.sign-welcome {
+  display: flex;
+  flex-direction: c;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+  // justify-content: space-between;
+  // gap: 30px;
+
+  
 }
+
+// .register-form {
+
+//   .woocommerce-privacy-policy-text {
+//     font-size: 0.75rem;
+//     line-height: normal;
+//   }
+// }
 
 .login-form {
-  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+
+  form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .f-btm {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: auto;
+    }
+  }
 
   .sign-btns {
     justify-content: space-between;
@@ -97,6 +205,11 @@
 
   .form-floating {
     margin-bottom: 1rem !important;
+
+    .form-control, label {
+      height: 3rem;
+      padding: 0.5rem 0.75rem;
+    }
   }
 
   .login-title {
@@ -111,23 +224,23 @@
 
   @include media-breakpoint-up(lg) {
     // margin-left: auto;
-    margin-right: auto;
+    // margin-right: auto;
   }
 
   @include media-breakpoint-up(md) {
-    margin-left: 30px;
+    // margin-left: 30px;
   }
 
   @include media-breakpoint-down(lg) {
-    margin-top: 50px;
+    // margin-top: 50px;
     
   }
 
   @include media-breakpoint-down(md) {
-    margin-top: 30px;
+    // margin-top: 30px;
   }
   @include media-breakpoint-down(sm) {
-    margin-left: auto;
+    // margin-left: auto;
   }
 }
 

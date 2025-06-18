@@ -8603,6 +8603,22 @@ h5, .h5 {
   border-color: #000000;
   border-radius: 4px 4px 4px 4px;
 }
+.btn.btn-bb {
+  font-family: "Roboto", Sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  fill: #FFFFFF;
+  color: #FFFFFF;
+  background-color: black;
+  border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: black;
+  border-radius: 4px;
+}
+.btn.btn-bb:hover {
+  border-color: #28AAE1;
+}
 
 .btn-primary {
   --bs-btn-color: #fff;
@@ -11338,24 +11354,6 @@ textarea.form-control-lg {
   margin-bottom: 1rem !important;
 }
 
-.ginput_container_select .ts-wrapper, .ginput_container_multiselect .ts-wrapper {
-  border: 1px solid black !important;
-  border-radius: 3px;
-  padding: 5px 10px !important;
-}
-
-.login-form,
-.reset-form {
-  margin-top: 6rem;
-  margin-bottom: 7.9rem;
-}
-@media (max-width: 991.98px) {
-  .login-form,
-.reset-form {
-    margin-top: 3.5rem;
-    margin-bottom: 4.9rem;
-  }
-}
 .login-form .reset-p,
 .reset-form .reset-p {
   font-size: 1.125rem;
@@ -11418,14 +11416,7 @@ textarea.form-control-lg {
 .reset-form .form-group.forgot-pwd a:hover {
   color: #000;
 }
-.login-form .form-group .login-submit,
-.reset-form .form-group .login-submit {
-  color: #fff;
-  background-color: #000;
-}
-.login-form .form-group .login-submit,
 .login-form .form-group .reset-submit,
-.reset-form .form-group .login-submit,
 .reset-form .form-group .reset-submit {
   width: 100%;
   border-radius: 0.25rem;
@@ -11460,10 +11451,6 @@ textarea.form-control-lg {
   top: 20px;
 }
 
-.register-form {
-  margin-top: 6rem;
-  margin-bottom: 7.9rem;
-}
 .register-form .re-register-info {
   font-size: 14px;
   line-height: 18px;
@@ -23398,72 +23385,143 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   }
 }
 
-.sign-welcome {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  height: 100%;
-  justify-content: center;
+.lity {
+  z-index: 10000 !important;
 }
-.sign-welcome .sign-logo {
-  display: flex;
+
+body.lity-login-modal .lity {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
 }
-.sign-welcome .sign-logo img {
+
+.lity-active button.lity-close {
+  position: absolute;
+  color: black;
+  transition: all 0.5s;
+}
+
+#login-register-modal {
+  max-width: 500px;
+  width: 90vw;
+  margin: auto;
+  background: white;
+  border-radius: 5px;
+  padding: 1rem;
+}
+#login-register-modal .sign-logo {
+  display: flex;
+  padding: 20px 0;
+}
+#login-register-modal .sign-logo img {
   display: flex;
   object-fit: contain;
   width: 100%;
-  max-height: 200px;
+  max-height: 100px;
 }
-.sign-welcome .sign-text {
+#login-register-modal .nav-tabs .nav-item {
+  flex: 1;
+}
+#login-register-modal .nav-tabs .nav-item .nav-link {
+  color: #666666;
   text-align: center;
-  width: 50%;
+  background-color: #F4F4F4;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+#login-register-modal .nav-tabs .nav-item .nav-link:hover {
+  box-shadow: 0px -3px 4px -2px rgba(0, 0, 0, 0.3);
+}
+#login-register-modal .nav-tabs .nav-item .nav-link.active {
+  color: black;
+  background-color: white;
+  border-bottom: 3px solid #28AAE1;
+  box-shadow: none;
+}
+#login-register-modal .sign-text {
+  text-align: center;
+  word-break: break-word;
+  max-width: 100%;
+}
+#login-register-modal .woocommerce-privacy-policy-text {
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  width: 100%;
+  word-wrap: break-word;
 }
 @media (min-width: 576px) {
-  .sign-welcome {
+  #login-register-modal {
     justify-content: center;
-    flex-direction: column;
   }
-  .sign-welcome .sign-text {
+  #login-register-modal .sign-text {
     margin-bottom: 20px;
   }
-  .sign-welcome .sign-logo {
-    margin-bottom: 30px;
+  #login-register-modal .sign-logo {
+    margin-bottom: 10px;
   }
 }
 @media (max-width: 1199.98px) {
-  .sign-welcome .sign-text {
+  #login-register-modal .sign-text {
     width: 100%;
   }
 }
 @media (max-width: 991.98px) {
-  .sign-welcome .sign-logo img {
+  #login-register-modal .sign-logo img {
     max-height: 175px;
   }
 }
 @media (max-width: 767.98px) {
-  .sign-welcome {
+  #login-register-modal {
     margin-top: 50px;
   }
-  .sign-welcome .sign-logo img {
+  #login-register-modal .sign-logo img {
     max-height: 100px;
   }
 }
-@media (max-width: 575.98px) {
-  .sign-welcome {
-    height: fit-content;
-  }
-  .sign-welcome .sign-logo {
-    display: none;
-  }
+#login-register-modal .fixed-tab-content {
+  position: relative;
+  height: 500px;
+}
+#login-register-modal .tab-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: opacity 0.3s ease-in-out;
+}
+#login-register-modal .tab-pane:not(.show) {
+  opacity: 0;
+  pointer-events: none;
+}
+#login-register-modal .tab-pane.show.active {
+  position: relative;
+  height: 100%;
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.register-form .woocommerce-privacy-policy-text {
-  font-size: 0.75rem;
-  line-height: normal;
+.sign-welcome {
+  display: flex;
+  flex-direction: c;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
 }
 
 .login-form {
-  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+}
+.login-form form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.login-form form .f-btm {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: auto;
 }
 .login-form .sign-btns {
   justify-content: space-between;
@@ -23480,6 +23538,10 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
 .login-form .form-floating {
   margin-bottom: 1rem !important;
 }
+.login-form .form-floating .form-control, .login-form .form-floating label {
+  height: 3rem;
+  padding: 0.5rem 0.75rem;
+}
 .login-form .login-title {
   margin-bottom: 15px;
 }
@@ -23487,32 +23549,6 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   display: flex;
   justify-content: flex-end;
 }
-@media (min-width: 992px) {
-  .login-form {
-    margin-right: auto;
-  }
-}
-@media (min-width: 768px) {
-  .login-form {
-    margin-left: 30px;
-  }
-}
-@media (max-width: 991.98px) {
-  .login-form {
-    margin-top: 50px;
-  }
-}
-@media (max-width: 767.98px) {
-  .login-form {
-    margin-top: 30px;
-  }
-}
-@media (max-width: 575.98px) {
-  .login-form {
-    margin-left: auto;
-  }
-}
-
 .banner-hero-full {
   display: flex;
   align-items: center;

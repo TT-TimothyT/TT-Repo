@@ -2436,10 +2436,10 @@ add_action('wp_enqueue_scripts', 'trek_enqueue_tomselect');
 
 // Lightbox JS
 function enqueue_lity_scripts() {
-    if (is_page_template('tpl-landing-guides.php')) { 
+    // if (is_page_template('tpl-landing-guides.php')) { 
         wp_enqueue_style('lity-css', 'https://cdnjs.cloudflare.com/ajax/libs/lity/2.4.1/lity.min.css', array(), '2.4.1');
         wp_enqueue_script('lity-js', 'https://cdnjs.cloudflare.com/ajax/libs/lity/2.4.1/lity.min.js', array('jquery'), '2.4.1', true);
-    }
+    // }
 }
 add_action('wp_enqueue_scripts', 'enqueue_lity_scripts');
 
@@ -2546,7 +2546,7 @@ function trek_turnstile_validate_registration($username, $email, $validation_err
     }
 
     if (!$success) {
-        $validation_errors->add('turnstile_failed', __('Human verification failed. Please try again.', 'your-theme'));
+        $validation_errors->add('turnstile_failed', __('Human verification failed. Please try again.', 'trek-travel-theme'));
     }
 
     return $validation_errors;
@@ -2682,11 +2682,88 @@ function tt_make_user_registration_column_sortable( $columns ) {
     return $columns;
 }
 
-// Swiper JS Enqueue
 
-add_action('enqueue_swiper_js', function () {
-    wp_enqueue_style('swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css');
-    wp_enqueue_script('swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], null, true);
-    wp_enqueue_script('media-repeater-init', get_template_directory_uri() . '/assets/js/media-repeater.js', ['swiper-js'], null, true);
-});
+// Login Register Modal Link Function
+
+function trek_login_register_modal_link( $args = [] ) {
+    $defaults = [
+        'text'        => '',
+        'class'       => 'btn btn-primary',
+        'icon'        => '', // e.g., <i class="bi bi-person"></i>
+        'return_url'  => '', // if you want to override default
+        'wrapper'     => '', // span, div, etc. if needed
+    ];
+    $args = wp_parse_args( $args, $defaults );
+
+    $url = '#login-register-modal';
+    $return_url = $args['return_url'] ?: esc_url( add_query_arg( 'return_url', rawurlencode( get_permalink() ), home_url() ) );
+
+    $html = sprintf(
+        '<a href="%s" data-lity class="%s open-login-modal" data-return-url="%s">%s %s</a>',
+        esc_attr( $url ),
+        esc_attr( $args['class'] ),
+        esc_attr( $return_url ),
+        $args['icon'],
+        esc_html( $args['text'] )
+    );
+
+    if ( $args['wrapper'] ) {
+        return sprintf( '<%1$s>%2$s</%1$s>', $args['wrapper'], $html );
+    }
+
+    return $html;
+}
+
+
+function redirect_my_account_to_modal() {
+    if ( is_account_page() && ! is_user_logged_in() && ! is_ajax() ) {
+        ?>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                if (!document.body.classList.contains('woocommerce-checkout')) {
+                    lity('#login-register-modal');
+                }
+            });
+        </script>
+        <?php
+    }
+}
+add_action( 'wp_footer', 'redirect_my_account_to_modal' );
+
+function trek_prevent_wc_login_template() {
+    if ( is_account_page() && ! is_user_logged_in() && ! is_checkout() ) {
+        wp_redirect( home_url() );
+        exit;
+    }
+}
+add_action( 'template_redirect', 'trek_prevent_wc_login_template', 1 );
+
+function trek_my_account_link() {
+    if ( ! is_user_logged_in() ) {
+        $return_url = esc_url( home_url( $_SERVER['REQUEST_URI'] ) );
+        return '<a href="#login-register-modal" data-lity class="open-login-modal" data-return-url="' . $return_url . '">My Account</a>';
+    } else {
+        return '<a href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '">My Account</a>';
+    }
+}
+
+add_filter('wp_nav_menu_objects', 'trek_mmm_modify_my_account_menu_link', 10, 2);
+function trek_mmm_modify_my_account_menu_link($items, $args) {
+    foreach ($items as &$item) {
+        // Replace with your actual menu location or condition
+        if (strpos($item->url, '/my-account/') !== false && $item->ID == 83692) {
+            if (!is_user_logged_in()) {
+                $item->url = '#login-register-modal';
+                $item->title = 'My Account';
+                $item->classes[] = 'open-login-modal';
+                $item->classes[] = 'data-lity'; // we’ll convert this to data-lity in the output fix below
+                $item->classes[] = 'data-return-url-' . urlencode(home_url(add_query_arg([]))); // custom encoding
+            }
+        }
+    }
+    return $items;
+}
+
+
+
 
