@@ -975,7 +975,8 @@ document.addEventListener("DOMContentLoaded", function () {
 jQuery(document).ready(function($) {
   $(document).on('click', '.open-login-modal', function() {
     const returnUrl = $(this).data('return-url');
-    $('#login-register-modal input[name="http_referer"]').val(returnUrl);
+    $('#login-form input[name="http_referer"]').val(returnUrl);
+    $('#register-form input[name="http_referer"]').val(returnUrl);
   });
 });
 
@@ -1006,7 +1007,8 @@ jQuery(document).ready(function($) {
 
     function openLoginModal(url) {
         const modal = $('#login-register-modal');
-        modal.find('input[name="http_referer"]').val(url);
+        modal.find('#login-form input[name="http_referer"]').val(url);
+        modal.find('#register-form input[name="http_referer"]').val(url);
         lity('#login-register-modal');
     }
 });

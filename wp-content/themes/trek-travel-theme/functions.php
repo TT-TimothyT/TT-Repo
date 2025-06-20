@@ -968,8 +968,21 @@ function custom_address_update_message_and_redirect( $user_id, $load_address ) {
  * @param int $user_id The ID of the newly registered user.
  */
 add_filter( 'woocommerce_registration_redirect', function($redirect){
-	$redirect = home_url( '/register-success/' );
-	return $redirect;
+        $redirect = home_url( '/register-success/' );
+
+        if ( isset( $_POST['http_referer'] ) ) {
+                $referer = esc_url_raw( $_POST['http_referer'] );
+                $ref_sourceUrl = parse_url( $referer );
+                $site_urlParse = parse_url( site_url() );
+
+                if ( $ref_sourceUrl && isset( $ref_sourceUrl['host'] ) &&
+                     $site_urlParse && isset( $site_urlParse['host'] ) &&
+                     $ref_sourceUrl['host'] === $site_urlParse['host'] ) {
+                        $redirect = $referer;
+                }
+        }
+
+        return $redirect;
 });
 //chnaged password metered strenght
  function iconic_min_password_strength( $strength ) {

@@ -6157,6 +6157,7 @@ jQuery(document).on('lity:open', function (event, instance) {
 
     if (returnUrl) {
       jQuery('#login-form input[name="http_referer"]').val(returnUrl);
+      jQuery('#register-form input[name="http_referer"]').val(returnUrl);
     }
   }
 });
