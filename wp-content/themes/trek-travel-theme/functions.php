@@ -2707,11 +2707,11 @@ function trek_login_register_modal_link( $args = [] ) {
     $args = wp_parse_args( $args, $defaults );
 
 	if ( is_user_logged_in() ) { 
-
-		$url = '/my-account/'; // Default URL for logged-in users
-	} else {
-    	$url = '#login-register-modal';
-	}
+        $url = home_url( '/my-account/' ); // Full URL for logged-in users
+    } else {
+        $url = '#login-register-modal'; // Open modal for non-logged-in users
+    }
+	
     $return_url = $args['return_url'] ?: esc_url( add_query_arg( 'return_url', rawurlencode( get_permalink() ), home_url() ) );
 
     $html = sprintf(
