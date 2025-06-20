@@ -967,9 +967,20 @@ function custom_address_update_message_and_redirect( $user_id, $load_address ) {
  *
  * @param int $user_id The ID of the newly registered user.
  */
-add_filter( 'woocommerce_registration_redirect', function($redirect){
-	$redirect = home_url( '/register-success/' );
-	return $redirect;
+add_filter( 'woocommerce_registration_redirect', function( $redirect ) {
+        $redirect = home_url( '/register-success/' );
+
+        if ( isset( $_POST['http_referer'] ) ) {
+                $referer      = esc_url_raw( wp_unslash( $_POST['http_referer'] ) );
+                $ref_source   = parse_url( $referer );
+                $site_url     = parse_url( site_url() );
+
+                if ( $ref_source && $site_url && isset( $ref_source['host'] ) && isset( $site_url['host'] ) && $ref_source['host'] === $site_url['host'] ) {
+                        $redirect = $referer;
+                }
+        }
+
+        return $redirect;
 });
 //chnaged password metered strenght
  function iconic_min_password_strength( $strength ) {
