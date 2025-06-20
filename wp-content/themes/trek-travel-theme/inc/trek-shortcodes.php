@@ -13,18 +13,9 @@
      if (is_admin() || is_user_logged_in()) return;
  
     do_action('woocommerce_before_customer_login_form');
-
-    $http_referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-    $ref_sourceUrl = parse_url($http_referer);
-    $site_urlParse = parse_url(site_url());
-    $redirect_url = get_permalink();
-    if( $ref_sourceUrl && isset($ref_sourceUrl['host']) &&
-        $site_urlParse && isset($site_urlParse['host']) &&
-        $ref_sourceUrl['host'] == $site_urlParse['host'] ){
-        $redirect_url = $http_referer;
-    }
-
-    $google_api_key = G_CAPTCHA_SITEKEY ?: '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSde0zV';
+    global $wp;
+    $current_url = home_url(add_query_arg([], $wp->request));
+    $google_api_key = G_CAPTCHA_SITEKEY ?: '6LfNqogpAAAAAEoQ66tbnh01t0o_2YXgHVSe0zV';
      ?>
       <div class="row">
              <div class="col-12 login-form">
@@ -83,7 +74,8 @@
                         <input type="text" name="tt-ba" style="display:none;" tabindex="-1" autocomplete="off" />
 
                         <input type="hidden" name="form_start_time" value="<?php echo time(); ?>">
-                     </div>
+                        <input type="hidden" name="http_referer" value="<?php echo esc_url( $current_url ); ?>">
+                    </div>
 
                      <?php do_action('woocommerce_register_form'); ?>
 

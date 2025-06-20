@@ -968,20 +968,19 @@ function custom_address_update_message_and_redirect( $user_id, $load_address ) {
  * @param int $user_id The ID of the newly registered user.
  */
 add_filter( 'woocommerce_registration_redirect', function( $redirect ) {
-       $redirect_url = home_url( '/register-success/' );
+        $redirect = home_url( '/register-success/' );
 
-       // Check for posted http_referer and validate it points to the same domain.
-       if ( isset( $_POST['http_referer'] ) ) {
-               $posted_url = esc_url_raw( wp_unslash( $_POST['http_referer'] ) );
-               $home_host  = wp_parse_url( home_url(), PHP_URL_HOST );
-               $post_host  = wp_parse_url( $posted_url, PHP_URL_HOST );
+        if ( isset( $_POST['http_referer'] ) ) {
+                $referer      = esc_url_raw( wp_unslash( $_POST['http_referer'] ) );
+                $ref_source   = parse_url( $referer );
+                $site_url     = parse_url( site_url() );
 
-               if ( $posted_url && $home_host && $post_host && strtolower( $home_host ) === strtolower( $post_host ) ) {
-                       $redirect_url = $posted_url;
-               }
-       }
+                if ( $ref_source && $site_url && isset( $ref_source['host'] ) && isset( $site_url['host'] ) && $ref_source['host'] === $site_url['host'] ) {
+                        $redirect = $referer;
+                }
+        }
 
-       return $redirect_url;
+        return $redirect;
 });
 //chnaged password metered strenght
  function iconic_min_password_strength( $strength ) {
