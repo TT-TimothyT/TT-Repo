@@ -2706,29 +2706,37 @@ function trek_login_register_modal_link( $args = [] ) {
     ];
     $args = wp_parse_args( $args, $defaults );
 
-	if ( is_user_logged_in() ) { 
+    // Check if the user is logged in
+    if ( is_user_logged_in() ) { 
         $url = home_url( '/my-account/' ); // Full URL for logged-in users
+        $data_lity = ''; // Don't apply data-lity for logged-in users
     } else {
         $url = '#login-register-modal'; // Open modal for non-logged-in users
+        $data_lity = 'data-lity'; // Apply data-lity for non-logged-in users
     }
-	
+
+    // Get the return URL if passed in the arguments
     $return_url = $args['return_url'] ?: esc_url( add_query_arg( 'return_url', rawurlencode( get_permalink() ), home_url() ) );
 
+    // Create the HTML for the link
     $html = sprintf(
-        '<a href="%s" data-lity class="%s open-login-modal" data-return-url="%s">%s %s</a>',
+        '<a href="%s" class="%s" %s data-return-url="%s">%s %s</a>',
         esc_attr( $url ),
         esc_attr( $args['class'] ),
+        $data_lity,
         esc_attr( $return_url ),
         $args['icon'],
         esc_html( $args['text'] )
     );
 
+    // Wrap the link if needed
     if ( $args['wrapper'] ) {
         return sprintf( '<%1$s>%2$s</%1$s>', $args['wrapper'], $html );
     }
 
     return $html;
 }
+
 
 
 function redirect_my_account_to_modal() {
