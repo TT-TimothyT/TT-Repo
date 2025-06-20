@@ -80,8 +80,8 @@
                      <?php do_action('woocommerce_register_form'); ?>
 
                      <div class="f-btm form-group">
-                        <div class="cf-turnstile" data-sitekey="0x4AAAAAABWi6ZkGeYPlL4wS" data-callback="javascriptCallback" data-theme="light">
-                        </div>
+                        <!-- <div class="cf-turnstile" data-sitekey="0x4AAAAAABWi6ZkGeYPlL4wS" data-callback="javascriptCallback" data-theme="light">
+                        </div> -->
                          <div class="invalid-feedback">Please verify you're human.</div>
                          <?php wp_nonce_field('woocommerce-register', 'woocommerce-register-nonce'); ?>
                          <button type="submit" class="btn btn-bb" name="register">
@@ -172,7 +172,7 @@ function trek_login_form()
          </div>   
             <?php do_action('woocommerce_login_form'); ?>
             <div class="f-btm form-group">
-               <div class="cf-turnstile" data-sitekey="0x4AAAAAABWi6ZkGeYPlL4wS" data-callback="javascriptCallback" data-theme="light"></div>
+               <!-- <div class="cf-turnstile" data-sitekey="0x4AAAAAABWi6ZkGeYPlL4wS" data-callback="javascriptCallback" data-theme="light"></div> -->
                   <div class="invalid-feedback">Please verify you're human.</div>
                   <?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
                   <button type="submit" class="woocommerce-button button woocommerce-form-login__submit login-submit btn btn-bb" name="login" value="<?php esc_attr_e('Sign in', 'trek-travel-theme'); ?>"><?php esc_html_e('Log in', 'trek-travel-theme'); ?></button>

@@ -2706,7 +2706,12 @@ function trek_login_register_modal_link( $args = [] ) {
     ];
     $args = wp_parse_args( $args, $defaults );
 
-    $url = '#login-register-modal';
+	if ( is_user_logged_in() ) { 
+
+		$url = '/my-account/'; // Default URL for logged-in users
+	} else {
+    	$url = '#login-register-modal';
+	}
     $return_url = $args['return_url'] ?: esc_url( add_query_arg( 'return_url', rawurlencode( get_permalink() ), home_url() ) );
 
     $html = sprintf(
