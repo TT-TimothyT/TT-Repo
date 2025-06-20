@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
 		if (instance.opener().attr('href') === '#login-register-modal') {
 			document.body.classList.add('lity-login-modal');
 
-			if (returnUrl) {
-				jQuery('#login-form input[name="http_referer"]').val(returnUrl);
-			}
-		}
+                        if (returnUrl) {
+                                jQuery('#login-register-modal input[name="http_referer"]').val(returnUrl);
+                        }
+                }
 	});
 
 	jQuery(document).on('lity:close', function () {
