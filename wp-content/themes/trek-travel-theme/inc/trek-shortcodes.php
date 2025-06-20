@@ -33,8 +33,19 @@
                      <p class="my-1">Sign up to personalize your experience and trips.</p>
                </div>
 
-                 <form id="register-form" method="post" class="woocommerce-form woocommerce-form-register needs-validation" novalidate <?php do_action('woocommerce_register_form_tag'); ?>>
-                     <?php do_action('woocommerce_register_form_start'); ?>
+                <?php
+                    $http_referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+                    $ref_sourceUrl = parse_url($http_referer);
+                    $site_urlParse = parse_url(site_url());
+                    $redirect_url = site_url('my-account');
+                    if( $ref_sourceUrl && isset($ref_sourceUrl['host']) &&
+                       $site_urlParse && isset($site_urlParse['host']) &&
+                       $ref_sourceUrl['host'] == $site_urlParse['host'] ){
+                        $redirect_url = $http_referer;
+                    }
+                ?>
+                <form id="register-form" method="post" class="woocommerce-form woocommerce-form-register needs-validation" novalidate <?php do_action('woocommerce_register_form_tag'); ?>>
+                    <?php do_action('woocommerce_register_form_start'); ?>
  
                      <div class="field-group my-auto">
  
@@ -81,13 +92,13 @@
                         </div>
                          <div class="invalid-feedback">Please verify you're human.</div>
                          <?php wp_nonce_field('woocommerce-register', 'woocommerce-register-nonce'); ?>
-                        <button type="submit" class="btn btn-bb" name="register">
-                            <?php esc_html_e('Sign up', 'trek-travel-theme'); ?>
-                        </button>
-                        <input type="hidden" name="http_referer" value="<?php echo esc_url($redirect_url); ?>">
-                    </div>
-                    <?php do_action('woocommerce_register_form_end'); ?>
-                </form>
+                         <button type="submit" class="btn btn-bb" name="register">
+                             <?php esc_html_e('Sign up', 'trek-travel-theme'); ?>
+                         </button>
+                         <input type="hidden" name="http_referer" value="<?php echo esc_url( $redirect_url ); ?>">
+                     </div>
+                     <?php do_action('woocommerce_register_form_end'); ?>
+                 </form>
              </div>
          </div>
  

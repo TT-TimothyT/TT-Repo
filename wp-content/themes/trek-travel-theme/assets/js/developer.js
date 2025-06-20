@@ -6156,8 +6156,7 @@ jQuery(document).on('lity:open', function (event, instance) {
     document.body.classList.add('lity-login-modal');
 
     if (returnUrl) {
-      jQuery('#login-form input[name="http_referer"]').val(returnUrl);
-      jQuery('#register-form input[name="http_referer"]').val(returnUrl);
+      jQuery('#login-register-modal input[name="http_referer"]').val(returnUrl);
     }
   }
 });
