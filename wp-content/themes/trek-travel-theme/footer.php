@@ -34,22 +34,22 @@
 					<div class="row mx-0">
 						<p class="menu-title">As Recognized By</p>
 						<div class="row mx-0 recognised-by">
-							<div class="col-3">
+							<div class="col-3 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/travel.png" />
 							</div>
-							<div class="col-3">
+							<div class="col-3 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/shape-travel.png" />
 							</div>
-							<div class="col-3">
+							<div class="col-3 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/bicycle.png" />
 							</div>
-							<div class="col-3">
+							<div class="col-3 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/tours.png" />
 							</div>
-							<div class="col-3">
+							<div class="col-3 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/50-tours.png" />
 							</div>
-							<div class="col-3">
+							<div class="col-3 px-0">
 								<img class="img-item" src="<?php echo get_template_directory_uri(); ?>/assets/images/GPTW-Badge-Gray.png" />
 							</div>
 						</div>
