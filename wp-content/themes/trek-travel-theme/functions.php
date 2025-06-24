@@ -2690,3 +2690,76 @@ add_action('enqueue_swiper_js', function () {
     wp_enqueue_script('media-repeater-init', get_template_directory_uri() . '/assets/js/media-repeater.js', ['swiper-js'], null, true);
 });
 
+// Add a Metabox to the Bike CPT edit screen
+function add_grouped_products_metabox_to_bike() {
+    add_meta_box(
+        'grouped_products_metabox',           // ID of the metabox
+        'Grouped Products Related to this Bike', // Title of the metabox
+        'display_grouped_products_metabox',   // Callback function to display the content
+        'bike',                              // Post type (for the Bike CPT)
+        'normal',                            // Position
+        'default'                            // Priority
+    );
+}
+add_action('add_meta_boxes', 'add_grouped_products_metabox_to_bike');
+
+// Callback to display the Grouped Products related to this Bike
+function display_grouped_products_metabox($post) {
+    // Step 3: Get the current Bike's ID
+    $bike_id = $post->ID;
+
+    // Check for cached (transient) data for the related grouped products
+    $transient_key = 'related_grouped_products_' . $bike_id; // Unique key for each bike
+    $grouped_products = get_transient($transient_key);
+
+    if (false === $grouped_products) {
+        // If transient is not found, perform the query
+        $args = [
+            'post_type'      => 'product',        // Grouped Product is a type of product
+            'posts_per_page' => -1,               // Get all grouped products
+            'post_status'    => 'publish',        // Only get published products
+            'meta_query'     => [
+                [
+                    'key'     => 'bikes',      // The ACF relationship field key on the grouped product
+                    'value'   => '"' . $bike_id . '"', // Check if the Bike ID exists in the relationship field
+                    'compare' => 'LIKE',       // Compare using LIKE for relationships
+                ]
+            ]
+        ];
+
+        // Get the related grouped products
+        $grouped_products_query = new WP_Query($args);
+
+        if ($grouped_products_query->have_posts()) {
+            $grouped_products = [];
+            while ($grouped_products_query->have_posts()) {
+                $grouped_products_query->the_post();
+                // Collect the product titles and their edit links
+                $grouped_products[] = [
+                    'title' => get_the_title(),
+                    'edit_link' => get_edit_post_link()
+                ];
+            }
+        } else {
+            $grouped_products = [];
+        }
+
+        // Cache the results in a transient for 1 hour
+        set_transient($transient_key, $grouped_products, HOUR_IN_SECONDS);
+
+        wp_reset_postdata();
+    }
+
+    // Display related grouped products in the metabox
+    if (!empty($grouped_products)) {
+        echo '<ul>';
+        foreach ($grouped_products as $product) {
+            // Display each related Grouped Product with a link to its edit page
+            echo '<li><a href="' . esc_url($product['edit_link']) . '" target="_blank">' . esc_html($product['title']) . '</a></li>';
+        }
+        echo '</ul>';
+    } else {
+        // If no related grouped products are found, display a message
+        echo '<p>No related Grouped Products found for this Bike.</p>';
+    }
+}
