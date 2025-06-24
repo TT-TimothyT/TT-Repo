@@ -250,6 +250,13 @@
         }
     }
 
+    .recognised-by {
+        .img-item {
+            object-fit: contain;
+            width: 100%;
+        }
+    }
+
     .menu-title {
         font-size: $font-size-base;
         font-weight: $font-weight-medium;

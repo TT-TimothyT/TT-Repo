@@ -14725,6 +14725,10 @@ li.nsub-header > a {
   color: #000;
   font-size: 0.875rem;
 }
+#footer .recognised-by .img-item {
+  object-fit: contain;
+  width: 100%;
+}
 #footer .menu-title {
   font-size: 1rem;
   font-weight: 500;
