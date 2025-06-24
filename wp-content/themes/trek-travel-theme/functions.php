@@ -2696,7 +2696,7 @@ function add_grouped_products_metabox_to_bike() {
         'grouped_products_metabox',           // ID of the metabox
         'Grouped Products Related to this Bike', // Title of the metabox
         'display_grouped_products_metabox',   // Callback function to display the content
-        'bike',                              // Post type (for the Bike CPT)
+        'bikes',                              // Post type (for the Bike CPT)
         'normal',                            // Position
         'default'                            // Priority
     );
