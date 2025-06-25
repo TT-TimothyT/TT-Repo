@@ -23391,6 +23391,15 @@ form.trek-trip-finder-form input:hover, form.trek-trip-finder-form i:hover {
   }
 }
 
+body.lity-login-modal #quickLookModal {
+  z-index: 9998;
+  pointer-events: none;
+}
+
+body.lity-login-modal .modal-backdrop {
+  z-index: 9997;
+}
+
 .lity {
   z-index: 10000 !important;
 }

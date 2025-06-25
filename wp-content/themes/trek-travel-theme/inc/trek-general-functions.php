@@ -1394,12 +1394,11 @@ function trek_trek_login_action_cb() {
             if ( tt_should_redirect_user_to_checkout() ) {
                 $res['redirect'] = trek_checkout_step_link(1);
             } else {
-                $http_referer   = $_REQUEST['http_referer'];
-                $page_id        = url_to_postid( $http_referer );
-                $ref_source_url = parse_url( $http_referer );
+                $http_referer   = isset( $_REQUEST['http_referer'] ) ? $_REQUEST['http_referer'] : '';
+                $ref_source_url = $http_referer ? parse_url( $http_referer ) : array();
                 $site_url_parse = parse_url( site_url() );
-                if ( $ref_source_url['host'] === $site_url_parse['host'] && 'product' === get_post_type( $page_id ) ) {
-                    $res['redirect'] = $http_referer;
+                if ( $http_referer && isset( $ref_source_url['host'] ) && $ref_source_url['host'] === $site_url_parse['host'] ) {
+                    $res['redirect'] = esc_url_raw( $http_referer );
                 } else {
                     $res['redirect'] = site_url( 'my-account' );
                 }

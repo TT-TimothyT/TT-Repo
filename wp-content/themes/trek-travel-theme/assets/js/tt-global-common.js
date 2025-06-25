@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const $opener = instance.opener();
                 const returnUrl = $opener.data('return-url');
 
-                if (instance.opener().attr('href') === '#login-register-modal') {
+                if ($opener.attr('href') === '#login-register-modal') {
                         document.body.classList.add('lity-login-modal');
 
                         if (returnUrl) {
