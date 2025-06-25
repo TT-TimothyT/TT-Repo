@@ -6942,42 +6942,64 @@ function add_trip_weight_to_algolia($shared_attributes, $post) {
     return $shared_attributes;
 }
 
-// Add custom column for `trip_weight`
-add_filter('manage_edit-product_columns', 'add_trip_weight_column');
-function add_trip_weight_column($columns) {
-    $columns['trip_weight'] = __('Trip Weight', 'your-text-domain');
+// Register column
+add_filter('manage_edit-product_columns', function($columns) {
+    $columns['trip_weight'] = __('Trip Weight', 'trek-travel-theme');
     return $columns;
-}
+});
 
-// Display `trip_weight` value in the custom column
-add_action('manage_product_posts_custom_column', 'show_trip_weight_column', 10, 2);
-function show_trip_weight_column($column, $post_id) {
-    if ('trip_weight' === $column) {
-        $trip_weight = get_field('trip_weight', $post_id);
-        echo esc_html($trip_weight);
+// Show value in column with span for Quick Edit
+add_action('manage_product_posts_custom_column', function($column, $post_id) {
+    if ($column === 'trip_weight') {
+        $value = get_post_meta($post_id, 'trip_weight', true);
+        echo '<span id="trip_weight_' . esc_attr($post_id) . '">' . esc_html($value) . '</span>';
     }
-}
+}, 10, 2);
 
-// Make the `trip_weight` column sortable
-add_filter('manage_edit-product_sortable_columns', 'make_trip_weight_column_sortable');
-function make_trip_weight_column_sortable($sortable_columns) {
-    $sortable_columns['trip_weight'] = 'trip_weight';
-    return $sortable_columns;
-}
+// Make column sortable
+add_filter('manage_edit-product_sortable_columns', fn($cols) => $cols + ['trip_weight' => 'trip_weight']);
 
-// Modify the query to sort by `trip_weight` ACF field
-add_action('pre_get_posts', 'sort_by_trip_weight');
-function sort_by_trip_weight($query) {
-    if (!is_admin()) {
-        return;
+// Sort query by meta value
+add_action('pre_get_posts', function($q) {
+    if (is_admin() && $q->is_main_query() && $q->get('orderby') === 'trip_weight') {
+        $q->set('meta_key', 'trip_weight');
+        $q->set('orderby', 'meta_value_num');
     }
-    
-    $orderby = $query->get('orderby');
-    if ('trip_weight' === $orderby) {
-        $query->set('meta_key', 'trip_weight');
-        $query->set('orderby', 'meta_value_num');
+});
+
+// Add Quick Edit field
+add_action('quick_edit_custom_box', function($column, $type) {
+    if ($column !== 'trip_weight' || $type !== 'product') return;
+    echo '<fieldset class="inline-edit-col-right"><div class="inline-edit-col">
+        <label><span class="title">Trip Weight</span>
+        <input type="number" name="trip_weight" step="0.01" />
+        </label></div></fieldset>';
+}, 10, 2);
+
+// Inject JS to populate Quick Edit field
+add_action('admin_footer', function() {
+    global $typenow;
+    if ($typenow !== 'product') return;
+    ?>
+    <script>
+        jQuery(function($) {
+            $('a.editinline').on('click', function() {
+                const id = $(this).closest('tr').attr('id').replace('post-', '');
+                const val = $('#trip_weight_' + id).text().trim();
+                $('input[name="trip_weight"]').val(val);
+            });
+        });
+    </script>
+    <?php
+});
+
+// Save Quick Edit value
+add_action('save_post_product', function($post_id) {
+    if (isset($_POST['trip_weight']) && current_user_can('edit_post', $post_id)) {
+        update_post_meta($post_id, 'trip_weight', sanitize_text_field($_POST['trip_weight']));
     }
-}
+});
+
 
 
 
