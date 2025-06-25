@@ -2788,6 +2788,18 @@ function trek_mmm_modify_my_account_menu_link($items, $args) {
     return $items;
 }
 
-
+/**
+ * Redirect users to the home page after logging out.
+ *
+ * @param string $redirect_to           The redirect destination URL.
+ * @param string $requested_redirect_to The requested redirect destination URL passed as a parameter.
+ * @param WP_User $user                 The user that is logging out.
+ *
+ * @return string Home URL to redirect to.
+ */
+function trek_logout_redirect_home( $redirect_to, $requested_redirect_to, $user ) {
+    return home_url( '/' );
+}
+add_filter( 'logout_redirect', 'trek_logout_redirect_home', 10, 3 );
 
 

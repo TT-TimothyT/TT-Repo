@@ -11354,6 +11354,12 @@ textarea.form-control-lg {
   margin-bottom: 1rem !important;
 }
 
+.ginput_container_select .ts-wrapper, .ginput_container_multiselect .ts-wrapper {
+  border: 1px solid black !important;
+  border-radius: 3px;
+  padding: 5px 10px !important;
+}
+
 .login-form .reset-p,
 .reset-form .reset-p {
   font-size: 1.125rem;
