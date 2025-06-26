@@ -623,7 +623,12 @@ if( $available_child_products ) {
                                             }
                                         // }
                                     } else {
-                                        $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                        if ( ! is_user_logged_in() ) {
+                                            $login_url = trek_checkout_step_link(1);
+                                            $button = '<a href="#login-register-modal" data-lity class="btn btn-primary btn-md rounded-1 dates-pricing-book-now open-login-modal" data-return-url="'.esc_url( $login_url ).'">Book now</a>';
+                                        } else {
+                                            $button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="'.$accordina_id.'" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                        }
                                     }
                                 } else {
                                     if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
@@ -639,7 +644,12 @@ if( $available_child_products ) {
                                                 }
                                         }
                                     } else {
-                                        $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                        if ( ! is_user_logged_in() ) {
+                                            $login_url = trek_checkout_step_link(1);
+                                            $button = '<a href="#login-register-modal" data-lity class="btn btn-primary btn-md rounded-1 dates-pricing-book-now open-login-modal" data-return-url="'.esc_url( $login_url ).'">Book now</a>';
+                                        } else {
+                                            $button = '<button type="submit" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now" data-return-url="/?trip='.$product->name.'">Book now</button>';
+                                        }
                                     }
                                 }
 
