@@ -1558,6 +1558,7 @@ jQuery(document).ready(function () {
             jQuery('form.woocommerce-form-login')[0].reset();
             resMessage = `<div class="alert alert-success" role="alert">${response.message}</div>`;
             ttLoader.hide(1000);
+            lity.close();
             window.location.href = response.redirect;
           } else {
             resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`;
