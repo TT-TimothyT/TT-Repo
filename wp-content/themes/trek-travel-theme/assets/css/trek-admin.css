@@ -9,3 +9,30 @@ table.wp-list-table .column-parent_product,
 table.wp-list-table .column-orders_count {
 	width: 7% !important;
 }
+
+.related-orders-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.related-order-link {
+	display: inline-block;
+	padding: 2px 5px;
+	background: #f0f0f1;
+	border-radius: 3px;
+	color: #50575e;
+	text-decoration: none;
+	cursor: inherit !important;
+}
+.related-order-link.travel-protection {
+	background: #ebe9ff;
+	color: #674399;
+}
+.related-order-link.booking {
+	background: #e6f6e8;
+	color: #2a6638;
+}
+.related-order-link:hover {
+	background: #007cba;
+	color: #fff;
+}

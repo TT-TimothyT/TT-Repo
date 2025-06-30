@@ -1211,7 +1211,6 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
 
         // Collect the insertion booking data.
         $booking_table_data['order_id']                 = $order_info['order_id'];
-        $booking_table_data['wantsInsurance']           = tt_validate( $guest->tripInsurancePurchased );
         $booking_table_data['releaseFormId']            = $order_info['current_guest_rf_id'];
         $booking_table_data['guest_index_id']           = $order_info['guest_index_id'];
         $booking_table_data['guest_phone_number']       = tt_validate( $ns_guest_booking_result->phone );
@@ -1261,6 +1260,8 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
         $booking_table_data['user_id'] = $wp_user_id;
     }
 
+    $booking_table_data['wantsInsurance']                      = tt_validate( $guest->tripInsurancePurchased );
+    $booking_table_data['waive_insurance']                     = tt_validate( $guest->waiveInsurance );
     $booking_table_data['guest_email_address']                 = tt_validate( $ns_guest_booking_result->email );
     $booking_table_data['guest_first_name']                    = tt_validate( $ns_guest_booking_result->firstname );
     $booking_table_data['guest_last_name']                     = tt_validate( $ns_guest_booking_result->lastname );
@@ -1939,3 +1940,169 @@ function ttnsw_remove_menu_items() {
     }
 }
 add_action('admin_menu', 'ttnsw_remove_menu_items', 11);
+
+/**
+ * Callback function for the `tt_trigger_ns_booking_update` action.
+ * This function is a placeholder and can be extended to perform actions
+ * when a booking update is triggered.
+ *
+ * @param int $order_id The ID of the order being updated.
+ */
+function tt_trigger_ns_booking_update_cb( $order_id = 0 ) {
+    if ( empty( $order_id ) ) {
+        return;
+    }
+
+    $accepted_p_ids     = tt_get_line_items_product_ids();
+    $tt_protection_data = array();
+    $order              = wc_get_order($order_id);
+    $order_items        = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
+    foreach ( $order_items as $item_id => $item ) {
+        $product_id = $item['product_id'];
+        if ( in_array( $product_id, $accepted_p_ids ) ) {
+            $tt_protection_data = wc_get_order_item_meta( $item_id, 'tt_protection_data', true );
+        }
+    }
+
+    $travelers        = isset( $tt_protection_data['travelers'] ) ? $tt_protection_data['travelers'] : array();
+    $booking_order_id = isset( $tt_protection_data['order_id'] ) ? $tt_protection_data['order_id'] : 0;
+
+    // RETRIEVE INSTRUMENT IDENTIFIER //
+    global $wpdb;
+    $bookings_table_name = $wpdb->prefix . 'guest_bookings';
+
+    $token = get_post_meta( $order_id, '_wc_cybersource_credit_card_payment_token', true );
+
+    // Prepare and execute the query
+    $token_id = $wpdb->get_var( $wpdb->prepare( "
+        SELECT token_id 
+        FROM {$wpdb->prefix}woocommerce_payment_tokens 
+        WHERE token = %s
+    ", $token ) );
+
+    // Prepare and execute the query
+    $instrument_identifier = $wpdb->get_var( $wpdb->prepare( "
+        SELECT meta_value 
+        FROM {$wpdb->prefix}woocommerce_payment_tokenmeta 
+        WHERE payment_token_id = %d 
+        AND meta_key = 'instrument_identifier'
+    ", $token_id ) );
+
+    // Check if an instrument identifier was found
+    if ( $instrument_identifier ) {
+        // Unserialize the instrument identifier
+        $instrument_identifier_array = unserialize( $instrument_identifier );
+
+        // Extract the identifier
+        $identifier = isset( $instrument_identifier_array['id'] ) ? $instrument_identifier_array['id'] : '';
+
+    } else {
+        $identifier = '';
+    }
+
+    $transaction_id              = get_post_meta( $order_id, '_wc_cybersource_credit_card_trans_id', true );
+    $transaction_date            = get_post_meta( $order_id, '_wc_cybersource_credit_card_trans_date', true );
+    $authorization_amount        = get_post_meta( $order_id, '_wc_cybersource_credit_card_authorization_amount', true );
+    $transaction_deposit         = get_post_meta( $order_id, '_is_order_transaction_deposit', true );
+    $transaction_payment_token   = $identifier;
+    $cc_account_four             = get_post_meta( $order_id, '_wc_cybersource_credit_card_account_four', true );
+    $cc_expiry_date              = get_post_meta( $order_id, '_wc_cybersource_credit_card_card_expiry_date', true );
+    $cc_card_type                = get_post_meta( $order_id, '_wc_cybersource_credit_card_card_type', true );
+    $cc_processor_transaction_id = get_post_meta( $order_id, '_wc_cybersource_credit_card_processor_transaction_id', true );
+
+
+    $ns_booking_update_payload = array();
+
+    foreach ( $travelers as $traveler_key => $traveler_data ) {
+        if ( 'primary' === $traveler_key ) {
+            $ns_booking_update_payload['paymentInfo'] = array(
+                'transaction_id'                                   => $transaction_id,
+                'transaction_date'                                 => $transaction_date,
+                'transaction_authorization_amount'                 => $authorization_amount,
+                'transaction_deposit'                              => ($transaction_deposit ? 1 : 0),
+                'transaction_payment_token'                        => $transaction_payment_token,
+                'transaction_credit_card_account_four'             => $cc_account_four,
+                'transaction_card_card_expiry_date'                => $cc_expiry_date,
+                'transaction_cardholder_name'                      => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+                'transaction_credit_card_card_type'                => $cc_card_type,
+                'transaction_credit_card_processor_transaction_id' => $cc_processor_transaction_id
+            );
+
+            $ns_booking_update_payload['billingAddress'] = array(
+                'country' => $order->get_billing_country(),
+                'address' => $order->get_billing_address_1() . ' ' . $order->get_billing_address_2(),
+                'city'    => $order->get_billing_city(),
+                'state'   => $order->get_billing_state(),
+                'zip'     => $order->get_billing_postcode()
+            );
+
+            // Update the primary guest booking
+            $guest_index = 0; // Primary guest index is always 0
+
+            $booking_order_data = $wpdb->get_row( $wpdb->prepare( "
+                SELECT guestRegistrationId, 
+                       ns_trip_booking_id, 
+                       netsuite_guest_registration_id, 
+                       wantsInsurance, 
+                       insuranceAmount
+                FROM {$bookings_table_name} 
+                WHERE order_id = %d AND guest_index_id = %d
+            ", $booking_order_id, $guest_index ), ARRAY_A );
+
+            $ns_booking_update_payload['bookingId'] = $booking_order_data['ns_trip_booking_id'];
+
+            $is_tp_purchased = (int) $traveler_data['is_tp_purchased'] === 1 ? true : false;
+
+            // If the guest has purchased the travel protection, skip it.
+            if ( $is_tp_purchased ) {
+                continue;
+            }
+
+            $ns_booking_update_payload['guestsData'][$guest_index] = array(
+                'registrationId' => $booking_order_data['guestRegistrationId'],
+                'guestId'        => $booking_order_data['netsuite_guest_registration_id'],
+                'wantsInsurance' => (int) $booking_order_data['wantsInsurance'], // Convert to boolean.
+                'insuranceAmount'=> $booking_order_data['insuranceAmount']
+            );
+
+        } else {
+            // Update each guest booking
+            foreach ( $traveler_data as $guest_index => $guest_data ) {
+                $booking_order_data = $wpdb->get_row( $wpdb->prepare( "
+                    SELECT guestRegistrationId, 
+                           ns_trip_booking_id, 
+                           netsuite_guest_registration_id, 
+                           wantsInsurance, 
+                           insuranceAmount
+                    FROM {$bookings_table_name} 
+                    WHERE order_id = %d AND guest_index_id = %d
+                ", $booking_order_id, $guest_index ), ARRAY_A );
+
+                $is_tp_purchased = (int) $guest_data['is_tp_purchased'] === 1 ? true : false;
+
+                // If the guest has purchased the travel protection, skip it.
+                if ( $is_tp_purchased ) {
+                    continue;
+                }
+
+                $ns_booking_update_payload['guestsData'][$guest_index] = array(
+                    'registrationId' => $booking_order_data['guestRegistrationId'],
+                    'guestId'        => $booking_order_data['netsuite_guest_registration_id'],
+                    'wantsInsurance' => (int) $booking_order_data['wantsInsurance'], // Convert to boolean.
+                    'insuranceAmount'=> $booking_order_data['insuranceAmount']
+                );
+            }
+        }
+    }
+
+    if ( empty( $ns_booking_update_payload['guestsData'] ) ) {
+        return;
+    }
+
+    $ns_booking_update_payload['guestsData'] = array_values( $ns_booking_update_payload['guestsData'] ); // Re-index the array to ensure it starts from 0.
+
+    $net_suite_client         = new NetSuiteClient();
+    $ns_booking_update_result = $net_suite_client->post( TPP_SCRIPT_ID, json_encode( $ns_booking_update_payload ) );
+    tt_add_error_log( 'TPP_SCRIPT_ID: ' . TPP_SCRIPT_ID, $ns_booking_update_payload, $ns_booking_update_result );
+}
+add_action( 'tt_trigger_ns_booking_update', 'tt_trigger_ns_booking_update_cb', 10, 1 );

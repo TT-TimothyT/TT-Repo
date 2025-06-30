@@ -143,6 +143,9 @@ $nav_year_tab         = '';
 $nav_year_tab_content = '';
 
 if ( $available_child_products ) {
+	// Check if there is protection data.
+	$protection_data = tt_get_protection_data_from_cart();
+	$is_tpp          = ! empty( $protection_data ) ? true : false; // Check if we have started the TPP process.
 
 	ksort( $available_child_products );
 	
@@ -238,7 +241,7 @@ if ( $available_child_products ) {
 							$cart                  = WC()->session->get( 'cart', null );
 							$persistent_cart_count = isset( $cart_result['cart'] ) && $cart_result['cart'] ? count( $cart_result['cart'] ) : 0;
 
-							if ( ! is_null( $cart ) && $persistent_cart_count > 0 ) {
+							if ( ! is_null( $cart ) && $persistent_cart_count > 0 && ! $is_tpp ) {
 								// Already has started the booking process. Show the warning modal.
 								$book_now_button = '<button type="button" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now qv-book-now-btn" id="trip-booking-modal" data-bs-toggle="modal" data-bs-target="#tripBookingModal" data-form-id="' . $accordion_item_id . '" data-return-url="/?trip=' . $product->name . '">Book now</button>';
 							} else {

@@ -17,6 +17,7 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'TT_NS_TOKEN_SECRET', '8a7ec82c6bf78cd91199379d6e7548f9268c66bb2d5951a515db3caa9a00001d');
     define( 'TRIPS_SCRIPT_ID', '1296:1' ); //214 -old ID, New ID - 1296
     define( 'BOOKING_SCRIPT_ID', '1298:1' );
+    define( 'TPP_SCRIPT_ID', '2095:1' );
     define( 'TRIP_DETAIL_SCRIPT_ID', '1297:1' ); //211 -old ID, New ID - 1297
     define( 'LISTS_SCRIPT_ID', '1299:1' );
     define( 'USER_BOOKINGS_SCRIPT_ID', '1305:1' );
@@ -40,6 +41,7 @@ if ( ! defined( 'DX_DEV' ) ) {
     define( 'TT_NS_TOKEN_SECRET', 'e993e3c52dee6356016ae87ca8dce0ceff7fe908b96f800b9e69932a8db84518');
     define( 'TRIPS_SCRIPT_ID', '1296:2' ); //214 -old ID, New ID - 1296
     define( 'BOOKING_SCRIPT_ID', '1298:2' );
+    define( 'TPP_SCRIPT_ID', '1998:2' );
     define( 'TRIP_DETAIL_SCRIPT_ID', '1297:2' ); //211 -old ID, New ID - 1297
     define( 'LISTS_SCRIPT_ID', '1299:2' );
     define( 'USER_BOOKINGS_SCRIPT_ID', '1305:2' );

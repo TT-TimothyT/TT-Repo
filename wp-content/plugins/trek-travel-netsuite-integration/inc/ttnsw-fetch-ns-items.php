@@ -735,6 +735,20 @@ function tt_bookings_admin_menu_page_cb()
 
 function tt_dev_tools_admin_menu_page_cb() {
 
+    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'dx-add-waive-insurance' ) {
+        global $wpdb;
+        $gb_table_name                  = $wpdb->prefix . 'guest_bookings';
+        $gb_waive_insurance_column_name = 'waive_insurance';
+        $column_exist                   = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$gb_table_name}' AND column_name = '{$gb_waive_insurance_column_name}'"  );
+
+        if ( empty( $column_exist ) ) {
+            $sql = "ALTER TABLE $gb_table_name ADD COLUMN $gb_waive_insurance_column_name TINYINT(1) DEFAULT 0 AFTER wantsInsurance";
+
+            // Execute the query
+            $wpdb->query($sql);
+        }
+    }
+
     // Handle index creation requests
     if ( isset( $_POST['action'] ) && strpos( $_POST['action'], 'create-index-' ) === 0 ) {
         check_admin_referer( 'ttnsw_create_index' );
@@ -819,7 +833,30 @@ function tt_dev_tools_admin_menu_page_cb() {
             <!-- Hidden Developer Tools Section -->
             <div id="dx-repair-tools">
                 <h3>DX Repair Tools</h3>
-                
+
+                 <!-- Add the product_line column in the netsuite_trip_detail table -->
+                <?php
+                    global $wpdb;
+                    $waive_insurance_table_name  = $wpdb->prefix . 'guest_bookings';
+                    $waive_insurance_column_name = 'waive_insurance';
+                    $waive_insurance_row         = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$waive_insurance_table_name}' AND column_name = '{$waive_insurance_column_name}'"  );
+                    $waive_insurance_add_action  = 'dx-add-waive-insurance';
+                ?>
+                <p>This process below will add the column <code><?php echo esc_html( $waive_insurance_column_name ); ?></code> in the <code><?php echo esc_html( $waive_insurance_table_name ); ?></code> table.</p>
+                <form action="" class="tt-locking-status-sync" method="post">
+                    <input type="hidden" name="action" value="<?php echo esc_attr( $waive_insurance_add_action ) ?>">
+                    <input type="submit" name="submit" value="Add <?php echo esc_attr( $waive_insurance_column_name ); ?> column" class="button-primary" <?php echo esc_attr( ! empty( $waive_insurance_row ) ? 'disabled="true"' : '' ); ?>>
+                </form>
+                <div id="dx-print_result" style="margin: 2% 0px;">
+                    <p><b>Bookings table status: </b>
+                        <?php if( empty( $waive_insurance_row ) ) : ?>
+                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code><?php echo esc_html( $waive_insurance_column_name ); ?></code> column missing yet</span>
+                        <?php else : ?>
+                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code><?php echo esc_html( $waive_insurance_column_name ); ?></code> column</span>
+                        <?php endif; ?>
+                    </p>
+                </div>
+                <hr>
                 <!-- New Index Management Section -->
                 <div class="add-table-indexes">
                     <h4>Add Database Logs Table Indexes</h4>

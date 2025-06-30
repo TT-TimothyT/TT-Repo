@@ -74,6 +74,33 @@ class TT_Booking_Status_Controller {
 	}
 
 	/**
+	 * Maybe get the related order ID.
+	 *
+	 * If the order is a Travel Protection order,
+	 * then get the related order ID from the protection data,
+	 * otherwise return the original order ID.
+	 * 
+	 * @param int $order_id The original order ID.
+	 * @return int The related order ID or the original if no protection data found.
+	 */
+	private function tt_maybe_get_related_order_id( $order_id ) {
+		// Check if there is protection data.
+		$protection_data = tt_get_protection_data_by_order_id( $order_id );
+
+		if ( empty( $protection_data ) || ! is_array( $protection_data ) ) {
+			// No protection data found, return the original order ID.
+			return $order_id;
+		}
+
+		if ( ! isset( $protection_data['order_id'] ) || empty( $protection_data['order_id'] ) ) {
+			// No related order ID found, return the original order ID.
+			return $order_id;
+		}
+
+		return (int) $protection_data['order_id'];
+	}
+
+	/**
 	 * Adding columns.
 	 *
 	 * @param array $columns Table columns.
@@ -82,6 +109,8 @@ class TT_Booking_Status_Controller {
 	 */
 	public function tt_booking_status_column_set( $columns ) {
 		unset( $columns['origin'] );
+		$columns['order_type']     = $this->tt_get_formatted_booking_detail_heading( 'order_type' );
+		$columns['related_orders'] = $this->tt_get_formatted_booking_detail_heading( 'related_orders' );
 		$columns['trip_code']      = $this->tt_get_formatted_booking_detail_heading( 'trip_code' );
 		$columns['booking_status'] = $this->tt_get_formatted_booking_detail_heading( 'booking_status' );
 		$columns['booking_id']     = $this->tt_get_formatted_booking_detail_heading( 'booking_id' );
@@ -98,7 +127,50 @@ class TT_Booking_Status_Controller {
 	 *
 	 * @return void
 	 */
-	public function tt_booking_status_column_display( $column_name, $order_id )  {
+	public function tt_booking_status_column_display( $column_name, $order_id ) {
+		// Keep this before the order ID is changed.
+		if ( 'order_type' === $column_name ) {
+			$order_type = $this->tt_get_order_type( $order_id );
+
+			if( ! empty( $order_type ) ) {
+				printf( '<span style="color:#50575e;font-weight:bold;">%s</span>', $order_type );
+			}
+		}
+
+			// Display related orders column
+		if ( 'related_orders' === $column_name ) {
+			$related_orders = tt_get_related_orders( $order_id );
+			
+			if ( ! empty( $related_orders ) ) {
+				echo '<div class="related-orders-list">';
+				foreach ( $related_orders as $related_order_id ) {
+					if ( $related_order_id === $order_id ) {
+						continue; // Skip self
+					}
+					
+					$related_order = wc_get_order( $related_order_id );
+					if ( $related_order ) {
+						$order_type = $this->tt_get_order_type( $related_order_id );
+						$order_type_class = sanitize_html_class( strtolower( str_replace( ' ', '-', $order_type ) ) );
+						
+						printf(
+							'<a href="%s" class="related-order-link %s tips" data-tip="%s">#%s</a>',
+							esc_url( admin_url( 'post.php?post=' . absint( $related_order_id ) . '&action=edit' ) ),
+							esc_attr( $order_type_class ),
+							esc_attr( sprintf( __( 'Related %s Order #%s', 'trek-travel-theme' ), $order_type, $related_order_id ) ),
+							esc_html( $related_order_id )
+						);
+					}
+				}
+				echo '</div>';
+			} else {
+				echo '<span class="na">—</span>';
+			}
+		}
+
+		// Get related order ID if the order is a Travel Protection order.
+		$order_id = $this->tt_maybe_get_related_order_id( $order_id );
+
 		if ( 'booking_id' === $column_name ) {
 			$ns_booking_id = get_post_meta( $order_id, self::$booking_id_meta_key, true );
 
@@ -149,8 +221,11 @@ class TT_Booking_Status_Controller {
 	 *
 	 * @param object $order The currently editing shop order.
 	 */
-	public function tt_editable_order_meta_general( $order ){
-		$order_id       = $order->get_id();
+	public function tt_editable_order_meta_general( $order ) {
+		$order_type	    = $this->tt_get_order_type( $order->get_id() );
+		$related_orders = tt_get_related_orders( $order->get_id() );
+		$order_id       = $this->tt_maybe_get_related_order_id( $order->get_id() );
+		$order          = wc_get_order( $order_id );
 		$ns_booking_id  = $order->get_meta( self::$booking_id_meta_key );
 		$guest_reg_data = $this->tt_get_guest_registrations( $order_id );
 		$ns_guests_data = $this->tt_get_ns_guests( $order_id );
@@ -162,6 +237,28 @@ class TT_Booking_Status_Controller {
 			<div class="address">
 				<table class="wp-list-table widefat fixed striped table-view-list posts" style="border-radius: 4px;">
 					<tbody>
+						<tr>
+							<th><strong><?php $this->tt_get_formatted_booking_detail_heading( 'order_type', true ) ?></strong></th>
+							<td><strong><?php echo esc_html( $order_type ); ?></strong></td>
+						</tr>
+						<?php if ( ! empty( $related_orders ) ) : ?>
+							<tr>
+								<th><strong><?php $this->tt_get_formatted_booking_detail_heading( 'related_orders', true ) ?></strong></th>
+								<td class="related-orders-list">
+									<?php foreach ( $related_orders as $related_order_id ) :
+										$related_order = wc_get_order( $related_order_id );
+										if ( $related_order ) :
+											$related_order_type = $this->tt_get_order_type( $related_order_id );
+									?>
+										<a href="<?php echo esc_url( admin_url( 'post.php?post=' . absint( $related_order_id ) . '&action=edit' ) ); ?>" 
+											class="button <?php echo esc_attr( $related_order_type === __( 'Travel Protection', 'trek-travel-theme' ) ? 'button-secondary' : 'button-primary' ); ?> tips" 
+											data-tip="<?php echo esc_attr( sprintf( __( 'See the related %s order #%s', 'trek-travel-theme' ), $related_order_type, $related_order_id ) ); ?>">
+											<strong>#<?php echo esc_html( $related_order_id ); ?> (<?php echo esc_html( $related_order_type ); ?>)</strong>
+										</a>
+									<?php endif; endforeach; ?>
+								</td>
+							</tr>
+						<?php endif; ?>
 						<tr>
 							<th><strong><?php $this->tt_get_formatted_booking_detail_heading( 'booking_status', true ) ?></strong></th>
 							<td><?php $this->tt_print_the_booking_status_badge( $order_id ) ?></td>
@@ -302,6 +399,9 @@ class TT_Booking_Status_Controller {
 	 * @param int $order_id The id Of the Order.
 	 */
 	private function tt_print_the_booking_status_badge( $order_id ) {
+		// Get related order ID if the order is a Travel Protection order.
+		$order_id = $this->tt_maybe_get_related_order_id( $order_id );
+
 		// First check for cancelled status from the bookings table.
 		$cancelled_status = $this->tt_get_booking_cancelled_status( $order_id );
 
@@ -370,6 +470,12 @@ class TT_Booking_Status_Controller {
 				break;
 			case 'ns_guests':
 				$formatted_heading = sprintf( '<span style="%s"><img width="25" src="%s"/><span>%s</span></span>', esc_attr( 'display: flex;align-items: center;gap:6px;' ), esc_url( get_template_directory_uri() . '/assets/images/netsuite/customer.svg' ), __( 'NS Guests', 'trek-travel-theme' ) );;
+				break;
+			case 'order_type':
+				$formatted_heading = sprintf( '<span style="%s"><img width="25" src="%s"/><span>%s</span></span>', esc_attr( 'display: flex;align-items: center;gap:6px;' ), esc_url( get_template_directory_uri() . '/assets/images/netsuite/order-type.svg' ), __( 'Order Type', 'trek-travel-theme' ) );;
+				break;
+			case 'related_orders':
+				$formatted_heading = sprintf( '<span style="%s"><img width="25" src="%s"/><span>%s</span></span>', esc_attr( 'display: flex;align-items: center;gap:6px;' ), esc_url( get_template_directory_uri() . '/assets/images/netsuite/related-orders.svg' ), __( 'Related Orders', 'trek-travel-theme' ) );;
 				break;
 			default:
 				// Nothing by default.
@@ -464,6 +570,9 @@ class TT_Booking_Status_Controller {
 	 * @return string Booking status.
 	 */
 	public function tt_get_booking_status( $order_id ) {
+		 // Get related order ID checking for travel protection
+		$order_id = $this->tt_maybe_get_related_order_id( $order_id );
+
 		// First check for cancelled status from the bookings table.
 		$cancelled_status = $this->tt_get_booking_cancelled_status( $order_id );
 
@@ -500,6 +609,19 @@ class TT_Booking_Status_Controller {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the order type based on the order ID.
+	 *
+	 * @param int $order_id The Order ID.
+	 *
+	 * @uses tt_has_travel_protection()
+	 *
+	 * @return string Order type.
+	 */
+	public function tt_get_order_type( $order_id ) {
+		return tt_has_travel_protection( $order_id ) ? __( 'Travel Protection', 'trek-travel-theme' ) : __( 'Booking', 'trek-travel-theme' );
 	}
 }
 

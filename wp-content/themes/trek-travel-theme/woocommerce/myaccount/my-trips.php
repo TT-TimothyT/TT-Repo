@@ -3,6 +3,7 @@ $userInfo = wp_get_current_user();
 $ns_user_id = get_user_meta(get_current_user_id(), 'ns_customer_internal_id', true);
 $is_log = isset($_REQUEST['log']) && $_REQUEST['log'] == 1 ? true : false;
 $wp_user_email = $userInfo->user_email;
+
 ?>
 <div class="container my-trips my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
@@ -45,9 +46,9 @@ $wp_user_email = $userInfo->user_email;
 				if (!empty($trips) && isset($trips['count']) && $trips['count'] != 0 && is_user_logged_in()) {
 					if ( $trips && isset( $trips['data'] ) ) {
 						foreach ( $trips['data'] as $trip ) {
-							$product_id = $trip['product_id'];
-							$order_id   = $trip['order_id'];
-							$order      = wc_get_order( $order_id );
+							$product_id    = $trip['product_id'];
+							$order_id      = $trip['order_id'];
+							$order         = wc_get_order( $order_id );
 							if ( ! $order ) {
 								// Skip the trip if does not exist the order on the website.
 								continue;
@@ -61,13 +62,21 @@ $wp_user_email = $userInfo->user_email;
 							// Get The booking status.
 							$booking_status = tt_get_booking_status( $order_id );
 							if( $booking_status && in_array( $booking_status, TT_HIDE_ORDER_BOOKING_STATUSES ) ) {
+								if ( isset( $trips['count'] ) && 1 === $trips['count'] ) {
+									// If only one trip is available, show a message.
+									$trips_html .= '<p class="no-trip-text mt-2">Your trips are on the way! Please check back in a few minutes to view your trip details.</p>';
+								}
 								// Skip the trip if the booking status is not allowed to show the order.
 								continue;
 							}
 							$order_details = trek_get_user_order_info($userInfo->ID, $order_id);
-							$is_primary = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
+							$is_primary    = isset( $order_details[0]['guest_is_primary'] ) ? $order_details[0]['guest_is_primary'] : 0;
+							if ( $is_primary ) {
+								$order_details = trek_get_user_order_info(null, $order_id);
+							}
+
 							$waiver_signed = isset( $order_details[0]['waiver_signed'] ) ? $order_details[0]['waiver_signed'] : false;
-                            $is_secondary_user = $is_primary == 0;
+							$is_secondary_user = $is_primary == 0;
 							$product = wc_get_product($product_id);
 							$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
 							$trip_name = $trip['trip_name'];
@@ -122,19 +131,84 @@ $wp_user_email = $userInfo->user_email;
 								if ($is_secondary_user) {
 									$msg_html .= '<p class="fw-normal fs-sm lh-sm my-3">You`ve been added to this trip</p>';
 								}
+
+								$sdate_str = $sdate_obj[2] . '-' . $sdate_obj[1] . '-' . $sdate_obj[0]; // YYYY-MM-DD
+								$start = new DateTime($sdate_str);
+
+								$today = new DateTime();
+								$diff = $today->diff($start);
+
+								$travel_protected = isset( $order_details[0]['wantsInsurance'] ) && $order_details[0]['wantsInsurance'] == 1 ? true : false;
+								$waive_insurance  = isset( $order_details[0]['waive_insurance'] ) && $order_details[0]['waive_insurance'] == 1 ? true : false;
+
+								// Count the protected guests.
+								$travel_protected_guests_count = 0;
+								// Count the declined insurance guests.
+								$declined_insurance_guests_count = 0;
+								// Count of all guests in the order.
+								$guest_count = count( $order_details );
+								if ( $guest_count > 0 ) {
+									foreach ( $order_details as $guest ) {
+										if ( isset( $guest['wantsInsurance'] ) && $guest['wantsInsurance'] == 1 ) {
+											// If the guest has travel protection, increment the count
+											$travel_protected_guests_count++;
+										}
+
+										if ( isset( $guest['waive_insurance'] ) && $guest['waive_insurance'] == 1 ) {
+											// If the guest has declined travel protection, increment the count
+											$declined_insurance_guests_count++;
+										}
+									}
+								}
+
+								$can_show_travel_protection = $travel_protected_guests_count < $guest_count && ( $diff->days > 14 ) ? true : false;
+
+								$can_show_decline_btn = false; // $declined_insurance_guests_count < $guest_count && ( $declined_insurance_guests_count + $travel_protected_guests_count ) < $guest_count ? true : false;
+
 								if ($order_id && $trip_link != 'javascript:') {
-										$link_html .= '<div class="trip-details-cta">
-															<a class="btn btn-lg btn-primary rounded-1" href="' . $trip_link . '">View details</a>
-														</div>';
+									$link_html .= '<div class="trip-details-cta">';
+
+									$link_html .= '<a class="btn btn-lg btn-primary rounded-1" href="' . $trip_link . '">View checklist</a>';
+
+									if ( $is_primary && $can_show_travel_protection ) {
+										$fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
+										// Add check for cookie with name hide_travel_protection_button_${orderId}=true so can hide the button
+										if ( $can_show_decline_btn ) {
+											$link_html .= '<a href="#"
+																data-order_id="' . esc_attr( $order_id ) . '" 
+																data-page="my-trips"
+																data-bs-toggle="modal"
+																data-bs-target="#tpDeclineWarningModal"
+																class="btn btn-sm btn-fixed-width fw-medium rounded-1 text-white trek-decline-travel-protection">
+																<strong>Decline Travel Protection</strong>
+															</a>';
+										}
+											$add_tp_btn = '<a href="?add-to-cart=' . esc_attr( $fees_product_id ) . '" 
+															data-product_id="' . esc_attr( $fees_product_id ) . '" 
+															data-order_id="' . esc_attr( $order_id ) . '" 
+															data-origin="tt_modal_checkout" 
+															data-bs-toggle="modal" 
+															data-bs-target="#quickLookModalCheckout" 
+															data-page="my-trips"
+															class="btn btn-lg btn-primary rounded-1 trek-add-to-cart add-travel-protection-btn">
+															Add Travel Protection
+														</a>';
+											$link_html .= '<a href="tel:8664648735"
+															class="btn btn-lg btn-primary rounded-1 trek-add-to-cart add-travel-protection-btn">
+															<i class="bi bi-telephone"></i> Call Us
+														</a>';
+									}
+
+									$link_html .= '</div>';
 								} 
 								$trip_address = [$pa_city,$tripRegion];
 								$trip_address = array_filter($trip_address);
 								$is_checklist_completed = tt_is_checklist_completed( $userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $is_primary, $waiver_signed );
 								$trips_html .= '<div class="trips-list-item row">
-                                <div class="trip-image col-12 col-md-6 col-xl-4">
+                                <div class="trip-image ">
                                     <img src="' . $parent_trip['image'] . '">
                                 </div>
-								<div class="trip-box col-12 col-md-6 col-xl-8 col-xxl-7">
+								<div class="trip-box">
                                 <div class="trip-info">
                                     <h5 class="fw-semibold mb-4"><a href="' . $parent_trip['link'] . '" target="_blank">' . $parent_name . '</a></h5>
                                     <p class="fw-medium lh-sm">' . $date_range . '</p>';
@@ -142,18 +216,28 @@ $wp_user_email = $userInfo->user_email;
 								$lockedUserRecord = tt_is_registration_locked( $userInfo->ID, $order_details[0]['guestRegistrationId'], 'record' );
 								$lockedUserBike   = tt_is_registration_locked( $userInfo->ID, $order_details[0]['guestRegistrationId'], 'bike' );
 
+								$trips_html .= '<div class="order-details">';
 									if( ! empty( $order_details ) && ! $is_checklist_completed && 1 != $lockedUserRecord && 1 != $lockedUserBike ) {
-										$trips_html .= '<p class="fw-normal fs-sm lh-sm d-inline text-danger"><i class="fa-solid fa-tasks me-3 text-danger"></i>You have items pending confirmation</p>';
+										$trips_html .= '<p class="fw-normal fs-sm lh-sm d-inline text-danger"><img src="' . TREK_DIR . '/assets/images/error.svg">You have items pending confirmation</p>';
 									} else {
 										// Show this message on locked record or locked bike.
 										if ( $lockedUserRecord || $lockedUserBike ) {
-											$trips_html .= '<p class="fw-normal fs-sm lh-sm d-inline text-danger"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> Your Checklist or a checklist item is locked. <a href="tel:8664648735">Call us</a> if you have any questions or concerns.</p>';
+											$trips_html .= '<p class="fw-normal fs-sm lh-sm d-inline locked-text"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> <span>Your Checklist or a checklist item is locked. <a href="tel:8664648735">Call us</a> if you have any questions or concerns.</span></p>';
 										} else {
-											$trips_html .= '<img class="my-trips__good-to-go-badge__img" src="' . esc_url( get_template_directory_uri() . '/assets/images/success.png' ) . '" alt="success icon"><span class="mb-0 fs-sm lh-sm my-trips__good-to-go-badge__text rounded-1 p-1">' . __( 'Good to go! Your checklist is complete.', 'trek-travel-theme' ) . '</span>';
+											$trips_html .= '<img class="my-trips__good-to-go-badge__img" src="' . esc_url(get_template_directory_uri() . '/assets/images/Tick.svg') . '" alt="success icon"><span class="mb-0 fs-sm lh-sm my-trips__good-to-go-badge__text rounded-1 p-1">' . __( 'Good to go! Your checklist is complete.', 'trek-travel-theme' ) . '</span>';
 										}
 									}
+								$trips_html .= '</div>';
+								$trips_html .= '<div class="travel-protection-details">';
 
-								$trips_html .= '</div>' . $link_html . '</div></div><hr>';
+								if ($travel_protected) {
+									$trips_html .= '<p class="d-flex align-items-center lh-xs ">' . '<img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">' . ' Travel Protection</p>';
+								} else {
+									$trips_html .= '<p class="d-flex align-items-center lh-xs ">' . '<img src="' . TREK_DIR . '/assets/images/not-accepted-protection.svg" class="me-2 icon-16" alt="">' . ' Travel Protection</p>';
+								}
+								$trips_html .= '</div>';
+
+								$trips_html .= '</div>' . $link_html . '</div></div>';
 							}
 						}
 					}
@@ -259,10 +343,10 @@ $wp_user_email = $userInfo->user_email;
 								$trip_address = [$pa_city,$tripRegion];
 								$trip_address = array_filter($trip_address);
 								$past_trips_html .= '<div class="trips-list-item row past-trip-item">
-							<div class="trip-image col-12 col-md-6 col-xl-4">
+							<div class="trip-image">
                                     <img src="' . $parent_trip['image'] . '">
                                 </div>
-							<div class="trip-box col-12 col-md-6 col-xl-8 col-xxl-7">
+							<div class="trip-box ">
 								<div class="trip-info">
 									<h5 class="fw-semibold mb-4"><a href="' . $parent_trip['link'] . '" target="_blank">' . $parent_name . '</a></h5>
 									<p class="fw-medium lh-sm">' . $date_range . '</p>
@@ -271,7 +355,7 @@ $wp_user_email = $userInfo->user_email;
 									<a class="btn btn-lg btn-primary rounded-1" href="' . $trip_link . '">View details</a>
 									<p><a class="fw-normal fs-sm lh-sm ms-2" href="' . esc_url($review_link) . '" target="_blank">Leave a review</a></p>
 								</div>
-						</div></div><hr>';
+						</div></div>';
 							}
 						}
 					}
@@ -358,7 +442,7 @@ $wp_user_email = $userInfo->user_email;
 											<p class="fw-medium lh-sm">' . $date_range . '</p>
 											<p class="fw-normal fs-sm lh-sm d-inline text-danger"><i class="bi bi-info-circle me-3 text-danger"></i> This trip was cancelled!</p>
 										</div>
-									</div></div><hr>';
+									</div></div>';
 								}
 							}
 						}
@@ -369,3 +453,6 @@ $wp_user_email = $userInfo->user_email;
 	</div>
 	<?php endif; ?>
 </div>
+
+<!-- #tpDeclineWarningModal -->
+<?php get_template_part('inc/trek-modal-checkout/templates/modal', 'tp-decline-warning' ); ?>

@@ -16,6 +16,10 @@ $order_items                          = $order->get_items(apply_filters('woocomm
 $accepted_p_ids                       = tt_get_line_items_product_ids();
 $guest_emails_arr                     = trek_get_guest_emails( $user_id, $order_id );
 $user_order_info                      = trek_get_user_order_info( $user_id, $order_id );
+$guest_is_primary                     = tt_validate( $user_order_info[0]['guest_is_primary'], 0);
+if ( $guest_is_primary ) {
+	$user_order_info = trek_get_user_order_info(null, $order_id);
+}
 $guest_emails                         = implode(', ', $guest_emails_arr);
 $trek_formatted_checkoutData          = array();
 $trek_checkoutData                    = array();
@@ -72,6 +76,13 @@ foreach ( $order_items as $item_id => $item ) {
 			if ( has_post_thumbnail( $product_id ) && $product_id ) {
 				$product_image_url = get_the_post_thumbnail_url( $product_id );
 			}
+
+			$sdate_str = $sdate_obj[2] . '-' . $sdate_obj[1] . '-' . $sdate_obj[0]; // YYYY-MM-DD
+			$start = new DateTime($sdate_str);
+
+			$today = new DateTime();
+			$diff = $today->diff($start);
+			$days_left = ($start > $today) ? $diff->days . ' days left' : 'Started';
 		}
 	}
 }
@@ -113,7 +124,6 @@ $tt_jersey_size                      = tt_validate( $user_order_info[0]['tt_jers
 $tshirt_size                         = tt_validate( $user_order_info[0]['tshirt_size'] );
 $shorts_bib_size                     = tt_validate( $user_order_info[0]['shorts_bib_size'] );
 $trip_room_selection                 = tt_validate( $user_order_info[0]['trip_room_selection'] );
-$guest_is_primary                    = tt_validate( $user_order_info[0]['guest_is_primary'], 0);
 $public_view_order_url               = '';
 if ( $guest_is_primary == 1 ) {
 	$public_view_order_url = esc_url($order->get_view_order_url());
@@ -264,7 +274,64 @@ $cart_total_full_amount = isset( $trek_checkoutData['cart_total_full_amount'] ) 
 $cart_total             = 'deposite' === $pay_amount && ! empty( $cart_total_full_amount ) ? $cart_total_full_amount : $order->get_total( $order_item );
 
 $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku'], $trip_information['ns_trip_Id'] );
+
+// Status icons.
+$success_icon     = '<img src="' . TREK_DIR . '/assets/images/Tick.svg" class="me-2 icon-16" alt="">';
+$error_icon       = '<img src="' . TREK_DIR . '/assets/images/error.svg" class="me-2 icon-16" alt="">';
+$lock_icon        = '<img src="' . TREK_DIR . '/assets/images/lock.svg" class="me-2 icon-16" alt="">';
+$exclamation_icon = '<img src="' . TREK_DIR . '/assets/images/exclamation.svg" class="me-2 icon-16" alt="">';
+$shield_icon      = '<img src="' . TREK_DIR . '/assets/images/shield-icon.svg" class="me-2 icon-16" alt="">';
+$tpp_not_accepted = '<img src="' . TREK_DIR . '/assets/images/not-accepted-protection.svg" class="icon-16 me-2" alt="">';
+$tpp_accepted     = '<img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-16 me-2" alt="">';
+
+// Set the travel protected status.
+$travel_protected = isset( $user_order_info[0]['wantsInsurance'] ) && $user_order_info[0]['wantsInsurance'] == 1 ? true : false;
+// Set the declined insurance status.
+$waive_insurance = isset( $user_order_info[0]['waive_insurance'] ) && $user_order_info[0]['waive_insurance'] == 1 ? true : false;
+
+// Count the protected guests.
+$travel_protected_guests_count = 0;
+// Count the declined insurance guests.
+$declined_insurance_guests_count = 0;
+// Count of the guests.
+$guest_count = count( $user_order_info );
+if ( $guest_count > 0 ) {
+	foreach ( $user_order_info as $guest ) {
+		if ( isset( $guest['wantsInsurance'] ) && $guest['wantsInsurance'] == 1 ) {
+			// If the guest has travel protection, increment the count
+			$travel_protected_guests_count++;
+		}
+
+		if ( isset( $guest['waive_insurance'] ) && $guest['waive_insurance'] == 1 ) {
+			// If the guest has declined travel protection, increment the count
+			$declined_insurance_guests_count++;
+		}
+	}
+}
+
+$can_show_travel_protection = $travel_protected_guests_count < $guest_count && ( $diff->days > 14 ) ? true : false;
+
+$can_show_decline_btn = false; // $declined_insurance_guests_count < $guest_count && ( $declined_insurance_guests_count + $travel_protected_guests_count ) < $guest_count ? true : false;
+
+if( $guest_is_primary ) {
+	$public_view_order_url = esc_url($order->get_view_order_url());
+}
+
+$fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
 ?>
+
+<!-- SVG Icons templates -->
+<svg class="d-none" style="display: none;">
+	<symbol id="icon-error" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<rect x="0.5" y="0.5" width="18" height="18" rx="9" stroke="#CE242D"/>
+		<path d="M9.375 11.9375C9.16016 11.9375 9.00977 11.873 8.88086 11.7441C8.75195 11.6152 8.6875 11.4434 8.6875 11.2285V5.75C8.6875 5.55664 8.75195 5.38477 8.88086 5.25586C9.00977 5.12695 9.16016 5.0625 9.375 5.0625C9.56836 5.0625 9.74023 5.12695 9.86914 5.25586C9.99805 5.38477 10.0625 5.55664 10.0625 5.75V11.2715C10.0625 11.4648 9.99805 11.6152 9.86914 11.7441C9.74023 11.873 9.56836 11.9375 9.375 11.9375ZM9.375 12.9688C9.61133 12.9902 9.80469 13.0762 9.97656 13.2266C10.1484 13.3984 10.2344 13.6133 10.2344 13.8281C10.2344 14.0645 10.1484 14.2578 9.97656 14.4297C9.80469 14.6016 9.61133 14.666 9.375 14.666C9.11719 14.666 8.92383 14.6016 8.77344 14.4297C8.60156 14.2793 8.51562 14.0859 8.51562 13.8281C8.51562 13.5918 8.60156 13.3984 8.77344 13.2266C8.92383 13.0547 9.11719 12.9688 9.375 12.9688Z" fill="#CE242D"/>
+	</symbol>
+
+	<symbol id="icon-success" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<rect width="19" height="19" rx="9.5" fill="#6B9214"/>
+		<path d="M13.7801 6.22807C13.8498 6.30029 13.9051 6.38606 13.9428 6.48046C13.9806 6.57487 14 6.67606 14 6.77825C14 6.88045 13.9806 6.98164 13.9428 7.07604C13.9051 7.17045 13.8498 7.25621 13.7801 7.32844L8.53065 12.7719C8.461 12.8442 8.37829 12.9016 8.28725 12.9407C8.19622 12.9799 8.09863 13 8.00008 13C7.90153 13 7.80395 12.9799 7.71291 12.9407C7.62187 12.9016 7.53916 12.8442 7.46952 12.7719L5.21977 10.439C5.07905 10.2931 5 10.0952 5 9.88882C5 9.68246 5.07905 9.48456 5.21977 9.33864C5.36048 9.19272 5.55133 9.11075 5.75033 9.11075C5.94933 9.11075 6.14018 9.19272 6.2809 9.33864L8.00008 11.1224L12.7189 6.22807C12.7886 6.15577 12.8713 6.09841 12.9623 6.05928C13.0534 6.02014 13.1509 6 13.2495 6C13.348 6 13.4456 6.02014 13.5367 6.05928C13.6277 6.09841 13.7104 6.15577 13.7801 6.22807Z" fill="white"/>
+	</symbol>
+</svg>
 
 <div class="container my-trips-checklist my-4">
 	<div class="row mx-0 flex-column flex-lg-row">
@@ -285,61 +352,212 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 
 	<div class="row mx-0">
 		<div class="col-12">
-			<div class="card dashboard__card rounded-1">
+			<div class="card mb-5 dashboard__card rounded-1 my-trips-card">
+				<div class="card-body pb-0">
+					<?php
+					
+						$trips_html .= '<div class="dashboard__trip mb-4">';
 
-				<!-- desktop start -->
-				<div class="trip-checklist">
-					<div class="trips-list-item row">
-						<div class="trip-image col-12 col-md-6 col-xl-4">
-							<img src="<?php echo $product_image_url; ?>">
-						</div>
-						<div class="trip-box col-12 col-md-6 col-xl-8 col-xxl-7">
-							<div class="trip-info">
-							<h5 class="fw-semibold"><a href="<?php echo $parent_trip['link']; ?>" target="_blank"><?php echo $parent_name; ?></a></h5>
-								<p class="fw-medium lh-sm"><?php echo $date_range; ?></p>
-							</div>
-							<div class="trip-details-cta">
-								<?php if ($public_view_order_url) : ?>
-									<a href="<?php echo $public_view_order_url; ?>" class="btn btn-primary rounded-1 ">View order summary</a>
-								<?php endif; ?>
-								<?php if ($itinerary_link) : ?>
-									<a href="<?php echo $itinerary_link; ?>" class="btn btn-secondary btn-outline-dark rounded-1">View full itinerary</a>
-								<?php endif; ?>
-							</div>
-						</div>
-					</div>
+							$trips_html .= '<a href="' . $parent_trip['link'] . '" class="my-upcoming-trips position-relative d-block">';
+								$trips_html .= '<img src="' . esc_url($product_image_url) . '" alt="">';
+								$trips_html .= '<h6 class="dashboard__trip-badge fs-sm lh-sm fw-medium mb-2 bg-black text-white px-2 py-1 rounded-end">Upcoming</h6>';
+							$trips_html .= '</a>';
 
-					<div class="container">
-						<div class="booking-info d-flex">
-							<div class="trip-confirmation w-50">
-								<p class="fw-medium fs-lg lh-lg line-item-title">Confirmation #</p>
-								<p class="fw-normal fs-md lh-md"><?php echo $order_id ?></p>
-							</div>
-							<div class="trip-total">
-								<p class="fw-medium fs-lg lh-lg line-item-title">Trip Total</p>
-								<p class="fw-normal fs-md lh-md"><?php echo $is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : wc_price( $cart_total ) ?></p>
-							</div>
-						</div>
-						<hr>
-						<div class="guests-info d-flex">
-							<div class="trip-guests w-50">
-								<p class="fw-medium fs-lg lh-lg line-item-title">Guests</p>
-								<p class="fw-normal fs-md lh-md"><?php echo $trek_checkoutData['no_of_guests']; ?> Guests Attending</p>
-							</div>
-							<?php if( ! $is_order_auto_generated ) : ?>
-							<div class="guests-room">
-								<p class="fw-medium fs-lg lh-lg line-item-title">Room Selection</p>
-								<?php echo $tt_rooms_output; ?>
-							</div>
-							<?php endif; ?>
-						</div>
-					</div>
+							$trips_html .= '<div class="w-50">';
+
+								$trips_html .= '<a href="' . $parent_trip['link'] . '" class="text-decoration-none">';
+									$trips_html .= '<h6 class="fs-5 lh-lg fw-bold mb-1 text-dark trip-title">' . esc_html($parent_name) . '</h6>';
+								$trips_html .= '</a>';
+
+								$trips_html .= '<p class="dashboard__date-range fs-sm pt-1 lh-sm fw-normal mb-5 text-dark">' . esc_html($date_range) . ' <span class="text-muted">(' . esc_html($days_left) . ')</span></p>';
+
+								$is_checklist_completed = tt_is_checklist_completed($userInfo->ID, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary, $waiver_signed);
+								if (!$is_checklist_completed && !$lockedUserRecord && !$lockedUserBike) {
+									$trips_html .= '<p class="dashboard__error general-checklist-status-ctr"><img src="' . TREK_DIR . '/assets/images/error.svg"> You have pending items</p>';
+
+								} elseif ( !$lockedUserRecord && !$lockedUserBike ) {
+									$trips_html .= '<img class="dashboard__good-to-go-badge__img" src="' . esc_url(get_template_directory_uri() . '/assets/images/Tick.svg') . '" alt="success icon">';
+									$trips_html .= '<span class="mb-0 fs-sm lh-sm dashboard__good-to-go-badge__text rounded-1 p-1">You are all set!</span>';
+								}
+
+								$trips_html .= '<div class="mt-4">';
+
+									if ($lockedUserRecord || $lockedUserBike) {
+										$trips_html .= '<p class="dashboard__error locked-text"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> Your Checklist or a checklist item is locked</p>';
+									}
+
+									$trips_html .= '<div class="row text-xs fw-normal trip-info-list" data-page="my-trip-checklist" data-order_id="' . esc_attr($order_id) . '">';
+
+									// Column 1
+									$trips_html .= '<div class="">';
+									$medical_info_status = tt_is_individual_checklist_completed('medical_section', $userInfo->ID, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary);
+									$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="#flush-heading-medicalInfo" class="d-flex align-items-center text-decoration-none">' . $medical_info_status . ' Medical information</a></p>';
+
+									if ( '1' == $isPassportRequired ) {
+										$passport_info_status = $lockedUserRecord ? $lock_icon : tt_is_individual_checklist_completed('passport_section', $userInfo->ID, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary);
+										$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="#flush-heading-passportInfo" class="d-flex align-items-center text-decoration-none">' . $passport_info_status . ' Passport details</a></p>';
+									}
+
+									if ($bike_id != 5270 && 5257 != $bike_id) {
+										$gear_info_status = $lockedUserRecord ? $lock_icon : tt_is_individual_checklist_completed('gear_section', $userInfo->ID, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary);
+										$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="#flush-heading-gearInfo" class="d-flex align-items-center text-decoration-none">' . $gear_info_status . ' Gear information</a></p>';
+									}
+
+									$emergency_info_status = tt_is_individual_checklist_completed('emergency_section', $userInfo->ID, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary);
+									$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="#flush-heading-emergencyInfo" class="d-flex align-items-center text-decoration-none">' . $emergency_info_status . ' Emergency contact</a></p>';
+									$trips_html .= '</div>';
+
+									// Column 2
+									$trips_html .= '<div class="">';
+									if ( $bike_id != 5270 && 5257 != $bike_id && ! $is_hiking_checkout ) {
+										$bike_info_status = $lockedUserBike ? $lock_icon : tt_is_individual_checklist_completed('bike_section', $userInfo->ID, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary);
+										$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="#flush-heading-bikeInfo" class="d-flex align-items-center text-decoration-none">' . $bike_info_status . ' Bike selection</a></p>';
+
+										$gear_info_optional_status = tt_is_individual_checklist_completed('gear_optional_section', $userInfo->ID, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary);
+										$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="#flush-heading-gearInfo-optional" class="d-flex align-items-center text-decoration-none">' . $gear_info_optional_status . ' Bike fit information (optional)</a></p>';
+									}
+									if ($waiver_signed) {
+										$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="#waiver-section" class="d-flex align-items-center text-decoration-none">' . $success_icon . ' Trip Waiver</a></p>';
+									} else {
+										$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="#waiver-section" class="d-flex align-items-center text-decoration-none">' . $error_icon . ' Trip Waiver</a></p>';
+									}
+
+									if ($travel_protected) {
+										$trips_html .= '<p class="d-flex align-items-center lh-xs ">' . $tpp_accepted . ' <b> Travel Protection </b></p>';
+									} else {
+										$trips_html .= '<p class="d-flex align-items-center lh-xs ">' . $tpp_not_accepted . ' <b> Travel Protection </b></p>';
+									}
+									$trips_html .= '</div>';
+
+									$trips_html .= '</div>'; // end .row
+
+								$trips_html .= '</div>'; // end checklist block
+							$trips_html .= '</div>'; // end trip info
+
+							$trips_html .= '<div class="w-50 guests-booking-info">';
+
+								$trips_html .= '<div class="booking-info d-flex mb-5">';
+									$trips_html .= '<div class="trip-confirmation w-50">';
+										$trips_html .= '<p class="fw-medium fs-lg lh-lg line-item-title">Confirmation #</p>';
+										$trips_html .= '<p class="fw-normal fs-md lh-md">' . $order_id . '</p>';
+									$trips_html .= '</div>';
+									$trips_html .= '<div class="trip-guests w-50">';
+										$trips_html .= '<p class="fw-medium fs-lg lh-lg line-item-title">Guests</p>';
+										$trips_html .= '<p class="fw-normal fs-md lh-md">' . $trek_checkoutData['no_of_guests'] . ' Guests Attending</p>';
+									$trips_html .= '</div>';
+								$trips_html .= '</div>';
+
+								$trips_html .= '<div class="guests-info d-flex">';
+									if( ! $is_order_auto_generated ) {
+										$trips_html .= '<div class="guests-room w-50">';
+											$trips_html .= '<p class="fw-medium fs-lg lh-lg line-item-title">Room Selection</p>';
+											$trips_html .= $tt_rooms_output;
+										$trips_html .= '</div>';
+									}
+									$trips_html .= '<div class="trip-total w-50">';
+										$trips_html .= '<p class="fw-medium fs-lg lh-lg line-item-title">Trip Total</p>';
+										$trips_html .= '<p class="fw-normal fs-md lh-md">' . ($is_order_auto_generated ? wc_price( floatval( str_replace( ',', '', $tt_auto_generated_order_total_amount ) ) ) : wc_price( $cart_total )) . '</p>';
+									$trips_html .= '</div>';
+								$trips_html .= '</div>';
+
+								// CTA Button
+								$trips_html .= '<div class="mt-5 btn-checklist d-flex align-items-center justify-content-between flex-column flex-md-row">';
+								if ( $public_view_order_url ) {
+									$trips_html .= '<a class="btn btn-link rounded-1 fw-medium text-decoration-underline p-0 ms-auto me-3" href="' . $public_view_order_url . '">Order Details</a>';
+								}
+								if ($itinerary_link) {
+									$trips_html .= '<a href="' . $itinerary_link . '" class="btn btn-link rounded-1 text-decoration-underline p-0">View full itinerary</a>';
+								}
+								$trips_html .= '</div>';
+
+							$trips_html .= '</div>'; // end .guests-booking-info
+
+						$trips_html .= '</div>'; // end .dashboard__trip
+
+						// Add check for cookie with name hide_trip_insurance_info_${orderId}=true so can hide the section
+						if ( ! isset( $_COOKIE[ 'hide_trip_insurance_info_' . $order_id ] ) || $_COOKIE[ 'hide_trip_insurance_info_' . $order_id ] !== 'true' ) {
+							$trips_html .= '<div class="trip-insurance-info">';
+
+								$trips_html .= '<div class="fs-5 fw-bold text-dark mb-2 travel-protection-title hide-mobile"><img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">Travel Protection Benefits</div>';
+								$trips_html .= '<p class="fs-sm fw-semibold text-dark travel-protection-subtitle hide-mobile">Because peace of mind is the best travel companion. Protect your trip from the unexpected</p>';
+								$trips_html .= '<div class="fs-5 fw-bold text-dark mb-5 travel-protection-title show-mobile"><img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">Protect your vacation!</div>';
+								$trips_html .= '<div class="hide-mobile">';
+								$trips_html .= '<div class="d-flex align-items-center justify-content-between"><p class="fs-sm fw-semibold text-dark lh-sm mb-0">Here\'s what you get:</p><a href="' . site_url('/travel-protection') . '" class="btn btn-link p-0 view-full-details-link" target="_blank" data-page="my-trip-checklist">View Full Details</a></div>';
+								$trips_html .= '<div class="row list-elements">';
+								$trips_html .= '<div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Cancel with Confidence:</strong><span>Get up to 100% back if you cancel, 150% if your trip is interrupted.*</span></div>';
+								$trips_html .= '<div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Delays Happen, We’ve Got You:</strong><span>We cover meals, hotels, and transport for flight delays or missed connections.</span></div>';
+								$trips_html .= '<div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Missing Luggage?:</strong><span>Lost or delayed bags? We’ll help replace essentials and cover your gear.</span></div>';
+								$trips_html .= '<div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Medical Coverage Wherever You Ride or Hike</strong><span>Includes up to $50K for care and $150K for evacuation—no deductible.</span></div>';
+								$trips_html .= '<div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">In Case of Real Emergencies</strong><span>Get up to $25K for security evacuation in critical situations.</span></div>';
+								$trips_html .= '<div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Additional Coverage & Travel Dates</strong><span><a href="' . site_url('/contact-us') . '">Contact us</a> to insure non-refundable costs like airfare, hotels, and additional travel days.</span></div>';
+								$trips_html .= '<div class="d-flex justify-content-md-end mt-3">';
+								$trips_html .= '</div>';
+								$trips_html .= '</div>';
+								$trips_html .= '</div>';
+								$trips_html .= '<ul class="show-mobile travel-protection-list">';
+								$trips_html .= '<li class=""><svg xmlns="http://www.w3.org/2000/svg" width="18" height="15" viewBox="0 0 18 15" fill="none"><path d="M17.5601 0.936124C17.6996 1.08057 17.8102 1.2521 17.8857 1.44091C17.9612 1.62972 18 1.8321 18 2.03649C18 2.24088 17.9612 2.44326 17.8857 2.63207C17.8102 2.82088 17.6996 2.99241 17.5601 3.13685L7.0613 14.0238C6.922 14.1684 6.75659 14.2832 6.57451 14.3614C6.39243 14.4397 6.19726 14.48 6.00016 14.48C5.80306 14.48 5.60789 14.4397 5.42582 14.3614C5.24374 14.2832 5.07833 14.1684 4.93903 14.0238L0.439535 9.35799C0.158105 9.06615 0 8.67034 0 8.25762C0 7.84491 0.158105 7.44909 0.439535 7.15726C0.720964 6.86542 1.10266 6.70147 1.50067 6.70147C1.89867 6.70147 2.28037 6.86542 2.5618 7.15726L6.00016 10.7247L15.4379 0.936124C15.5772 0.79152 15.7426 0.676804 15.9246 0.598535C16.1067 0.520267 16.3019 0.47998 16.499 0.47998C16.6961 0.47998 16.8913 0.520267 17.0733 0.598535C17.2554 0.676804 17.4208 0.79152 17.5601 0.936124Z" fill="black"/></svg><div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Cancel with Confidence:</strong><span>Get up to 100% back if you cancel, 150% if your trip is interrupted.*</span></div></li>';
+								$trips_html .= '<li class=""><svg xmlns="http://www.w3.org/2000/svg" width="18" height="15" viewBox="0 0 18 15" fill="none"><path d="M17.5601 0.936124C17.6996 1.08057 17.8102 1.2521 17.8857 1.44091C17.9612 1.62972 18 1.8321 18 2.03649C18 2.24088 17.9612 2.44326 17.8857 2.63207C17.8102 2.82088 17.6996 2.99241 17.5601 3.13685L7.0613 14.0238C6.922 14.1684 6.75659 14.2832 6.57451 14.3614C6.39243 14.4397 6.19726 14.48 6.00016 14.48C5.80306 14.48 5.60789 14.4397 5.42582 14.3614C5.24374 14.2832 5.07833 14.1684 4.93903 14.0238L0.439535 9.35799C0.158105 9.06615 0 8.67034 0 8.25762C0 7.84491 0.158105 7.44909 0.439535 7.15726C0.720964 6.86542 1.10266 6.70147 1.50067 6.70147C1.89867 6.70147 2.28037 6.86542 2.5618 7.15726L6.00016 10.7247L15.4379 0.936124C15.5772 0.79152 15.7426 0.676804 15.9246 0.598535C16.1067 0.520267 16.3019 0.47998 16.499 0.47998C16.6961 0.47998 16.8913 0.520267 17.0733 0.598535C17.2554 0.676804 17.4208 0.79152 17.5601 0.936124Z" fill="black"/></svg><div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Delays Happen, We’ve Got You:</strong><span>We cover meals, hotels, and transport for flight delays or missed connections.</span></div></li>';
+								$trips_html .= '<li class=""><svg xmlns="http://www.w3.org/2000/svg" width="18" height="15" viewBox="0 0 18 15" fill="none"><path d="M17.5601 0.936124C17.6996 1.08057 17.8102 1.2521 17.8857 1.44091C17.9612 1.62972 18 1.8321 18 2.03649C18 2.24088 17.9612 2.44326 17.8857 2.63207C17.8102 2.82088 17.6996 2.99241 17.5601 3.13685L7.0613 14.0238C6.922 14.1684 6.75659 14.2832 6.57451 14.3614C6.39243 14.4397 6.19726 14.48 6.00016 14.48C5.80306 14.48 5.60789 14.4397 5.42582 14.3614C5.24374 14.2832 5.07833 14.1684 4.93903 14.0238L0.439535 9.35799C0.158105 9.06615 0 8.67034 0 8.25762C0 7.84491 0.158105 7.44909 0.439535 7.15726C0.720964 6.86542 1.10266 6.70147 1.50067 6.70147C1.89867 6.70147 2.28037 6.86542 2.5618 7.15726L6.00016 10.7247L15.4379 0.936124C15.5772 0.79152 15.7426 0.676804 15.9246 0.598535C16.1067 0.520267 16.3019 0.47998 16.499 0.47998C16.6961 0.47998 16.8913 0.520267 17.0733 0.598535C17.2554 0.676804 17.4208 0.79152 17.5601 0.936124Z" fill="black"/></svg><div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Missing Luggage?:</strong><span>Lost or delayed bags? We’ll help replace essentials and cover your gear.</span></div></li>';
+								$trips_html .= '<li class=""><svg xmlns="http://www.w3.org/2000/svg" width="18" height="15" viewBox="0 0 18 15" fill="none"><path d="M17.5601 0.936124C17.6996 1.08057 17.8102 1.2521 17.8857 1.44091C17.9612 1.62972 18 1.8321 18 2.03649C18 2.24088 17.9612 2.44326 17.8857 2.63207C17.8102 2.82088 17.6996 2.99241 17.5601 3.13685L7.0613 14.0238C6.922 14.1684 6.75659 14.2832 6.57451 14.3614C6.39243 14.4397 6.19726 14.48 6.00016 14.48C5.80306 14.48 5.60789 14.4397 5.42582 14.3614C5.24374 14.2832 5.07833 14.1684 4.93903 14.0238L0.439535 9.35799C0.158105 9.06615 0 8.67034 0 8.25762C0 7.84491 0.158105 7.44909 0.439535 7.15726C0.720964 6.86542 1.10266 6.70147 1.50067 6.70147C1.89867 6.70147 2.28037 6.86542 2.5618 7.15726L6.00016 10.7247L15.4379 0.936124C15.5772 0.79152 15.7426 0.676804 15.9246 0.598535C16.1067 0.520267 16.3019 0.47998 16.499 0.47998C16.6961 0.47998 16.8913 0.520267 17.0733 0.598535C17.2554 0.676804 17.4208 0.79152 17.5601 0.936124Z" fill="black"/></svg><div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Medical Coverage Wherever You Ride or Hike</strong><span>Includes up to $50K for care and $150K for evacuation—no deductible.</span></div></li>';
+								$trips_html .= '<li class=""><svg xmlns="http://www.w3.org/2000/svg" width="18" height="15" viewBox="0 0 18 15" fill="none"><path d="M17.5601 0.936124C17.6996 1.08057 17.8102 1.2521 17.8857 1.44091C17.9612 1.62972 18 1.8321 18 2.03649C18 2.24088 17.9612 2.44326 17.8857 2.63207C17.8102 2.82088 17.6996 2.99241 17.5601 3.13685L7.0613 14.0238C6.922 14.1684 6.75659 14.2832 6.57451 14.3614C6.39243 14.4397 6.19726 14.48 6.00016 14.48C5.80306 14.48 5.60789 14.4397 5.42582 14.3614C5.24374 14.2832 5.07833 14.1684 4.93903 14.0238L0.439535 9.35799C0.158105 9.06615 0 8.67034 0 8.25762C0 7.84491 0.158105 7.44909 0.439535 7.15726C0.720964 6.86542 1.10266 6.70147 1.50067 6.70147C1.89867 6.70147 2.28037 6.86542 2.5618 7.15726L6.00016 10.7247L15.4379 0.936124C15.5772 0.79152 15.7426 0.676804 15.9246 0.598535C16.1067 0.520267 16.3019 0.47998 16.499 0.47998C16.6961 0.47998 16.8913 0.520267 17.0733 0.598535C17.2554 0.676804 17.4208 0.79152 17.5601 0.936124Z" fill="black"/></svg><div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">In Case of Real Emergencies</strong><span>Get up to $25K for security evacuation in critical situations.</span></div></li>';
+								$trips_html .= '<li class=""><svg xmlns="http://www.w3.org/2000/svg" width="18" height="15" viewBox="0 0 18 15" fill="none"><path d="M17.5601 0.936124C17.6996 1.08057 17.8102 1.2521 17.8857 1.44091C17.9612 1.62972 18 1.8321 18 2.03649C18 2.24088 17.9612 2.44326 17.8857 2.63207C17.8102 2.82088 17.6996 2.99241 17.5601 3.13685L7.0613 14.0238C6.922 14.1684 6.75659 14.2832 6.57451 14.3614C6.39243 14.4397 6.19726 14.48 6.00016 14.48C5.80306 14.48 5.60789 14.4397 5.42582 14.3614C5.24374 14.2832 5.07833 14.1684 4.93903 14.0238L0.439535 9.35799C0.158105 9.06615 0 8.67034 0 8.25762C0 7.84491 0.158105 7.44909 0.439535 7.15726C0.720964 6.86542 1.10266 6.70147 1.50067 6.70147C1.89867 6.70147 2.28037 6.86542 2.5618 7.15726L6.00016 10.7247L15.4379 0.936124C15.5772 0.79152 15.7426 0.676804 15.9246 0.598535C16.1067 0.520267 16.3019 0.47998 16.499 0.47998C16.6961 0.47998 16.8913 0.520267 17.0733 0.598535C17.2554 0.676804 17.4208 0.79152 17.5601 0.936124Z" fill="black"/></svg><div class=" ps-4"><span class="fs-sm text-dark"><strong class="d-block">Additional Coverage & Travel Dates</strong><span><a href="' . site_url('/contact-us') . '">Contact us</a> to insure non-refundable costs like airfare, hotels, and additional travel days.</span></div></li>';
+								$trips_html .= '</ul>';
+
+
+								$trips_html .= '<div class="d-flex justify-content-between align-items-center mb-5 travel-protection-footer trip-details-cta">';
+									// Left link
+									$trips_html .= '<a href="#" class="text-decoration-underline text-dark fw-normal text-xs hide-mobile hide-insurance-btn" data-order_id="' . esc_attr( $order_id ) . '" data-page="my-trip-checklist"><strong>Hide</strong></a>';
+									if ( $guest_is_primary && $can_show_travel_protection ) {
+
+
+										// Decline Travel Protection button (left)
+										// Add check for cookie with name hide_travel_protection_button_${orderId}=true so can hide the button
+										if ( $can_show_decline_btn ) {
+											$trips_html .= '<a href="#"
+															data-order_id="' . esc_attr( $order_id ) . '" 
+															data-page="my-trip-checklist"
+															data-bs-toggle="modal"
+															data-bs-target="#tpDeclineWarningModal"
+															class="btn btn-sm btn-fixed-width fw-medium rounded-1 text-white ms-auto mb-3 mb-md-0 me-md-3 trek-decline-travel-protection">
+															<strong>Decline Travel Protection</strong>
+														</a>';
+										}
+										// Add Travel Protection button (right)
+										$add_tp_btn = '<a href="?add-to-cart=' . esc_attr( $fees_product_id ) . '" 
+															data-product_id="' . esc_attr( $fees_product_id ) . '" 
+															data-order_id="' . esc_attr( $order_id ) . '" 
+															data-origin="tt_modal_checkout" 
+															data-bs-toggle="modal"
+															data-bs-target="#quickLookModalCheckout"
+															data-page="my-trip-checklist"
+															class="btn btn-sm btn-fixed-width fw-medium rounded-1 text-white ms-auto trek-add-to-cart add-travel-protection-btn" 
+															style="background-color: #28AAE1;">
+															<svg class="show-mobile" xmlns="http://www.w3.org/2000/svg" width="21" height="23" viewBox="0 0 21 23" fill="none">
+																<path d="M19.5664 3.83936C20.3398 4.22607 20.7695 4.82764 20.8125 5.68701C20.7266 9.38232 19.9961 12.4331 18.6211 14.8823C17.2461 17.3745 15.7422 19.1792 14.1523 20.3823C12.5195 21.6284 11.3164 22.23 10.5 22.23C9.68359 22.23 8.48047 21.6284 6.84766 20.4253C5.21484 19.2222 3.75391 17.3745 2.37891 14.9253C1.00391 12.4761 0.273438 9.38232 0.1875 5.68701C0.1875 4.82764 0.617188 4.22607 1.47656 3.83936L9.72656 0.401855C9.98438 0.315918 10.2422 0.22998 10.5 0.22998C10.7578 0.22998 11.0586 0.315918 11.3164 0.401855L19.5664 3.83936ZM14.625 8.82373C14.625 8.65186 14.5391 8.43701 14.4102 8.1792C14.2383 7.96436 13.9805 7.83545 13.5938 7.74951C13.25 7.74951 12.9922 7.87842 12.8203 8.09326L9.42578 12.0894L8.13672 10.8003C7.92188 10.6284 7.66406 10.4995 7.40625 10.4995C6.76172 10.5854 6.41797 10.9292 6.375 11.5308C6.375 11.8745 6.46094 12.0894 6.67578 12.2612L8.73828 14.3237C8.91016 14.5386 9.16797 14.6245 9.46875 14.6245C9.64062 14.7104 9.89844 14.5815 10.2422 14.3237L14.3672 9.51123C14.5391 9.33936 14.625 9.08154 14.625 8.82373Z" fill="white"/>
+															</svg>
+															Add Travel Protection
+														</a>';
+										$trips_html .= '<a href="tel:8664648735"
+															class="btn btn-sm btn-fixed-width fw-medium rounded-1 text-white ms-auto trek-add-to-cart add-travel-protection-btn" 
+															style="background-color: #28AAE1;">
+															<i class="bi bi-telephone"></i> Call Us
+														</a>';
+
+									}
+
+								$trips_html .= '</div>';
+
+							$trips_html .= '</div>';
+						}
+
+						echo $trips_html;
+
+					?>
 				</div>
-				<!-- desktop end -->
-
 			</div>
 		</div>
-	</div> <!-- row ends -->
+	</div>
+
 	<div class="row mx-0">
 		<div class="col-12">
 			<h4 class="fw-semibold">Additional Trip Information</h4>
@@ -500,11 +718,13 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 							<?php if ( $lockedUserRecord ) : ?>
 								<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
 							<?php else: ?>
-								<?php if( $is_section_confirmed['medical_section'] ) : ?>
-									<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/success.png' ); ?>" alt="success icon">
-								<?php else : ?>
-									<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/error2.png' ); ?>" alt="error icon">
-								<?php endif; ?>
+								<svg width="19" height="19" class="status-icon">
+									<?php if( $is_section_confirmed['medical_section'] ) : ?>
+										<use href="#icon-success"></use>
+									<?php else : ?>
+										<use href="#icon-error"></use>
+									<?php endif; ?>
+								</svg>
 							<?php endif; ?>
 							<?php echo $medical_title_string ?>
 						</button>
@@ -596,11 +816,13 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 							<?php if ( $lockedUserRecord ) : ?>
 								<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
 							<?php else: ?>
-								<?php if( $is_section_confirmed['emergency_section'] ) : ?>
-									<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/success.png' ); ?>" alt="success icon">
-								<?php else : ?>
-									<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/error2.png' ); ?>" alt="error icon">
-								<?php endif; ?>
+								<svg width="19" height="19" class="status-icon">
+									<?php if( $is_section_confirmed['emergency_section'] ) : ?>
+										<use href="#icon-success"></use>
+									<?php else : ?>
+										<use href="#icon-error"></use>
+									<?php endif; ?>
+								</svg>
 							<?php endif; ?>
 							<?php echo $emergency_title_string ?>
 						</button>
@@ -692,11 +914,13 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 							<?php if ( $lockedUserRecord ) : ?>
 								<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
 							<?php else: ?>
-								<?php if( $is_section_confirmed['gear_section'] ) : ?>
-									<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/success.png' ); ?>" alt="success icon">
-								<?php else : ?>
-									<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/error2.png' ); ?>" alt="error icon">
-								<?php endif; ?>
+								<svg width="19" height="19" class="status-icon">
+									<?php if( $is_section_confirmed['gear_section'] ) : ?>
+										<use href="#icon-success"></use>
+									<?php else : ?>
+										<use href="#icon-error"></use>
+									<?php endif; ?>
+								</svg>
 							<?php endif; ?>
 							<?php echo $title_string; ?>
 						</button>
@@ -843,11 +1067,13 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 								<?php if ( $lockedUserRecord ) : ?>
 									<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
 								<?php else: ?>
-									<?php if( $is_section_confirmed['passport_section'] ) : ?>
-										<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/success.png' ); ?>" alt="success icon">
-									<?php else : ?>
-										<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/error2.png' ); ?>" alt="error icon">
-									<?php endif; ?>
+									<svg width="19" height="19" class="status-icon">
+										<?php if( $is_section_confirmed['passport_section'] ) : ?>
+											<use href="#icon-success"></use>
+										<?php else : ?>
+											<use href="#icon-error"></use>
+										<?php endif; ?>
+									</svg>
 								<?php endif; ?>
 								<?php echo $passport_title_string ?>
 							</button>
@@ -941,11 +1167,13 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 								<?php if ( $lockedUserRecord || $lockedUserBike ) : ?>
 									<i class="fa fa-lock fa-2x text-muted" aria-hidden="true"></i>
 								<?php else: ?>
-									<?php if ( $is_section_confirmed['bike_section'] ) : ?>
-										<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/success.png' ); ?>" alt="success icon">
-									<?php else : ?>
-										<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/error2.png' ); ?>" alt="error icon">
-									<?php endif; ?>
+									<svg width="19" height="19" class="status-icon">
+										<?php if( $is_section_confirmed['bike_section'] ) : ?>
+											<use href="#icon-success"></use>
+										<?php else : ?>
+											<use href="#icon-error"></use>
+										<?php endif; ?>
+									</svg>
 								<?php endif; ?>
 								<?php echo $bike_review_string; ?>
 							</button>
@@ -1179,7 +1407,7 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 	</div> <!-- row ends -->
 	<div class="row mx-0 p-0 trip-waiver-info">
 		<div class="col-12 waiver-col">
-			<div class="card dashboard__card rounded-1">
+			<div class="card dashboard__card rounded-1" id="waiver-section">
 				<p class="fw-medium fs-xl lh-xl">Trip Waiver Status</p>
 				<?php if ( $waiver_signed == 1 ) {  ?>
 					<p class="fw-medium fs-lg lh-lg status-signed">Signed</p>
@@ -1220,3 +1448,6 @@ $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_information['sku']
 	</div><!-- / .modal-dialog -->
 </div><!-- / .modal -->
 <!-- End: Travel Waiver modal form -->
+
+<!-- #tpDeclineWarningModal -->
+<?php get_template_part('inc/trek-modal-checkout/templates/modal', 'tp-decline-warning' ); ?>

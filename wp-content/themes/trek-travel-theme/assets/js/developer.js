@@ -25,7 +25,7 @@ const TT_BLOCK_UI_LOADER_ATTRIBUTES = {
 };
 
 jQuery(document).ready(function($) {
-  if ( trek_JS_obj && ( true == trek_JS_obj.is_checkout || true == trek_JS_obj.is_archive || true == trek_JS_obj.is_search ) ) {
+  if ( (trek_JS_obj && ( true == trek_JS_obj.is_checkout || true == trek_JS_obj.is_archive || true == trek_JS_obj.is_search )) || ( tt_modal_checkout_params && tt_modal_checkout_params.is_tt_loader === 'true' ) ) {
     /**
      * blockUI plugin - clear out plugin default styling on the checkout, archive and search pages.
      *
@@ -140,7 +140,7 @@ const ttLoader = {
    * @param {string} targetElement The HTML element selector for which to add the loader.
    */
   show: function( targetElement = '' ) {
-    if ( trek_JS_obj && ( true == trek_JS_obj.is_checkout || true == trek_JS_obj.is_archive || true == trek_JS_obj.is_search ) ) {
+    if ( ( trek_JS_obj && ( true == trek_JS_obj.is_checkout || true == trek_JS_obj.is_archive || true == trek_JS_obj.is_search ) ) || ( tt_modal_checkout_params && tt_modal_checkout_params.is_tt_loader === 'true' ) ) {
       // The checkout, archive and search pages loader style.
       if( 'string' === typeof targetElement && 0 < targetElement.length ) {
         // Make the loader align inside, depending on the container.
@@ -1649,7 +1649,8 @@ jQuery(document).ready(function () {
 
           switch (confirmedSection) {
             case 'medical_section':
-              jQuery('.medical_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              jQuery('.medical_checklist-btn .status-icon use').attr('href', '#icon-success');
+              jQuery('.trip-info-list a[href$="medicalInfo"] img').attr('src', trek_JS_obj.temp_dir + '/assets/images/Tick.svg');
               // Restore textarea values for submitted 'no' values.
               jQuery('.medical_validation_checkboxes').each(function(){
                 if( 'no' == jQuery(this).val() && jQuery(this).is(':checked') ){
@@ -1666,7 +1667,8 @@ jQuery(document).ready(function () {
               }
               break;
             case 'emergency_section':
-              jQuery('.emergency_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              jQuery('.emergency_checklist-btn .status-icon use').attr('href', '#icon-success');
+              jQuery('.trip-info-list a[href$="emergencyInfo"] img').attr('src', trek_JS_obj.temp_dir + '/assets/images/Tick.svg');
               // Prevent script-stop execution issues.
               try {
                 // Store new state of Emergency Info section.
@@ -1676,7 +1678,8 @@ jQuery(document).ready(function () {
               }
               break;
             case 'gear_section':
-              jQuery('.gear_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              jQuery('.gear_checklist-btn .status-icon use').attr('href', '#icon-success');
+              jQuery('.trip-info-list a[href$="gearInfo"] img').attr('src', trek_JS_obj.temp_dir + '/assets/images/Tick.svg');
               // Prevent script-stop execution issues.
               try {
                 // Store new state of Gear Info section.
@@ -1686,7 +1689,8 @@ jQuery(document).ready(function () {
               }
               break;
             case 'passport_section':
-              jQuery('.passport_checklist-btn img').attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              jQuery('.passport_checklist-btn .status-icon use').attr('href', '#icon-success');
+              jQuery('.trip-info-list a[href$="passportInfo"] img').attr('src', trek_JS_obj.temp_dir + '/assets/images/Tick.svg');
               // Prevent script-stop execution issues.
               try {
                 // Store new state of Passport Info section.
@@ -1696,7 +1700,8 @@ jQuery(document).ready(function () {
               }
               break;
             case 'bike_section':
-              jQuery( '.bike_checklist-btn img' ).attr('src', trek_JS_obj.temp_dir + '/assets/images/success.png');
+              jQuery( '.bike_checklist-btn .status-icon use').attr('href', '#icon-success');
+              jQuery('.trip-info-list a[href$="bikeInfo"] img').attr('src', trek_JS_obj.temp_dir + '/assets/images/Tick.svg');
               // Prevent script-stop execution issues.
               try {
                 // Store new state of Bike Info section.
@@ -1706,6 +1711,7 @@ jQuery(document).ready(function () {
               }
               break;
             case 'gear_optional_section':
+              jQuery('.trip-info-list a[href$="gearInfo-optional"] img').attr('src', trek_JS_obj.temp_dir + '/assets/images/Tick.svg');
               // Prevent script-stop execution issues.
               try {
                 // Store new state of Gear Info Optional section.
@@ -1717,6 +1723,10 @@ jQuery(document).ready(function () {
             default:
               break;
           }
+
+          if(!response.is_checklist_completed) {
+            jQuery('.general-checklist-status-ctr').replaceWith(`<img class="dashboard__good-to-go-badge__img" src="${trek_JS_obj.temp_dir + '/assets/images/Tick.svg'}" alt="success icon"><span class="mb-0 fs-sm lh-sm dashboard__good-to-go-badge__text rounded-1 p-1">You are all set!</span>`);
+          } 
         } else {
           resMessage = `<div class="alert alert-danger" role="alert">${response.message}</div>`;
         }
@@ -1963,16 +1973,40 @@ async function tt_get_product_Data(product_id = '') {
 
 
 // my account checklist expand/collapse
+// jQuery('.my-trips-checklist .checklist-expand-all').on('click', function () {
+//   currentText = jQuery(this).text()
+//   if (currentText == 'Expand all') {
+//     newText = 'Collapse all'
+//   }
+//   else {
+//     newText = 'Expand all'
+//   }
+//   jQuery(this).text(newText)
+//   jQuery('.checklist-accordion .accordion-item .accordion-collapse').collapse('toggle');
+// });
+
 jQuery('.my-trips-checklist .checklist-expand-all').on('click', function () {
-  currentText = jQuery(this).text()
-  if (currentText == 'Expand all') {
-    newText = 'Collapse all'
+  const currentText = jQuery(this).text().trim();
+  let newText;
+  if (currentText === 'Expand all') {
+    newText = 'Collapse all';
+    jQuery('.checklist-accordion .accordion-item').each(function () {
+      const button = jQuery(this).find('.accordion-header button');
+      if (button.hasClass('collapsed')) {
+        button.parent('').siblings().find('.accordion-collapse').collapse('toggle');
+      }
+    });
+
+  } else {
+    newText = 'Expand all';
+    jQuery('.checklist-accordion .accordion-item').each(function () {
+      const button = jQuery(this).find('.accordion-header button');
+      if (!button.hasClass('collapsed')) {
+        button.parent('').siblings().find('.accordion-collapse').collapse('toggle');
+      }
+    });
   }
-  else {
-    newText = 'Expand all'
-  }
-  jQuery(this).text(newText)
-  jQuery('.checklist-accordion .accordion-item .accordion-collapse').collapse('toggle');
+  jQuery(this).text(newText);
 });
 
 jQuery('select[id="shipping_country"]').change(function () {
@@ -4404,7 +4438,7 @@ jQuery(document).ready(function() {
   updateModalPosition(); // Correctly set the modal position immediately when the page loads
 
   // Ensure the modal-dialog is positioned correctly when modal opens
-  jQuery('a[data-bs-toggle="modal"]').on('click', function(e) {
+  jQuery('a[data-bs-target="#globalSearchModal"]').on('click', function(e) {
     e.preventDefault(); // Prevent default anchor behavior
     updateModalPosition(); // Position the modal-dialog before it is shown
     jQuery('#globalSearchModal').modal('show');
@@ -6142,3 +6176,68 @@ jQuery(document).ready(function($) {
       }
   }).observe(document, {subtree: true, childList: true});
 })(jQuery);
+
+/**
+ * Handle accordion section opening in the trip checklist page
+ * - Works when navigating from other pages (via URL hash)
+ * - Works when clicking on links within the same page
+ */
+jQuery(document).ready(function($) {
+    // Only execute on my-trip-checklist page
+    if ($('.my-trips-checklist').length > 0) {
+        // Function to handle opening sections based on a target
+        function openAccordionSection(target) {
+            // Check if we have a target that points to a heading section
+            if (target && target.indexOf('#flush-heading-') === 0) {
+                // Find the corresponding button element
+                var targetButton = $(target + ' .accordion-button');
+
+                // Check if the button element exists
+                if (targetButton.length) {
+                    // If section is collapsed, click it to expand
+                    if (targetButton.hasClass('collapsed')) {
+                        // Simulate click event
+                        targetButton.trigger('click');
+                    }
+
+                    // Smooth scroll to the section
+                    $('html, body').animate({
+                        scrollTop: $(target).offset().top - 100 // Offset to account for fixed header
+                    }, 500);
+                }
+            }
+            // Special handling for waiver section
+            else if (target && target === '#waiver-section') {
+                // Scroll to waiver section
+                $('html, body').animate({
+                    scrollTop: $('.trip-waiver-info').offset().top - 100
+                }, 500);
+            }
+            // Special handling for travel protection section
+            else if (target && target === '#travel-protection-section') {
+                // Scroll to travel protection section
+                $('html, body').animate({
+                    scrollTop: $('.trip-travel-protection-info').offset().top - 100
+                }, 500);
+            }
+        }
+        
+        // Handle URL hash when page loads
+        var hash = window.location.hash;
+        if (hash) {
+            // Delay execution slightly to ensure page is fully loaded
+            setTimeout(function() {
+                openAccordionSection(hash);
+            }, 300);
+        }
+        
+        // Handle clicks on links within the trip info list
+        $('.trip-info-list a').on('click', function(e) {
+            e.preventDefault();
+            var target = $(this).attr('href');
+            if (target) {
+                openAccordionSection(target);
+            }
+        });
+    }
+});

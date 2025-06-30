@@ -160,6 +160,9 @@ $contentFlag = false;
 $is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters( 'tt_is_persistent_cart_valid', true );
 
 if( $available_child_products ) {
+    // Check if there is protection data.
+    $protection_data = tt_get_protection_data_from_cart();
+    $is_tpp          = ! empty( $protection_data ) ? true : false; // Check if we have started the TPP process.
 
     ksort($available_child_products);
     
@@ -614,10 +617,10 @@ if( $available_child_products ) {
                                 if (in_array($trip_status, $wait_status)) {
                                     $formUrl = "waitlist";
                                 }
-                                    if ( $is_cart_check ) {
+                                    if ( $is_cart_check && ! $is_tpp ) {
                                         if ( isset( $formUrl ) && ! empty( $formUrl ) ) {
-                                                if ($formUrl === "waitlist") {
-                                                $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Join Waitlist</a>';
+                                                if ( $formUrl === "waitlist" ) {
+                                                    $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Join Waitlist</a>';
                                                 } else {
                                                     $button = '<a href="/'.$formUrl.'?tripname='.$product->name.'&tripdate='.$date_range.'" class="btn btn-primary btn-md rounded-1 dates-pricing-book-now">Book now</a>';
                                                 }

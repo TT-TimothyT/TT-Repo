@@ -191,6 +191,7 @@ function register_activation_trek_ns_integration(){
         `shipping_address_country` varchar(100) NULL,
         `shipping_address_zipcode` varchar(100) NULL,
         `wantsInsurance` varchar(100) NULL,
+        `waive_insurance` tinyint(1) DEFAULT 0,
         `insuranceAmount` varchar(100) NULL,
         `addOnIds` varchar(400) NULL,
         `bikeTypeName` varchar(100) NULL,

@@ -1172,6 +1172,12 @@
     }
   }
 
+  .modal-header {
+    display: initial;
+    padding: 0;
+    border: none;
+  }
+
   .modal-dialog {
     position: fixed;
     margin: auto;
@@ -1432,6 +1438,51 @@
 
       .pp-text-mobile {
         display: inline-block;
+      }
+    }
+  }
+}
+
+.modal.modal-tp-decline-warning {
+  button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    line-height: normal;
+  }
+  .modal-header {
+    .modal-title {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+  }
+  .confirm-tp-decline-btn {
+    // Styles for the confirm button
+    &.loading {
+      position: relative;
+      color: transparent !important;
+      pointer-events: none;
+      
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid #ffffff;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: button-loader 0.8s linear infinite;
+      }
+    }
+
+    @keyframes button-loader {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
       }
     }
   }

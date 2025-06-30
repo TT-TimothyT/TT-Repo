@@ -720,7 +720,8 @@ get_template_part( 'algolia/partials/taxonomies', 'filters-ordering' );
 	</script>
 
     <!-- #quickLookModal -->
-    <?php get_template_part('algolia/partials/modal', 'quick-look' ); ?>
+    <?php // get_template_part('algolia/partials/modal', 'quick-look' ); ?>
+    <?php get_template_part('tpl-parts/common/modal', 'quick-look', array( 'id' => 'quickLookModal', 'additional_class' => 'modal-quick-look-search' ) ); ?>
 
     <!-- #tripBookingModal -->
     <?php get_template_part('algolia/partials/modal', 'trip-booking-warning' ); ?>

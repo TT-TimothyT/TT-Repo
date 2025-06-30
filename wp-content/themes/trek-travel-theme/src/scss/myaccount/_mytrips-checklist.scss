@@ -1,6 +1,11 @@
 .my-trips-checklist{ 
     .card{
-        padding: 16px;
+        padding: 40px;
+        border-radius: 7px !important;
+
+        @media screen and (max-width: 768px) {
+            padding: 16px;
+        }
     }
     .trip-image{
         img{
@@ -24,7 +29,11 @@
     .checklist-accordion{
         margin: 12px 0;
         .accordion-button{
-            gap: 2%;
+            gap: 10px;
+
+            & > svg {
+                flex: none;
+            }
         }
         .accordion-button:not(.collapsed){
             color: #000000;
@@ -35,15 +44,19 @@
             box-shadow: none;
         }
         .accordion-button::after{
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-plus-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z'/%3E%3C/svg%3E");
+            height: 15px;
+            transform-origin: center;
+             background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none"><path d="M7 7.54248C6.73633 7.54248 6.50195 7.45459 6.32617 7.27881L0.701172 1.65381C0.525391 1.47803 0.4375 1.24365 0.4375 0.97998C0.4375 0.745605 0.525391 0.51123 0.701172 0.306152C0.876953 0.130371 1.11133 0.0424805 1.375 0.0424805C1.60938 0.0424805 1.84375 0.130371 2.04883 0.306152L7 5.28662L11.9512 0.306152C12.127 0.130371 12.3613 0.0424805 12.625 0.0424805C12.8594 0.0424805 13.0938 0.130371 13.2988 0.306152C13.4746 0.51123 13.5625 0.745605 13.5625 0.97998C13.5625 1.24365 13.4746 1.47803 13.2988 1.65381L7.67383 7.27881C7.46875 7.45459 7.23438 7.54248 7 7.54248Z" fill="%23333333"/></svg>') !important;
         }
-        .accordion-button:not(.collapsed)::after{
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-dash-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z'/%3E%3C/svg%3E");
-        }
+        // .accordion-button:not(.collapsed)::after{
+        //     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="9" viewBox="0 0 14 9" fill="none"><path d="M7 0.9375C6.73633 0.9375 6.50195 1.02539 6.32617 1.20117L0.701172 6.82617C0.525391 7.00195 0.4375 7.23633 0.4375 7.5C0.4375 7.73438 0.525391 7.96875 0.701172 8.17383C0.876953 8.34961 1.11133 8.4375 1.375 8.4375C1.60938 8.4375 1.84375 8.34961 2.04883 8.17383L7 3.19336L11.9512 8.17383C12.127 8.34961 12.3613 8.4375 12.625 8.4375C12.8594 8.4375 13.0938 8.34961 13.2988 8.17383C13.4746 7.96875 13.5625 7.73438 13.5625 7.5C13.5625 7.23633 13.4746 7.00195 13.2988 6.82617L7.67383 1.20117C7.46875 1.02539 7.23438 0.9375 7 0.9375Z" fill="%23333333"/></svg>');
+        // }
         .accordion-item{
             padding: 8px 16px;
-            border-radius: 4px;
-            margin-bottom: 8px;
+            border-radius: 7px !important;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #28AAE1;
+            box-shadow: 0px 8px 13px 2px rgba(0, 0, 0, 0.25);
             #flush-heading-bikeFitInfo{
                 button{
                     p{
@@ -111,6 +124,18 @@
             @include media-breakpoint-up(md) {
                 width: 15%;
             }
+        }
+    }
+    .trip-travel-protection-info{
+        .card{
+            @include media-breakpoint-up(lg) {
+                padding: 3rem;
+            }
+        }
+
+        .travel-protection-footer{
+            margin-top: 0;
+            margin-bottom: 0;
         }
     }
     .trip-photo-album{
@@ -199,8 +224,56 @@
             padding: 1rem 1.5rem;
         }
     }
+
+    .guests-booking-info {
+        margin-top: 72px;
+
+        @media screen and (max-width: 768px) {
+            margin-top: 0;
+        }
+
+        .checkout-bikes__selected-rooms {
+            & > p {
+                font-size: 14px;
+                font-weight: 400;
+                line-height: normal !important;
+            }
+
+            ul {
+                margin-top: 5px;
+                li {
+                    margin: 0 !important;
+                    color: #333;
+                    font-size: 12px;
+                    font-weight: 400;
+                    img {
+                        margin-right: 5px;
+                    }
+
+                    &:last-child {
+                        color: #6C757D;
+                        font-size: 12px;
+                        font-weight: 400 !important;
+                        line-height: normal !important;
+                    }
+                }
+            }
+        }
+    }
     .line-item-title{
         color: #000000;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        line-height: normal !important;
+
+        & + p {
+            color: #6C757D;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: normal;
+        }
     }
     // Fix form labels.
     .guest-checkout {
@@ -213,6 +286,120 @@
                 .form-control:focus~label,
                 .form-select ~ label {
                     display: block;
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .w-50 {
+            width: 100% !important;
+        }
+
+        .dashboard__trip {
+            padding: 0 !important;
+        }
+
+        .trip-insurance-info {
+            padding: 20px 6px !important;
+        }
+        .travel-protection-footer {
+            flex-direction: column !important;
+        }
+    }
+
+    .locked-text {
+
+        @media screen and (max-width: 991px) {
+            align-items: center !important;
+        }
+    }
+
+    .travel-protection-footer {
+        .btn {
+            &.trek-add-to-cart {
+                color: #fff !important;
+                border-color: rgb(15, 15, 15) !important;
+                background-color: rgb(15, 15, 15) !important;
+
+                svg {
+                    filter: grayscale(1);
+                }
+        
+                &:hover {
+                    color: rgb(15, 15, 15) !important;
+                    background-color: transparent !important;    
+
+                    svg {
+                        filter: invert(1);
+                    }
+                }
+            }
+        
+            &.trek-decline-travel-protection {
+                color: rgb(15, 15, 15) !important;
+                border-color: rgb(15, 15, 15) !important;
+                background-color: transparent !important;
+        
+                &:hover {
+                    // color: #fff !important;
+                    // background-color: rgb(15, 15, 15) !important;
+                    border-color: #28aae1 !important;
+                }
+
+                &.loading {
+                    position: relative;
+                    color: transparent !important;
+                    pointer-events: none;
+                    
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 20px;
+                        height: 20px;
+                        margin: -10px 0 0 -10px;
+                        border: 2px solid rgb(15, 15, 15);
+                        border-top-color: transparent;
+                        border-radius: 50%;
+                        animation: button-loader 0.8s linear infinite;
+                    }
+                }
+
+                &.ms-auto + .ms-auto {
+                    margin-left: 0 !important;
+                }
+            }
+
+            &.add-travel-protection-btn{
+                &.loading {
+                    position: relative;
+                    color: transparent !important;
+                    pointer-events: none;
+                    
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 20px;
+                        height: 20px;
+                        margin: -10px 0 0 -10px;
+                        border: 2px solid #ffffff;
+                        border-top-color: transparent;
+                        border-radius: 50%;
+                        animation: button-loader 0.8s linear infinite;
+                    }
+                }
+            }
+
+            @keyframes button-loader {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
                 }
             }
         }

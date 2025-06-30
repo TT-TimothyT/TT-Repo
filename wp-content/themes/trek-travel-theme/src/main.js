@@ -145,4 +145,129 @@ import { Carousel, Modal, Collapse, Toast } from 'bootstrap';
 		});
 	}
 
+	jQuery('.mobile-toggle-heading').on('click', function() {
+
+		// Track click event for Dashboard accordeon items clicks
+		dataLayer.push({
+			'event': 'my_dashboard_accordeon_click',
+			'name': jQuery(this).find('h5').text(),
+		});
+	})
+
+	// Set cookie for 7 days
+	function setCookie(name, value, days) {
+		const d = new Date();
+		d.setTime(d.getTime() + (days*24*60*60*1000));
+		document.cookie = name + "=" + value + ";expires=" + d.toUTCString() + ";path=/";
+	}
+
+	// Get cookie by name
+	function getCookie(name) {
+		const cname = name + "=";
+		const decodedCookie = decodeURIComponent(document.cookie);
+		const ca = decodedCookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i].trim();
+			if (c.indexOf(cname) === 0) {
+			return c.substring(cname.length, c.length);
+			}
+		}
+		return "";
+	}
+
+	// Find sibling with .dashboard__trip class
+	function findSiblingDashboardTrip(element) {
+		const siblings = element.parentElement.children;
+		for (let i = 0; i < siblings.length; i++) {
+			if (siblings[i] !== element && siblings[i].classList.contains("dashboard__trip")) {
+			return siblings[i];
+			}
+		}
+		return null;
+	}
+
+	document.addEventListener("DOMContentLoaded", function () {
+
+		document.querySelectorAll(".hide-insurance-btn").forEach(function(btn) {
+			btn.addEventListener("click", function(e) {
+				e.preventDefault();
+				// Get the order ID from data attribute
+				const orderId = btn.getAttribute("data-order_id");
+				const page    = btn.getAttribute("data-page");
+
+				// Hide Travel Protection info link
+				dataLayer.push({
+					'event': 'my_button_click',
+					'type': 'hide_travel_protection',
+					'order_id': orderId,
+					'page': page,
+				});
+
+				const section = btn.closest(".trip-insurance-info");
+				if (section) {
+					section.style.display = "none";
+
+					// Set cookie with dynamic name based on order ID.
+					if (orderId) {
+						setCookie("hide_trip_insurance_info_" + orderId, true, 7);
+					}
+				}
+			});
+		});
+
+		jQuery('.travel-protection-list.show-mobile li').on('click', function() {
+			jQuery(this).toggleClass('active');
+			jQuery(this).children('div').children('span').children('span').slideToggle();
+		})
+
+		jQuery(document).on('click', '.order-details-btn', function() {
+			// Order Details button
+			dataLayer.push({
+				'event': 'my_button_click',
+        		'type': 'order_details_click',
+				'order_id': jQuery(this).data('order_id'),
+				'page': jQuery(this).data('page'),
+			});
+		});
+
+		jQuery(document).on('click', '.view-checklist-btn', function() {
+			// View Checklist button
+			dataLayer.push({
+				'event': 'my_button_click',
+        		'type': 'view_checklist',
+				'order_id': jQuery(this).data('order_id'),
+				'page': jQuery(this).data('page'),
+			});
+		})
+
+		jQuery(document).on('click', '.add-travel-protection-btn', function() {
+			// Add Travel Protection button
+			dataLayer.push({
+				'event': 'my_button_click',
+        		'type': 'add_travel_protection',
+				'order_id': jQuery(this).data('order_id'),
+				'page': jQuery(this).data('page'),
+			});
+		})
+
+		jQuery(document).on('click', '.trip-info-list a', function() {
+			// Checklist item link click
+			dataLayer.push({
+				'event': 'my_checklist_click',
+				'name': jQuery(this).text(),
+				'order_id': jQuery(this).data('order_id'),
+				'page': jQuery(this).data('page'),
+			});
+		})
+
+		jQuery(document).on('click', '.view-full-details-link', function() {
+			// View Full Insurance Details link click
+			dataLayer.push({
+				'event': 'my_view_full_insurance_details_click',
+				'page': jQuery(this).data('page'),
+			});
+		})
+
+	});
+
 })();

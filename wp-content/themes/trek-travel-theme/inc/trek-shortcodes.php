@@ -432,13 +432,17 @@ function trek_my_trip_shortcode_cb() {
    $order              = wc_get_order( $order_id );
    $trip_status        = trek_get_guest_trip_status( get_current_user_id(), $order_id );
    $my_trip            = TREK_PATH . '/woocommerce/myaccount/my-trip-past-details.php';
-   $current_user_email = wp_get_current_user()->data->user_email;
+   $current_user       = wp_get_current_user();
+   $current_user_email = isset($current_user->data->user_email) ? strtolower($current_user->data->user_email) : '';
    $guest_emails       = trek_get_guest_emails( $order_id );
    $guest_emails_arr   = array();
 
    if( is_string( $guest_emails ) ) {
-      $guest_emails_arr   = explode(', ', $guest_emails);
+      $guest_emails_arr = explode(', ', $guest_emails);
    }
+
+   // Convert all guest emails to lowercase for case-insensitive comparison.
+   $guest_emails_arr = array_map('strtolower', $guest_emails_arr);
 
    if( $trip_status['is_upcoming'] == 1 && ( $trip_status['days_1'] >= 0 || $trip_status['days_2'] >= 0 ) ) {
       $my_trip = TREK_PATH . '/woocommerce/myaccount/my-trip-checklist.php';

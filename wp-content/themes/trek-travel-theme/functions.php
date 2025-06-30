@@ -542,6 +542,18 @@ if ( is_readable( $trek_email_manager ) ) {
 	require_once $trek_email_manager;
 }
 
+// Travel Protection Purchase class.
+$travel_protection_purchase = __DIR__ . '/inc/trek-modal-checkout/class-trek-modal-checkout.php';
+if ( is_readable( $travel_protection_purchase ) ) {
+	require_once $travel_protection_purchase;
+}
+
+// Trek Modal Checkout functions.
+$trek_modal_checkout_func = __DIR__ . '/inc/trek-modal-checkout/trek-modal-checkout-functions.php';
+if ( is_readable( $trek_modal_checkout_func ) ) {
+	require_once $trek_modal_checkout_func;
+}
+
 // Trek Booking status integration.
 $trek_booking_status = __DIR__ . '/inc/trek-booking-status.php';
 if ( is_readable( $trek_booking_status ) ) {
@@ -560,6 +572,13 @@ if ( is_readable( $trek_old_trip_dates ) ) {
 	require_once $trek_old_trip_dates;
 }
 
+/**
+ * Include Welcome Guide module
+ */
+$trek_welcome_guide = __DIR__ . '/inc/trek-welcome-guide/class-trek-welcome-guide.php';
+if ( is_readable( $trek_welcome_guide ) ) {
+	require_once $trek_welcome_guide;
+}
 
 /**
  * Loading All CSS Stylesheets and Javascript Files.
@@ -597,7 +616,7 @@ add_action( 'wp_enqueue_scripts', 'trek_travel_theme_scripts_loader' );
  */
 function trek_travel_theme_admin_assets_loader( $hook_suffix ) {
 	// Return if this is not edit.php
-	if ( 'edit.php' !== $hook_suffix ) {
+	if ( 'edit.php' !== $hook_suffix && 'post.php' !== $hook_suffix ) {
 		return;
 	}
 

@@ -1,7 +1,14 @@
 <?php
 
-add_action( 'woocommerce_thankyou', 'insert_records_guest_bookings_cb');
-function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call_from_code = 'false'){
+add_action( 'woocommerce_thankyou', 'insert_records_guest_bookings_cb' );
+function insert_records_guest_bookings_cb( $order_id, $custom_user = null, $call_from_code = 'false') {
+    $tt_modal_checkout = (bool) get_post_meta( $order_id,'tt_modal_checkout', true );
+
+    // If the order is created from the modal checkout, we don't need to run this function.
+    if ( $tt_modal_checkout ) {
+        return;
+    }
+
     $is_behalf = false;
     if ( isset( $_SESSION['admin'] ) && isset( $_SESSION['current_user_ids'] ) && $_SESSION['admin'] == 'adminisloggedin' ) {
         $is_behalf = true;

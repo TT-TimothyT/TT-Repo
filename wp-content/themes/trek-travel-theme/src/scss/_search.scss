@@ -1167,10 +1167,14 @@ body.search .blockUI.blockOverlay::before {
     display: none;
 }
 
-#quickLookModal {
+.quick-look-modal {
     .blockUI.blockMsg.blockElement{
         left: 50% !important;
         top: 50% !important;
+    }
+    .blockUI.blockOverlay::before {
+        content: unset;
+        display: none;
     }
 }
 

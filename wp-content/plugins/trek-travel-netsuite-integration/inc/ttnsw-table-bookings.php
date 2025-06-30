@@ -314,6 +314,8 @@ class Guest_Bookings_Table extends WP_List_Table {
 				'columns' => array(
 					'releaseFormId',
 					'waiver_signed',
+					'travel_protection',
+					'waive_insurance',
 					'is_guestreg_cancelled',
 					'ns_booking_status',
 					'ns_booking_response',
@@ -358,6 +360,8 @@ class Guest_Bookings_Table extends WP_List_Table {
 			'ns_booking_response' => __('NS Booking Response', 'trek-travel-netsuite-integration'),
 			'releaseFormId' => __('Release Form', 'trek-travel-netsuite-integration'),
 			'waiver_signed' => __('Waiver Signed', 'trek-travel-netsuite-integration'),
+			'travel_protection' => __('Travel Protection', 'trek-travel-netsuite-integration'),
+			'waive_insurance' => __('Waive Insurance', 'trek-travel-netsuite-integration'),
 			'created_at' => __('Created At', 'trek-travel-netsuite-integration'),
 			'modified_at' => __('Modified At', 'trek-travel-netsuite-integration'),
 			'trip_name' => __('Trip Name', 'trek-travel-netsuite-integration'),
@@ -548,6 +552,10 @@ class Guest_Bookings_Table extends WP_List_Table {
 			case 'waiver_signed':
 			case 'is_guestreg_cancelled':
 				return 1 == $item[ $column_name ] ? 'yes' : 'no';
+			case 'travel_protection':
+				return 1 == $item[ 'wantsInsurance' ] ? 'yes' : 'no';
+			case 'waive_insurance':
+				return 1 == $item[ 'waive_insurance' ] ? 'yes' : 'no';
 			case 'guest_gender':
 				switch ( $item[ $column_name ] ) {
 					case 1:

@@ -1,0 +1,135 @@
+/**
+ * Trek Tour Guide Styles
+ */
+
+/* Tour Guide Button */
+.tt-tour-guide-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: #28aae1;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 9998;
+}
+
+.tt-tour-guide-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.tt-tour-guide-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+/* Shepherd Button Styles */
+.shepherd-button {
+    background: #000;
+    border: 1px solid #000;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 8px;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+.shepherd-button:hover,
+.shepherd-button:not(:disabled):hover {
+    background: transparent;
+    color: #000;
+}
+
+.shepherd-button.shepherd-button-secondary {
+    background: transparent;
+    border: none;
+    color: #000;
+}
+
+.shepherd-button.shepherd-button-secondary:hover,
+.shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+    background: transparent;
+    text-decoration: underline;
+    color: #000;
+}
+
+/* Shepherd Modal Components */
+.shepherd-footer {
+    padding: 10px;
+}
+
+.shepherd-cancel-icon {
+    color: #888;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.shepherd-title {
+    color: #333;
+    font-size: 16px;
+    line-height: normal;
+    font-weight: bold;
+}
+
+.shepherd-text {
+    color: #666;
+    line-height: 1.5em;
+    padding: 1em;
+}
+
+.shepherd-element {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    z-index: 9999;
+}
+
+/* Trek customizations */
+.shepherd-highlighted {
+    box-shadow: 0 0 0 4px rgba(0, 102, 153, 0.5);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Shepherd Element Positioning */
+:root {
+  --shepherd-element-margin: 0; /* Adjust margin as needed */
+
+  @media screen and (min-width: 992px) {
+    --shepherd-element-margin: 2rem; /* Margin for larger screens */
+  }
+}
+
+.shepherd-element[data-popper-placement^="bottom"] {
+  margin-top: var(--shepherd-element-margin)!important;
+}
+
+.shepherd-element[data-popper-placement^="top"] {
+  margin-bottom: var(--shepherd-element-margin)!important;
+}
+
+.shepherd-element[data-popper-placement^="left"] {
+  margin-right: var(--shepherd-element-margin)!important;
+}
+
+.shepherd-element[data-popper-placement^="right"] {
+  margin-left: var(--shepherd-element-margin)!important;
+}
+
+/* Specific account page styles */
+.woocommerce-account .shepherd-element {
+    max-width: 450px;
+}

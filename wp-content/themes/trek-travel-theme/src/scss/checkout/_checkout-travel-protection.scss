@@ -1,0 +1,345 @@
+.modal-quick-look-checkout {
+    .btn-close {
+        position: absolute;
+        top: 1rem;
+        right: 2rem;
+        font-size: 22px;
+        z-index: 1;
+    }
+
+    .modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 1020;
+    }
+
+    .tt-modal-checkout {
+
+        .container {
+            padding: 40px;
+            @media screen and (max-width: 991px) {
+                padding: 40px 20px;
+            }
+
+            .protection-ctr {
+                margin-bottom: 30px;
+                .modal-body {
+                    &.__title{
+                        color: #000;
+                        font-weight: 700 !important;
+                        line-height: normal;
+                        margin-bottom: 5px;
+                    }
+
+                    &.__sub {
+                        color: #000;
+                        line-height: normal;
+                    } 
+
+                }
+
+                #tt-popup-insured-form {
+                    .modal-body__guest {
+                        & > p {
+                            color: #000;
+                            font-weight: 700;
+                            line-height: normal;
+                        }
+    
+                        & > div {
+                            gap: 7px;
+                            margin-bottom: 10px;
+    
+                            input {
+                                accent-color: #28AAE1;
+                            }
+                        }
+                    }
+                }
+    
+                .info-text {
+                    font-weight: 900 !important;
+                    line-height: normal !important;
+                    margin-bottom: 20px;
+                }
+
+                .tt-popup-insured-form {
+                    margin-top: 20px;
+                }
+
+                
+            }
+
+            .payment-ctr {
+                .checkout-payment__options {
+                    margin-top: 20px;
+                    margin-bottom: 30px !important;
+                }
+                .checkout-payment__title-option {
+                    line-height: 120%;
+                    margin-bottom: 12px;
+                } 
+                .checkout-payment__sublabel {
+                    color: #000;
+                    margin-bottom: 22px;
+                }
+
+                .checkout-payment__paydep{
+                    font-size: 20px;
+                }
+            }
+
+            .checkout-payment__method {
+                border-top: 1px solid #D3D3D3;
+                margin-top: 0;
+                padding-top: 20px;
+                margin-bottom: 0 !important;
+
+                .checkout-payment__title-option {
+                    color: #000;
+                }
+
+                .checkout-payment__paymethod {
+                    ul {
+                        list-style: none;
+                        padding: 0;
+
+                        .payment_method_cybersource_credit_card {
+                            line-height: 120%;
+                            color: #000;
+
+                            p.form-row-wide {
+                                label {
+                                    width: 100%;
+                                    max-width: unset;
+                                    padding: 22px;
+                                    margin-bottom: 20px;
+
+                                    &::after {
+                                        top: 53% !important;
+                                    }
+
+                                    span.title {
+                                        font-size: 20px; 
+                                        font-weight: 500;
+                                    }
+
+                                    &.btn {
+                                        font-weight: 500;
+                                        line-height: 120%;
+                                        padding: 12px 25px;
+                                        margin-bottom: 20px;
+                                        display: block !important;
+                                        width: fit-content;
+                                    }
+                                }
+                            }
+
+                            div.form-row-wide {
+                                padding-right: 5px;
+                                height: fit-content;
+
+                                @media screen and (max-width: 991px) {
+                                    padding-right: 0 !important;
+                                    margin-bottom: 12px;
+                                }
+                                label {
+                                    margin-bottom: 5px;
+                                }
+                            }
+
+                            div.form-row-last,
+                            p.form-row-first {
+                                margin-bottom: 0 !important;
+                                height: fit-content;
+                                label {
+                                    margin-bottom: 5px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .checkout-payment__billing {
+                border-top: 1px solid #D3D3D3;
+                margin-top: 0;
+                padding-top: 20px;
+
+                .billing-section-title {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 22px;
+
+                    @media screen and (max-width: 991px) {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        margin-bottom: 0;
+                    }
+
+                    h5 {
+                        margin-bottom: 0 !important;
+                    }
+
+                    .checkout-payment__billing-checkbox {
+                        gap: 4px;
+                    }
+                }
+
+                .billing_row {
+                    gap: 12px !important;
+                    margin-bottom: 12px !important;
+                }
+
+                input, select {
+                    padding: 12px 14px !important;
+                    height: fit-content !important;
+                }
+
+                label {
+                    line-height: 160% !important
+                }
+
+                .form-floating:not(.woocommerce-validated) {
+                    select {
+                        color: #C6C6C6 !important;
+                        option {
+                            color: #000;
+                        }
+                    }
+                }
+
+                .checkout-payment__billing-checkboxtwo {
+                    gap: 4px;
+
+                    @media screen and (max-width: 991px) {
+                        align-items: baseline;
+                    }
+                    label {
+                        width: 100% !important;
+                    }
+                }
+            }
+
+            .checkout-timeline__info {
+                border: 1px solid  #28AAE1;
+                padding: 12px;
+                align-items: flex-start;
+
+                p {
+                    line-height: 120% !important;
+                }
+            }
+
+            .checkout-payment__button {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                gap: 1rem;
+                text-align: center;
+                position: sticky;
+                bottom: 0;
+                background: #FFF;
+                border-top: 1px solid #dee2e6;
+                margin-left: -40px;
+                margin-right: -40px;
+                padding: 20px 40px;
+
+                @media screen and (max-width: 991px) {
+                    margin-left: -20px;
+                    margin-right: -20px;
+                    padding: 20px;
+                }
+
+                .modal-checkout__total-price {
+                    width: 100%;
+                }
+
+                .cart-total-price,
+                .total-price-label {
+                    font-size: 20px;
+                    font-weight: 700;
+                    line-height: 120%;
+                    color: #000;
+                }
+
+                button {
+                    border-radius: 6px;
+                    border: 1px solid #000;
+                    background: #000;
+                    color: #FFF;
+                    font-weight: 500;
+                    line-height: 120%;
+                    padding: 12px 25px;
+                    width: 100%;
+
+                    &:disabled {
+                        background: #D3D3D3;
+                        border: 1px solid #D3D3D3;
+                        color: #FFF;
+                        cursor: not-allowed;
+                        pointer-events: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .modal-footer {
+        border: none;
+        padding: 0;
+    }
+}
+
+.modal-quick-look-thank-you {
+    .btn-close {
+        position: absolute;
+        top: 1rem;
+        right: 2rem;
+        font-size: 22px;
+        z-index: 1;
+    }
+
+    .modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 1020;
+    }
+
+    .order-details {
+        &__banner {
+            height: 27vw;
+
+            &-heading {
+                font-size: 3.5rem;
+
+                @include media-breakpoint-down(xxl) {
+                    font-size: 2.5rem;
+                }
+
+                @include media-breakpoint-down(lg) {
+                    font-size: 1.5rem;
+                }
+            }
+
+            &-text {
+                @include media-breakpoint-down(md) {
+                    font-size: 1.25rem;
+                }
+            }
+        }
+
+        &#order-details-page > .row > .col-xl-6 {
+            @media screen and (min-width: 1200px) {
+                width: 76%;
+            }
+        }
+    }
+}
+
+// Added to fix the z-index of the Olark chat button
+div.olark-launch-button-wrapper {
+    z-index: 9998 !important;
+}

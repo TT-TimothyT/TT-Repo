@@ -55,15 +55,15 @@ trek_create_page('My Trip', '[trek-my-trip]', $my_trips_page_ID);
 add_action('woocommerce_register_post', 'trek_validate_extra_register_fields', 10, 3);
 function trek_validate_extra_register_fields($username, $email, $validation_errors)
 {
-    if (isset($_POST['billing_first_name']) && empty($_POST['billing_first_name'])) {
-        $validation_errors->add('billing_first_name_error', __('<strong>Error</strong>: First name is required!', 'trek-travel-theme'));
-    }
-    if (isset($_POST['billing_last_name']) && empty($_POST['billing_last_name'])) {
-        $validation_errors->add('billing_last_name_error', __('<strong>Error</strong>: Last name is required!.', 'trek-travel-theme'));
-    }
-    if (isset($_POST['password']) && empty($_POST['password'])) {
-        $validation_errors->add('password_name_error', __('<strong>Error</strong>: Password is required!.', 'trek-travel-theme'));
-    }
+    // if (isset($_POST['billing_first_name']) && empty($_POST['billing_first_name'])) {
+    //     $validation_errors->add('billing_first_name_error', __('<strong>Error</strong>: First name is required!', 'trek-travel-theme'));
+    // }
+    // if (isset($_POST['billing_last_name']) && empty($_POST['billing_last_name'])) {
+    //     $validation_errors->add('billing_last_name_error', __('<strong>Error</strong>: Last name is required!.', 'trek-travel-theme'));
+    // }
+    // if (isset($_POST['password']) && empty($_POST['password'])) {
+    //     $validation_errors->add('password_name_error', __('<strong>Error</strong>: Password is required!.', 'trek-travel-theme'));
+    // }
     return $validation_errors;
 }
 
@@ -219,7 +219,7 @@ function trek_wp_enqueue_scripts_cb()
         // 'review_order' => tt_get_review_order_html(), // I'm commenting this out for the moment, as I don't see a place where it can be used, and it's called on every page load, which is redundant.
         'is_order_received'         => is_wc_endpoint_url( 'order-received' ),
         'order_id'                  => $order_id,
-        'tt_loader_img'             => $checkout_loader_html
+        'tt_loader_img'             => $checkout_loader_html,
     ));
 
     if( is_search() || is_archive() ) {
@@ -1215,13 +1215,15 @@ function trek_update_trip_checklist_action_cb()
         if ( $wpdb->last_error ) {
             tt_add_error_log( '[Faild] Update Booking From Post-Booking', array( 'order_id' => $order_id, 'ns_user_id' => $ns_user_id ), array( 'last_error' => $wpdb->last_error ) );
         }
-        $res['status']       = true;
-        $res['is_updated']   = $is_updated;
-        $res['last_query']   = $wpdb->last_query;
-        $res['booking_data'] = $booking_data;
-        $res['where']        = $where;
-        $res['message']      = "Your Checklist information has been changed successfully!";
-        $res['is_primary']   = $guest_is_primary && $guest_is_primary == 1 ? true : false;
+        $updated_user_order_info       = trek_get_user_order_info( $user->ID, $order_id );
+        $res['status']                 = true;
+        $res['is_updated']             = $is_updated;
+        $res['last_query']             = $wpdb->last_query;
+        $res['booking_data']           = $booking_data;
+        $res['where']                  = $where;
+        $res['message']                = "Your Checklist information has been changed successfully!";
+        $res['is_primary']             = $guest_is_primary && $guest_is_primary == 1 ? true : false;
+        $res['is_checklist_completed'] = tt_is_checklist_completed( $user->ID, $order_id, $updated_user_order_info[0]['rider_level'], $trip_info['product_id'], $updated_user_order_info[0]['bike_id'], $guest_is_primary, $updated_user_order_info[0]['waiver_signed'] );
         tt_add_error_log( 'Post booking Log', $res, array( 'user_id' => $user->ID,'ns_user_id' => $ns_user_id, 'date' => date('Y-m-d H:i:s') ) );
     }
     echo json_encode($res);
@@ -1892,7 +1894,7 @@ function trek_get_guest_trips($user_id = '', $is_upcoming = 1, $order_id = '',$i
     if ($wp_user_email || $user_id) {
         $sql .= " AND ( gb.guest_email_address = '{$wp_user_email}' OR gb.user_id = '{$user_id}' )";
     }
-    $sql .= " ORDER BY gb.id DESC";
+    $sql .= " ORDER BY gb.trip_start_date ASC";
     if ($order_id) {
         $sql .= " AND gb.order_id = {$order_id}";
         $sql .= " ORDER BY gb.order_id DESC";
@@ -1973,6 +1975,8 @@ function trek_get_user_order_info($user_id, $order_id)
         $sql .= " AND gb.order_id = {$order_id} ";
     }
     if( $order_id || $ns_user_id ){
+        // Add order by guest index so can be sure that the primary guest is always first.
+        $sql .= " ORDER BY gb.guest_index_id ASC";
         $results = $wpdb->get_results($sql, ARRAY_A);
     }else{
         $results = [];
@@ -2607,7 +2611,7 @@ function tt_woocommerce_cart_calculate_fees_cb( $cart ) {
         $sku      = $_product->get_sku();
         if ( isset( $cartobj_item['product_id'] ) ) {
 
-            if ( 'TTWP23FEES' === $sku ) {
+            if ( 'TTWP23FEES' === $sku && ( ! isset( $cartobj_item['tt_modal_checkout'] ) || $cartobj_item['tt_modal_checkout'] === false ) ) {
                 if ( $insuredPerson > 0 && $insurance_amount > 0  ) {
                     $cartobj[$cartobj_item_id]['quantity'] = 1;
                     $cartobj_item['data']->set_price( $insurance_amount );
@@ -3266,7 +3270,7 @@ function tt_woocommerce_before_calculate_totals_cb( $cart_object ) {
             $product = wc_get_product( $item['product_id'] );
             if ( $product ) {
                 $sku = $product->get_sku();
-                if ( 'TTWP23FEES' === $sku ) {
+                if ( 'TTWP23FEES' === $sku && ( ! isset( $item['tt_modal_checkout'] ) || $item['tt_modal_checkout'] === false ) ) {
                     if ( $insuredPerson > 0 && $insurance_amount > 0  ) {
                         $cart_contents[$item_key]['quantity'] = 1;
                         $item['data']->set_price( $insurance_amount );
@@ -4522,7 +4526,8 @@ if (!function_exists('get_trip_capacity_info')) {
  * with essential basic info which will be used on the checkout page.
  */
 function tt_woocommerce_add_to_cart_cb() {
-    $accepted_p_ids = tt_get_line_items_product_ids();
+    $accepted_p_ids  = tt_get_line_items_product_ids();
+    $is_trip_product = false;
     // Get the current cart contents.
     $cart_contents = WC()->cart->get_cart_contents();
     if ( $cart_contents ) {
@@ -4531,6 +4536,7 @@ function tt_woocommerce_add_to_cart_cb() {
             $_product   = apply_filters( 'woocommerce_cart_item_product', $wc_data, $cart_item, $cart_item_id );
             $product_id = isset( $cart_item['product_id'] ) ? $cart_item['product_id'] : '';
             if ( $product_id && ! in_array( $product_id, $accepted_p_ids ) ) {
+                $is_trip_product = true;
                 // Trip Parent ID.
                 $cart_item['trek_user_checkout_data']['parent_product_id']     = tt_get_parent_trip_id_by_child_sku( $_product->get_sku() );
                 $cart_item['trek_user_checkout_data']['product_id']            = $product_id;
@@ -4547,6 +4553,21 @@ function tt_woocommerce_add_to_cart_cb() {
 
                 // This will add the date the first time only, if the date is missing.
                 do_action( 'tt_set_add_to_cart_date' );
+            }
+        }
+
+        // Remove any line item products from the cart.
+        foreach ( $cart_contents as $cart_item_id => $cart_item ) {
+            $product_id = isset( $cart_item['product_id'] ) ? $cart_item['product_id'] : '';
+            // Check if the product is a line item product.
+            if ( $product_id && ! in_array( $product_id, $accepted_p_ids ) ) {
+                continue;
+            }
+
+            // Remove the line item product from the cart if is a trip product and line item is added from the modal checkout.
+            if ( $is_trip_product && isset( $cart_item['tt_modal_checkout'] ) && $cart_item['tt_modal_checkout'] ) {
+                // Remove the line item product from the cart.
+                unset( $cart_contents[$cart_item_id] );
             }
         }
 
@@ -6580,6 +6601,9 @@ function tt_send_referral_info_to_ns( $ns_referral_args )
     // Cerate NS client.
     $netSuiteClient = new NetSuiteClient();
 
+    // "updateType": "referral", // possible values: 'referral'
+    $ns_referral_args['updateType'] = 'referral';
+
     // Make post request to NS with JSON object with required fields.
     $ns_referral_info_response = $netSuiteClient->post(REFERRAL_SOURCE_SCRIPT_ID, json_encode($ns_referral_args));
 
@@ -7163,6 +7187,67 @@ function tt_is_checklist_completed( $user_id, $order_id, $rider_level, $product_
 
 	return $is_checklist_completed;
 }
+
+/**
+ * Check the Post Booking Checklist individual items status.
+ *
+ * @param int|string $user_id     The user ID.
+ * @param int|string $order_id    The order ID.
+ * @param int|string $rider_level The rider level, taken from guest_bookings table.
+ * @param int|string $product_id  The product ID, to can check for the passport required.
+ * @param int|string $bike_id     The bike ID, taken from guest_bookings table.
+ * @param bool $guest_is_primary  Is Guest a primary guest.
+ *
+ * @return boolean Is the checklist complete.
+ */
+function tt_is_individual_checklist_completed( $checklist_section,  $user_id, $order_id, $rider_level, $product_id, $bike_id, $guest_is_primary ) {
+	$is_checklist_completed = true;
+    $trip_info              = tt_get_trip_pid_sku_from_cart( $order_id );
+    $is_hiking_checkout     = tt_is_product_line( 'Hiking', $trip_info['sku'], $trip_info['ns_trip_Id'] );
+
+    // Define icons
+    $success_icon = '<img src="' . TREK_DIR . '/assets/images/Tick.svg" class="me-2 icon-16" alt="">';
+    $error_icon = '<img src="' . TREK_DIR . '/assets/images/error.svg" class="me-2 icon-16" alt="">';
+    $lock_icon = '<img src="' . TREK_DIR . '/assets/images/lock.svg" class="me-2 icon-16" alt="">';
+    $exclamation_icon = '<img src="' . TREK_DIR . '/assets/images/exclamation.svg" class="me-2 icon-16" alt="">';
+    $shield_icon = '<img src="' . TREK_DIR . '/assets/images/shield-icon.svg" class="me-2 icon-16" alt="">';
+
+	// Get info for completed PB checklist sections from the user meta.
+	$confirmed_info_user         = get_user_meta( $user_id, 'pb_checklist_cofirmations', true );
+	$confirmed_info_unserialized = maybe_unserialize( $confirmed_info_user );
+
+    // There is no information yet for confirmed sections.
+	if( ! $confirmed_info_unserialized ) {
+		return $error_icon; // Return error icon if no info
+	}
+
+	$confirmed_info_order = isset( $confirmed_info_unserialized[ $order_id ] ) ? $confirmed_info_unserialized[ $order_id ] : null;
+
+    // There is no information yet for confirmed sections for the given order.
+	if( ! $confirmed_info_order ) {
+		return $error_icon; // Return error icon if no order info
+	}
+
+    // Collect available checklist sections.
+	$available_pb_checklist_sections= array(
+        'medical_section',
+		'emergency_section'
+	);
+
+    $is_passport_required = get_post_meta( $product_id, TT_WC_META_PREFIX . 'isPassportRequired', true );
+
+	if ( isset( $is_passport_required ) && true == $is_passport_required ) {
+		array_push( $available_pb_checklist_sections, 'passport_section' );
+	}
+
+	// Check if the checklist_section is completed
+	if (isset($confirmed_info_order[$checklist_section]) && $confirmed_info_order[$checklist_section]) {
+		return $success_icon; // Return success icon if completed
+	} else {
+		return $error_icon; // Return lock icon if not completed
+	}
+}
+
 
 /**
  * Function to detect if we have results from $customerSearchResponseByEmail
@@ -9095,6 +9180,107 @@ function tt_get_trip_duration_names( $product_id ) {
 }
 
 /**
+ * Shortcode to display the WooCommerce My Account page.
+ *
+ * @param array $atts Shortcode attributes.
+ */
+function tt_woocommerce_my_account_shortcode( $atts ) {
+    echo \WC_Shortcodes::my_account( $atts );
+}
+add_shortcode( 'tt_woocommerce_my_account', 'tt_woocommerce_my_account_shortcode' );
+
+/**
+ * Override the WooCommerce My Account page ID for payment gateways.
+ *
+ * This function checks if the current page is the WooCommerce My Account page
+ * and if the shortcode is present. If so, it overrides the page ID to -1
+ * to bypass the account page check in the payment gateway.
+ *
+ * @param int $page_id The current page ID.
+ * @return int The modified page ID.
+ */
+function tt_woocommerce_get_myaccount_page_id( $page_id ) {
+
+    // Only proceed if this is the account page and we have the shortcode.
+    if ( wc_post_content_has_shortcode( 'tt_woocommerce_my_account' ) ) {
+        // Check if the current call is from the payment gateway script
+        $backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 );
+
+        foreach ( $backtrace as $trace ) {
+            // Look for calls from the payment gateway framework
+            if ( isset( $trace['file'] ) && strpos( $trace['file'], 'gateway-cybersource' ) !== false ) {
+                // Return -1 to bypass the account page check in the payment gateway
+                return -1;
+            }
+        }
+    }
+
+    return $page_id;
+}
+add_filter( 'woocommerce_get_myaccount_page_id', 'tt_woocommerce_get_myaccount_page_id', 100 );
+
+/**
+ * Add a custom body class for the WooCommerce My Account page.
+ *
+ * @param array $classes Existing body classes.
+ * @return array Modified body classes.
+ */
+function tt_add_my_account_body_class( $classes ) {
+    if ( wc_post_content_has_shortcode( 'tt_woocommerce_my_account' ) ) {
+        $classes[] = 'woocommerce-account';
+    }
+    return $classes;
+}
+add_filter( 'body_class', 'tt_add_my_account_body_class' );
+
+/**
+ * Add a modal footer for quick look trips.
+ *
+ * This function displays the starting price for trips in the quick look modal.
+ * 
+ * @param array $args The arguments passed to the modal.
+ * @return void
+ */
+function tt_quick_look_modal_footer_trips( $args ) {
+    if ( ! isset( $args['id'] ) || $args['id'] !== 'quickLookModal' ) {
+        return;
+    }
+
+    ?>
+        <div class="me-auto ps-3">
+            <p class="fw-normal fs-sm lh-sm mb-0 text-muted starting-from"><?php esc_html_e( 'Starting from', 'trek-travel-theme' ) ?></p>
+            <p class="fw-bold fs-xl lh-xl mb-0 modal-price">
+                <span class="starting-from-price"></span>
+                <span class="fw-normal fs-sm pp-text"><?php esc_html_e( 'per person', 'trek-travel-theme' ) ?></span>
+                <span class="fw-normal fs-sm pp-text pp-text-mobile"><?php esc_html_e( 'pp', 'trek-travel-theme' ) ?></span>
+            </p>
+        </div>
+    <?php
+}
+add_action( 'tt_quick_look_modal_footer', 'tt_quick_look_modal_footer_trips', 10, 1 );
+
+/**
+ * Add a modal header content for quick look checkout.
+ *
+ * This function adds a close button to the header of the quick look modal.
+ *
+ * @param array $args The arguments passed to the modal.
+ * @return void
+ */
+function tt_quick_look_modal_header_checkout( $args ) {
+    if ( ! isset( $args['id'] ) || ( $args['id'] !== 'quickLookModalCheckout' && $args['id'] !== 'quickLookModalThankYou' ) ) {
+        return;
+    }
+
+    ?>
+        <span type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <i type="button" class="bi bi-x"></i>
+        </span>
+    <?php
+}
+add_action( 'tt_quick_look_modal_header', 'tt_quick_look_modal_header_checkout', 10, 1 );
+
+/**
  * Callback function for tt_ns_guest_booking_details_complete action.
  *
  * This function is triggered when the guest booking details are completed.
@@ -9112,3 +9298,29 @@ function tt_ns_guest_booking_details_complete_cb( $user_id = 0 ) {
 }
 
 add_action( 'tt_ns_guest_booking_details_complete', 'tt_ns_guest_booking_details_complete_cb', 10, 1 );
+
+/**
+ * Function to handle the decline of travel protection.
+ *
+ * This function posts the user registration arguments to NetSuite
+ * and logs the action.
+ *
+ * Example usage:
+ * $ns_user_reg_args = array(
+ *    'registrationId' => 64123,
+ *    'waiveInsurance' => 1,
+ * );
+ *
+ * @uses NetSuiteClient
+ *
+ * @param array $ns_user_reg_args The user registration arguments.
+ * @return void
+ */
+function tt_decline_travel_protection_ns_cb( $ns_user_reg_args ) {
+
+    $net_suite_client = new NetSuiteClient();
+    $ns_response      = $net_suite_client->post( CHECKLIST_SCRIPT_ID, json_encode( $ns_user_reg_args ) );
+
+    tt_add_error_log( '[SuiteScript:' . CHECKLIST_SCRIPT_ID . '] - Decline Travel Protection', $ns_user_reg_args, $ns_response );
+}
+add_action( 'tt_decline_travel_protection_ns', 'tt_decline_travel_protection_ns_cb', 10, 1 );
