@@ -218,52 +218,52 @@ $is_tpp          = ! empty( $protection_data ) ? true : false; // Check if we ha
 
 <nav id="header" class="navbar mb-0 mobile-nav<?php if (is_home() || is_front_page()) : echo ' home';
 												endif; ?>">
-
-	<div class="row">
-		<div class="col-2 phone-icon">
-			<a class="nav-link" href="tel:8664648735" onclick="dataLayer.push({'event': 'click_to_call'});">
-				<i class="bi bi-telephone"></i>
-			</a>
-		</div>
-		<div class="col-1 calendar-icon">
-			<a class="nav-link" href="" id="mobile-header-calendar">
-				<i class="bi bi-calendar"></i>
-			</a>
-		</div>
-		<div class="col-6 mobile-logo">
-			<a class="navbar-brand" href="<?php echo esc_url(home_url()); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home">
-				<img class="navbar-brand__logo" src="<?php echo get_template_directory_uri(); ?>/assets/images/mobile_logo.svg" alt="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" />
-			</a>
-		</div>
-		<div class="col-1 search-icon">
-			<?php
-			// Search and Account ////////////////////
-			?>
-			<div class="header-main__search-account">
-				<?php if ('1' === $search_enabled) : ?>
-					<div data-bs-toggle="modal" data-bs-target="#globalSearchModal" class="search-in-header">
-						<a class="" href="javascript:void(0)"><i class="bi bi-search"></i></a>
-					</div>
-				<?php endif; ?>
-
+	<div class="container">
+		<div class="row">
+			<div class="col-2 phone-icon">
+				<a class="nav-link" href="tel:8664648735" onclick="dataLayer.push({'event': 'click_to_call'});">
+					<i class="bi bi-telephone"></i>
+				</a>
 			</div>
-		</div>
-		<div class="col-2 mobile-menu-toggle">
-			<div id="navbar" class="collapse show">
+			<div class="col-1 calendar-icon">
+				<a class="nav-link" href="" id="mobile-header-calendar">
+					<i class="bi bi-calendar"></i>
+				</a>
+			</div>
+			<div class="col-6 mobile-logo">
+				<a class="navbar-brand" href="<?php echo esc_url(home_url()); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home">
+					<img class="navbar-brand__logo" src="<?php echo get_template_directory_uri(); ?>/assets/images/mobile_logo.svg" alt="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" />
+				</a>
+			</div>
+			<div class="col-1 search-icon">
 				<?php
-				// Loading WordPress Custom Menu (theme_location).
-				wp_nav_menu(
-					array(
-						'theme_location' => 'main-menu',
-					)
-				);
+				// Search and Account ////////////////////
 				?>
-			</div><!-- /.navbar-collapse -->
+				<div class="header-main__search-account">
+					<?php if ('1' === $search_enabled) : ?>
+						<div data-bs-toggle="modal" data-bs-target="#globalSearchModal" class="search-in-header">
+							<a class="" href="javascript:void(0)"><i class="bi bi-search"></i></a>
+						</div>
+					<?php endif; ?>
+
+				</div>
+			</div>
+			<div class="col-2 mobile-menu-toggle">
+				<div id="navbar" class="collapse show">
+					<?php
+					// Loading WordPress Custom Menu (theme_location).
+					wp_nav_menu(
+						array(
+							'theme_location' => 'main-menu',
+						)
+					);
+					?>
+				</div><!-- /.navbar-collapse -->
+			</div>
+
 		</div>
 
 	</div><!-- /.container -->
-
-
 
 </nav><!-- /#header -->
 
