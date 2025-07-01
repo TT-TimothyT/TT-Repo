@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\Gateway\Credit_Card;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
 
 /**
  * Plugin lifecycle handler.

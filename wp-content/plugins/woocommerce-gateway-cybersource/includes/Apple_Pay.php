@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 
 defined( 'ABSPATH' ) or exit;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
 
 /**
  * The Apple Pay handler.

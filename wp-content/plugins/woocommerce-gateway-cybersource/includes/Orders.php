@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource;
 defined( 'ABSPATH' ) or exit;
 
 use SkyVerge\WooCommerce\Cybersource\API\Responses\Reporting\Conversion_Detail;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
 
 /**
  * Orders handler class.

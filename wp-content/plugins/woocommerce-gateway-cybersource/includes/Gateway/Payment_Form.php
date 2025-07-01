@@ -26,7 +26,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\CaptureContextRetriever;
 use SkyVerge\WooCommerce\Cybersource\Flex_Helper;
 use SkyVerge\WooCommerce\Cybersource\Gateway;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

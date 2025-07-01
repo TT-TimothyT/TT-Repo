@@ -1,5 +1,11 @@
 *** WooCommerce CyberSource Gateway Changelog ***
 
+2025.06.17 - version 2.9.4
+ * Fix - 404 errors when 3D Secure is enabled
+ * Fix - Ensure unneeded files are not bundled with the plugin
+ * Fix - When deleting a payment method, if you clicked "Cancel" in the prompt, the delete button remained in a disabled state
+ * Dev - Updated the SkyVerge Plugin Framework to v5.15.11
+
 2025.05.08 - version 2.9.3
  * Fix - When using authorizations, the "Capture Charge" button in WP Admin wasn't working
  * Fix - "Translations loaded too early" error

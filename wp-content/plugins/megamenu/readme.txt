@@ -2,8 +2,8 @@
 Contributors: megamenu
 Tags: menu, responsive menu, mega menu, navigation, mobile menu
 Requires at least: 5.0
-Tested up to: 6.7
-Stable tag: 3.4.1
+Tested up to: 6.8
+Stable tag: 3.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -131,6 +131,23 @@ See https://www.megamenu.com for more screenshots
 5. Back end: Use the theme editor to change the appearance of your menus
 
 == Changelog ==
+
+= 3.6.1 =
+
+* Fix: PHP Error when percentage sign used in HTML block in menu toggle bar
+
+= 3.6 =
+
+* New: Experimental 'Use Flex CSS' option added to theme editor for new installations of MMM (will become available to existing installations in future versions)
+* New: Color picker in theme editor updated to allow CSS variables to be entered
+* New: Allow 'wv' units to be used to define sub menu width (e.g. 100vw will make the sub menu full browser width)
+* Update: Reusable block widget renamed to Pattern widget (use this to show saved Block Patterns within your sub menus)
+* Fix: Double blue 'Mega Menu' button in Enfold theme
+* Fix: Mobile close button sometimes disappears (use options rather than transients to store CSS version and generation date)
+* Fix: Sub menu items in mega menus don't appear on mobile when flex styling is used
+* Fix: Do not apply collapse children class to tabbed menu items
+* Improvement: Use more reliable/cleaner method to add toggle bar html to menu output
+* Accessibility: Change standard menu toggle span to button, for NVDA screen readers
 
 = 3.5 =
 

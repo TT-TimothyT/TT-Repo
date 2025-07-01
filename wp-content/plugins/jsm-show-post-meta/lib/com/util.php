@@ -354,6 +354,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 *
 		 *	add_after_key()
 		 *	add_before_key()
+		 *	add_multi_values()
 		 *	array_count_diff()
 		 *	array_flatten()
 		 *	array_implode()
@@ -368,6 +369,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		 *	get_array_or_element()
 		 *	get_array_pretty()
 		 *	get_assoc_salt()
+		 *	get_multi_values()
 		 *	move_to_front()
 		 *	move_to_end()
 		 *	natasort()
@@ -390,6 +392,16 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		public static function add_before_key( array &$arr, $match_key, $arr_or_key, $value = null ) {
 
 			return self::array_insert_element( $arr, $insert = 'before', $match_key, $arr_or_key, $value );
+		}
+
+		/*
+		 * Add an array of values that have a common numbered prefix key.
+		 */
+		public static function add_multi_values( array &$opts, $opt_prefix, $add_key = null ) {
+
+			if ( null === $add_key ) $add_key = $opt_prefix;
+
+			$opts[ $add_key ] = self::get_multi_values( $opts, $opt_prefix );
 		}
 
 		public static function array_count_diff( array $arr, $max = 0 ) {
@@ -699,6 +711,24 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			$assoc_salt = ltrim( $assoc_salt, '-' );
 
 			return $assoc_salt;
+		}
+
+		/*
+		 * Return a indexed array of values that have a common prefix key.
+		 */
+		public static function get_multi_values( array &$opts, $opt_prefix ) {
+
+			$values = SucomUtil::preg_grep_keys( '/^' . $opt_prefix . '_([0-9]+)$/', $opts, $invert = false, $replace = '$1' );
+
+			foreach ( $values as $num => $val ) {
+
+				if ( ! self::is_valid_option_value( $val ) ) {	// Allow for 0 but not empty string.
+
+					unset( $values[ $num ] );
+				}
+			}
+
+			return $values;
 		}
 
 		/*

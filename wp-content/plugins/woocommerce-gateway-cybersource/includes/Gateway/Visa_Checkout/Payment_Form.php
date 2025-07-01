@@ -25,7 +25,7 @@ namespace SkyVerge\WooCommerce\Cybersource\Gateway\Visa_Checkout;
 
 use SkyVerge\WooCommerce\Cybersource\Device_Data;
 use SkyVerge\WooCommerce\Cybersource\Gateway\Visa_Checkout;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

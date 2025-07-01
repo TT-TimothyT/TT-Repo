@@ -1,5 +1,8 @@
 <?php
 
+require_once TMWNI_DIR . 'inc/NS_Restlet/netsuiteRestAPI.php';
+
+
 use NetSuite\Classes\GetServerTimeRequest;
 use NetSuite\NetSuiteService;
 use NetSuite\Classes\Customer;
@@ -491,39 +494,41 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 	}
 
 	public function saveNetsuiteTaxCodes() {
-		$ns_tax_codes = $this->getNetsuiteTaxCodes();
-		if (!empty( $ns_tax_codes ) ) {
-			update_option( 'netsuite_tax_codes', $ns_tax_codes, false );
-		}
+		$urlAPIEndPoint = '/suiteql';
+		$ns_tax_codes = $this->getNetsuiteTaxCodes($urlAPIEndPoint);
 	}
 
 	public function getNetsuiteTaxCodes() {
 
-		$ns_service = new NetSuiteService();
-		$ns_service->setSearchPreferences( false, 1000, true );
+		$select_fields = 'id, name';
+		$from_clause   = 'FROM salestaxitem';
+		$where_conditions = array(
+			"isinactive = 'F'", // You can add more conditions if needed
+		);
 
-		$selectedField              = new SearchBooleanField();
-		$selectedField->searchValue = false;
+		$tax_query = array(
+			'q' => "SELECT $select_fields $from_clause WHERE " . implode( ' AND ', $where_conditions ),
+		);
 
-		$salesTaxItemSearch             = new SalesTaxItemSearchBasic();
-		$salesTaxItemSearch->isInactive = $selectedField;
+		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
+		$response = $this->NetsuiteRestAPIClient->nsRESTRequest( 'post', $urlAPIEndPoint, true, $tax_query );
+		$ns_tax_codes    = array();
 
-		$request               = new SearchRequest();
-		$request->searchRecord = $salesTaxItemSearch;
-
-		try {
-			$searchResponse = $ns_service->search( $request );
-			$data           = array();
-			if ( $searchResponse->searchResult->totalRecords > 0 ) {
-				foreach ( $searchResponse->searchResult->recordList->record as $key => $value ) {
-					$data[ $value->internalId ] = $value->itemId;
-				}
-				return $data;
-			} else {
-				return 0;
+		if ( isset( $response['items'] ) ) {
+			foreach ($response['items'] as $tax) {
+				$ns_tax_codes[ $tax['id'] ] = $tax['name'];
 			}
-		} catch ( SoapFault $e ) {
-			return 0;
+
+			if (!empty($ns_tax_codes)) {
+				update_option( 'netsuite_tax_codes', $ns_tax_codes, false );
+			}
+
+			if ( ! empty( $response['hasMore'] ) ) {
+				$count = $response['count'];
+				$offset = $response['offset'] + $count;
+				$urlAPIEndPoint = "/suiteql?limit=$count&offset=$offset";
+				$this->getNetsuiteTaxCodes( $urlAPIEndPoint );
+			}
 		}
 	}
 
@@ -1667,6 +1672,9 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 			case 'order_settings':
 			$current_tab_id = 'order_settings';
 				break;
+			case 'product_settings':
+			$current_tab_id = 'product_settings';
+				break;
 			default:
 			$current_tab_id = TMWNI_Settings::$default_tab;
 		}
@@ -1701,6 +1709,18 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 				} else {
 					$options = TMWNI_Settings::getTabSettings( $current_tab_id );
 				}
+			} elseif ('product_settings' == $current_tab_id) {
+				$product_general_settings = TMWNI_Settings::getTabSettings( $current_tab_id . '_general_settings' );
+				$product_mapping_settings = TMWNI_Settings::getTabSettings( $current_tab_id . '_product_mapping' );
+
+				if ( ! empty( $product_general_settings ) && !empty($product_mapping_settings) ) {
+					$options = array_merge( $product_general_settings, $product_mapping_settings );
+				} elseif (!empty($product_general_settings)) {
+					$options = $product_general_settings;
+				} else {
+					$options = '';
+				}
+
 			} else {
 				$options = TMWNI_Settings::getTabSettings( $current_tab_id );
 			}
@@ -1770,7 +1790,7 @@ class TMWNI_Admin_Loader extends CommonIntegrationFunctions {
 		require_once TMWNI_DIR . 'inc/admin/admin-page.php';
 		return;
 	}
-
+	
 	public function tm_woo_ns_css() {
 		if ( empty( $_GET['tab'] ) ) {
 			$current_tab_id = TMWNI_Settings::$default_tab;

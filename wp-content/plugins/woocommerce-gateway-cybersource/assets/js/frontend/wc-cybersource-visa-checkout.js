@@ -5,7 +5,7 @@ jQuery( ( $ ) => {
 
 	"use strict"
 
-	window.WC_Cybersource_Visa_Checkout_Payment_Form_Handler = class WC_Cybersource_Visa_Checkout_Payment_Form_Handler extends SV_WC_Payment_Form_Handler_v5_15_10 {
+	window.WC_Cybersource_Visa_Checkout_Payment_Form_Handler = class WC_Cybersource_Visa_Checkout_Payment_Form_Handler extends SV_WC_Payment_Form_Handler_v5_15_11 {
 
 
 		/**

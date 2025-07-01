@@ -1,4 +1,7 @@
 *** NetSuite Integration for WooCommerce Changelog ***
+2025-06-25 - version 1.6.9
+* Add -  Implement product sync feature from NetSuite to WooCommerce
+
 2025-05-23 - version 1.6.8
 * Add - Conditional mapping support sales order HandlingMode  feature.
 * Fix - Solve price currency issue.

@@ -27,7 +27,7 @@ use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 
 use SkyVerge\WooCommerce\Cybersource\API\DataObjects\CaptureContextData;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
 
 /**
  * Helper class for Flex Microform.

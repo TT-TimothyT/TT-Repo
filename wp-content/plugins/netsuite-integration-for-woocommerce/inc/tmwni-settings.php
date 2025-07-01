@@ -31,6 +31,12 @@ class TMWNI_Settings {
 	public static $pricing_group = 'Base Price';
 	public static $customerDummyFisrtName = 'Woo';
 	public static $customerDummyLastName = 'Customer';
+	public static $product_statuses = array(
+		'publish' => 'Published',
+		'draft'   => 'Draft',
+		'pending' => 'Pending Review',
+		'private' => 'Private',
+	);
 
 	public static $netsuite_country = array(
 		'AF' => '_afghanistan',
@@ -292,6 +298,7 @@ class TMWNI_Settings {
 		'inventory_settings' => 'Inventory Settings',
 		'customer_settings' => 'Customer Settings',
 		'order_settings' => 'Order Settings',
+		'product_settings' => 'Product Settings',
 		'logs' => 'NetSuite API Logs',
 		'help' => 'Help & Support',
 		'dashboard' => 'Dashboard',
@@ -325,7 +332,6 @@ class TMWNI_Settings {
 					$order_refund_settings = get_option( 'tmwni_order_settings_refund_settings_options' );
 
 					$order_line_item_settings = get_option( 'tmwni_order_settings_line_item_settings_options' );
-					// pr($order_general_settings); die('zzzz');
 					if ( ! empty( $order_refund_settings ) && ! empty( $order_general_settings ) && ! empty( $order_fulfillment_settings ) ) {
 						$tab_option_data = array_merge( $order_refund_settings, $order_general_settings, $order_fulfillment_settings );
 					} elseif ( ! empty( $order_refund_settings ) && ! empty( $order_general_settings ) ) {
@@ -340,6 +346,16 @@ class TMWNI_Settings {
 
 					if ( ! empty( $order_line_item_settings ) && ! empty( $tab_option_data ) ) {
 						$tab_option_data = array_merge( $order_line_item_settings, $tab_option_data );
+					}
+				} elseif ( 'Product Settings' == $tab_heading ) {
+					$product_general_settings = get_option( 'tmwni_product_settings_general_settings_options' );
+					$product_mapping_settings = get_option( 'tmwni_product_settings_product_mapping_options' );
+					if ( ! empty( $product_general_settings ) && ! empty( $product_mapping_settings ) ) {
+						$tab_option_data = array_merge( $product_general_settings, $product_mapping_settings );
+					} elseif ( ! empty( $product_general_settings ) ) {
+						$tab_option_data = $product_general_settings;
+					} else {
+						$tab_option_data = '';
 					}
 				} else {
 					$tab_option_data = get_option( $option_key );

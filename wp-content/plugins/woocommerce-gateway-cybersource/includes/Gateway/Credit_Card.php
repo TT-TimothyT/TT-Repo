@@ -28,9 +28,9 @@ use SkyVerge\WooCommerce\Cybersource\Gateway;
 use SkyVerge\WooCommerce\Cybersource\Gateway\ThreeD_Secure\Frontend;
 use SkyVerge\WooCommerce\Cybersource\Plugin;
 use SkyVerge\WooCommerce\Cybersource\Blocks\Credit_Card_Checkout_Block_Integration;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10\SV_WC_Helper;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11\SV_WC_Helper;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response;
 
 defined( 'ABSPATH' ) or exit;
 

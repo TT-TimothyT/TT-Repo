@@ -819,7 +819,7 @@ class OrderClient extends CommonIntegrationFunctions {
 	public function createRequest( &$so, $order_data ) {
 		foreach ( $order_data['ns_salesorder_fields'] as $nsfield => $value ) {
 
-			if ( isset( $value['type'] ) && ( 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type'] | 'SalesOrderOrderStatus' == $value['type'] ) ) {
+			if ( isset( $value['type'] ) && ( 'string' == $value['type'] || 'float' == $value['type'] || 'integer' == $value['type'] || 'SalesOrderOrderStatus' == $value['type'] || 'SalesOrderHandlingMode' == $value['type'] || 'CashSaleHandlingMode' == $value['type'] ) ) {
 				if ( 'phone' == $nsfield && strlen( $value['value'] ) > 6 ) {
 					$so->$nsfield = $value['value'];
 				} else {

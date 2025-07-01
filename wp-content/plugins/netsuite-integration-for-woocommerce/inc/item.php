@@ -56,7 +56,6 @@ class ItemClient extends CommonIntegrationFunctions {
 			'q' => "SELECT $select_fields $from_clause WHERE " . implode( ' AND ', $where_conditions ),
 		);
 
-
 		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
 		$response = $this->NetsuiteRestAPIClient->nsRESTRequest( 'post', $urlAPIEndPoint, true, $pricing_query );
 

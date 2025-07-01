@@ -23,7 +23,7 @@
 
 namespace SkyVerge\WooCommerce\Cybersource\API\Visa_Checkout\Responses;
 
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 

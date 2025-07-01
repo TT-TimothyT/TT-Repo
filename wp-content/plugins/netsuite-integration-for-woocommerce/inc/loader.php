@@ -36,6 +36,7 @@ use NetSuite\Classes\TermSearchBasic;
 use NetSuite\Classes\SearchBooleanField;
 use NetSuite\Classes\PriceLevelSearchBasic;
 
+
 class TMWNI_Loader {
 
 
@@ -51,6 +52,8 @@ class TMWNI_Loader {
 	public $add_netsuite_order;
 	public $netsuiteService;
 	public $add_netsuite_customer;
+	public $netsuiteProductClient;
+
 	/**
 	 * Construct
 	 */
@@ -61,6 +64,7 @@ class TMWNI_Loader {
 			if ( TMWNI_Settings::areCredentialsDefined() ) {
 				require_once TMWNI_DIR . 'inc/order.php';
 				require_once TMWNI_DIR . 'inc/customer.php';
+				require_once TMWNI_DIR . 'inc/product.php';
 
 				$this->netsuiteOrderClient = new OrderClient();
 
@@ -304,6 +308,8 @@ class TMWNI_Loader {
 			->cancel_process();
 		}
 	}
+
+
 	public function soap_notice() {
 		?>
 		<div class="notice notice-warning is-dismissible">
@@ -800,15 +806,16 @@ class TMWNI_Loader {
 				}
 				$address_data = $this->existingRegisterCustomerAddressData( $existing_customer_address, $customer_internal_id, $customer_id );
 			}
+			
+			$al = new CustomerAddressbookList();
+			$al->addressbook = $address_data;
+			$al->replaceAll = false;
 			/**
 			 *Custome Address data hook.
 			 *
 			 * @since 1.0.0
 			 */
-			$address_data = apply_filters( 'tm_netsuite_customer_address_data', $address_data, $customer_id );
-			$al = new CustomerAddressbookList();
-			$al->addressbook = $address_data;
-			$al->replaceAll = false;
+			$al = apply_filters( 'tm_netsuite_customer_address_data', $al, $customer_id );
 
 			if ( ! empty( $customer_internal_id ) ) {
 				/**

@@ -5956,10 +5956,10 @@ jQuery( 'body' ).on( 'currency_converter_switch', function( ev, to_currency ) {
  *
  * @requires sv-wc-payment-gateway-payment-form.js The main JS file from the Cybersource plugin.
  */
-jQuery(document.body).on('sv_wc_payment_form_handler_v5_15_3_loaded', function() {
+jQuery(document.body).on('sv_wc_payment_form_handler_v5_15_11_loaded', function() {
 
   // Extend the prototype with custom error rendering
-  window.SV_WC_Payment_Form_Handler_v5_15_3.prototype.render_errors = function(errors) {
+  window.SV_WC_Payment_Form_Handler_v5_15_11.prototype.render_errors = function(errors) {
     // Reset all previous error states
     jQuery('.woocommerce-cybersource-error').remove();
     jQuery('.form-row').removeClass('woocommerce-invalid');

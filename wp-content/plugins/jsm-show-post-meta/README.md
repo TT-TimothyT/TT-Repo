@@ -3,7 +3,7 @@
 <table>
 <tr><th align="right" valign="top" nowrap>Plugin Name</th><td>JSM Show Post Metadata</td></tr>
 <tr><th align="right" valign="top" nowrap>Summary</th><td>Show post metadata (aka custom fields) in a metabox when editing posts / pages - a great tool for debugging issues with post metadata.</td></tr>
-<tr><th align="right" valign="top" nowrap>Stable Version</th><td>4.6.3</td></tr>
+<tr><th align="right" valign="top" nowrap>Stable Version</th><td>4.7.0</td></tr>
 <tr><th align="right" valign="top" nowrap>Requires PHP</th><td>7.4.33 or newer</td></tr>
 <tr><th align="right" valign="top" nowrap>Requires WordPress</th><td>5.9 or newer</td></tr>
 <tr><th align="right" valign="top" nowrap>Tested Up To WordPress</th><td>6.8.1</td></tr>
@@ -15,6 +15,8 @@
 <h2>Description</h2>
 
 <p>The JSM Show Post Metadata plugin displays post (ie. posts, pages, and custom post types) meta keys (aka custom field names) and their unserialized values in a metabox at the bottom of the post editing page.</p>
+
+<p>Note that if you're using WooCommerce HPOS (High-Performance Order Storage), available since WooCommerce v8.2, then your WooCommerce orders are NOT post objects and you should use the <a href="https://wordpress.org/plugins/jsm-show-order-meta/">JSM Show Order Metadata</a> plugin instead.</p>
 
 <p>There are no plugin settings - simply install and activate the plugin.</p>
 

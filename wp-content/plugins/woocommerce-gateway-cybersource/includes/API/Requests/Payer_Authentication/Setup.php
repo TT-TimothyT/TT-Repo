@@ -24,7 +24,7 @@
 namespace SkyVerge\WooCommerce\Cybersource\API\Requests\Payer_Authentication;
 
 use SkyVerge\WooCommerce\Cybersource\API\Request;
-use SkyVerge\WooCommerce\PluginFramework\v5_15_10 as Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_15_11 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -43,7 +43,7 @@ class Setup extends Request {
 	 */
 	public function __construct() {
 
-		$this->path   = '/risk/v1/authentication-setups/';
+		$this->path   = '/risk/v1/authentication-setups';
 		$this->method = self::REQUEST_METHOD_POST;
 	}
 
