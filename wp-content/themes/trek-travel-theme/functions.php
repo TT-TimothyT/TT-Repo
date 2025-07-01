@@ -2764,7 +2764,7 @@ add_action( 'template_redirect', 'trek_prevent_wc_login_template', 1 );
 
 function trek_my_account_link() {
     if ( ! is_user_logged_in() ) {
-        $return_url = esc_url( home_url( $_SERVER['REQUEST_URI'] ) );
+        $return_url = esc_url( wc_get_page_permalink( 'myaccount' ) );
         return '<a href="#login-register-modal" data-lity class="open-login-modal" data-return-url="' . $return_url . '">My Account</a>';
     } else {
         return '<a href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '">My Account</a>';
@@ -2781,11 +2781,29 @@ function trek_mmm_modify_my_account_menu_link($items, $args) {
                 $item->title = 'My Account';
                 $item->classes[] = 'open-login-modal';
                 $item->classes[] = 'data-lity'; // we’ll convert this to data-lity in the output fix below
-                $item->classes[] = 'data-return-url-' . urlencode(home_url(add_query_arg([]))); // custom encoding
+                $item->classes[] = 'data-return-url-' . urlencode( wc_get_page_permalink( 'myaccount' ) ); // custom encoding
             }
         }
     }
     return $items;
+}
+
+add_filter( 'nav_menu_link_attributes', 'trek_mmm_add_data_attributes', 10, 3 );
+function trek_mmm_add_data_attributes( $atts, $item, $args ) {
+    if ( in_array( 'open-login-modal', $item->classes, true ) ) {
+        if ( in_array( 'data-lity', $item->classes, true ) ) {
+            $atts['data-lity'] = '';
+        }
+
+        foreach ( $item->classes as $class ) {
+            if ( strpos( $class, 'data-return-url-' ) === 0 ) {
+                $atts['data-return-url'] = urldecode( substr( $class, strlen( 'data-return-url-' ) ) );
+                break;
+            }
+        }
+    }
+
+    return $atts;
 }
 
 /**
