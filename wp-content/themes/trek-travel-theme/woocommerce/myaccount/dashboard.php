@@ -406,7 +406,8 @@ $pending_items = false; // Flag to track if there are any pending items
 															$bike_info_status = $lockedUserBike ? $lock_icon : tt_is_individual_checklist_completed('bike_section', $userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $guest_is_primary);
 															$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="' . site_url('my-trip/?order_id=' . $order_id . '#flush-heading-bikeInfo') . '" class="d-flex align-items-center text-decoration-none">' . $bike_info_status . ' Bike selection</a></p>';
 
-															$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="' . site_url('my-trip/?order_id=' . $order_id . '#flush-heading-gearInfo-optional') . '" class="d-flex align-items-center text-decoration-none">' . $exclamation_icon . ' Bike fit information (optional)</a></p>';
+															$gear_info_optional_status = tt_is_individual_checklist_completed('gear_optional_section', $userInfo->ID, $order_id, $order_details[0]['rider_level'], $product_id, $order_details[0]['bike_id'], $guest_is_primary);
+															$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="' . site_url('my-trip/?order_id=' . $order_id . '#flush-heading-gearInfo-optional') . '" class="d-flex align-items-center text-decoration-none">' . $gear_info_optional_status . ' Bike fit information (optional)</a></p>';
 														}
 														if ($waiver_signed) {
 															$trips_html .= '<p class="d-flex align-items-center lh-xs "><a href="' . site_url('my-trip/?order_id=' . $order_id . '#waiver-section') . '" class="d-flex align-items-center text-decoration-none">' . $success_icon . ' Trip Waiver</a></p>';
