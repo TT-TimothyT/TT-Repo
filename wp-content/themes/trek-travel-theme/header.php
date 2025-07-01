@@ -197,7 +197,7 @@ $is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters
                                 <?php echo trek_login_register_modal_link([
                                         'icon' => '<i class="bi bi-person"></i>',
                                         'class' => 'd-flex align-items-center',
-                                        'return_url' => wc_get_page_permalink( 'myaccount' ),
+                                        'return_url' => wc_get_page_permalink( 'my-account' ),
                                 ]); ?>
 			</div>
 			<a href="<?php echo site_url('tours/all/') ?>" class="btn btn-primary find-a-trip">Find a trip</a>

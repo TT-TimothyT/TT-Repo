@@ -2715,8 +2715,8 @@ function trek_login_register_modal_link( $args = [] ) {
         $data_lity = 'data-lity'; // Apply data-lity for non-logged-in users
     }
 
-    // Get the return URL if passed in the arguments
-    $return_url = $args['return_url'] ?: esc_url( add_query_arg( 'return_url', rawurlencode( get_permalink() ), home_url() ) );
+    // Get the return URL if passed in the arguments, or set the default to My Account page
+    $return_url = !empty($args['return_url']) ? $args['return_url'] : wc_get_page_permalink( 'my-account' );
 
     // Create the HTML for the link
     $html = sprintf(
@@ -2736,6 +2736,7 @@ function trek_login_register_modal_link( $args = [] ) {
 
     return $html;
 }
+
 
 
 
@@ -2764,7 +2765,7 @@ add_action( 'template_redirect', 'trek_prevent_wc_login_template', 1 );
 
 function trek_my_account_link() {
     if ( ! is_user_logged_in() ) {
-        $return_url = esc_url( wc_get_page_permalink( 'myaccount' ) );
+        $return_url = esc_url( wc_get_page_permalink( 'my-account' ) );
         return '<a href="#login-register-modal" data-lity class="open-login-modal" data-return-url="' . $return_url . '">My Account</a>';
     } else {
         return '<a href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '">My Account</a>';
