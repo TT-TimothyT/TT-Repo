@@ -196,7 +196,7 @@ $is_cart_check = apply_filters( 'tt_is_persistent_cart', true ) && apply_filters
 			<div class="account-in-header">
                                 <?php echo trek_login_register_modal_link([
                                         'icon' => '<i class="bi bi-person"></i>',
-                                        'class' => 'd-flex align-items-center',
+                                        'class' => 'open-login-modal d-flex align-items-center',
                                         'return_url' => wc_get_page_permalink( 'my-account' ),
                                 ]); ?>
 			</div>
