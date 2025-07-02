@@ -30,19 +30,33 @@ import { Carousel, Modal, Collapse, Toast } from 'bootstrap';
 
 	// Header dropshadow on scroll
 	window.addEventListener('scroll', (e) => {
-		const header = document.querySelector('.header-main');
+		const header = document.querySelector('header');
 		if (window.pageYOffset > 0) {
 			header.classList.add("add-shadow");
 		} else {
 			header.classList.remove("add-shadow");
 		}
 
-		// pdp nav bar sticky
-		var $el = jQuery('#header');
-		var drawerTopMobile = $el.position().top + $el.outerHeight() - 10;
-		var drawerTopDesktop = $el.position().top + $el.outerHeight(true);
+    	const overviewMenu = document.querySelector('.overview-menu-mobile');
+
+		// Dynamically calculate the height of the header
+		const headerHeight = header.offsetHeight; // Get dynamic height of the header
+
+		// Calculate the top offset for the mobile and desktop menu
+		const drawerTopMobile = headerHeight + 0; // Add a small margin if necessary
+		const drawerTopDesktop = headerHeight + 10;
+	
+		// Position the overview-menu-mobile and navigation-sticky based on the header's height
 		jQuery(".overview-menu-mobile").css({ top: drawerTopMobile + 'px' });
 		jQuery(".navigation-sticky").css({ top: drawerTopDesktop + 'px' });
+
+		// pdp nav bar sticky
+		// var $el = jQuery('#header');
+		// var drawerTopMobile = $el.position().top + $el.outerHeight() - 70;
+		// var drawerTopDesktop = $el.position().top + $el.outerHeight(true);
+		// jQuery(".overview-menu-mobile").css({ top: drawerTopMobile + 'px' });
+		// jQuery(".navigation-sticky").css({ top: drawerTopDesktop + 'px' });
+		
 
 	});
 
