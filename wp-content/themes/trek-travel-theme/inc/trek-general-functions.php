@@ -7280,47 +7280,84 @@ add_filter( 'tm_netsuite_customer_data', 'tt_netsuite_customer_data_cb', 10, 3 )
  * Prevent creating dummy addresses in NS.
  * Prevent TM NetSuite errors when dealing with billing_phone.
  *
- * @param array $address_data Array with NS class based objects.
+ * @param array|object $address_data Array with NS class based objects, or a single object.
  * @param int $customer_id The WP User ID
- * 
- * @return array The modified $address_data
+ *
+ * @return array|object The modified $address_data
  */
 function tt_netsuite_customer_address_data_cb( $address_data, $customer_id ) {
+    $tmp_address_data           = array();
     $address_indexes_for_remove = array();
     $is_data_modified           = false;
 
-    if( ! empty( $address_data ) ) {
+    if ( ! empty( $address_data ) ) {
+        if ( ! is_array( $address_data ) ) {
+            // If we have a single object, check for addressbook key.
+            if ( isset( $address_data->addressbook ) && is_array( $address_data->addressbook ) ) {
+                // Convert to array.
+                $tmp_address_data = $address_data->addressbook;
+            } else {
+                // If we have a single object, but not an array, return it as is.
+                return $address_data;
+            }
+
+        } else {
+            // If we have an array, just use it.
+            $tmp_address_data = $address_data;
+        }
+
         // Keep original data for the log.
         $incoming_address_data = $address_data;
 
-        foreach( $address_data as $index => $address ) {
-            if( isset( $address->addressbookAddress->zip ) && empty( $address->addressbookAddress->zip ) ) {
+        foreach ( $tmp_address_data as $index => $address ) {
+            if ( isset( $address->addressbookAddress->zip ) && empty( $address->addressbookAddress->zip ) ) {
                 // We have a zip, but is empty, so need to remove this address.
                 $address_indexes_for_remove[] = $index;
             }
         }
 
         // If all addresses don't have zip codes no need for address_data to be sent, to prevent dummy data in NS for addresses and prevent TM NetSuite errors.
-        if( count( $address_data ) === count( $address_indexes_for_remove ) ) {
-            $address_data     = null;
+        if ( count( $tmp_address_data ) === count( $address_indexes_for_remove ) ) {
+            if ( is_array( $address_data ) ) {
+                // If we have an array, just set it to null.
+                $address_data = null;
+            } else {
+                // If we have a single object, set it to null.
+                $address_data->addressbook = null;
+            }
+
             $is_data_modified = true;
         } else {
 
             // If we have something to remove, remove it.
-            if( ! empty( $address_indexes_for_remove ) ) {
-                foreach( $address_indexes_for_remove as $index ) {
+            if ( ! empty( $address_indexes_for_remove ) ) {
+                foreach ( $address_indexes_for_remove as $index ) {
                     // Remove empty address.
-                    unset( $address_data[ $index ] );
+                    if ( is_array( $address_data ) ) {
+                        // If we have an array, unset the address by index.
+                        unset( $address_data[ $index ] );
+                    } else {
+                        // If we have a single object, unset the address by index.
+                        unset( $address_data->addressbook[ $index ] );
+                    }
                 }
 
-                $reindex          = array_values($address_data); // normalize index.
-                $address_data     = $reindex;
+                // Reindex the array to prevent gaps in the indexes.
+                if ( is_array( $address_data ) ) {
+                    // If we have an array, reindex it.
+                    $reindex      = array_values( $address_data );
+                    $address_data = $reindex;
+                } else {
+                    // If we have a single object, reindex the addressbook.
+                    $address_data->addressbook = array_values( $address_data->addressbook );
+                }
+
                 $is_data_modified = true;
             }
         }
 
         // Log info if we make any manipulations.
-        if( $is_data_modified ) {
+        if ( $is_data_modified ) {
 
             tt_add_error_log( '[TM Netsuite] Modify customer_address_data', array( 'address_data' => $incoming_address_data, 'customer_id' => $customer_id ), array( 'status' => true, 'message' => 'Adjusting address data.', 'address_data(modified)' => $address_data ) );
         }
