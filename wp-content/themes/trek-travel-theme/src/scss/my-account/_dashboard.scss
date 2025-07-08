@@ -494,6 +494,14 @@ ul.travel-protection-list {
       @media screen and (max-width: 768px) {
         padding: 0;
       }
+
+      .dashboard__trip {
+        .checkout-bikes__selected-rooms {
+          @media screen and (max-width: 991px) {
+            text-align: left !important;
+          }
+        }
+      }
     }
 
     &.my-profile-mobile, &.resource-center, &.my-travel-advisor {
