@@ -105,7 +105,7 @@ if ( $show_downloads ) {
 							<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Travel Protection purchased for', 'trek-travel-theme' ); ?></p>
 							<p class="mb-0 fw-normal order-details__text"><?php esc_html_e( 'Purchase Date', 'trek-travel-theme' ); ?></p>
 							<?php foreach ( $insured_travelers as $traveler ) : ?>
-								<p class="mb-0 fw-normal order-details__text"><?php echo esc_html( $traveler['name'] ); ?></p>
+								<p class="mb-0 fw-normal order-details__text"><?php echo is_string( $traveler['name'] ) && ! empty( trim($traveler['name'] ) ) ? esc_html( $traveler['name'] ) : '<i>' . esc_html__( '<no name>', 'trek-travel-theme' ) . '</i>'; ?></p>
 							<?php endforeach; ?>
 							<p class="mt-1 mb-2 mt-lg-2 fw-medium order-details__textbold"><?php esc_html_e( 'Purchase Total', 'trek-travel-theme' ); ?></p>
 						</div>
@@ -114,7 +114,7 @@ if ( $show_downloads ) {
 							<p class="mb-0 fw-normal order-details__text"><?php echo date('M d, Y', strtotime( $order->get_date_created() ) ) ?></p>
 							<?php foreach ( $insured_travelers as $traveler ) : ?>
 								<?php if ( $traveler['is_tp_purchased'] == 1 ) : ?>
-									<p class="mb-0 fw-normal order-details__text"><img src="<?php echo esc_url( TREK_DIR . '/assets/images/accepted-protection.svg' ); ?>" class="icon-22 me-1"><?php esc_html_e( 'Protected', 'trek-travel-theme' ); ?></p>
+									<p class="mb-0 fw-normal order-details__text d-flex justify-content-end align-items-center"><img src="<?php echo esc_url( TREK_DIR . '/assets/images/accepted-protection.svg' ); ?>" class="icon-22 me-1"><span><?php esc_html_e( 'Protected', 'trek-travel-theme' ); ?></span></p>
 								<?php elseif ( $traveler['is_protected'] == 1 ) : ?>
 									<p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $traveler['amount'] ); ?> USD</p>
 								<?php else : ?>

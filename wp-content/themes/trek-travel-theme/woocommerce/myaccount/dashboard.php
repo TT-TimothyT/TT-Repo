@@ -424,6 +424,12 @@ $pending_items = false; // Flag to track if there are any pending items
 		
 														$trips_html .= '</div>'; // end .row
 		
+														// Add TPP status for mobile view.
+														if ( $travel_protected ) {
+															$trips_html .= '<p class="dashboard__protection show-mobile">' . $tpp_accepted . 'Travel Protection</p>';
+														} else {
+															$trips_html .= '<p class="dashboard__protection show-mobile">' . $tpp_not_accepted . 'Travel Protection</p>';
+														}
 														// CTA Button
 														$trips_html .= '<div class="mt-5 btn-checklist d-flex align-items-center justify-content-between flex-column flex-md-row">';
 														$trips_html .= '<a href="' . esc_url(add_query_arg('order_id', $order_id, home_url() . '/my-trip/')) . '" class="btn btn-primary rounded-1 view-checklist-btn" data-order_id="' . esc_attr( $order_id ) . '" data-page="dashboard">View Checklist</a>';
@@ -444,7 +450,7 @@ $pending_items = false; // Flag to track if there are any pending items
 
 												$trips_html .= '<div class="fs-5 fw-bold text-dark mb-2 travel-protection-title hide-mobile"><img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">Travel Protection Benefits</div>';
 												$trips_html .= '<p class="fs-sm fw-semibold text-dark travel-protection-subtitle hide-mobile">Because peace of mind is the best travel companion. Protect your trip from the unexpected</p>';
-												$trips_html .= '<div class="fs-5 fw-bold text-dark mb-5 travel-protection-title show-mobile"><img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">Protect your vacation!</div>';
+												$trips_html .= '<div class="fs-5 fw-bold text-dark mb-5 travel-protection-title show-mobile"><img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">Travel Protection Benefits</div>';
 												$trips_html .= '<div class="hide-mobile">';
 												$trips_html .= '<div class="d-flex align-items-center justify-content-between"><p class="fs-sm fw-semibold text-dark lh-sm mb-0">Here\'s what you get:</p><a href="' . site_url('/travel-protection') . '" class="btn btn-link p-0 view-full-details-link" target="_blank" data-page="dashboard">View Full Details</a></div>';
 												$trips_html .= '<div class="row list-elements">';
@@ -488,12 +494,13 @@ $pending_items = false; // Flag to track if there are any pending items
 														style="background-color: #28AAE1;"><svg class="show-mobile" xmlns="http://www.w3.org/2000/svg" width="21" height="23" viewBox="0 0 21 23" fill="none">
 														<path d="M19.5664 3.83936C20.3398 4.22607 20.7695 4.82764 20.8125 5.68701C20.7266 9.38232 19.9961 12.4331 18.6211 14.8823C17.2461 17.3745 15.7422 19.1792 14.1523 20.3823C12.5195 21.6284 11.3164 22.23 10.5 22.23C9.68359 22.23 8.48047 21.6284 6.84766 20.4253C5.21484 19.2222 3.75391 17.3745 2.37891 14.9253C1.00391 12.4761 0.273438 9.38232 0.1875 5.68701C0.1875 4.82764 0.617188 4.22607 1.47656 3.83936L9.72656 0.401855C9.98438 0.315918 10.2422 0.22998 10.5 0.22998C10.7578 0.22998 11.0586 0.315918 11.3164 0.401855L19.5664 3.83936ZM14.625 8.82373C14.625 8.65186 14.5391 8.43701 14.4102 8.1792C14.2383 7.96436 13.9805 7.83545 13.5938 7.74951C13.25 7.74951 12.9922 7.87842 12.8203 8.09326L9.42578 12.0894L8.13672 10.8003C7.92188 10.6284 7.66406 10.4995 7.40625 10.4995C6.76172 10.5854 6.41797 10.9292 6.375 11.5308C6.375 11.8745 6.46094 12.0894 6.67578 12.2612L8.73828 14.3237C8.91016 14.5386 9.16797 14.6245 9.46875 14.6245C9.64062 14.7104 9.89844 14.5815 10.2422 14.3237L14.3672 9.51123C14.5391 9.33936 14.625 9.08154 14.625 8.82373Z" fill="white"/>
 														</svg>Add Travel Protection</a>';
-														$trips_html .= '<a href="tel:8664648735"
+														$call_us_tp_btn = '<a href="tel:8664648735"
 														class="btn btn-sm btn-fixed-width fw-medium rounded-1 text-white trek-add-to-cart add-travel-protection-btn" 
 														style="background-color: #28AAE1;">
 														<i class="bi bi-telephone"></i> Call Us
 														</a>';
 
+														$trips_html .= $add_tp_btn;
 													}
 
 												$trips_html .= '</div>';
@@ -552,11 +559,13 @@ $pending_items = false; // Flag to track if there are any pending items
 														data-page="dashboard"
 														class="btn btn-sm btn-fixed-width fw-medium rounded-1 text-white trek-add-to-cart add-travel-protection-btn" 
 														style="background-color: #28AAE1;">Add Travel Protection</a>';
-													$trips_html .= '<a href="tel:8664648735"
+													$call_us_tp_btn = '<a href="tel:8664648735"
 														class="btn btn-sm btn-fixed-width fw-medium rounded-1 text-white trek-add-to-cart add-travel-protection-btn" 
 														style="background-color: #28AAE1;">
 														<i class="bi bi-telephone"></i> Call Us
 														</a>';
+
+													$trips_html .= $add_tp_btn;
 												} 
 											$trips_html .= '</div>'; // Close .travel-protection-footer
 										$trips_html .= '</div>'; // Close .dashboard__trip

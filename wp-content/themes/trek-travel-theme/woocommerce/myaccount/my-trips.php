@@ -163,7 +163,7 @@ $wp_user_email = $userInfo->user_email;
 
 								$can_show_travel_protection = $travel_protected_guests_count < $guest_count && ( $diff->days > 14 ) ? true : false;
 
-								$can_show_decline_btn = false; // $declined_insurance_guests_count < $guest_count && ( $declined_insurance_guests_count + $travel_protected_guests_count ) < $guest_count ? true : false;
+								$can_show_decline_btn = $declined_insurance_guests_count < $guest_count && ( $declined_insurance_guests_count + $travel_protected_guests_count ) < $guest_count ? true : false;
 
 								if ($order_id && $trip_link != 'javascript:') {
 									$link_html .= '<div class="trip-details-cta">';
@@ -193,10 +193,12 @@ $wp_user_email = $userInfo->user_email;
 															class="btn btn-lg btn-primary rounded-1 trek-add-to-cart add-travel-protection-btn">
 															Add Travel Protection
 														</a>';
-											$link_html .= '<a href="tel:8664648735"
+											$call_us_tp_btn = '<a href="tel:8664648735"
 															class="btn btn-lg btn-primary rounded-1 trek-add-to-cart add-travel-protection-btn">
 															<i class="bi bi-telephone"></i> Call Us
 														</a>';
+
+											$link_html .= $add_tp_btn;
 									}
 
 									$link_html .= '</div>';

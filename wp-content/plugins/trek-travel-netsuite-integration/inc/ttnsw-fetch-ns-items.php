@@ -400,8 +400,33 @@ function tt_admin_menu_page_cb()
         }
     }
     if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'tt_wp_manual_guest_bookings_sync_action' && isset( $_REQUEST['ns_user_id'] ) ) {
-        tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of guests information from NS to WC for single guest.', 'ns_user_id' => $_REQUEST['ns_user_id'] ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
-        tt_ns_guest_booking_details( true, $_REQUEST['ns_user_id'], '', DEFAULT_TIME_RANGE, true );
+        $manual_gb_sync_start_time  = date('Y-m-d H:i:s'); // For admin notices.
+        $booking_id                 = 0;
+        $skip_sync                  = false;
+        $sync_message               = '';
+
+        // Check if specific booking sync is requested
+        if ( isset( $_REQUEST['sync_specific_booking'] ) && $_REQUEST['sync_specific_booking'] == '1' ) {
+            if ( isset( $_REQUEST['booking_id'] ) && ! empty( $_REQUEST['booking_id'] ) ) {
+                $booking_id = sanitize_text_field( $_REQUEST['booking_id'] );
+                $sync_message = 'The sync of specific booking (ID: ' . $booking_id . ') from NS to WC';
+                tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of specific booking from NS to WC.', 'ns_user_id' => $_REQUEST['ns_user_id'], 'booking_id' => $booking_id ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
+            } else {
+                add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_wp_manual_guest_bookings_sync_action' ), 'Booking ID is required when syncing specific booking!', 'error' );
+                $skip_sync = true; // Skip sync if booking ID is not provided
+            }
+        } else {
+            $sync_message = 'The sync of all guest/bookings from NS to WC';
+            tt_add_error_log('[Start]', array( 'type'=> 'Manual Sync of guests information from NS to WC for single guest.', 'ns_user_id' => $_REQUEST['ns_user_id'] ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
+        }
+        
+        // Proceed with the sync if not skipped
+        if ( ! $skip_sync ) {
+            // Call the function to sync guest bookings.
+            tt_ns_guest_booking_details( true, $_REQUEST['ns_user_id'], '', DEFAULT_TIME_RANGE, true, $booking_id );
+            // Show a success message.
+            add_settings_error( 'ttnsw-admin-notice', esc_attr( 'tt_wp_manual_guest_bookings_sync_action' ), $sync_message . ' started at: ' . $manual_gb_sync_start_time . ' and finished at: ' . date('Y-m-d H:i:s'), 'info' );
+        }
     }
     if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tt_wp_manual_trip_sync_action' && isset($_REQUEST['trip_code'])) {
         $req_trip_code = isset($_REQUEST['trip_code']) ? $_REQUEST['trip_code'] : '';
@@ -556,6 +581,10 @@ function tt_admin_menu_page_cb()
                 <p>Sync bookings and preferences for a specific NetSuite guest</p>
                 <form action="" class="tt-bookings-sync" method="post">
                     <input type="text" name="ns_user_id" placeholder="Enter NetSuite User ID" required>
+                    <label>
+                        <input type="checkbox" name="sync_specific_booking" value="1"> Sync specific booking only
+                    </label>
+                    <input type="text" name="booking_id" placeholder="Enter Booking ID" style="display: none;">
                     <input type="hidden" name="action" value="tt_wp_manual_guest_bookings_sync_action">
                     <input type="submit" name="submit" value="Sync Guest Bookings" class="button-primary">
                 </form>

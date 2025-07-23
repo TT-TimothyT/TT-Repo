@@ -399,6 +399,19 @@ table.table-old.tt-booking-table .expandable-cell.expanded .expand-cell:before {
     background-color: #047;
 }
 
+.tt-sync-page label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #646970;
+    margin: 0;
+}
+
+.tt-sync-page label input[type="checkbox"] {
+    margin: 0;
+}
+
 .tt-sync-page p {
     color: #646970;
     font-size: 13px;

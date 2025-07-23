@@ -65,14 +65,8 @@ class Trek_Modal_Checkout {
 		add_action( 'wp_ajax_tt_decline_travel_protection', array( __CLASS__, 'process_decline_travel_protection' ) );
 		add_action( 'wp_ajax_nopriv_tt_decline_travel_protection', array( __CLASS__, 'process_decline_travel_protection' ) );
 
-		// Filter to intercept cart addition
-		add_filter( 'woocommerce_add_to_cart_validation', array( __CLASS__, 'pre_add_to_cart_validation' ), 10, 3 );
-		
 		// Actions after adding to cart
 		add_action( 'woocommerce_add_to_cart', array( __CLASS__, 'after_add_to_cart' ), 10, 6 );
-		
-		// Add custom cart item data
-		add_filter( 'woocommerce_add_cart_item_data', array( __CLASS__, 'add_cart_item_data' ), 10, 3 );
 
 		// Add custom data to cart item
 		add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'before_calculate_totals' ), 17 );
@@ -232,9 +226,9 @@ class Trek_Modal_Checkout {
 		// Perform pre-calculations
 		self::perform_calculations( $order_id );
 		
-		$quantity = isset( $_POST['quantity'] ) ? intval( $_POST['quantity'] ) : 1;
-		$variation_id = isset( $_POST['variation_id'] ) ? intval( $_POST['variation_id'] ) : 0;
-		$variation = isset( $_POST['variation'] ) ? (array) $_POST['variation'] : array();
+		$quantity       = isset( $_POST['quantity'] ) ? intval( $_POST['quantity'] ) : 1;
+		$variation_id   = isset( $_POST['variation_id'] ) ? intval( $_POST['variation_id'] ) : 0;
+		$variation      = isset( $_POST['variation'] ) ? (array) $_POST['variation'] : array();
 		$cart_item_data = array( 'tt_protection_data' => self::$calculations, 'tt_modal_checkout' => true, 'tt_related_orders' => array( $order_id ) );
 
 		$accepted_p_ids = tt_get_line_items_product_ids();
@@ -337,10 +331,10 @@ class Trek_Modal_Checkout {
 		$is_travel_protection = isset( $_POST['insurance_option'] ) ? (bool) $_POST['insurance_option'] : false;
 
 		$accepted_p_ids = tt_get_line_items_product_ids();
-		$cart = WC()->cart->get_cart_contents();
-		foreach ($cart as $cart_item_id => $cart_item) {
-			$product_id = isset($cart_item['product_id']) ? $cart_item['product_id'] : '';
-			if (in_array($product_id, $accepted_p_ids)) {
+		$cart           = WC()->cart->get_cart_contents();
+		foreach ( $cart as $cart_item_id => $cart_item ) {
+			$product_id = isset( $cart_item['product_id'] ) ? $cart_item['product_id'] : '';
+			if ( in_array( $product_id, $accepted_p_ids ) ) {
 				// Check if the product is a travel protection product
 				if ( isset( $cart_item['tt_protection_data'] ) && ! empty( $cart_item['tt_protection_data'] ) ) {
 					// Update the cart item data with the new calculations
@@ -433,34 +427,6 @@ class Trek_Modal_Checkout {
 	}
 
 	/**
-	 * Validate before adding to cart
-	 *
-	 * @param bool $passed
-	 * @param int $product_id
-	 * @param int $quantity
-	 * @return bool
-	 */
-	public static function pre_add_to_cart_validation( $passed, $product_id, $quantity ) {
-		if ( self::$is_protection_purchase ) {
-			// Perform additional validation if needed
-			// For example, check if the user has a trip in cart already
-			
-			// Log information about the request
-			// tt_add_error_log(
-			// 	'Travel Protection Purchase Validation', 
-			// 	array(
-			// 		'product_id' => $product_id,
-			// 		'request_origin' => self::$request_origin,
-			// 		'calculations' => self::$calculations
-			// 	), 
-			// 	array('status' => $passed)
-			// );
-		}
-		
-		return $passed;
-	}
-
-	/**
 	 * After adding to cart action
 	 *
 	 * @param string $cart_item_key
@@ -481,48 +447,6 @@ class Trek_Modal_Checkout {
 	}
 
 	/**
-	 * Add custom data to cart item
-	 *
-	 * @param array $cart_item_data
-	 * @param int $product_id
-	 * @param int $variation_id
-	 * @return array
-	 */
-	public static function add_cart_item_data( $cart_item_data, $product_id, $variation_id ) {
-		if ( self::$is_protection_purchase ) {
-			// Store our custom data in the cart item
-			// $cart_item_data['tt_protection_data'] = array(
-			// 	'request_origin' => self::$request_origin,
-			// 	'calculations' => self::$calculations,
-			// 	'timestamp' => time(),
-			// );
-			// $accepted_p_ids = tt_get_line_items_product_ids();
-
-			// $cart = WC()->cart->get_cart_contents();
-
-			// foreach ($cart as $cart_item_id => $cart_item) {
-			// 	$_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_id);
-			// 	$_product_name = $_product->get_name();
-			// 	$product_id = isset($cart_item['product_id']) ? $cart_item['product_id'] : '';
-			// 	if (in_array($product_id, $accepted_p_ids)) {
-			// 		$cart_item['tt_protection_data'] = $cart_item_data['tt_protection_data'];
-			// 	}
-			// }
-
-			// // Store the updated cart.
-			// WC()->cart->set_cart_contents( $cart );
-			// // Recalculate the totals after modifying the cart.
-			// WC()->cart->calculate_totals();
-			// // Save the updated cart to the session.
-			// WC()->cart->set_session();
-			// // Update persistent_cart.
-			// WC()->cart->persistent_cart_update();
-		}
-
-		return $cart_item_data;
-	}
-
-	/**
 	 * Check if a guest wants insurance.
 	 *
 	 * @param int $order_id
@@ -537,30 +461,57 @@ class Trek_Modal_Checkout {
 	}
 
 	/**
-	 * Perform calculations before adding to cart
+	 * Check if a guest has a single supplement.
 	 *
-	 * @param int $order_id
+	 * This check is based on the rooms occuupancy information.
+	 *
+	 * @param array $occupants
+	 * @param int|null $guest_idx
+	 *
+	 * @return bool Whether the guest has a single supplement.
 	 */
-	private static function perform_calculations( $order_id ) {
-		// Get trip information from cart
-		$trip_info = tt_get_trip_pid_sku_from_cart( $order_id );
+	private static function is_guest_with_supplement( $occupants = array(), $guest_idx = null ) {
+		if ( is_null( $guest_idx ) || ! is_array( $occupants ) || empty( $occupants ) ) {
+			return false;
+		}
 
-		$tt_posted = isset( $trip_info['tt_posted'] ) ? $trip_info['tt_posted'] : array();
+		return ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( $guest_idx, $occupants['private'] ) )
+		|| ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( $guest_idx, $occupants['roommate'] ) );
+	}
 
-		$coupon_code     = strtolower( $tt_posted['coupon_code'] );
-		$coupon          = new WC_Coupon( $coupon_code );
+	/**
+	 * Check if a guest has a bike upgrade.
+	 *
+	 * @param array $guest_bike
+	 *
+	 * @return bool Whether the guest has a bike upgrade.
+	 */
+	private static function is_guest_with_bike_upgrade( $guest_bike ) {
+		$bike_type_info = tt_ns_get_bike_type_info( $guest_bike['bikeTypeId'] );
+		if ( ! $bike_type_info || ! is_array( $bike_type_info ) || ! isset( $bike_type_info['isBikeUpgrade'] ) ) {
+			return false;
+		}
+		return $bike_type_info['isBikeUpgrade'] == 1;
+	}
 
-		$trip_product_id = isset( $trip_info['product_id'] ) ? $trip_info['product_id'] : 0;
+	/**
+	 * Get insurance dates arguments.
+	 *
+	 * @param WC_Product $trip_product
+	 *
+	 * @return array Insurance arguments with effective and expiration dates.
+	 */
+	private static function get_insurance_args_dates( $trip_product ) {
+		if ( ! $trip_product || ! is_a( $trip_product, 'WC_Product' ) ) {
+			return array( 'effective_date' => '', 'expiration_date' => '' );
+		}
 
-		$trip_product = wc_get_product( $trip_product_id );
-		$individualTripCost = 0;
-		$sdate_info = $edate_info = '';
+		$sdate_info   = '';
+		$edate_info   = '';
 
-		if( $trip_product ){
-			$individualTripCost = $trip_product->get_price();
-
+		if ( $trip_product ) {
 			$trip_sdate = $trip_product->get_attribute('pa_start-date');
-			$sdate_obj = explode('/', $trip_sdate);
+			$sdate_obj  = explode('/', $trip_sdate);
 			$sdate_info = array(
 				'd' => $sdate_obj[0],
 				'm' => $sdate_obj[1],
@@ -574,179 +525,243 @@ class Trek_Modal_Checkout {
 				'y' => substr(date('Y'),0,2).$edate_obj[2]
 			);
 		}
-
-		$insuredPerson = $insuredPerson_single = array();
-		$effective_date = $expiration_date = '';
-		if( $sdate_info && is_array($sdate_info) ){
+		$effective_date  = '';
+		$expiration_date = '';
+		if ( $sdate_info && is_array( $sdate_info ) ) {
 			$effective_date = date('Y-m-d', strtotime(implode('-', $sdate_info)));
 		}
-		if( $edate_info && is_array($edate_info) ){
+		if ( $edate_info && is_array( $edate_info ) ) {
 			$expiration_date = date('Y-m-d', strtotime(implode('-', $edate_info)));
 		}
 
+		return array(
+			'effective_date'  => $effective_date,
+			'expiration_date' => $expiration_date,
+		);
+	}
+
+	/**
+	 * Get insurance plan ID.
+	 *
+	 * @return string Insurance plan ID.
+	 */
+	private static function get_insurance_args_plan_id() {
 		$plan_id = get_field( 'plan_id', 'option' );
 
 		if ( empty( $plan_id ) ) {
 			$plan_id = 'TREKTRAVEL24';
 		}
 
-		$current_date = date( 'Y-m-d' );
+		return $plan_id;
+	}
 
-		$trek_insurance_args = array(
-			"coverage" => array(
-				"effective_date"  => $effective_date,
-				"expiration_date" => $expiration_date,
-				"depositDate"     => $current_date,
-				"destinations"    => array(
-					array(
-						"countryCode" => $tt_posted['shipping_country']
+	/**
+	 * Get trip information from the order.
+	 *
+	 * @param int $order_id
+	 *
+	 * @return array Trip information.
+	 */
+	private static function get_trip_info( $order_id = 0 ) {
+		if ( ! $order_id ) {
+			return array();
+		}
+
+		$current_date = date( 'Y-m-d' );
+		$trip_info    = array(
+			'tt_posted'  => array(),
+			'product_id' => 0,
+			// The args for the API request to calculate insurance fees.
+			'insurance_args' => array(
+				'coverage' => array(
+					'effective_date'  => '',
+					'expiration_date' => '',
+					'depositDate'     => $current_date,
+					'destinations'    => array(
+						array(
+							'countryCode' => ''
+						)
 					)
-				)
+				),
+				'language'             => 'en-us',
+				'planID'               => self::get_insurance_args_plan_id(),
+				'returnTravelerQuotes' => true,
+				'localDateTime'        => $current_date, // With this parameter can avoid errors caused by Time Zone differences like: {"success":false,"responseMessage":"The Deposit Date can not occurr in the future","responseCode":"InvalidDepositDate"}.
 			),
-			"language"             => "en-us",
-			"planID"               => $plan_id,
-			"returnTravelerQuotes" => true,
-			"localDateTime"        => $current_date // With this parameter can avoid errors caused by Time Zone differences like: {"success":false,"responseMessage":"The Deposit Date can not occurr in the future","responseCode":"InvalidDepositDate"}.
+			// Prices
+			'prices' => array(
+				'bike_upgrade_price'      => 0,
+				'single_supplement_price' => 0,
+				'trip_price'              => 0,
+				'discount_total'          => 0,
+			),
 		);
 
-		$guest_insurance = isset( $tt_posted['trek_guest_insurance'] ) ? $tt_posted['trek_guest_insurance'] : array();
+		$accepted_p_ids = tt_get_line_items_product_ids();
+        $order          = wc_get_order( $order_id );
+        $order_items    = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
+        foreach ( $order_items as $item_id => $item ) {
+            $product_id = isset( $item['product_id'] ) ? $item['product_id'] : '';
+			$product    = wc_get_product( $product_id );
+			$sku        = $product ? $product->get_sku() : '';
+			$qty        = $item->get_quantity();
+			$unit_price = $item->get_subtotal() / $qty;
+
+			if ( ! in_array( $product_id, $accepted_p_ids ) ) {
+				// This is a trip product.
+			$trip_info['tt_posted']                                     = wc_get_order_item_meta( $item_id, 'trek_user_checkout_data', true );
+				$trip_info['product_id']                                    = $product_id;
+
+				// Populate insurance args
+				$insurance_args_dates                                       = self::get_insurance_args_dates( $product );
+				$insurance_args_destinations                                = array(
+					'countryCode' => isset( $trip_info['tt_posted']['shipping_country'] ) ? $trip_info['tt_posted']['shipping_country'] : ''
+				);
+				$trip_info['insurance_args']['coverage']['effective_date']  = $insurance_args_dates['effective_date'];
+				$trip_info['insurance_args']['coverage']['expiration_date'] = $insurance_args_dates['expiration_date'];
+				$trip_info['insurance_args']['coverage']['destinations']    = array( $insurance_args_destinations );
+
+				// Populate trip prices
+				$trip_info['prices']['trip_price'] = $unit_price;
+			}
+
+			// Check for supplement item and take the price.
+			if ( 'TTWP23SUPP' === $sku ) {
+				$trip_info['prices']['single_supplement_price'] = $unit_price;
+			}
+
+			// Check for bike upgrade product.
+			if ( 'TTWP23UPGRADES' === $sku ) {
+				$trip_info['prices']['bike_upgrade_price'] = $unit_price;
+			}
+		}
+
+		// Check for discount in the order.
+		if ( $order->get_discount_total() > 0 ) {
+			$trip_info['prices']['discount_total'] = (float) $order->get_discount_total();
+		}
+
+		return $trip_info;
+	}
+
+	/**
+	 * Perform calculations before adding to cart
+	 *
+	 * @param int $order_id
+	 */
+	private static function perform_calculations( $order_id ) {
+		// Get trip information from order.
+		$trip_info           = self::get_trip_info( $order_id );
+		$tt_posted           = $trip_info['tt_posted'];
+		$trek_insurance_args = $trip_info['insurance_args'];
+		$guest_insurance     = isset( $tt_posted['trek_guest_insurance'] ) ? $tt_posted['trek_guest_insurance'] : array();
 		$tt_total_insurance_amount  = 0;
 		$is_travel_protection_count = 0;
 		if ( isset( $guest_insurance ) && ! empty( $guest_insurance ) ) {
-			$single_supplement_price = isset( $tt_posted['singleSupplementPrice'] ) ? $tt_posted['singleSupplementPrice'] : 0;
-			// Remove dollar sign and commas
-			$single_supplement_price_str = str_replace(array('$', ','), '', $single_supplement_price);
-			// Convert the string to a float
-			$single_supplement_price_float = (float) $single_supplement_price_str;
-			// Convert to an integer (removing the decimal part)
-			$single_supplement_price_int = (int) $single_supplement_price_float;
-
-			foreach ( $guest_insurance as $guest_insurance_k => $guest_insurance_val ) {
-				$individualTripCost = $trip_product->get_price();
+			foreach ( $guest_insurance as $guest_insurance_key => $guest_insurance_val ) {
 				$occupants          = $tt_posted['occupants'];
-				$trek_insurance_args["insuredPerson"] = array();
+				$trek_insurance_args["insuredPerson"] = array(); // Reset the insured person array for each guest.
 				$bike_gears         = $tt_posted['bike_gears'];
-				if ( isset( $tt_posted['bikeUpgradePrice'] ) ) {
-					$bike_upgrade_price = (int) $tt_posted['bikeUpgradePrice'];
-				} else {
-					$bike_upgrade_price =  0;
-				}
-				if ($guest_insurance_k == 'primary') {
-					// TODO: Add logic to handle primary guest insurance
+				if ( 'primary' === $guest_insurance_key ) {
+					$guest_ns_prices = isset( $guest_insurance_val['ns_prices'] ) ? $guest_insurance_val['ns_prices'] : array();
 					// We should check if the primary guest has travel protection. The status should be taken from the bookings table.
 					$guest_insurance_val['is_travel_protection'] = self::is_trip_insurance_purchased( $order_id, 0 ) ? 0 : 1;
+					$individual_trip_cost = isset( $guest_ns_prices['base_price'] ) && 0 < $guest_ns_prices['base_price'] ? $guest_ns_prices['base_price'] : $trip_info['prices']['trip_price'];
 
-					$primary_guest_bike = $bike_gears['primary'];
-					$bike_type_info     = tt_ns_get_bike_type_info( $primary_guest_bike['bikeTypeId'] );
-					if ($guest_insurance_val['is_travel_protection'] == 1) {
+					if ( $guest_insurance_val['is_travel_protection'] == 1 ) {
 						$is_travel_protection_count++;
 					}
-					if ( ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( 0, $occupants['private'] ) )
-					|| ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( 0, $occupants['roommate'] ) ) ) {
-						$individualTripCost = $individualTripCost + $single_supplement_price_int;
+					// If the primary guest has a single supplement, add it to the individual trip cost.
+					if ( isset( $guest_ns_prices['single_supplement'] ) && 0 < $guest_ns_prices['single_supplement'] ) {
+						$individual_trip_cost += $guest_ns_prices['single_supplement'];
+					} elseif ( 0 < $trip_info['prices']['single_supplement_price'] && self::is_guest_with_supplement( $occupants, 0 ) ) {
+						$individual_trip_cost += $trip_info['prices']['single_supplement_price'];
 					}
-					if ( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) {
-						$individualTripCost = $individualTripCost + $bike_upgrade_price;
+					// If the primary guest has a bike upgrade, add it to the individual trip cost.
+					if ( isset( $guest_ns_prices['wheel_upgrade'] ) && 0 < $guest_ns_prices['wheel_upgrade'] ) {
+						$individual_trip_cost += $guest_ns_prices['wheel_upgrade'];
+					} elseif ( 0 < $trip_info['prices']['bike_upgrade_price'] && self::is_guest_with_bike_upgrade( $bike_gears['primary'] ) ) {
+						$individual_trip_cost += $trip_info['prices']['bike_upgrade_price'];
 					}
-					if ( $coupon && tt_is_coupon_applied( $coupon_code ) ) {
-						// Check if the coupon exists
-						if ( $coupon->get_id() > 0 ) {
-							// Coupon exists, retrieve its details
-							$coupon_amount = $coupon->get_amount();
-						}
-				
-						$individualTripCost = $individualTripCost - $coupon_amount;
+					// If the primary guest has discounts, apply them to the individual trip cost.
+					if ( isset( $guest_ns_prices['discounts_total'] ) && 0 < $guest_ns_prices['discounts_total'] ) {
+						$individual_trip_cost -= $guest_ns_prices['discounts_total'];
+					} elseif ( 0 < $trip_info['prices']['discount_total'] ) {
+						// If there is a discount, apply it to the individual trip cost.
+						$individual_trip_cost -= $trip_info['prices']['discount_total'];
 					}
-					//if ($guest_insurance_val['is_travel_protection'] == 1) {
-					$insuredPerson[] = array(
+					$insured_person_single   = array(); // Reset the insured person array for primary guest.
+					$insured_person_single[] = array(
 						"address" => [
 							"stateAbbreviation" => $tt_posted['shipping_state'],
 							"countryAbbreviation" => $tt_posted['shipping_country']
 						],
 						"dob" => $tt_posted['custentity_birthdate'],
-						"individualTripCost" => $individualTripCost
+						"individualTripCost" => $individual_trip_cost
 					);
-					$insuredPerson_single = [];
-					$insuredPerson_single[] = array(
-						"address" => [
-							"stateAbbreviation" => $tt_posted['shipping_state'],
-							"countryAbbreviation" => $tt_posted['shipping_country']
-						],
-						"dob" => $tt_posted['custentity_birthdate'],
-						"individualTripCost" => $individualTripCost
-					);
-					$trek_insurance_args["insuredPerson"]      = $insuredPerson_single;
-					$archinsuranceResPP                        = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
-					$arcBasePremiumPP                          = isset( $archinsuranceResPP['basePremium'] ) ? $archinsuranceResPP['basePremium'] : 0;
-					$guest_insurance['primary']['basePremium'] = $arcBasePremiumPP;
+					$trek_insurance_args["insuredPerson"]      = $insured_person_single;
+					$arch_api_response_primary                 = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
+					$arch_base_premium_primary                 = isset( $arch_api_response_primary['basePremium'] ) ? $arch_api_response_primary['basePremium'] : 0;
+					$guest_insurance['primary']['basePremium'] = $arch_base_premium_primary;
 					if ( $guest_insurance_val['is_travel_protection'] == 1 ) {
-						$tt_total_insurance_amount += $arcBasePremiumPP;
+						$tt_total_insurance_amount += $arch_base_premium_primary;
 					}
 				} else {
-					foreach ($guest_insurance_val as $guest_key => $guest_insurance_Data) {
-						// TODO: Add logic to handle guest insurance
-						$guest_insurance_Data['is_travel_protection'] = self::is_trip_insurance_purchased( $order_id, $guest_key ) ? 0 : 1;
-						$individualTripCost                           = $trip_product->get_price();
-						$guestInfo                                    = $tt_posted['guests'][$guest_key];
-						$guest_bike                                   = $bike_gears['guests'][$guest_key];
-						$bike_type_info                               = tt_ns_get_bike_type_info( $guest_bike['bikeTypeId'] );
-						if ($guest_insurance_Data['is_travel_protection'] == 1) {
+					// Loop through each guest and calculate insurance fees
+					foreach ( $guest_insurance_val as $guest_key => $guest_insurance_data ) {
+						$guest_insurance_data['is_travel_protection'] = self::is_trip_insurance_purchased( $order_id, $guest_key ) ? 0 : 1;
+						$guest_ns_prices                              = isset( $guest_insurance_data['ns_prices'] ) ? $guest_insurance_data['ns_prices'] : array();
+						$individual_trip_cost                         = isset( $guest_ns_prices['base_price'] ) && 0 < $guest_ns_prices['base_price'] ? $guest_ns_prices['base_price'] : $trip_info['prices']['trip_price'];
+						$guest_info                                   = $tt_posted['guests'][$guest_key];
+						if ( $guest_insurance_data['is_travel_protection'] == 1 ) {
 							$is_travel_protection_count++;
 						}
-						if ( ( isset( $occupants['private'] ) && is_array( $occupants['private'] ) && in_array( $guest_key, $occupants['private'] ) )
-						|| ( isset( $occupants['roommate'] ) && is_array( $occupants['roommate'] ) && in_array( $guest_key, $occupants['roommate'] ) ) ) {
-							$individualTripCost = $individualTripCost + $single_supplement_price_int;
+						// If the guest has a single supplement, add it to the individual trip cost.
+						if ( isset( $guest_ns_prices['single_supplement'] ) && 0 < $guest_ns_prices['single_supplement'] ) {
+							$individual_trip_cost += $guest_ns_prices['single_supplement'];
+						} elseif ( 0 < $trip_info['prices']['single_supplement_price'] && self::is_guest_with_supplement( $occupants, $guest_key ) ) {
+							$individual_trip_cost += $trip_info['prices']['single_supplement_price'];
 						}
-						if ( $bike_type_info && isset( $bike_type_info['isBikeUpgrade'] ) && $bike_type_info['isBikeUpgrade'] == 1 ) {
-							$individualTripCost = $individualTripCost + $bike_upgrade_price;
+						// If the guest has a bike upgrade, add it to the individual trip cost.
+						if ( isset( $guest_ns_prices['wheel_upgrade'] ) && 0 < $guest_ns_prices['wheel_upgrade'] ) {
+							$individual_trip_cost += $guest_ns_prices['wheel_upgrade'];
+						} elseif ( 0 < $trip_info['prices']['bike_upgrade_price'] && self::is_guest_with_bike_upgrade( $bike_gears['guests'][$guest_key] ) ) {
+							$individual_trip_cost += $trip_info['prices']['bike_upgrade_price'];
 						}
-						if ( $coupon && tt_is_coupon_applied( $coupon_code ) ) {
-							// Check if the coupon exists
-							if ( $coupon->get_id() > 0 ) {
-								// Coupon exists, retrieve its details
-								$coupon_amount = $coupon->get_amount();
-							}
-					
-							$individualTripCost = $individualTripCost - $coupon_amount;
+						// If the guest has discounts, apply them to the individual trip cost.
+						if ( isset( $guest_ns_prices['discounts_total'] ) && 0 < $guest_ns_prices['discounts_total'] ) {
+							$individual_trip_cost -= $guest_ns_prices['discounts_total'];
+						} elseif ( 0 < $trip_info['prices']['discount_total'] ) {
+							// If there is a discount, apply it to the individual trip cost.
+							$individual_trip_cost -= $trip_info['prices']['discount_total'];
 						}
-						$insuredPerson[] = array(
+						$insured_person_single   = array(); // Reset the insured person array for each guest.
+						$insured_person_single[] = array(
 							"address" => [
 								"stateAbbreviation" => $tt_posted['shipping_state'],
 								"countryAbbreviation" => $tt_posted['shipping_country']
 							],
-							"dob" => $guestInfo['guest_dob'],
-							"individualTripCost" => $individualTripCost
+							"dob" => $guest_info['guest_dob'],
+							"individualTripCost" => $individual_trip_cost
 						);
-						$insuredPerson_single = [];
-						$insuredPerson_single[] = array(
-							"address" => [
-								"stateAbbreviation" => $tt_posted['shipping_state'],
-								"countryAbbreviation" => $tt_posted['shipping_country']
-							],
-							"dob" => $guestInfo['guest_dob'],
-							"individualTripCost" => $individualTripCost
-						);
-						$trek_insurance_args["insuredPerson"]                 = $insuredPerson_single;
-						$archinsuranceResPG                                   = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
-						$arcBasePremiumPG                                     = isset( $archinsuranceResPG['basePremium'] ) ? $archinsuranceResPG['basePremium'] : 0;
-						$guest_insurance['guests'][$guest_key]['basePremium'] = $arcBasePremiumPG;
-						if ( $guest_insurance_Data['is_travel_protection'] == 1 ) {
-							$tt_total_insurance_amount += $arcBasePremiumPG;
+						$trek_insurance_args["insuredPerson"]                 = $insured_person_single;
+						$arch_api_response_per_guest                          = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
+						$arch_base_premium_per_guest                          = isset( $arch_api_response_per_guest['basePremium'] ) ? $arch_api_response_per_guest['basePremium'] : 0;
+						$guest_insurance['guests'][$guest_key]['basePremium'] = $arch_base_premium_per_guest;
+						if ( $guest_insurance_data['is_travel_protection'] == 1 ) {
+							$tt_total_insurance_amount += $arch_base_premium_per_guest;
 						}
 					}
 				}
 			}
 		}
-		$trek_insurance_args["insuredPerson"] = $insuredPerson;
-		$arcBasePremium                       = $tt_total_insurance_amount && $tt_total_insurance_amount > 0 ? $tt_total_insurance_amount : 0;
-		
+		$arch_base_premium_total = $tt_total_insurance_amount && $tt_total_insurance_amount > 0 ? $tt_total_insurance_amount : 0;
+
 		// Initialize calculations array
 		$calculations = array(
-			'order_id'               => $order_id,
-			// 'travelers'              => array(),
-			// 'total_insurance_amount' => 0,
-			'trip_cost'              => 0,
-			'tp_price'               => $arcBasePremium,
+			'order_id'  => $order_id,
+			'trip_cost' => $trip_info['prices']['trip_price'],
+			'tp_price'  => $arch_base_premium_total,
 		);
 
 		// Process travelers info
@@ -779,21 +794,13 @@ class Trek_Modal_Checkout {
 							'is_tp_purchased'      => $guest_is_tp_purchased ? 1 : 0, // 1 if purchased, 0 if not purchased.
 							'is_travel_protection' => $guest_is_tp_purchased ? 0 : 1, // 0 if not wants insurance, 1 if wants insurance.
 						);
-						$calculations['travelers'][$guest_key] = $guests_traveler_info;
+						$calculations['travelers'][$guest_key]   = $guests_traveler_info;
 						$calculations['total_insurance_amount'] += floatval($guests_traveler_info[$_guest_key]['insurance_amount']);
 					}
 				}
 			}
 		}
-		
-		// Get trip cost from the product in cart
-		if (isset($trip_info['product_id'])) {
-			$product = wc_get_product($trip_info['product_id']);
-			if ($product) {
-				$calculations['trip_cost'] = $product->get_price();
-			}
-		}
-		
+
 		// Store the calculations
 		self::$calculations = $calculations;
 	}
@@ -947,8 +954,7 @@ class Trek_Modal_Checkout {
 			foreach ( $travelers as $traveler_key => $traveler_data ) {
 				if ( 'primary' === $traveler_key ) {
 					// Update the primary guest booking
-					$guest_index = 0; // Primary guest index is always 0
-					self::update_bookings_table( $booking_order_id, $guest_index, $traveler_data );
+					self::update_bookings_table( $booking_order_id, 0, $traveler_data ); // Primary guest index is always 0
 				} else {
 					// Update each guest booking
 					foreach ( $traveler_data as $guest_index => $guest_data ) {
@@ -960,6 +966,7 @@ class Trek_Modal_Checkout {
 
 			tt_add_error_log('[Start] - NS Booking Update', array( $order_id ), array( 'dateTime' => date('Y-m-d H:i:s') ) );
 			as_enqueue_async_action( 'tt_trigger_ns_booking_update', array( $order_id ), '[Sync] - NetSuite Booking Update' );
+			do_action( 'tt_set_ns_tpp_status', $order_id, 'tpp_pending' ); // Set the order status to pending for NetSuite.
 
 			update_post_meta( $order_id, 'tt_wc_order_ns_status', 'true' ); // Mark the current order as sent to NetSuite.
 		}
@@ -1106,7 +1113,7 @@ class Trek_Modal_Checkout {
 	 */
 	private static function is_devrix_email( $email ) {
 		// Add filter to disable the check for devrix.com emails.
-		if ( apply_filters( 'tt_disable_devrix_email_check', true ) ) {
+		if ( apply_filters( 'tt_disable_devrix_email_check', false ) ) {
 			return false;
 		}
 

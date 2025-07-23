@@ -1988,7 +1988,7 @@ function tt_checkbooking_status( $ns_user_id, $ns_order_id ) //old - $ns_user_id
     global $wpdb;
     $count = 0;
     $table_name = $wpdb->prefix . 'guest_bookings';
-    $sql = "SELECT * from {$table_name} as gb WHERE 1=1";
+    $sql = "SELECT id from {$table_name} as gb WHERE 1=1";
     if( $ns_user_id ){
         $sql .= " AND gb.netsuite_guest_registration_id = {$ns_user_id} ";
     }
@@ -3980,7 +3980,7 @@ function tt_sync_user_metadata_from_ns_cb( $user_id )
             tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => true, 'ns_user_id' => $ns_user_id ) );
 
             // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
-            as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id, DEFAULT_TIME_RANGE, true ), '[Sync] - Adding NS Trips for new register guest' );
+            as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id, DEFAULT_TIME_RANGE, true, 0 ), '[Sync] - Adding NS Trips for new register guest' );
         } else {
             // TM NetSuite returns 0 if something fails.
             tt_add_error_log('[TM Netsuite] NEW USER', array( 'wp_user_id' => $user_id ), array( 'status' => false, 'ns_user_id' => $ns_user_id, 'message' => 'TM NetSuite plugin Failed. Check the logs in TM NetSuite::Settings::NetSuite API Logs for more information.' ) );
@@ -4013,7 +4013,7 @@ function tt_cron_try_sync_user_ns_again_cb( $user_id, $attempt_number )
             tt_add_error_log('[TM Netsuite] NEW USER Retry', array( 'wp_user_id' => $user_id, 'attempt_number' => $attempt_number ), array( 'status' => true, 'ns_user_id' => $ns_user_id ) );
 
             // 1) single_guest, 2) ns_new_guest_id, 3) wc_user_id, 4) time_range, 5) is_sync_process.
-            as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id, DEFAULT_TIME_RANGE, true ), '[Sync] - Adding NS Trips for new register guest' );
+            as_enqueue_async_action( 'tt_trigger_cron_ns_guest_booking_details', array( true, $ns_user_id, $user_id, DEFAULT_TIME_RANGE, true, 0 ), '[Sync] - Adding NS Trips for new register guest' );
         } else {
             // TM NetSuite returns 0 if something fails.
             tt_add_error_log('[TM Netsuite] NEW USER Retry', array( 'wp_user_id' => $user_id, 'attempt_number' => $attempt_number ), array( 'status' => false, 'ns_user_id' => $ns_user_id, 'message' => 'TM NetSuite plugin Failed. Check the logs in TM NetSuite::Settings::NetSuite API Logs for more information.' ) );
@@ -5990,15 +5990,34 @@ function tt_ajax_get_waiver_info(){
 add_action('wp_ajax_tt_ajax_get_waiver_info_action', 'tt_ajax_get_waiver_info');
 add_action('wp_ajax_nopriv_tt_ajax_get_waiver_info_action', 'tt_ajax_get_waiver_info');
 
-add_action('tt_trigger_cron_ns_guest_booking_details', 'tt_trigger_cron_ns_guest_booking_details_cb', 10, 5);
-function tt_trigger_cron_ns_guest_booking_details_cb($single_req,$ns_user_id, $wc_user_id, $time_range = DEFAULT_TIME_RANGE, $is_sync_process = false){
-    tt_add_error_log('[Start] - Adding Trips', [ 'ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id, 'is_sync_process' => $is_sync_process ], ['dateTime' => date('Y-m-d H:i:s')]);
-    tt_ns_guest_booking_details( $single_req, $ns_user_id, $wc_user_id, $time_range, $is_sync_process );
-    tt_add_error_log('[End] - Adding Trips', [ 'ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id, 'is_sync_process' => $is_sync_process ], ['dateTime' => date('Y-m-d H:i:s')]);
-    
+/**
+ * Triggers cron job for processing guest booking details from NetSuite.
+ *
+ * This function serves as a wrapper for the NetSuite guest booking details sync process.
+ * It logs the start and end of the operation, processes the booking details, and triggers
+ * a completion action to clear sync flags.
+ *
+ * @since 1.0.0
+ *
+ * @param mixed $single_req          Single request data for processing.
+ * @param int   $ns_user_id          NetSuite user ID.
+ * @param int   $wc_user_id          WooCommerce user ID.
+ * @param int   $time_range          Time range for data retrieval. Default is DEFAULT_TIME_RANGE.
+ * @param bool  $is_sync_process     Whether this is part of a sync process. Default false.
+ * @param int   $specific_booking_id Specific booking ID to process. Default 0 (process all).
+ *
+ * @return void
+ */
+function tt_trigger_cron_ns_guest_booking_details_cb( $single_req, $ns_user_id, $wc_user_id, $time_range = DEFAULT_TIME_RANGE, $is_sync_process = false, $specific_booking_id = 0 ) {
+    tt_add_error_log('[Start] - Adding Trips', [ 'ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id, 'is_sync_process' => $is_sync_process, 'specific_booking_id' => $specific_booking_id ], ['dateTime' => date('Y-m-d H:i:s')]);
+    tt_ns_guest_booking_details( $single_req, $ns_user_id, $wc_user_id, $time_range, $is_sync_process, $specific_booking_id );
+    tt_add_error_log('[End] - Adding Trips', [ 'ns_user_id' => $ns_user_id, 'wc_user_id' => $wc_user_id, 'is_sync_process' => $is_sync_process, 'specific_booking_id' => $specific_booking_id ], ['dateTime' => date('Y-m-d H:i:s')]);
+
     // Trigger the completion action to clear the sync flag
     do_action('tt_ns_guest_booking_details_complete', $wc_user_id);
 }
+add_action( 'tt_trigger_cron_ns_guest_booking_details', 'tt_trigger_cron_ns_guest_booking_details_cb', 10, 6 );
+
 function tt_get_ns_booking_details_by_order( $order_id, $user_info = null ){
     $release_form_id = $booking_id = $waiver_link = "";
 

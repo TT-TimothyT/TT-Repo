@@ -278,3 +278,136 @@ function tt_get_protected_status( $booking_order_id = 0, $guest_reg_id = null ) 
 
 	return false;
 }
+
+/**
+ * Callback function to handle NetSuite booking update after TPP booking
+ *
+ * This function is triggered after a TPP booking update in NetSuite.
+ * It processes the response and updates the booking order accordingly.
+ *
+ * @param int   $tpp_order_id        The TPP order ID
+ * @param array $ns_booking_response The response from NetSuite booking update
+ *
+ * @return void
+ */
+function tt_after_ns_booking_update( $tpp_order_id = 0, $ns_booking_response = array() ) {
+	if ( empty( $tpp_order_id ) || empty( $ns_booking_response ) ) {
+		return;
+	}
+
+	$ns_booking_response     = json_encode( $ns_booking_response );
+	$ns_booking_response_arr = json_decode( $ns_booking_response, true );
+	if ( $ns_booking_response_arr && isset( $ns_booking_response_arr['success'] ) && $ns_booking_response_arr['success'] == true ) {
+		// Handle successful TPP booking update in NS.
+		do_action( 'tt_set_ns_tpp_status', $tpp_order_id, 'tpp_success' );
+		if ( isset( $ns_booking_response_arr['savedData'] ) && ! empty( $ns_booking_response_arr['savedData'] ) ) {
+			$booking_id               = isset( $ns_booking_response_arr['savedData']['bookingId'] ) ? $ns_booking_response_arr['savedData']['bookingId'] : '';
+
+			$related_orders           = tt_get_related_orders( $tpp_order_id );
+			$booking_order_id         = ! empty( $related_orders ) ? reset( $related_orders ) : 0;
+			$booking_order_booking_id = get_post_meta( $booking_order_id, TT_WC_META_PREFIX . 'guest_booking_id', true );
+
+			if ( ! empty( $booking_order_booking_id ) && $booking_order_booking_id == $booking_id ) {
+				$protection_data = tt_get_protection_data_by_order_id( $tpp_order_id );
+
+				if ( empty( $protection_data ) || empty( $protection_data['travelers'] ) ) {
+					return;
+				}
+
+				// Travel Protection info.
+				$trek_guest_insurance = array(
+					'primary' => array(
+						'is_travel_protection' => 0,
+						'basePremium' => 0,
+					),
+					'guests' => array(),
+				);
+
+				$tt_total_insurance_amount = 0;
+				$insured_person_count      = 0;
+
+				foreach ( $protection_data['travelers'] as $guest_type => $traveler_data ) {
+					if ( $guest_type === 'primary' ) {
+						$is_travel_protection_pr = isset( $traveler_data['is_travel_protection'] ) ? $traveler_data['is_travel_protection'] : 0;
+						$base_premium_pr         = isset( $traveler_data['insurance_amount'] ) ? $traveler_data['insurance_amount'] : 0;
+
+						// Primary traveler data.
+						$trek_guest_insurance['primary'] = array(
+							'is_travel_protection' => $is_travel_protection_pr,
+							'basePremium'          => $base_premium_pr,
+						);
+						if ( 1 == $is_travel_protection_pr ) {
+							$tt_total_insurance_amount += $base_premium_pr;
+							$insured_person_count++;
+						}
+					} else {
+						foreach ( $traveler_data as $guest_idx => $guest_data ) {
+
+							$is_travel_protection_guest = isset( $guest_data['is_travel_protection'] ) ? $guest_data['is_travel_protection'] : 0;
+							$base_premium_guest         = isset( $guest_data['insurance_amount'] ) ? $guest_data['insurance_amount'] : 0;
+
+							$trek_guest_insurance['guests'][$guest_idx] = array(
+								'is_travel_protection' => $is_travel_protection_guest,
+								'basePremium'          => $base_premium_guest,
+							);
+
+							if ( 1 == $is_travel_protection_guest ) {
+								$tt_total_insurance_amount += $base_premium_guest;
+								$insured_person_count++;
+							}
+						}
+					}
+				}
+				// Update the booking order with the travel protection data.
+				$trek_user_checkout_data = get_post_meta( $booking_order_id, 'trek_user_checkout_data', true );
+
+				$trek_user_checkout_data['trek_guest_insurance']       = $trek_guest_insurance;
+				$trek_user_checkout_data['tt_insurance_total_charges'] = $tt_total_insurance_amount;
+				$trek_user_checkout_data['insuredPerson']              = $insured_person_count;
+
+				$existing_trip_product_item_id = null;
+
+				$booking_order       = wc_get_order( $booking_order_id );
+				$booking_order_items = $booking_order->get_items( apply_filters('woocommerce_purchase_order_item_types', 'line_item') );
+				$trip_product_item   = reset( $booking_order_items ); // The first item is the trip product.
+				$trip_product_id     = $trip_product_item['product_id'];
+
+				// Get existing item IDs for single supplement, bike upgrade, and insurance.
+				foreach ( $booking_order_items as $item_id => $item ) {
+					$item_product_id = $item->get_product_id();
+
+					if ( $item_product_id == $trip_product_id ) {
+						// If the trip product is already in the order, we can update it.
+						$existing_trip_product_item_id = $item_id;
+						break;
+					}
+				}
+
+				// Update the order item meta for the trip product.
+				wc_update_order_item_meta( $existing_trip_product_item_id, 'trek_user_checkout_data', $trek_user_checkout_data );
+
+				// Add the TPP insurance as line item to the booking order.
+				$insurance_product_id = tt_create_line_item_product( 'TTWP23FEES' );
+
+				$insurance_product = wc_get_product( $insurance_product_id );
+				if ( ! empty( $tt_total_insurance_amount ) ) {
+					$insurance_product->set_price( $tt_total_insurance_amount );
+				}
+
+				$insurance_item_id = $booking_order->add_product( $insurance_product, 1 );
+
+				$booking_order->calculate_totals();
+				$booking_order->save();
+
+				// Update the order meta.
+				update_post_meta( $booking_order_id, 'trek_user_checkout_data', $trek_user_checkout_data );
+			}
+		}
+
+	} else {
+		// Handle TPP booking update failure in NS.
+		do_action( 'tt_set_ns_tpp_status', $tpp_order_id, 'tpp_failed' );
+		// TPP booking update Failure. Init the trek email notification system.
+		do_action( 'netsuite_tpp_failed', $tpp_order_id, $ns_booking_response_arr );
+	}
+}

@@ -45,24 +45,28 @@ $notes = $order->get_customer_order_notes();
 
 <?php
 
-$order = wc_get_order($order_id);
-$tt_order_type = $order->get_meta( 'tt_wc_order_type' );
-$is_order_auto_generated = 'auto-generated' == $tt_order_type ? true : false;
+$order                                = wc_get_order($order_id);
+$tt_order_type                        = $order->get_meta( 'tt_wc_order_type' );
+$is_order_auto_generated              = false; // 'auto-generated' == $tt_order_type ? true : false;
 $tt_auto_generated_order_total_amount = $order->get_meta( 'tt_meta_total_amount' );
-$userInfo = wp_get_current_user();
-$user_id = $userInfo->ID;
-$order_items = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
-$userInfo = wp_get_current_user();
-$accepted_p_ids = tt_get_line_items_product_ids();
-$guest_emails_arr = trek_get_guest_emails($user_id, $order_id);
-$User_order_info = trek_get_user_order_info($user_id, $order_id);
-$guest_emails = implode(', ', $guest_emails_arr);
-$trek_formatted_checkoutData = $trek_checkoutData = array();
-$trip_name = $trip_order_date = '';
-$trip_name = $trip_sdate = $trip_edate = $trip_sku = '';
-$order_item;
-$booked_trip_id = null;
-$product_quantity = '';
+$userInfo                             = wp_get_current_user();
+$user_id                              = $userInfo->ID;
+$order_items                          = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
+$userInfo                             = wp_get_current_user();
+$accepted_p_ids                       = tt_get_line_items_product_ids();
+$guest_emails_arr                     = trek_get_guest_emails($user_id, $order_id);
+$User_order_info                      = trek_get_user_order_info($user_id, $order_id);
+$guest_emails                         = implode(', ', $guest_emails_arr);
+$trek_formatted_checkoutData          = $trek_checkoutData = array();
+$trip_name                            = $trip_order_date = '';
+$trip_name                            = $trip_sdate = $trip_edate = $trip_sku = '';
+$order_item                           = null;
+$booked_trip_id                       = null;
+$product_quantity                     = '';
+$show_single_supplement_price         = false;
+$show_bike_upgrade_price              = false;
+$bike_upgrade_count                   = 0;
+$bike_upgrade_price                   = 0;
 foreach ($order_items as $item_id => $item) {
     $product_id = $item['product_id'];
     $product_quantity = $item['quantity'];
@@ -112,9 +116,28 @@ foreach ($order_items as $item_id => $item) {
             }
         }
     }
+    if ( 73798 === $product_id ) {
+        // This is the single supplement item.
+        $show_single_supplement_price = true;
+    }
+
+    if ( 78972 === $product_id ) {
+        // This is the bike upgrade item.
+        // Get the bike upgrade quantity and price.
+        $bike_upgrade_qty = $item['quantity'];
+        if ( $bike_upgrade_qty > 1 ) {
+            $bike_upgrade_count += $bike_upgrade_qty;
+        } else {
+            $bike_upgrade_count++;
+        }
+        $bike_upgrade_price += $item->get_total();
+
+        $show_bike_upgrade_price = true;
+    }
 }
 
 $first_item = reset( $order_items );
+$total_tax  = 0;
 if ( $first_item ) {
 	$product_id              = $first_item['product_id'];
 	$first_product_price     = get_post_meta( $product_id, '_price', true );
@@ -127,7 +150,6 @@ if ( $first_item ) {
 	}
 	
 	if ( $product_tax_rate ) {
-		$total_tax     = 0;
 		$first_product = false;
 		foreach ( $order_items as $item ) {
 			$item_id            = $item->get_product_id();
@@ -395,7 +417,7 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'], $t
                                                         <p class="mb-0 fw-normal order-details__text"><?php echo $order->get_formatted_line_subtotal( $order_item ); ?></p>
                                                     </td>
                                                 </tr>
-                                                <?php if ( 0 < $singleSupplementQty ) : ?>
+                                                <?php if ( $show_single_supplement_price ) : ?>
                                                     <tr>
                                                         <td>
                                                             <p class="mb-0 fw-normal order-details__text">Single Supplement x <?php echo $singleSupplementQty; ?></p>
@@ -405,13 +427,13 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'], $t
                                                         </td>
                                                     </tr>
                                                 <?php endif; ?>
-                                                <?php if ( 0 < $tt_get_upgrade_qty &&  $trek_checkoutData['bikeUpgradePrice'] ) : ?>
+                                                <?php if ( $show_bike_upgrade_price ) : ?>
                                                     <tr>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text">Upgrade x <?php echo $tt_get_upgrade_qty; ?></p>
+                                                            <p class="mb-0 fw-normal order-details__text">Upgrade x <?php echo $bike_upgrade_count; ?></p>
                                                         </td>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $tt_get_upgrade_qty * $trek_checkoutData['bikeUpgradePrice'] ); ?></p>
+                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $bike_upgrade_price ); ?></p>
                                                         </td>
                                                     </tr>
                                                 <?php endif; ?>
@@ -433,14 +455,16 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'], $t
                                                         <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $order->get_subtotal() ); ?></p>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p class="mb-0 fw-normal order-details__text">Taxes</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $total_tax ); ?></p>
-                                                    </td>
-                                                </tr>
+                                                <?php if ( 0 < $total_tax ) : ?>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text">Taxes</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $total_tax ); ?></p>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
                                                 <?php if ( 0 < $discount_order ) : ?>
                                                     <tr>
                                                         <td>
@@ -470,15 +494,15 @@ $is_hiking_checkout = tt_is_product_line( 'Hiking', $trip_information['sku'], $t
                                                     if ( $trek_checkoutData['no_of_guests'] ) {
                                                         $deposit_amount              = ( intval( $trek_checkoutData['no_of_guests'] ) ) * floatval( $deposit_amount );
                                                         $deposit_amount             += $tt_insurance_total_charges;
-                                                        $remaining_amount_calculated = floatval( $cart_total ) - $deposit_amount;
+                                                        $remaining_amount_calculated = floatval( $cart_total ) - $order->get_total();
                                                     }
                                                     ?>
                                                     <tr class="border-white">
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text">Deposit Amount</p>
+                                                            <p class="mb-0 fw-normal order-details__text">Amount Paid</p>
                                                         </td>
                                                         <td>
-                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $deposit_amount ); ?></p>
+                                                            <p class="mb-0 fw-normal order-details__text"><?php echo wc_price( $order->get_total() ); ?></p>
                                                         </td>
                                                     </tr>
                                                     <tr class="border-white">

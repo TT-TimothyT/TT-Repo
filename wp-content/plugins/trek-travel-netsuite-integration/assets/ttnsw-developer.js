@@ -83,6 +83,17 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    // Handle specific booking sync checkbox
+    $('input[name="sync_specific_booking"]').on('change', function() {
+        var $bookingIdField = $('input[name="booking_id"]');
+        
+        if ($(this).is(':checked')) {
+            $bookingIdField.show().prop('required', true);
+        } else {
+            $bookingIdField.hide().prop('required', false).val('');
+        }
+    });
+
     // Handle column group visibility toggles
     $('.column-groups input[type="checkbox"]').on('change', function() {
         var group   = $(this).attr('name').replace('bookings_group_', '');

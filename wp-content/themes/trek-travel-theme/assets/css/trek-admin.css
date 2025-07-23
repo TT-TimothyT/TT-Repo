@@ -36,3 +36,38 @@ table.wp-list-table .column-orders_count {
 	background: #007cba;
 	color: #fff;
 }
+
+.order-guest-reg-list {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	flex-direction: row;
+	width: 100% !important;
+}
+
+.order-guest-reg {
+	position: relative;
+}
+
+.tpp-protected-status {
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	line-height: 0;
+	background: #fff;
+	padding: 2px;
+	border-radius: 50%;
+	box-shadow: 0 0 7px #28AAE1;
+}
+
+.tpp-protected-status.guest-protected {
+	box-shadow: 0 0 5px #28AAE1;
+}
+
+.tpp-protected-status.guest-not-protected {
+	box-shadow: 0 0 5px rgb(206 36 45);
+}
+
+.tpp-protected-status img {
+	max-width: 12px;
+}

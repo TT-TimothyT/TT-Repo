@@ -770,12 +770,123 @@ function tt_get_bike_attributes_by_bike_id( $trip_id = '', $trip_code = '', $bik
 }
 
 /**
- * Finish the migrated order on the first registered guest.
+ * Convert a date from m/d/Y format to Y-m-d format.
+ *
+ * This function takes a date string in the format m/d/Y (e.g., 12/06/2025)
+ * and returns it in Y-m-d format (e.g., 2025-12-06).
+ *
+ * @param string $date_string The date string to convert.
+ *
+ * @return string|null        The formatted date string, or null if the input is invalid.
  */
-function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_ns_guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $ns_guest_info_from_booking ) {
+function tt_convert_us_date_to_iso( $date_string ) {
+    if ( empty( $date_string ) || ! is_string( $date_string ) ) {
+        return null;
+    }
+
+    $date = DateTime::createFromFormat( 'm/d/Y', $date_string );
+
+    if ( false === $date ) {
+        return null;
+    }
+
+    return $date->format( 'Y-m-d' );
+}
+
+/**
+ * Get the accommodation type by guest ID.
+ *
+ * Searches through an array of rooms to find the accommodation type
+ * associated with a given guest ID.
+ *
+ * @param array      $rooms       An array of rooms, each containing 'accommodationType' and 'guestIds'.
+ * @param int|string $guest_id    The guest ID to search for.
+ *
+ * @return string|null            Returns the accommodation type if found, or null if not found.
+ */
+function tt_get_accommodation_type_by_guest_id( $rooms, $guest_id ) {
+    if ( empty( $rooms ) || ! is_array( $rooms ) ) {
+        return null;
+    }
+
+    foreach ( $rooms as $room ) {
+        if ( isset( $room->guestIds ) && is_array( $room->guestIds ) ) {
+            if ( in_array( $guest_id, $room->guestIds ) ) {
+                return isset( $room->accommodationType ) ? $room->accommodationType : null;
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Remove line items from a WooCommerce order.
+ *
+ * This function removes specified line items from a given WooCommerce order.
+ * It iterates through the provided item IDs and removes each one from the order.
+ *
+ * @param object $order    The WC Order object.
+ * @param array  $item_ids An array of item IDs to remove from the order.
+ *
+ * @return void
+ */
+function tt_remove_line_items_from_order( $order, $item_ids ) {
+    if ( ! $order || empty( $item_ids ) ) {
+        return;
+    }
+
+    foreach ( $item_ids as $item_id ) {
+        $order->remove_item( $item_id );
+    }
+}
+
+/**
+ * Get float value from a string with dollar sign and commas.
+ *
+ * This function takes a string that may contain a dollar sign and commas,
+ * removes those characters, and converts the remaining string to a float.
+ *
+ * @param string $value The value to convert.
+ *
+ * @return float The converted float value.
+ */
+function tt_get_float_value( $value ) {
+    // Remove dollar sign and commas.
+    $value_str = str_replace(array('$', ','), '', $value);
+    // Convert the string to a float.
+    return (float) $value_str;
+}
+
+/**
+ * Process and finalize order data with NetSuite sync.
+ * 
+ * Handles comprehensive order processing for both migrated orders from NetSuite 
+ * and regular orders created through the web portal. Updates order items, calculates 
+ * pricing, processes guest data, and ensures booking records are properly stored 
+ * in the guest_bookings table.
+ * 
+ * @uses tt_get_bike_attributes_by_bike_id()
+ * @uses tt_get_jersey_style()
+ * @uses tt_ns_get_bike_type_info()
+ *
+ * @param object $order                      The WC Order object.
+ * @param int    $product_id                 The Product ID.
+ * @param int    $wc_user_id                 The WC User ID.
+ * @param int    $current_ns_guest_id        The current NS Guest ID.
+ * @param object $ns_guest_booking_result    The NS Guest Booking Result object. // 1305
+ * @param object $ns_booking_data            The NS Booking Data object. // 1304
+ * @param object $ns_guest_info              The NS Guest Info object. // 1294
+ * @param object $ns_guest_info_from_booking The NS Guest Info from Booking object. // guest object in 1304
+ * @param bool   $is_insertion               Whether this is an insertion or an update.
+ *
+ * @return void
+ */
+function tt_sync_order_data( $order, $product_id, $wc_user_id, $current_ns_guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $ns_guest_info_from_booking, $is_insertion = false ) {
     $order_status       = 'not-finished';
     $order_guest_index  = 0;
     $guests_count       = 1;
+    $bike_upgrade_count = 0;
     $order_bike_gears   = array(
         'primary' => array(),
         'guests'  => array(),
@@ -785,14 +896,29 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
     $order_meta_emails  = array();
     $order_meta_primary = array();
 
+    $bike_upgrade_price      = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true );
+    $bike_upgrade_prices     = array(); // Will be used to store bike upgrade prices for each guest.
+    $single_supplement_price = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true );
+    $product_tax_rate        = floatval( get_post_meta( $product_id, TT_WC_META_PREFIX . 'taxRate', true ) );
+
+    // Convert the string to a float
+    $single_supplement_price_float = tt_get_float_value( $single_supplement_price );
+
+    $tt_total_insurance_amount = 0;
+    $insured_person_count      = 0;
+    $guests_with_discount      = 0;
+
     $ns_guest_id        = $ns_guest_info_from_booking->guestId; // Ns guest.
+
+    $is_hiking_checkout = tt_is_product_line( 'Hiking', $ns_booking_data->tripCode, $ns_booking_data->tripId );
 
     $guest_bike_info    = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripId, $ns_booking_data->tripCode, $ns_guest_info->bikeId );
 
+    $bike_type_id       = tt_validate( json_decode( $guest_bike_info['bikeModel'], true )['id'] );
     $guest_bike_gears   = array(
         'rider_level'              => tt_validate( $ns_guest_booking_result->riderType->id ),
         'activity_level'           => tt_validate( $ns_guest_booking_result->activityLevel->id ),
-        'bikeTypeId'               => tt_validate( json_decode( $guest_bike_info['bikeModel'], true )['id'] ),
+        'bikeTypeId'               => $bike_type_id,
         'bikeId'                   => tt_validate( $ns_guest_info->bikeId ),
         'bike_type_id_preferences' => '',
         'bike_size'                => tt_validate( json_decode( $guest_bike_info['bikeSize'], true )['id'] ),
@@ -801,21 +927,112 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
         'helmet_size'              => tt_validate( $ns_guest_info->helmetId ),
         'jersey_style'             => tt_get_jersey_style( tt_validate( $ns_guest_info->jerseyId ) ),
         'jersey_size'              => tt_validate( $ns_guest_info->jerseyId ),
+        'tshirt_size'              => tt_validate( $ns_guest_info->tshirtSizeId ),
+    );
+
+    $current_guest_has_bike_upgrade = false;
+    $bike_upgrade_price_ns          = isset( $ns_guest_info_from_booking->wheelUpgrade ) ? tt_get_float_value( $ns_guest_info_from_booking->wheelUpgrade ) : 0;
+
+    if ( 0 < $bike_upgrade_price_ns ) {
+        // We have a bike upgrade as line item in the booking.
+        $bike_upgrade_count++;
+
+        $current_guest_has_bike_upgrade = true;
+
+        // Add the price from the booking data.
+        $bike_upgrade_prices[] = $bike_upgrade_price_ns;
+    }
+
+    // Rooms info.
+    $room_count_single   = 0;
+    $room_count_double   = 0;
+    $room_count_roommate = 0;
+    $room_count_private  = 0;
+    $occupants           = array();
+    $guests_occupants    = array();
+
+    // Travel Protection info.
+    $trek_guest_insurance = array(
+        'primary' => array(
+            'is_travel_protection' => 0,
+            'basePremium' => 0,
+        ),
+        'guests' => array(),
+    );
+
+    $plan_id = get_field( 'plan_id', 'option' );
+
+    if ( empty( $plan_id ) ) {
+        $plan_id = 'TREKTRAVEL24';
+    }
+
+    $trek_insurance_args = array(
+        "coverage" => array(
+            "effective_date"  => tt_convert_us_date_to_iso( $ns_booking_data->tripStartDate ), // Trip Start Date.
+            "expiration_date" => tt_convert_us_date_to_iso( $ns_booking_data->tripEndDate ), // Trip End Date.
+            "depositDate"     => tt_convert_us_date_to_iso( $ns_booking_data->bookingDate ), // Booking Date.
+            "destinations"    => array(
+                array(
+                    "countryCode" => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                )
+            )
+        ),
+        "language"             => "en-us",
+        "planID"               => $plan_id,
+        "returnTravelerQuotes" => true,
+        "localDateTime"        => tt_convert_us_date_to_iso( $ns_booking_data->bookingDate ), // With this parameter can avoid errors caused by Time Zone differences like: {"success":false,"responseMessage":"The Deposit Date can not occurr in the future","responseCode":"InvalidDepositDate"}.
+        "insuredPerson"        => array() // Will be filled with the guests data individually.
     );
 
     // Order info.
     $trip_product_qty    = isset( $ns_booking_data->guests ) ? count( $ns_booking_data->guests ) : 0;
-    $trip_total_amount   = isset( $ns_booking_data->totalAmount ) ? $ns_booking_data->totalAmount : '';
+    $trip_total_amount   = isset( $ns_booking_data->totalAmount ) ? tt_get_float_value( $ns_booking_data->totalAmount ) : 0;
+    $trip_balance_paid   = isset( $ns_booking_data->balancePaid ) ? tt_get_float_value( $ns_booking_data->balancePaid ) : 0;
+    $trip_amount_due     = isset( $ns_booking_data->amountDue ) ? tt_get_float_value( $ns_booking_data->amountDue ) : 0;
+    $trip_sales_tax      = isset( $ns_booking_data->salesTax ) ? tt_get_float_value( $ns_booking_data->salesTax ) : 0;
+    $trip_discount_total = isset( $ns_booking_data->discountsTotal ) ? abs( tt_get_float_value( $ns_booking_data->discountsTotal ) ) : 0;
     $trip_product_guests = isset( $ns_booking_data->guests ) ? $ns_booking_data->guests : array();
     $trip_product_price  = 0;
     $trip_s_qty          = 0;
     $trip_s_single_price = 0;
 
+    $base_price_ns      = isset( $ns_guest_info_from_booking->basePrice ) ? tt_get_float_value( $ns_guest_info_from_booking->basePrice ) : 0;
+    $insurance_price_ns = isset( $ns_guest_info_from_booking->insurance ) ? tt_get_float_value( $ns_guest_info_from_booking->insurance ) : 0;
+
+    $single_supplement_price_ns = isset( $ns_guest_info_from_booking->singleSupplement ) ? tt_get_float_value( $ns_guest_info_from_booking->singleSupplement ) : 0;
+
+    $individual_trip_cost = $base_price_ns;
+
+    if ( $current_guest_has_bike_upgrade ) {
+        $individual_trip_cost += 0 < $bike_upgrade_price_ns ? $bike_upgrade_price_ns : (float) $bike_upgrade_price;
+    }
+
+    if ( 0 != $single_supplement_price_ns ) {
+        $individual_trip_cost += $single_supplement_price_ns;
+    }
+
+    $guest_discounts_total_ns = 0;
+
+    if ( isset( $ns_guest_info_from_booking->discounts ) && is_array( $ns_guest_info_from_booking->discounts ) && ! empty( $ns_guest_info_from_booking->discounts ) ) {
+        foreach( $ns_guest_info_from_booking->discounts as $discount ) {
+            if ( isset( $discount->amount ) ) {
+                $individual_trip_cost -= abs( $discount->amount );
+                $guest_discounts_total_ns += abs( $discount->amount );
+                $guests_with_discount++;
+            }
+        }
+    }
+
+    $insured_person_single = array();
+
     // Here we have two options. Some of the secondary guest is registered first or the primary guest is registered first.
-    if( $ns_guest_info->isPrimary ) {
+    if ( $ns_guest_info->isPrimary ) {
         // Primary guest registers first.
         $guest_index_id              = 0;
         $order_guest_index           = $guest_index_id;
+
+        // Rooms guests indexes map.
+        $guests_occupants[$ns_guest_info->guestId] = $order_guest_index;
 
         $order_bike_gears['primary'] = $guest_bike_gears;
 
@@ -865,11 +1082,51 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
             'gender'      => tt_validate( $ns_guest_booking_result->gender->id ),
             'order_rf_id' => $order_rf_id,
         );
+
+        if ( 0 < $insurance_price_ns ) {
+            // If the insurance price is already set, we use it.
+            $arcBasePremiumPP = $insurance_price_ns;
+        } else {
+            // Otherwise, we calculate the insurance fees.
+
+            $insured_person_single[] = array(
+                "address" => array(
+                    "stateAbbreviation"   => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->state ) : tt_validate( $ns_guest_booking_result->addressInfo->state ),
+                    "countryAbbreviation" => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                ),
+                "dob"                => $ns_guest_booking_result->birthdate,
+                "individualTripCost" => $individual_trip_cost
+            );
+
+            $trek_insurance_args["insuredPerson"] = $insured_person_single;
+
+            $archinsuranceResPP = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
+            $arcBasePremiumPP   = isset( $archinsuranceResPP['basePremium'] ) ? (float) $archinsuranceResPP['basePremium'] : 0;
+        }
+
+        $trek_guest_insurance['primary'] = array(
+            'is_travel_protection' => isset( $ns_guest_info_from_booking->tripInsurancePurchased ) ? (int) $ns_guest_info_from_booking->tripInsurancePurchased : 0,
+            'basePremium'          => $arcBasePremiumPP,
+            'ns_prices'            => array(
+                'base_price'        => $base_price_ns,
+                'wheel_upgrade'     => $bike_upgrade_price_ns,
+                'single_supplement' => $single_supplement_price_ns,
+                'discounts_total'   => $guest_discounts_total_ns,
+            )
+        );
+
+        if ( $ns_guest_info_from_booking->tripInsurancePurchased ) {
+            $tt_total_insurance_amount += $arcBasePremiumPP;
+            $insured_person_count++;
+        }
     } else {
         // Secondary guest registers first.
         $guest_index_id    = 1;
         $order_guest_index = $guest_index_id;
         $guests_count += 1;
+
+        // Rooms guests indexes map.
+        $guests_occupants[$ns_guest_info->guestId] = $order_guest_index;
 
         $order_bike_gears['guests'][$guest_index_id] = $guest_bike_gears;
 
@@ -883,12 +1140,55 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
         );
 
         array_push( $order_meta_emails, tt_validate( $ns_guest_booking_result->email ) );
+
+        if ( ! isset( $trek_guest_insurance['guests'][$order_guest_index] ) ) {
+            $trek_guest_insurance['guests'][$order_guest_index] = array();
+        }
+
+        if ( 0 < $insurance_price_ns ) {
+            // If the insurance price is already set, we use it.
+            $arcBasePremiumPG = $insurance_price_ns;
+        } else {
+            // Otherwise, we calculate the insurance fees.
+
+            $insured_person_single[] = array(
+                "address" => array(
+                    "stateAbbreviation"   => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->state ) : tt_validate( $ns_guest_booking_result->addressInfo->state ),
+                    "countryAbbreviation" => isset( $ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $ns_guest_booking_result->addressInfo->country ),
+                ),
+                "dob"                => $ns_guest_booking_result->birthdate,
+                "individualTripCost" => $individual_trip_cost
+            );
+
+            $trek_insurance_args["insuredPerson"] = $insured_person_single;
+
+            $archinsuranceResPG = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
+            $arcBasePremiumPG   = isset( $archinsuranceResPG['basePremium'] ) ? (float) $archinsuranceResPG['basePremium'] : 0;
+        }
+
+
+        $trek_guest_insurance['guests'][$order_guest_index] = array(
+            'is_travel_protection' => isset( $ns_guest_info_from_booking->tripInsurancePurchased ) ? (int) $ns_guest_info_from_booking->tripInsurancePurchased : 0,
+            'basePremium'          => $arcBasePremiumPG,
+            'ns_prices'            => array(
+                'base_price'        => $base_price_ns,
+                'wheel_upgrade'     => $bike_upgrade_price_ns,
+                'single_supplement' => $single_supplement_price_ns,
+                'discounts_total'   => $guest_discounts_total_ns,
+            )
+        );
+
+        if ( $ns_guest_info_from_booking->tripInsurancePurchased ) {
+            $tt_total_insurance_amount += $arcBasePremiumPG;
+            $insured_person_count++;
+        }
     }
 
+    // Prepare data for the bookings table.
     $current_guest_rf_id = '';
 
-    foreach( $ns_booking_data->releaseForms as $guest_release_form ) {
-        if( $ns_guest_id == $guest_release_form->guestId ) {
+    foreach ( $ns_booking_data->releaseForms as $guest_release_form ) {
+        if ( $ns_guest_id == $guest_release_form->guestId ) {
             $current_guest_rf_id = $guest_release_form->releaseFormId;
         }
     }
@@ -907,12 +1207,21 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
         'order_info'              => $bookings_table_order_info,
     );
 
-    // New record insertion. This is the first insertion.
-    tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $insert_booking_data, 'insert' ), [], 'insert' );
+    $check_gb_status = tt_checkbooking_status( $ns_guest_id, $ns_booking_data->bookingId ); // 0 if record not in the bookings table, 1 if record exists.
 
-    foreach( $ns_booking_data->guests as $guest ) {
+    // If this is an insertion or the record does not exist, we need to insert the booking data into the bookings table.
+    if ( $is_insertion || ( 0 >= $check_gb_status ) ) {
+        // New record insertion. This is the first insertion.
+        tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $insert_booking_data, 'insert' ), [], 'insert' );
+    } else {
+        // Update the bookings table for the current guest. First update.
+        $where = array( 'netsuite_guest_registration_id' => $ns_guest_id, 'ns_trip_booking_id' => $ns_booking_data->bookingId );
+        tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $insert_booking_data ), $where );
+    }
+
+    foreach ( $ns_booking_data->guests as $guest ) {
         // Skip current guest, because we inserted data for him, and has stored in variables for the order already.
-        if( $guest->guestId == $current_ns_guest_id ) {
+        if ( $guest->guestId == $current_ns_guest_id ) {
             continue;
         }
 
@@ -924,10 +1233,11 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
 
         $_guest_bike_info         = tt_get_bike_attributes_by_bike_id( $ns_booking_data->tripId, $ns_booking_data->tripCode, $_ns_guest_info->bikeId );
 
+        $_bike_type_id            = tt_validate( json_decode( $_guest_bike_info['bikeModel'], true )['id'] );
         $_guest_bike_gears        = array(
             'rider_level'              => tt_validate( $_ns_guest_booking_result->riderType->id ),
             'activity_level'           => tt_validate( $_ns_guest_booking_result->activityLevel->id ),
-            'bikeTypeId'               => tt_validate( json_decode( $_guest_bike_info['bikeModel'], true )['id'] ),
+            'bikeTypeId'               => $_bike_type_id,
             'bikeId'                   => tt_validate( $_ns_guest_info->bikeId ),
             'bike_type_id_preferences' => '',
             'bike_size'                => tt_validate( json_decode( $_guest_bike_info['bikeSize'], true )['id'] ),
@@ -936,12 +1246,58 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
             'helmet_size'              => tt_validate( $_ns_guest_info->helmetId ),
             'jersey_style'             => tt_get_jersey_style( tt_validate( $_ns_guest_info->jerseyId ) ),
             'jersey_size'              => tt_validate( $_ns_guest_info->jerseyId ),
+            'tshirt_size'              => tt_validate( $_ns_guest_info->tshirtSizeId ),
         );
 
-        if( $guest->isPrimary ) {
+        $_current_guest_has_bike_upgrade = false;
+        $_bike_upgrade_price_ns          = isset( $guest->wheelUpgrade ) ? tt_get_float_value( $guest->wheelUpgrade ) : 0;
+
+        if ( 0 < $_bike_upgrade_price_ns ) {
+            // Selected bike is with upgrade
+            $bike_upgrade_count++;
+
+            $_current_guest_has_bike_upgrade = true;
+
+            // Add the price from the booking data.
+            $bike_upgrade_prices[] = $_bike_upgrade_price_ns;
+        }
+
+        $_base_price_ns      = isset( $guest->basePrice ) ? tt_get_float_value( $guest->basePrice ) : 0;
+        $_insurance_price_ns = isset( $guest->insurance ) ? tt_get_float_value( $guest->insurance ) : 0;
+
+        $_single_supplement_price_ns = isset( $guest->singleSupplement ) ? tt_get_float_value( $guest->singleSupplement ) : 0;
+
+        $_individual_trip_cost = $_base_price_ns;
+
+        if ( $_current_guest_has_bike_upgrade ) {
+            $_individual_trip_cost += 0 < $_bike_upgrade_price_ns ? $_bike_upgrade_price_ns : (float) $bike_upgrade_price;
+        }
+
+        if ( 0 < $_single_supplement_price_ns ) {
+            $_individual_trip_cost += $_single_supplement_price_ns;
+        }
+
+        $_guest_discounts_total_ns = 0;
+
+        if ( isset( $guest->discounts ) && is_array( $guest->discounts ) && ! empty( $guest->discounts ) ) {
+            foreach( $guest->discounts as $discount ) {
+                if ( isset( $discount->amount ) ) {
+                    $_individual_trip_cost -= abs( $discount->amount );
+                    $_guest_discounts_total_ns += abs( $discount->amount );
+                    $guests_with_discount++;
+                }
+            }
+        }
+
+        $_insured_person_single = array();
+
+        if ( $guest->isPrimary ) {
             // Primary guest.
             $guest_index_id              = 0;
             $order_guest_index           = $guest_index_id;
+
+            // Rooms guests indexes map.
+            $guests_occupants[$_ns_guest_info->guestId] = $order_guest_index;
 
             $order_bike_gears['primary'] = $_guest_bike_gears;
 
@@ -991,11 +1347,50 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
                 'gender'      => tt_validate( $_ns_guest_booking_result->gender->id ),
                 'order_rf_id' => $order_rf_id,
             );
+
+            if ( 0 < $_insurance_price_ns ) {
+                // If the insurance is already purchased, we use the price from the booking.
+                $arcBasePremiumPP = $_insurance_price_ns;
+            } else {
+                // Otherwise, we calculate the insurance fees.
+                $_insured_person_single[] = array(
+                    "address" => array(
+                        "stateAbbreviation"   => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->state ) : tt_validate( $_ns_guest_booking_result->addressInfo->state ),
+                        "countryAbbreviation" => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $_ns_guest_booking_result->addressInfo->country ),
+                    ),
+                    "dob"                => $_ns_guest_booking_result->birthdate,
+                    "individualTripCost" => $_individual_trip_cost
+                );
+
+                $trek_insurance_args["insuredPerson"] = $_insured_person_single;
+
+                $archinsuranceResPP = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
+                $arcBasePremiumPP   = isset( $archinsuranceResPP['basePremium'] ) ? (float) $archinsuranceResPP['basePremium'] : 0;
+            }
+
+            $trek_guest_insurance['primary'] = array(
+                'is_travel_protection' => isset( $guest->tripInsurancePurchased ) ? (int) $guest->tripInsurancePurchased : 0,
+                'basePremium'          => $arcBasePremiumPP,
+                'ns_prices'            => array(
+                    'base_price'        => $_base_price_ns,
+                    'wheel_upgrade'     => $_bike_upgrade_price_ns,
+                    'single_supplement' => $_single_supplement_price_ns,
+                    'discounts_total'   => $_guest_discounts_total_ns,
+                )
+            );
+
+            if ( $guest->tripInsurancePurchased ) {
+                $tt_total_insurance_amount += $arcBasePremiumPP;
+                $insured_person_count++;
+            }
         } else {
             // Secondary guest.
-            $guest_index_id = $guests_count; // ++
+            $guest_index_id    = $guests_count; // ++
             $order_guest_index = $guest_index_id;
-            $guests_count += 1;
+            $guests_count     += 1;
+
+             // Rooms guests indexes map.
+            $guests_occupants[$_ns_guest_info->guestId] = $order_guest_index;
 
             $order_bike_gears['guests'][$guest_index_id] = $_guest_bike_gears;
 
@@ -1009,12 +1404,54 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
             );
 
             array_push( $order_meta_emails, tt_validate( $_ns_guest_booking_result->email ) );
+
+            if ( ! isset( $trek_guest_insurance['guests'][$order_guest_index] ) ) {
+                $trek_guest_insurance['guests'][$order_guest_index] = array();
+            }
+
+            if ( 0 < $_insurance_price_ns ) {
+                // If the insurance is already purchased, we use the price from the booking.
+                $arcBasePremiumPG = $_insurance_price_ns;
+            } else {
+                // Otherwise, we calculate the insurance fees.
+                // !!! Note: the address here is for the current guest, not for the primary one.
+                $_insured_person_single[] = array(
+                    "address" => array(
+                        "stateAbbreviation"   => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->state ) : tt_validate( $_ns_guest_booking_result->addressInfo->state ),
+                        "countryAbbreviation" => isset( $_ns_guest_booking_result->addressInfo->shipping ) ? tt_validate( $_ns_guest_booking_result->addressInfo->shipping->country ) : tt_validate( $_ns_guest_booking_result->addressInfo->country ),
+                    ),
+                    "dob"                => $_ns_guest_booking_result->birthdate,
+                    "individualTripCost" => $_individual_trip_cost
+                );
+
+                $trek_insurance_args["insuredPerson"] = $_insured_person_single;
+
+                $archinsuranceResPG = tt_set_calculate_insurance_fees_api( $trek_insurance_args );
+                $arcBasePremiumPG   = isset( $archinsuranceResPG['basePremium'] ) ? (float) $archinsuranceResPG['basePremium'] : 0;
+            }
+
+            $trek_guest_insurance['guests'][$order_guest_index] = array(
+                'is_travel_protection' => isset( $guest->tripInsurancePurchased ) ? (int) $guest->tripInsurancePurchased : 0,
+                'basePremium'          => $arcBasePremiumPG,
+                'ns_prices'            => array(
+                    'base_price'        => $_base_price_ns,
+                    'wheel_upgrade'     => $_bike_upgrade_price_ns,
+                    'single_supplement' => $_single_supplement_price_ns,
+                    'discounts_total'   => $_guest_discounts_total_ns,
+                )
+            );
+
+            if ( $guest->tripInsurancePurchased ) {
+                $tt_total_insurance_amount += $arcBasePremiumPG;
+                $insured_person_count++;
+            }
         }
 
+        // Prepare data for the bookings table.
         $current_guest_rf_id = '';
 
-        foreach( $ns_booking_data->releaseForms as $guest_release_form ) {
-            if( $_ns_guest_id == $guest_release_form->guestId ) {
+        foreach ( $ns_booking_data->releaseForms as $guest_release_form ) {
+            if ( $_ns_guest_id == $guest_release_form->guestId ) {
                 $current_guest_rf_id = $guest_release_form->releaseFormId;
             }
         }
@@ -1033,67 +1470,298 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
             'order_info'              => $_bookings_table_order_info,
         );
 
-        // New record insertion. Every other guest insertion
-        tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $_insert_booking_data, 'insert' ), [], 'insert' );
+        $_check_gb_status = tt_checkbooking_status( $_ns_guest_id, $ns_booking_data->bookingId ); // 0 if record not in the bookings table, 1 if record exists.
+
+        // If this is an insertion or the record does not exist, we need to insert the booking data into the bookings table.
+        if ( $is_insertion || ( 0 >= $_check_gb_status ) ) {
+            // New record insertion. Every other guest insertion
+            tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $_insert_booking_data, 'insert' ), [], 'insert' );
+        } else {
+            // Update the bookings table for the current guest.
+            $_where = array( 'netsuite_guest_registration_id' => $_ns_guest_id, 'ns_trip_booking_id' => $ns_booking_data->bookingId );
+            tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $_insert_booking_data ), $_where );
+        }
     }
 
     // Finalizing the order needs to be done only one time.
-    foreach( $trip_product_guests as $guest ) {
-        if( $guest->isPrimary ) {
+    foreach ( $trip_product_guests as $guest ) {
+        if ( $guest->isPrimary ) {
             $trip_pr_guest_ns_user_id = $guest->guestId;
-            $trip_product_price       = $guest->basePrice;
+            $trip_product_price_ns = isset( $guest->basePrice ) ? tt_get_float_value( $guest->basePrice ) : 0;
+            $trip_product_price    = $trip_product_price_ns;
         }
-        
-        if( 0 != $guest->singleSupplement ) {
+
+        if ( 0 != $guest->singleSupplement ) {
             $trip_s_qty++;
-            $trip_s_single_price = $guest->singleSupplement;
+            $trip_s_single_price_ns = isset( $guest->singleSupplement ) ? tt_get_float_value( $guest->singleSupplement ) : 0;
+            $trip_s_single_price    = $trip_s_single_price_ns;
         }
     }
 
-    $bike_upgrade_price      = get_post_meta( $product_id, TT_WC_META_PREFIX . 'bikeUpgradePrice', true );
-    $single_supplement_price = get_post_meta( $product_id, TT_WC_META_PREFIX . 'singleSupplementPrice', true );
-
-    $trek_user_checkout_data = array(
-        'no_of_guests'          => count( $ns_booking_data->guests ),
-        'shipping_first_name'   => $order_meta_primary['address_info']['shipping']['first_name'],
-        'shipping_last_name'    => $order_meta_primary['address_info']['shipping']['last_name'],
-        'shipping_phone'        => $order_meta_primary['phone'],
-        'custentity_birthdate'  => $order_meta_primary['dob'],
-        'custentity_gender'     => $order_meta_primary['gender'],
-        'shipping_address_1'    => $order_meta_primary['address_info']['shipping']['address_1'],
-        'shipping_address_2'    => $order_meta_primary['address_info']['shipping']['address_2'],
-        'shipping_country'      => $order_meta_primary['address_info']['shipping']['country'],
-        'shipping_state'        => $order_meta_primary['address_info']['shipping']['state'],
-        'shipping_city'         => $order_meta_primary['address_info']['shipping']['city'],
-        'shipping_postcode'     => $order_meta_primary['address_info']['shipping']['postcode'],
-        'email'                 => $order_meta_primary['email'],
-        'guests'                => $order_guests,
-        'bike_gears'            => $order_bike_gears,
-        'tt_waiver'             => '1',
-        'parent_product_id'     => tt_get_parent_trip_id_by_child_sku( $ns_booking_data->tripCode, false ),
-        'product_id'            => $product_id,
-        'sku'                   => $ns_booking_data->tripCode,
-        'bikeUpgradePrice'      => $bike_upgrade_price,
-        'singleSupplementPrice' => $single_supplement_price,
+    $accommodation_type_map = array(
+        'doubleOneBed'      => 'single',
+        'doubleTwoBeds'     => 'double',
+        'sharedWithRoommate'=> 'roommate',
+        'privateRoom'       => 'private',
     );
 
-    $trip_product = wc_get_product( $product_id );
-    if( ! empty( $trip_product_price ) ) {
+    // Assign occupants to the rooms.
+    if ( isset( $ns_booking_data->rooms ) && is_array( $ns_booking_data->rooms ) ) {
+        foreach ( $ns_booking_data->rooms as $room ) {
+            if( 'doubleOneBed' === $room->accommodationType ) { // single
+                $room_count_single++;
+            } elseif( 'doubleTwoBeds' === $room->accommodationType ) { // double
+                $room_count_double++;
+            } elseif( 'sharedWithRoommate' === $room->accommodationType ) { // roommate
+                $room_count_roommate++;
+            } elseif( 'privateRoom' === $room->accommodationType ) { // private
+                $room_count_private++;
+            }
+
+            // Assign occupants to the rooms.
+            if ( ! empty( $room->guestIds ) && is_array( $room->guestIds ) ) {
+                foreach ( $room->guestIds as $guest_id ) {
+                    if ( isset( $guests_occupants[$guest_id] ) ) {
+                        if ( ! isset( $occupants[$accommodation_type_map[$room->accommodationType]] ) ) {
+                            $occupants[$accommodation_type_map[$room->accommodationType]] = array();
+                        }
+                        $occupants[$accommodation_type_map[$room->accommodationType]][] = $guests_occupants[$guest_id];
+                    }
+                }
+            }
+        }
+    }
+
+    // Check the trip for the deposit payment.
+    $pay_amount = 'full'; // Default payment amount is full.
+    $is_deposit = '0'; // Default deposit is not set.
+
+    if ( 0 < $trip_amount_due ) {
+        $pay_amount = 'deposite'; // If the trip amount due is greater than 0, we set the payment amount to deposit.
+        $is_deposit = '1';
+    }
+
+    $trek_user_checkout_data = array(
+        'no_of_guests'               => count( $ns_booking_data->guests ),
+        'first_name'                 => $order_meta_primary['first_name'],
+        'last_name'                  => $order_meta_primary['last_name'],
+        'shipping_first_name'        => $order_meta_primary['address_info']['shipping']['first_name'],
+        'shipping_last_name'         => $order_meta_primary['address_info']['shipping']['last_name'],
+        'shipping_phone'             => $order_meta_primary['phone'],
+        'custentity_birthdate'       => $order_meta_primary['dob'],
+        'custentity_gender'          => $order_meta_primary['gender'],
+        'shipping_address_1'         => $order_meta_primary['address_info']['shipping']['address_1'],
+        'shipping_address_2'         => $order_meta_primary['address_info']['shipping']['address_2'],
+        'shipping_country'           => $order_meta_primary['address_info']['shipping']['country'],
+        'shipping_state'             => $order_meta_primary['address_info']['shipping']['state'],
+        'shipping_city'              => $order_meta_primary['address_info']['shipping']['city'],
+        'shipping_postcode'          => $order_meta_primary['address_info']['shipping']['postcode'],
+        'billing_first_name'         => $order_meta_primary['address_info']['billing']['first_name'],
+        'billing_last_name'          => $order_meta_primary['address_info']['billing']['last_name'],
+        'billing_address_1'          => $order_meta_primary['address_info']['billing']['address_1'],
+        'billing_address_2'          => $order_meta_primary['address_info']['billing']['address_2'],
+        'billing_country'            => $order_meta_primary['address_info']['billing']['country'],
+        'billing_state'              => $order_meta_primary['address_info']['billing']['state'],
+        'billing_city'               => $order_meta_primary['address_info']['billing']['city'],
+        'billing_postcode'           => $order_meta_primary['address_info']['billing']['postcode'],
+        'email'                      => $order_meta_primary['email'],
+        'guests'                     => $order_guests,
+        'single'                     => $room_count_single,
+        'double'                     => $room_count_double,
+        'roommate'                   => $room_count_roommate,
+        'private'                    => $room_count_private,
+        'occupants'                  => $occupants,
+        'pay_amount'                 => $pay_amount,
+        'bike_gears'                 => $order_bike_gears,
+        'trek_guest_insurance'       => $trek_guest_insurance,
+        'tt_waiver'                  => '1',
+        'is_hiking_checkout'         => $is_hiking_checkout,
+        'parent_product_id'          => tt_get_parent_trip_id_by_child_sku( $ns_booking_data->tripCode, false ),
+        'product_id'                 => $product_id,
+        'sku'                        => $ns_booking_data->tripCode,
+        'bikeUpgradePrice'           => $bike_upgrade_price,
+        'singleSupplementPrice'      => $single_supplement_price_float,
+        'cart_total_full_amount'     => $trip_total_amount,
+        'insuredPerson'              => $insured_person_count,
+        'tt_insurance_total_charges' => $tt_total_insurance_amount,
+    );
+
+    // Get the trip product.
+    $trip_product                   = wc_get_product( $product_id );
+    $existing_trip_product_item_id  = null;
+
+    // Get the line item product IDs.
+    $s_product_id                   = tt_create_line_item_product( 'TTWP23SUPP' );
+    $existing_s_item_id             = null;
+
+    $bike_upgrade_product_id        = tt_create_line_item_product( 'TTWP23UPGRADES' );
+    $existing_bike_upgrade_item_ids = array();
+
+    $insurance_product_id           = tt_create_line_item_product( 'TTWP23FEES' );
+    $existing_insurance_item_id     = null;
+
+    // Get existing item IDs for single supplement, bike upgrade, and insurance.
+    foreach ( $order->get_items() as $item_id => $item ) {
+        $item_product_id = $item->get_product_id();
+
+        if ( $item_product_id == $s_product_id ) {
+            $existing_s_item_id = $item_id;
+        }
+
+        if ( $item_product_id == $bike_upgrade_product_id ) {
+            $existing_bike_upgrade_item_ids[] = $item_id; // Store all bike upgrade item IDs.
+        }
+
+        if ( $item_product_id == $insurance_product_id ) {
+            $existing_insurance_item_id = $item_id;
+        }
+
+        if ( $item_product_id == $product_id ) {
+            // If the trip product is already in the order, we can update it.
+            $existing_trip_product_item_id = $item_id;
+        }
+    }
+
+    if ( ! empty( $trip_product_price ) ) {
         $trip_product->set_price( $trip_product_price );
     }
-    $product_item_id = $order->add_product( $trip_product, $trip_product_qty );
-    wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_data', $trek_user_checkout_data );
-    wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_product_id', $product_id );
 
-    // TODO: Travel protection, Bike Upgrade
-    // *** Single Supplement Fees ***
-    if( ! empty( $trip_s_qty ) ) {
-        $s_product_id = tt_create_line_item_product( 'TTWP23SUPP' );
-        $s_product    = wc_get_product( $s_product_id );
-        if( ! empty( $trip_s_single_price ) ) {
-            $s_product->set_price( $trip_s_single_price );
+    // If this is an insertion, we need to insert the line item meta.
+    if ( $is_insertion ) {
+        $product_item_id = $order->add_product( $trip_product, $trip_product_qty );
+        wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_data', $trek_user_checkout_data );
+        wc_add_order_item_meta( $product_item_id, 'trek_user_checkout_product_id', $product_id );
+    } else {
+        // Add or update the trip product item in the order.
+        if ( $existing_trip_product_item_id ) {
+            $product_item_id = $existing_trip_product_item_id;
+            $existing_item   = $order->get_item( $product_item_id );
+            $existing_item->set_quantity( $trip_product_qty );
+            if ( ! empty( $trip_product_price ) ) {
+                $existing_item->set_subtotal( $trip_product_price * $trip_product_qty );
+                $existing_item->set_total( $trip_product_price * $trip_product_qty );
+            }
+            $existing_item->save();
+        } else {
+            // If the trip product is not in the order, we add it.
+            $product_item_id = $order->add_product( $trip_product, $trip_product_qty );
         }
-        $s_product_item_id = $order->add_product( $s_product, $trip_s_qty );
+
+        // Update the order item meta for the trip product.
+        wc_update_order_item_meta( $product_item_id, 'trek_user_checkout_data', $trek_user_checkout_data );
+        wc_update_order_item_meta( $product_item_id, 'trek_user_checkout_product_id', $product_id );
+    }
+
+    // *** Single Supplement Fees ***
+    if ( empty( $trip_s_qty ) || $trip_s_qty <= 0 ) {
+        // Remove existing single supplement item if trip_s_qty is empty or 0
+        if ( $existing_s_item_id ) {
+            $order->remove_item( $existing_s_item_id );
+            $order->save();
+        }
+    } else {
+        // Add or update single supplement item
+        if ( $existing_s_item_id ) {
+            // Update existing item quantity
+            $existing_item = $order->get_item( $existing_s_item_id );
+            $existing_item->set_quantity( $trip_s_qty );
+            if ( ! empty( $trip_s_single_price ) ) {
+                $existing_item->set_subtotal( $trip_s_single_price * $trip_s_qty );
+                $existing_item->set_total( $trip_s_single_price * $trip_s_qty );
+            }
+            $existing_item->save();
+        } else {
+            // Add new single supplement item
+            $s_product = wc_get_product( $s_product_id );
+            if ( ! empty( $trip_s_single_price ) ) {
+                $s_product->set_price( $trip_s_single_price );
+            }
+            $s_product_item_id = $order->add_product( $s_product, $trip_s_qty );
+        }
+    }
+
+    // *** Bike Upgrade Fees ***
+    // Remove existing bike upgrade item if bike_upgrade_count is empty or 0
+    if ( ! empty( $existing_bike_upgrade_item_ids ) ) {
+        tt_remove_line_items_from_order( $order, $existing_bike_upgrade_item_ids );
+    }
+
+    if ( $bike_upgrade_count > 0 ) {
+
+        // Add new bike upgrade items.
+        $bike_upgrade_product = wc_get_product( $bike_upgrade_product_id );
+
+        // Check if any price in the bike upgrade prices is different from the others.
+        if ( count( array_unique( $bike_upgrade_prices ) ) > 1 ) {
+            // If there are different prices, we need to set the price for each item individually.
+            foreach ( $bike_upgrade_prices as $price ) {
+                $bike_upgrade_product = wc_get_product( $bike_upgrade_product_id );
+                $bike_upgrade_product->set_price( $price );
+                $bike_upgrade_item_id = $order->add_product( $bike_upgrade_product, 1 );
+            }
+        } elseif ( count( $bike_upgrade_prices ) > 0 ) {
+            // If all prices are the same, we can set the price for the entire item.
+            $bike_upgrade_product->set_price( $bike_upgrade_prices[0] );
+            $bike_upgrade_item_id = $order->add_product( $bike_upgrade_product, $bike_upgrade_count );
+        }
+    }
+
+    // *** Travel Protection Fees ***
+    if ( empty( $tt_total_insurance_amount ) || $tt_total_insurance_amount <= 0 ) {
+        // Remove existing insurance item if tt_total_insurance_amount is empty or 0
+        if ( $existing_insurance_item_id ) {
+            $order->remove_item( $existing_insurance_item_id );
+            $order->save();
+        }
+    } else {
+        // Add or update insurance item
+        if ( $existing_insurance_item_id ) {
+            // Update existing item quantity
+            $existing_item = $order->get_item( $existing_insurance_item_id );
+            $existing_item->set_quantity( 1 ); // Insurance is always one item
+            if ( ! empty( $tt_total_insurance_amount ) ) {
+                $existing_item->set_subtotal( $tt_total_insurance_amount );
+                $existing_item->set_total( $tt_total_insurance_amount );
+            }
+            $existing_item->save();
+        } else {
+            // Add new insurance item
+            $insurance_product = wc_get_product( $insurance_product_id );
+            if ( ! empty( $tt_total_insurance_amount ) ) {
+                $insurance_product->set_price( $tt_total_insurance_amount );
+            }
+            $insurance_item_id = $order->add_product( $insurance_product, 1 );
+        }
+    }
+
+    // *** Taxes ***
+    $tax_fee        = null;
+    $tax_fee_exists = false;
+    $tax_fee_id     = null;
+    foreach ( $order->get_items('tax') as $tax_item_id => $tax_item ) {
+         /** @var WC_Order_Item_Tax $tax_item */
+        if ( $tax_item->get_label() === __( 'Tax', 'trek-travel-theme' ) ) {
+            $tax_fee_exists = true;
+            $tax_fee        = $tax_item;
+            $tax_fee_id     = $tax_item_id;
+            break;
+        }
+    }
+
+    // If there is no tax amount, we can remove it.
+    if ( $tax_fee_exists && $tax_fee_id ) {
+        $order->remove_item( $tax_fee_id );
+    }
+
+    // If there is a tax amount, we need to add it to the order or update the existing one.
+    if ( 0 < $trip_sales_tax ) {
+        $tax_fee = new WC_Order_Item_Tax();
+        $tax_fee->set_rate_id( $product_tax_rate ); // Set the tax rate if needed.
+        $tax_fee->set_label( __( 'Tax', 'trek-travel-theme' ) );
+        $tax_fee->set_tax_total( $trip_sales_tax );
+        $tax_fee->set_shipping_tax_total( 0.00 );
+
+        $order->add_item( $tax_fee );
     }
 
     // Add billing and shipping addresses.
@@ -1147,8 +1815,95 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
         $order->set_date_created( $date_time );
     }
 
+    // *** Discounts ***
+    $coupon = null;
+
+    // First backup any existing coupons on the first sync.
+    $order_coupons_bk = get_post_meta( $order->id, 'tt_wc_order_coupons_bk', true );
+    if ( empty( $order_coupons_bk ) ) {
+        $coupons_for_bk   = array();
+        $existing_coupons = $order->get_items( 'coupon' );
+
+        foreach ( $existing_coupons as $coupon_item ) {
+            /** @var WC_Order_Item_Coupon $coupon_item */
+            $coupons_for_bk[] = array(
+                'code'     => $coupon_item->get_code(),
+                'discount' => $coupon_item->get_discount(),
+            );
+        }
+        update_post_meta( $order->id, 'tt_wc_order_coupons_bk', $coupons_for_bk );
+    }
+
+    // If there is a discount, needs to create a coupon.
+    if ( 0 < $trip_discount_total ) {
+        if ( 0 <= $guests_with_discount ) {
+            $guests_with_discount = $guests_count; // Default to total guests count.
+        }
+
+        $discount_amount = $trip_discount_total / $guests_with_discount;
+
+        $should_create_coupon = true;
+
+        // Check for coupon with the same discount_amount.
+        $coupons = $order->get_items( 'coupon' );
+        foreach ( $coupons as $coupon_item ) {
+            /** @var WC_Order_Item_Coupon $coupon_item */
+            if ( $coupon_item->get_discount() == $discount_amount ) {
+                // If a coupon with the same discount amount already exists, no need to create a new one.
+                $should_create_coupon = false;
+                break;
+            }
+        }
+
+        // If no coupon with the same discount amount exists, create a new coupon.
+        if ( $should_create_coupon ) {
+            $coupon_code = 'auto_discount_' . $order->id;
+
+            $coupon = new WC_Coupon();
+            $coupon->set_code( $coupon_code );
+            $coupon->set_discount_type( 'fixed_cart' );
+            $coupon->set_amount( $discount_amount );
+            $coupon->set_individual_use( true );
+            $coupon->set_usage_limit( 1 );
+            $coupon->save();
+
+            $order->apply_coupon( $coupon_code );
+        }
+    } else {
+        // No discount applied, needs to remove any existing coupon.
+        $coupons = $order->get_items( 'coupon' );
+        foreach ( $coupons as $coupon_item_id => $coupon_item ) {
+            /** @var WC_Order_Item_Coupon $coupon_item */
+            $order->remove_item( $coupon_item_id );
+        }
+    }
+
     $order->calculate_totals();
+
+    if ( '1' === $is_deposit ) {
+        // Update the order total with the paid amount.
+        $order->set_total( $trip_balance_paid );
+    } else {
+        if ( 0 < $trip_sales_tax ) {
+            $order->set_total( $order->get_total() + $trip_sales_tax );
+        }
+    }
+
     $order->save();
+
+    if ( $coupon && is_a( $coupon, 'WC_Coupon' ) ) {
+        wp_delete_post( $coupon->get_id(), true );
+    }
+
+    // Check for backup of the original order meta.
+    $trek_user_checkout_data_bk = get_post_meta( $order->id, 'trek_user_checkout_data_bk', true );
+
+    // If the order backup meta is empty, we can store the original data as a backup.
+    if ( empty( $trek_user_checkout_data_bk ) ) {
+        $trek_user_checkout_data_original = get_post_meta( $order->id, 'trek_user_checkout_data', true );
+        // Backup the original order meta.
+        update_post_meta( $order->id, 'trek_user_checkout_data_bk', $trek_user_checkout_data_original );
+    }
 
     // Update the order meta.
     update_post_meta( $order->id, 'trek_user_checkout_data', $trek_user_checkout_data );
@@ -1159,10 +1914,19 @@ function tt_finalize_migrated_order( $order, $product_id, $wc_user_id, $current_
     update_post_meta( $order->id, 'tt_meta_total_amount', $trip_total_amount );
     update_post_meta( $order->id, 'tt_wc_order_finished_status', $order_status );
 
-    // Restore product qty.
-    wc_update_product_stock( $product_id, $trip_product_qty, 'increase' );
+    if ( '1' === $is_deposit ) {
+        update_post_meta( $order->id, '_is_order_transaction_deposit', true );
+    } else {
+        update_post_meta( $order->id, '_is_order_transaction_deposit', false );
+    }
 
-    tt_add_error_log( 'NS - Finalize migrated order - END.', array( 'booking_id' => $ns_booking_data->bookingId, 'order_id' => $order->id, 'customer_id' => $wc_user_id, 'ns_user_id' => $current_ns_guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'End migrated order sync.' ) );
+    // If this is an insertion, we need to increase the product stock and log the order finalization.
+    if ( $is_insertion ) {
+        // Restore product qty.
+        wc_update_product_stock( $product_id, $trip_product_qty, 'increase' );
+
+        tt_add_error_log( 'NS - Finalize migrated order - END.', array( 'booking_id' => $ns_booking_data->bookingId, 'order_id' => $order->id, 'customer_id' => $wc_user_id, 'ns_user_id' => $current_ns_guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'End migrated order sync.' ) );
+    }
 }
 
 /**
@@ -1210,12 +1974,6 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
         // Additional data that is needed to insert a row into the table.
 
         // Collect the insertion booking data.
-        $booking_table_data['order_id']                 = $order_info['order_id'];
-        $booking_table_data['releaseFormId']            = $order_info['current_guest_rf_id'];
-        $booking_table_data['guest_index_id']           = $order_info['guest_index_id'];
-        $booking_table_data['guest_phone_number']       = tt_validate( $ns_guest_booking_result->phone );
-        $booking_table_data['guest_gender']             = tt_validate( $ns_guest_booking_result->gender->id );
-        $booking_table_data['guest_date_of_birth']      = ! empty( tt_validate( $ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ) : '';
         $booking_table_data['ns_booking_status']        = 1;
 
         // Shipping Address.
@@ -1260,6 +2018,21 @@ function tt_prepare_bookings_table_data( $all_data, $operation_type = 'update' )
         $booking_table_data['user_id'] = $wp_user_id;
     }
 
+    if ( isset( $order_info['order_id'] ) ) {
+        $booking_table_data['order_id'] = $order_info['order_id'];
+    }
+
+    if ( isset( $order_info['current_guest_rf_id'] ) ) {
+        $booking_table_data['releaseFormId'] = $order_info['current_guest_rf_id'];
+    }
+
+    if ( isset( $order_info['guest_index_id'] ) ) {
+        $booking_table_data['guest_index_id'] = $order_info['guest_index_id'];
+    }
+
+    $booking_table_data['guest_phone_number']                  = tt_validate( $ns_guest_booking_result->phone );
+    $booking_table_data['guest_gender']                        = tt_validate( $ns_guest_booking_result->gender->id );
+    $booking_table_data['guest_date_of_birth']                 = ! empty( tt_validate( $ns_guest_booking_result->birthdate ) ) ? date( 'Y-m-d', strtotime( $ns_guest_booking_result->birthdate ) ) : '';
     $booking_table_data['wantsInsurance']                      = tt_validate( $guest->tripInsurancePurchased );
     $booking_table_data['waive_insurance']                     = tt_validate( $guest->waiveInsurance );
     $booking_table_data['guest_email_address']                 = tt_validate( $ns_guest_booking_result->email );
@@ -2096,6 +2869,7 @@ function tt_trigger_ns_booking_update_cb( $order_id = 0 ) {
     }
 
     if ( empty( $ns_booking_update_payload['guestsData'] ) ) {
+        do_action( 'tt_set_ns_tpp_status', $order_id, 'tpp_onhold' );
         return;
     }
 
@@ -2103,6 +2877,7 @@ function tt_trigger_ns_booking_update_cb( $order_id = 0 ) {
 
     $net_suite_client         = new NetSuiteClient();
     $ns_booking_update_result = $net_suite_client->post( TPP_SCRIPT_ID, json_encode( $ns_booking_update_payload ) );
+    tt_after_ns_booking_update( $order_id, $ns_booking_update_result );
     tt_add_error_log( 'TPP_SCRIPT_ID: ' . TPP_SCRIPT_ID, $ns_booking_update_payload, $ns_booking_update_result );
 }
 add_action( 'tt_trigger_ns_booking_update', 'tt_trigger_ns_booking_update_cb', 10, 1 );

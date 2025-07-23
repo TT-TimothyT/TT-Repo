@@ -22,6 +22,8 @@ class Trek_Email_Manager {
 		define( 'TREK_TEMPLATE_PATH', untrailingslashit( get_template_directory() ) . '/inc/trek-email-manager/templates/' );
 		// Hook for when booking creation in NetSuite fails.
 		add_action( 'netsuite_booking_failed', array( &$this, 'failed_booking_trigger_email_action' ), 10, 2 );
+		// Hook for when booking update in NetSuite fails. TPP failure.
+		add_action( 'netsuite_tpp_failed', array( &$this, 'failed_tpp_trigger_email_action' ), 10, 2 );
 		// Include the email class files.
 		add_filter( 'woocommerce_email_classes', array( &$this, 'trek_init_emails' ) );
 		
@@ -30,6 +32,8 @@ class Trek_Email_Manager {
 			
 			'failed_booking_pending_email',
 			'failed_booking_email',
+			'failed_tpp_pending_email',
+			'failed_tpp_email',
 		);
 
 		foreach ( $email_actions as $action ) {
@@ -45,6 +49,9 @@ class Trek_Email_Manager {
 		if ( ! isset( $emails[ 'Failed_Booking_Email' ] ) ) {
 			$emails[ 'Failed_Booking_Email' ] = include_once( 'emails/class-failed-booking-email.php' );
 		}
+		if ( ! isset( $emails[ 'Failed_TPP_Email' ] ) ) {
+			$emails[ 'Failed_TPP_Email' ] = include_once( 'emails/class-failed-tpp-email.php' );
+		}
 		// Include Admin On-hold Email.
 		if ( ! isset( $emails[ 'TT_WC_Email_On_Hold_Order' ] ) ) {
 			$emails[ 'TT_WC_Email_On_Hold_Order' ] = include_once( 'emails/class-wc-email-on-hold-order.php' );
@@ -57,6 +64,12 @@ class Trek_Email_Manager {
 		// Add an action for our email trigger.
 		new WC_Emails();
 		do_action( 'failed_booking_pending_email_notification', $order_id, $ns_response );
+	}
+
+	public function failed_tpp_trigger_email_action( $order_id, $ns_response ) {
+		// Add an action for our email trigger.
+		new WC_Emails();
+		do_action( 'failed_tpp_pending_email_notification', $order_id, $ns_response );
 	}
 	
 	public function trek_template_directory( $directory, $template ) {

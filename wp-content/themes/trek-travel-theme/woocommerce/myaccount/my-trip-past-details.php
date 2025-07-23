@@ -2,7 +2,7 @@
 $order_id = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : '';
 $order = wc_get_order($order_id);
 $tt_order_type = $order->get_meta( 'tt_wc_order_type' );
-$is_order_auto_generated = 'auto-generated' == $tt_order_type ? true : false;
+$is_order_auto_generated = false; // 'auto-generated' == $tt_order_type ? true : false;
 $tt_auto_generated_order_total_amount = $order->get_meta( 'tt_meta_total_amount' );
 $userInfo = wp_get_current_user();
 $user_id = $userInfo->ID;

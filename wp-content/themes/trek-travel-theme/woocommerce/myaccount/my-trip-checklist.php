@@ -8,7 +8,7 @@ $medical_fields = array(
 $order_id                             = $_REQUEST['order_id'];
 $order                                = wc_get_order( $order_id );
 $tt_order_type                        = $order->get_meta( 'tt_wc_order_type' );
-$is_order_auto_generated              = 'auto-generated' === $tt_order_type ? true : false;
+$is_order_auto_generated              = false; // 'auto-generated' === $tt_order_type ? true : false;
 $tt_auto_generated_order_total_amount = $order->get_meta( 'tt_meta_total_amount' );
 $userInfo                             = wp_get_current_user();
 $user_id                              = $userInfo->ID;
@@ -284,6 +284,9 @@ $shield_icon      = '<img src="' . TREK_DIR . '/assets/images/shield-icon.svg" c
 $tpp_not_accepted = '<img src="' . TREK_DIR . '/assets/images/not-accepted-protection.svg" class="icon-16 me-2" alt="">';
 $tpp_accepted     = '<img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-16 me-2" alt="">';
 
+$tpp_not_accepted_mobile = '<img src="' . TREK_DIR . '/assets/images/not-accepted-protection.svg" class="icon-22 me-2" alt="">';
+$tpp_accepted_mobile     = '<img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22 me-2" alt="">';
+
 // Set the travel protected status.
 $travel_protected = isset( $user_order_info[0]['wantsInsurance'] ) && $user_order_info[0]['wantsInsurance'] == 1 ? true : false;
 // Set the declined insurance status.
@@ -311,13 +314,23 @@ if ( $guest_count > 0 ) {
 
 $can_show_travel_protection = $travel_protected_guests_count < $guest_count && ( $diff->days > 14 ) ? true : false;
 
-$can_show_decline_btn = false; // $declined_insurance_guests_count < $guest_count && ( $declined_insurance_guests_count + $travel_protected_guests_count ) < $guest_count ? true : false;
+$can_show_decline_btn = $declined_insurance_guests_count < $guest_count && ( $declined_insurance_guests_count + $travel_protected_guests_count ) < $guest_count ? true : false;
 
 if( $guest_is_primary ) {
 	$public_view_order_url = esc_url($order->get_view_order_url());
 }
 
 $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
+
+// Always lock the bike selection if the user has a bike with upgrade selected.
+$primary_bikeTypeId            = isset($user_order_info[0]['bike_type_id']) ? $user_order_info[0]['bike_type_id'] : ''; //$bikeTypeId;
+$selected_bike_type_info       = tt_ns_get_bike_type_info($primary_bikeTypeId);
+$is_selected_bike_with_upgrade = false;
+if ($selected_bike_type_info && isset($selected_bike_type_info['isBikeUpgrade']) && $selected_bike_type_info['isBikeUpgrade'] == 1) {
+	// Selected bike is with upgrade
+	$is_selected_bike_with_upgrade = true;
+	$lockedUserBike = true;
+}
 ?>
 
 <!-- SVG Icons templates -->
@@ -381,6 +394,12 @@ $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
 								}
 
 								$trips_html .= '<div class="mt-4">';
+									// Add TPP status for mobile view.
+									if ($travel_protected) {
+										$trips_html .= '<p class="d-flex align-items-center lh-xs show-mobile fs-lg">' . $tpp_accepted_mobile . ' <b> Travel Protection </b></p>';
+									} else {
+										$trips_html .= '<p class="d-flex align-items-center lh-xs show-mobile fs-lg">' . $tpp_not_accepted_mobile . ' <b> Travel Protection </b></p>';
+									}
 
 									if ($lockedUserRecord || $lockedUserBike) {
 										$trips_html .= '<p class="dashboard__error locked-text"><i class="fa fa-lock fa-lg" aria-hidden="true"></i> Your Checklist or a checklist item is locked</p>';
@@ -480,7 +499,7 @@ $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
 
 								$trips_html .= '<div class="fs-5 fw-bold text-dark mb-2 travel-protection-title hide-mobile"><img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">Travel Protection Benefits</div>';
 								$trips_html .= '<p class="fs-sm fw-semibold text-dark travel-protection-subtitle hide-mobile">Because peace of mind is the best travel companion. Protect your trip from the unexpected</p>';
-								$trips_html .= '<div class="fs-5 fw-bold text-dark mb-5 travel-protection-title show-mobile"><img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">Protect your vacation!</div>';
+								$trips_html .= '<div class="fs-5 fw-bold text-dark mb-5 travel-protection-title show-mobile"><img src="' . TREK_DIR . '/assets/images/accepted-protection.svg" class="icon-22">Travel Protection Benefits</div>';
 								$trips_html .= '<div class="hide-mobile">';
 								$trips_html .= '<div class="d-flex align-items-center justify-content-between"><p class="fs-sm fw-semibold text-dark lh-sm mb-0">Here\'s what you get:</p><a href="' . site_url('/travel-protection') . '" class="btn btn-link p-0 view-full-details-link" target="_blank" data-page="my-trip-checklist">View Full Details</a></div>';
 								$trips_html .= '<div class="row list-elements">';
@@ -537,11 +556,13 @@ $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
 															</svg>
 															Add Travel Protection
 														</a>';
-										$trips_html .= '<a href="tel:8664648735"
+										$call_us_tp_btn = '<a href="tel:8664648735"
 															class="btn btn-sm btn-fixed-width fw-medium rounded-1 text-white ms-auto trek-add-to-cart add-travel-protection-btn" 
 															style="background-color: #28AAE1;">
 															<i class="bi bi-telephone"></i> Call Us
 														</a>';
+										
+										$trips_html .= $add_tp_btn;
 
 									}
 
@@ -904,7 +925,7 @@ $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
 				<?php $gray_out = ''; ?>
 					<?php if ( 5257 != $bike_id ) { ?>
 						<?php $title_string = 'Confirm your gear information'; ?>
-					<?php if( $lockedUserRecord == 1 || 5270 == $bike_id ) { ?>
+					<?php if( $lockedUserRecord == 1 ) { ?>
 						<?php $title_string = 'Review your gear information'; ?>
 						<?php $gray_out = 'disabled style="color: #666666;"'; ?>
 					<?php } ?>
@@ -928,7 +949,7 @@ $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
 					<form name="tt-checklist-form-gear-section" method="post" novalidate>
 						<div id="flush-collapse-gearInfo" class="accordion-collapse collapse" aria-labelledby="flush-heading-gearInfo">
 							<div class="accordion-body px-0">
-								<?php if( $lockedUserRecord || 5270 == $bike_id ) { ?>
+								<?php if( $lockedUserRecord ) { ?>
 									<div class="checkout-bikes__notice d-flex flex-column flex-lg-row flex-nowrap">
 										<div class="checkout-bikes__notice-icon">
 											<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/checkout/checkout-warning.png' ); ?>">
@@ -1037,7 +1058,7 @@ $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
 										</div>
 									</div>
 								<?php endif; ?>
-								<?php if ( $lockedUserRecord != 1 && 5270 != $bike_id ) { ?>
+								<?php if ( $lockedUserRecord != 1 ) { ?>
 									<div class="emergency-contact__button d-flex align-items-lg-center">
 										<div class="d-flex align-items-center emergency-contact__flex">
 											<button type="submit" class="btn btn-lg btn-primary fs-md lh-md emergency-contact__save" data-confirm="gear_section">Confirm</button>
@@ -1194,17 +1215,11 @@ $fees_product_id = tt_create_line_item_product( 'TTWP23FEES' );
 									<div class="checkout-bikes__bike-grid d-flex flex-column flex-lg-row flex-nowrap">
 										<?php
 										$primary_bikeId = $bike_id;
-										$primary_bikeTypeId = isset($user_order_info[0]['bike_type_id']) ? $user_order_info[0]['bike_type_id'] : ''; //$bikeTypeId;
 										$primary_available_bike_html = '';
 										$bikes_model_id_in = [];
 										$available_bikes = tt_get_local_bike_detail( $trip_information['ns_trip_Id'], $trip_sku );
 										$gear_preferences_bike_type = '';
-										$selected_bike_type_info = tt_ns_get_bike_type_info($primary_bikeTypeId);
-										$is_selected_bike_with_upgrade = false;
-										if ($selected_bike_type_info && isset($selected_bike_type_info['isBikeUpgrade']) && $selected_bike_type_info['isBikeUpgrade'] == 1) {
-											// Selected bike is with upgrade
-											$is_selected_bike_with_upgrade = true;
-										}
+
 										if ($available_bikes) {
 											foreach ($available_bikes as $available_bike) {
 												$bikeId        = $available_bike['bikeId'];

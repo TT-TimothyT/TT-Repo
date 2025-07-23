@@ -15,22 +15,10 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Store the Booking status in the orders meta.
+ * Booking Status Controller Class.
  *
- * @param int    $order_id The order ID.
- * @param string $booking_status Current Booking status.
- *
- * @return void
+ * @since 1.0.0
  */
-function tt_set_ns_booking_status_cb( $order_id = 0,  $booking_status = 'booking_unknown' ) {
-	if( empty( $order_id ) ) {
-		return;
-	}
-
-	update_post_meta( $order_id, TT_WC_META_PREFIX . 'guest_booking_status', $booking_status );
-}
-add_action( 'tt_set_ns_booking_status', 'tt_set_ns_booking_status_cb', 10, 2 );
-
 class TT_Booking_Status_Controller {
 	private static $instance                  = null;
 	private static $booking_id_meta_key       = TT_WC_META_PREFIX . 'guest_booking_id';
@@ -63,6 +51,10 @@ class TT_Booking_Status_Controller {
 		add_filter( 'manage_edit-shop_order_sortable_columns', array( $this, 'tt_booking_status_column_sort' ) );
 
 		add_action( 'woocommerce_admin_order_data_after_order_details', array( $this, 'tt_editable_order_meta_general' ) );
+
+		add_action( 'tt_set_ns_booking_status', array( $this, 'tt_set_ns_booking_status_cb' ), 10, 2 );
+
+		add_action( 'tt_set_ns_tpp_status', array( $this, 'tt_set_ns_tpp_status_cb' ), 10, 2 );
 
 		if ( ! defined( 'DX_DEV' ) ) {
 			// Live NetSuite
@@ -112,7 +104,7 @@ class TT_Booking_Status_Controller {
 		$columns['order_type']     = $this->tt_get_formatted_booking_detail_heading( 'order_type' );
 		$columns['related_orders'] = $this->tt_get_formatted_booking_detail_heading( 'related_orders' );
 		$columns['trip_code']      = $this->tt_get_formatted_booking_detail_heading( 'trip_code' );
-		$columns['booking_status'] = $this->tt_get_formatted_booking_detail_heading( 'booking_status' );
+		$columns['ns_status']      = $this->tt_get_formatted_booking_detail_heading( 'ns_status' );
 		$columns['booking_id']     = $this->tt_get_formatted_booking_detail_heading( 'booking_id' );
 		$columns['guest_count']    = $this->tt_get_formatted_booking_detail_heading( 'guest_count' );
 
@@ -132,12 +124,12 @@ class TT_Booking_Status_Controller {
 		if ( 'order_type' === $column_name ) {
 			$order_type = $this->tt_get_order_type( $order_id );
 
-			if( ! empty( $order_type ) ) {
-				printf( '<span style="color:#50575e;font-weight:bold;">%s</span>', $order_type );
+			if ( ! empty( $order_type ) ) {
+				printf( '<span style="color:#50575e;font-weight:bold;">%s</span>', $order_type['title'] );
 			}
 		}
 
-			// Display related orders column
+		// Display related orders column
 		if ( 'related_orders' === $column_name ) {
 			$related_orders = tt_get_related_orders( $order_id );
 			
@@ -151,13 +143,13 @@ class TT_Booking_Status_Controller {
 					$related_order = wc_get_order( $related_order_id );
 					if ( $related_order ) {
 						$order_type = $this->tt_get_order_type( $related_order_id );
-						$order_type_class = sanitize_html_class( strtolower( str_replace( ' ', '-', $order_type ) ) );
-						
+						$order_type_class = sanitize_html_class( strtolower( str_replace( ' ', '-', $order_type['title'] ) ) );
+
 						printf(
-							'<a href="%s" class="related-order-link %s tips" data-tip="%s">#%s</a>',
+							'<a href="%s" class="related-order-link %s tips" data-tip="%s" target="_blank">#%s</a>',
 							esc_url( admin_url( 'post.php?post=' . absint( $related_order_id ) . '&action=edit' ) ),
 							esc_attr( $order_type_class ),
-							esc_attr( sprintf( __( 'Related %s Order #%s', 'trek-travel-theme' ), $order_type, $related_order_id ) ),
+							esc_attr( sprintf( __( 'Related %s Order #%s', 'trek-travel-theme' ), $order_type['title'], $related_order_id ) ),
 							esc_html( $related_order_id )
 						);
 					}
@@ -168,6 +160,8 @@ class TT_Booking_Status_Controller {
 			}
 		}
 
+		// Store the original order ID to use it later.
+		$this_order_id = $order_id;
 		// Get related order ID if the order is a Travel Protection order.
 		$order_id = $this->tt_maybe_get_related_order_id( $order_id );
 
@@ -179,8 +173,21 @@ class TT_Booking_Status_Controller {
 			}
 		}
 
-		if ( 'booking_status' === $column_name ) {
-			$this->tt_print_the_booking_status_badge( $order_id );
+		if ( 'ns_status' === $column_name ) {
+			$order_type = $this->tt_get_order_type( $this_order_id );
+			switch ( $order_type['type'] ) {
+				case 'booking_order':
+					// Booking Order.
+					$this->tt_print_the_booking_status_badge( $order_id );
+					break;
+				case 'tpp_order':
+					// Travel Protection Order.
+					$this->tt_print_the_tpp_status_badge( $this_order_id );
+					break;
+				default:
+					// Other order types.
+					echo '<span class="na">—</span>';
+			}
 		}
 
 		if ( 'guest_count' === $column_name ) {
@@ -222,9 +229,10 @@ class TT_Booking_Status_Controller {
 	 * @param object $order The currently editing shop order.
 	 */
 	public function tt_editable_order_meta_general( $order ) {
-		$order_type	    = $this->tt_get_order_type( $order->get_id() );
-		$related_orders = tt_get_related_orders( $order->get_id() );
-		$order_id       = $this->tt_maybe_get_related_order_id( $order->get_id() );
+		$this_order_id  = $order->get_id();
+		$order_type     = $this->tt_get_order_type( $this_order_id );
+		$related_orders = tt_get_related_orders( $this_order_id );
+		$order_id       = $this->tt_maybe_get_related_order_id( $this_order_id );
 		$order          = wc_get_order( $order_id );
 		$ns_booking_id  = $order->get_meta( self::$booking_id_meta_key );
 		$guest_reg_data = $this->tt_get_guest_registrations( $order_id );
@@ -239,7 +247,7 @@ class TT_Booking_Status_Controller {
 					<tbody>
 						<tr>
 							<th><strong><?php $this->tt_get_formatted_booking_detail_heading( 'order_type', true ) ?></strong></th>
-							<td><strong><?php echo esc_html( $order_type ); ?></strong></td>
+							<td><strong><?php echo esc_html( $order_type['title'] ); ?></strong></td>
 						</tr>
 						<?php if ( ! empty( $related_orders ) ) : ?>
 							<tr>
@@ -250,18 +258,34 @@ class TT_Booking_Status_Controller {
 										if ( $related_order ) :
 											$related_order_type = $this->tt_get_order_type( $related_order_id );
 									?>
-										<a href="<?php echo esc_url( admin_url( 'post.php?post=' . absint( $related_order_id ) . '&action=edit' ) ); ?>" 
-											class="button <?php echo esc_attr( $related_order_type === __( 'Travel Protection', 'trek-travel-theme' ) ? 'button-secondary' : 'button-primary' ); ?> tips" 
-											data-tip="<?php echo esc_attr( sprintf( __( 'See the related %s order #%s', 'trek-travel-theme' ), $related_order_type, $related_order_id ) ); ?>">
-											<strong>#<?php echo esc_html( $related_order_id ); ?> (<?php echo esc_html( $related_order_type ); ?>)</strong>
+										<a href="<?php echo esc_url( admin_url( 'post.php?post=' . absint( $related_order_id ) . '&action=edit' ) ); ?>" target="_blank"
+											class="button <?php echo esc_attr( $related_order_type['type'] === 'tpp_order' ? 'button-secondary' : 'button-primary' ); ?> tips" 
+											data-tip="<?php echo esc_attr( sprintf( __( 'See the related %s order #%s', 'trek-travel-theme' ), $related_order_type['title'], $related_order_id ) ); ?>">
+											<strong>#<?php echo esc_html( $related_order_id ); ?> (<?php echo esc_html( $related_order_type['title'] ); ?>)</strong>
 										</a>
 									<?php endif; endforeach; ?>
 								</td>
 							</tr>
 						<?php endif; ?>
 						<tr>
-							<th><strong><?php $this->tt_get_formatted_booking_detail_heading( 'booking_status', true ) ?></strong></th>
-							<td><?php $this->tt_print_the_booking_status_badge( $order_id ) ?></td>
+							<th><strong><?php $this->tt_get_formatted_booking_detail_heading( 'ns_status', true ) ?></strong></th>
+							<td>
+								<?php
+									switch ( $order_type['type'] ) {
+										case 'booking_order':
+											// Booking Order.
+											$this->tt_print_the_booking_status_badge( $order_id );
+											break;
+										case 'tpp_order':
+											// Travel Protection Order.
+											$this->tt_print_the_tpp_status_badge( $this_order_id );
+											break;
+										default:
+											// Other order types.
+											echo '<span class="na">—</span>';
+									}
+								?>
+							</td>
 						</tr>
 						<?php
 							if( $ns_booking_id ) :
@@ -280,14 +304,21 @@ class TT_Booking_Status_Controller {
 							?>
 								<tr>
 									<th><strong><?php $this->tt_get_formatted_booking_detail_heading( 'guest_registrations', true ) ?></strong></th>
-									<td>
+									<td class="order-guest-reg-list">
 										<?php
 											foreach( $guest_reg_data['guest_registrations'] as $index => $guest_reg_id ) :
 												if ( ! empty( $guest_reg_id ) ) :
 													$guest_reg_url_args = array( 'rectype' => 246, 'id' => (int) $guest_reg_id, 'whence' => '' );
 													$guest_reg_url      = add_query_arg( $guest_reg_url_args, self::$tt_ns_base_url . self::$tt_ns_cust_rec_entry_path );
+													$is_guest_protected = tt_get_protected_status( $order_id, $guest_reg_id );
 												?>
-													<a href="<?php echo esc_url( $guest_reg_url ) ?>" target="_blank" rel="noopener noreferrer" class="button <?php echo esc_attr( 0 === $index ? 'button-primary' : 'button-secondary' ); ?> tips" data-tip="<?php echo esc_attr( 0 === $index ? __( 'See the Primary Guest Registration in NetSuite', 'trek-travel-theme' ) : __( 'See the Secondary Guest Registrations in NetSuite', 'trek-travel-theme' ) ); ?>"><strong><?php echo esc_html( $guest_reg_id ) ?></strong></a>
+													<a href="<?php echo esc_url( $guest_reg_url ) ?>" target="_blank" rel="noopener noreferrer" class="button <?php echo esc_attr( 0 === $index ? 'button-primary' : 'button-secondary' ); ?> tips order-guest-reg" data-tip="<?php echo esc_attr( 0 === $index ? __( 'See the Primary Guest Registration in NetSuite', 'trek-travel-theme' ) : __( 'See the Secondary Guest Registrations in NetSuite', 'trek-travel-theme' ) ); ?>"><strong><?php echo esc_html( $guest_reg_id ) ?></strong>
+														<?php if ( $is_guest_protected ) : ?>
+															<span class="tpp-protected-status guest-protected"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/netsuite/tpp-protected.svg' ) ?>" alt="shield-icon"></span>
+														<?php else : ?>
+															<span class="tpp-protected-status guest-not-protected"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/netsuite/tpp-not-protected.svg' ) ?>" alt="shield-icon"></span>
+														<?php endif; ?>
+													</a>
 												<?php
 												endif;
 											endforeach;
@@ -405,7 +436,7 @@ class TT_Booking_Status_Controller {
 		// First check for cancelled status from the bookings table.
 		$cancelled_status = $this->tt_get_booking_cancelled_status( $order_id );
 
-		if( ! empty( $cancelled_status ) ) {
+		if ( ! empty( $cancelled_status ) ) {
 			if ( is_array( $cancelled_status ) ) {
 				// Registration Cancelled.
 				printf( '<mark class="order-status %s tips" data-tip="%s" style="%s"><span>%s</span></mark>', $cancelled_status['status'], wp_kses_post( TT_BOOKING_STATUSES[$cancelled_status['status']]['tooltip'] ), esc_attr( TT_BOOKING_STATUSES[$cancelled_status['status']]['style'] ), esc_html( TT_BOOKING_STATUSES[$cancelled_status['status']]['title'] ) );
@@ -418,13 +449,13 @@ class TT_Booking_Status_Controller {
 			// Some status
 			$ns_booking_status = get_post_meta( $order_id, TT_WC_META_PREFIX . 'guest_booking_status', true );
 
-			if( ! empty( $ns_booking_status ) ) {
+			if ( ! empty( $ns_booking_status ) ) {
 				// Has some status in the order's meta, so we can work with it.
 				if( in_array( $ns_booking_status, array_keys( TT_BOOKING_STATUSES ) ) ) {
 					printf( '<mark class="order-status %s tips" data-tip="%s" style="%s"><span>%s</span></mark>', $ns_booking_status, wp_kses_post( TT_BOOKING_STATUSES[$ns_booking_status]['tooltip'] ), esc_attr( TT_BOOKING_STATUSES[$ns_booking_status]['style'] ), esc_html( TT_BOOKING_STATUSES[$ns_booking_status]['title'] ) );
 				} else {
 					// This Status not defined in the TT_BOOKING_STATUSES.
-					echo '<mark class="order-status booking_unknown tips" data-tip="The Booking status cannot be determined :-(" style="background: #e5e5e5;color: #777;"><span>Booking Unknown</span></mark>';
+					printf( '<mark class="order-status %s tips" data-tip="%s" style="%s"><span>%s</span></mark>', esc_attr( TT_BOOKING_STATUSES['booking_unknown'] ), wp_kses_post( TT_BOOKING_STATUSES['booking_unknown']['tooltip'] ), esc_attr( TT_BOOKING_STATUSES['booking_unknown']['style'] ), esc_html( TT_BOOKING_STATUSES['booking_unknown']['title'] ) );
 				}
 
 			} else {
@@ -443,6 +474,28 @@ class TT_Booking_Status_Controller {
 	}
 
 	/**
+	 * Print the Travel Protection status badge.
+	 *
+	 * @param int $order_id The id Of the Order.
+	 */
+	private function tt_print_the_tpp_status_badge( $order_id ) {
+		// Some status
+		$ns_tpp_status = get_post_meta( $order_id, TT_WC_META_PREFIX . 'tpp_status', true );
+
+		if ( ! empty( $ns_tpp_status ) ) {
+			// Has some status in the order's meta, so we can work with it.
+			if ( in_array( $ns_tpp_status, array_keys( TT_TPP_STATUSES ) ) ) {
+				printf( '<mark class="order-status %s tips" data-tip="%s" style="%s"><span>%s</span></mark>', $ns_tpp_status, wp_kses_post( TT_TPP_STATUSES[$ns_tpp_status]['tooltip'] ), esc_attr( TT_TPP_STATUSES[$ns_tpp_status]['style'] ), esc_html( TT_TPP_STATUSES[$ns_tpp_status]['title'] ) );
+			} else {
+				// This Status not defined in the TT_TPP_STATUSES.
+				printf( '<mark class="order-status %s tips" data-tip="%s" style="%s"><span>%s</span></mark>', esc_attr( TT_TPP_STATUSES['tpp_unknown'] ), wp_kses_post( TT_TPP_STATUSES['tpp_unknown']['tooltip'] ), esc_attr( TT_TPP_STATUSES['tpp_unknown']['style'] ), esc_html( TT_TPP_STATUSES['tpp_unknown']['title'] ) );
+			}
+		} else {
+			echo '<span class="na">—</span>';
+		}
+	}
+
+	/**
 	 * Get or Print formatted heading for given booking detail heading with an icon.
 	 *
 	 * @param string $heading_id The ID for booking detail heading.
@@ -456,8 +509,8 @@ class TT_Booking_Status_Controller {
 			case 'trip_code':
 				$formatted_heading = sprintf( '<span style="%s"><img width="25" src="%s"/><span>%s</span></span>', esc_attr( 'display: flex;align-items: center;gap:6px;' ), esc_url( get_template_directory_uri() . '/assets/images/netsuite/item.svg' ), __( 'Trip Code', 'trek-travel-theme' ) );
 				break;
-			case 'booking_status':
-				$formatted_heading = sprintf( '<span style="%s"><img width="25" src="%s" style="%s"/><span>%s</span></span>', esc_attr( 'display: flex;align-items: center;gap:6px;' ), esc_url( get_template_directory_uri() . '/assets/images/netsuite/netsuite-fav.png' ), esc_attr( 'border: 1px solid #36677d;border-radius: 50%;' ), __( 'Booking Status', 'trek-travel-theme' ) );
+			case 'ns_status':
+				$formatted_heading = sprintf( '<span style="%s"><img width="25" src="%s" style="%s"/><span>%s</span></span>', esc_attr( 'display: flex;align-items: center;gap:6px;' ), esc_url( get_template_directory_uri() . '/assets/images/netsuite/netsuite-fav.png' ), esc_attr( 'border: 1px solid #36677d;border-radius: 50%;' ), __( 'NS Status', 'trek-travel-theme' ) );
 				break;
 			case 'booking_id':
 				$formatted_heading = sprintf( '<span style="%s"><img width="25" src="%s"/><span>%s</span></span>', esc_attr( 'display: flex;align-items: center;gap:6px;' ), esc_url( get_template_directory_uri() . '/assets/images/netsuite/salesorder.svg' ), __( 'Booking ID', 'trek-travel-theme' ) );
@@ -618,10 +671,44 @@ class TT_Booking_Status_Controller {
 	 *
 	 * @uses tt_has_travel_protection()
 	 *
-	 * @return string Order type.
+	 * @return array Order type from TT_ORDER_TYPES.
+	 *              'booking' for regular bookings,
+	 *              'tpp' for Travel Protection orders.
 	 */
 	public function tt_get_order_type( $order_id ) {
-		return tt_has_travel_protection( $order_id ) ? __( 'Travel Protection', 'trek-travel-theme' ) : __( 'Booking', 'trek-travel-theme' );
+		return tt_has_travel_protection( $order_id ) ? TT_ORDER_TYPES['tpp'] : TT_ORDER_TYPES['booking'];
+	}
+
+	/**
+	 * Store the Booking status in the orders meta.
+	 *
+	 * @param int    $order_id The order ID.
+	 * @param string $booking_status Current Booking status.
+	 *
+	 * @return void
+	 */
+	public function tt_set_ns_booking_status_cb( $order_id = 0,  $booking_status = 'booking_unknown' ) {
+		if( empty( $order_id ) ) {
+			return;
+		}
+
+		update_post_meta( $order_id, TT_WC_META_PREFIX . 'guest_booking_status', $booking_status );
+	}
+
+	/**
+	 * Store the TPP status in the orders meta.
+	 *
+	 * @param int    $order_id The order ID.
+	 * @param string $tpp_status Current TPP status.
+	 *
+	 * @return void
+	 */
+	public function tt_set_ns_tpp_status_cb( $order_id = 0, $tpp_status = 'tpp_unknown' ) {
+		if ( empty( $order_id ) ) {
+			return;
+		}
+
+		update_post_meta( $order_id, TT_WC_META_PREFIX . 'tpp_status', $tpp_status );
 	}
 }
 

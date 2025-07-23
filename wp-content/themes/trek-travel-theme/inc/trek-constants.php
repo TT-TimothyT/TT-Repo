@@ -2,6 +2,9 @@
 /**
  * Common constants for all environments
  */
+
+use function PHPSTORM_META\type;
+
 $cancellation_policy_page_id   = get_option( 'tt_opt_cancellation_policy_page_id' ) ? get_option( 'tt_opt_cancellation_policy_page_id' ) : NULL;
 $cancellation_policy_page_link = $cancellation_policy_page_id ? get_the_permalink( $cancellation_policy_page_id ) : '';
 
@@ -54,6 +57,47 @@ define( 'TT_BOOKING_STATUSES', array(
     ),
 ) );
 define( 'TT_HIDE_ORDER_BOOKING_STATUSES', array( 'booking_failed', 'booking_pending', 'booking_onhold' ) );
+define( 'TT_ORDER_TYPES', array(
+    'booking' => array(
+        'type'    => 'booking_order',
+        'title'   => __('Booking', 'trek-travel-theme'),
+        'tooltip' => __('This is a Booking Order', 'trek-travel-theme'),
+        'style'   => 'background: #c6e1c6;color: #5b841b;',
+    ),
+    'tpp' => array(
+        'type'    => 'tpp_order',
+        'title'   => __('Travel Protection', 'trek-travel-theme'),
+        'tooltip' => __('This is a Travel Protection Order', 'trek-travel-theme'),
+        'style'   => 'background: #f8dda7;color: #94660c;',
+    ),
+) );
+define( 'TT_TPP_STATUSES', array( 
+    'tpp_success'        => array(
+        'title'   => 'TPP Success',
+        'tooltip' => 'TPP has been successfully created in NetSuite and linked to this order',
+        'style'   => 'background: #c6e1c6;color: #5b841b;',
+    ),
+    'tpp_failed'         => array(
+        'title'   => 'TPP Failed',
+        'tooltip' => 'There is no TPP in NetSuite, linked to this Order! Please review the logs for more information about the error that occurred',
+        'style'   => 'background: #eba3a3;color: #761919;',
+    ),
+    'tpp_pending'        => array(
+        'title'   => 'TPP Pending',
+        'tooltip' => 'In progress! The TPP information is not yet available as the order details are still being sent to NetSuite',
+        'style'   => 'background: #f8dda7;color: #94660c;',
+    ),
+    'tpp_onhold'         => array(
+        'title'   => 'TPP On hold',
+        'tooltip' => 'The order was not sent to NetSuite! Something went wrong during the TPP creation process',
+        'style'   => 'background: #f8dda7;color: #94660c;',
+    ),
+    'tpp_unknown'        => array(
+        'title'   => 'TPP Unknown',
+        'tooltip' => 'The TPP status cannot be determined :-(',
+        'style'   => 'background: #e5e5e5;color: #777;',
+    ),
+) );
 
 /**
  * If we are not running the dev environment, load the Production Constants.

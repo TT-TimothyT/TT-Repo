@@ -630,17 +630,23 @@ if ( ! function_exists( 'tt_ns_get_last_modified_gustes' ) ) {
         return $modified_guest_ids;
     }
 }
-/**
- * @author  : Dharmesh Panchal
- * @version : 1.0.0
- * @return  : tt_ns_guest_booking_details
- **/
-if (!function_exists('tt_ns_guest_booking_details')) {
-    function tt_ns_guest_booking_details( $single_guest = false, $ns_new_guest_id = '', $wc_user_id = '', $time_range = DEFAULT_TIME_RANGE, $is_sync_process = true )
-    {
-        global $wpdb;
-        $table_name       = $wpdb->prefix . 'guest_bookings';
 
+if ( ! function_exists( 'tt_ns_guest_booking_details' ) ) {
+    /**
+     * Function to sync the guest booking details from NS to WC.
+     *
+     * @param bool   $single_guest    Whether to sync a single guest or guests for the given time range.
+     * @param string $ns_new_guest_id The NS Guest ID for which to sync the booking details.
+     * @param string $wc_user_id      The WC User ID for which to sync the booking details.
+     * @param string $time_range      The time range for which take the details in the past (modifiedAfter).
+     * By default is used DEFAULT_TIME_RANGE defined in the ttnsw-constants.php file.
+     * OR based on the filter type can put another value.
+     * @param bool   $is_sync_process Whether this is a sync process or not. Default is true.
+     * @param int    $specific_booking_id The specific booking ID to sync. Default is 0.
+     *
+     * @return void
+     */
+    function tt_ns_guest_booking_details( $single_guest = false, $ns_new_guest_id = '', $wc_user_id = '', $time_range = DEFAULT_TIME_RANGE, $is_sync_process = true, $specific_booking_id = 0 ) {
         $net_suite_client = new NetSuiteClient();
 
         if( $single_guest == false ) {
@@ -728,6 +734,12 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                     continue;
                 }
 
+                // Check for booking ID, if it is passed as an argument.
+                if( ! empty( $specific_booking_id ) && $booking_data->bookingId != $specific_booking_id ) {
+                    // Skip this booking, because it is not the one we are looking for.
+                    continue;
+                }
+
                 $args_2          = array( 'bookingId' => $booking_data->bookingId );
                 $ns_booking_data = $net_suite_client->get( GET_BOOKING_SCRIPT_ID, $args_2 ); // 1304
                 tt_add_error_log( '2) NS - Guest includeBookingInfo', $args_2, $ns_booking_data );
@@ -767,6 +779,8 @@ if (!function_exists('tt_ns_guest_booking_details')) {
 
                     $ns_guest_info = $ns_guest_info_arr[0];
 
+                    $skip_gb_table_update = false;
+
                     // Set Bike and Checklist Locking statuses during the sync process.
                     tt_set_bike_record_lock_status( $ns_guest_email, $registration_id, $ns_guest_info );
 
@@ -780,7 +794,7 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                      */
                     $check_booking = tt_checkbooking_status( $ns_guest_id, $booking_id );
 
-                    if( ! $check_booking || $check_booking <= 0 ) {
+                    if ( ! $check_booking || $check_booking <= 0 ) {
 
                         $trip_code    = $ns_booking_data->tripCode;
                         $is_ride_camp = tt_check_is_ride_camp_trip_from_dates( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate );
@@ -818,19 +832,27 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                                 }
                             }
 
-                            tt_finalize_migrated_order( $auto_generated_order, $product_id, $wc_user_id, $guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $guest );
+                            tt_sync_order_data( $auto_generated_order, $product_id, $wc_user_id, $guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $guest, true );
                         }
 
                         // Skip next steps and go to the next guest. By the way, we added a check to sync only the guest registration of the current NS user.
                         continue;
-                    }
+                    } else {
+                        // Booking already exists, so we will update the order.
+                        $update_order = tt_get_order_by_booking( $booking_id ); // Take the order for this booking.
 
-                    $update_booking_data = array(
-                        'ns_guest_booking_result' => $ns_guest_booking_result,
-                        'ns_booking_data'         => $ns_booking_data,
-                        'ns_guest_info'           => $ns_guest_info,
-                        'guest'                   => $guest,
-                    );
+                        if ( $update_order ) {
+                            $trip_code    = $ns_booking_data->tripCode;
+                            $is_ride_camp = tt_check_is_ride_camp_trip_from_dates( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate );
+                            $product_id   = $is_ride_camp ? tt_take_ride_camp_product_info( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate, $ns_booking_data->tripCode, true ) : tt_get_product_by_sku( $trip_code, true ); // If there is not found product, we have null here.
+
+                            tt_sync_order_data( $update_order, $product_id, $wc_user_id, $guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $guest );
+                            update_post_meta( $update_order->id, 'tt_wc_order_last_sync', date( 'Y-m-d H:i:s' ) );
+                            tt_add_error_log( '[WC] - update existing booking', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'Booking already exists in the table, updating order.' ) );
+                            
+                            $skip_gb_table_update = true; // Skip the guest bookings table update, because we already have it.
+                        }
+                    }
 
                     if( $guest->isPrimary ) {
                         // Take the order for this booking.
@@ -852,6 +874,18 @@ if (!function_exists('tt_ns_guest_booking_details')) {
                         }
                     }
 
+                    if ( $skip_gb_table_update ) {
+                        // Skip the guest bookings table update, because we already have it.
+                        continue;
+                    }
+
+                    $update_booking_data = array(
+                        'ns_guest_booking_result' => $ns_guest_booking_result,
+                        'ns_booking_data'         => $ns_booking_data,
+                        'ns_guest_info'           => $ns_guest_info,
+                        'guest'                   => $guest,
+                    );
+
                     // Update existing booking.
                     $where = array( 'netsuite_guest_registration_id' => $ns_guest_id, 'ns_trip_booking_id' => $booking_id );
                     tt_guest_bookings_table_crud( tt_prepare_bookings_table_data( $update_booking_data ), $where );
@@ -859,9 +893,9 @@ if (!function_exists('tt_ns_guest_booking_details')) {
             }
         }
 
-        // At the end of processing, if this was a single guest sync from registration, mark it as complete
-        if($single_guest && !empty($wc_user_id)) {
-            do_action('tt_ns_guest_booking_details_complete', $wc_user_id);
+        // At the end of processing, if this was a single guest sync from registration, mark it as complete.
+        if ( $single_guest && !empty( $wc_user_id ) ) {
+            do_action( 'tt_ns_guest_booking_details_complete', $wc_user_id );
         }
     }
 }

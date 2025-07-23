@@ -238,7 +238,8 @@ class Guest_Bookings_Table extends WP_List_Table {
 					'guest_phone_number',
 					'guest_gender',
 					'guest_date_of_birth',
-					'guest_is_primary'
+					'guest_is_primary',
+					'guest_index_id',
 				)
 			),
 			'address' => array(
@@ -349,6 +350,7 @@ class Guest_Bookings_Table extends WP_List_Table {
 			'guest_first_name' => __('First Name', 'trek-travel-netsuite-integration'),
 			'guest_last_name' => __('Last Name', 'trek-travel-netsuite-integration'),
 			'guest_is_primary' => __('Primary Guest', 'trek-travel-netsuite-integration'),
+			'guest_index_id' => __('Guest Index ID', 'trek-travel-netsuite-integration'),
 			'trip_number_of_guests' => __('Guests Count', 'trek-travel-netsuite-integration'),
 			// 'bike' => __( 'Bike', 'trek-travel-netsuite-integration'), // This is an experimental custom column that does not exist in the table.
 			'medical_conditions' => __('Medical Conditions', 'trek-travel-netsuite-integration'),
@@ -524,6 +526,7 @@ class Guest_Bookings_Table extends WP_List_Table {
 			case 'passport_place_of_issue':
 			case 'passport_country_of_issue':
 			case 'place_of_birth':
+			case 'guest_index_id':
 				// Display raw data.
 				return esc_html($item[ $column_name ]);
 			case 'trip_code':
