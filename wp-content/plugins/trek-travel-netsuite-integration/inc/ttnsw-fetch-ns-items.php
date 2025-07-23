@@ -778,6 +778,20 @@ function tt_dev_tools_admin_menu_page_cb() {
         }
     }
 
+    if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'dx-add-trip-date-web-note' ) {
+        global $wpdb;
+        $td_table_name                  = $wpdb->prefix . 'netsuite_trip_detail';
+        $td_trip_date_web_note_column_name = 'trip_date_web_note';
+        $column_exist                   = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$td_table_name}' AND column_name = '{$td_trip_date_web_note_column_name}'"  );
+
+        if ( empty( $column_exist ) ) {
+            $sql = "ALTER TABLE $td_table_name ADD COLUMN $td_trip_date_web_note_column_name TEXT DEFAULT NULL AFTER tripSpecificMessage";
+
+            // Execute the query
+            $wpdb->query($sql);
+        }
+    }
+
     // Handle index creation requests
     if ( isset( $_POST['action'] ) && strpos( $_POST['action'], 'create-index-' ) === 0 ) {
         check_admin_referer( 'ttnsw_create_index' );
@@ -863,7 +877,7 @@ function tt_dev_tools_admin_menu_page_cb() {
             <div id="dx-repair-tools">
                 <h3>DX Repair Tools</h3>
 
-                 <!-- Add the product_line column in the netsuite_trip_detail table -->
+                <!-- Add the product_line column in the netsuite_trip_detail table -->
                 <?php
                     global $wpdb;
                     $waive_insurance_table_name  = $wpdb->prefix . 'guest_bookings';
@@ -882,6 +896,29 @@ function tt_dev_tools_admin_menu_page_cb() {
                         <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code><?php echo esc_html( $waive_insurance_column_name ); ?></code> column missing yet</span>
                         <?php else : ?>
                         <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code><?php echo esc_html( $waive_insurance_column_name ); ?></code> column</span>
+                        <?php endif; ?>
+                    </p>
+                </div>
+                <hr>
+                <!-- Add the trip_date_web_note column in the netsuite_trip_detail table -->
+                <?php
+                    global $wpdb;
+                    $trip_date_web_note_table_name  = $wpdb->prefix . 'netsuite_trip_detail';
+                    $trip_date_web_note_column_name = 'trip_date_web_note';
+                    $trip_date_web_note_row         = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$trip_date_web_note_table_name}' AND column_name = '{$trip_date_web_note_column_name}'"  );
+                    $trip_date_web_note_add_action  = 'dx-add-trip-date-web-note';
+                ?>
+                <p>This process below will add the column <code><?php echo esc_html( $trip_date_web_note_column_name ); ?></code> in the <code><?php echo esc_html( $trip_date_web_note_table_name ); ?></code> table.</p>
+                <form action="" class="tt-locking-status-sync" method="post">
+                    <input type="hidden" name="action" value="<?php echo esc_attr( $trip_date_web_note_add_action ) ?>">
+                    <input type="submit" name="submit" value="Add <?php echo esc_attr( $trip_date_web_note_column_name ); ?> column" class="button-primary" <?php echo esc_attr( ! empty( $trip_date_web_note_row ) ? 'disabled="true"' : '' ); ?>>
+                </form>
+                <div id="dx-print_result" style="margin: 2% 0px;">
+                    <p><b>Bookings table status: </b>
+                        <?php if( empty( $trip_date_web_note_row ) ) : ?>
+                        <span style="padding: 2px 5px;border-radius:4px; background-color:#f00; color: white;">The <code><?php echo esc_html( $trip_date_web_note_column_name ); ?></code> column missing yet</span>
+                        <?php else : ?>
+                        <span style="padding: 2px 5px;border-radius:4px; background-color:#0f0; color: blue;">Successfully added <code><?php echo esc_html( $trip_date_web_note_column_name ); ?></code> column</span>
                         <?php endif; ?>
                     </p>
                 </div>

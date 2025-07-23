@@ -29,7 +29,7 @@
 		</h6>
 		<div id="flush-collapse-<?php echo esc_attr( $args['accordion_id'] ); ?>" class="accordion-collapse collapse" aria-labelledby="flush-heading-<?php echo esc_attr( $args['accordion_id'] ); ?>" data-bs-parent="#accordionFlushExample-<?php echo esc_attr( $args['month_year'] ) ?>">
 			<hr>
-			<div class="accordion-body d-flex justify-content-between <?php echo esc_attr( strtolower( $args['trip_status'] ) ) ?>">
+			<div class="accordion-body d-flex justify-content-between flex-wrap <?php echo esc_attr( strtolower( $args['trip_status'] ) ) ?>">
 				<div class="accordion-hotels">
 					<p class="fw-medium fs-sm lh-sm"><?php esc_html_e( 'Hotels:', 'trek-travel-theme' ); ?></p>
 					<?php echo $args['trip_hotels']; ?>
@@ -52,6 +52,14 @@
 						<input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $args['product_id'] ) ?>" />
 					</form>
 				</div>
+				<?php if ( ! empty( $args['trip_date_web_note'] ) ) : ?>
+					<div class="accordion-date-note w-100">
+						<div class="date-note">
+							<p class="fw-bold fs-xs lh-xs mb-0"><?php esc_html_e( 'Date note:', 'trek-travel-theme' ); ?></p>
+							<p class="fw-normal fs-xs lh-xs mb-0"><?php echo esc_html( $args['trip_date_web_note'] ); ?></p>
+						</div>
+					</div>
+				<?php endif; ?>
 			</div>
 		</div>
 	<?php endif; ?>

@@ -221,6 +221,7 @@ if ( ! function_exists( 'tt_sync_ns_trip_details' ) ) {
                             'bikes'                    => json_encode( $trek_trip_detail->bikes ),
                             'addOns'                   => json_encode( $trek_trip_detail->addOns ),
                             'tripSpecificMessage'      => $trek_trip_detail->tripSpecificMessage,
+                            'trip_date_web_note'       => $trek_trip_detail->tripDateWebNote,
                             'SmugMugLink'              => $trek_trip_detail->smugMugLink,
                             'SmugMugPassword'          => $trek_trip_detail->smugMugPasscode
                         );
@@ -320,7 +321,8 @@ function tt_sync_wc_product_from_ns( $trek_trip ) {
         'insurancePercentage' => $trek_trip->insurancePercentage,
         'taxRate' => $trek_trip->taxRate,
         'isPassportRequired' => $trek_trip->isPassportRequired,
-        'tripSpecificMessage' => $trek_trip->tripSpecificMessage
+        'tripSpecificMessage' => $trek_trip->tripSpecificMessage,
+        'tripDateWebNote' => $trek_trip->tripDateWebNote,
     );
     $attr_startDate = ($trek_trip->startDate ? strtotime($trek_trip->startDate) : '');
     $attr_endDate = ($trek_trip->endDate ? strtotime($trek_trip->endDate) : '');

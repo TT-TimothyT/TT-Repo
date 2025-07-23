@@ -357,6 +357,17 @@
                         margin-bottom: 1rem;
                     }
                 }
+                .accordion-date-note {
+                    .date-note {
+                        border: 1px solid #28AAE1;
+                        border-radius: 5px;
+                        display: flex;
+                        width: fit-content;
+                        padding: 8px;
+                        margin-top: 5px;
+                        flex-direction: column;
+                    }
+                }
             }
         }
         #nav-private{

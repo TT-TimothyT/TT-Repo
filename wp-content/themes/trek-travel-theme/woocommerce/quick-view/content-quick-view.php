@@ -198,6 +198,7 @@ if ( $available_child_products ) {
 						$trip_status                  = $child_product_data['trip_status'];
 						$bike_hotels                  = tt_get_hotel_bike_list( $child_product_data['sku'], $child_product_data['trip_id'] );
 						$remove_from_stella           = tt_get_local_trips_detail( 'removeFromStella', $child_product_data['trip_id'], $child_product_data['sku'], true );
+						$trip_date_web_note           = tt_get_local_trips_detail( 'trip_date_web_note', $child_product_data['trip_id'], $child_product_data['sku'], true );
 						$single_supplement_price      = isset( $child_product_data['singleSupplementPrice'] ) ? $child_product_data['singleSupplementPrice'] : 0;
 						$trip_web_status              = get_web_dispaly_status( $trip_status );
 						$trip_web_status_class        = strtolower( str_ireplace( ' ', '-', $trip_web_status ) );
@@ -252,6 +253,7 @@ if ( $available_child_products ) {
 						$date_trip_item_args = array(
 							'sku'                     => $child_product_data['sku'],
 							'remove_from_stella'      => $remove_from_stella,
+							'trip_date_web_note'      => $trip_date_web_note,
 							'trip_status'             => $trip_status,
 							'accordion_id'            => $accordion_item_id,
 							'month_year'              => $my,

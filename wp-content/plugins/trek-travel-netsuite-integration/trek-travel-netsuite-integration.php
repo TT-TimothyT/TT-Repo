@@ -109,6 +109,7 @@ function register_activation_trek_ns_integration(){
         `bikes` text NULL,
         `addOns` text NULL,
         `tripSpecificMessage` text NULL,
+        `trip_date_web_note` text NULL,
         `SmugMugLink` varchar(255) NULL,
         `SmugMugPassword` varchar(255) NULL,
         `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
