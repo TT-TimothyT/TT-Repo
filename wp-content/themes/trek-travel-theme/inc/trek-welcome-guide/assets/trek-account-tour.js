@@ -27,6 +27,7 @@ jQuery(document).ready(function($) {
 	`);
 	
 	let screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+	let viewChecklistContainer = $('[data-tour-guide="view-checklist"]');
 
 	$(window).on('resize', function() {
 		// Update screen width on resize
@@ -241,60 +242,69 @@ jQuery(document).ready(function($) {
 								'action': 'next'
 							});
 						}
+						if ( ! viewChecklistContainer.length ) {
+							// If view checklist container doesn't exist
+							// Close My Trips section and open Resource Center
+							sectionToggler.openSection('.resource-center .mobile-toggle-heading', true);
+						}
 						tour.next();
 					}
 				}
 			]
 		});
 
-		// View Checklist step
-		tour.addStep({
-			id: 'view-checklist',
-			title: 'View Checklist 📝',
-			text: 'We\'ll need a few pieces of information from you before you travel to make sure we create the trip of a lifetime for you! View your checklist to confirm your bike selection, dietary needs, and other preferences.',
-			attachTo: {
-				element: '[data-tour-guide="view-checklist"]',
-				on: 'bottom'
-			},
-			buttons: [
-				{
-					text: trek_tour_JS_obj.i18n.back,
-					action: function() {
-						// Track tutorial step interaction
-						if (typeof dataLayer !== 'undefined') {
-							dataLayer.push({
-								'event': 'my_tutorial_step_interaction',
-								'name': trek_tour_JS_obj.tour_name,
-								'tutorial_step': 'navigation',
-								'tutorial_step_position': 3,
-								'action': 'back'
-							});
-						}
-						tour.back();
-					},
-					classes: 'shepherd-button-secondary'
+		if ( viewChecklistContainer.length ) {
+			// If view checklist container doesn't exist, skip this step
+
+			// View Checklist step
+			tour.addStep({
+				id: 'view-checklist',
+				title: 'View Checklist 📝',
+				text: 'We\'ll need a few pieces of information from you before you travel to make sure we create the trip of a lifetime for you! View your checklist to confirm your bike selection, dietary needs, and other preferences.',
+				attachTo: {
+					element: '[data-tour-guide="view-checklist"]',
+					on: 'bottom'
 				},
-				{
-					text: trek_tour_JS_obj.i18n.next,
-					action: function() {
-						// Track tutorial step interaction
-						if (typeof dataLayer !== 'undefined') {
-							dataLayer.push({
-								'event': 'my_tutorial_step_interaction',
-								'name': trek_tour_JS_obj.tour_name,
-								'tutorial_step': 'navigation',
-								'tutorial_step_position': 3,
-								'action': 'next'
-							});
+				buttons: [
+					{
+						text: trek_tour_JS_obj.i18n.back,
+						action: function() {
+							// Track tutorial step interaction
+							if (typeof dataLayer !== 'undefined') {
+								dataLayer.push({
+									'event': 'my_tutorial_step_interaction',
+									'name': trek_tour_JS_obj.tour_name,
+									'tutorial_step': 'navigation',
+									'tutorial_step_position': 3,
+									'action': 'back'
+								});
+							}
+							tour.back();
+						},
+						classes: 'shepherd-button-secondary'
+					},
+					{
+						text: trek_tour_JS_obj.i18n.next,
+						action: function() {
+							// Track tutorial step interaction
+							if (typeof dataLayer !== 'undefined') {
+								dataLayer.push({
+									'event': 'my_tutorial_step_interaction',
+									'name': trek_tour_JS_obj.tour_name,
+									'tutorial_step': 'navigation',
+									'tutorial_step_position': 3,
+									'action': 'next'
+								});
+							}
+							// Close My Trips section and open Resource Center
+							sectionToggler.openSection('.resource-center .mobile-toggle-heading', true);
+							tour.next();
 						}
-						// Close My Trips section and open Resource Center
-						sectionToggler.openSection('.resource-center .mobile-toggle-heading', true);
-						tour.next();
 					}
-				}
-			],
-			// highlightClass: 'shepherd-highlighted'
-		});
+				],
+				// highlightClass: 'shepherd-highlighted'
+			});
+		}
 
 		// Resource Center step
 		tour.addStep({
