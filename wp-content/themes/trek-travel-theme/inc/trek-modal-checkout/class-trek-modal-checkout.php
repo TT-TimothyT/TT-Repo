@@ -818,28 +818,30 @@ class Trek_Modal_Checkout {
 				foreach ( $cart_item['tt_protection_data']['travelers'] as $guest_idx => $traveler_data ) {
 					if( 'primary' === $guest_idx ) {
 						if( isset( $traveler_data['is_travel_protection'] ) && $traveler_data['is_travel_protection'] == 1 ) {
-							if (self::is_devrix_email( $traveler_data['email'] )) {
-								// If the email is a DevriX email, set the price to 2.
-								$tp_price += 2;
-							} else {
+							// !!! Keep this commented-out code for future testing.
+							// if (self::is_devrix_email( $traveler_data['email'] )) {
+							// 	// If the email is a DevriX email, set the price to 2.
+							// 	$tp_price += 2;
+							// } else {
 								// Add the insurance amount for the primary guest
 								$tp_price += floatval( $traveler_data['insurance_amount'] );
-							}
+							// }
 						}
 					} else {
 						// Loop through each guest's insurance data
 						foreach ( $traveler_data as $traveler ) {
 							if( isset( $traveler['is_travel_protection'] ) && $traveler['is_travel_protection'] == 1 ) {
-								if (self::is_devrix_email( $traveler['email'] )) {
-									// If the email is a DevriX email, set the price to 2.
-									$tp_price += 2;
-								} else {
+								// !!! Keep this commented-out code for future testing.
+								// if (self::is_devrix_email( $traveler['email'] )) {
+								// 	// If the email is a DevriX email, set the price to 2.
+								// 	$tp_price += 2;
+								// } else {
 									// Add the insurance amount for each guest
 									$tp_price += floatval( $traveler['insurance_amount'] );
-								}
+								// }
 							}
 						}
-					} 
+					}
 				}
 
 				$cart_item['tt_protection_data']['tp_price'] = $tp_price;
@@ -1113,7 +1115,7 @@ class Trek_Modal_Checkout {
 	 */
 	private static function is_devrix_email( $email ) {
 		// Add filter to disable the check for devrix.com emails.
-		if ( apply_filters( 'tt_disable_devrix_email_check', false ) ) {
+		if ( apply_filters( 'tt_disable_devrix_email_check', true ) ) {
 			return false;
 		}
 
