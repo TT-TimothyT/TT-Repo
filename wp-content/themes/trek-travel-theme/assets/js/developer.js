@@ -805,6 +805,8 @@ jQuery(document).ready(function () {
                   jQuery('#tt-review-order').html(response.review_order);
                 }
 
+                jQuery("#currency_switcher").trigger("change");
+
                 // Remove the loader on success.
                 ttLoader.hide();
                 addingGuestsInProgress = false;

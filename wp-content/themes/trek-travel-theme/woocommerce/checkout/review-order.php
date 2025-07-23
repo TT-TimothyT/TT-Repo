@@ -188,7 +188,7 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 								?>
 									<div class="d-flex justify-content-between checkout-summary__table-row">
 										<div class="text-start">
-											<p class="col-md  px-0 py-0 my-0 form-row">
+											<p class="col-md  px-0 py-0 my-0 form-row fw-bold">
 												<?php echo esc_html( $product_name ); ?>
 												<span class="fs-sm lh-sm checkout-summary__guest d-none">x<?php echo esc_attr( $product_qty ); ?>&nbsp;<?php esc_html_e( 'guest', 'trek-travel-theme' ); ?></span>
 											</p>
@@ -216,16 +216,14 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 						</div>
 					</div>
 
-					<div class="d-flex justify-content-between checkout-summary__table-row">
-						<div class="text-start">
-							<p class="mb-0"><?php esc_html_e( 'Local Taxes', 'trek-travel-theme' ); ?></p>
-							<p class="fs-xs lh-xs checkout-summary__small"><?php esc_html_e( 'Taxes are based on your trip destination', 'trek-travel-theme' ); ?></p>
-						</div>
-						<div class="text-end ">
-							<p class="fw-bold fs-lg"><?php do_action( 'woocommerce_review_order_before_shipping' ); ?></p>
-						</div>
-					</div>
-					
+					<?php 
+						/**
+						 * Display local taxes and fees.
+						 * This action hook is used to display the local taxes and fees in the checkout summary.
+						 */
+						do_action( 'woocommerce_review_order_before_shipping' );
+					?>
+
 					<!-- Begin: Coupan code Dynamic logic -->
 					<?php
 					if ( WC()->cart->get_coupons() ) {
@@ -320,15 +318,6 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 								</div>
 							</div>
 
-							<div class="d-flex justify-content-between checkout-summary__table-row">
-								<div class="text-start">
-								<p><?php esc_html_e( 'Future Payment', 'trek-travel-theme' ); ?></p>
-								</div>
-								<div class="text-end">
-								<p class="fw-bold fs-lg"><span class="amount"><?php echo $remaining_amount_curr; ?></span></p>
-								</div>
-							</div>
-
 							<div class="d-flex justify-content-between checkout-summary__dues-today  align-items-center checkout-summary__table-row">
 								<div class="text-start">
 									<p class="fs-lg lh-lg fw-bold "><?php esc_html_e( 'Due Today', 'trek-travel-theme' ); ?></p>
@@ -336,6 +325,15 @@ foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 								<div class="text-end">
 									<p class="h5 fw-semibold checkout-summary__font"><span class="amount"><?php echo $outstanding_payment; ?></span></p>
 									<span class="original-price-usd">(<?php echo get_woocommerce_currency_symbol( 'USD' ) . number_format( $original_price_usd, 2 ); ?> USD)</span>
+								</div>
+							</div>
+
+							<div class="d-flex justify-content-between checkout-summary__table-row">
+								<div class="text-start">
+								<p><?php esc_html_e( 'Future Payment', 'trek-travel-theme' ); ?></p>
+								</div>
+								<div class="text-end">
+								<p class="fw-bold fs-lg"><span class="amount"><?php echo $remaining_amount_curr; ?></span></p>
 								</div>
 							</div>
 							

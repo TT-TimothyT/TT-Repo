@@ -6604,7 +6604,25 @@ function display_total_tax() {
     $cart      = WC()->cart;
     $total_tax = calculate_cart_total_tax( $cart );
 
-    echo '<p class="mb-0 fw-bold fs-lg">' . wc_price( $total_tax ) . '</p>';
+    if ( ! $total_tax || $total_tax <= 0 ) {
+        return; // If total tax is zero or negative, do not display
+    }
+
+    ?>
+    <div class="d-flex justify-content-between checkout-summary__table-row">
+        <div class="text-start">
+            <p class="mb-0"><?php esc_html_e( 'Local Taxes', 'trek-travel-theme' ); ?></p>
+        </div>
+        <div class="text-end ">
+            <p class="fw-bold fs-lg">
+                <p class="mb-0 fw-bold fs-lg">
+                    <?php echo wc_price( $total_tax ) ?>
+                </p>
+            </p>
+        </div>
+    </div>
+
+    <?php
 }
 
 /**
