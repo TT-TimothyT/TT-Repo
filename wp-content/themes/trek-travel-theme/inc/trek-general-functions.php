@@ -2165,9 +2165,10 @@ function get_bearer_token_insurance()
 }
 function tt_set_calculate_insurance_fees_api($trek_insurance_args)
 {
-    $res['message'] = 'error';
-    $res['status'] = false;
+    $res['message']     = 'error';
+    $res['status']      = false;
     $res['basePremium'] = 0;
+    $errors             = array();
     $trek_insurance_result = array();
     $bearer_token = get_bearer_token_insurance();
     if ($bearer_token && isset($bearer_token['token']) && isset($bearer_token['status']) && $bearer_token['status'] == true) {
@@ -2182,10 +2183,16 @@ function tt_set_calculate_insurance_fees_api($trek_insurance_args)
             $trek_insurance_result = wp_remote_post(
                 TREK_INRURANCE_API_URL . '/Quote/GetQuotes',
                 $api_args
-            );
-            $res['message'] =  $trek_insurance_result;
+            );// Can return WP Error or array
+            if ( is_wp_error( $trek_insurance_result ) ) {
+                $res['message'] = $trek_insurance_result->get_error_message();
+                $errors[]       = $res['message'];
+            } else {
+                $res['message'] =  $trek_insurance_result;
+            }
         } catch (Exception $e) {
             $res['message'] =  $e->getMessage();
+            $errors[]       = $res['message'];
         }
     }
     $basePremium = 0;
@@ -2204,7 +2211,7 @@ function tt_set_calculate_insurance_fees_api($trek_insurance_args)
     if( isset( $res_mess_arr['quotes'] ) ) {
         unset( $res_mess_arr['quotes'] );
     }
-    tt_add_error_log( '[Arch insurance]', $trek_insurance_args, array( 'message->body' => $res_mess_arr ) );
+    tt_add_error_log( '[Arch insurance]', $trek_insurance_args, array( 'message->body' => $res_mess_arr, 'errors' => $errors ) );
     return $res;
 }
 /**

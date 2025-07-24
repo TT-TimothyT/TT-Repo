@@ -803,8 +803,8 @@ if ( ! function_exists( 'tt_ns_guest_booking_details' ) ) {
                         $product_id   = $is_ride_camp ? tt_take_ride_camp_product_info( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate, $ns_booking_data->tripCode, true ) : tt_get_product_by_sku( $trip_code, true ); // If there is not found product, we have null here.
 
                         // Need to have a product, because the data for the booking will be stored in line item metadata.
-                        if( empty( $product_id ) ) {
-                            tt_add_error_log( '[WC] - create auto-generated order', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary, 'trip_code' => $trip_code, 'is_ride_camp' => $is_ride_camp ), array( 'status' => 'false', 'message' => 'Attempt to create an order, but product was not found.' ) );
+                        if ( empty( $product_id ) ) {
+                            tt_add_error_log( '[WC] - create auto-generated order', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary, 'trip_code' => $trip_code, 'is_ride_camp' => $is_ride_camp, 'product_id' => $product_id ), array( 'status' => 'false', 'message' => 'Attempt to create an order, but product was not found.' ) );
                             // Skip the order creating, booking import, and booking update.
                             continue;
                         }
@@ -848,11 +848,18 @@ if ( ! function_exists( 'tt_ns_guest_booking_details' ) ) {
                             $is_ride_camp = tt_check_is_ride_camp_trip_from_dates( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate );
                             $product_id   = $is_ride_camp ? tt_take_ride_camp_product_info( $ns_booking_data->tripStartDate, $ns_booking_data->tripEndDate, $ns_booking_data->wholeTripStartDate, $ns_booking_data->wholeTripEndDate, $ns_booking_data->tripCode, true ) : tt_get_product_by_sku( $trip_code, true ); // If there is not found product, we have null here.
 
-                            tt_sync_order_data( $update_order, $product_id, $wc_user_id, $guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $guest );
-                            update_post_meta( $update_order->id, 'tt_wc_order_last_sync', date( 'Y-m-d H:i:s' ) );
-                            tt_add_error_log( '[WC] - update existing booking', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'Booking already exists in the table, updating order.' ) );
-                            
-                            $skip_gb_table_update = true; // Skip the guest bookings table update, because we already have it.
+                            // Need to have a product, because the data for the booking will be stored in line item metadata.
+                            if ( ! empty( $product_id ) ) {
+                                tt_sync_order_data( $update_order, $product_id, $wc_user_id, $guest_id, $ns_guest_booking_result, $ns_booking_data, $ns_guest_info, $guest );
+                                update_post_meta( $update_order->id, 'tt_wc_order_last_sync', date( 'Y-m-d H:i:s' ) );
+                                tt_add_error_log( '[WC] - update existing booking', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary ), array( 'status' => 'true', 'message' => 'Booking already exists in the table, updating order.' ) );
+
+                                $skip_gb_table_update = true; // Skip the guest bookings table update, because we already have it.
+                            } else {
+                                tt_add_error_log( '[WC] - update existing booking', array( 'booking_id' => $booking_id, 'customer_id' => $wc_user_id, 'ns_user_id' => $guest_id, 'is_primary' => $ns_guest_info->isPrimary, 'trip_code' => $trip_code, 'is_ride_camp' => $is_ride_camp, 'product_id' => $product_id ), array( 'status' => 'false', 'message' => 'Attempt to update an order, but product was not found. Continue to bookings table update only.' ) );
+                                // Skip the order updating, and continue to bookings table update.
+                            }
+
                         }
                     }
 

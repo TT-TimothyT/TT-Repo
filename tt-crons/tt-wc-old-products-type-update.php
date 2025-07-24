@@ -36,5 +36,5 @@ try {
 	// Run the Old Trip Type Update.
 	tt_wc_old_trips_update_type_cron();
 } catch ( Exception $e ) {
-	error_log( "TT_WC_PRODUCT_TYPE_UPDATE ", $e->getMessage() );
+	error_log( "TT_WC_PRODUCT_TYPE_UPDATE " . $e->getMessage() );
 }

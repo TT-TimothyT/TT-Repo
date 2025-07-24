@@ -42,5 +42,5 @@ try {
 	// Run the Trip and Product Sync Cron.
 	tt_ns_wc_sync_cron();
 } catch ( Exception $e ) {
-	error_log( "TT_NS_TRIP_SYNC_CRON_ERROR: ", $e->getMessage() );
+	error_log( "TT_NS_TRIP_SYNC_CRON_ERROR: " . $e->getMessage() );
 }

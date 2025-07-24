@@ -37,5 +37,5 @@ try {
 	// Run the Locking Status Sync Cron.
 	tt_ns_wc_sync_cron();
 } catch ( Exception $e ) {
-	error_log( "TT_NS_LOCKING_STATUS_SYNC_CRON_ERROR: ", $e->getMessage() );
+	error_log( "TT_NS_LOCKING_STATUS_SYNC_CRON_ERROR: " . $e->getMessage() );
 }
