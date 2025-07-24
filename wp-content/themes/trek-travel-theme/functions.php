@@ -2782,3 +2782,25 @@ function display_grouped_products_metabox($post) {
         echo '<p>No related Grouped Products found for this Bike.</p>';
     }
 }
+
+
+// Function to get video embed code
+function get_video_embed($url) {
+    
+
+    if (strpos($url, 'youtube.com') !== false || strpos($url, 'youtu.be') !== false) {
+        preg_match('/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|.*[?&]v=))([^"&?\/\s]{11})/', $url, $matches);
+        if (isset($matches[1])) {
+            $video_id = esc_attr($matches[1]);
+            $embed_url = "https://www.youtube.com/embed/{$video_id}?rel=0&modestbranding=1&controls=0";
+            return '<iframe width="560" height="315" src="' . $embed_url . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+        }
+
+    } elseif (strpos($url, 'vimeo.com') !== false) {
+        preg_match('/vimeo\.com\/(\d+)/', $url, $matches);
+        if (isset($matches[1])) {
+            return '<iframe src="https://player.vimeo.com/video/' . $matches[1] . '" frameborder="0" allowfullscreen></iframe>';
+        }
+    }
+    return '<video controls><source src="' . esc_url($url) . '" type="video/mp4"></video>';
+}

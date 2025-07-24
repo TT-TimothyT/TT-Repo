@@ -9057,8 +9057,46 @@ add_filter( 'rest_authentication_errors', 'tt_rest_authentication_errors' );
 
 
 // ACF TT Button Group
+function tt_button($input, $button_class = 'btn btn-primary', $wrapper_class = 'tt-button-wrapper') {
+    // Determine if input is a field group name (string) or button data (array)
+    if (is_array($input)) {
+        $text = $input['text'] ?? '';
+        $ntab = $input['new_tab'] ?? false;
+        $manual = $input['manual'] ?? false;
+        $link = $input['link'] ?? '';
+        $manual_link = $input['manual_link'] ?? '';
+    } else {
+        $text = get_field("{$input}_text");
+        $ntab = get_field("{$input}_new_tab");
+        $manual = get_field("{$input}_manual");
+        $link = get_field("{$input}_link");
+        $manual_link = get_field("{$input}_manual_link");
+    }
 
-function tt_button($field_group_name, $button_class = 'btn btn-primary', $wrapper_class = 'tt-button-wrapper') {
+    // Determine the URL
+    $url = '';
+    if ($manual && !empty($manual_link)) {
+        $url = esc_url($manual_link);
+    } elseif (!empty($link)) {
+        $url = get_permalink($link);
+    }
+
+    // Render the button only if text and URL exist
+    if (!empty($text) && !empty($url)) {
+        $target = $ntab ? ' target="_blank" rel="noopener noreferrer"' : '';
+        ?>
+        <div class="<?php echo esc_attr($wrapper_class); ?>">
+            <a href="<?php echo esc_url($url); ?>" class="<?php echo esc_attr($button_class); ?>"<?php echo $target; ?>>
+                <?php echo esc_html($text); ?>
+            </a>
+        </div>
+        <?php
+    }
+}
+
+
+
+function tt_button_OLD($field_group_name, $button_class = 'btn btn-primary', $wrapper_class = 'tt-button-wrapper') {
     // Get ACF fields
     $text = get_field("{$field_group_name}_text");
     $ntab = get_field("{$field_group_name}_new_tab");

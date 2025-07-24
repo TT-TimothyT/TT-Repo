@@ -156,7 +156,7 @@ h2, .h2{
   }
 }
 h3, .h3{
-  line-height: $h3-line-height;
+  // line-height: $h3-line-height;
 
   @media (max-width: 768px) {
     line-height: $h3-line-height-md;
