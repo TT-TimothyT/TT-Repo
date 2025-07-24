@@ -1,4 +1,10 @@
 *** NetSuite Integration for WooCommerce Changelog ***
+
+2025-07-07 - version 1.7.0
+* Add - Prevents fatal error if SOAP is not enabled.
+* Update - Update SOAP API version.
+* Fix - Solve inventory issue with custom field.
+
 2025-06-25 - version 1.6.9
 * Add -  Implement product sync feature from NetSuite to WooCommerce
 

@@ -2,7 +2,7 @@
 $TMWNI_OPTIONS = TMWNI_Settings::getTabSettings();
 
 ini_set( 'default_socket_timeout', 600 );
-define( 'NS_ENDPOINT', '2021_2' );
+define( 'NS_ENDPOINT', '2024_2' );
 define( 'NS_HOST', isset( $TMWNI_OPTIONS['ns_host'] ) ? rtrim( $TMWNI_OPTIONS['ns_host'], '/\\' ) : '' );
 define( 'NS_ACCOUNT', isset( $TMWNI_OPTIONS['ns_account'] ) ? trim( $TMWNI_OPTIONS['ns_account'] ) : '' );
 define( 'NS_APPID', isset( $TMWNI_OPTIONS['ns_app_id'] ) ? trim( $TMWNI_OPTIONS['ns_app_id'] ) : '' );

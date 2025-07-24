@@ -72,21 +72,24 @@ class ProductClient {
 	) {
 		global $TMWNI_OPTIONS;
 
+	
+
 		// Build the product query
 		if ( ! empty( $TMWNI_OPTIONS['ns_woo_identifier'] ) ) {
 			$ns_woo_identifier = 'item.' . $TMWNI_OPTIONS['ns_woo_identifier'];
 			$product_query = array(
-				'q' => "SELECT item.id, $sku_mapping_field, $ns_woo_identifier, $ns_fields_to_search 
+				'q' => "SELECT item.id, $map_field_name, $ns_woo_identifier, $ns_fields_to_search 
                 FROM item  
                 WHERE $ns_woo_identifier = 'T' AND item.itemtype = 'InvtPart' AND (item.matrixtype != 'CHILD' or item.matrixtype is null)",
 			);
 		} else {
 			$product_query = array(
-				'q' => "SELECT item.id, $sku_mapping_field, $ns_fields_to_search 
+				'q' => "SELECT item.id, $map_field_name, $ns_fields_to_search 
                 FROM item  
                 WHERE item.itemtype = 'InvtPart' AND (item.matrixtype != 'CHILD' or item.matrixtype is null)",
 			);
 		}
+
 
 		// Make the API request
 		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
@@ -97,11 +100,7 @@ class ProductClient {
 			$product_query
 		);
 
-		// Check for API errors
-		if ( isset( $response['error'] ) ) {
-			error_log( "NetSuite API error at $urlAPIEndPoint: " . $response['error'] );
-			return;
-		}
+	
 
 		// Queue only the current response items
 		if ( ! empty( $response['items'] ) ) {
@@ -136,10 +135,12 @@ class ProductClient {
 
 		$map_field_name = isset( $TMWNI_OPTIONS['sku_mapping_field'] ) ? $TMWNI_OPTIONS['sku_mapping_field'] : TMWNI_Settings::$sku_mapping_field;
 
+		$mapped_field = 'item.' . strtolower( $map_field_name );
+
 		$ns_fields_to_search = $this->getProductFields();
 
 		$get_new_products_from_netsuite = $this->getAllProductsOfNs(
-			$map_field_name,
+			$mapped_field,
 			$urlAPIEndPoint,
 			$ns_fields_to_search,
 			$TMWNI_OPTIONS['sku_mapping_field']
@@ -153,9 +154,11 @@ class ProductClient {
 
 		foreach ( $TMWNI_OPTIONS['fields'] as $section ) {
 			foreach ( $section as $key => $value ) {
-				if ( strpos( $key, 'ns_field_' ) === 0 ) {
-					$ns_field_values[] = 'item.' . $value;
+				
+				if ( strpos( $key, 'ns_field_' ) === 0 && !empty( $value ) ) {
+					$ns_field_values[] = 'item.' . trim( $value );
 				}
+
 			}
 		}
 

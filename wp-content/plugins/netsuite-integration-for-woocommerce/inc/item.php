@@ -58,6 +58,7 @@ class ItemClient extends CommonIntegrationFunctions {
 
 		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
 		$response = $this->NetsuiteRestAPIClient->nsRESTRequest( 'post', $urlAPIEndPoint, true, $pricing_query );
+		
 
 		if ( isset( $response['items'] ) ) {
 			update_option( 'tm_rest_web_service_enable', 'yes' );
@@ -88,6 +89,7 @@ class ItemClient extends CommonIntegrationFunctions {
 		}
 
 		if ( ! empty( $response['hasMore'] ) ) {
+			sleep(2);
 			$count = $response['count'];
 			$offset = $response['offset'] + $count;
 			$urlAPIEndPoint = "/suiteql?limit=$count&offset=$offset";
@@ -109,7 +111,11 @@ class ItemClient extends CommonIntegrationFunctions {
 
 		foreach ( $items as $item ) {
 			$price_update_status = true;
-			$sku = $item[ strtolower( $TMWNI_OPTIONS['sku_mapping_field'] ) ];
+			$map_field_name = strtolower( $TMWNI_OPTIONS['sku_mapping_field'] );
+			if ('customfieldlist'  === $map_field_name && !empty( $TMWNI_OPTIONS['sku_mapping_custom_field'] ) ) {
+				$map_field_name = trim( $TMWNI_OPTIONS['sku_mapping_custom_field'] );
+			}
+			$sku = $item[ strtolower( $map_field_name ) ];
 			$product_id = $this->getProductIdBySku( $sku );
 			if ( ! empty( $product_id ) ) {
 				/**
@@ -185,6 +191,7 @@ class ItemClient extends CommonIntegrationFunctions {
 		}
 
 		if ( ! empty( $response['hasMore'] ) ) {
+			sleep(2);
 			$count = $response['count'];
 			$offset = $response['offset'] + $count;
 			$urlAPIEndPoint = "/suiteql?limit=$count&offset=$offset";
@@ -223,10 +230,15 @@ class ItemClient extends CommonIntegrationFunctions {
 	 */
 	public function getQuantity( $location_data, $all_sku ) {
 		global $TMWNI_OPTIONS;
+		
 
 		$sku_array = explode( ', ', str_replace( "'", '', $all_sku ) );
+		
 		$quantity_field_name = strtolower( $TMWNI_OPTIONS['inventorySyncField'] );
 		$map_field_name = strtolower( $TMWNI_OPTIONS['sku_mapping_field'] );
+		if ('customfieldlist'  === $map_field_name && !empty( $TMWNI_OPTIONS['sku_mapping_custom_field'] ) ) {
+			$map_field_name = trim( $TMWNI_OPTIONS['sku_mapping_custom_field'] );
+		}
 		$grouped_data = array();
 
 		foreach ( $location_data as $item ) {
@@ -261,7 +273,7 @@ class ItemClient extends CommonIntegrationFunctions {
 
 		$this->NetsuiteRestAPIClient = new NetsuiteRestAPI();
 		$response = $this->NetsuiteRestAPIClient->nsRESTRequest( 'post', $urlAPIEndPoint, true, $selected_location_query );
-
+	
 		if ( ! empty( $response['items'] ) ) {
 			$item_quantity_array = $this->getQuantity( $response['items'], $skus );
 			update_option( 'tm_rest_web_service_enable', 'yes' );
@@ -277,6 +289,7 @@ class ItemClient extends CommonIntegrationFunctions {
 		}
 
 		if ( ! empty( $response['hasMore'] ) ) {
+			sleep(2);
 			$count = $response['count'];
 			$offset = $response['offset'] + $count;
 			$urlAPIEndPoint = "/suiteql?limit=$count&offset=$offset";
@@ -315,6 +328,7 @@ class ItemClient extends CommonIntegrationFunctions {
 		foreach ( $item_quantity_array as $sku => $quantity ) {
 			$product_id = $this->getProductIdBySku( $sku );
 			if ( ! empty( $product_id ) ) {
+				
 				/**
 					* Filter to modify the status of update quantity process.
 					*
