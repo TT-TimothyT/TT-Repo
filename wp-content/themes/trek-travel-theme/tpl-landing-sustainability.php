@@ -23,12 +23,12 @@ get_header(); ?>
 
         <!-- Partners Section -->
         <?php get_template_part('tpl-parts/common/feature-3-up'); ?>
-        
-        <!-- Impact Section -->
-        <?php get_template_part('tpl-parts/common/cta-50-repeater'); ?>
 
         <!-- Support Section -->
         <?php get_template_part('tpl-parts/common/text-gallery-block'); ?>
+        
+        <!-- Impact Section -->
+        <?php get_template_part('tpl-parts/common/cta-50-repeater'); ?>
         
         <!-- CTA Section -->
         <?php get_template_part('tpl-parts/common/cta-block'); ?>

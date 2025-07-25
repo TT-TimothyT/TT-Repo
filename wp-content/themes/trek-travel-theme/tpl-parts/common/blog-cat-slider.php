@@ -11,6 +11,8 @@ $background_image = get_field('blog_background');
 $blog_category = get_field('blog_category');
 
 
+
+
 $bg_style = '';
 if ($background_image) {
     $bg_style = 'style="background-image: url(' . esc_url($background_image['url']) . ');"';
@@ -22,7 +24,7 @@ if (!$header) return;
 $blog_query = new WP_Query([
     'post_type' => 'post',
     'posts_per_page' => 6,
-    'category_name' => $blog_category,
+    'cat' => $blog_category,
     'post_status' => 'publish'
 ]);
 ?>
@@ -33,7 +35,9 @@ $blog_query = new WP_Query([
             <div class="row">
                 <div class="col-12 col-xl-6 mx-auto text-center">
                     <div class="section-header h3">
-                    <?php echo esc_html($header); ?>
+                    <?php echo esc_html($header); 
+                    
+                    print_r($blog_category);?>
                     </div>
                 </div>
             </div>
