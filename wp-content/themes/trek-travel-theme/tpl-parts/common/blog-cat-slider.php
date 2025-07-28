@@ -35,9 +35,7 @@ $blog_query = new WP_Query([
             <div class="row">
                 <div class="col-12 col-xl-6 mx-auto text-center">
                     <div class="section-header h3">
-                    <?php echo esc_html($header); 
-                    
-                    print_r($blog_category);?>
+                    <?php echo esc_html($header); ?>
                     </div>
                 </div>
             </div>
@@ -49,7 +47,7 @@ $blog_query = new WP_Query([
                 <div class="swiper-wrapper">
                     <?php while ($blog_query->have_posts()): $blog_query->the_post(); ?>
                         <div class="swiper-slide">
-                            <a class="blog-card bg-overlay" href="<?php the_permalink(); ?> style="background-image: url(<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'medium')); ?>)" alt="<?php echo esc_attr($background_image['alt']); ?>">
+                            <a class="blog-card bg-overlay" href="<?php the_permalink(); ?>" style="background-image: url(<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>)" alt="<?php echo esc_attr($background_image['alt']); ?>">
 
                                 <div class="blog-content">
                                     <?php the_title(); ?>
